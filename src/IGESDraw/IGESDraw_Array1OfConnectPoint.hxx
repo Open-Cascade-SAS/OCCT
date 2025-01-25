@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESDraw_ConnectPoint)> IGESDraw_Array1OfConnectPoint;
 
-
 #endif

@@ -29,61 +29,55 @@ class Geom_Curve;
 class Geom2d_Curve;
 class TopoDS_Shape;
 
-
-
-class TopOpeBRepTool_CurveTool 
+class TopOpeBRepTool_CurveTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepTool_CurveTool();
-  
+
   Standard_EXPORT TopOpeBRepTool_CurveTool(const TopOpeBRepTool_OutCurveType OCT);
-  
+
   Standard_EXPORT TopOpeBRepTool_CurveTool(const TopOpeBRepTool_GeomTool& GT);
-  
+
   Standard_EXPORT TopOpeBRepTool_GeomTool& ChangeGeomTool();
-  
+
   Standard_EXPORT const TopOpeBRepTool_GeomTool& GetGeomTool() const;
-  
-  Standard_EXPORT void SetGeomTool (const TopOpeBRepTool_GeomTool& GT);
-  
+
+  Standard_EXPORT void SetGeomTool(const TopOpeBRepTool_GeomTool& GT);
+
   //! Approximates curves.
   //! Returns False in the case of failure
-  Standard_EXPORT Standard_Boolean MakeCurves (const Standard_Real min, const Standard_Real max, const Handle(Geom_Curve)& C3D, const Handle(Geom2d_Curve)& PC1, const Handle(Geom2d_Curve)& PC2, const TopoDS_Shape& S1, const TopoDS_Shape& S2, Handle(Geom_Curve)& C3DN, Handle(Geom2d_Curve)& PC1N, Handle(Geom2d_Curve)& PC2N, Standard_Real& Tol3d, Standard_Real& Tol2d) const;
-  
-  Standard_EXPORT static Handle(Geom_Curve) MakeBSpline1fromPnt (const TColgp_Array1OfPnt& P);
-  
-  Standard_EXPORT static Handle(Geom2d_Curve) MakeBSpline1fromPnt2d (const TColgp_Array1OfPnt2d& P);
-  
-  Standard_EXPORT static Standard_Boolean IsProjectable (const TopoDS_Shape& S, const Handle(Geom_Curve)& C);
-  
-  Standard_EXPORT static Handle(Geom2d_Curve) MakePCurveOnFace (const TopoDS_Shape& S, const Handle(Geom_Curve)& C, Standard_Real& TolReached2d, const Standard_Real first = 0.0, const Standard_Real last = 0.0);
+  Standard_EXPORT Standard_Boolean MakeCurves(const Standard_Real         min,
+                                              const Standard_Real         max,
+                                              const Handle(Geom_Curve)&   C3D,
+                                              const Handle(Geom2d_Curve)& PC1,
+                                              const Handle(Geom2d_Curve)& PC2,
+                                              const TopoDS_Shape&         S1,
+                                              const TopoDS_Shape&         S2,
+                                              Handle(Geom_Curve)&         C3DN,
+                                              Handle(Geom2d_Curve)&       PC1N,
+                                              Handle(Geom2d_Curve)&       PC2N,
+                                              Standard_Real&              Tol3d,
+                                              Standard_Real&              Tol2d) const;
 
+  Standard_EXPORT static Handle(Geom_Curve) MakeBSpline1fromPnt(const TColgp_Array1OfPnt& P);
 
+  Standard_EXPORT static Handle(Geom2d_Curve) MakeBSpline1fromPnt2d(const TColgp_Array1OfPnt2d& P);
 
+  Standard_EXPORT static Standard_Boolean IsProjectable(const TopoDS_Shape&       S,
+                                                        const Handle(Geom_Curve)& C);
+
+  Standard_EXPORT static Handle(Geom2d_Curve) MakePCurveOnFace(const TopoDS_Shape&       S,
+                                                               const Handle(Geom_Curve)& C,
+                                                               Standard_Real&      TolReached2d,
+                                                               const Standard_Real first = 0.0,
+                                                               const Standard_Real last  = 0.0);
 
 protected:
-
-
-
   TopOpeBRepTool_GeomTool myGeomTool;
 
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_CurveTool_HeaderFile

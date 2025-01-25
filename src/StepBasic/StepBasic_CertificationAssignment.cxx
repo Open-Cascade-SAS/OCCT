@@ -20,43 +20,43 @@
 #include <StepBasic_Certification.hxx>
 #include <StepBasic_CertificationAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_CertificationAssignment
-//purpose  : 
+// function : StepBasic_CertificationAssignment
+// purpose  :
 //=======================================================================
-StepBasic_CertificationAssignment::StepBasic_CertificationAssignment ()
-{
-}
+StepBasic_CertificationAssignment::StepBasic_CertificationAssignment() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_CertificationAssignment::Init (const Handle(StepBasic_Certification) &aAssignedCertification)
+void StepBasic_CertificationAssignment::Init(
+  const Handle(StepBasic_Certification)& aAssignedCertification)
 {
 
   theAssignedCertification = aAssignedCertification;
 }
 
 //=======================================================================
-//function : AssignedCertification
-//purpose  : 
+// function : AssignedCertification
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_Certification) StepBasic_CertificationAssignment::AssignedCertification () const
+Handle(StepBasic_Certification) StepBasic_CertificationAssignment::AssignedCertification() const
 {
   return theAssignedCertification;
 }
 
 //=======================================================================
-//function : SetAssignedCertification
-//purpose  : 
+// function : SetAssignedCertification
+// purpose  :
 //=======================================================================
 
-void StepBasic_CertificationAssignment::SetAssignedCertification (const Handle(StepBasic_Certification) &aAssignedCertification)
+void StepBasic_CertificationAssignment::SetAssignedCertification(
+  const Handle(StepBasic_Certification)& aAssignedCertification)
 {
   theAssignedCertification = aAssignedCertification;
 }

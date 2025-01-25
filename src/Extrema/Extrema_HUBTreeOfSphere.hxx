@@ -20,8 +20,8 @@
 #include <NCollection_Handle.hxx>
 #include <Bnd_Sphere.hxx>
 
-typedef NCollection_UBTree<Standard_Integer,Bnd_Sphere> Extrema_UBTreeOfSphere;
-typedef NCollection_UBTreeFiller<Standard_Integer,Bnd_Sphere> Extrema_UBTreeFillerOfSphere;
-typedef NCollection_Handle<Extrema_UBTreeOfSphere> Extrema_HUBTreeOfSphere;
+typedef NCollection_UBTree<Standard_Integer, Bnd_Sphere>       Extrema_UBTreeOfSphere;
+typedef NCollection_UBTreeFiller<Standard_Integer, Bnd_Sphere> Extrema_UBTreeFillerOfSphere;
+typedef NCollection_Handle<Extrema_UBTreeOfSphere>             Extrema_HUBTreeOfSphere;
 
 #endif //_Extrema_HUBTreeOfSphere_HeaderFile

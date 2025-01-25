@@ -81,8 +81,8 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
       nbs = 50;
     Standard_Integer nnbs = (Standard_Integer)nbs;
 
-    Pars                  = new TColStd_HArray1OfReal(1, nnbs);
-    Standard_Real du      = (U1 - U0) / (nnbs - 1);
+    Pars             = new TColStd_HArray1OfReal(1, nnbs);
+    Standard_Real du = (U1 - U0) / (nnbs - 1);
 
     Pars->SetValue(1, U0);
     Pars->SetValue(nnbs, U1);
@@ -131,7 +131,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
 
   TColStd_Array1OfReal    aPars(1, nbsu);
   TColStd_Array1OfBoolean aFlg(1, nbsu);
-  //Filling of sample parameters
+  // Filling of sample parameters
   if (bUniform)
   {
     t1          = U0;
@@ -172,7 +172,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     ++k;
     aPars(k) = t1;
   }
-  //Analysis of deflection
+  // Analysis of deflection
 
   Standard_Real    aDefl2 = Max(Defl * Defl, 1.e-9);
   Standard_Real    tol    = Max(0.01 * aDefl2, 1.e-9);
@@ -243,7 +243,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
 
   if (NbSamples < myMinPnts)
   {
-    //uniform distribution
+    // uniform distribution
     NbSamples = myMinPnts;
     Pars      = new TColStd_HArray1OfReal(1, NbSamples);
     t1        = U0;

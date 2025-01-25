@@ -26,51 +26,29 @@ class Standard_Transient;
 class StepFEA_ElementRepresentation;
 class StepFEA_ElementGroup;
 
-
 //! Representation of STEP SELECT type ElementOrElementGroup
-class StepFEA_ElementOrElementGroup  : public StepData_SelectType
+class StepFEA_ElementOrElementGroup : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_ElementOrElementGroup();
-  
+
   //! Recognizes a kind of ElementOrElementGroup select type
   //! 1 -> ElementRepresentation from StepFEA
   //! 2 -> ElementGroup from StepFEA
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as ElementRepresentation (or Null if another type)
   Standard_EXPORT Handle(StepFEA_ElementRepresentation) ElementRepresentation() const;
-  
+
   //! Returns Value as ElementGroup (or Null if another type)
   Standard_EXPORT Handle(StepFEA_ElementGroup) ElementGroup() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_ElementOrElementGroup_HeaderFile

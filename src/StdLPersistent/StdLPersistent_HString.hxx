@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_HString_HeaderFile
 #define _StdLPersistent_HString_HeaderFile
 
@@ -21,7 +20,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 
-
 class StdLPersistent_HString
 {
   template <class StringClass, typename CharType>
@@ -29,24 +27,24 @@ class StdLPersistent_HString
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
     //! Get/create a label defined by referenced string.
-    Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;
+    Standard_EXPORT virtual TDF_Label Label(const Handle(TDF_Data)& theDF) const;
 
     //! Get the value.
-    const Handle(StringClass)& Value() const  { return myValue; }
+    const Handle(StringClass)& Value() const { return myValue; }
 
   protected:
     Handle(StringClass) myValue;
   };
 
 public:
-  class Ascii
-    : public instance<TCollection_HAsciiString, Standard_Character>
+  class Ascii : public instance<TCollection_HAsciiString, Standard_Character>
   {
   public:
     //! Get referenced ASCII string.
@@ -55,8 +53,7 @@ public:
     inline Standard_CString PName() const { return "PCollection_HAsciiString"; }
   };
 
-  class Extended
-    : public instance<TCollection_HExtendedString, Standard_ExtCharacter>
+  class Extended : public instance<TCollection_HExtendedString, Standard_ExtCharacter>
   {
   public:
     //! Get referenced extended string.

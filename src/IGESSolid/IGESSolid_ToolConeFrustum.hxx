@@ -35,60 +35,50 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a ConeFrustum. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESSolid_ToolConeFrustum 
+class IGESSolid_ToolConeFrustum
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolConeFrustum, ready to work
   Standard_EXPORT IGESSolid_ToolConeFrustum();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESSolid_ConeFrustum)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESSolid_ConeFrustum)&   ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESSolid_ConeFrustum)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESSolid_ConeFrustum)& ent,
+                                      IGESData_IGESWriter&                 IW) const;
+
   //! Lists the Entities shared by a ConeFrustum <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESSolid_ConeFrustum)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESSolid_ConeFrustum)& ent,
+                                 Interface_EntityIterator&            iter) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESSolid_ConeFrustum)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESSolid_ConeFrustum)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESSolid_ConeFrustum)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESSolid_ConeFrustum)& ent,
+                                const Interface_ShareTool&           shares,
+                                Handle(Interface_Check)&             ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESSolid_ConeFrustum)& entfrom, const Handle(IGESSolid_ConeFrustum)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESSolid_ConeFrustum)& entfrom,
+                               const Handle(IGESSolid_ConeFrustum)& entto,
+                               Interface_CopyTool&                  TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESSolid_ConeFrustum)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESSolid_ConeFrustum)& ent,
+                               const IGESData_IGESDumper&           dumper,
+                               Standard_OStream&                    S,
+                               const Standard_Integer               own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_ToolConeFrustum_HeaderFile

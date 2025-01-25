@@ -25,8 +25,9 @@ class Transfer_TransferDeadLoop;
 DEFINE_STANDARD_HANDLE(Transfer_TransferDeadLoop, Transfer_TransferFailure)
 
 #if !defined No_Exception && !defined No_Transfer_TransferDeadLoop
-  #define Transfer_TransferDeadLoop_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Transfer_TransferDeadLoop(MESSAGE);
+  #define Transfer_TransferDeadLoop_Raise_if(CONDITION, MESSAGE)                                   \
+    if (CONDITION)                                                                                 \
+      throw Transfer_TransferDeadLoop(MESSAGE);
 #else
   #define Transfer_TransferDeadLoop_Raise_if(CONDITION, MESSAGE)
 #endif

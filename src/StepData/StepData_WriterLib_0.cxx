@@ -22,7 +22,6 @@
 #include <StepData_ReadWriteModule.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_GlobalNodeOfWriterLib.hxx>
- 
 
 #define TheObject Handle(Standard_Transient)
 #define TheObject_hxx <Standard_Transient.hxx>
@@ -41,4 +40,3 @@
 #define LibCtl_Library StepData_WriterLib
 #define LibCtl_Library_hxx <StepData_WriterLib.hxx>
 #include "../LibCtl/LibCtl_Library.gxx"
-

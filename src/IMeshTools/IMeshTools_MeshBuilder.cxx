@@ -21,52 +21,47 @@ IMPLEMENT_STANDARD_RTTIEXT(IMeshTools_MeshBuilder, Message_Algorithm)
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-IMeshTools_MeshBuilder::IMeshTools_MeshBuilder ()
-{
-}
+IMeshTools_MeshBuilder::IMeshTools_MeshBuilder() {}
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-IMeshTools_MeshBuilder::IMeshTools_MeshBuilder (
-  const Handle (IMeshTools_Context)& theContext)
-  : myContext(theContext)
+IMeshTools_MeshBuilder::IMeshTools_MeshBuilder(const Handle(IMeshTools_Context)& theContext)
+    : myContext(theContext)
 {
 }
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-IMeshTools_MeshBuilder::~IMeshTools_MeshBuilder ()
-{
-}
+IMeshTools_MeshBuilder::~IMeshTools_MeshBuilder() {}
 
 //=======================================================================
 // Function: Perform
-// Purpose : 
+// Purpose :
 //=======================================================================
-void IMeshTools_MeshBuilder::Perform (const Message_ProgressRange& theRange)
+void IMeshTools_MeshBuilder::Perform(const Message_ProgressRange& theRange)
 {
-  ClearStatus ();
+  ClearStatus();
 
-  const Handle (IMeshTools_Context)& aContext = GetContext ();
-  if (aContext.IsNull ())
+  const Handle(IMeshTools_Context)& aContext = GetContext();
+  if (aContext.IsNull())
   {
-    SetStatus (Message_Fail1);
+    SetStatus(Message_Fail1);
     return;
   }
 
   Message_ProgressScope aPS(theRange, "Mesh Perform", 10);
 
-  if (aContext->BuildModel ())
+  if (aContext->BuildModel())
   {
-    if (aContext->DiscretizeEdges ())
+    if (aContext->DiscretizeEdges())
     {
-      if (aContext->HealModel ())
+      if (aContext->HealModel())
       {
         if (aContext->PreProcessModel())
         {
@@ -104,25 +99,23 @@ void IMeshTools_MeshBuilder::Perform (const Message_ProgressRange& theRange)
     }
     else
     {
-      SetStatus (Message_Fail3);
+      SetStatus(Message_Fail3);
     }
   }
   else
   {
-    const Handle (IMeshTools_ModelBuilder)& aModelBuilder =
-      aContext->GetModelBuilder ();
+    const Handle(IMeshTools_ModelBuilder)& aModelBuilder = aContext->GetModelBuilder();
 
-    if (aModelBuilder.IsNull ())
+    if (aModelBuilder.IsNull())
     {
-      SetStatus (Message_Fail1);
+      SetStatus(Message_Fail1);
     }
     else
     {
       // Is null shape or another problem?
-      SetStatus (aModelBuilder->GetStatus ().IsSet (Message_Fail1) ?
-        Message_Warn1 : Message_Fail2);
+      SetStatus(aModelBuilder->GetStatus().IsSet(Message_Fail1) ? Message_Warn1 : Message_Fail2);
     }
   }
   aPS.Next(1);
-  aContext->Clean ();
+  aContext->Clean();
 }

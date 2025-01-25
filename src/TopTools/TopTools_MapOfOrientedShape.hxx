@@ -20,8 +20,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<TopoDS_Shape> TopTools_MapOfOrientedShape;
+typedef NCollection_Map<TopoDS_Shape>           TopTools_MapOfOrientedShape;
 typedef NCollection_Map<TopoDS_Shape>::Iterator TopTools_MapIteratorOfMapOfOrientedShape;
-
 
 #endif

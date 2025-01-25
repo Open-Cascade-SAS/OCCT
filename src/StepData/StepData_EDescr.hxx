@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepData_Described;
 
-
 class StepData_EDescr;
 DEFINE_STANDARD_HANDLE(StepData_EDescr, Standard_Transient)
 
@@ -33,38 +32,19 @@ class StepData_EDescr : public Standard_Transient
 {
 
 public:
-
-  
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT virtual Standard_Boolean Matches (const Standard_CString steptype) const = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Matches(const Standard_CString steptype) const = 0;
+
   //! Tells if a EDescr is complex (ECDescr) or simple (ESDescr)
   Standard_EXPORT virtual Standard_Boolean IsComplex() const = 0;
-  
+
   //! Creates a described entity (i.e. a simple one)
   Standard_EXPORT virtual Handle(StepData_Described) NewEntity() const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepData_EDescr,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepData_EDescr, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepData_EDescr_HeaderFile

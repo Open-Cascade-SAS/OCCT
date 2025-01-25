@@ -15,42 +15,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
-inline TopoDS_Edge& BRepClass_Edge::Edge() 
+inline TopoDS_Edge& BRepClass_Edge::Edge()
 {
-  return  myEdge;
+  return myEdge;
 }
 
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Edge& BRepClass_Edge::Edge() const
 {
-  return  myEdge;
+  return myEdge;
 }
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
-inline TopoDS_Face& BRepClass_Edge::Face() 
+inline TopoDS_Face& BRepClass_Edge::Face()
 {
   return myFace;
 }
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Face& BRepClass_Edge::Face() const
 {
   return myFace;
 }
-

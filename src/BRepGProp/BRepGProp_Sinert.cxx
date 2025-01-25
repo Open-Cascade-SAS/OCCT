@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepGProp_Domain.hxx>
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_Gauss.hxx>
@@ -20,28 +19,27 @@
 #include <gp_Pnt.hxx>
 
 //=======================================================================
-//function : BRepGProp_Sinert
-//purpose  : Constructor
+// function : BRepGProp_Sinert
+// purpose  : Constructor
 //=======================================================================
 BRepGProp_Sinert::BRepGProp_Sinert()
-: myEpsilon(0.0)
+    : myEpsilon(0.0)
 {
 }
 
 //=======================================================================
-//function : BRepGProp_Sinert
-//purpose  : Constructor
+// function : BRepGProp_Sinert
+// purpose  : Constructor
 //=======================================================================
-BRepGProp_Sinert::BRepGProp_Sinert (const BRepGProp_Face& theSurface,
-                                    const gp_Pnt&         theLocation)
+BRepGProp_Sinert::BRepGProp_Sinert(const BRepGProp_Face& theSurface, const gp_Pnt& theLocation)
 {
   SetLocation(theLocation);
   Perform(theSurface);
 }
 
 //=======================================================================
-//function : BRepGProp_Sinert
-//purpose  : Constructor
+// function : BRepGProp_Sinert
+// purpose  : Constructor
 //=======================================================================
 BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
                                    BRepGProp_Domain& theDomain,
@@ -52,8 +50,8 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
 }
 
 //=======================================================================
-//function : BRepGProp_Sinert
-//purpose  : Constructor
+// function : BRepGProp_Sinert
+// purpose  : Constructor
 //=======================================================================
 BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
                                    const gp_Pnt&       theLocation,
@@ -64,8 +62,8 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
 }
 
 //=======================================================================
-//function : BRepGProp_Sinert
-//purpose  : Constructor
+// function : BRepGProp_Sinert
+// purpose  : Constructor
 //=======================================================================
 BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
                                    BRepGProp_Domain&   theDomain,
@@ -77,8 +75,8 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
 }
 
 //=======================================================================
-//function : SetLocation
-//purpose  : 
+// function : SetLocation
+// purpose  :
 //=======================================================================
 void BRepGProp_Sinert::SetLocation(const gp_Pnt& theLocation)
 {
@@ -86,8 +84,8 @@ void BRepGProp_Sinert::SetLocation(const gp_Pnt& theLocation)
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
 void BRepGProp_Sinert::Perform(const BRepGProp_Face& theSurface)
 {
@@ -98,11 +96,10 @@ void BRepGProp_Sinert::Perform(const BRepGProp_Face& theSurface)
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
-void BRepGProp_Sinert::Perform(BRepGProp_Face&   theSurface,
-                               BRepGProp_Domain& theDomain)
+void BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, BRepGProp_Domain& theDomain)
 {
   myEpsilon = 1.0;
 
@@ -111,31 +108,30 @@ void BRepGProp_Sinert::Perform(BRepGProp_Face&   theSurface,
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
-Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
-                                        const Standard_Real theEps)
+Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, const Standard_Real theEps)
 {
   BRepGProp_Domain anEmptyDomian;
   return Perform(theSurface, anEmptyDomian, theEps);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
 Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
                                         BRepGProp_Domain&   theDomain,
                                         const Standard_Real theEps)
 {
-  BRepGProp_Gauss  aGauss(BRepGProp_Gauss::Sinert);
+  BRepGProp_Gauss aGauss(BRepGProp_Gauss::Sinert);
   return myEpsilon = aGauss.Compute(theSurface, theDomain, loc, theEps, dim, g, inertia);
 }
 
 //=======================================================================
-//function : GetEpsilon
-//purpose  : 
+// function : GetEpsilon
+// purpose  :
 //=======================================================================
 Standard_Real BRepGProp_Sinert::GetEpsilon()
 {

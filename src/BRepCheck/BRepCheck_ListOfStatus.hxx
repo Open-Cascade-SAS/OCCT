@@ -21,9 +21,8 @@
 #include <NCollection_List.hxx>
 #include <NCollection_Shared.hxx>
 
-typedef NCollection_List<BRepCheck_Status> BRepCheck_ListOfStatus;
+typedef NCollection_List<BRepCheck_Status>           BRepCheck_ListOfStatus;
 typedef NCollection_List<BRepCheck_Status>::Iterator BRepCheck_ListIteratorOfListOfStatus;
-typedef NCollection_Shared<BRepCheck_ListOfStatus> BRepCheck_HListOfStatus;
-
+typedef NCollection_Shared<BRepCheck_ListOfStatus>   BRepCheck_HListOfStatus;
 
 #endif

@@ -24,45 +24,50 @@
 IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_LengthUnit, TDF_Attribute, "xcaf", "LengthUnit")
 
 //=======================================================================
-//function : XCAFDoc_LengthUnit
-//purpose  :
+// function : XCAFDoc_LengthUnit
+// purpose  :
 //=======================================================================
-XCAFDoc_LengthUnit::XCAFDoc_LengthUnit() : TDF_Attribute(), myUnitScaleValue(1.)
-{}
+XCAFDoc_LengthUnit::XCAFDoc_LengthUnit()
+    : TDF_Attribute(),
+      myUnitScaleValue(1.)
+{
+}
 
 //=======================================================================
-//function : Set
-//purpose  :
+// function : Set
+// purpose  :
 //=======================================================================
-Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label& theLabel,
-                                                     const TCollection_AsciiString& theUnitName,
-                                                     const Standard_Real theUnitValue)
+Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label&               theLabel,
+                                                   const TCollection_AsciiString& theUnitName,
+                                                   const Standard_Real            theUnitValue)
 {
   return Set(theLabel, GetID(), theUnitName, theUnitValue);
 }
 
 //=======================================================================
-//function : Set
-//purpose  :
+// function : Set
+// purpose  :
 //=======================================================================
-Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label& theLabel,
-                                                     const Standard_Real theUnitValue)
+Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label&    theLabel,
+                                                   const Standard_Real theUnitValue)
 {
-  TCollection_AsciiString aUnitName = UnitsMethods::DumpLengthUnit(theUnitValue, UnitsMethods_LengthUnit_Meter);
+  TCollection_AsciiString aUnitName =
+    UnitsMethods::DumpLengthUnit(theUnitValue, UnitsMethods_LengthUnit_Meter);
   return Set(theLabel, GetID(), aUnitName, theUnitValue);
 }
 
 //=======================================================================
-//function : Set
-//purpose  :
+// function : Set
+// purpose  :
 //=======================================================================
-Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label& theLabel,
-                                                     const Standard_GUID& theGUID,
-                                                     const TCollection_AsciiString& theUnitName,
-                                                     const Standard_Real theUnitValue)
+Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label&               theLabel,
+                                                   const Standard_GUID&           theGUID,
+                                                   const TCollection_AsciiString& theUnitName,
+                                                   const Standard_Real            theUnitValue)
 {
   Handle(XCAFDoc_LengthUnit) A;
-  if (!theLabel.FindAttribute(theGUID, A)) {
+  if (!theLabel.FindAttribute(theGUID, A))
+  {
     A = new XCAFDoc_LengthUnit();
     A->SetID(theGUID);
     theLabel.AddAttribute(A);
@@ -72,30 +77,30 @@ Handle(XCAFDoc_LengthUnit) XCAFDoc_LengthUnit::Set(const TDF_Label& theLabel,
 }
 
 //=======================================================================
-//function : Set
-//purpose  :
+// function : Set
+// purpose  :
 //=======================================================================
 void XCAFDoc_LengthUnit::Set(const TCollection_AsciiString& theUnitName,
-                              const Standard_Real theUnitValue)
+                             const Standard_Real            theUnitValue)
 {
   Backup();
-  myUnitName = theUnitName;
+  myUnitName       = theUnitName;
   myUnitScaleValue = theUnitValue;
 }
 
 //=======================================================================
-//function : GetID
-//purpose  :
+// function : GetID
+// purpose  :
 //=======================================================================
 const Standard_GUID& XCAFDoc_LengthUnit::GetID()
 {
-  static const Standard_GUID theGUID ("efd212f8-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID theGUID("efd212f8-6dfd-11d4-b9c8-0060b0ee281b");
   return theGUID;
 }
 
 //=======================================================================
-//function : ID
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
 
 const Standard_GUID& XCAFDoc_LengthUnit::ID() const
@@ -104,23 +109,23 @@ const Standard_GUID& XCAFDoc_LengthUnit::ID() const
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : 
+// function : Restore
+// purpose  :
 //=======================================================================
 
 void XCAFDoc_LengthUnit::Restore(const Handle(TDF_Attribute)& theWith)
 {
   Handle(XCAFDoc_LengthUnit) anAttr = Handle(XCAFDoc_LengthUnit)::DownCast(theWith);
-  myUnitName = anAttr->GetUnitName();
-  myUnitScaleValue = anAttr->GetUnitValue();
+  myUnitName                        = anAttr->GetUnitName();
+  myUnitScaleValue                  = anAttr->GetUnitValue();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : Paste
+// purpose  :
 //=======================================================================
-void XCAFDoc_LengthUnit::Paste(const Handle(TDF_Attribute)& theInto,
-  const Handle(TDF_RelocationTable)&  theRT ) const
+void XCAFDoc_LengthUnit::Paste(const Handle(TDF_Attribute)&       theInto,
+                               const Handle(TDF_RelocationTable)& theRT) const
 {
   (void)theRT;
   Handle(XCAFDoc_LengthUnit) anAttr = Handle(XCAFDoc_LengthUnit)::DownCast(theInto);
@@ -128,8 +133,8 @@ void XCAFDoc_LengthUnit::Paste(const Handle(TDF_Attribute)& theInto,
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 Standard_OStream& XCAFDoc_LengthUnit::Dump(Standard_OStream& theOS) const
 {
@@ -143,8 +148,8 @@ Standard_OStream& XCAFDoc_LengthUnit::Dump(Standard_OStream& theOS) const
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
 void XCAFDoc_LengthUnit::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {

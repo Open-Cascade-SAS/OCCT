@@ -15,26 +15,42 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DomainError.hxx>
 
-inline Standard_Boolean IntAna_IntQuadQuad::IsDone () const
+inline Standard_Boolean IntAna_IntQuadQuad::IsDone() const
 {
-  return(done);
+  return (done);
 }
 
-inline Standard_Boolean IntAna_IntQuadQuad::IdenticalElements () const { 
-  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
-  return(identical); 
-}
-
-inline Standard_Integer IntAna_IntQuadQuad::NbCurve () const { 
-  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
-  if (identical) {throw Standard_DomainError();}
-  return(NbCurves); 
-}
-
-inline Standard_Integer IntAna_IntQuadQuad::NbPnt () const
+inline Standard_Boolean IntAna_IntQuadQuad::IdenticalElements() const
 {
-  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
-  if (identical) {throw Standard_DomainError();}
-  return(Nbpoints);
+  if (!done)
+  {
+    throw StdFail_NotDone("IntQuadQuad Not done");
+  }
+  return (identical);
 }
 
+inline Standard_Integer IntAna_IntQuadQuad::NbCurve() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone("IntQuadQuad Not done");
+  }
+  if (identical)
+  {
+    throw Standard_DomainError();
+  }
+  return (NbCurves);
+}
+
+inline Standard_Integer IntAna_IntQuadQuad::NbPnt() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone("IntQuadQuad Not done");
+  }
+  if (identical)
+  {
+    throw Standard_DomainError();
+  }
+  return (Nbpoints);
+}

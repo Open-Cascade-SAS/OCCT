@@ -14,48 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MAT_Node.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MAT_Node,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Node, Standard_Transient)
 
 //=============================================================================
-//function : 
-//Purpose  :
+// function :
+// Purpose  :
 //=============================================================================
-MAT_Node::MAT_Node(const Standard_Integer     GeomIndex, 
-		   const Handle(MAT_Arc)&     LinkedArc, 
-		   const Standard_Real        Distance)
-     : nodeIndex(0),
-       geomIndex(GeomIndex),
-       distance(Distance)
+MAT_Node::MAT_Node(const Standard_Integer GeomIndex,
+                   const Handle(MAT_Arc)& LinkedArc,
+                   const Standard_Real    Distance)
+    : nodeIndex(0),
+      geomIndex(GeomIndex),
+      distance(Distance)
 {
   aLinkedArc = LinkedArc.get();
 }
 
 //=============================================================================
-//function : GeomIndex 
-//Purpose  :
+// function : GeomIndex
+// Purpose  :
 //=============================================================================
-Standard_Integer  MAT_Node::GeomIndex() const
+Standard_Integer MAT_Node::GeomIndex() const
 {
   return geomIndex;
 }
 
 //=============================================================================
-//function : Index
-//Purpose  :
+// function : Index
+// Purpose  :
 //=============================================================================
-Standard_Integer  MAT_Node::Index() const
+Standard_Integer MAT_Node::Index() const
 {
   return nodeIndex;
 }
 
 //=============================================================================
-//function : LinkedArcs
-//Purpose  :
+// function : LinkedArcs
+// Purpose  :
 //=============================================================================
 void MAT_Node::LinkedArcs(MAT_SequenceOfArc& S) const
 {
@@ -65,9 +64,11 @@ void MAT_Node::LinkedArcs(MAT_SequenceOfArc& S) const
 
   S.Append(LA);
 
-  if (LA->HasNeighbour(Me, MAT_Left)) {
-    Handle(MAT_Arc)  CA = LA->Neighbour(Me, MAT_Left);
-    while (CA != LA) {
+  if (LA->HasNeighbour(Me, MAT_Left))
+  {
+    Handle(MAT_Arc) CA = LA->Neighbour(Me, MAT_Left);
+    while (CA != LA)
+    {
       S.Append(CA);
       CA = CA->Neighbour(Me, MAT_Left);
     }
@@ -75,8 +76,8 @@ void MAT_Node::LinkedArcs(MAT_SequenceOfArc& S) const
 }
 
 //=============================================================================
-//function : NearElts 
-//Purpose  :
+// function : NearElts
+// Purpose  :
 //=============================================================================
 void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
 {
@@ -88,85 +89,84 @@ void MAT_Node::NearElts(MAT_SequenceOfBasicElt& S) const
   S.Append(LA->FirstElement());
   S.Append(LA->SecondElement());
 
-  if (LA->HasNeighbour(Me, MAT_Left)) {
+  if (LA->HasNeighbour(Me, MAT_Left))
+  {
 
-    Handle(MAT_Arc)  CA = LA->Neighbour(Me, MAT_Left);
+    Handle(MAT_Arc)  CA   = LA->Neighbour(Me, MAT_Left);
     Standard_Boolean Pair = Standard_False;
-    
+
     //---------------------------------------------------------
     // Recuperation des deux elements separes pour un arc sur
     // deux.
     //---------------------------------------------------------
-    
-    while (CA != LA) {
-      if (Pair) {
-	S.Append(CA->FirstElement());
-	S.Append(CA->SecondElement());
+
+    while (CA != LA)
+    {
+      if (Pair)
+      {
+        S.Append(CA->FirstElement());
+        S.Append(CA->SecondElement());
       }
-      else {
-	Pair = Standard_True;
+      else
+      {
+        Pair = Standard_True;
       }
       CA = CA->Neighbour(Me, MAT_Left);
     }
   }
 }
-  
+
 //=============================================================================
-//function : Distance
-//Purpose  :
+// function : Distance
+// Purpose  :
 //=============================================================================
-Standard_Real  MAT_Node::Distance() const
+Standard_Real MAT_Node::Distance() const
 {
   return distance;
 }
 
-
 //=============================================================================
-//function : PendingNode
-//Purpose  :
+// function : PendingNode
+// Purpose  :
 //=============================================================================
-Standard_Boolean  MAT_Node::PendingNode() const
+Standard_Boolean MAT_Node::PendingNode() const
 {
   Handle(MAT_Node) Me = this;
-  return (!((MAT_Arc*)aLinkedArc)->HasNeighbour(Me,MAT_Left));
+  return (!((MAT_Arc*)aLinkedArc)->HasNeighbour(Me, MAT_Left));
 }
 
 //=============================================================================
-//function : NodeOnFig
-//Purpose  :
+// function : NodeOnFig
+// Purpose  :
 //=============================================================================
-Standard_Boolean  MAT_Node::OnBasicElt() const
+Standard_Boolean MAT_Node::OnBasicElt() const
 {
   return (Distance() == 0.0);
 }
 
 //=============================================================================
-//function : NodeInfinite
-//Purpose  :
+// function : NodeInfinite
+// Purpose  :
 //=============================================================================
-Standard_Boolean  MAT_Node::Infinite() const
+Standard_Boolean MAT_Node::Infinite() const
 {
   return (Distance() == Precision::Infinite());
 }
 
 //=============================================================================
-//function : SetLinkedArcs
-//Purpose  :
+// function : SetLinkedArcs
+// Purpose  :
 //=============================================================================
-void MAT_Node::SetLinkedArc (const Handle(MAT_Arc)& LinkedArc)
+void MAT_Node::SetLinkedArc(const Handle(MAT_Arc)& LinkedArc)
 {
   aLinkedArc = LinkedArc.get();
 }
 
 //=============================================================================
-//function : SetIndex
-//Purpose  :
+// function : SetIndex
+// Purpose  :
 //=============================================================================
-void MAT_Node::SetIndex (const Standard_Integer anIndex)
+void MAT_Node::SetIndex(const Standard_Integer anIndex)
 {
   nodeIndex = anIndex;
 }
-
-
-
-

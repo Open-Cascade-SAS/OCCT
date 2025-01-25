@@ -22,7 +22,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESBasic_ExternalRefFileName;
 DEFINE_STANDARD_HANDLE(IGESBasic_ExternalRefFileName, IGESData_IGESEntity)
 
@@ -35,49 +34,31 @@ class IGESBasic_ExternalRefFileName : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESBasic_ExternalRefFileName();
-  
+
   //! This method is used to set the fields of the class
   //! ExternalRefFileName
   //! - aFileIdent : External Reference File Identifier
   //! - anExtName  : External Reference Entity Symbolic Name
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aFileIdent, const Handle(TCollection_HAsciiString)& anExtName);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aFileIdent,
+                            const Handle(TCollection_HAsciiString)& anExtName);
+
   //! Changes FormNumber to be 2 if <mode> is True (For Entity)
   //! or 0 if <mode> is False (For Definition)
-  Standard_EXPORT void SetForEntity (const Standard_Boolean mode);
-  
+  Standard_EXPORT void SetForEntity(const Standard_Boolean mode);
+
   //! returns External Reference File Identifier
   Standard_EXPORT Handle(TCollection_HAsciiString) FileId() const;
-  
+
   //! returns External Reference Entity Symbolic Name
   Standard_EXPORT Handle(TCollection_HAsciiString) ReferenceName() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileName,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileName, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theExtRefFileIdentifier;
   Handle(TCollection_HAsciiString) theExtRefEntitySymbName;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESBasic_ExternalRefFileName_HeaderFile

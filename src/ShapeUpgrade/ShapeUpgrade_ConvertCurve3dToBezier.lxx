@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetLineMode
-//purpose  : 
+// function : SetLineMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetLineMode(const Standard_Boolean mode)
@@ -25,8 +25,8 @@ inline void ShapeUpgrade_ConvertCurve3dToBezier::SetLineMode(const Standard_Bool
 }
 
 //=======================================================================
-//function : GetLineMode
-//purpose  : 
+// function : GetLineMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetLineMode() const
@@ -35,8 +35,8 @@ inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetLineMode() const
 }
 
 //=======================================================================
-//function : SetCircleMode
-//purpose  : 
+// function : SetCircleMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetCircleMode(const Standard_Boolean mode)
@@ -45,8 +45,8 @@ inline void ShapeUpgrade_ConvertCurve3dToBezier::SetCircleMode(const Standard_Bo
 }
 
 //=======================================================================
-//function : GetCircleMode
-//purpose  : 
+// function : GetCircleMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetCircleMode() const
@@ -55,8 +55,8 @@ inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetCircleMode() con
 }
 
 //=======================================================================
-//function : SetConicMode
-//purpose  : 
+// function : SetConicMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetConicMode(const Standard_Boolean mode)
@@ -65,8 +65,8 @@ inline void ShapeUpgrade_ConvertCurve3dToBezier::SetConicMode(const Standard_Boo
 }
 
 //=======================================================================
-//function : GetConicMode
-//purpose  : 
+// function : GetConicMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetConicMode() const

@@ -22,35 +22,33 @@
 #include <BRepMesh_CircleInspector.hxx>
 
 //=======================================================================
-//function : BRepMesh_CircleTool
-//purpose  : 
+// function : BRepMesh_CircleTool
+// purpose  :
 //=======================================================================
-BRepMesh_CircleTool::BRepMesh_CircleTool(
-  const Handle(NCollection_IncAllocator)& theAllocator)
-: myTolerance (Precision::PConfusion()),
-  myAllocator (theAllocator),
-  myCellFilter(10.0, theAllocator),
-  mySelector  (myTolerance, 64, theAllocator)
+BRepMesh_CircleTool::BRepMesh_CircleTool(const Handle(NCollection_IncAllocator)& theAllocator)
+    : myTolerance(Precision::PConfusion()),
+      myAllocator(theAllocator),
+      myCellFilter(10.0, theAllocator),
+      mySelector(myTolerance, 64, theAllocator)
 {
 }
 
 //=======================================================================
-//function : BRepMesh_CircleTool
-//purpose  : 
+// function : BRepMesh_CircleTool
+// purpose  :
 //=======================================================================
-BRepMesh_CircleTool::BRepMesh_CircleTool(
-  const Standard_Integer                  theReservedSize,
-  const Handle(NCollection_IncAllocator)& theAllocator)
-: myTolerance (Precision::PConfusion()),
-  myAllocator (theAllocator),
-  myCellFilter(10.0, theAllocator),
-  mySelector  (myTolerance, Max(theReservedSize, 64), theAllocator)
+BRepMesh_CircleTool::BRepMesh_CircleTool(const Standard_Integer                  theReservedSize,
+                                         const Handle(NCollection_IncAllocator)& theAllocator)
+    : myTolerance(Precision::PConfusion()),
+      myAllocator(theAllocator),
+      myCellFilter(10.0, theAllocator),
+      mySelector(myTolerance, Max(theReservedSize, 64), theAllocator)
 {
 }
 
 //=======================================================================
-//function : bind
-//purpose  : 
+// function : bind
+// purpose  :
 //=======================================================================
 void BRepMesh_CircleTool::bind(const Standard_Integer theIndex,
                                const gp_XY&           theLocation,
@@ -58,7 +56,7 @@ void BRepMesh_CircleTool::bind(const Standard_Integer theIndex,
 {
   BRepMesh_Circle aCirle(theLocation, theRadius);
 
-  //compute coords
+  // compute coords
   Standard_Real aMaxX = Min(theLocation.X() + theRadius, myFaceMax.X());
   Standard_Real aMinX = Max(theLocation.X() - theRadius, myFaceMin.X());
   Standard_Real aMaxY = Min(theLocation.Y() + theRadius, myFaceMax.Y());
@@ -72,11 +70,10 @@ void BRepMesh_CircleTool::bind(const Standard_Integer theIndex,
 }
 
 //=======================================================================
-//function : Bind
-//purpose  : 
+// function : Bind
+// purpose  :
 //=======================================================================
-void BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
-                               const gp_Circ2d&       theCircle)
+void BRepMesh_CircleTool::Bind(const Standard_Integer theIndex, const gp_Circ2d& theCircle)
 {
   gp_XY         aCoord  = theCircle.Location().Coord();
   Standard_Real aRadius = theCircle.Radius();
@@ -84,8 +81,8 @@ void BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
 }
 
 //=======================================================================
-//function : MakeCircle
-//purpose  : 
+// function : MakeCircle
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
                                                  const gp_XY&   thePoint2,
@@ -96,57 +93,60 @@ Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
   static const Standard_Real aPrecision   = Precision::PConfusion();
   static const Standard_Real aSqPrecision = aPrecision * aPrecision;
 
-  gp_XY aLink1(const_cast<gp_XY&>(thePoint3).ChangeCoord(1) - const_cast<gp_XY&>(thePoint2).ChangeCoord(1),
-               const_cast<gp_XY&>(thePoint2).ChangeCoord(2) - const_cast<gp_XY&>(thePoint3).ChangeCoord(2));
+  gp_XY aLink1(
+    const_cast<gp_XY&>(thePoint3).ChangeCoord(1) - const_cast<gp_XY&>(thePoint2).ChangeCoord(1),
+    const_cast<gp_XY&>(thePoint2).ChangeCoord(2) - const_cast<gp_XY&>(thePoint3).ChangeCoord(2));
   if (aLink1.SquareModulus() < aSqPrecision)
     return Standard_False;
 
-  gp_XY aLink2(const_cast<gp_XY&>(thePoint1).ChangeCoord(1) - const_cast<gp_XY&>(thePoint3).ChangeCoord(1),
-               const_cast<gp_XY&>(thePoint3).ChangeCoord(2) - const_cast<gp_XY&>(thePoint1).ChangeCoord(2));
+  gp_XY aLink2(
+    const_cast<gp_XY&>(thePoint1).ChangeCoord(1) - const_cast<gp_XY&>(thePoint3).ChangeCoord(1),
+    const_cast<gp_XY&>(thePoint3).ChangeCoord(2) - const_cast<gp_XY&>(thePoint1).ChangeCoord(2));
   if (aLink2.SquareModulus() < aSqPrecision)
     return Standard_False;
 
-  gp_XY aLink3(const_cast<gp_XY&>(thePoint2).ChangeCoord(1) - const_cast<gp_XY&>(thePoint1).ChangeCoord(1),
-               const_cast<gp_XY&>(thePoint1).ChangeCoord(2) - const_cast<gp_XY&>(thePoint2).ChangeCoord(2));
+  gp_XY aLink3(
+    const_cast<gp_XY&>(thePoint2).ChangeCoord(1) - const_cast<gp_XY&>(thePoint1).ChangeCoord(1),
+    const_cast<gp_XY&>(thePoint1).ChangeCoord(2) - const_cast<gp_XY&>(thePoint2).ChangeCoord(2));
   if (aLink3.SquareModulus() < aSqPrecision)
     return Standard_False;
 
-  const Standard_Real aD = 2 * (const_cast<gp_XY&>(thePoint1).ChangeCoord(1) * aLink1.Y() +
-                                const_cast<gp_XY&>(thePoint2).ChangeCoord(1) * aLink2.Y() +
-                                const_cast<gp_XY&>(thePoint3).ChangeCoord(1) * aLink3.Y());
+  const Standard_Real aD = 2
+                           * (const_cast<gp_XY&>(thePoint1).ChangeCoord(1) * aLink1.Y()
+                              + const_cast<gp_XY&>(thePoint2).ChangeCoord(1) * aLink2.Y()
+                              + const_cast<gp_XY&>(thePoint3).ChangeCoord(1) * aLink3.Y());
 
   if (Abs(aD) < gp::Resolution())
     return Standard_False;
 
-  const Standard_Real aInvD = 1. / aD;
+  const Standard_Real aInvD   = 1. / aD;
   const Standard_Real aSqMod1 = thePoint1.SquareModulus();
   const Standard_Real aSqMod2 = thePoint2.SquareModulus();
   const Standard_Real aSqMod3 = thePoint3.SquareModulus();
-  theLocation.ChangeCoord(1) = (aSqMod1 * aLink1.Y() +
-                                aSqMod2 * aLink2.Y() +
-                                aSqMod3 * aLink3.Y()) * aInvD;
+  theLocation.ChangeCoord(1) =
+    (aSqMod1 * aLink1.Y() + aSqMod2 * aLink2.Y() + aSqMod3 * aLink3.Y()) * aInvD;
 
-  theLocation.ChangeCoord(2) = (aSqMod1 * aLink1.X() +
-                                aSqMod2 * aLink2.X() +
-                                aSqMod3 * aLink3.X()) * aInvD;
+  theLocation.ChangeCoord(2) =
+    (aSqMod1 * aLink1.X() + aSqMod2 * aLink2.X() + aSqMod3 * aLink3.X()) * aInvD;
 
   theRadius = Sqrt(Max(Max((thePoint1 - theLocation).SquareModulus(),
                            (thePoint2 - theLocation).SquareModulus()),
-                           (thePoint3 - theLocation).SquareModulus())) + 2 * RealEpsilon();
+                       (thePoint3 - theLocation).SquareModulus()))
+              + 2 * RealEpsilon();
 
   return Standard_True;
 }
 
 //=======================================================================
-//function : Bind
-//purpose  : 
+// function : Bind
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
                                            const gp_XY&           thePoint1,
                                            const gp_XY&           thePoint2,
                                            const gp_XY&           thePoint3)
 {
-  gp_XY aLocation;
+  gp_XY         aLocation;
   Standard_Real aRadius;
   if (!MakeCircle(thePoint1, thePoint2, thePoint3, aLocation, aRadius))
     return Standard_False;
@@ -156,19 +156,19 @@ Standard_Boolean BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
 }
 
 //=======================================================================
-//function : Delete
-//purpose  : 
+// function : Delete
+// purpose  :
 //=======================================================================
 void BRepMesh_CircleTool::Delete(const Standard_Integer theIndex)
 {
   BRepMesh_Circle& aCircle = mySelector.Circle(theIndex);
-  if(aCircle.Radius() > 0.)
+  if (aCircle.Radius() > 0.)
     aCircle.SetRadius(-1);
 }
 
 //=======================================================================
-//function : Select
-//purpose  : 
+// function : Select
+// purpose  :
 //=======================================================================
 IMeshData::ListOfInteger& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
 {
@@ -178,8 +178,8 @@ IMeshData::ListOfInteger& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
 }
 
 //=======================================================================
-//function : MocBind
-//purpose  : 
+// function : MocBind
+// purpose  :
 //=======================================================================
 void BRepMesh_CircleTool::MocBind(const Standard_Integer theIndex)
 {

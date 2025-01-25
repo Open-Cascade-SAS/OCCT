@@ -27,7 +27,6 @@ class OpenGl_VertexBuffer;
 class OpenGl_FrameStatsPrs : public OpenGl_Element
 {
 public:
-
   //! Default constructor.
   Standard_EXPORT OpenGl_FrameStatsPrs();
 
@@ -35,40 +34,42 @@ public:
   Standard_EXPORT virtual ~OpenGl_FrameStatsPrs();
 
   //! Render element.
-  Standard_EXPORT virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+    Standard_OVERRIDE;
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Update text.
-  Standard_EXPORT void Update (const Handle(OpenGl_Workspace)& theWorkspace);
+  Standard_EXPORT void Update(const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Assign text aspect.
-  void SetTextAspect (const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect.SetAspect (theAspect); }
+  void SetTextAspect(const Handle(Graphic3d_AspectText3d)& theAspect)
+  {
+    myTextAspect.SetAspect(theAspect);
+  }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-
   //! Update chart presentation.
-  Standard_EXPORT void updateChart (const Handle(OpenGl_Workspace)& theWorkspace);
+  Standard_EXPORT void updateChart(const Handle(OpenGl_Workspace)& theWorkspace);
 
 protected:
-
-  Handle(OpenGl_FrameStats)          myStatsPrev;         //!< currently displayed stats
-// clang-format off
+  Handle(OpenGl_FrameStats) myStatsPrev;               //!< currently displayed stats
+                                                       // clang-format off
   Handle(Graphic3d_TransformPers)    myCountersTrsfPers;  //!< transformation persistence for counters presentation
   OpenGl_Text                        myCountersText;      //!< counters presentation
   OpenGl_Aspects                     myTextAspect;        //!< text aspect
   Handle(Graphic3d_TransformPers)    myChartTrsfPers;     //!< transformation persistence for chart presentation
-// clang-format on
-  Handle(Graphic3d_ArrayOfTriangles) myChartArray;        //!< array of chart triangles
-  Handle(OpenGl_VertexBuffer)        myChartVertices;     //!< VBO with chart triangles
-  Handle(OpenGl_IndexBuffer)         myChartIndices;      //!< VBO with chart triangle indexes
-  Handle(OpenGl_VertexBuffer)        myChartLines;        //!< array of chart lines
-  OpenGl_Text                        myChartLabels[3];    //!< chart labels
-
+                                                       // clang-format on
+  Handle(Graphic3d_ArrayOfTriangles) myChartArray;     //!< array of chart triangles
+  Handle(OpenGl_VertexBuffer)        myChartVertices;  //!< VBO with chart triangles
+  Handle(OpenGl_IndexBuffer)         myChartIndices;   //!< VBO with chart triangle indexes
+  Handle(OpenGl_VertexBuffer)        myChartLines;     //!< array of chart lines
+  OpenGl_Text                        myChartLabels[3]; //!< chart labels
 };
 
 #endif // _OpenGl_FrameStatsPrs_HeaderFile

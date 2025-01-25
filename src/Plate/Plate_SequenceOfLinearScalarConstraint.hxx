@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Plate_LinearScalarConstraint> Plate_SequenceOfLinearScalarConstraint;
 
-
 #endif

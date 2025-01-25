@@ -19,5 +19,6 @@
 #include <StepDimTol_DatumReferenceCompartment.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepDimTol_DatumReferenceCompartment)> StepDimTol_Array1OfDatumReferenceCompartment;
+typedef NCollection_Array1<Handle(StepDimTol_DatumReferenceCompartment)>
+  StepDimTol_Array1OfDatumReferenceCompartment;
 #endif // _StepDimTol_Array1OfDatumReferenceCompartment_HeaderFile

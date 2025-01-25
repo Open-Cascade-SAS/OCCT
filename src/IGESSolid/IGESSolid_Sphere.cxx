@@ -22,36 +22,35 @@
 #include <IGESSolid_Sphere.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Sphere,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Sphere, IGESData_IGESEntity)
 
-IGESSolid_Sphere::IGESSolid_Sphere ()    {  }
+IGESSolid_Sphere::IGESSolid_Sphere() {}
 
-
-    void  IGESSolid_Sphere::Init
-  (const Standard_Real aRadius, const gp_XYZ& aCenter)
+void IGESSolid_Sphere::Init(const Standard_Real aRadius, const gp_XYZ& aCenter)
 {
   theRadius = aRadius;
-  theCenter = aCenter;            // default (0,0,0)
-  InitTypeAndForm(158,0);
+  theCenter = aCenter; // default (0,0,0)
+  InitTypeAndForm(158, 0);
 }
 
-    Standard_Real  IGESSolid_Sphere::Radius () const
+Standard_Real IGESSolid_Sphere::Radius() const
 {
   return theRadius;
 }
 
-    gp_Pnt  IGESSolid_Sphere::Center () const
+gp_Pnt IGESSolid_Sphere::Center() const
 {
   return gp_Pnt(theCenter);
 }
 
-    gp_Pnt  IGESSolid_Sphere::TransformedCenter () const
+gp_Pnt IGESSolid_Sphere::TransformedCenter() const
 {
-  if (!HasTransf()) return gp_Pnt(theCenter);
+  if (!HasTransf())
+    return gp_Pnt(theCenter);
   else
-    {
-      gp_XYZ tmp = theCenter;
-      Location().Transforms(tmp);
-      return gp_Pnt(tmp);
-    }
+  {
+    gp_XYZ tmp = theCenter;
+    Location().Transforms(tmp);
+    return gp_Pnt(tmp);
+  }
 }

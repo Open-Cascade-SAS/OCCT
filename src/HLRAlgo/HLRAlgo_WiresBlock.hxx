@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-
 class HLRAlgo_WiresBlock;
 DEFINE_STANDARD_HANDLE(HLRAlgo_WiresBlock, Standard_Transient)
 
@@ -40,38 +39,31 @@ class HLRAlgo_WiresBlock : public Standard_Transient
 {
 public:
   //! Create a Block of Blocks.
-  HLRAlgo_WiresBlock(const Standard_Integer NbWires) :
-    myWires(1,NbWires)
+  HLRAlgo_WiresBlock(const Standard_Integer NbWires)
+      : myWires(1, NbWires)
   {
-  }
-  
-  Standard_Integer NbWires() const
-  {
-    return myWires.Upper();
-  }
-  
-  void Set (const Standard_Integer I, const Handle(HLRAlgo_EdgesBlock)& W)
-  {
-    myWires (I) = W;
-  }
-  
-  Handle(HLRAlgo_EdgesBlock)& Wire (const Standard_Integer I)
-  {
-    return *((Handle(HLRAlgo_EdgesBlock)*) &myWires(I));
-  }
-  
-  void UpdateMinMax (const HLRAlgo_EdgesBlock::MinMaxIndices& theMinMaxes)
-  {myMinMax = theMinMaxes;}
-
-  HLRAlgo_EdgesBlock::MinMaxIndices& MinMax()
-  {
-    return myMinMax;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,Standard_Transient)
+  Standard_Integer NbWires() const { return myWires.Upper(); }
+
+  void Set(const Standard_Integer I, const Handle(HLRAlgo_EdgesBlock)& W) { myWires(I) = W; }
+
+  Handle(HLRAlgo_EdgesBlock)& Wire(const Standard_Integer I)
+  {
+    return *((Handle(HLRAlgo_EdgesBlock)*)&myWires(I));
+  }
+
+  void UpdateMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& theMinMaxes)
+  {
+    myMinMax = theMinMaxes;
+  }
+
+  HLRAlgo_EdgesBlock::MinMaxIndices& MinMax() { return myMinMax; }
+
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock, Standard_Transient)
 
 private:
-  TColStd_Array1OfTransient myWires;
+  TColStd_Array1OfTransient         myWires;
   HLRAlgo_EdgesBlock::MinMaxIndices myMinMax;
 };
 

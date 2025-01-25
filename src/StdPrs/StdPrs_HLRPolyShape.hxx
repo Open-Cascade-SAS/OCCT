@@ -23,20 +23,19 @@
 //! and visible lines are identified with respect to a given projection.
 //! StdPrs_HLRPolyShape works with a polyhedral simplification of the shape whereas
 //! StdPrs_HLRShape takes the shape itself into account.
-//! When you use StdPrs_HLRShape, you obtain an exact result, whereas, when you use StdPrs_HLRPolyShape,
-//! you reduce computation time but obtain polygonal segments.
-//! The polygonal algorithm is used.
+//! When you use StdPrs_HLRShape, you obtain an exact result, whereas, when you use
+//! StdPrs_HLRPolyShape, you reduce computation time but obtain polygonal segments. The polygonal
+//! algorithm is used.
 class StdPrs_HLRPolyShape : public StdPrs_HLRShapeI
 {
   DEFINE_STANDARD_RTTIEXT(StdPrs_HLRPolyShape, StdPrs_HLRShapeI)
 public:
-  
   //! Compute presentation for specified shape.
-  Standard_EXPORT virtual void ComputeHLR (const Handle(Prs3d_Presentation)& thePrs,
-                                           const TopoDS_Shape& theShape,
-                                           const Handle(Prs3d_Drawer)& theDrawer,
-                                           const Handle(Graphic3d_Camera)& theProjector) const Standard_OVERRIDE;
-
+  Standard_EXPORT virtual void ComputeHLR(const Handle(Prs3d_Presentation)& thePrs,
+                                          const TopoDS_Shape&               theShape,
+                                          const Handle(Prs3d_Drawer)&       theDrawer,
+                                          const Handle(Graphic3d_Camera)&   theProjector) const
+    Standard_OVERRIDE;
 };
 
 #endif // _StdPrs_HLRPolyShape_HeaderFile

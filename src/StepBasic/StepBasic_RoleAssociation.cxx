@@ -19,23 +19,21 @@
 #include <StepBasic_RoleAssociation.hxx>
 #include <StepBasic_RoleSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_RoleAssociation
-//purpose  : 
+// function : StepBasic_RoleAssociation
+// purpose  :
 //=======================================================================
-StepBasic_RoleAssociation::StepBasic_RoleAssociation ()
-{
-}
+StepBasic_RoleAssociation::StepBasic_RoleAssociation() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_RoleAssociation::Init (const Handle(StepBasic_ObjectRole) &aRole,
-                                      const StepBasic_RoleSelect &aItemWithRole)
+void StepBasic_RoleAssociation::Init(const Handle(StepBasic_ObjectRole)& aRole,
+                                     const StepBasic_RoleSelect&         aItemWithRole)
 {
 
   theRole = aRole;
@@ -44,41 +42,41 @@ void StepBasic_RoleAssociation::Init (const Handle(StepBasic_ObjectRole) &aRole,
 }
 
 //=======================================================================
-//function : Role
-//purpose  : 
+// function : Role
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_ObjectRole) StepBasic_RoleAssociation::Role () const
+Handle(StepBasic_ObjectRole) StepBasic_RoleAssociation::Role() const
 {
   return theRole;
 }
 
 //=======================================================================
-//function : SetRole
-//purpose  : 
+// function : SetRole
+// purpose  :
 //=======================================================================
 
-void StepBasic_RoleAssociation::SetRole (const Handle(StepBasic_ObjectRole) &aRole)
+void StepBasic_RoleAssociation::SetRole(const Handle(StepBasic_ObjectRole)& aRole)
 {
   theRole = aRole;
 }
 
 //=======================================================================
-//function : ItemWithRole
-//purpose  : 
+// function : ItemWithRole
+// purpose  :
 //=======================================================================
 
-StepBasic_RoleSelect StepBasic_RoleAssociation::ItemWithRole () const
+StepBasic_RoleSelect StepBasic_RoleAssociation::ItemWithRole() const
 {
   return theItemWithRole;
 }
 
 //=======================================================================
-//function : SetItemWithRole
-//purpose  : 
+// function : SetItemWithRole
+// purpose  :
 //=======================================================================
 
-void StepBasic_RoleAssociation::SetItemWithRole (const StepBasic_RoleSelect &aItemWithRole)
+void StepBasic_RoleAssociation::SetItemWithRole(const StepBasic_RoleSelect& aItemWithRole)
 {
   theItemWithRole = aItemWithRole;
 }

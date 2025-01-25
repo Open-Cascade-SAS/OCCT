@@ -26,36 +26,34 @@
 class IntTools_CurveRangeSample;
 class Bnd_Box;
 
-class IntTools_CurveRangeLocalizeData 
+class IntTools_CurveRangeLocalizeData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT IntTools_CurveRangeLocalizeData(const Standard_Integer theNbSample, const Standard_Real theMinRange);
-  
+  Standard_EXPORT IntTools_CurveRangeLocalizeData(const Standard_Integer theNbSample,
+                                                  const Standard_Real    theMinRange);
+
   Standard_Integer GetNbSample() const { return myNbSampleC; }
 
   Standard_Real GetMinRange() const { return myMinRangeC; }
 
-  Standard_EXPORT void AddOutRange (const IntTools_CurveRangeSample& theRange);
+  Standard_EXPORT void AddOutRange(const IntTools_CurveRangeSample& theRange);
 
-  Standard_EXPORT void AddBox (const IntTools_CurveRangeSample& theRange, const Bnd_Box& theBox);
+  Standard_EXPORT void AddBox(const IntTools_CurveRangeSample& theRange, const Bnd_Box& theBox);
 
-  Standard_EXPORT Standard_Boolean FindBox (const IntTools_CurveRangeSample& theRange, Bnd_Box& theBox) const;
+  Standard_EXPORT Standard_Boolean FindBox(const IntTools_CurveRangeSample& theRange,
+                                           Bnd_Box&                         theBox) const;
 
-  Standard_EXPORT Standard_Boolean IsRangeOut (const IntTools_CurveRangeSample& theRange) const;
+  Standard_EXPORT Standard_Boolean IsRangeOut(const IntTools_CurveRangeSample& theRange) const;
 
-  Standard_EXPORT void ListRangeOut (IntTools_ListOfCurveRangeSample& theList) const;
+  Standard_EXPORT void ListRangeOut(IntTools_ListOfCurveRangeSample& theList) const;
 
 private:
-
-  Standard_Integer myNbSampleC;
-  Standard_Real myMinRangeC;
-  IntTools_MapOfCurveSample myMapRangeOut;
+  Standard_Integer                 myNbSampleC;
+  Standard_Real                    myMinRangeC;
+  IntTools_MapOfCurveSample        myMapRangeOut;
   IntTools_DataMapOfCurveSampleBox myMapBox;
-
 };
 
 #endif // _IntTools_CurveRangeLocalizeData_HeaderFile

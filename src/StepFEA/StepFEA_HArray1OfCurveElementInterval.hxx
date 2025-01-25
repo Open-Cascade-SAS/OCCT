@@ -20,5 +20,4 @@
 
 DEFINE_HARRAY1(StepFEA_HArray1OfCurveElementInterval, StepFEA_Array1OfCurveElementInterval)
 
-
 #endif

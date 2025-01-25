@@ -14,45 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <NLPlate_HPG0Constraint.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0Constraint,NLPlate_HGPPConstraint)
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0Constraint, NLPlate_HGPPConstraint)
 
-NLPlate_HPG0Constraint::NLPlate_HPG0Constraint(const gp_XY& UV,const gp_XYZ& Value)
-:myXYZTarget(Value)
+NLPlate_HPG0Constraint::NLPlate_HPG0Constraint(const gp_XY& UV, const gp_XYZ& Value)
+    : myXYZTarget(Value)
 {
   SetUV(UV);
   SetActiveOrder(0);
-  UVIsFree = Standard_False;
+  UVIsFree                  = Standard_False;
   IncrementalLoadingAllowed = Standard_False;
 }
-void NLPlate_HPG0Constraint::SetUVFreeSliding(const Standard_Boolean UVFree) 
+
+void NLPlate_HPG0Constraint::SetUVFreeSliding(const Standard_Boolean UVFree)
 {
   UVIsFree = UVFree;
 }
-void NLPlate_HPG0Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA) 
+
+void NLPlate_HPG0Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA)
 {
   IncrementalLoadingAllowed = ILA;
 }
+
 Standard_Boolean NLPlate_HPG0Constraint::UVFreeSliding() const
 {
   return UVIsFree;
 }
+
 Standard_Boolean NLPlate_HPG0Constraint::IncrementalLoadAllowed() const
 {
   return IncrementalLoadingAllowed;
 }
+
 Standard_Integer NLPlate_HPG0Constraint::ActiveOrder() const
 {
-  if (myActiveOrder<0) return myActiveOrder;
-  else return 0;
+  if (myActiveOrder < 0)
+    return myActiveOrder;
+  else
+    return 0;
 }
+
 Standard_Boolean NLPlate_HPG0Constraint::IsG0() const
 {
   return Standard_True;
 }
+
 const gp_XYZ& NLPlate_HPG0Constraint::G0Target() const
 {
   return myXYZTarget;

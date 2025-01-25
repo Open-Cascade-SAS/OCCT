@@ -22,5 +22,4 @@
 
 DEFINE_HSEQUENCE(ProjLib_HSequenceOfHSequenceOfPnt, ProjLib_SequenceOfHSequenceOfPnt)
 
-
 #endif

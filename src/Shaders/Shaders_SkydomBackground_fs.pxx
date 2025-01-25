@@ -10,7 +10,7 @@ static const char Shaders_SkydomBackground_fs[] =
   "const float THE_G2           = THE_G * THE_G;\n"
   "const float THE_HR           = 8000.0;  // Thickness of the atmosphere\n"
   "const float THE_HM           = 1000.0;  // Same as above but for Mie\n"
-// clang-format off
+  // clang-format off
   "const vec3  THE_BETA_R       = vec3 (5.8e-6, 13.5e-6, 33.1e-6); // Reyleigh scattering normal earth\n"
   "const vec3  THE_BETA_M       = vec3 (21e-6); // Normal Mie scattering\n"
   "\n"
@@ -20,7 +20,7 @@ static const char Shaders_SkydomBackground_fs[] =
   "const float THE_HorizonWidth   = 0.002;\n"
   "const int   THE_NbSamples      = 8;\n"
   "const int   THE_NbSamplesLight = 8;     // integral sampling rate (might highly hit performance)\n"
-// clang-format on
+  // clang-format on
   "const float THE_SunPower       = 5.0;\n"
   "const float THE_StarTreshold   = 0.98;\n"
   "\n"

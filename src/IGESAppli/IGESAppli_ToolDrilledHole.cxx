@@ -29,12 +29,11 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolDrilledHole::IGESAppli_ToolDrilledHole ()    {  }
+IGESAppli_ToolDrilledHole::IGESAppli_ToolDrilledHole() {}
 
-
-void  IGESAppli_ToolDrilledHole::ReadOwnParams
-  (const Handle(IGESAppli_DrilledHole)& ent,
-   const Handle(IGESData_IGESReaderData)& /*IR*/, IGESData_ParamReader& PR) const
+void IGESAppli_ToolDrilledHole::ReadOwnParams(const Handle(IGESAppli_DrilledHole)& ent,
+                                              const Handle(IGESData_IGESReaderData)& /*IR*/,
+                                              IGESData_ParamReader& PR) const
 {
   Standard_Integer tempNbPropertyValues;
   Standard_Real    tempDrillDiaSize;
@@ -42,23 +41,27 @@ void  IGESAppli_ToolDrilledHole::ReadOwnParams
   Standard_Integer tempPlatingFlag;
   Standard_Integer tempNbLowerLayer;
   Standard_Integer tempNbHigherLayer;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  //szv#4:S4163:12Mar99 `st=` not needed
-  PR.ReadInteger(PR.Current(),"No. of Property values",tempNbPropertyValues);
-  PR.ReadReal(PR.Current(),"Drill diameter size",tempDrillDiaSize);
-  PR.ReadReal(PR.Current(),"Finish diameter size",tempFinishDiaSize);
-  PR.ReadInteger(PR.Current(),"Plating Flag",tempPlatingFlag);
-  PR.ReadInteger(PR.Current(),"Lower numbered layer", tempNbLowerLayer);
-  PR.ReadInteger(PR.Current(),"Higher numbered layer", tempNbHigherLayer);
+  // szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadInteger(PR.Current(), "No. of Property values", tempNbPropertyValues);
+  PR.ReadReal(PR.Current(), "Drill diameter size", tempDrillDiaSize);
+  PR.ReadReal(PR.Current(), "Finish diameter size", tempFinishDiaSize);
+  PR.ReadInteger(PR.Current(), "Plating Flag", tempPlatingFlag);
+  PR.ReadInteger(PR.Current(), "Lower numbered layer", tempNbLowerLayer);
+  PR.ReadInteger(PR.Current(), "Higher numbered layer", tempNbHigherLayer);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init(tempNbPropertyValues,tempDrillDiaSize,tempFinishDiaSize,
-	    tempPlatingFlag, tempNbLowerLayer,tempNbHigherLayer);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempNbPropertyValues,
+            tempDrillDiaSize,
+            tempFinishDiaSize,
+            tempPlatingFlag,
+            tempNbLowerLayer,
+            tempNbHigherLayer);
 }
 
-void  IGESAppli_ToolDrilledHole::WriteOwnParams
-  (const Handle(IGESAppli_DrilledHole)& ent, IGESData_IGESWriter& IW) const
+void IGESAppli_ToolDrilledHole::WriteOwnParams(const Handle(IGESAppli_DrilledHole)& ent,
+                                               IGESData_IGESWriter&                 IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->DrillDiaSize());
@@ -68,41 +71,47 @@ void  IGESAppli_ToolDrilledHole::WriteOwnParams
   IW.Send(ent->NbHigherLayer());
 }
 
-void  IGESAppli_ToolDrilledHole::OwnShared
-  (const Handle(IGESAppli_DrilledHole)& /*ent*/, Interface_EntityIterator& /*iter*/) const
+void IGESAppli_ToolDrilledHole::OwnShared(const Handle(IGESAppli_DrilledHole)& /*ent*/,
+                                          Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void  IGESAppli_ToolDrilledHole::OwnCopy
-  (const Handle(IGESAppli_DrilledHole)& another,
-   const Handle(IGESAppli_DrilledHole)& ent, Interface_CopyTool& /*TC*/) const
+void IGESAppli_ToolDrilledHole::OwnCopy(const Handle(IGESAppli_DrilledHole)& another,
+                                        const Handle(IGESAppli_DrilledHole)& ent,
+                                        Interface_CopyTool& /*TC*/) const
 {
-  ent->Init
-    (5,another->DrillDiaSize(),another->FinishDiaSize(),
-     (another->IsPlating() ? 1 : 0),
-     another->NbLowerLayer(),another->NbHigherLayer());
+  ent->Init(5,
+            another->DrillDiaSize(),
+            another->FinishDiaSize(),
+            (another->IsPlating() ? 1 : 0),
+            another->NbLowerLayer(),
+            another->NbHigherLayer());
 }
 
-
-Standard_Boolean  IGESAppli_ToolDrilledHole::OwnCorrect
-  (const Handle(IGESAppli_DrilledHole)& ent) const
+Standard_Boolean IGESAppli_ToolDrilledHole::OwnCorrect(
+  const Handle(IGESAppli_DrilledHole)& ent) const
 {
   Standard_Boolean res = (ent->NbPropertyValues() != 5);
-  if (res) ent->Init
-    (5,ent->DrillDiaSize(),ent->FinishDiaSize(),(ent->IsPlating() ? 1 : 0),
-     ent->NbLowerLayer(),ent->NbHigherLayer());
-  if (ent->SubordinateStatus() != 0) {
+  if (res)
+    ent->Init(5,
+              ent->DrillDiaSize(),
+              ent->FinishDiaSize(),
+              (ent->IsPlating() ? 1 : 0),
+              ent->NbLowerLayer(),
+              ent->NbHigherLayer());
+  if (ent->SubordinateStatus() != 0)
+  {
     Handle(IGESData_LevelListEntity) nulevel;
-    ent->InitLevel(nulevel,0);
+    ent->InitLevel(nulevel, 0);
     res = Standard_True;
-  }   // NbPropertyvalues = 5 + RAZ level selon subordinate
+  } // NbPropertyvalues = 5 + RAZ level selon subordinate
   return res;
 }
 
-IGESData_DirChecker  IGESAppli_ToolDrilledHole::DirChecker
-  (const Handle(IGESAppli_DrilledHole)& /*ent*/) const
+IGESData_DirChecker IGESAppli_ToolDrilledHole::DirChecker(
+  const Handle(IGESAppli_DrilledHole)& /*ent*/) const
 {
-  IGESData_DirChecker DC(406,6);  //Form no = 6 & Type = 406
+  IGESData_DirChecker DC(406, 6); // Form no = 6 & Type = 406
   DC.Structure(IGESData_DefVoid);
   DC.GraphicsIgnored();
   DC.BlankStatusIgnored();
@@ -111,30 +120,32 @@ IGESData_DirChecker  IGESAppli_ToolDrilledHole::DirChecker
   return DC;
 }
 
-void  IGESAppli_ToolDrilledHole::OwnCheck
-  (const Handle(IGESAppli_DrilledHole)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const
+void IGESAppli_ToolDrilledHole::OwnCheck(const Handle(IGESAppli_DrilledHole)& ent,
+                                         const Interface_ShareTool&,
+                                         Handle(Interface_Check)& ach) const
 {
   if (ent->SubordinateStatus() != 0)
-    if (ent->DefLevel() != IGESData_DefOne &&
-	ent->DefLevel() != IGESData_DefSeveral)
+    if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
       ach->AddFail("Level type : Not value/reference");
   if (ent->NbPropertyValues() != 5)
     ach->AddFail("Number of Property Values != 5");
 }
 
-void  IGESAppli_ToolDrilledHole::OwnDump
-  (const Handle(IGESAppli_DrilledHole)& ent, const IGESData_IGESDumper& /*dumper*/,
-   Standard_OStream& S, const Standard_Integer /*level*/) const
+void IGESAppli_ToolDrilledHole::OwnDump(const Handle(IGESAppli_DrilledHole)& ent,
+                                        const IGESData_IGESDumper& /*dumper*/,
+                                        Standard_OStream& S,
+                                        const Standard_Integer /*level*/) const
 {
   S << "IGESAppli_DrilledHole" << std::endl;
 
   S << "Number of property values : " << ent->NbPropertyValues() << std::endl;
   S << "Drill  diameter size :" << ent->DrillDiaSize() << "  ";
-  S << "Finish diameter size : "  << ent->FinishDiaSize() << std::endl;
+  S << "Finish diameter size : " << ent->FinishDiaSize() << std::endl;
   S << "Plating indication flag : ";
-  if (!ent->IsPlating())   S << "NO"  << "  -  ";
-  else                     S << "YES  -  ";
+  if (!ent->IsPlating())
+    S << "NO" << "  -  ";
+  else
+    S << "YES  -  ";
   S << "Lower Numbered Layer  : " << ent->NbLowerLayer() << "  ";
   S << "Higher Numbered Layer : " << ent->NbHigherLayer() << std::endl;
 }

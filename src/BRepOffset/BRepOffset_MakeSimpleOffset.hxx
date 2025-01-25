@@ -27,7 +27,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
 
-
 enum BRepOffsetSimple_Status
 {
   BRepOffsetSimple_OK,
@@ -38,30 +37,30 @@ enum BRepOffsetSimple_Status
   BRepOffsetSimple_ErrorNonClosedShell
 };
 
-//! This class represents simple offset algorithm itself. It builds simple offset without intersection.
-//! Solid can be created using SetBuildSolidFlag method (set flag to true). By default shell will be constructed.
+//! This class represents simple offset algorithm itself. It builds simple offset without
+//! intersection. Solid can be created using SetBuildSolidFlag method (set flag to true). By default
+//! shell will be constructed.
 //!
 //! Algorithm:
-//! 1. Build source-image maps for vertices, edges and faces.BRepTools_Modification class will be used
-//!    to store this information. An image of a shared edge can be constructed from the corresponding edge
-//!    of the first iterated face.
+//! 1. Build source-image maps for vertices, edges and faces.BRepTools_Modification class will be
+//! used
+//!    to store this information. An image of a shared edge can be constructed from the
+//!    corresponding edge of the first iterated face.
 //! 2. Run BRepTools_Modifier to obtain offset shape.
 //  3. Ensure topological integrity of the output shape.
 //!
 //! Limitations:
-//! According to the algorithm nature result depends on the smoothness of input data. Smooth (G1-continuity) input shape
-//! will lead to the good result.
+//! According to the algorithm nature result depends on the smoothness of input data. Smooth
+//! (G1-continuity) input shape will lead to the good result.
 //!
-//! The possible drawback of the simple algorithm is that it leads, in general case, to tolerance increasing.
-//! The tolerances have to grow in order to cover the gaps between the neighbor faces in the output.
-//! It should be noted that the actual tolerance growth depends on the offset distance and the quality of 
-//! joints between the input faces. Anyway the good input shell (smooth connections between adjacent faces)
-//! will lead to good result.
+//! The possible drawback of the simple algorithm is that it leads, in general case, to tolerance
+//! increasing. The tolerances have to grow in order to cover the gaps between the neighbor faces in
+//! the output. It should be noted that the actual tolerance growth depends on the offset distance
+//! and the quality of joints between the input faces. Anyway the good input shell (smooth
+//! connections between adjacent faces) will lead to good result.
 class BRepOffset_MakeSimpleOffset
 {
 public:
-
-
   //! Constructor. Does nothing.
   Standard_EXPORT BRepOffset_MakeSimpleOffset();
 
@@ -99,10 +98,10 @@ public:
   Standard_Real GetTolerance() const { return myTolerance; }
 
   //! Sets tolerance (used for handling singularities).
-  void SetTolerance (const Standard_Real theValue) { myTolerance = theValue; }
+  void SetTolerance(const Standard_Real theValue) { myTolerance = theValue; }
 
   //! Gets done state.
-  Standard_Boolean IsDone() const { return myIsDone; } 
+  Standard_Boolean IsDone() const { return myIsDone; }
 
   //! Returns result shape.
   const TopoDS_Shape& GetResultShape() const { return myResShape; }
@@ -117,7 +116,6 @@ public:
   Standard_EXPORT const TopoDS_Shape Modified(const TopoDS_Shape& theShape) const;
 
 protected:
-
   //! Computes max angle in faces junction.
   void ComputeMaxAngle();
 
@@ -125,7 +123,6 @@ protected:
   void Clear();
 
 private:
-
   //! Builds face on specified wall.
   TopoDS_Face BuildWallFace(const TopoDS_Edge& theOrigEdge);
 
@@ -171,7 +168,6 @@ private:
 
   //! Result shape.
   TopoDS_Shape myResShape;
-
 };
 
 #endif // _BRepOffset_MakeSimpleOffset_HeaderFile

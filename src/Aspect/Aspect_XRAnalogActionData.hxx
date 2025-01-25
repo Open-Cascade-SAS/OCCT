@@ -19,19 +19,24 @@
 //! Analog input XR action data.
 struct Aspect_XRAnalogActionData
 {
-  uint64_t                ActiveOrigin; //!< The origin that caused this action's current state
-// clang-format off
+  uint64_t ActiveOrigin; //!< The origin that caused this action's current state
+                         // clang-format off
   float                   UpdateTime;   //!< Time relative to now when this event happened. Will be negative to indicate a past time
   NCollection_Vec3<float> VecXYZ;       //!< the current state of this action
   NCollection_Vec3<float> DeltaXYZ;     //!< deltas since the previous update
   bool                    IsActive;     //!< whether or not this action is currently available to be bound in the active action set
-// clang-format on
+                         // clang-format on
 
   //! Return TRUE if delta is non-zero.
-  bool IsChanged() { return !DeltaXYZ.IsEqual (NCollection_Vec3<float> (0.0f, 0.0f, 0.0f)); }
+  bool IsChanged() { return !DeltaXYZ.IsEqual(NCollection_Vec3<float>(0.0f, 0.0f, 0.0f)); }
 
   //! Empty constructor.
-  Aspect_XRAnalogActionData() : ActiveOrigin (0), UpdateTime (0.0f), IsActive (false) {}
+  Aspect_XRAnalogActionData()
+      : ActiveOrigin(0),
+        UpdateTime(0.0f),
+        IsActive(false)
+  {
+  }
 };
 
 #endif // _Aspect_XRAnalogActionData_HeaderFile

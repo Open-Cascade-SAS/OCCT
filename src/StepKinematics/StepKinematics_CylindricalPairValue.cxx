@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,24 +19,22 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_CylindricalPairValue, StepKinematics_PairValue)
 
 //=======================================================================
-//function : StepKinematics_CylindricalPairValue
-//purpose  :
+// function : StepKinematics_CylindricalPairValue
+// purpose  :
 //=======================================================================
-StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue ()
-{
-}
+StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue() {}
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
-void StepKinematics_CylindricalPairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                                const Standard_Real theActualTranslation,
-                                                const Standard_Real theActualRotation)
+void StepKinematics_CylindricalPairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Standard_Real                         theActualTranslation,
+  const Standard_Real                         theActualRotation)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualTranslation = theActualTranslation;
 
@@ -44,37 +42,38 @@ void StepKinematics_CylindricalPairValue::Init (const Handle(TCollection_HAsciiS
 }
 
 //=======================================================================
-//function : ActualTranslation
-//purpose  :
+// function : ActualTranslation
+// purpose  :
 //=======================================================================
-Standard_Real StepKinematics_CylindricalPairValue::ActualTranslation () const
+Standard_Real StepKinematics_CylindricalPairValue::ActualTranslation() const
 {
   return myActualTranslation;
 }
 
 //=======================================================================
-//function : SetActualTranslation
-//purpose  :
+// function : SetActualTranslation
+// purpose  :
 //=======================================================================
-void StepKinematics_CylindricalPairValue::SetActualTranslation (const Standard_Real theActualTranslation)
+void StepKinematics_CylindricalPairValue::SetActualTranslation(
+  const Standard_Real theActualTranslation)
 {
   myActualTranslation = theActualTranslation;
 }
 
 //=======================================================================
-//function : ActualRotation
-//purpose  :
+// function : ActualRotation
+// purpose  :
 //=======================================================================
-Standard_Real StepKinematics_CylindricalPairValue::ActualRotation () const
+Standard_Real StepKinematics_CylindricalPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=======================================================================
-//function : SetActualRotation
-//purpose  :
+// function : SetActualRotation
+// purpose  :
 //=======================================================================
-void StepKinematics_CylindricalPairValue::SetActualRotation (const Standard_Real theActualRotation)
+void StepKinematics_CylindricalPairValue::SetActualRotation(const Standard_Real theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

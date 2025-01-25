@@ -28,8 +28,9 @@ class TopoDS_UnCompatibleShapes;
 DEFINE_STANDARD_HANDLE(TopoDS_UnCompatibleShapes, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_TopoDS_UnCompatibleShapes
-  #define TopoDS_UnCompatibleShapes_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw TopoDS_UnCompatibleShapes(MESSAGE);
+  #define TopoDS_UnCompatibleShapes_Raise_if(CONDITION, MESSAGE)                                   \
+    if (CONDITION)                                                                                 \
+      throw TopoDS_UnCompatibleShapes(MESSAGE);
 #else
   #define TopoDS_UnCompatibleShapes_Raise_if(CONDITION, MESSAGE)
 #endif

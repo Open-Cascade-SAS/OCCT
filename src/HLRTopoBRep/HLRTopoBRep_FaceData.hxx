@@ -23,55 +23,34 @@
 
 #include <TopTools_ListOfShape.hxx>
 
-
 //! Contains the  3 ListOfShape of  a Face  ( Internal
 //! OutLines, OutLines on restriction and IsoLines ).
-class HLRTopoBRep_FaceData 
+class HLRTopoBRep_FaceData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRTopoBRep_FaceData();
-  
-    const TopTools_ListOfShape& FaceIntL() const;
-  
-    const TopTools_ListOfShape& FaceOutL() const;
-  
-    const TopTools_ListOfShape& FaceIsoL() const;
-  
-    TopTools_ListOfShape& AddIntL();
-  
-    TopTools_ListOfShape& AddOutL();
-  
-    TopTools_ListOfShape& AddIsoL();
 
+  const TopTools_ListOfShape& FaceIntL() const;
 
+  const TopTools_ListOfShape& FaceOutL() const;
 
+  const TopTools_ListOfShape& FaceIsoL() const;
+
+  TopTools_ListOfShape& AddIntL();
+
+  TopTools_ListOfShape& AddOutL();
+
+  TopTools_ListOfShape& AddIsoL();
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_ListOfShape myIntL;
   TopTools_ListOfShape myOutL;
   TopTools_ListOfShape myIsoL;
-
-
 };
 
-
 #include <HLRTopoBRep_FaceData.lxx>
-
-
-
-
 
 #endif // _HLRTopoBRep_FaceData_HeaderFile

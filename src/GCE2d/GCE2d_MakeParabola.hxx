@@ -29,7 +29,6 @@ class gp_Ax22d;
 class gp_Ax2d;
 class gp_Pnt2d;
 
-
 //! This class implements the following algorithms used to
 //! create Parabola from Geom2d.
 //! * Create an Parabola from two apex  and the center.
@@ -46,37 +45,39 @@ class gp_Pnt2d;
 //! parabola called Parameter).
 //! The focal length F = P/2 is the distance between the vertex
 //! and the focus of the parabola.
-class GCE2d_MakeParabola  : public GCE2d_Root
+class GCE2d_MakeParabola : public GCE2d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a parabola from a non persistent one.
   Standard_EXPORT GCE2d_MakeParabola(const gp_Parab2d& Prb);
-  
+
   //! Creates a parabola with its local coordinate system and it's focal
   //! length "Focal".
   //! The "Location" point of "Axis" is the vertex of the parabola
   //! Status is "NegativeFocusLength" if Focal < 0.0
   Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& Axis, const Standard_Real Focal);
-  
+
   //! Creates a parabola with its "MirrorAxis" and it's focal length "Focal".
   //! MirrorAxis is the axis of symmetry of the curve, it is the
   //! "XAxis". The "YAxis" is parallel to the directrix of the
   //! parabola. The "Location" point of "MirrorAxis" is the vertex of the parabola
   //! Status is "NegativeFocusLength" if Focal < 0.0
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& MirrorAxis, const Standard_Real Focal, const Standard_Boolean Sense);
-  
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
+                                     const Standard_Real    Focal,
+                                     const Standard_Boolean Sense);
+
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis "XAxis" of the parabola is normal to the
   //! directrix and pass through the focus point F, but its
   //! "Location" point is the vertex of the parabola.
   //! The "YAxis" of the parabola is parallel to D and its "Location"
   //! point is the vertex of the parabola.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& D, const gp_Pnt2d& F, const Standard_Boolean Sense = Standard_True);
-  
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         D,
+                                     const gp_Pnt2d&        F,
+                                     const Standard_Boolean Sense = Standard_True);
+
   //! Make a parabola with focal point S1 and
   //! center O
   //! The branch of the parabola returned will have <S1> as
@@ -94,12 +95,12 @@ public:
   //! -   gce_NullFocusLength if Focal is less than 0.0, or
   //! -   gce_NullAxis if points S1 and O are coincident.
   Standard_EXPORT GCE2d_MakeParabola(const gp_Pnt2d& S1, const gp_Pnt2d& O);
-  
+
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
   Standard_EXPORT const Handle(Geom2d_Parabola)& Value() const;
 
-  operator const Handle(Geom2d_Parabola)& () const { return Value(); }
+  operator const Handle(Geom2d_Parabola) & () const { return Value(); }
 
 private:
   Handle(Geom2d_Parabola) TheParabola;

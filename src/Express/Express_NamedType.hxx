@@ -28,12 +28,11 @@ class Express_NamedType : public Express_Type
 {
 
 public:
+  //! Creates an object and initializes by name
+  Standard_EXPORT Express_NamedType(const Standard_CString theName);
 
   //! Creates an object and initializes by name
-  Standard_EXPORT Express_NamedType (const Standard_CString theName);
-
-  //! Creates an object and initializes by name
-  Standard_EXPORT Express_NamedType (const Handle(TCollection_HAsciiString)& theName);
+  Standard_EXPORT Express_NamedType(const Handle(TCollection_HAsciiString)& theName);
 
   //! Returns name of type (item in schema)
   Standard_EXPORT const TCollection_AsciiString& Name() const;
@@ -45,7 +44,7 @@ public:
   Standard_EXPORT const Handle(Express_Item)& Item() const;
 
   //! Sets handle to referred item in schema
-  Standard_EXPORT void SetItem (const Handle(Express_Item)& theItem);
+  Standard_EXPORT void SetItem(const Handle(Express_Item)& theItem);
 
   //! Returns CPP-style name of the type
   Standard_EXPORT virtual const TCollection_AsciiString CPPName() const Standard_OVERRIDE;
@@ -65,17 +64,16 @@ public:
 
   //! Declares type as used by some item being generated.
   //! Calls Use() for referred item (found by name).
-  Standard_EXPORT virtual void Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Use2(const TCollection_AsciiString& theRefName,
+                                    const TCollection_AsciiString& theRefPack) const
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Express_NamedType, Express_Type)
 
 protected:
-
 private:
-
   Handle(TCollection_HAsciiString) myName;
-  Handle(Express_Item) myItem;
-
+  Handle(Express_Item)             myItem;
 };
 
 #endif // _Express_NamedType_HeaderFile

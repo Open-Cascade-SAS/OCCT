@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_Macros.hxx>
@@ -39,137 +38,153 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances,IFSelect_SelectExplore)
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplore)
 
 static Handle(Interface_HGraph) myGraph;
 static Interface_EntityIterator myEntities;
 
-STEPSelections_SelectInstances::STEPSelections_SelectInstances():IFSelect_SelectExplore (-1){ }
+STEPSelections_SelectInstances::STEPSelections_SelectInstances()
+    : IFSelect_SelectExplore(-1)
+{
+}
 
 static void AddAllSharings(const Handle(Standard_Transient)& start,
-			    const Interface_Graph& graph,
-			    Interface_EntityIterator& explored) 
+                           const Interface_Graph&            graph,
+                           Interface_EntityIterator&         explored)
 {
-  if(start.IsNull()) return;
+  if (start.IsNull())
+    return;
   Interface_EntityIterator subs = graph.Shareds(start);
-  for (subs.Start(); subs.More(); subs.Next()) {
-    explored.AddItem(subs.Value()); 
+  for (subs.Start(); subs.More(); subs.Next())
+  {
+    explored.AddItem(subs.Value());
     AddAllSharings(subs.Value(), graph, explored);
   }
 }
-    
 
 static void AddInstances(const Handle(Standard_Transient)& start,
-			 const Interface_Graph& graph,
-			 Interface_EntityIterator& explored)
+                         const Interface_Graph&            graph,
+                         Interface_EntityIterator&         explored)
 {
-  if(start.IsNull()) return;
-  
+  if (start.IsNull())
+    return;
+
   explored.AddItem(start);
-  if (start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) {
-    DeclareAndCast(StepShape_ShapeDefinitionRepresentation,sdr,start);
-    AddInstances(sdr->UsedRepresentation(),graph,explored);
+  if (start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+  {
+    DeclareAndCast(StepShape_ShapeDefinitionRepresentation, sdr, start);
+    AddInstances(sdr->UsedRepresentation(), graph, explored);
     Interface_EntityIterator subs = graph.Shareds(start);
-    for (subs.Start(); subs.More(); subs.Next()) {
-      DeclareAndCast(StepShape_ContextDependentShapeRepresentation,anitem,subs.Value());
-      if (anitem.IsNull()) continue;
-      AddInstances(anitem,graph,explored);
+    for (subs.Start(); subs.More(); subs.Next())
+    {
+      DeclareAndCast(StepShape_ContextDependentShapeRepresentation, anitem, subs.Value());
+      if (anitem.IsNull())
+        continue;
+      AddInstances(anitem, graph, explored);
     }
     return;
   }
-  
-  if (start->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation))) {
-    DeclareAndCast(StepShape_ShapeRepresentation,sr,start);
+
+  if (start->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+  {
+    DeclareAndCast(StepShape_ShapeRepresentation, sr, start);
     Standard_Integer nb = sr->NbItems();
-    for (Standard_Integer i = 1; i <= nb; i++) {
+    for (Standard_Integer i = 1; i <= nb; i++)
+    {
       Handle(StepRepr_RepresentationItem) anitem = sr->ItemsValue(i);
-      AddInstances(anitem,graph,explored);
+      AddInstances(anitem, graph, explored);
     }
     return;
   }
-  
-  if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrep))||
-      start->IsKind(STANDARD_TYPE(StepShape_BrepWithVoids))||
-      start->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep))||
-      start->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel))||
-      start->IsKind(STANDARD_TYPE(StepShape_FacetedBrepAndBrepWithVoids))||
-      start->IsKind(STANDARD_TYPE(StepShape_GeometricSet))||
-      start->IsKind(STANDARD_TYPE(StepShape_FaceSurface))||
-      start->IsKind(STANDARD_TYPE(StepRepr_MappedItem))) {
+
+  if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrep))
+      || start->IsKind(STANDARD_TYPE(StepShape_BrepWithVoids))
+      || start->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep))
+      || start->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel))
+      || start->IsKind(STANDARD_TYPE(StepShape_FacetedBrepAndBrepWithVoids))
+      || start->IsKind(STANDARD_TYPE(StepShape_GeometricSet))
+      || start->IsKind(STANDARD_TYPE(StepShape_FaceSurface))
+      || start->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
+  {
     AddAllSharings(start, graph, explored);
     return;
   }
 
-  if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation))) {
-    DeclareAndCast(StepShape_ContextDependentShapeRepresentation,CDSR,start);
+  if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))
+  {
+    DeclareAndCast(StepShape_ContextDependentShapeRepresentation, CDSR, start);
     Handle(StepRepr_RepresentationRelationship) SRR = CDSR->RepresentationRelation();
-    if ( SRR.IsNull() ) return ;
-    
+    if (SRR.IsNull())
+      return;
+
     Handle(StepRepr_Representation) rep;
-    Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( graph, CDSR );
-    if(SRRReversed)
+    Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
+    if (SRRReversed)
       rep = SRR->Rep2();
     else
       rep = SRR->Rep1();
-    
+
     Interface_EntityIterator subs = graph.Sharings(rep);
-    for (subs.Start(); subs.More(); subs.Next()) 
-      if ( subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) {
-	DeclareAndCast(StepShape_ShapeDefinitionRepresentation,SDR,subs.Value());
-	AddInstances(SDR,graph,explored);
+    for (subs.Start(); subs.More(); subs.Next())
+      if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+      {
+        DeclareAndCast(StepShape_ShapeDefinitionRepresentation, SDR, subs.Value());
+        AddInstances(SDR, graph, explored);
       }
     //???
     return;
-  } 
-  
-  if (start->IsKind (STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship)) ) {
-    DeclareAndCast(StepRepr_ShapeRepresentationRelationship,und,start);
-    for (Standard_Integer i = 1; i <= 2; i ++) {
+  }
+
+  if (start->IsKind(STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship)))
+  {
+    DeclareAndCast(StepRepr_ShapeRepresentationRelationship, und, start);
+    for (Standard_Integer i = 1; i <= 2; i++)
+    {
       Handle(Standard_Transient) anitem;
-      if (i == 1) anitem = und->Rep1();
-      if (i == 2) anitem = und->Rep2();
-      AddInstances(anitem,graph,explored);
-    } 
+      if (i == 1)
+        anitem = und->Rep1();
+      if (i == 2)
+        anitem = und->Rep2();
+      AddInstances(anitem, graph, explored);
+    }
     return;
   }
-  
 }
-     
-     
-Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interface_Graph &G) const
+
+Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interface_Graph& G) const
 {
-  static Standard_Mutex aMutex;
+  static Standard_Mutex  aMutex;
   Standard_Mutex::Sentry aSentry(aMutex);
-  if(myGraph.IsNull()||(G.Model()!=myGraph->Graph().Model()))
+  if (myGraph.IsNull() || (G.Model() != myGraph->Graph().Model()))
   {
     Interface_EntityIterator roots = G.RootEntities();
-    myGraph = new Interface_HGraph(G);
+    myGraph                        = new Interface_HGraph(G);
     myEntities.Destroy();
     for (roots.Start(); roots.More(); roots.Next())
       AddInstances(roots.Value(), G, myEntities);
   }
 
-  if(HasInput()||HasAlternate()) {
-    Interface_EntityIterator select = InputResult(G);
-    Standard_Integer nbSelected = select.NbEntities();
-    TColStd_IndexedMapOfTransient filter (nbSelected);
-    for(select.Start(); select.More(); select.Next())
+  if (HasInput() || HasAlternate())
+  {
+    Interface_EntityIterator      select     = InputResult(G);
+    Standard_Integer              nbSelected = select.NbEntities();
+    TColStd_IndexedMapOfTransient filter(nbSelected);
+    for (select.Start(); select.More(); select.Next())
       filter.Add(select.Value());
     Interface_EntityIterator result;
-    for(myEntities.Start(); myEntities.More(); myEntities.Next()) 
-      if(filter.Contains(myEntities.Value()))
-	result.AddItem(myEntities.Value());
+    for (myEntities.Start(); myEntities.More(); myEntities.Next())
+      if (filter.Contains(myEntities.Value()))
+        result.AddItem(myEntities.Value());
     return result;
   }
   else
     return myEntities;
 }
 
-
 Standard_Boolean STEPSelections_SelectInstances::Explore(const Standard_Integer,
-							const Handle(Standard_Transient)&,
-							const Interface_Graph&,
-							Interface_EntityIterator&) const
+                                                         const Handle(Standard_Transient)&,
+                                                         const Interface_Graph&,
+                                                         Interface_EntityIterator&) const
 {
   return Standard_False;
 }
@@ -181,5 +196,5 @@ Standard_Boolean STEPSelections_SelectInstances::HasUniqueResult() const
 
 TCollection_AsciiString STEPSelections_SelectInstances::ExploreLabel() const
 {
-  return TCollection_AsciiString ("Instances");
+  return TCollection_AsciiString("Instances");
 }

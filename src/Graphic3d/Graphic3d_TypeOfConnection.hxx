@@ -20,8 +20,8 @@
 //! To manage the connections between the structures.
 enum Graphic3d_TypeOfConnection
 {
-Graphic3d_TOC_ANCESTOR,
-Graphic3d_TOC_DESCENDANT
+  Graphic3d_TOC_ANCESTOR,
+  Graphic3d_TOC_DESCENDANT
 };
 
 #endif // _Graphic3d_TypeOfConnection_HeaderFile

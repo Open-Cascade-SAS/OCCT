@@ -17,17 +17,16 @@
 #ifndef _Blend_Status_HeaderFile
 #define _Blend_Status_HeaderFile
 
-
 enum Blend_Status
 {
-Blend_StepTooLarge,
-Blend_StepTooSmall,
-Blend_Backward,
-Blend_SamePoints,
-Blend_OnRst1,
-Blend_OnRst2,
-Blend_OnRst12,
-Blend_OK
+  Blend_StepTooLarge,
+  Blend_StepTooSmall,
+  Blend_Backward,
+  Blend_SamePoints,
+  Blend_OnRst1,
+  Blend_OnRst2,
+  Blend_OnRst12,
+  Blend_OK
 };
 
 #endif // _Blend_Status_HeaderFile

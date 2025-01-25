@@ -26,51 +26,29 @@ class Standard_Transient;
 class StepShape_DimensionalLocation;
 class StepShape_DimensionalSize;
 
-
 //! Representation of STEP SELECT type DimensionalCharacteristic
-class StepShape_DimensionalCharacteristic  : public StepData_SelectType
+class StepShape_DimensionalCharacteristic : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepShape_DimensionalCharacteristic();
-  
+
   //! Recognizes a kind of DimensionalCharacteristic select type
   //! 1 -> DimensionalLocation from StepShape
   //! 2 -> DimensionalSize from StepShape
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as DimensionalLocation (or Null if another type)
   Standard_EXPORT Handle(StepShape_DimensionalLocation) DimensionalLocation() const;
-  
+
   //! Returns Value as DimensionalSize (or Null if another type)
   Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_DimensionalCharacteristic_HeaderFile

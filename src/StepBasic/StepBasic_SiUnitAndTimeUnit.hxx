@@ -25,48 +25,29 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_TimeUnit;
 
-
 class StepBasic_SiUnitAndTimeUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndTimeUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndTimeUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndTimeUnit
   Standard_EXPORT StepBasic_SiUnitAndTimeUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetTimeUnit (const Handle(StepBasic_TimeUnit)& aTimeUnit);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
+
+  Standard_EXPORT void SetTimeUnit(const Handle(StepBasic_TimeUnit)& aTimeUnit);
+
   Standard_EXPORT Handle(StepBasic_TimeUnit) TimeUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndTimeUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndTimeUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_TimeUnit) timeUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndTimeUnit_HeaderFile

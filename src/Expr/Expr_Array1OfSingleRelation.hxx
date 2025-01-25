@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Expr_SingleRelation)> Expr_Array1OfSingleRelation;
 
-
 #endif

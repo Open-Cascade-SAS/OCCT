@@ -25,51 +25,33 @@
 #include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
 #include <Standard_Integer.hxx>
 
-
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
 DEFINE_STANDARD_HANDLE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, Standard_Transient)
-
 
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(const Standard_Integer low,
+                                                                 const Standard_Integer up);
 
-  
-  Standard_EXPORT IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(const Standard_Integer low, const Standard_Integer up);
-  
   Standard_EXPORT Standard_Integer Lower() const;
-  
+
   Standard_EXPORT Standard_Integer Upper() const;
-  
+
   Standard_EXPORT Standard_Integer Length() const;
-  
-  Standard_EXPORT void SetValue (const Standard_Integer num, const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& val);
-  
-  Standard_EXPORT Handle(IGESGraph_HArray1OfTextDisplayTemplate) Value (const Standard_Integer num) const;
 
+  Standard_EXPORT void SetValue(const Standard_Integer                                num,
+                                const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& val);
 
+  Standard_EXPORT Handle(IGESGraph_HArray1OfTextDisplayTemplate) Value(
+    const Standard_Integer num) const;
 
-
-  DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   TColStd_Array1OfTransient thelist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDefs_HArray1OfHArray1OfTextDisplayTemplate_HeaderFile

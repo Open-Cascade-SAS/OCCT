@@ -21,5 +21,4 @@
 
 DEFINE_HARRAY1(MeshVS_HArray1OfSequenceOfInteger, MeshVS_Array1OfSequenceOfInteger)
 
-
 #endif

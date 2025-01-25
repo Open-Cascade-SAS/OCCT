@@ -16,36 +16,35 @@
 
 inline const TopoDS_Shape& BRepFill_Section::OriginalShape() const
 {
-  return myOriginalShape; 
+  return myOriginalShape;
 }
 
 inline const TopoDS_Wire& BRepFill_Section::Wire() const
 {
-  return wire; 
+  return wire;
 }
 
 inline const TopoDS_Vertex& BRepFill_Section::Vertex() const
 {
-  return vertex; 
+  return vertex;
 }
 
-inline Standard_Boolean  BRepFill_Section::IsLaw() const
+inline Standard_Boolean BRepFill_Section::IsLaw() const
 {
   return islaw;
 }
 
-inline Standard_Boolean  BRepFill_Section::IsPunctual() const
+inline Standard_Boolean BRepFill_Section::IsPunctual() const
 {
   return ispunctual;
 }
 
-inline Standard_Boolean  BRepFill_Section::WithContact() const
+inline Standard_Boolean BRepFill_Section::WithContact() const
 {
   return contact;
 }
 
-inline Standard_Boolean  BRepFill_Section::WithCorrection() const
+inline Standard_Boolean BRepFill_Section::WithCorrection() const
 {
   return correction;
 }
-

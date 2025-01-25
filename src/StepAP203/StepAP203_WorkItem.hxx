@@ -26,47 +26,25 @@
 class Standard_Transient;
 class StepBasic_ProductDefinitionFormation;
 
-
 //! Representation of STEP SELECT type WorkItem
-class StepAP203_WorkItem  : public StepData_SelectType
+class StepAP203_WorkItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_WorkItem();
-  
+
   //! Recognizes a kind of WorkItem select type
   //! 1 -> ProductDefinitionFormation from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_WorkItem_HeaderFile

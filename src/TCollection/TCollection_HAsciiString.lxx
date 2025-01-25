@@ -15,53 +15,63 @@
 // ---------------------------------------------------------------------------
 // AssignCat
 // ----------------------------------------------------------------------------
-inline void TCollection_HAsciiString::AssignCat(const Standard_CString other) 
-{myString.AssignCat(other);}
+inline void TCollection_HAsciiString::AssignCat(const Standard_CString other)
+{
+  myString.AssignCat(other);
+}
 
 // ---------------------------------------------------------------------------
 // AssignCat
 // ----------------------------------------------------------------------------
-inline void TCollection_HAsciiString::AssignCat
-                      (const Handle(TCollection_HAsciiString)& other) 
-{myString.AssignCat(other->String());}
-
+inline void TCollection_HAsciiString::AssignCat(const Handle(TCollection_HAsciiString)& other)
+{
+  myString.AssignCat(other->String());
+}
 
 // ----------------------------------------------------------------------------
 // Length
 // ----------------------------------------------------------------------------
 inline Standard_Integer TCollection_HAsciiString::Length() const
-{return myString.mylength;}
+{
+  return myString.mylength;
+}
 
 // ----------------------------------------------------------------------------
 // String
 // ----------------------------------------------------------------------------
 inline const TCollection_AsciiString& TCollection_HAsciiString::String() const
-{return myString;}
+{
+  return myString;
+}
 
 // ----------------------------------------------------------------------------
 inline Standard_CString TCollection_HAsciiString::ToCString() const
-{ return myString.ToCString(); }
+{
+  return myString.ToCString();
+}
 
 namespace std
 {
-  template <>
-  struct hash<Handle(TCollection_HAsciiString)>
+template <>
+struct hash<Handle(TCollection_HAsciiString)>
+{
+  size_t operator()(const Handle(TCollection_HAsciiString)& theString) const
   {
-    size_t operator()(const Handle(TCollection_HAsciiString)& theString) const
-    {
-      if (theString.IsNull()) return 0;
-      return std::hash<TCollection_AsciiString>{}(theString->String());
-    }
-  };
+    if (theString.IsNull())
+      return 0;
+    return std::hash<TCollection_AsciiString>{}(theString->String());
+  }
+};
 
-  template<>
-  struct equal_to<Handle(TCollection_HAsciiString)>
+template <>
+struct equal_to<Handle(TCollection_HAsciiString)>
+{
+  bool operator()(const Handle(TCollection_HAsciiString)& theString1,
+                  const Handle(TCollection_HAsciiString)& theString2) const
   {
-    bool operator()(const Handle(TCollection_HAsciiString)& theString1,
-      const Handle(TCollection_HAsciiString)& theString2) const
-    {
-      return theString1 == theString2 ||
-        (!theString1.IsNull() && !theString2.IsNull() && theString1->String() == theString2->String());
-    }
-  };
-}
+    return theString1 == theString2
+           || (!theString1.IsNull() && !theString2.IsNull()
+               && theString1->String() == theString2->String());
+  }
+};
+} // namespace std

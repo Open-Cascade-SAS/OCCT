@@ -11,8 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
-
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_Communicator.hxx>
 
@@ -33,7 +32,8 @@ Standard_EXPORTEXTERNC TInspectorAPI_Communicator* CreateCommunicator()
 // purpose :
 // =======================================================================
 DFBrowser_Communicator::DFBrowser_Communicator()
- : TInspectorAPI_Communicator(), myWindow (0)
+    : TInspectorAPI_Communicator(),
+      myWindow(0)
 {
   myWindow = new DFBrowser_Window();
 }
@@ -42,8 +42,9 @@ DFBrowser_Communicator::DFBrowser_Communicator()
 // function : SetParameters
 // purpose :
 // =======================================================================
-void DFBrowser_Communicator::SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters)
+void DFBrowser_Communicator::SetParameters(
+  const Handle(TInspectorAPI_PluginParameters)& theParameters)
 {
-  myWindow->SetParameters (theParameters);
+  myWindow->SetParameters(theParameters);
   myWindow->UpdateContent();
 }

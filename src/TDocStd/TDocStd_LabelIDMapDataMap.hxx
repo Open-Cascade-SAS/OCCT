@@ -21,8 +21,8 @@
 #include <TDF_IDMap.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TDF_Label,TDF_IDMap> TDocStd_LabelIDMapDataMap;
-typedef NCollection_DataMap<TDF_Label,TDF_IDMap>::Iterator TDocStd_DataMapIteratorOfLabelIDMapDataMap;
-
+typedef NCollection_DataMap<TDF_Label, TDF_IDMap> TDocStd_LabelIDMapDataMap;
+typedef NCollection_DataMap<TDF_Label, TDF_IDMap>::Iterator
+  TDocStd_DataMapIteratorOfLabelIDMapDataMap;
 
 #endif

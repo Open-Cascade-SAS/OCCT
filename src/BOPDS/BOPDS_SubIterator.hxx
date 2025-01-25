@@ -25,16 +25,14 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Integer.hxx>
 
-
 //! The class BOPDS_SubIterator is used to compute intersections between
 //! bounding boxes of two sub-sets of BRep sub-shapes of arguments
 //! of an operation (see the class BOPDS_DS).
 //! The class provides interface to iterate the pairs of intersected sub-shapes.
 
-class BOPDS_SubIterator 
+class BOPDS_SubIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -47,85 +45,62 @@ public:
 
   //! Sets the data structure <pDS> to process.
   //! It is used to access the shapes and their bounding boxes.
-  void SetDS (const BOPDS_PDS& pDS)
-  {
-    myDS = pDS;
-  }
+  void SetDS(const BOPDS_PDS& pDS) { myDS = pDS; }
 
   //! Returns the data structure
-  const BOPDS_DS& DS() const
-  {
-    return *myDS;
-  }
+  const BOPDS_DS& DS() const { return *myDS; }
 
   //! Sets the first set of indices <theLI> to process
-  void SetSubSet1 (const TColStd_ListOfInteger& theLI)
+  void SetSubSet1(const TColStd_ListOfInteger& theLI)
   {
     mySubSet1 = (TColStd_ListOfInteger*)&theLI;
   }
 
   //! Returns the first set of indices to process
-  const TColStd_ListOfInteger& SubSet1() const
-  {
-    return *mySubSet1;
-  }
+  const TColStd_ListOfInteger& SubSet1() const { return *mySubSet1; }
 
   //! Sets the second set of indices <theLI> to process
-  void SetSubSet2 (const TColStd_ListOfInteger& theLI)
+  void SetSubSet2(const TColStd_ListOfInteger& theLI)
   {
     mySubSet2 = (TColStd_ListOfInteger*)&theLI;
   }
 
   //! Returns the second set of indices to process
-  const TColStd_ListOfInteger& SubSet2() const
-  {
-    return *mySubSet2;
-  }
+  const TColStd_ListOfInteger& SubSet2() const { return *mySubSet2; }
 
   //! Initializes the iterator
   Standard_EXPORT void Initialize();
 
   //! Returns true if there are more pairs of intersected shapes
-  Standard_Boolean More() const
-  {
-    return myIterator.More();
-  }
+  Standard_Boolean More() const { return myIterator.More(); }
 
   //! Moves iterations ahead
-  void Next()
-  {
-    myIterator.Next();
-  }
+  void Next() { myIterator.Next(); }
 
   //! Returns indices (DS) of intersected shapes
   //! theIndex1 - the index of the first shape
   //! theIndex2 - the index of the second shape
-  Standard_EXPORT void Value (Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
+  Standard_EXPORT void Value(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
 
   //! Perform the intersection algorithm and prepare
   //! the results to be used
   Standard_EXPORT virtual void Prepare();
 
   //! Returns the number of interfering pairs
-  Standard_Integer ExpectedLength() const
-  {
-    return myList.Length();
-  }
+  Standard_Integer ExpectedLength() const { return myList.Length(); }
 
 protected:
-
   //! Performs intersection of bounding boxes
   Standard_EXPORT virtual void Intersect();
 
   Handle(NCollection_BaseAllocator) myAllocator;
-  BOPDS_PDS myDS;
-  BOPDS_VectorOfPair myList;
-  BOPDS_VectorOfPair::Iterator myIterator;
-  TColStd_ListOfInteger* mySubSet1;
-  TColStd_ListOfInteger* mySubSet2;
+  BOPDS_PDS                         myDS;
+  BOPDS_VectorOfPair                myList;
+  BOPDS_VectorOfPair::Iterator      myIterator;
+  TColStd_ListOfInteger*            mySubSet1;
+  TColStd_ListOfInteger*            mySubSet2;
 
 private:
-
 };
 
 #endif // _BOPDS_SubIterator_HeaderFile

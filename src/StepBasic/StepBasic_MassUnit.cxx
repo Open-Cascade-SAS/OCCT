@@ -18,12 +18,10 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_MassUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_MassUnit,StepBasic_NamedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_MassUnit, StepBasic_NamedUnit)
 
 //=======================================================================
-//function : StepBasic_MassUnit
-//purpose  : 
+// function : StepBasic_MassUnit
+// purpose  :
 //=======================================================================
-StepBasic_MassUnit::StepBasic_MassUnit ()
-{
-}
+StepBasic_MassUnit::StepBasic_MassUnit() {}

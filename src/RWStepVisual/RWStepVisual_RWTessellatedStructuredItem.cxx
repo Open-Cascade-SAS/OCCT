@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -22,22 +22,21 @@
 #include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
-//function : RWStepVisual_RWTessellatedStructuredItem
-//purpose  : 
+// function : RWStepVisual_RWTessellatedStructuredItem
+// purpose  :
 //=======================================================================
 
 RWStepVisual_RWTessellatedStructuredItem::RWStepVisual_RWTessellatedStructuredItem() {}
 
-
 //=======================================================================
-//function : ReadStep
-//purpose  : 
+// function : ReadStep
+// purpose  :
 //=======================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
-  const Handle(StepData_StepReaderData)& theData,
-  const Standard_Integer theNum,
-  Handle(Interface_Check)& theCheck,
+  const Handle(StepData_StepReaderData)&              theData,
+  const Standard_Integer                              theNum,
+  Handle(Interface_Check)&                            theCheck,
   const Handle(StepVisual_TessellatedStructuredItem)& theEnt) const
 {
   // Check number of parameters
@@ -56,12 +55,12 @@ void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
 }
 
 //=======================================================================
-//function : WriteStep
-//purpose  : 
+// function : WriteStep
+// purpose  :
 //=======================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::WriteStep(
-  StepData_StepWriter& theSW,
+  StepData_StepWriter&                                theSW,
   const Handle(StepVisual_TessellatedStructuredItem)& theEnt) const
 {
 
@@ -71,12 +70,12 @@ void RWStepVisual_RWTessellatedStructuredItem::WriteStep(
 }
 
 //=======================================================================
-//function : Share
-//purpose  : 
+// function : Share
+// purpose  :
 //=======================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::Share(
   const Handle(StepVisual_TessellatedStructuredItem)&,
-Interface_EntityIterator&) const
+  Interface_EntityIterator&) const
 {
 }

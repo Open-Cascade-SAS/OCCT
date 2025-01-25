@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_C0RegularityFilter.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -27,44 +26,49 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter,SelectMgr_Filter)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
 //=======================================================================
-//function : AIS_C0RegularityFilter
-//purpose  : 
+// function : AIS_C0RegularityFilter
+// purpose  :
 //=======================================================================
 AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
 {
   TopTools_IndexedDataMapOfShapeListOfShape SubShapes;
-  TopExp::MapShapesAndAncestors(aShape,TopAbs_EDGE,TopAbs_FACE,SubShapes);
+  TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, SubShapes);
   Standard_Boolean Ok;
-  for (Standard_Integer i = 1; i <= SubShapes.Extent(); i++) {
+  for (Standard_Integer i = 1; i <= SubShapes.Extent(); i++)
+  {
     Ok = Standard_False;
     TopTools_ListIteratorOfListOfShape it(SubShapes(i));
-    TopoDS_Face Face1, Face2;
-    if (it.More()) {
+    TopoDS_Face                        Face1, Face2;
+    if (it.More())
+    {
       Face1 = TopoDS::Face(it.Value());
       it.Next();
-      if (it.More()) {
-	Face2 = TopoDS::Face(it.Value());
-	it.Next();
-	if (!it.More()) {
-	  GeomAbs_Shape ShapeContinuity =
-	    BRep_Tool::Continuity(TopoDS::Edge(SubShapes.FindKey(i)),Face1,Face2);
-	  Ok = (ShapeContinuity == GeomAbs_C0);
-	}
+      if (it.More())
+      {
+        Face2 = TopoDS::Face(it.Value());
+        it.Next();
+        if (!it.More())
+        {
+          GeomAbs_Shape ShapeContinuity =
+            BRep_Tool::Continuity(TopoDS::Edge(SubShapes.FindKey(i)), Face1, Face2);
+          Ok = (ShapeContinuity == GeomAbs_C0);
+        }
       }
     }
-    if (Ok) {
-      const TopoDS_Shape& curEdge = SubShapes.FindKey( i );
+    if (Ok)
+    {
+      const TopoDS_Shape& curEdge = SubShapes.FindKey(i);
       myMapOfEdges.Add(curEdge);
     }
   }
 }
 
 //=======================================================================
-//function : ActsOn
-//purpose  : 
+// function : ActsOn
+// purpose  :
 //=======================================================================
 
 Standard_Boolean AIS_C0RegularityFilter::ActsOn(const TopAbs_ShapeEnum aType) const
@@ -73,19 +77,19 @@ Standard_Boolean AIS_C0RegularityFilter::ActsOn(const TopAbs_ShapeEnum aType) co
 }
 
 //=======================================================================
-//function : IsOk
-//purpose  : 
+// function : IsOk
+// purpose  :
 //=======================================================================
 
 Standard_Boolean AIS_C0RegularityFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 {
-  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
   if (aBO.IsNull())
     return Standard_False;
 
   const TopoDS_Shape& aShape = aBO->Shape();
 
-  if(aShape.ShapeType()!= TopAbs_EDGE)
+  if (aShape.ShapeType() != TopAbs_EDGE)
     return Standard_False;
 
   return (myMapOfEdges.Contains(aShape));

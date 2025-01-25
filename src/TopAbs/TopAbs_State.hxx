@@ -24,10 +24,10 @@
 //! to the face which it intersects.
 enum TopAbs_State
 {
-TopAbs_IN,
-TopAbs_OUT,
-TopAbs_ON,
-TopAbs_UNKNOWN
+  TopAbs_IN,
+  TopAbs_OUT,
+  TopAbs_ON,
+  TopAbs_UNKNOWN
 };
 
 #endif // _TopAbs_State_HeaderFile

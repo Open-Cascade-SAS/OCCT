@@ -28,7 +28,6 @@
 #include <TColStd_Array2OfReal.hxx>
 class gp_Pnt;
 
-
 //! A framework for computing the global properties of a
 //! set of points.
 //! A point mass is attached to each point. The global
@@ -48,13 +47,11 @@ class gp_Pnt;
 //! GProp_PGProps object to a set of points and to
 //! create a GProp_GProps object in order to bring
 //! together global properties of different systems.
-class GProp_PGProps  : public GProp_GProps
+class GProp_PGProps : public GProp_GProps
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes a framework to compute global properties
   //! on a set of points.
   //! The point relative to which the inertia of the system is
@@ -72,31 +69,27 @@ public:
   //! system's global properties. Note that the current
   //! system may be more complex than a set of points.
   Standard_EXPORT GProp_PGProps();
-  
+
   //! Brings together the global properties already
   //! retained by this framework with those induced by
   //! the point Pnt. Pnt may be the first point of the current system.
   //! A point mass is attached to the point Pnt, it is either
   //! equal to 1. or to Density.
-  Standard_EXPORT void AddPoint (const gp_Pnt& P);
-  
+  Standard_EXPORT void AddPoint(const gp_Pnt& P);
 
   //! Adds a new point P with its density in the system of points
   //! Exceptions
   //! Standard_DomainError if the mass value Density
   //! is less than gp::Resolution().
-  Standard_EXPORT void AddPoint (const gp_Pnt& P, const Standard_Real Density);
-  
+  Standard_EXPORT void AddPoint(const gp_Pnt& P, const Standard_Real Density);
 
   //! computes the global properties of the system of points Pnts.
   //! The density of the points are defaulted to all being 1
   Standard_EXPORT GProp_PGProps(const TColgp_Array1OfPnt& Pnts);
-  
 
   //! computes the global properties of the system of points Pnts.
   //! The density of the points are defaulted to all being 1
   Standard_EXPORT GProp_PGProps(const TColgp_Array2OfPnt& Pnts);
-  
 
   //! computes the global properties of the system of points Pnts.
   //! A density is associated with each point.
@@ -106,8 +99,8 @@ public:
   //!
   //! raises if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT GProp_PGProps(const TColgp_Array1OfPnt& Pnts, const TColStd_Array1OfReal& Density);
-  
+  Standard_EXPORT GProp_PGProps(const TColgp_Array1OfPnt&   Pnts,
+                                const TColStd_Array1OfReal& Density);
 
   //! computes the global properties of the system of points Pnts.
   //! A density is associated with each point.
@@ -117,18 +110,16 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT GProp_PGProps(const TColgp_Array2OfPnt& Pnts, const TColStd_Array2OfReal& Density);
-  
+  Standard_EXPORT GProp_PGProps(const TColgp_Array2OfPnt&   Pnts,
+                                const TColStd_Array2OfReal& Density);
 
   //! Computes the barycentre of a set of points. The density of the
   //! points is defaulted to 1.
-  Standard_EXPORT static gp_Pnt Barycentre (const TColgp_Array1OfPnt& Pnts);
-  
+  Standard_EXPORT static gp_Pnt Barycentre(const TColgp_Array1OfPnt& Pnts);
 
   //! Computes the barycentre of a set of points. The density of the
   //! points is defaulted to 1.
-  Standard_EXPORT static gp_Pnt Barycentre (const TColgp_Array2OfPnt& Pnts);
-  
+  Standard_EXPORT static gp_Pnt Barycentre(const TColgp_Array2OfPnt& Pnts);
 
   //! Computes the barycentre of a set of points. A density is associated
   //! with each point.
@@ -138,8 +129,10 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT static void Barycentre (const TColgp_Array1OfPnt& Pnts, const TColStd_Array1OfReal& Density, Standard_Real& Mass, gp_Pnt& G);
-  
+  Standard_EXPORT static void Barycentre(const TColgp_Array1OfPnt&   Pnts,
+                                         const TColStd_Array1OfReal& Density,
+                                         Standard_Real&              Mass,
+                                         gp_Pnt&                     G);
 
   //! Computes the barycentre of a set of points. A density is associated
   //! with each point.
@@ -149,29 +142,13 @@ public:
   //!
   //! Raised if the length of Pnts and the length of Density
   //! is not the same.
-  Standard_EXPORT static void Barycentre (const TColgp_Array2OfPnt& Pnts, const TColStd_Array2OfReal& Density, Standard_Real& Mass, gp_Pnt& G);
-
-
-
+  Standard_EXPORT static void Barycentre(const TColgp_Array2OfPnt&   Pnts,
+                                         const TColStd_Array2OfReal& Density,
+                                         Standard_Real&              Mass,
+                                         gp_Pnt&                     G);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GProp_PGProps_HeaderFile

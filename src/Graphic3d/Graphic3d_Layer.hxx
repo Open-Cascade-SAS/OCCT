@@ -29,7 +29,8 @@
 typedef NCollection_IndexedMap<const Graphic3d_CStructure*> Graphic3d_IndexedMapOfStructure;
 
 //! Defines array of indexed maps of structures.
-typedef std::array<Graphic3d_IndexedMapOfStructure, Graphic3d_DisplayPriority_NB> Graphic3d_ArrayOfIndexedMapOfStructure;
+typedef std::array<Graphic3d_IndexedMapOfStructure, Graphic3d_DisplayPriority_NB>
+  Graphic3d_ArrayOfIndexedMapOfStructure;
 
 class Graphic3d_CullingTool;
 
@@ -38,10 +39,9 @@ class Graphic3d_Layer : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 public:
-
   //! Initializes associated priority list and layer properties
-  Standard_EXPORT Graphic3d_Layer (Graphic3d_ZLayerId theId,
-                                   const Handle(BVH_Builder3d)& theBuilder);
+  Standard_EXPORT Graphic3d_Layer(Graphic3d_ZLayerId           theId,
+                                  const Handle(BVH_Builder3d)& theBuilder);
 
   //! Destructor.
   Standard_EXPORT virtual ~Graphic3d_Layer();
@@ -50,28 +50,35 @@ public:
   Graphic3d_ZLayerId LayerId() const { return myLayerId; }
 
   //! Returns BVH tree builder for frustum culling.
-  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
+  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const
+  {
+    return myBVHPrimitivesTrsfPers.Builder();
+  }
 
   //! Assigns BVH tree builder for frustum culling.
-  void SetFrustumCullingBVHBuilder (const Handle(BVH_Builder3d)& theBuilder) { myBVHPrimitivesTrsfPers.SetBuilder (theBuilder); }
+  void SetFrustumCullingBVHBuilder(const Handle(BVH_Builder3d)& theBuilder)
+  {
+    myBVHPrimitivesTrsfPers.SetBuilder(theBuilder);
+  }
 
   //! Return true if layer was marked with immediate flag.
-  Standard_Boolean IsImmediate() const  { return myLayerSettings.IsImmediate(); }
+  Standard_Boolean IsImmediate() const { return myLayerSettings.IsImmediate(); }
 
   //! Returns settings of the layer object.
   const Graphic3d_ZLayerSettings& LayerSettings() const { return myLayerSettings; };
 
   //! Sets settings of the layer object.
-  Standard_EXPORT void SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings);
+  Standard_EXPORT void SetLayerSettings(const Graphic3d_ZLayerSettings& theSettings);
 
-  Standard_EXPORT void Add (const Graphic3d_CStructure* theStruct,
-                            Graphic3d_DisplayPriority thePriority,
-                            Standard_Boolean isForChangePriority = Standard_False);
+  Standard_EXPORT void Add(const Graphic3d_CStructure* theStruct,
+                           Graphic3d_DisplayPriority   thePriority,
+                           Standard_Boolean            isForChangePriority = Standard_False);
 
-  //! Remove structure and returns its priority, if the structure is not found, method returns negative value
-  Standard_EXPORT bool Remove (const Graphic3d_CStructure* theStruct,
-                               Graphic3d_DisplayPriority& thePriority,
-                               Standard_Boolean isForChangePriority = Standard_False);
+  //! Remove structure and returns its priority, if the structure is not found, method returns
+  //! negative value
+  Standard_EXPORT bool Remove(const Graphic3d_CStructure* theStruct,
+                              Graphic3d_DisplayPriority&  thePriority,
+                              Standard_Boolean            isForChangePriority = Standard_False);
 
   //! @return the number of structures
   Standard_Integer NbStructures() const { return myNbStructures; }
@@ -84,13 +91,16 @@ public:
 
   //! Append layer of acceptable type (with similar number of priorities or less).
   //! Returns Standard_False if the list can not be accepted.
-  Standard_EXPORT Standard_Boolean Append (const Graphic3d_Layer& theOther);
+  Standard_EXPORT Standard_Boolean Append(const Graphic3d_Layer& theOther);
 
   //! Returns array of structures.
   const Graphic3d_ArrayOfIndexedMapOfStructure& ArrayOfStructures() const { return myArray; }
 
   //! Returns structures for specified priority.
-  const Graphic3d_IndexedMapOfStructure& Structures (Graphic3d_DisplayPriority thePriority) const { return myArray[thePriority]; }
+  const Graphic3d_IndexedMapOfStructure& Structures(Graphic3d_DisplayPriority thePriority) const
+  {
+    return myArray[thePriority];
+  }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
@@ -107,25 +117,28 @@ public:
   //! @param theCamera             camera definition
   //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
   //! @param theWindowHeight       viewport height (for applying transformation-persistence)
-  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
+  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
+  //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT Bnd_Box BoundingBox (Standard_Integer theViewId,
-                                       const Handle(Graphic3d_Camera)& theCamera,
-                                       Standard_Integer theWindowWidth,
-                                       Standard_Integer theWindowHeight,
-                                       Standard_Boolean theToIncludeAuxiliary) const;
+  Standard_EXPORT Bnd_Box BoundingBox(Standard_Integer                theViewId,
+                                      const Handle(Graphic3d_Camera)& theCamera,
+                                      Standard_Integer                theWindowWidth,
+                                      Standard_Integer                theWindowHeight,
+                                      Standard_Boolean                theToIncludeAuxiliary) const;
 
   //! Returns zoom-scale factor.
-  Standard_EXPORT Standard_Real considerZoomPersistenceObjects (Standard_Integer theViewId,
-                                                                const Handle(Graphic3d_Camera)& theCamera,
-                                                                Standard_Integer theWindowWidth,
-                                                                Standard_Integer theWindowHeight) const;
+  Standard_EXPORT Standard_Real
+    considerZoomPersistenceObjects(Standard_Integer                theViewId,
+                                   const Handle(Graphic3d_Camera)& theCamera,
+                                   Standard_Integer                theWindowWidth,
+                                   Standard_Integer                theWindowHeight) const;
 
   //! Update culling state - should be called before rendering.
   //! Traverses through BVH tree to determine which structures are in view volume.
-  Standard_EXPORT void UpdateCulling (Standard_Integer theViewId,
-                                      const Graphic3d_CullingTool& theSelector,
-                                      const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState);
+  Standard_EXPORT void UpdateCulling(
+    Standard_Integer                                theViewId,
+    const Graphic3d_CullingTool&                    theSelector,
+    const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState);
 
   //! Returns TRUE if layer is empty or has been discarded entirely by culling test.
   bool IsCulled() const { return myNbStructuresNotCulled == 0; }
@@ -137,26 +150,29 @@ public:
   }
 
 public:
-
   //! Returns set of Graphic3d_CStructures structures for building BVH tree.
   const Graphic3d_BvhCStructureSet& CullableStructuresBVH() const { return myBVHPrimitives; }
 
   //! Returns set of transform persistent Graphic3d_CStructures for building BVH tree.
-  const Graphic3d_BvhCStructureSetTrsfPers& CullableTrsfPersStructuresBVH() const { return myBVHPrimitivesTrsfPers; }
+  const Graphic3d_BvhCStructureSetTrsfPers& CullableTrsfPersStructuresBVH() const
+  {
+    return myBVHPrimitivesTrsfPers;
+  }
 
   //! Returns indexed map of always rendered structures.
-  const NCollection_IndexedMap<const Graphic3d_CStructure*>& NonCullableStructures() const { return myAlwaysRenderedMap; }
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& NonCullableStructures() const
+  {
+    return myAlwaysRenderedMap;
+  }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
-
   //! Updates BVH trees if their state has been invalidated.
   Standard_EXPORT void updateBVH() const;
 
 private:
-
   //! Array of Graphic3d_CStructures by priority rendered in layer.
   Graphic3d_ArrayOfIndexedMapOfStructure myArray;
 
@@ -192,7 +208,6 @@ private:
 
   //! Cached layer bounding box.
   mutable Bnd_Box myBoundingBox[2];
-
 };
 
 #endif // _Graphic3d_Layer_HeaderFile

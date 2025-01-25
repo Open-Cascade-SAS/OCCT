@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<TopOpeBRep_Point2d> TopOpeBRep_SequenceOfPoint2d;
 
-
 #endif

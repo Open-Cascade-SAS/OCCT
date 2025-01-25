@@ -24,7 +24,6 @@
 class StepBasic_ActionMethod;
 class StepBasic_VersionedActionRequest;
 
-
 class StepBasic_ActionRequestSolution;
 DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestSolution, Standard_Transient)
 
@@ -33,49 +32,31 @@ class StepBasic_ActionRequestSolution : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_ActionRequestSolution();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_ActionMethod)& aMethod, const Handle(StepBasic_VersionedActionRequest)& aRequest);
-  
+  Standard_EXPORT void Init(const Handle(StepBasic_ActionMethod)&           aMethod,
+                            const Handle(StepBasic_VersionedActionRequest)& aRequest);
+
   //! Returns field Method
   Standard_EXPORT Handle(StepBasic_ActionMethod) Method() const;
-  
+
   //! Set field Method
-  Standard_EXPORT void SetMethod (const Handle(StepBasic_ActionMethod)& Method);
-  
+  Standard_EXPORT void SetMethod(const Handle(StepBasic_ActionMethod)& Method);
+
   //! Returns field Request
   Standard_EXPORT Handle(StepBasic_VersionedActionRequest) Request() const;
-  
+
   //! Set field Request
-  Standard_EXPORT void SetRequest (const Handle(StepBasic_VersionedActionRequest)& Request);
+  Standard_EXPORT void SetRequest(const Handle(StepBasic_VersionedActionRequest)& Request);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepBasic_ActionMethod) theMethod;
+  Handle(StepBasic_ActionMethod)           theMethod;
   Handle(StepBasic_VersionedActionRequest) theRequest;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ActionRequestSolution_HeaderFile

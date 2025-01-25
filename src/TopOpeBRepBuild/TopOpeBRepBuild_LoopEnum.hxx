@@ -17,12 +17,11 @@
 #ifndef _TopOpeBRepBuild_LoopEnum_HeaderFile
 #define _TopOpeBRepBuild_LoopEnum_HeaderFile
 
-
 enum TopOpeBRepBuild_LoopEnum
 {
-TopOpeBRepBuild_ANYLOOP,
-TopOpeBRepBuild_BOUNDARY,
-TopOpeBRepBuild_BLOCK
+  TopOpeBRepBuild_ANYLOOP,
+  TopOpeBRepBuild_BOUNDARY,
+  TopOpeBRepBuild_BLOCK
 };
 
 #endif // _TopOpeBRepBuild_LoopEnum_HeaderFile

@@ -22,7 +22,6 @@
 #include <ExprIntrp_Generator.hxx>
 class TCollection_AsciiString;
 
-
 class ExprIntrp_GenFct;
 DEFINE_STANDARD_HANDLE(ExprIntrp_GenFct, ExprIntrp_Generator)
 
@@ -33,38 +32,19 @@ class ExprIntrp_GenFct : public ExprIntrp_Generator
 {
 
 public:
-
-  
   Standard_EXPORT static Handle(ExprIntrp_GenFct) Create();
-  
-  Standard_EXPORT void Process (const TCollection_AsciiString& str);
-  
+
+  Standard_EXPORT void Process(const TCollection_AsciiString& str);
+
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ExprIntrp_GenFct,ExprIntrp_Generator)
+  DEFINE_STANDARD_RTTIEXT(ExprIntrp_GenFct, ExprIntrp_Generator)
 
 protected:
-
-
-
-
 private:
-
-  
   Standard_EXPORT ExprIntrp_GenFct();
 
   Standard_Boolean done;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ExprIntrp_GenFct_HeaderFile

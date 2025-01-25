@@ -15,40 +15,57 @@
 // commercial license or contractual agreement.
 
 //============================================================================
-inline Standard_Boolean BRepClass3d_Intersector3d::IsDone() const { 
-  return(done);
+inline Standard_Boolean BRepClass3d_Intersector3d::IsDone() const
+{
+  return (done);
 }
-//============================================================================
-inline Standard_Boolean BRepClass3d_Intersector3d::HasAPoint() const { 
-  return(hasapoint);
-}
-//============================================================================
-inline const gp_Pnt& BRepClass3d_Intersector3d::Pnt() const { 
-  return(pnt); 
-}
-//============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::UParameter() const { 
-  return(U); 
-}
-//============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::VParameter() const { 
-  return(V); 
-}
-//============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::WParameter() const { 
-  return(W); 
-}
-//============================================================================
-inline IntCurveSurface_TransitionOnCurve BRepClass3d_Intersector3d::Transition() const { 
-  return(transition); 
-}
-//============================================================================
-inline TopAbs_State BRepClass3d_Intersector3d::State() const { 
-  return(state);
-}
-//============================================================================
-inline const TopoDS_Face&  BRepClass3d_Intersector3d::Face() const { 
-  return(face);
-}
-//============================================================================
 
+//============================================================================
+inline Standard_Boolean BRepClass3d_Intersector3d::HasAPoint() const
+{
+  return (hasapoint);
+}
+
+//============================================================================
+inline const gp_Pnt& BRepClass3d_Intersector3d::Pnt() const
+{
+  return (pnt);
+}
+
+//============================================================================
+inline Standard_Real BRepClass3d_Intersector3d::UParameter() const
+{
+  return (U);
+}
+
+//============================================================================
+inline Standard_Real BRepClass3d_Intersector3d::VParameter() const
+{
+  return (V);
+}
+
+//============================================================================
+inline Standard_Real BRepClass3d_Intersector3d::WParameter() const
+{
+  return (W);
+}
+
+//============================================================================
+inline IntCurveSurface_TransitionOnCurve BRepClass3d_Intersector3d::Transition() const
+{
+  return (transition);
+}
+
+//============================================================================
+inline TopAbs_State BRepClass3d_Intersector3d::State() const
+{
+  return (state);
+}
+
+//============================================================================
+inline const TopoDS_Face& BRepClass3d_Intersector3d::Face() const
+{
+  return (face);
+}
+
+//============================================================================

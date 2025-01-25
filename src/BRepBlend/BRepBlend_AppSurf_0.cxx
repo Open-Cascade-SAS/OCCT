@@ -21,7 +21,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Blend_AppFunction.hxx>
 #include <BRepBlend_Line.hxx>
- 
 
 #define TheSectionGenerator Blend_AppFunction
 #define TheSectionGenerator_hxx <Blend_AppFunction.hxx>
@@ -31,4 +30,3 @@
 #define AppBlend_AppSurf BRepBlend_AppSurf
 #define AppBlend_AppSurf_hxx <BRepBlend_AppSurf.hxx>
 #include "../AppBlend/AppBlend_AppSurf.gxx"
-

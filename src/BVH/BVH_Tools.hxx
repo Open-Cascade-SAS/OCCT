@@ -27,11 +27,9 @@ template <class T, int N>
 class BVH_Tools
 {
 public: //! @name public types
-
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
-
   enum BVH_PrjStateInTriangle
   {
     BVH_PrjStateInTriangle_VERTEX,
@@ -40,111 +38,122 @@ public:
   };
 
 public: //! @name Box-Box Square distance
-
   //! Computes Square distance between Axis aligned bounding boxes
-  static T BoxBoxSquareDistance (const BVH_Box<T, N>& theBox1,
-                                 const BVH_Box<T, N>& theBox2)
+  static T BoxBoxSquareDistance(const BVH_Box<T, N>& theBox1, const BVH_Box<T, N>& theBox2)
   {
     if (!theBox1.IsValid() || !theBox2.IsValid())
     {
       return static_cast<T>(0);
     }
-    return BoxBoxSquareDistance (theBox1.CornerMin(), theBox1.CornerMax(),
-                                 theBox2.CornerMin(), theBox2.CornerMax());
+    return BoxBoxSquareDistance(theBox1.CornerMin(),
+                                theBox1.CornerMax(),
+                                theBox2.CornerMin(),
+                                theBox2.CornerMax());
   }
 
   //! Computes Square distance between Axis aligned bounding boxes
-  static T BoxBoxSquareDistance (const BVH_VecNt& theCMin1,
-                                 const BVH_VecNt& theCMax1,
-                                 const BVH_VecNt& theCMin2,
-                                 const BVH_VecNt& theCMax2)
+  static T BoxBoxSquareDistance(const BVH_VecNt& theCMin1,
+                                const BVH_VecNt& theCMax1,
+                                const BVH_VecNt& theCMin2,
+                                const BVH_VecNt& theCMax2)
   {
     T aDist = 0;
     for (int i = 0; i < N; ++i)
     {
-      if      (theCMin1[i] > theCMax2[i]) { T d = theCMin1[i] - theCMax2[i]; d *= d; aDist += d; }
-      else if (theCMax1[i] < theCMin2[i]) { T d = theCMin2[i] - theCMax1[i]; d *= d; aDist += d; }
+      if (theCMin1[i] > theCMax2[i])
+      {
+        T d = theCMin1[i] - theCMax2[i];
+        d *= d;
+        aDist += d;
+      }
+      else if (theCMax1[i] < theCMin2[i])
+      {
+        T d = theCMin2[i] - theCMax1[i];
+        d *= d;
+        aDist += d;
+      }
     }
     return aDist;
   }
 
 public: //! @name Point-Box Square distance
-
   //! Computes square distance between point and bounding box
-  static T PointBoxSquareDistance (const BVH_VecNt& thePoint,
-                                   const BVH_Box<T, N>& theBox)
+  static T PointBoxSquareDistance(const BVH_VecNt& thePoint, const BVH_Box<T, N>& theBox)
   {
     if (!theBox.IsValid())
     {
       return static_cast<T>(0);
     }
-    return PointBoxSquareDistance (thePoint,
-                                   theBox.CornerMin(),
-                                   theBox.CornerMax());
+    return PointBoxSquareDistance(thePoint, theBox.CornerMin(), theBox.CornerMax());
   }
 
   //! Computes square distance between point and bounding box
-  static T PointBoxSquareDistance (const BVH_VecNt& thePoint,
-                                   const BVH_VecNt& theCMin,
-                                   const BVH_VecNt& theCMax)
+  static T PointBoxSquareDistance(const BVH_VecNt& thePoint,
+                                  const BVH_VecNt& theCMin,
+                                  const BVH_VecNt& theCMax)
   {
     T aDist = 0;
     for (int i = 0; i < N; ++i)
     {
-      if      (thePoint[i] < theCMin[i]) { T d = theCMin[i] - thePoint[i]; d *= d; aDist += d; }
-      else if (thePoint[i] > theCMax[i]) { T d = thePoint[i] - theCMax[i]; d *= d; aDist += d; }
+      if (thePoint[i] < theCMin[i])
+      {
+        T d = theCMin[i] - thePoint[i];
+        d *= d;
+        aDist += d;
+      }
+      else if (thePoint[i] > theCMax[i])
+      {
+        T d = thePoint[i] - theCMax[i];
+        d *= d;
+        aDist += d;
+      }
     }
     return aDist;
   }
 
 public: //! @name Point-Box projection
-
   //! Computes projection of point on bounding box
-  static BVH_VecNt PointBoxProjection (const BVH_VecNt& thePoint,
-                                       const BVH_Box<T, N>& theBox)
+  static BVH_VecNt PointBoxProjection(const BVH_VecNt& thePoint, const BVH_Box<T, N>& theBox)
   {
     if (!theBox.IsValid())
     {
       return thePoint;
     }
-    return PointBoxProjection (thePoint,
-                               theBox.CornerMin(),
-                               theBox.CornerMax());
+    return PointBoxProjection(thePoint, theBox.CornerMin(), theBox.CornerMax());
   }
 
   //! Computes projection of point on bounding box
-  static BVH_VecNt PointBoxProjection (const BVH_VecNt& thePoint,
-                                       const BVH_VecNt& theCMin,
-                                       const BVH_VecNt& theCMax)
+  static BVH_VecNt PointBoxProjection(const BVH_VecNt& thePoint,
+                                      const BVH_VecNt& theCMin,
+                                      const BVH_VecNt& theCMax)
   {
-    return thePoint.cwiseMax (theCMin).cwiseMin (theCMax);
+    return thePoint.cwiseMax(theCMin).cwiseMin(theCMax);
   }
 
 public: //! @name Point-Triangle Square distance
-
   //! Find nearest point on a triangle for the given point
-  static BVH_VecNt PointTriangleProjection (const BVH_VecNt& thePoint,
-                                            const BVH_VecNt& theNode0,
-                                            const BVH_VecNt& theNode1,
-                                            const BVH_VecNt& theNode2,
-                                            BVH_PrjStateInTriangle* thePrjState = nullptr,
-                                            Standard_Integer* theNumberOfFirstNode = nullptr,
-                                            Standard_Integer* theNumberOfLastNode = nullptr)
+  static BVH_VecNt PointTriangleProjection(const BVH_VecNt&        thePoint,
+                                           const BVH_VecNt&        theNode0,
+                                           const BVH_VecNt&        theNode1,
+                                           const BVH_VecNt&        theNode2,
+                                           BVH_PrjStateInTriangle* thePrjState          = nullptr,
+                                           Standard_Integer*       theNumberOfFirstNode = nullptr,
+                                           Standard_Integer*       theNumberOfLastNode  = nullptr)
   {
     const BVH_VecNt aAB = theNode1 - theNode0;
     const BVH_VecNt aAC = theNode2 - theNode0;
     const BVH_VecNt aAP = thePoint - theNode0;
-  
+
     T aABdotAP = aAB.Dot(aAP);
     T aACdotAP = aAC.Dot(aAP);
-  
+
     if (aABdotAP <= 0. && aACdotAP <= 0.)
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *thePrjState          = BVH_PrjStateInTriangle_VERTEX;
         *theNumberOfFirstNode = 0;
-        *theNumberOfLastNode = 0;
+        *theNumberOfLastNode  = 0;
       }
       return theNode0;
     }
@@ -152,37 +161,37 @@ public: //! @name Point-Triangle Square distance
     const BVH_VecNt aBC = theNode2 - theNode1;
     const BVH_VecNt aBP = thePoint - theNode1;
 
-    T aBAdotBP = -(aAB.Dot (aBP));
-    T aBCdotBP = (aBC.Dot (aBP));
+    T aBAdotBP = -(aAB.Dot(aBP));
+    T aBCdotBP = (aBC.Dot(aBP));
 
     if (aBAdotBP <= 0. && aBCdotBP <= 0.)
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *thePrjState          = BVH_PrjStateInTriangle_VERTEX;
         *theNumberOfFirstNode = 1;
-        *theNumberOfLastNode = 1;
+        *theNumberOfLastNode  = 1;
       }
       return theNode1;
     }
 
     const BVH_VecNt aCP = thePoint - theNode2;
 
-    T aCBdotCP = -(aBC.Dot (aCP));
-    T aCAdotCP = -(aAC.Dot (aCP));
+    T aCBdotCP = -(aBC.Dot(aCP));
+    T aCAdotCP = -(aAC.Dot(aCP));
 
     if (aCAdotCP <= 0. && aCBdotCP <= 0.)
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *thePrjState          = BVH_PrjStateInTriangle_VERTEX;
         *theNumberOfFirstNode = 2;
-        *theNumberOfLastNode = 2;
+        *theNumberOfLastNode  = 2;
       }
       return theNode2;
     }
 
-    T aACdotBP = (aAC.Dot (aBP));
+    T aACdotBP = (aAC.Dot(aBP));
 
     T aVC = aABdotAP * aACdotBP + aBAdotBP * aACdotAP;
 
@@ -190,14 +199,14 @@ public: //! @name Point-Triangle Square distance
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *thePrjState          = BVH_PrjStateInTriangle_EDGE;
         *theNumberOfFirstNode = 0;
-        *theNumberOfLastNode = 1;
+        *theNumberOfLastNode  = 1;
       }
       return theNode0 + aAB * (aABdotAP / (aABdotAP + aBAdotBP));
     }
 
-    T aABdotCP = (aAB.Dot (aCP));
+    T aABdotCP = (aAB.Dot(aCP));
 
     T aVA = aBAdotBP * aCAdotCP - aABdotCP * aACdotBP;
 
@@ -205,9 +214,9 @@ public: //! @name Point-Triangle Square distance
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *thePrjState          = BVH_PrjStateInTriangle_EDGE;
         *theNumberOfFirstNode = 1;
-        *theNumberOfLastNode = 2;
+        *theNumberOfLastNode  = 2;
       }
       return theNode1 + aBC * (aBCdotBP / (aBCdotBP + aCBdotCP));
     }
@@ -218,9 +227,9 @@ public: //! @name Point-Triangle Square distance
     {
       if (thePrjState != nullptr)
       {
-        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *thePrjState          = BVH_PrjStateInTriangle_EDGE;
         *theNumberOfFirstNode = 2;
-        *theNumberOfLastNode = 0;
+        *theNumberOfLastNode  = 0;
       }
       return theNode0 + aAC * (aACdotAP / (aACdotAP + aCAdotCP));
     }
@@ -236,75 +245,85 @@ public: //! @name Point-Triangle Square distance
   }
 
   //! Computes square distance between point and triangle
-  static T PointTriangleSquareDistance (const BVH_VecNt& thePoint,
-                                        const BVH_VecNt& theNode0,
-                                        const BVH_VecNt& theNode1,
-                                        const BVH_VecNt& theNode2)
+  static T PointTriangleSquareDistance(const BVH_VecNt& thePoint,
+                                       const BVH_VecNt& theNode0,
+                                       const BVH_VecNt& theNode1,
+                                       const BVH_VecNt& theNode2)
   {
     const BVH_VecNt aProj = PointTriangleProjection(thePoint, theNode0, theNode1, theNode2);
-    const BVH_VecNt aPP = aProj - thePoint;
+    const BVH_VecNt aPP   = aProj - thePoint;
     return aPP.Dot(aPP);
   }
 
 public: //! @name Ray-Box Intersection
-
   //! Computes hit time of ray-box intersection
-  static Standard_Boolean RayBoxIntersection (const BVH_Ray<T, N>& theRay,
-                                              const BVH_Box<T, N>& theBox,
-                                              T& theTimeEnter,
-                                              T& theTimeLeave)
+  static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
+                                             const BVH_Box<T, N>& theBox,
+                                             T&                   theTimeEnter,
+                                             T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
       return Standard_False;
     }
-    return RayBoxIntersection (theRay, theBox.CornerMin(), theBox.CornerMax(), theTimeEnter, theTimeLeave);
+    return RayBoxIntersection(theRay,
+                              theBox.CornerMin(),
+                              theBox.CornerMax(),
+                              theTimeEnter,
+                              theTimeLeave);
   }
 
   //! Computes hit time of ray-box intersection
-  static Standard_Boolean RayBoxIntersection (const BVH_Ray<T, N>& theRay,
-                                              const BVH_VecNt& theBoxCMin,
-                                              const BVH_VecNt& theBoxCMax,
-                                              T& theTimeEnter,
-                                              T& theTimeLeave)
+  static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
+                                             const BVH_VecNt&     theBoxCMin,
+                                             const BVH_VecNt&     theBoxCMax,
+                                             T&                   theTimeEnter,
+                                             T&                   theTimeLeave)
   {
-    return RayBoxIntersection (theRay.Origin, theRay.Direct,
-                               theBoxCMin, theBoxCMax, theTimeEnter, theTimeLeave);
+    return RayBoxIntersection(theRay.Origin,
+                              theRay.Direct,
+                              theBoxCMin,
+                              theBoxCMax,
+                              theTimeEnter,
+                              theTimeLeave);
   }
 
   //! Computes hit time of ray-box intersection
-  static Standard_Boolean RayBoxIntersection (const BVH_VecNt& theRayOrigin,
-                                              const BVH_VecNt& theRayDirection,
-                                              const BVH_Box<T, N>& theBox,
-                                              T& theTimeEnter,
-                                              T& theTimeLeave)
+  static Standard_Boolean RayBoxIntersection(const BVH_VecNt&     theRayOrigin,
+                                             const BVH_VecNt&     theRayDirection,
+                                             const BVH_Box<T, N>& theBox,
+                                             T&                   theTimeEnter,
+                                             T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
       return Standard_False;
     }
-    return RayBoxIntersection (theRayOrigin, theRayDirection,
-                               theBox.CornerMin(), theBox.CornerMax(),
-                               theTimeEnter, theTimeLeave);
+    return RayBoxIntersection(theRayOrigin,
+                              theRayDirection,
+                              theBox.CornerMin(),
+                              theBox.CornerMax(),
+                              theTimeEnter,
+                              theTimeLeave);
   }
 
   //! Computes hit time of ray-box intersection
-  static Standard_Boolean RayBoxIntersection (const BVH_VecNt& theRayOrigin,
-                                              const BVH_VecNt& theRayDirection,
-                                              const BVH_VecNt& theBoxCMin,
-                                              const BVH_VecNt& theBoxCMax,
-                                              T& theTimeEnter,
-                                              T& theTimeLeave)
+  static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
+                                             const BVH_VecNt& theRayDirection,
+                                             const BVH_VecNt& theBoxCMin,
+                                             const BVH_VecNt& theBoxCMax,
+                                             T&               theTimeEnter,
+                                             T&               theTimeLeave)
   {
     BVH_VecNt aNodeMin, aNodeMax;
     for (int i = 0; i < N; ++i)
     {
       if (theRayDirection[i] == 0)
       {
-        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ?
-                       (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();
-        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) < 0 ?
-                       (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();
+        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ? (std::numeric_limits<T>::min)()
+                                                             : (std::numeric_limits<T>::max)();
+        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) < 0 ? (std::numeric_limits<T>::min)()
+                                                            : (std::numeric_limits<T>::max)();
       }
       else
       {
@@ -316,12 +335,12 @@ public: //! @name Ray-Box Intersection
     BVH_VecNt aTimeMin, aTimeMax;
     for (int i = 0; i < N; ++i)
     {
-      aTimeMin[i] = Min (aNodeMin[i], aNodeMax[i]);
-      aTimeMax[i] = Max (aNodeMin[i], aNodeMax[i]);
+      aTimeMin[i] = Min(aNodeMin[i], aNodeMax[i]);
+      aTimeMax[i] = Max(aNodeMin[i], aNodeMax[i]);
     }
 
-    T aTimeEnter = Max (aTimeMin[0], Max (aTimeMin[1], aTimeMin[2]));
-    T aTimeLeave = Min (aTimeMax[0], Min (aTimeMax[1], aTimeMax[2]));
+    T aTimeEnter = Max(aTimeMin[0], Max(aTimeMin[1], aTimeMin[2]));
+    T aTimeLeave = Min(aTimeMax[0], Min(aTimeMax[1], aTimeMax[2]));
 
     Standard_Boolean hasIntersection = aTimeEnter <= aTimeLeave && aTimeLeave >= 0;
     if (hasIntersection)

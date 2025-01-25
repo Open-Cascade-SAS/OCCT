@@ -31,37 +31,43 @@ class Transfer_Binder;
 class StepShape_ShapeDefinitionRepresentation;
 class StepShape_ContextDependentShapeRepresentation;
 
-
 //! Defines tools for creation and investigation STEP constructs
 //! used for representing various kinds of data, such as product and
 //! assembly structure, unit contexts, associated information
 //! The creation of these structures is made according to currently
 //! active schema (AP203 or AP214 CD2 or DIS)
 //! This is taken from parameter write.step.schema
-class STEPConstruct 
+class STEPConstruct
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns STEP entity of the (sub)type of RepresentationItem
   //! which is a result of the translation of the Shape, or Null if
   //! no result is recorded
-  Standard_EXPORT static Handle(StepRepr_RepresentationItem) FindEntity (const Handle(Transfer_FinderProcess)& FinderProcess, const TopoDS_Shape& Shape);
-  
+  Standard_EXPORT static Handle(StepRepr_RepresentationItem) FindEntity(
+    const Handle(Transfer_FinderProcess)& FinderProcess,
+    const TopoDS_Shape&                   Shape);
+
   //! The same as above, but in the case if item not found, repeats
   //! search on the same shape without location. The Loc corresponds to the
   //! location with which result is found (either location of the Shape,
   //! or Null)
-  Standard_EXPORT static Handle(StepRepr_RepresentationItem) FindEntity (const Handle(Transfer_FinderProcess)& FinderProcess, const TopoDS_Shape& Shape, TopLoc_Location& Loc);
-  
-  //! Returns Shape resulting from given STEP entity (Null if not mapped)
-  Standard_EXPORT static TopoDS_Shape FindShape (const Handle(Transfer_TransientProcess)& TransientProcess, const Handle(StepRepr_RepresentationItem)& item);
-  
-  //! Find CDSR corresponding to the component in the specified assembly
-  Standard_EXPORT static Standard_Boolean FindCDSR (const Handle(Transfer_Binder)& ComponentBinder, const Handle(StepShape_ShapeDefinitionRepresentation)& AssemblySDR, Handle(StepShape_ContextDependentShapeRepresentation)& ComponentCDSR);
+  Standard_EXPORT static Handle(StepRepr_RepresentationItem) FindEntity(
+    const Handle(Transfer_FinderProcess)& FinderProcess,
+    const TopoDS_Shape&                   Shape,
+    TopLoc_Location&                      Loc);
 
+  //! Returns Shape resulting from given STEP entity (Null if not mapped)
+  Standard_EXPORT static TopoDS_Shape FindShape(
+    const Handle(Transfer_TransientProcess)&   TransientProcess,
+    const Handle(StepRepr_RepresentationItem)& item);
+
+  //! Find CDSR corresponding to the component in the specified assembly
+  Standard_EXPORT static Standard_Boolean FindCDSR(
+    const Handle(Transfer_Binder)&                         ComponentBinder,
+    const Handle(StepShape_ShapeDefinitionRepresentation)& AssemblySDR,
+    Handle(StepShape_ContextDependentShapeRepresentation)& ComponentCDSR);
 };
 
 #endif // _STEPConstruct_HeaderFile

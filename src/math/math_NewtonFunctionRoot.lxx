@@ -14,34 +14,37 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_NewtonFunctionRoot::IsDone() const {return Done;}
+inline Standard_Boolean math_NewtonFunctionRoot::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_NewtonFunctionRoot& N)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_NewtonFunctionRoot& N)
 {
   N.Dump(o);
   return o;
 }
 
-inline Standard_Real math_NewtonFunctionRoot::Root () const{
+inline Standard_Real math_NewtonFunctionRoot::Root() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return X;
 }
 
-
-inline Standard_Real math_NewtonFunctionRoot::Derivative () const {
+inline Standard_Real math_NewtonFunctionRoot::Derivative() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return DFx;
 }
 
-
-inline Standard_Real math_NewtonFunctionRoot::Value () const {
+inline Standard_Real math_NewtonFunctionRoot::Value() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Fx;
 }
 
-
-inline Standard_Integer math_NewtonFunctionRoot::NbIterations () const {
+inline Standard_Integer math_NewtonFunctionRoot::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return It;
 }

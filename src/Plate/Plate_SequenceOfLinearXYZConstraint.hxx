@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Plate_LinearXYZConstraint> Plate_SequenceOfLinearXYZConstraint;
 
-
 #endif

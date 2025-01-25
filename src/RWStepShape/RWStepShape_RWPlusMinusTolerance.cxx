@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepShape_RWPlusMinusTolerance.pxx"
 #include <StepData_StepReaderData.hxx>
@@ -19,46 +18,45 @@
 #include <StepShape_PlusMinusTolerance.hxx>
 #include <StepShape_ToleranceMethodDefinition.hxx>
 
-RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance () {}
+RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance() {}
 
-void RWStepShape_RWPlusMinusTolerance::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepShape_PlusMinusTolerance)& ent) const
+void RWStepShape_RWPlusMinusTolerance::ReadStep(
+  const Handle(StepData_StepReaderData)&      data,
+  const Standard_Integer                      num,
+  Handle(Interface_Check)&                    ach,
+  const Handle(StepShape_PlusMinusTolerance)& ent) const
 {
-	// --- Number of Parameter Control ---
+  // --- Number of Parameter Control ---
 
-	if (!data->CheckNbParams(num,2,ach,"plus_minus_tolerance")) return;
+  if (!data->CheckNbParams(num, 2, ach, "plus_minus_tolerance"))
+    return;
 
-	// --- own field : range ---
+  // --- own field : range ---
 
-	StepShape_ToleranceMethodDefinition aRange;
-	data->ReadEntity (num,1,"range",ach,aRange);
+  StepShape_ToleranceMethodDefinition aRange;
+  data->ReadEntity(num, 1, "range", ach, aRange);
 
-	// --- own field : tolerance_dimension ---
+  // --- own field : tolerance_dimension ---
 
-	StepShape_DimensionalCharacteristic aTD;
-	data->ReadEntity (num,2,"2dtolerance_dimensionrange",ach,aTD);
+  StepShape_DimensionalCharacteristic aTD;
+  data->ReadEntity(num, 2, "2dtolerance_dimensionrange", ach, aTD);
 
-	//--- Initialisation of the read entity ---
+  //--- Initialisation of the read entity ---
 
-	ent->Init(aRange,aTD);
+  ent->Init(aRange, aTD);
 }
 
-
-void RWStepShape_RWPlusMinusTolerance::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepShape_PlusMinusTolerance)& ent) const
+void RWStepShape_RWPlusMinusTolerance::WriteStep(
+  StepData_StepWriter&                        SW,
+  const Handle(StepShape_PlusMinusTolerance)& ent) const
 {
-  SW.Send (ent->Range().Value());
-  SW.Send (ent->TolerancedDimension().Value());
+  SW.Send(ent->Range().Value());
+  SW.Send(ent->TolerancedDimension().Value());
 }
 
-
-void RWStepShape_RWPlusMinusTolerance::Share(const Handle(StepShape_PlusMinusTolerance)& ent, Interface_EntityIterator& iter) const
+void RWStepShape_RWPlusMinusTolerance::Share(const Handle(StepShape_PlusMinusTolerance)& ent,
+                                             Interface_EntityIterator&                   iter) const
 {
-  iter.AddItem (ent->Range().Value());
-  iter.AddItem (ent->TolerancedDimension().Value());
+  iter.AddItem(ent->Range().Value());
+  iter.AddItem(ent->TolerancedDimension().Value());
 }
-

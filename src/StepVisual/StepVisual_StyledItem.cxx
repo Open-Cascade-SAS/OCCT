@@ -15,35 +15,36 @@
 #include <StepVisual_StyledItemTarget.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem, StepRepr_RepresentationItem)
 
 void StepVisual_StyledItem::Init(
-  const Handle(TCollection_HAsciiString)& aName,
+  const Handle(TCollection_HAsciiString)&                        aName,
   const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-  const Handle(Standard_Transient)& aItem)
+  const Handle(Standard_Transient)&                              aItem)
 {
   // --- classe own fields ---
-  myStyles = aStyles;
-  myItem = aItem;
+  myStyles   = aStyles;
+  myItem     = aItem;
   myReprItem = Handle(StepRepr_RepresentationItem)::DownCast(aItem);
   // --- classe inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepVisual_StyledItem::SetStyles(const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles)
+void StepVisual_StyledItem::SetStyles(
+  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles)
 {
   myStyles = aStyles;
 }
 
 void StepVisual_StyledItem::SetItem(const Handle(StepRepr_RepresentationItem)& aItem)
 {
-  myItem = aItem;
+  myItem     = aItem;
   myReprItem = aItem;
 }
 
 void StepVisual_StyledItem::SetItem(const StepVisual_StyledItemTarget& theItem)
 {
-  myItem = theItem.Value();
+  myItem     = theItem.Value();
   myReprItem = Handle(StepRepr_RepresentationItem)::DownCast(myItem);
 }
 

@@ -22,18 +22,16 @@
 class XmlMDF_ADriverTable;
 class Message_Messenger;
 
-
 //! Storage and Retrieval drivers for modelling attributes.
 //! Transient attributes are defined in package TDataStd.
-class XmlMDataStd 
+class XmlMDataStd
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& anMsgDrv);
-
+  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                                         const Handle(Message_Messenger)&   anMsgDrv);
 };
 
 #endif // _XmlMDataStd_HeaderFile

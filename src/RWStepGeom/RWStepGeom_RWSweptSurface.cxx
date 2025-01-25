@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepGeom_RWSweptSurface.pxx"
 #include <StepData_StepReaderData.hxx>
@@ -19,57 +18,52 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SweptSurface.hxx>
 
-RWStepGeom_RWSweptSurface::RWStepGeom_RWSweptSurface () {}
+RWStepGeom_RWSweptSurface::RWStepGeom_RWSweptSurface() {}
 
-void RWStepGeom_RWSweptSurface::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepGeom_SweptSurface)& ent) const
+void RWStepGeom_RWSweptSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                         const Standard_Integer                 num,
+                                         Handle(Interface_Check)&               ach,
+                                         const Handle(StepGeom_SweptSurface)&   ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "swept_surface"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"swept_surface")) return;
+  // --- inherited field : name ---
 
-	// --- inherited field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- own field : sweptCurve ---
 
-	// --- own field : sweptCurve ---
+  Handle(StepGeom_Curve) aSweptCurve;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadEntity(num, 2, "swept_curve", ach, STANDARD_TYPE(StepGeom_Curve), aSweptCurve);
 
-	Handle(StepGeom_Curve) aSweptCurve;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"swept_curve", ach, STANDARD_TYPE(StepGeom_Curve), aSweptCurve);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aName, aSweptCurve);
+  ent->Init(aName, aSweptCurve);
 }
 
-
-void RWStepGeom_RWSweptSurface::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepGeom_SweptSurface)& ent) const
+void RWStepGeom_RWSweptSurface::WriteStep(StepData_StepWriter&                 SW,
+                                          const Handle(StepGeom_SweptSurface)& ent) const
 {
 
-	// --- inherited field name ---
+  // --- inherited field name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- own field : sweptCurve ---
+  // --- own field : sweptCurve ---
 
-	SW.Send(ent->SweptCurve());
+  SW.Send(ent->SweptCurve());
 }
 
-
-void RWStepGeom_RWSweptSurface::Share(const Handle(StepGeom_SweptSurface)& ent, Interface_EntityIterator& iter) const
+void RWStepGeom_RWSweptSurface::Share(const Handle(StepGeom_SweptSurface)& ent,
+                                      Interface_EntityIterator&            iter) const
 {
 
-	iter.GetOneItem(ent->SweptCurve());
+  iter.GetOneItem(ent->SweptCurve());
 }
-

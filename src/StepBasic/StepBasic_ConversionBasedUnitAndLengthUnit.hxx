@@ -26,48 +26,29 @@ class StepBasic_DimensionalExponents;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
-
 class StepBasic_ConversionBasedUnitAndLengthUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndLengthUnit, StepBasic_ConversionBasedUnit)
-
 
 class StepBasic_ConversionBasedUnitAndLengthUnit : public StepBasic_ConversionBasedUnit
 {
 
 public:
-
-  
   //! Returns a ConversionBasedUnitAndLengthUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndLengthUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
-  
-  Standard_EXPORT void SetLengthUnit (const Handle(StepBasic_LengthUnit)& aLengthUnit);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
+                            const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+
+  Standard_EXPORT void SetLengthUnit(const Handle(StepBasic_LengthUnit)& aLengthUnit);
+
   Standard_EXPORT Handle(StepBasic_LengthUnit) LengthUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit, StepBasic_ConversionBasedUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_LengthUnit) lengthUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ConversionBasedUnitAndLengthUnit_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<AppDef_MultiPointConstraint> AppDef_Array1OfMultiPointConstraint;
 
-
 #endif

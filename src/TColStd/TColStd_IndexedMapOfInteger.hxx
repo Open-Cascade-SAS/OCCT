@@ -20,5 +20,4 @@
 
 typedef NCollection_IndexedMap<Standard_Integer> TColStd_IndexedMapOfInteger;
 
-
 #endif

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<HLRBRep_FaceData> HLRBRep_Array1OfFData;
 
-
 #endif

@@ -20,7 +20,7 @@
 #include <StepAP214_AutoDesignDateAndPersonItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> StepAP214_Array1OfAutoDesignDateAndPersonItem;
-
+typedef NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem>
+  StepAP214_Array1OfAutoDesignDateAndPersonItem;
 
 #endif

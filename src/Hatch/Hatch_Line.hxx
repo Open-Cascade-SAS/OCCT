@@ -25,7 +25,6 @@
 #include <Hatch_LineForm.hxx>
 #include <Hatch_SequenceOfParameter.hxx>
 
-
 //! Stores a Line in the Hatcher. Represented by :
 //!
 //! * A Lin2d from gp, the geometry of the line.
@@ -34,45 +33,29 @@
 //!
 //! * A sorted List  of Parameters, the  intersections
 //! on the line.
-class Hatch_Line 
+class Hatch_Line
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Hatch_Line();
-  
+
   Standard_EXPORT Hatch_Line(const gp_Lin2d& L, const Hatch_LineForm T);
-  
+
   //! Insert a new intersection in the sorted list.
-  Standard_EXPORT void AddIntersection (const Standard_Real Par1, const Standard_Boolean Start, const Standard_Integer Index, const Standard_Real Par2, const Standard_Real theToler);
+  Standard_EXPORT void AddIntersection(const Standard_Real    Par1,
+                                       const Standard_Boolean Start,
+                                       const Standard_Integer Index,
+                                       const Standard_Real    Par2,
+                                       const Standard_Real    theToler);
 
-
-friend class Hatch_Hatcher;
-
+  friend class Hatch_Hatcher;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Lin2d myLin;
-  Hatch_LineForm myForm;
+  gp_Lin2d                  myLin;
+  Hatch_LineForm            myForm;
   Hatch_SequenceOfParameter myInters;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Hatch_Line_HeaderFile

@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepVisual_DraughtingPreDefinedColour.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedColour,StepVisual_PreDefinedColour)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedColour, StepVisual_PreDefinedColour)
 
-StepVisual_DraughtingPreDefinedColour::StepVisual_DraughtingPreDefinedColour ()  {}
-
+StepVisual_DraughtingPreDefinedColour::StepVisual_DraughtingPreDefinedColour() {}

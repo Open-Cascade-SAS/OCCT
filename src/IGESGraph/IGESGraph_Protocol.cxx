@@ -34,8 +34,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Protocol, IGESData_Protocol)
 
-IGESGraph_Protocol::IGESGraph_Protocol()
-{}
+IGESGraph_Protocol::IGESGraph_Protocol() {}
 
 Standard_Integer IGESGraph_Protocol::NbResources() const
 {

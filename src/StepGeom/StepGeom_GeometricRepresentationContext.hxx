@@ -24,48 +24,30 @@
 #include <StepRepr_RepresentationContext.hxx>
 class TCollection_HAsciiString;
 
-
 class StepGeom_GeometricRepresentationContext;
 DEFINE_STANDARD_HANDLE(StepGeom_GeometricRepresentationContext, StepRepr_RepresentationContext)
-
 
 class StepGeom_GeometricRepresentationContext : public StepRepr_RepresentationContext
 {
 
 public:
-
-  
   //! Returns a GeometricRepresentationContext
   Standard_EXPORT StepGeom_GeometricRepresentationContext();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension);
-  
-  Standard_EXPORT void SetCoordinateSpaceDimension (const Standard_Integer aCoordinateSpaceDimension);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aContextIdentifier,
+                            const Handle(TCollection_HAsciiString)& aContextType,
+                            const Standard_Integer                  aCoordinateSpaceDimension);
+
+  Standard_EXPORT void SetCoordinateSpaceDimension(
+    const Standard_Integer aCoordinateSpaceDimension);
+
   Standard_EXPORT Standard_Integer CoordinateSpaceDimension() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext, StepRepr_RepresentationContext)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer coordinateSpaceDimension;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_GeometricRepresentationContext_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ItemContextProperties_H
 #define VInspector_ItemContextProperties_H
@@ -23,7 +23,8 @@
 #include <TCollection_AsciiString.hxx>
 
 class VInspector_ItemContextProperties;
-typedef QExplicitlySharedDataPointer<VInspector_ItemContextProperties> VInspector_ItemContextPropertiesPtr;
+typedef QExplicitlySharedDataPointer<VInspector_ItemContextProperties>
+  VInspector_ItemContextPropertiesPtr;
 
 //! \class VInspector_ItemContextProperties
 //! Item presents additional level of information in the tree model.
@@ -31,10 +32,14 @@ typedef QExplicitlySharedDataPointer<VInspector_ItemContextProperties> VInspecto
 class VInspector_ItemContextProperties : public VInspector_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static VInspector_ItemContextPropertiesPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return VInspector_ItemContextPropertiesPtr (new VInspector_ItemContextProperties (theParent, theRow, theColumn)); }
+  static VInspector_ItemContextPropertiesPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                                        const int             theRow,
+                                                        const int             theColumn)
+  {
+    return VInspector_ItemContextPropertiesPtr(
+      new VInspector_ItemContextProperties(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~VInspector_ItemContextProperties() Standard_OVERRIDE {};
@@ -50,21 +55,23 @@ protected:
   //! Returns item information for the given role. Fills internal container if it was not filled yet
   //! \param theItemRole a value role
   //! \return the value
-  virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Creates a child item in the given position.
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! param theParent a parent item
-  VInspector_ItemContextProperties (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    : VInspector_ItemBase (theParent, theRow, theColumn) {}
-
+  VInspector_ItemContextProperties(TreeModel_ItemBasePtr theParent,
+                                   const int             theRow,
+                                   const int             theColumn)
+      : VInspector_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 };
 
 #endif

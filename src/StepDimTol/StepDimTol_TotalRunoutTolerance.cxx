@@ -17,12 +17,11 @@
 
 #include <StepDimTol_TotalRunoutTolerance.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_TotalRunoutTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_TotalRunoutTolerance,
+                           StepDimTol_GeometricToleranceWithDatumReference)
 
 //=======================================================================
-//function : StepDimTol_TotalRunoutTolerance
-//purpose  : 
+// function : StepDimTol_TotalRunoutTolerance
+// purpose  :
 //=======================================================================
-StepDimTol_TotalRunoutTolerance::StepDimTol_TotalRunoutTolerance ()
-{
-}
+StepDimTol_TotalRunoutTolerance::StepDimTol_TotalRunoutTolerance() {}

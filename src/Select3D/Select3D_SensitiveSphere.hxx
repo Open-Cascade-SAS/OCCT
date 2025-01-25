@@ -23,21 +23,20 @@ class Select3D_SensitiveSphere : public Select3D_SensitiveEntity
 {
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSphere, Select3D_SensitiveEntity)
 public:
-
   //! Constructs a sensitive sphere object defined by the owner theOwnerId,
   //! the center of the sphere and it's radius.
-  Standard_EXPORT Select3D_SensitiveSphere (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                            const gp_Pnt& theCenter,
-                                            const Standard_Real theRadius);
+  Standard_EXPORT Select3D_SensitiveSphere(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                           const gp_Pnt&                        theCenter,
+                                           const Standard_Real                  theRadius);
 
   //! Returns the radius of the sphere
   Standard_Real Radius() const { return myRadius; }
 
 public:
-
   //! Checks whether the sphere overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns the copy of this
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
@@ -61,7 +60,7 @@ public:
   //! Invalidate the position of detected point on the sphere.
   void ResetLastDetectedPoint()
   {
-    myLastDetectedPoint = gp_Pnt (RealLast(), RealLast(), RealLast());
+    myLastDetectedPoint = gp_Pnt(RealLast(), RealLast(), RealLast());
   }
 
 protected:

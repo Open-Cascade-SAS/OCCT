@@ -19,6 +19,7 @@
 #include <NCollection_Sequence.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 
-typedef NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> XCAFDimTolObjects_GeomToleranceModifiersSequence;
+typedef NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>
+  XCAFDimTolObjects_GeomToleranceModifiersSequence;
 
 #endif

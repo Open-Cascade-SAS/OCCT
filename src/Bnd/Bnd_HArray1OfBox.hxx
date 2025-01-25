@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(Bnd_HArray1OfBox, Bnd_Array1OfBox)
 
-
 #endif

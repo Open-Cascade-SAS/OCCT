@@ -23,18 +23,14 @@
 class BinMDF_ADriverTable;
 class Message_Messenger;
 
-
-
-class BinMXCAFDoc 
+class BinMXCAFDoc
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& theMsgDrv);
-
+  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                                         const Handle(Message_Messenger)&   theMsgDrv);
 };
 
 #endif // _BinMXCAFDoc_HeaderFile

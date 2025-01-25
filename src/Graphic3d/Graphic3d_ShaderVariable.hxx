@@ -30,55 +30,66 @@ struct Graphic3d_ValueInterface
   virtual Standard_Size TypeID() const = 0;
 
   //! Returns variable value casted to specified type.
-  template <class T> T& As();
+  template <class T>
+  T& As();
 
   //! Returns variable value casted to specified type.
-  template <class T> const T& As() const;
+  template <class T>
+  const T& As() const;
 };
 
 //! Generates unique type identifier for variable value.
-template<class T>
-struct Graphic3d_UniformValueTypeID {
+template <class T>
+struct Graphic3d_UniformValueTypeID
+{
   /* Not implemented */
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Standard_Integer> {
+template <>
+struct Graphic3d_UniformValueTypeID<Standard_Integer>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Standard_ShortReal> {
+template <>
+struct Graphic3d_UniformValueTypeID<Standard_ShortReal>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec2> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec2>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec3> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec3>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec4> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec4>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec2i> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec2i>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec3i> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec3i>
+{
   static const Standard_Size ID = __LINE__;
 };
 
-template<>
-struct Graphic3d_UniformValueTypeID<Graphic3d_Vec4i> {
+template <>
+struct Graphic3d_UniformValueTypeID<Graphic3d_Vec4i>
+{
   static const Standard_Size ID = __LINE__;
 };
 
@@ -87,7 +98,10 @@ template <class T>
 struct Graphic3d_UniformValue : public Graphic3d_ValueInterface
 {
   //! Creates new variable value.
-  Graphic3d_UniformValue (const T& theValue) : Value (theValue) { }
+  Graphic3d_UniformValue(const T& theValue)
+      : Value(theValue)
+  {
+  }
 
   //! Returns unique identifier of value type.
   virtual Standard_Size TypeID() const;
@@ -124,10 +138,9 @@ typedef Graphic3d_UniformValue<Graphic3d_Vec4> Graphic3d_UniformVec4;
 class Graphic3d_ShaderVariable : public Standard_Transient
 {
 public:
-
   //! Releases resources of shader variable.
   Standard_EXPORT virtual ~Graphic3d_ShaderVariable();
-  
+
   //! Returns name of shader variable.
   Standard_EXPORT const TCollection_AsciiString& Name() const;
 
@@ -138,21 +151,18 @@ public:
   Standard_EXPORT Graphic3d_ValueInterface* Value();
 
   //! Creates new initialized shader variable.
-  template<class T>
-  static Graphic3d_ShaderVariable* Create (const TCollection_AsciiString& theName,
-                                           const T&                       theValue);
+  template <class T>
+  static Graphic3d_ShaderVariable* Create(const TCollection_AsciiString& theName,
+                                          const T&                       theValue);
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderVariable,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderVariable, Standard_Transient)
 
 protected:
-
   //! Creates new uninitialized shader variable.
-  Standard_EXPORT Graphic3d_ShaderVariable (const TCollection_AsciiString& theName);
+  Standard_EXPORT Graphic3d_ShaderVariable(const TCollection_AsciiString& theName);
 
 protected:
-
   //! The name of uniform shader variable.
   TCollection_AsciiString myName;
 
@@ -160,7 +170,7 @@ protected:
   Graphic3d_ValueInterface* myValue;
 };
 
-DEFINE_STANDARD_HANDLE (Graphic3d_ShaderVariable, Standard_Transient)
+DEFINE_STANDARD_HANDLE(Graphic3d_ShaderVariable, Standard_Transient)
 
 #include <Graphic3d_ShaderVariable.lxx>
 

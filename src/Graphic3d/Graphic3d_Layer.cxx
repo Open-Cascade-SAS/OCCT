@@ -22,14 +22,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 // function : Graphic3d_Layer
 // purpose  :
 // =======================================================================
-Graphic3d_Layer::Graphic3d_Layer (Graphic3d_ZLayerId theId,
-                                  const Handle(BVH_Builder3d)& theBuilder)
-: myNbStructures              (0),
-  myNbStructuresNotCulled     (0),
-  myLayerId                   (theId),
-  myBVHPrimitivesTrsfPers     (theBuilder),
-  myBVHIsLeftChildQueuedFirst (Standard_True),
-  myIsBVHPrimitivesNeedsReset (Standard_False)
+Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId theId, const Handle(BVH_Builder3d)& theBuilder)
+    : myNbStructures(0),
+      myNbStructuresNotCulled(0),
+      myLayerId(theId),
+      myBVHPrimitivesTrsfPers(theBuilder),
+      myBVHIsLeftChildQueuedFirst(Standard_True),
+      myIsBVHPrimitivesNeedsReset(Standard_False)
 {
   myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
 }
@@ -47,34 +46,35 @@ Graphic3d_Layer::~Graphic3d_Layer()
 // function : Add
 // purpose  :
 // =======================================================================
-void Graphic3d_Layer::Add (const Graphic3d_CStructure* theStruct,
-                           Graphic3d_DisplayPriority thePriority,
-                           Standard_Boolean isForChangePriority)
+void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
+                          Graphic3d_DisplayPriority   thePriority,
+                          Standard_Boolean            isForChangePriority)
 {
-  const Standard_Integer anIndex = Min (Max (thePriority, Graphic3d_DisplayPriority_Bottom), Graphic3d_DisplayPriority_Topmost);
+  const Standard_Integer anIndex =
+    Min(Max(thePriority, Graphic3d_DisplayPriority_Bottom), Graphic3d_DisplayPriority_Topmost);
   if (theStruct == NULL)
   {
     return;
   }
 
-  myArray[anIndex].Add (theStruct);
+  myArray[anIndex].Add(theStruct);
   if (theStruct->IsAlwaysRendered())
   {
     theStruct->MarkAsNotCulled();
     if (!isForChangePriority)
     {
-      myAlwaysRenderedMap.Add (theStruct);
+      myAlwaysRenderedMap.Add(theStruct);
     }
   }
   else if (!isForChangePriority)
   {
     if (theStruct->TransformPersistence().IsNull())
     {
-      myBVHPrimitives.Add (theStruct);
+      myBVHPrimitives.Add(theStruct);
     }
     else
     {
-      myBVHPrimitivesTrsfPers.Add (theStruct);
+      myBVHPrimitivesTrsfPers.Add(theStruct);
     }
   }
   ++myNbStructures;
@@ -84,9 +84,9 @@ void Graphic3d_Layer::Add (const Graphic3d_CStructure* theStruct,
 // function : Remove
 // purpose  :
 // =======================================================================
-bool Graphic3d_Layer::Remove (const Graphic3d_CStructure* theStruct,
-                              Graphic3d_DisplayPriority& thePriority,
-                              Standard_Boolean isForChangePriority)
+bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
+                             Graphic3d_DisplayPriority&  thePriority,
+                             Standard_Boolean            isForChangePriority)
 {
   if (theStruct == NULL)
   {
@@ -94,16 +94,18 @@ bool Graphic3d_Layer::Remove (const Graphic3d_CStructure* theStruct,
     return false;
   }
 
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom; aPriorityIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorityIter)
+  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorityIter)
   {
     Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorityIter];
-    const Standard_Integer anIndex = aStructures.FindIndex (theStruct);
+    const Standard_Integer           anIndex     = aStructures.FindIndex(theStruct);
     if (anIndex == 0)
     {
       continue;
     }
 
-    aStructures.Swap (anIndex, aStructures.Size());
+    aStructures.Swap(anIndex, aStructures.Size());
     aStructures.RemoveLast();
 
     if (!isForChangePriority)
@@ -111,9 +113,9 @@ bool Graphic3d_Layer::Remove (const Graphic3d_CStructure* theStruct,
       Standard_Boolean isAlwaysRend = theStruct->IsAlwaysRendered();
       if (!isAlwaysRend)
       {
-        if (!myBVHPrimitives.Remove (theStruct))
+        if (!myBVHPrimitives.Remove(theStruct))
         {
-          if (!myBVHPrimitivesTrsfPers.Remove (theStruct))
+          if (!myBVHPrimitivesTrsfPers.Remove(theStruct))
           {
             isAlwaysRend = Standard_True;
           }
@@ -121,16 +123,16 @@ bool Graphic3d_Layer::Remove (const Graphic3d_CStructure* theStruct,
       }
       if (isAlwaysRend)
       {
-        const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex (theStruct);
+        const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex(theStruct);
         if (anIndex2 != 0)
         {
-          myAlwaysRenderedMap.Swap (myAlwaysRenderedMap.Size(), anIndex2);
+          myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Size(), anIndex2);
           myAlwaysRenderedMap.RemoveLast();
         }
       }
     }
     --myNbStructures;
-    thePriority = (Graphic3d_DisplayPriority )aPriorityIter;
+    thePriority = (Graphic3d_DisplayPriority)aPriorityIter;
     return true;
   }
 
@@ -148,35 +150,34 @@ void Graphic3d_Layer::InvalidateBVHData()
 }
 
 //! Calculate a finite bounding box of infinite object as its middle point.
-inline Graphic3d_BndBox3d centerOfinfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
+inline Graphic3d_BndBox3d centerOfinfiniteBndBox(const Graphic3d_BndBox3d& theBndBox)
 {
   // bounding borders of infinite line has been calculated as own point in center of this line
   const Graphic3d_Vec3d aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
   return aDiagVec.SquareModulus() >= 500000.0 * 500000.0
-       ? Graphic3d_BndBox3d ((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5)
-       : Graphic3d_BndBox3d();
+           ? Graphic3d_BndBox3d((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5)
+           : Graphic3d_BndBox3d();
 }
 
 //! Return true if at least one vertex coordinate out of float range.
-inline bool isInfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
+inline bool isInfiniteBndBox(const Graphic3d_BndBox3d& theBndBox)
 {
-  return Abs (theBndBox.CornerMax().x()) >= ShortRealLast()
-      || Abs (theBndBox.CornerMax().y()) >= ShortRealLast()
-      || Abs (theBndBox.CornerMax().z()) >= ShortRealLast()
-      || Abs (theBndBox.CornerMin().x()) >= ShortRealLast()
-      || Abs (theBndBox.CornerMin().y()) >= ShortRealLast()
-      || Abs (theBndBox.CornerMin().z()) >= ShortRealLast();
+  return Abs(theBndBox.CornerMax().x()) >= ShortRealLast()
+         || Abs(theBndBox.CornerMax().y()) >= ShortRealLast()
+         || Abs(theBndBox.CornerMax().z()) >= ShortRealLast()
+         || Abs(theBndBox.CornerMin().x()) >= ShortRealLast()
+         || Abs(theBndBox.CornerMin().y()) >= ShortRealLast()
+         || Abs(theBndBox.CornerMin().z()) >= ShortRealLast();
 }
 
 //! Extend bounding box with another box.
-static void addBox3dToBndBox (Bnd_Box& theResBox,
-                              const Graphic3d_BndBox3d& theBox)
+static void addBox3dToBndBox(Bnd_Box& theResBox, const Graphic3d_BndBox3d& theBox)
 {
   // skip too big boxes to prevent float overflow at camera parameters calculation
-  if (theBox.IsValid() && !isInfiniteBndBox (theBox))
+  if (theBox.IsValid() && !isInfiniteBndBox(theBox))
   {
-    theResBox.Add (gp_Pnt (theBox.CornerMin().x(), theBox.CornerMin().y(), theBox.CornerMin().z()));
-    theResBox.Add (gp_Pnt (theBox.CornerMax().x(), theBox.CornerMax().y(), theBox.CornerMax().z()));
+    theResBox.Add(gp_Pnt(theBox.CornerMin().x(), theBox.CornerMin().y(), theBox.CornerMin().z()));
+    theResBox.Add(gp_Pnt(theBox.CornerMax().x(), theBox.CornerMax().y(), theBox.CornerMax().z()));
   }
 }
 
@@ -184,15 +185,15 @@ static void addBox3dToBndBox (Bnd_Box& theResBox,
 // function : BoundingBox
 // purpose  :
 // =======================================================================
-Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
-                                      const Handle(Graphic3d_Camera)& theCamera,
-                                      Standard_Integer theWindowWidth,
-                                      Standard_Integer theWindowHeight,
-                                      Standard_Boolean theToIncludeAuxiliary) const
+Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
+                                     const Handle(Graphic3d_Camera)& theCamera,
+                                     Standard_Integer                theWindowWidth,
+                                     Standard_Integer                theWindowHeight,
+                                     Standard_Boolean                theToIncludeAuxiliary) const
 {
   updateBVH();
 
-  const Standard_Integer aBoxId = !theToIncludeAuxiliary ? 0 : 1;
+  const Standard_Integer aBoxId         = !theToIncludeAuxiliary ? 0 : 1;
   const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
   const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
   if (myIsBoundingBoxNeedsReset[aBoxId])
@@ -200,49 +201,52 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
     // Recompute layer bounding box
     myBoundingBox[aBoxId].SetVoid();
 
-    for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom; aPriorIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorIter)
+    for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+         aPriorIter <= Graphic3d_DisplayPriority_Topmost;
+         ++aPriorIter)
     {
       const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-      for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+      for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+           aStructIter.Next())
       {
         const Graphic3d_CStructure* aStructure = aStructIter.Value();
-        if (!aStructure->IsVisible (theViewId))
+        if (!aStructure->IsVisible(theViewId))
         {
           continue;
         }
 
         // "FitAll" operation ignores object with transform persistence parameter
-        // but adds transform persistence point in a bounding box of layer (only zoom pers. objects).
+        // but adds transform persistence point in a bounding box of layer (only zoom pers.
+        // objects).
         if (!aStructure->TransformPersistence().IsNull())
         {
-          if (!theToIncludeAuxiliary
-            && aStructure->TransformPersistence()->IsZoomOrRotate())
+          if (!theToIncludeAuxiliary && aStructure->TransformPersistence()->IsZoomOrRotate())
           {
             const gp_Pnt anAnchor = aStructure->TransformPersistence()->AnchorPoint();
-            myBoundingBox[aBoxId].Add (anAnchor);
+            myBoundingBox[aBoxId].Add(anAnchor);
             continue;
           }
-          // Panning and 2d persistence apply changes to projection or/and its translation components.
-          // It makes them incompatible with z-fitting algorithm. Ignored by now.
-          else if (!theToIncludeAuxiliary
-                 || aStructure->TransformPersistence()->IsTrihedronOr2d())
+          // Panning and 2d persistence apply changes to projection or/and its translation
+          // components. It makes them incompatible with z-fitting algorithm. Ignored by now.
+          else if (!theToIncludeAuxiliary || aStructure->TransformPersistence()->IsTrihedronOr2d())
           {
             continue;
           }
         }
 
-        if (!theToIncludeAuxiliary
-          && aStructure->HasGroupTransformPersistence())
+        if (!theToIncludeAuxiliary && aStructure->HasGroupTransformPersistence())
         {
           // add per-group transform-persistence point in a bounding box
-          for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
+          for (Graphic3d_SequenceOfGroup::Iterator aGroupIter(aStructure->Groups());
+               aGroupIter.More();
+               aGroupIter.Next())
           {
             const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
             if (!aGroup->TransformPersistence().IsNull()
-              && aGroup->TransformPersistence()->IsZoomOrRotate())
+                && aGroup->TransformPersistence()->IsZoomOrRotate())
             {
               const gp_Pnt anAnchor = aGroup->TransformPersistence()->AnchorPoint();
-              myBoundingBox[aBoxId].Add (anAnchor);
+              myBoundingBox[aBoxId].Add(anAnchor);
             }
           }
         }
@@ -253,18 +257,22 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
           continue;
         }
 
-        if (aStructure->IsInfinite
-        && !theToIncludeAuxiliary)
+        if (aStructure->IsInfinite && !theToIncludeAuxiliary)
         {
           // include center of infinite object
-          aBox = centerOfinfiniteBndBox (aBox);
+          aBox = centerOfinfiniteBndBox(aBox);
         }
 
         if (!aStructure->TransformPersistence().IsNull())
         {
-          aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
+          aStructure->TransformPersistence()->Apply(theCamera,
+                                                    aProjectionMat,
+                                                    aWorldViewMat,
+                                                    theWindowWidth,
+                                                    theWindowHeight,
+                                                    aBox);
         }
-        addBox3dToBndBox (myBoundingBox[aBoxId], aBox);
+        addBox3dToBndBox(myBoundingBox[aBoxId], aBox);
       }
     }
 
@@ -272,17 +280,20 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
   }
 
   Bnd_Box aResBox = myBoundingBox[aBoxId];
-  if (!theToIncludeAuxiliary
-    || myAlwaysRenderedMap.IsEmpty())
+  if (!theToIncludeAuxiliary || myAlwaysRenderedMap.IsEmpty())
   {
     return aResBox;
   }
 
-  // add transformation-persistent objects which depend on camera position (and thus can not be cached) for operations like Z-fit
-  for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter (myAlwaysRenderedMap); aStructIter.More(); aStructIter.Next())
+  // add transformation-persistent objects which depend on camera position (and thus can not be
+  // cached) for operations like Z-fit
+  for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(
+         myAlwaysRenderedMap);
+       aStructIter.More();
+       aStructIter.Next())
   {
     const Graphic3d_CStructure* aStructure = aStructIter.Value();
-    if (!aStructure->IsVisible (theViewId))
+    if (!aStructure->IsVisible(theViewId))
     {
       continue;
     }
@@ -290,34 +301,39 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
     // handle per-group transformation persistence specifically
     if (aStructure->HasGroupTransformPersistence())
     {
-      for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
+      for (Graphic3d_SequenceOfGroup::Iterator aGroupIter(aStructure->Groups()); aGroupIter.More();
+           aGroupIter.Next())
       {
         const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
-        const Graphic3d_BndBox4f& aBoxF = aGroup->BoundingBox();
-        if (aGroup->TransformPersistence().IsNull()
-        || !aBoxF.IsValid())
+        const Graphic3d_BndBox4f&      aBoxF  = aGroup->BoundingBox();
+        if (aGroup->TransformPersistence().IsNull() || !aBoxF.IsValid())
         {
           continue;
         }
 
-        Graphic3d_BndBox3d aBoxCopy (Graphic3d_Vec3d (aBoxF.CornerMin().xyz()),
-                                     Graphic3d_Vec3d (aBoxF.CornerMax().xyz()));
-        aGroup->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBoxCopy);
-        addBox3dToBndBox (aResBox, aBoxCopy);
+        Graphic3d_BndBox3d aBoxCopy(Graphic3d_Vec3d(aBoxF.CornerMin().xyz()),
+                                    Graphic3d_Vec3d(aBoxF.CornerMax().xyz()));
+        aGroup->TransformPersistence()->Apply(theCamera,
+                                              aProjectionMat,
+                                              aWorldViewMat,
+                                              theWindowWidth,
+                                              theWindowHeight,
+                                              aBoxCopy);
+        addBox3dToBndBox(aResBox, aBoxCopy);
       }
     }
 
     const Graphic3d_BndBox3d& aStructBox = aStructure->BoundingBox();
-    if (!aStructBox.IsValid()
-     ||  aStructure->TransformPersistence().IsNull()
-     || !aStructure->TransformPersistence()->IsTrihedronOr2d())
+    if (!aStructBox.IsValid() || aStructure->TransformPersistence().IsNull()
+        || !aStructure->TransformPersistence()->IsTrihedronOr2d())
     {
       continue;
     }
 
     Graphic3d_BndBox3d aBoxCopy = aStructBox;
-    aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBoxCopy);
-    addBox3dToBndBox (aResBox, aBoxCopy);
+    aStructure->TransformPersistence()
+      ->Apply(theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBoxCopy);
+    addBox3dToBndBox(aResBox, aBoxCopy);
   }
 
   return aResBox;
@@ -327,10 +343,11 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
 // function : considerZoomPersistenceObjects
 // purpose  :
 // =======================================================================
-Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer theViewId,
-                                                               const Handle(Graphic3d_Camera)& theCamera,
-                                                               Standard_Integer theWindowWidth,
-                                                               Standard_Integer theWindowHeight) const
+Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
+  Standard_Integer                theViewId,
+  const Handle(Graphic3d_Camera)& theCamera,
+  Standard_Integer                theWindowWidth,
+  Standard_Integer                theWindowHeight) const
 {
   if (NbOfTransformPersistenceObjects() == 0)
   {
@@ -341,15 +358,17 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer 
   const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
   Standard_Real          aMaxCoef       = -std::numeric_limits<double>::max();
 
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom; aPriorIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorIter)
+  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorIter)
   {
     const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+         aStructIter.Next())
     {
       const Graphic3d_CStructure* aStructure = aStructIter.Value();
-      if (!aStructure->IsVisible (theViewId)
-       ||  aStructure->TransformPersistence().IsNull()
-       || !aStructure->TransformPersistence()->IsZoomOrRotate())
+      if (!aStructure->IsVisible(theViewId) || aStructure->TransformPersistence().IsNull()
+          || !aStructure->TransformPersistence()->IsZoomOrRotate())
       {
         continue;
       }
@@ -360,51 +379,54 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer 
         continue;
       }
 
-      aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
+      aStructure->TransformPersistence()
+        ->Apply(theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
 
-      const BVH_Vec3d&       aCornerMin           = aBox.CornerMin();
-      const BVH_Vec3d&       aCornerMax           = aBox.CornerMax();
-      const Standard_Integer aNbOfPoints          = 8;
-      const gp_Pnt           aPoints[aNbOfPoints] = { gp_Pnt (aCornerMin.x(), aCornerMin.y(), aCornerMin.z()),
-                                                      gp_Pnt (aCornerMin.x(), aCornerMin.y(), aCornerMax.z()),
-                                                      gp_Pnt (aCornerMin.x(), aCornerMax.y(), aCornerMin.z()),
-                                                      gp_Pnt (aCornerMin.x(), aCornerMax.y(), aCornerMax.z()),
-                                                      gp_Pnt (aCornerMax.x(), aCornerMin.y(), aCornerMin.z()),
-                                                      gp_Pnt (aCornerMax.x(), aCornerMin.y(), aCornerMax.z()),
-                                                      gp_Pnt (aCornerMax.x(), aCornerMax.y(), aCornerMin.z()),
-                                                      gp_Pnt (aCornerMax.x(), aCornerMax.y(), aCornerMax.z()) };
-      gp_Pnt aConvertedPoints[aNbOfPoints];
-      Standard_Real aConvertedMinX =  std::numeric_limits<double>::max();
+      const BVH_Vec3d&       aCornerMin  = aBox.CornerMin();
+      const BVH_Vec3d&       aCornerMax  = aBox.CornerMax();
+      const Standard_Integer aNbOfPoints = 8;
+      const gp_Pnt  aPoints[aNbOfPoints] = {gp_Pnt(aCornerMin.x(), aCornerMin.y(), aCornerMin.z()),
+                                            gp_Pnt(aCornerMin.x(), aCornerMin.y(), aCornerMax.z()),
+                                            gp_Pnt(aCornerMin.x(), aCornerMax.y(), aCornerMin.z()),
+                                            gp_Pnt(aCornerMin.x(), aCornerMax.y(), aCornerMax.z()),
+                                            gp_Pnt(aCornerMax.x(), aCornerMin.y(), aCornerMin.z()),
+                                            gp_Pnt(aCornerMax.x(), aCornerMin.y(), aCornerMax.z()),
+                                            gp_Pnt(aCornerMax.x(), aCornerMax.y(), aCornerMin.z()),
+                                            gp_Pnt(aCornerMax.x(), aCornerMax.y(), aCornerMax.z())};
+      gp_Pnt        aConvertedPoints[aNbOfPoints];
+      Standard_Real aConvertedMinX = std::numeric_limits<double>::max();
       Standard_Real aConvertedMaxX = -std::numeric_limits<double>::max();
-      Standard_Real aConvertedMinY =  std::numeric_limits<double>::max();
+      Standard_Real aConvertedMinY = std::numeric_limits<double>::max();
       Standard_Real aConvertedMaxY = -std::numeric_limits<double>::max();
       for (Standard_Integer anIdx = 0; anIdx < aNbOfPoints; ++anIdx)
       {
-        aConvertedPoints[anIdx] = theCamera->Project (aPoints[anIdx]);
+        aConvertedPoints[anIdx] = theCamera->Project(aPoints[anIdx]);
 
-        aConvertedMinX          = Min (aConvertedMinX, aConvertedPoints[anIdx].X());
-        aConvertedMaxX          = Max (aConvertedMaxX, aConvertedPoints[anIdx].X());
+        aConvertedMinX = Min(aConvertedMinX, aConvertedPoints[anIdx].X());
+        aConvertedMaxX = Max(aConvertedMaxX, aConvertedPoints[anIdx].X());
 
-        aConvertedMinY          = Min (aConvertedMinY, aConvertedPoints[anIdx].Y());
-        aConvertedMaxY          = Max (aConvertedMaxY, aConvertedPoints[anIdx].Y());
+        aConvertedMinY = Min(aConvertedMinY, aConvertedPoints[anIdx].Y());
+        aConvertedMaxY = Max(aConvertedMaxY, aConvertedPoints[anIdx].Y());
       }
 
-      const Standard_Boolean isBigObject  = (Abs (aConvertedMaxX - aConvertedMinX) > 2.0)  // width  of zoom pers. object greater than width  of window
-// clang-format off
+      const Standard_Boolean isBigObject =
+        (Abs(aConvertedMaxX - aConvertedMinX)
+         > 2.0) // width  of zoom pers. object greater than width  of window
+                // clang-format off
                                          || (Abs (aConvertedMaxY - aConvertedMinY) > 2.0); // height of zoom pers. object greater than height of window
-// clang-format on
+                // clang-format on
       const Standard_Boolean isAlreadyInScreen = (aConvertedMinX > -1.0 && aConvertedMinX < 1.0)
-                                              && (aConvertedMaxX > -1.0 && aConvertedMaxX < 1.0)
-                                              && (aConvertedMinY > -1.0 && aConvertedMinY < 1.0)
-                                              && (aConvertedMaxY > -1.0 && aConvertedMaxY < 1.0);
+                                                 && (aConvertedMaxX > -1.0 && aConvertedMaxX < 1.0)
+                                                 && (aConvertedMinY > -1.0 && aConvertedMinY < 1.0)
+                                                 && (aConvertedMaxY > -1.0 && aConvertedMaxY < 1.0);
       if (isBigObject || isAlreadyInScreen)
       {
         continue;
       }
 
-      const gp_Pnt aTPPoint = aStructure->TransformPersistence()->AnchorPoint();
-      gp_Pnt aConvertedTPPoint = theCamera->Project (aTPPoint);
-      aConvertedTPPoint.SetZ (0.0);
+      const gp_Pnt aTPPoint          = aStructure->TransformPersistence()->AnchorPoint();
+      gp_Pnt       aConvertedTPPoint = theCamera->Project(aTPPoint);
+      aConvertedTPPoint.SetZ(0.0);
 
       if (aConvertedTPPoint.Coord().Modulus() < Precision::Confusion())
       {
@@ -414,32 +436,40 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer 
       Standard_Real aShiftX = 0.0;
       if (aConvertedMinX < -1.0)
       {
-        aShiftX = ((aConvertedMaxX < -1.0) ? (-(1.0 + aConvertedMaxX) + (aConvertedMaxX - aConvertedMinX)) : -(1.0 + aConvertedMinX));
+        aShiftX =
+          ((aConvertedMaxX < -1.0) ? (-(1.0 + aConvertedMaxX) + (aConvertedMaxX - aConvertedMinX))
+                                   : -(1.0 + aConvertedMinX));
       }
       else if (aConvertedMaxX > 1.0)
       {
-        aShiftX = ((aConvertedMinX > 1.0) ? ((aConvertedMinX - 1.0) + (aConvertedMaxX - aConvertedMinX)) : (aConvertedMaxX - 1.0));
+        aShiftX =
+          ((aConvertedMinX > 1.0) ? ((aConvertedMinX - 1.0) + (aConvertedMaxX - aConvertedMinX))
+                                  : (aConvertedMaxX - 1.0));
       }
 
       Standard_Real aShiftY = 0.0;
       if (aConvertedMinY < -1.0)
       {
-        aShiftY = ((aConvertedMaxY < -1.0) ? (-(1.0 + aConvertedMaxY) + (aConvertedMaxY - aConvertedMinY)) : -(1.0 + aConvertedMinY));
+        aShiftY =
+          ((aConvertedMaxY < -1.0) ? (-(1.0 + aConvertedMaxY) + (aConvertedMaxY - aConvertedMinY))
+                                   : -(1.0 + aConvertedMinY));
       }
       else if (aConvertedMaxY > 1.0)
       {
-        aShiftY = ((aConvertedMinY > 1.0) ? ((aConvertedMinY - 1.0) + (aConvertedMaxY - aConvertedMinY)) : (aConvertedMaxY - 1.0));
+        aShiftY =
+          ((aConvertedMinY > 1.0) ? ((aConvertedMinY - 1.0) + (aConvertedMaxY - aConvertedMinY))
+                                  : (aConvertedMaxY - 1.0));
       }
 
-      const Standard_Real aDifX = Abs (aConvertedTPPoint.X()) - aShiftX;
-      const Standard_Real aDifY = Abs (aConvertedTPPoint.Y()) - aShiftY;
+      const Standard_Real aDifX = Abs(aConvertedTPPoint.X()) - aShiftX;
+      const Standard_Real aDifY = Abs(aConvertedTPPoint.Y()) - aShiftY;
       if (aDifX > Precision::Confusion())
       {
-        aMaxCoef = Max (aMaxCoef, Abs (aConvertedTPPoint.X()) / aDifX);
+        aMaxCoef = Max(aMaxCoef, Abs(aConvertedTPPoint.X()) / aDifX);
       }
       if (aDifY > Precision::Confusion())
       {
-        aMaxCoef = Max (aMaxCoef, Abs (aConvertedTPPoint.Y()) / aDifY);
+        aMaxCoef = Max(aMaxCoef, Abs(aConvertedTPPoint.Y()) / aDifY);
       }
     }
   }
@@ -462,24 +492,27 @@ void Graphic3d_Layer::updateBVH() const
   myBVHPrimitivesTrsfPers.Clear();
   myAlwaysRenderedMap.Clear();
   myIsBVHPrimitivesNeedsReset = Standard_False;
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom; aPriorIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorIter)
+  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorIter)
   {
     const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+         aStructIter.Next())
     {
       const Graphic3d_CStructure* aStruct = aStructIter.Value();
       if (aStruct->IsAlwaysRendered())
       {
         aStruct->MarkAsNotCulled();
-        myAlwaysRenderedMap.Add (aStruct);
+        myAlwaysRenderedMap.Add(aStruct);
       }
       else if (aStruct->TransformPersistence().IsNull())
       {
-        myBVHPrimitives.Add (aStruct);
+        myBVHPrimitives.Add(aStruct);
       }
       else
       {
-        myBVHPrimitivesTrsfPers.Add (aStruct);
+        myBVHPrimitivesTrsfPers.Add(aStruct);
       }
     }
   }
@@ -487,40 +520,50 @@ void Graphic3d_Layer::updateBVH() const
 
 namespace
 {
-  //! This structure describes the node in BVH
-  struct NodeInStack
+//! This structure describes the node in BVH
+struct NodeInStack
+{
+  NodeInStack(Standard_Integer theId = 0, Standard_Boolean theIsFullInside = false)
+      : Id(theId),
+        IsFullInside(theIsFullInside)
   {
-    NodeInStack (Standard_Integer theId = 0,
-                 Standard_Boolean theIsFullInside = false) : Id (theId), IsFullInside (theIsFullInside) {}
+  }
 
-    Standard_Integer Id;           //!< node identifier
-    Standard_Boolean IsFullInside; //!< if the node is completely inside
-  };
-}
+  Standard_Integer Id;           //!< node identifier
+  Standard_Boolean IsFullInside; //!< if the node is completely inside
+};
+} // namespace
 
 // =======================================================================
 // function : UpdateCulling
 // purpose  :
 // =======================================================================
-void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
-                                     const Graphic3d_CullingTool& theSelector,
-                                     const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
+void Graphic3d_Layer::UpdateCulling(
+  Standard_Integer                                theViewId,
+  const Graphic3d_CullingTool&                    theSelector,
+  const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
 {
   updateBVH();
 
   myNbStructuresNotCulled = myNbStructures;
   if (theFrustumCullingState != Graphic3d_RenderingParams::FrustumCulling_NoUpdate)
   {
-    Standard_Boolean toTraverse = (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
+    Standard_Boolean toTraverse =
+      (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(myBVHPrimitives.Structures());
+         aStructIter.More();
+         aStructIter.Next())
     {
       const Graphic3d_CStructure* aStruct = aStructIter.Value();
-      aStruct->SetCulled (toTraverse);
+      aStruct->SetCulled(toTraverse);
     }
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(
+           myBVHPrimitivesTrsfPers.Structures());
+         aStructIter.More();
+         aStructIter.Next())
     {
       const Graphic3d_CStructure* aStruct = aStructIter.Value();
-      aStruct->SetCulled (toTraverse);
+      aStruct->SetCulled(toTraverse);
     }
   }
 
@@ -528,8 +571,7 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
   {
     return;
   }
-  if (myBVHPrimitives        .Size() == 0
-   && myBVHPrimitivesTrsfPers.Size() == 0)
+  if (myBVHPrimitives.Size() == 0 && myBVHPrimitivesTrsfPers.Size() == 0)
   {
     return;
   }
@@ -537,23 +579,28 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
   myNbStructuresNotCulled = myAlwaysRenderedMap.Extent();
   Graphic3d_CullingTool::CullingContext aCullCtx;
   theSelector.SetCullingDistance(aCullCtx, myLayerSettings.CullingDistance());
-  theSelector.SetCullingSize    (aCullCtx, myLayerSettings.CullingSize());
+  theSelector.SetCullingSize(aCullCtx, myLayerSettings.CullingSize());
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
-    const Standard_Boolean isTrsfPers = aBVHTreeIdx == 1;
-    opencascade::handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
+    const Standard_Boolean                          isTrsfPers = aBVHTreeIdx == 1;
+    opencascade::handle<BVH_Tree<Standard_Real, 3>> aBVHTree;
     if (isTrsfPers)
     {
       if (myBVHPrimitivesTrsfPers.Size() == 0)
         continue;
 
-      const Graphic3d_Mat4d& aProjection            = theSelector.ProjectionMatrix();
-      const Graphic3d_Mat4d& aWorldView             = theSelector.WorldViewMatrix();
-      const Graphic3d_WorldViewProjState& aWVPState = theSelector.WorldViewProjState();
-      const Standard_Integer aViewportWidth         = theSelector.ViewportWidth();
-      const Standard_Integer aViewportHeight        = theSelector.ViewportHeight();
+      const Graphic3d_Mat4d&              aProjection     = theSelector.ProjectionMatrix();
+      const Graphic3d_Mat4d&              aWorldView      = theSelector.WorldViewMatrix();
+      const Graphic3d_WorldViewProjState& aWVPState       = theSelector.WorldViewProjState();
+      const Standard_Integer              aViewportWidth  = theSelector.ViewportWidth();
+      const Standard_Integer              aViewportHeight = theSelector.ViewportHeight();
 
-      aBVHTree = myBVHPrimitivesTrsfPers.BVH (theSelector.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
+      aBVHTree = myBVHPrimitivesTrsfPers.BVH(theSelector.Camera(),
+                                             aProjection,
+                                             aWorldView,
+                                             aViewportWidth,
+                                             aViewportHeight,
+                                             aWVPState);
     }
     else
     {
@@ -563,52 +610,63 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
       aBVHTree = myBVHPrimitives.BVH();
     }
 
-    const bool toCheckFullInside = true;
-    NodeInStack aNode (0, toCheckFullInside); // a root node
-    if (theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (0), aBVHTree->MaxPoint (0), toCheckFullInside ? &aNode.IsFullInside : NULL))
+    const bool  toCheckFullInside = true;
+    NodeInStack aNode(0, toCheckFullInside); // a root node
+    if (theSelector.IsCulled(aCullCtx,
+                             aBVHTree->MinPoint(0),
+                             aBVHTree->MaxPoint(0),
+                             toCheckFullInside ? &aNode.IsFullInside : NULL))
     {
       continue;
     }
 
-    NodeInStack aStack[BVH_Constants_MaxTreeDepth];
+    NodeInStack      aStack[BVH_Constants_MaxTreeDepth];
     Standard_Integer aHead = -1;
     for (;;)
     {
-      if (!aBVHTree->IsOuter (aNode.Id))
+      if (!aBVHTree->IsOuter(aNode.Id))
       {
-        NodeInStack aLeft (aBVHTree->Child<0> (aNode.Id), toCheckFullInside);
-        NodeInStack aRight(aBVHTree->Child<1> (aNode.Id), toCheckFullInside);
-        bool isLeftChildIn = true, isRightChildIn = true;
+        NodeInStack aLeft(aBVHTree->Child<0>(aNode.Id), toCheckFullInside);
+        NodeInStack aRight(aBVHTree->Child<1>(aNode.Id), toCheckFullInside);
+        bool        isLeftChildIn = true, isRightChildIn = true;
         if (aNode.IsFullInside)
         {
           // small size should be always checked
-          isLeftChildIn  = !theSelector.IsTooSmall (aCullCtx, aBVHTree->MinPoint (aLeft.Id),  aBVHTree->MaxPoint (aLeft.Id));
-          isRightChildIn = !theSelector.IsTooSmall (aCullCtx, aBVHTree->MinPoint (aRight.Id), aBVHTree->MaxPoint (aRight.Id));
+          isLeftChildIn  = !theSelector.IsTooSmall(aCullCtx,
+                                                  aBVHTree->MinPoint(aLeft.Id),
+                                                  aBVHTree->MaxPoint(aLeft.Id));
+          isRightChildIn = !theSelector.IsTooSmall(aCullCtx,
+                                                   aBVHTree->MinPoint(aRight.Id),
+                                                   aBVHTree->MaxPoint(aRight.Id));
         }
         else
         {
-          isLeftChildIn = !theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (aLeft.Id),  aBVHTree->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
+          isLeftChildIn = !theSelector.IsCulled(aCullCtx,
+                                                aBVHTree->MinPoint(aLeft.Id),
+                                                aBVHTree->MaxPoint(aLeft.Id),
+                                                toCheckFullInside ? &aLeft.IsFullInside : NULL);
           if (!isLeftChildIn)
           {
             aLeft.IsFullInside = false;
           }
 
-          isRightChildIn = !theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (aRight.Id), aBVHTree->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
+          isRightChildIn = !theSelector.IsCulled(aCullCtx,
+                                                 aBVHTree->MinPoint(aRight.Id),
+                                                 aBVHTree->MaxPoint(aRight.Id),
+                                                 toCheckFullInside ? &aRight.IsFullInside : NULL);
           if (!isRightChildIn)
           {
             aRight.IsFullInside = false;
           }
         }
 
-        if (isLeftChildIn
-         && isRightChildIn)
+        if (isLeftChildIn && isRightChildIn)
         {
-          aNode = myBVHIsLeftChildQueuedFirst ? aLeft : aRight;
-          aStack[++aHead] = myBVHIsLeftChildQueuedFirst ? aRight : aLeft;
+          aNode                       = myBVHIsLeftChildQueuedFirst ? aLeft : aRight;
+          aStack[++aHead]             = myBVHIsLeftChildQueuedFirst ? aRight : aLeft;
           myBVHIsLeftChildQueuedFirst = !myBVHIsLeftChildQueuedFirst;
         }
-        else if (isLeftChildIn
-              || isRightChildIn)
+        else if (isLeftChildIn || isRightChildIn)
         {
           aNode = isLeftChildIn ? aLeft : aRight;
         }
@@ -624,14 +682,14 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
       }
       else
       {
-        const Standard_Integer aStartIdx = aBVHTree->BegPrimitive (aNode.Id);
-        const Standard_Integer anEndIdx  = aBVHTree->EndPrimitive (aNode.Id);
+        const Standard_Integer aStartIdx = aBVHTree->BegPrimitive(aNode.Id);
+        const Standard_Integer anEndIdx  = aBVHTree->EndPrimitive(aNode.Id);
         for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
         {
           const Graphic3d_CStructure* aStruct = isTrsfPers
-                                              ? myBVHPrimitivesTrsfPers.GetStructureById (anIdx)
-                                              : myBVHPrimitives.GetStructureById (anIdx);
-          if (aStruct->IsVisible (theViewId))
+                                                  ? myBVHPrimitivesTrsfPers.GetStructureById(anIdx)
+                                                  : myBVHPrimitives.GetStructureById(anIdx);
+          if (aStruct->IsVisible(theViewId))
           {
             aStruct->MarkAsNotCulled();
             ++myNbStructuresNotCulled;
@@ -652,15 +710,18 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
 // function : Append
 // purpose  :
 // =======================================================================
-Standard_Boolean Graphic3d_Layer::Append (const Graphic3d_Layer& theOther)
+Standard_Boolean Graphic3d_Layer::Append(const Graphic3d_Layer& theOther)
 {
   // add all structures to destination priority list
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom; aPriorityIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorityIter)
+  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorityIter)
   {
     const Graphic3d_IndexedMapOfStructure& aStructures = theOther.myArray[aPriorityIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+         aStructIter.Next())
     {
-      Add (aStructIter.Value(), (Graphic3d_DisplayPriority )aPriorityIter);
+      Add(aStructIter.Value(), (Graphic3d_DisplayPriority)aPriorityIter);
     }
   }
 
@@ -668,24 +729,28 @@ Standard_Boolean Graphic3d_Layer::Append (const Graphic3d_Layer& theOther)
 }
 
 //=======================================================================
-//function : SetLayerSettings
-//purpose  :
+// function : SetLayerSettings
+// purpose  :
 //=======================================================================
-void Graphic3d_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings)
+void Graphic3d_Layer::SetLayerSettings(const Graphic3d_ZLayerSettings& theSettings)
 {
-  const Standard_Boolean toUpdateTrsf = !myLayerSettings.Origin().IsEqual (theSettings.Origin(), gp::Resolution());
+  const Standard_Boolean toUpdateTrsf =
+    !myLayerSettings.Origin().IsEqual(theSettings.Origin(), gp::Resolution());
   myLayerSettings = theSettings;
   if (!toUpdateTrsf)
   {
     return;
   }
 
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom; aPriorIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorIter)
+  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorIter)
   {
     Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+         aStructIter.Next())
     {
-      Graphic3d_CStructure* aStructure = const_cast<Graphic3d_CStructure* >(aStructIter.Value());
+      Graphic3d_CStructure* aStructure = const_cast<Graphic3d_CStructure*>(aStructIter.Value());
       aStructure->updateLayerTransformation();
     }
   }
@@ -695,32 +760,35 @@ void Graphic3d_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSetti
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Graphic3d_Layer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_Layer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLayerId)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbStructures)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbStructuresNotCulled)
+  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, this)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLayerId)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNbStructures)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNbStructuresNotCulled)
 
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom; aPriorityIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorityIter)
+  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+       aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
+       ++aPriorityIter)
   {
     const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorityIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+         aStructIter.Next())
     {
       const Graphic3d_CStructure* aStructure = aStructIter.Value();
-      OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aStructure)
+      OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, aStructure)
     }
   }
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLayerSettings)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myLayerSettings)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBVHIsLeftChildQueuedFirst)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBVHPrimitivesNeedsReset)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBoundingBoxNeedsReset[0])
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBoundingBoxNeedsReset[1])
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myBVHIsLeftChildQueuedFirst)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsBVHPrimitivesNeedsReset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsBoundingBoxNeedsReset[0])
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsBoundingBoxNeedsReset[1])
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBoundingBox[0])
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBoundingBox[1])
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBoundingBox[0])
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBoundingBox[1])
 }

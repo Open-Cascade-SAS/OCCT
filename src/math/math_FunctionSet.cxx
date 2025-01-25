@@ -12,20 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <math_FunctionSet.hxx>
 
 //=======================================================================
-//function : ~math_FunctionSet
-//purpose  : Destructor
+// function : ~math_FunctionSet
+// purpose  : Destructor
 //=======================================================================
-math_FunctionSet::~math_FunctionSet()
-{
-}
+math_FunctionSet::~math_FunctionSet() {}
 
 //=======================================================================
-//function : GetStateNumber
-//purpose  : 
+// function : GetStateNumber
+// purpose  :
 //=======================================================================
 Standard_Integer math_FunctionSet::GetStateNumber()
 {

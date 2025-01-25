@@ -21,8 +21,8 @@
 #include <MAT_BasicElt.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_BasicElt)> MAT_DataMapOfIntegerBasicElt;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_BasicElt)>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerBasicElt;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_BasicElt)> MAT_DataMapOfIntegerBasicElt;
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_BasicElt)>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerBasicElt;
 
 #endif

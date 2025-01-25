@@ -25,7 +25,6 @@
 class XSControl_WorkSession;
 class TDocStd_Document;
 
-
 //! Provides a tool to read IGES file and put it into
 //! DECAF document. Besides transfer of shapes (including
 //! assemblies) provided by IGESControl, supports also
@@ -44,67 +43,67 @@ class TDocStd_Document;
 //! Names
 //! reader.SetNameMode(namemode);
 //! Standard_Boolean namemode = reader.GetNameMode();
-class IGESCAFControl_Reader  : public IGESControl_Reader
+class IGESCAFControl_Reader : public IGESControl_Reader
 {
- public:
-
+public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a reader with an empty
   //! IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
   IGESCAFControl_Reader()
-  : myColorMode( Standard_True ),
-    myNameMode ( Standard_True ),
-    myLayerMode( Standard_True )
-  {}
-  
+      : myColorMode(Standard_True),
+        myNameMode(Standard_True),
+        myLayerMode(Standard_True)
+  {
+  }
+
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
-  IGESCAFControl_Reader(const Handle(XSControl_WorkSession)& theWS, const Standard_Boolean FromScratch = Standard_True)
-  : myColorMode( Standard_True ),
-    myNameMode ( Standard_True ),
-    myLayerMode( Standard_True )
-  { SetWS (theWS,FromScratch); }
-  
+  IGESCAFControl_Reader(const Handle(XSControl_WorkSession)& theWS,
+                        const Standard_Boolean               FromScratch = Standard_True)
+      : myColorMode(Standard_True),
+        myNameMode(Standard_True),
+        myLayerMode(Standard_True)
+  {
+    SetWS(theWS, FromScratch);
+  }
+
   //! Translates currently loaded IGES file into the document
   //! Returns True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& theDoc,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_Boolean Perform (const TCollection_AsciiString& theFileName,
-                            const Handle(TDocStd_Document)& theDoc,
-                            const Message_ProgressRange& theProgress = Message_ProgressRange())
-  { return Perform (theFileName.ToCString(), theDoc, theProgress); }
-  
+  Standard_EXPORT Standard_Boolean
+    Transfer(const Handle(TDocStd_Document)& theDoc,
+             const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  Standard_Boolean Perform(const TCollection_AsciiString&  theFileName,
+                           const Handle(TDocStd_Document)& theDoc,
+                           const Message_ProgressRange&    theProgress = Message_ProgressRange())
+  {
+    return Perform(theFileName.ToCString(), theDoc, theProgress);
+  }
+
   //! Translate IGES file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean Perform (const Standard_CString theFileName,
-                                            const Handle(TDocStd_Document)& theDoc,
-                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT Standard_Boolean
+    Perform(const Standard_CString          theFileName,
+            const Handle(TDocStd_Document)& theDoc,
+            const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
   //! Set ColorMode for indicate read Colors or not.
-  void SetColorMode (const Standard_Boolean theMode)
-  { myColorMode = theMode; }
+  void SetColorMode(const Standard_Boolean theMode) { myColorMode = theMode; }
 
-  Standard_Boolean GetColorMode() const
-  { return myColorMode; }
-  
+  Standard_Boolean GetColorMode() const { return myColorMode; }
+
   //! Set NameMode for indicate read Name or not.
-  void SetNameMode (const Standard_Boolean theMode)
-  { myNameMode = theMode; }
+  void SetNameMode(const Standard_Boolean theMode) { myNameMode = theMode; }
 
-  Standard_Boolean GetNameMode() const
-  { return myNameMode; }
-  
+  Standard_Boolean GetNameMode() const { return myNameMode; }
+
   //! Set LayerMode for indicate read Layers or not.
-  void SetLayerMode (const Standard_Boolean theMode)
-  { myLayerMode = theMode; }
+  void SetLayerMode(const Standard_Boolean theMode) { myLayerMode = theMode; }
 
-  Standard_Boolean GetLayerMode() const
-  { return myLayerMode; }
+  Standard_Boolean GetLayerMode() const { return myLayerMode; }
 
- private:
-
+private:
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;

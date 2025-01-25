@@ -16,12 +16,11 @@
 #ifndef _Aspect_TypeOfFacingModel_HeaderFile
 #define _Aspect_TypeOfFacingModel_HeaderFile
 
-
 enum Aspect_TypeOfFacingModel
 {
-Aspect_TOFM_BOTH_SIDE,
-Aspect_TOFM_BACK_SIDE,
-Aspect_TOFM_FRONT_SIDE
+  Aspect_TOFM_BOTH_SIDE,
+  Aspect_TOFM_BACK_SIDE,
+  Aspect_TOFM_FRONT_SIDE
 };
 
 #endif // _Aspect_TypeOfFacingModel_HeaderFile

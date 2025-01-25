@@ -22,7 +22,6 @@
 #include <StepShape_DimensionalCharacteristic.hxx>
 #include <Standard_Transient.hxx>
 
-
 class StepShape_PlusMinusTolerance;
 DEFINE_STANDARD_HANDLE(StepShape_PlusMinusTolerance, Standard_Transient)
 
@@ -31,43 +30,26 @@ class StepShape_PlusMinusTolerance : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepShape_PlusMinusTolerance();
-  
-  Standard_EXPORT void Init (const StepShape_ToleranceMethodDefinition& range, const StepShape_DimensionalCharacteristic& toleranced_dimension);
-  
+
+  Standard_EXPORT void Init(const StepShape_ToleranceMethodDefinition& range,
+                            const StepShape_DimensionalCharacteristic& toleranced_dimension);
+
   Standard_EXPORT StepShape_ToleranceMethodDefinition Range() const;
-  
-  Standard_EXPORT void SetRange (const StepShape_ToleranceMethodDefinition& range);
-  
+
+  Standard_EXPORT void SetRange(const StepShape_ToleranceMethodDefinition& range);
+
   Standard_EXPORT StepShape_DimensionalCharacteristic TolerancedDimension() const;
-  
-  Standard_EXPORT void SetTolerancedDimension (const StepShape_DimensionalCharacteristic& toleranced_dimension);
 
+  Standard_EXPORT void SetTolerancedDimension(
+    const StepShape_DimensionalCharacteristic& toleranced_dimension);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   StepShape_ToleranceMethodDefinition theRange;
   StepShape_DimensionalCharacteristic theTolerancedDimension;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_PlusMinusTolerance_HeaderFile

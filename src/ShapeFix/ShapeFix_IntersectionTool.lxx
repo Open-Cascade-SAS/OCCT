@@ -12,12 +12,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Context
-//purpose  : 
+// function : Context
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeBuild_ReShape) ShapeFix_IntersectionTool::Context() const
 {
   return myContext;
 }
-

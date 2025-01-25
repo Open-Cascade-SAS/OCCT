@@ -20,23 +20,21 @@
 #include <StepRepr_ConfigurationDesignItem.hxx>
 #include <StepRepr_ConfigurationItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign, Standard_Transient)
 
 //=======================================================================
-//function : StepRepr_ConfigurationDesign
-//purpose  : 
+// function : StepRepr_ConfigurationDesign
+// purpose  :
 //=======================================================================
-StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign ()
-{
-}
+StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepRepr_ConfigurationDesign::Init (const Handle(StepRepr_ConfigurationItem) &aConfiguration,
-                                         const StepRepr_ConfigurationDesignItem &aDesign)
+void StepRepr_ConfigurationDesign::Init(const Handle(StepRepr_ConfigurationItem)& aConfiguration,
+                                        const StepRepr_ConfigurationDesignItem&   aDesign)
 {
 
   theConfiguration = aConfiguration;
@@ -45,41 +43,42 @@ void StepRepr_ConfigurationDesign::Init (const Handle(StepRepr_ConfigurationItem
 }
 
 //=======================================================================
-//function : Configuration
-//purpose  : 
+// function : Configuration
+// purpose  :
 //=======================================================================
 
-Handle(StepRepr_ConfigurationItem) StepRepr_ConfigurationDesign::Configuration () const
+Handle(StepRepr_ConfigurationItem) StepRepr_ConfigurationDesign::Configuration() const
 {
   return theConfiguration;
 }
 
 //=======================================================================
-//function : SetConfiguration
-//purpose  : 
+// function : SetConfiguration
+// purpose  :
 //=======================================================================
 
-void StepRepr_ConfigurationDesign::SetConfiguration (const Handle(StepRepr_ConfigurationItem) &aConfiguration)
+void StepRepr_ConfigurationDesign::SetConfiguration(
+  const Handle(StepRepr_ConfigurationItem)& aConfiguration)
 {
   theConfiguration = aConfiguration;
 }
 
 //=======================================================================
-//function : Design
-//purpose  : 
+// function : Design
+// purpose  :
 //=======================================================================
 
-StepRepr_ConfigurationDesignItem StepRepr_ConfigurationDesign::Design () const
+StepRepr_ConfigurationDesignItem StepRepr_ConfigurationDesign::Design() const
 {
   return theDesign;
 }
 
 //=======================================================================
-//function : SetDesign
-//purpose  : 
+// function : SetDesign
+// purpose  :
 //=======================================================================
 
-void StepRepr_ConfigurationDesign::SetDesign (const StepRepr_ConfigurationDesignItem &aDesign)
+void StepRepr_ConfigurationDesign::SetDesign(const StepRepr_ConfigurationDesignItem& aDesign)
 {
   theDesign = aDesign;
 }

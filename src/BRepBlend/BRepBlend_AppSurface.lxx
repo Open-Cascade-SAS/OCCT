@@ -21,12 +21,10 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
-
 inline Standard_Boolean BRepBlend_AppSurface::IsDone() const
 {
   return approx.IsDone();
 }
-
 
 inline Standard_Integer BRepBlend_AppSurface::UDegree() const
 {
@@ -38,46 +36,39 @@ inline Standard_Integer BRepBlend_AppSurface::VDegree() const
   return approx.VDegree();
 }
 
-inline const TColgp_Array2OfPnt& 
-BRepBlend_AppSurface::SurfPoles() const
+inline const TColgp_Array2OfPnt& BRepBlend_AppSurface::SurfPoles() const
 {
   return approx.SurfPoles();
 }
 
-inline const TColStd_Array2OfReal& 
-BRepBlend_AppSurface::SurfWeights() const
+inline const TColStd_Array2OfReal& BRepBlend_AppSurface::SurfWeights() const
 {
   return approx.SurfWeights();
 }
 
-
-inline const TColStd_Array1OfReal& 
-BRepBlend_AppSurface::SurfUKnots() const
+inline const TColStd_Array1OfReal& BRepBlend_AppSurface::SurfUKnots() const
 {
-   return approx.SurfUKnots(); 
+  return approx.SurfUKnots();
 }
 
-inline const TColStd_Array1OfReal& 
-BRepBlend_AppSurface::SurfVKnots() const
+inline const TColStd_Array1OfReal& BRepBlend_AppSurface::SurfVKnots() const
 {
-   return approx.SurfVKnots(); 
+  return approx.SurfVKnots();
 }
 
-inline const TColStd_Array1OfInteger& 
-BRepBlend_AppSurface::SurfUMults() const
+inline const TColStd_Array1OfInteger& BRepBlend_AppSurface::SurfUMults() const
 {
-   return approx.SurfUMults(); 
+  return approx.SurfUMults();
 }
 
-inline const TColStd_Array1OfInteger& 
-BRepBlend_AppSurface::SurfVMults() const
+inline const TColStd_Array1OfInteger& BRepBlend_AppSurface::SurfVMults() const
 {
-  return approx.SurfVMults(); 
+  return approx.SurfVMults();
 }
 
 inline Standard_Integer BRepBlend_AppSurface::NbCurves2d() const
 {
- return approx.NbCurves2d();
+  return approx.NbCurves2d();
 }
 
 inline Standard_Integer BRepBlend_AppSurface::Curves2dDegree() const
@@ -85,22 +76,18 @@ inline Standard_Integer BRepBlend_AppSurface::Curves2dDegree() const
   return approx.Curves2dDegree();
 }
 
-inline const TColgp_Array1OfPnt2d& 
-BRepBlend_AppSurface::Curve2dPoles(const Standard_Integer Index) const
+inline const TColgp_Array1OfPnt2d& BRepBlend_AppSurface::Curve2dPoles(
+  const Standard_Integer Index) const
 {
-  return  approx.Curve2dPoles(Index);
+  return approx.Curve2dPoles(Index);
 }
 
-inline const TColStd_Array1OfReal& 
-BRepBlend_AppSurface::Curves2dKnots() const
+inline const TColStd_Array1OfReal& BRepBlend_AppSurface::Curves2dKnots() const
 {
-   return approx.Curves2dKnots();
+  return approx.Curves2dKnots();
 }
 
-inline const TColStd_Array1OfInteger& 
-BRepBlend_AppSurface::Curves2dMults () const
+inline const TColStd_Array1OfInteger& BRepBlend_AppSurface::Curves2dMults() const
 {
-   return approx.Curves2dMults(); 
+  return approx.Curves2dMults();
 }
-
-

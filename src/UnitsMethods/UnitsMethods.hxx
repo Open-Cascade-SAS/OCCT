@@ -23,9 +23,7 @@
 class UnitsMethods
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
 
   //! Returns value of unit encoded by parameter theUnit
   //! (integer value denoting unit, as described in IGES
@@ -34,10 +32,12 @@ public:
 
   //! Returns value of current internal unit for CASCADE
   //! in millemeters by default
-  Standard_EXPORT static Standard_Real GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
+  Standard_EXPORT static Standard_Real GetCasCadeLengthUnit(
+    const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
   //! Sets value of current internal unit for CASCADE
-  Standard_EXPORT static void SetCasCadeLengthUnit(const Standard_Real theUnitValue,
+  Standard_EXPORT static void SetCasCadeLengthUnit(
+    const Standard_Real           theUnitValue,
     const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
   //! Sets value of current internal unit for CASCADE
@@ -50,20 +50,22 @@ public:
                                                           const UnitsMethods_LengthUnit theToUnit);
 
   //! Returns the enumeration corresponding to the given scale factor
-  Standard_EXPORT static UnitsMethods_LengthUnit GetLengthUnitByFactorValue(const Standard_Real theFactorValue,
+  Standard_EXPORT static UnitsMethods_LengthUnit GetLengthUnitByFactorValue(
+    const Standard_Real           theFactorValue,
     const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
   //! Returns string name for the given scale factor
-  Standard_EXPORT static Standard_CString DumpLengthUnit(const Standard_Real theScaleFactor,
+  Standard_EXPORT static Standard_CString DumpLengthUnit(
+    const Standard_Real           theScaleFactor,
     const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
   //! Returns string for the given value of LengthUnit
   Standard_EXPORT static Standard_CString DumpLengthUnit(const UnitsMethods_LengthUnit theUnit);
 
   //! Make conversion of given string to value of LengthUnit
-  Standard_EXPORT static UnitsMethods_LengthUnit LengthUnitFromString(Standard_CString theStr,
-                                                                      const Standard_Boolean theCaseSensitive);
-
+  Standard_EXPORT static UnitsMethods_LengthUnit LengthUnitFromString(
+    Standard_CString       theStr,
+    const Standard_Boolean theCaseSensitive);
 };
 
 #endif // _UnitsMethods_HeaderFile

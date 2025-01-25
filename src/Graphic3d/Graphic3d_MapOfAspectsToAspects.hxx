@@ -17,6 +17,7 @@
 #include <NCollection_DataMap.hxx>
 
 class Graphic3d_Aspects;
-typedef NCollection_DataMap<Handle(Graphic3d_Aspects), Handle(Graphic3d_Aspects)> Graphic3d_MapOfAspectsToAspects;
+typedef NCollection_DataMap<Handle(Graphic3d_Aspects), Handle(Graphic3d_Aspects)>
+  Graphic3d_MapOfAspectsToAspects;
 
 #endif // _Graphic3d_MapOfAspectsToAspects_Header

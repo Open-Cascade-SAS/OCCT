@@ -27,9 +27,8 @@ class Image_Texture;
 class RWGltf_MaterialMetallicRoughness : public Standard_Transient
 {
 public:
-
-  Handle(Image_Texture)   BaseColorTexture;         //!< RGB texture for the base color
-// clang-format off
+  Handle(Image_Texture) BaseColorTexture; //!< RGB texture for the base color
+                                          // clang-format off
   Handle(Image_Texture)   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
   Handle(Image_Texture)   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
   Handle(Image_Texture)   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
@@ -43,17 +42,18 @@ public:
   Standard_ShortReal      AlphaCutOff;              //!< alpha cutoff value; 0.5 by default
   RWGltf_GltfAlphaMode    AlphaMode;                //!< alpha mode; RWGltf_GltfAlphaMode_Opaque by default
   Standard_Boolean        IsDoubleSided;            //!< specifies whether the material is double sided; FALSE by default
-// clang-format on
+                                          // clang-format on
 
   RWGltf_MaterialMetallicRoughness()
-  : BaseColor (1.0f, 1.0f, 1.0f, 1.0f),
-    EmissiveFactor (0.0f, 0.0f, 0.0f),
-    Metallic  (1.0f),
-    Roughness (1.0f),
-    AlphaCutOff (0.5f),
-    AlphaMode (RWGltf_GltfAlphaMode_Opaque),
-    IsDoubleSided (Standard_False) {}
-
+      : BaseColor(1.0f, 1.0f, 1.0f, 1.0f),
+        EmissiveFactor(0.0f, 0.0f, 0.0f),
+        Metallic(1.0f),
+        Roughness(1.0f),
+        AlphaCutOff(0.5f),
+        AlphaMode(RWGltf_GltfAlphaMode_Opaque),
+        IsDoubleSided(Standard_False)
+  {
+  }
 };
 
 #endif // _RWGltf_MaterialMetallicRoughness_HeaderFile

@@ -25,32 +25,27 @@ class BRepMesh_Delaun;
 class BRepMesh_ConstrainedBaseMeshAlgo : public BRepMesh_BaseMeshAlgo
 {
 public:
-
   //! Constructor.
-  BRepMesh_ConstrainedBaseMeshAlgo ()
-  {
-  }
+  BRepMesh_ConstrainedBaseMeshAlgo() {}
 
   //! Destructor.
-  virtual ~BRepMesh_ConstrainedBaseMeshAlgo ()
-  {
-  }
+  virtual ~BRepMesh_ConstrainedBaseMeshAlgo() {}
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ConstrainedBaseMeshAlgo, BRepMesh_BaseMeshAlgo)
 
 protected:
-
   //! Returns size of cell to be used by acceleration circles grid structure.
-  virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount (const Standard_Integer /*theVerticesNb*/)
+  virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount(
+    const Standard_Integer /*theVerticesNb*/)
   {
-    return std::pair<Standard_Integer, Standard_Integer> (-1, -1);
+    return std::pair<Standard_Integer, Standard_Integer>(-1, -1);
   }
 
   //! Performs processing of generated mesh.
   //! By default does nothing.
   //! Expected to be called from method generateMesh() in successor classes.
-  virtual void postProcessMesh (BRepMesh_Delaun&              /*theMesher*/,
-                                const Message_ProgressRange&  /*theRange*/)
+  virtual void postProcessMesh(BRepMesh_Delaun& /*theMesher*/,
+                               const Message_ProgressRange& /*theRange*/)
   {
   }
 };

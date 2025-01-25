@@ -18,91 +18,101 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntPatch_Point.hxx>
 
-
-inline void IntPatch_WLine::AddVertex (const IntPatch_Point& thePnt,
-                                       const Standard_Boolean theIsPrepend)
+inline void IntPatch_WLine::AddVertex(const IntPatch_Point&  thePnt,
+                                      const Standard_Boolean theIsPrepend)
 {
-  if(theIsPrepend)
+  if (theIsPrepend)
     svtx.Prepend(thePnt);
   else
     svtx.Append(thePnt);
 }
 
-inline void IntPatch_WLine::Replace (const Standard_Integer Index,
-				     const IntPatch_Point& Pnt)
+inline void IntPatch_WLine::Replace(const Standard_Integer Index, const IntPatch_Point& Pnt)
 {
   svtx(Index) = Pnt;
 }
 
-inline void IntPatch_WLine::SetFirstPoint (const Standard_Integer IndFirst)
+inline void IntPatch_WLine::SetFirstPoint(const Standard_Integer IndFirst)
 {
   fipt = Standard_True;
   indf = IndFirst;
 }
 
-inline void IntPatch_WLine::SetLastPoint (const Standard_Integer IndLast)
+inline void IntPatch_WLine::SetLastPoint(const Standard_Integer IndLast)
 {
   lapt = Standard_True;
   indl = IndLast;
 }
 
-inline Standard_Integer IntPatch_WLine::NbPnts () const
+inline Standard_Integer IntPatch_WLine::NbPnts() const
 {
   return curv->NbPoints();
 }
 
-inline const IntSurf_PntOn2S& IntPatch_WLine::Point (const Standard_Integer Index) const
+inline const IntSurf_PntOn2S& IntPatch_WLine::Point(const Standard_Integer Index) const
 {
   return curv->Value(Index);
 }
 
-inline Standard_Boolean IntPatch_WLine::HasFirstPoint () const
+inline Standard_Boolean IntPatch_WLine::HasFirstPoint() const
 {
   return fipt;
 }
 
-inline Standard_Boolean IntPatch_WLine::HasLastPoint () const
+inline Standard_Boolean IntPatch_WLine::HasLastPoint() const
 {
   return lapt;
 }
 
-inline const IntPatch_Point& IntPatch_WLine::FirstPoint () const
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint() const
 {
-  if (!fipt) {throw Standard_DomainError();}
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indf);
 }
 
-inline const IntPatch_Point& IntPatch_WLine::LastPoint () const
+inline const IntPatch_Point& IntPatch_WLine::LastPoint() const
 {
-  if (!lapt) {throw Standard_DomainError();}
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indl);
 }
 
-inline const IntPatch_Point& IntPatch_WLine::FirstPoint (Standard_Integer& Indfirst) const
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint(Standard_Integer& Indfirst) const
 {
-  if (!fipt) {throw Standard_DomainError();}
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
   Indfirst = indf;
   return svtx(indf);
 }
 
-inline const IntPatch_Point& IntPatch_WLine::LastPoint (Standard_Integer& Indlast) const
+inline const IntPatch_Point& IntPatch_WLine::LastPoint(Standard_Integer& Indlast) const
 {
-  if (!lapt) {throw Standard_DomainError();}
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
   Indlast = indl;
   return svtx(indl);
 }
 
-inline Standard_Integer IntPatch_WLine::NbVertex () const
+inline Standard_Integer IntPatch_WLine::NbVertex() const
 {
   return svtx.Length();
 }
 
-inline const IntPatch_Point& IntPatch_WLine::Vertex (const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_WLine::Vertex(const Standard_Integer Index) const
 {
   return svtx(Index);
 }
 
-inline IntPatch_Point& IntPatch_WLine::ChangeVertex (const Standard_Integer Index)
+inline IntPatch_Point& IntPatch_WLine::ChangeVertex(const Standard_Integer Index)
 {
   return svtx(Index);
 }
@@ -114,18 +124,18 @@ inline void IntPatch_WLine::ClearVertexes()
 
 inline void IntPatch_WLine::RemoveVertex(const Standard_Integer theIndex)
 {
-  if((theIndex < 1) || (theIndex > NbVertex()))
+  if ((theIndex < 1) || (theIndex > NbVertex()))
     throw Standard_OutOfRange("Cannot delete not existing vertex");
   svtx.Remove(theIndex);
 }
 
-inline void IntPatch_WLine::InsertVertexBefore( const Standard_Integer theIndex,
-                                                const IntPatch_Point& thePnt)
+inline void IntPatch_WLine::InsertVertexBefore(const Standard_Integer theIndex,
+                                               const IntPatch_Point&  thePnt)
 {
   const Standard_Integer aNbVertexes = NbVertex();
-  Standard_Integer anIndex = Max(theIndex, 1);
+  Standard_Integer       anIndex     = Max(theIndex, 1);
 
-  if(anIndex > aNbVertexes)
+  if (anIndex > aNbVertexes)
     svtx.Append(thePnt);
   else
     svtx.InsertBefore(theIndex, thePnt);

@@ -27,7 +27,6 @@
 class XSControl_WorkSession;
 class TCollection_AsciiString;
 
-
 //! Defines additional commands for XSControl to :
 //! - control of initialisation (xinit, xnorm, newmodel)
 //! - analyse of the result of a transfer (recorded in a
@@ -38,16 +37,14 @@ class TCollection_AsciiString;
 //!
 //! This appendix of XSControl is compiled separately to distinguish
 //! basic features from user callable forms
-class XSControl_FuncShape 
+class XSControl_FuncShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Defines and loads all functions which work on shapes for XSControl (as ActFunc)
   Standard_EXPORT static void Init();
-  
+
   //! Analyses a name as designating Shapes from a Vars or from
   //! XSTEP transfer (last Transfer on Reading). <name> can be :
   //! "*" : all the root shapes produced by last Transfer (Read)
@@ -58,8 +55,10 @@ public:
   //! <list>. If <list> is null, it is firstly created. Then it is
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
-  Standard_EXPORT static Standard_Integer MoreShapes (const Handle(XSControl_WorkSession)& session, Handle(TopTools_HSequenceOfShape)& list, const Standard_CString name);
-  
+  Standard_EXPORT static Standard_Integer MoreShapes(const Handle(XSControl_WorkSession)& session,
+                                                     Handle(TopTools_HSequenceOfShape)&   list,
+                                                     const Standard_CString               name);
+
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
   //! name plus status "file to read"(True) or "already read"(False)
@@ -71,29 +70,15 @@ public:
   //! If <var> is neither null nor empty, resvar = var
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
-  Standard_EXPORT static Standard_Boolean FileAndVar (const Handle(XSControl_WorkSession)& session, const Standard_CString file, const Standard_CString var, const Standard_CString def, TCollection_AsciiString& resfile, TCollection_AsciiString& resvar);
-
-
-
+  Standard_EXPORT static Standard_Boolean FileAndVar(const Handle(XSControl_WorkSession)& session,
+                                                     const Standard_CString               file,
+                                                     const Standard_CString               var,
+                                                     const Standard_CString               def,
+                                                     TCollection_AsciiString&             resfile,
+                                                     TCollection_AsciiString&             resvar);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XSControl_FuncShape_HeaderFile

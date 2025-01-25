@@ -26,7 +26,6 @@ class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 class IGESDimen_WitnessLine;
 
-
 class IGESDimen_LinearDimension;
 DEFINE_STANDARD_HANDLE(IGESDimen_LinearDimension, IGESData_IGESEntity)
 
@@ -37,10 +36,8 @@ class IGESDimen_LinearDimension : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_LinearDimension();
-  
+
   //! This method is used to set the fields of the class
   //! LinearDimension
   //! - aNote          : General Note Entity
@@ -50,60 +47,47 @@ public:
   //! Handle
   //! - anotherWitness : Second Witness Line Entity or a Null
   //! Handle
-  Standard_EXPORT void Init (const Handle(IGESDimen_GeneralNote)& aNote, const Handle(IGESDimen_LeaderArrow)& aLeader, const Handle(IGESDimen_LeaderArrow)& anotherLeader, const Handle(IGESDimen_WitnessLine)& aWitness, const Handle(IGESDimen_WitnessLine)& anotherWitness);
-  
+  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
+                            const Handle(IGESDimen_LeaderArrow)& aLeader,
+                            const Handle(IGESDimen_LeaderArrow)& anotherLeader,
+                            const Handle(IGESDimen_WitnessLine)& aWitness,
+                            const Handle(IGESDimen_WitnessLine)& anotherWitness);
+
   //! Changes FormNumber (indicates the Nature of the Dimension
   //! Unspecified, Diameter or Radius)
   //! Error if not in range [0-2]
-  Standard_EXPORT void SetFormNumber (const Standard_Integer form);
-  
+  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+
   //! returns General Note Entity
   Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
-  
+
   //! returns first Leader Entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) FirstLeader() const;
-  
+
   //! returns second Leader Entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
-  
+
   //! returns False if no first witness line
   Standard_EXPORT Standard_Boolean HasFirstWitness() const;
-  
+
   //! returns first Witness Line Entity or a Null Handle
   Standard_EXPORT Handle(IGESDimen_WitnessLine) FirstWitness() const;
-  
+
   //! returns False if no second witness line
   Standard_EXPORT Standard_Boolean HasSecondWitness() const;
-  
+
   //! returns second Witness Line Entity or a Null Handle
   Standard_EXPORT Handle(IGESDimen_WitnessLine) SecondWitness() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_LinearDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_LinearDimension, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDimen_GeneralNote) theNote;
   Handle(IGESDimen_LeaderArrow) theFirstLeader;
   Handle(IGESDimen_LeaderArrow) theSecondLeader;
   Handle(IGESDimen_WitnessLine) theFirstWitness;
   Handle(IGESDimen_WitnessLine) theSecondWitness;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_LinearDimension_HeaderFile

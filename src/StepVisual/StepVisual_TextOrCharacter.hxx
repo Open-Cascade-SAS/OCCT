@@ -28,55 +28,32 @@ class StepVisual_AnnotationText;
 class StepVisual_CompositeText;
 class StepVisual_TextLiteral;
 
-
-
-class StepVisual_TextOrCharacter  : public StepData_SelectType
+class StepVisual_TextOrCharacter : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a TextOrCharacter SelectType
   Standard_EXPORT StepVisual_TextOrCharacter();
-  
+
   //! Recognizes a TextOrCharacter Kind Entity that is :
   //! 1 -> AnnotationText
   //! 2 -> CompositeText
   //! 3 -> TextLiteral
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a AnnotationText (Null if another type)
   Standard_EXPORT Handle(StepVisual_AnnotationText) AnnotationText() const;
-  
+
   //! returns Value as a CompositeText (Null if another type)
   Standard_EXPORT Handle(StepVisual_CompositeText) CompositeText() const;
-  
+
   //! returns Value as a TextLiteral (Null if another type)
   Standard_EXPORT Handle(StepVisual_TextLiteral) TextLiteral() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_TextOrCharacter_HeaderFile

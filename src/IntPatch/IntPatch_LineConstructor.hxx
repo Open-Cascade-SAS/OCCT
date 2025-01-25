@@ -25,43 +25,28 @@ class Adaptor3d_TopolTool;
 //! The intersections  algorithms compute the intersection
 //! on two surfaces and  return the intersections lines as
 //! IntPatch_Line.
-class IntPatch_LineConstructor 
+class IntPatch_LineConstructor
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntPatch_LineConstructor(const Standard_Integer mode);
-  
-  Standard_EXPORT void Perform (const IntPatch_SequenceOfLine& SL, const Handle(IntPatch_Line)& L, const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real Tol);
-  
+
+  Standard_EXPORT void Perform(const IntPatch_SequenceOfLine&     SL,
+                               const Handle(IntPatch_Line)&       L,
+                               const Handle(Adaptor3d_Surface)&   S1,
+                               const Handle(Adaptor3d_TopolTool)& D1,
+                               const Handle(Adaptor3d_Surface)&   S2,
+                               const Handle(Adaptor3d_TopolTool)& D2,
+                               const Standard_Real                Tol);
+
   Standard_EXPORT Standard_Integer NbLines() const;
-  
-  Standard_EXPORT Handle(IntPatch_Line) Line (const Standard_Integer index) const;
 
-
-
+  Standard_EXPORT Handle(IntPatch_Line) Line(const Standard_Integer index) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   IntPatch_SequenceOfLine slin;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntPatch_LineConstructor_HeaderFile

@@ -22,13 +22,13 @@
 #include <Message_Messenger.hxx>
 
 //=======================================================================
-//function : AddDrivers
-//purpose  : 
+// function : AddDrivers
+// purpose  :
 //=======================================================================
-void BinMFunction::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
-			       const Handle(Message_Messenger)&   theMsgDriver)
+void BinMFunction::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                              const Handle(Message_Messenger)&   theMsgDriver)
 {
-  theDriverTable->AddDriver (new BinMFunction_FunctionDriver  (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMFunction_GraphNodeDriver (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMFunction_ScopeDriver     (theMsgDriver) );
+  theDriverTable->AddDriver(new BinMFunction_FunctionDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMFunction_GraphNodeDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMFunction_ScopeDriver(theMsgDriver));
 }

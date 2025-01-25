@@ -20,34 +20,31 @@ inline Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function&)
   return (x <= (TwoTol + a)) && (x >= (b - TwoTol));
 }
 
-
 inline Standard_Boolean math_BrentMinimum::IsDone() const
 {
   return Done;
 }
 
-
-inline Standard_OStream& operator<< (Standard_OStream& o,
-				     const math_BrentMinimum& Br)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_BrentMinimum& Br)
 {
   Br.Dump(o);
   return o;
 }
 
-
-inline  Standard_Real math_BrentMinimum::Location() const{
+inline Standard_Real math_BrentMinimum::Location() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return x;
 }
 
-
-inline  Standard_Real math_BrentMinimum::Minimum() const{
+inline Standard_Real math_BrentMinimum::Minimum() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return fx;
 }
 
-
-inline  Standard_Integer math_BrentMinimum::NbIterations() const{
+inline Standard_Integer math_BrentMinimum::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return iter;
 }

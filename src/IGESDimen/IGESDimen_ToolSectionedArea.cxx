@@ -33,29 +33,28 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea ()    {  }
+IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea() {}
 
-
-void IGESDimen_ToolSectionedArea::ReadOwnParams
-  (const Handle(IGESDimen_SectionedArea)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESDimen_ToolSectionedArea::ReadOwnParams(const Handle(IGESDimen_SectionedArea)& ent,
+                                                const Handle(IGESData_IGESReaderData)& IR,
+                                                IGESData_ParamReader&                  PR) const
 {
-  Handle(IGESData_IGESEntity) extCurve;
-  Standard_Integer tempPattern, nbislands;
-  gp_XYZ passPnt;
-  Standard_Real tempDistance, tempAngle;
+  Handle(IGESData_IGESEntity)          extCurve;
+  Standard_Integer                     tempPattern, nbislands;
+  gp_XYZ                               passPnt;
+  Standard_Real                        tempDistance, tempAngle;
   Handle(IGESData_HArray1OfIGESEntity) tempIslands;
-  Handle(IGESData_IGESEntity) anent;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  Handle(IGESData_IGESEntity)          anent;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
 
-  //szv#4:S4163:12Mar99 `st=` not needed
+  // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR, PR.Current(), "Exterior curve", extCurve, (ent->FormNumber() == 1));
   PR.ReadInteger(PR.Current(), "Fill pattern", tempPattern);
   PR.ReadXYZ(PR.CurrentList(1, 3), "Passing point", passPnt);
   PR.ReadReal(PR.Current(), "Distance between lines", tempDistance);
 
   if (PR.DefinedElseSkip())
-// clang-format off
+    // clang-format off
     PR.ReadReal(PR.Current(), "Angle between line and X axis", tempAngle); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempAngle = M_PI / 4.0;
@@ -63,25 +62,24 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of island curves", nbislands);
   if (st && nbislands > 0)
     PR.ReadEnts (IR,PR.CurrentList(nbislands),"Island curves",tempIslands); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
-/*
-    {
-      tempIslands = new IGESData_HArray1OfIGESEntity(1, nbislands);
-      for (Standard_Integer i=1; i<=nbislands; i++)
-	{
-          st = PR.ReadEntity(IR, PR.Current(), "Island curves", anent);
-	  if (st) tempIslands->SetValue(i, anent);
-	}
-    }
-*/
+  // clang-format on
+  /*
+      {
+        tempIslands = new IGESData_HArray1OfIGESEntity(1, nbislands);
+        for (Standard_Integer i=1; i<=nbislands; i++)
+      {
+            st = PR.ReadEntity(IR, PR.Current(), "Island curves", anent);
+        if (st) tempIslands->SetValue(i, anent);
+      }
+      }
+  */
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (extCurve, tempPattern, passPnt, tempDistance, tempAngle, tempIslands);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(extCurve, tempPattern, passPnt, tempDistance, tempAngle, tempIslands);
 }
 
-void IGESDimen_ToolSectionedArea::WriteOwnParams
-  (const Handle(IGESDimen_SectionedArea)& ent, IGESData_IGESWriter& IW) const
+void IGESDimen_ToolSectionedArea::WriteOwnParams(const Handle(IGESDimen_SectionedArea)& ent,
+                                                 IGESData_IGESWriter&                   IW) const
 {
   Standard_Integer i, length = ent->NbIslands();
   IW.Send(ent->ExteriorCurve());
@@ -92,83 +90,82 @@ void IGESDimen_ToolSectionedArea::WriteOwnParams
   IW.Send(ent->Distance());
   IW.Send(ent->Angle());
   IW.Send(length);
-  for (i = 1; i <= length; i ++)
+  for (i = 1; i <= length; i++)
     IW.Send(ent->IslandCurve(i));
 }
 
-void  IGESDimen_ToolSectionedArea::OwnShared
-  (const Handle(IGESDimen_SectionedArea)& ent, Interface_EntityIterator& iter) const
+void IGESDimen_ToolSectionedArea::OwnShared(const Handle(IGESDimen_SectionedArea)& ent,
+                                            Interface_EntityIterator&              iter) const
 {
   Standard_Integer i, length = ent->NbIslands();
   iter.GetOneItem(ent->ExteriorCurve());
-  for (i = 1; i <= length; i ++)
+  for (i = 1; i <= length; i++)
     iter.GetOneItem(ent->IslandCurve(i));
 }
 
-void IGESDimen_ToolSectionedArea::OwnCopy
-  (const Handle(IGESDimen_SectionedArea)& another,
-   const Handle(IGESDimen_SectionedArea)& ent, Interface_CopyTool& TC) const
+void IGESDimen_ToolSectionedArea::OwnCopy(const Handle(IGESDimen_SectionedArea)& another,
+                                          const Handle(IGESDimen_SectionedArea)& ent,
+                                          Interface_CopyTool&                    TC) const
 {
-  DeclareAndCast(IGESData_IGESEntity, extCurve,
-		 TC.Transferred(another->ExteriorCurve()));
-  Standard_Integer tempPattern = another->Pattern();
-  gp_XYZ passPnt = (another->PassingPoint()).XYZ();
-  Standard_Real tempDistance = another->Distance();
-  Standard_Real tempAngle = another->Angle();
+  DeclareAndCast(IGESData_IGESEntity, extCurve, TC.Transferred(another->ExteriorCurve()));
+  Standard_Integer                     tempPattern  = another->Pattern();
+  gp_XYZ                               passPnt      = (another->PassingPoint()).XYZ();
+  Standard_Real                        tempDistance = another->Distance();
+  Standard_Real                        tempAngle    = another->Angle();
   Handle(IGESData_HArray1OfIGESEntity) tempIslands;
-  Standard_Integer nbislands = another->NbIslands();
+  Standard_Integer                     nbislands = another->NbIslands();
   if (nbislands > 0)
+  {
+    tempIslands = new IGESData_HArray1OfIGESEntity(1, nbislands);
+    for (Standard_Integer i = 1; i <= nbislands; i++)
     {
-      tempIslands = new IGESData_HArray1OfIGESEntity(1, nbislands);
-      for (Standard_Integer i=1; i<=nbislands; i++)
-	{
-          DeclareAndCast(IGESData_IGESEntity, anent,
-			 TC.Transferred(another->IslandCurve(i)));
-          tempIslands->SetValue(i, anent);
-	}
+      DeclareAndCast(IGESData_IGESEntity, anent, TC.Transferred(another->IslandCurve(i)));
+      tempIslands->SetValue(i, anent);
     }
-  ent->Init(extCurve, tempPattern, passPnt,
-	    tempDistance, tempAngle, tempIslands);
-  ent->SetInverted (another->IsInverted());
+  }
+  ent->Init(extCurve, tempPattern, passPnt, tempDistance, tempAngle, tempIslands);
+  ent->SetInverted(another->IsInverted());
 }
 
-IGESData_DirChecker IGESDimen_ToolSectionedArea::DirChecker
-  (const Handle(IGESDimen_SectionedArea)& /* ent */ ) const
+IGESData_DirChecker IGESDimen_ToolSectionedArea::DirChecker(
+  const Handle(IGESDimen_SectionedArea)& /* ent */) const
 {
-  IGESData_DirChecker DC(230, 0,1);
+  IGESData_DirChecker DC(230, 0, 1);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefAny);
   DC.LineWeight(IGESData_DefValue);
   DC.Color(IGESData_DefAny);
 
-  DC.UseFlagRequired (1);
+  DC.UseFlagRequired(1);
 
   return DC;
 }
 
-void IGESDimen_ToolSectionedArea::OwnCheck
-  (const Handle(IGESDimen_SectionedArea)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESDimen_ToolSectionedArea::OwnCheck(const Handle(IGESDimen_SectionedArea)& /* ent */,
+                                           const Interface_ShareTool&,
+                                           Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void IGESDimen_ToolSectionedArea::OwnDump
-  (const Handle(IGESDimen_SectionedArea)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESDimen_ToolSectionedArea::OwnDump(const Handle(IGESDimen_SectionedArea)& ent,
+                                          const IGESData_IGESDumper&             dumper,
+                                          Standard_OStream&                      S,
+                                          const Standard_Integer                 level) const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDimen_SectionedArea\n"
     << (ent->IsInverted() ? "Inverted Cross Hatches" : "Standard Cross Hatches")
     << " - Exterior curve : ";
-  dumper.Dump(ent->ExteriorCurve(),S, sublevel);
+  dumper.Dump(ent->ExteriorCurve(), S, sublevel);
   S << "\n"
     << "Fill pattern code : " << ent->Pattern() << "\n"
     << "Passing point : ";
-  IGESData_DumpXYZL(S,level, ent->PassingPoint(), ent->Location());  S << "\n";
+  IGESData_DumpXYZL(S, level, ent->PassingPoint(), ent->Location());
+  S << "\n";
   S << "Distance between lines : " << ent->Distance() << "\n"
     << "Angle between lines and X axis : " << ent->Angle() << "\n"
     << "Island Curve : ";
-  IGESData_DumpEntities(S,dumper ,level,1, ent->NbIslands(),ent->IslandCurve);
+  IGESData_DumpEntities(S, dumper, level, 1, ent->NbIslands(), ent->IslandCurve);
   S << "\n";
 }

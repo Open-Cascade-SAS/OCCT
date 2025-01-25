@@ -20,8 +20,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TDF_Label,Standard_Integer> TDF_LabelIntegerMap;
-typedef NCollection_DataMap<TDF_Label,Standard_Integer>::Iterator TDF_DataMapIteratorOfLabelIntegerMap;
-
+typedef NCollection_DataMap<TDF_Label, Standard_Integer> TDF_LabelIntegerMap;
+typedef NCollection_DataMap<TDF_Label, Standard_Integer>::Iterator
+  TDF_DataMapIteratorOfLabelIntegerMap;
 
 #endif

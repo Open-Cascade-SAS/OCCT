@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_AttributePaneCreator_H
 #define DFBrowserPane_AttributePaneCreator_H
@@ -26,19 +26,21 @@
 class DFBrowserPane_AttributePaneCreator : public DFBrowserPane_AttributePaneCreatorAPI
 {
 public:
-
   //! Constructor
-  DFBrowserPane_AttributePaneCreator() : DFBrowserPane_AttributePaneCreatorAPI() {}
+  DFBrowserPane_AttributePaneCreator()
+      : DFBrowserPane_AttributePaneCreatorAPI()
+  {
+  }
 
   //! Destructor
   virtual ~DFBrowserPane_AttributePaneCreator() Standard_OVERRIDE {}
 
 public:
-
-  //! Creates attribute pane for TDF, TDataStd, TDocStd, TPrsStd, TNaming and TFunction attribute types
-  //! \param theAttributeName a standard type of attribute
-  //! \return an attribute pane if it can be created for this type
-  Standard_EXPORT virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane(Standard_CString theAttributeName) Standard_OVERRIDE;
+  //! Creates attribute pane for TDF, TDataStd, TDocStd, TPrsStd, TNaming and TFunction attribute
+  //! types \param theAttributeName a standard type of attribute \return an attribute pane if it can
+  //! be created for this type
+  Standard_EXPORT virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane(
+    Standard_CString theAttributeName) Standard_OVERRIDE;
 };
 
 #endif

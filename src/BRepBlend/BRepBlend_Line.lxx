@@ -15,7 +15,6 @@
 #include <Blend_SequenceOfPoint.hxx>
 #include <Standard_DomainError.hxx>
 
-
 inline void BRepBlend_Line::Append(const Blend_Point& P)
 {
   seqpt.Append(P);
@@ -26,35 +25,33 @@ inline void BRepBlend_Line::Prepend(const Blend_Point& P)
   seqpt.Prepend(P);
 }
 
-inline void BRepBlend_Line::InsertBefore(const Standard_Integer Index,
-				    const Blend_Point& P) 
+inline void BRepBlend_Line::InsertBefore(const Standard_Integer Index, const Blend_Point& P)
 {
   seqpt.InsertBefore(Index, P);
 }
 
-inline void BRepBlend_Line::Remove(const Standard_Integer FromIndex,
-			       const Standard_Integer ToIndex)
+inline void BRepBlend_Line::Remove(const Standard_Integer FromIndex, const Standard_Integer ToIndex)
 {
-  seqpt.Remove(FromIndex,ToIndex);
+  seqpt.Remove(FromIndex, ToIndex);
 }
 
 inline void BRepBlend_Line::SetStartPoints(const BRepBlend_Extremity& StartPtOnS1,
-				       const BRepBlend_Extremity& StartPtOnS2)
+                                           const BRepBlend_Extremity& StartPtOnS2)
 
 {
-  stp1  = StartPtOnS1;
-  stp2  = StartPtOnS2;
+  stp1 = StartPtOnS1;
+  stp2 = StartPtOnS2;
 }
 
 inline void BRepBlend_Line::SetEndPoints(const BRepBlend_Extremity& EndPtOnS1,
-				     const BRepBlend_Extremity& EndPtOnS2)
+                                         const BRepBlend_Extremity& EndPtOnS2)
 
 {
   endp1 = EndPtOnS1;
   endp2 = EndPtOnS2;
 }
 
-inline Standard_Integer BRepBlend_Line::NbPoints () const
+inline Standard_Integer BRepBlend_Line::NbPoints() const
 {
   return seqpt.Length();
 }
@@ -64,15 +61,21 @@ inline const Blend_Point& BRepBlend_Line::Point(const Standard_Integer Index) co
   return seqpt(Index);
 }
 
-inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS1 () const
+inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS1() const
 {
-  if (!hass1) {throw Standard_DomainError();}
+  if (!hass1)
+  {
+    throw Standard_DomainError();
+  }
   return tras1;
 }
 
-inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS2 () const
+inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS2() const
 {
-  if (!hass2) {throw Standard_DomainError();}
+  if (!hass2)
+  {
+    throw Standard_DomainError();
+  }
   return tras2;
 }
 
@@ -96,10 +99,11 @@ inline const BRepBlend_Extremity& BRepBlend_Line::EndPointOnSecond() const
   return endp2;
 }
 
-inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS () const
+inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS() const
 {
-  if (!hass1) {throw Standard_DomainError();}
+  if (!hass1)
+  {
+    throw Standard_DomainError();
+  }
   return tras1;
 }
-
-

@@ -26,49 +26,27 @@ class Standard_Transient;
 class StepShape_ToleranceValue;
 class StepShape_LimitsAndFits;
 
-
 //! Added for Dimensional Tolerances
-class StepShape_ToleranceMethodDefinition  : public StepData_SelectType
+class StepShape_ToleranceMethodDefinition : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepShape_ToleranceMethodDefinition();
-  
+
   //! Recognizes a kind of ValueQualifier Select Type :
   //! 1 -> ToleranceValue from StepShape
   //! 2 -> LimitsAndFits from StepShape
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as ToleranceValue
   Standard_EXPORT Handle(StepShape_ToleranceValue) ToleranceValue() const;
-  
+
   //! Returns Value as LimitsAndFits
   Standard_EXPORT Handle(StepShape_LimitsAndFits) LimitsAndFits() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ToleranceMethodDefinition_HeaderFile

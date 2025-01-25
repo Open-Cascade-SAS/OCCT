@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Signature
-//purpose  : 
+// function : Signature
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer TDataXtd_PatternStd::Signature() const
@@ -24,8 +24,8 @@ inline Standard_Integer TDataXtd_PatternStd::Signature() const
 }
 
 //=======================================================================
-//function : Axis1
-//purpose  : 
+// function : Axis1
+// purpose  :
 //=======================================================================
 
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis1() const
@@ -34,8 +34,8 @@ inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis1() const
 }
 
 //=======================================================================
-//function : Axis2
-//purpose  : 
+// function : Axis2
+// purpose  :
 //=======================================================================
 
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis2() const
@@ -44,8 +44,8 @@ inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis2() const
 }
 
 //=======================================================================
-//function : Axis1Reversed
-//purpose  : 
+// function : Axis1Reversed
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TDataXtd_PatternStd::Axis1Reversed() const
@@ -54,8 +54,8 @@ inline Standard_Boolean TDataXtd_PatternStd::Axis1Reversed() const
 }
 
 //=======================================================================
-//function : Axis2Reversed
-//purpose  : 
+// function : Axis2Reversed
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TDataXtd_PatternStd::Axis2Reversed() const
@@ -64,8 +64,8 @@ inline Standard_Boolean TDataXtd_PatternStd::Axis2Reversed() const
 }
 
 //=======================================================================
-//function : Value1
-//purpose  : 
+// function : Value1
+// purpose  :
 //=======================================================================
 
 inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value1() const
@@ -74,8 +74,8 @@ inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value1() const
 }
 
 //=======================================================================
-//function : Value2
-//purpose  : 
+// function : Value2
+// purpose  :
 //=======================================================================
 
 inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value2() const
@@ -84,8 +84,8 @@ inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value2() const
 }
 
 //=======================================================================
-//function : NbInstances1
-//purpose  : 
+// function : NbInstances1
+// purpose  :
 //=======================================================================
 
 inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances1() const
@@ -94,8 +94,8 @@ inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances1() const
 }
 
 //=======================================================================
-//function : NbInstances2
-//purpose  : 
+// function : NbInstances2
+// purpose  :
 //=======================================================================
 
 inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances2() const
@@ -104,12 +104,11 @@ inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances2() const
 }
 
 //=======================================================================
-//function : Mirror
-//purpose  : 
+// function : Mirror
+// purpose  :
 //=======================================================================
 
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Mirror() const
 {
   return myMirror;
 }
-

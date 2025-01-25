@@ -31,10 +31,9 @@ class HLRAlgo_PolyAlgo : public Standard_Transient
 {
 
 public:
-
   Standard_EXPORT HLRAlgo_PolyAlgo();
 
-  Standard_EXPORT void Init (const Standard_Integer theNbShells);
+  Standard_EXPORT void Init(const Standard_Integer theNbShells);
 
   const NCollection_Array1<Handle(HLRAlgo_PolyShellData)>& PolyShell() const { return myHShell; }
 
@@ -56,12 +55,12 @@ public:
   Standard_EXPORT void NextHide();
 
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide (HLRAlgo_EdgeStatus& status,
-                                                  Standard_Integer& Index,
-                                                  Standard_Boolean& reg1,
-                                                  Standard_Boolean& regn,
-                                                  Standard_Boolean& outl,
-                                                  Standard_Boolean& intl);
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide(HLRAlgo_EdgeStatus& status,
+                                                 Standard_Integer&   Index,
+                                                 Standard_Boolean&   reg1,
+                                                 Standard_Boolean&   regn,
+                                                 Standard_Boolean&   outl,
+                                                 Standard_Boolean&   intl);
 
   void InitShow()
   {
@@ -74,23 +73,21 @@ public:
   Standard_EXPORT void NextShow();
 
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show (Standard_Integer& Index,
-                                                  Standard_Boolean& reg1,
-                                                  Standard_Boolean& regn,
-                                                  Standard_Boolean& outl,
-                                                  Standard_Boolean& intl);
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show(Standard_Integer& Index,
+                                                 Standard_Boolean& reg1,
+                                                 Standard_Boolean& regn,
+                                                 Standard_Boolean& outl,
+                                                 Standard_Boolean& intl);
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo, Standard_Transient)
 
 private:
-
   NCollection_Array1<Handle(HLRAlgo_PolyShellData)> myHShell;
-  HLRAlgo_PolyData::Triangle myTriangle;
-  HLRAlgo_ListIteratorOfListOfBPoint mySegListIt;
-  Standard_Integer myNbrShell;
-  Standard_Integer myCurShell;
-  Standard_Boolean myFound;
-
+  HLRAlgo_PolyData::Triangle                        myTriangle;
+  HLRAlgo_ListIteratorOfListOfBPoint                mySegListIt;
+  Standard_Integer                                  myNbrShell;
+  Standard_Integer                                  myCurShell;
+  Standard_Boolean                                  myFound;
 };
 
 #endif // _HLRAlgo_PolyAlgo_HeaderFile

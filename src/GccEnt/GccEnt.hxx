@@ -28,7 +28,6 @@ class gp_Lin2d;
 class GccEnt_QualifiedCirc;
 class gp_Circ2d;
 
-
 //! This package provides an implementation of the qualified
 //! entities useful to create 2d entities with geometric
 //! constraints. The qualifier explains which subfamily of
@@ -47,31 +46,29 @@ class gp_Circ2d;
 //! subfamilies exist. For example, it is not used for a point.
 //! Note:    the interior of a curve is defined as the left-hand
 //! side of the curve in relation to its orientation.
-class GccEnt 
+class GccEnt
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-
   //! Prints the name of Position type as a String on the Stream.
-  static Standard_OStream& Print (const GccEnt_Position thePosition, Standard_OStream& theStream)
+  static Standard_OStream& Print(const GccEnt_Position thePosition, Standard_OStream& theStream)
   {
-    return (theStream << PositionToString (thePosition));
+    return (theStream << PositionToString(thePosition));
   }
 
   //! Returns the string name for a given position.
   //! @param thePosition position type
   //! @return string identifier from the list UNQUALIFIED ENCLOSING ENCLOSED OUTSIDE NOQUALIFIER
-  Standard_EXPORT static Standard_CString PositionToString (GccEnt_Position thePosition);
+  Standard_EXPORT static Standard_CString PositionToString(GccEnt_Position thePosition);
 
   //! Returns the position from the given string identifier (using case-insensitive comparison).
   //! @param thePositionString string identifier
   //! @return position or GccEnt_unqualified if string identifier is invalid
-  static GccEnt_Position PositionFromString (Standard_CString thePositionString)
+  static GccEnt_Position PositionFromString(Standard_CString thePositionString)
   {
     GccEnt_Position aPosition = GccEnt_unqualified;
-    PositionFromString (thePositionString, aPosition);
+    PositionFromString(thePositionString, aPosition);
     return aPosition;
   }
 
@@ -79,51 +76,49 @@ public:
   //! @param thePositionString string identifier
   //! @param thePosition detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static Standard_Boolean PositionFromString (Standard_CString thePositionString,
-                                                              GccEnt_Position& thePosition);
-  
+  Standard_EXPORT static Standard_Boolean PositionFromString(Standard_CString thePositionString,
+                                                             GccEnt_Position& thePosition);
+
   //! Constructs a qualified line,
   //! so that the relative position to the circle or line of the
   //! solution computed by a construction algorithm using the
   //! qualified circle or line is not qualified, i.e. all solutions apply.
-  Standard_EXPORT static GccEnt_QualifiedLin Unqualified (const gp_Lin2d& Obj);
-  
+  Standard_EXPORT static GccEnt_QualifiedLin Unqualified(const gp_Lin2d& Obj);
+
   //! Constructs a qualified circle
   //! so that the relative position to the circle or line of the
   //! solution computed by a construction algorithm using the
   //! qualified circle or line is not qualified, i.e. all solutions apply.
-  Standard_EXPORT static GccEnt_QualifiedCirc Unqualified (const gp_Circ2d& Obj);
-  
+  Standard_EXPORT static GccEnt_QualifiedCirc Unqualified(const gp_Circ2d& Obj);
 
   //! Constructs such a qualified circle that the solution
   //! computed by a construction algorithm using the qualified
   //! circle encloses the circle.
-  Standard_EXPORT static GccEnt_QualifiedCirc Enclosing (const gp_Circ2d& Obj);
-  
-  //! Constructs a qualified line,
-  //! so that the solution computed by a construction
-  //! algorithm using the qualified circle or line is enclosed by
-  //! the circle or line.
-  Standard_EXPORT static GccEnt_QualifiedLin Enclosed (const gp_Lin2d& Obj);
-  
-  //! Constructs a qualified circle
-  //! so that the solution computed by a construction
-  //! algorithm using the qualified circle or line is enclosed by
-  //! the circle or line.
-  Standard_EXPORT static GccEnt_QualifiedCirc Enclosed (const gp_Circ2d& Obj);
-  
-  //! Constructs a qualified line,
-  //! so that the solution computed by a construction
-  //! algorithm using the qualified circle or line and the circle
-  //! or line are external to one another.
-  Standard_EXPORT static GccEnt_QualifiedLin Outside (const gp_Lin2d& Obj);
-  
-  //! Constructs a qualified circle
-  //! so that the solution computed by a construction
-  //! algorithm using the qualified circle or line and the circle
-  //! or line are external to one another.
-  Standard_EXPORT static GccEnt_QualifiedCirc Outside (const gp_Circ2d& Obj);
+  Standard_EXPORT static GccEnt_QualifiedCirc Enclosing(const gp_Circ2d& Obj);
 
+  //! Constructs a qualified line,
+  //! so that the solution computed by a construction
+  //! algorithm using the qualified circle or line is enclosed by
+  //! the circle or line.
+  Standard_EXPORT static GccEnt_QualifiedLin Enclosed(const gp_Lin2d& Obj);
+
+  //! Constructs a qualified circle
+  //! so that the solution computed by a construction
+  //! algorithm using the qualified circle or line is enclosed by
+  //! the circle or line.
+  Standard_EXPORT static GccEnt_QualifiedCirc Enclosed(const gp_Circ2d& Obj);
+
+  //! Constructs a qualified line,
+  //! so that the solution computed by a construction
+  //! algorithm using the qualified circle or line and the circle
+  //! or line are external to one another.
+  Standard_EXPORT static GccEnt_QualifiedLin Outside(const gp_Lin2d& Obj);
+
+  //! Constructs a qualified circle
+  //! so that the solution computed by a construction
+  //! algorithm using the qualified circle or line and the circle
+  //! or line are external to one another.
+  Standard_EXPORT static GccEnt_QualifiedCirc Outside(const gp_Circ2d& Obj);
 };
 
 #endif // _GccEnt_HeaderFile

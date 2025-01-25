@@ -18,25 +18,28 @@
 // Purpose:
 // ============================================================================
 StepData_Factors::StepData_Factors()
-  :myLengthFactor(1.), myPlaneAngleFactor(1.),
-   mySolidAngleFactor(1.), myFactRD(1.),
-   myFactDR(1.), myCascadeUnit(1.)
-{}
+    : myLengthFactor(1.),
+      myPlaneAngleFactor(1.),
+      mySolidAngleFactor(1.),
+      myFactRD(1.),
+      myFactDR(1.),
+      myCascadeUnit(1.)
+{
+}
 
 // ============================================================================
 // Method : InitializeFactors
 // Purpose:
 // ============================================================================
-void StepData_Factors::InitializeFactors(
-  const Standard_Real theLengthFactor,
-  const Standard_Real thePlaneAngleFactor,
-  const Standard_Real theSolidAngleFactor)
+void StepData_Factors::InitializeFactors(const Standard_Real theLengthFactor,
+                                         const Standard_Real thePlaneAngleFactor,
+                                         const Standard_Real theSolidAngleFactor)
 {
-  myLengthFactor = theLengthFactor;
+  myLengthFactor     = theLengthFactor;
   myPlaneAngleFactor = thePlaneAngleFactor;
   mySolidAngleFactor = theSolidAngleFactor;
-  myFactRD = 1. / thePlaneAngleFactor;
-  myFactDR = thePlaneAngleFactor;
+  myFactRD           = 1. / thePlaneAngleFactor;
+  myFactDR           = thePlaneAngleFactor;
 }
 
 // ============================================================================

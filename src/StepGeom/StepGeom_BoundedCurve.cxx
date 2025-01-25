@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BoundedCurve,StepGeom_Curve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BoundedCurve, StepGeom_Curve)
 
-StepGeom_BoundedCurve::StepGeom_BoundedCurve ()  {}
-
+StepGeom_BoundedCurve::StepGeom_BoundedCurve() {}

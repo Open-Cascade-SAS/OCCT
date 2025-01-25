@@ -37,88 +37,99 @@ class BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox;
 class BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox;
 class AppParCurves_MultiBSpCurve;
 
-
-
-class BRepApprox_MyBSplGradientOfTheComputeLineOfApprox 
+class BRepApprox_MyBSplGradientOfTheComputeLineOfApprox
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Tries to minimize the sum (square(||Qui - Bi*Pi||))
   //! where Pui describe the approximating BSpline curves'Poles
   //! and Qi the MultiLine points with a parameter ui.
   //! In this algorithm, the parameters ui are the unknowns.
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
-  Standard_EXPORT BRepApprox_MyBSplGradientOfTheComputeLineOfApprox(const BRepApprox_TheMultiLineOfApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, math_Vector& Parameters, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer Deg, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer NbIterations = 1);
-  
+  Standard_EXPORT BRepApprox_MyBSplGradientOfTheComputeLineOfApprox(
+    const BRepApprox_TheMultiLineOfApprox&                SSP,
+    const Standard_Integer                                FirstPoint,
+    const Standard_Integer                                LastPoint,
+    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+    math_Vector&                                          Parameters,
+    const TColStd_Array1OfReal&                           Knots,
+    const TColStd_Array1OfInteger&                        Mults,
+    const Standard_Integer                                Deg,
+    const Standard_Real                                   Tol3d,
+    const Standard_Real                                   Tol2d,
+    const Standard_Integer                                NbIterations = 1);
+
   //! Tries to minimize the sum (square(||Qui - Bi*Pi||))
   //! where Pui describe the approximating BSpline curves'Poles
   //! and Qi the MultiLine points with a parameter ui.
   //! In this algorithm, the parameters ui are the unknowns.
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
-  Standard_EXPORT BRepApprox_MyBSplGradientOfTheComputeLineOfApprox(const BRepApprox_TheMultiLineOfApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, math_Vector& Parameters, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer Deg, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer NbIterations, const Standard_Real lambda1, const Standard_Real lambda2);
-  
+  Standard_EXPORT BRepApprox_MyBSplGradientOfTheComputeLineOfApprox(
+    const BRepApprox_TheMultiLineOfApprox&                SSP,
+    const Standard_Integer                                FirstPoint,
+    const Standard_Integer                                LastPoint,
+    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+    math_Vector&                                          Parameters,
+    const TColStd_Array1OfReal&                           Knots,
+    const TColStd_Array1OfInteger&                        Mults,
+    const Standard_Integer                                Deg,
+    const Standard_Real                                   Tol3d,
+    const Standard_Real                                   Tol2d,
+    const Standard_Integer                                NbIterations,
+    const Standard_Real                                   lambda1,
+    const Standard_Real                                   lambda2);
+
   //! returns True if all has been correctly done.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns all the BSpline curves approximating the
   //! MultiLine SSP after minimization of the parameter.
   Standard_EXPORT AppParCurves_MultiBSpCurve Value() const;
-  
+
   //! returns the difference between the old and the new
   //! approximation.
   //! An exception is raised if NotDone.
   //! An exception is raised if Index<1 or Index>NbParameters.
-  Standard_EXPORT Standard_Real Error (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Real Error(const Standard_Integer Index) const;
+
   //! returns the maximum difference between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real MaxError3d() const;
-  
+
   //! returns the maximum difference between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real MaxError2d() const;
-  
+
   //! returns the average error between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real AverageError() const;
 
-
-
-
 protected:
-
-  
-  Standard_EXPORT void Perform (const BRepApprox_TheMultiLineOfApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, math_Vector& Parameters, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer Deg, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer NbIterations = 200);
-
-
-
+  Standard_EXPORT void Perform(const BRepApprox_TheMultiLineOfApprox&                SSP,
+                               const Standard_Integer                                FirstPoint,
+                               const Standard_Integer                                LastPoint,
+                               const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+                               math_Vector&                                          Parameters,
+                               const TColStd_Array1OfReal&                           Knots,
+                               const TColStd_Array1OfInteger&                        Mults,
+                               const Standard_Integer                                Deg,
+                               const Standard_Real                                   Tol3d,
+                               const Standard_Real                                   Tol2d,
+                               const Standard_Integer NbIterations = 200);
 
 private:
-
-
-
   AppParCurves_MultiBSpCurve SCU;
-  math_Vector ParError;
-  Standard_Real AvError;
-  Standard_Real MError3d;
-  Standard_Real MError2d;
-  Standard_Real mylambda1;
-  Standard_Real mylambda2;
-  Standard_Boolean myIsLambdaDefined;
-  Standard_Boolean Done;
-
-
+  math_Vector                ParError;
+  Standard_Real              AvError;
+  Standard_Real              MError3d;
+  Standard_Real              MError2d;
+  Standard_Real              mylambda1;
+  Standard_Real              mylambda2;
+  Standard_Boolean           myIsLambdaDefined;
+  Standard_Boolean           Done;
 };
-
-
-
-
-
-
 
 #endif // _BRepApprox_MyBSplGradientOfTheComputeLineOfApprox_HeaderFile

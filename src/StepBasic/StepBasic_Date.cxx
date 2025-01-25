@@ -11,28 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_Date.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Date,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Date, Standard_Transient)
 
-StepBasic_Date::StepBasic_Date ()  {}
+StepBasic_Date::StepBasic_Date() {}
 
-void StepBasic_Date::Init(
-	const Standard_Integer aYearComponent)
+void StepBasic_Date::Init(const Standard_Integer aYearComponent)
 {
-	// --- classe own fields ---
-	yearComponent = aYearComponent;
+  // --- classe own fields ---
+  yearComponent = aYearComponent;
 }
-
 
 void StepBasic_Date::SetYearComponent(const Standard_Integer aYearComponent)
 {
-	yearComponent = aYearComponent;
+  yearComponent = aYearComponent;
 }
 
 Standard_Integer StepBasic_Date::YearComponent() const
 {
-	return yearComponent;
+  return yearComponent;
 }

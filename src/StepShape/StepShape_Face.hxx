@@ -26,52 +26,32 @@
 class TCollection_HAsciiString;
 class StepShape_FaceBound;
 
-
 class StepShape_Face;
 DEFINE_STANDARD_HANDLE(StepShape_Face, StepShape_TopologicalRepresentationItem)
-
 
 class StepShape_Face : public StepShape_TopologicalRepresentationItem
 {
 
 public:
-
-  
   //! Returns a Face
   Standard_EXPORT StepShape_Face();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFaceBound)& aBounds);
-  
-  Standard_EXPORT virtual void SetBounds (const Handle(StepShape_HArray1OfFaceBound)& aBounds);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
+                            const Handle(StepShape_HArray1OfFaceBound)& aBounds);
+
+  Standard_EXPORT virtual void SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds);
+
   Standard_EXPORT virtual Handle(StepShape_HArray1OfFaceBound) Bounds() const;
-  
-  Standard_EXPORT virtual Handle(StepShape_FaceBound) BoundsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT virtual Handle(StepShape_FaceBound) BoundsValue(const Standard_Integer num) const;
+
   Standard_EXPORT virtual Standard_Integer NbBounds() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_Face,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_Face, StepShape_TopologicalRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfFaceBound) bounds;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_Face_HeaderFile

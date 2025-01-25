@@ -27,7 +27,6 @@
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
 
-
 class TopOpeBRepDS_ShapeShapeInterference;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
 
@@ -36,8 +35,6 @@ class TopOpeBRepDS_ShapeShapeInterference : public TopOpeBRepDS_Interference
 {
 
 public:
-
-  
   //! a shape interferes on shape <G> with shape <S>.
   //! examples :
   //! create a ShapeShapeInterference describing :
@@ -60,37 +57,26 @@ public:
   //! DIFF_ORIENTED :
   //! <S> and <Ancestor> have identical types,
   //! <S> and <Ancestor> orientations are DIFFERENT.
-  Standard_EXPORT TopOpeBRepDS_ShapeShapeInterference(const TopOpeBRepDS_Transition& T, const TopOpeBRepDS_Kind ST, const Standard_Integer S, const TopOpeBRepDS_Kind GT, const Standard_Integer G, const Standard_Boolean GBound, const TopOpeBRepDS_Config C);
-  
+  Standard_EXPORT TopOpeBRepDS_ShapeShapeInterference(const TopOpeBRepDS_Transition& T,
+                                                      const TopOpeBRepDS_Kind        ST,
+                                                      const Standard_Integer         S,
+                                                      const TopOpeBRepDS_Kind        GT,
+                                                      const Standard_Integer         G,
+                                                      const Standard_Boolean         GBound,
+                                                      const TopOpeBRepDS_Config      C);
+
   Standard_EXPORT TopOpeBRepDS_Config Config() const;
-  
+
   Standard_EXPORT Standard_Boolean GBound() const;
-  
-  Standard_EXPORT void SetGBound (const Standard_Boolean b);
-  
 
+  Standard_EXPORT void SetGBound(const Standard_Boolean b);
 
-
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference,TopOpeBRepDS_Interference)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Boolean myGBound;
+  Standard_Boolean    myGBound;
   TopOpeBRepDS_Config myC;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_ShapeShapeInterference_HeaderFile

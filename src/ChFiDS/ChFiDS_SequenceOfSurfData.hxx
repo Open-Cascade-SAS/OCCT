@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(ChFiDS_SurfData)> ChFiDS_SequenceOfSurfData;
 
-
 #endif

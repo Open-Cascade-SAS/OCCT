@@ -21,5 +21,4 @@
 class XCAFDoc_GraphNode;
 typedef NCollection_Sequence<Handle(XCAFDoc_GraphNode)> XCAFDoc_GraphNodeSequence;
 
-
 #endif

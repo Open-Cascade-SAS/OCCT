@@ -53,33 +53,29 @@ class PrsDim_DiameterDimension : public PrsDim_Dimension
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_DiameterDimension, PrsDim_Dimension)
 public:
-
   //! Construct diameter dimension for the circle.
   //! @param[in] theCircle  the circle to measure.
-  Standard_EXPORT PrsDim_DiameterDimension (const gp_Circ& theCircle);
+  Standard_EXPORT PrsDim_DiameterDimension(const gp_Circ& theCircle);
 
   //! Construct diameter dimension for the circle and orient it correspondingly
   //! to the passed plane.
   //! @param[in] theCircle  the circle to measure.
   //! @param[in] thePlane  the plane defining preferred orientation
   //!        for dimension.
-  Standard_EXPORT PrsDim_DiameterDimension (const gp_Circ& theCircle,
-                                            const gp_Pln& thePlane);
+  Standard_EXPORT PrsDim_DiameterDimension(const gp_Circ& theCircle, const gp_Pln& thePlane);
 
   //! Construct diameter on the passed shape, if applicable.
   //! @param[in] theShape  the shape to measure.
-  Standard_EXPORT PrsDim_DiameterDimension (const TopoDS_Shape& theShape);
+  Standard_EXPORT PrsDim_DiameterDimension(const TopoDS_Shape& theShape);
 
   //! Construct diameter on the passed shape, if applicable - and
   //! define the preferred plane to orient the dimension.
   //! @param[in] theShape  the shape to measure.
   //! @param[in] thePlane  the plane defining preferred orientation
   //!        for dimension.
-  Standard_EXPORT PrsDim_DiameterDimension (const TopoDS_Shape& theShape,
-                                            const gp_Pln& thePlane);
+  Standard_EXPORT PrsDim_DiameterDimension(const TopoDS_Shape& theShape, const gp_Pln& thePlane);
 
 public:
-
   //! @return measured geometry circle.
   const gp_Circ& Circle() const { return myCircle; }
 
@@ -90,37 +86,37 @@ public:
   const TopoDS_Shape& Shape() const { return myShape; }
 
 public:
-
   //! Measure diameter of the circle.
   //! The actual dimension plane is used for determining anchor points
   //! on the circle to attach the dimension lines to.
   //! The dimension will become invalid if the diameter of the circle
   //! is less than Precision::Confusion().
   //! @param[in] theCircle  the circle to measure.
-  Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle);
+  Standard_EXPORT void SetMeasuredGeometry(const gp_Circ& theCircle);
 
   //! Measure diameter on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
   //! measurable or if measured diameter value is less than Precision::Confusion().
   //! @param[in] theShape  the shape to measure.
-  Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape);
+  Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape& theShape);
 
   //! @return the display units string.
   Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
-  
+
   //! @return the model units string.
   Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& theUnits) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& theUnits) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void SetTextPosition (const gp_Pnt& theTextPos) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
 
   Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
 
 protected:
-
   //! Override this method to change logic of anchor point computation.
   //! Computes anchor point. Its computation is based on the current
   //! dimension plane. Therfore, anchor point is an intersection of plane
@@ -133,40 +129,40 @@ protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the center of the circle is on the plane.
-  Standard_EXPORT virtual Standard_Boolean CheckPlane (const gp_Pln& thePlane) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePresentation,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePresentation,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                       const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeFlyoutSelection(
+    const Handle(SelectMgr_Selection)&   theSelection,
+    const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
 
 protected:
-
   //! Compute points on the circle sides for the dimension plane.
-  //! Program error exception is raised if the dimension plane "x" direction 
+  //! Program error exception is raised if the dimension plane "x" direction
   //! is orthogonal to plane (the "impossible" case). The passed dimension plane
   //! is the one specially computed to locate dimension presentation in circle.
   //! @param[in] theCircle  the circle.
   //! @param[out] theFirstPnt  the first point.
   //! @param[out] theSecondPnt  the second point.
-  Standard_EXPORT void ComputeSidePoints (const gp_Circ& theCircle,
-                                          gp_Pnt& theFirstPnt,
-                                          gp_Pnt& theSecondPnt);
+  Standard_EXPORT void ComputeSidePoints(const gp_Circ& theCircle,
+                                         gp_Pnt&        theFirstPnt,
+                                         gp_Pnt&        theSecondPnt);
 
-  Standard_EXPORT Standard_Boolean IsValidCircle (const gp_Circ& theCircle) const;
+  Standard_EXPORT Standard_Boolean IsValidCircle(const gp_Circ& theCircle) const;
 
-  Standard_EXPORT Standard_Boolean IsValidAnchor (const gp_Circ& theCircle,
-                                                  const gp_Pnt& thePnt) const;
+  Standard_EXPORT Standard_Boolean IsValidAnchor(const gp_Circ& theCircle,
+                                                 const gp_Pnt&  thePnt) const;
 
 private:
-
-  gp_Circ          myCircle;
-  gp_Pnt           myAnchorPoint;
-  TopoDS_Shape     myShape;
+  gp_Circ      myCircle;
+  gp_Pnt       myAnchorPoint;
+  TopoDS_Shape myShape;
 };
 
 #endif // _PrsDim_DiameterDimension_HeaderFile

@@ -25,7 +25,6 @@ class BVH_BuilderTransient : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(BVH_BuilderTransient, Standard_Transient)
 public:
-
   //! Returns the maximum depth of constructed BVH.
   Standard_Integer MaxTreeDepth() const { return myMaxTreeDepth; }
 
@@ -33,28 +32,22 @@ public:
   Standard_Integer LeafNodeSize() const { return myLeafNodeSize; }
 
   //! Returns parallel flag.
-  inline Standard_Boolean IsParallel() const
-  {
-    return myIsParallel;
-  }
+  inline Standard_Boolean IsParallel() const { return myIsParallel; }
 
   //! Set parallel flag contolling possibility of parallel execution.
-  inline void SetParallel(const Standard_Boolean isParallel)
+  inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
+
+protected:
+  //! Creates new abstract BVH builder.
+  BVH_BuilderTransient(const Standard_Integer theLeafNodeSize,
+                       const Standard_Integer theMaxTreeDepth)
+      : myMaxTreeDepth(theMaxTreeDepth),
+        myLeafNodeSize(theLeafNodeSize),
+        myIsParallel(Standard_False)
   {
-    myIsParallel = isParallel;
   }
 
 protected:
-
-  //! Creates new abstract BVH builder.
-  BVH_BuilderTransient (const Standard_Integer theLeafNodeSize,
-                        const Standard_Integer theMaxTreeDepth)
-  : myMaxTreeDepth (theMaxTreeDepth),
-    myLeafNodeSize (theLeafNodeSize),
-    myIsParallel   (Standard_False) {}
-
-protected:
-
   Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
   Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
   Standard_Boolean myIsParallel;   //!< Parallel execution flag.
@@ -64,33 +57,30 @@ protected:
 //! boxes (AABBs) of abstract objects.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
-template<class T, int N>
+template <class T, int N>
 class BVH_Builder : public BVH_BuilderTransient
 {
 public:
-
   //! Builds BVH using specific algorithm.
-  virtual void Build (BVH_Set<T, N>*       theSet,
-                      BVH_Tree<T, N>*      theBVH,
-                      const BVH_Box<T, N>& theBox) const = 0;
+  virtual void Build(BVH_Set<T, N>*       theSet,
+                     BVH_Tree<T, N>*      theBVH,
+                     const BVH_Box<T, N>& theBox) const = 0;
 
 protected:
-
   //! Creates new abstract BVH builder.
-  BVH_Builder (const Standard_Integer theLeafNodeSize,
-               const Standard_Integer theMaxTreeDepth)
-  : BVH_BuilderTransient (theLeafNodeSize, theMaxTreeDepth) {}
+  BVH_Builder(const Standard_Integer theLeafNodeSize, const Standard_Integer theMaxTreeDepth)
+      : BVH_BuilderTransient(theLeafNodeSize, theMaxTreeDepth)
+  {
+  }
 
   //! Updates depth of constructed BVH tree.
-  void updateDepth (BVH_Tree<T, N>*        theBVH,
-                    const Standard_Integer theLevel) const
+  void updateDepth(BVH_Tree<T, N>* theBVH, const Standard_Integer theLevel) const
   {
     if (theLevel > theBVH->myDepth)
     {
       theBVH->myDepth = theLevel;
     }
   }
-
 };
 
 #endif // _BVH_Builder_Header

@@ -20,12 +20,12 @@
 
 #ifdef _WIN32
 
-#include <windows.h>
+  #include <windows.h>
 typedef HANDLE OSD_PThread;
 
 #else
 
-#include <pthread.h>
+  #include <pthread.h>
 typedef pthread_t OSD_PThread;
 
 #endif

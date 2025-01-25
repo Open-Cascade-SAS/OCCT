@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageModel_ItemBase.hxx>
 #include <inspector/MessageModel_ItemRoot.hxx>
@@ -25,7 +25,7 @@ TreeModel_ItemBasePtr MessageModel_ItemBase::GetRootItem() const
   TreeModel_ItemBasePtr anItem = Parent();
   while (anItem)
   {
-    if (MessageModel_ItemRootPtr aThisRootItem = itemDynamicCast<MessageModel_ItemRoot> (anItem))
+    if (MessageModel_ItemRootPtr aThisRootItem = itemDynamicCast<MessageModel_ItemRoot>(anItem))
     {
       return aThisRootItem;
     }

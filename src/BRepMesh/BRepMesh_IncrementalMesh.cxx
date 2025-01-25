@@ -25,32 +25,32 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
 
 namespace
 {
-  //! Default flag to control parallelization for BRepMesh_IncrementalMesh
-  //! tool returned for Mesh Factory
-  static Standard_Boolean IS_IN_PARALLEL = Standard_False;
-}
+//! Default flag to control parallelization for BRepMesh_IncrementalMesh
+//! tool returned for Mesh Factory
+static Standard_Boolean IS_IN_PARALLEL = Standard_False;
+} // namespace
 
 //=======================================================================
-//function : Default constructor
-//purpose  : 
+// function : Default constructor
+// purpose  :
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
-: myModified(Standard_False),
-  myStatus(IMeshData_NoError)
+    : myModified(Standard_False),
+      myStatus(IMeshData_NoError)
 {
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh( const TopoDS_Shape&    theShape,
-                                                    const Standard_Real    theLinDeflection,
-                                                    const Standard_Boolean isRelative,
-                                                    const Standard_Real    theAngDeflection,
-                                                    const Standard_Boolean isInParallel)
-: myModified(Standard_False),
-  myStatus(IMeshData_NoError)
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape&    theShape,
+                                                   const Standard_Real    theLinDeflection,
+                                                   const Standard_Boolean isRelative,
+                                                   const Standard_Real    theAngDeflection,
+                                                   const Standard_Boolean isInParallel)
+    : myModified(Standard_False),
+      myStatus(IMeshData_NoError)
 {
   myParameters.Deflection = theLinDeflection;
   myParameters.Angle      = theAngDeflection;
@@ -62,42 +62,40 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh( const TopoDS_Shape&    theSh
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
-  const TopoDS_Shape&          theShape,
-  const IMeshTools_Parameters& theParameters,
-  const Message_ProgressRange& theRange)
-  : myParameters(theParameters)
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape&          theShape,
+                                                   const IMeshTools_Parameters& theParameters,
+                                                   const Message_ProgressRange& theRange)
+    : myParameters(theParameters)
 {
   myShape = theShape;
   Perform(theRange);
 }
 
 //=======================================================================
-//function : Destructor
-//purpose  : 
+// function : Destructor
+// purpose  :
 //=======================================================================
-BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
-{
-}
+BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh() {}
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
 void BRepMesh_IncrementalMesh::Perform(const Message_ProgressRange& theRange)
 {
-  Handle(BRepMesh_Context) aContext = new BRepMesh_Context (myParameters.MeshAlgo);
-  Perform (aContext, theRange);
+  Handle(BRepMesh_Context) aContext = new BRepMesh_Context(myParameters.MeshAlgo);
+  Perform(aContext, theRange);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : Perform
+// purpose  :
 //=======================================================================
-void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theContext, const Message_ProgressRange& theRange)
+void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theContext,
+                                       const Message_ProgressRange&      theRange)
 {
   initParameters();
 
@@ -105,7 +103,7 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
   theContext->ChangeParameters()            = myParameters;
   theContext->ChangeParameters().CleanModel = Standard_False;
 
-  Message_ProgressScope aPS(theRange, "Perform incmesh", 10);
+  Message_ProgressScope  aPS(theRange, "Perform incmesh", 10);
   IMeshTools_MeshBuilder aIncMesh(theContext);
   aIncMesh.Perform(aPS.Next(9));
   if (!aPS.More())
@@ -113,7 +111,7 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
     myStatus = IMeshData_UserBreak;
     return;
   }
-  myStatus = IMeshData_NoError;
+  myStatus                              = IMeshData_NoError;
   const Handle(IMeshData_Model)& aModel = theContext->GetModel();
   if (!aModel.IsNull())
   {
@@ -134,27 +132,26 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
 }
 
 //=======================================================================
-//function : Discret
-//purpose  :
+// function : Discret
+// purpose  :
 //=======================================================================
-Standard_Integer BRepMesh_IncrementalMesh::Discret(
-  const TopoDS_Shape&    theShape,
-  const Standard_Real    theDeflection,
-  const Standard_Real    theAngle,
-  BRepMesh_DiscretRoot* &theAlgo)
+Standard_Integer BRepMesh_IncrementalMesh::Discret(const TopoDS_Shape&    theShape,
+                                                   const Standard_Real    theDeflection,
+                                                   const Standard_Real    theAngle,
+                                                   BRepMesh_DiscretRoot*& theAlgo)
 {
-  BRepMesh_IncrementalMesh* anAlgo = new BRepMesh_IncrementalMesh();
+  BRepMesh_IncrementalMesh* anAlgo      = new BRepMesh_IncrementalMesh();
   anAlgo->ChangeParameters().Deflection = theDeflection;
   anAlgo->ChangeParameters().Angle      = theAngle;
   anAlgo->ChangeParameters().InParallel = IS_IN_PARALLEL;
-  anAlgo->SetShape (theShape);
+  anAlgo->SetShape(theShape);
   theAlgo = anAlgo;
   return 0; // no error
 }
 
 //=======================================================================
-//function : IsParallelDefault
-//purpose  :
+// function : IsParallelDefault
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepMesh_IncrementalMesh::IsParallelDefault()
 {
@@ -162,11 +159,10 @@ Standard_Boolean BRepMesh_IncrementalMesh::IsParallelDefault()
 }
 
 //=======================================================================
-//function : Discret
-//purpose  :
+// function : Discret
+// purpose  :
 //=======================================================================
-void BRepMesh_IncrementalMesh::SetParallelDefault(
-  const Standard_Boolean theInParallel)
+void BRepMesh_IncrementalMesh::SetParallelDefault(const Standard_Boolean theInParallel)
 {
   IS_IN_PARALLEL = theInParallel;
 }

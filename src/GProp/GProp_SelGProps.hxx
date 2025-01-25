@@ -27,58 +27,71 @@ class gp_Cone;
 class gp_Sphere;
 class gp_Torus;
 
-
-
 //! Computes the global properties of a bounded
 //! elementary surface in 3d (surface of the gp package)
-class GProp_SelGProps  : public GProp_GProps
+class GProp_SelGProps : public GProp_GProps
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GProp_SelGProps();
-  
-  Standard_EXPORT GProp_SelGProps(const gp_Cylinder& S, const Standard_Real Alpha1, const Standard_Real Alpha2, const Standard_Real Z1, const Standard_Real Z2, const gp_Pnt& SLocation);
-  
-  Standard_EXPORT GProp_SelGProps(const gp_Cone& S, const Standard_Real Alpha1, const Standard_Real Alpha2, const Standard_Real Z1, const Standard_Real Z2, const gp_Pnt& SLocation);
-  
-  Standard_EXPORT GProp_SelGProps(const gp_Sphere& S, const Standard_Real Teta1, const Standard_Real Teta2, const Standard_Real Alpha1, const Standard_Real Alpha2, const gp_Pnt& SLocation);
-  
-  Standard_EXPORT GProp_SelGProps(const gp_Torus& S, const Standard_Real Teta1, const Standard_Real Teta2, const Standard_Real Alpha1, const Standard_Real Alpha2, const gp_Pnt& SLocation);
-  
-  Standard_EXPORT void SetLocation (const gp_Pnt& SLocation);
-  
-  Standard_EXPORT void Perform (const gp_Cylinder& S, const Standard_Real Alpha1, const Standard_Real Alpha2, const Standard_Real Z1, const Standard_Real Z2);
-  
-  Standard_EXPORT void Perform (const gp_Cone& S, const Standard_Real Alpha1, const Standard_Real Alpha2, const Standard_Real Z1, const Standard_Real Z2);
-  
-  Standard_EXPORT void Perform (const gp_Sphere& S, const Standard_Real Teta1, const Standard_Real Teta2, const Standard_Real Alpha1, const Standard_Real Alpha2);
-  
-  Standard_EXPORT void Perform (const gp_Torus& S, const Standard_Real Teta1, const Standard_Real Teta2, const Standard_Real Alpha1, const Standard_Real Alpha2);
 
+  Standard_EXPORT GProp_SelGProps(const gp_Cylinder&  S,
+                                  const Standard_Real Alpha1,
+                                  const Standard_Real Alpha2,
+                                  const Standard_Real Z1,
+                                  const Standard_Real Z2,
+                                  const gp_Pnt&       SLocation);
 
+  Standard_EXPORT GProp_SelGProps(const gp_Cone&      S,
+                                  const Standard_Real Alpha1,
+                                  const Standard_Real Alpha2,
+                                  const Standard_Real Z1,
+                                  const Standard_Real Z2,
+                                  const gp_Pnt&       SLocation);
 
+  Standard_EXPORT GProp_SelGProps(const gp_Sphere&    S,
+                                  const Standard_Real Teta1,
+                                  const Standard_Real Teta2,
+                                  const Standard_Real Alpha1,
+                                  const Standard_Real Alpha2,
+                                  const gp_Pnt&       SLocation);
+
+  Standard_EXPORT GProp_SelGProps(const gp_Torus&     S,
+                                  const Standard_Real Teta1,
+                                  const Standard_Real Teta2,
+                                  const Standard_Real Alpha1,
+                                  const Standard_Real Alpha2,
+                                  const gp_Pnt&       SLocation);
+
+  Standard_EXPORT void SetLocation(const gp_Pnt& SLocation);
+
+  Standard_EXPORT void Perform(const gp_Cylinder&  S,
+                               const Standard_Real Alpha1,
+                               const Standard_Real Alpha2,
+                               const Standard_Real Z1,
+                               const Standard_Real Z2);
+
+  Standard_EXPORT void Perform(const gp_Cone&      S,
+                               const Standard_Real Alpha1,
+                               const Standard_Real Alpha2,
+                               const Standard_Real Z1,
+                               const Standard_Real Z2);
+
+  Standard_EXPORT void Perform(const gp_Sphere&    S,
+                               const Standard_Real Teta1,
+                               const Standard_Real Teta2,
+                               const Standard_Real Alpha1,
+                               const Standard_Real Alpha2);
+
+  Standard_EXPORT void Perform(const gp_Torus&     S,
+                               const Standard_Real Teta1,
+                               const Standard_Real Teta2,
+                               const Standard_Real Alpha1,
+                               const Standard_Real Alpha2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GProp_SelGProps_HeaderFile

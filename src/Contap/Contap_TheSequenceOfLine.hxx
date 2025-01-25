@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Contap_Line> Contap_TheSequenceOfLine;
 
-
 #endif

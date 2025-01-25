@@ -24,42 +24,22 @@
 #include <Plate_LinearXYZConstraint.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
 
-
 //! define m PinPointConstraint driven by m unknown
-class Plate_SampledCurveConstraint 
+class Plate_SampledCurveConstraint
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT Plate_SampledCurveConstraint(const Plate_SequenceOfPinpointConstraint& SOPPC, const Standard_Integer n);
-  
-    const Plate_LinearXYZConstraint& LXYZC() const;
+  Standard_EXPORT Plate_SampledCurveConstraint(const Plate_SequenceOfPinpointConstraint& SOPPC,
+                                               const Standard_Integer                    n);
 
-
-
+  const Plate_LinearXYZConstraint& LXYZC() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Plate_LinearXYZConstraint myLXYZC;
-
-
 };
 
-
 #include <Plate_SampledCurveConstraint.lxx>
-
-
-
-
 
 #endif // _Plate_SampledCurveConstraint_HeaderFile

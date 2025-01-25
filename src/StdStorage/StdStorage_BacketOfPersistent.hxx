@@ -20,7 +20,7 @@
 
 class StdObjMgt_Persistent;
 
-class StdStorage_Bucket 
+class StdStorage_Bucket
 {
   friend class StdStorage_BucketIterator;
   friend class StdStorage_BucketOfPersistent;
@@ -29,20 +29,27 @@ class StdStorage_Bucket
   Standard_Integer       mySpaceSize;
   Standard_Integer       myCurrentSpace;
 
-  void Append(StdObjMgt_Persistent *);
+  void Append(StdObjMgt_Persistent*);
 
   StdObjMgt_Persistent* Value(const Standard_Integer theIndex) const;
 
 public:
-
-  StdStorage_Bucket() : mySpace(0L), mySpaceSize(200000), myCurrentSpace(-1)
+  StdStorage_Bucket()
+      : mySpace(0L),
+        mySpaceSize(200000),
+        myCurrentSpace(-1)
   {
-    mySpace = (StdObjMgt_Persistent**)Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize);
+    mySpace =
+      (StdObjMgt_Persistent**)Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize);
   }
 
-  StdStorage_Bucket(const Standard_Integer theSpaceSize) : mySpace(0L), mySpaceSize(theSpaceSize), myCurrentSpace(-1)
+  StdStorage_Bucket(const Standard_Integer theSpaceSize)
+      : mySpace(0L),
+        mySpaceSize(theSpaceSize),
+        myCurrentSpace(-1)
   {
-    mySpace = (StdObjMgt_Persistent**)Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize);
+    mySpace =
+      (StdObjMgt_Persistent**)Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize);
   }
 
   void Clear();
@@ -50,7 +57,7 @@ public:
   ~StdStorage_Bucket();
 };
 
-class StdStorage_BucketOfPersistent 
+class StdStorage_BucketOfPersistent
 {
   friend class StdStorage_BucketIterator;
   StdStorage_Bucket** myBuckets;
@@ -62,12 +69,10 @@ class StdStorage_BucketOfPersistent
   Standard_Integer    myBucketSize;
 
 public:
-  StdStorage_BucketOfPersistent(const Standard_Integer theBucketSize = 300000, const Standard_Integer theBucketNumber = 100);
+  StdStorage_BucketOfPersistent(const Standard_Integer theBucketSize   = 300000,
+                                const Standard_Integer theBucketNumber = 100);
 
-  Standard_Integer Length() const
-  {
-    return myLength;
-  }
+  Standard_Integer Length() const { return myLength; }
 
   void Append(const Handle(StdObjMgt_Persistent)& sp);
 
@@ -78,10 +83,10 @@ public:
   ~StdStorage_BucketOfPersistent();
 };
 
-class StdStorage_BucketIterator 
+class StdStorage_BucketIterator
 {
-  StdStorage_BucketOfPersistent *myBucket;
-  StdStorage_Bucket             *myCurrentBucket;
+  StdStorage_BucketOfPersistent* myBucket;
+  StdStorage_Bucket*             myCurrentBucket;
   Standard_Integer               myCurrentBucketIndex;
   Standard_Integer               myCurrentIndex;
   Standard_Integer               myBucketNumber;
@@ -95,16 +100,15 @@ public:
 
   StdObjMgt_Persistent* Value() const
   {
-    if (myCurrentBucket) {
+    if (myCurrentBucket)
+    {
       return myCurrentBucket->mySpace[myCurrentIndex];
     }
-    else return 0L;
+    else
+      return 0L;
   }
 
-  Standard_Boolean More() const
-  {
-    return myMoreObject;
-  }
+  Standard_Boolean More() const { return myMoreObject; }
 
   void Next();
 };

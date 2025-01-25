@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_AttributePaneSelector_H
 #define DFBrowserPane_AttributePaneSelector_H
@@ -28,22 +28,21 @@
 class QItemSelectionModel;
 
 //! \class DFBrowserPane_AttributePaneSelector
-//! \brief Container of active selection models. It connects to selection changed signal of the models and
-//! emits one signal for any selection.
+//! \brief Container of active selection models. It connects to selection changed signal of the
+//! models and emits one signal for any selection.
 class DFBrowserPane_AttributePaneSelector : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
   Standard_EXPORT DFBrowserPane_AttributePaneSelector(QObject* theParent);
 
   //! Destructor
   Standard_EXPORT virtual ~DFBrowserPane_AttributePaneSelector();
 
-  //! Fills the pane selection by the given models. Disconnect it from the previous model and connect to new models
-  //! \param theModels a list of selection models
-  Standard_EXPORT void  SetCurrentSelectionModels(const std::list<QItemSelectionModel*>& theModels);
+  //! Fills the pane selection by the given models. Disconnect it from the previous model and
+  //! connect to new models \param theModels a list of selection models
+  Standard_EXPORT void SetCurrentSelectionModels(const std::list<QItemSelectionModel*>& theModels);
 
   //! Clears selection in all selection models using block for selection changed flag
   Standard_EXPORT void ClearSelected();
@@ -54,19 +53,20 @@ signals:
   //! \param theSelected selected items
   //! \param theDeselected deselected items
   //! \param theModel a selection model where the selection happens
-  void tableSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected,
-                              QItemSelectionModel* theModel);
+  void tableSelectionChanged(const QItemSelection& theSelected,
+                             const QItemSelection& theDeselected,
+                             QItemSelectionModel*  theModel);
 protected slots:
 
-  //! Listens selectionChanged() of the model and emits signal tableSelectionChanged filled with the selection model
-  //! \param theSelected selected items
-  //! \param theDeselected deselected items
-  void onTableSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+  //! Listens selectionChanged() of the model and emits signal tableSelectionChanged filled with the
+  //! selection model \param theSelected selected items \param theDeselected deselected items
+  void onTableSelectionChanged(const QItemSelection& theSelected,
+                               const QItemSelection& theDeselected);
 
 private:
-
   std::list<QItemSelectionModel*> mySelectionModels; //!< container of selection models
-  bool mySendSelectionChangeBlocked; //!< flag is selection processing should not performed, avoid cyclic dependency
+  bool mySendSelectionChangeBlocked; //!< flag is selection processing should not performed, avoid
+                                     //!< cyclic dependency
 };
 
 #endif

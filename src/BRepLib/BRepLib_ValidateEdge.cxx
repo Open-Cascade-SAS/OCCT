@@ -19,27 +19,28 @@
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
 //=============================================================================
-//function : BRepLib_ValidateEdge
-//purpose  : Constructor
+// function : BRepLib_ValidateEdge
+// purpose  : Constructor
 //=============================================================================
-BRepLib_ValidateEdge::BRepLib_ValidateEdge(Handle(Adaptor3d_Curve) theReferenceCurve, 
-                                           Handle(Adaptor3d_CurveOnSurface) theOtherCurve, 
-                                           Standard_Boolean theSameParameter):
-  myReferenceCurve(theReferenceCurve),
-  myOtherCurve(theOtherCurve),
-  mySameParameter(theSameParameter),
-  myControlPointsNumber(22),
-  myToleranceForChecking(0),
-  myCalculatedDistance(0),
-  myExitIfToleranceExceeded(Standard_False),
-  myIsDone(Standard_False),
-  myIsExactMethod(Standard_False),
-  myIsMultiThread(Standard_False)
-{ }
+BRepLib_ValidateEdge::BRepLib_ValidateEdge(Handle(Adaptor3d_Curve)          theReferenceCurve,
+                                           Handle(Adaptor3d_CurveOnSurface) theOtherCurve,
+                                           Standard_Boolean                 theSameParameter)
+    : myReferenceCurve(theReferenceCurve),
+      myOtherCurve(theOtherCurve),
+      mySameParameter(theSameParameter),
+      myControlPointsNumber(22),
+      myToleranceForChecking(0),
+      myCalculatedDistance(0),
+      myExitIfToleranceExceeded(Standard_False),
+      myIsDone(Standard_False),
+      myIsExactMethod(Standard_False),
+      myIsMultiThread(Standard_False)
+{
+}
 
 //=============================================================================
-//function : CheckTolerance
-//purpose  : 
+// function : CheckTolerance
+// purpose  :
 //=============================================================================
 Standard_Boolean BRepLib_ValidateEdge::CheckTolerance(Standard_Real theToleranceToCheck)
 {
@@ -47,8 +48,8 @@ Standard_Boolean BRepLib_ValidateEdge::CheckTolerance(Standard_Real theTolerance
 }
 
 //=============================================================================
-//function : GetMaxDistance
-//purpose  : 
+// function : GetMaxDistance
+// purpose  :
 //=============================================================================
 Standard_Real BRepLib_ValidateEdge::GetMaxDistance()
 {
@@ -57,8 +58,8 @@ Standard_Real BRepLib_ValidateEdge::GetMaxDistance()
 }
 
 //=============================================================================
-//function : UpdateTolerance
-//purpose  : 
+// function : UpdateTolerance
+// purpose  :
 //=============================================================================
 void BRepLib_ValidateEdge::UpdateTolerance(Standard_Real& theToleranceToUpdate)
 {
@@ -70,32 +71,33 @@ void BRepLib_ValidateEdge::UpdateTolerance(Standard_Real& theToleranceToUpdate)
 }
 
 //=============================================================================
-//function : correctTolerance
-//purpose  : 
+// function : correctTolerance
+// purpose  :
 //=============================================================================
 Standard_Real BRepLib_ValidateEdge::correctTolerance(Standard_Real theTolerance)
 {
-  const Handle(Adaptor3d_Surface)& aSurface = myOtherCurve->GetSurface();
-  Standard_Real aCurvePrecision = BRepCheck::PrecCurve(*myReferenceCurve);
-  Standard_Real aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
-  Standard_Real aToleranceDelta = (aCurvePrecision > aSurfacePrecision) ? aCurvePrecision : aSurfacePrecision;
+  const Handle(Adaptor3d_Surface)& aSurface          = myOtherCurve->GetSurface();
+  Standard_Real                    aCurvePrecision   = BRepCheck::PrecCurve(*myReferenceCurve);
+  Standard_Real                    aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
+  Standard_Real                    aToleranceDelta =
+    (aCurvePrecision > aSurfacePrecision) ? aCurvePrecision : aSurfacePrecision;
   Standard_Real aCorrectedTolerance = theTolerance + aToleranceDelta;
   return aCorrectedTolerance;
 }
 
 //=============================================================================
-//function : SetExitIfToleranceExceeded
-//purpose  : 
+// function : SetExitIfToleranceExceeded
+// purpose  :
 //=============================================================================
 void BRepLib_ValidateEdge::SetExitIfToleranceExceeded(Standard_Real theToleranceForChecking)
 {
   myExitIfToleranceExceeded = Standard_True;
-  myToleranceForChecking = correctTolerance(theToleranceForChecking);
+  myToleranceForChecking    = correctTolerance(theToleranceForChecking);
 }
 
 //=============================================================================
-//function : Process
-//purpose  : 
+// function : Process
+// purpose  :
 //=============================================================================
 void BRepLib_ValidateEdge::Process()
 {
@@ -110,36 +112,37 @@ void BRepLib_ValidateEdge::Process()
 }
 
 //=============================================================================
-//function : processApprox
-//purpose  : 
+// function : processApprox
+// purpose  :
 //=============================================================================
 void BRepLib_ValidateEdge::processApprox()
 {
-  myIsDone = Standard_True;
+  myIsDone                                  = Standard_True;
   Standard_Real aSquareToleranceForChecking = myToleranceForChecking * myToleranceForChecking;
-  Standard_Real aReferenceFirstParam = myReferenceCurve->FirstParameter();
-  Standard_Real aReferenceLastParam = myReferenceCurve->LastParameter();
-  Standard_Real anOtherFirstParam = myOtherCurve->FirstParameter();
-  Standard_Real anOtherLastParam = myOtherCurve->LastParameter();
-  Standard_Real aMaxSquareDistance = 0.;
+  Standard_Real aReferenceFirstParam        = myReferenceCurve->FirstParameter();
+  Standard_Real aReferenceLastParam         = myReferenceCurve->LastParameter();
+  Standard_Real anOtherFirstParam           = myOtherCurve->FirstParameter();
+  Standard_Real anOtherLastParam            = myOtherCurve->LastParameter();
+  Standard_Real aMaxSquareDistance          = 0.;
 
   Standard_Integer aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
-  Standard_Boolean anIsProjection = (!mySameParameter ||
-    Abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion() ||
-    Abs(anOtherLastParam - aReferenceLastParam) > Precision::PConfusion());
+  Standard_Boolean anIsProjection =
+    (!mySameParameter || Abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion()
+     || Abs(anOtherLastParam - aReferenceLastParam) > Precision::PConfusion());
 
   if (!anIsProjection)
   {
     for (Standard_Integer i = 0; i <= aControlPointsNumber; ++i)
     {
       Standard_Real aControlPointParam =
-        ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam) / aControlPointsNumber;
-      gp_Pnt aReferencePoint = myReferenceCurve->Value(aControlPointParam);
-      gp_Pnt anOtherPoint = myOtherCurve->Value(aControlPointParam);
+        ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
+        / aControlPointsNumber;
+      gp_Pnt        aReferencePoint = myReferenceCurve->Value(aControlPointParam);
+      gp_Pnt        anOtherPoint    = myOtherCurve->Value(aControlPointParam);
       Standard_Real aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
       if (aSquareDistance > aMaxSquareDistance)
       {
-          aMaxSquareDistance = aSquareDistance;
+        aMaxSquareDistance = aSquareDistance;
       }
       // Stop process for best performance
       if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
@@ -151,12 +154,12 @@ void BRepLib_ValidateEdge::processApprox()
   }
   else
   {
-    gp_Pnt aReferencePoint = myReferenceCurve->Value(aReferenceFirstParam);
-    gp_Pnt anOtherPoint = myOtherCurve->Value(anOtherFirstParam);
+    gp_Pnt        aReferencePoint = myReferenceCurve->Value(aReferenceFirstParam);
+    gp_Pnt        anOtherPoint    = myOtherCurve->Value(anOtherFirstParam);
     Standard_Real aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
     if (aSquareDistance > aMaxSquareDistance)
     {
-        aMaxSquareDistance = aSquareDistance;
+      aMaxSquareDistance = aSquareDistance;
     }
     if (myExitIfToleranceExceeded && aMaxSquareDistance > aSquareToleranceForChecking)
     {
@@ -165,7 +168,7 @@ void BRepLib_ValidateEdge::processApprox()
     }
 
     aReferencePoint = myReferenceCurve->Value(aReferenceLastParam);
-    anOtherPoint = myOtherCurve->Value(anOtherLastParam);
+    anOtherPoint    = myOtherCurve->Value(anOtherLastParam);
     aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
     if (aSquareDistance > aMaxSquareDistance)
     {
@@ -178,13 +181,23 @@ void BRepLib_ValidateEdge::processApprox()
     }
 
     Extrema_LocateExtPC aReferenceExtrema, anOtherExtrema;
-    aReferenceExtrema.Initialize(*myReferenceCurve, aReferenceFirstParam, aReferenceLastParam, myReferenceCurve->Resolution(Precision::Confusion()));
-    anOtherExtrema.Initialize(*myOtherCurve, anOtherFirstParam, anOtherLastParam, myOtherCurve->Resolution(Precision::Confusion()));
+    aReferenceExtrema.Initialize(*myReferenceCurve,
+                                 aReferenceFirstParam,
+                                 aReferenceLastParam,
+                                 myReferenceCurve->Resolution(Precision::Confusion()));
+    anOtherExtrema.Initialize(*myOtherCurve,
+                              anOtherFirstParam,
+                              anOtherLastParam,
+                              myOtherCurve->Resolution(Precision::Confusion()));
     for (Standard_Integer i = 1; i < aControlPointsNumber; i++)
     {
-      Standard_Real aReferenceParam = ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam) / aControlPointsNumber;
-      gp_Pnt aReferenceExtremaPoint = myReferenceCurve->Value(aReferenceParam);
-      Standard_Real anOtherParam = ((aControlPointsNumber - i) * anOtherFirstParam + i * anOtherLastParam) / aControlPointsNumber;
+      Standard_Real aReferenceParam =
+        ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
+        / aControlPointsNumber;
+      gp_Pnt        aReferenceExtremaPoint = myReferenceCurve->Value(aReferenceParam);
+      Standard_Real anOtherParam =
+        ((aControlPointsNumber - i) * anOtherFirstParam + i * anOtherLastParam)
+        / aControlPointsNumber;
       gp_Pnt anOtherExtremaPoint = myOtherCurve->Value(anOtherParam);
 
       aReferenceExtrema.Perform(anOtherExtremaPoint, aReferenceParam);
@@ -232,8 +245,8 @@ void BRepLib_ValidateEdge::processApprox()
 }
 
 //=============================================================================
-//function : processExact
-//purpose  : 
+// function : processExact
+// purpose  :
 //=============================================================================
 void BRepLib_ValidateEdge::processExact()
 {
@@ -246,4 +259,3 @@ void BRepLib_ValidateEdge::processExact()
     myCalculatedDistance = aCheckCurveOnSurface.MaxDistance();
   }
 }
-

@@ -11,39 +11,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentUsageConstraint.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint, Standard_Transient)
 
-StepBasic_DocumentUsageConstraint::StepBasic_DocumentUsageConstraint  ()    {  }
+StepBasic_DocumentUsageConstraint::StepBasic_DocumentUsageConstraint() {}
 
-void  StepBasic_DocumentUsageConstraint::Init
-  (const Handle(StepBasic_Document)& aSource,
-   const Handle(TCollection_HAsciiString)& ase,
-   const Handle(TCollection_HAsciiString)& asev)
+void StepBasic_DocumentUsageConstraint::Init(const Handle(StepBasic_Document)&       aSource,
+                                             const Handle(TCollection_HAsciiString)& ase,
+                                             const Handle(TCollection_HAsciiString)& asev)
 {
   theSource = aSource;
-  theSE  = ase;
-  theSEV = asev;
+  theSE     = ase;
+  theSEV    = asev;
 }
 
-Handle(StepBasic_Document)  StepBasic_DocumentUsageConstraint::Source () const
-{  return theSource;  }
+Handle(StepBasic_Document) StepBasic_DocumentUsageConstraint::Source() const
+{
+  return theSource;
+}
 
-void  StepBasic_DocumentUsageConstraint::SetSource (const Handle(StepBasic_Document)& aSource)
-{  theSource = aSource;  }
+void StepBasic_DocumentUsageConstraint::SetSource(const Handle(StepBasic_Document)& aSource)
+{
+  theSource = aSource;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentUsageConstraint::SubjectElement () const
-{  return theSE;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentUsageConstraint::SubjectElement() const
+{
+  return theSE;
+}
 
-void  StepBasic_DocumentUsageConstraint::SetSubjectElement (const Handle(TCollection_HAsciiString)& ase)
-{  theSE  = ase;  }
+void StepBasic_DocumentUsageConstraint::SetSubjectElement(
+  const Handle(TCollection_HAsciiString)& ase)
+{
+  theSE = ase;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentUsageConstraint::SubjectElementValue () const
-{  return theSEV;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentUsageConstraint::SubjectElementValue() const
+{
+  return theSEV;
+}
 
-void  StepBasic_DocumentUsageConstraint::SetSubjectElementValue (const Handle(TCollection_HAsciiString)& asev)
-{  theSEV = asev;  }
+void StepBasic_DocumentUsageConstraint::SetSubjectElementValue(
+  const Handle(TCollection_HAsciiString)& asev)
+{
+  theSEV = asev;
+}

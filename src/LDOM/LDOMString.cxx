@@ -17,57 +17,54 @@
 #include <LDOM_MemManager.hxx>
 
 //=======================================================================
-//function : CreateDirectString
-//purpose  : Only for hashed strings!!
+// function : CreateDirectString
+// purpose  : Only for hashed strings!!
 //=======================================================================
 
-LDOMString LDOMString::CreateDirectString (const char             * aValue,
-                                           const LDOM_MemManager& aDoc)
+LDOMString LDOMString::CreateDirectString(const char* aValue, const LDOM_MemManager& aDoc)
 {
   LDOMString aResult;
   aResult.myPtrDoc = &aDoc;
-  aResult.SetDirect (LDOMBasicString::LDOM_AsciiHashed, aValue);
+  aResult.SetDirect(LDOMBasicString::LDOM_AsciiHashed, aValue);
   return aResult;
 }
 
 //=======================================================================
-//function : LDOMString
-//purpose  : Copy from another string with allocation in the document
+// function : LDOMString
+// purpose  : Copy from another string with allocation in the document
 //=======================================================================
 
-LDOMString::LDOMString (const LDOMBasicString&          anOther,
-                        const Handle(LDOM_MemManager)&  aDoc)
-     : myPtrDoc (&aDoc -> Self())
+LDOMString::LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemManager)& aDoc)
+    : myPtrDoc(&aDoc->Self())
 {
   myType = anOther.Type();
   switch (myType)
   {
-  case LDOM_Integer:
-    anOther.GetInteger (myVal.i);
-    break;
-  case LDOM_AsciiFree:
-    myType = LDOM_AsciiDoc;
-    Standard_FALLTHROUGH
-  case LDOM_AsciiDocClear:
-  case LDOM_AsciiDoc:
-    {
-      const char * aString = anOther.GetString ();
-      Standard_Integer aLen = (Standard_Integer)(strlen (aString) + 1);
-      myVal.ptr = ((LDOM_MemManager *) myPtrDoc) -> Allocate (aLen);
-      memcpy (myVal.ptr, aString, aLen);
+    case LDOM_Integer:
+      anOther.GetInteger(myVal.i);
+      break;
+    case LDOM_AsciiFree:
+      myType = LDOM_AsciiDoc;
+      Standard_FALLTHROUGH
+    case LDOM_AsciiDocClear:
+    case LDOM_AsciiDoc: {
+      const char*      aString = anOther.GetString();
+      Standard_Integer aLen    = (Standard_Integer)(strlen(aString) + 1);
+      myVal.ptr                = ((LDOM_MemManager*)myPtrDoc)->Allocate(aLen);
+      memcpy(myVal.ptr, aString, aLen);
     }
     break;
-  case LDOM_AsciiHashed:
-    myVal.ptr = (void *)anOther.GetString ();
-    break;
-  default:
-    myType = LDOM_NULL;
+    case LDOM_AsciiHashed:
+      myVal.ptr = (void*)anOther.GetString();
+      break;
+    default:
+      myType = LDOM_NULL;
   }
 }
 
 //=======================================================================
-//function : LDOMString
-//purpose  : Copy from another with allocation in the document if necessary
+// function : LDOMString
+// purpose  : Copy from another with allocation in the document if necessary
 //=======================================================================
 /*
 LDOMString::LDOMString (const LDOMString& anOther, const LDOM_Document& aDoc)

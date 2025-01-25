@@ -25,63 +25,44 @@ class TFunction_Logbook;
 class TDF_Label;
 class BRepPrimAPI_MakeBox;
 
-
 class DNaming_BoxDriver;
 DEFINE_STANDARD_HANDLE(DNaming_BoxDriver, TFunction_Driver)
-
 
 class DNaming_BoxDriver : public TFunction_Driver
 {
 
 public:
-
-  
   //! Constructor
   //! validation
   //! ==========
   Standard_EXPORT DNaming_BoxDriver();
-  
+
   //! Validates labels of a function in <log>.
   //! In regeneration mode this method must be called (by the
   //! solver) even if the function is not executed, to build
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean MustExecute(
+    const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& theLog) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DNaming_BoxDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_BoxDriver, TFunction_Driver)
 
 protected:
-
-
-
-
 private:
-
-  
-  Standard_EXPORT void LoadNamingDS (const TDF_Label& theResultLabel, BRepPrimAPI_MakeBox& mkBox) const;
-
-
-
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&     theResultLabel,
+                                    BRepPrimAPI_MakeBox& mkBox) const;
 };
-
-
-
-
-
-
 
 #endif // _DNaming_BoxDriver_HeaderFile

@@ -19,8 +19,7 @@
 #include <IntTools_CurveRangeSample.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<IntTools_CurveRangeSample> IntTools_MapOfCurveSample;
+typedef NCollection_Map<IntTools_CurveRangeSample>           IntTools_MapOfCurveSample;
 typedef NCollection_Map<IntTools_CurveRangeSample>::Iterator IntTools_MapIteratorOfMapOfCurveSample;
-
 
 #endif

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx>
@@ -28,8 +27,8 @@
 #define MDShaodmoiloi TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference
 
 //=======================================================================
-//function : TopOpeBRepDS_TKI
-//purpose  : 
+// function : TopOpeBRepDS_TKI
+// purpose  :
 //=======================================================================
 TopOpeBRepDS_TKI::TopOpeBRepDS_TKI()
 {
@@ -37,203 +36,230 @@ TopOpeBRepDS_TKI::TopOpeBRepDS_TKI()
 }
 
 //=======================================================================
-//function : Reset
-//purpose  : private
+// function : Reset
+// purpose  : private
 //=======================================================================
 void TopOpeBRepDS_TKI::Reset()
 {
   Standard_Integer ip = (Standard_Integer)TopOpeBRepDS_POINT;
   Standard_Integer is = (Standard_Integer)TopOpeBRepDS_SOLID;
-  if (ip > is ) {
+  if (ip > is)
+  {
     throw Standard_ProgramError("TopOpeBRepDS_TKI : enumeration badly ordered");
     return;
   }
-  Standard_Integer f = 1;           // first index of table
-  Standard_Integer l = f + (is-ip); // last index of table
-  mydelta = f - ip;
+  Standard_Integer f = 1;             // first index of table
+  Standard_Integer l = f + (is - ip); // last index of table
+  mydelta            = f - ip;
   // k + mydelta = i in [f,l]; TopOpeBRepDS_POINT,SOLID + mydelta = f,l
-  if (myT.IsNull()) myT = new MDShaodmoiloi(f,l);
+  if (myT.IsNull())
+    myT = new MDShaodmoiloi(f, l);
   Clear();
   myK = TopOpeBRepDS_UNKNOWN;
   myG = 0;
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::Clear()
 {
-  Standard_Integer i=myT->Lower(), n=myT->Upper();
-  for (; i<=n; i++) myT->ChangeValue(i).Clear();
+  Standard_Integer i = myT->Lower(), n = myT->Upper();
+  for (; i <= n; i++)
+    myT->ChangeValue(i).Clear();
 }
 
 //=======================================================================
-//function : FillOnGeometry
-//purpose  : 
+// function : FillOnGeometry
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::FillOnGeometry(const TopOpeBRepDS_ListOfInterference& L)
 {
-  for(TopOpeBRepDS_ListIteratorOfListOfInterference it(L);it.More();it.Next()) {
+  for (TopOpeBRepDS_ListIteratorOfListOfInterference it(L); it.More(); it.Next())
+  {
     const Handle(TopOpeBRepDS_Interference)& I = it.Value();
-    TopOpeBRepDS_Kind GT,ST; Standard_Integer G,S;
-    FDS_data(I,GT,G,ST,S);
-    Add(GT,G,I);
+    TopOpeBRepDS_Kind                        GT, ST;
+    Standard_Integer                         G, S;
+    FDS_data(I, GT, G, ST, S);
+    Add(GT, G, I);
   }
 }
 
 //=======================================================================
-//function : FillOnSupport
-//purpose  : 
+// function : FillOnSupport
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::FillOnSupport(const TopOpeBRepDS_ListOfInterference& L)
 {
-  for(TopOpeBRepDS_ListIteratorOfListOfInterference it(L);it.More();it.Next()) {
+  for (TopOpeBRepDS_ListIteratorOfListOfInterference it(L); it.More(); it.Next())
+  {
     const Handle(TopOpeBRepDS_Interference)& I = it.Value();
-    TopOpeBRepDS_Kind GT,ST; Standard_Integer G,S;
-    FDS_data(I,GT,G,ST,S);
-    Add(ST,S,I);
+    TopOpeBRepDS_Kind                        GT, ST;
+    Standard_Integer                         G, S;
+    FDS_data(I, GT, G, ST, S);
+    Add(ST, S, I);
   }
 }
 
 //=======================================================================
-//function : IsBound
-//purpose  : 
+// function : IsBound
+// purpose  :
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::IsBound(const TopOpeBRepDS_Kind K,const Standard_Integer G) const
+Standard_Boolean TopOpeBRepDS_TKI::IsBound(const TopOpeBRepDS_Kind K,
+                                           const Standard_Integer  G) const
 {
-  if (!IsValidKG(K,G)) return Standard_False;
+  if (!IsValidKG(K, G))
+    return Standard_False;
   Standard_Integer TI = KindToTableIndex(K);
   Standard_Boolean in = myT->Value(TI).IsBound(G);
   return in;
 }
 
 //=======================================================================
-//function : Interferences
-//purpose  : 
+// function : Interferences
+// purpose  :
 //=======================================================================
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::Interferences
-(const TopOpeBRepDS_Kind K,const Standard_Integer G) const
+const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::Interferences(
+  const TopOpeBRepDS_Kind K,
+  const Standard_Integer  G) const
 {
-  Standard_Boolean in = IsBound(K,G);
+  Standard_Boolean in = IsBound(K, G);
   Standard_Integer TI = KindToTableIndex(K);
-  if ( in ) return myT->Value(TI).Find(G);
+  if (in)
+    return myT->Value(TI).Find(G);
   return myEmptyLOI;
 }
 
 //=======================================================================
-//function : ChangeInterferences
-//purpose  : 
+// function : ChangeInterferences
+// purpose  :
 //=======================================================================
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::ChangeInterferences(const TopOpeBRepDS_Kind K,const Standard_Integer G)
+TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::ChangeInterferences(const TopOpeBRepDS_Kind K,
+                                                                       const Standard_Integer  G)
 {
-  Standard_Boolean in = IsBound(K,G);
+  Standard_Boolean in = IsBound(K, G);
   Standard_Integer TI = KindToTableIndex(K);
-  if ( in ) return myT->ChangeValue(TI).ChangeFind(G);
+  if (in)
+    return myT->ChangeValue(TI).ChangeFind(G);
   return myEmptyLOI;
 }
 
 //=======================================================================
-//function : HasInterferences
-//purpose  : 
+// function : HasInterferences
+// purpose  :
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::HasInterferences(const TopOpeBRepDS_Kind K,const Standard_Integer G) const
+Standard_Boolean TopOpeBRepDS_TKI::HasInterferences(const TopOpeBRepDS_Kind K,
+                                                    const Standard_Integer  G) const
 {
-  Standard_Boolean has = IsBound(K,G);
-  if ( has ) {
-    const TopOpeBRepDS_ListOfInterference& loi = Interferences(K,G);
-    Standard_Integer l = loi.Extent();
-    has = (l != 0 ) ;
+  Standard_Boolean has = IsBound(K, G);
+  if (has)
+  {
+    const TopOpeBRepDS_ListOfInterference& loi = Interferences(K, G);
+    Standard_Integer                       l   = loi.Extent();
+    has                                        = (l != 0);
   }
   return has;
 }
 
 //=======================================================================
-//function : Add
-//purpose  : 
+// function : Add
+// purpose  :
 //=======================================================================
-void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G)
+void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K, const Standard_Integer G)
 {
-  Standard_Boolean ok = IsValidKG(K,G);
-  if (!ok) {
+  Standard_Boolean ok = IsValidKG(K, G);
+  if (!ok)
+  {
     throw Standard_ProgramError("TopOpeBRepDS_TKI : Add K G");
     return;
   }
 
-  Standard_Boolean in = IsBound(K,G);
-  Standard_Integer TI = KindToTableIndex(K);
+  Standard_Boolean                in = IsBound(K, G);
+  Standard_Integer                TI = KindToTableIndex(K);
   TopOpeBRepDS_ListOfInterference thelist;
-  if ( !in ) 
+  if (!in)
     myT->ChangeValue(TI).Bind(G, thelist);
 }
 
 //=======================================================================
-//function : Add
-//purpose  : 
+// function : Add
+// purpose  :
 //=======================================================================
-void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G,const Handle(TopOpeBRepDS_Interference)& HI)
+void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind                  K,
+                           const Standard_Integer                   G,
+                           const Handle(TopOpeBRepDS_Interference)& HI)
 {
-  Standard_Boolean ok = IsValidKG(K,G);
-  if (!ok) throw Standard_ProgramError("TopOpeBRepDS_TKI : Add K G HI");
+  Standard_Boolean ok = IsValidKG(K, G);
+  if (!ok)
+    throw Standard_ProgramError("TopOpeBRepDS_TKI : Add K G HI");
 
-  Add(K,G);
-  ChangeInterferences(K,G).Append(HI);
+  Add(K, G);
+  ChangeInterferences(K, G).Append(HI);
 }
 
 //=======================================================================
-//function : DumpTKIIterator
-//purpose  : 
+// function : DumpTKIIterator
+// purpose  :
 //=======================================================================
-void TopOpeBRepDS_TKI::DumpTKIIterator(const TCollection_AsciiString& s1,const TCollection_AsciiString& s2)
+void TopOpeBRepDS_TKI::DumpTKIIterator(const TCollection_AsciiString& s1,
+                                       const TCollection_AsciiString& s2)
 {
-  std::cout<<s1;
+  std::cout << s1;
   Init();
-  while (More()) {
-    TopOpeBRepDS_Kind K;Standard_Integer G;
-    Value(K,G);
+  while (More())
+  {
+    TopOpeBRepDS_Kind K;
+    Standard_Integer  G;
+    Value(K, G);
     Next();
   }
-  std::cout<<s2;
+  std::cout << s2;
   std::cout.flush();
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::Init()
 {
   myK = TopOpeBRepDS_UNKNOWN;
   myG = 0;
-  if (myT.IsNull()) return;
-  myTI = myT->Lower(); myK = TableIndexToKind(myTI);
+  if (myT.IsNull())
+    return;
+  myTI = myT->Lower();
+  myK  = TableIndexToKind(myTI);
   myITM.Initialize(myT->Value(myTI));
   Find();
 }
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::More() const 
+Standard_Boolean TopOpeBRepDS_TKI::More() const
 {
-  Standard_Boolean b = IsValidKG(myK,myG);
+  Standard_Boolean b = IsValidKG(myK, myG);
   return b;
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::Next()
 {
-  if ( MoreITM() ) {
+  if (MoreITM())
+  {
     NextITM();
     Find();
   }
-  else if ( MoreTI() ) {
+  else if (MoreTI())
+  {
     NextTI();
-    if (MoreTI()) {
+    if (MoreTI())
+    {
       myITM.Initialize(myT->Value(myTI));
     }
     Find();
@@ -241,108 +267,125 @@ void TopOpeBRepDS_TKI::Next()
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::Value(TopOpeBRepDS_Kind& K,Standard_Integer& G) const
+const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::Value(TopOpeBRepDS_Kind& K,
+                                                               Standard_Integer&  G) const
 {
-  if ( !More() ) return myEmptyLOI;
-  K = myK; G = myG;
-  return Interferences(K,G);
+  if (!More())
+    return myEmptyLOI;
+  K = myK;
+  G = myG;
+  return Interferences(K, G);
 }
 
 //=======================================================================
-//function : ChangeValue
-//purpose  : 
+// function : ChangeValue
+// purpose  :
 //=======================================================================
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::ChangeValue(TopOpeBRepDS_Kind& K,Standard_Integer& G)
+TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_TKI::ChangeValue(TopOpeBRepDS_Kind& K,
+                                                               Standard_Integer&  G)
 {
-  if ( !More() ) return myEmptyLOI;
-  K = myK; G = myG;
-  return ChangeInterferences(K,G);
+  if (!More())
+    return myEmptyLOI;
+  K = myK;
+  G = myG;
+  return ChangeInterferences(K, G);
 }
 
 //=======================================================================
-//function : MoreTI
-//purpose  : 
+// function : MoreTI
+// purpose  :
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::MoreTI() const 
+Standard_Boolean TopOpeBRepDS_TKI::MoreTI() const
 {
   Standard_Boolean b = IsValidTI(myTI);
   return b;
 }
 
 //=======================================================================
-//function : NextTI
-//purpose  : 
+// function : NextTI
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::NextTI()
 {
-  myTI = myTI + 1; myK = TableIndexToKind(myTI);
+  myTI = myTI + 1;
+  myK  = TableIndexToKind(myTI);
 }
 
 //=======================================================================
-//function : MoreITM
-//purpose  : 
+// function : MoreITM
+// purpose  :
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::MoreITM() const 
+Standard_Boolean TopOpeBRepDS_TKI::MoreITM() const
 {
   Standard_Boolean b = myITM.More();
   return b;
 }
 
 //=======================================================================
-//function : FindITM
-//purpose  : 
+// function : FindITM
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::FindITM()
 {
   Standard_Boolean f = Standard_False;
-  while (MoreITM()) {
+  while (MoreITM())
+  {
     myG = myITM.Key();
-    f = HasInterferences(myK,myG);
-    if (f) break;
-    else myITM.Next();
+    f   = HasInterferences(myK, myG);
+    if (f)
+      break;
+    else
+      myITM.Next();
   }
 }
 
 //=======================================================================
-//function : NextITM
-//purpose  : 
+// function : NextITM
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::NextITM()
 {
-  if ( !MoreITM() ) return;
+  if (!MoreITM())
+    return;
   myITM.Next();
   FindITM();
 }
 
 //=======================================================================
-//function : Find
-//purpose  : 
+// function : Find
+// purpose  :
 //=======================================================================
 void TopOpeBRepDS_TKI::Find()
 {
   Standard_Boolean f = Standard_False;
-  while (MoreTI()) {
-    while (MoreITM()) {
+  while (MoreTI())
+  {
+    while (MoreITM())
+    {
       FindITM();
-      f = HasInterferences(myK,myG);
-      if (f) break;
+      f = HasInterferences(myK, myG);
+      if (f)
+        break;
     }
-    if (f) break;
-    else {
+    if (f)
+      break;
+    else
+    {
       NextTI();
-      if (MoreTI()) {
-	myITM.Initialize(myT->Value(myTI));
+      if (MoreTI())
+      {
+        myITM.Initialize(myT->Value(myTI));
       }
     }
   }
 }
 
 //=======================================================================
-//function : KindToTableIndex
-//purpose  : private
+// function : KindToTableIndex
+// purpose  : private
 //=======================================================================
 Standard_Integer TopOpeBRepDS_TKI::KindToTableIndex(const TopOpeBRepDS_Kind K) const
 {
@@ -352,8 +395,8 @@ Standard_Integer TopOpeBRepDS_TKI::KindToTableIndex(const TopOpeBRepDS_Kind K) c
 }
 
 //=======================================================================
-//function : TableIndexToKind
-//purpose  : private
+// function : TableIndexToKind
+// purpose  : private
 //=======================================================================
 TopOpeBRepDS_Kind TopOpeBRepDS_TKI::TableIndexToKind(const Standard_Integer TI) const
 {
@@ -363,29 +406,30 @@ TopOpeBRepDS_Kind TopOpeBRepDS_TKI::TableIndexToKind(const Standard_Integer TI) 
 }
 
 //=======================================================================
-//function : IsValidTI
-//purpose  : private
+// function : IsValidTI
+// purpose  : private
 //=======================================================================
 Standard_Boolean TopOpeBRepDS_TKI::IsValidTI(const Standard_Integer TI) const
 {
-  if ( myT.IsNull() ) return Standard_False;
-  Standard_Boolean nok = ( TI < myT->Lower() || TI > myT->Upper() );
+  if (myT.IsNull())
+    return Standard_False;
+  Standard_Boolean nok = (TI < myT->Lower() || TI > myT->Upper());
   return !nok;
 }
 
 //=======================================================================
-//function : IsValidK
-//purpose  : private
+// function : IsValidK
+// purpose  : private
 //=======================================================================
 Standard_Boolean TopOpeBRepDS_TKI::IsValidK(const TopOpeBRepDS_Kind K) const
 {
-  Standard_Boolean nok = ( K < TopOpeBRepDS_POINT || K > TopOpeBRepDS_SOLID );
+  Standard_Boolean nok = (K < TopOpeBRepDS_POINT || K > TopOpeBRepDS_SOLID);
   return !nok;
 }
 
 //=======================================================================
-//function : IsValidG
-//purpose  : private
+// function : IsValidG
+// purpose  : private
 //=======================================================================
 Standard_Boolean TopOpeBRepDS_TKI::IsValidG(const Standard_Integer G) const
 {
@@ -394,10 +438,11 @@ Standard_Boolean TopOpeBRepDS_TKI::IsValidG(const Standard_Integer G) const
 }
 
 //=======================================================================
-//function : IsValidKG
-//purpose  : private
+// function : IsValidKG
+// purpose  : private
 //=======================================================================
-Standard_Boolean TopOpeBRepDS_TKI::IsValidKG(const TopOpeBRepDS_Kind K,const Standard_Integer G) const
+Standard_Boolean TopOpeBRepDS_TKI::IsValidKG(const TopOpeBRepDS_Kind K,
+                                             const Standard_Integer  G) const
 {
   Standard_Boolean nok = (!IsValidK(K) || !IsValidG(G));
   return !nok;

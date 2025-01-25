@@ -28,52 +28,37 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
-
 class StepGeom_RationalBSplineCurve;
 DEFINE_STANDARD_HANDLE(StepGeom_RationalBSplineCurve, StepGeom_BSplineCurve)
-
 
 class StepGeom_RationalBSplineCurve : public StepGeom_BSplineCurve
 {
 
 public:
-
-  
   //! Returns a RationalBSplineCurve
   Standard_EXPORT StepGeom_RationalBSplineCurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfReal)& aWeightsData);
-  
-  Standard_EXPORT void SetWeightsData (const Handle(TColStd_HArray1OfReal)& aWeightsData);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
+                            const Standard_Integer                          aDegree,
+                            const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+                            const StepGeom_BSplineCurveForm                 aCurveForm,
+                            const StepData_Logical                          aClosedCurve,
+                            const StepData_Logical                          aSelfIntersect,
+                            const Handle(TColStd_HArray1OfReal)&            aWeightsData);
+
+  Standard_EXPORT void SetWeightsData(const Handle(TColStd_HArray1OfReal)& aWeightsData);
+
   Standard_EXPORT Handle(TColStd_HArray1OfReal) WeightsData() const;
-  
-  Standard_EXPORT Standard_Real WeightsDataValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Standard_Real WeightsDataValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbWeightsData() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_RationalBSplineCurve,StepGeom_BSplineCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_RationalBSplineCurve, StepGeom_BSplineCurve)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfReal) weightsData;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_RationalBSplineCurve_HeaderFile

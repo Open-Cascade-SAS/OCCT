@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Dir;
 
-
 class IGESSolid_SolidOfLinearExtrusion;
 DEFINE_STANDARD_HANDLE(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
 
@@ -36,54 +35,37 @@ class IGESSolid_SolidOfLinearExtrusion : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_SolidOfLinearExtrusion();
-  
+
   //! This method is used to set the fields of the class
   //! SolidOfLinearExtrusion
   //! - aCurve     : the planar curve that is to be translated
   //! - aLength    : the length of extrusion
   //! - aDirection : the vector specifying the direction of extrusion
   //! default (0,0,1)
-  Standard_EXPORT void Init (const Handle(IGESData_IGESEntity)& aCurve, const Standard_Real aLength, const gp_XYZ& aDirection);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aCurve,
+                            const Standard_Real                aLength,
+                            const gp_XYZ&                      aDirection);
+
   //! returns the planar curve that is to be translated
   Standard_EXPORT Handle(IGESData_IGESEntity) Curve() const;
-  
+
   //! returns the Extrusion Length
   Standard_EXPORT Standard_Real ExtrusionLength() const;
-  
+
   //! returns the Extrusion direction
   Standard_EXPORT gp_Dir ExtrusionDirection() const;
-  
+
   //! returns ExtrusionDirection after applying TransformationMatrix
   Standard_EXPORT gp_Dir TransformedExtrusionDirection() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_IGESEntity) theCurve;
-  Standard_Real theLength;
-  gp_XYZ theDirection;
-
-
+  Standard_Real               theLength;
+  gp_XYZ                      theDirection;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_SolidOfLinearExtrusion_HeaderFile

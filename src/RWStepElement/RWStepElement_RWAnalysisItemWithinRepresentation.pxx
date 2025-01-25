@@ -27,48 +27,33 @@ class StepElement_AnalysisItemWithinRepresentation;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for AnalysisItemWithinRepresentation
-class RWStepElement_RWAnalysisItemWithinRepresentation 
+class RWStepElement_RWAnalysisItemWithinRepresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepElement_RWAnalysisItemWithinRepresentation();
-  
+
   //! Reads AnalysisItemWithinRepresentation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(
+    const Handle(StepData_StepReaderData)&                      data,
+    const Standard_Integer                                      num,
+    Handle(Interface_Check)&                                    ach,
+    const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
+
   //! Writes AnalysisItemWithinRepresentation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                        SW,
+    const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepElement_AnalysisItemWithinRepresentation)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepElement_AnalysisItemWithinRepresentation)& ent,
+                             Interface_EntityIterator& iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepElement_RWAnalysisItemWithinRepresentation_HeaderFile

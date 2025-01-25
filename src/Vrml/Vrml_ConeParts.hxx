@@ -17,12 +17,11 @@
 #ifndef _Vrml_ConeParts_HeaderFile
 #define _Vrml_ConeParts_HeaderFile
 
-
 enum Vrml_ConeParts
 {
-Vrml_ConeSIDES,
-Vrml_ConeBOTTOM,
-Vrml_ConeALL
+  Vrml_ConeSIDES,
+  Vrml_ConeBOTTOM,
+  Vrml_ConeALL
 };
 
 #endif // _Vrml_ConeParts_HeaderFile

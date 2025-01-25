@@ -22,7 +22,6 @@
 
 #include <Draw_Interpretor.hxx>
 
-
 //! Contains commands to activate package ShapeUpgrade
 //! List of DRAW commands and corresponding functionalities:
 //! DT_ShapeDivide         - ShapeUpgrade_ShapeDivide
@@ -35,37 +34,16 @@
 //! DT_SupportModification - ShapeUpgrade_DataMapOfShapeSurface
 //! DT_Debug               - ShapeUpgrade::SetDebug
 //! shellsolid             - ShapeAnalysis_Shell/ShapeUpgrade_ShellSewing
-class SWDRAW_ShapeUpgrade 
+class SWDRAW_ShapeUpgrade
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Loads commands defined in ShapeUpgrade
-  Standard_EXPORT static void InitCommands (Draw_Interpretor& theCommands);
-
-
-
+  Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _SWDRAW_ShapeUpgrade_HeaderFile

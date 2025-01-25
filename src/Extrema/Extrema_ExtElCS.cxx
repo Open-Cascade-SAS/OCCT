@@ -40,31 +40,25 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
-Extrema_ExtElCS::Extrema_ExtElCS() 
+Extrema_ExtElCS::Extrema_ExtElCS()
 {
-  myDone = Standard_False;
+  myDone  = Standard_False;
   myIsPar = Standard_False;
   myNbExt = 0;
 }
 
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
-				 const gp_Pln& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C, const gp_Pln& S)
 {
   Perform(C, S);
 }
 
-
-
-void Extrema_ExtElCS::Perform(const gp_Lin& C,
-			      const gp_Pln& S)
+void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Pln& S)
 {
-  myDone = Standard_True;
+  myDone  = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
 
-  if (C.Direction().IsNormal(S.Axis().Direction(),
-                            Precision::Angular()))
+  if (C.Direction().IsNormal(S.Axis().Direction(), Precision::Angular()))
   {
     mySqDist = new TColStd_HArray1OfReal(1, 1);
     mySqDist->SetValue(1, S.SquareDistance(C));
@@ -73,19 +67,14 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
   }
 }
 
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
-				 const gp_Cylinder& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C, const gp_Cylinder& S)
 {
   Perform(C, S);
 }
 
-
-
-void Extrema_ExtElCS::Perform(const gp_Lin& C,
-                              const gp_Cylinder& S)
+void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Cylinder& S)
 {
-  myDone = Standard_False;
+  myDone  = Standard_False;
   myNbExt = 0;
   myIsPar = Standard_False;
 
@@ -93,7 +82,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
 
   Standard_Boolean isParallel = Standard_False;
 
-  Standard_Real radius = S.Radius();
+  Standard_Real  radius = S.Radius();
   Extrema_ExtElC Extrem(gp_Lin(Pos.Axis()), C, Precision::Angular());
   if (Extrem.IsParallel())
   {
@@ -106,12 +95,12 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
     Extrema_POnCurv myPOnC1, myPOnC2;
     Extrem.Points(1, myPOnC1, myPOnC2);
     gp_Pnt PonAxis = myPOnC1.Value();
-    gp_Pnt PC = myPOnC2.Value();
+    gp_Pnt PC      = myPOnC2.Value();
 
     // line intersects the cylinder
     if (radius - PonAxis.Distance(PC) > Precision::PConfusion())
     {
-      IntAna_Quadric theQuadric(S);
+      IntAna_Quadric      theQuadric(S);
       IntAna_IntConicQuad Inters(C, theQuadric);
       if (Inters.IsDone() && Inters.IsInQuadric())
       {
@@ -119,7 +108,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
       }
       else if (Inters.IsDone())
       {
-        myNbExt = Inters.NbPoints();
+        myNbExt   = Inters.NbPoints();
         aStartIdx = myNbExt;
         if (myNbExt > 0)
         {
@@ -132,7 +121,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
           {
             mySqDist->SetValue(i, 0.);
             gp_Pnt P_int = Inters.Point(i);
-            w = Inters.ParamOnConic(i);
+            w            = Inters.ParamOnConic(i);
             Extrema_POnCurv PonC(w, P_int);
             myPoint1->SetValue(i, PonC);
             ElSLib::CylinderParameters(Pos, radius, P_int, u, v);
@@ -150,7 +139,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
       {
         if (aStartIdx == 0)
         {
-          myNbExt = ExPS.NbExt();
+          myNbExt  = ExPS.NbExt();
           mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
           myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
           myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
@@ -162,11 +151,12 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
         {
           myPoint1->SetValue(i, myPOnC2);
           myPoint2->SetValue(i, ExPS.Point(i - aStartIdx));
-          mySqDist->SetValue(i, (myPOnC2.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
+          mySqDist->SetValue(i,
+                             (myPOnC2.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
         }
       }
     }
-    
+
     myDone = Standard_True;
   }
 
@@ -179,8 +169,8 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
     // characteristics to consider given geometries parallel.
     // In the latter case there may be several extremas, thus we look for
     // the one with the lowest distance and use it as a final solution.
-    mySqDist = new TColStd_HArray1OfReal(1, 1);
-    Standard_Real aDist = Extrem.SquareDistance(1);
+    mySqDist                      = new TColStd_HArray1OfReal(1, 1);
+    Standard_Real          aDist  = Extrem.SquareDistance(1);
     const Standard_Integer aNbExt = Extrem.NbExt();
     for (Standard_Integer i = 2; i <= aNbExt; i++)
     {
@@ -190,52 +180,41 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
         aDist = aD;
       }
     }
-      
+
     aDist = sqrt(aDist) - radius;
     mySqDist->SetValue(1, aDist * aDist);
-    myDone = Standard_True;
+    myDone  = Standard_True;
     myIsPar = Standard_True;
     myNbExt = 1;
   }
 }
 
-
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
-				 const gp_Cone& S)
-{  Perform(C, S);}
-
-
-
-//void Extrema_ExtElCS::Perform(const gp_Lin& C,
-//			      const gp_Cone& S)
-void Extrema_ExtElCS::Perform(const gp_Lin& ,
-			      const gp_Cone& )
-{
-  throw Standard_NotImplemented();
-
-}
-
-
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
-				 const gp_Sphere& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C, const gp_Cone& S)
 {
   Perform(C, S);
 }
 
+// void Extrema_ExtElCS::Perform(const gp_Lin& C,
+//			      const gp_Cone& S)
+void Extrema_ExtElCS::Perform(const gp_Lin&, const gp_Cone&)
+{
+  throw Standard_NotImplemented();
+}
 
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C, const gp_Sphere& S)
+{
+  Perform(C, S);
+}
 
-void Extrema_ExtElCS::Perform(const gp_Lin& C,
-                              const gp_Sphere& S)
+void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Sphere& S)
 {
   // In case of intersection - return four points:
   // 2 intersection points and 2 perpendicular.
   // No intersection - only min and max.
 
-  myDone = Standard_False;
-  myNbExt = 0;
-  myIsPar = Standard_False;
+  myDone                     = Standard_False;
+  myNbExt                    = 0;
+  myIsPar                    = Standard_False;
   Standard_Integer aStartIdx = 0;
 
   gp_Pnt aCenter = S.Location();
@@ -243,16 +222,15 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
   Extrema_ExtPElC Extrem(aCenter, C, Precision::Angular(), RealFirst(), RealLast());
 
   Standard_Integer i;
-  if (Extrem.IsDone() &&
-      Extrem.NbExt() > 0)
+  if (Extrem.IsDone() && Extrem.NbExt() > 0)
   {
-    Extrema_POnCurv myPOnC1 =  Extrem.Point(1);
+    Extrema_POnCurv myPOnC1 = Extrem.Point(1);
     if (myPOnC1.Value().Distance(aCenter) <= S.Radius())
     {
       IntAna_IntConicQuad aLinSphere(C, S);
       if (aLinSphere.IsDone())
       {
-        myNbExt = aLinSphere.NbPoints();
+        myNbExt   = aLinSphere.NbPoints();
         aStartIdx = myNbExt;
         // Not more than 2 additional points from perpendiculars.
         mySqDist = new TColStd_HArray1OfReal(1, myNbExt + 2);
@@ -263,13 +241,13 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
         {
           Extrema_POnCurv aCPnt(aLinSphere.ParamOnConic(i), aLinSphere.Point(i));
 
-          Standard_Real u,v;
+          Standard_Real u, v;
           ElSLib::Parameters(S, aLinSphere.Point(i), u, v);
           Extrema_POnSurf aSPnt(u, v, aLinSphere.Point(i));
 
           myPoint1->SetValue(i, aCPnt);
           myPoint2->SetValue(i, aSPnt);
-          mySqDist->SetValue(i,(aCPnt.Value()).SquareDistance(aSPnt.Value()));
+          mySqDist->SetValue(i, (aCPnt.Value()).SquareDistance(aSPnt.Value()));
         }
       }
     }
@@ -279,7 +257,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
     {
       if (aStartIdx == 0)
       {
-        myNbExt = ExPS.NbExt();
+        myNbExt  = ExPS.NbExt();
         mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
         myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
         myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
@@ -291,76 +269,67 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
       {
         myPoint1->SetValue(i, myPOnC1);
         myPoint2->SetValue(i, ExPS.Point(i - aStartIdx));
-        mySqDist->SetValue(i,(myPOnC1.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
+        mySqDist->SetValue(i, (myPOnC1.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
       }
     }
   }
   myDone = Standard_True;
 }
 
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
-				 const gp_Torus& S)
-{  Perform(C, S);}
-
-
-
-//void Extrema_ExtElCS::Perform(const gp_Lin& C,
-//			      const gp_Torus& S)
-void Extrema_ExtElCS::Perform(const gp_Lin& ,
-			      const gp_Torus& )
-{
-  throw Standard_NotImplemented();
-
-}
-
-
-//        Circle-?
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-				 const gp_Pln& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C, const gp_Torus& S)
 {
   Perform(C, S);
 }
 
-
-
-void Extrema_ExtElCS::Perform(const gp_Circ& C,
-                              const gp_Pln& S)
+// void Extrema_ExtElCS::Perform(const gp_Lin& C,
+//			      const gp_Torus& S)
+void Extrema_ExtElCS::Perform(const gp_Lin&, const gp_Torus&)
 {
-  myDone = Standard_True;
+  throw Standard_NotImplemented();
+}
+
+//        Circle-?
+
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Pln& S)
+{
+  Perform(C, S);
+}
+
+void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Pln& S)
+{
+  myDone  = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
 
-  gp_Ax2 Pos = C.Position();
+  gp_Ax2 Pos   = C.Position();
   gp_Dir NCirc = Pos.Direction();
-  gp_Dir NPln = S.Axis().Direction();
+  gp_Dir NPln  = S.Axis().Direction();
 
   Standard_Boolean isParallel = Standard_False;
 
-  if (NCirc.IsParallel(NPln, Precision::Angular())) {
+  if (NCirc.IsParallel(NPln, Precision::Angular()))
+  {
     isParallel = Standard_True;
   }
-  else {
+  else
+  {
 
     gp_Dir ExtLine = NCirc ^ NPln;
-    ExtLine = ExtLine ^ NCirc;
+    ExtLine        = ExtLine ^ NCirc;
     //
-    gp_Dir XDir = Pos.XDirection();
+    gp_Dir        XDir = Pos.XDirection();
     Standard_Real T[2];
     T[0] = XDir.AngleWithRef(ExtLine, NCirc);
-    if(T[0] < 0.)
+    if (T[0] < 0.)
     {
-      //Put in period
+      // Put in period
       T[0] += M_PI;
     }
     T[1] = T[0] + M_PI;
     //
     myNbExt = 2;
-    //Check intersection 
-    IntAna_IntConicQuad anInter(C, S,
-                                Precision::Angular(),
-                                Precision::Confusion());
+    // Check intersection
+    IntAna_IntConicQuad anInter(C, S, Precision::Angular(), Precision::Confusion());
 
     if (anInter.IsDone() && anInter.IsInQuadric())
     {
@@ -368,7 +337,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     }
     else if (anInter.IsDone())
     {
-      if(anInter.NbPoints() > 1)
+      if (anInter.NbPoints() > 1)
       {
         myNbExt += anInter.NbPoints();
       }
@@ -381,10 +350,10 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
 
       Standard_Integer i;
-      gp_Pnt PC, PP;
-      Standard_Real U, V;
-      Extrema_POnCurv POnC;
-      Extrema_POnSurf POnS;
+      gp_Pnt           PC, PP;
+      Standard_Real    U, V;
+      Extrema_POnCurv  POnC;
+      Extrema_POnSurf  POnS;
       for (i = 0; i < 2; ++i)
       {
         PC = ElCLib::CircleValue(T[i], C.Position(), C.Radius());
@@ -399,11 +368,11 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       //
       if (myNbExt > 2)
       {
-        //Add intersection points
+        // Add intersection points
         for (i = 1; i <= anInter.NbPoints(); ++i)
         {
           Standard_Real t = anInter.ParamOnConic(i);
-          PC = ElCLib::CircleValue(t, C.Position(), C.Radius());
+          PC              = ElCLib::CircleValue(t, C.Position(), C.Radius());
           POnC.SetValues(t, PC);
           myPoint1->SetValue(i + 2, POnC);
           ElSLib::PlaneParameters(S.Position(), PC, U, V);
@@ -415,7 +384,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       }
     }
   }
-  
+
   if (isParallel)
   {
     mySqDist = new TColStd_HArray1OfReal(1, 1);
@@ -425,18 +394,14 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
   }
 }
 
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-				 const gp_Cylinder& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Cylinder& S)
 {
   Perform(C, S);
 }
 
-
-
 //  Modified by skv - Thu Jul  7 14:37:05 2005 OCC9134 Begin
 // Implementation of the method.
-void Extrema_ExtElCS::Perform(const gp_Circ& C,
-			      const gp_Cylinder& S)
+void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Cylinder& S)
 {
   myDone  = Standard_False;
   myIsPar = Standard_False;
@@ -453,19 +418,22 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
 
   Standard_Boolean isParallel = Standard_False;
 
-  if (anExtC.IsParallel()) {
+  if (anExtC.IsParallel())
+  {
     isParallel = Standard_True;
-  } else {
-    Standard_Integer aNbExt   = anExtC.NbExt();
-    Standard_Integer i;
-    Standard_Integer aCurI    = 1;
+  }
+  else
+  {
+    Standard_Integer        aNbExt = anExtC.NbExt();
+    Standard_Integer        i;
+    Standard_Integer        aCurI    = 1;
     constexpr Standard_Real aTolConf = Precision::Confusion();
-    Standard_Real    aCylRad  = S.Radius();
+    Standard_Real           aCylRad  = S.Radius();
 
     // Check whether two objects have intersection points
-    IntAna_Quadric aCylQuad(S);
+    IntAna_Quadric      aCylQuad(S);
     IntAna_IntConicQuad aCircCylInter(C, aCylQuad);
-    Standard_Integer aNbInter = 0;
+    Standard_Integer    aNbInter = 0;
     if (aCircCylInter.IsDone() && aCircCylInter.IsInQuadric())
     {
       isParallel = Standard_True;
@@ -478,29 +446,32 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     if (!isParallel)
     {
       // Compute the extremas.
-      myNbExt = 2 * aNbExt + aNbInter;
+      myNbExt  = 2 * aNbExt + aNbInter;
       mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
       myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
       myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
 
-      for (i = 1; i <= aNbExt; i++) {
+      for (i = 1; i <= aNbExt; i++)
+      {
         Extrema_POnCurv aPOnAxis;
         Extrema_POnCurv aPOnCirc;
         Standard_Real   aSqDist = anExtC.SquareDistance(i);
-        Standard_Real   aDist = sqrt(aSqDist);
+        Standard_Real   aDist   = sqrt(aSqDist);
 
         anExtC.Points(i, aPOnAxis, aPOnCirc);
 
-        if (aSqDist <= (aTolConf * aTolConf)) {
+        if (aSqDist <= (aTolConf * aTolConf))
+        {
           myNbExt -= 2;
           continue;
         }
 
-        gp_Dir aDir(aPOnAxis.Value().XYZ().Subtracted(aPOnCirc.Value().XYZ()));
-        Standard_Real aShift[2] = {aDist + aCylRad, aDist - aCylRad};
+        gp_Dir           aDir(aPOnAxis.Value().XYZ().Subtracted(aPOnCirc.Value().XYZ()));
+        Standard_Real    aShift[2] = {aDist + aCylRad, aDist - aCylRad};
         Standard_Integer j;
 
-        for (j = 0; j < 2; j++) {
+        for (j = 0; j < 2; j++)
+        {
           gp_Vec aVec(aDir);
           gp_Pnt aPntOnCyl;
 
@@ -521,7 +492,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       }
 
       // Adding intersection points to the list of extremas
-      for (i=1; i<=aNbInter; i++)
+      for (i = 1; i <= aNbInter; i++)
       {
         Standard_Real aU;
         Standard_Real aV;
@@ -551,9 +522,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     // In the latter case there may be several extremas, thus we look for
     // the one with the lowest distance and use it as a final solution.
 
-    myIsPar = Standard_True;
-    myNbExt = 1;
-    mySqDist = new TColStd_HArray1OfReal(1, 1);
+    myIsPar             = Standard_True;
+    myNbExt             = 1;
+    mySqDist            = new TColStd_HArray1OfReal(1, 1);
     Standard_Real aDist = anExtC.SquareDistance(1);
 
     const Standard_Integer aNbExt = anExtC.NbExt();
@@ -570,45 +541,37 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     mySqDist->SetValue(1, aDist * aDist);
   }
 }
+
 //  Modified by skv - Thu Jul  7 14:37:05 2005 OCC9134 End
 
-
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-				 const gp_Cone& S)
-{  Perform(C, S);}
-
-
-
-//void Extrema_ExtElCS::Perform(const gp_Circ& C,
-//			 const gp_Cone& S)
-void Extrema_ExtElCS::Perform(const gp_Circ& ,
-			 const gp_Cone& )
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Cone& S)
 {
-  throw Standard_NotImplemented();
-
+  Perform(C, S);
 }
 
-
+// void Extrema_ExtElCS::Perform(const gp_Circ& C,
+//			 const gp_Cone& S)
+void Extrema_ExtElCS::Perform(const gp_Circ&, const gp_Cone&)
+{
+  throw Standard_NotImplemented();
+}
 
 //=======================================================================
-//function : Extrema_ExtElCS
-//purpose  : Circle/Sphere
+// function : Extrema_ExtElCS
+// purpose  : Circle/Sphere
 //=======================================================================
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-                                 const gp_Sphere& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Sphere& S)
 {
   Perform(C, S);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : Circle/Sphere
+// function : Perform
+// purpose  : Circle/Sphere
 //=======================================================================
-void Extrema_ExtElCS::Perform(const gp_Circ& C,
-                              const gp_Sphere& S)
+void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
 {
-  myDone = Standard_False;
+  myDone  = Standard_False;
   myIsPar = Standard_False;
   myNbExt = 0;
 
@@ -616,20 +579,20 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
   {
     // Circle and sphere are parallel
     myIsPar = Standard_True;
-    myDone = Standard_True;
+    myDone  = Standard_True;
     myNbExt = 1;
 
     // Compute distance from circle to the sphere
     Standard_Real aSqDistLoc = C.Location().SquareDistance(S.Location());
-    Standard_Real aSqDist = aSqDistLoc + C.Radius() * C.Radius();
-    Standard_Real aDist = sqrt(aSqDist) - S.Radius();
-    mySqDist = new TColStd_HArray1OfReal(1, 1);
+    Standard_Real aSqDist    = aSqDistLoc + C.Radius() * C.Radius();
+    Standard_Real aDist      = sqrt(aSqDist) - S.Radius();
+    mySqDist                 = new TColStd_HArray1OfReal(1, 1);
     mySqDist->SetValue(1, aDist * aDist);
     return;
   }
 
   // Intersect sphere with circle's plane
-  gp_Pln CPln(C.Location(), C.Axis().Direction());
+  gp_Pln             CPln(C.Location(), C.Axis().Direction());
   IntAna_QuadQuadGeo anInter(CPln, S);
   if (!anInter.IsDone())
     // not done
@@ -641,7 +604,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     // The parallel case has already been considered,
     // thus, here we have to find only one minimal solution
     myNbExt = 1;
-    myDone = Standard_True;
+    myDone  = Standard_True;
 
     mySqDist = new TColStd_HArray1OfReal(1, 1);
     myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);
@@ -671,12 +634,13 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
   gp_Circ aCInt = anInter.Circle(1);
 
   // Perform intersection of the input circle with the intersection circle
-  Extrema_ExtElC anExtC(C, aCInt);
-  Standard_Boolean isExtremaCircCircValid =  anExtC.IsDone() // Check if intersection is done
-                                          && !anExtC.IsParallel() // Parallel case has already been considered
-// clang-format off
+  Extrema_ExtElC   anExtC(C, aCInt);
+  Standard_Boolean isExtremaCircCircValid =
+    anExtC.IsDone()         // Check if intersection is done
+    && !anExtC.IsParallel() // Parallel case has already been considered
+                            // clang-format off
                                           && anExtC.NbExt() > 0; // Check that some solutions have been found
-// clang-format on
+                            // clang-format on
   if (!isExtremaCircCircValid)
     // not done
     return;
@@ -729,60 +693,56 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
   }
 }
 
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-				 const gp_Torus& S)
-{  Perform(C, S);}
-
-
-
-//void Extrema_ExtElCS::Perform(const gp_Circ& C,
-//			      const gp_Torus& S)
-void Extrema_ExtElCS::Perform(const gp_Circ& ,
-			      const gp_Torus& )
-{
-  throw Standard_NotImplemented();
-
-}
-
-Extrema_ExtElCS::Extrema_ExtElCS(const gp_Hypr& C,
-				 const gp_Pln& S)
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Torus& S)
 {
   Perform(C, S);
 }
 
-
-
-void Extrema_ExtElCS::Perform(const gp_Hypr& C,
-			      const gp_Pln& S)
+// void Extrema_ExtElCS::Perform(const gp_Circ& C,
+//			      const gp_Torus& S)
+void Extrema_ExtElCS::Perform(const gp_Circ&, const gp_Torus&)
 {
-  myDone = Standard_True;
+  throw Standard_NotImplemented();
+}
+
+Extrema_ExtElCS::Extrema_ExtElCS(const gp_Hypr& C, const gp_Pln& S)
+{
+  Perform(C, S);
+}
+
+void Extrema_ExtElCS::Perform(const gp_Hypr& C, const gp_Pln& S)
+{
+  myDone  = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
 
-  gp_Ax2 Pos = C.Position();
+  gp_Ax2 Pos   = C.Position();
   gp_Dir NHypr = Pos.Direction();
-  gp_Dir NPln = S.Axis().Direction();
+  gp_Dir NPln  = S.Axis().Direction();
 
-  if (NHypr.IsParallel(NPln, Precision::Angular())) {
+  if (NHypr.IsParallel(NPln, Precision::Angular()))
+  {
 
     mySqDist = new TColStd_HArray1OfReal(1, 1);
     mySqDist->SetValue(1, S.SquareDistance(C.Location()));
     myIsPar = Standard_True;
     myNbExt = 1;
   }
-  else {
+  else
+  {
 
     gp_Dir XDir = Pos.XDirection();
     gp_Dir YDir = Pos.YDirection();
 
-    Standard_Real A = C.MinorRadius()*(NPln.Dot(YDir)); 
-    Standard_Real B = C.MajorRadius()*(NPln.Dot(XDir)); 
+    Standard_Real A = C.MinorRadius() * (NPln.Dot(YDir));
+    Standard_Real B = C.MajorRadius() * (NPln.Dot(XDir));
 
-    if(Abs(B) > Abs(A)) {
-      Standard_Real T = -0.5 * Log((A+B)/(B-A));
-      gp_Pnt Ph = ElCLib::HyperbolaValue(T, Pos, C.MajorRadius(), C.MinorRadius());
+    if (Abs(B) > Abs(A))
+    {
+      Standard_Real   T  = -0.5 * Log((A + B) / (B - A));
+      gp_Pnt          Ph = ElCLib::HyperbolaValue(T, Pos, C.MajorRadius(), C.MinorRadius());
       Extrema_POnCurv PC(T, Ph);
-      myPoint1 = new Extrema_HArray1OfPOnCurv(1,1);
+      myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);
       myPoint1->SetValue(1, PC);
 
       mySqDist = new TColStd_HArray1OfReal(1, 1);
@@ -790,9 +750,9 @@ void Extrema_ExtElCS::Perform(const gp_Hypr& C,
 
       Standard_Real U, V;
       ElSLib::PlaneParameters(S.Position(), Ph, U, V);
-      gp_Pnt Pp = ElSLib::PlaneValue(U, V, S.Position());
+      gp_Pnt          Pp = ElSLib::PlaneValue(U, V, S.Position());
       Extrema_POnSurf PS(U, V, Pp);
-      myPoint2 = new Extrema_HArray1OfPOnSurf(1,1);
+      myPoint2 = new Extrema_HArray1OfPOnSurf(1, 1);
       myPoint2->SetValue(1, PS);
 
       myNbExt = 1;
@@ -800,16 +760,15 @@ void Extrema_ExtElCS::Perform(const gp_Hypr& C,
   }
 }
 
-
 Standard_Boolean Extrema_ExtElCS::IsDone() const
 {
   return myDone;
 }
 
-
 Standard_Integer Extrema_ExtElCS::NbExt() const
 {
-  if (!IsDone()) throw StdFail_NotDone();
+  if (!IsDone())
+    throw StdFail_NotDone();
   return myNbExt;
 }
 
@@ -823,10 +782,9 @@ Standard_Real Extrema_ExtElCS::SquareDistance(const Standard_Integer N) const
   return mySqDist->Value(N);
 }
 
-
 void Extrema_ExtElCS::Points(const Standard_Integer N,
-			     Extrema_POnCurv& P1,
-			     Extrema_POnSurf& P2) const
+                             Extrema_POnCurv&       P1,
+                             Extrema_POnSurf&       P2) const
 {
   if (N < 1 || N > NbExt())
   {
@@ -836,7 +794,6 @@ void Extrema_ExtElCS::Points(const Standard_Integer N,
   P1 = myPoint1->Value(N);
   P2 = myPoint2->Value(N);
 }
-
 
 Standard_Boolean Extrema_ExtElCS::IsParallel() const
 {

@@ -20,7 +20,7 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepVisual_PresentationStyleAssignment)> StepVisual_Array1OfPresentationStyleAssignment;
-
+typedef NCollection_Array1<Handle(StepVisual_PresentationStyleAssignment)>
+  StepVisual_Array1OfPresentationStyleAssignment;
 
 #endif

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Trsf> GeomFill_SequenceOfTrsf;
 
-
 #endif

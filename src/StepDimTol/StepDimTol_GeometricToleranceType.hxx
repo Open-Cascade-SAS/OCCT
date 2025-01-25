@@ -16,7 +16,8 @@
 #ifndef _StepDimTol_GeometricToleranceType_HeaderFile
 #define _StepDimTol_GeometricToleranceType_HeaderFile
 
-enum StepDimTol_GeometricToleranceType {
+enum StepDimTol_GeometricToleranceType
+{
   StepDimTol_GTTAngularityTolerance,
   StepDimTol_GTTCircularRunoutTolerance,
   StepDimTol_GTTCoaxialityTolerance,

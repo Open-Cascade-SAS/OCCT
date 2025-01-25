@@ -1,7 +1,7 @@
-// Created on: 2011-10-20 
+// Created on: 2011-10-20
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -35,38 +35,38 @@ public:
   //! Implements point picking
   //! @param[in]  theXPix, theYPix Display coordinates of the point
   //! @param[in]  theView  ICamera interface to update the projection parameters.
-  void Pick (const Standard_Integer    theXPix,
-             const Standard_Integer    theYPix,
-             const IVtk_IView::Handle& theView);
+  void Pick(const Standard_Integer    theXPix,
+            const Standard_Integer    theYPix,
+            const IVtk_IView::Handle& theView);
 
   //! Picking by rectangle
   //! @param[in]  theXMin, theYMin, theXMax, theYMax Rectangle coords
   //! @param[in]  theView ICamera interface to calculate projections
-  void Pick (const Standard_Integer    theXMin,
-             const Standard_Integer    theYMin,
-             const Standard_Integer    theXMax,
-             const Standard_Integer    theYMax,
-             const IVtk_IView::Handle& theView);
+  void Pick(const Standard_Integer    theXMin,
+            const Standard_Integer    theYMin,
+            const Standard_Integer    theXMax,
+            const Standard_Integer    theYMax,
+            const IVtk_IView::Handle& theView);
 
   //! Implements point picking
-  void Pick (double** thePoly, const int theNbPoints, const IVtk_IView::Handle& theView);
+  void Pick(double** thePoly, const int theNbPoints, const IVtk_IView::Handle& theView);
 
   //! Activates the given selection
-  void Activate (const Handle(SelectMgr_Selection)& theSelection);
+  void Activate(const Handle(SelectMgr_Selection)& theSelection);
 
   //! Deactivate the given selection
-  void Deactivate (const Handle(SelectMgr_Selection)& theSelection);
+  void Deactivate(const Handle(SelectMgr_Selection)& theSelection);
 
   //! Converts VTK camera defiened for input view to OCC camera
-  static Handle(Graphic3d_Camera) ConvertVtkToOccCamera (const IVtk_IView::Handle& theView);
+  static Handle(Graphic3d_Camera) ConvertVtkToOccCamera(const IVtk_IView::Handle& theView);
 
-  DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector,SelectMgr_ViewerSelector)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 private:
   Standard_Integer myPixTol;
   Standard_Boolean myToUpdateTol;
 };
 
-DEFINE_STANDARD_HANDLE( IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector )
+DEFINE_STANDARD_HANDLE(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 #endif // __IVTKOCC_VIEWERSELECTOR_H__

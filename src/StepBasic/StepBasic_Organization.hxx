@@ -24,63 +24,45 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_Organization;
 DEFINE_STANDARD_HANDLE(StepBasic_Organization, Standard_Transient)
-
 
 class StepBasic_Organization : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a Organization
   Standard_EXPORT StepBasic_Organization();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAid, const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
-  
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aId);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean                  hasAid,
+                            const Handle(TCollection_HAsciiString)& aId,
+                            const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(TCollection_HAsciiString)& aDescription);
+
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& aId);
+
   Standard_EXPORT void UnSetId();
-  
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
-  
+
   Standard_EXPORT Standard_Boolean HasId() const;
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& aDescription);
-  
+
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Organization,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Organization, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) id;
   Handle(TCollection_HAsciiString) name;
   Handle(TCollection_HAsciiString) description;
-  Standard_Boolean hasId;
-
-
+  Standard_Boolean                 hasId;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Organization_HeaderFile

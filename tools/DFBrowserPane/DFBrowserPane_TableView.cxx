@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TableView.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
@@ -31,23 +31,23 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_TableView::DFBrowserPane_TableView (QWidget* theParent,
-                                                  const QMap<int, int>& theDefaultColumnWidths)
-: QWidget (theParent)
+DFBrowserPane_TableView::DFBrowserPane_TableView(QWidget*              theParent,
+                                                 const QMap<int, int>& theDefaultColumnWidths)
+    : QWidget(theParent)
 {
-  QHBoxLayout* aLay = new QHBoxLayout (this);
-  aLay->setContentsMargins (0, 0, 0, 0);
+  QHBoxLayout* aLay = new QHBoxLayout(this);
+  aLay->setContentsMargins(0, 0, 0, 0);
 
-  myTableView = new QTableView (theParent);
-  myTableView->setShowGrid (false);
+  myTableView = new QTableView(theParent);
+  myTableView->setShowGrid(false);
 
   QHeaderView* aVHeader = myTableView->verticalHeader();
-  aVHeader->setVisible (false);
-  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize());
+  aVHeader->setVisible(false);
+  aVHeader->setDefaultSectionSize(aVHeader->minimumSectionSize());
 
-  myTableView->horizontalHeader()->setStretchLastSection (true);
-  myTableView->horizontalHeader()->setVisible (false);
-  aLay->addWidget (myTableView);
+  myTableView->horizontalHeader()->setStretchLastSection(true);
+  myTableView->horizontalHeader()->setVisible(false);
+  aLay->addWidget(myTableView);
   myDefaultColumnWidths = theDefaultColumnWidths;
 }
 
@@ -55,54 +55,62 @@ DFBrowserPane_TableView::DFBrowserPane_TableView (QWidget* theParent,
 // function : SetModel
 // purpose :
 // =======================================================================
-void DFBrowserPane_TableView::SetModel (QAbstractTableModel* theModel)
+void DFBrowserPane_TableView::SetModel(QAbstractTableModel* theModel)
 {
-  myTableView->setModel (theModel);
+  myTableView->setModel(theModel);
 
   for (int aColumnId = 0, aCount = theModel->columnCount(); aColumnId < aCount; aColumnId++)
-    myTableView->setColumnWidth (aColumnId, myDefaultColumnWidths.contains (aColumnId) ?
-            myDefaultColumnWidths[aColumnId] : DFBrowserPane_Tools::DefaultPanelColumnWidth (aColumnId));
+    myTableView->setColumnWidth(aColumnId,
+                                myDefaultColumnWidths.contains(aColumnId)
+                                  ? myDefaultColumnWidths[aColumnId]
+                                  : DFBrowserPane_Tools::DefaultPanelColumnWidth(aColumnId));
 }
 
 // =======================================================================
 // function : SetFixedRowCount
 // purpose :
 // =======================================================================
-void DFBrowserPane_TableView::SetFixedRowCount (const int theCount, QTableView* theView, const bool theScroll)
+void DFBrowserPane_TableView::SetFixedRowCount(const int   theCount,
+                                               QTableView* theView,
+                                               const bool  theScroll)
 {
-  int aHeight = theView->verticalHeader()->defaultSectionSize()*theCount + TreeModel_Tools::HeaderSectionMargin();
+  int aHeight = theView->verticalHeader()->defaultSectionSize() * theCount
+                + TreeModel_Tools::HeaderSectionMargin();
   if (theScroll)
     aHeight += theView->horizontalScrollBar()->sizeHint().height();
 
-  theView->setMaximumHeight (aHeight);
+  theView->setMaximumHeight(aHeight);
 }
 
 // =======================================================================
 // function : SetVisibleHorizontalHeader
 // purpose :
 // =======================================================================
-void DFBrowserPane_TableView::SetVisibleHorizontalHeader (const bool& theVisible)
+void DFBrowserPane_TableView::SetVisibleHorizontalHeader(const bool& theVisible)
 {
-  myTableView->horizontalHeader()->setVisible (theVisible);
+  myTableView->horizontalHeader()->setVisible(theVisible);
 }
 
 // =======================================================================
 // function : GetSelectedColumnValues
 // purpose :
 // =======================================================================
-QStringList DFBrowserPane_TableView::GetSelectedColumnValues (QTableView* theTableView, const int theColumnId)
+QStringList DFBrowserPane_TableView::GetSelectedColumnValues(QTableView* theTableView,
+                                                             const int   theColumnId)
 {
-  QAbstractItemModel* aModel = theTableView->model();
-  QModelIndexList aSelectedIndices = theTableView->selectionModel()->selectedIndexes();
+  QAbstractItemModel* aModel           = theTableView->model();
+  QModelIndexList     aSelectedIndices = theTableView->selectionModel()->selectedIndexes();
 
   QStringList aSelectedEntries;
   for (QModelIndexList::const_iterator aSelectedIt = aSelectedIndices.begin();
-       aSelectedIt != aSelectedIndices.end(); aSelectedIt++)
+       aSelectedIt != aSelectedIndices.end();
+       aSelectedIt++)
   {
     QModelIndex anIndex = *aSelectedIt;
     if (theColumnId == anIndex.column())
-      aSelectedEntries.append (aModel->data (aModel->index (anIndex.row(), theColumnId, anIndex.parent()),
-                               Qt::DisplayRole).toString());
+      aSelectedEntries.append(
+        aModel->data(aModel->index(anIndex.row(), theColumnId, anIndex.parent()), Qt::DisplayRole)
+          .toString());
   }
   return aSelectedEntries;
 }

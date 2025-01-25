@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_NamedUnit;
 
-
 class StepBasic_DerivedUnitElement;
 DEFINE_STANDARD_HANDLE(StepBasic_DerivedUnitElement, Standard_Transient)
 
@@ -32,43 +31,25 @@ class StepBasic_DerivedUnitElement : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_DerivedUnitElement();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_NamedUnit)& aUnit, const Standard_Real aExponent);
-  
-  Standard_EXPORT void SetUnit (const Handle(StepBasic_NamedUnit)& aUnit);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_NamedUnit)& aUnit,
+                            const Standard_Real                aExponent);
+
+  Standard_EXPORT void SetUnit(const Handle(StepBasic_NamedUnit)& aUnit);
+
   Standard_EXPORT Handle(StepBasic_NamedUnit) Unit() const;
-  
-  Standard_EXPORT void SetExponent (const Standard_Real aExponent);
-  
+
+  Standard_EXPORT void SetExponent(const Standard_Real aExponent);
+
   Standard_EXPORT Standard_Real Exponent() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_NamedUnit) theUnit;
-  Standard_Real theExponent;
-
-
+  Standard_Real               theExponent;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DerivedUnitElement_HeaderFile

@@ -35,21 +35,20 @@ class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
 class TopoDS_Edge;
 
-
 //! Topological Sweep Algorithm
 //! Computes an  Sweep  shell using a  generating
 //! wire, an SectionLaw and an LocationLaw.
-class BRepFill_Sweep 
+class BRepFill_Sweep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section, const Handle(BRepFill_LocationLaw)& Location, const Standard_Boolean WithKPart);
-  
-  Standard_EXPORT void SetBounds (const TopoDS_Wire& FirstShape, const TopoDS_Wire& LastShape);
-  
+  Standard_EXPORT BRepFill_Sweep(const Handle(BRepFill_SectionLaw)&  Section,
+                                 const Handle(BRepFill_LocationLaw)& Location,
+                                 const Standard_Boolean              WithKPart);
+
+  Standard_EXPORT void SetBounds(const TopoDS_Wire& FirstShape, const TopoDS_Wire& LastShape);
+
   //! Set Approximation Tolerance
   //! Tol3d : Tolerance to surface approximation
   //! Tol2d : Tolerance used to perform curve approximation
@@ -59,19 +58,23 @@ public:
   //! TolAngular : Tolerance (in radian) to control the angle
   //! between tangents on the section law and
   //! tangent of iso-v on approximated surface
-  Standard_EXPORT void SetTolerance (const Standard_Real Tol3d, const Standard_Real BoundTol = 1.0, const Standard_Real Tol2d = 1.0e-5, const Standard_Real TolAngular = 1.0e-2);
-  
+  Standard_EXPORT void SetTolerance(const Standard_Real Tol3d,
+                                    const Standard_Real BoundTol   = 1.0,
+                                    const Standard_Real Tol2d      = 1.0e-5,
+                                    const Standard_Real TolAngular = 1.0e-2);
+
   //! Tolerance  To controle Corner management.
   //!
   //! If the discontinuity is lesser than <AngleMin> in radian The
   //! Transition Performed will be always "Modified"
-  Standard_EXPORT void SetAngularControl (const Standard_Real AngleMin = 0.01, const Standard_Real AngleMax = 6.0);
-  
+  Standard_EXPORT void SetAngularControl(const Standard_Real AngleMin = 0.01,
+                                         const Standard_Real AngleMax = 6.0);
+
   //! Set the flag that indicates attempt to approximate
   //! a C1-continuous surface if a swept surface proved
   //! to be C0.
-  Standard_EXPORT void SetForceApproxC1 (const Standard_Boolean ForceApproxC1);
-  
+  Standard_EXPORT void SetForceApproxC1(const Standard_Boolean ForceApproxC1);
+
   //! Build the Sweep Surface
   //! Transition define Transition strategy
   //! Approx define Approximation Strategy
@@ -86,86 +89,92 @@ public:
   //! Degmax     : The maximum degree in v required on the surface
   //! Segmax     : The maximum number of span in v required on
   //! the surface.
-  Standard_EXPORT void Build (TopTools_MapOfShape& ReversedEdges, BRepFill_DataMapOfShapeHArray2OfShape& Tapes, BRepFill_DataMapOfShapeHArray2OfShape& Rails, const BRepFill_TransitionStyle Transition = BRepFill_Modified, const GeomAbs_Shape Continuity = GeomAbs_C2, const GeomFill_ApproxStyle Approx = GeomFill_Location, const Standard_Integer Degmax = 11, const Standard_Integer Segmax = 30);
-  
+  Standard_EXPORT void Build(TopTools_MapOfShape&                   ReversedEdges,
+                             BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
+                             BRepFill_DataMapOfShapeHArray2OfShape& Rails,
+                             const BRepFill_TransitionStyle         Transition = BRepFill_Modified,
+                             const GeomAbs_Shape                    Continuity = GeomAbs_C2,
+                             const GeomFill_ApproxStyle             Approx     = GeomFill_Location,
+                             const Standard_Integer                 Degmax     = 11,
+                             const Standard_Integer                 Segmax     = 30);
+
   //! Say if the Shape is Build.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns the Sweeping Shape
   Standard_EXPORT TopoDS_Shape Shape() const;
-  
+
   //! Get the Approximation  error.
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
-  
+
   Standard_EXPORT Handle(TopTools_HArray2OfShape) SubShape() const;
-  
+
   Standard_EXPORT Handle(TopTools_HArray2OfShape) InterFaces() const;
-  
+
   Standard_EXPORT Handle(TopTools_HArray2OfShape) Sections() const;
 
   //! returns the Tape corresponding to Index-th edge of section
   Standard_EXPORT TopoDS_Shape Tape(const Standard_Integer Index) const;
 
-
-
 protected:
-
   Standard_EXPORT Standard_Boolean CorrectApproxParameters();
-  
-  Standard_EXPORT Standard_Boolean BuildWire (const BRepFill_TransitionStyle Transition);
-  
-  Standard_EXPORT Standard_Boolean BuildShell (const BRepFill_TransitionStyle Transition, const Standard_Integer Vf, const Standard_Integer Vl, TopTools_MapOfShape& ReversedEdges, BRepFill_DataMapOfShapeHArray2OfShape& Tapes, BRepFill_DataMapOfShapeHArray2OfShape& Rails, const Standard_Real ExtendFirst = 0.0, const Standard_Real ExtendLast = 0.0);
-  
-  Standard_EXPORT Standard_Boolean PerformCorner (const Standard_Integer Index, const BRepFill_TransitionStyle Transition, const Handle(TopTools_HArray2OfShape)& Bounds);
-  
-  Standard_EXPORT Standard_Real EvalExtrapol (const Standard_Integer Index, const BRepFill_TransitionStyle Transition) const;
-  
-  Standard_EXPORT Standard_Boolean MergeVertex (const TopoDS_Shape& V1, TopoDS_Shape& V2) const;
-  
-  Standard_EXPORT void UpdateVertex (const Standard_Integer Ipath, const Standard_Integer Isec, const Standard_Real Error, const Standard_Real Param, TopoDS_Shape& V) const;
-  
-  Standard_EXPORT void RebuildTopOrBottomEdge (const TopoDS_Edge& aNewEdge, TopoDS_Edge& anEdge, TopTools_MapOfShape& ReversedEdges) const;
 
+  Standard_EXPORT Standard_Boolean BuildWire(const BRepFill_TransitionStyle Transition);
 
+  Standard_EXPORT Standard_Boolean BuildShell(const BRepFill_TransitionStyle         Transition,
+                                              const Standard_Integer                 Vf,
+                                              const Standard_Integer                 Vl,
+                                              TopTools_MapOfShape&                   ReversedEdges,
+                                              BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
+                                              BRepFill_DataMapOfShapeHArray2OfShape& Rails,
+                                              const Standard_Real ExtendFirst = 0.0,
+                                              const Standard_Real ExtendLast  = 0.0);
 
+  Standard_EXPORT Standard_Boolean PerformCorner(const Standard_Integer                 Index,
+                                                 const BRepFill_TransitionStyle         Transition,
+                                                 const Handle(TopTools_HArray2OfShape)& Bounds);
+
+  Standard_EXPORT Standard_Real EvalExtrapol(const Standard_Integer         Index,
+                                             const BRepFill_TransitionStyle Transition) const;
+
+  Standard_EXPORT Standard_Boolean MergeVertex(const TopoDS_Shape& V1, TopoDS_Shape& V2) const;
+
+  Standard_EXPORT void UpdateVertex(const Standard_Integer Ipath,
+                                    const Standard_Integer Isec,
+                                    const Standard_Real    Error,
+                                    const Standard_Real    Param,
+                                    TopoDS_Shape&          V) const;
+
+  Standard_EXPORT void RebuildTopOrBottomEdge(const TopoDS_Edge&   aNewEdge,
+                                              TopoDS_Edge&         anEdge,
+                                              TopTools_MapOfShape& ReversedEdges) const;
 
 private:
-
-  
-
-
-  Standard_Boolean isDone;
-  Standard_Boolean KPart;
-  Standard_Real myTol3d;
-  Standard_Real myBoundTol;
-  Standard_Real myTol2d;
-  Standard_Real myTolAngular;
-  Standard_Real myAngMin;
-  Standard_Real myAngMax;
-  GeomFill_ApproxStyle myApproxStyle;
-  GeomAbs_Shape myContinuity;
-  Standard_Integer myDegmax;
-  Standard_Integer mySegmax;
-  Standard_Boolean myForceApproxC1;
-  TopoDS_Shape myShape;
-  Handle(BRepFill_LocationLaw) myLoc;
-  Handle(BRepFill_SectionLaw) mySec;
+  Standard_Boolean                isDone;
+  Standard_Boolean                KPart;
+  Standard_Real                   myTol3d;
+  Standard_Real                   myBoundTol;
+  Standard_Real                   myTol2d;
+  Standard_Real                   myTolAngular;
+  Standard_Real                   myAngMin;
+  Standard_Real                   myAngMax;
+  GeomFill_ApproxStyle            myApproxStyle;
+  GeomAbs_Shape                   myContinuity;
+  Standard_Integer                myDegmax;
+  Standard_Integer                mySegmax;
+  Standard_Boolean                myForceApproxC1;
+  TopoDS_Shape                    myShape;
+  Handle(BRepFill_LocationLaw)    myLoc;
+  Handle(BRepFill_SectionLaw)     mySec;
   Handle(TopTools_HArray2OfShape) myUEdges;
   Handle(TopTools_HArray2OfShape) myVEdges;
-  TopTools_DataMapOfShapeShape myVEdgesModified;
+  TopTools_DataMapOfShapeShape    myVEdgesModified;
   Handle(TopTools_HArray2OfShape) myFaces;
-  TopTools_ListOfShape myAuxShape;
+  TopTools_ListOfShape            myAuxShape;
   Handle(TopTools_HArray1OfShape) myTapes;
-  Standard_Real Error;
-  TopoDS_Wire FirstShape;
-  TopoDS_Wire LastShape;
-
+  Standard_Real                   Error;
+  TopoDS_Wire                     FirstShape;
+  TopoDS_Wire                     LastShape;
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_Sweep_HeaderFile

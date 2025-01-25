@@ -18,23 +18,22 @@
 #include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepBasic_Group.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment,StepBasic_GroupAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment, StepBasic_GroupAssignment)
 
 //=======================================================================
-//function : StepAP214_AppliedGroupAssignment
-//purpose  : 
+// function : StepAP214_AppliedGroupAssignment
+// purpose  :
 //=======================================================================
-StepAP214_AppliedGroupAssignment::StepAP214_AppliedGroupAssignment ()
-{
-}
+StepAP214_AppliedGroupAssignment::StepAP214_AppliedGroupAssignment() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepAP214_AppliedGroupAssignment::Init (const Handle(StepBasic_Group) &aGroupAssignment_AssignedGroup,
-                                             const Handle(StepAP214_HArray1OfGroupItem) &aItems)
+void StepAP214_AppliedGroupAssignment::Init(
+  const Handle(StepBasic_Group)&              aGroupAssignment_AssignedGroup,
+  const Handle(StepAP214_HArray1OfGroupItem)& aItems)
 {
   StepBasic_GroupAssignment::Init(aGroupAssignment_AssignedGroup);
 
@@ -42,21 +41,21 @@ void StepAP214_AppliedGroupAssignment::Init (const Handle(StepBasic_Group) &aGro
 }
 
 //=======================================================================
-//function : Items
-//purpose  : 
+// function : Items
+// purpose  :
 //=======================================================================
 
-Handle(StepAP214_HArray1OfGroupItem) StepAP214_AppliedGroupAssignment::Items () const
+Handle(StepAP214_HArray1OfGroupItem) StepAP214_AppliedGroupAssignment::Items() const
 {
   return theItems;
 }
 
 //=======================================================================
-//function : SetItems
-//purpose  : 
+// function : SetItems
+// purpose  :
 //=======================================================================
 
-void StepAP214_AppliedGroupAssignment::SetItems (const Handle(StepAP214_HArray1OfGroupItem) &aItems)
+void StepAP214_AppliedGroupAssignment::SetItems(const Handle(StepAP214_HArray1OfGroupItem)& aItems)
 {
   theItems = aItems;
 }

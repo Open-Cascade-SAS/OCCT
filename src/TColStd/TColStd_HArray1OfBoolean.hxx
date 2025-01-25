@@ -20,5 +20,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfBoolean, TColStd_Array1OfBoolean)
 
-
 #endif

@@ -19,24 +19,27 @@
 
 /**
  * The Class BOPDS_CoupleOfPaveBlocks is to store
- * the information about two pave blocks 
- * and some satellite information 
+ * the information about two pave blocks
+ * and some satellite information
  *
-*/
+ */
 //=======================================================================
-//class : BOPDS_CoupleOfPaveBlocks
-//purpose  : 
+// class : BOPDS_CoupleOfPaveBlocks
+// purpose  :
 //=======================================================================
-class BOPDS_CoupleOfPaveBlocks {
- public:
+class BOPDS_CoupleOfPaveBlocks
+{
+public:
   /**
    * Constructor
    */
-  BOPDS_CoupleOfPaveBlocks() :
-    myIndexInterf(-1),
-    myIndex(-1),
-    myTolerance(0)
-  {}
+  BOPDS_CoupleOfPaveBlocks()
+      : myIndexInterf(-1),
+        myIndex(-1),
+        myTolerance(0)
+  {
+  }
+
   //
   /**
    * Constructor
@@ -46,136 +49,128 @@ class BOPDS_CoupleOfPaveBlocks {
    *  secondt pave block
    */
   BOPDS_CoupleOfPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1,
-    const Handle(BOPDS_PaveBlock)& thePB2) :
-    myIndexInterf(-1),
-    myIndex(-1),
-    myTolerance(0)
+                           const Handle(BOPDS_PaveBlock)& thePB2)
+      : myIndexInterf(-1),
+        myIndex(-1),
+        myTolerance(0)
   {
     SetPaveBlocks(thePB1, thePB2);
   }
+
   //
   /**
    * Destructor
    */
-  ~BOPDS_CoupleOfPaveBlocks() {
-  }
+  ~BOPDS_CoupleOfPaveBlocks() {}
+
   //
   /**
    * Sets an index
    * @param theIndex
    *  index
    */
-  void SetIndex(const Standard_Integer theIndex) {
-    myIndex=theIndex;
-  } 
+  void SetIndex(const Standard_Integer theIndex) { myIndex = theIndex; }
+
   //
   /**
    * Returns the index
-   * @return 
+   * @return
    *   index
    */
-  Standard_Integer Index()const {
-    return myIndex;
-  } 
-  // 
-  /**
-   * Sets an index of an interference 
-   * @param theIndex
-   *  index of an interference 
-   */ 
-  void SetIndexInterf(const Standard_Integer theIndex) {
-    myIndexInterf=theIndex;
-  } 
+  Standard_Integer Index() const { return myIndex; }
+
   //
   /**
-   * Returns the index of an interference 
-   * @return 
-   *   index of an interference 
+   * Sets an index of an interference
+   * @param theIndex
+   *  index of an interference
    */
-  Standard_Integer IndexInterf()const {
-    return myIndexInterf;
-  } 
-  // 
+  void SetIndexInterf(const Standard_Integer theIndex) { myIndexInterf = theIndex; }
+
+  //
+  /**
+   * Returns the index of an interference
+   * @return
+   *   index of an interference
+   */
+  Standard_Integer IndexInterf() const { return myIndexInterf; }
+
+  //
   /**
    * Sets pave blocks
    * @param thePB1
    *  first pave block
    * @param thePB2
    *  secondt pave block
-   */ 
-  void SetPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1,
-		     const Handle(BOPDS_PaveBlock)& thePB2) {
-    myPB[0]=thePB1;
-    myPB[1]=thePB2;
-  } 
-  // 
+   */
+  void SetPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1, const Handle(BOPDS_PaveBlock)& thePB2)
+  {
+    myPB[0] = thePB1;
+    myPB[1] = thePB2;
+  }
+
+  //
   /**
    * Returns pave blocks
    * @param thePB1
    *  the first pave block
    * @param thePB2
    *  the second pave block
-   */ 
-  void PaveBlocks(Handle(BOPDS_PaveBlock)& thePB1,
-		  Handle(BOPDS_PaveBlock)& thePB2) const {
-    thePB1=myPB[0];
-    thePB2=myPB[1];       
+   */
+  void PaveBlocks(Handle(BOPDS_PaveBlock)& thePB1, Handle(BOPDS_PaveBlock)& thePB2) const
+  {
+    thePB1 = myPB[0];
+    thePB2 = myPB[1];
   }
-  // 
+
+  //
   /**
    * Sets the first pave block
    * @param thePB
    *  the first pave block
-   */  
-  void SetPaveBlock1(const Handle(BOPDS_PaveBlock)& thePB) {
-    myPB[0]=thePB;
-  } 
+   */
+  void SetPaveBlock1(const Handle(BOPDS_PaveBlock)& thePB) { myPB[0] = thePB; }
+
   /**
    * Returns the first pave block
-   * @return 
+   * @return
    * the first pave block
-   */  
-  const Handle(BOPDS_PaveBlock)& PaveBlock1()const {
-    return myPB[0];
-  }
+   */
+  const Handle(BOPDS_PaveBlock)& PaveBlock1() const { return myPB[0]; }
+
   //
   /**
    * Sets the second pave block
    * @param thePB
    *  the second pave block
-   */  
-  void SetPaveBlock2(const Handle(BOPDS_PaveBlock)& thePB) {
-    myPB[1]=thePB;
-  } 
+   */
+  void SetPaveBlock2(const Handle(BOPDS_PaveBlock)& thePB) { myPB[1] = thePB; }
+
   //
   /**
    * Returns the second pave block
-   * @return 
+   * @return
    * the second pave block
-   */  
-  const Handle(BOPDS_PaveBlock)& PaveBlock2()const {
-    return myPB[1];
-  }
+   */
+  const Handle(BOPDS_PaveBlock)& PaveBlock2() const { return myPB[1]; }
 
   /**
-  * Sets the tolerance associated with this couple
-  */
-  void SetTolerance(const Standard_Real theTol) {
-    myTolerance = theTol;
-  }
+   * Sets the tolerance associated with this couple
+   */
+  void SetTolerance(const Standard_Real theTol) { myTolerance = theTol; }
+
   //
   /**
-  * Returns the tolerance associated with this couple
-  */
-  Standard_Real Tolerance()const {
-    return myTolerance;
-  }
+   * Returns the tolerance associated with this couple
+   */
+  Standard_Real Tolerance() const { return myTolerance; }
 
- protected:
-  Standard_Integer myIndexInterf;
-  Standard_Integer myIndex;
+protected:
+  Standard_Integer        myIndexInterf;
+  Standard_Integer        myIndex;
   Handle(BOPDS_PaveBlock) myPB[2];
-  Standard_Real    myTolerance;
+  Standard_Real           myTolerance;
 };
+
 //
 #endif

@@ -15,12 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : OutLiner
-//purpose  : 
+// function : OutLiner
+// purpose  :
 //=======================================================================
 
-inline Handle(HLRTopoBRep_OutLiner) HLRTest_OutLiner::OutLiner() const 
+inline Handle(HLRTopoBRep_OutLiner) HLRTest_OutLiner::OutLiner() const
 {
   return myOutLiner;
 }
-

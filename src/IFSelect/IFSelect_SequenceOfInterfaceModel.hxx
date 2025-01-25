@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Interface_InterfaceModel)> IFSelect_SequenceOfInterfaceModel;
 
-
 #endif

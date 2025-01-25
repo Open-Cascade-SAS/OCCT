@@ -22,10 +22,10 @@
 #define _Aspect_Handle_HeaderFile
 
 #ifdef _WIN32
- typedef void*         HANDLE;
- typedef HANDLE        Aspect_Handle;
+typedef void*  HANDLE;
+typedef HANDLE Aspect_Handle;
 #else
- typedef unsigned long Aspect_Handle;
+typedef unsigned long Aspect_Handle;
 #endif /* _WIN32 */
 
 #endif /* _Aspect_Handle_HeaderFile */

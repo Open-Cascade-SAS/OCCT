@@ -39,121 +39,127 @@ class WNT_WClass;
 //! Parameters for creating new view.
 struct ViewerTest_VinitParams
 {
-  TCollection_AsciiString ViewName;
-  TCollection_AsciiString DisplayName;
-  Handle(V3d_View) ViewToClone;
-  Handle(V3d_View) ParentView;
-  Graphic3d_Vec2d  Offset;
-  Graphic3d_Vec2d  Size;
+  TCollection_AsciiString       ViewName;
+  TCollection_AsciiString       DisplayName;
+  Handle(V3d_View)              ViewToClone;
+  Handle(V3d_View)              ParentView;
+  Graphic3d_Vec2d               Offset;
+  Graphic3d_Vec2d               Size;
   Aspect_TypeOfTriedronPosition Corner;
-  Graphic3d_Vec2i  SubviewMargins;
-  Standard_Boolean IsVirtual;
-  Standard_Boolean IsComposer;
+  Graphic3d_Vec2i               SubviewMargins;
+  Standard_Boolean              IsVirtual;
+  Standard_Boolean              IsComposer;
 
-  ViewerTest_VinitParams() : Corner (Aspect_TOTP_LEFT_UPPER), IsVirtual (false), IsComposer (false) {}
+  ViewerTest_VinitParams()
+      : Corner(Aspect_TOTP_LEFT_UPPER),
+        IsVirtual(false),
+        IsComposer(false)
+  {
+  }
 };
 
 class ViewerTest
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Loads all Draw commands of  V2d & V3d. Used for plugin.
-  Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
-
-
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 
   //! Creates view with default or custom name and adds this name in map to manage multiple views.
   //! Implemented in ViewerTest_ViewerCommands.cxx.
-  Standard_EXPORT static TCollection_AsciiString ViewerInit (const ViewerTest_VinitParams& theParams);
+  Standard_EXPORT static TCollection_AsciiString ViewerInit(
+    const ViewerTest_VinitParams& theParams);
 
   //! Creates view.
-  static TCollection_AsciiString ViewerInit (const TCollection_AsciiString& theViewName = "")
+  static TCollection_AsciiString ViewerInit(const TCollection_AsciiString& theViewName = "")
   {
     ViewerTest_VinitParams aParams;
     aParams.ViewName = theViewName;
-    return ViewerInit (aParams);
+    return ViewerInit(aParams);
   }
 
   //! Creates view.
-  static TCollection_AsciiString ViewerInit (const Standard_Integer thePxLeft,
-                                             const Standard_Integer thePxTop,
-                                             const Standard_Integer thePxWidth,
-                                             const Standard_Integer thePxHeight,
-                                             const TCollection_AsciiString& theViewName,
-                                             const TCollection_AsciiString& theDisplayName = "",
-                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)(),
-                                             const Standard_Boolean theIsVirtual = false)
+  static TCollection_AsciiString ViewerInit(
+    const Standard_Integer         thePxLeft,
+    const Standard_Integer         thePxTop,
+    const Standard_Integer         thePxWidth,
+    const Standard_Integer         thePxHeight,
+    const TCollection_AsciiString& theViewName,
+    const TCollection_AsciiString& theDisplayName = "",
+    const Handle(V3d_View)&        theViewToClone = Handle(V3d_View)(),
+    const Standard_Boolean         theIsVirtual   = false)
   {
     ViewerTest_VinitParams aParams;
-    aParams.Offset.SetValues ((float )thePxLeft, (float)thePxTop);
-    aParams.Size.SetValues ((float)thePxWidth, (float)thePxHeight);
-    aParams.ViewName = theViewName;
+    aParams.Offset.SetValues((float)thePxLeft, (float)thePxTop);
+    aParams.Size.SetValues((float)thePxWidth, (float)thePxHeight);
+    aParams.ViewName    = theViewName;
     aParams.DisplayName = theDisplayName;
     aParams.ViewToClone = theViewToClone;
-    aParams.IsVirtual = theIsVirtual;
-    return ViewerInit (aParams);
+    aParams.IsVirtual   = theIsVirtual;
+    return ViewerInit(aParams);
   }
 
-  Standard_EXPORT static void RemoveViewName (const TCollection_AsciiString& theName);
+  Standard_EXPORT static void RemoveViewName(const TCollection_AsciiString& theName);
 
-  Standard_EXPORT static void InitViewName (const TCollection_AsciiString& theName,
-                                            const Handle(V3d_View)&        theView);
+  Standard_EXPORT static void InitViewName(const TCollection_AsciiString& theName,
+                                           const Handle(V3d_View)&        theView);
 
   Standard_EXPORT static TCollection_AsciiString GetCurrentViewName();
 
   //! Make the view active
-  Standard_EXPORT static void ActivateView (const Handle(V3d_View)& theView,
-                                            Standard_Boolean theToUpdate);
+  Standard_EXPORT static void ActivateView(const Handle(V3d_View)& theView,
+                                           Standard_Boolean        theToUpdate);
 
   //! Removes view and clear all maps
   //! with information about its resources if necessary
-  Standard_EXPORT static void RemoveView (const TCollection_AsciiString& theViewName,
-                                          const Standard_Boolean         theToRemoveContext = Standard_True);
+  Standard_EXPORT static void RemoveView(const TCollection_AsciiString& theViewName,
+                                         const Standard_Boolean theToRemoveContext = Standard_True);
 
   //! Removes view and clear all maps
   //! with information about its resources if necessary
-  Standard_EXPORT static void RemoveView (const Handle(V3d_View)& theView,
-                                          const Standard_Boolean  theToRemoveContext = Standard_True);
+  Standard_EXPORT static void RemoveView(const Handle(V3d_View)& theView,
+                                         const Standard_Boolean theToRemoveContext = Standard_True);
 
-  //! Display AIS object in active Viewer and register it in the map of Interactive Objects with specified name.
+  //! Display AIS object in active Viewer and register it in the map of Interactive Objects with
+  //! specified name.
   //! @param theName            key to be associated to displayed interactive object
   //! @param theObject          object to display
   //! @param theToUpdate        redraw viewer after displaying object
   //! @param theReplaceIfExists replace the object assigned to specified key
   //! @return true if new object has been displayed
-  Standard_EXPORT static Standard_Boolean Display (const TCollection_AsciiString&       theName,
-                                                   const Handle(AIS_InteractiveObject)& theObject,
-                                                   const Standard_Boolean               theToUpdate = Standard_True,
-                                                   const Standard_Boolean               theReplaceIfExists = Standard_True);
+  Standard_EXPORT static Standard_Boolean Display(
+    const TCollection_AsciiString&       theName,
+    const Handle(AIS_InteractiveObject)& theObject,
+    const Standard_Boolean               theToUpdate        = Standard_True,
+    const Standard_Boolean               theReplaceIfExists = Standard_True);
 
   //! waits until a shape of type <aType> is picked in the AIS Viewer and returns it.
   //! if <aType> == TopAbs_Shape, any shape can be picked...
   //! MaxPick  is the Max number before exiting, if no pick is successful
-  Standard_EXPORT static TopoDS_Shape PickShape (const TopAbs_ShapeEnum aType,
-                                                 const Standard_Integer MaxPick = 5);
+  Standard_EXPORT static TopoDS_Shape PickShape(const TopAbs_ShapeEnum aType,
+                                                const Standard_Integer MaxPick = 5);
 
   //! wait until the array is filled with picked shapes.
   //! returns True if the array is filled.
   //! exit if number of unsuccessful picks =  <MaxPick>
-  Standard_EXPORT static Standard_Boolean PickShapes (const TopAbs_ShapeEnum           aType,
-                                                      Handle(TopTools_HArray1OfShape)& thepicked,
-                                                      const Standard_Integer           MaxPick = 5);
+  Standard_EXPORT static Standard_Boolean PickShapes(const TopAbs_ShapeEnum           aType,
+                                                     Handle(TopTools_HArray1OfShape)& thepicked,
+                                                     const Standard_Integer           MaxPick = 5);
 
-  Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void Commands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void ViewerCommands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void ViewerCommands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void RelationCommands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void RelationCommands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void ObjectCommands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void ObjectCommands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void FilletCommands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void FilletCommands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void OpenGlCommands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void OpenGlCommands(Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void GetMousePosition (Standard_Integer& xpix, Standard_Integer& ypix);
+  Standard_EXPORT static void GetMousePosition(Standard_Integer& xpix, Standard_Integer& ypix);
 
   Standard_EXPORT static Handle(V3d_Viewer) GetViewerFromContext();
 
@@ -161,16 +167,16 @@ public:
 
   Standard_EXPORT static const Handle(AIS_InteractiveContext)& GetAISContext();
 
-  Standard_EXPORT static void SetAISContext (const Handle(AIS_InteractiveContext)& aContext);
+  Standard_EXPORT static void SetAISContext(const Handle(AIS_InteractiveContext)& aContext);
 
   Standard_EXPORT static const Handle(V3d_View)& CurrentView();
 
-  Standard_EXPORT static void CurrentView (const Handle(V3d_View)& aViou);
+  Standard_EXPORT static void CurrentView(const Handle(V3d_View)& aViou);
 
   Standard_EXPORT static void Clear();
 
   //! puts theMgr as current eventmanager (the move,select,...will be applied to theMgr)
-  Standard_EXPORT static void SetEventManager (const Handle(ViewerTest_EventManager)& theMgr);
+  Standard_EXPORT static void SetEventManager(const Handle(ViewerTest_EventManager)& theMgr);
 
   //! removes the last EventManager from the list.
   Standard_EXPORT static void UnsetEventManager();
@@ -189,97 +195,96 @@ public:
   //! Splits "parameter=value" string into separate
   //! parameter and value strings.
   //! @return TRUE if the string matches pattern "<string>=<empty or string>"
-  Standard_EXPORT static Standard_Boolean SplitParameter (const TCollection_AsciiString& theString,
-                                                          TCollection_AsciiString&       theName,
-                                                          TCollection_AsciiString&       theValue);
+  Standard_EXPORT static Standard_Boolean SplitParameter(const TCollection_AsciiString& theString,
+                                                         TCollection_AsciiString&       theName,
+                                                         TCollection_AsciiString&       theValue);
 
   //! Returns list of selected shapes.
-  Standard_EXPORT static void GetSelectedShapes (TopTools_ListOfShape& theShapes);
+  Standard_EXPORT static void GetSelectedShapes(TopTools_ListOfShape& theShapes);
 
   //! Parses line type argument.
   //! Handles either enumeration (integer) value or string constant.
-  Standard_EXPORT static Standard_Boolean ParseLineType (Standard_CString theArg,
-                                                         Aspect_TypeOfLine& theType,
-                                                         uint16_t& thePattern);
+  Standard_EXPORT static Standard_Boolean ParseLineType(Standard_CString   theArg,
+                                                        Aspect_TypeOfLine& theType,
+                                                        uint16_t&          thePattern);
 
   //! Parses line type argument.
   //! Handles either enumeration (integer) value or string constant.
-  static Standard_Boolean ParseLineType (Standard_CString theArg,
-                                         Aspect_TypeOfLine& theType)
+  static Standard_Boolean ParseLineType(Standard_CString theArg, Aspect_TypeOfLine& theType)
   {
     uint16_t aPattern = 0xFFFF;
-    return ParseLineType (theArg, theType, aPattern);
+    return ParseLineType(theArg, theType, aPattern);
   }
 
   //! Parses marker type argument.
   //! Handles either enumeration (integer) value or string constant.
-  Standard_EXPORT static Standard_Boolean ParseMarkerType (Standard_CString theArg,
-                                                           Aspect_TypeOfMarker& theType,
-                                                           Handle(Image_PixMap)& theImage);
+  Standard_EXPORT static Standard_Boolean ParseMarkerType(Standard_CString      theArg,
+                                                          Aspect_TypeOfMarker&  theType,
+                                                          Handle(Image_PixMap)& theImage);
 
   //! Parses shading model argument.
   //! Handles either enumeration (integer) value or string constant.
-  Standard_EXPORT static Standard_Boolean ParseShadingModel (Standard_CString              theArg,
-                                                             Graphic3d_TypeOfShadingModel& theModel);
+  Standard_EXPORT static Standard_Boolean ParseShadingModel(Standard_CString              theArg,
+                                                            Graphic3d_TypeOfShadingModel& theModel);
 
   //! Parses ZLayer name.
   //! @param[in] theArg  layer name or enumeration alias
   //! @param[out] theLayer  layer index
-  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
-  static Standard_Boolean ParseZLayerName (Standard_CString theArg,
-                                           Graphic3d_ZLayerId& theLayer)
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid
+  //! value
+  static Standard_Boolean ParseZLayerName(Standard_CString theArg, Graphic3d_ZLayerId& theLayer)
   {
-    return parseZLayer (theArg, false, theLayer);
+    return parseZLayer(theArg, false, theLayer);
   }
 
   //! Parses ZLayer name.
   //! @param[in] theArg  layer name, enumeration alias or index (of existing Layer)
   //! @param[out] theLayer  layer index
-  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
-  static Standard_Boolean ParseZLayer (Standard_CString theArg,
-                                       Graphic3d_ZLayerId& theLayer)
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid
+  //! value
+  static Standard_Boolean ParseZLayer(Standard_CString theArg, Graphic3d_ZLayerId& theLayer)
   {
-    return parseZLayer (theArg, true, theLayer);
+    return parseZLayer(theArg, true, theLayer);
   }
 
   //! Auxiliary method to parse transformation persistence flags
-  Standard_EXPORT static Standard_Boolean ParseCorner (Standard_CString theArg,
-                                                       Aspect_TypeOfTriedronPosition& theCorner);
+  Standard_EXPORT static Standard_Boolean ParseCorner(Standard_CString               theArg,
+                                                      Aspect_TypeOfTriedronPosition& theCorner);
 
 public: //! @name deprecated methods
-
-  //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and theArgVec[3].
+  //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and
+  //! theArgVec[3].
   Standard_DEPRECATED("Method has been moved to Draw::ParseColor()")
-  Standard_EXPORT static Standard_Integer ParseColor (const Standard_Integer   theArgNb,
-                                                      const char* const* const theArgVec,
-                                                      Quantity_ColorRGBA&      theColor);
+  Standard_EXPORT static Standard_Integer ParseColor(const Standard_Integer   theArgNb,
+                                                     const char* const* const theArgVec,
+                                                     Quantity_ColorRGBA&      theColor);
 
   //! Parses RGB color argument(s).
   //! Returns number of handled arguments (1 or 3) or 0 on syntax error.
   Standard_DEPRECATED("Method has been moved to Draw::ParseColor()")
-  Standard_EXPORT static Standard_Integer ParseColor (const Standard_Integer   theArgNb,
-                                                      const char* const* const theArgVec,
-                                                      Quantity_Color&          theColor);
+  Standard_EXPORT static Standard_Integer ParseColor(const Standard_Integer   theArgNb,
+                                                     const char* const* const theArgVec,
+                                                     Quantity_Color&          theColor);
 
   //! Parses boolean argument.
   //! Handles either flag specified by 0|1 or on|off.
   Standard_DEPRECATED("Method has been moved to Draw::ParseOnOff()")
-  Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
-                                                      Standard_Boolean& theIsOn);
+  Standard_EXPORT static Standard_Boolean ParseOnOff(Standard_CString  theArg,
+                                                     Standard_Boolean& theIsOn);
 
   Standard_DEPRECATED("Method has been moved to Quantity_Color::ColorFromName()")
-  Standard_EXPORT static Quantity_NameOfColor GetColorFromName (const Standard_CString name);
+  Standard_EXPORT static Quantity_NameOfColor GetColorFromName(const Standard_CString name);
 
 private:
-
   //! Parses ZLayer name.
   //! @param[in] theArg  layer name, enumeration alias or index (of existing Layer)
   //! @param[in] theToAllowInteger  when TRUE, the argument will be checked for existing layer index
   //! @param[out] theLayer  layer index
-  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
-  Standard_EXPORT static Standard_Boolean parseZLayer (Standard_CString theArg,
-                                                       Standard_Boolean theToAllowInteger,
-                                                       Graphic3d_ZLayerId& theLayer);
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid
+  //! value
+  Standard_EXPORT static Standard_Boolean parseZLayer(Standard_CString    theArg,
+                                                      Standard_Boolean    theToAllowInteger,
+                                                      Graphic3d_ZLayerId& theLayer);
 
   //! Returns a window class that implements standard behavior of
   //! all windows of the ViewerTest. This includes usual Open CASCADE

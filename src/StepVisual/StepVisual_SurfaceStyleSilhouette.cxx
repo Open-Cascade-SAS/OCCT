@@ -11,28 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleSilhouette.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette, Standard_Transient)
 
-StepVisual_SurfaceStyleSilhouette::StepVisual_SurfaceStyleSilhouette ()  {}
+StepVisual_SurfaceStyleSilhouette::StepVisual_SurfaceStyleSilhouette() {}
 
 void StepVisual_SurfaceStyleSilhouette::Init(
-	const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette)
+  const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette)
 {
-	// --- classe own fields ---
-	styleOfSilhouette = aStyleOfSilhouette;
+  // --- classe own fields ---
+  styleOfSilhouette = aStyleOfSilhouette;
 }
 
-
-void StepVisual_SurfaceStyleSilhouette::SetStyleOfSilhouette(const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette)
+void StepVisual_SurfaceStyleSilhouette::SetStyleOfSilhouette(
+  const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette)
 {
-	styleOfSilhouette = aStyleOfSilhouette;
+  styleOfSilhouette = aStyleOfSilhouette;
 }
 
 Handle(StepVisual_CurveStyle) StepVisual_SurfaceStyleSilhouette::StyleOfSilhouette() const
 {
-	return styleOfSilhouette;
+  return styleOfSilhouette;
 }

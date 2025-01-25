@@ -29,79 +29,58 @@ class TopOpeBRepBuild_ShellFaceSet;
 class TopoDS_Shape;
 class TopOpeBRepBuild_ShapeSet;
 
-
-
-class TopOpeBRepBuild_SolidBuilder 
+class TopOpeBRepBuild_SolidBuilder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepBuild_SolidBuilder();
-  
+
   //! Create a SolidBuilder to build the areas on
   //! the shapes (shells, blocks of faces) described by <LS>.
-  Standard_EXPORT TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS, const Standard_Boolean ForceClass = Standard_False);
-  
-  Standard_EXPORT void InitSolidBuilder (TopOpeBRepBuild_ShellFaceSet& FS, const Standard_Boolean ForceClass);
-  
+  Standard_EXPORT TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
+                                               const Standard_Boolean ForceClass = Standard_False);
+
+  Standard_EXPORT void InitSolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
+                                        const Standard_Boolean        ForceClass);
+
   Standard_EXPORT Standard_Integer InitSolid();
-  
+
   Standard_EXPORT Standard_Boolean MoreSolid() const;
-  
+
   Standard_EXPORT void NextSolid();
-  
+
   Standard_EXPORT Standard_Integer InitShell();
-  
+
   Standard_EXPORT Standard_Boolean MoreShell() const;
-  
+
   Standard_EXPORT void NextShell();
-  
+
   Standard_EXPORT Standard_Boolean IsOldShell() const;
-  
+
   //! Returns current shell
   //! This shell may be :
   //! * an old shell OldShell(), which has not been reconstructed;
   //! * a new shell made of faces described by ...NewFace() methods.
   Standard_EXPORT const TopoDS_Shape& OldShell() const;
-  
+
   Standard_EXPORT Standard_Integer InitFace();
-  
+
   Standard_EXPORT Standard_Boolean MoreFace() const;
-  
+
   Standard_EXPORT void NextFace();
-  
+
   //! Returns current new face of current new shell.
   Standard_EXPORT const TopoDS_Shape& Face() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT void MakeLoops(TopOpeBRepBuild_ShapeSet& SS);
 
-  
-  Standard_EXPORT void MakeLoops (TopOpeBRepBuild_ShapeSet& SS);
-
-
-  TopOpeBRepBuild_LoopSet myLoopSet;
-  TopOpeBRepBuild_BlockIterator myBlockIterator;
-  TopOpeBRepBuild_BlockBuilder myBlockBuilder;
+  TopOpeBRepBuild_LoopSet          myLoopSet;
+  TopOpeBRepBuild_BlockIterator    myBlockIterator;
+  TopOpeBRepBuild_BlockBuilder     myBlockBuilder;
   TopOpeBRepBuild_SolidAreaBuilder mySolidAreaBuilder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_SolidBuilder_HeaderFile

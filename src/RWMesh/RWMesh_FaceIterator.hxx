@@ -31,16 +31,15 @@ class TDF_Label;
 class RWMesh_FaceIterator
 {
 public:
-
   //! Main constructor.
-  Standard_EXPORT RWMesh_FaceIterator (const TDF_Label&       theLabel,
-                                       const TopLoc_Location& theLocation,
-                                       const Standard_Boolean theToMapColors = false,
-                                       const XCAFPrs_Style&   theStyle = XCAFPrs_Style());
+  Standard_EXPORT RWMesh_FaceIterator(const TDF_Label&       theLabel,
+                                      const TopLoc_Location& theLocation,
+                                      const Standard_Boolean theToMapColors = false,
+                                      const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
-  Standard_EXPORT RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
-                                       const XCAFPrs_Style& theStyle = XCAFPrs_Style());
+  Standard_EXPORT RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
+                                      const XCAFPrs_Style& theStyle = XCAFPrs_Style());
 
   //! Return explored shape.
   const TopoDS_Shape& ExploredShape() const { return myFaceIter.ExploredShape(); }
@@ -61,11 +60,10 @@ public:
   bool IsEmptyMesh() const
   {
     return myPolyTriang.IsNull()
-       || (myPolyTriang->NbNodes() < 1 && myPolyTriang->NbTriangles() < 1);
+           || (myPolyTriang->NbNodes() < 1 && myPolyTriang->NbTriangles() < 1);
   }
 
 public:
-
   //! Return face material.
   const XCAFPrs_Style& FaceStyle() const { return myFaceStyle; }
 
@@ -76,7 +74,6 @@ public:
   const Quantity_ColorRGBA& FaceColor() const { return myFaceColor; }
 
 public:
-
   //! Return number of elements of specific type for the current face.
   Standard_Integer NbTriangles() const { return myPolyTriang->NbTriangles(); }
 
@@ -87,31 +84,31 @@ public:
   Standard_Integer ElemUpper() const { return myPolyTriang->NbTriangles(); }
 
   //! Return triangle with specified index with applied Face orientation.
-  Poly_Triangle TriangleOriented (Standard_Integer theElemIndex) const
+  Poly_Triangle TriangleOriented(Standard_Integer theElemIndex) const
   {
-    Poly_Triangle aTri = triangle (theElemIndex);
+    Poly_Triangle aTri = triangle(theElemIndex);
     if ((myFace.Orientation() == TopAbs_REVERSED) ^ myIsMirrored)
     {
-      return Poly_Triangle (aTri.Value (1), aTri.Value (3), aTri.Value (2));
+      return Poly_Triangle(aTri.Value(1), aTri.Value(3), aTri.Value(2));
     }
     return aTri;
   }
 
 public:
-
   //! Return true if triangulation has defined normals.
   bool HasNormals() const { return myHasNormals; }
 
   //! Return true if triangulation has defined normals.
   bool HasTexCoords() const { return !myPolyTriang.IsNull() && myPolyTriang->HasUVNodes(); }
 
-  //! Return normal at specified node index with face transformation applied and face orientation applied.
-  gp_Dir NormalTransformed (Standard_Integer theNode) const
+  //! Return normal at specified node index with face transformation applied and face orientation
+  //! applied.
+  gp_Dir NormalTransformed(Standard_Integer theNode) const
   {
-    gp_Dir aNorm = normal (theNode);
+    gp_Dir aNorm = normal(theNode);
     if (myTrsf.Form() != gp_Identity)
     {
-      aNorm.Transform (myTrsf);
+      aNorm.Transform(myTrsf);
     }
     if (myFace.Orientation() == TopAbs_REVERSED)
     {
@@ -121,12 +118,7 @@ public:
   }
 
   //! Return number of nodes for the current face.
-  Standard_Integer NbNodes() const
-  {
-    return !myPolyTriang.IsNull()
-          ? myPolyTriang->NbNodes()
-          : 0;
-  }
+  Standard_Integer NbNodes() const { return !myPolyTriang.IsNull() ? myPolyTriang->NbNodes() : 0; }
 
   //! Lower node index in current triangulation.
   Standard_Integer NodeLower() const { return 1; }
@@ -135,56 +127,56 @@ public:
   Standard_Integer NodeUpper() const { return myPolyTriang->NbNodes(); }
 
   //! Return the node with specified index with applied transformation.
-  gp_Pnt NodeTransformed (const Standard_Integer theNode) const
+  gp_Pnt NodeTransformed(const Standard_Integer theNode) const
   {
-    gp_Pnt aNode = node (theNode);
-    aNode.Transform (myTrsf);
+    gp_Pnt aNode = node(theNode);
+    aNode.Transform(myTrsf);
     return aNode;
   }
 
   //! Return texture coordinates for the node.
-  gp_Pnt2d NodeTexCoord (const Standard_Integer theNode) const
+  gp_Pnt2d NodeTexCoord(const Standard_Integer theNode) const
   {
-    return myPolyTriang->HasUVNodes() ? myPolyTriang->UVNode (theNode) : gp_Pnt2d();
+    return myPolyTriang->HasUVNodes() ? myPolyTriang->UVNode(theNode) : gp_Pnt2d();
   }
 
 public:
-
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node (const Standard_Integer theNode) const { return myPolyTriang->Node (theNode); }
+  gp_Pnt node(const Standard_Integer theNode) const { return myPolyTriang->Node(theNode); }
 
   //! Return normal at specified node index without face transformation applied.
-  Standard_EXPORT gp_Dir normal (Standard_Integer theNode) const;
+  Standard_EXPORT gp_Dir normal(Standard_Integer theNode) const;
 
   //! Return triangle with specified index.
-  Poly_Triangle triangle (Standard_Integer theElemIndex) const { return myPolyTriang->Triangle (theElemIndex); }
+  Poly_Triangle triangle(Standard_Integer theElemIndex) const
+  {
+    return myPolyTriang->Triangle(theElemIndex);
+  }
 
 private:
-
   //! Dispatch face styles.
-  void dispatchStyles (const TDF_Label&       theLabel,
-                       const TopLoc_Location& theLocation,
-                       const XCAFPrs_Style&   theStyle);
+  void dispatchStyles(const TDF_Label&       theLabel,
+                      const TopLoc_Location& theLocation,
+                      const XCAFPrs_Style&   theStyle);
 
   //! Reset information for current face.
   void resetFace()
   {
     myPolyTriang.Nullify();
     myFace.Nullify();
-    myHasNormals = false;
+    myHasNormals   = false;
     myHasFaceColor = false;
-    myFaceColor = Quantity_ColorRGBA();
-    myFaceStyle = XCAFPrs_Style();
+    myFaceColor    = Quantity_ColorRGBA();
+    myFaceStyle    = XCAFPrs_Style();
   }
 
   //! Initialize face properties.
   void initFace();
 
 private:
-
   NCollection_DataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
-                                  myStyles;       //!< Face -> Style map
-// clang-format off
+    myStyles; //!< Face -> Style map
+  // clang-format off
   XCAFPrs_Style                   myDefStyle;     //!< default style for faces without dedicated style
   Standard_Boolean                myToMapColors;  //!< flag to dispatch styles
 
@@ -200,8 +192,7 @@ private:
   XCAFPrs_Style                   myFaceStyle;    //!< current face style
   Quantity_ColorRGBA              myFaceColor;    //!< current face color
   Standard_Boolean                myHasFaceColor; //!< flag indicating that current face has assigned color
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _RWMesh_FaceIterator_HeaderFile

@@ -23,7 +23,6 @@
 #include <Geom2d_Geometry.hxx>
 #include <Standard_Real.hxx>
 
-
 class Geom2d_Vector;
 DEFINE_STANDARD_HANDLE(Geom2d_Vector, Geom2d_Geometry)
 
@@ -36,68 +35,50 @@ class Geom2d_Vector : public Geom2d_Geometry
 {
 
 public:
-
-  
   //! Reverses the vector <me>.
   Standard_EXPORT void Reverse();
-  
+
   //! Returns a copy of <me> reversed.
   Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Vector) Reversed() const;
-  
+
   //! Computes the angular value, in radians, between this
   //! vector and vector Other. The result is a value
   //! between -Pi and Pi. The orientation is from this
   //! vector to vector Other.
   //! Raises VectorWithNullMagnitude if one of the two vectors is a vector with
   //! null magnitude because the angular value is indefinite.
-  Standard_EXPORT Standard_Real Angle (const Handle(Geom2d_Vector)& Other) const;
-  
+  Standard_EXPORT Standard_Real Angle(const Handle(Geom2d_Vector)& Other) const;
+
   //! Returns the coordinates of <me>.
-  Standard_EXPORT void Coord (Standard_Real& X, Standard_Real& Y) const;
-  
+  Standard_EXPORT void Coord(Standard_Real& X, Standard_Real& Y) const;
+
   //! Returns the  Magnitude of <me>.
   Standard_EXPORT virtual Standard_Real Magnitude() const = 0;
-  
+
   //! Returns the square magnitude of <me>.
   Standard_EXPORT virtual Standard_Real SquareMagnitude() const = 0;
-  
+
   //! Returns the X coordinate of <me>.
   Standard_EXPORT Standard_Real X() const;
-  
+
   //! Returns the Y coordinate of <me>.
   Standard_EXPORT Standard_Real Y() const;
-  
+
   //! Cross product of <me> with the vector <Other>.
-  Standard_EXPORT virtual Standard_Real Crossed (const Handle(Geom2d_Vector)& Other) const = 0;
-  
+  Standard_EXPORT virtual Standard_Real Crossed(const Handle(Geom2d_Vector)& Other) const = 0;
+
   //! Returns the scalar product of 2 Vectors.
-  Standard_EXPORT Standard_Real Dot (const Handle(Geom2d_Vector)& Other) const;
-  
+  Standard_EXPORT Standard_Real Dot(const Handle(Geom2d_Vector)& Other) const;
+
   //! Returns a non persistent copy of <me>.
   Standard_EXPORT gp_Vec2d Vec2d() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Vector,Geom2d_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Vector, Geom2d_Geometry)
 
 protected:
-
-
   gp_Vec2d gpVec2d;
 
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Vector_HeaderFile

@@ -26,7 +26,6 @@
 #include <gp_Vec2d.hxx>
 #include <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
- 
 
 #define Curve Adaptor2d_Curve2d
 #define Curve_hxx <Adaptor2d_Curve2d.hxx>
@@ -47,4 +46,3 @@
 #define Extrema_GenLocateExtPC Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
 #define Extrema_GenLocateExtPC_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include "../Extrema/Extrema_GenLocateExtPC.gxx"
-

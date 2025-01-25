@@ -22,13 +22,13 @@
 //! StdSelect_FaceFilter.
 enum StdSelect_TypeOfFace
 {
-StdSelect_AnyFace,
-StdSelect_Plane,
-StdSelect_Cylinder,
-StdSelect_Sphere,
-StdSelect_Torus,
-StdSelect_Revol,
-StdSelect_Cone
+  StdSelect_AnyFace,
+  StdSelect_Plane,
+  StdSelect_Cylinder,
+  StdSelect_Sphere,
+  StdSelect_Torus,
+  StdSelect_Revol,
+  StdSelect_Cone
 };
 
 #endif // _StdSelect_TypeOfFace_HeaderFile

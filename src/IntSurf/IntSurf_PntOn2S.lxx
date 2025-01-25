@@ -12,17 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void IntSurf_PntOn2S::SetValue (const gp_Pnt& Pt ) {
+inline void IntSurf_PntOn2S::SetValue(const gp_Pnt& Pt)
+{
 
   pt = Pt;
 }
 
-
-inline void IntSurf_PntOn2S::SetValue (const gp_Pnt& Pt,
-				       const Standard_Real U1,
-				       const Standard_Real V1,
-				       const Standard_Real U2,
-				       const Standard_Real V2) {
+inline void IntSurf_PntOn2S::SetValue(const gp_Pnt&       Pt,
+                                      const Standard_Real U1,
+                                      const Standard_Real V1,
+                                      const Standard_Real U2,
+                                      const Standard_Real V2)
+{
 
   pt = Pt;
   u1 = U1;
@@ -31,48 +32,42 @@ inline void IntSurf_PntOn2S::SetValue (const gp_Pnt& Pt,
   v2 = V2;
 }
 
-inline void IntSurf_PntOn2S::SetValue (const Standard_Real U1,
-				       const Standard_Real V1,
-				       const Standard_Real U2,
-				       const Standard_Real V2) {
+inline void IntSurf_PntOn2S::SetValue(const Standard_Real U1,
+                                      const Standard_Real V1,
+                                      const Standard_Real U2,
+                                      const Standard_Real V2)
+{
   u1 = U1;
   v1 = V1;
   u2 = U2;
   v2 = V2;
 }
 
-
-inline const gp_Pnt& IntSurf_PntOn2S::Value () const {
+inline const gp_Pnt& IntSurf_PntOn2S::Value() const
+{
 
   return pt;
 }
 
-
-inline void IntSurf_PntOn2S::ParametersOnS1 (Standard_Real& U1,
-					     Standard_Real& V1) const
+inline void IntSurf_PntOn2S::ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const
 {
   U1 = u1;
   V1 = v1;
 }
 
-
-inline void IntSurf_PntOn2S::ParametersOnS2 (Standard_Real& U2,
-					     Standard_Real& V2) const
+inline void IntSurf_PntOn2S::ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const
 {
   U2 = u2;
   V2 = v2;
 }
 
-inline void IntSurf_PntOn2S::Parameters (Standard_Real& U1,
-					 Standard_Real& V1,
-					 Standard_Real& U2,
-					 Standard_Real& V2) const
+inline void IntSurf_PntOn2S::Parameters(Standard_Real& U1,
+                                        Standard_Real& V1,
+                                        Standard_Real& U2,
+                                        Standard_Real& V2) const
 {
   U1 = u1;
   V1 = v1;
   U2 = u2;
   V2 = v2;
 }
-
-
-

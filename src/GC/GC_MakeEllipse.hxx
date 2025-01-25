@@ -28,7 +28,6 @@ class gp_Elips;
 class gp_Ax2;
 class gp_Pnt;
 
-
 //! This class implements construction algorithms for an ellipse in
 //! 3D space. The result is a Geom_Ellipse ellipse.
 //! A MakeEllipse object provides a framework for:
@@ -36,17 +35,14 @@ class gp_Pnt;
 //! -   implementing the construction algorithm, and
 //! -   consulting the results. In particular, the Value
 //! function returns the constructed ellipse.
-class GC_MakeEllipse  : public GC_Root
+class GC_MakeEllipse : public GC_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Creates an ellipse from a non persistent ellipse E from package gp by its conversion.
   Standard_EXPORT GC_MakeEllipse(const gp_Elips& E);
-  
+
   //! Constructs an ellipse with major and minor radii MajorRadius and
   //! MinorRadius, and located in the plane defined by
   //! the "X Axis" and "Y Axis" of the coordinate system A2, where:
@@ -64,20 +60,22 @@ public:
   //! -   the major radius computed with Center and S1
   //! is less than the minor radius computed with Center, S1 and S2, or
   //! -   Center, S1 and S2 are collinear.
-  Standard_EXPORT GC_MakeEllipse(const gp_Ax2& A2, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
+  Standard_EXPORT GC_MakeEllipse(const gp_Ax2&       A2,
+                                 const Standard_Real MajorRadius,
+                                 const Standard_Real MinorRadius);
+
   //! Constructs an ellipse centered on the point Center, where
   //! -   the plane of the ellipse is defined by Center, S1 and S2,
   //! -   its major axis is defined by Center and S1,
   //! -   its major radius is the distance between Center and S1, and
   //! -   its minor radius is the distance between S2 and the major axis.
   Standard_EXPORT GC_MakeEllipse(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
-  
+
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const Handle(Geom_Ellipse)& Value() const;
 
-  operator const Handle(Geom_Ellipse)& () const { return Value(); }
+  operator const Handle(Geom_Ellipse) & () const { return Value(); }
 
 private:
   Handle(Geom_Ellipse) TheEllipse;

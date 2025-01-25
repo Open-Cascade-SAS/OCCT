@@ -20,8 +20,7 @@
 #include <ChFiDS_Regul.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<ChFiDS_Regul> ChFiDS_Regularities;
+typedef NCollection_List<ChFiDS_Regul>           ChFiDS_Regularities;
 typedef NCollection_List<ChFiDS_Regul>::Iterator ChFiDS_ListIteratorOfRegularities;
-
 
 #endif

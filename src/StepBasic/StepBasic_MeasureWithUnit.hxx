@@ -24,57 +24,37 @@
 #include <Standard_Transient.hxx>
 class StepBasic_MeasureValueMember;
 
-
 class StepBasic_MeasureWithUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_MeasureWithUnit, Standard_Transient)
-
 
 class StepBasic_MeasureWithUnit : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a MeasureWithUnit
   Standard_EXPORT StepBasic_MeasureWithUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent);
-  
-  Standard_EXPORT void SetValueComponent (const Standard_Real aValueComponent);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+                            const StepBasic_Unit&                       aUnitComponent);
+
+  Standard_EXPORT void SetValueComponent(const Standard_Real aValueComponent);
+
   Standard_EXPORT Standard_Real ValueComponent() const;
-  
+
   Standard_EXPORT Handle(StepBasic_MeasureValueMember) ValueComponentMember() const;
-  
-  Standard_EXPORT void SetValueComponentMember (const Handle(StepBasic_MeasureValueMember)& val);
-  
-  Standard_EXPORT void SetUnitComponent (const StepBasic_Unit& aUnitComponent);
-  
+
+  Standard_EXPORT void SetValueComponentMember(const Handle(StepBasic_MeasureValueMember)& val);
+
+  Standard_EXPORT void SetUnitComponent(const StepBasic_Unit& aUnitComponent);
+
   Standard_EXPORT StepBasic_Unit UnitComponent() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_MeasureValueMember) valueComponent;
-  StepBasic_Unit unitComponent;
-
-
+  StepBasic_Unit                       unitComponent;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_MeasureWithUnit_HeaderFile

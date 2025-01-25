@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Bnd_Box2d> Bnd_Array1OfBox2d;
 
-
 #endif

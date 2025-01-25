@@ -26,52 +26,34 @@
 class TCollection_HAsciiString;
 class StepShape_OrientedEdge;
 
-
 class StepShape_Path;
 DEFINE_STANDARD_HANDLE(StepShape_Path, StepShape_TopologicalRepresentationItem)
-
 
 class StepShape_Path : public StepShape_TopologicalRepresentationItem
 {
 
 public:
-
-  
   //! Returns a Path
   Standard_EXPORT StepShape_Path();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
-  
-  Standard_EXPORT virtual void SetEdgeList (const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aName,
+                            const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+
+  Standard_EXPORT virtual void SetEdgeList(
+    const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+
   Standard_EXPORT virtual Handle(StepShape_HArray1OfOrientedEdge) EdgeList() const;
-  
-  Standard_EXPORT virtual Handle(StepShape_OrientedEdge) EdgeListValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT virtual Handle(StepShape_OrientedEdge) EdgeListValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT virtual Standard_Integer NbEdgeList() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_Path,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_Path, StepShape_TopologicalRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfOrientedEdge) edgeList;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_Path_HeaderFile

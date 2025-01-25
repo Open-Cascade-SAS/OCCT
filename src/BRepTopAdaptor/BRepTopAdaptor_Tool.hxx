@@ -22,59 +22,37 @@
 class BRepTopAdaptor_TopolTool;
 class TopoDS_Face;
 
-class BRepTopAdaptor_Tool 
+class BRepTopAdaptor_Tool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepTopAdaptor_Tool();
-  
+
   Standard_EXPORT BRepTopAdaptor_Tool(const TopoDS_Face& F, const Standard_Real Tol2d);
-  
-  Standard_EXPORT BRepTopAdaptor_Tool(const Handle(Adaptor3d_Surface)& Surface, const Standard_Real Tol2d);
-  
-  Standard_EXPORT void Init (const TopoDS_Face& F, const Standard_Real Tol2d);
-  
-  Standard_EXPORT void Init (const Handle(Adaptor3d_Surface)& Surface, const Standard_Real Tol2d);
-  
+
+  Standard_EXPORT BRepTopAdaptor_Tool(const Handle(Adaptor3d_Surface)& Surface,
+                                      const Standard_Real              Tol2d);
+
+  Standard_EXPORT void Init(const TopoDS_Face& F, const Standard_Real Tol2d);
+
+  Standard_EXPORT void Init(const Handle(Adaptor3d_Surface)& Surface, const Standard_Real Tol2d);
+
   Standard_EXPORT Handle(BRepTopAdaptor_TopolTool) GetTopolTool();
-  
-  Standard_EXPORT void SetTopolTool (const Handle(BRepTopAdaptor_TopolTool)& TT);
-  
+
+  Standard_EXPORT void SetTopolTool(const Handle(BRepTopAdaptor_TopolTool)& TT);
+
   Standard_EXPORT Handle(Adaptor3d_Surface) GetSurface();
-  
+
   Standard_EXPORT void Destroy();
-~BRepTopAdaptor_Tool()
-{
-  Destroy();
-}
 
-
-
+  ~BRepTopAdaptor_Tool() { Destroy(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myloaded;
+  Standard_Boolean                 myloaded;
   Handle(BRepTopAdaptor_TopolTool) myTopolTool;
-  Handle(Adaptor3d_Surface) myHSurface;
-
-
+  Handle(Adaptor3d_Surface)        myHSurface;
 };
-
-
-
-
-
-
 
 #endif // _BRepTopAdaptor_Tool_HeaderFile

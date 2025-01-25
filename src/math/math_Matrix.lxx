@@ -16,63 +16,70 @@
 
 #include <Standard_DimensionError.hxx>
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_Matrix& mat)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Matrix& mat)
 {
   mat.Dump(o);
   return o;
 }
 
-inline math_Matrix operator* (const Standard_Real Left,
-			      const math_Matrix& Right) 
+inline math_Matrix operator*(const Standard_Real Left, const math_Matrix& Right)
 {
   return Right.Multiplied(Left);
 }
 
-
-
-inline Standard_Real& math_Matrix::Value(const Standard_Integer Row, 
-					 const Standard_Integer Col)const
+inline Standard_Real& math_Matrix::Value(const Standard_Integer Row,
+                                         const Standard_Integer Col) const
 {
-  Standard_RangeError_Raise_if(((Row < LowerRowIndex) || 
-				(Row > UpperRowIndex) ||
-				(Col < LowerColIndex) || 
-				(Col > UpperColIndex)), " ");
+  Standard_RangeError_Raise_if(((Row < LowerRowIndex) || (Row > UpperRowIndex)
+                                || (Col < LowerColIndex) || (Col > UpperColIndex)),
+                               " ");
 
   return Array(Row, Col);
 }
 
-inline Standard_Integer math_Matrix::RowNumber() const 
-         { return UpperRowIndex - LowerRowIndex + 1; }
+inline Standard_Integer math_Matrix::RowNumber() const
+{
+  return UpperRowIndex - LowerRowIndex + 1;
+}
 
-     // returns the row range of a matrix.
+// returns the row range of a matrix.
 
-inline Standard_Integer math_Matrix::ColNumber() const 
-         { return UpperColIndex - LowerColIndex + 1; }
- 
-     // returns the column range of a matrix.
+inline Standard_Integer math_Matrix::ColNumber() const
+{
+  return UpperColIndex - LowerColIndex + 1;
+}
 
+// returns the column range of a matrix.
 
+inline Standard_Integer math_Matrix::LowerRow() const
+{
+  return LowerRowIndex;
+}
 
+// returns the value of the Lower index of the row range of a matrix.
 
-inline Standard_Integer math_Matrix::LowerRow() const { return LowerRowIndex; }
+inline Standard_Integer math_Matrix::UpperRow() const
+{
+  return UpperRowIndex;
+}
 
-     // returns the value of the Lower index of the row range of a matrix.
+// returns the value of the Upper index of the row range of a matrix.
 
-inline Standard_Integer math_Matrix::UpperRow () const { return UpperRowIndex;  }
+inline Standard_Integer math_Matrix::LowerCol() const
+{
+  return LowerColIndex;
+}
 
-     // returns the value of the Upper index of the row range of a matrix.
+// returns the value of the Lower index of the column range of a matrix.
 
-inline Standard_Integer math_Matrix::LowerCol() const { return LowerColIndex; }
+inline Standard_Integer math_Matrix::UpperCol() const
+{
+  return UpperColIndex;
+}
 
-     // returns the value of the Lower index of the column range of a matrix.
+// returns the value of the Upper index of the column range of a matrix.
 
-inline Standard_Integer math_Matrix::UpperCol()  const { return UpperColIndex;  }
-
-     // returns the value of the Upper index of the column range of a matrix.
-
-inline void math_Matrix::SetLower (const Standard_Integer LowerRow,
-				   const Standard_Integer LowerCol) 
+inline void math_Matrix::SetLower(const Standard_Integer LowerRow, const Standard_Integer LowerCol)
 {
   SetLowerRow(LowerRow);
   SetLowerCol(LowerCol);

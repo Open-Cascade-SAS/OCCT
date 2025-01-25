@@ -16,12 +16,15 @@
 //      	-----------------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Dec  1 1997	Creation
 
 inline Standard_Boolean TDF_ChildIDIterator::More() const
-{ return !myAtt.IsNull(); }
+{
+  return !myAtt.IsNull();
+}
 
 inline Handle(TDF_Attribute) TDF_ChildIDIterator::Value() const
-{ return myAtt; }
-
+{
+  return myAtt;
+}

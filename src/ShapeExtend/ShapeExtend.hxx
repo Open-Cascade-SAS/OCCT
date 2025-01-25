@@ -24,7 +24,6 @@
 #include <ShapeExtend_Status.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! This package provides general tools and data structures common
 //! for other packages in SHAPEWORKS and extending CAS.CADE
 //! structures.
@@ -40,23 +39,21 @@
 //! - class MsgRegistrator for attaching messages to the objects
 //! - tools for exploring the shapes
 //! -       tools for creating       new shapes.
-class ShapeExtend 
+class ShapeExtend
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Inits using of ShapeExtend.
   //! Currently, loads messages output by ShapeHealing algorithms.
   Standard_EXPORT static void Init();
-  
-  //! Encodes status (enumeration) to a bit flag
-  Standard_EXPORT static Standard_Integer EncodeStatus (const ShapeExtend_Status status);
-  
-  //! Tells if a bit flag contains bit corresponding to enumerated status
-  Standard_EXPORT static Standard_Boolean DecodeStatus (const Standard_Integer flag, const ShapeExtend_Status status);
 
+  //! Encodes status (enumeration) to a bit flag
+  Standard_EXPORT static Standard_Integer EncodeStatus(const ShapeExtend_Status status);
+
+  //! Tells if a bit flag contains bit corresponding to enumerated status
+  Standard_EXPORT static Standard_Boolean DecodeStatus(const Standard_Integer   flag,
+                                                       const ShapeExtend_Status status);
 };
 
 #endif // _ShapeExtend_HeaderFile

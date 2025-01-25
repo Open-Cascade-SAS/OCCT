@@ -26,26 +26,26 @@
 
 class Standard_Transient;
 
-class StepDimTol_DatumReferenceModifier  : public StepData_SelectType
+class StepDimTol_DatumReferenceModifier : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a DatumReferenceModifier select type
   Standard_EXPORT StepDimTol_DatumReferenceModifier();
-  
+
   //! Recognizes a DatumReferenceModifier Kind Entity that is :
   //! 1 -> DatumReferenceModifierWithValue
   //! 2 -> SimpleDatumReferenceModifierMember
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a DatumReferenceModifierWithValue (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_DatumReferenceModifierWithValue) DatumReferenceModifierWithValue()  const;
-  
+  Standard_EXPORT Handle(StepDimTol_DatumReferenceModifierWithValue)
+    DatumReferenceModifierWithValue() const;
+
   //! returns Value as a SimpleDatumReferenceModifierMember (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_SimpleDatumReferenceModifierMember) SimpleDatumReferenceModifierMember()  const;
-  
+  Standard_EXPORT Handle(StepDimTol_SimpleDatumReferenceModifierMember)
+    SimpleDatumReferenceModifierMember() const;
 };
 #endif // _StepDimTol_DatumReferenceModifier_HeaderFile

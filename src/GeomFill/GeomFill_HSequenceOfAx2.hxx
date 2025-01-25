@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(GeomFill_HSequenceOfAx2, GeomFill_SequenceOfAx2)
 
-
 #endif

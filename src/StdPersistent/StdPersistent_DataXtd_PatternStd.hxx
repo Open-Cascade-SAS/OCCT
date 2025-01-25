@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdPersistent_DataXtd_PatternStd_HeaderFile
 #define _StdPersistent_DataXtd_PatternStd_HeaderFile
 
@@ -19,23 +18,23 @@
 
 #include <TDataXtd_PatternStd.hxx>
 
-
-class StdPersistent_DataXtd_PatternStd
-  : public StdObjMgt_Attribute<TDataXtd_PatternStd>
+class StdPersistent_DataXtd_PatternStd : public StdObjMgt_Attribute<TDataXtd_PatternStd>
 {
 public:
   //! Read persistent data from a file.
-  inline void Read (StdObjMgt_ReadData& theReadData)
+  inline void Read(StdObjMgt_ReadData& theReadData)
   {
-    theReadData >> mySignature >> myAxis1Reversed >> myAxis2Reversed >>
-      myAxis1 >> myAxis2 >> myValue1 >> myValue2 >> myNb1 >> myNb2 >> myMirror;
+    theReadData >> mySignature >> myAxis1Reversed >> myAxis2Reversed >> myAxis1 >> myAxis2
+      >> myValue1 >> myValue2 >> myNb1 >> myNb2 >> myMirror;
   }
+
   //! Write persistent data to a file.
   inline void Write(StdObjMgt_WriteData& theWriteData)
   {
-    theWriteData << mySignature << myAxis1Reversed << myAxis2Reversed <<
-      myAxis1 << myAxis2 << myValue1 << myValue2 << myNb1 << myNb2 << myMirror;
+    theWriteData << mySignature << myAxis1Reversed << myAxis2Reversed << myAxis1 << myAxis2
+                 << myValue1 << myValue2 << myNb1 << myNb2 << myMirror;
   }
+
   //! Gets persistent child objects
   inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
   {
@@ -47,11 +46,12 @@ public:
     theChildren.Append(myNb2);
     theChildren.Append(myMirror);
   }
+
   //! Returns persistent type name
   inline Standard_CString PName() const { return "PDataXtd_PatternStd"; }
 
   //! Import transient attribute from the persistent data.
-  void Import (const Handle(TDataXtd_PatternStd)& theAttribute) const;
+  void Import(const Handle(TDataXtd_PatternStd)& theAttribute) const;
 
 private:
   Standard_Integer             mySignature;

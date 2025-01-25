@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_PreviewParameters_H
 #define View_PreviewParameters_H
@@ -31,9 +31,8 @@
 class View_PreviewParameters
 {
 public:
-
   //! Constructor
-  Standard_EXPORT View_PreviewParameters (const Standard_Boolean theToTransparent = Standard_True);
+  Standard_EXPORT View_PreviewParameters(const Standard_Boolean theToTransparent = Standard_True);
 
   //! Destructor
   virtual ~View_PreviewParameters() {}
@@ -47,10 +46,14 @@ public:
   //! \param theTreeView a view instance
   //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
-  static void SaveState (View_PreviewParameters* theParameters,
-                         QMap<QString, QString>& theItems,
-                         const QString& thePrefix = QString())
-  { (void)theParameters; (void)theItems; (void)thePrefix; }
+  static void SaveState(View_PreviewParameters* theParameters,
+                        QMap<QString, QString>& theItems,
+                        const QString&          thePrefix = QString())
+  {
+    (void)theParameters;
+    (void)theItems;
+    (void)thePrefix;
+  }
 
   //! Restores state of preview parameters by a container
   //! \param theTreeView a view instance
@@ -58,13 +61,19 @@ public:
   //! \param theValue property value
   //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
-  static bool RestoreState (View_PreviewParameters* theParameters,
-                            const QString& theKey, const QString& theValue,
-                            const QString& thePrefix = QString())
-  { (void)theParameters; (void)theKey; (void)theValue; (void)thePrefix; return false; }
+  static bool RestoreState(View_PreviewParameters* theParameters,
+                           const QString&          theKey,
+                           const QString&          theValue,
+                           const QString&          thePrefix = QString())
+  {
+    (void)theParameters;
+    (void)theKey;
+    (void)theValue;
+    (void)thePrefix;
+    return false;
+  }
 
 private:
-
   Handle(Prs3d_Drawer) myDrawer; //!< attributes for preview presentation
 };
 

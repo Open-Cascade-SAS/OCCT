@@ -15,75 +15,86 @@
 #include <StdFail_UndefinedDerivative.hxx>
 #include <TColgp_HSequenceOfXY.hxx>
 
-inline void IntSurf_PathPoint::AddUV(const Standard_Real U,
-				     const Standard_Real V) {
-  sequv->Append(gp_XY(U,V));
+inline void IntSurf_PathPoint::AddUV(const Standard_Real U, const Standard_Real V)
+{
+  sequv->Append(gp_XY(U, V));
 }
-  
-inline void IntSurf_PathPoint::SetDirections (const gp_Vec& V,
-					      const gp_Dir2d& D) {
+
+inline void IntSurf_PathPoint::SetDirections(const gp_Vec& V, const gp_Dir2d& D)
+{
 
   istgt = Standard_False;
   vectg = V;
   dirtg = D;
 }
 
-inline void IntSurf_PathPoint::SetTangency (const Standard_Boolean Tang) {
-  
+inline void IntSurf_PathPoint::SetTangency(const Standard_Boolean Tang)
+{
+
   istgt = Tang;
 }
 
-inline void IntSurf_PathPoint::SetPassing (const Standard_Boolean Pass) {
+inline void IntSurf_PathPoint::SetPassing(const Standard_Boolean Pass)
+{
 
   ispass = Pass;
 }
 
-inline const gp_Pnt& IntSurf_PathPoint::Value () const
+inline const gp_Pnt& IntSurf_PathPoint::Value() const
 {
   return pt;
 }
 
-inline void IntSurf_PathPoint::Value2d (Standard_Real& U,
-					Standard_Real& V) const
+inline void IntSurf_PathPoint::Value2d(Standard_Real& U, Standard_Real& V) const
 {
   gp_XY uv(sequv->Sequence().First());
   U = uv.X();
   V = uv.Y();
 }
 
-inline Standard_Boolean IntSurf_PathPoint::IsPassingPnt () const {
+inline Standard_Boolean IntSurf_PathPoint::IsPassingPnt() const
+{
 
   return ispass;
 }
 
-inline Standard_Boolean IntSurf_PathPoint::IsTangent () const {
+inline Standard_Boolean IntSurf_PathPoint::IsTangent() const
+{
 
   return istgt;
 }
 
-inline const gp_Vec& IntSurf_PathPoint::Direction3d () const {
+inline const gp_Vec& IntSurf_PathPoint::Direction3d() const
+{
 
-  if (istgt) {throw StdFail_UndefinedDerivative();}
+  if (istgt)
+  {
+    throw StdFail_UndefinedDerivative();
+  }
   return vectg;
 }
 
-inline const gp_Dir2d& IntSurf_PathPoint::Direction2d () const {
+inline const gp_Dir2d& IntSurf_PathPoint::Direction2d() const
+{
 
-  if (istgt) {throw StdFail_UndefinedDerivative();}
+  if (istgt)
+  {
+    throw StdFail_UndefinedDerivative();
+  }
   return dirtg;
 }
 
-inline Standard_Integer IntSurf_PathPoint::Multiplicity () const {
+inline Standard_Integer IntSurf_PathPoint::Multiplicity() const
+{
 
-  return (sequv->Length()-1);
+  return (sequv->Length() - 1);
 }
 
-inline void IntSurf_PathPoint::Parameters (const Standard_Integer Index,
-					   Standard_Real& U,
-					   Standard_Real& V) const
+inline void IntSurf_PathPoint::Parameters(const Standard_Integer Index,
+                                          Standard_Real&         U,
+                                          Standard_Real&         V) const
 {
-  gp_XY uv(sequv->Value(Index+1));
+  gp_XY uv(sequv->Value(Index + 1));
   U = uv.X();
   V = uv.Y();
 }
-

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Adaptor3d_Curve)> GeomPlate_Array1OfHCurve;
 
-
 #endif

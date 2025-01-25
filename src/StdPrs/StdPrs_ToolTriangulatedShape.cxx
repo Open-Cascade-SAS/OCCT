@@ -28,16 +28,16 @@
 #include <TopoDS_Face.hxx>
 
 //=======================================================================
-//function : IsTriangulated
-//purpose  :
+// function : IsTriangulated
+// purpose  :
 //=======================================================================
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsTriangulated (const TopoDS_Shape& theShape)
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsTriangulated(const TopoDS_Shape& theShape)
 {
   TopLoc_Location aLocDummy;
-  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
-    const TopoDS_Face&                aFace = TopoDS::Face (aFaceIter.Current());
-    const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation (aFace, aLocDummy);
+    const TopoDS_Face&                aFace = TopoDS::Face(aFaceIter.Current());
+    const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation(aFace, aLocDummy);
     if (aTri.IsNull())
     {
       return Standard_False;
@@ -47,10 +47,10 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsTriangulated (const TopoDS_Shap
 }
 
 //=======================================================================
-//function : IsClosed
-//purpose  :
+// function : IsClosed
+// purpose  :
 //=======================================================================
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& theShape)
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
   {
@@ -61,28 +61,26 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
   {
     case TopAbs_COMPOUND:
     case TopAbs_COMPSOLID:
-    default:
-    {
+    default: {
       // check that compound consists of closed solids
-      for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
+      for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
       {
         const TopoDS_Shape& aShape = anIter.Value();
-        if (!IsClosed (aShape))
+        if (!IsClosed(aShape))
         {
           return Standard_False;
         }
       }
       return Standard_True;
     }
-    case TopAbs_SOLID:
-    {
+    case TopAbs_SOLID: {
       // Check for non-manifold topology first of all:
       // have to use BRep_Tool::IsClosed() because it checks the face connectivity
       // inside the shape
-      if (!BRep_Tool::IsClosed (theShape))
+      if (!BRep_Tool::IsClosed(theShape))
         return Standard_False;
 
-      for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
+      for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
       {
         const TopoDS_Shape& aShape = anIter.Value();
         if (aShape.IsNull())
@@ -95,7 +93,7 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
           // invalid solid
           return Standard_False;
         }
-        else if (!IsTriangulated (aShape))
+        else if (!IsTriangulated(aShape))
         {
           // mesh contains holes
           return Standard_False;
@@ -104,15 +102,13 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
       return Standard_True;
     }
     case TopAbs_SHELL:
-    case TopAbs_FACE:
-    {
+    case TopAbs_FACE: {
       // free faces / shell are not allowed
       return Standard_False;
     }
     case TopAbs_WIRE:
     case TopAbs_EDGE:
-    case TopAbs_VERTEX:
-    {
+    case TopAbs_VERTEX: {
       // ignore
       return Standard_True;
     }
@@ -120,11 +116,11 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
 }
 
 //=======================================================================
-//function : GetDeflection
-//purpose  :
+// function : GetDeflection
+// purpose  :
 //=======================================================================
-Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection (const TopoDS_Shape& theShape,
-                                                           const Handle(Prs3d_Drawer)& theDrawer)
+Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&         theShape,
+                                                          const Handle(Prs3d_Drawer)& theDrawer)
 {
   if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
   {
@@ -132,7 +128,7 @@ Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection (const TopoDS_Shape& t
   }
 
   Bnd_Box aBndBox;
-  BRepBndLib::Add (theShape, aBndBox, Standard_False);
+  BRepBndLib::Add(theShape, aBndBox, Standard_False);
   if (aBndBox.IsVoid())
   {
     return theDrawer->MaximalChordialDeviation();
@@ -146,42 +142,44 @@ Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection (const TopoDS_Shape& t
     aBndBox = aBndBox.FinitePart();
   }
 
-  // store computed relative deflection of shape as absolute deviation coefficient in case relative type to use it later on for sub-shapes
-  const Standard_Real aDeflection = Prs3d::GetDeflection (aBndBox, theDrawer->DeviationCoefficient(), theDrawer->MaximalChordialDeviation());
-  theDrawer->SetMaximalChordialDeviation (aDeflection);
+  // store computed relative deflection of shape as absolute deviation coefficient in case relative
+  // type to use it later on for sub-shapes
+  const Standard_Real aDeflection = Prs3d::GetDeflection(aBndBox,
+                                                         theDrawer->DeviationCoefficient(),
+                                                         theDrawer->MaximalChordialDeviation());
+  theDrawer->SetMaximalChordialDeviation(aDeflection);
   return aDeflection;
 }
 
 //=======================================================================
-//function : IsTessellated
-//purpose  :
+// function : IsTessellated
+// purpose  :
 //=======================================================================
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated (const TopoDS_Shape&         theShape,
-                                                              const Handle(Prs3d_Drawer)& theDrawer)
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&         theShape,
+                                                             const Handle(Prs3d_Drawer)& theDrawer)
 {
-  return BRepTools::Triangulation (theShape, GetDeflection (theShape, theDrawer), true);
+  return BRepTools::Triangulation(theShape, GetDeflection(theShape, theDrawer), true);
 }
 
 // =======================================================================
 // function : Tessellate
 // purpose  :
 // =======================================================================
-Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate (const TopoDS_Shape&         theShape,
-                                                           const Handle(Prs3d_Drawer)& theDrawer)
+Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theShape,
+                                                          const Handle(Prs3d_Drawer)& theDrawer)
 {
   Standard_Boolean wasRecomputed = Standard_False;
   // Check if it is possible to avoid unnecessary recomputation of shape triangulation
-  if (IsTessellated (theShape, theDrawer))
+  if (IsTessellated(theShape, theDrawer))
   {
     return wasRecomputed;
   }
 
-  const Standard_Real aDeflection = GetDeflection (theShape, theDrawer);
+  const Standard_Real aDeflection = GetDeflection(theShape, theDrawer);
 
   // retrieve meshing tool from Factory
-  Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
-                                                                                   aDeflection,
-                                                                                   theDrawer->DeviationAngle());
+  Handle(BRepMesh_DiscretRoot) aMeshAlgo =
+    BRepMesh_DiscretFactory::Get().Discret(theShape, aDeflection, theDrawer->DeviationAngle());
   if (!aMeshAlgo.IsNull())
   {
     aMeshAlgo->Perform();
@@ -195,29 +193,29 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate (const TopoDS_Shape&  
 // function : ClearOnOwnDeflectionChange
 // purpose  :
 // =======================================================================
-void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (const TopoDS_Shape&         theShape,
-                                                               const Handle(Prs3d_Drawer)& theDrawer,
-                                                               const Standard_Boolean      theToResetCoeff)
+void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(
+  const TopoDS_Shape&         theShape,
+  const Handle(Prs3d_Drawer)& theDrawer,
+  const Standard_Boolean      theToResetCoeff)
 {
-  if (!theDrawer->IsAutoTriangulation()
-    || theShape.IsNull())
+  if (!theDrawer->IsAutoTriangulation() || theShape.IsNull())
   {
     return;
   }
 
   const Standard_Boolean isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
   const Standard_Boolean isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
-  const Standard_Real anAngleNew  = theDrawer->DeviationAngle();
-  const Standard_Real anAnglePrev = theDrawer->PreviousDeviationAngle();
-  const Standard_Real aCoeffNew   = theDrawer->DeviationCoefficient();
-  const Standard_Real aCoeffPrev  = theDrawer->PreviousDeviationCoefficient();
-  if ((!isOwnDeviationAngle       || Abs (anAngleNew - anAnglePrev) <= Precision::Angular())
-   && (!isOwnDeviationCoefficient || Abs (aCoeffNew  - aCoeffPrev)  <= Precision::Confusion()))
+  const Standard_Real    anAngleNew                = theDrawer->DeviationAngle();
+  const Standard_Real    anAnglePrev               = theDrawer->PreviousDeviationAngle();
+  const Standard_Real    aCoeffNew                 = theDrawer->DeviationCoefficient();
+  const Standard_Real    aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
+  if ((!isOwnDeviationAngle || Abs(anAngleNew - anAnglePrev) <= Precision::Angular())
+      && (!isOwnDeviationCoefficient || Abs(aCoeffNew - aCoeffPrev) <= Precision::Confusion()))
   {
     return;
   }
 
-  BRepTools::Clean (theShape);
+  BRepTools::Clean(theShape);
   if (theToResetCoeff)
   {
     theDrawer->UpdatePreviousDeviationAngle();

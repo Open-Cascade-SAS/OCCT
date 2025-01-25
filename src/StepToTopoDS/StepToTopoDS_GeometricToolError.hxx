@@ -17,15 +17,14 @@
 #ifndef _StepToTopoDS_GeometricToolError_HeaderFile
 #define _StepToTopoDS_GeometricToolError_HeaderFile
 
-
 enum StepToTopoDS_GeometricToolError
 {
-StepToTopoDS_GeometricToolDone,
-StepToTopoDS_GeometricToolIsDegenerated,
-StepToTopoDS_GeometricToolHasNoPCurve,
-StepToTopoDS_GeometricToolWrong3dParameters,
-StepToTopoDS_GeometricToolNoProjectiOnCurve,
-StepToTopoDS_GeometricToolOther
+  StepToTopoDS_GeometricToolDone,
+  StepToTopoDS_GeometricToolIsDegenerated,
+  StepToTopoDS_GeometricToolHasNoPCurve,
+  StepToTopoDS_GeometricToolWrong3dParameters,
+  StepToTopoDS_GeometricToolNoProjectiOnCurve,
+  StepToTopoDS_GeometricToolOther
 };
 
 #endif // _StepToTopoDS_GeometricToolError_HeaderFile

@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESDefs_MacroDef;
 DEFINE_STANDARD_HANDLE(IGESDefs_MacroDef, IGESData_IGESEntity)
 
@@ -37,57 +36,42 @@ class IGESDefs_MacroDef : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDefs_MacroDef();
-  
+
   //! This method is used to set the fields of the class
   //! MacroDef
   //! - macro          : MACRO
   //! - entityTypeID   : Entity Type ID
   //! - langStatements : Language Statements
   //! - endMacro       : END MACRO
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& macro, const Standard_Integer entityTypeID, const Handle(Interface_HArray1OfHAsciiString)& langStatements, const Handle(TCollection_HAsciiString)& endMacro);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        macro,
+                            const Standard_Integer                         entityTypeID,
+                            const Handle(Interface_HArray1OfHAsciiString)& langStatements,
+                            const Handle(TCollection_HAsciiString)&        endMacro);
+
   //! returns the number of language statements
   Standard_EXPORT Standard_Integer NbStatements() const;
-  
+
   //! returns the MACRO(Literal)
   Standard_EXPORT Handle(TCollection_HAsciiString) MACRO() const;
-  
+
   //! returns the Entity Type ID
   Standard_EXPORT Standard_Integer EntityTypeID() const;
-  
-  Standard_EXPORT Handle(TCollection_HAsciiString) LanguageStatement (const Standard_Integer StatNum) const;
-  
+
+  Standard_EXPORT Handle(TCollection_HAsciiString) LanguageStatement(
+    const Standard_Integer StatNum) const;
+
   //! returns the ENDM(Literal)
   Standard_EXPORT Handle(TCollection_HAsciiString) ENDMACRO() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDefs_MacroDef,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_MacroDef, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) theMACRO;
-  Standard_Integer theEntityTypeID;
+  Handle(TCollection_HAsciiString)        theMACRO;
+  Standard_Integer                        theEntityTypeID;
   Handle(Interface_HArray1OfHAsciiString) theLangStatements;
-  Handle(TCollection_HAsciiString) theENDMACRO;
-
-
+  Handle(TCollection_HAsciiString)        theENDMACRO;
 };
-
-
-
-
-
-
 
 #endif // _IGESDefs_MacroDef_HeaderFile

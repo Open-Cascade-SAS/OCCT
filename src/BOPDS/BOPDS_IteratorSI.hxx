@@ -26,21 +26,16 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 
-
-
 //! The class BOPDS_IteratorSI is
 //! 1.to compute self-intersections between BRep sub-shapes
 //! of each argument of an operation (see the class BOPDS_DS)
 //! in terms of theirs bounding boxes
 //! 2.provides interface to iterare the pairs of
 //! intersected sub-shapes of given type
-class BOPDS_IteratorSI  : public BOPDS_Iterator
+class BOPDS_IteratorSI : public BOPDS_Iterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Empty constructor
   Standard_EXPORT BOPDS_IteratorSI();
@@ -50,7 +45,7 @@ public:
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
   Standard_EXPORT BOPDS_IteratorSI(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
+
   //! Updates the lists of possible intersections
   //! according to the value of <theLevel>.
   //! It defines which interferferences will be checked:
@@ -60,33 +55,15 @@ public:
   //! 3 - V/V, V/E, E/E and V/F;
   //! 4 - V/V, V/E, E/E, V/F and E/F;
   //! other - all interferences.
-  Standard_EXPORT void UpdateByLevelOfCheck (const Standard_Integer theLevel);
-
-
-
+  Standard_EXPORT void UpdateByLevelOfCheck(const Standard_Integer theLevel);
 
 protected:
-
-  
-  Standard_EXPORT virtual void Intersect(const Handle(IntTools_Context)& theCtx = Handle(IntTools_Context)(),
-                                         const Standard_Boolean theCheckOBB = Standard_False,
-                                         const Standard_Real theFuzzyValue = Precision::Confusion()) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual void Intersect(
+    const Handle(IntTools_Context)& theCtx        = Handle(IntTools_Context)(),
+    const Standard_Boolean          theCheckOBB   = Standard_False,
+    const Standard_Real             theFuzzyValue = Precision::Confusion()) Standard_OVERRIDE;
 
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPDS_IteratorSI_HeaderFile

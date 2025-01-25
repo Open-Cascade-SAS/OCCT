@@ -17,11 +17,10 @@
 #ifndef _Geom2dGcc_Type3_HeaderFile
 #define _Geom2dGcc_Type3_HeaderFile
 
-
 enum Geom2dGcc_Type3
 {
-Geom2dGcc_CuCu,
-Geom2dGcc_CiCu
+  Geom2dGcc_CuCu,
+  Geom2dGcc_CiCu
 };
 
 #endif // _Geom2dGcc_Type3_HeaderFile

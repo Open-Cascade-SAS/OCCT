@@ -21,5 +21,4 @@
 
 typedef BlendFunc_Chamfer BRepBlend_Chamfer;
 
-
 #endif // _BRepBlend_Chamfer_HeaderFile

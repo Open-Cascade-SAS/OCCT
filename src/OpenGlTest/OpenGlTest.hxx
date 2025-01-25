@@ -20,14 +20,13 @@
 class OpenGlTest
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Adds Draw commands to the draw interpreter.
-  Standard_EXPORT static void Commands (Draw_Interpretor& theDI);
+  Standard_EXPORT static void Commands(Draw_Interpretor& theDI);
 
   //! Plugin entry point function.
-  Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 };
 
 #endif // _OpenGlTest_HeaderFile

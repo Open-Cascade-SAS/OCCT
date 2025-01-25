@@ -24,5 +24,4 @@
 
 typedef NCollection_Array1<gp_Lin> Intf_Array1OfLin;
 
-
 #endif

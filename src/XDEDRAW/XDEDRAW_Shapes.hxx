@@ -21,38 +21,16 @@
 
 #include <Draw_Interpretor.hxx>
 
-
 //! Contains commands to work with shapes and assemblies
-class XDEDRAW_Shapes 
+class XDEDRAW_Shapes
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void InitCommands (Draw_Interpretor& theCommands);
-
-
-
+  Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XDEDRAW_Shapes_HeaderFile

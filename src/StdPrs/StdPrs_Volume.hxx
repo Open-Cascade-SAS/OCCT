@@ -23,9 +23,9 @@
 //! Volume_Opened as Open volumes (shells or solids with holes)
 enum StdPrs_Volume
 {
-StdPrs_Volume_Autodetection,
-StdPrs_Volume_Closed,
-StdPrs_Volume_Opened
+  StdPrs_Volume_Autodetection,
+  StdPrs_Volume_Closed,
+  StdPrs_Volume_Opened
 };
 
 #endif // _StdPrs_Volume_HeaderFile

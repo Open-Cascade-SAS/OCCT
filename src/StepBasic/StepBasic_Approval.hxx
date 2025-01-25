@@ -32,49 +32,30 @@ class TCollection_HAsciiString;
 class StepBasic_Approval;
 DEFINE_STANDARD_HANDLE(StepBasic_Approval, Standard_Transient)
 
-
 class StepBasic_Approval : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a Approval
   Standard_EXPORT StepBasic_Approval();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_ApprovalStatus)& aStatus, const Handle(TCollection_HAsciiString)& aLevel);
-  
-  Standard_EXPORT void SetStatus (const Handle(StepBasic_ApprovalStatus)& aStatus);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_ApprovalStatus)& aStatus,
+                            const Handle(TCollection_HAsciiString)& aLevel);
+
+  Standard_EXPORT void SetStatus(const Handle(StepBasic_ApprovalStatus)& aStatus);
+
   Standard_EXPORT Handle(StepBasic_ApprovalStatus) Status() const;
-  
-  Standard_EXPORT void SetLevel (const Handle(TCollection_HAsciiString)& aLevel);
-  
+
+  Standard_EXPORT void SetLevel(const Handle(TCollection_HAsciiString)& aLevel);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Level() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Approval,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Approval, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_ApprovalStatus) status;
   Handle(TCollection_HAsciiString) level;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Approval_HeaderFile

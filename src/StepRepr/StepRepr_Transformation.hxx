@@ -27,49 +27,29 @@ class Standard_Transient;
 class StepRepr_ItemDefinedTransformation;
 class StepRepr_FunctionallyDefinedTransformation;
 
-
-
-class StepRepr_Transformation  : public StepData_SelectType
+class StepRepr_Transformation : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a Transformation SelectType
   Standard_EXPORT StepRepr_Transformation();
-  
+
   //! Recognizes a Transformation Kind Entity that is :
   //! 1 -> ItemDefinedTransformation
   //! 2 -> FunctionallyDefinedTransformation
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a ItemDefinedTransformation (Null if another type)
   Standard_EXPORT Handle(StepRepr_ItemDefinedTransformation) ItemDefinedTransformation() const;
-  
-  //! returns Value as a FunctionallyDefinedTransformation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_FunctionallyDefinedTransformation) FunctionallyDefinedTransformation() const;
 
+  //! returns Value as a FunctionallyDefinedTransformation (Null if another type)
+  Standard_EXPORT Handle(StepRepr_FunctionallyDefinedTransformation)
+    FunctionallyDefinedTransformation() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_Transformation_HeaderFile

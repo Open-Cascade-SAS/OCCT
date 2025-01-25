@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
 
-
 class ShapeUpgrade_SplitCurve2dContinuity;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 
@@ -36,44 +35,25 @@ class ShapeUpgrade_SplitCurve2dContinuity : public ShapeUpgrade_SplitCurve2d
 {
 
 public:
-
-  
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_SplitCurve2dContinuity();
-  
+
   //! Sets criterion for splitting.
-  Standard_EXPORT void SetCriterion (const GeomAbs_Shape Criterion);
-  
+  Standard_EXPORT void SetCriterion(const GeomAbs_Shape Criterion);
+
   //! Sets tolerance.
-  Standard_EXPORT void SetTolerance (const Standard_Real Tol);
-  
+  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+
   //! Calculates points for correction/splitting of the curve
   Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity,ShapeUpgrade_SplitCurve2d)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 
 protected:
-
-
-
-
 private:
-
-
-  GeomAbs_Shape myCriterion;
+  GeomAbs_Shape    myCriterion;
   Standard_Integer myCont;
-  Standard_Real myTolerance;
-
-
+  Standard_Real    myTolerance;
 };
-
-
-
-
-
-
 
 #endif // _ShapeUpgrade_SplitCurve2dContinuity_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Extrema_POnSurf> Extrema_SequenceOfPOnSurf;
 
-
 #endif

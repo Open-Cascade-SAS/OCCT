@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -32,7 +32,6 @@ class StepRepr_RepresentationOrRepresentationReference : public StepData_SelectT
 {
 
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -41,13 +40,13 @@ public:
   //! Recognizes a kind of RepresentationOrRepresentationReference select type
   //! -- 1 -> Representation
   //! -- 2 -> RepresentationReference
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns Value as Representation (or Null if another type)
   Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
 
   //! Returns Value as RepresentationReference (or Null if another type)
   Standard_EXPORT Handle(StepRepr_RepresentationReference) RepresentationReference() const;
-
 };
 #endif // _StepRepr_RepresentationOrRepresentationReference_HeaderFile

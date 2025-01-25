@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_Item.hxx>
 
@@ -50,7 +50,7 @@ Handle(TDF_Attribute) DFBrowser_Item::GetAttribute() const
 {
   initItem();
   Handle(TDF_Attribute) anAttribute;
-  GetLabel().FindAttribute (myAttributeGUID, anAttribute);
+  GetLabel().FindAttribute(myAttributeGUID, anAttribute);
   return anAttribute;
 }
 
@@ -60,7 +60,7 @@ Handle(TDF_Attribute) DFBrowser_Item::GetAttribute() const
 // =======================================================================
 void DFBrowser_Item::Init()
 {
-  DFBrowser_ItemBasePtr aParentItem = itemDynamicCast<DFBrowser_ItemBase> (Parent());
+  DFBrowser_ItemBasePtr aParentItem = itemDynamicCast<DFBrowser_ItemBase>(Parent());
   if (!aParentItem)
     return;
   TDF_Label aParentLabel = aParentItem->GetLabel();
@@ -69,22 +69,24 @@ void DFBrowser_Item::Init()
     return;
 
   int aNbAttributes = aParentLabel.NbAttributes();
-  int aRowId = Row();
+  int aRowId        = Row();
   if (aRowId < aNbAttributes)
   {
     Handle(TDF_Attribute) anAttribute;
-    int anAttributeId = 0;
-    for (TDF_AttributeIterator anAttrIt (aParentLabel); anAttrIt.More(); anAttrIt.Next(), anAttributeId++)
+    int                   anAttributeId = 0;
+    for (TDF_AttributeIterator anAttrIt(aParentLabel); anAttrIt.More();
+         anAttrIt.Next(), anAttributeId++)
     {
       if (anAttributeId == aRowId)
         anAttribute = anAttrIt.Value();
     }
-    SetAttribute (anAttribute);
+    SetAttribute(anAttribute);
   }
-  else {
-    int aCurrentId = aRowId - aNbAttributes;
-    TDF_ChildIterator aLabelsIt (aParentLabel);
-    TDF_Label aLabel;
+  else
+  {
+    int               aCurrentId = aRowId - aNbAttributes;
+    TDF_ChildIterator aLabelsIt(aParentLabel);
+    TDF_Label         aLabel;
     for (int aLabelId = 0; aLabelsIt.More(); aLabelsIt.Next(), aLabelId++)
     {
       if (aLabelId < aCurrentId)
@@ -93,7 +95,7 @@ void DFBrowser_Item::Init()
       break;
     }
     if (!aLabel.IsNull())
-      setLabel (aLabel);
+      setLabel(aLabel);
   }
   TreeModel_ItemBase::Init();
 }
@@ -104,7 +106,7 @@ void DFBrowser_Item::Init()
 // =======================================================================
 void DFBrowser_Item::Reset()
 {
-  SetAttribute (Handle(TDF_Attribute)());
+  SetAttribute(Handle(TDF_Attribute)());
 
   DFBrowser_ItemBase::Reset();
 }
@@ -122,37 +124,43 @@ int DFBrowser_Item::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant DFBrowser_Item::initValue (const int theItemRole) const
+QVariant DFBrowser_Item::initValue(const int theItemRole) const
 {
   if (!HasAttribute())
-    return DFBrowser_ItemBase::initValue (theItemRole);
+    return DFBrowser_ItemBase::initValue(theItemRole);
 
-  if (theItemRole == DFBrowserPane_ItemRole_DisplayExtended || theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
+  if (theItemRole == DFBrowserPane_ItemRole_DisplayExtended
+      || theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
   {
-    int aRole = theItemRole == DFBrowserPane_ItemRole_DisplayExtended ? Qt::DisplayRole : Qt::ToolTipRole;
-    QVariant aValue = DFBrowser_Module::GetAttributeInfo (GetAttribute(), GetModule(), aRole, Column());
-    QString anAdditionalInfo = DFBrowser_Module::GetAttributeInfo (GetAttribute(), GetModule(),
-                                                                    DFBrowser_ItemRole_AdditionalInfo, Column()).toString();
+    int aRole =
+      theItemRole == DFBrowserPane_ItemRole_DisplayExtended ? Qt::DisplayRole : Qt::ToolTipRole;
+    QVariant aValue =
+      DFBrowser_Module::GetAttributeInfo(GetAttribute(), GetModule(), aRole, Column());
+    QString anAdditionalInfo = DFBrowser_Module::GetAttributeInfo(GetAttribute(),
+                                                                  GetModule(),
+                                                                  DFBrowser_ItemRole_AdditionalInfo,
+                                                                  Column())
+                                 .toString();
     if (!anAdditionalInfo.isEmpty())
     {
       if (theItemRole == DFBrowserPane_ItemRole_DisplayExtended)
-        anAdditionalInfo = TreeModel_Tools::CutString (anAdditionalInfo);
+        anAdditionalInfo = TreeModel_Tools::CutString(anAdditionalInfo);
       if (!anAdditionalInfo.isEmpty())
-        aValue = QVariant (aValue.toString() + QString (" [%1]").arg (anAdditionalInfo));
-      //if (aRole == Qt::ToolTipRole)
-      //  aValue = wrapTextByWords(aValue.toString().toStdString(), INFO_LENGHT).c_str();
+        aValue = QVariant(aValue.toString() + QString(" [%1]").arg(anAdditionalInfo));
+      // if (aRole == Qt::ToolTipRole)
+      //   aValue = wrapTextByWords(aValue.toString().toStdString(), INFO_LENGHT).c_str();
     }
     return aValue;
   }
 
-  return DFBrowser_Module::GetAttributeInfo (GetAttribute(), GetModule(), theItemRole, Column());
+  return DFBrowser_Module::GetAttributeInfo(GetAttribute(), GetModule(), theItemRole, Column());
 }
 
 // =======================================================================
 // function : initStream
 // purpose :
 // =======================================================================
-void DFBrowser_Item::initStream (Standard_OStream& theOStream) const
+void DFBrowser_Item::initStream(Standard_OStream& theOStream) const
 {
   if (!HasAttribute())
     return;
@@ -162,7 +170,7 @@ void DFBrowser_Item::initStream (Standard_OStream& theOStream) const
     Handle(TDF_Attribute) anAttribute = GetAttribute();
     if (!anAttribute.IsNull())
     {
-      anAttribute->DumpJson (theOStream);
+      anAttribute->DumpJson(theOStream);
     }
   }
 }
@@ -171,10 +179,10 @@ void DFBrowser_Item::initStream (Standard_OStream& theOStream) const
 // function : GetAttributeInfo
 // purpose :
 // =======================================================================
-QVariant DFBrowser_Item::GetAttributeInfo (int theRole) const
+QVariant DFBrowser_Item::GetAttributeInfo(int theRole) const
 {
   initItem();
-  return cachedValue (theRole);
+  return cachedValue(theRole);
 }
 
 // =======================================================================
@@ -185,7 +193,7 @@ void DFBrowser_Item::initItem() const
 {
   if (IsInitialized())
     return;
-  
+
   const_cast<DFBrowser_Item*>(this)->Init();
 }
 
@@ -193,16 +201,16 @@ void DFBrowser_Item::initItem() const
 // function : SetAttribute
 // purpose :
 // =======================================================================
-void DFBrowser_Item::SetAttribute (Handle(TDF_Attribute) theAttribute)
+void DFBrowser_Item::SetAttribute(Handle(TDF_Attribute) theAttribute)
 {
   if (!theAttribute.IsNull())
   {
-    setLabel (theAttribute->Label());
+    setLabel(theAttribute->Label());
     myAttributeGUID = theAttribute->ID();
   }
   else
   {
-    setLabel (TDF_Label());
+    setLabel(TDF_Label());
     myAttributeGUID = Standard_GUID();
   }
 }

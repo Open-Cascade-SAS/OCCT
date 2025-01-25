@@ -17,7 +17,6 @@
 #ifndef _CSLib_DerivativeStatus_HeaderFile
 #define _CSLib_DerivativeStatus_HeaderFile
 
-
 //! D1uIsNull : ||D1U|| <= Resolution
 //!
 //! D1vIsNull : ||D1V|| <= Resolution
@@ -41,13 +40,13 @@
 //! as input data)
 enum CSLib_DerivativeStatus
 {
-CSLib_Done,
-CSLib_D1uIsNull,
-CSLib_D1vIsNull,
-CSLib_D1IsNull,
-CSLib_D1uD1vRatioIsNull,
-CSLib_D1vD1uRatioIsNull,
-CSLib_D1uIsParallelD1v
+  CSLib_Done,
+  CSLib_D1uIsNull,
+  CSLib_D1vIsNull,
+  CSLib_D1IsNull,
+  CSLib_D1uD1vRatioIsNull,
+  CSLib_D1vD1uRatioIsNull,
+  CSLib_D1uIsParallelD1v
 };
 
 #endif // _CSLib_DerivativeStatus_HeaderFile

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_Document_HeaderFile
 #define _StdLPersistent_Document_HeaderFile
 
@@ -20,23 +19,21 @@
 class TDocStd_Document;
 class StdLPersistent_Data;
 
-
 class StdLPersistent_Document : public StdObjMgt_Persistent
 {
 public:
   //! Read persistent data from a file.
-  Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+  Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
   //! Read persistent data from a file.
-  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+  Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
   //! Gets persistent child objects
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
+
   //! Returns persistent type name
-  virtual Standard_CString PName() const
-    { return "PDocStd_Document"; }
+  virtual Standard_CString PName() const { return "PDocStd_Document"; }
 
   //! Import transient document from the persistent data.
-  Standard_EXPORT virtual void ImportDocument
-    (const Handle(TDocStd_Document)& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(const Handle(TDocStd_Document)& theDocument) const;
 
 private:
   Handle(StdLPersistent_Data) myData;

@@ -32,18 +32,14 @@ class TopoDS_Shape;
 class BRepMesh_DiscretFactory
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns the global factory instance.
   Standard_EXPORT static BRepMesh_DiscretFactory& Get();
-  
+
   //! Returns the list of registered meshing algorithms.
-  const TColStd_MapOfAsciiString& Names() const
-  {
-    return myNames;
-  }
-  
+  const TColStd_MapOfAsciiString& Names() const { return myNames; }
+
   //! Setup meshing algorithm by name. <br>
   //! Returns TRUE if requested tool is available. <br>
   //! On fail Factory will continue to use previous algo.
@@ -51,13 +47,10 @@ public:
   {
     return SetDefault(theName, myFunctionName);
   }
-  
+
   //! Returns name for current meshing algorithm.
-  const TCollection_AsciiString& DefaultName() const
-  {
-    return myDefaultName;
-  }
-  
+  const TCollection_AsciiString& DefaultName() const { return myDefaultName; }
+
   //! Advanced function. Changes function name to retrieve from plugin. <br>
   //! Returns TRUE if requested tool is available. <br>
   //! On fail Factory will continue to use previous algo.
@@ -65,25 +58,20 @@ public:
   {
     return SetDefault(myDefaultName, theFuncName);
   }
-  
+
   //! Returns function name that should be exported by plugin.
-  const TCollection_AsciiString& FunctionName() const
-  {
-    return myFunctionName;
-  }
-  
+  const TCollection_AsciiString& FunctionName() const { return myFunctionName; }
+
   //! Returns error status for last meshing algorithm switch.
-  BRepMesh_FactoryError ErrorStatus() const
-  {
-    return myErrorStatus;
-  }
+  BRepMesh_FactoryError ErrorStatus() const { return myErrorStatus; }
 
   //! Setup meshing algorithm that should be created by this Factory. <br>
   //! Returns TRUE if requested tool is available. <br>
   //! On fail Factory will continue to use previous algo. <br>
   //! Call ::ErrorStatus() method to retrieve fault reason.
-  Standard_EXPORT Standard_Boolean SetDefault(const TCollection_AsciiString& theName,
-                                              const TCollection_AsciiString& theFuncName = "DISCRETALGO");
+  Standard_EXPORT Standard_Boolean
+    SetDefault(const TCollection_AsciiString& theName,
+               const TCollection_AsciiString& theFuncName = "DISCRETALGO");
 
   //! Returns triangulation algorithm instance.
   //! @param theShape shape to be meshed.
@@ -94,7 +82,6 @@ public:
                                                        const Standard_Real theAngDeflection);
 
 protected:
-  
   //! Constructor
   Standard_EXPORT BRepMesh_DiscretFactory();
 
@@ -104,12 +91,12 @@ protected:
   //! Clears factory data.
   Standard_EXPORT void clear();
 
-  BRepMesh_PluginEntryType  myPluginEntry;
-  BRepMesh_FactoryError     myErrorStatus;
-  TColStd_MapOfAsciiString  myNames;
-  TCollection_AsciiString   myDefaultName;
-  TCollection_AsciiString   myFunctionName;
-  Plugin_MapOfFunctions     myFactoryMethods;
+  BRepMesh_PluginEntryType myPluginEntry;
+  BRepMesh_FactoryError    myErrorStatus;
+  TColStd_MapOfAsciiString myNames;
+  TCollection_AsciiString  myDefaultName;
+  TCollection_AsciiString  myFunctionName;
+  Plugin_MapOfFunctions    myFactoryMethods;
 };
 
 #endif

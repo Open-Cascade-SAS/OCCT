@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 140202: Repl.(const char *) for (LDOMBasicString) => myTagName
+// AGV 140202: Repl.(const char *) for (LDOMBasicString) => myTagName
 
 #ifndef LDOM_BasicElement_HeaderFile
 #define LDOM_BasicElement_HeaderFile
@@ -30,71 +30,66 @@ class LDOM_BasicAttribute;
 
 class LDOM_BasicElement : public LDOM_BasicNode
 {
- public:
- 
+public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_BasicElement ()
-    : LDOM_BasicNode    (LDOM_Node::UNKNOWN),
-      myTagName         (NULL),
-      myAttributeMask   (0),
-      myFirstChild      (NULL) {}
+  LDOM_BasicElement()
+      : LDOM_BasicNode(LDOM_Node::UNKNOWN),
+        myTagName(NULL),
+        myAttributeMask(0),
+        myFirstChild(NULL)
+  {
+  }
+
   //    Empty constructor
 
-  static LDOM_BasicElement& Create (const char                     * aName,
-                                    const Standard_Integer         aLength,
-                                    const Handle(LDOM_MemManager)& aDoc);
+  static LDOM_BasicElement& Create(const char*                    aName,
+                                   const Standard_Integer         aLength,
+                                   const Handle(LDOM_MemManager)& aDoc);
 
-//  Standard_EXPORT LDOM_BasicElement (const LDOM_BasicElement& theOther);
+  //  Standard_EXPORT LDOM_BasicElement (const LDOM_BasicElement& theOther);
   //    Copy constructor
 
-  Standard_EXPORT LDOM_BasicElement&
-                operator =              (const LDOM_NullPtr * aNull);
+  Standard_EXPORT LDOM_BasicElement& operator=(const LDOM_NullPtr* aNull);
   //    Nullify
 
-  Standard_EXPORT ~LDOM_BasicElement ();
+  Standard_EXPORT ~LDOM_BasicElement();
+
   //    Destructor
 
-  const char *  GetTagName              () const { return myTagName; }
+  const char* GetTagName() const { return myTagName; }
 
-  const LDOM_BasicNode *
-                GetFirstChild           () const { return myFirstChild; }
+  const LDOM_BasicNode* GetFirstChild() const { return myFirstChild; }
 
-  Standard_EXPORT const LDOM_BasicNode *
-                GetLastChild            () const;
+  Standard_EXPORT const LDOM_BasicNode* GetLastChild() const;
 
-  Standard_EXPORT const LDOM_BasicAttribute&
-                GetAttribute            (const LDOMBasicString& aName,
-                                         const LDOM_BasicNode * aLastCh) const;
+  Standard_EXPORT const LDOM_BasicAttribute& GetAttribute(const LDOMBasicString& aName,
+                                                          const LDOM_BasicNode*  aLastCh) const;
   //    Search for attribute name, using or setting myFirstAttribute
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-//  LDOM_BasicElement (const LDOM_Element& anElement);
+  //  LDOM_BasicElement (const LDOM_Element& anElement);
   //    Constructor
 
-  Standard_EXPORT const LDOM_BasicNode *
-                AddAttribute            (const LDOMBasicString&   anAttrName,
-                                         const LDOMBasicString&   anAttrValue,
-                                         const Handle(LDOM_MemManager)& aDoc,
-                                         const LDOM_BasicNode     * aLastCh);
+  Standard_EXPORT const LDOM_BasicNode* AddAttribute(const LDOMBasicString&         anAttrName,
+                                                     const LDOMBasicString&         anAttrValue,
+                                                     const Handle(LDOM_MemManager)& aDoc,
+                                                     const LDOM_BasicNode*          aLastCh);
   //    add or replace an attribute to the element
 
-  Standard_EXPORT const LDOM_BasicNode *
-                RemoveAttribute         (const LDOMBasicString& aName,
-                                         const LDOM_BasicNode * aLastCh) const;
+  Standard_EXPORT const LDOM_BasicNode* RemoveAttribute(const LDOMBasicString& aName,
+                                                        const LDOM_BasicNode*  aLastCh) const;
 
-  Standard_EXPORT void
-                RemoveChild             (const LDOM_BasicNode * aChild) const;
+  Standard_EXPORT void RemoveChild(const LDOM_BasicNode* aChild) const;
   //    remove a child element
 
-  Standard_EXPORT void
-                AppendChild             (const LDOM_BasicNode *  aChild,
-                                         const LDOM_BasicNode *& aLastCh) const;
+  Standard_EXPORT void AppendChild(const LDOM_BasicNode*  aChild,
+                                   const LDOM_BasicNode*& aLastCh) const;
   //    append a child node to the end of the list
 
- private:
+private:
   friend class LDOMParser;
   friend class LDOM_XmlReader;
   friend class LDOM_Document;
@@ -102,31 +97,27 @@ class LDOM_BasicElement : public LDOM_BasicNode
   friend class LDOM_Node;
   // ---------- PRIVATE METHODS ----------
 
-  const LDOM_BasicAttribute *
-                GetFirstAttribute       (const LDOM_BasicNode *& aLastCh,
-                                         const LDOM_BasicNode **& thePrN) const;
+  const LDOM_BasicAttribute* GetFirstAttribute(const LDOM_BasicNode*&  aLastCh,
+                                               const LDOM_BasicNode**& thePrN) const;
 
-  void          RemoveNodes             ();
+  void RemoveNodes();
 
-  void          ReplaceElement          (const LDOM_BasicElement&       anOther,
-                                         const Handle(LDOM_MemManager)& aDoc);
+  void ReplaceElement(const LDOM_BasicElement& anOther, const Handle(LDOM_MemManager)& aDoc);
   //    remark: recursive
 
-  void          AddElementsByTagName    (LDOM_NodeList&         aList,
-                                         const LDOMBasicString& aTagName) const;
+  void AddElementsByTagName(LDOM_NodeList& aList, const LDOMBasicString& aTagName) const;
   //    remark: recursive
 
-  void          AddAttributes           (LDOM_NodeList&         aList,
-                                         const LDOM_BasicNode * aLastCh) const;
+  void AddAttributes(LDOM_NodeList& aList, const LDOM_BasicNode* aLastCh) const;
   //    add attributes to list
 
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
-//  LDOMBasicString       myTagName;
-  const char            * myTagName;
-  unsigned long         myAttributeMask;
-  LDOM_BasicNode        * myFirstChild;
+  //  LDOMBasicString       myTagName;
+  const char*     myTagName;
+  unsigned long   myAttributeMask;
+  LDOM_BasicNode* myFirstChild;
 };
 
 #endif

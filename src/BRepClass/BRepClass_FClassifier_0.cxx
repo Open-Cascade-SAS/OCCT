@@ -22,7 +22,6 @@
 #include <BRepClass_Intersector.hxx>
 #include <BRepClass_FClass2dOfFClassifier.hxx>
 #include <gp_Pnt2d.hxx>
- 
 
 #define TheFaceExplorer BRepClass_FaceExplorer
 #define TheFaceExplorer_hxx <BRepClass_FaceExplorer.hxx>
@@ -35,4 +34,3 @@
 #define TopClass_FaceClassifier BRepClass_FClassifier
 #define TopClass_FaceClassifier_hxx <BRepClass_FClassifier.hxx>
 #include "../TopClass/TopClass_FaceClassifier.gxx"
-

@@ -20,5 +20,4 @@
 
 typedef TColStd_DataMapOfAsciiStringInteger BinMDF_StringIdMap;
 
-
 #endif // _BinMDF_StringIdMap_HeaderFile

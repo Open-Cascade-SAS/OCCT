@@ -20,10 +20,8 @@
 class TDF_Label;
 class gp_Pnt;
 
-
 class TDataXtd_Point;
 DEFINE_STANDARD_HANDLE(TDataXtd_Point, TDataStd_GenericEmpty)
-
 
 //! The basis to define a point attribute.
 //! The topological attribute must contain a vertex.
@@ -35,51 +33,32 @@ class TDataXtd_Point : public TDataStd_GenericEmpty
 {
 
 public:
-
-  
   //! class methods
   //! =============
   //!
   //! Returns the GUID for point attributes.
   Standard_EXPORT static const Standard_GUID& GetID();
-  
 
   //! Sets the label Label as a point attribute.
   //! If no object is found, a point attribute is created.
-  Standard_EXPORT static Handle(TDataXtd_Point) Set (const TDF_Label& label);
-  
+  Standard_EXPORT static Handle(TDataXtd_Point) Set(const TDF_Label& label);
 
   //! Sets the label Label as a point attribute containing the point P.
   //! If no object is found, a point attribute is created.
   //! Point methods
   //! =============
-  Standard_EXPORT static Handle(TDataXtd_Point) Set (const TDF_Label& label, const gp_Pnt& P);
-  
-  Standard_EXPORT TDataXtd_Point();
-  
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT static Handle(TDataXtd_Point) Set(const TDF_Label& label, const gp_Pnt& P);
 
+  Standard_EXPORT TDataXtd_Point();
+
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Point, TDataStd_GenericEmpty)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataXtd_Point_HeaderFile

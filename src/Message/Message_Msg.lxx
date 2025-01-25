@@ -16,68 +16,68 @@
 #include <Message_Msg.hxx>
 
 #ifndef _TCollection_HAsciiString_HeaderFile
-#include <TCollection_HAsciiString.hxx>
+  #include <TCollection_HAsciiString.hxx>
 #endif
 #ifndef _TCollection_HExtendedString_HeaderFile
-#include <TCollection_HExtendedString.hxx>
+  #include <TCollection_HExtendedString.hxx>
 #endif
 
 //=======================================================================
-//function : Arg (TCollection_AsciiString)
-//purpose  : 
+// function : Arg (TCollection_AsciiString)
+// purpose  :
 //=======================================================================
 
-inline Message_Msg& Message_Msg::Arg (const TCollection_AsciiString& theString)
+inline Message_Msg& Message_Msg::Arg(const TCollection_AsciiString& theString)
 {
-  return Arg (theString.ToCString());
+  return Arg(theString.ToCString());
 }
 
 //=======================================================================
-//function : Arg (TCollection_HAsciiString)
-//purpose  : 
+// function : Arg (TCollection_HAsciiString)
+// purpose  :
 //=======================================================================
 
-inline Message_Msg& Message_Msg::Arg (const Handle(TCollection_HAsciiString)& theString)
+inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HAsciiString)& theString)
 {
-  return Arg (theString->String().ToCString());
+  return Arg(theString->String().ToCString());
 }
 
 //=======================================================================
-//function : Arg (TCollection_HExtendedString)
-//purpose  : 
+// function : Arg (TCollection_HExtendedString)
+// purpose  :
 //=======================================================================
 
-inline Message_Msg& Message_Msg::Arg (const Handle(TCollection_HExtendedString)& theString)
+inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HExtendedString)& theString)
 {
-  return Arg (theString->String());
+  return Arg(theString->String());
 }
 
 //=======================================================================
-//function : Original
-//purpose  : 
+// function : Original
+// purpose  :
 //=======================================================================
 
 inline const TCollection_ExtendedString& Message_Msg::Original() const
 {
   return myOriginal;
 }
- 
+
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
 inline const TCollection_ExtendedString& Message_Msg::Value() const
 {
   return myMessageBody;
 }
- 
+
 //=======================================================================
-//function : IsEdited
-//purpose  : 
+// function : IsEdited
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean Message_Msg::IsEdited() const
 {
-  return !myOriginal.IsEqual( myMessageBody );
+  return !myOriginal.IsEqual(myMessageBody);
 }

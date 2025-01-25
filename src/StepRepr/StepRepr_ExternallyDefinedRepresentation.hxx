@@ -22,40 +22,19 @@
 
 #include <StepRepr_Representation.hxx>
 
-
 class StepRepr_ExternallyDefinedRepresentation;
 DEFINE_STANDARD_HANDLE(StepRepr_ExternallyDefinedRepresentation, StepRepr_Representation)
-
 
 class StepRepr_ExternallyDefinedRepresentation : public StepRepr_Representation
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_ExternallyDefinedRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation, StepRepr_Representation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_ExternallyDefinedRepresentation_HeaderFile

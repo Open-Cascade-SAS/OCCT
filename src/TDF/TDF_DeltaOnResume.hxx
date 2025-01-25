@@ -21,7 +21,6 @@
 #include <TDF_AttributeDelta.hxx>
 class TDF_Attribute;
 
-
 class TDF_DeltaOnResume;
 DEFINE_STANDARD_HANDLE(TDF_DeltaOnResume, TDF_AttributeDelta)
 
@@ -34,38 +33,20 @@ class TDF_DeltaOnResume : public TDF_AttributeDelta
 {
 
 public:
-
-  
   //! Creates a TDF_DeltaOnResume.
   Standard_EXPORT TDF_DeltaOnResume(const Handle(TDF_Attribute)& anAtt);
-  
+
   //! Applies the delta to the attribute.
   Standard_EXPORT void Apply() Standard_OVERRIDE;
-  
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnResume,TDF_AttributeDelta)
+  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnResume, TDF_AttributeDelta)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDF_DeltaOnResume_HeaderFile

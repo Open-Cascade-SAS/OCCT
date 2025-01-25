@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdObjMgt_TransientPersistentMap_HeaderFile
 #define _StdObjMgt_TransientPersistentMap_HeaderFile
 
@@ -20,6 +19,7 @@
 class Standard_Transient;
 class StdObjMgt_Persistent;
 
-typedef NCollection_DataMap<Handle(Standard_Transient), Handle(StdObjMgt_Persistent)> StdObjMgt_TransientPersistentMap;
+typedef NCollection_DataMap<Handle(Standard_Transient), Handle(StdObjMgt_Persistent)>
+  StdObjMgt_TransientPersistentMap;
 
 #endif // _StdObjMgt_TransientPersistentMap_HeaderFile

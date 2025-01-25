@@ -11,77 +11,73 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_OrientedFace.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedFace,StepShape_Face)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedFace, StepShape_Face)
 
-StepShape_OrientedFace::StepShape_OrientedFace ()  {}
+StepShape_OrientedFace::StepShape_OrientedFace() {}
 
-void StepShape_OrientedFace::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_Face)& aFaceElement,
-	const Standard_Boolean aOrientation)
+void StepShape_OrientedFace::Init(const Handle(TCollection_HAsciiString)& aName,
+                                  const Handle(StepShape_Face)&           aFaceElement,
+                                  const Standard_Boolean                  aOrientation)
 {
-	// --- classe own fields ---
-	faceElement = aFaceElement;
-	orientation = aOrientation;
-	// --- classe inherited fields ---
-	Handle(StepShape_HArray1OfFaceBound) aBounds;
-	aBounds.Nullify();
-	StepShape_Face::Init(aName, aBounds);
+  // --- classe own fields ---
+  faceElement = aFaceElement;
+  orientation = aOrientation;
+  // --- classe inherited fields ---
+  Handle(StepShape_HArray1OfFaceBound) aBounds;
+  aBounds.Nullify();
+  StepShape_Face::Init(aName, aBounds);
 }
-
 
 void StepShape_OrientedFace::SetFaceElement(const Handle(StepShape_Face)& aFaceElement)
 {
-	faceElement = aFaceElement;
+  faceElement = aFaceElement;
 }
 
 Handle(StepShape_Face) StepShape_OrientedFace::FaceElement() const
 {
-	return faceElement;
+  return faceElement;
 }
 
 void StepShape_OrientedFace::SetOrientation(const Standard_Boolean aOrientation)
 {
-	orientation = aOrientation;
+  orientation = aOrientation;
 }
 
 Standard_Boolean StepShape_OrientedFace::Orientation() const
 {
-	return orientation;
+  return orientation;
 }
 
 void StepShape_OrientedFace::SetBounds(const Handle(StepShape_HArray1OfFaceBound)& /*aBounds*/)
 {
-	// WARNING : the field is redefined.
-	// field set up forbidden.
-	std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
+  // WARNING : the field is redefined.
+  // field set up forbidden.
+  std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
 Handle(StepShape_HArray1OfFaceBound) StepShape_OrientedFace::Bounds() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
-  // Attention, cette modif. est juste pour la compilation  
+  // Attention, cette modif. est juste pour la compilation
   return faceElement->Bounds();
-
 }
 
 Handle(StepShape_FaceBound) StepShape_OrientedFace::BoundsValue(const Standard_Integer num) const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
-  // Attention, cette modif. est juste pour la compilation  
+  // Attention, cette modif. est juste pour la compilation
   return faceElement->BoundsValue(num);
 }
 
-Standard_Integer StepShape_OrientedFace::NbBounds () const
+Standard_Integer StepShape_OrientedFace::NbBounds() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
-  // Attention, cette modif. est juste pour la compilation  
+  // Attention, cette modif. est juste pour la compilation
   return faceElement->NbBounds();
 }

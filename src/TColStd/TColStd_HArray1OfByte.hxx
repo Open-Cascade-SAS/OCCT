@@ -20,5 +20,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfByte, TColStd_Array1OfByte)
 
-
 #endif

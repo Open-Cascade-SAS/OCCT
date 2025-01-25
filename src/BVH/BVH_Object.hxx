@@ -25,12 +25,14 @@ class BVH_ObjectTransient : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(BVH_ObjectTransient, Standard_Transient)
 public:
-
   //! Returns properties of the geometric object.
   virtual const Handle(BVH_Properties)& Properties() const { return myProperties; }
 
   //! Sets properties of the geometric object.
-  virtual void SetProperties (const Handle(BVH_Properties)& theProperties) { myProperties = theProperties; }
+  virtual void SetProperties(const Handle(BVH_Properties)& theProperties)
+  {
+    myProperties = theProperties;
+  }
 
   //! Returns TRUE if object state should be updated.
   virtual Standard_Boolean IsDirty() const { return myIsDirty; }
@@ -39,25 +41,24 @@ public:
   virtual void MarkDirty() { myIsDirty = Standard_True; }
 
 protected:
-
   //! Creates new abstract geometric object.
-  BVH_ObjectTransient() : myIsDirty (Standard_False) {}
+  BVH_ObjectTransient()
+      : myIsDirty(Standard_False)
+  {
+  }
 
 protected:
-
   Standard_Boolean       myIsDirty;    //!< Marks internal object state as outdated
   Handle(BVH_Properties) myProperties; //!< Generic properties assigned to the object
-
 };
 
 //! Abstract geometric object bounded by BVH box.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
-template<class T, int N>
+template <class T, int N>
 class BVH_Object : public BVH_ObjectTransient
 {
 public:
-
   //! Creates new abstract geometric object.
   BVH_Object() {}
 
@@ -65,10 +66,8 @@ public:
   virtual ~BVH_Object() {}
 
 public:
-
   //! Returns AABB of the geometric object.
   virtual BVH_Box<T, N> Box() const = 0;
-
 };
 
 #endif // _BVH_Object_Header

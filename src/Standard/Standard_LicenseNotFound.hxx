@@ -26,8 +26,9 @@ class Standard_LicenseNotFound;
 DEFINE_STANDARD_HANDLE(Standard_LicenseNotFound, Standard_LicenseError)
 
 #if !defined No_Exception && !defined No_Standard_LicenseNotFound
-  #define Standard_LicenseNotFound_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_LicenseNotFound(MESSAGE);
+  #define Standard_LicenseNotFound_Raise_if(CONDITION, MESSAGE)                                    \
+    if (CONDITION)                                                                                 \
+      throw Standard_LicenseNotFound(MESSAGE);
 #else
   #define Standard_LicenseNotFound_Raise_if(CONDITION, MESSAGE)
 #endif

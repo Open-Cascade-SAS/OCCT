@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 
-
 class Transfer_TransientListBinder;
 DEFINE_STANDARD_HANDLE(Transfer_TransientListBinder, Transfer_Binder)
 
@@ -37,52 +36,33 @@ class Transfer_TransientListBinder : public Transfer_Binder
 {
 
 public:
-
-  
   Standard_EXPORT Transfer_TransientListBinder();
-  
+
   Standard_EXPORT Transfer_TransientListBinder(const Handle(TColStd_HSequenceOfTransient)& list);
-  
+
   Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
-  
+
   //! Adds an item to the result list
-  Standard_EXPORT void AddResult (const Handle(Standard_Transient)& res);
-  
+  Standard_EXPORT void AddResult(const Handle(Standard_Transient)& res);
+
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) Result() const;
-  
+
   //! Changes an already defined sub-result
-  Standard_EXPORT void SetResult (const Standard_Integer num, const Handle(Standard_Transient)& res);
-  
+  Standard_EXPORT void SetResult(const Standard_Integer num, const Handle(Standard_Transient)& res);
+
   Standard_EXPORT Standard_Integer NbTransients() const;
-  
-  Standard_EXPORT const Handle(Standard_Transient)& Transient (const Standard_Integer num) const;
 
+  Standard_EXPORT const Handle(Standard_Transient)& Transient(const Standard_Integer num) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Transfer_TransientListBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_TransientListBinder, Transfer_Binder)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HSequenceOfTransient) theres;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_TransientListBinder_HeaderFile

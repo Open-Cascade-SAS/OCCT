@@ -35,60 +35,50 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a TabularData. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDefs_ToolTabularData 
+class IGESDefs_ToolTabularData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolTabularData, ready to work
   Standard_EXPORT IGESDefs_ToolTabularData();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDefs_TabularData)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDefs_TabularData)&    ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDefs_TabularData)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDefs_TabularData)& ent,
+                                      IGESData_IGESWriter&                IW) const;
+
   //! Lists the Entities shared by a TabularData <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDefs_TabularData)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDefs_TabularData)& ent,
+                                 Interface_EntityIterator&           iter) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDefs_TabularData)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDefs_TabularData)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDefs_TabularData)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDefs_TabularData)& ent,
+                                const Interface_ShareTool&          shares,
+                                Handle(Interface_Check)&            ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDefs_TabularData)& entfrom, const Handle(IGESDefs_TabularData)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDefs_TabularData)& entfrom,
+                               const Handle(IGESDefs_TabularData)& entto,
+                               Interface_CopyTool&                 TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDefs_TabularData)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDefs_TabularData)& ent,
+                               const IGESData_IGESDumper&          dumper,
+                               Standard_OStream&                   S,
+                               const Standard_Integer              own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDefs_ToolTabularData_HeaderFile

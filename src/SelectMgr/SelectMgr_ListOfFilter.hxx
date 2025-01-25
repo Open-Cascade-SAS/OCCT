@@ -20,8 +20,7 @@
 #include <SelectMgr_Filter.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(SelectMgr_Filter)> SelectMgr_ListOfFilter;
+typedef NCollection_List<Handle(SelectMgr_Filter)>           SelectMgr_ListOfFilter;
 typedef NCollection_List<Handle(SelectMgr_Filter)>::Iterator SelectMgr_ListIteratorOfListOfFilter;
-
 
 #endif

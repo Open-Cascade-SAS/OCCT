@@ -11,43 +11,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics,StepVisual_TextStyle)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
 
-StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics ()  {}
+StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics() {}
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance,
-	const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
+  const Handle(TCollection_HAsciiString)&                    aName,
+  const Handle(StepVisual_TextStyleForDefinedFont)&          aCharacterAppearance,
+  const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
 {
-	// --- classe own fields ---
-	characteristics = aCharacteristics;
-	// --- classe inherited fields ---
-	StepVisual_TextStyle::Init(aName, aCharacterAppearance);
+  // --- classe own fields ---
+  characteristics = aCharacteristics;
+  // --- classe inherited fields ---
+  StepVisual_TextStyle::Init(aName, aCharacterAppearance);
 }
 
-
-void StepVisual_TextStyleWithBoxCharacteristics::SetCharacteristics(const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
+void StepVisual_TextStyleWithBoxCharacteristics::SetCharacteristics(
+  const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
 {
-	characteristics = aCharacteristics;
+  characteristics = aCharacteristics;
 }
 
-Handle(StepVisual_HArray1OfBoxCharacteristicSelect) StepVisual_TextStyleWithBoxCharacteristics::Characteristics() const
+Handle(StepVisual_HArray1OfBoxCharacteristicSelect) StepVisual_TextStyleWithBoxCharacteristics::
+  Characteristics() const
 {
-	return characteristics;
+  return characteristics;
 }
 
-StepVisual_BoxCharacteristicSelect StepVisual_TextStyleWithBoxCharacteristics::CharacteristicsValue(const Standard_Integer num) const
+StepVisual_BoxCharacteristicSelect StepVisual_TextStyleWithBoxCharacteristics::CharacteristicsValue(
+  const Standard_Integer num) const
 {
-	return characteristics->Value(num);
+  return characteristics->Value(num);
 }
 
-Standard_Integer StepVisual_TextStyleWithBoxCharacteristics::NbCharacteristics () const
+Standard_Integer StepVisual_TextStyleWithBoxCharacteristics::NbCharacteristics() const
 {
-	return characteristics->Length();
+  return characteristics->Length();
 }

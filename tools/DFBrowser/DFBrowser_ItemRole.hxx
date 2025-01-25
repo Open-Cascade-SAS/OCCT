@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_ItemRole_H
 #define DFBrowser_ItemRole_H
@@ -25,7 +25,8 @@
 //! Additional data item role for DFBrowser tree item
 enum DFBrowser_ItemRole
 {
-  DFBrowser_ItemRole_AdditionalInfo = DFBrowserPane_ItemRole_LastTreeRole + 1 //!< an attribute additional information 
+  DFBrowser_ItemRole_AdditionalInfo =
+    DFBrowserPane_ItemRole_LastTreeRole + 1 //!< an attribute additional information
 };
 
 #endif

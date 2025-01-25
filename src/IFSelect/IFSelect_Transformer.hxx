@@ -45,7 +45,6 @@ class IFSelect_Transformer : public Standard_Transient
 {
 
 public:
-
   //! Performs a Transformation (defined by each sub-class) :
   //! <G> gives the input data (especially the starting model) and
   //! can be used for queries (by Selections, etc...)
@@ -70,8 +69,11 @@ public:
   //! Returns True if Done, False if an Error occurred:
   //! in this case, if a new data set has been produced, the transformation is ignored,
   //! else data may be corrupted.
-  Standard_EXPORT virtual Standard_Boolean Perform (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Perform(const Interface_Graph&            G,
+                                                   const Handle(Interface_Protocol)& protocol,
+                                                   Interface_CheckIterator&          checks,
+                                                   Handle(Interface_InterfaceModel)& newmod) = 0;
+
   //! This methods allows to declare that the Protocol applied to
   //! the new Model has changed. It applies to the last call to
   //! Perform.
@@ -79,22 +81,22 @@ public:
   //! Returns True if the Protocol has changed, False else.
   //! The provided default keeps the starting Protocol. This method
   //! should be redefined as required by the effect of Perform.
-  Standard_EXPORT virtual Standard_Boolean ChangeProtocol (Handle(Interface_Protocol)& newproto) const;
-  
+  Standard_EXPORT virtual Standard_Boolean ChangeProtocol(
+    Handle(Interface_Protocol)& newproto) const;
+
   //! This method allows to know what happened to a starting
   //! entity after the last Perform. If <entfrom> (from starting
   //! model) has one and only one known item which corresponds in
   //! the new produced model, this method must return True and
   //! fill the argument <entto>. Else, it returns False.
-  Standard_EXPORT virtual Standard_Boolean Updated (const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto) const = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Updated(const Handle(Standard_Transient)& entfrom,
+                                                   Handle(Standard_Transient)& entto) const = 0;
+
   //! Returns a text which defines the way a Transformer works
   //! (to identify the transformation it performs)
   Standard_EXPORT virtual TCollection_AsciiString Label() const = 0;
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer,Standard_Transient)
-
-
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer, Standard_Transient)
 };
 
 #endif // _IFSelect_Transformer_HeaderFile

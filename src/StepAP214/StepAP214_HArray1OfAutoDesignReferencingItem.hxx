@@ -20,7 +20,7 @@
 #include <StepAP214_Array1OfAutoDesignReferencingItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignReferencingItem, StepAP214_Array1OfAutoDesignReferencingItem)
-
+DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignReferencingItem,
+               StepAP214_Array1OfAutoDesignReferencingItem)
 
 #endif

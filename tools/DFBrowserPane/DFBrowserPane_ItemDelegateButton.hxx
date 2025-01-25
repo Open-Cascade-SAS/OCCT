@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_ItemDelegateButton_H
 #define DFBrowserPane_ItemDelegateButton_H
@@ -40,25 +40,24 @@ class DFBrowserPane_ItemDelegateButton : public QStyledItemDelegate
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowserPane_ItemDelegateButton (QObject* theParent, const QString& theIcon);
+  Standard_EXPORT DFBrowserPane_ItemDelegateButton(QObject* theParent, const QString& theIcon);
 
   //! Destructor
   virtual ~DFBrowserPane_ItemDelegateButton() {}
 
 public:
-
   //! Stores indices of rows where the icon should not be shown
   //! \param theRows an indices of rows
-  void SetFreeRows (const QList<int>& theRows) { myFreeRows = theRows; }
+  void SetFreeRows(const QList<int>& theRows) { myFreeRows = theRows; }
 
   //! Draw an icon in the cell
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
-  Standard_EXPORT virtual void paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                      const QModelIndex& theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void paint(QPainter*                   thePainter,
+                                     const QStyleOptionViewItem& theOption,
+                                     const QModelIndex&          theIndex) const Standard_OVERRIDE;
 
   //! Emits pressed signal if event type is mouse button pressed and there is icon for this index
   //! After signal it calls the parent method
@@ -66,17 +65,18 @@ public:
   //! \param theModel a current view model
   //! \param theOption display options
   //! \param theIndex an edited item
-  Standard_EXPORT virtual bool editorEvent (QEvent* theEvent, QAbstractItemModel* theModel,
-                            const QStyleOptionViewItem& theOption, const QModelIndex& theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool editorEvent(QEvent*                     theEvent,
+                                           QAbstractItemModel*         theModel,
+                                           const QStyleOptionViewItem& theOption,
+                                           const QModelIndex&          theIndex) Standard_OVERRIDE;
 signals:
 
   //! Signal about button pressing
   //! \param theIndex an index of clicked item
-  void buttonPressed (const QModelIndex& theIndex);
+  void buttonPressed(const QModelIndex& theIndex);
 
 private:
-
-  QIcon myIcon; //!< an item icon
+  QIcon      myIcon;     //!< an item icon
   QList<int> myFreeRows; //!< container of row indices where icon is not used
 };
 

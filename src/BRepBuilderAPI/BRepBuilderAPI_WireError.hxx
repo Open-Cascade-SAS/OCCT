@@ -29,10 +29,10 @@
 //! The wire with some singularity.
 enum BRepBuilderAPI_WireError
 {
-BRepBuilderAPI_WireDone,
-BRepBuilderAPI_EmptyWire,
-BRepBuilderAPI_DisconnectedWire,
-BRepBuilderAPI_NonManifoldWire
+  BRepBuilderAPI_WireDone,
+  BRepBuilderAPI_EmptyWire,
+  BRepBuilderAPI_DisconnectedWire,
+  BRepBuilderAPI_NonManifoldWire
 };
 
 #endif // _BRepBuilderAPI_WireError_HeaderFile

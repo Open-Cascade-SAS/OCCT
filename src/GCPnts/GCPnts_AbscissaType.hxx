@@ -17,12 +17,11 @@
 #ifndef _GCPnts_AbscissaType_HeaderFile
 #define _GCPnts_AbscissaType_HeaderFile
 
-
 enum GCPnts_AbscissaType
 {
-GCPnts_LengthParametrized,
-GCPnts_Parametrized,
-GCPnts_AbsComposite
+  GCPnts_LengthParametrized,
+  GCPnts_Parametrized,
+  GCPnts_AbsComposite
 };
 
 #endif // _GCPnts_AbscissaType_HeaderFile

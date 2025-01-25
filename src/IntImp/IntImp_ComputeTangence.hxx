@@ -18,11 +18,11 @@
 #include <gp_Vec.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 
-Standard_EXPORT IntImp_ConstIsoparametric ChoixRef (Standard_Integer theIndex);
+Standard_EXPORT IntImp_ConstIsoparametric ChoixRef(Standard_Integer theIndex);
 
-Standard_EXPORT Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
-							const Standard_Real EpsUV[],
-							Standard_Real Tgduv[],
-							IntImp_ConstIsoparametric TabIso[]); 
+Standard_EXPORT Standard_Boolean IntImp_ComputeTangence(const gp_Vec              DPuv[],
+                                                        const Standard_Real       EpsUV[],
+                                                        Standard_Real             Tgduv[],
+                                                        IntImp_ConstIsoparametric TabIso[]);
 
 #endif

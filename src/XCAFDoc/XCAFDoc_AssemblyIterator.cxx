@@ -30,8 +30,8 @@
 
 XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
                                                    const Standard_Integer          theLevel)
-  : myMaxLevel(theLevel)
-  , mySeedLevel(1)
+    : myMaxLevel(theLevel),
+      mySeedLevel(1)
 {
   Standard_NullObject_Raise_if(theDoc.IsNull(), "Null document!");
 
@@ -43,7 +43,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
   TDF_LabelSequence aRoots;
   myShapeTool->GetFreeShapes(aRoots);
 
-  AuxAssemblyItem anAuxItem;
+  AuxAssemblyItem           anAuxItem;
   TColStd_ListOfAsciiString aParentPath;
   for (TDF_LabelSequence::Iterator anIt(aRoots); anIt.More(); anIt.Next())
   {
@@ -60,8 +60,8 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
 XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
                                                    const XCAFDoc_AssemblyItemId&   theRoot,
                                                    const Standard_Integer          theLevel)
-  : myMaxLevel(theLevel)
-  , mySeedLevel(theRoot.GetPath().Size())
+    : myMaxLevel(theLevel),
+      mySeedLevel(theRoot.GetPath().Size())
 {
   Standard_NullObject_Raise_if(theDoc.IsNull(), "Null document!");
 
@@ -89,7 +89,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
     else
     {
       TCollection_AsciiString aPathStr = theRoot.ToString();
-      Standard_Integer anIndex = aPathStr.SearchFromEnd("/");
+      Standard_Integer        anIndex  = aPathStr.SearchFromEnd("/");
       if (anIndex != -1)
       {
         aPathStr.Remove(anIndex, aPathStr.Length() - anIndex + 1);
@@ -170,7 +170,7 @@ XCAFDoc_AssemblyItemId XCAFDoc_AssemblyIterator::Current() const
 // purpose  : Makes an assembly item id from the specified label
 // =======================================================================
 
-void XCAFDoc_AssemblyIterator::createItem(const TDF_Label&                 theLabel, 
+void XCAFDoc_AssemblyIterator::createItem(const TDF_Label&                 theLabel,
                                           const TColStd_ListOfAsciiString& theParentPath,
                                           AuxAssemblyItem&                 theAuxItem) const
 {

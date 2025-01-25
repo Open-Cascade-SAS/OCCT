@@ -21,5 +21,4 @@
 
 typedef TColStd_DataMapOfStringInteger CDM_NamesDirectory;
 
-
 #endif // _CDM_NamesDirectory_HeaderFile

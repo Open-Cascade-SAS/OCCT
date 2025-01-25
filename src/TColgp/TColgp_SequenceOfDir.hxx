@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Dir> TColgp_SequenceOfDir;
 
-
 #endif

@@ -24,16 +24,13 @@ class V3d_PositionLight : public Graphic3d_CLight
 {
   DEFINE_STANDARD_RTTIEXT(V3d_PositionLight, Graphic3d_CLight)
 protected:
-
   //! Protected constructor.
-  Standard_EXPORT V3d_PositionLight (Graphic3d_TypeOfLightSource theType);
+  Standard_EXPORT V3d_PositionLight(Graphic3d_TypeOfLightSource theType);
 
-//! @name hidden properties not applicable to positional light
+  //! @name hidden properties not applicable to positional light
 protected:
-
   using Graphic3d_CLight::Position;
   using Graphic3d_CLight::SetPosition;
-
 };
 
 DEFINE_STANDARD_HANDLE(V3d_PositionLight, Graphic3d_CLight)

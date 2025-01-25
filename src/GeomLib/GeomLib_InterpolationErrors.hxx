@@ -21,10 +21,10 @@
 //! tells what happened
 enum GeomLib_InterpolationErrors
 {
-GeomLib_NoError,
-GeomLib_NotEnoughtPoints,
-GeomLib_DegreeSmallerThan3,
-GeomLib_InversionProblem
+  GeomLib_NoError,
+  GeomLib_NotEnoughtPoints,
+  GeomLib_DegreeSmallerThan3,
+  GeomLib_InversionProblem
 };
 
 #endif // _GeomLib_InterpolationErrors_HeaderFile

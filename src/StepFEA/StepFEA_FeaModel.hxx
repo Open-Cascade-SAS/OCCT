@@ -24,7 +24,6 @@
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
 
-
 class StepFEA_FeaModel;
 DEFINE_STANDARD_HANDLE(StepFEA_FeaModel, StepRepr_Representation)
 
@@ -33,63 +32,53 @@ class StepFEA_FeaModel : public StepRepr_Representation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_FeaModel();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentation_Name, const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items, const Handle(StepRepr_RepresentationContext)& aRepresentation_ContextOfItems, const Handle(TCollection_HAsciiString)& aCreatingSoftware, const Handle(TColStd_HArray1OfAsciiString)& aIntendedAnalysisCode, const Handle(TCollection_HAsciiString)& aDescription, const Handle(TCollection_HAsciiString)& aAnalysisType);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
+    const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
+    const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
+    const Handle(TCollection_HAsciiString)&             aCreatingSoftware,
+    const Handle(TColStd_HArray1OfAsciiString)&         aIntendedAnalysisCode,
+    const Handle(TCollection_HAsciiString)&             aDescription,
+    const Handle(TCollection_HAsciiString)&             aAnalysisType);
+
   //! Returns field CreatingSoftware
   Standard_EXPORT Handle(TCollection_HAsciiString) CreatingSoftware() const;
-  
+
   //! Set field CreatingSoftware
-  Standard_EXPORT void SetCreatingSoftware (const Handle(TCollection_HAsciiString)& CreatingSoftware);
-  
+  Standard_EXPORT void SetCreatingSoftware(
+    const Handle(TCollection_HAsciiString)& CreatingSoftware);
+
   //! Returns field IntendedAnalysisCode
   Standard_EXPORT Handle(TColStd_HArray1OfAsciiString) IntendedAnalysisCode() const;
-  
+
   //! Set field IntendedAnalysisCode
-  Standard_EXPORT void SetIntendedAnalysisCode (const Handle(TColStd_HArray1OfAsciiString)& IntendedAnalysisCode);
-  
+  Standard_EXPORT void SetIntendedAnalysisCode(
+    const Handle(TColStd_HArray1OfAsciiString)& IntendedAnalysisCode);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns field AnalysisType
   Standard_EXPORT Handle(TCollection_HAsciiString) AnalysisType() const;
-  
+
   //! Set field AnalysisType
-  Standard_EXPORT void SetAnalysisType (const Handle(TCollection_HAsciiString)& AnalysisType);
+  Standard_EXPORT void SetAnalysisType(const Handle(TCollection_HAsciiString)& AnalysisType);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel, StepRepr_Representation)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) theCreatingSoftware;
+  Handle(TCollection_HAsciiString)     theCreatingSoftware;
   Handle(TColStd_HArray1OfAsciiString) theIntendedAnalysisCode;
-  Handle(TCollection_HAsciiString) theDescription;
-  Handle(TCollection_HAsciiString) theAnalysisType;
-
-
+  Handle(TCollection_HAsciiString)     theDescription;
+  Handle(TCollection_HAsciiString)     theAnalysisType;
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_FeaModel_HeaderFile

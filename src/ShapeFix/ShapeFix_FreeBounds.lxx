@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetClosedWires
-//purpose  : 
+// function : GetClosedWires
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Compound& ShapeFix_FreeBounds::GetClosedWires() const
@@ -24,10 +24,9 @@ inline const TopoDS_Compound& ShapeFix_FreeBounds::GetClosedWires() const
   return myWires;
 }
 
- 
 //=======================================================================
-//function : GetOpenWires
-//purpose  : 
+// function : GetOpenWires
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Compound& ShapeFix_FreeBounds::GetOpenWires() const
@@ -35,15 +34,12 @@ inline const TopoDS_Compound& ShapeFix_FreeBounds::GetOpenWires() const
   return myEdges;
 }
 
- 
 //=======================================================================
-//function : GetShape
-//purpose  : 
+// function : GetShape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& ShapeFix_FreeBounds::GetShape() const
 {
   return myShape;
 }
-
- 

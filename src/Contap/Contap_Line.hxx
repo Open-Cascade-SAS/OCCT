@@ -33,90 +33,70 @@ class gp_Lin;
 class gp_Circ;
 class Contap_Point;
 
-class Contap_Line 
+class Contap_Line
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Contap_Line();
-  
-  Standard_EXPORT void SetLineOn2S (const Handle(IntSurf_LineOn2S)& L);
-  
+
+  Standard_EXPORT void SetLineOn2S(const Handle(IntSurf_LineOn2S)& L);
+
   Standard_EXPORT void Clear();
-  
-    const Handle(IntSurf_LineOn2S)& LineOn2S() const;
-  
+
+  const Handle(IntSurf_LineOn2S)& LineOn2S() const;
+
   Standard_EXPORT void ResetSeqOfVertex();
-  
-    void Add (const IntSurf_PntOn2S& P);
-  
-  Standard_EXPORT void SetValue (const gp_Lin& L);
-  
-  Standard_EXPORT void SetValue (const gp_Circ& C);
-  
-  Standard_EXPORT void SetValue (const Handle(Adaptor2d_Curve2d)& A);
-  
-  Standard_EXPORT void Add (const Contap_Point& P);
-  
-    Standard_Integer NbVertex() const;
-  
-    Contap_Point& Vertex (const Standard_Integer Index) const;
-  
+
+  void Add(const IntSurf_PntOn2S& P);
+
+  Standard_EXPORT void SetValue(const gp_Lin& L);
+
+  Standard_EXPORT void SetValue(const gp_Circ& C);
+
+  Standard_EXPORT void SetValue(const Handle(Adaptor2d_Curve2d)& A);
+
+  Standard_EXPORT void Add(const Contap_Point& P);
+
+  Standard_Integer NbVertex() const;
+
+  Contap_Point& Vertex(const Standard_Integer Index) const;
+
   //! Returns Contap_Lin for a line, Contap_Circle for
   //! a circle, and Contap_Walking for a Walking line,
   //! Contap_Restriction for a part of  boundarie.
-    Contap_IType TypeContour() const;
-  
-    Standard_Integer NbPnts() const;
-  
-    const IntSurf_PntOn2S& Point (const Standard_Integer Index) const;
-  
-    gp_Lin Line() const;
-  
-    gp_Circ Circle() const;
-  
+  Contap_IType TypeContour() const;
+
+  Standard_Integer NbPnts() const;
+
+  const IntSurf_PntOn2S& Point(const Standard_Integer Index) const;
+
+  gp_Lin Line() const;
+
+  gp_Circ Circle() const;
+
   Standard_EXPORT const Handle(Adaptor2d_Curve2d)& Arc() const;
-  
+
   //! Set The Transition of the line.
-  Standard_EXPORT void SetTransitionOnS (const IntSurf_TypeTrans T);
-  
+  Standard_EXPORT void SetTransitionOnS(const IntSurf_TypeTrans T);
+
   //! returns IN if at the "left" of the line, the normale of the
   //! surface is oriented to the observator.
   Standard_EXPORT IntSurf_TypeTrans TransitionOnS() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  IntSurf_TypeTrans Trans;
-  Handle(IntSurf_LineOn2S) curv;
+  IntSurf_TypeTrans                  Trans;
+  Handle(IntSurf_LineOn2S)           curv;
   Handle(Contap_TheHSequenceOfPoint) svtx;
-  Handle(Adaptor2d_Curve2d) thearc;
-  Contap_IType typL;
-  gp_Pnt pt;
-  gp_Dir dir1;
-  gp_Dir dir2;
-  Standard_Real rad;
-
-
+  Handle(Adaptor2d_Curve2d)          thearc;
+  Contap_IType                       typL;
+  gp_Pnt                             pt;
+  gp_Dir                             dir1;
+  gp_Dir                             dir2;
+  Standard_Real                      rad;
 };
 
-
 #include <Contap_Line.lxx>
-
-
-
-
 
 #endif // _Contap_Line_HeaderFile

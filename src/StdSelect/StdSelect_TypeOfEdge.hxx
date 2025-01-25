@@ -22,9 +22,9 @@
 //! inheriting StdSelect_EdgeFilter.
 enum StdSelect_TypeOfEdge
 {
-StdSelect_AnyEdge,
-StdSelect_Line,
-StdSelect_Circle
+  StdSelect_AnyEdge,
+  StdSelect_Line,
+  StdSelect_Circle
 };
 
 #endif // _StdSelect_TypeOfEdge_HeaderFile

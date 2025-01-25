@@ -24,24 +24,26 @@
 #include <Standard_Handle.hxx>
 
 //! A root class for the standard presentation algorithms of the StdPrs package.
-class Prs3d_Root 
+class Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::CurrentGroup() should be called instead")
-  static Handle(Graphic3d_Group) CurrentGroup (const Handle(Prs3d_Presentation)& thePrs3d)
+  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::CurrentGroup() should be "
+                      "called instead")
+
+  static Handle(Graphic3d_Group) CurrentGroup(const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->CurrentGroup();
   }
 
-  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::NewGroup() should be called instead")
-  static Handle(Graphic3d_Group) NewGroup (const Handle(Prs3d_Presentation)& thePrs3d)
+  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::NewGroup() should be called "
+                      "instead")
+
+  static Handle(Graphic3d_Group) NewGroup(const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->NewGroup();
   }
-
 };
 
 #endif // _Prs3d_Root_HeaderFile

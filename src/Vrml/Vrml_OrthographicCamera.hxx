@@ -25,65 +25,46 @@
 #include <Vrml_SFRotation.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! specifies a OrthographicCamera node of VRML specifying properties of cameras.
 //! An orthographic camera defines a parallel projection from a viewpoint. This camera does
 //! not diminish objects with distance, as a PerspectiveCamera does. The viewing volume for
 //! an orthographic camera is a rectangular parallelepiped (a box).
-class Vrml_OrthographicCamera 
+class Vrml_OrthographicCamera
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_OrthographicCamera();
-  
-  Standard_EXPORT Vrml_OrthographicCamera(const gp_Vec& aPosition, const Vrml_SFRotation& aOrientation, const Standard_Real aFocalDistance, const Standard_Real aHeight);
-  
-  Standard_EXPORT void SetPosition (const gp_Vec& aPosition);
-  
+
+  Standard_EXPORT Vrml_OrthographicCamera(const gp_Vec&          aPosition,
+                                          const Vrml_SFRotation& aOrientation,
+                                          const Standard_Real    aFocalDistance,
+                                          const Standard_Real    aHeight);
+
+  Standard_EXPORT void SetPosition(const gp_Vec& aPosition);
+
   Standard_EXPORT gp_Vec Position() const;
-  
-  Standard_EXPORT void SetOrientation (const Vrml_SFRotation& aOrientation);
-  
+
+  Standard_EXPORT void SetOrientation(const Vrml_SFRotation& aOrientation);
+
   Standard_EXPORT Vrml_SFRotation Orientation() const;
-  
-  Standard_EXPORT void SetFocalDistance (const Standard_Real aFocalDistance);
-  
+
+  Standard_EXPORT void SetFocalDistance(const Standard_Real aFocalDistance);
+
   Standard_EXPORT Standard_Real FocalDistance() const;
-  
-  Standard_EXPORT void SetHeight (const Standard_Real aHeight);
-  
+
+  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+
   Standard_EXPORT Standard_Real Height() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Vec myPosition;
+  gp_Vec          myPosition;
   Vrml_SFRotation myOrientation;
-  Standard_Real myFocalDistance;
-  Standard_Real myHeight;
-
-
+  Standard_Real   myFocalDistance;
+  Standard_Real   myHeight;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_OrthographicCamera_HeaderFile

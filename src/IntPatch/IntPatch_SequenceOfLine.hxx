@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(IntPatch_Line)> IntPatch_SequenceOfLine;
 
-
 #endif

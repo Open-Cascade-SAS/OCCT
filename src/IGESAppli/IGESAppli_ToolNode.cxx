@@ -33,30 +33,33 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESAppli_ToolNode::IGESAppli_ToolNode ()    {  }
+IGESAppli_ToolNode::IGESAppli_ToolNode() {}
 
-
-void  IGESAppli_ToolNode::ReadOwnParams
-  (const Handle(IGESAppli_Node)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESAppli_ToolNode::ReadOwnParams(const Handle(IGESAppli_Node)&          ent,
+                                       const Handle(IGESData_IGESReaderData)& IR,
+                                       IGESData_ParamReader&                  PR) const
 {
-  gp_XYZ tempCoordinates;
+  gp_XYZ                                tempCoordinates;
   Handle(IGESGeom_TransformationMatrix) tempSystem;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  //szv#4:S4163:12Mar99 `st=` not needed
-  PR.ReadXYZ(PR.CurrentList(1, 3),"Coordinates of Node (XYZ)",tempCoordinates);
+  // szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadXYZ(PR.CurrentList(1, 3), "Coordinates of Node (XYZ)", tempCoordinates);
 
   if (PR.DefinedElseSkip())
-    PR.ReadEntity(IR,PR.Current(),"Transformation Matrix",
-		  STANDARD_TYPE(IGESGeom_TransformationMatrix), tempSystem,Standard_True);
+    PR.ReadEntity(IR,
+                  PR.Current(),
+                  "Transformation Matrix",
+                  STANDARD_TYPE(IGESGeom_TransformationMatrix),
+                  tempSystem,
+                  Standard_True);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init(tempCoordinates,tempSystem);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempCoordinates, tempSystem);
 }
 
-void  IGESAppli_ToolNode::WriteOwnParams
-  (const Handle(IGESAppli_Node)& ent, IGESData_IGESWriter& IW) const
+void IGESAppli_ToolNode::WriteOwnParams(const Handle(IGESAppli_Node)& ent,
+                                        IGESData_IGESWriter&          IW) const
 {
   IW.Send(ent->Coord().X());
   IW.Send(ent->Coord().Y());
@@ -64,27 +67,25 @@ void  IGESAppli_ToolNode::WriteOwnParams
   IW.Send(ent->System());
 }
 
-void  IGESAppli_ToolNode::OwnShared
-  (const Handle(IGESAppli_Node)& ent, Interface_EntityIterator& iter) const
+void IGESAppli_ToolNode::OwnShared(const Handle(IGESAppli_Node)& ent,
+                                   Interface_EntityIterator&     iter) const
 {
   iter.GetOneItem(ent->System());
 }
 
-void  IGESAppli_ToolNode::OwnCopy
-  (const Handle(IGESAppli_Node)& another,
-   const Handle(IGESAppli_Node)& ent, Interface_CopyTool& TC) const
+void IGESAppli_ToolNode::OwnCopy(const Handle(IGESAppli_Node)& another,
+                                 const Handle(IGESAppli_Node)& ent,
+                                 Interface_CopyTool&           TC) const
 {
   gp_XYZ aCoord = (another->Coord()).XYZ();
-  DeclareAndCast(IGESGeom_TransformationMatrix,aSystem,
-		 TC.Transferred(another->System()));
+  DeclareAndCast(IGESGeom_TransformationMatrix, aSystem, TC.Transferred(another->System()));
 
-  ent->Init(aCoord,aSystem);
+  ent->Init(aCoord, aSystem);
 }
 
-IGESData_DirChecker  IGESAppli_ToolNode::DirChecker
-  (const Handle(IGESAppli_Node)& /*ent*/ ) const
+IGESData_DirChecker IGESAppli_ToolNode::DirChecker(const Handle(IGESAppli_Node)& /*ent*/) const
 {
-  IGESData_DirChecker DC(134,0);  //Form no = 0 & Type = 134
+  IGESData_DirChecker DC(134, 0); // Form no = 0 & Type = 134
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefVoid);
   DC.LineWeight(IGESData_DefVoid);
@@ -93,9 +94,9 @@ IGESData_DirChecker  IGESAppli_ToolNode::DirChecker
   return DC;
 }
 
-void  IGESAppli_ToolNode::OwnCheck
-  (const Handle(IGESAppli_Node)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const
+void IGESAppli_ToolNode::OwnCheck(const Handle(IGESAppli_Node)& ent,
+                                  const Interface_ShareTool&,
+                                  Handle(Interface_Check)& ach) const
 {
   if (!ent->HasSubScriptNumber())
     ach->AddFail("SubScript Number expected (for Node Number) not present");
@@ -106,16 +107,17 @@ void  IGESAppli_ToolNode::OwnCheck
       ach->AddFail("System : Incorrect FormNumber (not 10-11-12)");
 }
 
-void  IGESAppli_ToolNode::OwnDump
-  (const Handle(IGESAppli_Node)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESAppli_ToolNode::OwnDump(const Handle(IGESAppli_Node)& ent,
+                                 const IGESData_IGESDumper&    dumper,
+                                 Standard_OStream&             S,
+                                 const Standard_Integer        level) const
 {
   S << "IGESAppli_Node\n";
-  S << " Nodal Coords : 1st " << ent->Coord().X()
-    << "  2nd : " << ent->Coord().Y() << "  3rd : " << ent->Coord().Z() << "\n";
+  S << " Nodal Coords : 1st " << ent->Coord().X() << "  2nd : " << ent->Coord().Y()
+    << "  3rd : " << ent->Coord().Z() << "\n";
   S << "Nodal Displacement Coordinate System : ";
   if (!ent->System().IsNull())
-    dumper.Dump(ent->System(),S, level);
+    dumper.Dump(ent->System(), S, level);
   else
     S << "Global Cartesian Coordinate System (default)";
   S << std::endl;

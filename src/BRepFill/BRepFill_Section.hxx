@@ -23,65 +23,48 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
 
-
 //! To store section definition
-class BRepFill_Section 
+class BRepFill_Section
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_Section();
-  
-  Standard_EXPORT BRepFill_Section(const TopoDS_Shape& Profile, const TopoDS_Vertex& V, const Standard_Boolean WithContact, const Standard_Boolean WithCorrection);
-  
-  Standard_EXPORT void Set (const Standard_Boolean IsLaw);
-  
-    const TopoDS_Shape& OriginalShape() const;
-  
-    const TopoDS_Wire& Wire() const;
-  
-    const TopoDS_Vertex& Vertex() const;
-  
+
+  Standard_EXPORT BRepFill_Section(const TopoDS_Shape&    Profile,
+                                   const TopoDS_Vertex&   V,
+                                   const Standard_Boolean WithContact,
+                                   const Standard_Boolean WithCorrection);
+
+  Standard_EXPORT void Set(const Standard_Boolean IsLaw);
+
+  const TopoDS_Shape& OriginalShape() const;
+
+  const TopoDS_Wire& Wire() const;
+
+  const TopoDS_Vertex& Vertex() const;
+
   Standard_EXPORT TopoDS_Shape ModifiedShape(const TopoDS_Shape& theShape) const;
-  
-    Standard_Boolean IsLaw() const;
-  
-    Standard_Boolean IsPunctual() const;
-  
-    Standard_Boolean WithContact() const;
-  
-    Standard_Boolean WithCorrection() const;
 
+  Standard_Boolean IsLaw() const;
 
+  Standard_Boolean IsPunctual() const;
 
+  Standard_Boolean WithContact() const;
+
+  Standard_Boolean WithCorrection() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Shape myOriginalShape;
-  TopoDS_Wire wire;
-  TopoDS_Vertex vertex;
+  TopoDS_Shape     myOriginalShape;
+  TopoDS_Wire      wire;
+  TopoDS_Vertex    vertex;
   Standard_Boolean islaw;
   Standard_Boolean ispunctual;
   Standard_Boolean contact;
   Standard_Boolean correction;
-
 };
 
-
 #include <BRepFill_Section.lxx>
-
-
-
-
 
 #endif // _BRepFill_Section_HeaderFile

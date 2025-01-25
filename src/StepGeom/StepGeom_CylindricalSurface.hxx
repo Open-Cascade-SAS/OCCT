@@ -24,48 +24,29 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement3d;
 
-
 class StepGeom_CylindricalSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_CylindricalSurface, StepGeom_ElementarySurface)
-
 
 class StepGeom_CylindricalSurface : public StepGeom_ElementarySurface
 {
 
 public:
-
-  
   //! Returns a CylindricalSurface
   Standard_EXPORT StepGeom_CylindricalSurface();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aRadius);
-  
-  Standard_EXPORT void SetRadius (const Standard_Real aRadius);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
+                            const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                            const Standard_Real                      aRadius);
+
+  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+
   Standard_EXPORT Standard_Real Radius() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_CylindricalSurface,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CylindricalSurface, StepGeom_ElementarySurface)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real radius;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_CylindricalSurface_HeaderFile

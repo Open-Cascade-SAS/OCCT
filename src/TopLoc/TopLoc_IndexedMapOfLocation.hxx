@@ -22,5 +22,4 @@
 
 typedef NCollection_IndexedMap<TopLoc_Location> TopLoc_IndexedMapOfLocation;
 
-
 #endif

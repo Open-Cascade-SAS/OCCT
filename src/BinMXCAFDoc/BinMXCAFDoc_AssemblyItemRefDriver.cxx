@@ -22,18 +22,18 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_AssemblyItemRefDriver, BinMDF_ADriver)
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-BinMXCAFDoc_AssemblyItemRefDriver::BinMXCAFDoc_AssemblyItemRefDriver(const Handle(Message_Messenger)& theMsgDriver)
-  : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
+BinMXCAFDoc_AssemblyItemRefDriver::BinMXCAFDoc_AssemblyItemRefDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
 {
-
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 Handle(TDF_Attribute) BinMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 {
@@ -41,17 +41,18 @@ Handle(TDF_Attribute) BinMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-Standard_Boolean BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                          const Handle(TDF_Attribute)& theTarget,
-                                                          BinObjMgt_RRelocationTable&  /*theRelocTable*/) const
+Standard_Boolean BinMXCAFDoc_AssemblyItemRefDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theTarget);
   if (aThis.IsNull())
     return Standard_False;
-  
+
   TCollection_AsciiString aPathStr;
   if (!(theSource >> aPathStr))
     return Standard_False;
@@ -83,12 +84,12 @@ Standard_Boolean BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persis
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 void BinMXCAFDoc_AssemblyItemRefDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					                                    BinObjMgt_Persistent&        theTarget,
-					                                    BinObjMgt_SRelocationTable&  /*theRelocTable*/) const
+                                              BinObjMgt_Persistent&        theTarget,
+                                              BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theSource);
   if (!aThis.IsNull())

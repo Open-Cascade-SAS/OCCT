@@ -27,7 +27,6 @@
 class Interface_ParamList;
 class Interface_FileParameter;
 
-
 class Interface_ParamSet;
 DEFINE_STANDARD_HANDLE(Interface_ParamSet, Standard_Transient)
 
@@ -37,14 +36,12 @@ class Interface_ParamSet : public Standard_Transient
 {
 
 public:
-
-  
   //! Creates an empty ParamSet, beginning at number "nst" and of
   //! initial reservation "nres" : the "nres" first parameters
   //! which follow "ndeb" (included) will be put in an Array
   //! (a ParamList). The remainders are set in Next(s) ParamSet(s)
   Standard_EXPORT Interface_ParamSet(const Standard_Integer nres, const Standard_Integer nst = 1);
-  
+
   //! Adds a parameter defined as its Value (CString and length) and
   //! Type. Optional EntityNumber (for FileReaderData) can be given
   //! Allows a better memory management than Appending a
@@ -53,64 +50,50 @@ public:
   //! address is stored as such. Else, <val> is copied in a locally
   //! (quickly) managed Page of Characters
   //! Returns new count of recorded Parameters
-  Standard_EXPORT Standard_Integer Append (const Standard_CString val, const Standard_Integer lnval, const Interface_ParamType typ, const Standard_Integer nument);
-  
+  Standard_EXPORT Standard_Integer Append(const Standard_CString    val,
+                                          const Standard_Integer    lnval,
+                                          const Interface_ParamType typ,
+                                          const Standard_Integer    nument);
+
   //! Adds a parameter at the end of the ParamSet (transparent
   //! about reservation and "Next")
   //! Returns new count of recorded Parameters
-  Standard_EXPORT Standard_Integer Append (const Interface_FileParameter& FP);
-  
+  Standard_EXPORT Standard_Integer Append(const Interface_FileParameter& FP);
+
   //! Returns the total count of parameters (including nexts)
   Standard_EXPORT Standard_Integer NbParams() const;
-  
+
   //! Returns a parameter identified by its number
-  Standard_EXPORT const Interface_FileParameter& Param (const Standard_Integer num) const;
-  
+  Standard_EXPORT const Interface_FileParameter& Param(const Standard_Integer num) const;
+
   //! Same as above, but in order to be modified on place
-  Standard_EXPORT Interface_FileParameter& ChangeParam (const Standard_Integer num);
-  
+  Standard_EXPORT Interface_FileParameter& ChangeParam(const Standard_Integer num);
+
   //! Changes a parameter identified by its number
-  Standard_EXPORT void SetParam (const Standard_Integer num, const Interface_FileParameter& FP);
-  
+  Standard_EXPORT void SetParam(const Standard_Integer num, const Interface_FileParameter& FP);
+
   //! Builds and returns the sub-list corresponding to parameters,
   //! from "num" included, with count "nb"
   //! If <num> and <nb> are zero, returns the whole list
-  Standard_EXPORT Handle(Interface_ParamList) Params (const Standard_Integer num, const Standard_Integer nb) const;
-  
+  Standard_EXPORT Handle(Interface_ParamList) Params(const Standard_Integer num,
+                                                     const Standard_Integer nb) const;
+
   //! Destructor (waiting for transparent memory management)
   Standard_EXPORT void Destroy();
-~Interface_ParamSet()
-{
-  Destroy();
-}
 
+  ~Interface_ParamSet() { Destroy(); }
 
-
-  DEFINE_STANDARD_RTTIEXT(Interface_ParamSet,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamSet, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_PCharacter theval;
-  Standard_Integer thelnval;
-  Standard_Integer thelnres;
-  Standard_Integer thenbpar;
-  Standard_Integer themxpar;
+  Standard_PCharacter         theval;
+  Standard_Integer            thelnval;
+  Standard_Integer            thelnres;
+  Standard_Integer            thenbpar;
+  Standard_Integer            themxpar;
   Handle(Interface_ParamList) thelist;
-  Handle(Interface_ParamSet) thenext;
-
-
+  Handle(Interface_ParamSet)  thenext;
 };
-
-
-
-
-
-
 
 #endif // _Interface_ParamSet_HeaderFile

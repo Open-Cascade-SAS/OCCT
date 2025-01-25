@@ -19,41 +19,43 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_ProductDefinitionReference
-//purpose  : 
+// function : StepBasic_ProductDefinitionReference
+// purpose  :
 //=======================================================================
-StepBasic_ProductDefinitionReference::StepBasic_ProductDefinitionReference () {}
+StepBasic_ProductDefinitionReference::StepBasic_ProductDefinitionReference() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
-void StepBasic_ProductDefinitionReference::Init (const Handle(StepBasic_ExternalSource)& theSource,
-                                                 const Handle(TCollection_HAsciiString)& theProductId,
-                                                 const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
-                                                 const Handle(TCollection_HAsciiString)& theProductDefinitionId,
-                                                 const Handle(TCollection_HAsciiString)& theIdOwningOrganizationName)
+void StepBasic_ProductDefinitionReference::Init(
+  const Handle(StepBasic_ExternalSource)& theSource,
+  const Handle(TCollection_HAsciiString)& theProductId,
+  const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
+  const Handle(TCollection_HAsciiString)& theProductDefinitionId,
+  const Handle(TCollection_HAsciiString)& theIdOwningOrganizationName)
 {
-  mySource = theSource;
-  myProductId = theProductId;
+  mySource                       = theSource;
+  myProductId                    = theProductId;
   myProductDefinitionFormationId = theProductDefinitionFormationId;
-  myProductDefinitionId = theProductDefinitionId;
-  myIdOwningOrganizationName = theIdOwningOrganizationName;
-  hasIdOwningOrganizationName = (!theIdOwningOrganizationName.IsNull());
+  myProductDefinitionId          = theProductDefinitionId;
+  myIdOwningOrganizationName     = theIdOwningOrganizationName;
+  hasIdOwningOrganizationName    = (!theIdOwningOrganizationName.IsNull());
 }
-                             
+
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
-void StepBasic_ProductDefinitionReference::Init (const Handle(StepBasic_ExternalSource)& theSource,
-                                                 const Handle(TCollection_HAsciiString)& theProductId,
-                                                 const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
-                                                 const Handle(TCollection_HAsciiString)& theProductDefinitionId)
+void StepBasic_ProductDefinitionReference::Init(
+  const Handle(StepBasic_ExternalSource)& theSource,
+  const Handle(TCollection_HAsciiString)& theProductId,
+  const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
+  const Handle(TCollection_HAsciiString)& theProductDefinitionId)
 {
-  mySource = theSource;
-  myProductId = theProductId;
+  mySource                       = theSource;
+  myProductId                    = theProductId;
   myProductDefinitionFormationId = theProductDefinitionFormationId;
-  myProductDefinitionId = theProductDefinitionId;
-  hasIdOwningOrganizationName = Standard_False;
+  myProductDefinitionId          = theProductDefinitionId;
+  hasIdOwningOrganizationName    = Standard_False;
 }

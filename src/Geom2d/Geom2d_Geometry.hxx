@@ -27,10 +27,8 @@ class gp_Ax2d;
 class gp_Vec2d;
 class gp_Trsf2d;
 
-
 class Geom2d_Geometry;
 DEFINE_STANDARD_HANDLE(Geom2d_Geometry, Standard_Transient)
-
 
 //! The general abstract class Geometry in 2D space describes
 //! the common behaviour of all the geometric entities.
@@ -59,30 +57,28 @@ class Geom2d_Geometry : public Standard_Transient
 {
 
 public:
-
-  
   //! Performs the symmetrical transformation of a Geometry
   //! with respect to the point P which is the center of the
   //! symmetry and assigns the result to this geometric object.
-  Standard_EXPORT void Mirror (const gp_Pnt2d& P);
-  
+  Standard_EXPORT void Mirror(const gp_Pnt2d& P);
+
   //! Performs the symmetrical transformation of a Geometry
   //! with respect to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT void Mirror (const gp_Ax2d& A);
-  
+  Standard_EXPORT void Mirror(const gp_Ax2d& A);
+
   //! Rotates a Geometry. P is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_EXPORT void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
-  
+  Standard_EXPORT void Rotate(const gp_Pnt2d& P, const Standard_Real Ang);
+
   //! Scales a Geometry. S is the scaling value.
-  Standard_EXPORT void Scale (const gp_Pnt2d& P, const Standard_Real S);
-  
+  Standard_EXPORT void Scale(const gp_Pnt2d& P, const Standard_Real S);
+
   //! Translates a Geometry.  V is the vector of the translation.
-  Standard_EXPORT void Translate (const gp_Vec2d& V);
-  
+  Standard_EXPORT void Translate(const gp_Vec2d& V);
+
   //! Translates a Geometry from the point P1 to the point P2.
-  Standard_EXPORT void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
-  
+  Standard_EXPORT void Translate(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
+
   //! Transformation of a geometric object. This transformation
   //! can be a translation, a rotation, a symmetry, a scaling
   //! or a complex transformation obtained by combination of
@@ -91,48 +87,35 @@ public:
   //! The following transformations have the same properties
   //! as the previous ones but they don't modified the object
   //! itself. A copy of the object is returned.
-  Standard_EXPORT virtual void Transform (const gp_Trsf2d& T) = 0;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored (const gp_Pnt2d& P) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored (const gp_Ax2d& A) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Transformed (const gp_Trsf2d& T) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated (const gp_Vec2d& V) const;
-  
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
-  
+  Standard_EXPORT virtual void Transform(const gp_Trsf2d& T) = 0;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored(const gp_Pnt2d& P) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored(const gp_Ax2d& A) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Rotated(const gp_Pnt2d&     P,
+                                                                     const Standard_Real Ang) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Scaled(const gp_Pnt2d&     P,
+                                                                    const Standard_Real S) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Transformed(const gp_Trsf2d& T) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated(const gp_Vec2d& V) const;
+
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated(const gp_Pnt2d& P1,
+                                                                        const gp_Pnt2d& P2) const;
+
   Standard_EXPORT virtual Handle(Geom2d_Geometry) Copy() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Geometry,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Geometry, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Geometry_HeaderFile

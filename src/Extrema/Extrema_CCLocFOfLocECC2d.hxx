@@ -36,97 +36,89 @@ class gp_Pnt2d;
 class gp_Vec2d;
 class math_Matrix;
 
-
-
-class Extrema_CCLocFOfLocECC2d  : public math_FunctionSetWithDerivatives
+class Extrema_CCLocFOfLocECC2d : public math_FunctionSetWithDerivatives
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Extrema_CCLocFOfLocECC2d(const Standard_Real thetol = 1.0e-10);
-  
-  Standard_EXPORT Extrema_CCLocFOfLocECC2d(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2, const Standard_Real thetol = 1.0e-10);
-  
-  Standard_EXPORT void SetCurve (const Standard_Integer theRank, const Adaptor2d_Curve2d& C1);
-  
-    void SetTolerance (const Standard_Real theTol);
-  
-    virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
-  
-    virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT Extrema_CCLocFOfLocECC2d(const Adaptor2d_Curve2d& C1,
+                                           const Adaptor2d_Curve2d& C2,
+                                           const Standard_Real      thetol = 1.0e-10);
+
+  Standard_EXPORT void SetCurve(const Standard_Integer theRank, const Adaptor2d_Curve2d& C1);
+
+  void SetTolerance(const Standard_Real theTol);
+
+  virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+
+  virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
+
   //! Calculate Fi(U,V).
-  Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& UV,
+                                                 math_Vector&       F) Standard_OVERRIDE;
+
   //! Calculate Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& UV, math_Matrix& DF) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
+                                               math_Matrix&       DF) Standard_OVERRIDE;
+
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& UV, math_Vector& F, math_Matrix& DF) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
+                                          math_Vector&       F,
+                                          math_Matrix&       DF) Standard_OVERRIDE;
+
   //! Save the found extremum.
   Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
-  
+
   //! Return the number of found extrema.
-    Standard_Integer NbExt() const;
-  
+  Standard_Integer NbExt() const;
+
   //! Return the value of the Nth distance.
-    Standard_Real SquareDistance (const Standard_Integer N) const;
-  
+  Standard_Real SquareDistance(const Standard_Integer N) const;
+
   //! Return the points of the Nth extreme distance.
-  Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const;
-  
+  Standard_EXPORT void Points(const Standard_Integer N,
+                              Extrema_POnCurv2d&     P1,
+                              Extrema_POnCurv2d&     P2) const;
+
   //! Returns a pointer to the curve specified in the constructor
   //! or in SetCurve() method.
-    Standard_Address CurvePtr (const Standard_Integer theRank) const;
-  
+  Standard_Address CurvePtr(const Standard_Integer theRank) const;
+
   //! Returns a tolerance specified in the constructor
   //! or in SetTolerance() method.
-    Standard_Real Tolerance() const;
-  
+  Standard_Real Tolerance() const;
+
   //! Determines of boundaries of subinterval for find of root.
-  Standard_EXPORT void SubIntervalInitialize (const math_Vector& theUfirst, const math_Vector& theUlast);
-  
+  Standard_EXPORT void SubIntervalInitialize(const math_Vector& theUfirst,
+                                             const math_Vector& theUlast);
+
   //! Computes a Tol value. If 1st derivative of curve
   //! |D1|<Tol, it is considered D1=0.
-  Standard_EXPORT Standard_Real SearchOfTolerance (const Standard_Address C);
-
-
-
+  Standard_EXPORT Standard_Real SearchOfTolerance(const Standard_Address C);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Address myC1;
-  Standard_Address myC2;
-  Standard_Real myTol;
-  Standard_Real myU;
-  Standard_Real myV;
-  gp_Pnt2d myP1;
-  gp_Pnt2d myP2;
-  gp_Vec2d myDu;
-  gp_Vec2d myDv;
-  TColStd_SequenceOfReal mySqDist;
+  Standard_Address            myC1;
+  Standard_Address            myC2;
+  Standard_Real               myTol;
+  Standard_Real               myU;
+  Standard_Real               myV;
+  gp_Pnt2d                    myP1;
+  gp_Pnt2d                    myP2;
+  gp_Vec2d                    myDu;
+  gp_Vec2d                    myDv;
+  TColStd_SequenceOfReal      mySqDist;
   Extrema_SequenceOfPOnCurv2d myPoints;
-  Standard_Real myTolC1;
-  Standard_Real myTolC2;
-  Standard_Integer myMaxDerivOrderC1;
-  Standard_Integer myMaxDerivOrderC2;
-  Standard_Real myUinfium;
-  Standard_Real myUsupremum;
-  Standard_Real myVinfium;
-  Standard_Real myVsupremum;
-
-
+  Standard_Real               myTolC1;
+  Standard_Real               myTolC2;
+  Standard_Integer            myMaxDerivOrderC1;
+  Standard_Integer            myMaxDerivOrderC2;
+  Standard_Real               myUinfium;
+  Standard_Real               myUsupremum;
+  Standard_Real               myVinfium;
+  Standard_Real               myVsupremum;
 };
 
 #define Curve1 Adaptor2d_Curve2d
@@ -168,8 +160,5 @@ private:
 #undef Extrema_SeqPOnC_hxx
 #undef Extrema_FuncExtCC
 #undef Extrema_FuncExtCC_hxx
-
-
-
 
 #endif // _Extrema_CCLocFOfLocECC2d_HeaderFile

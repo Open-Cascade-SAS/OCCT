@@ -20,67 +20,61 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Wire, IMeshData_Wire)
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMeshData_Wire::BRepMeshData_Wire (
-  const TopoDS_Wire&                       theWire,
-  const Standard_Integer                   theEdgeNb,
-  const Handle (NCollection_IncAllocator)& theAllocator)
-  : IMeshData_Wire (theWire),
-    myDEdges    (theEdgeNb > 0 ? theEdgeNb : 256, theAllocator),
-    myDEdgesOri (theEdgeNb > 0 ? theEdgeNb : 256, theAllocator)
+BRepMeshData_Wire::BRepMeshData_Wire(const TopoDS_Wire&                      theWire,
+                                     const Standard_Integer                  theEdgeNb,
+                                     const Handle(NCollection_IncAllocator)& theAllocator)
+    : IMeshData_Wire(theWire),
+      myDEdges(theEdgeNb > 0 ? theEdgeNb : 256, theAllocator),
+      myDEdgesOri(theEdgeNb > 0 ? theEdgeNb : 256, theAllocator)
 {
 }
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMeshData_Wire::~BRepMeshData_Wire ()
-{
-}
+BRepMeshData_Wire::~BRepMeshData_Wire() {}
 
 //=======================================================================
 // Function: EdgesNb
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Integer BRepMeshData_Wire::EdgesNb () const
+Standard_Integer BRepMeshData_Wire::EdgesNb() const
 {
-  return myDEdges.Size ();
+  return myDEdges.Size();
 }
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Integer BRepMeshData_Wire::AddEdge (
-  const IMeshData::IEdgePtr& theDEdge,
-  const TopAbs_Orientation   theOrientation)
+Standard_Integer BRepMeshData_Wire::AddEdge(const IMeshData::IEdgePtr& theDEdge,
+                                            const TopAbs_Orientation   theOrientation)
 {
-  const Standard_Integer aIndex = EdgesNb ();
+  const Standard_Integer aIndex = EdgesNb();
 
-  myDEdges   .Append (theDEdge);
-  myDEdgesOri.Append (theOrientation);
+  myDEdges.Append(theDEdge);
+  myDEdgesOri.Append(theOrientation);
 
   return aIndex;
 }
 
 //=======================================================================
 // Function: GetEdge
-// Purpose : 
+// Purpose :
 //=======================================================================
-const IMeshData::IEdgePtr& BRepMeshData_Wire::GetEdge (
-  const Standard_Integer theIndex) const
+const IMeshData::IEdgePtr& BRepMeshData_Wire::GetEdge(const Standard_Integer theIndex) const
 {
-  return myDEdges (theIndex);
+  return myDEdges(theIndex);
 }
 
 //=======================================================================
 // Function: GetEdgeOrientation
-// Purpose : 
+// Purpose :
 //=======================================================================
-TopAbs_Orientation BRepMeshData_Wire::GetEdgeOrientation (
-  const Standard_Integer theIndex) const
+TopAbs_Orientation BRepMeshData_Wire::GetEdgeOrientation(const Standard_Integer theIndex) const
 {
-  return myDEdgesOri (theIndex);
+  return myDEdgesOri(theIndex);
 }

@@ -20,41 +20,23 @@
 
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 
-
 class StepFEA_FeaMaterialPropertyRepresentation;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaMaterialPropertyRepresentation, StepRepr_MaterialPropertyRepresentation)
+DEFINE_STANDARD_HANDLE(StepFEA_FeaMaterialPropertyRepresentation,
+                       StepRepr_MaterialPropertyRepresentation)
 
 //! Representation of STEP entity FeaMaterialPropertyRepresentation
 class StepFEA_FeaMaterialPropertyRepresentation : public StepRepr_MaterialPropertyRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_FeaMaterialPropertyRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaMaterialPropertyRepresentation,StepRepr_MaterialPropertyRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaMaterialPropertyRepresentation,
+                          StepRepr_MaterialPropertyRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_FeaMaterialPropertyRepresentation_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TInspector_Shortcut.hxx>
 
@@ -26,30 +26,31 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-TInspector_Shortcut::TInspector_Shortcut (QObject* theParent, TInspector_Window* theWindow)
-: QObject (theParent), myWindow (theWindow)
+TInspector_Shortcut::TInspector_Shortcut(QObject* theParent, TInspector_Window* theWindow)
+    : QObject(theParent),
+      myWindow(theWindow)
 {
-  qApp->installEventFilter (this);
+  qApp->installEventFilter(this);
 }
 
 // =======================================================================
 // function : eventFilter
 // purpose :
 // =======================================================================
-bool TInspector_Shortcut::eventFilter (QObject* theObject, QEvent* theEvent)
+bool TInspector_Shortcut::eventFilter(QObject* theObject, QEvent* theEvent)
 {
   if (!myWindow || theEvent->type() != QEvent::KeyRelease)
-    return QObject::eventFilter (theObject, theEvent);
+    return QObject::eventFilter(theObject, theEvent);
 
-  QKeyEvent* aKeyEvent = dynamic_cast<QKeyEvent*> (theEvent);
+  QKeyEvent* aKeyEvent = dynamic_cast<QKeyEvent*>(theEvent);
   switch (aKeyEvent->key())
   {
-    case Qt::Key_F5:
-    {
+    case Qt::Key_F5: {
       myWindow->UpdateContent();
       return true;
     }
-    default: break;
+    default:
+      break;
   }
-  return QObject::eventFilter (theObject, theEvent);
+  return QObject::eventFilter(theObject, theEvent);
 }

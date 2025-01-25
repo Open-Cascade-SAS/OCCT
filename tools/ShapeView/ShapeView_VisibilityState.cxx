@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_VisibilityState.hxx>
 
@@ -21,26 +21,28 @@
 // function : OnClicked
 // purpose :
 // =======================================================================
-void ShapeView_VisibilityState::OnClicked (const QModelIndex& theIndex)
+void ShapeView_VisibilityState::OnClicked(const QModelIndex& theIndex)
 {
-  processClicked (theIndex);
-  emit itemClicked (theIndex);
+  processClicked(theIndex);
+  emit itemClicked(theIndex);
 }
 
 // =======================================================================
 // function : SetVisible
 // purpose :
 // =======================================================================
-bool ShapeView_VisibilityState::SetVisible (const QModelIndex& theIndex, const bool theState, const bool toEmitDataChanged)
+bool ShapeView_VisibilityState::SetVisible(const QModelIndex& theIndex,
+                                           const bool         theState,
+                                           const bool         toEmitDataChanged)
 {
-  TopoDS_Shape aShape = Shape (theIndex);
+  TopoDS_Shape aShape = Shape(theIndex);
   if (aShape.IsNull())
     return false;
 
-  myDisplayer->SetVisible (aShape, theState, myPresentationType);
+  myDisplayer->SetVisible(aShape, theState, myPresentationType);
 
   if (toEmitDataChanged)
-    getModel()->EmitDataChanged (theIndex, theIndex);
+    getModel()->EmitDataChanged(theIndex, theIndex);
   return true;
 }
 
@@ -48,9 +50,9 @@ bool ShapeView_VisibilityState::SetVisible (const QModelIndex& theIndex, const b
 // function : Shape
 // purpose :
 // =======================================================================
-TopoDS_Shape ShapeView_VisibilityState::Shape (const QModelIndex& theIndex) const
+TopoDS_Shape ShapeView_VisibilityState::Shape(const QModelIndex& theIndex) const
 {
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(theIndex);
   if (!anItemBase)
     return TopoDS_Shape();
 

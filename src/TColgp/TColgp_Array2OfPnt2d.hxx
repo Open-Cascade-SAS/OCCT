@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<gp_Pnt2d> TColgp_Array2OfPnt2d;
 
-
 #endif

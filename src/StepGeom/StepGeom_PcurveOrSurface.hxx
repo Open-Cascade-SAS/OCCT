@@ -27,51 +27,28 @@ class Standard_Transient;
 class StepGeom_Pcurve;
 class StepGeom_Surface;
 
-
-
-class StepGeom_PcurveOrSurface  : public StepData_SelectType
+class StepGeom_PcurveOrSurface : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a PcurveOrSurface SelectType
   Standard_EXPORT StepGeom_PcurveOrSurface();
-  
+
   //! Recognizes a PcurveOrSurface Kind Entity that is :
   //! 1 -> Pcurve
   //! 2 -> Surface
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Pcurve (Null if another type)
   Standard_EXPORT Handle(StepGeom_Pcurve) Pcurve() const;
-  
+
   //! returns Value as a Surface (Null if another type)
   Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_PcurveOrSurface_HeaderFile

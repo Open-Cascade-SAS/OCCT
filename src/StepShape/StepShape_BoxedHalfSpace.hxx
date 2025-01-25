@@ -25,48 +25,30 @@ class StepShape_BoxDomain;
 class TCollection_HAsciiString;
 class StepGeom_Surface;
 
-
 class StepShape_BoxedHalfSpace;
 DEFINE_STANDARD_HANDLE(StepShape_BoxedHalfSpace, StepShape_HalfSpaceSolid)
-
 
 class StepShape_BoxedHalfSpace : public StepShape_HalfSpaceSolid
 {
 
 public:
-
-  
   //! Returns a BoxedHalfSpace
   Standard_EXPORT StepShape_BoxedHalfSpace();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag, const Handle(StepShape_BoxDomain)& aEnclosure);
-  
-  Standard_EXPORT void SetEnclosure (const Handle(StepShape_BoxDomain)& aEnclosure);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_Surface)&         aBaseSurface,
+                            const Standard_Boolean                  aAgreementFlag,
+                            const Handle(StepShape_BoxDomain)&      aEnclosure);
+
+  Standard_EXPORT void SetEnclosure(const Handle(StepShape_BoxDomain)& aEnclosure);
+
   Standard_EXPORT Handle(StepShape_BoxDomain) Enclosure() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace,StepShape_HalfSpaceSolid)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace, StepShape_HalfSpaceSolid)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_BoxDomain) enclosure;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_BoxedHalfSpace_HeaderFile

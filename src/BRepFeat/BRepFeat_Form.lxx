@@ -15,36 +15,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeatForm
-//purpose  : 
+// function : BRepFeatForm
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_Form::BRepFeat_Form () :
-   myFuse(Standard_False),
-   myModify(Standard_False),
-   myPerfSelection(BRepFeat_NoSelection),
-   myJustGluer(Standard_False),
-   myJustFeat(Standard_False),
-   mySbOK(Standard_False),mySkOK(Standard_False),
-   myGSOK(Standard_False),mySFOK(Standard_False),
-   mySUOK(Standard_False),myGFOK(Standard_False),
-   myPSOK(Standard_False),
-   myStatusError(BRepFeat_NotInitialized)
+inline BRepFeat_Form::BRepFeat_Form()
+    : myFuse(Standard_False),
+      myModify(Standard_False),
+      myPerfSelection(BRepFeat_NoSelection),
+      myJustGluer(Standard_False),
+      myJustFeat(Standard_False),
+      mySbOK(Standard_False),
+      mySkOK(Standard_False),
+      myGSOK(Standard_False),
+      mySFOK(Standard_False),
+      mySUOK(Standard_False),
+      myGFOK(Standard_False),
+      myPSOK(Standard_False),
+      myStatusError(BRepFeat_NotInitialized)
 
-{}
+{
+}
 
 //=======================================================================
-//function : BasisShapeValid
-//purpose  : 
+// function : BasisShapeValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::BasisShapeValid()
 {
   mySbOK = Standard_True;
 }
+
 //=======================================================================
-//function : PerfSelectionValid
-//purpose  : 
+// function : PerfSelectionValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::PerfSelectionValid()
@@ -53,26 +58,28 @@ inline void BRepFeat_Form::PerfSelectionValid()
 }
 
 //=======================================================================
-//function : GeneratedShapeValid
-//purpose  : 
+// function : GeneratedShapeValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::GeneratedShapeValid()
 {
   myGSOK = Standard_True;
 }
+
 //=======================================================================
-//function : ShapeFromValid
-//purpose  : 
+// function : ShapeFromValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::ShapeFromValid()
 {
   mySFOK = Standard_True;
 }
+
 //=======================================================================
-//function : ShapeUntilValid
-//purpose  : 
+// function : ShapeUntilValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::ShapeUntilValid()
@@ -81,8 +88,8 @@ inline void BRepFeat_Form::ShapeUntilValid()
 }
 
 //=======================================================================
-//function : GluedFacesValid
-//purpose  : 
+// function : GluedFacesValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::GluedFacesValid()
@@ -91,14 +98,11 @@ inline void BRepFeat_Form::GluedFacesValid()
 }
 
 //=======================================================================
-//function : SketchFaceValid
-//purpose  : 
+// function : SketchFaceValid
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_Form::SketchFaceValid()
 {
   mySkOK = Standard_True;
 }
-
-
-

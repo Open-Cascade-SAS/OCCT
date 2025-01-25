@@ -20,7 +20,7 @@
 #include <StepVisual_Array1OfPresentationStyleAssignment.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepVisual_HArray1OfPresentationStyleAssignment, StepVisual_Array1OfPresentationStyleAssignment)
-
+DEFINE_HARRAY1(StepVisual_HArray1OfPresentationStyleAssignment,
+               StepVisual_Array1OfPresentationStyleAssignment)
 
 #endif

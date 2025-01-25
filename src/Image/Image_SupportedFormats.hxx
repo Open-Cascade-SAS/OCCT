@@ -23,43 +23,40 @@ class Image_SupportedFormats : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Image_SupportedFormats, Standard_Transient)
 public:
-
   //! Empty constructor.
   Standard_EXPORT Image_SupportedFormats();
 
   //! Return TRUE if image format is supported.
-  bool IsSupported (Image_Format theFormat) const { return myFormats.Value (theFormat); }
+  bool IsSupported(Image_Format theFormat) const { return myFormats.Value(theFormat); }
 
   //! Set if image format is supported or not.
-  void Add (Image_Format theFormat) { myFormats.SetValue (theFormat, true); }
+  void Add(Image_Format theFormat) { myFormats.SetValue(theFormat, true); }
 
   //! Return TRUE if there are compressed image formats supported.
   bool HasCompressed() const { return myHasCompressed; }
 
   //! Return TRUE if compressed image format is supported.
-  bool IsSupported (Image_CompressedFormat theFormat) const { return myFormats.Value (theFormat); }
+  bool IsSupported(Image_CompressedFormat theFormat) const { return myFormats.Value(theFormat); }
 
   //! Set if compressed image format is supported or not.
-  void Add (Image_CompressedFormat theFormat)
+  void Add(Image_CompressedFormat theFormat)
   {
-    myFormats.SetValue (theFormat, true);
+    myFormats.SetValue(theFormat, true);
     myHasCompressed = true;
   }
 
   //! Reset flags.
   void Clear()
   {
-    myFormats.Init (false);
+    myFormats.Init(false);
     myHasCompressed = false;
   }
 
 protected:
-
   NCollection_Array1<bool> myFormats; //!< list of supported formats
-// clang-format off
+  // clang-format off
   Standard_Boolean   myHasCompressed; //!< flag indicating that some compressed image formats are supported
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _Image_SupportedFormats_HeaderFile

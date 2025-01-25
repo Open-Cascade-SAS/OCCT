@@ -32,97 +32,76 @@ class StepData_StepModel;
 class TopoDS_Shape;
 class StepShape_TopologicalRepresentationItem;
 
-
 //! This Tool Class provides Information to build
 //! a ProSTEP Shape model from a Cas.Cad BRep.
-class TopoDSToStep_Tool 
+class TopoDSToStep_Tool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopoDSToStep_Tool(const Handle(StepData_StepModel)& theModel);
-  
+
   Standard_EXPORT TopoDSToStep_Tool(const MoniTool_DataMapOfShapeTransient& M,
-                                    const Standard_Boolean FacetedContext,
-                                    Standard_Integer theSurfCurveMode);
-  
-  Standard_EXPORT void Init (const MoniTool_DataMapOfShapeTransient& M,
-                             const Standard_Boolean FacetedContext,
-                             Standard_Integer theSurfCurveMode);
-  
-  Standard_EXPORT Standard_Boolean IsBound (const TopoDS_Shape& S);
-  
-  Standard_EXPORT void Bind (const TopoDS_Shape& S, const Handle(StepShape_TopologicalRepresentationItem)& T);
-  
-  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) Find (const TopoDS_Shape& S);
-  
+                                    const Standard_Boolean                  FacetedContext,
+                                    Standard_Integer                        theSurfCurveMode);
+
+  Standard_EXPORT void Init(const MoniTool_DataMapOfShapeTransient& M,
+                            const Standard_Boolean                  FacetedContext,
+                            Standard_Integer                        theSurfCurveMode);
+
+  Standard_EXPORT Standard_Boolean IsBound(const TopoDS_Shape& S);
+
+  Standard_EXPORT void Bind(const TopoDS_Shape&                                    S,
+                            const Handle(StepShape_TopologicalRepresentationItem)& T);
+
+  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) Find(const TopoDS_Shape& S);
+
   Standard_EXPORT Standard_Boolean Faceted() const;
-  
-  Standard_EXPORT void SetCurrentShell (const TopoDS_Shell& S);
-  
+
+  Standard_EXPORT void SetCurrentShell(const TopoDS_Shell& S);
+
   Standard_EXPORT const TopoDS_Shell& CurrentShell() const;
-  
-  Standard_EXPORT void SetCurrentFace (const TopoDS_Face& F);
-  
+
+  Standard_EXPORT void SetCurrentFace(const TopoDS_Face& F);
+
   Standard_EXPORT const TopoDS_Face& CurrentFace() const;
-  
-  Standard_EXPORT void SetCurrentWire (const TopoDS_Wire& W);
-  
+
+  Standard_EXPORT void SetCurrentWire(const TopoDS_Wire& W);
+
   Standard_EXPORT const TopoDS_Wire& CurrentWire() const;
-  
-  Standard_EXPORT void SetCurrentEdge (const TopoDS_Edge& E);
-  
+
+  Standard_EXPORT void SetCurrentEdge(const TopoDS_Edge& E);
+
   Standard_EXPORT const TopoDS_Edge& CurrentEdge() const;
-  
-  Standard_EXPORT void SetCurrentVertex (const TopoDS_Vertex& V);
-  
+
+  Standard_EXPORT void SetCurrentVertex(const TopoDS_Vertex& V);
+
   Standard_EXPORT const TopoDS_Vertex& CurrentVertex() const;
-  
+
   Standard_EXPORT Standard_Real Lowest3DTolerance() const;
-  
-  Standard_EXPORT void SetSurfaceReversed (const Standard_Boolean B);
-  
+
+  Standard_EXPORT void SetSurfaceReversed(const Standard_Boolean B);
+
   Standard_EXPORT Standard_Boolean SurfaceReversed() const;
-  
+
   Standard_EXPORT const MoniTool_DataMapOfShapeTransient& Map() const;
-  
+
   //! Returns mode for writing pcurves
   //! (initialized by parameter write.surfacecurve.mode)
   Standard_EXPORT Standard_Integer PCurveMode() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   MoniTool_DataMapOfShapeTransient myDataMap;
-  Standard_Boolean myFacetedContext;
-  Standard_Real myLowestTol;
-  TopoDS_Shell myCurrentShell;
-  TopoDS_Face myCurrentFace;
-  TopoDS_Wire myCurrentWire;
-  TopoDS_Edge myCurrentEdge;
-  TopoDS_Vertex myCurrentVertex;
-  Standard_Boolean myReversedSurface;
-  Standard_Integer myPCurveMode;
-
-
+  Standard_Boolean                 myFacetedContext;
+  Standard_Real                    myLowestTol;
+  TopoDS_Shell                     myCurrentShell;
+  TopoDS_Face                      myCurrentFace;
+  TopoDS_Wire                      myCurrentWire;
+  TopoDS_Edge                      myCurrentEdge;
+  TopoDS_Vertex                    myCurrentVertex;
+  Standard_Boolean                 myReversedSurface;
+  Standard_Integer                 myPCurveMode;
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_Tool_HeaderFile

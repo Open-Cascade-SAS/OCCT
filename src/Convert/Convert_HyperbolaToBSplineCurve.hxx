@@ -24,8 +24,6 @@
 #include <Convert_ConicToBSplineCurve.hxx>
 class gp_Hypr2d;
 
-
-
 //! This algorithm converts a hyperbola into a rational B-spline curve.
 //! The hyperbola is an Hypr2d from package gp with the
 //! parametrization :
@@ -36,40 +34,20 @@ class gp_Hypr2d;
 //! of the hyperbola.
 //! KeyWords :
 //! Convert, Hyperbola, BSplineCurve, 2D .
-class Convert_HyperbolaToBSplineCurve  : public Convert_ConicToBSplineCurve
+class Convert_HyperbolaToBSplineCurve : public Convert_ConicToBSplineCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The hyperbola H is limited between the parametric values U1, U2
   //! and the equivalent B-spline curve has the same orientation as the
   //! hyperbola.
-  Standard_EXPORT Convert_HyperbolaToBSplineCurve(const gp_Hypr2d& H, const Standard_Real U1, const Standard_Real U2);
-
-
-
+  Standard_EXPORT Convert_HyperbolaToBSplineCurve(const gp_Hypr2d&    H,
+                                                  const Standard_Real U1,
+                                                  const Standard_Real U2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Convert_HyperbolaToBSplineCurve_HeaderFile

@@ -26,7 +26,7 @@
 //! Control of processing values of pointers out-of-scope
 //! and should be controlled externally.
 //! Especially, copy operation should post-process elements of pointers to make deep copy.
-class NCollection_BasePointerVector 
+class NCollection_BasePointerVector
 {
 public:
   //! Memory allocation
@@ -34,7 +34,6 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 
 public:
-
   //! Default constructor
   NCollection_BasePointerVector() {}
 
@@ -63,44 +62,43 @@ public:
   void Clear(const bool theReleaseMemory = false)
   {
     if (theReleaseMemory)
-      clear(); 
+      clear();
     mySize = 0;
   }
 
 public:
-
   //! Gets array, can be null
   void** GetArray() const { return myArray; }
 
   //! Gets value by index, no access validation
-  void* Value (const size_t theInd) const { return myArray[theInd]; }
+  void* Value(const size_t theInd) const { return myArray[theInd]; }
 
 public:
-
   //! Inserts new element at the end, increase size,
   //! if capacity is not enough, call resize.
-  Standard_EXPORT void Append (const void* thePnt);
+  Standard_EXPORT void Append(const void* thePnt);
 
   //! Updates value of existed element,
   //! If index more then size, increase size of container,
   //! in this case capacity can be updated.
-  Standard_EXPORT void SetValue (const size_t theInd, const void* thePnt);
+  Standard_EXPORT void SetValue(const size_t theInd, const void* thePnt);
 
   //! Copy vector
-  Standard_EXPORT NCollection_BasePointerVector& operator= (const NCollection_BasePointerVector& theOther);
+  Standard_EXPORT NCollection_BasePointerVector& operator=(
+    const NCollection_BasePointerVector& theOther);
 
   //! Move vector
-  Standard_EXPORT NCollection_BasePointerVector& operator= (NCollection_BasePointerVector&& theOther) noexcept;
+  Standard_EXPORT NCollection_BasePointerVector& operator=(
+    NCollection_BasePointerVector&& theOther) noexcept;
 
 private:
-
   //! Deallocate array
   Standard_EXPORT void clear();
 
 private:
-  size_t mySize = 0; //!< Used length of vector
-  size_t myCapacity = 0; //!< Allocated vector size
-  void** myArray = nullptr; //! Array of pointers
+  size_t                       mySize     = 0;       //!< Used length of vector
+  size_t                       myCapacity = 0;       //!< Allocated vector size
+  void**                       myArray    = nullptr; //! Array of pointers
   NCollection_Allocator<void*> myAllocator;
 };
 

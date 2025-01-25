@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef StdStorage_MapOfRoots_HeaderFile
 #define StdStorage_MapOfRoots_HeaderFile
 
@@ -19,7 +18,9 @@
 #include <StdStorage_Root.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root)> StdStorage_MapOfRoots;
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root)>::Iterator StdStorage_DataMapIteratorOfMapOfRoots;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root)>
+  StdStorage_MapOfRoots;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root)>::Iterator
+  StdStorage_DataMapIteratorOfMapOfRoots;
 
 #endif // StdStorage_MapOfRoots_HeaderFile

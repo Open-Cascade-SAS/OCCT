@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ExprIntrp.hxx>
 #include <ExprIntrp_Generator.hxx>
 #include <ExprIntrp_SyntaxError.hxx>
@@ -25,27 +24,32 @@
 
 static TCollection_AsciiString ExprIntrp_thestring;
 
-Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen, const TCollection_AsciiString& str)
+Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen,
+                                  const TCollection_AsciiString&     str)
 {
   ExprIntrp_Recept.SetMaster(gen);
-  if (str.Length() == 0) return Standard_False;
+  if (str.Length() == 0)
+    return Standard_False;
   ExprIntrp_thestring = str;
   ExprIntrp_start_string(ExprIntrp_thestring.ToCString());
 
-  int kerror=1;
+  int kerror = 1;
 
   {
-    try {
+    try
+    {
       OCC_CATCH_SIGNALS
-      while (kerror!=0) {
+      while (kerror != 0)
+      {
         kerror = ExprIntrpparse();
       }
       ExprIntrp_stop_string();
       return Standard_True;
     }
-    catch (Standard_Failure const&) {}
+    catch (Standard_Failure const&)
+    {
+    }
   }
   ExprIntrp_stop_string();
   return Standard_False;
 }
-

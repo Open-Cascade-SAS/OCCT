@@ -27,35 +27,38 @@
 
 class StepDimTol_SimpleDatumReferenceModifierMember;
 DEFINE_STANDARD_HANDLE(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
+
 //! Defines SimpleDatumReferenceModifier as unique member of DatumReferenceModifier
 //! Works with an EnumTool
 class StepDimTol_SimpleDatumReferenceModifierMember : public StepData_SelectInt
 {
 
 public:
-  
   Standard_EXPORT StepDimTol_SimpleDatumReferenceModifierMember();
-  
-  virtual Standard_Boolean HasName() const Standard_OVERRIDE
-    {  return Standard_True;  }
+
+  virtual Standard_Boolean HasName() const Standard_OVERRIDE { return Standard_True; }
 
   virtual Standard_CString Name() const Standard_OVERRIDE
-    {  return "SIMPLE_DATUM_REFERENCE_MODIFIER";  }
+  {
+    return "SIMPLE_DATUM_REFERENCE_MODIFIER";
+  }
 
   virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
-    {  return Standard_True;  }
+  {
+    return Standard_True;
+  }
 
-  Standard_Integer Kind() const Standard_OVERRIDE
-    {return 4;}
-  
-  Standard_EXPORT virtual   Standard_CString EnumText()  const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual   void SetEnumText (const Standard_Integer theValue, const Standard_CString theText)  Standard_OVERRIDE;
-  
-  Standard_EXPORT   void SetValue (const StepDimTol_SimpleDatumReferenceModifier theValue) ;
-  
-  Standard_EXPORT   StepDimTol_SimpleDatumReferenceModifier Value()  const;
+  Standard_Integer Kind() const Standard_OVERRIDE { return 4; }
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_SimpleDatumReferenceModifierMember,StepData_SelectInt)
+  Standard_EXPORT virtual Standard_CString EnumText() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetEnumText(const Standard_Integer theValue,
+                                           const Standard_CString theText) Standard_OVERRIDE;
+
+  Standard_EXPORT void SetValue(const StepDimTol_SimpleDatumReferenceModifier theValue);
+
+  Standard_EXPORT StepDimTol_SimpleDatumReferenceModifier Value() const;
+
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
 };
 #endif // _StepDimTol_SimpleDatumReferenceModifierMember_HeaderFile

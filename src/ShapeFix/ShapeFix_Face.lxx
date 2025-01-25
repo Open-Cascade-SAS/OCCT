@@ -14,18 +14,18 @@
 #include <ShapeExtend.hxx>
 
 //=======================================================================
-//function : FixWireMode
-//purpose  : 
+// function : FixWireMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Face::FixWireMode() 
+inline Standard_Integer& ShapeFix_Face::FixWireMode()
 {
   return myFixWireMode;
 }
 
 //=======================================================================
-//function : FixOrientationMode
-//purpose  : 
+// function : FixOrientationMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixOrientationMode()
@@ -34,8 +34,8 @@ inline Standard_Integer& ShapeFix_Face::FixOrientationMode()
 }
 
 //=======================================================================
-//function : FixAddNaturalBoundMode
-//purpose  : 
+// function : FixAddNaturalBoundMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixAddNaturalBoundMode()
@@ -44,8 +44,8 @@ inline Standard_Integer& ShapeFix_Face::FixAddNaturalBoundMode()
 }
 
 //=======================================================================
-//function : FixMissingSeamMode
-//purpose  : 
+// function : FixMissingSeamMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixMissingSeamMode()
@@ -54,8 +54,8 @@ inline Standard_Integer& ShapeFix_Face::FixMissingSeamMode()
 }
 
 //=======================================================================
-//function : FixSmallAreaWireMode
-//purpose  : 
+// function : FixSmallAreaWireMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixSmallAreaWireMode()
@@ -64,8 +64,8 @@ inline Standard_Integer& ShapeFix_Face::FixSmallAreaWireMode()
 }
 
 //=======================================================================
-//function : RemoveSmallAreaFaceMode
-//purpose  : 
+// function : RemoveSmallAreaFaceMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::RemoveSmallAreaFaceMode()
@@ -74,8 +74,8 @@ inline Standard_Integer& ShapeFix_Face::RemoveSmallAreaFaceMode()
 }
 
 //=======================================================================
-//function : FixIntersectingWiresMode
-//purpose  : 
+// function : FixIntersectingWiresMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixIntersectingWiresMode()
@@ -84,8 +84,8 @@ inline Standard_Integer& ShapeFix_Face::FixIntersectingWiresMode()
 }
 
 //=======================================================================
-//function : FixLoopWiresMode
-//purpose  : 
+// function : FixLoopWiresMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixLoopWiresMode()
@@ -94,8 +94,8 @@ inline Standard_Integer& ShapeFix_Face::FixLoopWiresMode()
 }
 
 //=======================================================================
-//function : FixSplitFaceMode
-//purpose  : 
+// function : FixSplitFaceMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixSplitFaceMode()
@@ -104,8 +104,8 @@ inline Standard_Integer& ShapeFix_Face::FixSplitFaceMode()
 }
 
 //=======================================================================
-//function : AutoCorrectPrecisionMode
-//purpose  : 
+// function : AutoCorrectPrecisionMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::AutoCorrectPrecisionMode()
@@ -114,8 +114,8 @@ inline Standard_Integer& ShapeFix_Face::AutoCorrectPrecisionMode()
 }
 
 //=======================================================================
-//function : FixPeriodicDegeneratedMode
-//purpose  : 
+// function : FixPeriodicDegeneratedMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& ShapeFix_Face::FixPeriodicDegeneratedMode()
@@ -124,41 +124,41 @@ inline Standard_Integer& ShapeFix_Face::FixPeriodicDegeneratedMode()
 }
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
 inline TopoDS_Face ShapeFix_Face::Face() const
 {
   return myFace;
 }
- 
+
 //=======================================================================
-//function : Result
-//purpose  : 
+// function : Result
+// purpose  :
 //=======================================================================
 
 inline TopoDS_Shape ShapeFix_Face::Result() const
 {
   return myResult;
 }
- 
+
 //=======================================================================
-//function : Status
-//purpose  : 
+// function : Status
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean ShapeFix_Face::Status (const ShapeExtend_Status status) const
+inline Standard_Boolean ShapeFix_Face::Status(const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatus, status ); 
+  return ShapeExtend::DecodeStatus(myStatus, status);
 }
 
 //=======================================================================
-//function : FixWireTool
-//purpose  : 
+// function : FixWireTool
+// purpose  :
 //=======================================================================
 
-inline Handle(ShapeFix_Wire) ShapeFix_Face::FixWireTool() 
+inline Handle(ShapeFix_Wire) ShapeFix_Face::FixWireTool()
 {
   return myFixWire;
 }

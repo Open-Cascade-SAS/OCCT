@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <inspector/DFBrowserPane_ItemRole.hxx>
@@ -34,24 +34,26 @@
 // purpose :
 // =======================================================================
 DFBrowserPane_AttributePane::DFBrowserPane_AttributePane()
-: DFBrowserPane_AttributePaneAPI(), myMainWidget (0), myTableView (0)
+    : DFBrowserPane_AttributePaneAPI(),
+      myMainWidget(0),
+      myTableView(0)
 {
   myPaneModel = new DFBrowserPane_AttributePaneModel();
 
-  getPaneModel()->SetColumnCount (getColumnCount());
-  getPaneModel()->SetHeaderValues (getHeaderValues(Qt::Horizontal), Qt::Horizontal);
+  getPaneModel()->SetColumnCount(getColumnCount());
+  getPaneModel()->SetHeaderValues(getHeaderValues(Qt::Horizontal), Qt::Horizontal);
 
-  mySelectionModels.push_back (new QItemSelectionModel (myPaneModel));
+  mySelectionModels.push_back(new QItemSelectionModel(myPaneModel));
 }
 
 // =======================================================================
 // function : GetWidget
 // purpose :
 // =======================================================================
-QWidget* DFBrowserPane_AttributePane::GetWidget (QWidget* theParent, const bool isToCreate)
+QWidget* DFBrowserPane_AttributePane::GetWidget(QWidget* theParent, const bool isToCreate)
 {
   if (!myMainWidget && isToCreate)
-    myMainWidget = CreateWidget (theParent);
+    myMainWidget = CreateWidget(theParent);
   return myMainWidget;
 }
 
@@ -59,28 +61,30 @@ QWidget* DFBrowserPane_AttributePane::GetWidget (QWidget* theParent, const bool 
 // function : CreateWidget
 // purpose :
 // =======================================================================
-QWidget* DFBrowserPane_AttributePane::CreateWidget (QWidget* theParent)
+QWidget* DFBrowserPane_AttributePane::CreateWidget(QWidget* theParent)
 {
-  QWidget* aMainWidget = new QWidget (theParent);
-  aMainWidget->setVisible (false);
+  QWidget* aMainWidget = new QWidget(theParent);
+  aMainWidget->setVisible(false);
 
-  myTableView = new DFBrowserPane_TableView (aMainWidget, getTableColumnWidths());
-  myTableView->SetModel (myPaneModel);
-  QTableView* aTableView = myTableView->GetTableView();
-  DFBrowserPane_AttributePaneModel* aPaneModel = dynamic_cast<DFBrowserPane_AttributePaneModel*>(myPaneModel);
+  myTableView = new DFBrowserPane_TableView(aMainWidget, getTableColumnWidths());
+  myTableView->SetModel(myPaneModel);
+  QTableView*                       aTableView = myTableView->GetTableView();
+  DFBrowserPane_AttributePaneModel* aPaneModel =
+    dynamic_cast<DFBrowserPane_AttributePaneModel*>(myPaneModel);
   if (aPaneModel)
   {
     if (aPaneModel->GetOrientation() == Qt::Vertical)
-      aTableView->horizontalHeader()->setVisible (!aPaneModel->HeaderValues (Qt::Horizontal).isEmpty());
+      aTableView->horizontalHeader()->setVisible(
+        !aPaneModel->HeaderValues(Qt::Horizontal).isEmpty());
     else
-      aTableView->verticalHeader()->setVisible (!aPaneModel->HeaderValues (Qt::Vertical).isEmpty());
+      aTableView->verticalHeader()->setVisible(!aPaneModel->HeaderValues(Qt::Vertical).isEmpty());
   }
-  aTableView->setSelectionModel (mySelectionModels.front());
-  aTableView->setSelectionBehavior (QAbstractItemView::SelectRows);
+  aTableView->setSelectionModel(mySelectionModels.front());
+  aTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  QGridLayout* aLay = new QGridLayout (aMainWidget);
-  aLay->setContentsMargins (0, 0, 0, 0);
-  aLay->addWidget (myTableView);
+  QGridLayout* aLay = new QGridLayout(aMainWidget);
+  aLay->setContentsMargins(0, 0, 0, 0);
+  aLay->addWidget(myTableView);
 
   return aMainWidget;
 }
@@ -89,37 +93,40 @@ QWidget* DFBrowserPane_AttributePane::CreateWidget (QWidget* theParent)
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePane::Init (const Handle(TDF_Attribute)& theAttribute)
+void DFBrowserPane_AttributePane::Init(const Handle(TDF_Attribute)& theAttribute)
 {
   QList<QVariant> aValues;
-  GetValues (theAttribute, aValues);
-  getPaneModel()->Init (aValues);
+  GetValues(theAttribute, aValues);
+  getPaneModel()->Init(aValues);
 
   if (myTableView)
-    myTableView->GetTableView()->resizeColumnToContents (0);
+    myTableView->GetTableView()->resizeColumnToContents(0);
 }
 
 // =======================================================================
 // function : GetAttributeInfo
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_AttributePane::GetAttributeInfo (const Handle(TDF_Attribute)& theAttribute,
-                                                        int theRole, int theColumnId)
+QVariant DFBrowserPane_AttributePane::GetAttributeInfo(const Handle(TDF_Attribute)& theAttribute,
+                                                       int                          theRole,
+                                                       int                          theColumnId)
 {
   switch (theRole)
   {
-    case DFBrowserPane_ItemRole_ShortInfo:
-    {
+    case DFBrowserPane_ItemRole_ShortInfo: {
       QList<QVariant> aValues;
-      GetShortAttributeInfo (theAttribute, aValues);
+      GetShortAttributeInfo(theAttribute, aValues);
       QStringList anInfoList;
-      for (QList<QVariant>::const_iterator aValuesIt = aValues.begin(); aValuesIt != aValues.end(); aValuesIt++)
-        anInfoList.append (aValuesIt->toString());
-      return QVariant (anInfoList.join (", "));
+      for (QList<QVariant>::const_iterator aValuesIt = aValues.begin(); aValuesIt != aValues.end();
+           aValuesIt++)
+        anInfoList.append(aValuesIt->toString());
+      return QVariant(anInfoList.join(", "));
     }
     default:
-      return DFBrowserPane_AttributePane::GetAttributeInfoByType (theAttribute.IsNull() ? ""
-                                            : theAttribute->DynamicType()->Name(), theRole, theColumnId);
+      return DFBrowserPane_AttributePane::GetAttributeInfoByType(
+        theAttribute.IsNull() ? "" : theAttribute->DynamicType()->Name(),
+        theRole,
+        theColumnId);
   }
 }
 
@@ -127,21 +134,23 @@ QVariant DFBrowserPane_AttributePane::GetAttributeInfo (const Handle(TDF_Attribu
 // function : GetShortAttributeInfo
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePane::GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
+void DFBrowserPane_AttributePane::GetShortAttributeInfo(const Handle(TDF_Attribute)& theAttribute,
+                                                        QList<QVariant>&             theValues)
 {
   QList<QVariant> aValues;
   GetValues(theAttribute, aValues);
 
-  for (int aValuesEvenId  = 1; aValuesEvenId < aValues.size(); aValuesEvenId = aValuesEvenId + 2)
-    theValues.append (aValues[aValuesEvenId]);
+  for (int aValuesEvenId = 1; aValuesEvenId < aValues.size(); aValuesEvenId = aValuesEvenId + 2)
+    theValues.append(aValues[aValuesEvenId]);
 }
 
 // =======================================================================
 // function : GetAttributeInfoByType
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType (Standard_CString theAttributeName,
-                                                              int theRole, int theColumnId)
+QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType(Standard_CString theAttributeName,
+                                                             int              theRole,
+                                                             int              theColumnId)
 {
   if (theColumnId != 0)
     return QVariant();
@@ -149,10 +158,14 @@ QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType (Standard_CString t
   switch (theRole)
   {
     case Qt::DisplayRole:
-    case Qt::ToolTipRole:    return QVariant (theAttributeName);
-    case Qt::DecorationRole: return QIcon (":/icons/attribute.png");
-    case DFBrowserPane_ItemRole_Decoration_40x40: return QIcon (":/icons/attribute_40x40.png");
-    default: break;
+    case Qt::ToolTipRole:
+      return QVariant(theAttributeName);
+    case Qt::DecorationRole:
+      return QIcon(":/icons/attribute.png");
+    case DFBrowserPane_ItemRole_Decoration_40x40:
+      return QIcon(":/icons/attribute_40x40.png");
+    default:
+      break;
   }
   return QVariant();
 }
@@ -163,7 +176,7 @@ QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType (Standard_CString t
 // =======================================================================
 DFBrowserPane_AttributePaneModel* DFBrowserPane_AttributePane::getPaneModel() const
 {
-  return dynamic_cast<DFBrowserPane_AttributePaneModel*> (myPaneModel);
+  return dynamic_cast<DFBrowserPane_AttributePaneModel*>(myPaneModel);
 }
 
 // =======================================================================
@@ -174,6 +187,6 @@ QMap<int, int> DFBrowserPane_AttributePane::getTableColumnWidths() const
 {
   QMap<int, int> aValues;
   for (int aColumnId = 0, aCount = getPaneModel()->columnCount(); aColumnId < aCount; aColumnId++)
-    aValues.insert (aColumnId, DFBrowserPane_Tools::DefaultPanelColumnWidth (aColumnId));
+    aValues.insert(aColumnId, DFBrowserPane_Tools::DefaultPanelColumnWidth(aColumnId));
   return aValues;
 }

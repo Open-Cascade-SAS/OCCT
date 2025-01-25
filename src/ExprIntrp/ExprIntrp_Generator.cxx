@@ -14,19 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ExprIntrp_Generator.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_Generator,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_Generator, Standard_Transient)
 
 #include <ExprIntrp_yaccanal.hxx>
 ExprIntrp_Analysis ExprIntrp_Recept;
 
-ExprIntrp_Generator::ExprIntrp_Generator()
-{
-}
+ExprIntrp_Generator::ExprIntrp_Generator() {}
 
 void ExprIntrp_Generator::Use(const Handle(Expr_NamedFunction)& func)
 {
@@ -43,15 +40,18 @@ const ExprIntrp_SequenceOfNamedFunction& ExprIntrp_Generator::GetFunctions() con
   return myFunctions;
 }
 
-const ExprIntrp_SequenceOfNamedExpression & ExprIntrp_Generator::GetNamed() const
+const ExprIntrp_SequenceOfNamedExpression& ExprIntrp_Generator::GetNamed() const
 {
   return myNamed;
 }
 
-Handle(Expr_NamedFunction) ExprIntrp_Generator::GetFunction (const TCollection_AsciiString& name) const
+Handle(Expr_NamedFunction) ExprIntrp_Generator::GetFunction(
+  const TCollection_AsciiString& name) const
 {
-  for (Standard_Integer i=1; i<= myFunctions.Length(); i++) {
-    if (name == myFunctions(i)->GetName()) {
+  for (Standard_Integer i = 1; i <= myFunctions.Length(); i++)
+  {
+    if (name == myFunctions(i)->GetName())
+    {
       return myFunctions(i);
     }
   }
@@ -59,14 +59,16 @@ Handle(Expr_NamedFunction) ExprIntrp_Generator::GetFunction (const TCollection_A
   return curfunc;
 }
 
-Handle(Expr_NamedExpression) ExprIntrp_Generator::GetNamed (const TCollection_AsciiString& name) const
+Handle(Expr_NamedExpression) ExprIntrp_Generator::GetNamed(
+  const TCollection_AsciiString& name) const
 {
-  for (Standard_Integer i=1;i<=myNamed.Length();i++){
-    if (name == myNamed(i)->GetName()) {
+  for (Standard_Integer i = 1; i <= myNamed.Length(); i++)
+  {
+    if (name == myNamed(i)->GetName())
+    {
       return myNamed(i);
     }
   }
   Handle(Expr_NamedExpression) curexp;
   return curexp;
 }
-

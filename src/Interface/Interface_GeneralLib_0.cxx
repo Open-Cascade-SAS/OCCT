@@ -22,7 +22,6 @@
 #include <Interface_GeneralModule.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_GlobalNodeOfGeneralLib.hxx>
- 
 
 #define TheObject Handle(Standard_Transient)
 #define TheObject_hxx <Standard_Transient.hxx>
@@ -41,4 +40,3 @@
 #define LibCtl_Library Interface_GeneralLib
 #define LibCtl_Library_hxx <Interface_GeneralLib.hxx>
 #include "../LibCtl/LibCtl_Library.gxx"
-

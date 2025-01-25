@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Reference, Express_Item)
 // purpose  :
 //=======================================================================
 
-Express_Reference::Express_Reference (const Standard_CString theName,
-                                      const Handle(TColStd_HSequenceOfHAsciiString)& theTypes)
-: Express_Item (theName)
+Express_Reference::Express_Reference(const Standard_CString                         theName,
+                                     const Handle(TColStd_HSequenceOfHAsciiString)& theTypes)
+    : Express_Item(theName)
 {
   myTypes = theTypes;
 }
@@ -44,6 +44,4 @@ Standard_Boolean Express_Reference::GenerateClass() const
 // purpose  : dummy method
 //=======================================================================
 
-void Express_Reference::PropagateUse() const
-{
-}
+void Express_Reference::PropagateUse() const {}

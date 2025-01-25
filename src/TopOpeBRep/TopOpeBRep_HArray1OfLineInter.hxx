@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(TopOpeBRep_HArray1OfLineInter, TopOpeBRep_Array1OfLineInter)
 
-
 #endif

@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteBinData, XCAFDoc_Note)
 // function : GetID
 // purpose  :
 // =======================================================================
-const Standard_GUID&
-XCAFDoc_NoteBinData::GetID()
+const Standard_GUID& XCAFDoc_NoteBinData::GetID()
 {
   static Standard_GUID s_ID("E9055501-F0FC-4864-BE4B-284FDA7DDEAC");
   return s_ID;
@@ -34,8 +33,7 @@ XCAFDoc_NoteBinData::GetID()
 // function : Get
 // purpose  :
 // =======================================================================
-Handle(XCAFDoc_NoteBinData)
-XCAFDoc_NoteBinData::Get(const TDF_Label& theLabel)
+Handle(XCAFDoc_NoteBinData) XCAFDoc_NoteBinData::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_NoteBinData) aThis;
   theLabel.FindAttribute(XCAFDoc_NoteBinData::GetID(), aThis);
@@ -46,13 +44,12 @@ XCAFDoc_NoteBinData::Get(const TDF_Label& theLabel)
 // function : Set
 // purpose  :
 // =======================================================================
-Handle(XCAFDoc_NoteBinData)
-XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
-                         const TCollection_ExtendedString& theUserName,
-                         const TCollection_ExtendedString& theTimeStamp,
-                         const TCollection_ExtendedString& theTitle,
-                         const TCollection_AsciiString&    theMIMEtype,
-                         OSD_File&                         theFile)
+Handle(XCAFDoc_NoteBinData) XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
+                                                     const TCollection_ExtendedString& theUserName,
+                                                     const TCollection_ExtendedString& theTimeStamp,
+                                                     const TCollection_ExtendedString& theTitle,
+                                                     const TCollection_AsciiString&    theMIMEtype,
+                                                     OSD_File&                         theFile)
 {
   Handle(XCAFDoc_NoteBinData) aNoteBinData;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteBinData::GetID(), aNoteBinData))
@@ -71,13 +68,12 @@ XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
 // function : Set
 // purpose  :
 // =======================================================================
-Handle(XCAFDoc_NoteBinData)
-XCAFDoc_NoteBinData::Set(const TDF_Label&                     theLabel,
-                         const TCollection_ExtendedString&    theUserName,
-                         const TCollection_ExtendedString&    theTimeStamp,
-                         const TCollection_ExtendedString&    theTitle,
-                         const TCollection_AsciiString&       theMIMEtype,
-                         const Handle(TColStd_HArray1OfByte)& theData)
+Handle(XCAFDoc_NoteBinData) XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
+                                                     const TCollection_ExtendedString& theUserName,
+                                                     const TCollection_ExtendedString& theTimeStamp,
+                                                     const TCollection_ExtendedString& theTitle,
+                                                     const TCollection_AsciiString&    theMIMEtype,
+                                                     const Handle(TColStd_HArray1OfByte)& theData)
 {
   Handle(XCAFDoc_NoteBinData) aNoteBinData;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteBinData::GetID(), aNoteBinData))
@@ -94,18 +90,15 @@ XCAFDoc_NoteBinData::Set(const TDF_Label&                     theLabel,
 // function : XCAFDoc_NoteBinData
 // purpose  :
 // =======================================================================
-XCAFDoc_NoteBinData::XCAFDoc_NoteBinData()
-{
-}
+XCAFDoc_NoteBinData::XCAFDoc_NoteBinData() {}
 
 // =======================================================================
 // function : Set
 // purpose  :
 // =======================================================================
-Standard_Boolean
-XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
-                         const TCollection_AsciiString&    theMIMEtype,
-                         OSD_File&                         theFile)
+Standard_Boolean XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
+                                          const TCollection_AsciiString&    theMIMEtype,
+                                          OSD_File&                         theFile)
 {
   if (!theFile.IsOpen() || !theFile.IsReadable())
     return Standard_False;
@@ -121,7 +114,7 @@ XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
   if (nbReadBytes < myData->Length())
     return Standard_False;
 
-  myTitle = theTitle;
+  myTitle    = theTitle;
   myMIMEtype = theMIMEtype;
 
   return Standard_True;
@@ -131,15 +124,14 @@ XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
 // function : Set
 // purpose  :
 // =======================================================================
-void
-XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle, 
-                         const TCollection_AsciiString&       theMIMEtype,
-                         const Handle(TColStd_HArray1OfByte)& theData)
+void XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle,
+                              const TCollection_AsciiString&       theMIMEtype,
+                              const Handle(TColStd_HArray1OfByte)& theData)
 {
   Backup();
 
-  myData = theData;
-  myTitle = theTitle;
+  myData     = theData;
+  myTitle    = theTitle;
   myMIMEtype = theMIMEtype;
 }
 
@@ -147,8 +139,7 @@ XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle,
 // function : ID
 // purpose  :
 // =======================================================================
-const
-Standard_GUID& XCAFDoc_NoteBinData::ID() const
+const Standard_GUID& XCAFDoc_NoteBinData::ID() const
 {
   return GetID();
 }
@@ -157,8 +148,7 @@ Standard_GUID& XCAFDoc_NoteBinData::ID() const
 // function : NewEmpty
 // purpose  :
 // =======================================================================
-Handle(TDF_Attribute)
-XCAFDoc_NoteBinData::NewEmpty() const
+Handle(TDF_Attribute) XCAFDoc_NoteBinData::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
@@ -167,17 +157,16 @@ XCAFDoc_NoteBinData::NewEmpty() const
 // function : Restore
 // purpose  :
 // =======================================================================
-void
-XCAFDoc_NoteBinData::Restore(const Handle(TDF_Attribute)& theAttr)
+void XCAFDoc_NoteBinData::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   XCAFDoc_Note::Restore(theAttr);
 
   Handle(XCAFDoc_NoteBinData) aMine = Handle(XCAFDoc_NoteBinData)::DownCast(theAttr);
   if (!aMine.IsNull())
   {
-    myTitle = aMine->myTitle;
+    myTitle    = aMine->myTitle;
     myMIMEtype = aMine->myMIMEtype;
-    myData = aMine->myData;
+    myData     = aMine->myData;
   }
 }
 
@@ -185,9 +174,8 @@ XCAFDoc_NoteBinData::Restore(const Handle(TDF_Attribute)& theAttr)
 // function : Paste
 // purpose  :
 // =======================================================================
-void
-XCAFDoc_NoteBinData::Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                           const Handle(TDF_RelocationTable)& theRT) const
+void XCAFDoc_NoteBinData::Paste(const Handle(TDF_Attribute)&       theAttrInto,
+                                const Handle(TDF_RelocationTable)& theRT) const
 {
   XCAFDoc_Note::Paste(theAttrInto, theRT);
 
@@ -200,15 +188,13 @@ XCAFDoc_NoteBinData::Paste(const Handle(TDF_Attribute)&       theAttrInto,
 // function : Dump
 // purpose  :
 // =======================================================================
-Standard_OStream&
-XCAFDoc_NoteBinData::Dump(Standard_OStream& theOS) const
+Standard_OStream& XCAFDoc_NoteBinData::Dump(Standard_OStream& theOS) const
 {
   XCAFDoc_Note::Dump(theOS);
   theOS << "\n"
-    << "Title : " << (!myTitle.IsEmpty() ? myMIMEtype : "<untitled>") << "\n"
-    << "MIME type : " << (!myMIMEtype.IsEmpty() ? myMIMEtype : "<none>") << "\n"
-    << "Size : " << Size() << " bytes" << "\n"
-    ;
+        << "Title : " << (!myTitle.IsEmpty() ? myMIMEtype : "<untitled>") << "\n"
+        << "MIME type : " << (!myMIMEtype.IsEmpty() ? myMIMEtype : "<none>") << "\n"
+        << "Size : " << Size() << " bytes" << "\n";
   if (!myData.IsNull())
   {
     for (Standard_Integer i = myData->Lower(); i <= myData->Upper(); ++i)

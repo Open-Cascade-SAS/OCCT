@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<HLRBRep_ShapeBounds> HLRBRep_SeqOfShapeBounds;
 
-
 #endif

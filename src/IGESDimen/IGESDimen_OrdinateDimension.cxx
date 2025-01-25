@@ -22,47 +22,46 @@
 #include <IGESDimen_WitnessLine.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_OrdinateDimension,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_OrdinateDimension, IGESData_IGESEntity)
 
-IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension ()    {  }
+IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension() {}
 
-
-    void IGESDimen_OrdinateDimension::Init
-  (const Handle(IGESDimen_GeneralNote)& aNote,
-   const Standard_Boolean isLine,
-   const Handle(IGESDimen_WitnessLine)& aLine,
-   const Handle(IGESDimen_LeaderArrow)& anArrow)
+void IGESDimen_OrdinateDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
+                                       const Standard_Boolean               isLine,
+                                       const Handle(IGESDimen_WitnessLine)& aLine,
+                                       const Handle(IGESDimen_LeaderArrow)& anArrow)
 {
   theNote        = aNote;
   isItLine       = isLine;
   theWitnessLine = aLine;
   theLeader      = anArrow;
-  if ( (aLine.IsNull()) || (anArrow.IsNull()) ) InitTypeAndForm(218,0);
-  else                                          InitTypeAndForm(218,1);
+  if ((aLine.IsNull()) || (anArrow.IsNull()))
+    InitTypeAndForm(218, 0);
+  else
+    InitTypeAndForm(218, 1);
 }
 
-
-    Handle(IGESDimen_GeneralNote) IGESDimen_OrdinateDimension::Note () const
+Handle(IGESDimen_GeneralNote) IGESDimen_OrdinateDimension::Note() const
 {
   return theNote;
 }
 
-    Handle(IGESDimen_WitnessLine) IGESDimen_OrdinateDimension::WitnessLine () const
+Handle(IGESDimen_WitnessLine) IGESDimen_OrdinateDimension::WitnessLine() const
 {
   return theWitnessLine;
 }
 
-    Handle(IGESDimen_LeaderArrow) IGESDimen_OrdinateDimension::Leader () const
+Handle(IGESDimen_LeaderArrow) IGESDimen_OrdinateDimension::Leader() const
 {
   return theLeader;
 }
 
-    Standard_Boolean IGESDimen_OrdinateDimension::IsLine () const
+Standard_Boolean IGESDimen_OrdinateDimension::IsLine() const
 {
   return isItLine;
 }
 
-    Standard_Boolean IGESDimen_OrdinateDimension::IsLeader () const
+Standard_Boolean IGESDimen_OrdinateDimension::IsLeader() const
 {
   return !isItLine;
 }

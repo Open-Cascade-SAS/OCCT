@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepAP214_HArray1OfOrganizationItem, StepAP214_Array1OfOrganizationItem)
 
-
 #endif

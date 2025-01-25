@@ -16,39 +16,33 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 
-
 inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetNbSampleU() const
 {
   return myNbSampleU;
 }
 
- 
 inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetNbSampleV() const
 {
   return myNbSampleV;
 }
 
- 
 inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetMinRangeU() const
 {
   return myMinRangeU;
 }
 
- 
 inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetMinRangeV() const
 {
   return myMinRangeV;
 }
 
- 
 //  Modified by skv - Thu Nov  3 09:59:43 2005 Optimization Begin
-inline void IntTools_SurfaceRangeLocalizeData::SetGridDeflection
-                     (const Standard_Real theDeflection)
+inline void IntTools_SurfaceRangeLocalizeData::SetGridDeflection(const Standard_Real theDeflection)
 {
   myDeflection = theDeflection;
 }
 
-inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetGridDeflection() const 
+inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetGridDeflection() const
 {
   return myDeflection;
 }
@@ -58,70 +52,57 @@ inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetRangeUGrid() const
   return (myUParams.IsNull()) ? 0 : myUParams->Length();
 }
 
-
-inline void IntTools_SurfaceRangeLocalizeData::SetUParam
-                     (const Standard_Integer theIndex,
-		      const Standard_Real theUParam)
+inline void IntTools_SurfaceRangeLocalizeData::SetUParam(const Standard_Integer theIndex,
+                                                         const Standard_Real    theUParam)
 {
   myUParams->SetValue(theIndex, theUParam);
 }
 
-
-inline Standard_Real  IntTools_SurfaceRangeLocalizeData::GetUParam
-                     (const Standard_Integer theIndex) const
+inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetUParam(
+  const Standard_Integer theIndex) const
 {
   return myUParams->Value(theIndex);
 }
-
 
 inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetRangeVGrid() const
 {
   return (myVParams.IsNull()) ? 0 : myVParams->Length();
 }
 
-
-inline void IntTools_SurfaceRangeLocalizeData::SetVParam
-                     (const Standard_Integer theIndex,
-		      const Standard_Real theVParam)
+inline void IntTools_SurfaceRangeLocalizeData::SetVParam(const Standard_Integer theIndex,
+                                                         const Standard_Real    theVParam)
 {
   myVParams->SetValue(theIndex, theVParam);
 }
 
-
-inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetVParam
-                     (const Standard_Integer theIndex) const
+inline Standard_Real IntTools_SurfaceRangeLocalizeData::GetVParam(
+  const Standard_Integer theIndex) const
 {
   return myVParams->Value(theIndex);
 }
 
-
-inline void IntTools_SurfaceRangeLocalizeData::SetGridPoint
-                     (const Standard_Integer  theUIndex,
-                      const Standard_Integer  theVIndex,
-		      const gp_Pnt           &thePoint)
+inline void IntTools_SurfaceRangeLocalizeData::SetGridPoint(const Standard_Integer theUIndex,
+                                                            const Standard_Integer theVIndex,
+                                                            const gp_Pnt&          thePoint)
 {
   myGridPoints->SetValue(theUIndex, theVIndex, thePoint);
 }
 
-
-inline const gp_Pnt &IntTools_SurfaceRangeLocalizeData::GetGridPoint
-                     (const Standard_Integer  theUIndex,
-                      const Standard_Integer  theVIndex) const
+inline const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetGridPoint(
+  const Standard_Integer theUIndex,
+  const Standard_Integer theVIndex) const
 {
   return myGridPoints->Value(theUIndex, theVIndex);
 }
 
-
-inline Standard_Integer IntTools_SurfaceRangeLocalizeData::
-                                 GetNBUPointsInFrame() const
+inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetNBUPointsInFrame() const
 {
   return myUIndMax - myUIndMin + 1;
 }
 
-
-inline Standard_Integer IntTools_SurfaceRangeLocalizeData::
-                                 GetNBVPointsInFrame() const
+inline Standard_Integer IntTools_SurfaceRangeLocalizeData::GetNBVPointsInFrame() const
 {
   return myVIndMax - myVIndMin + 1;
 }
+
 //  Modified by skv - Thu Nov  3 09:59:43 2005 Optimization End

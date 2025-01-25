@@ -16,12 +16,13 @@
 #include <cstring>
 
 //=======================================================================
-//function : NCollection_BasePointerVector
-//purpose  :
+// function : NCollection_BasePointerVector
+// purpose  :
 //=======================================================================
-NCollection_BasePointerVector::NCollection_BasePointerVector(const NCollection_BasePointerVector& theOther) :
-  mySize(theOther.mySize),
-  myCapacity(theOther.myCapacity)
+NCollection_BasePointerVector::NCollection_BasePointerVector(
+  const NCollection_BasePointerVector& theOther)
+    : mySize(theOther.mySize),
+      myCapacity(theOther.myCapacity)
 {
   if (myCapacity > 0)
   {
@@ -31,24 +32,25 @@ NCollection_BasePointerVector::NCollection_BasePointerVector(const NCollection_B
 }
 
 //=======================================================================
-//function : NCollection_BasePointerVector
-//purpose  :
+// function : NCollection_BasePointerVector
+// purpose  :
 //=======================================================================
-NCollection_BasePointerVector::NCollection_BasePointerVector(NCollection_BasePointerVector&& theOther) noexcept :
-  mySize(std::move(theOther.mySize)),
-  myCapacity(std::move(theOther.myCapacity)),
-  myArray(std::move(theOther.myArray))
+NCollection_BasePointerVector::NCollection_BasePointerVector(
+  NCollection_BasePointerVector&& theOther) noexcept
+    : mySize(std::move(theOther.mySize)),
+      myCapacity(std::move(theOther.myCapacity)),
+      myArray(std::move(theOther.myArray))
 {
   theOther.myCapacity = 0;
-  theOther.mySize = 0;
-  theOther.myArray = nullptr;
+  theOther.mySize     = 0;
+  theOther.myArray    = nullptr;
 }
 
 //=======================================================================
-//function : Append
-//purpose  :
+// function : Append
+// purpose  :
 //=======================================================================
-void NCollection_BasePointerVector::Append (const void* thePnt)
+void NCollection_BasePointerVector::Append(const void* thePnt)
 {
   if (mySize == myCapacity)
   {
@@ -66,10 +68,10 @@ void NCollection_BasePointerVector::Append (const void* thePnt)
 }
 
 //=======================================================================
-//function : SetValue
-//purpose  :
+// function : SetValue
+// purpose  :
 //=======================================================================
-void NCollection_BasePointerVector::SetValue (const size_t theInd, const void* thePnt)
+void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* thePnt)
 {
   if (theInd >= myCapacity)
   {
@@ -89,8 +91,8 @@ void NCollection_BasePointerVector::SetValue (const size_t theInd, const void* t
 }
 
 //=======================================================================
-//function : clear
-//purpose  :
+// function : clear
+// purpose  :
 //=======================================================================
 void NCollection_BasePointerVector::clear()
 {
@@ -98,15 +100,16 @@ void NCollection_BasePointerVector::clear()
   {
     myAllocator.deallocate(myArray, myCapacity);
   }
-  myArray = nullptr;
+  myArray    = nullptr;
   myCapacity = 0;
 }
 
 //=======================================================================
-//function : operator=
-//purpose  :
+// function : operator=
+// purpose  :
 //=======================================================================
-NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(const NCollection_BasePointerVector& theOther)
+NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
+  const NCollection_BasePointerVector& theOther)
 {
   if (this == &theOther)
   {
@@ -117,28 +120,29 @@ NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(const NC
   {
     clear();
     myCapacity = theOther.myCapacity;
-    myArray = myAllocator.allocate(myCapacity);
+    myArray    = myAllocator.allocate(myCapacity);
   }
   memcpy(myArray, theOther.myArray, mySize * sizeof(void*));
   return *this;
 }
 
 //=======================================================================
-//function : operator=
-//purpose  :
+// function : operator=
+// purpose  :
 //=======================================================================
-NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(NCollection_BasePointerVector&& theOther) noexcept
+NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
+  NCollection_BasePointerVector&& theOther) noexcept
 {
   if (this == &theOther)
   {
     return *this;
   }
   clear();
-  mySize = std::move(theOther.mySize);
-  myCapacity = std::move(theOther.myCapacity);
-  myArray = std::move(theOther.myArray);
+  mySize              = std::move(theOther.mySize);
+  myCapacity          = std::move(theOther.myCapacity);
+  myArray             = std::move(theOther.myArray);
   theOther.myCapacity = 0;
-  theOther.mySize = 0;
-  theOther.myArray = nullptr;
+  theOther.mySize     = 0;
+  theOther.myArray    = nullptr;
   return *this;
 }

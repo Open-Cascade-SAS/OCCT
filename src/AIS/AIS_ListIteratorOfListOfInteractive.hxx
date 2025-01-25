@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef AIS_ListIteratorOfListOfInteractive_HeaderFile
 #define AIS_ListIteratorOfListOfInteractive_HeaderFile
 

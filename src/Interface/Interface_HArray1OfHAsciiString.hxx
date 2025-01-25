@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(Interface_HArray1OfHAsciiString, Interface_Array1OfHAsciiString)
 
-
 #endif

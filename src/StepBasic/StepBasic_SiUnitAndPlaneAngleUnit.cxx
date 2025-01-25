@@ -11,21 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_PlaneAngleUnit.hxx>
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit ()
-{
-}
+StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit() {}
 
-void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Standard_Boolean hasAprefix,
-					     const StepBasic_SiPrefix aPrefix,
-					     const StepBasic_SiUnitName aName)
+void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Standard_Boolean     hasAprefix,
+                                             const StepBasic_SiPrefix   aPrefix,
+                                             const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
   // --- ANDOR component fields ---
@@ -38,8 +35,8 @@ void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Standard_Boolean hasAprefix,
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 
-
-void StepBasic_SiUnitAndPlaneAngleUnit::SetPlaneAngleUnit(const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit)
+void StepBasic_SiUnitAndPlaneAngleUnit::SetPlaneAngleUnit(
+  const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit)
 {
   planeAngleUnit = aPlaneAngleUnit;
 }

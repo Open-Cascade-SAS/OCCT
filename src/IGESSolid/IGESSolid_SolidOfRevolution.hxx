@@ -25,7 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-
 class IGESSolid_SolidOfRevolution;
 DEFINE_STANDARD_HANDLE(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 
@@ -38,72 +37,56 @@ class IGESSolid_SolidOfRevolution : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_SolidOfRevolution();
-  
+
   //! This method is used to set the fields of the class
   //! SolidOfRevolution
   //! - aCurve     : the curve entity that is to be revolved
   //! - aFract     : the fraction of full rotation (default 1.0)
   //! - aAxisPnt   : the point on the axis
   //! - aDirection : the direction of the axis
-  Standard_EXPORT void Init (const Handle(IGESData_IGESEntity)& aCurve, const Standard_Real aFract, const gp_XYZ& aAxisPnt, const gp_XYZ& aDirection);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aCurve,
+                            const Standard_Real                aFract,
+                            const gp_XYZ&                      aAxisPnt,
+                            const gp_XYZ&                      aDirection);
+
   //! Sets the Curve to be by default, Closed to Axis (Form 0)
   //! if <mode> is True, Closed to Itself (Form 1) else
-  Standard_EXPORT void SetClosedToAxis (const Standard_Boolean mode);
-  
+  Standard_EXPORT void SetClosedToAxis(const Standard_Boolean mode);
+
   //! Returns True if Form Number = 0
   //! if Form no is 0, then the curve is closed to axis
   //! if 1, the curve is closed to itself.
   Standard_EXPORT Standard_Boolean IsClosedToAxis() const;
-  
+
   //! returns the curve entity that is to be revolved
   Standard_EXPORT Handle(IGESData_IGESEntity) Curve() const;
-  
+
   //! returns the fraction of full rotation that the curve is to
   //! be rotated
   Standard_EXPORT Standard_Real Fraction() const;
-  
+
   //! returns the point on the axis
   Standard_EXPORT gp_Pnt AxisPoint() const;
-  
+
   //! returns the point on the axis after applying Trans.Matrix
   Standard_EXPORT gp_Pnt TransformedAxisPoint() const;
-  
+
   //! returns the direction of the axis
   Standard_EXPORT gp_Dir Axis() const;
-  
+
   //! returns the direction of the axis after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Dir TransformedAxis() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_IGESEntity) theCurve;
-  Standard_Real theFraction;
-  gp_XYZ theAxisPoint;
-  gp_XYZ theAxis;
-
-
+  Standard_Real               theFraction;
+  gp_XYZ                      theAxisPoint;
+  gp_XYZ                      theAxis;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_SolidOfRevolution_HeaderFile

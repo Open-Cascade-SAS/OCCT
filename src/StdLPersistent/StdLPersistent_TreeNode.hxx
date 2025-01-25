@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_TreeNode_HeaderFile
 #define _StdLPersistent_TreeNode_HeaderFile
 
@@ -20,23 +19,20 @@
 #include <TDataStd_TreeNode.hxx>
 #include <Standard_GUID.hxx>
 
-
-class StdLPersistent_TreeNode
-  : public StdObjMgt_Attribute<TDataStd_TreeNode>::Static
+class StdLPersistent_TreeNode : public StdObjMgt_Attribute<TDataStd_TreeNode>::Static
 {
 public:
   //! Read persistent data from a file.
-  Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+  Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
 
   //! Write persistent data to a file.
-  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+  Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
 
   //! Gets persistent child objects
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
 
   //! Returns persistent type name
-  virtual Standard_CString PName() const
-    { return "PDataStd_TreeNode"; }
+  virtual Standard_CString PName() const { return "PDataStd_TreeNode"; }
 
   //! Create an empty transient attribute
   Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
@@ -51,7 +47,7 @@ private:
     Standard_GUID                   TreeID;
   };
 
-  Handle(dynamic) myDynamicData;
+  Handle(dynamic)                 myDynamicData;
   Handle(StdLPersistent_TreeNode) myNext;
 };
 

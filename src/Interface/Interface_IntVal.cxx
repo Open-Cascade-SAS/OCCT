@@ -11,14 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_IntVal.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_IntVal,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_IntVal, Standard_Transient)
 
-Interface_IntVal::Interface_IntVal  ()    {  theval = 0;  }
+Interface_IntVal::Interface_IntVal()
+{
+  theval = 0;
+}
 
-Standard_Integer  Interface_IntVal::Value () const  {  return theval;  }
+Standard_Integer Interface_IntVal::Value() const
+{
+  return theval;
+}
 
-Standard_Integer&  Interface_IntVal::CValue ()  {  return theval;  }
+Standard_Integer& Interface_IntVal::CValue()
+{
+  return theval;
+}

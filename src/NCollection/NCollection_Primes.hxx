@@ -30,8 +30,8 @@
 //! 301989889, 573308929, 1019215873, 2038431745
 namespace NCollection_Primes
 {
-  //! Returns the next prime number greater than or equal to theN.
-  Standard_EXPORT int NextPrimeForMap(const int theN);
-};
+//! Returns the next prime number greater than or equal to theN.
+Standard_EXPORT int NextPrimeForMap(const int theN);
+}; // namespace NCollection_Primes
 
 #endif // _NCollection_Primes_HeaderFile

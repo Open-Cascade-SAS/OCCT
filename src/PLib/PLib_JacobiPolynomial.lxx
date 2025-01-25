@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer PLib_JacobiPolynomial::WorkDegree() const 
+inline Standard_Integer PLib_JacobiPolynomial::WorkDegree() const
 {
   return myWorkDegree;
 }
 
- inline Standard_Integer PLib_JacobiPolynomial::NivConstr() const 
+inline Standard_Integer PLib_JacobiPolynomial::NivConstr() const
 {
   return myNivConstr;
 }

@@ -31,30 +31,27 @@ class StepBasic_GeneralPropertyRelationship;
 class RWStepBasic_RWGeneralPropertyRelationship
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
   Standard_HIDDEN RWStepBasic_RWGeneralPropertyRelationship();
 
   //! Reads GeneralPropertyAssociation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                 const Standard_Integer theNum,
-                                 Handle(Interface_Check)& theAch,
-                                 const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&               theData,
+                                const Standard_Integer                               theNum,
+                                Handle(Interface_Check)&                             theAch,
+                                const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
 
   //! Writes GeneralPropertyAssociation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& theSW,
-                                  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 theSW,
+                                 const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
-                              Interface_EntityIterator& theIter) const;
+  Standard_HIDDEN void Share(const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
+                             Interface_EntityIterator&                            theIter) const;
 
 protected:
-
 private:
-
 };
 
 #endif // _RWStepBasic_RWGeneralPropertyRelationship_HeaderFile

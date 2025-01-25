@@ -17,25 +17,24 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : GeomInt_LineConstructor
-//purpose  : 
+// function : GeomInt_LineConstructor
+// purpose  :
 //=======================================================================
 
-inline GeomInt_LineConstructor::GeomInt_LineConstructor ()
- : done(Standard_False)
+inline GeomInt_LineConstructor::GeomInt_LineConstructor()
+    : done(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : Load
-//purpose  : 
+// function : Load
+// purpose  :
 //=======================================================================
 
-inline void GeomInt_LineConstructor::Load (const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_TopolTool)& D2,
-                                           const Handle(GeomAdaptor_Surface)& S1,
-                                           const Handle(GeomAdaptor_Surface)& S2)
+inline void GeomInt_LineConstructor::Load(const Handle(Adaptor3d_TopolTool)& D1,
+                                          const Handle(Adaptor3d_TopolTool)& D2,
+                                          const Handle(GeomAdaptor_Surface)& S1,
+                                          const Handle(GeomAdaptor_Surface)& S2)
 {
   myDom1 = D1;
   myDom2 = D2;
@@ -43,39 +42,42 @@ inline void GeomInt_LineConstructor::Load (const Handle(Adaptor3d_TopolTool)& D1
   myHS2  = S2;
 }
 
-
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean GeomInt_LineConstructor::IsDone () const
+inline Standard_Boolean GeomInt_LineConstructor::IsDone() const
 {
   return done;
 }
 
-
 //=======================================================================
-//function : NbParts
-//purpose  : 
+// function : NbParts
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer GeomInt_LineConstructor::NbParts () const
+inline Standard_Integer GeomInt_LineConstructor::NbParts() const
 {
-  if (!done) { throw StdFail_NotDone(); }
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return (seqp.Length() / 2);
 }
 
-
 //=======================================================================
-//function : Part
-//purpose  : 
+// function : Part
+// purpose  :
 //=======================================================================
-inline void GeomInt_LineConstructor::Part (const Standard_Integer I,
-                                           Standard_Real& WFirst,
-                                           Standard_Real& WLast) const
+inline void GeomInt_LineConstructor::Part(const Standard_Integer I,
+                                          Standard_Real&         WFirst,
+                                          Standard_Real&         WLast) const
 {
-  if (!done) { throw StdFail_NotDone(); }
-  WFirst = seqp(2*I-1);
-  WLast  = seqp(2*I);
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  WFirst = seqp(2 * I - 1);
+  WLast  = seqp(2 * I);
 }

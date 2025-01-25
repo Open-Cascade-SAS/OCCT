@@ -24,7 +24,7 @@
 #include <Contap_Point.hxx>
 #include <Contap_TheHSequenceOfPoint.hxx>
 
-inline const Handle(IntSurf_LineOn2S)& Contap_Line::LineOn2S () const
+inline const Handle(IntSurf_LineOn2S)& Contap_Line::LineOn2S() const
 {
   return curv;
 }
@@ -34,39 +34,53 @@ inline void Contap_Line::Add(const IntSurf_PntOn2S& POn2S)
   curv->Add(POn2S);
 }
 
-inline Standard_Integer Contap_Line::NbVertex () const
+inline Standard_Integer Contap_Line::NbVertex() const
 {
   return svtx->Length();
 }
 
-inline Contap_Point& Contap_Line::Vertex (const Standard_Integer Index) const
+inline Contap_Point& Contap_Line::Vertex(const Standard_Integer Index) const
 {
   return svtx->ChangeSequence()(Index);
 }
 
-inline Contap_IType Contap_Line::TypeContour () const
+inline Contap_IType Contap_Line::TypeContour() const
 {
   return typL;
 }
 
-inline Standard_Integer Contap_Line::NbPnts () const {
-  if (typL != Contap_Walking) {throw Standard_DomainError();}
-  return(curv->NbPoints());
-}
-
-inline const IntSurf_PntOn2S& Contap_Line::Point (const Standard_Integer Index) const {
-  if (typL != Contap_Walking) {throw Standard_DomainError();}
-  return(curv->Value(Index));
-}
-
-inline gp_Lin Contap_Line::Line () const
+inline Standard_Integer Contap_Line::NbPnts() const
 {
-  if (typL != Contap_Lin) {throw Standard_DomainError();}
-  return gp_Lin(pt,dir1);
+  if (typL != Contap_Walking)
+  {
+    throw Standard_DomainError();
+  }
+  return (curv->NbPoints());
 }
 
-inline gp_Circ Contap_Line::Circle () const
+inline const IntSurf_PntOn2S& Contap_Line::Point(const Standard_Integer Index) const
 {
-  if (typL != Contap_Circle) {throw Standard_DomainError();}
-  return gp_Circ(gp_Ax2(pt,dir1,dir2),rad);
+  if (typL != Contap_Walking)
+  {
+    throw Standard_DomainError();
+  }
+  return (curv->Value(Index));
+}
+
+inline gp_Lin Contap_Line::Line() const
+{
+  if (typL != Contap_Lin)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Lin(pt, dir1);
+}
+
+inline gp_Circ Contap_Line::Circle() const
+{
+  if (typL != Contap_Circle)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Circ(gp_Ax2(pt, dir1, dir2), rad);
 }

@@ -19,7 +19,8 @@
 
 #include <Graphic3d_TypeOfLightSource.hxx>
 
-Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfLightSource should be used instead")
+Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfLightSource should be used "
+                    "instead")
 typedef Graphic3d_TypeOfLightSource V3d_TypeOfLight;
 
 #endif // _V3d_TypeOfLight_HeaderFile

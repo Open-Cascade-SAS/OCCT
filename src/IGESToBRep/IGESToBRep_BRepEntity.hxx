@@ -37,75 +37,66 @@ class IGESSolid_Face;
 class IGESSolid_Shell;
 class IGESSolid_ManifoldSolid;
 
-
 //! Provides methods to transfer BRep entities
 //! ( VertexList 502, EdgeList 504, Loop 508,
 //! Face 510, Shell 514, ManifoldSolid 186)
 //! from IGES to CASCADE.
-class IGESToBRep_BRepEntity  : public IGESToBRep_CurveAndSurface
+class IGESToBRep_BRepEntity : public IGESToBRep_CurveAndSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates  a tool BRepEntity  ready  to  run, with
   //! epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
   //! optimization of  the continuity to False.
   Standard_EXPORT IGESToBRep_BRepEntity();
-  
+
   //! Creates a tool BRepEntity ready to run and sets its
   //! fields as CS's.
   Standard_EXPORT IGESToBRep_BRepEntity(const IGESToBRep_CurveAndSurface& CS);
-  
+
   //! Creates a tool BRepEntity ready to run.
-  Standard_EXPORT IGESToBRep_BRepEntity(const Standard_Real eps, const Standard_Real epsGeom, const Standard_Real epsCoeff, const Standard_Boolean mode, const Standard_Boolean modeapprox, const Standard_Boolean optimized);
-  
+  Standard_EXPORT IGESToBRep_BRepEntity(const Standard_Real    eps,
+                                        const Standard_Real    epsGeom,
+                                        const Standard_Real    epsCoeff,
+                                        const Standard_Boolean mode,
+                                        const Standard_Boolean modeapprox,
+                                        const Standard_Boolean optimized);
+
   //! Transfer the BRepEntity" : Face, Shell or ManifoldSolid.
-  Standard_EXPORT TopoDS_Shape TransferBRepEntity (const Handle(IGESData_IGESEntity)& start,
-                                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT TopoDS_Shape
+    TransferBRepEntity(const Handle(IGESData_IGESEntity)& start,
+                       const Message_ProgressRange&       theProgress = Message_ProgressRange());
+
   //! Transfer the entity number "index" of the VertexList "start"
-  Standard_EXPORT TopoDS_Vertex TransferVertex (const Handle(IGESSolid_VertexList)& start, const Standard_Integer index);
-  
+  Standard_EXPORT TopoDS_Vertex TransferVertex(const Handle(IGESSolid_VertexList)& start,
+                                               const Standard_Integer              index);
+
   //! Transfer the entity number "index" of the EdgeList "start".
-  Standard_EXPORT TopoDS_Shape TransferEdge (const Handle(IGESSolid_EdgeList)& start, const Standard_Integer index);
-  
+  Standard_EXPORT TopoDS_Shape TransferEdge(const Handle(IGESSolid_EdgeList)& start,
+                                            const Standard_Integer            index);
+
   //! Transfer the Loop Entity
-  Standard_EXPORT TopoDS_Shape TransferLoop (const Handle(IGESSolid_Loop)& start, const TopoDS_Face& Face, const gp_Trsf2d& trans, const Standard_Real uFact);
-  
+  Standard_EXPORT TopoDS_Shape TransferLoop(const Handle(IGESSolid_Loop)& start,
+                                            const TopoDS_Face&            Face,
+                                            const gp_Trsf2d&              trans,
+                                            const Standard_Real           uFact);
+
   //! Transfer the Face Entity
-  Standard_EXPORT TopoDS_Shape TransferFace (const Handle(IGESSolid_Face)& start);
-  
+  Standard_EXPORT TopoDS_Shape TransferFace(const Handle(IGESSolid_Face)& start);
+
   //! Transfer the Shell Entity
-  Standard_EXPORT TopoDS_Shape TransferShell (const Handle(IGESSolid_Shell)& start,
-                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT TopoDS_Shape
+    TransferShell(const Handle(IGESSolid_Shell)& start,
+                  const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
   //! Transfer the ManifoldSolid Entity
-  Standard_EXPORT TopoDS_Shape TransferManifoldSolid (const Handle(IGESSolid_ManifoldSolid)& start,
-                                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
-
-
-
+  Standard_EXPORT TopoDS_Shape
+    TransferManifoldSolid(const Handle(IGESSolid_ManifoldSolid)& start,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESToBRep_BRepEntity_HeaderFile

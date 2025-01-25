@@ -11,10 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdObject_gp_Vectors_HeaderFile
 #define _StdObject_gp_Vectors_HeaderFile
-
 
 #include <StdObjMgt_ReadData.hxx>
 #include <StdObjMgt_WriteData.hxx>
@@ -26,92 +24,82 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 
-
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_XY& theXY)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_XY& theXY)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   Standard_Real aX, aY;
   theReadData >> aX >> aY;
-  theXY.SetCoord (aX, aY);
+  theXY.SetCoord(aX, aY);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_XY& theXY)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_XY& theXY)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   Standard_Real aX = theXY.X(), aY = theXY.Y();
   theWriteData << aX << aY;
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Pnt2d& thePnt)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Pnt2d& thePnt)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XY aXY;
   theReadData >> aXY;
-  thePnt.SetXY (aXY);
+  thePnt.SetXY(aXY);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Pnt2d& thePnt)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Pnt2d& thePnt)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << thePnt.XY();
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Vec2d& theVec)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Vec2d& theVec)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XY aXY;
   theReadData >> aXY;
-  theVec.SetXY (aXY);
+  theVec.SetXY(aXY);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Vec2d& theVec)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Vec2d& theVec)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << theVec.XY();
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Dir2d& theDir)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Dir2d& theDir)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XY aXY;
   theReadData >> aXY;
-  theDir.SetXY (aXY);
+  theDir.SetXY(aXY);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Dir2d& theDir)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Dir2d& theDir)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << theDir.XY();
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_XYZ& theXYZ)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_XYZ& theXYZ)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   Standard_Real aX, aY, aZ;
   theReadData >> aX >> aY >> aZ;
@@ -119,60 +107,54 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_XYZ& theXYZ)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_XYZ& theXYZ)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   Standard_Real aX = theXYZ.X(), aY = theXYZ.Y(), aZ = theXYZ.Z();
   theWriteData << aX << aY << aZ;
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Pnt& thePnt)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Pnt& thePnt)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XYZ aXYZ;
   theReadData >> aXYZ;
-  thePnt.SetXYZ (aXYZ);
+  thePnt.SetXYZ(aXYZ);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Pnt& thePnt)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Pnt& thePnt)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << thePnt.XYZ();
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Vec& theVec)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Vec& theVec)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XYZ aXYZ;
   theReadData >> aXYZ;
-  theVec.SetXYZ (aXYZ);
+  theVec.SetXYZ(aXYZ);
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Vec& theVec)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Vec& theVec)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << theVec.XYZ();
   return theWriteData;
 }
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, gp_Dir& theDir)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_Dir& theDir)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   gp_XYZ aXYZ;
   theReadData >> aXYZ;
@@ -180,14 +162,12 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const gp_Dir& theDir)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const gp_Dir& theDir)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   theWriteData << theDir.XYZ();
   return theWriteData;
 }
-
 
 #endif

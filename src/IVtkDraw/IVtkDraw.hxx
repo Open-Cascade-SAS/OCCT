@@ -1,7 +1,7 @@
-// Created on: 2012-02-03 
-// 
-// Copyright (c) 2012-2014 OPEN CASCADE SAS 
-// 
+// Created on: 2012-02-03
+//
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -36,30 +36,32 @@ public:
     Standard_Integer NbMsaaSample;
     Standard_Boolean UseSRGBColorSpace;
 
-    IVtkWinParams() : NbMsaaSample (0), UseSRGBColorSpace (false) {}
+    IVtkWinParams()
+        : NbMsaaSample(0),
+          UseSRGBColorSpace(false)
+    {
+    }
   };
 
 public:
+  Standard_EXPORT static void ViewerInit(const IVtkWinParams& theParams);
 
-  Standard_EXPORT static void ViewerInit (const IVtkWinParams& theParams);
-
-  static void ViewerInit (Standard_Integer thePxLeft,
-                          Standard_Integer thePxTop,
-                          Standard_Integer thePxWidth,
-                          Standard_Integer thePxHeight)
+  static void ViewerInit(Standard_Integer thePxLeft,
+                         Standard_Integer thePxTop,
+                         Standard_Integer thePxWidth,
+                         Standard_Integer thePxHeight)
   {
     IVtkWinParams aParams;
-    aParams.TopLeft.SetValues (thePxLeft, thePxTop);
-    aParams.Size.SetValues (thePxWidth, thePxHeight);
-    ViewerInit (aParams);
+    aParams.TopLeft.SetValues(thePxLeft, thePxTop);
+    aParams.Size.SetValues(thePxWidth, thePxHeight);
+    ViewerInit(aParams);
   }
 
-  Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
-  Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
+  Standard_EXPORT static void Commands(Draw_Interpretor& theCommands);
 
 private:
   Standard_EXPORT static const Handle(WNT_WClass)& WClass();
 };
 
 #endif
-

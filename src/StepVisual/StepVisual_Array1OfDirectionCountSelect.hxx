@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepVisual_DirectionCountSelect> StepVisual_Array1OfDirectionCountSelect;
 
-
 #endif

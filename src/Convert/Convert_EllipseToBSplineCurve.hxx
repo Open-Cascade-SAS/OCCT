@@ -25,8 +25,6 @@
 #include <Convert_ParameterisationType.hxx>
 class gp_Elips2d;
 
-
-
 //! This algorithm converts a ellipse into a rational B-spline curve.
 //! The ellipse is represented an Elips2d from package gp with
 //! the parametrization :
@@ -37,46 +35,30 @@ class gp_Elips2d;
 //! the ellipse. The parametrization range is U [0, 2PI].
 //! KeyWords :
 //! Convert, Ellipse, BSplineCurve, 2D .
-class Convert_EllipseToBSplineCurve  : public Convert_ConicToBSplineCurve
+class Convert_EllipseToBSplineCurve : public Convert_ConicToBSplineCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! The equivalent B-spline curve has the same orientation
   //! as the ellipse E.
-  Standard_EXPORT Convert_EllipseToBSplineCurve(const gp_Elips2d& E, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-  
+  Standard_EXPORT Convert_EllipseToBSplineCurve(
+    const gp_Elips2d&                  E,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! The ellipse E is limited between the parametric values U1, U2.
   //! The equivalent B-spline curve is oriented from U1 to U2 and has
   //! the same orientation as E.
   //!
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
-  Standard_EXPORT Convert_EllipseToBSplineCurve(const gp_Elips2d& E, const Standard_Real U1, const Standard_Real U2, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-
-
-
+  Standard_EXPORT Convert_EllipseToBSplineCurve(
+    const gp_Elips2d&                  E,
+    const Standard_Real                U1,
+    const Standard_Real                U2,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Convert_EllipseToBSplineCurve_HeaderFile

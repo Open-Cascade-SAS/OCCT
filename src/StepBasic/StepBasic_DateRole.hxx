@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_DateRole;
 DEFINE_STANDARD_HANDLE(StepBasic_DateRole, Standard_Transient)
-
 
 class StepBasic_DateRole : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a DateRole
   Standard_EXPORT StepBasic_DateRole();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DateRole,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateRole, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) name;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DateRole_HeaderFile

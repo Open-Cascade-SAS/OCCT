@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <HLRAlgo_WiresBlock.hxx>
 #include <HLRBRep_FaceData.hxx>
@@ -22,22 +21,25 @@
 #include <TopoDS_Face.hxx>
 
 //=======================================================================
-//function : FaceData
-//purpose  : 
+// function : FaceData
+// purpose  :
 //=======================================================================
-HLRBRep_FaceData::HLRBRep_FaceData () :
-myFlags(0),mySize(0)
-{ Selected(Standard_True); }
+HLRBRep_FaceData::HLRBRep_FaceData()
+    : myFlags(0),
+      mySize(0)
+{
+  Selected(Standard_True);
+}
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
-void HLRBRep_FaceData::Set (const TopoDS_Face& FG,
-			    const TopAbs_Orientation Or,
-			    const Standard_Boolean Cl,
-			    const Standard_Integer NW)
+void HLRBRep_FaceData::Set(const TopoDS_Face&       FG,
+                           const TopAbs_Orientation Or,
+                           const Standard_Boolean   Cl,
+                           const Standard_Integer   NW)
 {
   Closed(Cl);
   Geometry().Surface(FG);
@@ -47,34 +49,33 @@ void HLRBRep_FaceData::Set (const TopoDS_Face& FG,
 }
 
 //=======================================================================
-//function : SetWire
-//purpose  : 
+// function : SetWire
+// purpose  :
 //=======================================================================
 
-void HLRBRep_FaceData::SetWire (const Standard_Integer WI,
-				const Standard_Integer NE)
+void HLRBRep_FaceData::SetWire(const Standard_Integer WI, const Standard_Integer NE)
 {
-  Wires()->Set(WI,new HLRAlgo_EdgesBlock(NE));
+  Wires()->Set(WI, new HLRAlgo_EdgesBlock(NE));
 }
 
 //=======================================================================
-//function : SetWEdge
-//purpose  : 
+// function : SetWEdge
+// purpose  :
 //=======================================================================
 
-void HLRBRep_FaceData::SetWEdge (const Standard_Integer WI,
-				 const Standard_Integer EWI,
-				 const Standard_Integer EI,
-				 const TopAbs_Orientation Or,
-				 const Standard_Boolean OutL,
-				 const Standard_Boolean Inte,
-				 const Standard_Boolean Dble,
-				 const Standard_Boolean IsoL)
+void HLRBRep_FaceData::SetWEdge(const Standard_Integer   WI,
+                                const Standard_Integer   EWI,
+                                const Standard_Integer   EI,
+                                const TopAbs_Orientation Or,
+                                const Standard_Boolean   OutL,
+                                const Standard_Boolean   Inte,
+                                const Standard_Boolean   Dble,
+                                const Standard_Boolean   IsoL)
 {
-  Wires()->Wire(WI)->Edge       (EWI,EI);
-  Wires()->Wire(WI)->Orientation(EWI,Or);
-  Wires()->Wire(WI)->OutLine    (EWI,OutL);
-  Wires()->Wire(WI)->Internal   (EWI,Inte);
-  Wires()->Wire(WI)->Double     (EWI,Dble);
-  Wires()->Wire(WI)->IsoLine    (EWI,IsoL);
+  Wires()->Wire(WI)->Edge(EWI, EI);
+  Wires()->Wire(WI)->Orientation(EWI, Or);
+  Wires()->Wire(WI)->OutLine(EWI, OutL);
+  Wires()->Wire(WI)->Internal(EWI, Inte);
+  Wires()->Wire(WI)->Double(EWI, Dble);
+  Wires()->Wire(WI)->IsoLine(EWI, IsoL);
 }

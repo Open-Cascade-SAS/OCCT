@@ -16,54 +16,54 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_NewtonMinimum::IsConverged() const 
+inline Standard_Boolean math_NewtonMinimum::IsConverged() const
 {
-  return ( (TheStep.Norm() <= XTol ) || 
-    ( Abs(TheMinimum-PreviousMinimum) <= XTol * Abs(PreviousMinimum) ));
+  return ((TheStep.Norm() <= XTol)
+          || (Abs(TheMinimum - PreviousMinimum) <= XTol * Abs(PreviousMinimum)));
 }
 
-inline Standard_Boolean math_NewtonMinimum::IsDone() const 
+inline Standard_Boolean math_NewtonMinimum::IsDone() const
 {
   return Done;
 }
 
-inline const math_Vector& math_NewtonMinimum::Location() const 
+inline const math_Vector& math_NewtonMinimum::Location() const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   return TheLocation;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  return TheLocation;
 }
 
-inline void math_NewtonMinimum::Location(math_Vector& Loc) const 
+inline void math_NewtonMinimum::Location(math_Vector& Loc) const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   Loc = TheLocation;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  Loc = TheLocation;
 }
 
-inline Standard_Real math_NewtonMinimum::Minimum() const 
+inline Standard_Real math_NewtonMinimum::Minimum() const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   return TheMinimum;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  return TheMinimum;
 }
 
-inline const math_Vector& math_NewtonMinimum::Gradient() const 
+inline const math_Vector& math_NewtonMinimum::Gradient() const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   return TheGradient;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  return TheGradient;
 }
 
-inline void math_NewtonMinimum::Gradient(math_Vector& Grad) const 
+inline void math_NewtonMinimum::Gradient(math_Vector& Grad) const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   Grad = TheGradient;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  Grad = TheGradient;
 }
 
-inline Standard_Integer math_NewtonMinimum::NbIterations() const 
+inline Standard_Integer math_NewtonMinimum::NbIterations() const
 {
-   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
-   return nbiter;
+  StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+  return nbiter;
 }
 
-inline math_Status math_NewtonMinimum::GetStatus() const 
+inline math_Status math_NewtonMinimum::GetStatus() const
 {
   return TheStatus;
 }

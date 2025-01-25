@@ -23,25 +23,21 @@
 
 #include <math_Vector.hxx>
 
-
 //! Describes the virtual functions associated with a multiple variable function.
-class math_MultipleVarFunction 
+class math_MultipleVarFunction
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Returns the number of variables of the function
   Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
-  
+
   //! Computes the values of the Functions <F> for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! otherwise false.
-  Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& X, Standard_Real& F) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) = 0;
+
   //! return the state of the function corresponding to the latestt
   //! call of any methods associated to the function. This
   //! function is called by each of the algorithms described
@@ -59,27 +55,8 @@ public:
   Standard_EXPORT virtual Standard_Integer GetStateNumber();
   Standard_EXPORT virtual ~math_MultipleVarFunction();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _math_MultipleVarFunction_HeaderFile

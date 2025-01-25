@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,27 +19,26 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PlanarCurvePair, StepKinematics_HighOrderKinematicPair)
 
 //=======================================================================
-//function : StepKinematics_PlanarCurvePair
-//purpose  :
+// function : StepKinematics_PlanarCurvePair
+// purpose  :
 //=======================================================================
-StepKinematics_PlanarCurvePair::StepKinematics_PlanarCurvePair ()
-{
-}
+StepKinematics_PlanarCurvePair::StepKinematics_PlanarCurvePair() {}
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarCurvePair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                           const Handle(StepGeom_Curve)& theCurve1,
-                                           const Handle(StepGeom_Curve)& theCurve2,
-                                           const Standard_Boolean theOrientation)
+void StepKinematics_PlanarCurvePair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Handle(StepGeom_Curve)&                theCurve1,
+  const Handle(StepGeom_Curve)&                theCurve2,
+  const Standard_Boolean                       theOrientation)
 {
   StepKinematics_HighOrderKinematicPair::Init(theRepresentationItem_Name,
                                               theItemDefinedTransformation_Name,
@@ -57,55 +56,55 @@ void StepKinematics_PlanarCurvePair::Init (const Handle(TCollection_HAsciiString
 }
 
 //=======================================================================
-//function : Curve1
-//purpose  :
+// function : Curve1
+// purpose  :
 //=======================================================================
-Handle(StepGeom_Curve) StepKinematics_PlanarCurvePair::Curve1 () const
+Handle(StepGeom_Curve) StepKinematics_PlanarCurvePair::Curve1() const
 {
   return myCurve1;
 }
 
 //=======================================================================
-//function : SetCurve1
-//purpose  :
+// function : SetCurve1
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarCurvePair::SetCurve1 (const Handle(StepGeom_Curve)& theCurve1)
+void StepKinematics_PlanarCurvePair::SetCurve1(const Handle(StepGeom_Curve)& theCurve1)
 {
   myCurve1 = theCurve1;
 }
 
 //=======================================================================
-//function : Curve2
-//purpose  :
+// function : Curve2
+// purpose  :
 //=======================================================================
-Handle(StepGeom_Curve) StepKinematics_PlanarCurvePair::Curve2 () const
+Handle(StepGeom_Curve) StepKinematics_PlanarCurvePair::Curve2() const
 {
   return myCurve2;
 }
 
 //=======================================================================
-//function : SetCurve2
-//purpose  :
+// function : SetCurve2
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarCurvePair::SetCurve2 (const Handle(StepGeom_Curve)& theCurve2)
+void StepKinematics_PlanarCurvePair::SetCurve2(const Handle(StepGeom_Curve)& theCurve2)
 {
   myCurve2 = theCurve2;
 }
 
 //=======================================================================
-//function : Orientation
-//purpose  :
+// function : Orientation
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_PlanarCurvePair::Orientation () const
+Standard_Boolean StepKinematics_PlanarCurvePair::Orientation() const
 {
   return myOrientation;
 }
 
 //=======================================================================
-//function : SetOrientation
-//purpose  :
+// function : SetOrientation
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarCurvePair::SetOrientation (const Standard_Boolean theOrientation)
+void StepKinematics_PlanarCurvePair::SetOrientation(const Standard_Boolean theOrientation)
 {
   myOrientation = theOrientation;
 }

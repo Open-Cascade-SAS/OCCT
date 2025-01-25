@@ -23,13 +23,15 @@ class StdLPersistent_Data::Parser
 {
 public:
   //! Start parsing a persistent data.
-  Parser (const TColStd_HArray1OfInteger&           theLabels,
-          const StdLPersistent_HArray1OfPersistent& theAttributes)
-    : myLabelsIter (theLabels)
-    , myAttribIter (theAttributes) {}
+  Parser(const TColStd_HArray1OfInteger&           theLabels,
+         const StdLPersistent_HArray1OfPersistent& theAttributes)
+      : myLabelsIter(theLabels),
+        myAttribIter(theAttributes)
+  {
+  }
 
   //! Fill a transient label with data.
-  void FillLabel (TDF_Label theLabel)
+  void FillLabel(TDF_Label theLabel)
   {
     Standard_Integer i;
 
@@ -44,10 +46,11 @@ public:
       Handle(StdObjMgt_Persistent)& aPAttrib = myAttribIter.ChangeValue();
       myAttribIter.Next();
       // create transient attribute and add it to the label
-      if (aPAttrib) {
-        Handle (TDF_Attribute) anAtt = aPAttrib->CreateAttribute();
+      if (aPAttrib)
+      {
+        Handle(TDF_Attribute) anAtt = aPAttrib->CreateAttribute();
         anAtt->SetID();
-        theLabel.AddAttribute (anAtt);
+        theLabel.AddAttribute(anAtt);
       }
     }
 
@@ -63,37 +66,37 @@ public:
       Standard_Integer aSubLabelTag = myLabelsIter.Value();
 
       // create and fill child label
-      TDF_Label aSubLabel = theLabel.FindChild (aSubLabelTag, Standard_True);
-      FillLabel (aSubLabel);
+      TDF_Label aSubLabel = theLabel.FindChild(aSubLabelTag, Standard_True);
+      FillLabel(aSubLabel);
     }
   }
 
 private:
-  TColStd_HArray1OfInteger          ::Iterator myLabelsIter;
+  TColStd_HArray1OfInteger ::Iterator          myLabelsIter;
   StdLPersistent_HArray1OfPersistent::Iterator myAttribIter;
 };
 
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdLPersistent_Data::Read (StdObjMgt_ReadData& theReadData)
+void StdLPersistent_Data::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myVersion >> myLabels >> myAttributes;
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdLPersistent_Data::Write (StdObjMgt_WriteData& theWriteData) const
+void StdLPersistent_Data::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myVersion << myLabels << myAttributes;
 }
 
 //=======================================================================
-//function : Import
-//purpose  : Import transient data from the persistent data
+// function : Import
+// purpose  : Import transient data from the persistent data
 //=======================================================================
 Handle(TDF_Data) StdLPersistent_Data::Import() const
 {
@@ -102,10 +105,10 @@ Handle(TDF_Data) StdLPersistent_Data::Import() const
 
   // Create tree of labels and add empty transient attributes to them
   Handle(TDF_Data) aData = new TDF_Data;
-  Parser (*myLabels->Array(), *myAttributes->Array()).FillLabel (aData->Root());
+  Parser(*myLabels->Array(), *myAttributes->Array()).FillLabel(aData->Root());
 
   // Import transient attributes from persistent data
-  StdLPersistent_HArray1OfPersistent::Iterator anAttribIter (*myAttributes->Array());
+  StdLPersistent_HArray1OfPersistent::Iterator anAttribIter(*myAttributes->Array());
   for (; anAttribIter.More(); anAttribIter.Next())
   {
     Handle(StdObjMgt_Persistent)& aPAttrib = anAttribIter.ChangeValue();

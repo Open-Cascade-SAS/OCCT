@@ -21,9 +21,9 @@
 #include <TObj_LabelIterator.hxx>
 
 /**
-* This class provides an iterator by objects in a partition.
-* (implements TObj_ObjectIterator interface)
-*/
+ * This class provides an iterator by objects in a partition.
+ * (implements TObj_ObjectIterator interface)
+ */
 
 class TObj_OcafObjectIterator : public TObj_LabelIterator
 {
@@ -32,12 +32,13 @@ public:
   //! @param theLabel start label for searching
   //! @param theType type of the found objects, or all types if Null
   //! @param theRecursive search children recursively, not only on sub-labels of theLabel
-  //! @param theAllSubChildren do not stop at the first level of children, but search for sub-children too
-  Standard_EXPORT TObj_OcafObjectIterator
-                         (const TDF_Label&             theLabel,
-                          const Handle(Standard_Type)& theType = NULL,
-                          const Standard_Boolean       theRecursive = Standard_False,
-                          const Standard_Boolean       theAllSubChildren = Standard_False);
+  //! @param theAllSubChildren do not stop at the first level of children, but search for
+  //! sub-children too
+  Standard_EXPORT TObj_OcafObjectIterator(
+    const TDF_Label&             theLabel,
+    const Handle(Standard_Type)& theType           = NULL,
+    const Standard_Boolean       theRecursive      = Standard_False,
+    const Standard_Boolean       theAllSubChildren = Standard_False);
 
 protected:
   //! Shift iterator to the next object
@@ -45,17 +46,17 @@ protected:
 
 protected:
   Handle(Standard_Type) myType; //!< type of objects to iterate on
-// clang-format off
+  // clang-format off
   Standard_Boolean myAllSubChildren; //!< to iterate all sub-children, do not stop on the first level
-// clang-format on
-  
+  // clang-format on
+
 public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_OcafObjectIterator,TObj_LabelIterator)
+  DEFINE_STANDARD_RTTIEXT(TObj_OcafObjectIterator, TObj_LabelIterator)
 };
 
 //! Define handle class for TObj_OcafObjectIterator
-DEFINE_STANDARD_HANDLE(TObj_OcafObjectIterator,TObj_LabelIterator)
+DEFINE_STANDARD_HANDLE(TObj_OcafObjectIterator, TObj_LabelIterator)
 
 #endif
 

@@ -11,71 +11,69 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Cube.hxx>
 
 Vrml_Cube::Vrml_Cube(const Standard_Real aWidth,
-		     const Standard_Real aHeight,
-		     const Standard_Real aDepth)
+                     const Standard_Real aHeight,
+                     const Standard_Real aDepth)
 {
-    myWidth = aWidth;
-    myHeight = aHeight;
-    myDepth = aDepth;
+  myWidth  = aWidth;
+  myHeight = aHeight;
+  myDepth  = aDepth;
 }
 
- void Vrml_Cube::SetWidth(const Standard_Real aWidth) 
+void Vrml_Cube::SetWidth(const Standard_Real aWidth)
 {
-    myWidth = aWidth;
+  myWidth = aWidth;
 }
 
- Standard_Real Vrml_Cube::Width() const
+Standard_Real Vrml_Cube::Width() const
 {
   return myWidth;
 }
 
- void Vrml_Cube::SetHeight(const Standard_Real aHeight) 
+void Vrml_Cube::SetHeight(const Standard_Real aHeight)
 {
-    myHeight = aHeight;
+  myHeight = aHeight;
 }
 
- Standard_Real Vrml_Cube::Height() const
+Standard_Real Vrml_Cube::Height() const
 {
   return myHeight;
 }
 
- void Vrml_Cube::SetDepth(const Standard_Real aDepth) 
+void Vrml_Cube::SetDepth(const Standard_Real aDepth)
 {
-    myDepth = aDepth;
+  myDepth = aDepth;
 }
 
- Standard_Real Vrml_Cube::Depth() const
+Standard_Real Vrml_Cube::Depth() const
 {
   return myDepth;
 }
 
- Standard_OStream& Vrml_Cube::Print(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Cube::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Cube {\n";
+  anOStream << "Cube {\n";
 
- if ( Abs(myWidth - 2) > 0.0001 )
-   {
-    anOStream  << "    width\t";
+  if (Abs(myWidth - 2) > 0.0001)
+  {
+    anOStream << "    width\t";
     anOStream << myWidth << "\n";
-   }
+  }
 
- if ( Abs(myHeight - 2) > 0.0001 )
-   {
-    anOStream  << "    height\t";
+  if (Abs(myHeight - 2) > 0.0001)
+  {
+    anOStream << "    height\t";
     anOStream << myHeight << "\n";
-   }
+  }
 
- if ( Abs(myDepth - 2) > 0.0001 )
-   {
-    anOStream  << "    depth\t";
+  if (Abs(myDepth - 2) > 0.0001)
+  {
+    anOStream << "    depth\t";
     anOStream << myDepth << "\n";
-   }
+  }
 
- anOStream  << "}\n";
- return anOStream;
-
+  anOStream << "}\n";
+  return anOStream;
 }

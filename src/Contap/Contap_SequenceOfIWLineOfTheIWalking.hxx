@@ -20,6 +20,7 @@
 #include <Contap_TheIWLineOfTheIWalking.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(Contap_TheIWLineOfTheIWalking)> Contap_SequenceOfIWLineOfTheIWalking;
+typedef NCollection_Sequence<Handle(Contap_TheIWLineOfTheIWalking)>
+  Contap_SequenceOfIWLineOfTheIWalking;
 
 #endif // _Contap_SequenceOfIWLineOfTheIWalking_HeaderFile

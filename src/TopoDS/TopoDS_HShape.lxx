@@ -15,29 +15,25 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : TopoDS_HShape
-//purpose  : 
+// function : TopoDS_HShape
+// purpose  :
 //=======================================================================
 
-inline TopoDS_HShape::TopoDS_HShape()
-{
-}
-
+inline TopoDS_HShape::TopoDS_HShape() {}
 
 //=======================================================================
-//function : TopoDS_HShape
-//purpose  : 
+// function : TopoDS_HShape
+// purpose  :
 //=======================================================================
 
 inline TopoDS_HShape::TopoDS_HShape(const TopoDS_Shape& aShape)
- : myShape(aShape)
+    : myShape(aShape)
 {
 }
 
-
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline void TopoDS_HShape::Shape(const TopoDS_Shape& aShape)
@@ -45,10 +41,9 @@ inline void TopoDS_HShape::Shape(const TopoDS_Shape& aShape)
   myShape = aShape;
 }
 
-
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& TopoDS_HShape::Shape() const
@@ -56,10 +51,9 @@ inline const TopoDS_Shape& TopoDS_HShape::Shape() const
   return myShape;
 }
 
-
 //=======================================================================
-//function : ChangeShape
-//purpose  : 
+// function : ChangeShape
+// purpose  :
 //=======================================================================
 
 inline TopoDS_Shape& TopoDS_HShape::ChangeShape()

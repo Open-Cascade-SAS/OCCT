@@ -17,54 +17,59 @@
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
-inline Standard_Real Plate_Plate::Polm(const gp_XY& point2d, const Standard_Integer iu, const Standard_Integer iv,
-					const Standard_Integer idu, const Standard_Integer idv) const 
+inline Standard_Real Plate_Plate::Polm(const gp_XY&           point2d,
+                                       const Standard_Integer iu,
+                                       const Standard_Integer iv,
+                                       const Standard_Integer idu,
+                                       const Standard_Integer idv) const
 {
-  if(idu>iu) return 0;
-  if(idv>iv) return 0;
+  if (idu > iu)
+    return 0;
+  if (idv > iv)
+    return 0;
   Standard_Real u = point2d.X();
   Standard_Real v = point2d.Y();
 
   Standard_Real value = 1;
 
   Standard_Integer degu = iu - idu;
-  Standard_Integer i ;
-  for( i=0;i<degu;i++) value *= u;
-  for(i=iu;i>degu;i--) value *= i;
-    
-  
-  Standard_Integer degv = iv - idv;
-  for(i=0;i<degv;i++) value *= v;
-  for(i=iv;i>degv;i--) value *= i;
+  Standard_Integer i;
+  for (i = 0; i < degu; i++)
+    value *= u;
+  for (i = iu; i > degu; i--)
+    value *= i;
 
+  Standard_Integer degv = iv - idv;
+  for (i = 0; i < degv; i++)
+    value *= v;
+  for (i = iv; i > degv; i--)
+    value *= i;
 
   // le produit par ddu[iu]*ddv[iv] n'est pas indispensable !! (il change
   // les valeurs claculles pour la partie coef polynomiaux de Sol
-  // de telle facon que les methodes Evaluate et EvaluateDerivative donnent 
-  //en theorie les memes valeurs. Toutefois, il nous semble que ce produit
+  // de telle facon que les methodes Evaluate et EvaluateDerivative donnent
+  // en theorie les memes valeurs. Toutefois, il nous semble que ce produit
   // ameliore le conditionnmenet de la matrice
-  return value*ddu[iu]*ddv[iv];
-  //return value; 
+  return value * ddu[iu] * ddv[iv];
+  // return value;
 }
 
- inline Standard_Integer& Plate_Plate::Deru(const Standard_Integer index) const 
+inline Standard_Integer& Plate_Plate::Deru(const Standard_Integer index) const
 {
-  return ((Standard_Integer *)deru)[index];
+  return ((Standard_Integer*)deru)[index];
 }
 
- inline Standard_Integer& Plate_Plate::Derv(const Standard_Integer index) const 
+inline Standard_Integer& Plate_Plate::Derv(const Standard_Integer index) const
 {
-  return ((Standard_Integer *)derv)[index];
+  return ((Standard_Integer*)derv)[index];
 }
 
- inline gp_XYZ& Plate_Plate::Solution(const Standard_Integer index) const 
+inline gp_XYZ& Plate_Plate::Solution(const Standard_Integer index) const
 {
-  return ((gp_XYZ *)solution)[index];
+  return ((gp_XYZ*)solution)[index];
 }
 
- inline gp_XY& Plate_Plate::Points(const Standard_Integer index) const 
+inline gp_XY& Plate_Plate::Points(const Standard_Integer index) const
 {
-  return ((gp_XY *)points)[index];
+  return ((gp_XY*)points)[index];
 }
-
-

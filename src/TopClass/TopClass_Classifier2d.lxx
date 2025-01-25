@@ -17,8 +17,8 @@
 //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627
 
 //=======================================================================
-//function : Parameter
-//purpose  : 
+// function : Parameter
+// purpose  :
 //=======================================================================
 
 inline Standard_Real TopClass_Classifier2d::Parameter() const
@@ -27,8 +27,8 @@ inline Standard_Real TopClass_Classifier2d::Parameter() const
 }
 
 //=======================================================================
-//function : Intersector
-//purpose  : 
+// function : Intersector
+// purpose  :
 //=======================================================================
 
 inline TheIntersector& TopClass_Classifier2d::Intersector()
@@ -37,8 +37,8 @@ inline TheIntersector& TopClass_Classifier2d::Intersector()
 }
 
 //=======================================================================
-//function : ClosestIntersection
-//purpose  : 
+// function : ClosestIntersection
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer TopClass_Classifier2d::ClosestIntersection() const
@@ -47,11 +47,11 @@ inline Standard_Integer TopClass_Classifier2d::ClosestIntersection() const
 }
 
 //=======================================================================
-//function : State
-//purpose  : 
+// function : State
+// purpose  :
 //=======================================================================
 
-inline  TopAbs_State TopClass_Classifier2d::State() const
+inline TopAbs_State TopClass_Classifier2d::State() const
 {
   return myState;
 }
@@ -59,11 +59,11 @@ inline  TopAbs_State TopClass_Classifier2d::State() const
 //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 Begin
 
 //=======================================================================
-//function : IsHeadOrEnd
-//purpose  : 
+// function : IsHeadOrEnd
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean TopClass_Classifier2d::IsHeadOrEnd() const
+inline Standard_Boolean TopClass_Classifier2d::IsHeadOrEnd() const
 {
   return myIsHeadOrEnd;
 }

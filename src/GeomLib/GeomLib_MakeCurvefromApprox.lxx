@@ -15,13 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean GeomLib_MakeCurvefromApprox::IsDone() const 
+inline Standard_Boolean GeomLib_MakeCurvefromApprox::IsDone() const
 {
   return myApprox.IsDone();
 }
-
-

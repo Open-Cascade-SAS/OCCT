@@ -12,25 +12,25 @@
 // commercial license or contractual agreement.
 
 inline Extrema_POnSurfParams::Extrema_POnSurfParams()
-: mySqrDistance (0.),
-  myElementType (Extrema_Node),
-  myIndexU      (0),
-  myIndexV      (0)
+    : mySqrDistance(0.),
+      myElementType(Extrema_Node),
+      myIndexU(0),
+      myIndexV(0)
 {
 }
 
-inline Extrema_POnSurfParams::Extrema_POnSurfParams
-   (const Standard_Real theU, const Standard_Real theV, const gp_Pnt &thePnt)
-: Extrema_POnSurf (theU, theV, thePnt),
-  mySqrDistance   (0.),
-  myElementType   (Extrema_Node),
-  myIndexU        (0),
-  myIndexV        (0)
+inline Extrema_POnSurfParams::Extrema_POnSurfParams(const Standard_Real theU,
+                                                    const Standard_Real theV,
+                                                    const gp_Pnt&       thePnt)
+    : Extrema_POnSurf(theU, theV, thePnt),
+      mySqrDistance(0.),
+      myElementType(Extrema_Node),
+      myIndexU(0),
+      myIndexV(0)
 {
 }
 
-inline void Extrema_POnSurfParams::SetSqrDistance
-        (const Standard_Real theSqrDistance)
+inline void Extrema_POnSurfParams::SetSqrDistance(const Standard_Real theSqrDistance)
 {
   mySqrDistance = theSqrDistance;
 }
@@ -40,8 +40,7 @@ inline Standard_Real Extrema_POnSurfParams::GetSqrDistance() const
   return mySqrDistance;
 }
 
-inline void Extrema_POnSurfParams::SetElementType
-        (const Extrema_ElementType theElementType)
+inline void Extrema_POnSurfParams::SetElementType(const Extrema_ElementType theElementType)
 {
   myElementType = theElementType;
 }
@@ -50,18 +49,16 @@ inline Extrema_ElementType Extrema_POnSurfParams::GetElementType() const
 {
   return myElementType;
 }
-    
-inline void Extrema_POnSurfParams::SetIndices
-                          (const Standard_Integer theIndexU,
-                           const Standard_Integer theIndexV)
+
+inline void Extrema_POnSurfParams::SetIndices(const Standard_Integer theIndexU,
+                                              const Standard_Integer theIndexV)
 {
   myIndexU = theIndexU;
   myIndexV = theIndexV;
-}                          
+}
 
-inline void Extrema_POnSurfParams::GetIndices
-                  (Standard_Integer &theIndexU,
-                   Standard_Integer &theIndexV) const
+inline void Extrema_POnSurfParams::GetIndices(Standard_Integer& theIndexU,
+                                              Standard_Integer& theIndexV) const
 {
   theIndexU = myIndexU;
   theIndexV = myIndexV;

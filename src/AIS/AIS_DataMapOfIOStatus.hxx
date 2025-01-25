@@ -21,8 +21,9 @@
 #include <AIS_GlobalStatus.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus)> AIS_DataMapOfIOStatus;
-typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus)>::Iterator AIS_DataMapIteratorOfDataMapOfIOStatus;
-
+typedef NCollection_DataMap<Handle(AIS_InteractiveObject), Handle(AIS_GlobalStatus)>
+  AIS_DataMapOfIOStatus;
+typedef NCollection_DataMap<Handle(AIS_InteractiveObject), Handle(AIS_GlobalStatus)>::Iterator
+  AIS_DataMapIteratorOfDataMapOfIOStatus;
 
 #endif

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Standard_Persistent)> Storage_PArray;
 
-
 #endif

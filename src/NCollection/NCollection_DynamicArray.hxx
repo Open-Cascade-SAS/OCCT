@@ -59,144 +59,115 @@ public:
   //! Memory allocation
   DEFINE_STANDARD_ALLOC;
   DEFINE_NCOLLECTION_ALLOC;
+
 public:
   typedef NCollection_OccAllocator<TheItemType> allocator_type;
-  typedef NCollection_BasePointerVector vector;
-public:
+  typedef NCollection_BasePointerVector         vector;
 
+public:
   // Define various type aliases for convenience
-  using value_type = TheItemType;
-  using size_type = size_t;
+  using value_type      = TheItemType;
+  using size_type       = size_t;
   using difference_type = size_t;
-  using pointer = TheItemType*;
-  using const_pointer = TheItemType&;
-  using reference = TheItemType&;
+  using pointer         = TheItemType*;
+  using const_pointer   = TheItemType&;
+  using reference       = TheItemType&;
   using const_reference = const TheItemType&;
 
 public:
-
-  using iterator = NCollection_IndexedIterator<std::random_access_iterator_tag, NCollection_DynamicArray, value_type, false>;
-  using const_iterator = NCollection_IndexedIterator<std::random_access_iterator_tag, NCollection_DynamicArray, value_type, true>;
-  using Iterator = NCollection_Iterator<NCollection_DynamicArray<TheItemType>>;
+  using iterator       = NCollection_IndexedIterator<std::random_access_iterator_tag,
+                                                     NCollection_DynamicArray,
+                                                     value_type,
+                                                     false>;
+  using const_iterator = NCollection_IndexedIterator<std::random_access_iterator_tag,
+                                                     NCollection_DynamicArray,
+                                                     value_type,
+                                                     true>;
+  using Iterator       = NCollection_Iterator<NCollection_DynamicArray<TheItemType>>;
 
 public:
+  const_iterator begin() const { return const_iterator(*this); }
 
-  const_iterator begin() const
-  {
-    return const_iterator(*this);
-  }
+  iterator begin() { return iterator(*this); }
 
-  iterator begin()
-  {
-    return iterator(*this);
-  }
+  const_iterator cbegin() const { return const_iterator(*this); }
 
-  const_iterator cbegin() const
-  {
-    return const_iterator(*this);
-  }
+  iterator end() { return iterator(myUsedSize, *this); }
 
-  iterator end()
-  {
-    return iterator(myUsedSize, *this);
-  }
+  const_iterator end() const { return const_iterator(myUsedSize, *this); }
 
-  const_iterator end() const
-  {
-    return const_iterator(myUsedSize, *this);
-  }
-
-  const_iterator cend() const
-  {
-    return const_iterator(myUsedSize, *this);
-  }
+  const_iterator cend() const { return const_iterator(myUsedSize, *this); }
 
 public: //! @name public methods
+  NCollection_DynamicArray(const Standard_Integer theIncrement = 256)
+      : myContainer(),
+        myAlloc(),
+        myInternalSize(theIncrement),
+        myUsedSize(0)
+  {
+  }
 
-  NCollection_DynamicArray(const Standard_Integer theIncrement = 256) :
-    myContainer(),
-    myAlloc(),
-    myInternalSize(theIncrement),
-    myUsedSize(0)
-  {}
+  // Constructor taking an allocator
+  explicit NCollection_DynamicArray(const Standard_Integer                   theIncrement,
+                                    const Handle(NCollection_BaseAllocator)& theAllocator)
+      : myContainer(),
+        myAlloc(allocator_type(theAllocator)),
+        myInternalSize(theIncrement),
+        myUsedSize(0)
+  {
+  }
 
   // Constructor taking an allocator
   explicit NCollection_DynamicArray(const Standard_Integer theIncrement,
-                                    const Handle(NCollection_BaseAllocator)& theAllocator) :
-    myContainer(),
-    myAlloc(allocator_type(theAllocator)),
-    myInternalSize(theIncrement),
-    myUsedSize(0)
-  {}
-
-  // Constructor taking an allocator
-  explicit NCollection_DynamicArray(const Standard_Integer theIncrement,
-                                    const allocator_type& theAllocator) :
-    myContainer(),
-    myAlloc(theAllocator),
-    myInternalSize(theIncrement),
-    myUsedSize(0)
-  {}
+                                    const allocator_type&  theAllocator)
+      : myContainer(),
+        myAlloc(theAllocator),
+        myInternalSize(theIncrement),
+        myUsedSize(0)
+  {
+  }
 
   //! Copy constructor
-  NCollection_DynamicArray(const NCollection_DynamicArray& theOther) :
-    myContainer(theOther.myContainer),
-    myAlloc(theOther.myAlloc),
-    myInternalSize(theOther.myInternalSize),
-    myUsedSize(theOther.myUsedSize)
+  NCollection_DynamicArray(const NCollection_DynamicArray& theOther)
+      : myContainer(theOther.myContainer),
+        myAlloc(theOther.myAlloc),
+        myInternalSize(theOther.myInternalSize),
+        myUsedSize(theOther.myUsedSize)
   {
     copyDate();
   }
 
-  NCollection_DynamicArray(NCollection_DynamicArray&& theOther) noexcept :
-    myContainer(std::move(theOther.myContainer)),
-    myAlloc(theOther.myAlloc),
-    myInternalSize(theOther.myInternalSize),
-    myUsedSize(theOther.myUsedSize)
+  NCollection_DynamicArray(NCollection_DynamicArray&& theOther) noexcept
+      : myContainer(std::move(theOther.myContainer)),
+        myAlloc(theOther.myAlloc),
+        myInternalSize(theOther.myInternalSize),
+        myUsedSize(theOther.myUsedSize)
   {
     theOther.myUsedSize = 0;
   }
 
-  ~NCollection_DynamicArray()
-  {
-    Clear(true);
-  }
+  ~NCollection_DynamicArray() { Clear(true); }
 
   //! Total number of items
-  Standard_Integer Length() const
-  {
-    return static_cast<int>(myUsedSize);
-  }
+  Standard_Integer Length() const { return static_cast<int>(myUsedSize); }
 
   //! Total number of items in the vector
-  Standard_Integer Size() const
-  {
-    return Length();
-  }
+  Standard_Integer Size() const { return Length(); }
 
   //! Method for consistency with other collections.
   //! @return Lower bound (inclusive) for iteration.
-  Standard_Integer Lower() const
-  {
-    return 0;
-  }
+  Standard_Integer Lower() const { return 0; }
 
   //! Method for consistency with other collections.
   //! @return Upper bound (inclusive) for iteration.
-  Standard_Integer Upper() const
-  {
-    return Length() - 1;
-  }
+  Standard_Integer Upper() const { return Length() - 1; }
 
   //! Empty query
-  Standard_Boolean IsEmpty() const
-  {
-    return myUsedSize == 0;
-  }
+  Standard_Boolean IsEmpty() const { return myUsedSize == 0; }
 
   //! Assignment to the collection of the same type
   NCollection_DynamicArray& Assign(const NCollection_DynamicArray& theOther,
-                                   const bool theOwnAllocator = true)
+                                   const bool                      theOwnAllocator = true)
   {
     if (&theOther == this)
     {
@@ -211,9 +182,9 @@ public: //! @name public methods
     {
       Clear(false);
     }
-    myContainer = theOther.myContainer;
+    myContainer    = theOther.myContainer;
     myInternalSize = theOther.myInternalSize;
-    myUsedSize = theOther.myUsedSize;
+    myUsedSize     = theOther.myUsedSize;
     copyDate();
     return *this;
   }
@@ -225,22 +196,22 @@ public: //! @name public methods
       return *this;
     }
     Clear(true);
-    myContainer = std::move(theOther.myContainer);
-    myAlloc = theOther.myAlloc;
-    myInternalSize = theOther.myInternalSize;
-    myUsedSize = theOther.myUsedSize;
+    myContainer         = std::move(theOther.myContainer);
+    myAlloc             = theOther.myAlloc;
+    myInternalSize      = theOther.myInternalSize;
+    myUsedSize          = theOther.myUsedSize;
     theOther.myUsedSize = 0;
     return *this;
   }
 
   //! Assignment operator
-  NCollection_DynamicArray& operator= (const NCollection_DynamicArray& theOther)
+  NCollection_DynamicArray& operator=(const NCollection_DynamicArray& theOther)
   {
     return Assign(theOther, false);
   }
 
   //! Assignment operator
-  NCollection_DynamicArray& operator= (NCollection_DynamicArray&& theOther) noexcept
+  NCollection_DynamicArray& operator=(NCollection_DynamicArray&& theOther) noexcept
   {
     return Assign(std::forward<NCollection_DynamicArray>(theOther));
   }
@@ -293,22 +264,13 @@ public: //! @name public methods
   }
 
   //! Operator() - query the const value
-  const_reference operator() (const Standard_Integer theIndex) const
-  {
-    return Value(theIndex);
-  }
+  const_reference operator()(const Standard_Integer theIndex) const { return Value(theIndex); }
 
   //! Operator[] - query the const value
-  const_reference operator[] (const Standard_Integer theIndex) const
-  {
-    return Value(theIndex);
-  }
+  const_reference operator[](const Standard_Integer theIndex) const { return Value(theIndex); }
 
   //! Operator[] - query the const value
-  const_reference operator[] (const size_t theIndex) const
-  {
-    return at(theIndex);
-  }
+  const_reference operator[](const size_t theIndex) const { return at(theIndex); }
 
   const_reference Value(const Standard_Integer theIndex) const
   {
@@ -316,58 +278,33 @@ public: //! @name public methods
   }
 
   //! @return first element
-  const_reference First() const
-  {
-    return getArray()[0][0];
-  }
+  const_reference First() const { return getArray()[0][0]; }
 
   //! @return first element
-  reference ChangeFirst()
-  {
-    return getArray()[0][0];
-  }
+  reference ChangeFirst() { return getArray()[0][0]; }
 
   //! @return last element
-  const_reference Last() const
-  {
-    return at(myUsedSize - 1);
-  }
+  const_reference Last() const { return at(myUsedSize - 1); }
 
   //! @return last element
-  reference ChangeLast()
-  {
-    return at(myUsedSize - 1);
-  }
+  reference ChangeLast() { return at(myUsedSize - 1); }
 
   //! Operator() - query the value
-  reference operator() (const Standard_Integer theIndex)
-  {
-    return ChangeValue(theIndex);
-  }
+  reference operator()(const Standard_Integer theIndex) { return ChangeValue(theIndex); }
 
   //! Operator[] - query the value
-  reference operator[] (const Standard_Integer theIndex)
-  {
-    return ChangeValue(theIndex);
-  }
+  reference operator[](const Standard_Integer theIndex) { return ChangeValue(theIndex); }
 
   //! Operator[] - query the value
-  reference operator[] (const size_t theIndex)
-  {
-    return at(theIndex);
-  }
+  reference operator[](const size_t theIndex) { return at(theIndex); }
 
-  reference ChangeValue(const Standard_Integer theIndex)
-  {
-    return at(static_cast<int>(theIndex));
-  }
+  reference ChangeValue(const Standard_Integer theIndex) { return at(static_cast<int>(theIndex)); }
 
   //! SetValue () - set or append a value
-  reference SetValue(const Standard_Integer theIndex,
-                     const TheItemType& theValue)
+  reference SetValue(const Standard_Integer theIndex, const TheItemType& theValue)
   {
     const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
-    const size_t anIndex = static_cast<size_t>(theIndex);
+    const size_t anIndex   = static_cast<size_t>(theIndex);
     for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
     {
       expandArray();
@@ -387,11 +324,10 @@ public: //! @name public methods
   }
 
   //! SetValue () - set or append a value
-  reference SetValue(const Standard_Integer theIndex,
-                     TheItemType&& theValue)
+  reference SetValue(const Standard_Integer theIndex, TheItemType&& theValue)
   {
     const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
-    const size_t anIndex = static_cast<size_t>(theIndex);
+    const size_t anIndex   = static_cast<size_t>(theIndex);
     for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
     {
       expandArray();
@@ -416,7 +352,8 @@ public: //! @name public methods
     for (size_t aBlockInd = 0; aBlockInd < myContainer.Size(); aBlockInd++)
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize; anElemInd++, aUsedSize++)
+      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
+           anElemInd++, aUsedSize++)
       {
         aCurStart[anElemInd].~TheItemType();
       }
@@ -441,11 +378,7 @@ public: //! @name public methods
   friend const_iterator;
 
 protected:
-
-  size_t availableSize() const
-  {
-    return myContainer.Size() * myInternalSize;
-  }
+  size_t availableSize() const { return myContainer.Size() * myInternalSize; }
 
   TheItemType* expandArray()
   {
@@ -471,7 +404,8 @@ protected:
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
       TheItemType* aNewBlock = myAlloc.allocate(myInternalSize);
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize; anElemInd++, aUsedSize++)
+      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
+           anElemInd++, aUsedSize++)
       {
         pointer aPnt = &aNewBlock[anElemInd];
         myAlloc.construct(aPnt, aCurStart[anElemInd]);
@@ -481,14 +415,13 @@ protected:
   }
 
   //! Wrapper to extract array
-  TheItemType** getArray() const { return (TheItemType**) myContainer.GetArray(); }
+  TheItemType** getArray() const { return (TheItemType**)myContainer.GetArray(); }
 
 protected:
-
-  vector myContainer;
+  vector         myContainer;
   allocator_type myAlloc;
-  size_t myInternalSize;
-  size_t myUsedSize;
+  size_t         myInternalSize;
+  size_t         myUsedSize;
 };
 
 #endif // NCollection_DynamicArray_HeaderFile

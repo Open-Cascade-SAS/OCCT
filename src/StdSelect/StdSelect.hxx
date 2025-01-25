@@ -40,16 +40,15 @@
 //!
 //! -  Implementation of dedicated Sensitives Entities:
 //! Text for 2D Views (linked to Specific 2D projectors.)
-class StdSelect 
+class StdSelect
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! puts The same drawer in every BRepOwner Of SensitivePrimitive
   //! Used Only for hilight Of BRepOwner...
-  Standard_EXPORT static void SetDrawerForBRepOwner (const Handle(SelectMgr_Selection)& aSelection, const Handle(Prs3d_Drawer)& aDrawer);
-
+  Standard_EXPORT static void SetDrawerForBRepOwner(const Handle(SelectMgr_Selection)& aSelection,
+                                                    const Handle(Prs3d_Drawer)&        aDrawer);
 };
 
 #endif // _StdSelect_HeaderFile

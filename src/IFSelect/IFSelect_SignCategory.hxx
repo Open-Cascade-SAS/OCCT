@@ -23,7 +23,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class IFSelect_SignCategory;
 DEFINE_STANDARD_HANDLE(IFSelect_SignCategory, IFSelect_Signature)
 
@@ -33,36 +32,19 @@ class IFSelect_SignCategory : public IFSelect_Signature
 {
 
 public:
-
-  
   //! Returns a SignCategory
   Standard_EXPORT IFSelect_SignCategory();
-  
+
   //! Returns the Signature for a Transient object, as its Category
   //! recorded in the model
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SignCategory,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignCategory, IFSelect_Signature)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SignCategory_HeaderFile

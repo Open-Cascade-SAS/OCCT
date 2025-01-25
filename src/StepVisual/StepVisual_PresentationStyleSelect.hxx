@@ -29,18 +29,14 @@ class StepVisual_CurveStyle;
 class StepVisual_NullStyleMember;
 class StepVisual_SurfaceStyleUsage;
 
-
-
-class StepVisual_PresentationStyleSelect  : public StepData_SelectType
+class StepVisual_PresentationStyleSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a PresentationStyleSelect SelectType
   Standard_EXPORT StepVisual_PresentationStyleSelect();
-  
+
   //! Recognizes a PresentationStyleSelect Kind Entity that is :
   //! 1 -> PointStyle
   //! 2 -> CurveStyle
@@ -50,41 +46,22 @@ public:
   //! 6 -> TextStyle
   //! 7 -> NullStyle
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a PointStyle (Null if another type)
   Standard_EXPORT Handle(StepVisual_PointStyle) PointStyle() const;
-  
+
   //! returns Value as a CurveStyle (Null if another type)
   Standard_EXPORT Handle(StepVisual_CurveStyle) CurveStyle() const;
 
   //! returns Value as a NullStyleMember (Null if another type)
   Standard_EXPORT Handle(StepVisual_NullStyleMember) NullStyle() const;
-  
+
   //! returns Value as a SurfaceStyleUsage (Null if another type)
   Standard_EXPORT Handle(StepVisual_SurfaceStyleUsage) SurfaceStyleUsage() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationStyleSelect_HeaderFile

@@ -16,7 +16,7 @@
 //      	-------------------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb 16 1998	Creation
 
 #ifndef TDF_AttributeIterator_HeaderFile
@@ -40,61 +40,56 @@
 // option is set. To use this possibility, look at
 // the constructor.
 
-class TDF_AttributeIterator  {
+class TDF_AttributeIterator
+{
 
 public:
-
   // Methods PUBLIC
-  // 
-  Standard_EXPORT TDF_AttributeIterator();
-  Standard_EXPORT TDF_AttributeIterator
-    (const TDF_Label& aLabel,
-     const Standard_Boolean withoutForgotten = Standard_True);
-  Standard_EXPORT TDF_AttributeIterator
-    (const TDF_LabelNodePtr aLabelNode,
-     const Standard_Boolean withoutForgotten = Standard_True);
-  Standard_EXPORT   void Initialize
-    (const TDF_Label& aLabel,
-     const Standard_Boolean withoutForgotten = Standard_True) ;
-  inline   Standard_Boolean More() const;
-  Standard_EXPORT   void Next() ;
-  inline   Handle(TDF_Attribute) Value() const;
+  //
+  Standard_EXPORT              TDF_AttributeIterator();
+  Standard_EXPORT              TDF_AttributeIterator(const TDF_Label&       aLabel,
+                                                     const Standard_Boolean withoutForgotten = Standard_True);
+  Standard_EXPORT              TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
+                                                     const Standard_Boolean withoutForgotten = Standard_True);
+  Standard_EXPORT void         Initialize(const TDF_Label&       aLabel,
+                                          const Standard_Boolean withoutForgotten = Standard_True);
+  inline Standard_Boolean      More() const;
+  Standard_EXPORT void         Next();
+  inline Handle(TDF_Attribute) Value() const;
 
   //! Provides an access to the internal pointer of the current attribute.
   //! The method has better performance as not-creating handle.
   inline const TDF_Attribute* PtrValue() const { return myValue; }
 
 protected:
+  // Methods PROTECTED
+  //
 
- // Methods PROTECTED
- // 
+  // Fields PROTECTED
+  //
 
+private:
+  // Methods PRIVATE
+  //
+  void goToNext(const Handle(TDF_Attribute)& anAttr);
 
- // Fields PROTECTED
- //
-
-
-private: 
-
- // Methods PRIVATE
- // 
-  void goToNext (const Handle(TDF_Attribute)& anAttr);
-
-
- // Fields PRIVATE
- //
-  TDF_Attribute    * myValue;
+  // Fields PRIVATE
+  //
+  TDF_Attribute*   myValue;
   Standard_Boolean myWithoutForgotten;
 };
-
 
 // other inline functions and methods (like "C++: function call" methods)
 //
 
 inline Standard_Boolean TDF_AttributeIterator::More() const
-{ return (myValue != 0L); }
+{
+  return (myValue != 0L);
+}
 
 inline Handle(TDF_Attribute) TDF_AttributeIterator::Value() const
-{ return myValue; }
+{
+  return myValue;
+}
 
 #endif

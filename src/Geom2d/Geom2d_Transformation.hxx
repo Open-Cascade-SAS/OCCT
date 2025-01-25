@@ -28,10 +28,8 @@ class gp_Pnt2d;
 class gp_Ax2d;
 class gp_Vec2d;
 
-
 class Geom2d_Transformation;
 DEFINE_STANDARD_HANDLE(Geom2d_Transformation, Standard_Transient)
-
 
 //! The class Transformation allows to create Translation,
 //! Rotation, Symmetry, Scaling and complex transformations
@@ -69,82 +67,71 @@ class Geom2d_Transformation : public Standard_Transient
 {
 
 public:
-
-  
   //! Creates an identity transformation.
   Standard_EXPORT Geom2d_Transformation();
-  
+
   //! Creates a persistent copy of T.
   Standard_EXPORT Geom2d_Transformation(const gp_Trsf2d& T);
-  
 
   //! Makes the transformation into a symmetrical transformation
   //! with respect to a point P.
   //! P is the center of the symmetry.
-  Standard_EXPORT void SetMirror (const gp_Pnt2d& P);
-  
+  Standard_EXPORT void SetMirror(const gp_Pnt2d& P);
 
   //! Makes the transformation into a symmetrical transformation
   //! with respect to an axis A.
   //! A is the center of the axial symmetry.
-  Standard_EXPORT void SetMirror (const gp_Ax2d& A);
-  
+  Standard_EXPORT void SetMirror(const gp_Ax2d& A);
+
   //! Assigns to this transformation the geometric
   //! properties of a rotation at angle Ang (in radians) about point P.
-  Standard_EXPORT void SetRotation (const gp_Pnt2d& P, const Standard_Real Ang);
-  
+  Standard_EXPORT void SetRotation(const gp_Pnt2d& P, const Standard_Real Ang);
 
   //! Makes the transformation into a scale. P is the center of
   //! the scale and S is the scaling value.
-  Standard_EXPORT void SetScale (const gp_Pnt2d& P, const Standard_Real S);
-  
+  Standard_EXPORT void SetScale(const gp_Pnt2d& P, const Standard_Real S);
 
   //! Makes a transformation allowing passage from the coordinate
   //! system "FromSystem1" to the coordinate system "ToSystem2".
-  Standard_EXPORT void SetTransformation (const gp_Ax2d& FromSystem1, const gp_Ax2d& ToSystem2);
-  
+  Standard_EXPORT void SetTransformation(const gp_Ax2d& FromSystem1, const gp_Ax2d& ToSystem2);
 
   //! Makes the transformation allowing passage from the basic
   //! coordinate system
   //! {P(0.,0.,0.), VX (1.,0.,0.), VY (0.,1.,0.)}
   //! to the local coordinate system defined with the Ax2d ToSystem.
-  Standard_EXPORT void SetTransformation (const gp_Ax2d& ToSystem);
-  
+  Standard_EXPORT void SetTransformation(const gp_Ax2d& ToSystem);
 
   //! Makes the transformation into a translation.
   //! V is the vector of the translation.
-  Standard_EXPORT void SetTranslation (const gp_Vec2d& V);
-  
+  Standard_EXPORT void SetTranslation(const gp_Vec2d& V);
 
   //! Makes the transformation into a translation from the point
   //! P1 to the point P2.
-  Standard_EXPORT void SetTranslation (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
-  
+  Standard_EXPORT void SetTranslation(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
   //! Makes the transformation into a transformation T from
   //! package gp.
-  Standard_EXPORT void SetTrsf2d (const gp_Trsf2d& T);
-  
+  Standard_EXPORT void SetTrsf2d(const gp_Trsf2d& T);
+
   //! Checks whether this transformation is an indirect
   //! transformation: returns true if the determinant of the
   //! matrix of the vectorial part of the transformation is less than 0.
   Standard_EXPORT Standard_Boolean IsNegative() const;
-  
+
   //! Returns the nature of this transformation as a value
   //! of the gp_TrsfForm enumeration.
   //! Returns the nature of the transformation. It can be
   //! Identity, Rotation, Translation, PntMirror, Ax1Mirror,
   //! Scale, CompoundTrsf
   Standard_EXPORT gp_TrsfForm Form() const;
-  
+
   //! Returns the scale value of the transformation.
   Standard_EXPORT Standard_Real ScaleFactor() const;
-  
+
   //! Converts this transformation into a gp_Trsf2d transformation.
   //! Returns a non persistent copy of <me>.
   //! -C++: return const&
   Standard_EXPORT gp_Trsf2d Trsf2d() const;
-  
 
   //! Returns the coefficients of the global matrix of transformation.
   //! It is a 2 rows X 3 columns matrix.
@@ -152,8 +139,8 @@ public:
   //! Raised if  Row < 1 or Row > 2  or  Col < 1 or Col > 2
   //!
   //! Computes the reverse transformation.
-  Standard_EXPORT Standard_Real Value (const Standard_Integer Row, const Standard_Integer Col) const;
-  
+  Standard_EXPORT Standard_Real Value(const Standard_Integer Row, const Standard_Integer Col) const;
+
   //! Computes the inverse of this transformation.
   //! and  assigns the result to this transformatio
   //!
@@ -161,23 +148,23 @@ public:
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
   Standard_EXPORT void Invert();
-  
+
   //! Computes the inverse of this transformation and creates a new one.
   //! Raises ConstructionError  if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from package gp.
   Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Inverted() const;
-  
 
   //! Computes the transformation composed with Other and <me>.
   //! <me> * Other.
   //! Returns a new transformation
-  Standard_NODISCARD Standard_EXPORT
-	Handle(Geom2d_Transformation) Multiplied (const Handle(Geom2d_Transformation)& Other) const;
-Standard_NODISCARD Handle(Geom2d_Transformation) operator * (const Handle(Geom2d_Transformation)& Other) const
-{
-  return Multiplied(Other);
-}
-  
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Multiplied(
+    const Handle(Geom2d_Transformation)& Other) const;
+
+  Standard_NODISCARD Handle(Geom2d_Transformation) operator*(
+    const Handle(Geom2d_Transformation)& Other) const
+  {
+    return Multiplied(Other);
+  }
 
   //! Computes the transformation composed with Other and <me> .
   //! <me> = <me> * Other.
@@ -186,54 +173,31 @@ Standard_NODISCARD Handle(Geom2d_Transformation) operator * (const Handle(Geom2d
   //! if N > 0  <me> * <me> * .......* <me>.
   //! if N = 0  Identity
   //! if N < 0  <me>.Invert() * .........* <me>.Invert()
-  Standard_EXPORT void Multiply (const Handle(Geom2d_Transformation)& Other);
-void operator *= (const Handle(Geom2d_Transformation)& Other)
-{
-  Multiply(Other);
-}
-  
+  Standard_EXPORT void Multiply(const Handle(Geom2d_Transformation)& Other);
+
+  void operator*=(const Handle(Geom2d_Transformation)& Other) { Multiply(Other); }
 
   //! Raised if N < 0 and if the transformation is not inversible
-  Standard_EXPORT void Power (const Standard_Integer N);
-  
+  Standard_EXPORT void Power(const Standard_Integer N);
 
   //! Raised if N < 0 and if the transformation is not inversible
-  Standard_EXPORT Handle(Geom2d_Transformation) Powered (const Standard_Integer N) const;
-  
+  Standard_EXPORT Handle(Geom2d_Transformation) Powered(const Standard_Integer N) const;
 
   //! Computes the matrix of the transformation composed with
   //! <me> and Other.     <me> = Other * <me>
-  Standard_EXPORT void PreMultiply (const Handle(Geom2d_Transformation)& Other);
-  
+  Standard_EXPORT void PreMultiply(const Handle(Geom2d_Transformation)& Other);
 
   //! Applies the transformation <me> to the triplet {X, Y}.
-  Standard_EXPORT void Transforms (Standard_Real& X, Standard_Real& Y) const;
-  
+  Standard_EXPORT void Transforms(Standard_Real& X, Standard_Real& Y) const;
+
   //! Creates a new object, which is a copy of this transformation.
   Standard_EXPORT Handle(Geom2d_Transformation) Copy() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   gp_Trsf2d gpTrsf2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Transformation_HeaderFile

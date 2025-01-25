@@ -20,8 +20,7 @@
 #include <Plate_Plate.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Plate_Plate> NLPlate_StackOfPlate;
+typedef NCollection_List<Plate_Plate>           NLPlate_StackOfPlate;
 typedef NCollection_List<Plate_Plate>::Iterator NLPlate_ListIteratorOfStackOfPlate;
-
 
 #endif

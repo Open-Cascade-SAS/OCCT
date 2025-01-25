@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepTools_CopyModification.hxx>
 
 #include <BRep_Tool.hxx>
@@ -21,19 +20,19 @@
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_CopyModification, BRepTools_Modification)
 
 //=======================================================================
-//function : BRepTools_CopyModification
-//purpose  : 
+// function : BRepTools_CopyModification
+// purpose  :
 //=======================================================================
 BRepTools_CopyModification::BRepTools_CopyModification(const Standard_Boolean copyGeom,
                                                        const Standard_Boolean copyMesh)
-  : myCopyGeom(copyGeom),
-    myCopyMesh(copyMesh)
+    : myCopyGeom(copyGeom),
+      myCopyMesh(copyMesh)
 {
 }
 
 //=======================================================================
-//function : NewSurface
-//purpose  : 
+// function : NewSurface
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewSurface(const TopoDS_Face&    theFace,
                                                         Handle(Geom_Surface)& theSurf,
@@ -42,8 +41,8 @@ Standard_Boolean BRepTools_CopyModification::NewSurface(const TopoDS_Face&    th
                                                         Standard_Boolean&     theRevWires,
                                                         Standard_Boolean&     theRevFace)
 {
-  theSurf = BRep_Tool::Surface(theFace, theLoc);
-  theTol = BRep_Tool::Tolerance(theFace);
+  theSurf     = BRep_Tool::Surface(theFace, theLoc);
+  theTol      = BRep_Tool::Tolerance(theFace);
   theRevWires = theRevFace = Standard_False;
 
   if (!theSurf.IsNull() && myCopyGeom)
@@ -53,8 +52,8 @@ Standard_Boolean BRepTools_CopyModification::NewSurface(const TopoDS_Face&    th
 }
 
 //=======================================================================
-//function : NewTriangulation
-//purpose  : 
+// function : NewTriangulation
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewTriangulation(const TopoDS_Face&          theFace,
                                                               Handle(Poly_Triangulation)& theTri)
@@ -77,8 +76,8 @@ Standard_Boolean BRepTools_CopyModification::NewTriangulation(const TopoDS_Face&
 }
 
 //=======================================================================
-//function : NewCurve
-//purpose  : 
+// function : NewCurve
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewCurve(const TopoDS_Edge&  theEdge,
                                                       Handle(Geom_Curve)& theCurve,
@@ -87,7 +86,7 @@ Standard_Boolean BRepTools_CopyModification::NewCurve(const TopoDS_Edge&  theEdg
 {
   Standard_Real aFirst, aLast;
   theCurve = BRep_Tool::Curve(theEdge, theLoc, aFirst, aLast);
-  theTol = BRep_Tool::Tolerance(theEdge);
+  theTol   = BRep_Tool::Tolerance(theEdge);
 
   if (!theCurve.IsNull() && myCopyGeom)
     theCurve = Handle(Geom_Curve)::DownCast(theCurve->Copy());
@@ -96,8 +95,8 @@ Standard_Boolean BRepTools_CopyModification::NewCurve(const TopoDS_Edge&  theEdg
 }
 
 //=======================================================================
-//function : NewPolygon
-//purpose  : 
+// function : NewPolygon
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewPolygon(const TopoDS_Edge&      theEdge,
                                                         Handle(Poly_Polygon3D)& thePoly)
@@ -120,8 +119,8 @@ Standard_Boolean BRepTools_CopyModification::NewPolygon(const TopoDS_Edge&      
 }
 
 //=======================================================================
-//function : NewPolygonOnTriangulation
-//purpose  : 
+// function : NewPolygonOnTriangulation
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewPolygonOnTriangulation(
   const TopoDS_Edge&                   theEdge,
@@ -133,9 +132,9 @@ Standard_Boolean BRepTools_CopyModification::NewPolygonOnTriangulation(
     return Standard_False;
   }
 
-  TopLoc_Location aLoc;
+  TopLoc_Location            aLoc;
   Handle(Poly_Triangulation) aTria = BRep_Tool::Triangulation(theFace, aLoc);
-  thePoly = BRep_Tool::PolygonOnTriangulation(theEdge, aTria, aLoc);
+  thePoly                          = BRep_Tool::PolygonOnTriangulation(theEdge, aTria, aLoc);
 
   if (thePoly.IsNull())
     return Standard_False;
@@ -147,10 +146,10 @@ Standard_Boolean BRepTools_CopyModification::NewPolygonOnTriangulation(
 }
 
 //=======================================================================
-//function : NewPoint
-//purpose  : 
+// function : NewPoint
+// purpose  :
 //=======================================================================
-Standard_Boolean BRepTools_CopyModification::NewPoint(const TopoDS_Vertex& theVertex, 
+Standard_Boolean BRepTools_CopyModification::NewPoint(const TopoDS_Vertex& theVertex,
                                                       gp_Pnt&              thePnt,
                                                       Standard_Real&       theTol)
 {
@@ -160,11 +159,11 @@ Standard_Boolean BRepTools_CopyModification::NewPoint(const TopoDS_Vertex& theVe
 }
 
 //=======================================================================
-//function : NewCurve2d
-//purpose  : 
+// function : NewCurve2d
+// purpose  :
 //=======================================================================
-Standard_Boolean BRepTools_CopyModification::NewCurve2d(const TopoDS_Edge&    theEdge,
-                                                        const TopoDS_Face&    theFace,
+Standard_Boolean BRepTools_CopyModification::NewCurve2d(const TopoDS_Edge& theEdge,
+                                                        const TopoDS_Face& theFace,
                                                         const TopoDS_Edge&,
                                                         const TopoDS_Face&,
                                                         Handle(Geom2d_Curve)& theCurve,
@@ -181,8 +180,8 @@ Standard_Boolean BRepTools_CopyModification::NewCurve2d(const TopoDS_Edge&    th
 }
 
 //=======================================================================
-//function : NewParameter
-//purpose  : 
+// function : NewParameter
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepTools_CopyModification::NewParameter(const TopoDS_Vertex& theVertex,
                                                           const TopoDS_Edge&   theEdge,
@@ -199,8 +198,8 @@ Standard_Boolean BRepTools_CopyModification::NewParameter(const TopoDS_Vertex& t
 }
 
 //=======================================================================
-//function : Continuity
-//purpose  : 
+// function : Continuity
+// purpose  :
 //=======================================================================
 GeomAbs_Shape BRepTools_CopyModification::Continuity(const TopoDS_Edge& theEdge,
                                                      const TopoDS_Face& theFace1,
@@ -211,5 +210,3 @@ GeomAbs_Shape BRepTools_CopyModification::Continuity(const TopoDS_Edge& theEdge,
 {
   return BRep_Tool::Continuity(theEdge, theFace1, theFace2);
 }
-
-

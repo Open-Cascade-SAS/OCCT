@@ -27,7 +27,6 @@ class IGESDimen_WitnessLine;
 class IGESDimen_LeaderArrow;
 class gp_Pnt2d;
 
-
 class IGESDimen_AngularDimension;
 DEFINE_STANDARD_HANDLE(IGESDimen_AngularDimension, IGESData_IGESEntity)
 
@@ -38,10 +37,8 @@ class IGESDimen_AngularDimension : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_AngularDimension();
-  
+
   //! This method is used to set the fields of the class
   //! AngularDimension
   //! - aNote         : General Note Entity
@@ -53,67 +50,56 @@ public:
   //! - aRadius       : Radius of leader arcs
   //! - aLeader       : First Leader Entity
   //! - anotherLeader : Second Leader Entity
-  Standard_EXPORT void Init (const Handle(IGESDimen_GeneralNote)& aNote, const Handle(IGESDimen_WitnessLine)& aLine, const Handle(IGESDimen_WitnessLine)& anotherLine, const gp_XY& aVertex, const Standard_Real aRadius, const Handle(IGESDimen_LeaderArrow)& aLeader, const Handle(IGESDimen_LeaderArrow)& anotherLeader);
-  
+  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
+                            const Handle(IGESDimen_WitnessLine)& aLine,
+                            const Handle(IGESDimen_WitnessLine)& anotherLine,
+                            const gp_XY&                         aVertex,
+                            const Standard_Real                  aRadius,
+                            const Handle(IGESDimen_LeaderArrow)& aLeader,
+                            const Handle(IGESDimen_LeaderArrow)& anotherLeader);
+
   //! returns the General Note Entity of the Dimension.
   Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
-  
+
   //! returns False if theFirstWitnessLine is Null Handle.
   Standard_EXPORT Standard_Boolean HasFirstWitnessLine() const;
-  
+
   //! returns the First Witness Line Entity or Null Handle.
   Standard_EXPORT Handle(IGESDimen_WitnessLine) FirstWitnessLine() const;
-  
+
   //! returns False if theSecondWitnessLine is Null Handle.
   Standard_EXPORT Standard_Boolean HasSecondWitnessLine() const;
-  
+
   //! returns the Second Witness Line Entity or Null Handle.
   Standard_EXPORT Handle(IGESDimen_WitnessLine) SecondWitnessLine() const;
-  
+
   //! returns the coordinates of the Vertex point as Pnt2d from gp.
   Standard_EXPORT gp_Pnt2d Vertex() const;
-  
+
   //! returns the coordinates of the Vertex point as Pnt2d from gp
   //! after Transformation. (Z = 0.0 for Transformation)
   Standard_EXPORT gp_Pnt2d TransformedVertex() const;
-  
+
   //! returns the Radius of the Leader arcs.
   Standard_EXPORT Standard_Real Radius() const;
-  
+
   //! returns the First Leader Entity.
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) FirstLeader() const;
-  
+
   //! returns the Second Leader Entity.
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_AngularDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_AngularDimension, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDimen_GeneralNote) theNote;
   Handle(IGESDimen_WitnessLine) theFirstWitnessLine;
   Handle(IGESDimen_WitnessLine) theSecondWitnessLine;
-  gp_XY theVertex;
-  Standard_Real theRadius;
+  gp_XY                         theVertex;
+  Standard_Real                 theRadius;
   Handle(IGESDimen_LeaderArrow) theFirstLeader;
   Handle(IGESDimen_LeaderArrow) theSecondLeader;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_AngularDimension_HeaderFile

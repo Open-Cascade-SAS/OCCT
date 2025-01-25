@@ -11,25 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//:pdn 05.01.99: renaming method ...Little to ...Small
+//: pdn 05.01.99: renaming method ...Little to ...Small
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_WireData.hxx>
 
-
 //=======================================================================
-//function : IsLoaded
-//purpose  : 
+// function : IsLoaded
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeAnalysis_Wire::IsLoaded() const
 {
-  return ! myWire.IsNull() && myWire->NbEdges() >0;
+  return !myWire.IsNull() && myWire->NbEdges() > 0;
 }
 
- 
 //=======================================================================
-//function : IsReady
-//purpose  : 
+// function : IsReady
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeAnalysis_Wire::IsReady() const
@@ -37,10 +35,9 @@ inline Standard_Boolean ShapeAnalysis_Wire::IsReady() const
   return IsLoaded() && !myFace.IsNull();
 }
 
- 
 //=======================================================================
-//function : Precision
-//purpose  : 
+// function : Precision
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Wire::Precision() const
@@ -48,10 +45,9 @@ inline Standard_Real ShapeAnalysis_Wire::Precision() const
   return myPrecision;
 }
 
- 
 //=======================================================================
-//function : WireData
-//purpose  : 
+// function : WireData
+// purpose  :
 //=======================================================================
 
 inline const Handle(ShapeExtend_WireData)& ShapeAnalysis_Wire::WireData() const
@@ -59,10 +55,9 @@ inline const Handle(ShapeExtend_WireData)& ShapeAnalysis_Wire::WireData() const
   return myWire;
 }
 
- 
 //=======================================================================
-//function : NbEdges
-//purpose  : 
+// function : NbEdges
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer ShapeAnalysis_Wire::NbEdges() const
@@ -70,10 +65,9 @@ inline Standard_Integer ShapeAnalysis_Wire::NbEdges() const
   return myWire.IsNull() ? 0 : myWire->NbEdges();
 }
 
- 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Face& ShapeAnalysis_Wire::Face() const
@@ -81,10 +75,9 @@ inline const TopoDS_Face& ShapeAnalysis_Wire::Face() const
   return myFace;
 }
 
- 
 //=======================================================================
-//function : Surface
-//purpose  : 
+// function : Surface
+// purpose  :
 //=======================================================================
 
 inline const Handle(ShapeAnalysis_Surface)& ShapeAnalysis_Wire::Surface() const
@@ -92,151 +85,140 @@ inline const Handle(ShapeAnalysis_Surface)& ShapeAnalysis_Wire::Surface() const
   return mySurf;
 }
 
-
 //=======================================================================
-//function : StatusOrder
-//purpose  : 
+// function : StatusOrder
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::StatusOrder (const ShapeExtend_Status Status) const
+inline Standard_Boolean ShapeAnalysis_Wire::StatusOrder(const ShapeExtend_Status Status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusOrder, Status );
-}
-
-
-//=======================================================================
-//function : StatusConnected
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusConnected (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusConnected, Status );
-}
-
-
-//=======================================================================
-//function : StatusEdgeCurves
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusEdgeCurves (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusEdgeCurves, Status );
-}
-
-
-//=======================================================================
-//function : StatusDegenerated
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusDegenerated (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusDegenerated, Status );
-}
-
-
-//=======================================================================
-//function : StatusClosed
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusClosed (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusClosed, Status );
-}
-
-
-//=======================================================================
-//function : StatusSmall
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusSmall (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusSmall, Status );
-}
-
-
-//=======================================================================
-//function : StatusSelfIntersection
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusSelfIntersection (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusSelfIntersection, Status );
-}
-
-
-//=======================================================================
-//function : StatusLacking
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean ShapeAnalysis_Wire::StatusLacking (const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusLacking, Status );
-}
-
-
-//=======================================================================
-//function : StatusGaps3d
-//purpose  : 
-//=======================================================================
-
-inline  Standard_Boolean ShapeAnalysis_Wire::StatusGaps3d(const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusGaps3d, Status );
-}
-
-
-//=======================================================================
-//function : StatusGaps2d
-//purpose  : 
-//=======================================================================
-
-inline  Standard_Boolean ShapeAnalysis_Wire::StatusGaps2d(const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusGaps2d, Status );
-}
-
-
-//=======================================================================
-//function : StatusCurveGaps
-//purpose  : 
-//=======================================================================
-
-inline  Standard_Boolean ShapeAnalysis_Wire::StatusCurveGaps(const ShapeExtend_Status Status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusCurveGaps, Status );
+  return ShapeExtend::DecodeStatus(myStatusOrder, Status);
 }
 
 //=======================================================================
-//function : StatusLoop
-//purpose  : 
+// function : StatusConnected
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean ShapeAnalysis_Wire::StatusLoop(const ShapeExtend_Status Status) const
+inline Standard_Boolean ShapeAnalysis_Wire::StatusConnected(const ShapeExtend_Status Status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusLoop, Status );
+  return ShapeExtend::DecodeStatus(myStatusConnected, Status);
 }
 
 //=======================================================================
-//function : Status
-//purpose  : 
+// function : StatusEdgeCurves
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean ShapeAnalysis_Wire::LastCheckStatus (const ShapeExtend_Status Status) const
+inline Standard_Boolean ShapeAnalysis_Wire::StatusEdgeCurves(const ShapeExtend_Status Status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatus, Status );
+  return ShapeExtend::DecodeStatus(myStatusEdgeCurves, Status);
 }
 
+//=======================================================================
+// function : StatusDegenerated
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusDegenerated(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusDegenerated, Status);
+}
 
 //=======================================================================
-//function : MinDistance3d
-//purpose  : 
+// function : StatusClosed
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusClosed(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusClosed, Status);
+}
+
+//=======================================================================
+// function : StatusSmall
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusSmall(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSmall, Status);
+}
+
+//=======================================================================
+// function : StatusSelfIntersection
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusSelfIntersection(
+  const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSelfIntersection, Status);
+}
+
+//=======================================================================
+// function : StatusLacking
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusLacking(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusLacking, Status);
+}
+
+//=======================================================================
+// function : StatusGaps3d
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusGaps3d(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusGaps3d, Status);
+}
+
+//=======================================================================
+// function : StatusGaps2d
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusGaps2d(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusGaps2d, Status);
+}
+
+//=======================================================================
+// function : StatusCurveGaps
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusCurveGaps(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusCurveGaps, Status);
+}
+
+//=======================================================================
+// function : StatusLoop
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::StatusLoop(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusLoop, Status);
+}
+
+//=======================================================================
+// function : Status
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean ShapeAnalysis_Wire::LastCheckStatus(const ShapeExtend_Status Status) const
+{
+  return ShapeExtend::DecodeStatus(myStatus, Status);
+}
+
+//=======================================================================
+// function : MinDistance3d
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Wire::MinDistance3d() const
@@ -244,10 +226,9 @@ inline Standard_Real ShapeAnalysis_Wire::MinDistance3d() const
   return myMin3d;
 }
 
-
 //=======================================================================
-//function : MinDistance2d
-//purpose  : 
+// function : MinDistance2d
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Wire::MinDistance2d() const
@@ -255,10 +236,9 @@ inline Standard_Real ShapeAnalysis_Wire::MinDistance2d() const
   return myMin2d;
 }
 
-
 //=======================================================================
-//function : MaxDistance3d
-//purpose  : 
+// function : MaxDistance3d
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Wire::MaxDistance3d() const
@@ -266,10 +246,9 @@ inline Standard_Real ShapeAnalysis_Wire::MaxDistance3d() const
   return myMax3d;
 }
 
-
 //=======================================================================
-//function : MaxDistance2d
-//purpose  : 
+// function : MaxDistance2d
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Wire::MaxDistance2d() const

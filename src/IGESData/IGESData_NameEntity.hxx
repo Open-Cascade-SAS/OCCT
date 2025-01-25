@@ -22,7 +22,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESData_NameEntity;
 DEFINE_STANDARD_HANDLE(IGESData_NameEntity, IGESData_IGESEntity)
 
@@ -33,32 +32,13 @@ class IGESData_NameEntity : public IGESData_IGESEntity
 {
 
 public:
-
-  
   //! Retyrns the alphanumeric value of the Name, to be defined
   Standard_EXPORT virtual Handle(TCollection_HAsciiString) Value() const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESData_NameEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_NameEntity, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_NameEntity_HeaderFile

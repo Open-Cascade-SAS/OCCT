@@ -23,7 +23,6 @@ class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
-
 class BinMXCAFDoc_LengthUnitDriver;
 DEFINE_STANDARD_HANDLE(BinMXCAFDoc_LengthUnitDriver, BinMDF_ADriver)
 
@@ -32,21 +31,21 @@ class BinMXCAFDoc_LengthUnitDriver : public BinMDF_ADriver
 {
 
 public:
-
   Standard_EXPORT BinMXCAFDoc_LengthUnitDriver(const Handle(Message_Messenger)& theMsgDriver);
 
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent& theSource,
+  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
                                                  const Handle(TDF_Attribute)& theTarget,
-                                                 BinObjMgt_RRelocationTable& theRelocTable) const Standard_OVERRIDE;
+                                                 BinObjMgt_RRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
-                                     BinObjMgt_Persistent& theTarget,
-                                     BinObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
+                                     BinObjMgt_Persistent&        theTarget,
+                                     BinObjMgt_SRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_LengthUnitDriver, BinMDF_ADriver)
-
 };
 
 #endif // _BinMXCAFDoc_LengthUnitDriver_HeaderFile

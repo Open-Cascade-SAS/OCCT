@@ -23,7 +23,8 @@
 void GeomliteTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   GeomliteTest::CurveCommands(theCommands);
@@ -33,8 +34,6 @@ void GeomliteTest::AllCommands(Draw_Interpretor& theCommands)
   GeomliteTest::ModificationCommands(theCommands);
 
   // define the TCL variable Draw_GEOMETRY
-  //char* com = "set Draw_GEOMETRY 1";
-  //theCommands.Eval(com);
+  // char* com = "set Draw_GEOMETRY 1";
+  // theCommands.Eval(com);
 }
-
-

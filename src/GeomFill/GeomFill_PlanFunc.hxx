@@ -27,66 +27,62 @@
 
 class gp_Vec;
 
-
-
-class GeomFill_PlanFunc  : public math_FunctionWithDerivative
+class GeomFill_PlanFunc : public math_FunctionWithDerivative
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomFill_PlanFunc(const gp_Pnt& P, const gp_Vec& V, const Handle(Adaptor3d_Curve)& C);
-  
+  Standard_EXPORT GeomFill_PlanFunc(const gp_Pnt&                  P,
+                                    const gp_Vec&                  V,
+                                    const Handle(Adaptor3d_Curve)& C);
+
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value (const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X,
+                                                 Standard_Real&      F) Standard_OVERRIDE;
+
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Derivative (const Standard_Real X, Standard_Real& D) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean Derivative(const Standard_Real X,
+                                                      Standard_Real&      D) Standard_OVERRIDE;
+
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values (const Standard_Real X, Standard_Real& F, Standard_Real& D) Standard_OVERRIDE;
-  
-  Standard_EXPORT void D2 (const Standard_Real X, Standard_Real& F, Standard_Real& D1, Standard_Real& D2);
-  
-  Standard_EXPORT void DEDT (const Standard_Real X, const gp_Vec& DP, const gp_Vec& DV, Standard_Real& DF);
-  
-  Standard_EXPORT void D2E (const Standard_Real X, const gp_Vec& DP, const gp_Vec& D2P, const gp_Vec& DV, const gp_Vec& D2V, Standard_Real& DFDT, Standard_Real& D2FDT2, Standard_Real& D2FDTDX);
+  Standard_EXPORT virtual Standard_Boolean Values(const Standard_Real X,
+                                                  Standard_Real&      F,
+                                                  Standard_Real&      D) Standard_OVERRIDE;
 
+  Standard_EXPORT void D2(const Standard_Real X,
+                          Standard_Real&      F,
+                          Standard_Real&      D1,
+                          Standard_Real&      D2);
 
+  Standard_EXPORT void DEDT(const Standard_Real X,
+                            const gp_Vec&       DP,
+                            const gp_Vec&       DV,
+                            Standard_Real&      DF);
 
+  Standard_EXPORT void D2E(const Standard_Real X,
+                           const gp_Vec&       DP,
+                           const gp_Vec&       D2P,
+                           const gp_Vec&       DV,
+                           const gp_Vec&       D2V,
+                           Standard_Real&      DFDT,
+                           Standard_Real&      D2FDT2,
+                           Standard_Real&      D2FDTDX);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_XYZ myPnt;
-  gp_XYZ myVec;
-  gp_XYZ V;
-  gp_Pnt G;
+  gp_XYZ                  myPnt;
+  gp_XYZ                  myVec;
+  gp_XYZ                  V;
+  gp_Pnt                  G;
   Handle(Adaptor3d_Curve) myCurve;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_PlanFunc_HeaderFile

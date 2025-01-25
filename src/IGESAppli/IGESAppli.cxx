@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESAppli.hxx>
 #include <IGESAppli_GeneralModule.hxx>
 #include <IGESAppli_Protocol.hxx>
@@ -28,22 +27,21 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESAppli_Protocol) protocol;
 
-
-
-    void  IGESAppli::Init ()
+void IGESAppli::Init()
 {
   IGESDefs::Init();
   IGESDraw::Init();
-  if (protocol.IsNull()) {
+  if (protocol.IsNull())
+  {
     protocol = new IGESAppli_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESAppli_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESAppli_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESAppli_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESAppli_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESAppli_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESAppli_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESAppli_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESAppli_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESAppli_Protocol)  IGESAppli::Protocol ()
+Handle(IGESAppli_Protocol) IGESAppli::Protocol()
 {
   return protocol;
 }

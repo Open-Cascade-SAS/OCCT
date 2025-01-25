@@ -17,12 +17,11 @@
 #ifndef _Standard_HandlerStatus_HeaderFile
 #define _Standard_HandlerStatus_HeaderFile
 
-
 enum Standard_HandlerStatus
 {
-Standard_HandlerVoid,
-Standard_HandlerJumped,
-Standard_HandlerProcessed
+  Standard_HandlerVoid,
+  Standard_HandlerJumped,
+  Standard_HandlerProcessed
 };
 
 #endif // _Standard_HandlerStatus_HeaderFile

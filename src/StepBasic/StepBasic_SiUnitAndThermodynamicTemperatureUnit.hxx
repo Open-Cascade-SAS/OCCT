@@ -24,48 +24,31 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_ThermodynamicTemperatureUnit;
 
-
 class StepBasic_SiUnitAndThermodynamicTemperatureUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndThermodynamicTemperatureUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndThermodynamicTemperatureUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndThermodynamicTemperatureUnit
   Standard_EXPORT StepBasic_SiUnitAndThermodynamicTemperatureUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetThermodynamicTemperatureUnit (const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit);
-  
-  Standard_EXPORT Handle(StepBasic_ThermodynamicTemperatureUnit) ThermodynamicTemperatureUnit() const;
 
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
 
+  Standard_EXPORT void SetThermodynamicTemperatureUnit(
+    const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit);
 
+  Standard_EXPORT Handle(StepBasic_ThermodynamicTemperatureUnit) ThermodynamicTemperatureUnit()
+    const;
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_ThermodynamicTemperatureUnit) thermodynamicTemperatureUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndThermodynamicTemperatureUnit_HeaderFile

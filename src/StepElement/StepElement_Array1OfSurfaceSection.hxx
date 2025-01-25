@@ -19,5 +19,4 @@
 
 typedef NCollection_Array1<Handle(StepElement_SurfaceSection)> StepElement_Array1OfSurfaceSection;
 
-
 #endif

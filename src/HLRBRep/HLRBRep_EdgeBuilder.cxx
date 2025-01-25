@@ -15,9 +15,8 @@
 // commercial license or contractual agreement.
 
 #ifndef No_Exception
-#define No_Exception
+  #define No_Exception
 #endif
-
 
 #include <HLRAlgo_Intersection.hxx>
 #include <HLRBRep_AreaLimit.hxx>
@@ -29,108 +28,117 @@
 #include <TopAbs.hxx>
 
 //=======================================================================
-//function : HLRBRep_EdgeBuilder
-//purpose  : 
+// function : HLRBRep_EdgeBuilder
+// purpose  :
 //=======================================================================
-HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder (HLRBRep_VertexList& VList)
+HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder(HLRBRep_VertexList& VList)
 {
   // at creation the EdgeBuilder explore the VertexList
   // and use it to build a list of "AreaLimit" on the edge.
-  // An area is a part of the curve between 
+  // An area is a part of the curve between
   // two consecutive vertices
-  
-  Standard_DomainError_Raise_if(!VList.More(),
-				"EdgeBuilder  : Empty vertex list");
 
-  Handle(HLRBRep_AreaLimit) last,cur;
-  TopAbs_State before,after,ebefore,eafter;
-  HLRAlgo_Intersection V;
+  Standard_DomainError_Raise_if(!VList.More(), "EdgeBuilder  : Empty vertex list");
+
+  Handle(HLRBRep_AreaLimit) last, cur;
+  TopAbs_State              before, after, ebefore, eafter;
+  HLRAlgo_Intersection      V;
 
   // loop on the Vertices
-  for (;VList.More();VList.Next()) {
+  for (; VList.More(); VList.Next())
+  {
     before = after = ebefore = eafter = TopAbs_UNKNOWN;
     // compute the states
-    if (VList.IsBoundary()) {
-      switch (VList.Orientation()) {
+    if (VList.IsBoundary())
+    {
+      switch (VList.Orientation())
+      {
 
-      case TopAbs_FORWARD :
-	ebefore = TopAbs_OUT;
-	eafter  = TopAbs_IN;
-	break;
+        case TopAbs_FORWARD:
+          ebefore = TopAbs_OUT;
+          eafter  = TopAbs_IN;
+          break;
 
-      case TopAbs_REVERSED :
-	ebefore = TopAbs_IN;
-	eafter  = TopAbs_OUT;
-	break;
+        case TopAbs_REVERSED:
+          ebefore = TopAbs_IN;
+          eafter  = TopAbs_OUT;
+          break;
 
-      case TopAbs_INTERNAL :
-	ebefore = TopAbs_IN;
-	eafter  = TopAbs_IN;
-	break;
+        case TopAbs_INTERNAL:
+          ebefore = TopAbs_IN;
+          eafter  = TopAbs_IN;
+          break;
 
-      case TopAbs_EXTERNAL :
-	ebefore = TopAbs_OUT;
-	eafter  = TopAbs_OUT;
-	break;
+        case TopAbs_EXTERNAL:
+          ebefore = TopAbs_OUT;
+          eafter  = TopAbs_OUT;
+          break;
       }
     }
 
-    if (VList.IsInterference()) {
-      switch (VList.Transition()) {
+    if (VList.IsInterference())
+    {
+      switch (VList.Transition())
+      {
 
-      case TopAbs_FORWARD :
-	before = TopAbs_OUT;
-	after  = TopAbs_IN;
-	break;
+        case TopAbs_FORWARD:
+          before = TopAbs_OUT;
+          after  = TopAbs_IN;
+          break;
 
-      case TopAbs_REVERSED :
-	before = TopAbs_IN;
-	after  = TopAbs_OUT;
-	break;
+        case TopAbs_REVERSED:
+          before = TopAbs_IN;
+          after  = TopAbs_OUT;
+          break;
 
-      case TopAbs_INTERNAL :
-	before = TopAbs_IN;
-	after  = TopAbs_IN;
-	break;
+        case TopAbs_INTERNAL:
+          before = TopAbs_IN;
+          after  = TopAbs_IN;
+          break;
 
-      case TopAbs_EXTERNAL :
-	before = TopAbs_OUT;
-	after  = TopAbs_OUT;
-	break;
+        case TopAbs_EXTERNAL:
+          before = TopAbs_OUT;
+          after  = TopAbs_OUT;
+          break;
       }
 
-      switch (VList.BoundaryTransition()) {
+      switch (VList.BoundaryTransition())
+      {
 
-      case TopAbs_FORWARD :
-	after  = TopAbs_ON;
-	break;
+        case TopAbs_FORWARD:
+          after = TopAbs_ON;
+          break;
 
-      case TopAbs_REVERSED :
-	before = TopAbs_ON;
-	break;
+        case TopAbs_REVERSED:
+          before = TopAbs_ON;
+          break;
 
-      case TopAbs_INTERNAL :
-	before = TopAbs_ON;
-	after  = TopAbs_ON;
-	break;
+        case TopAbs_INTERNAL:
+          before = TopAbs_ON;
+          after  = TopAbs_ON;
+          break;
 
-      case TopAbs_EXTERNAL :
-	break;
+        case TopAbs_EXTERNAL:
+          break;
       }
     }
 
     // create the Limit and connect to list
-    V = VList.Current();
+    V   = VList.Current();
     cur = new HLRBRep_AreaLimit(V,
-				 VList.IsBoundary(),
-				 VList.IsInterference(),
-				 before,after,
-				 ebefore,eafter);
-    if (myLimits.IsNull()) {
+                                VList.IsBoundary(),
+                                VList.IsInterference(),
+                                before,
+                                after,
+                                ebefore,
+                                eafter);
+    if (myLimits.IsNull())
+    {
       myLimits = cur;
       last     = cur;
     }
-    else {
+    else
+    {
       last->Next(cur);
       cur->Previous(last);
       last = cur;
@@ -138,27 +146,33 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder (HLRBRep_VertexList& VList)
   }
 
   // periodicity, make a circular list
-  if (VList.IsPeriodic()) {
+  if (VList.IsPeriodic())
+  {
     last->Next(myLimits);
     myLimits->Previous(last);
   }
 
   // process UNKNOWN areas
-  TopAbs_State  stat = TopAbs_UNKNOWN;
+  TopAbs_State stat  = TopAbs_UNKNOWN;
   TopAbs_State estat = TopAbs_UNKNOWN;
 
   cur = myLimits;
-  while (!cur.IsNull()) {
-    if (stat == TopAbs_UNKNOWN) {
+  while (!cur.IsNull())
+  {
+    if (stat == TopAbs_UNKNOWN)
+    {
       stat = cur->StateBefore();
-      if (stat == TopAbs_UNKNOWN) {
-	stat = cur->StateAfter();
+      if (stat == TopAbs_UNKNOWN)
+      {
+        stat = cur->StateAfter();
       }
     }
-    if (estat == TopAbs_UNKNOWN) {
+    if (estat == TopAbs_UNKNOWN)
+    {
       estat = cur->EdgeBefore();
-      if (estat == TopAbs_UNKNOWN) {
-	estat = cur->EdgeAfter();
+      if (estat == TopAbs_UNKNOWN)
+      {
+        estat = cur->EdgeAfter();
       }
     }
     cur = cur->Next();
@@ -168,15 +182,15 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder (HLRBRep_VertexList& VList)
   }
 
   // error if no interferences
-  Standard_DomainError_Raise_if(stat == TopAbs_UNKNOWN,
-				"EdgeBuilder : No interferences");
+  Standard_DomainError_Raise_if(stat == TopAbs_UNKNOWN, "EdgeBuilder : No interferences");
   // if no boundary the edge covers the whole curve
   if (estat == TopAbs_UNKNOWN)
     estat = TopAbs_IN;
-  
+
   // propagate states
   cur = myLimits;
-  while (!cur.IsNull()) {
+  while (!cur.IsNull())
+  {
     if (cur->StateBefore() == TopAbs_UNKNOWN)
       cur->StateBefore(stat);
     else
@@ -200,19 +214,19 @@ HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder (HLRBRep_VertexList& VList)
 }
 
 //=======================================================================
-//function : InitAreas
-//purpose  : set on the first area
+// function : InitAreas
+// purpose  : set on the first area
 //=======================================================================
 
 void HLRBRep_EdgeBuilder::InitAreas()
 {
-  left = myLimits->Previous();
+  left  = myLimits->Previous();
   right = myLimits;
 }
 
 //=======================================================================
-//function : NextArea
-//purpose  : 
+// function : NextArea
+// purpose  :
 //=======================================================================
 
 void HLRBRep_EdgeBuilder::NextArea()
@@ -223,8 +237,8 @@ void HLRBRep_EdgeBuilder::NextArea()
 }
 
 //=======================================================================
-//function : PreviousArea
-//purpose  : 
+// function : PreviousArea
+// purpose  :
 //=======================================================================
 
 void HLRBRep_EdgeBuilder::PreviousArea()
@@ -235,21 +249,23 @@ void HLRBRep_EdgeBuilder::PreviousArea()
 }
 
 //=======================================================================
-//function : HasArea
-//purpose  : 
+// function : HasArea
+// purpose  :
 //=======================================================================
 
 Standard_Boolean HLRBRep_EdgeBuilder::HasArea() const
 {
   if (left.IsNull())
-    if (right.IsNull()) return Standard_False;
-  if (right == myLimits) return Standard_False;
+    if (right.IsNull())
+      return Standard_False;
+  if (right == myLimits)
+    return Standard_False;
   return Standard_True;
 }
 
 //=======================================================================
-//function : AreaState
-//purpose  : 
+// function : AreaState
+// purpose  :
 //=======================================================================
 
 TopAbs_State HLRBRep_EdgeBuilder::AreaState() const
@@ -263,8 +279,8 @@ TopAbs_State HLRBRep_EdgeBuilder::AreaState() const
 }
 
 //=======================================================================
-//function : AreaEdgeState
-//purpose  : 
+// function : AreaEdgeState
+// purpose  :
 //=======================================================================
 
 TopAbs_State HLRBRep_EdgeBuilder::AreaEdgeState() const
@@ -278,8 +294,8 @@ TopAbs_State HLRBRep_EdgeBuilder::AreaEdgeState() const
 }
 
 //=======================================================================
-//function : LeftLimit
-//purpose  : 
+// function : LeftLimit
+// purpose  :
 //=======================================================================
 
 Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::LeftLimit() const
@@ -288,8 +304,8 @@ Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::LeftLimit() const
 }
 
 //=======================================================================
-//function : RightLimit
-//purpose  : 
+// function : RightLimit
+// purpose  :
 //=======================================================================
 
 Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::RightLimit() const
@@ -298,57 +314,58 @@ Handle(HLRBRep_AreaLimit) HLRBRep_EdgeBuilder::RightLimit() const
 }
 
 //=======================================================================
-//function : Builds
-//purpose  : 
+// function : Builds
+// purpose  :
 //=======================================================================
 
-void  HLRBRep_EdgeBuilder::Builds(const TopAbs_State ToBuild)
+void HLRBRep_EdgeBuilder::Builds(const TopAbs_State ToBuild)
 {
   toBuild = ToBuild;
   InitAreas();
-  do {
-    if ((AreaState() == toBuild) &&
-	(AreaEdgeState() == TopAbs_IN)) {
+  do
+  {
+    if ((AreaState() == toBuild) && (AreaEdgeState() == TopAbs_IN))
+    {
       if (left.IsNull())
-	current = 2;
+        current = 2;
       else
-	current = 1;
+        current = 1;
       return;
     }
     NextArea();
-  }
-  while (HasArea());
+  } while (HasArea());
   current = 3;
 }
 
 //=======================================================================
-//function : MoreEdges
-//purpose  : 
+// function : MoreEdges
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  HLRBRep_EdgeBuilder::MoreEdges() const
+Standard_Boolean HLRBRep_EdgeBuilder::MoreEdges() const
 {
   return HasArea();
 }
 
 //=======================================================================
-//function : NextEdge
-//purpose  : 
+// function : NextEdge
+// purpose  :
 //=======================================================================
 
-void  HLRBRep_EdgeBuilder::NextEdge()
+void HLRBRep_EdgeBuilder::NextEdge()
 {
   // clean the current edge
   while (AreaState() == toBuild)
     NextArea();
   // go to the next edge
-  while (HasArea()) {
-    if ((AreaState() == toBuild) &&
-	(AreaEdgeState() == TopAbs_IN)) {
+  while (HasArea())
+  {
+    if ((AreaState() == toBuild) && (AreaEdgeState() == TopAbs_IN))
+    {
       if (left.IsNull())
-	current = 2;
+        current = 2;
       else
-	current = 1;
+        current = 1;
       return;
     }
     NextArea();
@@ -356,28 +373,30 @@ void  HLRBRep_EdgeBuilder::NextEdge()
 }
 
 //=======================================================================
-//function : MoreVertices
-//purpose  : 
+// function : MoreVertices
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  HLRBRep_EdgeBuilder::MoreVertices() const
+Standard_Boolean HLRBRep_EdgeBuilder::MoreVertices() const
 {
   return (current < 3);
 }
 
 //=======================================================================
-//function : NextVertex
-//purpose  : 
+// function : NextVertex
+// purpose  :
 //=======================================================================
 
-void  HLRBRep_EdgeBuilder::NextVertex()
+void HLRBRep_EdgeBuilder::NextVertex()
 {
-  if (current == 1) {
+  if (current == 1)
+  {
     current = 2;
     if (right.IsNull())
       current = 3;
   }
-  else if (current == 2) {
+  else if (current == 2)
+  {
     NextArea();
     if ((AreaState() == toBuild) && (AreaEdgeState() == TopAbs_IN))
       current = 2;
@@ -389,8 +408,8 @@ void  HLRBRep_EdgeBuilder::NextVertex()
 }
 
 //=======================================================================
-//function : Current
-//purpose  : 
+// function : Current
+// purpose  :
 //=======================================================================
 
 const HLRAlgo_Intersection& HLRBRep_EdgeBuilder::Current() const
@@ -404,11 +423,11 @@ const HLRAlgo_Intersection& HLRBRep_EdgeBuilder::Current() const
 }
 
 //=======================================================================
-//function : IsBoundary
-//purpose  : 
+// function : IsBoundary
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  HLRBRep_EdgeBuilder::IsBoundary() const
+Standard_Boolean HLRBRep_EdgeBuilder::IsBoundary() const
 {
   if (current == 1)
     return left->IsBoundary();
@@ -419,11 +438,11 @@ Standard_Boolean  HLRBRep_EdgeBuilder::IsBoundary() const
 }
 
 //=======================================================================
-//function : IsInterference
-//purpose  : 
+// function : IsInterference
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  HLRBRep_EdgeBuilder::IsInterference() const
+Standard_Boolean HLRBRep_EdgeBuilder::IsInterference() const
 {
   if (current == 1)
     return left->IsInterference();
@@ -434,22 +453,23 @@ Standard_Boolean  HLRBRep_EdgeBuilder::IsInterference() const
 }
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
-TopAbs_Orientation  HLRBRep_EdgeBuilder::Orientation() const
+TopAbs_Orientation HLRBRep_EdgeBuilder::Orientation() const
 {
-  if (current == 1) {
-    if ((left->StateBefore() == left->StateAfter()) &&
-	(left->EdgeBefore()  == left->EdgeAfter()))
+  if (current == 1)
+  {
+    if ((left->StateBefore() == left->StateAfter()) && (left->EdgeBefore() == left->EdgeAfter()))
       return TopAbs_INTERNAL;
     else
       return TopAbs_FORWARD;
   }
-  else if (current == 2) {
-    if ((right->StateBefore() == right->StateAfter()) &&
-	(right->EdgeBefore()  == right->EdgeAfter()))
+  else if (current == 2)
+  {
+    if ((right->StateBefore() == right->StateAfter())
+        && (right->EdgeBefore() == right->EdgeAfter()))
       return TopAbs_INTERNAL;
     else
       return TopAbs_REVERSED;
@@ -458,14 +478,15 @@ TopAbs_Orientation  HLRBRep_EdgeBuilder::Orientation() const
 }
 
 //=======================================================================
-//function : Destroy
-//purpose  : 
+// function : Destroy
+// purpose  :
 //=======================================================================
 
 void HLRBRep_EdgeBuilder::Destroy()
 {
   Handle(HLRBRep_AreaLimit) cur = myLimits;
-  while (!cur.IsNull()) {
+  while (!cur.IsNull())
+  {
     Handle(HLRBRep_AreaLimit) n = cur->Next();
     cur->Clear();
     cur = n;

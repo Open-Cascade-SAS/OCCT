@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdObject_Location_HeaderFile
 #define _StdObject_Location_HeaderFile
 
@@ -25,7 +24,6 @@
 class StdObject_Location
 {
 public:
-
   //! Gets persistent child objects
   Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
 
@@ -33,31 +31,29 @@ public:
   TopLoc_Location Import() const;
 
   //! Creates a persistent wrapper object for a location
-  Standard_EXPORT static StdObject_Location Translate (const TopLoc_Location& theLoc,
-                                                       StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static StdObject_Location Translate(const TopLoc_Location&            theLoc,
+                                                      StdObjMgt_TransientPersistentMap& theMap);
 
 private:
   Handle(StdObjMgt_Persistent) myData;
 
-  friend StdObjMgt_ReadData& operator >>
-    (StdObjMgt_ReadData&, StdObject_Location&);
-  friend StdObjMgt_WriteData& operator <<
-    (StdObjMgt_WriteData&, const StdObject_Location&);
+  friend StdObjMgt_ReadData&  operator>>(StdObjMgt_ReadData&, StdObject_Location&);
+  friend StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&, const StdObject_Location&);
 };
 
 //! Read persistent data from a file.
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, StdObject_Location& theLocation)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData,
+                                      StdObject_Location& theLocation)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
   return theReadData >> theLocation.myData;
 }
 
 //! Write persistent data to a file.
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const StdObject_Location& theLocation)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&      theWriteData,
+                                       const StdObject_Location& theLocation)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
   return theWriteData << theLocation.myData;
 }
 

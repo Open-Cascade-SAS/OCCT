@@ -16,43 +16,45 @@
 #include <Standard_OutOfRange.hxx>
 
 //=======================================================================
-//function : IsAllDone
-//purpose  : 
+// function : IsAllDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean CPnts_UniformDeflection::IsAllDone () const 
-{ 
+inline Standard_Boolean CPnts_UniformDeflection::IsAllDone() const
+{
   return myDone;
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 inline void CPnts_UniformDeflection::Next()
-{ 
-  Standard_OutOfRange_Raise_if(myIPoint >= myNbPoints, "CPnts_UniformDeflection::Next() - no more points available");
+{
+  Standard_OutOfRange_Raise_if(myIPoint >= myNbPoints,
+                               "CPnts_UniformDeflection::Next() - no more points available");
   myIPoint++;
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline Standard_Real CPnts_UniformDeflection::Value () const
-{ 
-  StdFail_NotDone_Raise_if (!myDone, "CPnts_UniformDeflection::Value() - no result");
+inline Standard_Real CPnts_UniformDeflection::Value() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "CPnts_UniformDeflection::Value() - no result");
   return myParams[myIPoint + 1];
 }
+
 //=======================================================================
-//function : Point
-//purpose  : 
+// function : Point
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt  CPnts_UniformDeflection::Point () const
-{ 
-  StdFail_NotDone_Raise_if (!myDone, "CPnts_UniformDeflection::Point() - no result");
+inline gp_Pnt CPnts_UniformDeflection::Point() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "CPnts_UniformDeflection::Point() - no result");
   return myPoints[myIPoint + 1];
 }

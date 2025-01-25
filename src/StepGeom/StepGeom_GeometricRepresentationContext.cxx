@@ -11,32 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_GeometricRepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext,StepRepr_RepresentationContext)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext, StepRepr_RepresentationContext)
 
-StepGeom_GeometricRepresentationContext::StepGeom_GeometricRepresentationContext ()  {}
+StepGeom_GeometricRepresentationContext::StepGeom_GeometricRepresentationContext() {}
 
 void StepGeom_GeometricRepresentationContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType,
-	const Standard_Integer aCoordinateSpaceDimension)
+  const Handle(TCollection_HAsciiString)& aContextIdentifier,
+  const Handle(TCollection_HAsciiString)& aContextType,
+  const Standard_Integer                  aCoordinateSpaceDimension)
 {
-	// --- classe own fields ---
-	coordinateSpaceDimension = aCoordinateSpaceDimension;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
+  // --- classe own fields ---
+  coordinateSpaceDimension = aCoordinateSpaceDimension;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
 }
 
-
-void StepGeom_GeometricRepresentationContext::SetCoordinateSpaceDimension(const Standard_Integer aCoordinateSpaceDimension)
+void StepGeom_GeometricRepresentationContext::SetCoordinateSpaceDimension(
+  const Standard_Integer aCoordinateSpaceDimension)
 {
-	coordinateSpaceDimension = aCoordinateSpaceDimension;
+  coordinateSpaceDimension = aCoordinateSpaceDimension;
 }
 
 Standard_Integer StepGeom_GeometricRepresentationContext::CoordinateSpaceDimension() const
 {
-	return coordinateSpaceDimension;
+  return coordinateSpaceDimension;
 }

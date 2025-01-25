@@ -19,58 +19,61 @@
 #include <HLRAlgo_HArray1OfPHDat.hxx>
 
 //=======================================================================
-//function : FaceIndex
-//purpose  : 
+// function : FaceIndex
+// purpose  :
 //=======================================================================
 
-inline void
-HLRAlgo_PolyData::FaceIndex (const Standard_Integer I)
+inline void HLRAlgo_PolyData::FaceIndex(const Standard_Integer I)
 {
   myFaceIndices.Index = I;
 }
 
 //=======================================================================
-//function : FaceIndex
-//purpose  : 
+// function : FaceIndex
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRAlgo_PolyData::FaceIndex () const
+inline Standard_Integer HLRAlgo_PolyData::FaceIndex() const
 {
   return myFaceIndices.Index;
 }
 
 //=======================================================================
-//function : Nodes
-//purpose  : 
+// function : Nodes
+// purpose  :
 //=======================================================================
 
-inline TColgp_Array1OfXYZ &
-HLRAlgo_PolyData::Nodes () const
-{ return myHNodes->ChangeArray1(); }
+inline TColgp_Array1OfXYZ& HLRAlgo_PolyData::Nodes() const
+{
+  return myHNodes->ChangeArray1();
+}
 
 //=======================================================================
-//function : TData
-//purpose  : 
+// function : TData
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Array1OfTData &
-HLRAlgo_PolyData::TData () const
-{ return myHTData->ChangeArray1(); }
+inline HLRAlgo_Array1OfTData& HLRAlgo_PolyData::TData() const
+{
+  return myHTData->ChangeArray1();
+}
 
 //=======================================================================
-//function : PHDat
-//purpose  : 
+// function : PHDat
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Array1OfPHDat &
-HLRAlgo_PolyData::PHDat () const
-{ return myHPHDat->ChangeArray1(); }
+inline HLRAlgo_Array1OfPHDat& HLRAlgo_PolyData::PHDat() const
+{
+  return myHPHDat->ChangeArray1();
+}
 
 //=======================================================================
-//function : Hiding
-//purpose  : 
+// function : Hiding
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean HLRAlgo_PolyData::Hiding () const
-{ return !myHPHDat.IsNull(); }
+inline Standard_Boolean HLRAlgo_PolyData::Hiding() const
+{
+  return !myHPHDat.IsNull();
+}

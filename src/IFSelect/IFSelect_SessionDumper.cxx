@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_BasicDumper.hxx>
 #include <IFSelect_SessionDumper.hxx>
 #include <IFSelect_SessionFile.hxx>
@@ -19,23 +18,31 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper, Standard_Transient)
 
-static Handle(IFSelect_SessionDumper)  thefirst;
-static int cefait = 0;
+static Handle(IFSelect_SessionDumper) thefirst;
+static int                            cefait = 0;
+
 // On commence la serie avec celui-la
 
-
-    IFSelect_SessionDumper::IFSelect_SessionDumper ()
+IFSelect_SessionDumper::IFSelect_SessionDumper()
 {
   if (!cefait)
-    { cefait = 1;  Handle(IFSelect_BasicDumper) bid = new IFSelect_BasicDumper; }
-  else thenext  = thefirst;
-  thefirst = this;    // as Handle
+  {
+    cefait                           = 1;
+    Handle(IFSelect_BasicDumper) bid = new IFSelect_BasicDumper;
+  }
+  else
+    thenext = thefirst;
+  thefirst = this; // as Handle
 }
 
-    Handle(IFSelect_SessionDumper)  IFSelect_SessionDumper::First ()
-      {  return thefirst;  }
+Handle(IFSelect_SessionDumper) IFSelect_SessionDumper::First()
+{
+  return thefirst;
+}
 
-    Handle(IFSelect_SessionDumper)  IFSelect_SessionDumper::Next () const
-      {  return thenext;   }
+Handle(IFSelect_SessionDumper) IFSelect_SessionDumper::Next() const
+{
+  return thenext;
+}

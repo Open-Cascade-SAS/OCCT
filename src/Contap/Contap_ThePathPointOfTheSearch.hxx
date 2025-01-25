@@ -24,56 +24,55 @@ class Adaptor3d_HVertex;
 class Standard_DomainError;
 class gp_Pnt;
 
-class Contap_ThePathPointOfTheSearch 
+class Contap_ThePathPointOfTheSearch
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Contap_ThePathPointOfTheSearch();
-  
-  Standard_EXPORT Contap_ThePathPointOfTheSearch(const gp_Pnt& P, const Standard_Real Tol, const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Parameter);
-  
-  Standard_EXPORT Contap_ThePathPointOfTheSearch(const gp_Pnt& P, const Standard_Real Tol, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Parameter);
-  
-    void SetValue (const gp_Pnt& P, const Standard_Real Tol, const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Parameter);
-  
-    void SetValue (const gp_Pnt& P, const Standard_Real Tol, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Parameter);
-  
-    const gp_Pnt& Value() const;
-  
-    Standard_Real Tolerance() const;
-  
-    Standard_Boolean IsNew() const;
-  
-    const Handle(Adaptor3d_HVertex)& Vertex() const;
-  
-    const Handle(Adaptor2d_Curve2d)& Arc() const;
-  
-    Standard_Real Parameter() const;
 
+  Standard_EXPORT Contap_ThePathPointOfTheSearch(const gp_Pnt&                    P,
+                                                 const Standard_Real              Tol,
+                                                 const Handle(Adaptor3d_HVertex)& V,
+                                                 const Handle(Adaptor2d_Curve2d)& A,
+                                                 const Standard_Real              Parameter);
 
+  Standard_EXPORT Contap_ThePathPointOfTheSearch(const gp_Pnt&                    P,
+                                                 const Standard_Real              Tol,
+                                                 const Handle(Adaptor2d_Curve2d)& A,
+                                                 const Standard_Real              Parameter);
 
+  void SetValue(const gp_Pnt&                    P,
+                const Standard_Real              Tol,
+                const Handle(Adaptor3d_HVertex)& V,
+                const Handle(Adaptor2d_Curve2d)& A,
+                const Standard_Real              Parameter);
+
+  void SetValue(const gp_Pnt&                    P,
+                const Standard_Real              Tol,
+                const Handle(Adaptor2d_Curve2d)& A,
+                const Standard_Real              Parameter);
+
+  const gp_Pnt& Value() const;
+
+  Standard_Real Tolerance() const;
+
+  Standard_Boolean IsNew() const;
+
+  const Handle(Adaptor3d_HVertex)& Vertex() const;
+
+  const Handle(Adaptor2d_Curve2d)& Arc() const;
+
+  Standard_Real Parameter() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Pnt point;
-  Standard_Real tol;
-  Standard_Boolean isnew;
+  gp_Pnt                    point;
+  Standard_Real             tol;
+  Standard_Boolean          isnew;
   Handle(Adaptor3d_HVertex) vtx;
   Handle(Adaptor2d_Curve2d) arc;
-  Standard_Real param;
-
-
+  Standard_Real             param;
 };
 
 #define TheVertex Handle(Adaptor3d_HVertex)
@@ -91,8 +90,5 @@ private:
 #undef TheArc_hxx
 #undef IntStart_PathPoint
 #undef IntStart_PathPoint_hxx
-
-
-
 
 #endif // _Contap_ThePathPointOfTheSearch_HeaderFile

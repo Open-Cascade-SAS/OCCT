@@ -26,52 +26,32 @@
 class TCollection_HAsciiString;
 class StepShape_Face;
 
-
 class StepShape_ConnectedFaceSet;
 DEFINE_STANDARD_HANDLE(StepShape_ConnectedFaceSet, StepShape_TopologicalRepresentationItem)
-
 
 class StepShape_ConnectedFaceSet : public StepShape_TopologicalRepresentationItem
 {
 
 public:
-
-  
   //! Returns a ConnectedFaceSet
   Standard_EXPORT StepShape_ConnectedFaceSet();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFace)& aCfsFaces);
-  
-  Standard_EXPORT virtual void SetCfsFaces (const Handle(StepShape_HArray1OfFace)& aCfsFaces);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_HArray1OfFace)&  aCfsFaces);
+
+  Standard_EXPORT virtual void SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces);
+
   Standard_EXPORT virtual Handle(StepShape_HArray1OfFace) CfsFaces() const;
-  
-  Standard_EXPORT virtual Handle(StepShape_Face) CfsFacesValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT virtual Handle(StepShape_Face) CfsFacesValue(const Standard_Integer num) const;
+
   Standard_EXPORT virtual Standard_Integer NbCfsFaces() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet, StepShape_TopologicalRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfFace) cfsFaces;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ConnectedFaceSet_HeaderFile

@@ -17,16 +17,14 @@
 
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Express_Real,Express_PredefinedType)
+IMPLEMENT_STANDARD_RTTIEXT(Express_Real, Express_PredefinedType)
 
 //=======================================================================
 // function : Express_Real
 // purpose  :
 //=======================================================================
 
-Express_Real::Express_Real()
-{
-}
+Express_Real::Express_Real() {}
 
 //=======================================================================
 // function : CPPName

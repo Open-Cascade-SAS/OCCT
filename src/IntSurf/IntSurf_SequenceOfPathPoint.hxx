@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntSurf_PathPoint> IntSurf_SequenceOfPathPoint;
 
-
 #endif

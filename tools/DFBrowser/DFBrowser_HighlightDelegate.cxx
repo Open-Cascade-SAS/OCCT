@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_HighlightDelegate.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
@@ -24,16 +24,16 @@
 // function : paint
 // purpose :
 // =======================================================================
-void DFBrowser_HighlightDelegate::paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                         const QModelIndex& theIndex) const
+void DFBrowser_HighlightDelegate::paint(QPainter*                   thePainter,
+                                        const QStyleOptionViewItem& theOption,
+                                        const QModelIndex&          theIndex) const
 {
   // highlight cell
   if (theOption.state & QStyle::State_MouseOver)
   {
     QColor aHighlightColor = DFBrowserPane_Tools::LightHighlightColor();
-    thePainter->fillRect (theOption.rect, aHighlightColor);
+    thePainter->fillRect(theOption.rect, aHighlightColor);
   }
   // default paint
-  QItemDelegate::paint (thePainter, theOption, theIndex);
+  QItemDelegate::paint(thePainter, theOption, theIndex);
 }
-

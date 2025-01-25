@@ -24,11 +24,12 @@
 class Standard_Transient;
 class Standard_GUID;
 
-class Plugin 
+class Plugin
 {
 public:
-  
-  Standard_EXPORT static Handle(Standard_Transient) Load (const Standard_GUID& aGUID, const Standard_Boolean theVerbose = Standard_True);  
+  Standard_EXPORT static Handle(Standard_Transient) Load(
+    const Standard_GUID&   aGUID,
+    const Standard_Boolean theVerbose = Standard_True);
 };
 
 #endif // _Plugin_HeaderFile

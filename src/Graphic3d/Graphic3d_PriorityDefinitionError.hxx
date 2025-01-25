@@ -26,8 +26,9 @@ class Graphic3d_PriorityDefinitionError;
 DEFINE_STANDARD_HANDLE(Graphic3d_PriorityDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Graphic3d_PriorityDefinitionError
-  #define Graphic3d_PriorityDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Graphic3d_PriorityDefinitionError(MESSAGE);
+  #define Graphic3d_PriorityDefinitionError_Raise_if(CONDITION, MESSAGE)                           \
+    if (CONDITION)                                                                                 \
+      throw Graphic3d_PriorityDefinitionError(MESSAGE);
 #else
   #define Graphic3d_PriorityDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

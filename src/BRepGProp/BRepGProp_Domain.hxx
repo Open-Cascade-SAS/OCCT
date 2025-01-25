@@ -26,63 +26,40 @@
 class TopoDS_Face;
 class TopoDS_Edge;
 
-
 //! Arc iterator. Returns only Forward and Reversed edges from
 //! the face in an undigested order.
-class BRepGProp_Domain 
+class BRepGProp_Domain
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
-    BRepGProp_Domain();
-  
+  BRepGProp_Domain();
+
   //! Constructor. Initializes the domain with the face.
-    BRepGProp_Domain(const TopoDS_Face& F);
-  
+  BRepGProp_Domain(const TopoDS_Face& F);
+
   //! Initializes the domain with the face.
-    void Init (const TopoDS_Face& F);
-  
+  void Init(const TopoDS_Face& F);
 
   //! Returns True if there is another arc of curve in the list.
-    Standard_Boolean More();
-  
+  Standard_Boolean More();
+
   //! Initializes the exploration with the face already set.
-    void Init();
-  
+  void Init();
+
   //! Returns the current edge.
-    const TopoDS_Edge& Value();
-  
+  const TopoDS_Edge& Value();
 
   //! Sets the index of the arc iterator to the next arc of
   //! curve.
   Standard_EXPORT void Next();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TopExp_Explorer myExplorer;
-
-
 };
 
-
 #include <BRepGProp_Domain.lxx>
-
-
-
-
 
 #endif // _BRepGProp_Domain_HeaderFile

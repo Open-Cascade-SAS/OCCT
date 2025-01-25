@@ -17,13 +17,12 @@
 #ifndef _IntSurf_TypeTrans_HeaderFile
 #define _IntSurf_TypeTrans_HeaderFile
 
-
 enum IntSurf_TypeTrans
 {
-IntSurf_In,
-IntSurf_Out,
-IntSurf_Touch,
-IntSurf_Undecided
+  IntSurf_In,
+  IntSurf_Out,
+  IntSurf_Touch,
+  IntSurf_Undecided
 };
 
 #endif // _IntSurf_TypeTrans_HeaderFile

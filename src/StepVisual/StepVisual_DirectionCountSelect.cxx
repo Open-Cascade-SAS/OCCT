@@ -13,18 +13,19 @@
 
 #include <StepVisual_DirectionCountSelect.hxx>
 
-StepVisual_DirectionCountSelect::StepVisual_DirectionCountSelect() :
-    theUDirectionCount(0),
-    theVDirectionCount(0),
-    theTypeOfContent(0)
-{}
+StepVisual_DirectionCountSelect::StepVisual_DirectionCountSelect()
+    : theUDirectionCount(0),
+      theVDirectionCount(0),
+      theTypeOfContent(0)
+{
+}
 
 void StepVisual_DirectionCountSelect::SetTypeOfContent(const Standard_Integer aType)
 {
   theTypeOfContent = aType;
 }
 
-Standard_Integer StepVisual_DirectionCountSelect::TypeOfContent() const 
+Standard_Integer StepVisual_DirectionCountSelect::TypeOfContent() const
 {
   return theTypeOfContent;
 }
@@ -40,7 +41,6 @@ void StepVisual_DirectionCountSelect::SetUDirectionCount(const Standard_Integer 
   theTypeOfContent   = 1;
 }
 
-
 Standard_Integer StepVisual_DirectionCountSelect::VDirectionCount() const
 {
   return theUDirectionCount;
@@ -51,5 +51,3 @@ void StepVisual_DirectionCountSelect::SetVDirectionCount(const Standard_Integer 
   theVDirectionCount = aVDirectionCount;
   theTypeOfContent   = 2;
 }
-
-

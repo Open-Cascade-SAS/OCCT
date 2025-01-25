@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_PropertyPanel_H
 #define DFBrowser_PropertyPanel_H
@@ -36,9 +36,8 @@ class DFBrowser_PropertyPanel : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowser_PropertyPanel (QWidget* theParent);
+  Standard_EXPORT DFBrowser_PropertyPanel(QWidget* theParent);
 
   //! Destructor
   virtual ~DFBrowser_PropertyPanel() {}
@@ -53,11 +52,11 @@ public:
   //! Fills attributes stack by selected index
   //! \param theSelected selected items
   //! \param theDeselected deselected items
-  Standard_EXPORT void UpdateBySelectionChanged (const QItemSelection& theSelected,
-                                                 const QItemSelection& theDeselected);
-private:
+  Standard_EXPORT void UpdateBySelectionChanged(const QItemSelection& theSelected,
+                                                const QItemSelection& theDeselected);
 
-  QWidget* myMainWindow; //!< parent of attribute stack control
+private:
+  QWidget*                      myMainWindow;      //!< parent of attribute stack control
   DFBrowser_AttributePaneStack* myAttributesStack; //!< panes stack
 };
 #endif

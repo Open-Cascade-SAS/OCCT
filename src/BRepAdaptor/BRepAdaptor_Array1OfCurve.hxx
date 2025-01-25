@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<BRepAdaptor_Curve> BRepAdaptor_Array1OfCurve;
 
-
 #endif

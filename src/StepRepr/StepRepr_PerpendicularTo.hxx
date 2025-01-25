@@ -22,14 +22,14 @@
 
 class StepRepr_PerpendicularTo;
 DEFINE_STANDARD_HANDLE(StepRepr_PerpendicularTo, StepRepr_DerivedShapeAspect)
+
 //! Added for Dimensional Tolerances
 class StepRepr_PerpendicularTo : public StepRepr_DerivedShapeAspect
 {
 
 public:
-  
   Standard_EXPORT StepRepr_PerpendicularTo();
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_PerpendicularTo,StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PerpendicularTo, StepRepr_DerivedShapeAspect)
 };
 #endif // _StepRepr_PerpendicularTo_HeaderFile

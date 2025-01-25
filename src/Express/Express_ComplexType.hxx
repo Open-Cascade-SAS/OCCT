@@ -26,11 +26,10 @@ class Express_ComplexType : public Express_Type
 {
 
 public:
-
   //! Creates an object and initializes fields
-  Standard_EXPORT Express_ComplexType (const Standard_Integer theImin,
-                                       const Standard_Integer theImax,
-                                       const Handle(Express_Type)& theType);
+  Standard_EXPORT Express_ComplexType(const Standard_Integer      theImin,
+                                      const Standard_Integer      theImax,
+                                      const Handle(Express_Type)& theType);
 
   //! Returns type of complex type items
   Standard_EXPORT const Handle(Express_Type)& Type() const;
@@ -44,18 +43,17 @@ public:
 
   //! Declares type as used by some item being generated.
   //! Calls Use() for type of elements
-  Standard_EXPORT virtual void Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Use2(const TCollection_AsciiString& theRefName,
+                                    const TCollection_AsciiString& theRefPack) const
+    Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Express_ComplexType, Express_Type)
 
 protected:
-
 private:
-
-  Standard_Integer myMin;
-  Standard_Integer myMax;
+  Standard_Integer     myMin;
+  Standard_Integer     myMax;
   Handle(Express_Type) myType;
-
 };
 
 #endif // _Express_ComplexType_HeaderFile

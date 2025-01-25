@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<HLRBRep_EdgeData> HLRBRep_Array1OfEData;
 
-
 #endif

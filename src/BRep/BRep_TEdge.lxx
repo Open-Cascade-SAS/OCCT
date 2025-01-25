@@ -15,58 +15,52 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  BRep_TEdge::Tolerance()const 
+inline Standard_Real BRep_TEdge::Tolerance() const
 {
   return myTolerance;
 }
 
-
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
- inline void  BRep_TEdge::Tolerance(const Standard_Real T)
+inline void BRep_TEdge::Tolerance(const Standard_Real T)
 {
   myTolerance = T;
 }
 
-
 //=======================================================================
-//function : UpdateTolerance
-//purpose  : 
+// function : UpdateTolerance
+// purpose  :
 //=======================================================================
 
- inline void  BRep_TEdge::UpdateTolerance(const Standard_Real T)
+inline void BRep_TEdge::UpdateTolerance(const Standard_Real T)
 {
-  if (T > myTolerance) myTolerance = T;
+  if (T > myTolerance)
+    myTolerance = T;
 }
 
-
-
 //=======================================================================
-//function : Curves
-//purpose  : 
+// function : Curves
+// purpose  :
 //=======================================================================
 
- inline const BRep_ListOfCurveRepresentation&  BRep_TEdge::Curves()const 
+inline const BRep_ListOfCurveRepresentation& BRep_TEdge::Curves() const
 {
   return myCurves;
 }
 
-
 //=======================================================================
-//function : ChangeCurves
-//purpose  : 
+// function : ChangeCurves
+// purpose  :
 //=======================================================================
 
- inline BRep_ListOfCurveRepresentation&  BRep_TEdge::ChangeCurves()
+inline BRep_ListOfCurveRepresentation& BRep_TEdge::ChangeCurves()
 {
   return myCurves;
 }
-
-

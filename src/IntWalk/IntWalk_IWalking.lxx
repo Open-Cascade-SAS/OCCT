@@ -17,46 +17,43 @@
 #include IntWalk_TheIWLine_hxx
 
 inline void IntWalk_IWalking::SetTolerance(const Standard_Real Epsilon,
-					   const Standard_Real Deflection,
-					   const Standard_Real Increment )
+                                           const Standard_Real Deflection,
+                                           const Standard_Real Increment)
 {
-  fleche = Deflection;
-  pas = Increment;
-  epsilon = Epsilon*Epsilon;
+  fleche  = Deflection;
+  pas     = Increment;
+  epsilon = Epsilon * Epsilon;
 }
-
 
 inline Standard_Boolean IntWalk_IWalking::IsDone() const
 {
- return done;
+  return done;
 }
 
 inline Standard_Integer IntWalk_IWalking::NbLines() const
-{ 
-  if(!done) throw StdFail_NotDone();
+{
+  if (!done)
+    throw StdFail_NotDone();
   return lines.Length();
 }
 
-inline const Handle(IntWalk_TheIWLine)& IntWalk_IWalking::Value
-  (const Standard_Integer Index) const
-{ 
-  if(!done) throw StdFail_NotDone();
+inline const Handle(IntWalk_TheIWLine)& IntWalk_IWalking::Value(const Standard_Integer Index) const
+{
+  if (!done)
+    throw StdFail_NotDone();
   return lines.Value(Index);
 }
 
-inline Standard_Integer IntWalk_IWalking::NbSinglePnts() const 
+inline Standard_Integer IntWalk_IWalking::NbSinglePnts() const
 {
-    if(!done) throw StdFail_NotDone();
-    return seqSingle.Length();
+  if (!done)
+    throw StdFail_NotDone();
+  return seqSingle.Length();
 }
 
-inline const ThePointOfPath& IntWalk_IWalking::SinglePnt
-  (const Standard_Integer Index) const
+inline const ThePointOfPath& IntWalk_IWalking::SinglePnt(const Standard_Integer Index) const
 {
-  if(!done) throw StdFail_NotDone();
+  if (!done)
+    throw StdFail_NotDone();
   return seqSingle.Value(Index);
 }
-
-
-
-

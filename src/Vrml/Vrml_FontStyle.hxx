@@ -26,59 +26,39 @@
 #include <Vrml_FontStyleStyle.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a FontStyle node of VRML of properties of geometry
 //! and its appearance.
 //! The  size  field  specifies  the  height  (in  object  space  units)
 //! of  glyphs  rendered  and  determines  the  vertical  spacing  of
 //! adjacent  lines  of  text.
-class Vrml_FontStyle 
+class Vrml_FontStyle
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT Vrml_FontStyle(const Standard_Real aSize = 10, const Vrml_FontStyleFamily aFamily = Vrml_SERIF, const Vrml_FontStyleStyle aStyle = Vrml_NONE);
-  
-  Standard_EXPORT void SetSize (const Standard_Real aSize);
-  
+  Standard_EXPORT Vrml_FontStyle(const Standard_Real        aSize   = 10,
+                                 const Vrml_FontStyleFamily aFamily = Vrml_SERIF,
+                                 const Vrml_FontStyleStyle  aStyle  = Vrml_NONE);
+
+  Standard_EXPORT void SetSize(const Standard_Real aSize);
+
   Standard_EXPORT Standard_Real Size() const;
-  
-  Standard_EXPORT void SetFamily (const Vrml_FontStyleFamily aFamily);
-  
+
+  Standard_EXPORT void SetFamily(const Vrml_FontStyleFamily aFamily);
+
   Standard_EXPORT Vrml_FontStyleFamily Family() const;
-  
-  Standard_EXPORT void SetStyle (const Vrml_FontStyleStyle aStyle);
-  
+
+  Standard_EXPORT void SetStyle(const Vrml_FontStyleStyle aStyle);
+
   Standard_EXPORT Vrml_FontStyleStyle Style() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real mySize;
+  Standard_Real        mySize;
   Vrml_FontStyleFamily myFamily;
-  Vrml_FontStyleStyle myStyle;
-
-
+  Vrml_FontStyleStyle  myStyle;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_FontStyle_HeaderFile

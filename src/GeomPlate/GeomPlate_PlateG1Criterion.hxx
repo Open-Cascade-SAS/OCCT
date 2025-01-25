@@ -28,45 +28,29 @@
 class AdvApp2Var_Patch;
 class AdvApp2Var_Context;
 
-
-
 //! this class contains a specific G1 criterion for GeomPlate_MakeApprox
-class GeomPlate_PlateG1Criterion  : public AdvApp2Var_Criterion
+class GeomPlate_PlateG1Criterion : public AdvApp2Var_Criterion
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomPlate_PlateG1Criterion(const TColgp_SequenceOfXY& Data, const TColgp_SequenceOfXYZ& G1Data, const Standard_Real Maximum, const AdvApp2Var_CriterionType Type = AdvApp2Var_Absolute, const AdvApp2Var_CriterionRepartition Repart = AdvApp2Var_Regular);
-  
-  Standard_EXPORT virtual void Value (AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean IsSatisfied (const AdvApp2Var_Patch& P) const Standard_OVERRIDE;
+  Standard_EXPORT GeomPlate_PlateG1Criterion(
+    const TColgp_SequenceOfXY&            Data,
+    const TColgp_SequenceOfXYZ&           G1Data,
+    const Standard_Real                   Maximum,
+    const AdvApp2Var_CriterionType        Type   = AdvApp2Var_Absolute,
+    const AdvApp2Var_CriterionRepartition Repart = AdvApp2Var_Regular);
 
+  Standard_EXPORT virtual void Value(AdvApp2Var_Patch&         P,
+                                     const AdvApp2Var_Context& C) const Standard_OVERRIDE;
 
-
+  Standard_EXPORT virtual Standard_Boolean IsSatisfied(const AdvApp2Var_Patch& P) const
+    Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TColgp_SequenceOfXY myData;
+  TColgp_SequenceOfXY  myData;
   TColgp_SequenceOfXYZ myXYZ;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomPlate_PlateG1Criterion_HeaderFile

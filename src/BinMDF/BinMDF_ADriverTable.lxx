@@ -14,54 +14,53 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : AssignId
-//purpose  : Assigns the ID to the driver of the Type
+// function : AssignId
+// purpose  : Assigns the ID to the driver of the Type
 //=======================================================================
 
-inline void BinMDF_ADriverTable::AssignId
-		(const Handle(Standard_Type)& theType,
-		 const Standard_Integer theId)
+inline void BinMDF_ADriverTable::AssignId(const Handle(Standard_Type)& theType,
+                                          const Standard_Integer       theId)
 {
-  myMapId.Bind (theType, theId);
+  myMapId.Bind(theType, theId);
 }
 
 //=======================================================================
-//function : GetDriver
-//purpose  : Gets a driver <theDriver> according to <theType>.
+// function : GetDriver
+// purpose  : Gets a driver <theDriver> according to <theType>.
 //           Returns Type ID if the driver was assigned an ID; 0 otherwise.
 //=======================================================================
 
-inline Standard_Integer BinMDF_ADriverTable::GetDriver
-                (const Handle(Standard_Type)&	theType,
-		 Handle(BinMDF_ADriver)&	theDriver)
+inline Standard_Integer BinMDF_ADriverTable::GetDriver(const Handle(Standard_Type)& theType,
+                                                       Handle(BinMDF_ADriver)&      theDriver)
 {
-  if (!myMap.IsBound (theType)) // try to assign driver for derived type
+  if (!myMap.IsBound(theType)) // try to assign driver for derived type
   {
-    AddDerivedDriver (theType->Name());
+    AddDerivedDriver(theType->Name());
   }
 
   Standard_Integer anId = 0;
-  if (myMap.IsBound(theType)) {
-    theDriver = myMap (theType);
+  if (myMap.IsBound(theType))
+  {
+    theDriver = myMap(theType);
     if (myMapId.IsBound1(theType))
-      anId = myMapId.Find1 (theType);
+      anId = myMapId.Find1(theType);
   }
   return anId;
 }
 
 //=======================================================================
-//function : GetDriver
-//purpose  : Returns a driver according to <theTypeId>.
+// function : GetDriver
+// purpose  : Returns a driver according to <theTypeId>.
 //           Returns null handle if a driver is not found
 //=======================================================================
 
-inline Handle(BinMDF_ADriver) BinMDF_ADriverTable::GetDriver
-                (const Standard_Integer theTypeId)
+inline Handle(BinMDF_ADriver) BinMDF_ADriverTable::GetDriver(const Standard_Integer theTypeId)
 {
   Handle(BinMDF_ADriver) aDriver;
-  if (myMapId.IsBound2(theTypeId)) {
-    const Handle(Standard_Type)& aType = myMapId.Find2 (theTypeId);
-    aDriver = myMap (aType);
+  if (myMapId.IsBound2(theTypeId))
+  {
+    const Handle(Standard_Type)& aType = myMapId.Find2(theTypeId);
+    aDriver                            = myMap(aType);
   }
   return aDriver;
 }

@@ -33,7 +33,7 @@ void RWStepAP214::Init()
   THE_RWStepAP214_init = 1;
   RWHeaderSection::Init();
   Handle(StepAP214_Protocol) proto = StepAP214::Protocol();
-  Interface_GeneralLib::SetGlobal (new RWStepAP214_GeneralModule,proto);
-  Interface_ReaderLib::SetGlobal  (new RWStepAP214_ReadWriteModule,proto);
-  StepData_WriterLib::SetGlobal   (new RWStepAP214_ReadWriteModule,proto);
+  Interface_GeneralLib::SetGlobal(new RWStepAP214_GeneralModule, proto);
+  Interface_ReaderLib::SetGlobal(new RWStepAP214_ReadWriteModule, proto);
+  StepData_WriterLib::SetGlobal(new RWStepAP214_ReadWriteModule, proto);
 }

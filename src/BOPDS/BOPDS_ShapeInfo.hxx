@@ -26,13 +26,11 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <TopoDS_Shape.hxx>
 
-
 //! The class BOPDS_ShapeInfo is to store
 //! handy information about shape
-class BOPDS_ShapeInfo 
+class BOPDS_ShapeInfo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -43,132 +41,97 @@ public:
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
   BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
 
   //! Modifier
   //! Sets the shape <theS>
-    void SetShape (const TopoDS_Shape& theS);
-  
+  void SetShape(const TopoDS_Shape& theS);
 
   //! Selector
   //! Returns the shape
-    const TopoDS_Shape& Shape() const;
-  
+  const TopoDS_Shape& Shape() const;
 
   //! Modifier
   //! Sets the type of shape theType
-    void SetShapeType (const TopAbs_ShapeEnum theType);
-  
+  void SetShapeType(const TopAbs_ShapeEnum theType);
 
   //! Selector
   //! Returns the type of shape
-    TopAbs_ShapeEnum ShapeType() const;
-  
+  TopAbs_ShapeEnum ShapeType() const;
 
   //! Modifier
   //! Sets the boundung box of the shape theBox
-    void SetBox (const Bnd_Box& theBox);
-  
+  void SetBox(const Bnd_Box& theBox);
 
   //! Selector
   //! Returns the boundung box of the shape
-    const Bnd_Box& Box() const;
-  
+  const Bnd_Box& Box() const;
 
   //! Selector/Modifier
   //! Returns the boundung box of the shape
-    Bnd_Box& ChangeBox();
-  
+  Bnd_Box& ChangeBox();
 
   //! Selector
   //! Returns the list of indices of sub-shapes
-    const TColStd_ListOfInteger& SubShapes() const;
-  
+  const TColStd_ListOfInteger& SubShapes() const;
 
   //! Selector/ Modifier
   //! Returns the list of indices of sub-shapes
-    TColStd_ListOfInteger& ChangeSubShapes();
-  
+  TColStd_ListOfInteger& ChangeSubShapes();
 
   //! Query
   //! Returns true if the shape has sub-shape with
   //! index theI
-    Standard_Boolean HasSubShape (const Standard_Integer theI) const;
-  
-    Standard_Boolean HasReference() const;
-  
+  Standard_Boolean HasSubShape(const Standard_Integer theI) const;
+
+  Standard_Boolean HasReference() const;
 
   //! Modifier
   //! Sets the index of a reference information
-    void SetReference (const Standard_Integer theI);
-  
+  void SetReference(const Standard_Integer theI);
 
   //! Selector
   //! Returns the index of a reference information
-    Standard_Integer Reference() const;
-  
+  Standard_Integer Reference() const;
 
   //! Query
   //! Returns true if the shape has boundary representation
-    Standard_Boolean HasBRep() const;
-  
+  Standard_Boolean HasBRep() const;
 
   //! Returns true if the shape can be participant of
   //! an interference
   //!
   //! Flag
-    Standard_Boolean IsInterfering() const;
-  
+  Standard_Boolean IsInterfering() const;
 
   //! Query
   //! Returns true if there is flag.
-    Standard_Boolean HasFlag() const;
-  
+  Standard_Boolean HasFlag() const;
 
   //! Query
   //! Returns true if there is flag.
   //! Returns the flag theFlag
-    Standard_Boolean HasFlag (Standard_Integer& theFlag) const;
-  
+  Standard_Boolean HasFlag(Standard_Integer& theFlag) const;
 
   //! Modifier
   //! Sets the flag
-    void SetFlag (const Standard_Integer theI);
-  
+  void SetFlag(const Standard_Integer theI);
 
   //! Returns the flag
-    Standard_Integer Flag() const;
-  
+  Standard_Integer Flag() const;
+
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
-
-
-
-  TopoDS_Shape myShape;
-  TopAbs_ShapeEnum myType;
-  Bnd_Box myBox;
+  TopoDS_Shape          myShape;
+  TopAbs_ShapeEnum      myType;
+  Bnd_Box               myBox;
   TColStd_ListOfInteger mySubShapes;
-  Standard_Integer myReference;
-  Standard_Integer myFlag;
-
+  Standard_Integer      myReference;
+  Standard_Integer      myFlag;
 
 private:
-
-
-
-
-
 };
 
-
 #include <BOPDS_ShapeInfo.lxx>
-
-
-
-
 
 #endif // _BOPDS_ShapeInfo_HeaderFile

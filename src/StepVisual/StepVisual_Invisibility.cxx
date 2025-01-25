@@ -11,38 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Invisibility,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Invisibility, Standard_Transient)
 
-StepVisual_Invisibility::StepVisual_Invisibility ()  {}
+StepVisual_Invisibility::StepVisual_Invisibility() {}
 
-void StepVisual_Invisibility::Init(
-	const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
+void StepVisual_Invisibility::Init(const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
 {
-	// --- classe own fields ---
-	invisibleItems = aInvisibleItems;
+  // --- classe own fields ---
+  invisibleItems = aInvisibleItems;
 }
 
-
-void StepVisual_Invisibility::SetInvisibleItems(const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
+void StepVisual_Invisibility::SetInvisibleItems(
+  const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
 {
-	invisibleItems = aInvisibleItems;
+  invisibleItems = aInvisibleItems;
 }
 
 Handle(StepVisual_HArray1OfInvisibleItem) StepVisual_Invisibility::InvisibleItems() const
 {
-	return invisibleItems;
+  return invisibleItems;
 }
 
-StepVisual_InvisibleItem StepVisual_Invisibility::InvisibleItemsValue(const Standard_Integer num) const
+StepVisual_InvisibleItem StepVisual_Invisibility::InvisibleItemsValue(
+  const Standard_Integer num) const
 {
-	return invisibleItems->Value(num);
+  return invisibleItems->Value(num);
 }
 
-Standard_Integer StepVisual_Invisibility::NbInvisibleItems () const
+Standard_Integer StepVisual_Invisibility::NbInvisibleItems() const
 {
-	return invisibleItems->Length();
+  return invisibleItems->Length();
 }

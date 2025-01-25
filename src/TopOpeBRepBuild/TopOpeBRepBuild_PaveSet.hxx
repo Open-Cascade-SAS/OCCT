@@ -28,74 +28,52 @@ class TopoDS_Shape;
 class TopOpeBRepBuild_Pave;
 class TopOpeBRepBuild_Loop;
 
-
-
 //! class providing an exploration of a set of vertices to build edges.
 //! It is similar to LoopSet from TopOpeBRepBuild where Loop is Pave.
-class TopOpeBRepBuild_PaveSet  : public TopOpeBRepBuild_LoopSet
+class TopOpeBRepBuild_PaveSet : public TopOpeBRepBuild_LoopSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Create a Pave set on edge <E>. It contains <E> vertices.
   Standard_EXPORT TopOpeBRepBuild_PaveSet(const TopoDS_Shape& E);
-  
-  Standard_EXPORT void RemovePV (const Standard_Boolean B);
-  
+
+  Standard_EXPORT void RemovePV(const Standard_Boolean B);
+
   //! Add <PV> in the Pave set.
-  Standard_EXPORT void Append (const Handle(TopOpeBRepBuild_Pave)& PV);
-  
+  Standard_EXPORT void Append(const Handle(TopOpeBRepBuild_Pave)& PV);
+
   Standard_EXPORT virtual void InitLoop() Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Boolean MoreLoop() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual void NextLoop() Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Handle(TopOpeBRepBuild_Loop) Loop() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT const TopoDS_Edge& Edge() const;
-  
+
   Standard_EXPORT Standard_Boolean HasEqualParameters();
-  
+
   Standard_EXPORT Standard_Real EqualParameters() const;
-  
+
   Standard_EXPORT Standard_Boolean ClosedVertices();
-  
-  Standard_EXPORT static void SortPave (const TopOpeBRepBuild_ListOfPave& Lin, TopOpeBRepBuild_ListOfPave& Lout);
 
-
-
+  Standard_EXPORT static void SortPave(const TopOpeBRepBuild_ListOfPave& Lin,
+                                       TopOpeBRepBuild_ListOfPave&       Lout);
 
 protected:
-
-
-
-
-
 private:
-
-  
   Standard_EXPORT void Prepare();
 
-
-  TopoDS_Edge myEdge;
-  TopOpeBRepBuild_ListOfPave myVertices;
+  TopoDS_Edge                              myEdge;
+  TopOpeBRepBuild_ListOfPave               myVertices;
   TopOpeBRepBuild_ListIteratorOfListOfPave myVerticesIt;
-  Standard_Boolean myHasEqualParameters;
-  Standard_Real myEqualParameters;
-  Standard_Boolean myClosed;
-  Standard_Boolean myPrepareDone;
-  Standard_Boolean myRemovePV;
-
-
+  Standard_Boolean                         myHasEqualParameters;
+  Standard_Real                            myEqualParameters;
+  Standard_Boolean                         myClosed;
+  Standard_Boolean                         myPrepareDone;
+  Standard_Boolean                         myRemovePV;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_PaveSet_HeaderFile

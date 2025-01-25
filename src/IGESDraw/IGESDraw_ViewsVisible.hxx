@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class IGESData_IGESEntity;
 
-
 class IGESDraw_ViewsVisible;
 DEFINE_STANDARD_HANDLE(IGESDraw_ViewsVisible, IGESData_ViewKindEntity)
 
@@ -39,61 +38,44 @@ class IGESDraw_ViewsVisible : public IGESData_ViewKindEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDraw_ViewsVisible();
-  
+
   //! This method is used to set the fields of the class
   //! ViewsVisible
   //! - allViewEntities  : All View kind entities
   //! - allDisplayEntity : All entities whose display is specified
-  Standard_EXPORT void Init (const Handle(IGESDraw_HArray1OfViewKindEntity)& allViewEntities, const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
-  
+  Standard_EXPORT void Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViewEntities,
+                            const Handle(IGESData_HArray1OfIGESEntity)&     allDisplayEntity);
+
   //! Changes only the list of Displayed Entities (Null allowed)
-  Standard_EXPORT void InitImplied (const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
-  
+  Standard_EXPORT void InitImplied(const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
+
   //! Returns False (for a complex view)
   Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
-  
+
   //! returns the Number of views visible
   Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
-  
+
   //! returns the number of entities displayed in the Views or zero if
   //! no Entities specified in these Views
   Standard_EXPORT Standard_Integer NbDisplayedEntities() const;
-  
+
   //! returns the Index'th ViewKindEntity Entity
   //! raises exception if Index  <= 0 or Index > NbViewsVisible()
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem (const Standard_Integer Index) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer Index) const
+    Standard_OVERRIDE;
+
   //! returns the Index'th entity whose display is being specified by
   //! this associativity instance
   //! raises exception if Index  <= 0 or Index > NbEntityDisplayed()
-  Standard_EXPORT Handle(IGESData_IGESEntity) DisplayedEntity (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESData_IGESEntity) DisplayedEntity(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDraw_ViewsVisible,IGESData_ViewKindEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_ViewsVisible, IGESData_ViewKindEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDraw_HArray1OfViewKindEntity) theViewEntities;
-  Handle(IGESData_HArray1OfIGESEntity) theDisplayEntity;
-
-
+  Handle(IGESData_HArray1OfIGESEntity)     theDisplayEntity;
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_ViewsVisible_HeaderFile

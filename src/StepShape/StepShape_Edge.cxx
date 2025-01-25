@@ -11,44 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_Edge.hxx>
 #include <StepShape_Vertex.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Edge,StepShape_TopologicalRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Edge, StepShape_TopologicalRepresentationItem)
 
-StepShape_Edge::StepShape_Edge ()  {}
+StepShape_Edge::StepShape_Edge() {}
 
-void StepShape_Edge::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_Vertex)& aEdgeStart,
-	const Handle(StepShape_Vertex)& aEdgeEnd)
+void StepShape_Edge::Init(const Handle(TCollection_HAsciiString)& aName,
+                          const Handle(StepShape_Vertex)&         aEdgeStart,
+                          const Handle(StepShape_Vertex)&         aEdgeEnd)
 {
-	// --- classe own fields ---
-	edgeStart = aEdgeStart;
-	edgeEnd = aEdgeEnd;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  edgeStart = aEdgeStart;
+  edgeEnd   = aEdgeEnd;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_Edge::SetEdgeStart(const Handle(StepShape_Vertex)& aEdgeStart)
 {
-	edgeStart = aEdgeStart;
+  edgeStart = aEdgeStart;
 }
 
 Handle(StepShape_Vertex) StepShape_Edge::EdgeStart() const
 {
-	return edgeStart;
+  return edgeStart;
 }
 
 void StepShape_Edge::SetEdgeEnd(const Handle(StepShape_Vertex)& aEdgeEnd)
 {
-	edgeEnd = aEdgeEnd;
+  edgeEnd = aEdgeEnd;
 }
 
 Handle(StepShape_Vertex) StepShape_Edge::EdgeEnd() const
 {
-	return edgeEnd;
+  return edgeEnd;
 }

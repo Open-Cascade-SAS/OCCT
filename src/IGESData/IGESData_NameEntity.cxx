@@ -11,11 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_NameEntity.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_NameEntity,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_NameEntity, IGESData_IGESEntity)
 
 // NameEntity sert a decrire des entites "propriete nom" (Value a definir)

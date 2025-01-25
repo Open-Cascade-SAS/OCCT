@@ -23,22 +23,17 @@
 class BRepMesh_ConeRangeSplitter : public BRepMesh_DefaultRangeSplitter
 {
 public:
-
   //! Constructor.
-  BRepMesh_ConeRangeSplitter()
-  {
-  }
+  BRepMesh_ConeRangeSplitter() {}
 
   //! Destructor.
-  virtual ~BRepMesh_ConeRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_ConeRangeSplitter() {}
 
   //! Returns split intervals along U and V direction.
   //! @param theParameters meshing parameters.
-  //! @param[out] theStepsNb number of steps along corresponding direction. 
+  //! @param[out] theStepsNb number of steps along corresponding direction.
   std::pair<Standard_Real, Standard_Real> GetSplitSteps(
-    const IMeshTools_Parameters&                   theParameters,    
+    const IMeshTools_Parameters&                   theParameters,
     std::pair<Standard_Integer, Standard_Integer>& theStepsNb) const;
 
   //! Returns list of nodes generated using surface data and specified parameters.

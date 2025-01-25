@@ -24,7 +24,6 @@ class Graphic3d_AspectLine3d : public Graphic3d_Aspects
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 public:
-
   //! Creates a context table for line primitives
   //! defined with the following default values:
   //!
@@ -32,36 +31,32 @@ public:
   //! Type  = Aspect_TOL_SOLID;
   //! Width = 1.0;
   Standard_EXPORT Graphic3d_AspectLine3d();
-  
+
   //! Creates a context table for line primitives defined with the specified values.
   //! Warning: theWidth is the "line width scale factor".
   //! The nominal line width is 1 pixel.
-  //! The width of the line is determined by applying the line width scale factor to this nominal line width.
-  //! The supported line widths vary by 1-pixel units.
-  Standard_EXPORT Graphic3d_AspectLine3d (const Quantity_Color& theColor,
-                                          Aspect_TypeOfLine theType,
-                                          Standard_Real theWidth);
+  //! The width of the line is determined by applying the line width scale factor to this nominal
+  //! line width. The supported line widths vary by 1-pixel units.
+  Standard_EXPORT Graphic3d_AspectLine3d(const Quantity_Color& theColor,
+                                         Aspect_TypeOfLine     theType,
+                                         Standard_Real         theWidth);
 
   //! Return line type.
   Aspect_TypeOfLine Type() const { return myLineType; }
 
   //! Modifies the type of line.
-  void SetType (const Aspect_TypeOfLine theType) { SetLineType (theType); }
+  void SetType(const Aspect_TypeOfLine theType) { SetLineType(theType); }
 
   //! Return line width.
   Standard_ShortReal Width() const { return myLineWidth; }
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetWidth (const Standard_Real theWidth) { SetWidth ((float )theWidth); }
+  void SetWidth(const Standard_Real theWidth) { SetWidth((float)theWidth); }
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetWidth (Standard_ShortReal theWidth)
-  {
-    SetLineWidth (theWidth);
-  }
-
+  void SetWidth(Standard_ShortReal theWidth) { SetLineWidth(theWidth); }
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_AspectLine3d, Graphic3d_Aspects)

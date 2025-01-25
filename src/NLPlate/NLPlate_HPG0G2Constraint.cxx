@@ -14,24 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <NLPlate_HPG0G2Constraint.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0G2Constraint,NLPlate_HPG0G1Constraint)
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0G2Constraint, NLPlate_HPG0G1Constraint)
 
-NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY& UV, const gp_XYZ& Value, const Plate_D1& D1T, const Plate_D2& D2T)
-: NLPlate_HPG0G1Constraint(UV,Value,D1T), myG2Target(D2T)
+NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY&    UV,
+                                                   const gp_XYZ&   Value,
+                                                   const Plate_D1& D1T,
+                                                   const Plate_D2& D2T)
+    : NLPlate_HPG0G1Constraint(UV, Value, D1T),
+      myG2Target(D2T)
 {
   SetActiveOrder(2);
 }
+
 Standard_Integer NLPlate_HPG0G2Constraint::ActiveOrder() const
 {
-  if (myActiveOrder<2) return myActiveOrder;
-  else return 2;
+  if (myActiveOrder < 2)
+    return myActiveOrder;
+  else
+    return 2;
 }
+
 const Plate_D2& NLPlate_HPG0G2Constraint::G2Target() const
 {
   return myG2Target;

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,9 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_OrientedJoint, StepShape_OrientedEdge)
 
 //=======================================================================
-//function : StepKinematics_OrientedJoint
-//purpose  :
+// function : StepKinematics_OrientedJoint
+// purpose  :
 //=======================================================================
-StepKinematics_OrientedJoint::StepKinematics_OrientedJoint ()
-{
-}
+StepKinematics_OrientedJoint::StepKinematics_OrientedJoint() {}

@@ -24,57 +24,38 @@
 #include <Intf_Polygon2d.hxx>
 class gp_Pnt2d;
 
-
-
-class IntPatch_Polygo  : public Intf_Polygon2d
+class IntPatch_Polygo : public Intf_Polygon2d
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    Standard_Real Error() const;
-  
+  Standard_Real Error() const;
+
   Standard_EXPORT virtual Standard_Integer NbPoints() const = 0;
-  
-  Standard_EXPORT virtual gp_Pnt2d Point (const Standard_Integer Index) const = 0;
-  
+
+  Standard_EXPORT virtual gp_Pnt2d Point(const Standard_Integer Index) const = 0;
+
   //! Returns the tolerance of the polygon.
-    virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
-  
+  virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
+
   //! Returns the number of Segments in the polyline.
-    virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
-  
+  virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
+
   //! Returns the points of the segment <Index> in the Polygon.
-    virtual void Segment (const Standard_Integer theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const Standard_OVERRIDE;
-  
+  virtual void Segment(const Standard_Integer theIndex,
+                       gp_Pnt2d&              theBegin,
+                       gp_Pnt2d&              theEnd) const Standard_OVERRIDE;
+
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
-
-  
   Standard_EXPORT IntPatch_Polygo(const Standard_Real theError = 0.0);
-
 
   Standard_Real myError;
 
-
 private:
-
-
-
-
-
 };
 
-
 #include <IntPatch_Polygo.lxx>
-
-
-
-
 
 #endif // _IntPatch_Polygo_HeaderFile

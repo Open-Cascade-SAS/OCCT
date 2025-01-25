@@ -24,7 +24,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <HLRBRep_CLPropsATool.hxx>
- 
 
 #define Curve HLRBRep_Curve*
 #define Curve_hxx <HLRBRep_Curve.hxx>
@@ -39,4 +38,3 @@
 #define LProp_CLProps HLRBRep_CLProps
 #define LProp_CLProps_hxx <HLRBRep_CLProps.hxx>
 #include "../LProp/LProp_CLProps.gxx"
-

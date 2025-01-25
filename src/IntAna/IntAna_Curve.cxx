@@ -15,26 +15,26 @@
 // commercial license or contractual agreement.
 
 #ifndef OCCT_DEBUG
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
+  #define No_Standard_RangeError
+  #define No_Standard_OutOfRange
 #endif
 
 //----------------------------------------------------------------------
 //-- Differents constructeurs sont proposes qui correspondent aux
-//-- polynomes en Z :  
-//--    A(Sin(Theta),Cos(Theta)) Z**2 
+//-- polynomes en Z :
+//--    A(Sin(Theta),Cos(Theta)) Z**2
 //--  + B(Sin(Theta),Cos(Theta)) Z
 //--  + C(Sin(Theta),Cos(Theta))
 //--
-//-- Une Courbe est definie sur un domaine 
+//-- Une Courbe est definie sur un domaine
 //--
 //-- Value retourne le point de parametre U(Theta),V(Theta)
 //--       ou V est la solution du polynome A V**2 + B V + C
 //--       (Selon les cas, on prend V+ ou V-)
 //--
-//-- D1u   calcule le vecteur tangent a la courbe 
+//-- D1u   calcule le vecteur tangent a la courbe
 //--       et retourne le booleen Standard_False si ce calcul ne peut
-//--       pas etre mene a bien.  
+//--       pas etre mene a bien.
 //----------------------------------------------------------------------
 
 #include <algorithm>
@@ -51,231 +51,230 @@
 #include <Standard_DomainError.hxx>
 
 //=======================================================================
-//function : IntAna_Curve
-//purpose  : 
+// function : IntAna_Curve
+// purpose  :
 //=======================================================================
 IntAna_Curve::IntAna_Curve()
-: Z0Cte(0.0),
-  Z0Sin(0.0),
-  Z0Cos(0.0),
-  Z0SinSin(0.0),
-  Z0CosCos(0.0),
-  Z0CosSin(0.0),
-  Z1Cte(0.0),
-  Z1Sin(0.0),
-  Z1Cos(0.0),
-  Z1SinSin(0.0),
-  Z1CosCos(0.0),
-  Z1CosSin(0.0),
-  Z2Cte(0.0),
-  Z2Sin(0.0),
-  Z2Cos(0.0),
-  Z2SinSin(0.0),
-  Z2CosCos(0.0),
-  Z2CosSin(0.0),
-  TwoCurves(Standard_False),
-  TakeZPositive(Standard_False),
-  Tolerance(0.0),
-  DomainInf(0.0),
-  DomainSup(0.0),
-  RestrictedInf(Standard_False),
-  RestrictedSup(Standard_False),
-  firstbounded(Standard_False),
-  lastbounded(Standard_False),
-  typequadric(GeomAbs_OtherSurface),
-  RCyl(0.0),
-  Angle(0.0),
-  myFirstParameter(0.0),
-  myLastParameter(0.0)
+    : Z0Cte(0.0),
+      Z0Sin(0.0),
+      Z0Cos(0.0),
+      Z0SinSin(0.0),
+      Z0CosCos(0.0),
+      Z0CosSin(0.0),
+      Z1Cte(0.0),
+      Z1Sin(0.0),
+      Z1Cos(0.0),
+      Z1SinSin(0.0),
+      Z1CosCos(0.0),
+      Z1CosSin(0.0),
+      Z2Cte(0.0),
+      Z2Sin(0.0),
+      Z2Cos(0.0),
+      Z2SinSin(0.0),
+      Z2CosCos(0.0),
+      Z2CosSin(0.0),
+      TwoCurves(Standard_False),
+      TakeZPositive(Standard_False),
+      Tolerance(0.0),
+      DomainInf(0.0),
+      DomainSup(0.0),
+      RestrictedInf(Standard_False),
+      RestrictedSup(Standard_False),
+      firstbounded(Standard_False),
+      lastbounded(Standard_False),
+      typequadric(GeomAbs_OtherSurface),
+      RCyl(0.0),
+      Angle(0.0),
+      myFirstParameter(0.0),
+      myLastParameter(0.0)
 {
 }
+
 //=======================================================================
-//function : SetConeQuadValues
-//purpose  : Description de l intersection Cone Quadrique
+// function : SetConeQuadValues
+// purpose  : Description de l intersection Cone Quadrique
 //=======================================================================
-void IntAna_Curve::SetConeQuadValues(const gp_Cone& Cone,
-                                     const Standard_Real Qxx,
-                                     const Standard_Real Qyy,
-                                     const Standard_Real Qzz,
-                                     const Standard_Real Qxy,
-                                     const Standard_Real Qxz,
-                                     const Standard_Real Qyz,
-                                     const Standard_Real Qx,
-                                     const Standard_Real Qy,
-                                     const Standard_Real Qz,
-                                     const Standard_Real Q1,
-                                     const Standard_Real TOL,
-                                     const Standard_Real DomInf,
-                                     const Standard_Real DomSup,
+void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
+                                     const Standard_Real    Qxx,
+                                     const Standard_Real    Qyy,
+                                     const Standard_Real    Qzz,
+                                     const Standard_Real    Qxy,
+                                     const Standard_Real    Qxz,
+                                     const Standard_Real    Qyz,
+                                     const Standard_Real    Qx,
+                                     const Standard_Real    Qy,
+                                     const Standard_Real    Qz,
+                                     const Standard_Real    Q1,
+                                     const Standard_Real    TOL,
+                                     const Standard_Real    DomInf,
+                                     const Standard_Real    DomSup,
                                      const Standard_Boolean twocurves,
                                      const Standard_Boolean takezpositive)
 {
-  
-  Ax3        = Cone.Position();
-  RCyl       = Cone.RefRadius();
 
-  Angle      = Cone.SemiAngle();
-  Standard_Real UnSurTgAngle = 1.0/(Tan(Cone.SemiAngle()));
+  Ax3  = Cone.Position();
+  RCyl = Cone.RefRadius();
 
-  typequadric= GeomAbs_Cone;
-  
-  TwoCurves     = twocurves;         //-- deux  Z pour un meme parametre 
-  TakeZPositive = takezpositive;     //-- Prendre sur la courbe le Z Positif
-                                     //--   ( -B + Sqrt()) et non (-B - Sqrt())
-  
-  
-  Z0Cte      = Q1;                   //-- Attention On a    Z?Cos Cos(t)
-  Z0Sin      = 0.0;                  //-- et Non          2 Z?Cos Cos(t) !!!
-  Z0Cos      = 0.0;                  //-- Ce pour tous les Parametres
-  Z0CosCos   = 0.0;                  //--  ie pas de Coefficient 2  
-  Z0SinSin   = 0.0;                  //--     devant les termes CS C S 
-  Z0CosSin   = 0.0;
-  
-  Z1Cte      = 2.0*(UnSurTgAngle)*Qz;
-  Z1Sin      = Qy+Qy;
-  Z1Cos      = Qx+Qx;
-  Z1CosCos   = 0.0;
-  Z1SinSin   = 0.0;
-  Z1CosSin   = 0.0;
-  
-  Z2Cte      = Qzz * UnSurTgAngle*UnSurTgAngle;
-  Z2Sin      = (UnSurTgAngle+UnSurTgAngle)*Qyz;
-  Z2Cos      = (UnSurTgAngle+UnSurTgAngle)*Qxz;
-  Z2CosCos   = Qxx;
-  Z2SinSin   = Qyy;
-  Z2CosSin   = Qxy;
+  Angle                      = Cone.SemiAngle();
+  Standard_Real UnSurTgAngle = 1.0 / (Tan(Cone.SemiAngle()));
 
-  Tolerance  = TOL;
+  typequadric = GeomAbs_Cone;
+
+  TwoCurves     = twocurves;     //-- deux  Z pour un meme parametre
+  TakeZPositive = takezpositive; //-- Prendre sur la courbe le Z Positif
+                                 //--   ( -B + Sqrt()) et non (-B - Sqrt())
+
+  Z0Cte    = Q1;  //-- Attention On a    Z?Cos Cos(t)
+  Z0Sin    = 0.0; //-- et Non          2 Z?Cos Cos(t) !!!
+  Z0Cos    = 0.0; //-- Ce pour tous les Parametres
+  Z0CosCos = 0.0; //--  ie pas de Coefficient 2
+  Z0SinSin = 0.0; //--     devant les termes CS C S
+  Z0CosSin = 0.0;
+
+  Z1Cte    = 2.0 * (UnSurTgAngle)*Qz;
+  Z1Sin    = Qy + Qy;
+  Z1Cos    = Qx + Qx;
+  Z1CosCos = 0.0;
+  Z1SinSin = 0.0;
+  Z1CosSin = 0.0;
+
+  Z2Cte    = Qzz * UnSurTgAngle * UnSurTgAngle;
+  Z2Sin    = (UnSurTgAngle + UnSurTgAngle) * Qyz;
+  Z2Cos    = (UnSurTgAngle + UnSurTgAngle) * Qxz;
+  Z2CosCos = Qxx;
+  Z2SinSin = Qyy;
+  Z2CosSin = Qxy;
+
+  Tolerance = TOL;
   DomainInf = DomInf;
   DomainSup = DomSup;
-  
-  RestrictedInf = RestrictedSup = Standard_True;   //-- Le Domaine est Borne
+
+  RestrictedInf = RestrictedSup = Standard_True; //-- Le Domaine est Borne
   firstbounded = lastbounded = Standard_False;
 
   myFirstParameter = DomainInf;
-  myLastParameter = (TwoCurves) ? DomainSup + DomainSup - DomainInf :
-                                  DomainSup;
+  myLastParameter  = (TwoCurves) ? DomainSup + DomainSup - DomainInf : DomainSup;
 }
 
 //=======================================================================
-//function : SetCylinderQuadValues
-//purpose  : Description de l intersection Cylindre Quadrique
+// function : SetCylinderQuadValues
+// purpose  : Description de l intersection Cylindre Quadrique
 //=======================================================================
-void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder& Cyl,
-                                         const Standard_Real Qxx,
-                                         const Standard_Real Qyy,
-                                         const Standard_Real Qzz,
-                                         const Standard_Real Qxy,
-                                         const Standard_Real Qxz,
-                                         const Standard_Real Qyz,
-                                         const Standard_Real Qx,
-                                         const Standard_Real Qy,
-                                         const Standard_Real Qz,
-                                         const Standard_Real Q1,
-                                         const Standard_Real TOL,
-                                         const Standard_Real DomInf,
-                                         const Standard_Real DomSup,
+void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
+                                         const Standard_Real    Qxx,
+                                         const Standard_Real    Qyy,
+                                         const Standard_Real    Qzz,
+                                         const Standard_Real    Qxy,
+                                         const Standard_Real    Qxz,
+                                         const Standard_Real    Qyz,
+                                         const Standard_Real    Qx,
+                                         const Standard_Real    Qy,
+                                         const Standard_Real    Qz,
+                                         const Standard_Real    Q1,
+                                         const Standard_Real    TOL,
+                                         const Standard_Real    DomInf,
+                                         const Standard_Real    DomSup,
                                          const Standard_Boolean twocurves,
                                          const Standard_Boolean takezpositive)
 {
-  
-  Ax3        = Cyl.Position();
-  RCyl       = Cyl.Radius();
-  typequadric= GeomAbs_Cylinder;
-  
-  TwoCurves     = twocurves;         //-- deux  Z pour un meme parametre 
-  TakeZPositive = takezpositive;     //-- Prendre sur la courbe le Z Positif
-  Standard_Real RCylmul2 = RCyl+RCyl;         //--   ( -B + Sqrt()) 
 
-  Z0Cte      = Q1;
-  Z0Sin      = RCylmul2*Qy;
-  Z0Cos      = RCylmul2*Qx;
-  Z0CosCos   = Qxx*RCyl*RCyl;
-  Z0SinSin   = Qyy*RCyl*RCyl;
-  Z0CosSin   = RCyl*RCyl*Qxy;
+  Ax3         = Cyl.Position();
+  RCyl        = Cyl.Radius();
+  typequadric = GeomAbs_Cylinder;
 
-  Z1Cte      = Qz+Qz;
-  Z1Sin      = RCylmul2*Qyz;
-  Z1Cos      = RCylmul2*Qxz;
-  Z1CosCos   = 0.0;
-  Z1SinSin   = 0.0;
-  Z1CosSin   = 0.0;
+  TwoCurves              = twocurves;     //-- deux  Z pour un meme parametre
+  TakeZPositive          = takezpositive; //-- Prendre sur la courbe le Z Positif
+  Standard_Real RCylmul2 = RCyl + RCyl;   //--   ( -B + Sqrt())
 
-  Z2Cte      = Qzz;
-  Z2Sin      = 0.0;
-  Z2Cos      = 0.0;
-  Z2CosCos   = 0.0;
-  Z2SinSin   = 0.0;
-  Z2CosSin   = 0.0;
+  Z0Cte    = Q1;
+  Z0Sin    = RCylmul2 * Qy;
+  Z0Cos    = RCylmul2 * Qx;
+  Z0CosCos = Qxx * RCyl * RCyl;
+  Z0SinSin = Qyy * RCyl * RCyl;
+  Z0CosSin = RCyl * RCyl * Qxy;
 
-  Tolerance  = TOL;
+  Z1Cte    = Qz + Qz;
+  Z1Sin    = RCylmul2 * Qyz;
+  Z1Cos    = RCylmul2 * Qxz;
+  Z1CosCos = 0.0;
+  Z1SinSin = 0.0;
+  Z1CosSin = 0.0;
+
+  Z2Cte    = Qzz;
+  Z2Sin    = 0.0;
+  Z2Cos    = 0.0;
+  Z2CosCos = 0.0;
+  Z2SinSin = 0.0;
+  Z2CosSin = 0.0;
+
+  Tolerance = TOL;
   DomainInf = DomInf;
   DomainSup = DomSup;
-  
+
   RestrictedInf = RestrictedSup = Standard_True;
   firstbounded = lastbounded = Standard_False;
 
   myFirstParameter = DomainInf;
-  myLastParameter  = (TwoCurves) ? DomainSup + DomainSup - DomainInf :
-                                   DomainSup;
+  myLastParameter  = (TwoCurves) ? DomainSup + DomainSup - DomainInf : DomainSup;
 }
 
 //=======================================================================
-//function : IsOpen
-//purpose  : 
+// function : IsOpen
+// purpose  :
 //=======================================================================
 Standard_Boolean IntAna_Curve::IsOpen() const
 {
-  return(RestrictedInf && RestrictedSup);
+  return (RestrictedInf && RestrictedSup);
 }
 
 //=======================================================================
-//function : Domain
-//purpose  : 
+// function : Domain
+// purpose  :
 //=======================================================================
-void IntAna_Curve::Domain(Standard_Real& theFirst,
-                          Standard_Real& theLast) const
+void IntAna_Curve::Domain(Standard_Real& theFirst, Standard_Real& theLast) const
 {
   if (RestrictedInf && RestrictedSup)
   {
     theFirst = myFirstParameter;
-    theLast = myLastParameter;
+    theLast  = myLastParameter;
   }
   else
   {
     throw Standard_DomainError("IntAna_Curve::Domain");
   }
 }
+
 //=======================================================================
-//function : IsConstant
-//purpose  : 
+// function : IsConstant
+// purpose  :
 //=======================================================================
 Standard_Boolean IntAna_Curve::IsConstant() const
 {
   //-- ???  Pas facile de decider a la seule vue des Param.
-  return(Standard_False);
+  return (Standard_False);
 }
 
 //=======================================================================
-//function : IsFirstOpen
-//purpose  : 
+// function : IsFirstOpen
+// purpose  :
 //=======================================================================
 Standard_Boolean IntAna_Curve::IsFirstOpen() const
 {
-  return(firstbounded);
+  return (firstbounded);
 }
 
 //=======================================================================
-//function : IsLastOpen
-//purpose  : 
+// function : IsLastOpen
+// purpose  :
 //=======================================================================
 Standard_Boolean IntAna_Curve::IsLastOpen() const
 {
-  return(lastbounded);
+  return (lastbounded);
 }
+
 //=======================================================================
-//function : SetIsFirstOpen
-//purpose  : 
+// function : SetIsFirstOpen
+// purpose  :
 //=======================================================================
 void IntAna_Curve::SetIsFirstOpen(const Standard_Boolean Flag)
 {
@@ -283,8 +282,8 @@ void IntAna_Curve::SetIsFirstOpen(const Standard_Boolean Flag)
 }
 
 //=======================================================================
-//function : SetIsLastOpen
-//purpose  : 
+// function : SetIsLastOpen
+// purpose  :
 //=======================================================================
 void IntAna_Curve::SetIsLastOpen(const Standard_Boolean Flag)
 {
@@ -292,86 +291,83 @@ void IntAna_Curve::SetIsLastOpen(const Standard_Boolean Flag)
 }
 
 //=======================================================================
-//function : InternalUVValue
-//purpose  : 
+// function : InternalUVValue
+// purpose  :
 //=======================================================================
 void IntAna_Curve::InternalUVValue(const Standard_Real theta,
-                                   Standard_Real& Param1,
-                                   Standard_Real& Param2,
-                                   Standard_Real& A,
-                                   Standard_Real& B,
-                                   Standard_Real& C,
-                                   Standard_Real& cost,
-                                   Standard_Real& sint,
-                                   Standard_Real& SigneSqrtDis) const
+                                   Standard_Real&      Param1,
+                                   Standard_Real&      Param2,
+                                   Standard_Real&      A,
+                                   Standard_Real&      B,
+                                   Standard_Real&      C,
+                                   Standard_Real&      cost,
+                                   Standard_Real&      sint,
+                                   Standard_Real&      SigneSqrtDis) const
 {
-  const Standard_Real aRelTolp = 1.0+Epsilon(1.0), aRelTolm = 1.0-Epsilon(1.0);
-  
+  const Standard_Real aRelTolp = 1.0 + Epsilon(1.0), aRelTolm = 1.0 - Epsilon(1.0);
+
   // Infinitesimal step of increasing curve parameter. See comment below.
-  const Standard_Real aDT = 100.0*Epsilon(DomainSup + DomainSup - DomainInf);
+  const Standard_Real aDT = 100.0 * Epsilon(DomainSup + DomainSup - DomainInf);
 
-  Standard_Real Theta=theta;
-  Standard_Boolean SecondSolution=Standard_False; 
+  Standard_Real    Theta          = theta;
+  Standard_Boolean SecondSolution = Standard_False;
 
-  if ((Theta<DomainInf*aRelTolm) ||
-      ((Theta>DomainSup*aRelTolp) && (!TwoCurves)) ||
-      (Theta>(DomainSup + DomainSup - DomainInf)*aRelTolp))
+  if ((Theta < DomainInf * aRelTolm) || ((Theta > DomainSup * aRelTolp) && (!TwoCurves))
+      || (Theta > (DomainSup + DomainSup - DomainInf) * aRelTolp))
   {
     SigneSqrtDis = 0.;
     throw Standard_DomainError("IntAna_Curve::Domain");
   }
-  
+
   if (Abs(Theta - DomainSup) < aDT)
   {
     // Point of Null-discriminant.
     Theta = DomainSup;
   }
-  else if (Theta>DomainSup)
+  else if (Theta > DomainSup)
   {
-    Theta = DomainSup + DomainSup - Theta;
-    SecondSolution=Standard_True; 
+    Theta          = DomainSup + DomainSup - Theta;
+    SecondSolution = Standard_True;
   }
 
-  Param1=Theta;
+  Param1 = Theta;
 
-  if(!TwoCurves) { 
-    SecondSolution=TakeZPositive; 
+  if (!TwoCurves)
+  {
+    SecondSolution = TakeZPositive;
   }
   //
-  cost = Cos(Theta);
-  sint = Sin(Theta);
+  cost                       = Cos(Theta);
+  sint                       = Sin(Theta);
   const Standard_Real aSin2t = Sin(Theta + Theta);
   const Standard_Real aCos2t = Cos(Theta + Theta);
-  
-  A=Z2Cte+sint*(Z2Sin+sint*Z2SinSin)+cost*(Z2Cos+cost*Z2CosCos)
-    + Z2CosSin*aSin2t;
-  
-  const Standard_Real aDA = cost*Z2Sin - sint*Z2Cos + 
-                            aSin2t*(Z2SinSin - Z2CosCos) + 
-                            aCos2t*(Z2CosSin * Z2CosSin);
 
-  B=Z1Cte+sint*(Z1Sin+sint*Z1SinSin)+cost*(Z1Cos+cost*Z1CosCos)
-    + Z1CosSin*aSin2t;
+  A =
+    Z2Cte + sint * (Z2Sin + sint * Z2SinSin) + cost * (Z2Cos + cost * Z2CosCos) + Z2CosSin * aSin2t;
 
-  const Standard_Real aDB = Z1Sin*cost - Z1Cos*sint +
-                            aSin2t*(Z1SinSin - Z1CosCos) +
-                            aCos2t*(Z1CosSin + Z1CosSin);
-  
-  C=Z0Cte+sint*(Z0Sin+sint*Z0SinSin)+cost*(Z0Cos+cost*Z0CosCos)
-    + Z0CosSin*aSin2t;
-  
-  const Standard_Real aDC = Z0Sin*cost - Z0Cos*sint +
-                            aSin2t*(Z0SinSin - Z0CosCos) + 
-                            aCos2t*(Z0CosSin + Z0CosSin);
+  const Standard_Real aDA =
+    cost * Z2Sin - sint * Z2Cos + aSin2t * (Z2SinSin - Z2CosCos) + aCos2t * (Z2CosSin * Z2CosSin);
 
-  Standard_Real aDiscriminant = B*B-4.0*A*C;
+  B =
+    Z1Cte + sint * (Z1Sin + sint * Z1SinSin) + cost * (Z1Cos + cost * Z1CosCos) + Z1CosSin * aSin2t;
+
+  const Standard_Real aDB =
+    Z1Sin * cost - Z1Cos * sint + aSin2t * (Z1SinSin - Z1CosCos) + aCos2t * (Z1CosSin + Z1CosSin);
+
+  C =
+    Z0Cte + sint * (Z0Sin + sint * Z0SinSin) + cost * (Z0Cos + cost * Z0CosCos) + Z0CosSin * aSin2t;
+
+  const Standard_Real aDC =
+    Z0Sin * cost - Z0Cos * sint + aSin2t * (Z0SinSin - Z0CosCos) + aCos2t * (Z0CosSin + Z0CosSin);
+
+  Standard_Real aDiscriminant = B * B - 4.0 * A * C;
 
   // We consider that infinitesimal dt = aDT.
   // Error of discriminant computation is equal to
   // (d(Disc)/dt)*dt, where 1st derivative d(Disc)/dt = 2*B*aDB - 4*(A*aDC + C*aDA).
 
-  const Standard_Real aTolD = 2.0*aDT*Abs(B*aDB - 2.0*(A*aDC + C*aDA));
-  
+  const Standard_Real aTolD = 2.0 * aDT * Abs(B * aDB - 2.0 * (A * aDC + C * aDA));
+
   if (aDiscriminant < aTolD)
     aDiscriminant = 0.0;
 
@@ -389,93 +385,96 @@ void IntAna_Curve::InternalUVValue(const Standard_Real theta,
   else
   {
     SigneSqrtDis = (SecondSolution) ? Sqrt(aDiscriminant) : -Sqrt(aDiscriminant);
-    Param2 = (-B + SigneSqrtDis) / (A + A);
+    Param2       = (-B + SigneSqrtDis) / (A + A);
   }
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 gp_Pnt IntAna_Curve::Value(const Standard_Real theta)
 {
   Standard_Real A, B, C, U, V, sint, cost, SigneSqrtDis;
   //
-  A=0.0;  B=0.0;   C=0.0;
-  U=0.0;  V=0.0;  
-  sint=0.0;  cost=0.0;
-  SigneSqrtDis=0.0;
-  InternalUVValue(theta,U,V,A,B,C,cost,sint,SigneSqrtDis); 
+  A            = 0.0;
+  B            = 0.0;
+  C            = 0.0;
+  U            = 0.0;
+  V            = 0.0;
+  sint         = 0.0;
+  cost         = 0.0;
+  SigneSqrtDis = 0.0;
+  InternalUVValue(theta, U, V, A, B, C, cost, sint, SigneSqrtDis);
   //-- checked the parameter U and Raises Domain Error if Error
-  return(InternalValue(U,V));
+  return (InternalValue(U, V));
 }
+
 //=======================================================================
-//function : D1u
-//purpose  : 
+// function : D1u
+// purpose  :
 //=======================================================================
-Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta,
-                                   gp_Pnt& Pt,
-                                   gp_Vec& Vec)
+Standard_Boolean IntAna_Curve::D1u(const Standard_Real theta, gp_Pnt& Pt, gp_Vec& Vec)
 {
-  //-- Pour detecter le cas ou le calcul est impossible 
+  //-- Pour detecter le cas ou le calcul est impossible
   Standard_Real A, B, C, U, V, sint, cost, SigneSqrtDis;
-  A=0.0;  B=0.0;   C=0.0;
-  U=0.0;  V=0.0;  
-  sint=0.0;  cost=0.0;
+  A    = 0.0;
+  B    = 0.0;
+  C    = 0.0;
+  U    = 0.0;
+  V    = 0.0;
+  sint = 0.0;
+  cost = 0.0;
   //
-  InternalUVValue(theta,U,V,A,B,C,cost,sint,SigneSqrtDis);
+  InternalUVValue(theta, U, V, A, B, C, cost, sint, SigneSqrtDis);
   //
   Pt = Value(theta);
-  if (Abs(A)<1.0e-7 || Abs(SigneSqrtDis)<1.0e-10) return(Standard_False);
-  
-  
+  if (Abs(A) < 1.0e-7 || Abs(SigneSqrtDis) < 1.0e-10)
+    return (Standard_False);
+
   //-- Approximation de la derivee (mieux que le calcul mathematique!)
-  Standard_Real dtheta = (DomainSup - DomainInf)*1.0e-6;
-  Standard_Real theta2 = theta+dtheta;
-  if ((theta2<DomainInf) || ((theta2>DomainSup) && (!TwoCurves))
-      || (theta2>(DomainSup + DomainSup - DomainInf + 1.0e-14)))
+  Standard_Real dtheta = (DomainSup - DomainInf) * 1.0e-6;
+  Standard_Real theta2 = theta + dtheta;
+  if ((theta2 < DomainInf) || ((theta2 > DomainSup) && (!TwoCurves))
+      || (theta2 > (DomainSup + DomainSup - DomainInf + 1.0e-14)))
   {
     dtheta = -dtheta;
-    theta2 = theta+dtheta;
+    theta2 = theta + dtheta;
   }
   gp_Pnt P2 = Value(theta2);
-  dtheta = 1.0/dtheta;
-  Vec.SetCoord((P2.X()-Pt.X())*dtheta,
-	       (P2.Y()-Pt.Y())*dtheta,
-	       (P2.Z()-Pt.Z())*dtheta);
-  
-  return(Standard_True);
-}  
+  dtheta    = 1.0 / dtheta;
+  Vec.SetCoord((P2.X() - Pt.X()) * dtheta, (P2.Y() - Pt.Y()) * dtheta, (P2.Z() - Pt.Z()) * dtheta);
+
+  return (Standard_True);
+}
+
 //=======================================================================
-//function : FindParameter
-//purpose  : Projects P to the ALine. Returns the list of parameters as a results
+// function : FindParameter
+// purpose  : Projects P to the ALine. Returns the list of parameters as a results
 //            of projection.
-//           Sometimes aline can be self-intersected line (see bug #29807 where 
+//           Sometimes aline can be self-intersected line (see bug #29807 where
 //            ALine goes through the cone apex).
 //=======================================================================
-void IntAna_Curve::FindParameter(const gp_Pnt& theP,
-                                 TColStd_ListOfReal& theParams) const
+void IntAna_Curve::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& theParams) const
 {
-  const Standard_Real aPIpPI = M_PI + M_PI,
-    anEpsAng = 1.e-8,
-    InternalPrecision = 1.e-8; //precision of internal algorithm of values computation
-// clang-format off
+  const Standard_Real aPIpPI = M_PI + M_PI, anEpsAng = 1.e-8,
+                      InternalPrecision =
+                        1.e-8; // precision of internal algorithm of values computation
+  // clang-format off
   constexpr Standard_Real aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
-// clang-format on
-  
+  // clang-format on
+
   Standard_Real aTheta = 0.0;
   //
   switch (typequadric)
   {
-    case GeomAbs_Cylinder:
-    {
+    case GeomAbs_Cylinder: {
       Standard_Real aZ;
       ElSLib::CylinderParameters(Ax3, RCyl, theP, aTheta, aZ);
     }
     break;
 
-    case GeomAbs_Cone:
-    {
+    case GeomAbs_Cone: {
       Standard_Real aZ;
       ElSLib::ConeParameters(Ax3, RCyl, Angle, theP, aTheta, aZ);
     }
@@ -503,9 +502,11 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP,
     aTheta = aTheta - aPIpPI;
   }
 
-  const Standard_Integer aMaxPar = 5;
-  Standard_Real aParams[aMaxPar] = {DomainInf, DomainSup, aTheta,
-                                    (TwoCurves)? DomainSup + DomainSup - aTheta : RealLast(),
+  const Standard_Integer aMaxPar          = 5;
+  Standard_Real          aParams[aMaxPar] = {DomainInf,
+                                             DomainSup,
+                                             aTheta,
+                                    (TwoCurves) ? DomainSup + DomainSup - aTheta : RealLast(),
                                     (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
 
   std::sort(aParams, aParams + aMaxPar - 1);
@@ -514,74 +515,76 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP,
   {
     if (aParams[i] > myLastParameter)
       break;
-    
+
     if (aParams[i] < myFirstParameter)
       continue;
 
     if (i && (aParams[i] - aParams[i - 1]) < Precision::PConfusion())
       continue;
 
-    Standard_Real U = 0.0, V= 0.0, 
-                  A = 0.0, B = 0.0, C = 0.0,
-                  sint = 0.0, cost = 0.0, SigneSqrtDis = 0.0;
-    InternalUVValue(aParams[i], U, V, A, B, C, 
-                    cost, sint, SigneSqrtDis);
+    Standard_Real U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0,
+                  SigneSqrtDis = 0.0;
+    InternalUVValue(aParams[i], U, V, A, B, C, cost, sint, SigneSqrtDis);
     const gp_Pnt aP(InternalValue(U, V));
-    
+
     Standard_Real aSqTol;
-    if (aParams[i] == aTheta ||
-        (TwoCurves && aParams[i] == DomainSup + DomainSup - aTheta))
+    if (aParams[i] == aTheta || (TwoCurves && aParams[i] == DomainSup + DomainSup - aTheta))
       aSqTol = InternalPrecision;
     else
       aSqTol = aSqTolPrecision;
-    
+
     if (aP.SquareDistance(theP) < aSqTol)
     {
       theParams.Append(aParams[i]);
     }
   }
 }
+
 //=======================================================================
-//function : InternalValue
-//purpose  : 
+// function : InternalValue
+// purpose  :
 //=======================================================================
-gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U,
-                                   const Standard_Real _V) const
+gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U, const Standard_Real _V) const
 {
   //-- std::cout<<" ["<<U<<","<<V<<"]";
   Standard_Real V = _V;
-  if(V > 100000.0 )   {   V= 100000.0; }       
-  if(V < -100000.0 )  {   V=-100000.0; }      
+  if (V > 100000.0)
+  {
+    V = 100000.0;
+  }
+  if (V < -100000.0)
+  {
+    V = -100000.0;
+  }
 
-  switch(typequadric) {
-  case GeomAbs_Cone:
-    {
+  switch (typequadric)
+  {
+    case GeomAbs_Cone: {
       //------------------------------------------------
       //-- Parametrage : X = V * Cos(U)              ---
       //--               Y = V * Sin(U)              ---
       //--               Z = (V-RCyl) / Tan(SemiAngle)--
-      //------------------------------------------------ 
-      //-- Angle Vaut Cone.SemiAngle()  
-      return(ElSLib::ConeValue(U,(V-RCyl)/Sin(Angle),Ax3,RCyl,Angle));
+      //------------------------------------------------
+      //-- Angle Vaut Cone.SemiAngle()
+      return (ElSLib::ConeValue(U, (V - RCyl) / Sin(Angle), Ax3, RCyl, Angle));
     }
     break;
-    
-  case GeomAbs_Cylinder:
-    return(ElSLib::CylinderValue(U,V,Ax3,RCyl)); 
-  case GeomAbs_Sphere:
-    return(ElSLib::SphereValue(U,V,Ax3,RCyl)); 
-  default:
-    return(gp_Pnt(0.0,0.0,0.0));
+
+    case GeomAbs_Cylinder:
+      return (ElSLib::CylinderValue(U, V, Ax3, RCyl));
+    case GeomAbs_Sphere:
+      return (ElSLib::SphereValue(U, V, Ax3, RCyl));
+    default:
+      return (gp_Pnt(0.0, 0.0, 0.0));
   }
 }
 
 //
 //=======================================================================
-//function : SetDomain
-//purpose  : 
+// function : SetDomain
+// purpose  :
 //=======================================================================
-void IntAna_Curve::SetDomain(const Standard_Real theFirst,
-                             const Standard_Real theLast)
+void IntAna_Curve::SetDomain(const Standard_Real theFirst, const Standard_Real theLast)
 {
   if (theLast <= theFirst)
   {
@@ -589,5 +592,5 @@ void IntAna_Curve::SetDomain(const Standard_Real theFirst,
   }
   //
   myFirstParameter = theFirst;
-  myLastParameter = theLast;
+  myLastParameter  = theLast;
 }

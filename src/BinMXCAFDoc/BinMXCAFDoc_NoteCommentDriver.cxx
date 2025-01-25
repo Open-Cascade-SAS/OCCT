@@ -22,17 +22,18 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteCommentDriver, BinMXCAFDoc_NoteDriver)
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver)
-  : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
+BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
 {
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 Handle(TDF_Attribute) BinMXCAFDoc_NoteCommentDriver::NewEmpty() const
 {
@@ -40,12 +41,13 @@ Handle(TDF_Attribute) BinMXCAFDoc_NoteCommentDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-Standard_Boolean BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
-                                                      BinObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean BinMXCAFDoc_NoteCommentDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
     return Standard_False;
@@ -64,8 +66,8 @@ Standard_Boolean BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                           BinObjMgt_Persistent&        theTarget,
@@ -79,12 +81,12 @@ void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver,
-                                                             Standard_CString                 theName)
-  : BinMXCAFDoc_NoteDriver(theMsgDriver, theName)
+BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(
+  const Handle(Message_Messenger)& theMsgDriver,
+  Standard_CString                 theName)
+    : BinMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {
-
 }

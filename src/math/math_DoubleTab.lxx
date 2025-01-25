@@ -18,17 +18,13 @@
 
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Real& math_DoubleTab::Value (const Standard_Integer RowIndex,
-				    const Standard_Integer ColIndex) const
+inline Standard_Real& math_DoubleTab::Value(const Standard_Integer RowIndex,
+                                            const Standard_Integer ColIndex) const
 {
   return ((Standard_Real*)Addr)[(UppC - LowC + 1) * (RowIndex - LowR) + (ColIndex - LowC)];
 }
 
-
-
-inline void math_DoubleTab::Copy(math_DoubleTab& Other)const
+inline void math_DoubleTab::Copy(math_DoubleTab& Other) const
 {
-  memmove (Other.Addr, Addr, (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Standard_Real)));
+  memmove(Other.Addr, Addr, (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Standard_Real)));
 }
-
-

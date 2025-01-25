@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Hatch_Parameter> Hatch_SequenceOfParameter;
 
-
 #endif

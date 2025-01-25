@@ -20,7 +20,7 @@
 #include <StepAP203_PersonOrganizationItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP203_PersonOrganizationItem> StepAP203_Array1OfPersonOrganizationItem;
-
+typedef NCollection_Array1<StepAP203_PersonOrganizationItem>
+  StepAP203_Array1OfPersonOrganizationItem;
 
 #endif

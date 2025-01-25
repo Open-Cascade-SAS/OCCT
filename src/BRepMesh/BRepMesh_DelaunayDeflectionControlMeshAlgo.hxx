@@ -20,47 +20,46 @@
 #include <BRepMesh_GeomTool.hxx>
 #include <GeomLib.hxx>
 
-//! Extends node insertion Delaunay meshing algo in order to control 
+//! Extends node insertion Delaunay meshing algo in order to control
 //! deflection of generated trianges. Splits triangles failing the check.
-template<class RangeSplitter, class BaseAlgo>
-class BRepMesh_DelaunayDeflectionControlMeshAlgo : public BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
+template <class RangeSplitter, class BaseAlgo>
+class BRepMesh_DelaunayDeflectionControlMeshAlgo
+    : public BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
 {
 private:
   // Typedef for OCCT RTTI
-  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo> DelaunayInsertionBaseClass;
+  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
+    DelaunayInsertionBaseClass;
 
 public:
-
   //! Constructor.
   BRepMesh_DelaunayDeflectionControlMeshAlgo()
-    : myMaxSqDeflection(-1.),
-      mySqMinSize(-1.),
-      myIsAllDegenerated(Standard_False),
-      myCircles(NULL)
+      : myMaxSqDeflection(-1.),
+        mySqMinSize(-1.),
+        myIsAllDegenerated(Standard_False),
+        myCircles(NULL)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DelaunayDeflectionControlMeshAlgo()
-  {
-  }
+  virtual ~BRepMesh_DelaunayDeflectionControlMeshAlgo() {}
 
 protected:
-
-  //! Performs processing of generated mesh. Generates surface nodes and inserts them into structure.
-  virtual void postProcessMesh (BRepMesh_Delaun& theMesher,
-                                const Message_ProgressRange& theRange) Standard_OVERRIDE
+  //! Performs processing of generated mesh. Generates surface nodes and inserts them into
+  //! structure.
+  virtual void postProcessMesh(BRepMesh_Delaun&             theMesher,
+                               const Message_ProgressRange& theRange) Standard_OVERRIDE
   {
     Message_ProgressScope aPS(theRange, "Post process mesh", 2);
     // Insert surface nodes.
-    DelaunayInsertionBaseClass::postProcessMesh (theMesher, aPS.Next());
+    DelaunayInsertionBaseClass::postProcessMesh(theMesher, aPS.Next());
     if (!aPS.More())
     {
       return;
     }
 
-    if (this->getParameters().ControlSurfaceDeflection &&
-        this->getStructure()->ElementsOfDomain().Extent() > 0)
+    if (this->getParameters().ControlSurfaceDeflection
+        && this->getStructure()->ElementsOfDomain().Extent() > 0)
     {
       optimizeMesh(theMesher, aPS.Next());
     }
@@ -72,28 +71,30 @@ protected:
 
   //! Checks deviation of a mesh from geometrical surface.
   //! Inserts additional nodes in case of huge deviation.
-  virtual void optimizeMesh (BRepMesh_Delaun& theMesher,
-                             const Message_ProgressRange& theRange)
+  virtual void optimizeMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange)
   {
     Handle(NCollection_IncAllocator) aTmpAlloc =
       new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
-    mySqMinSize    = this->getParameters().MinSize * this->getParameters().MinSize;
-    myCouplesMap   = new IMeshData::MapOfOrientedEdges(3 * this->getStructure()->ElementsOfDomain().Extent(), aTmpAlloc);
+    mySqMinSize = this->getParameters().MinSize * this->getParameters().MinSize;
+    myCouplesMap =
+      new IMeshData::MapOfOrientedEdges(3 * this->getStructure()->ElementsOfDomain().Extent(),
+                                        aTmpAlloc);
     myControlNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
     myCircles      = &theMesher.Circles();
-    
+
     const Standard_Integer aIterationsNb = 11;
-    Standard_Boolean isInserted = Standard_True;
-    Message_ProgressScope aPS(theRange, "Iteration", aIterationsNb);
-    for (Standard_Integer aPass = 1; aPass <= aIterationsNb && isInserted && !myIsAllDegenerated; ++aPass)
+    Standard_Boolean       isInserted    = Standard_True;
+    Message_ProgressScope  aPS(theRange, "Iteration", aIterationsNb);
+    for (Standard_Integer aPass = 1; aPass <= aIterationsNb && isInserted && !myIsAllDegenerated;
+         ++aPass)
     {
       if (!aPS.More())
       {
         return;
       }
       // Reset stop condition
-      myMaxSqDeflection = -1.;
+      myMaxSqDeflection  = -1.;
       myIsAllDegenerated = Standard_True;
       myControlNodes->Clear();
 
@@ -126,7 +127,7 @@ private:
   struct TriangleNodeInfo
   {
     TriangleNodeInfo()
-    : isFrontierLink(Standard_False)
+        : isFrontierLink(Standard_False)
     {
     }
 
@@ -139,11 +140,9 @@ private:
   class NormalDeviation
   {
   public:
-    NormalDeviation(
-      const gp_Pnt& theRefPnt,
-      const gp_Vec& theNormal)
-      : myRefPnt(theRefPnt),
-        myNormal(theNormal)
+    NormalDeviation(const gp_Pnt& theRefPnt, const gp_Vec& theNormal)
+        : myRefPnt(theRefPnt),
+          myNormal(theNormal)
     {
     }
 
@@ -154,13 +153,11 @@ private:
     }
 
   private:
+    NormalDeviation(const NormalDeviation& theOther);
 
-    NormalDeviation (const NormalDeviation& theOther);
-
-    void operator= (const NormalDeviation& theOther);
+    void operator=(const NormalDeviation& theOther);
 
   private:
-
     const gp_Pnt& myRefPnt;
     const gp_Vec& myNormal;
   };
@@ -169,12 +166,9 @@ private:
   class LineDeviation
   {
   public:
-
-    LineDeviation(
-      const gp_Pnt& thePnt1,
-      const gp_Pnt& thePnt2)
-      : myPnt1(thePnt1),
-        myPnt2(thePnt2)
+    LineDeviation(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
+        : myPnt1(thePnt1),
+          myPnt2(thePnt2)
     {
     }
 
@@ -184,10 +178,9 @@ private:
     }
 
   private:
+    LineDeviation(const LineDeviation& theOther);
 
-    LineDeviation (const LineDeviation& theOther);
-
-    void operator= (const LineDeviation& theOther);
+    void operator=(const LineDeviation& theOther);
 
   private:
     const gp_Pnt& myPnt1;
@@ -195,22 +188,23 @@ private:
   };
 
   //! Returns nodes info of the given triangle.
-  void getTriangleInfo(
-    const BRepMesh_Triangle& theTriangle,
-    const Standard_Integer (&theNodesIndices)[3],
-    TriangleNodeInfo       (&theInfo)[3]) const
+  void getTriangleInfo(const BRepMesh_Triangle& theTriangle,
+                       const Standard_Integer (&theNodesIndices)[3],
+                       TriangleNodeInfo (&theInfo)[3]) const
   {
     const Standard_Integer(&e)[3] = theTriangle.myEdges;
     for (Standard_Integer i = 0; i < 3; ++i)
     {
       const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(theNodesIndices[i]);
-      theInfo[i].Point2d        = this->getRangeSplitter().Scale(aVertex.Coord(), Standard_False).XY();
-      theInfo[i].Point          = this->getNodesMap()->Value(aVertex.Location3d()).XYZ();
-      theInfo[i].isFrontierLink = (this->getStructure()->GetLink(e[i]).Movability() == BRepMesh_Frontier);
+      theInfo[i].Point2d = this->getRangeSplitter().Scale(aVertex.Coord(), Standard_False).XY();
+      theInfo[i].Point   = this->getNodesMap()->Value(aVertex.Location3d()).XYZ();
+      theInfo[i].isFrontierLink =
+        (this->getStructure()->GetLink(e[i]).Movability() == BRepMesh_Frontier);
     }
   }
 
-  // Check geometry of the given triangle. If triangle does not suit specified deflection, inserts new point.
+  // Check geometry of the given triangle. If triangle does not suit specified deflection, inserts
+  // new point.
   void splitTriangleGeometry(const BRepMesh_Triangle& theTriangle)
   {
     if (theTriangle.Movability() != BRepMesh_Deleted)
@@ -227,9 +221,8 @@ private:
       {
         myIsAllDegenerated = Standard_False;
 
-        const gp_XY aCenter2d = (aNodesInfo[0].Point2d +
-                                 aNodesInfo[1].Point2d +
-                                 aNodesInfo[2].Point2d) / 3.;
+        const gp_XY aCenter2d =
+          (aNodesInfo[0].Point2d + aNodesInfo[1].Point2d + aNodesInfo[2].Point2d) / 3.;
 
         usePoint(aCenter2d, NormalDeviation(aNodesInfo[0].Point, aNormal));
         splitLinks(aNodesInfo, aNodexIndices);
@@ -239,10 +232,9 @@ private:
 
   //! Updates array of links vectors.
   //! @return False on degenerative triangle.
-  Standard_Boolean computeTriangleGeometry(
-    const TriangleNodeInfo(&theNodesInfo)[3],
-    gp_Vec                (&theLinks)[3],
-    gp_Vec                 &theNormal)
+  Standard_Boolean computeTriangleGeometry(const TriangleNodeInfo (&theNodesInfo)[3],
+                                           gp_Vec (&theLinks)[3],
+                                           gp_Vec& theNormal)
   {
     if (checkTriangleForDegenerativityAndGetLinks(theNodesInfo, theLinks))
     {
@@ -262,7 +254,7 @@ private:
   //! @return False on degenerative triangle.
   Standard_Boolean checkTriangleForDegenerativityAndGetLinks(
     const TriangleNodeInfo (&theNodesInfo)[3],
-    gp_Vec                 (&theLinks)[3])
+    gp_Vec (&theLinks)[3])
   {
     const Standard_Real MinimalSqLength3d = 1.e-12;
     for (Standard_Integer i = 0; i < 3; ++i)
@@ -279,8 +271,7 @@ private:
 
   //! Checks area of triangle in parametric space for degenerativity.
   //! @return False on degenerative triangle.
-  Standard_Boolean checkTriangleArea2d(
-    const TriangleNodeInfo (&theNodesInfo)[3])
+  Standard_Boolean checkTriangleArea2d(const TriangleNodeInfo (&theNodesInfo)[3])
   {
     const gp_Vec2d aLink2d1(theNodesInfo[0].Point2d, theNodesInfo[1].Point2d);
     const gp_Vec2d aLink2d2(theNodesInfo[1].Point2d, theNodesInfo[2].Point2d);
@@ -291,9 +282,7 @@ private:
 
   //! Computes normal using two link vectors.
   //! @return True on success, False in case of normal of null magnitude.
-  Standard_Boolean computeNormal(const gp_Vec& theLink1,
-                                 const gp_Vec& theLink2,
-                                 gp_Vec&       theNormal)
+  Standard_Boolean computeNormal(const gp_Vec& theLink1, const gp_Vec& theLink2, gp_Vec& theNormal)
   {
     const gp_Vec aNormal(theLink1 ^ theLink2);
     if (aNormal.SquareMagnitude() > gp::Resolution())
@@ -307,9 +296,8 @@ private:
 
   //! Computes deflection of midpoints of triangles links.
   //! @return True if point fits specified deflection.
-  void splitLinks(
-    const TriangleNodeInfo (&theNodesInfo)[3],
-    const Standard_Integer (&theNodesIndices)[3])
+  void splitLinks(const TriangleNodeInfo (&theNodesInfo)[3],
+                  const Standard_Integer (&theNodesIndices)[3])
   {
     // Check deflection at triangle links
     for (Standard_Integer i = 0; i < 3; ++i)
@@ -335,19 +323,13 @@ private:
 
       if (myCouplesMap->Add(BRepMesh_OrientedEdge(aFirstVertex, aLastVertex)))
       {
-        const gp_XY aMidPnt2d = (theNodesInfo[i].Point2d +
-                                 theNodesInfo[j].Point2d) / 2.;
+        const gp_XY aMidPnt2d = (theNodesInfo[i].Point2d + theNodesInfo[j].Point2d) / 2.;
 
-        if (!usePoint (aMidPnt2d, LineDeviation (theNodesInfo[i].Point, 
-                                                 theNodesInfo[j].Point)))
+        if (!usePoint(aMidPnt2d, LineDeviation(theNodesInfo[i].Point, theNodesInfo[j].Point)))
         {
-          if (!rejectSplitLinksForMinSize (theNodesInfo[i],
-                                           theNodesInfo[j],
-                                           aMidPnt2d))
+          if (!rejectSplitLinksForMinSize(theNodesInfo[i], theNodesInfo[j], aMidPnt2d))
           {
-            if (!checkLinkEndsForAngularDeviation (theNodesInfo[i],
-                                                   theNodesInfo[j],
-                                                   aMidPnt2d))
+            if (!checkLinkEndsForAngularDeviation(theNodesInfo[i], theNodesInfo[j], aMidPnt2d))
             {
               myControlNodes->Append(aMidPnt2d);
             }
@@ -357,28 +339,28 @@ private:
     }
   }
 
-  //! Checks that two links produced as the result of a split of 
+  //! Checks that two links produced as the result of a split of
   //! the given link by the middle point fit MinSize requirement.
-  Standard_Boolean rejectSplitLinksForMinSize (const TriangleNodeInfo& theNodeInfo1,
-                                               const TriangleNodeInfo& theNodeInfo2,
-                                               const gp_XY&            theMidPoint)
+  Standard_Boolean rejectSplitLinksForMinSize(const TriangleNodeInfo& theNodeInfo1,
+                                              const TriangleNodeInfo& theNodeInfo2,
+                                              const gp_XY&            theMidPoint)
   {
-    const gp_Pnt aPnt = getPoint3d (theMidPoint);
-    return ((theNodeInfo1.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize ||
-            (theNodeInfo2.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize);
+    const gp_Pnt aPnt = getPoint3d(theMidPoint);
+    return ((theNodeInfo1.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize
+            || (theNodeInfo2.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize);
   }
 
   //! Checks the given point (located between the given nodes)
   //! for specified angular deviation.
   Standard_Boolean checkLinkEndsForAngularDeviation(const TriangleNodeInfo& theNodeInfo1,
                                                     const TriangleNodeInfo& theNodeInfo2,
-                                                    const gp_XY&          /*theMidPoint*/)
+                                                    const gp_XY& /*theMidPoint*/)
   {
-    gp_Dir aNorm1, aNorm2;
+    gp_Dir                      aNorm1, aNorm2;
     const Handle(Geom_Surface)& aSurf = this->getDFace()->GetSurface()->Surface().Surface();
-    
-    if ((GeomLib::NormEstim(aSurf, theNodeInfo1.Point2d, Precision::Confusion(), aNorm1) == 0) &&
-        (GeomLib::NormEstim(aSurf, theNodeInfo2.Point2d, Precision::Confusion(), aNorm2) == 0))
+
+    if ((GeomLib::NormEstim(aSurf, theNodeInfo1.Point2d, Precision::Confusion(), aNorm1) == 0)
+        && (GeomLib::NormEstim(aSurf, theNodeInfo2.Point2d, Precision::Confusion(), aNorm2) == 0))
     {
       Standard_Real anAngle = aNorm1.Angle(aNorm2);
       if (anAngle > this->getParameters().AngleInterior)
@@ -401,7 +383,7 @@ private:
   }
 
   //! Returns 3d point corresponding to the given one in 2d space.
-  gp_Pnt getPoint3d (const gp_XY& thePnt2d)
+  gp_Pnt getPoint3d(const gp_XY& thePnt2d)
   {
     gp_Pnt aPnt;
     this->getDFace()->GetSurface()->D0(thePnt2d.X(), thePnt2d.Y(), aPnt);
@@ -411,13 +393,13 @@ private:
   //! Computes deflection of the given point and caches it for
   //! insertion in case if it overflows deflection.
   //! @return True if point has been cached for insertion.
-  template<class DeflectionFunctor>
-  Standard_Boolean usePoint(
-    const gp_XY&             thePnt2d,
-    const DeflectionFunctor& theDeflectionFunctor)
+  template <class DeflectionFunctor>
+  Standard_Boolean usePoint(const gp_XY& thePnt2d, const DeflectionFunctor& theDeflectionFunctor)
   {
-    const gp_Pnt aPnt = getPoint3d (thePnt2d);
-    if (!checkDeflectionOfPointAndUpdateCache(thePnt2d, aPnt, theDeflectionFunctor.SquareDeviation(aPnt)))
+    const gp_Pnt aPnt = getPoint3d(thePnt2d);
+    if (!checkDeflectionOfPointAndUpdateCache(thePnt2d,
+                                              aPnt,
+                                              theDeflectionFunctor.SquareDeviation(aPnt)))
     {
       myControlNodes->Append(thePnt2d);
       return Standard_True;
@@ -428,17 +410,16 @@ private:
 
   //! Checks the given point for specified linear deflection.
   //! Updates value of total mesh defleciton.
-  Standard_Boolean checkDeflectionOfPointAndUpdateCache(
-    const gp_XY&        thePnt2d,
-    const gp_Pnt&       thePnt3d,
-    const Standard_Real theSqDeflection)
+  Standard_Boolean checkDeflectionOfPointAndUpdateCache(const gp_XY&        thePnt2d,
+                                                        const gp_Pnt&       thePnt3d,
+                                                        const Standard_Real theSqDeflection)
   {
     if (theSqDeflection > myMaxSqDeflection)
     {
       myMaxSqDeflection = theSqDeflection;
     }
 
-    const Standard_Real aSqDeflection = 
+    const Standard_Real aSqDeflection =
       this->getDFace()->GetDeflection() * this->getDFace()->GetDeflection();
     if (theSqDeflection < aSqDeflection)
     {
@@ -448,18 +429,16 @@ private:
     return rejectByMinSize(thePnt2d, thePnt3d);
   }
 
-  //! Checks distance between the given node and nodes of triangles 
+  //! Checks distance between the given node and nodes of triangles
   //! shot by it for MinSize criteria.
-  //! This check is expected to roughly estimate and prevent 
+  //! This check is expected to roughly estimate and prevent
   //! generation of triangles with sides smaller than MinSize.
-  Standard_Boolean rejectByMinSize(
-    const gp_XY&  thePnt2d,
-    const gp_Pnt& thePnt3d)
+  Standard_Boolean rejectByMinSize(const gp_XY& thePnt2d, const gp_Pnt& thePnt3d)
   {
-    IMeshData::MapOfInteger aUsedNodes;
+    IMeshData::MapOfInteger   aUsedNodes;
     IMeshData::ListOfInteger& aCirclesList =
-      const_cast<BRepMesh_CircleTool&>(*myCircles).Select(
-        this->getRangeSplitter().Scale(thePnt2d, Standard_True).XY());
+      const_cast<BRepMesh_CircleTool&>(*myCircles)
+        .Select(this->getRangeSplitter().Scale(thePnt2d, Standard_True).XY());
 
     IMeshData::ListOfInteger::Iterator aCircleIt(aCirclesList);
     for (; aCircleIt.More(); aCircleIt.Next())
@@ -475,7 +454,7 @@ private:
         {
           aUsedNodes.Add(aNodes[i]);
           const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(aNodes[i]);
-          const gp_Pnt& aPoint = this->getNodesMap()->Value(aVertex.Location3d());
+          const gp_Pnt&          aPoint  = this->getNodesMap()->Value(aVertex.Location3d());
 
           if (thePnt3d.SquareDistance(aPoint) < mySqMinSize)
           {

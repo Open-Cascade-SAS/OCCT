@@ -20,10 +20,10 @@
 //! Errors that can occur at shell construction.
 enum BRepLib_ShellError
 {
-BRepLib_ShellDone,
-BRepLib_EmptyShell,
-BRepLib_DisconnectedShell,
-BRepLib_ShellParametersOutOfRange
+  BRepLib_ShellDone,
+  BRepLib_EmptyShell,
+  BRepLib_DisconnectedShell,
+  BRepLib_ShellParametersOutOfRange
 };
 
 #endif // _BRepLib_ShellError_HeaderFile

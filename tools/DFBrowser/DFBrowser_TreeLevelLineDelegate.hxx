@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_TreeLevelLineDelegate_H
 #define DFBrowser_TreeLevelLineDelegate_H
@@ -31,9 +31,8 @@ class DFBrowser_TreeLevelLineDelegate : public QItemDelegate
 {
 
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowser_TreeLevelLineDelegate (QObject* theParent = 0);
+  Standard_EXPORT DFBrowser_TreeLevelLineDelegate(QObject* theParent = 0);
 
   //! Destructor
   virtual ~DFBrowser_TreeLevelLineDelegate() {}
@@ -42,8 +41,9 @@ public:
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
-  Standard_EXPORT virtual void paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                      const QModelIndex& theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void paint(QPainter*                   thePainter,
+                                     const QStyleOptionViewItem& theOption,
+                                     const QModelIndex&          theIndex) const Standard_OVERRIDE;
 };
 
 #endif

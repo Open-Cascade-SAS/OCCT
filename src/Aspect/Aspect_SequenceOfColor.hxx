@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<Quantity_Color> Aspect_SequenceOfColor;
 
-
 #endif

@@ -64,37 +64,42 @@ class Geom_Transformation : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Geom_Transformation, Standard_Transient)
 public:
-  
   //! Creates an identity transformation.
   Standard_EXPORT Geom_Transformation();
-  
+
   //! Creates a transient copy of T.
   Standard_EXPORT Geom_Transformation(const gp_Trsf& T);
 
   //! Makes the transformation into a symmetrical transformation
   //! with respect to a point P.
   //! P is the center of the symmetry.
-  void SetMirror (const gp_Pnt& thePnt) { gpTrsf.SetMirror (thePnt); }
+  void SetMirror(const gp_Pnt& thePnt) { gpTrsf.SetMirror(thePnt); }
 
   //! Makes the transformation into a symmetrical transformation
   //! with respect to an axis A1.
   //! A1 is the center of the axial symmetry.
-  void SetMirror (const gp_Ax1& theA1) { gpTrsf.SetMirror (theA1); }
+  void SetMirror(const gp_Ax1& theA1) { gpTrsf.SetMirror(theA1); }
 
   //! Makes the transformation into a symmetrical transformation
   //! with respect to a plane.  The plane of the symmetry is
   //! defined with the axis placement A2. It is the plane
   //! (Location, XDirection, YDirection).
-  void SetMirror (const gp_Ax2& theA2) { gpTrsf.SetMirror (theA2); }
+  void SetMirror(const gp_Ax2& theA2) { gpTrsf.SetMirror(theA2); }
 
   //! Makes the transformation into a rotation.
   //! A1 is the axis rotation and Ang is the angular value
   //! of the rotation in radians.
-  void SetRotation (const gp_Ax1& theA1, const Standard_Real theAng) { gpTrsf.SetRotation (theA1, theAng); }
+  void SetRotation(const gp_Ax1& theA1, const Standard_Real theAng)
+  {
+    gpTrsf.SetRotation(theA1, theAng);
+  }
 
   //! Makes the transformation into a scale. P is the center of
   //! the scale and S is the scaling value.
-  void SetScale (const gp_Pnt& thePnt, const Standard_Real theScale) { gpTrsf.SetScale (thePnt, theScale); }
+  void SetScale(const gp_Pnt& thePnt, const Standard_Real theScale)
+  {
+    gpTrsf.SetScale(thePnt, theScale);
+  }
 
   //! Makes a transformation allowing passage from the coordinate
   //! system "FromSystem1" to the coordinate system "ToSystem2".
@@ -109,7 +114,10 @@ public:
   //! T.SetTransformation (FromSystem1, ToSystem2);
   //! gp_Pnt P2 = P1.Transformed (T);
   //! P2.Coord (x2, y2, z2);
-  void SetTransformation (const gp_Ax3& theFromSystem1, const gp_Ax3& theToSystem2) { gpTrsf.SetTransformation (theFromSystem1, theToSystem2); }
+  void SetTransformation(const gp_Ax3& theFromSystem1, const gp_Ax3& theToSystem2)
+  {
+    gpTrsf.SetTransformation(theFromSystem1, theToSystem2);
+  }
 
   //! Makes the transformation allowing passage from the basic
   //! coordinate system
@@ -117,24 +125,24 @@ public:
   //! to the local coordinate system defined with the Ax2 ToSystem.
   //! Same utilisation as the previous method. FromSystem1 is
   //! defaulted to the absolute coordinate system.
-  void SetTransformation (const gp_Ax3& theToSystem) { gpTrsf.SetTransformation (theToSystem); }
+  void SetTransformation(const gp_Ax3& theToSystem) { gpTrsf.SetTransformation(theToSystem); }
 
   //! Makes the transformation into a translation.
   //! V is the vector of the translation.
-  void SetTranslation (const gp_Vec& theVec) { gpTrsf.SetTranslation (theVec); }
+  void SetTranslation(const gp_Vec& theVec) { gpTrsf.SetTranslation(theVec); }
 
   //! Makes the transformation into a translation from the point
   //! P1 to the point P2.
-  void SetTranslation (const gp_Pnt& P1, const gp_Pnt& P2) { gpTrsf.SetTranslation (P1, P2); }
+  void SetTranslation(const gp_Pnt& P1, const gp_Pnt& P2) { gpTrsf.SetTranslation(P1, P2); }
 
   //! Converts the gp_Trsf transformation T into this transformation.
-  void SetTrsf (const gp_Trsf& theTrsf) { gpTrsf = theTrsf; }
-  
+  void SetTrsf(const gp_Trsf& theTrsf) { gpTrsf = theTrsf; }
+
   //! Checks whether this transformation is an indirect
   //! transformation: returns true if the determinant of the
   //! matrix of the vectorial part of the transformation is less than 0.
   Standard_Boolean IsNegative() const { return gpTrsf.IsNegative(); }
-  
+
   //! Returns the nature of this transformation as a value
   //! of the gp_TrsfForm enumeration.
   gp_TrsfForm Form() const { return gpTrsf.Form(); }
@@ -149,7 +157,10 @@ public:
   //! It is a 3 rows X 4 columns matrix.
   //!
   //! Raised if  Row < 1 or Row > 3  or  Col < 1 or Col > 4
-  Standard_Real Value (const Standard_Integer theRow, const Standard_Integer theCol) const { return gpTrsf.Value (theRow, theCol); }
+  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const
+  {
+    return gpTrsf.Value(theRow, theCol);
+  }
 
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
@@ -164,11 +175,12 @@ public:
   //! Computes the transformation composed with Other and <me>.
   //! <me> * Other.
   //! Returns a new transformation
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Multiplied (const Handle(Geom_Transformation)& Other) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Multiplied(
+    const Handle(Geom_Transformation)& Other) const;
 
   //! Computes the transformation composed with Other and <me> .
   //! <me> = <me> * Other.
-  void Multiply (const Handle(Geom_Transformation)& theOther) { gpTrsf.Multiply (theOther->Trsf()); }
+  void Multiply(const Handle(Geom_Transformation)& theOther) { gpTrsf.Multiply(theOther->Trsf()); }
 
   //! Computes the following composition of transformations
   //! if N > 0  <me> * <me> * .......* <me>.
@@ -176,28 +188,30 @@ public:
   //! if N < 0  <me>.Invert() * .........* <me>.Invert()
   //!
   //! Raised if N < 0 and if the transformation is not inversible
-  void Power (const Standard_Integer N) { gpTrsf.Power (N); }
+  void Power(const Standard_Integer N) { gpTrsf.Power(N); }
 
   //! Raised if N < 0 and if the transformation is not inversible
-  Standard_EXPORT Handle(Geom_Transformation) Powered (const Standard_Integer N) const;
+  Standard_EXPORT Handle(Geom_Transformation) Powered(const Standard_Integer N) const;
 
   //! Computes the matrix of the transformation composed with
   //! <me> and Other.     <me> = Other * <me>
-  Standard_EXPORT void PreMultiply (const Handle(Geom_Transformation)& Other);
+  Standard_EXPORT void PreMultiply(const Handle(Geom_Transformation)& Other);
 
   //! Applies the transformation <me> to the triplet {X, Y, Z}.
-  void Transforms (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const { gpTrsf.Transforms (theX, theY, theZ); }
-  
+  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+  {
+    gpTrsf.Transforms(theX, theY, theZ);
+  }
+
   //! Creates a new object which is a copy of this transformation.
   Standard_EXPORT Handle(Geom_Transformation) Copy() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
 private:
-
   gp_Trsf gpTrsf;
-
 };
 
 #endif // _Geom_Transformation_HeaderFile

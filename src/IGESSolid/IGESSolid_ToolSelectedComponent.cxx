@@ -35,30 +35,32 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent ()    {  }
+IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent() {}
 
-
-void  IGESSolid_ToolSelectedComponent::ReadOwnParams
-  (const Handle(IGESSolid_SelectedComponent)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESSolid_ToolSelectedComponent::ReadOwnParams(const Handle(IGESSolid_SelectedComponent)& ent,
+                                                    const Handle(IGESData_IGESReaderData)&     IR,
+                                                    IGESData_ParamReader& PR) const
 {
   Handle(IGESSolid_BooleanTree) tempEntity;
-  gp_XYZ tempSelectPoint;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ                        tempSelectPoint;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  PR.ReadEntity(IR, PR.Current(), "Boolean Tree Entity",
-		STANDARD_TYPE(IGESSolid_BooleanTree), tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "Boolean Tree Entity",
+                STANDARD_TYPE(IGESSolid_BooleanTree),
+                tempEntity); // szv#4:S4163:12Mar99 `st=` not needed
 
-// clang-format off
+  // clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Select Point", tempSelectPoint); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempEntity, tempSelectPoint);
 }
 
-void  IGESSolid_ToolSelectedComponent::WriteOwnParams
-  (const Handle(IGESSolid_SelectedComponent)& ent, IGESData_IGESWriter& IW) const
+void IGESSolid_ToolSelectedComponent::WriteOwnParams(const Handle(IGESSolid_SelectedComponent)& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Component());
   IW.Send(ent->SelectPoint().X());
@@ -66,54 +68,54 @@ void  IGESSolid_ToolSelectedComponent::WriteOwnParams
   IW.Send(ent->SelectPoint().Z());
 }
 
-void  IGESSolid_ToolSelectedComponent::OwnShared
-  (const Handle(IGESSolid_SelectedComponent)& ent, Interface_EntityIterator& iter) const
+void IGESSolid_ToolSelectedComponent::OwnShared(const Handle(IGESSolid_SelectedComponent)& ent,
+                                                Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Component());
 }
 
-void  IGESSolid_ToolSelectedComponent::OwnCopy
-  (const Handle(IGESSolid_SelectedComponent)& another,
-   const Handle(IGESSolid_SelectedComponent)& ent, Interface_CopyTool& TC) const
+void IGESSolid_ToolSelectedComponent::OwnCopy(const Handle(IGESSolid_SelectedComponent)& another,
+                                              const Handle(IGESSolid_SelectedComponent)& ent,
+                                              Interface_CopyTool&                        TC) const
 {
-  DeclareAndCast(IGESSolid_BooleanTree, tempEntity,
-		 TC.Transferred(another->Component()));
+  DeclareAndCast(IGESSolid_BooleanTree, tempEntity, TC.Transferred(another->Component()));
   gp_XYZ tempSelectPoint = another->SelectPoint().XYZ();
-  ent->Init (tempEntity, tempSelectPoint);
+  ent->Init(tempEntity, tempSelectPoint);
 }
 
-IGESData_DirChecker  IGESSolid_ToolSelectedComponent::DirChecker
-  (const Handle(IGESSolid_SelectedComponent)& /* ent */ ) const
+IGESData_DirChecker IGESSolid_ToolSelectedComponent::DirChecker(
+  const Handle(IGESSolid_SelectedComponent)& /* ent */) const
 {
   IGESData_DirChecker DC(182, 0);
 
-  DC.Structure  (IGESData_DefVoid);
-  DC.LineFont   (IGESData_DefVoid);
-  DC.LineWeight (IGESData_DefVoid);
-  DC.Color      (IGESData_DefAny);
+  DC.Structure(IGESData_DefVoid);
+  DC.LineFont(IGESData_DefVoid);
+  DC.LineWeight(IGESData_DefVoid);
+  DC.Color(IGESData_DefAny);
 
-  DC.BlankStatusIgnored ();
-  DC.UseFlagRequired (3);
-  DC.HierarchyStatusIgnored ();
+  DC.BlankStatusIgnored();
+  DC.UseFlagRequired(3);
+  DC.HierarchyStatusIgnored();
   return DC;
 }
 
-void  IGESSolid_ToolSelectedComponent::OwnCheck
-  (const Handle(IGESSolid_SelectedComponent)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESSolid_ToolSelectedComponent::OwnCheck(const Handle(IGESSolid_SelectedComponent)& /* ent */,
+                                               const Interface_ShareTool&,
+                                               Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void  IGESSolid_ToolSelectedComponent::OwnDump
-  (const Handle(IGESSolid_SelectedComponent)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESSolid_ToolSelectedComponent::OwnDump(const Handle(IGESSolid_SelectedComponent)& ent,
+                                              const IGESData_IGESDumper&                 dumper,
+                                              Standard_OStream&                          S,
+                                              const Standard_Integer level) const
 {
   S << "IGESSolid_SelectedComponent\n";
 
   // the heading for boolean tree is in BooleanTree OwnDump
   S << "Boolean Tree Entity :\n";
-  dumper.Dump(ent->Component(),S, (level <= 4) ? 0 : 1);
+  dumper.Dump(ent->Component(), S, (level <= 4) ? 0 : 1);
   S << "Selected Point       : ";
-  IGESData_DumpXYZL(S,level, ent->SelectPoint(), ent->Location());
+  IGESData_DumpXYZL(S, level, ent->SelectPoint(), ent->Location());
   S << std::endl;
 }

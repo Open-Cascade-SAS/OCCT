@@ -26,7 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-
 class IGESSelect_AddGroup;
 DEFINE_STANDARD_HANDLE(IGESSelect_AddGroup, IGESSelect_ModelModifier)
 
@@ -36,39 +35,22 @@ class IGESSelect_AddGroup : public IGESSelect_ModelModifier
 {
 
 public:
-
-  
   //! Creates an AddGroup
   Standard_EXPORT IGESSelect_AddGroup();
-  
+
   //! Specific action : Adds a new group
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
+                                  const Handle(IGESData_IGESModel)& target,
+                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+
   //! Returns a text which is
   //! "Add Group"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_AddGroup,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_AddGroup, IGESSelect_ModelModifier)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_AddGroup_HeaderFile

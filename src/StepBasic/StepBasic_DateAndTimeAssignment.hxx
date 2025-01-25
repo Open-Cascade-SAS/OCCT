@@ -24,50 +24,31 @@
 class StepBasic_DateAndTime;
 class StepBasic_DateTimeRole;
 
-
 class StepBasic_DateAndTimeAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_DateAndTimeAssignment, Standard_Transient)
-
 
 class StepBasic_DateAndTimeAssignment : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Init(const Handle(StepBasic_DateAndTime)&  aAssignedDateAndTime,
+                            const Handle(StepBasic_DateTimeRole)& aRole);
 
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole);
-  
-  Standard_EXPORT void SetAssignedDateAndTime (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime);
-  
+  Standard_EXPORT void SetAssignedDateAndTime(
+    const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime);
+
   Standard_EXPORT Handle(StepBasic_DateAndTime) AssignedDateAndTime() const;
-  
-  Standard_EXPORT void SetRole (const Handle(StepBasic_DateTimeRole)& aRole);
-  
+
+  Standard_EXPORT void SetRole(const Handle(StepBasic_DateTimeRole)& aRole);
+
   Standard_EXPORT Handle(StepBasic_DateTimeRole) Role() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepBasic_DateAndTime) assignedDateAndTime;
+  Handle(StepBasic_DateAndTime)  assignedDateAndTime;
   Handle(StepBasic_DateTimeRole) role;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DateAndTimeAssignment_HeaderFile

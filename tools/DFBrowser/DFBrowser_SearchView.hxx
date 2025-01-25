@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_SearchView_H
 #define DFBrowser_SearchView_H
@@ -36,9 +36,8 @@ class DFBrowser_SearchView : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowser_SearchView (QWidget* theParent);
+  Standard_EXPORT DFBrowser_SearchView(QWidget* theParent);
 
   //! Destructor
   virtual ~DFBrowser_SearchView() {}
@@ -47,43 +46,43 @@ public:
   QWidget* GetControl() const { return myMainWindow; }
 
   //! Sets search line to connect to the search line completion model
-  void SetSearchLine (DFBrowser_SearchLine* theSearchLine) { mySearchLine = theSearchLine; }
+  void SetSearchLine(DFBrowser_SearchLine* theSearchLine) { mySearchLine = theSearchLine; }
 
-  //! Fills the table by values of search line completion model. The zero column of the table is hidden,
-  //! so it visualizes values of 1st and 2nd columns of this model. It creates selection model and connects
-  //! to selectionChanged and doubleClicked signals
+  //! Fills the table by values of search line completion model. The zero column of the table is
+  //! hidden, so it visualizes values of 1st and 2nd columns of this model. It creates selection
+  //! model and connects to selectionChanged and doubleClicked signals
   Standard_EXPORT void InitModels();
 
   //! Resets search line
-  void Reset() { mySearchLine->SetText (""); }
+  void Reset() { mySearchLine->SetText(""); }
 
 signals:
 
   //! Signal about selecting of an item in the view.
   //! \param thePath path to the selected item (e.g. 0, 0:1, 0:1:1)
   //! \param theValue value of the selected item (e.g. TDataStd_Name)
-  void pathSelected (const QStringList& thePath, const QString& theValue);
+  void pathSelected(const QStringList& thePath, const QString& theValue);
 
   //! Signal about double click on an item in the view.
   //! \param thePath path to the selected item (e.g. 0, 0:1, 0:1:1)
   //! \param theValue value of the selected item (e.g. TDataStd_Name)
-  void pathDoubleClicked (const QStringList& thePath, const QString& theValue);
+  void pathDoubleClicked(const QStringList& thePath, const QString& theValue);
 
 protected slots:
 
   //! Listens selection change and emits the pathSelected signal
   //! \param theSelected selected items
   //! \param theDeselected deselected items
-  void onTableSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+  void onTableSelectionChanged(const QItemSelection& theSelected,
+                               const QItemSelection& theDeselected);
 
   //! Listens double click signal on table view
   //! \theIndex a model index of double clicked item
-  void onTableDoubleClicked (const QModelIndex& theIndex);
+  void onTableDoubleClicked(const QModelIndex& theIndex);
 
 private:
-
-  QWidget* myMainWindow; //!< control where table view is placed
-  QTableView* myTableView; //!< table view to visualize search values
+  QWidget*              myMainWindow; //!< control where table view is placed
+  QTableView*           myTableView;  //!< table view to visualize search values
   DFBrowser_SearchLine* mySearchLine; //!< search line to have access to search model completor
 };
 #endif

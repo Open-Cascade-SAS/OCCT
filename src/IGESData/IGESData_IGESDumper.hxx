@@ -37,41 +37,44 @@ class IGESData_IGESEntity;
 //! (specific to each type) and other attached data, which are
 //! defined for all IGES Types (either from "Directory Entry" or
 //! from Lists of Associativities and Properties)
-class IGESData_IGESDumper 
+class IGESData_IGESDumper
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns an IGESDumper ready to work.
   //! The IGESModel provides the numbering of Entities:
   //! as for any InterfaceModel, it gives each Entity a number;
   //! but for IGESEntities, the "Number of Directory Entry"
   //! according to the definition of IGES Files, is also useful.
-  Standard_EXPORT IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model, const Handle(IGESData_Protocol)& protocol);
-  
+  Standard_EXPORT IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model,
+                                      const Handle(IGESData_Protocol)&  protocol);
+
   //! Prints onto an output, the "Number of Directory Entry" which
   //! corresponds to an IGESEntity in the IGESModel, under the form
   //! "D#nnn" (a Null Handle gives D#0)
-  Standard_EXPORT void PrintDNum (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
-  
+  Standard_EXPORT void PrintDNum(const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
+
   //! Prints onto an output, the "Number of Directory Entry" (see
   //! PrintDNum) plus IGES Type and Form Numbers, which gives
   //! "D#nnn  Type nnn  Form nnn"
-  Standard_EXPORT void PrintShort (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
-  
-  Standard_EXPORT void Dump (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S, const Standard_Integer own, const Standard_Integer attached = -1) const;
-  
+  Standard_EXPORT void PrintShort(const Handle(IGESData_IGESEntity)& ent,
+                                  Standard_OStream&                  S) const;
+
+  Standard_EXPORT void Dump(const Handle(IGESData_IGESEntity)& ent,
+                            Standard_OStream&                  S,
+                            const Standard_Integer             own,
+                            const Standard_Integer             attached = -1) const;
+
   //! Specific Dump for each IGES Entity, call by Dump (just above)
   //! <own> is the parameter <own> from Dump
-  Standard_EXPORT void OwnDump (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S, const Standard_Integer own) const;
+  Standard_EXPORT void OwnDump(const Handle(IGESData_IGESEntity)& ent,
+                               Standard_OStream&                  S,
+                               const Standard_Integer             own) const;
 
 private:
-
   Handle(IGESData_IGESModel) themodel;
-  IGESData_SpecificLib thelib;
-
+  IGESData_SpecificLib       thelib;
 };
 
 #endif // _IGESData_IGESDumper_HeaderFile

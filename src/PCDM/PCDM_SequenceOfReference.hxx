@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<PCDM_Reference> PCDM_SequenceOfReference;
 
-
 #endif

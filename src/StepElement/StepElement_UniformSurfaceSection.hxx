@@ -21,7 +21,6 @@
 #include <Standard_Real.hxx>
 #include <StepElement_SurfaceSection.hxx>
 
-
 class StepElement_UniformSurfaceSection;
 DEFINE_STANDARD_HANDLE(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
 
@@ -30,56 +29,45 @@ class StepElement_UniformSurfaceSection : public StepElement_SurfaceSection
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_UniformSurfaceSection();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset, const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass, const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset, const Standard_Real aThickness, const StepElement_MeasureOrUnspecifiedValue& aBendingThickness, const StepElement_MeasureOrUnspecifiedValue& aShearThickness);
-  
+  Standard_EXPORT void Init(
+    const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
+    const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
+    const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
+    const Standard_Real                          aThickness,
+    const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
+    const StepElement_MeasureOrUnspecifiedValue& aShearThickness);
+
   //! Returns field Thickness
   Standard_EXPORT Standard_Real Thickness() const;
-  
+
   //! Set field Thickness
-  Standard_EXPORT void SetThickness (const Standard_Real Thickness);
-  
+  Standard_EXPORT void SetThickness(const Standard_Real Thickness);
+
   //! Returns field BendingThickness
   Standard_EXPORT StepElement_MeasureOrUnspecifiedValue BendingThickness() const;
-  
+
   //! Set field BendingThickness
-  Standard_EXPORT void SetBendingThickness (const StepElement_MeasureOrUnspecifiedValue& BendingThickness);
-  
+  Standard_EXPORT void SetBendingThickness(
+    const StepElement_MeasureOrUnspecifiedValue& BendingThickness);
+
   //! Returns field ShearThickness
   Standard_EXPORT StepElement_MeasureOrUnspecifiedValue ShearThickness() const;
-  
+
   //! Set field ShearThickness
-  Standard_EXPORT void SetShearThickness (const StepElement_MeasureOrUnspecifiedValue& ShearThickness);
+  Standard_EXPORT void SetShearThickness(
+    const StepElement_MeasureOrUnspecifiedValue& ShearThickness);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)
+  DEFINE_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Real theThickness;
+  Standard_Real                         theThickness;
   StepElement_MeasureOrUnspecifiedValue theBendingThickness;
   StepElement_MeasureOrUnspecifiedValue theShearThickness;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_UniformSurfaceSection_HeaderFile

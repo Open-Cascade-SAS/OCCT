@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_AngularQualifier_HeaderFile
 #define _XCAFDimTolObjects_AngularQualifier_HeaderFile
 
 //! Defines types of qualifier for angular dimensions
 enum XCAFDimTolObjects_AngularQualifier
 {
-XCAFDimTolObjects_AngularQualifier_None,
-XCAFDimTolObjects_AngularQualifier_Small,
-XCAFDimTolObjects_AngularQualifier_Large,
-XCAFDimTolObjects_AngularQualifier_Equal
+  XCAFDimTolObjects_AngularQualifier_None,
+  XCAFDimTolObjects_AngularQualifier_Small,
+  XCAFDimTolObjects_AngularQualifier_Large,
+  XCAFDimTolObjects_AngularQualifier_Equal
 };
 
 #endif // _XCAFDimTolObjects_AngularQualifier_HeaderFile

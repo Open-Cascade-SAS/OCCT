@@ -20,7 +20,7 @@
 #include <StepAP214_ExternalIdentificationItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_ExternalIdentificationItem> StepAP214_Array1OfExternalIdentificationItem;
-
+typedef NCollection_Array1<StepAP214_ExternalIdentificationItem>
+  StepAP214_Array1OfExternalIdentificationItem;
 
 #endif

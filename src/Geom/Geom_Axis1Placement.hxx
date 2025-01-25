@@ -26,7 +26,6 @@ class gp_Dir;
 class gp_Trsf;
 class Geom_Geometry;
 
-
 class Geom_Axis1Placement;
 DEFINE_STANDARD_HANDLE(Geom_Axis1Placement, Geom_AxisPlacement)
 
@@ -47,55 +46,35 @@ class Geom_Axis1Placement : public Geom_AxisPlacement
 {
 
 public:
-
-  
   //! Returns a transient copy of A1.
   Standard_EXPORT Geom_Axis1Placement(const gp_Ax1& A1);
-  
 
   //! P is the origin of the axis placement and V is the direction
   //! of the axis placement.
   Standard_EXPORT Geom_Axis1Placement(const gp_Pnt& P, const gp_Dir& V);
-  
+
   //! Returns a non transient copy of <me>.
   Standard_EXPORT const gp_Ax1& Ax1() const;
-  
+
   //! Reverses the direction of the axis placement.
   Standard_EXPORT void Reverse();
-  
+
   //! Returns a copy of <me> reversed.
   Standard_NODISCARD Standard_EXPORT Handle(Geom_Axis1Placement) Reversed() const;
-  
+
   //! Assigns V to the unit vector of this axis.
-  Standard_EXPORT void SetDirection (const gp_Dir& V) Standard_OVERRIDE;
-  
+  Standard_EXPORT void SetDirection(const gp_Dir& V) Standard_OVERRIDE;
+
   //! Applies the transformation T to this axis.
-  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
-  
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
+
   //! Creates a new object, which is a copy of this axis.
   Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom_Axis1Placement,Geom_AxisPlacement)
+  DEFINE_STANDARD_RTTIEXT(Geom_Axis1Placement, Geom_AxisPlacement)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_Axis1Placement_HeaderFile

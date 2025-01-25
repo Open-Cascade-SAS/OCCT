@@ -26,8 +26,9 @@ class Storage_StreamModeError;
 DEFINE_STANDARD_HANDLE(Storage_StreamModeError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Storage_StreamModeError
-  #define Storage_StreamModeError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Storage_StreamModeError(MESSAGE);
+  #define Storage_StreamModeError_Raise_if(CONDITION, MESSAGE)                                     \
+    if (CONDITION)                                                                                 \
+      throw Storage_StreamModeError(MESSAGE);
 #else
   #define Storage_StreamModeError_Raise_if(CONDITION, MESSAGE)
 #endif

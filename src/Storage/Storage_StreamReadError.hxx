@@ -26,8 +26,9 @@ class Storage_StreamReadError;
 DEFINE_STANDARD_HANDLE(Storage_StreamReadError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Storage_StreamReadError
-  #define Storage_StreamReadError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Storage_StreamReadError(MESSAGE);
+  #define Storage_StreamReadError_Raise_if(CONDITION, MESSAGE)                                     \
+    if (CONDITION)                                                                                 \
+      throw Storage_StreamReadError(MESSAGE);
 #else
   #define Storage_StreamReadError_Raise_if(CONDITION, MESSAGE)
 #endif

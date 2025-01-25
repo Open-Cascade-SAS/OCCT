@@ -28,7 +28,6 @@ class Graphic3d_Texture1Dmanual : public Graphic3d_Texture1D
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual, Graphic3d_Texture1D)
 public:
-  
   //! Creates a texture from the file FileName.
   Standard_EXPORT Graphic3d_Texture1Dmanual(const TCollection_AsciiString& theFileName);
 
@@ -37,7 +36,6 @@ public:
 
   //! Creates a texture from the pixmap.
   Standard_EXPORT Graphic3d_Texture1Dmanual(const Handle(Image_PixMap)& thePixMap);
-
 };
 
 #endif // _Graphic3d_Texture1Dmanual_HeaderFile

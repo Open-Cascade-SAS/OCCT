@@ -25,41 +25,21 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-
-
 //! if Cutting is necessary in [a,b], we cut at (a+b) / 2.
-class AdvApprox_DichoCutting  : public AdvApprox_Cutting
+class AdvApprox_DichoCutting : public AdvApprox_Cutting
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT AdvApprox_DichoCutting();
-  
-  Standard_EXPORT virtual Standard_Boolean Value (const Standard_Real a, const Standard_Real b, Standard_Real& cuttingvalue) const Standard_OVERRIDE;
 
-
-
+  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
+                                                 const Standard_Real b,
+                                                 Standard_Real&      cuttingvalue) const
+    Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _AdvApprox_DichoCutting_HeaderFile

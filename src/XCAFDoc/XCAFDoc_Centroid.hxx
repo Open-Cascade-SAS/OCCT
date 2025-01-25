@@ -26,7 +26,6 @@ class Standard_GUID;
 class TDF_Label;
 class TDF_RelocationTable;
 
-
 class XCAFDoc_Centroid;
 DEFINE_STANDARD_HANDLE(XCAFDoc_Centroid, TDF_Attribute)
 
@@ -35,63 +34,46 @@ class XCAFDoc_Centroid : public TDF_Attribute
 {
 
 public:
-
-  
   //! class methods
   //! =============
   Standard_EXPORT XCAFDoc_Centroid();
-  
+
   Standard_EXPORT static const Standard_GUID& GetID();
-  
+
   //! Find, or create, a Location attribute and set it's value
   //! the Location attribute is returned.
   //! Location methods
   //! ===============
-  Standard_EXPORT static Handle(XCAFDoc_Centroid) Set (const TDF_Label& label, const gp_Pnt& pnt);
-  
-  Standard_EXPORT void Set (const gp_Pnt& pnt);
-  
+  Standard_EXPORT static Handle(XCAFDoc_Centroid) Set(const TDF_Label& label, const gp_Pnt& pnt);
+
+  Standard_EXPORT void Set(const gp_Pnt& pnt);
+
   Standard_EXPORT gp_Pnt Get() const;
-  
+
   //! Returns point as argument
   //! returns false if no such attribute at the <label>
-  Standard_EXPORT static Standard_Boolean Get (const TDF_Label& label, gp_Pnt& pnt);
-  
+  Standard_EXPORT static Standard_Boolean Get(const TDF_Label& label, gp_Pnt& pnt);
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Centroid,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Centroid, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
-
   gp_Pnt myCentroid;
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFDoc_Centroid_HeaderFile

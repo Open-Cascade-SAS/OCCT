@@ -21,8 +21,9 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<gp_Pnt,Handle(Standard_Transient)> STEPConstruct_DataMapOfPointTransient;
-typedef NCollection_DataMap<gp_Pnt,Handle(Standard_Transient)>::Iterator STEPConstruct_DataMapIteratorOfDataMapOfPointTransient;
-
+typedef NCollection_DataMap<gp_Pnt, Handle(Standard_Transient)>
+  STEPConstruct_DataMapOfPointTransient;
+typedef NCollection_DataMap<gp_Pnt, Handle(Standard_Transient)>::Iterator
+  STEPConstruct_DataMapIteratorOfDataMapOfPointTransient;
 
 #endif

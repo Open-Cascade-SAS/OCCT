@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
 inline void Hatch_Hatcher::Tolerance(const Standard_Real Tol)
@@ -25,8 +25,8 @@ inline void Hatch_Hatcher::Tolerance(const Standard_Real Tol)
 }
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real Hatch_Hatcher::Tolerance() const
@@ -38,9 +38,8 @@ inline Standard_Boolean Hatch_Hatcher::IsXLine(const Standard_Integer I) const
 {
   return LineForm(I) == Hatch_XLINE;
 }
-  
+
 inline Standard_Boolean Hatch_Hatcher::IsYLine(const Standard_Integer I) const
 {
   return LineForm(I) == Hatch_YLINE;
 }
-  

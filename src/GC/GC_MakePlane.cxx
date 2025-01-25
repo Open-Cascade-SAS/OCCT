@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GC_MakePlane.hxx>
 #include <gce_MakePln.hxx>
 #include <Geom_Plane.hxx>
@@ -33,24 +32,25 @@ GC_MakePlane::GC_MakePlane(const gp_Pln& Pl)
   ThePlane = new Geom_Plane(Pl);
 }
 
-GC_MakePlane::GC_MakePlane(const gp_Pnt& P,
-			     const gp_Dir& V)
+GC_MakePlane::GC_MakePlane(const gp_Pnt& P, const gp_Dir& V)
 {
   TheError = gce_Done;
-  ThePlane = new Geom_Plane(P,V);
+  ThePlane = new Geom_Plane(P, V);
 }
 
 GC_MakePlane::GC_MakePlane(const Standard_Real A,
-			     const Standard_Real B,
-			     const Standard_Real C,
-			     const Standard_Real D)
+                           const Standard_Real B,
+                           const Standard_Real C,
+                           const Standard_Real D)
 {
-  if (Sqrt(A*A + B*B +C*C) <= gp::Resolution()) {
-    TheError = gce_BadEquation; 
+  if (Sqrt(A * A + B * B + C * C) <= gp::Resolution())
+  {
+    TheError = gce_BadEquation;
   }
-  else {
+  else
+  {
     TheError = gce_Done;
-    ThePlane = new Geom_Plane(gp_Pln(A,B,C,D));
+    ThePlane = new Geom_Plane(gp_Pln(A, B, C, D));
   }
 }
 
@@ -58,12 +58,12 @@ GC_MakePlane::GC_MakePlane(const Standard_Real A,
 //   Creation d un Geom_Plane passant par trois points.                   +
 //=========================================================================
 
-GC_MakePlane::GC_MakePlane(const gp_Pnt& P1    ,
-			     const gp_Pnt& P2    ,
-			     const gp_Pnt& P3    ) {
-  gce_MakePln Pl(P1,P2,P3);
+GC_MakePlane::GC_MakePlane(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
+{
+  gce_MakePln Pl(P1, P2, P3);
   TheError = Pl.Status();
-  if (TheError == gce_Done) {
+  if (TheError == gce_Done)
+  {
     ThePlane = new Geom_Plane(Pl.Value());
   }
 }
@@ -72,11 +72,11 @@ GC_MakePlane::GC_MakePlane(const gp_Pnt& P1    ,
 //   Creation d un Geom_Plane parallele a un pln a une distance donnee.   +
 //=========================================================================
 
-GC_MakePlane::GC_MakePlane(const gp_Pln& Pl   ,
-			     const Standard_Real    Dist ) {
-  gp_Pln Pln = gce_MakePln(Pl,Dist);
-  TheError = gce_Done;
-  ThePlane = new Geom_Plane(Pln);
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const Standard_Real Dist)
+{
+  gp_Pln Pln = gce_MakePln(Pl, Dist);
+  TheError   = gce_Done;
+  ThePlane   = new Geom_Plane(Pln);
 }
 
 //=========================================================================
@@ -84,30 +84,31 @@ GC_MakePlane::GC_MakePlane(const gp_Pln& Pl   ,
 //   <Point1>.                                                            +
 //=========================================================================
 
-GC_MakePlane::GC_MakePlane(const gp_Pln& Pl    ,
-			     const gp_Pnt& Point ) {
-  gp_Pln Pln= gce_MakePln(Pl,Point);
-  TheError = gce_Done;
-  ThePlane = new Geom_Plane(Pln);
+GC_MakePlane::GC_MakePlane(const gp_Pln& Pl, const gp_Pnt& Point)
+{
+  gp_Pln Pln = gce_MakePln(Pl, Point);
+  TheError   = gce_Done;
+  ThePlane   = new Geom_Plane(Pln);
 }
 
 //=========================================================================
 //  Creation d un Geom_Plane a partir d un Ax1 (Point + Normale).         +
 //=========================================================================
 
-GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis ) {
+GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis)
+{
   gp_Pln Pln = gce_MakePln(Axis);
-  TheError = gce_Done;
-  ThePlane = new Geom_Plane(Pln);
+  TheError   = gce_Done;
+  ThePlane   = new Geom_Plane(Pln);
 }
-     
+
 //=========================================================================
 //  Creation d un Geom_Plane par un tableau de points.                    +
 //=========================================================================
 
 /*GC_MakePlane::GC_MakePlane(const TColgp_Array1OfPnt&    Pts     ,
-	 		           Standard_Real            ErrMax  ,
-			           Standard_Real            ErrMean ) {
+                       Standard_Real            ErrMax  ,
+                       Standard_Real            ErrMean ) {
   GC_MakePln Pln(Pts,ErrMax,ErrMean);
   TheError = Pln.Status();
   if (TheError == GC_Done) {
@@ -117,8 +118,7 @@ GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis ) {
 */
 
 const Handle(Geom_Plane)& GC_MakePlane::Value() const
-{ 
-  StdFail_NotDone_Raise_if (TheError != gce_Done,
-                            "GC_MakePlane::Value() - no result");
+{
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakePlane::Value() - no result");
   return ThePlane;
 }

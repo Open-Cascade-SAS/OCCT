@@ -29,23 +29,22 @@
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 
-
 //! Describes functions to build a shell out of a shape. The
 //! result is an unlooped shape parallel to the source shape.
 //! A MakeOffsetShape object provides a framework for:
 //! - defining the construction of a shell
 //! - implementing the construction algorithm
 //! - consulting the result.
-class BRepOffsetAPI_MakeOffsetShape  : public BRepBuilderAPI_MakeShape
+class BRepOffsetAPI_MakeOffsetShape : public BRepBuilderAPI_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructor does nothing.
   Standard_EXPORT BRepOffsetAPI_MakeOffsetShape();
 
-  //! Constructs offset shape for the given one using simple algorithm without intersections computation.
+  //! Constructs offset shape for the given one using simple algorithm without intersections
+  //! computation.
   Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS,
                                        const Standard_Real theOffsetValue);
 
@@ -84,7 +83,7 @@ public:
   //! - if Join is equal to GeomAbs_Intersection, then the parallels to the
   //! two adjacent faces are enlarged and intersected,
   //! so that there are no free edges on parallels to faces.
-  //! RemoveIntEdges flag defines whether to remove the INTERNAL edges 
+  //! RemoveIntEdges flag defines whether to remove the INTERNAL edges
   //! from the result or not.
   //! Warnings
   //! 1. All the faces of the shape S should be based on the surfaces
@@ -104,36 +103,39 @@ public:
   //! Exceptions
   //! Geom_UndefinedDerivative if the underlying
   //! geometry of S is BSpline with continuity C0.
-  Standard_EXPORT void PerformByJoin(const TopoDS_Shape& S,
-                                     const Standard_Real Offset,
-                                     const Standard_Real Tol,
-                                     const BRepOffset_Mode Mode = BRepOffset_Skin,
-                                     const Standard_Boolean Intersection = Standard_False,
-                                     const Standard_Boolean SelfInter = Standard_False,
-                                     const GeomAbs_JoinType Join = GeomAbs_Arc,
-                                     const Standard_Boolean RemoveIntEdges = Standard_False,
-                                     const Message_ProgressRange& theRange = Message_ProgressRange());
+  Standard_EXPORT void PerformByJoin(
+    const TopoDS_Shape&          S,
+    const Standard_Real          Offset,
+    const Standard_Real          Tol,
+    const BRepOffset_Mode        Mode           = BRepOffset_Skin,
+    const Standard_Boolean       Intersection   = Standard_False,
+    const Standard_Boolean       SelfInter      = Standard_False,
+    const GeomAbs_JoinType       Join           = GeomAbs_Arc,
+    const Standard_Boolean       RemoveIntEdges = Standard_False,
+    const Message_ProgressRange& theRange       = Message_ProgressRange());
 
   //! Returns instance of the underlying intersection / arc algorithm.
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;
 
   //! Does nothing.
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+
   //! Returns the list of shapes generated from the shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
+    Standard_OVERRIDE;
 
   //! Returns the list of shapes Modified from the shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified (const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
+    Standard_OVERRIDE;
 
   //! Returns true if the shape has been removed from the result.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
   //! Returns offset join type.
   Standard_EXPORT GeomAbs_JoinType GetJoinType() const;
 
 protected:
-
   enum OffsetAlgo_Type
   {
     OffsetAlgo_NONE,
@@ -143,7 +145,7 @@ protected:
 
   OffsetAlgo_Type myLastUsedAlgo;
 
-  BRepOffset_MakeOffset myOffsetShape;
+  BRepOffset_MakeOffset       myOffsetShape;
   BRepOffset_MakeSimpleOffset mySimpleOffsetShape;
 };
 

@@ -26,23 +26,16 @@ class Express_Reference : public Express_Item
 {
 
 public:
-
   //! Create Reference item and initialize it
-  Standard_EXPORT Express_Reference (const Standard_CString theName,
-                                     const Handle(TColStd_HSequenceOfHAsciiString)& theTypes);
+  Standard_EXPORT Express_Reference(const Standard_CString                         theName,
+                                    const Handle(TColStd_HSequenceOfHAsciiString)& theTypes);
 
   //! Returns list of types referenced
-  const Handle(TColStd_HSequenceOfHAsciiString)& Types() const
-  {
-    return myTypes;
-  }
+  const Handle(TColStd_HSequenceOfHAsciiString)& Types() const { return myTypes; }
 
   //! Returns handle to sequence of items corresponding to
   //! listed types
-  const Handle(Express_HSequenceOfItem)& Items() const
-  {
-    return myItems;
-  }
+  const Handle(Express_HSequenceOfItem)& Items() const { return myItems; }
 
   //! Redefined to empty (in order to be able to instantiate)
   //! Return False
@@ -54,12 +47,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Reference, Express_Item)
 
 protected:
-
 private:
-
   Handle(TColStd_HSequenceOfHAsciiString) myTypes;
-  Handle(Express_HSequenceOfItem) myItems;
-
+  Handle(Express_HSequenceOfItem)         myItems;
 };
 
 #endif // _Express_Reference_HeaderFile

@@ -31,66 +31,63 @@ class Extrema_ExtPRevS : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Extrema_ExtPRevS();
-  
+
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
-  
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                  P,
+                                   const Handle(GeomAdaptor_SurfaceOfRevolution)& S,
+                                   const Standard_Real                            Umin,
+                                   const Standard_Real                            Usup,
+                                   const Standard_Real                            Vmin,
+                                   const Standard_Real                            Vsup,
+                                   const Standard_Real                            TolU,
+                                   const Standard_Real                            TolV);
+
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real TolU, const Standard_Real TolV);
-  
-  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
-  
-  Standard_EXPORT void Perform (const gp_Pnt& P);
-  
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                  P,
+                                   const Handle(GeomAdaptor_SurfaceOfRevolution)& S,
+                                   const Standard_Real                            TolU,
+                                   const Standard_Real                            TolV);
+
+  Standard_EXPORT void Initialize(const Handle(GeomAdaptor_SurfaceOfRevolution)& S,
+                                  const Standard_Real                            Umin,
+                                  const Standard_Real                            Usup,
+                                  const Standard_Real                            Vmin,
+                                  const Standard_Real                            Vsup,
+                                  const Standard_Real                            TolU,
+                                  const Standard_Real                            TolV);
+
+  Standard_EXPORT void Perform(const gp_Pnt& P);
+
   //! Returns True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the number of extremum distances.
   Standard_EXPORT Standard_Integer NbExt() const;
-  
+
   //! Returns the value of the Nth resulting square distance.
-  Standard_EXPORT Standard_Real SquareDistance (const Standard_Integer N) const;
-  
+  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+
   //! Returns the point of the Nth resulting distance.
-  Standard_EXPORT const Extrema_POnSurf& Point (const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPRevS,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPRevS, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(GeomAdaptor_SurfaceOfRevolution) myS;
-  Standard_Real myvinf;
-  Standard_Real myvsup;
-  Standard_Real mytolv;
-  gp_Ax2 myPosition;
-  Extrema_GenExtPS myExtPS;
-  Standard_Boolean myIsAnalyticallyComputable;
-  Standard_Boolean myDone;
-  Standard_Integer myNbExt;
-  Standard_Real mySqDist[8];
-  Extrema_POnSurf myPoint[8];
-
-
+  Standard_Real                           myvinf;
+  Standard_Real                           myvsup;
+  Standard_Real                           mytolv;
+  gp_Ax2                                  myPosition;
+  Extrema_GenExtPS                        myExtPS;
+  Standard_Boolean                        myIsAnalyticallyComputable;
+  Standard_Boolean                        myDone;
+  Standard_Integer                        myNbExt;
+  Standard_Real                           mySqDist[8];
+  Extrema_POnSurf                         myPoint[8];
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtPRevS_HeaderFile

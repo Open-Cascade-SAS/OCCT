@@ -23,21 +23,17 @@
 
 class IGESSolid_Protocol;
 
-
 //! This package consists of B-Rep and CSG Solid entities
-class IGESSolid 
+class IGESSolid
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prepares dynamic data (Protocol, Modules) for this package
   Standard_EXPORT static void Init();
-  
+
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESSolid_Protocol) Protocol();
-
 };
 
 #endif // _IGESSolid_HeaderFile

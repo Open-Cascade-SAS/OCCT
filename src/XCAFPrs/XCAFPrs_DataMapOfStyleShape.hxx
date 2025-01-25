@@ -20,8 +20,8 @@
 #include <XCAFPrs_Style.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<XCAFPrs_Style,TopoDS_Shape> XCAFPrs_DataMapOfStyleShape;
-typedef NCollection_DataMap<XCAFPrs_Style,TopoDS_Shape>::Iterator XCAFPrs_DataMapIteratorOfDataMapOfStyleShape;
-
+typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> XCAFPrs_DataMapOfStyleShape;
+typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape>::Iterator
+  XCAFPrs_DataMapIteratorOfDataMapOfStyleShape;
 
 #endif

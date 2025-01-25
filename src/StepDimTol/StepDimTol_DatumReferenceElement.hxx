@@ -23,15 +23,15 @@
 
 class StepDimTol_DatumReferenceElement;
 DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceElement, StepDimTol_GeneralDatumReference)
+
 //! Representation of STEP entity DatumReferenceElement
 class StepDimTol_DatumReferenceElement : public StepDimTol_GeneralDatumReference
 {
 
 public:
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_DatumReferenceElement();
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceElement,StepDimTol_GeneralDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceElement, StepDimTol_GeneralDatumReference)
 };
 #endif // _StepDimTol_DatumReferenceElement_HeaderFile

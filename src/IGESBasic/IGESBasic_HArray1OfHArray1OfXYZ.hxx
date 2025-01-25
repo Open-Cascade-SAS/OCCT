@@ -25,51 +25,31 @@
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <Standard_Integer.hxx>
 
-
 class IGESBasic_HArray1OfHArray1OfXYZ;
 DEFINE_STANDARD_HANDLE(IGESBasic_HArray1OfHArray1OfXYZ, Standard_Transient)
-
 
 class IGESBasic_HArray1OfHArray1OfXYZ : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT IGESBasic_HArray1OfHArray1OfXYZ(const Standard_Integer low,
+                                                  const Standard_Integer up);
 
-  
-  Standard_EXPORT IGESBasic_HArray1OfHArray1OfXYZ(const Standard_Integer low, const Standard_Integer up);
-  
   Standard_EXPORT Standard_Integer Lower() const;
-  
+
   Standard_EXPORT Standard_Integer Upper() const;
-  
+
   Standard_EXPORT Standard_Integer Length() const;
-  
-  Standard_EXPORT void SetValue (const Standard_Integer num, const Handle(TColgp_HArray1OfXYZ)& val);
-  
-  Standard_EXPORT Handle(TColgp_HArray1OfXYZ) Value (const Standard_Integer num) const;
 
+  Standard_EXPORT void SetValue(const Standard_Integer num, const Handle(TColgp_HArray1OfXYZ)& val);
 
+  Standard_EXPORT Handle(TColgp_HArray1OfXYZ) Value(const Standard_Integer num) const;
 
-
-  DEFINE_STANDARD_RTTI_INLINE(IGESBasic_HArray1OfHArray1OfXYZ,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(IGESBasic_HArray1OfHArray1OfXYZ, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   TColStd_Array1OfTransient thelist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESBasic_HArray1OfHArray1OfXYZ_HeaderFile

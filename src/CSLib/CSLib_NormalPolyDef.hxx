@@ -25,56 +25,36 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_Boolean.hxx>
 
-
-class CSLib_NormalPolyDef  : public math_FunctionWithDerivative
+class CSLib_NormalPolyDef : public math_FunctionWithDerivative
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT CSLib_NormalPolyDef(const Standard_Integer k0, const TColStd_Array1OfReal& li);
-  
+
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F);
-  
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivative (const Standard_Real X, Standard_Real& D);
-  
+  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values (const Standard_Real X, Standard_Real& F, Standard_Real& D);
-
-
-
+  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
+                                          Standard_Real&      F,
+                                          Standard_Real&      D);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Integer myK0;
+  Standard_Integer     myK0;
   TColStd_Array1OfReal myTABli;
-
-
 };
-
-
-
-
-
-
 
 #endif // _CSLib_NormalPolyDef_HeaderFile

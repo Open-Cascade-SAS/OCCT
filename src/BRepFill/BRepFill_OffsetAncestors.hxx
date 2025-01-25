@@ -27,54 +27,32 @@ class BRepFill_OffsetWire;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-
 //! this class is used to find the generating shapes
 //! of an OffsetWire.
-class BRepFill_OffsetAncestors 
+class BRepFill_OffsetAncestors
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_OffsetAncestors();
-  
+
   Standard_EXPORT BRepFill_OffsetAncestors(BRepFill_OffsetWire& Paral);
-  
-  Standard_EXPORT void Perform (BRepFill_OffsetWire& Paral);
-  
+
+  Standard_EXPORT void Perform(BRepFill_OffsetWire& Paral);
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
-  Standard_EXPORT Standard_Boolean HasAncestor (const TopoDS_Edge& S1) const;
-  
+
+  Standard_EXPORT Standard_Boolean HasAncestor(const TopoDS_Edge& S1) const;
+
   //! may return a Null Shape if S1 is not a subShape
   //! of <Paral>;
   //! if Perform is not done.
-  Standard_EXPORT const TopoDS_Shape& Ancestor (const TopoDS_Edge& S1) const;
-
-
-
+  Standard_EXPORT const TopoDS_Shape& Ancestor(const TopoDS_Edge& S1) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myIsPerform;
+  Standard_Boolean             myIsPerform;
   TopTools_DataMapOfShapeShape myMap;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_OffsetAncestors_HeaderFile

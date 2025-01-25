@@ -11,28 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationItem,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationItem, Standard_Transient)
 
-StepRepr_RepresentationItem::StepRepr_RepresentationItem ()  {}
+StepRepr_RepresentationItem::StepRepr_RepresentationItem() {}
 
-void StepRepr_RepresentationItem::Init(
-	const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_RepresentationItem::Init(const Handle(TCollection_HAsciiString)& aName)
 {
-	// --- classe own fields ---
-	name = aName;
+  // --- classe own fields ---
+  name = aName;
 }
-
 
 void StepRepr_RepresentationItem::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
-	name = aName;
+  name = aName;
 }
 
 Handle(TCollection_HAsciiString) StepRepr_RepresentationItem::Name() const
 {
-	return name;
+  return name;
 }

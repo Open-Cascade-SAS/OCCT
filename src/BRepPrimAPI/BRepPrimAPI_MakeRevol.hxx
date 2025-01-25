@@ -28,7 +28,6 @@
 class TopoDS_Shape;
 class gp_Ax1;
 
-
 //! Class to make revolved sweep topologies.
 //!
 //! a revolved sweep is defined by :
@@ -60,50 +59,55 @@ class gp_Ax1;
 //! Sweeping a Compound sweeps  the elements  of the
 //! compound  and creates    a  compound with    the
 //! results.
-class BRepPrimAPI_MakeRevol  : public BRepPrimAPI_MakeSweep
+class BRepPrimAPI_MakeRevol : public BRepPrimAPI_MakeSweep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Builds the Revol of base S, axis  A and angle  D. If C
   //! is true, S is copied.
-  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape& S, const gp_Ax1& A, const Standard_Real D, const Standard_Boolean Copy = Standard_False);
-  
+  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                        const gp_Ax1&          A,
+                                        const Standard_Real    D,
+                                        const Standard_Boolean Copy = Standard_False);
+
   //! Builds the Revol of base S, axis  A and angle 2*Pi. If
   //! C is true, S is copied.
-  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape& S, const gp_Ax1& A, const Standard_Boolean Copy = Standard_False);
-  
+  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                        const gp_Ax1&          A,
+                                        const Standard_Boolean Copy = Standard_False);
+
   //! Returns the internal sweeping algorithm.
   Standard_EXPORT const BRepSweep_Revol& Revol() const;
-  
+
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+
   //! Returns the first shape of the revol  (coinciding with
   //! the generating shape).
   Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
-  
+
   //! Returns the TopoDS Shape of the end of the revol.
   Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
-  
+
   //! Returns list of shape generated from shape S
   //! Warning: shape S must be shape of type VERTEX, EDGE, FACE, SOLID.
   //! For shapes of other types method always returns empty list
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
+    Standard_OVERRIDE;
 
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
 
-  
   //! Returns the TopoDS Shape of the beginning of the revolution,
   //! generated with theShape  (subShape of the generating shape).
-  Standard_EXPORT TopoDS_Shape FirstShape (const TopoDS_Shape& theShape);
-  
+  Standard_EXPORT TopoDS_Shape FirstShape(const TopoDS_Shape& theShape);
+
   //! Returns the TopoDS Shape of the end of the revolution,
   //! generated with  theShape (subShape of the  generating shape).
-  Standard_EXPORT TopoDS_Shape LastShape (const TopoDS_Shape& theShape);
-  
+  Standard_EXPORT TopoDS_Shape LastShape(const TopoDS_Shape& theShape);
+
   //! Check if there are degenerated edges in the result.
   Standard_EXPORT Standard_Boolean HasDegenerated() const;
 
@@ -111,27 +115,15 @@ public:
   Standard_EXPORT const TopTools_ListOfShape& Degenerated() const;
 
 protected:
-
   //! Checks possibilities of producing self-intersection surface
   //! returns true if all surfaces are valid
   Standard_EXPORT Standard_Boolean CheckValidity(const TopoDS_Shape& theShape, const gp_Ax1& theA);
 
 private:
-
-
-
-  BRepSweep_Revol myRevol;
-  TopTools_ListOfShape myDegenerated;
+  BRepSweep_Revol           myRevol;
+  TopTools_ListOfShape      myDegenerated;
   Handle(BRepTools_History) myHist;
-  Standard_Boolean myIsBuild;
-
-
+  Standard_Boolean          myIsBuild;
 };
-
-
-
-
-
-
 
 #endif // _BRepPrimAPI_MakeRevol_HeaderFile

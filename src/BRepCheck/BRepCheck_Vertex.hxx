@@ -24,48 +24,27 @@
 class TopoDS_Vertex;
 class TopoDS_Shape;
 
-
 class BRepCheck_Vertex;
 DEFINE_STANDARD_HANDLE(BRepCheck_Vertex, BRepCheck_Result)
-
 
 class BRepCheck_Vertex : public BRepCheck_Result
 {
 
 public:
-
-  
   Standard_EXPORT BRepCheck_Vertex(const TopoDS_Vertex& V);
-  
-  Standard_EXPORT void InContext (const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
+
   Standard_EXPORT void Minimum() Standard_OVERRIDE;
-  
+
   Standard_EXPORT void Blind() Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Real Tolerance();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepCheck_Vertex,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Vertex, BRepCheck_Result)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepCheck_Vertex_HeaderFile

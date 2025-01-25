@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWDateAndTime.pxx"
 #include <StepBasic_Date.hxx>
@@ -20,60 +19,55 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWDateAndTime::RWStepBasic_RWDateAndTime () {}
+RWStepBasic_RWDateAndTime::RWStepBasic_RWDateAndTime() {}
 
-void RWStepBasic_RWDateAndTime::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_DateAndTime)& ent) const
+void RWStepBasic_RWDateAndTime::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                         const Standard_Integer                 num,
+                                         Handle(Interface_Check)&               ach,
+                                         const Handle(StepBasic_DateAndTime)&   ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "date_and_time"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"date_and_time")) return;
+  // --- own field : dateComponent ---
 
-	// --- own field : dateComponent ---
+  Handle(StepBasic_Date) aDateComponent;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num, 1, "date_component", ach, STANDARD_TYPE(StepBasic_Date), aDateComponent);
 
-	Handle(StepBasic_Date) aDateComponent;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num, 1,"date_component", ach, STANDARD_TYPE(StepBasic_Date), aDateComponent);
+  // --- own field : timeComponent ---
 
-	// --- own field : timeComponent ---
+  Handle(StepBasic_LocalTime) aTimeComponent;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data
+    ->ReadEntity(num, 2, "time_component", ach, STANDARD_TYPE(StepBasic_LocalTime), aTimeComponent);
 
-	Handle(StepBasic_LocalTime) aTimeComponent;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"time_component", ach, STANDARD_TYPE(StepBasic_LocalTime), aTimeComponent);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aDateComponent, aTimeComponent);
+  ent->Init(aDateComponent, aTimeComponent);
 }
 
-
-void RWStepBasic_RWDateAndTime::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_DateAndTime)& ent) const
+void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                 SW,
+                                          const Handle(StepBasic_DateAndTime)& ent) const
 {
 
-	// --- own field : dateComponent ---
+  // --- own field : dateComponent ---
 
-	SW.Send(ent->DateComponent());
+  SW.Send(ent->DateComponent());
 
-	// --- own field : timeComponent ---
+  // --- own field : timeComponent ---
 
-	SW.Send(ent->TimeComponent());
+  SW.Send(ent->TimeComponent());
 }
 
-
-void RWStepBasic_RWDateAndTime::Share(const Handle(StepBasic_DateAndTime)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWDateAndTime::Share(const Handle(StepBasic_DateAndTime)& ent,
+                                      Interface_EntityIterator&            iter) const
 {
 
-	iter.GetOneItem(ent->DateComponent());
+  iter.GetOneItem(ent->DateComponent());
 
-
-	iter.GetOneItem(ent->TimeComponent());
+  iter.GetOneItem(ent->TimeComponent());
 }
-

@@ -23,17 +23,18 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING(UnitScaleValue, "value")
 
 //=======================================================================
-//function : XmlMXCAFDoc_LengthUnitDriver
-//purpose  : Constructor
+// function : XmlMXCAFDoc_LengthUnitDriver
+// purpose  : Constructor
 //=======================================================================
-XmlMXCAFDoc_LengthUnitDriver::XmlMXCAFDoc_LengthUnitDriver
-(const Handle(Message_Messenger)& theMsgDriver)
-  : XmlMDF_ADriver(theMsgDriver, "xcaf", "LengthUnit")
-{}
+XmlMXCAFDoc_LengthUnitDriver::XmlMXCAFDoc_LengthUnitDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, "xcaf", "LengthUnit")
+{
+}
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
+// function : NewEmpty
+// purpose  :
 //=======================================================================
 Handle(TDF_Attribute) XmlMXCAFDoc_LengthUnitDriver::NewEmpty() const
 {
@@ -41,10 +42,10 @@ Handle(TDF_Attribute) XmlMXCAFDoc_LengthUnitDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent& theSource,
+Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&  theSource,
                                                      const Handle(TDF_Attribute)& theTarget,
                                                      XmlObjMgt_RRelocationTable&) const
 {
@@ -57,12 +58,11 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
     myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
-  const XmlObjMgt_Element& anElement = theSource;
-  XmlObjMgt_DOMString aUnitScaleValue = anElement.getAttribute(::UnitScaleValue());
+  const XmlObjMgt_Element& anElement       = theSource;
+  XmlObjMgt_DOMString      aUnitScaleValue = anElement.getAttribute(::UnitScaleValue());
   if (aUnitScaleValue == NULL)
   {
-    TCollection_ExtendedString aMessageString
-    ("Cannot retrieve LengthUnit scale factor");
+    TCollection_ExtendedString aMessageString("Cannot retrieve LengthUnit scale factor");
     myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
@@ -70,8 +70,7 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
   TCollection_AsciiString anUnitName(aNameStr.GetString());
   if (!aScaleFactor.IsRealValue(true))
   {
-    TCollection_ExtendedString aMessageString
-    ("Cannot retrieve LengthUnit scale factor");
+    TCollection_ExtendedString aMessageString("Cannot retrieve LengthUnit scale factor");
     myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
@@ -82,16 +81,16 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_LengthUnitDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                          XmlObjMgt_Persistent&        theTarget,
-                                          XmlObjMgt_SRelocationTable&  ) const
+void XmlMXCAFDoc_LengthUnitDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                         XmlObjMgt_Persistent&        theTarget,
+                                         XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_LengthUnit) anAtt = Handle(XCAFDoc_LengthUnit)::DownCast(theSource);
-  XmlObjMgt_DOMString aNameUnit = anAtt->GetUnitName().ToCString(); 
-  XmlObjMgt_DOMString aValueUnit = TCollection_AsciiString(anAtt->GetUnitValue()).ToCString();
-  XmlObjMgt::SetStringValue (theTarget, aNameUnit);
+  Handle(XCAFDoc_LengthUnit) anAtt     = Handle(XCAFDoc_LengthUnit)::DownCast(theSource);
+  XmlObjMgt_DOMString        aNameUnit = anAtt->GetUnitName().ToCString();
+  XmlObjMgt_DOMString aValueUnit       = TCollection_AsciiString(anAtt->GetUnitValue()).ToCString();
+  XmlObjMgt::SetStringValue(theTarget, aNameUnit);
   theTarget.Element().setAttribute(::UnitScaleValue(), aValueUnit);
 }

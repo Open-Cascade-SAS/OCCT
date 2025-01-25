@@ -14,43 +14,44 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Error
-//purpose  : 
+// function : Error
+// purpose  :
 //=======================================================================
 
-inline Standard_Real IntPatch_Polygo::Error () const
+inline Standard_Real IntPatch_Polygo::Error() const
 {
   return myError;
 }
 
 //=======================================================================
-//function : DeflectionOverEstimation
-//purpose  : 
+// function : DeflectionOverEstimation
+// purpose  :
 //=======================================================================
 
-inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation () const
+inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation() const
 {
   return myError;
 }
 
 //=======================================================================
-//function : NbSegments
-//purpose  : 
+// function : NbSegments
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer IntPatch_Polygo::NbSegments () const
+inline Standard_Integer IntPatch_Polygo::NbSegments() const
 {
-  return NbPoints()-1;
+  return NbPoints() - 1;
 }
 
 //=======================================================================
-//function : BeginOfSeg
-//purpose  : 
+// function : BeginOfSeg
+// purpose  :
 //=======================================================================
 
-inline void IntPatch_Polygo::Segment (const Standard_Integer theIndex,
-                                      gp_Pnt2d &theBegin, gp_Pnt2d &theEnd) const
+inline void IntPatch_Polygo::Segment(const Standard_Integer theIndex,
+                                     gp_Pnt2d&              theBegin,
+                                     gp_Pnt2d&              theEnd) const
 {
   theBegin = Point(theIndex);
-  theEnd = Point(theIndex+1);
+  theEnd   = Point(theIndex + 1);
 }

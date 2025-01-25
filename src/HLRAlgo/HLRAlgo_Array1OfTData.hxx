@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<HLRAlgo_TriangleData> HLRAlgo_Array1OfTData;
 
-
 #endif

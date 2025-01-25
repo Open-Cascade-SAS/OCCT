@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -24,56 +24,58 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_GearPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+DEFINE_STANDARD_HANDLE(StepKinematics_GearPair,
+                       StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
 //! Representation of STEP entity GearPair
 class StepKinematics_GearPair : public StepKinematics_LowOrderKinematicPairWithMotionCoupling
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_GearPair();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                           const Standard_Real theRadiusFirstLink,
-                           const Standard_Real theRadiusSecondLink,
-                           const Standard_Real theBevel,
-                           const Standard_Real theHelicalAngle,
-                           const Standard_Real theGearRatio);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+    const Standard_Real                          theRadiusFirstLink,
+    const Standard_Real                          theRadiusSecondLink,
+    const Standard_Real                          theBevel,
+    const Standard_Real                          theHelicalAngle,
+    const Standard_Real                          theGearRatio);
 
   //! Returns field RadiusFirstLink
   Standard_EXPORT Standard_Real RadiusFirstLink() const;
   //! Sets field RadiusFirstLink
-  Standard_EXPORT void SetRadiusFirstLink (const Standard_Real theRadiusFirstLink);
+  Standard_EXPORT void SetRadiusFirstLink(const Standard_Real theRadiusFirstLink);
 
   //! Returns field RadiusSecondLink
   Standard_EXPORT Standard_Real RadiusSecondLink() const;
   //! Sets field RadiusSecondLink
-  Standard_EXPORT void SetRadiusSecondLink (const Standard_Real theRadiusSecondLink);
+  Standard_EXPORT void SetRadiusSecondLink(const Standard_Real theRadiusSecondLink);
 
   //! Returns field Bevel
   Standard_EXPORT Standard_Real Bevel() const;
   //! Sets field Bevel
-  Standard_EXPORT void SetBevel (const Standard_Real theBevel);
+  Standard_EXPORT void SetBevel(const Standard_Real theBevel);
 
   //! Returns field HelicalAngle
   Standard_EXPORT Standard_Real HelicalAngle() const;
   //! Sets field HelicalAngle
-  Standard_EXPORT void SetHelicalAngle (const Standard_Real theHelicalAngle);
+  Standard_EXPORT void SetHelicalAngle(const Standard_Real theHelicalAngle);
 
   //! Returns field GearRatio
   Standard_EXPORT Standard_Real GearRatio() const;
   //! Sets field GearRatio
-  Standard_EXPORT void SetGearRatio (const Standard_Real theGearRatio);
+  Standard_EXPORT void SetGearRatio(const Standard_Real theGearRatio);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPair,
+                          StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
 private:
   Standard_Real myRadiusFirstLink;
@@ -81,6 +83,5 @@ private:
   Standard_Real myBevel;
   Standard_Real myHelicalAngle;
   Standard_Real myGearRatio;
-
 };
 #endif // _StepKinematics_GearPair_HeaderFile_

@@ -16,71 +16,83 @@
 
 #include <Standard_Macro.hxx>
 #include <AdvApp2Var_Data_f2c.hxx>
+
 //
-struct mdnombr_1_ {
-  doublereal pi, 
-  deuxpi, 
-  pisur2, 
-  pis180, 
-  c180pi, 
-  zero, 
-  one, 
-  a180, 
-  a360, 
-  a90;
+struct mdnombr_1_
+{
+  doublereal pi, deuxpi, pisur2, pis180, c180pi, zero, one, a180, a360, a90;
 };
+
 //
-struct minombr_1_ {
+struct minombr_1_
+{
   integer nbr[1001];
 };
+
 //
-struct maovpar_1_ {
+struct maovpar_1_
+{
   doublereal r8und, r8ovr, x4und, x4ovr;
-    real r4und, r4ovr;
-  integer r4nbe, r8nbm, r8nbe, i4ovr, i4ovn, r4exp, r8exp, r4exn, r8exn, 
-  r4ncs, r8ncs, r4nbm;
-  shortint i2ovr, i2ovn;
+  real       r4und, r4ovr;
+  integer    r4nbe, r8nbm, r8nbe, i4ovr, i4ovn, r4exp, r8exp, r4exn, r8exn, r4ncs, r8ncs, r4nbm;
+  shortint   i2ovr, i2ovn;
 };
+
 //
-struct maovpch_1_ {
+struct maovpch_1_
+{
   char cnmmac[16], frmr4[8], frmr8[8], cdcode[8];
 };
+
 //
-struct mlgdrtl_1_ {
-    doublereal rootab[930],// was [465][2]  
-    hiltab[930],// was [465][2]  
+struct mlgdrtl_1_
+{
+  doublereal rootab[930], // was [465][2]
+    hiltab[930],          // was [465][2]
     hi0tab[31];
-  };
-//
-struct mmjcobi_1_ {
-    doublereal plgcan[3968];// was [496][2][4]  
-    doublereal canjac[3968];// was [496][2][4] 
 };
+
 //
-struct mmcmcnp_1_ {
-  doublereal cnp[3721];	// was [61][61] ;
+struct mmjcobi_1_
+{
+  doublereal plgcan[3968]; // was [496][2][4]
+  doublereal canjac[3968]; // was [496][2][4]
 };
+
 //
-struct mmapgss_1_ {
-  doublereal gslxjs[5017], 
-  gsl0js[52];
+struct mmcmcnp_1_
+{
+  doublereal cnp[3721]; // was [61][61] ;
 };
+
 //
-struct mmapgs0_1_ {
+struct mmapgss_1_
+{
+  doublereal gslxjs[5017], gsl0js[52];
+};
+
+//
+struct mmapgs0_1_
+{
   doublereal gslxj0[4761], gsl0j0[49];
 };
+
 //
-struct mmapgs1_1_ {
+struct mmapgs1_1_
+{
   doublereal gslxj1[4505], gsl0j1[46];
 };
+
 //
-struct mmapgs2_1_ {
+struct mmapgs2_1_
+{
   doublereal gslxj2[4249], gsl0j2[43];
 };
+
 ////
-class AdvApp2Var_Data {
- public: 
-  
+class AdvApp2Var_Data
+{
+public:
   Standard_EXPORT static mdnombr_1_& Getmdnombr();
   Standard_EXPORT static minombr_1_& Getminombr();
   Standard_EXPORT static maovpar_1_& Getmaovpar();
@@ -92,8 +104,8 @@ class AdvApp2Var_Data {
   Standard_EXPORT static mmapgs0_1_& Getmmapgs0();
   Standard_EXPORT static mmapgs1_1_& Getmmapgs1();
   Standard_EXPORT static mmapgs2_1_& Getmmapgs2();
- 
 };
+
 //
 #define mdnombr_ AdvApp2Var_Data::Getmdnombr()
 #define minombr_ AdvApp2Var_Data::Getminombr()

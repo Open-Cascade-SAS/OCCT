@@ -22,28 +22,27 @@
 
 /**
  * This class is partition is predefined hidden flag
-*/
-  
+ */
+
 class TObj_HiddenPartition : public TObj_Partition
 {
- public:
+public:
   //! constructor
-  Standard_EXPORT TObj_HiddenPartition (const TDF_Label& theLabel);
+  Standard_EXPORT TObj_HiddenPartition(const TDF_Label& theLabel);
 
   //! Returns all flags of father except Visible
   virtual Standard_EXPORT Standard_Integer GetTypeFlags() const Standard_OVERRIDE;
 
- protected:
+protected:
   //! Persistence of TObj object
-  DECLARE_TOBJOCAF_PERSISTENCE(TObj_HiddenPartition,TObj_Partition)
- public:
+  DECLARE_TOBJOCAF_PERSISTENCE(TObj_HiddenPartition, TObj_Partition)
+public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_HiddenPartition,TObj_Partition)
+  DEFINE_STANDARD_RTTIEXT(TObj_HiddenPartition, TObj_Partition)
 };
 
 //! Define handle class for TObj_HiddenPartition
-DEFINE_STANDARD_HANDLE(TObj_HiddenPartition,TObj_Partition)
-
+DEFINE_STANDARD_HANDLE(TObj_HiddenPartition, TObj_Partition)
 
 #endif
 

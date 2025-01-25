@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<Handle(MeshVS_PrsBuilder)> MeshVS_SequenceOfPrsBuilder;
 
-
 #endif

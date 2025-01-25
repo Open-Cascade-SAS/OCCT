@@ -22,41 +22,20 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_AdvancedBrepShapeRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_AdvancedBrepShapeRepresentation, StepShape_ShapeRepresentation)
-
 
 class StepShape_AdvancedBrepShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
 public:
-
-  
   //! Returns a AdvancedBrepShapeRepresentation
   Standard_EXPORT StepShape_AdvancedBrepShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedBrepShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedBrepShapeRepresentation, StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_AdvancedBrepShapeRepresentation_HeaderFile

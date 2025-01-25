@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<gp_Mat> GeomLib_Array1OfMat;
 
-
 #endif

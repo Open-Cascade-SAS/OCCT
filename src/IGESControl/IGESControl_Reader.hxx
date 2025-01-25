@@ -62,43 +62,47 @@ class IGESData_IGESModel;
 //! reader.TransientProcess();
 //! TopoDS_Shape shape =
 //! TransferBRep::ShapeResult(reader.TransientProcess(),ent);
-class IGESControl_Reader  : public XSControl_Reader
+class IGESControl_Reader : public XSControl_Reader
 {
 public:
   DEFINE_STANDARD_ALLOC
-  
+
   //! Creates a Reader from scratch
   Standard_EXPORT IGESControl_Reader();
-  
+
   //! Creates a Reader from an already existing Session
-  Standard_EXPORT IGESControl_Reader(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+  Standard_EXPORT IGESControl_Reader(const Handle(XSControl_WorkSession)& WS,
+                                     const Standard_Boolean               scratch = Standard_True);
+
   //! Set the transion of ALL Roots (if theReadOnlyVisible is False)
   //! or of Visible Roots (if theReadOnlyVisible is True)
-    void SetReadVisible (const Standard_Boolean ReadRoot);
-  
-    Standard_Boolean GetReadVisible() const;
-  
+  void SetReadVisible(const Standard_Boolean ReadRoot);
+
+  Standard_Boolean GetReadVisible() const;
+
   //! Returns the model as a IGESModel.
   //! It can then be consulted (header, product)
   Standard_EXPORT Handle(IGESData_IGESModel) IGESModel() const;
-  
+
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
   //! <theReadOnlyVisible> is taken into account to define roots
   Standard_EXPORT virtual Standard_Integer NbRootsForTransfer() Standard_OVERRIDE;
-  
+
   //! Prints Statistics and check list for Transfer
-  Standard_EXPORT void PrintTransferInfo (const IFSelect_PrintFail failwarn, const IFSelect_PrintCount mode) const;
+  Standard_EXPORT void PrintTransferInfo(const IFSelect_PrintFail  failwarn,
+                                         const IFSelect_PrintCount mode) const;
 
 protected:
   //! Returns default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const Standard_OVERRIDE;
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const
+    Standard_OVERRIDE;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const Standard_OVERRIDE;
+  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const
+    Standard_OVERRIDE;
 
 private:
   Standard_Boolean theReadOnlyVisible;

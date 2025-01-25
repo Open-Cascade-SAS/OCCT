@@ -22,19 +22,20 @@
 class Select3D_BVHIndexBuffer : public Graphic3d_Buffer
 {
 public:
-
   //! Empty constructor.
-  Select3D_BVHIndexBuffer (const Handle(NCollection_BaseAllocator)& theAlloc)
-  : Graphic3d_Buffer (theAlloc), myHasPatches (false) {}
+  Select3D_BVHIndexBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+      : Graphic3d_Buffer(theAlloc),
+        myHasPatches(false)
+  {
+  }
 
   bool HasPatches() const { return myHasPatches; }
 
   //! Allocates new empty index array
-  bool Init (const Standard_Integer theNbElems,
-             const bool theHasPatches)
+  bool Init(const Standard_Integer theNbElems, const bool theHasPatches)
   {
     release();
-    Stride = sizeof(unsigned int);
+    Stride       = sizeof(unsigned int);
     myHasPatches = theHasPatches;
     if (theHasPatches)
     {
@@ -43,8 +44,7 @@ public:
 
     NbElements   = theNbElems;
     NbAttributes = 0;
-    if (NbElements != 0
-    && !Allocate (size_t(Stride) * size_t(NbElements)))
+    if (NbElements != 0 && !Allocate(size_t(Stride) * size_t(NbElements)))
     {
       release();
       return false;
@@ -53,43 +53,40 @@ public:
   }
 
   //! Access index at specified position
-  Standard_Integer Index (const Standard_Integer theIndex) const
+  Standard_Integer Index(const Standard_Integer theIndex) const
   {
-    return Standard_Integer(*reinterpret_cast<const unsigned int* >(value (theIndex)));
+    return Standard_Integer(*reinterpret_cast<const unsigned int*>(value(theIndex)));
   }
 
   //! Access index at specified position
-  Standard_Integer PatchSize (const Standard_Integer theIndex) const
+  Standard_Integer PatchSize(const Standard_Integer theIndex) const
   {
-    return myHasPatches
-         ? Standard_Integer(*reinterpret_cast<const unsigned int* >(value (theIndex) + sizeof(unsigned int)))
-         : 1;
+    return myHasPatches ? Standard_Integer(*reinterpret_cast<const unsigned int*>(
+                            value(theIndex) + sizeof(unsigned int)))
+                        : 1;
   }
 
   //! Change index at specified position
-  void SetIndex (const Standard_Integer theIndex,
-                 const Standard_Integer theValue)
+  void SetIndex(const Standard_Integer theIndex, const Standard_Integer theValue)
   {
-    *reinterpret_cast<unsigned int* >(changeValue (theIndex)) = (unsigned int )theValue;
+    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
   }
 
   //! Change index at specified position
-  void SetIndex (const Standard_Integer theIndex,
-                 const Standard_Integer theValue,
-                 const Standard_Integer thePatchSize)
+  void SetIndex(const Standard_Integer theIndex,
+                const Standard_Integer theValue,
+                const Standard_Integer thePatchSize)
   {
-    *reinterpret_cast<unsigned int* >(changeValue (theIndex))                        = (unsigned int )theValue;
-    *reinterpret_cast<unsigned int* >(changeValue (theIndex) + sizeof(unsigned int)) = (unsigned int )thePatchSize;
+    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
+    *reinterpret_cast<unsigned int*>(changeValue(theIndex) + sizeof(unsigned int)) =
+      (unsigned int)thePatchSize;
   }
 
 private:
-
   bool myHasPatches;
-  
+
 public:
-
-  DEFINE_STANDARD_RTTI_INLINE(Select3D_BVHIndexBuffer,Graphic3d_Buffer)
-
+  DEFINE_STANDARD_RTTI_INLINE(Select3D_BVHIndexBuffer, Graphic3d_Buffer)
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_BVHIndexBuffer, Graphic3d_Buffer)

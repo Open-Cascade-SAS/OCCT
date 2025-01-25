@@ -18,11 +18,11 @@
 //! Specifies the type of files.
 enum OSD_KindFile
 {
-OSD_FILE,
-OSD_DIRECTORY,
-OSD_LINK,
-OSD_SOCKET,
-OSD_UNKNOWN
+  OSD_FILE,
+  OSD_DIRECTORY,
+  OSD_LINK,
+  OSD_SOCKET,
+  OSD_UNKNOWN
 };
 
 #endif // _OSD_KindFile_HeaderFile

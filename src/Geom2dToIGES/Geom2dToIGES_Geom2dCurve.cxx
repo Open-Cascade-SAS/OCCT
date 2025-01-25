@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#53 rln 24.12.98 CCI60005
-//#57 rln 25.12.98 avoid code duplication
+// #53 rln 24.12.98 CCI60005
+// #57 rln 25.12.98 avoid code duplication
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -27,44 +27,43 @@
 #include <gp_Pln.hxx>
 #include <IGESGeom_BSplineCurve.hxx>
 
-//#include <Geom2dConvert.hxx>
+// #include <Geom2dConvert.hxx>
 //=============================================================================
-// Geom2dToIGES_Geom2dCurve
+//  Geom2dToIGES_Geom2dCurve
 //=============================================================================
 Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve()
-:Geom2dToIGES_Geom2dEntity()
+    : Geom2dToIGES_Geom2dEntity()
 {
 }
-
 
 //=============================================================================
 // Geom2dToIGES_Geom2dCurve
 //=============================================================================
 
-Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve
-(const Geom2dToIGES_Geom2dEntity& G2dE)
-:Geom2dToIGES_Geom2dEntity(G2dE)
+Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve(const Geom2dToIGES_Geom2dEntity& G2dE)
+    : Geom2dToIGES_Geom2dEntity(G2dE)
 {
 }
-
 
 //=============================================================================
 // Transfer des Entites Curve de Geom2d vers IGES
 // Transfer2dCurve
 //=============================================================================
 
-Handle(IGESData_IGESEntity) Geom2dToIGES_Geom2dCurve::Transfer2dCurve
-(const Handle(Geom2d_Curve)& start, const Standard_Real Udeb, const Standard_Real Ufin)
+Handle(IGESData_IGESEntity) Geom2dToIGES_Geom2dCurve::Transfer2dCurve(
+  const Handle(Geom2d_Curve)& start,
+  const Standard_Real         Udeb,
+  const Standard_Real         Ufin)
 {
   Handle(IGESData_IGESEntity) res;
-  if (start.IsNull()) {
+  if (start.IsNull())
+  {
     return res;
   }
 
-  //#57 rln 25.12.98 avoid code duplication
+  // #57 rln 25.12.98 avoid code duplication
   GeomToIGES_GeomCurve GC;
-  GC.SetModel (GetModel());
-  GC.SetUnit (1.); //not scale 2D curves
-  return GC.TransferCurve (GeomAPI::To3d (start, gp_Pln (0, 0, 1, 0)), Udeb, Ufin);
+  GC.SetModel(GetModel());
+  GC.SetUnit(1.); // not scale 2D curves
+  return GC.TransferCurve(GeomAPI::To3d(start, gp_Pln(0, 0, 1, 0)), Udeb, Ufin);
 }
-

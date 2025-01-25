@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<Handle(MAT2d_Connexion)> MAT2d_Array2OfConnexion;
 
-
 #endif

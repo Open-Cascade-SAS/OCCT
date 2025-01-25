@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<ChFiDS_CircSection> ChFiDS_SecArray1;
 
-
 #endif

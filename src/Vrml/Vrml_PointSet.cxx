@@ -11,53 +11,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_PointSet.hxx>
 
-Vrml_PointSet::Vrml_PointSet(const Standard_Integer aStartIndex, 
-			      const Standard_Integer aNumPoints)
+Vrml_PointSet::Vrml_PointSet(const Standard_Integer aStartIndex, const Standard_Integer aNumPoints)
 {
- myStartIndex = aStartIndex;
- myNumPoints  = aNumPoints;
+  myStartIndex = aStartIndex;
+  myNumPoints  = aNumPoints;
 }
 
 void Vrml_PointSet::SetStartIndex(const Standard_Integer aStartIndex)
 {
- myStartIndex = aStartIndex;
+  myStartIndex = aStartIndex;
 }
 
-Standard_Integer Vrml_PointSet::StartIndex() const 
+Standard_Integer Vrml_PointSet::StartIndex() const
 {
- return myStartIndex;
+  return myStartIndex;
 }
 
 void Vrml_PointSet::SetNumPoints(const Standard_Integer aNumPoints)
 {
- myNumPoints  = aNumPoints;
+  myNumPoints = aNumPoints;
 }
 
-Standard_Integer Vrml_PointSet::NumPoints() const 
+Standard_Integer Vrml_PointSet::NumPoints() const
 {
- return myNumPoints;
+  return myNumPoints;
 }
 
-Standard_OStream& Vrml_PointSet::Print(Standard_OStream& anOStream) const 
+Standard_OStream& Vrml_PointSet::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "PointSet {\n";
- if ( myStartIndex != 0 || myNumPoints !=-1 )
+  anOStream << "PointSet {\n";
+  if (myStartIndex != 0 || myNumPoints != -1)
   {
-    if ( myStartIndex != 0)
-      {
-	anOStream  << "    startIndex\t";
-	anOStream << myStartIndex << "\n";
-      }
-    if ( myNumPoints != 0)
-      {
-	anOStream  << "    numPoints\t";
-	anOStream << myNumPoints << "\n";
-      }
+    if (myStartIndex != 0)
+    {
+      anOStream << "    startIndex\t";
+      anOStream << myStartIndex << "\n";
+    }
+    if (myNumPoints != 0)
+    {
+      anOStream << "    numPoints\t";
+      anOStream << myNumPoints << "\n";
+    }
   }
- anOStream  << "}\n";
- return anOStream;
+  anOStream << "}\n";
+  return anOStream;
 }
-

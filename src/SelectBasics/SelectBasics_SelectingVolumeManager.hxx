@@ -31,7 +31,6 @@ class gp_Pnt;
 class SelectBasics_SelectingVolumeManager
 {
 public:
-
   //! Empty constructor.
   SelectBasics_SelectingVolumeManager();
 
@@ -42,103 +41,103 @@ public:
   virtual Standard_Integer GetActiveSelectionType() const = 0;
 
 public:
-
   //! Returns true if selecting volume is overlapped by box theBox
-  virtual Standard_Boolean OverlapsBox (const NCollection_Vec3<Standard_Real>& theBoxMin,
-                                        const NCollection_Vec3<Standard_Real>& theBoxMax,
-                                        SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsBox(const NCollection_Vec3<Standard_Real>& theBoxMin,
+                                       const NCollection_Vec3<Standard_Real>& theBoxMax,
+                                       SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box with minimum
   //! corner at point theMinPt and maximum at point theMaxPt
-  virtual Standard_Boolean OverlapsBox (const NCollection_Vec3<Standard_Real>& theBoxMin,
-                                        const NCollection_Vec3<Standard_Real>& theBoxMax,
-                                        Standard_Boolean*                      theInside = NULL) const = 0;
+  virtual Standard_Boolean OverlapsBox(const NCollection_Vec3<Standard_Real>& theBoxMin,
+                                       const NCollection_Vec3<Standard_Real>& theBoxMax,
+                                       Standard_Boolean* theInside = NULL) const = 0;
 
   //! Returns true if selecting volume is overlapped by point thePnt
-  virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
-                                          SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsPoint(const gp_Pnt&            thePnt,
+                                         SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by point thePnt.
   //! Does not perform depth calculation, so this method is defined as
   //! helper function for inclusion test.
-  virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const = 0;
+  virtual Standard_Boolean OverlapsPoint(const gp_Pnt& thePnt) const = 0;
 
   //! Returns true if selecting volume is overlapped by planar convex polygon, which points
   //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
-  virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPts,
-                                            Standard_Integer theSensType,
-                                            SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsPolygon(const TColgp_Array1OfPnt& theArrayOfPts,
+                                           Standard_Integer          theSensType,
+                                           SelectBasics_PickResult&  thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by line segment with start point at thePt1
   //! and end point at thePt2
-  virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePt1,
-                                            const gp_Pnt& thePt2,
-                                            SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsSegment(const gp_Pnt&            thePt1,
+                                           const gp_Pnt&            thePt2,
+                                           SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by triangle with vertices thePt1,
   //! thePt2 and thePt3, taking into account sensitivity type theSensType
-  virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePt1,
-                                             const gp_Pnt& thePt2,
-                                             const gp_Pnt& thePt3,
-                                             Standard_Integer theSensType,
-                                             SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsTriangle(const gp_Pnt&            thePt1,
+                                            const gp_Pnt&            thePt2,
+                                            const gp_Pnt&            thePt3,
+                                            Standard_Integer         theSensType,
+                                            SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
-                                           const Standard_Real theRadius,
-                                           SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsSphere(const gp_Pnt&            theCenter,
+                                          const Standard_Real      theRadius,
+                                          SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
-                                           const Standard_Real theRadius,
-                                           Standard_Boolean* theInside = NULL) const = 0;
+  virtual Standard_Boolean OverlapsSphere(const gp_Pnt&       theCenter,
+                                          const Standard_Real theRadius,
+                                          Standard_Boolean*   theInside = NULL) const = 0;
 
-  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
-  //! and theTopRad, height theHeight, the boolean theIsHollow and transformation to apply theTrsf.
-  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
-                                             const Standard_Real theTopRad,
-                                             const Standard_Real theHeight,
-                                             const gp_Trsf& theTrsf,
-                                             const Standard_Boolean theIsHollow,
-                                             SelectBasics_PickResult& thePickResult) const = 0;
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
+  //! theBottomRad and theTopRad, height theHeight, the boolean theIsHollow and transformation to
+  //! apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder(const Standard_Real      theBottomRad,
+                                            const Standard_Real      theTopRad,
+                                            const Standard_Real      theHeight,
+                                            const gp_Trsf&           theTrsf,
+                                            const Standard_Boolean   theIsHollow,
+                                            SelectBasics_PickResult& thePickResult) const = 0;
 
-  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
-  //! and theTopRad, height theHeight, the boolean theIsHollow and transformation to apply theTrsf.
-  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
-                                             const Standard_Real theTopRad,
-                                             const Standard_Real theHeight,
-                                             const gp_Trsf& theTrsf,
-                                             const Standard_Boolean theIsHollow,
-                                             Standard_Boolean* theInside = NULL) const = 0;
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
+  //! theBottomRad and theTopRad, height theHeight, the boolean theIsHollow and transformation to
+  //! apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder(const Standard_Real    theBottomRad,
+                                            const Standard_Real    theTopRad,
+                                            const Standard_Real    theHeight,
+                                            const gp_Trsf&         theTrsf,
+                                            const Standard_Boolean theIsHollow,
+                                            Standard_Boolean*      theInside = NULL) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! the boolean theIsFilled, and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  virtual Standard_Boolean OverlapsCircle (const Standard_Real theRadius,
-                                           const gp_Trsf& theTrsf,
-                                           const Standard_Boolean theIsFilled,
-                                           SelectBasics_PickResult& thePickResult) const = 0;
+  virtual Standard_Boolean OverlapsCircle(const Standard_Real      theRadius,
+                                          const gp_Trsf&           theTrsf,
+                                          const Standard_Boolean   theIsFilled,
+                                          SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! the boolean theIsFilled, and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  virtual Standard_Boolean OverlapsCircle (const Standard_Real theRadius,
-                                           const gp_Trsf& theTrsf,
-                                           const Standard_Boolean theIsFilled,
-                                           Standard_Boolean* theInside = NULL) const = 0;
+  virtual Standard_Boolean OverlapsCircle(const Standard_Real    theRadius,
+                                          const gp_Trsf&         theTrsf,
+                                          const Standard_Boolean theIsFilled,
+                                          Standard_Boolean*      theInside = NULL) const = 0;
 
 public:
-
   //! Calculates distance from 3d projection of user-defined selection point
   //! to the given point theCOG
-  virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const = 0;
+  virtual Standard_Real DistToGeometryCenter(const gp_Pnt& theCOG) const = 0;
 
   //! Return 3D point corresponding to specified depth within picking ray.
-  virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const = 0;
+  virtual gp_Pnt DetectedPoint(const Standard_Real theDepth) const = 0;
 
   //! Returns flag indicating if partial overlapping of entities is allowed or should be rejected.
   virtual Standard_Boolean IsOverlapAllowed() const = 0;
@@ -163,85 +162,90 @@ public:
   virtual Standard_Boolean IsScalableActiveVolume() const = 0;
 
   //! Returns mouse coordinates for Point selection mode.
-  //! @return infinite point in case of unsupport of mouse position for this active selection volume.
+  //! @return infinite point in case of unsupport of mouse position for this active selection
+  //! volume.
   virtual gp_Pnt2d GetMousePosition() const = 0;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
-  virtual void GetPlanes (NCollection_Vector<NCollection_Vec4<Standard_Real> >& thePlaneEquations) const = 0;
+  virtual void GetPlanes(
+    NCollection_Vector<NCollection_Vec4<Standard_Real>>& thePlaneEquations) const = 0;
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
   {
-    (void )theOStream;
-    (void )theDepth;
+    (void)theOStream;
+    (void)theDepth;
   }
 
 public:
+  Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsBox()")
-  Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
-                             const NCollection_Vec3<Standard_Real>& theBoxMax,
-                             SelectBasics_PickResult& thePickResult) const
+  Standard_Boolean Overlaps(const NCollection_Vec3<Standard_Real>& theBoxMin,
+                            const NCollection_Vec3<Standard_Real>& theBoxMax,
+                            SelectBasics_PickResult&               thePickResult) const
   {
-    return OverlapsBox (theBoxMin, theBoxMax, thePickResult);
+    return OverlapsBox(theBoxMin, theBoxMax, thePickResult);
   }
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsBox()")
-  Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
-                             const NCollection_Vec3<Standard_Real>& theBoxMax,
-                             Standard_Boolean*                      theInside = NULL) const
+  Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
+
+  Standard_Boolean Overlaps(const NCollection_Vec3<Standard_Real>& theBoxMin,
+                            const NCollection_Vec3<Standard_Real>& theBoxMax,
+                            Standard_Boolean*                      theInside = NULL) const
   {
-    return OverlapsBox (theBoxMin, theBoxMax, theInside);
+    return OverlapsBox(theBoxMin, theBoxMax, theInside);
   }
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsPoint()")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                             SelectBasics_PickResult& thePickResult) const
+  Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
+  Standard_Boolean Overlaps(const gp_Pnt& thePnt, SelectBasics_PickResult& thePickResult) const
   {
-    return OverlapsPoint (thePnt, thePickResult);
+    return OverlapsPoint(thePnt, thePickResult);
   }
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsPoint()")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt) const
+  Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
+  Standard_Boolean Overlaps(const gp_Pnt& thePnt) const { return OverlapsPoint(thePnt); }
+
+  Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
+  Standard_EXPORT Standard_Boolean Overlaps(const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                            Standard_Integer                   theSensType,
+                                            SelectBasics_PickResult&           thePickResult) const;
+
+  Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
+
+  Standard_Boolean Overlaps(const TColgp_Array1OfPnt& theArrayOfPts,
+                            Standard_Integer          theSensType,
+                            SelectBasics_PickResult&  thePickResult) const
   {
-    return OverlapsPoint (thePnt);
+    return OverlapsPolygon(theArrayOfPts, theSensType, thePickResult);
   }
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsPolygon()")
-  Standard_EXPORT Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                             Standard_Integer theSensType,
-                                             SelectBasics_PickResult& thePickResult) const;
+  Standard_DEPRECATED("Deprecated alias for OverlapsSegment()")
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsPolygon()")
-  Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
-                             Standard_Integer theSensType,
-                             SelectBasics_PickResult& thePickResult) const
+  Standard_Boolean Overlaps(const gp_Pnt&            thePnt1,
+                            const gp_Pnt&            thePnt2,
+                            SelectBasics_PickResult& thePickResult) const
   {
-    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
+    return OverlapsSegment(thePnt1, thePnt2, thePickResult);
   }
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsSegment()")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                             const gp_Pnt& thePnt2,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsSegment (thePnt1, thePnt2, thePickResult);
-  }
+  Standard_DEPRECATED("Deprecated alias for OverlapsTriangle()")
 
-  Standard_DEPRECATED ("Deprecated alias for OverlapsTriangle()")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                             const gp_Pnt& thePnt2,
-                             const gp_Pnt& thePnt3,
-                             Standard_Integer theSensType,
-                             SelectBasics_PickResult& thePickResult) const
+  Standard_Boolean Overlaps(const gp_Pnt&            thePnt1,
+                            const gp_Pnt&            thePnt2,
+                            const gp_Pnt&            thePnt3,
+                            Standard_Integer         theSensType,
+                            SelectBasics_PickResult& thePickResult) const
   {
-    return OverlapsTriangle (thePnt1, thePnt2, thePnt3, theSensType, thePickResult);
+    return OverlapsTriangle(thePnt1, thePnt2, thePnt3, theSensType, thePickResult);
   }
 
 //! Deprecated static const class members aren't supported for Visual Studio prior to 2015 (vc14)
 //! and GCC >= 5.0 and GCC < 6.3 (due to bug when warning was raised without member usage).
-#if (!defined(_MSC_VER) || (_MSC_VER >= 1900)) && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
+#if (!defined(_MSC_VER) || (_MSC_VER >= 1900))                                                     \
+  && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
   static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
 
@@ -254,7 +258,6 @@ public:
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
   static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Unknown;
 #endif
-
 };
 
 #endif // _SelectBasics_SelectingVolumeManager_HeaderFile

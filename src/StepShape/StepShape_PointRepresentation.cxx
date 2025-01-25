@@ -18,12 +18,10 @@
 #include <Standard_Type.hxx>
 #include <StepShape_PointRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_PointRepresentation,StepShape_ShapeRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_PointRepresentation, StepShape_ShapeRepresentation)
 
 //=======================================================================
-//function : StepShape_PointRepresentation
-//purpose  : 
+// function : StepShape_PointRepresentation
+// purpose  :
 //=======================================================================
-StepShape_PointRepresentation::StepShape_PointRepresentation ()
-{
-}
+StepShape_PointRepresentation::StepShape_PointRepresentation() {}

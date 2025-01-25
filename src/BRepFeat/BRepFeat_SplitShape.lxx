@@ -16,56 +16,54 @@
 
 #include <LocOpe_WiresOnShape.hxx>
 
-
 //=======================================================================
-//function : BRepFeat_SplitShape
-//purpose  : 
-//=======================================================================
-
-inline BRepFeat_SplitShape::BRepFeat_SplitShape () {}
-
-
-
-
-//=======================================================================
-//function : BRepFeat_SplitShape
-//purpose  : 
+// function : BRepFeat_SplitShape
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_SplitShape::BRepFeat_SplitShape (const TopoDS_Shape& S) :
-   mySShape(S)
+inline BRepFeat_SplitShape::BRepFeat_SplitShape() {}
+
+//=======================================================================
+// function : BRepFeat_SplitShape
+// purpose  :
+//=======================================================================
+
+inline BRepFeat_SplitShape::BRepFeat_SplitShape(const TopoDS_Shape& S)
+    : mySShape(S)
 {
   myWOnShape = new LocOpe_WiresOnShape(S);
 }
 
 //=======================================================================
-//function :  Add
-//purpose  : 
+// function :  Add
+// purpose  :
 //=======================================================================
- inline Standard_Boolean BRepFeat_SplitShape::Add(const TopTools_SequenceOfShape& theEdges)
- {
-   return myWOnShape->Add(theEdges);
- }
+inline Standard_Boolean BRepFeat_SplitShape::Add(const TopTools_SequenceOfShape& theEdges)
+{
+  return myWOnShape->Add(theEdges);
+}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_SplitShape::Init(const TopoDS_Shape& S)
 {
   mySShape.Init(S);
-  if (myWOnShape.IsNull()) {
+  if (myWOnShape.IsNull())
+  {
     myWOnShape = new LocOpe_WiresOnShape(S);
   }
-  else {
+  else
+  {
     myWOnShape->Init(S);
   }
 }
 
 //=======================================================================
-//function : SetCheckInterior
-//purpose  : 
+// function : SetCheckInterior
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_SplitShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
@@ -74,49 +72,41 @@ inline void BRepFeat_SplitShape::SetCheckInterior(const Standard_Boolean ToCheck
 }
 
 //=======================================================================
-//function : Add
-//purpose  : 
+// function : Add
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_SplitShape::Add(const TopoDS_Wire& W,
-				     const TopoDS_Face& F)
+inline void BRepFeat_SplitShape::Add(const TopoDS_Wire& W, const TopoDS_Face& F)
 {
-  myWOnShape->Bind(W,F);
-}
-
-
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-
-inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E,
-				     const TopoDS_Face& F)
-{
-  myWOnShape->Bind(E,F);
+  myWOnShape->Bind(W, F);
 }
 
 //=======================================================================
-//function : Add
-//purpose  : 
+// function : Add
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_SplitShape::Add(const TopoDS_Compound& Comp,
-				     const TopoDS_Face& F)
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  myWOnShape->Bind(Comp,F);
+  myWOnShape->Bind(E, F);
 }
 
-
 //=======================================================================
-//function : Add
-//purpose  : 
+// function : Add
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E,
-				     const TopoDS_Edge& EOn)
+inline void BRepFeat_SplitShape::Add(const TopoDS_Compound& Comp, const TopoDS_Face& F)
 {
-  myWOnShape->Bind(E,EOn);
+  myWOnShape->Bind(Comp, F);
 }
 
+//=======================================================================
+// function : Add
+// purpose  :
+//=======================================================================
 
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E, const TopoDS_Edge& EOn)
+{
+  myWOnShape->Bind(E, EOn);
+}

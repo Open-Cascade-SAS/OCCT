@@ -22,17 +22,20 @@
 #include <StepVisual_DraughtingModel.hxx>
 
 class StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel;
-DEFINE_STANDARD_HANDLE(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, StepVisual_DraughtingModel)
+DEFINE_STANDARD_HANDLE(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel,
+                       StepVisual_DraughtingModel)
+
 //! Added for Dimensional Tolerances
-//! Complex STEP entity Characterized_Object & Characterized_Representation & Draughting_Model & Representation
-class StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel : public StepVisual_DraughtingModel
+//! Complex STEP entity Characterized_Object & Characterized_Representation & Draughting_Model &
+//! Representation
+class StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel
+    : public StepVisual_DraughtingModel
 {
 
 public:
-  
   Standard_EXPORT StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel();
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, StepVisual_DraughtingModel)
-
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel,
+                          StepVisual_DraughtingModel)
 };
 #endif // _StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel_HeaderFile

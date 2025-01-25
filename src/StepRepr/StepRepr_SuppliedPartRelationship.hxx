@@ -21,40 +21,20 @@
 
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 
-
 class StepRepr_SuppliedPartRelationship;
 DEFINE_STANDARD_HANDLE(StepRepr_SuppliedPartRelationship, StepBasic_ProductDefinitionRelationship)
-
 
 class StepRepr_SuppliedPartRelationship : public StepBasic_ProductDefinitionRelationship
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_SuppliedPartRelationship();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,StepBasic_ProductDefinitionRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,
+                          StepBasic_ProductDefinitionRelationship)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_SuppliedPartRelationship_HeaderFile

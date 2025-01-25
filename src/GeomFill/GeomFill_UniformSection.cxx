@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -31,47 +30,50 @@
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_UniformSection,GeomFill_SectionLaw)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
 #ifdef DRAW
-#include <DrawTrSurf.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BSplineCurve.hxx>
+  #include <DrawTrSurf.hxx>
+  #include <Geom_Curve.hxx>
+  #include <Geom_BSplineCurve.hxx>
 static Standard_Integer NumSec = 0;
 static Standard_Boolean Affich = 0;
 #endif
 
 GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
-						 const Standard_Real FirstParameter,
-						 const Standard_Real LastParameter)
-                                                 : First(FirstParameter),
-						   Last(LastParameter)
+                                                 const Standard_Real       FirstParameter,
+                                                 const Standard_Real       LastParameter)
+    : First(FirstParameter),
+      Last(LastParameter)
 {
- mySection = Handle(Geom_Curve)::DownCast(C->Copy());
- myCurve =  Handle(Geom_BSplineCurve)::DownCast(C);
- if (myCurve.IsNull()) {
-   myCurve = GeomConvert::CurveToBSplineCurve(C, Convert_QuasiAngular);
-   if (myCurve->IsPeriodic()) {
-     Standard_Integer M = myCurve->Degree()/2+1;
-     myCurve->RemoveKnot(1, M, Precision::Confusion());
-   }
- }
+  mySection = Handle(Geom_Curve)::DownCast(C->Copy());
+  myCurve   = Handle(Geom_BSplineCurve)::DownCast(C);
+  if (myCurve.IsNull())
+  {
+    myCurve = GeomConvert::CurveToBSplineCurve(C, Convert_QuasiAngular);
+    if (myCurve->IsPeriodic())
+    {
+      Standard_Integer M = myCurve->Degree() / 2 + 1;
+      myCurve->RemoveKnot(1, M, Precision::Confusion());
+    }
+  }
 
 #ifdef DRAW
- if (Affich) {
-   char name[256];
-   sprintf(name,"UnifSect_%d",++NumSec);
-   DrawTrSurf::Set(name, myCurve);
- }
+  if (Affich)
+  {
+    char name[256];
+    sprintf(name, "UnifSect_%d", ++NumSec);
+    DrawTrSurf::Set(name, myCurve);
+  }
 #endif
 }
 
 //=======================================================
 // Purpose :D0
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::D0(const Standard_Real,
-					      TColgp_Array1OfPnt& Poles,
-					      TColStd_Array1OfReal& Weights) 
+Standard_Boolean GeomFill_UniformSection::D0(const Standard_Real,
+                                             TColgp_Array1OfPnt&   Poles,
+                                             TColStd_Array1OfReal& Weights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -82,11 +84,11 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :D1
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::D1(const Standard_Real,
-					      TColgp_Array1OfPnt& Poles,
-					      TColgp_Array1OfVec& DPoles,
-					      TColStd_Array1OfReal& Weights,
-					      TColStd_Array1OfReal& DWeights) 
+Standard_Boolean GeomFill_UniformSection::D1(const Standard_Real,
+                                             TColgp_Array1OfPnt&   Poles,
+                                             TColgp_Array1OfVec&   DPoles,
+                                             TColStd_Array1OfReal& Weights,
+                                             TColStd_Array1OfReal& DWeights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -100,13 +102,13 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :D2
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::D2(const Standard_Real,
-					      TColgp_Array1OfPnt& Poles,
-					      TColgp_Array1OfVec& DPoles,
-					      TColgp_Array1OfVec& D2Poles,
-					      TColStd_Array1OfReal& Weights,
-					      TColStd_Array1OfReal& DWeights,
-					      TColStd_Array1OfReal& D2Weights) 
+Standard_Boolean GeomFill_UniformSection::D2(const Standard_Real,
+                                             TColgp_Array1OfPnt&   Poles,
+                                             TColgp_Array1OfVec&   DPoles,
+                                             TColgp_Array1OfVec&   D2Poles,
+                                             TColStd_Array1OfReal& Weights,
+                                             TColStd_Array1OfReal& DWeights,
+                                             TColStd_Array1OfReal& D2Weights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -122,15 +124,16 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :BSplineSurface()
 //=======================================================
- Handle(Geom_BSplineSurface) GeomFill_UniformSection::BSplineSurface() const
+Handle(Geom_BSplineSurface) GeomFill_UniformSection::BSplineSurface() const
 {
-  Standard_Integer ii, NbPoles = myCurve->NbPoles();
-  TColgp_Array2OfPnt Poles( 1, NbPoles, 1, 2);
-  TColStd_Array1OfReal UKnots(1,myCurve->NbKnots()), VKnots(1,2); 
-  TColStd_Array1OfInteger UMults(1,myCurve->NbKnots()), VMults(1,2);
-  
-  for (ii=1; ii <= NbPoles; ii++) {
-    Poles(ii, 1) =  Poles(ii, 2) = myCurve->Pole(ii);
+  Standard_Integer        ii, NbPoles = myCurve->NbPoles();
+  TColgp_Array2OfPnt      Poles(1, NbPoles, 1, 2);
+  TColStd_Array1OfReal    UKnots(1, myCurve->NbKnots()), VKnots(1, 2);
+  TColStd_Array1OfInteger UMults(1, myCurve->NbKnots()), VMults(1, 2);
+
+  for (ii = 1; ii <= NbPoles; ii++)
+  {
+    Poles(ii, 1) = Poles(ii, 2) = myCurve->Pole(ii);
   }
 
   myCurve->Knots(UKnots);
@@ -140,45 +143,47 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
   myCurve->Multiplicities(UMults);
   VMults.Init(2);
 
-
-  Handle(Geom_BSplineSurface) BS = 
-    new (Geom_BSplineSurface) ( Poles,
-			       UKnots, VKnots,
-			       UMults, VMults,
-			       myCurve->Degree(), 1,
-			       myCurve->IsPeriodic());
+  Handle(Geom_BSplineSurface) BS = new (Geom_BSplineSurface)(Poles,
+                                                             UKnots,
+                                                             VKnots,
+                                                             UMults,
+                                                             VMults,
+                                                             myCurve->Degree(),
+                                                             1,
+                                                             myCurve->IsPeriodic());
 
   return BS;
 }
+
 //=======================================================
 // Purpose :SectionShape
 //=======================================================
- void GeomFill_UniformSection::SectionShape(Standard_Integer& NbPoles,
-					    Standard_Integer& NbKnots,
-					    Standard_Integer& Degree) const
+void GeomFill_UniformSection::SectionShape(Standard_Integer& NbPoles,
+                                           Standard_Integer& NbKnots,
+                                           Standard_Integer& Degree) const
 {
-   NbPoles = myCurve->NbPoles();
-   NbKnots = myCurve->NbKnots();
-   Degree  = myCurve->Degree();
+  NbPoles = myCurve->NbPoles();
+  NbKnots = myCurve->NbKnots();
+  Degree  = myCurve->Degree();
 }
 
- void GeomFill_UniformSection::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomFill_UniformSection::Knots(TColStd_Array1OfReal& TKnots) const
 {
- myCurve->Knots(TKnots);
+  myCurve->Knots(TKnots);
 }
+
 //=======================================================
 // Purpose :Mults
 //=======================================================
- void GeomFill_UniformSection::Mults(TColStd_Array1OfInteger& TMults) const
+void GeomFill_UniformSection::Mults(TColStd_Array1OfInteger& TMults) const
 {
-   myCurve->Multiplicities(TMults);
+  myCurve->Multiplicities(TMults);
 }
-
 
 //=======================================================
 // Purpose :IsRational
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::IsRational() const
+Standard_Boolean GeomFill_UniformSection::IsRational() const
 {
   return myCurve->IsRational();
 }
@@ -186,7 +191,7 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :IsUPeriodic
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::IsUPeriodic() const
+Standard_Boolean GeomFill_UniformSection::IsUPeriodic() const
 {
   return myCurve->IsPeriodic();
 }
@@ -194,7 +199,7 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :IsVPeriodic
 //=======================================================
- Standard_Boolean GeomFill_UniformSection::IsVPeriodic() const
+Standard_Boolean GeomFill_UniformSection::IsVPeriodic() const
 {
   return Standard_True;
 }
@@ -203,38 +208,34 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 // Purpose :NbIntervals
 //=======================================================
 // Standard_Integer GeomFill_UniformSection::NbIntervals(const GeomAbs_Shape S) const
- Standard_Integer GeomFill_UniformSection::NbIntervals(const GeomAbs_Shape ) const
+Standard_Integer GeomFill_UniformSection::NbIntervals(const GeomAbs_Shape) const
 {
   return 1;
 }
 
-
 //=======================================================
 // Purpose :Intervals
 //=======================================================
- void GeomFill_UniformSection::Intervals(TColStd_Array1OfReal& T,
-//					 const GeomAbs_Shape S) const
-					 const GeomAbs_Shape ) const
+void GeomFill_UniformSection::Intervals(TColStd_Array1OfReal& T,
+                                        //					 const GeomAbs_Shape S) const
+                                        const GeomAbs_Shape) const
 {
   T(T.Lower()) = First;
   T(T.Upper()) = Last;
 }
 
-
 //=======================================================
 // Purpose : SetInterval
 //=======================================================
- void GeomFill_UniformSection::SetInterval(const Standard_Real,
-					   const Standard_Real) 
+void GeomFill_UniformSection::SetInterval(const Standard_Real, const Standard_Real)
 {
- // Ne fait Rien
+  // Ne fait Rien
 }
 
 //=======================================================
 // Purpose : GetInterval
 //=======================================================
- void GeomFill_UniformSection::GetInterval(Standard_Real& F,
-					   Standard_Real& L) const
+void GeomFill_UniformSection::GetInterval(Standard_Real& F, Standard_Real& L) const
 {
   F = First;
   L = Last;
@@ -243,8 +244,7 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose : GetDomain
 //=======================================================
- void GeomFill_UniformSection::GetDomain(Standard_Real& F,
-					 Standard_Real& L) const
+void GeomFill_UniformSection::GetDomain(Standard_Real& F, Standard_Real& L) const
 {
   F = First;
   L = Last;
@@ -253,14 +253,15 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose : GetTolerance
 //=======================================================
- void GeomFill_UniformSection::GetTolerance(const Standard_Real BoundTol,
-					    const Standard_Real SurfTol,
-//					    const Standard_Real AngleTol,
-					    const Standard_Real ,
-					    TColStd_Array1OfReal& Tol3d) const
+void GeomFill_UniformSection::GetTolerance(const Standard_Real BoundTol,
+                                           const Standard_Real SurfTol,
+                                           //					    const Standard_Real AngleTol,
+                                           const Standard_Real,
+                                           TColStd_Array1OfReal& Tol3d) const
 {
   Tol3d.Init(SurfTol);
-  if (BoundTol<SurfTol) {
+  if (BoundTol < SurfTol)
+  {
     Tol3d(Tol3d.Lower()) = BoundTol;
     Tol3d(Tol3d.Upper()) = BoundTol;
   }
@@ -269,48 +270,50 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 //=======================================================
 // Purpose :
 //=======================================================
- gp_Pnt GeomFill_UniformSection::BarycentreOfSurf() const
+gp_Pnt GeomFill_UniformSection::BarycentreOfSurf() const
 {
   Standard_Real U = mySection->FirstParameter(), Delta;
-  gp_Pnt P, Bary;
+  gp_Pnt        P, Bary;
 
-  Delta = ( myCurve->LastParameter() - U ) / 20;
+  Delta = (myCurve->LastParameter() - U) / 20;
   Bary.SetCoord(0., 0., 0.);
-  for (Standard_Integer ii=0; ii <=20; ii++, U+=Delta) {
+  for (Standard_Integer ii = 0; ii <= 20; ii++, U += Delta)
+  {
     P = myCurve->Value(U);
     Bary.ChangeCoord() += P.XYZ();
-  } 
+  }
   Bary.ChangeCoord() /= 21.;
 
   return Bary;
 }
 
- Standard_Real GeomFill_UniformSection::MaximalSection() const
+Standard_Real GeomFill_UniformSection::MaximalSection() const
 {
-  GeomAdaptor_Curve AC (mySection);
+  GeomAdaptor_Curve AC(mySection);
   return GCPnts_AbscissaPoint::Length(AC);
 }
 
 void GeomFill_UniformSection::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
 {
-  if (myCurve->IsRational()) {
+  if (myCurve->IsRational())
+  {
     myCurve->Weights(Weights);
   }
-  else {
+  else
+  {
     Weights.Init(1);
   }
 }
 
- Standard_Boolean GeomFill_UniformSection::IsConstant(Standard_Real& Error) const
+Standard_Boolean GeomFill_UniformSection::IsConstant(Standard_Real& Error) const
 {
   Error = 0.;
   return Standard_True;
 }
 
- Handle(Geom_Curve) GeomFill_UniformSection::ConstantSection() const
+Handle(Geom_Curve) GeomFill_UniformSection::ConstantSection() const
 {
   Handle(Geom_Curve) C;
-  C = Handle(Geom_Curve)::DownCast( mySection->Copy());
+  C = Handle(Geom_Curve)::DownCast(mySection->Copy());
   return C;
 }
-

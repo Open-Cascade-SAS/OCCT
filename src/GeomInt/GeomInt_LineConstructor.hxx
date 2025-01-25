@@ -24,69 +24,46 @@ class Adaptor3d_TopolTool;
 class IntPatch_Line;
 
 //! Splits given Line.
-class GeomInt_LineConstructor 
+class GeomInt_LineConstructor
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-
   //! Empty constructor
-    GeomInt_LineConstructor();
-  
+  GeomInt_LineConstructor();
 
   //! Initializes me by two surfaces and corresponding
   //! tools which represent boundaries of surfaces
-    void Load (const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_TopolTool)& D2, const Handle(GeomAdaptor_Surface)& S1, const Handle(GeomAdaptor_Surface)& S2);
-  
+  void Load(const Handle(Adaptor3d_TopolTool)& D1,
+            const Handle(Adaptor3d_TopolTool)& D2,
+            const Handle(GeomAdaptor_Surface)& S1,
+            const Handle(GeomAdaptor_Surface)& S2);
 
   //! Splits line
-  Standard_EXPORT void Perform (const Handle(IntPatch_Line)& L);
-  
+  Standard_EXPORT void Perform(const Handle(IntPatch_Line)& L);
 
   //! Returns True if splitting was successful
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
 
   //! Returns number of splits
-    Standard_Integer NbParts() const;
-  
+  Standard_Integer NbParts() const;
 
   //! Return first and last parameters
   //! for given index of split
-    void Part (const Standard_Integer I, Standard_Real& WFirst, Standard_Real& WLast) const;
-
-
-
+  void Part(const Standard_Integer I, Standard_Real& WFirst, Standard_Real& WLast) const;
 
 protected:
-
-  
-  Standard_EXPORT void TreatCircle (const Handle(IntPatch_Line)& aLine, const Standard_Real aTol);
-
-
-
+  Standard_EXPORT void TreatCircle(const Handle(IntPatch_Line)& aLine, const Standard_Real aTol);
 
 private:
-
-
-
-  Standard_Boolean done;
-  TColStd_SequenceOfReal seqp;
+  Standard_Boolean            done;
+  TColStd_SequenceOfReal      seqp;
   Handle(Adaptor3d_TopolTool) myDom1;
   Handle(Adaptor3d_TopolTool) myDom2;
   Handle(GeomAdaptor_Surface) myHS1;
   Handle(GeomAdaptor_Surface) myHS2;
-
-
 };
 
-
 #include <GeomInt_LineConstructor.lxx>
-
-
-
-
 
 #endif // _GeomInt_LineConstructor_HeaderFile

@@ -14,24 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccInt_BPoint.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_BPoint,GccInt_Bisec)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BPoint, GccInt_Bisec)
 
-GccInt_BPoint::
-   GccInt_BPoint(const gp_Pnt2d& Point) {
-   pnt = gp_Pnt2d(Point);
- }
+GccInt_BPoint::GccInt_BPoint(const gp_Pnt2d& Point)
+{
+  pnt = gp_Pnt2d(Point);
+}
 
-GccInt_IType GccInt_BPoint::
-   ArcType() const {
-   return GccInt_Pnt;
- }
+GccInt_IType GccInt_BPoint::ArcType() const
+{
+  return GccInt_Pnt;
+}
 
-gp_Pnt2d GccInt_BPoint::
-   Point() const { return pnt; }
-
-
+gp_Pnt2d GccInt_BPoint::Point() const
+{
+  return pnt;
+}

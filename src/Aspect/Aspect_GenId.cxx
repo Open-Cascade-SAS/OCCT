@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Aspect_GenId.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
 
@@ -25,10 +24,10 @@
 // purpose  :
 // =======================================================================
 Aspect_GenId::Aspect_GenId()
-: myFreeCount  (INT_MAX / 2 + 1),
-  myLength     (INT_MAX / 2 + 1),
-  myLowerBound (0),
-  myUpperBound (INT_MAX / 2)
+    : myFreeCount(INT_MAX / 2 + 1),
+      myLength(INT_MAX / 2 + 1),
+      myLowerBound(0),
+      myUpperBound(INT_MAX / 2)
 {
   //
 }
@@ -37,12 +36,11 @@ Aspect_GenId::Aspect_GenId()
 // function : Aspect_GenId
 // purpose  :
 // =======================================================================
-Aspect_GenId::Aspect_GenId (const Standard_Integer theLow,
-                            const Standard_Integer theUpper)
-: myFreeCount  (theUpper - theLow + 1),
-  myLength     (theUpper - theLow + 1),
-  myLowerBound (theLow),
-  myUpperBound (theUpper)
+Aspect_GenId::Aspect_GenId(const Standard_Integer theLow, const Standard_Integer theUpper)
+    : myFreeCount(theUpper - theLow + 1),
+      myLength(theUpper - theLow + 1),
+      myLowerBound(theLow),
+      myUpperBound(theUpper)
 {
   if (theLow > theUpper)
   {
@@ -64,10 +62,9 @@ void Aspect_GenId::Free()
 // function : Free
 // purpose  :
 // =======================================================================
-void Aspect_GenId::Free (const Standard_Integer theId)
+void Aspect_GenId::Free(const Standard_Integer theId)
 {
-  if (theId >= myLowerBound
-   && theId <= myUpperBound)
+  if (theId >= myLowerBound && theId <= myUpperBound)
   {
     if (myFreeCount + myFreeIds.Extent() + 1 == myLength)
     {
@@ -76,7 +73,7 @@ void Aspect_GenId::Free (const Standard_Integer theId)
     }
     else
     {
-      myFreeIds.Prepend (theId);
+      myFreeIds.Prepend(theId);
     }
   }
 }
@@ -88,7 +85,7 @@ void Aspect_GenId::Free (const Standard_Integer theId)
 Standard_Integer Aspect_GenId::Next()
 {
   Standard_Integer aNewId = 0;
-  if (!Next (aNewId))
+  if (!Next(aNewId))
   {
     throw Aspect_IdentDefinitionError("Aspect_GenId::Next(), Error: Available == 0");
   }
@@ -99,7 +96,7 @@ Standard_Integer Aspect_GenId::Next()
 // function : Next
 // purpose  :
 // =======================================================================
-Standard_Boolean Aspect_GenId::Next (Standard_Integer& theId)
+Standard_Boolean Aspect_GenId::Next(Standard_Integer& theId)
 {
   if (!myFreeIds.IsEmpty())
   {
@@ -121,16 +118,16 @@ Standard_Boolean Aspect_GenId::Next (Standard_Integer& theId)
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Aspect_GenId::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Aspect_GenId::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFreeCount)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLowerBound)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpperBound)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFreeCount)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLowerBound)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myUpperBound)
 
-  for (TColStd_ListOfInteger::Iterator anIter (myFreeIds); anIter.More(); anIter.Next())
+  for (TColStd_ListOfInteger::Iterator anIter(myFreeIds); anIter.More(); anIter.Next())
   {
     Standard_Integer aFreeId = anIter.Value();
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aFreeId)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aFreeId)
   }
 }

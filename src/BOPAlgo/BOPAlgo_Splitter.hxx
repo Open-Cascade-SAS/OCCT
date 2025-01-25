@@ -10,7 +10,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef _BOPAlgo_Splitter_HeaderFile
 #define _BOPAlgo_Splitter_HeaderFile
@@ -50,7 +50,6 @@
 class BOPAlgo_Splitter : public BOPAlgo_ToolsProvider
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -60,10 +59,10 @@ public:
   Standard_EXPORT BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Performs the operation
-  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
-
   //! Checks the input data
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
@@ -71,7 +70,6 @@ protected:
   //! When called the for the last time (for compound) it rebuilds the result
   //! shape to avoid multiple enclosure into compounds.
   Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
-
 };
 
 #endif // _BOPAlgo_Splitter_HeaderFile

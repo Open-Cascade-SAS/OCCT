@@ -26,8 +26,9 @@ class GccAna_NoSolution;
 DEFINE_STANDARD_HANDLE(GccAna_NoSolution, Standard_Failure)
 
 #if !defined No_Exception && !defined No_GccAna_NoSolution
-  #define GccAna_NoSolution_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw GccAna_NoSolution(MESSAGE);
+  #define GccAna_NoSolution_Raise_if(CONDITION, MESSAGE)                                           \
+    if (CONDITION)                                                                                 \
+      throw GccAna_NoSolution(MESSAGE);
 #else
   #define GccAna_NoSolution_Raise_if(CONDITION, MESSAGE)
 #endif

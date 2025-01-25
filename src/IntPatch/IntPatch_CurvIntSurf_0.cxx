@@ -25,7 +25,6 @@
 #include <IntPatch_CSFunction.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define ThePSurface Handle(Adaptor3d_Surface)
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
@@ -40,4 +39,3 @@
 #define IntImp_IntCS IntPatch_CurvIntSurf
 #define IntImp_IntCS_hxx <IntPatch_CurvIntSurf.hxx>
 #include "../IntImp/IntImp_IntCS.gxx"
-

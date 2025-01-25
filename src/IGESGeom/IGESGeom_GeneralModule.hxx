@@ -30,7 +30,6 @@ class Interface_Check;
 class Standard_Transient;
 class Interface_CopyTool;
 
-
 class IGESGeom_GeneralModule;
 DEFINE_STANDARD_HANDLE(IGESGeom_GeneralModule, IGESData_GeneralModule)
 
@@ -40,55 +39,50 @@ class IGESGeom_GeneralModule : public IGESData_GeneralModule
 {
 
 public:
-
-  
   //! Creates a GeneralModule from IGESGeom and puts it into GeneralLib
   Standard_EXPORT IGESGeom_GeneralModule();
-  
+
   //! Lists the Entities shared by a given IGESEntity <ent>, from
   //! its specific parameters : specific for each type
-  Standard_EXPORT void OwnSharedCase (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, Interface_EntityIterator& iter) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void OwnSharedCase(const Standard_Integer             CN,
+                                     const Handle(IGESData_IGESEntity)& ent,
+                                     Interface_EntityIterator& iter) const Standard_OVERRIDE;
+
   //! Returns a DirChecker, specific for each type of Entity
   //! (identified by its Case Number) : this DirChecker defines
   //! constraints which must be respected by the DirectoryPart
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const Standard_Integer             CN,
+               const Handle(IGESData_IGESEntity)& ent) const Standard_OVERRIDE;
+
   //! Performs Specific Semantic Check for each type of Entity
-  Standard_EXPORT void OwnCheckCase (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void OwnCheckCase(const Standard_Integer             CN,
+                                    const Handle(IGESData_IGESEntity)& ent,
+                                    const Interface_ShareTool&         shares,
+                                    Handle(Interface_Check)&           ach) const Standard_OVERRIDE;
+
   //! Specific creation of a new void entity
-  Standard_EXPORT Standard_Boolean NewVoid (const Standard_Integer CN, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    NewVoid(const Standard_Integer CN, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
+
   //! Copies parameters which are specific of each Type of Entity
-  Standard_EXPORT void OwnCopyCase (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& entfrom, const Handle(IGESData_IGESEntity)& entto, Interface_CopyTool& TC) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void OwnCopyCase(const Standard_Integer             CN,
+                                   const Handle(IGESData_IGESEntity)& entfrom,
+                                   const Handle(IGESData_IGESEntity)& entto,
+                                   Interface_CopyTool&                TC) const Standard_OVERRIDE;
+
   //! Returns a category number which characterizes an entity
   //! Shape for all, but Drawing for :
   //! Flash;  Point with a symbol;  Plane with a symbol
-  Standard_EXPORT virtual Standard_Integer CategoryNumber (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer CategoryNumber(const Standard_Integer            CN,
+                                                          const Handle(Standard_Transient)& ent,
+                                                          const Interface_ShareTool& shares) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_GeneralModule,IGESData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_GeneralModule, IGESData_GeneralModule)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_GeneralModule_HeaderFile

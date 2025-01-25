@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(AppDef_HArray1OfMultiPointConstraint, AppDef_Array1OfMultiPointConstraint)
 
-
 #endif

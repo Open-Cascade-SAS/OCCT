@@ -18,24 +18,23 @@
 #include <TopoDS_Shape.hxx>
 
 //=============================================================================
-//function : Write
-//purpose  :
+// function : Write
+// purpose  :
 //=============================================================================
-Standard_Boolean StlAPI::Write (const TopoDS_Shape&    theShape,
-                                const Standard_CString theFile,
-                                const Standard_Boolean theAsciiMode)
+Standard_Boolean StlAPI::Write(const TopoDS_Shape&    theShape,
+                               const Standard_CString theFile,
+                               const Standard_Boolean theAsciiMode)
 {
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = theAsciiMode;
-  return aWriter.Write (theShape, theFile);
+  return aWriter.Write(theShape, theFile);
 }
 
 //=============================================================================
-//function : Read
-//purpose  :
+// function : Read
+// purpose  :
 //=============================================================================
-Standard_Boolean StlAPI::Read (TopoDS_Shape&          theShape,
-                               const Standard_CString theFile)
+Standard_Boolean StlAPI::Read(TopoDS_Shape& theShape, const Standard_CString theFile)
 {
   StlAPI_Reader aReader;
   return aReader.Read(theShape, theFile);

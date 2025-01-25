@@ -19,5 +19,4 @@
 
 DEFINE_HSEQUENCE(StepElement_HSequenceOfElementMaterial, StepElement_SequenceOfElementMaterial)
 
-
 #endif

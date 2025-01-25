@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESData_ViewKindEntity)> IGESDraw_Array1OfViewKindEntity;
 
-
 #endif

@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(TopTools_HSequenceOfShape, TopTools_SequenceOfShape)
 
-
 #endif

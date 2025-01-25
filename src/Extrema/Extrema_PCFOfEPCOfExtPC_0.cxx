@@ -23,7 +23,7 @@
 #include <Extrema_POnCurv.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Extrema_SequenceOfPOnCurv.hxx> 
+#include <Extrema_SequenceOfPOnCurv.hxx>
 
 #define Curve Adaptor3d_Curve
 #define Curve_hxx <Adaptor3d_Curve.hxx>
@@ -40,4 +40,3 @@
 #define Extrema_FuncExtPC Extrema_PCFOfEPCOfExtPC
 #define Extrema_FuncExtPC_hxx <Extrema_PCFOfEPCOfExtPC.hxx>
 #include "../Extrema/Extrema_FuncExtPC.gxx"
-

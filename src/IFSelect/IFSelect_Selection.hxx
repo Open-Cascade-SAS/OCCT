@@ -42,42 +42,39 @@ class IFSelect_Selection : public Standard_Transient
 {
 
 public:
-
   //! Returns the list of selected entities, computed from Input
   //! given as a Graph. Specific to each class of Selection
   //! Note that uniqueness of each entity is not required here
   //! This method can raise an exception as necessary
-  Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const = 0;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const = 0;
 
   //! Returns the list of selected entities, each of them being
   //! unique. Default definition works from RootResult. According
   //! HasUniqueResult, UniqueResult returns directly RootResult,
   //! or build a Unique Result from it with a Graph.
-  Standard_EXPORT Interface_EntityIterator UniqueResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator UniqueResult(const Interface_Graph& G) const;
 
   //! Returns the list of entities involved by a Selection, i.e.
   //! UniqueResult plus the shared entities (directly or not)
-  Standard_EXPORT virtual Interface_EntityIterator CompleteResult (const Interface_Graph& G) const;
-  
+  Standard_EXPORT virtual Interface_EntityIterator CompleteResult(const Interface_Graph& G) const;
+
   //! Puts in an Iterator the Selections from which "me" depends
   //! (there can be zero, or one, or a list).
   //! Specific to each class of Selection
-  Standard_EXPORT virtual void FillIterator (IFSelect_SelectionIterator& iter) const = 0;
-  
+  Standard_EXPORT virtual void FillIterator(IFSelect_SelectionIterator& iter) const = 0;
+
   //! Returns a text which defines the criterium applied by a
   //! Selection (can be used to be printed, displayed ...)
   //! Specific to each class
   Standard_EXPORT virtual TCollection_AsciiString Label() const = 0;
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Selection,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Selection, Standard_Transient)
 
 protected:
-
   //! Returns True if RootResult guarantees uniqueness for each
   //! Entity. Called by UniqueResult.
   //! Default answer is False. Can be redefined.
   Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const;
-
 };
 
 #endif // _IFSelect_Selection_HeaderFile

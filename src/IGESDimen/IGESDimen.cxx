@@ -28,21 +28,21 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESDimen_Protocol) protocol;
 
-
-    void  IGESDimen::Init ()
+void IGESDimen::Init()
 {
   IGESGeom::Init();
   IGESGraph::Init();
-  if (protocol.IsNull()) {
+  if (protocol.IsNull())
+  {
     protocol = new IGESDimen_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESDimen_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESDimen_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESDimen_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESDimen_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESDimen_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESDimen_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESDimen_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESDimen_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESDimen_Protocol)  IGESDimen::Protocol ()
+Handle(IGESDimen_Protocol) IGESDimen::Protocol()
 {
   return protocol;
 }

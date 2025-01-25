@@ -20,6 +20,7 @@
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(IntPatch_TheIWLineOfTheIWalking)> IntPatch_SequenceOfIWLineOfTheIWalking;
+typedef NCollection_Sequence<Handle(IntPatch_TheIWLineOfTheIWalking)>
+  IntPatch_SequenceOfIWLineOfTheIWalking;
 
 #endif // _IntPatch_SequenceOfIWLineOfTheIWalking_HeaderFile

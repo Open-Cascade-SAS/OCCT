@@ -14,25 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline  const gp_XY& Plate_PinpointConstraint::Pnt2d() const
+inline const gp_XY& Plate_PinpointConstraint::Pnt2d() const
 {
   return pnt2d;
 }
 
- 
-inline  const Standard_Integer& Plate_PinpointConstraint::Idu() const
+inline const Standard_Integer& Plate_PinpointConstraint::Idu() const
 {
   return idu;
 }
 
- 
-inline  const Standard_Integer& Plate_PinpointConstraint::Idv() const
+inline const Standard_Integer& Plate_PinpointConstraint::Idv() const
 {
   return idv;
 }
 
- 
-inline  const gp_XYZ& Plate_PinpointConstraint::Value() const
+inline const gp_XYZ& Plate_PinpointConstraint::Value() const
 {
   return value;
 }

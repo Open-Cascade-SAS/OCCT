@@ -1,7 +1,7 @@
-// Created on: 2011-10-14 
+// Created on: 2011-10-14
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -17,25 +17,25 @@
 
 #include <TopExp.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
+IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
 
 //============================================================================
 // Method: Constructor
 // Purpose:
 //============================================================================
-IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape,
-                              const Handle(Prs3d_Drawer)& theDrawerLink)
-: myTopoDSShape (theShape),
-  myOCCTDrawer (new Prs3d_Drawer())
+IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&         theShape,
+                             const Handle(Prs3d_Drawer)& theDrawerLink)
+    : myTopoDSShape(theShape),
+      myOCCTDrawer(new Prs3d_Drawer())
 {
   if (!theDrawerLink.IsNull())
   {
-    myOCCTDrawer->SetLink (theDrawerLink);
+    myOCCTDrawer->SetLink(theDrawerLink);
   }
   else
   {
     // these old defaults have been moved from IVtkOCC_ShapeMesher constructor
-    myOCCTDrawer->SetDeviationCoefficient (0.0001); // Aspect_TOD_RELATIVE
+    myOCCTDrawer->SetDeviationCoefficient(0.0001); // Aspect_TOD_RELATIVE
     myOCCTDrawer->SetupOwnDefaults();
   }
   buildSubShapeIdMap();
@@ -45,20 +45,19 @@ IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape,
 // Method: Destructor
 // Purpose:
 //============================================================================
-IVtkOCC_Shape::~IVtkOCC_Shape() { }
+IVtkOCC_Shape::~IVtkOCC_Shape() {}
 
 //============================================================================
 // Method: GetSubShapeId
 // Purpose:
 //============================================================================
-IVtk_IdType IVtkOCC_Shape::GetSubShapeId (const TopoDS_Shape& theSubShape) const
+IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
 {
-  Standard_Integer anIndex = theSubShape.IsSame (myTopoDSShape) ?
-                             -1 :
-                             mySubShapeIds.FindIndex (theSubShape);
+  Standard_Integer anIndex =
+    theSubShape.IsSame(myTopoDSShape) ? -1 : mySubShapeIds.FindIndex(theSubShape);
   if (anIndex == 0) // Not found in the map
   {
-    return (IVtk_IdType )-1;
+    return (IVtk_IdType)-1;
   }
   return (IVtk_IdType)anIndex;
 }
@@ -67,41 +66,39 @@ IVtk_IdType IVtkOCC_Shape::GetSubShapeId (const TopoDS_Shape& theSubShape) const
 // Method: getSubIds
 // Purpose:
 //============================================================================
-IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
+IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
 {
   IVtk_ShapeIdList aRes;
   // Get the sub-shape by the given id.
-  TopoDS_Shape aShape = mySubShapeIds.FindKey ((Standard_Integer) theId);
+  TopoDS_Shape     aShape     = mySubShapeIds.FindKey((Standard_Integer)theId);
   TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
-  if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE ||
-      aShapeType == TopAbs_FACE)
+  if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE || aShapeType == TopAbs_FACE)
   {
     // If it is vertex, edge or face return just the input id.
-    aRes.Append (theId);
+    aRes.Append(theId);
   }
   else
   {
     // Find all composing vertices, edges and faces of the found sub-shape
     // and append their ids to the result.
     TopTools_IndexedMapOfShape aSubShapes;
-    if (aShape.IsSame (myTopoDSShape))
+    if (aShape.IsSame(myTopoDSShape))
     {
       aSubShapes = mySubShapeIds;
     }
     else
     {
-      TopExp::MapShapes (aShape, aSubShapes);
+      TopExp::MapShapes(aShape, aSubShapes);
     }
 
     for (int anIt = 1; anIt <= aSubShapes.Extent(); anIt++)
     {
-      aShape = aSubShapes.FindKey (anIt);
+      aShape     = aSubShapes.FindKey(anIt);
       aShapeType = aShape.ShapeType();
-      if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE ||
-          aShapeType == TopAbs_FACE)
+      if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE || aShapeType == TopAbs_FACE)
       {
         // If it is vertex, edge or face add its id to the result.
-        aRes.Append (mySubShapeIds.FindIndex (aShape));
+        aRes.Append(mySubShapeIds.FindIndex(aShape));
       }
     }
   }
@@ -113,9 +110,9 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
 // Method: GetSubShape
 // Purpose:
 //============================================================================
-const TopoDS_Shape& IVtkOCC_Shape::GetSubShape (const IVtk_IdType theId) const
+const TopoDS_Shape& IVtkOCC_Shape::GetSubShape(const IVtk_IdType theId) const
 {
-  return mySubShapeIds.FindKey ((Standard_Integer) theId);
+  return mySubShapeIds.FindKey((Standard_Integer)theId);
 }
 
 //============================================================================
@@ -125,5 +122,5 @@ const TopoDS_Shape& IVtkOCC_Shape::GetSubShape (const IVtk_IdType theId) const
 void IVtkOCC_Shape::buildSubShapeIdMap()
 {
   mySubShapeIds.Clear();
-  TopExp::MapShapes (myTopoDSShape, mySubShapeIds);
+  TopExp::MapShapes(myTopoDSShape, mySubShapeIds);
 }

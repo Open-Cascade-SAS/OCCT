@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_VKeySet, Standard_Transient)
 // Purpose  :
 // ================================================================
 Aspect_VKeySet::Aspect_VKeySet()
-: myKeys (0, Aspect_VKey_MAX),
-  myModifiers (Aspect_VKeyFlags_NONE)
+    : myKeys(0, Aspect_VKey_MAX),
+      myModifiers(Aspect_VKeyFlags_NONE)
 {
   //
 }
@@ -32,9 +32,9 @@ Aspect_VKeySet::Aspect_VKeySet()
 // ================================================================
 void Aspect_VKeySet::Reset()
 {
-  Standard_Mutex::Sentry aLock (myLock);
+  Standard_Mutex::Sentry aLock(myLock);
   myModifiers = 0;
-  for (NCollection_Array1<KeyState>::Iterator aKeyIter (myKeys); aKeyIter.More(); aKeyIter.Next())
+  for (NCollection_Array1<KeyState>::Iterator aKeyIter(myKeys); aKeyIter.More(); aKeyIter.Next())
   {
     aKeyIter.ChangeValue().Reset();
   }
@@ -44,11 +44,9 @@ void Aspect_VKeySet::Reset()
 // Function : KeyDown
 // Purpose  :
 // ================================================================
-void Aspect_VKeySet::KeyDown (Aspect_VKey theKey,
-                              double theTime,
-                              double thePressure)
+void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
-  Standard_Mutex::Sentry aLock (myLock);
+  Standard_Mutex::Sentry aLock(myLock);
   if (myKeys[theKey].KStatus != KeyStatus_Pressed)
   {
     myKeys[theKey].KStatus  = KeyStatus_Pressed;
@@ -56,25 +54,24 @@ void Aspect_VKeySet::KeyDown (Aspect_VKey theKey,
   }
   myKeys[theKey].Pressure = thePressure;
 
-  const unsigned int aModif = Aspect_VKey2Modifier (theKey);
-  myModifiers = myModifiers | aModif;
+  const unsigned int aModif = Aspect_VKey2Modifier(theKey);
+  myModifiers               = myModifiers | aModif;
 }
 
 // ================================================================
 // Function : KeyUp
 // Purpose  :
 // ================================================================
-void Aspect_VKeySet::KeyUp (Aspect_VKey theKey,
-                            double theTime)
+void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
 {
-  Standard_Mutex::Sentry aLock (myLock);
+  Standard_Mutex::Sentry aLock(myLock);
   if (myKeys[theKey].KStatus == KeyStatus_Pressed)
   {
     myKeys[theKey].KStatus = KeyStatus_Released;
-    myKeys[theKey].TimeUp = theTime;
+    myKeys[theKey].TimeUp  = theTime;
   }
 
-  const unsigned int aModif = Aspect_VKey2Modifier (theKey);
+  const unsigned int aModif = Aspect_VKey2Modifier(theKey);
   if (aModif != 0)
   {
     myModifiers = myModifiers & ~aModif;
@@ -85,32 +82,32 @@ void Aspect_VKeySet::KeyUp (Aspect_VKey theKey,
 // Function : KeyFromAxis
 // Purpose  :
 // ================================================================
-void Aspect_VKeySet::KeyFromAxis (Aspect_VKey theNegative,
-                                  Aspect_VKey thePositive,
-                                  double theTime,
-                                  double thePressure)
+void Aspect_VKeySet::KeyFromAxis(Aspect_VKey theNegative,
+                                 Aspect_VKey thePositive,
+                                 double      theTime,
+                                 double      thePressure)
 {
-  Standard_Mutex::Sentry aLock (myLock);
+  Standard_Mutex::Sentry aLock(myLock);
   if (thePressure != 0)
   {
     const Aspect_VKey aKeyDown = thePressure > 0 ? thePositive : theNegative;
     const Aspect_VKey aKeyUp   = thePressure < 0 ? thePositive : theNegative;
 
-    KeyDown (aKeyDown, theTime, Abs (thePressure));
+    KeyDown(aKeyDown, theTime, Abs(thePressure));
     if (myKeys[aKeyUp].KStatus == KeyStatus_Pressed)
     {
-      KeyUp (aKeyUp, theTime);
+      KeyUp(aKeyUp, theTime);
     }
   }
   else
   {
     if (myKeys[theNegative].KStatus == KeyStatus_Pressed)
     {
-      KeyUp (theNegative, theTime);
+      KeyUp(theNegative, theTime);
     }
     if (myKeys[thePositive].KStatus == KeyStatus_Pressed)
     {
-      KeyUp (thePositive, theTime);
+      KeyUp(thePositive, theTime);
     }
   }
 }
@@ -119,28 +116,25 @@ void Aspect_VKeySet::KeyFromAxis (Aspect_VKey theNegative,
 // Function : HoldDuration
 // Purpose  :
 // ================================================================
-bool Aspect_VKeySet::HoldDuration (Aspect_VKey theKey,
-                                   double theTime,
-                                   double& theDuration,
-                                   double& thePressure)
+bool Aspect_VKeySet::HoldDuration(Aspect_VKey theKey,
+                                  double      theTime,
+                                  double&     theDuration,
+                                  double&     thePressure)
 {
-  Standard_Mutex::Sentry aLock (myLock);
+  Standard_Mutex::Sentry aLock(myLock);
   switch (myKeys[theKey].KStatus)
   {
-    case KeyStatus_Free:
-    {
+    case KeyStatus_Free: {
       theDuration = 0.0;
       return false;
     }
-    case KeyStatus_Released:
-    {
+    case KeyStatus_Released: {
       myKeys[theKey].KStatus = KeyStatus_Free;
-      theDuration = myKeys[theKey].TimeUp - myKeys[theKey].TimeDown;
-      thePressure = myKeys[theKey].Pressure;
+      theDuration            = myKeys[theKey].TimeUp - myKeys[theKey].TimeDown;
+      thePressure            = myKeys[theKey].Pressure;
       return true;
     }
-    case KeyStatus_Pressed:
-    {
+    case KeyStatus_Pressed: {
       theDuration = theTime - myKeys[theKey].TimeDown;
       thePressure = myKeys[theKey].Pressure;
       return true;

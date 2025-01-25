@@ -26,28 +26,34 @@ class Adaptor3d_Curve;
 //! A framework to define display of lines, arcs of circles
 //! and conic sections.
 //! This is done with a fixed number of points, which can be modified.
-class StdPrs_Curve  : public Prs3d_Root
+class StdPrs_Curve : public Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds to the presentation aPresentation the drawing of the curve aCurve.
   //! The aspect is defined by LineAspect in aDrawer.
   //! If drawCurve equals Standard_False the curve will not be displayed,
   //! it is used if the curve is a part of some shape and PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean drawCurve = Standard_True);
-  
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Curve&            aCurve,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const Standard_Boolean            drawCurve = Standard_True);
+
   //! Adds to the presentation aPresentation the drawing of the curve aCurve.
   //! The aspect is defined by LineAspect in aDrawer.
   //! The drawing will be limited between the points of parameter U1 and U2.
   //! If drawCurve equals Standard_False the curve will not be displayed,
   //! it is used if the curve is a part of some shape and PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean drawCurve = Standard_True);
-  
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Curve&            aCurve,
+                                  const Standard_Real               U1,
+                                  const Standard_Real               U2,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const Standard_Boolean            drawCurve = Standard_True);
+
   //! adds to the presentation aPresentation the drawing of the curve aCurve.
   //! The aspect is the current aspect.
   //! aDeflection is used in the circle case.
@@ -55,8 +61,12 @@ public:
   //! If drawCurve equals Standard_False the curve will not be displayed,
   //! it is used if the curve is a part of some shape and PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer, TColgp_SequenceOfPnt& Points, const Standard_Boolean drawCurve = Standard_True);
-  
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Curve&            aCurve,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  TColgp_SequenceOfPnt&             Points,
+                                  const Standard_Boolean            drawCurve = Standard_True);
+
   //! adds to the presentation aPresentation the drawing of the curve
   //! aCurve.
   //! The aspect is the current aspect.
@@ -67,28 +77,60 @@ public:
   //! If drawCurve equals Standard_False the curve will not be displayed,
   //! it is used if the curve is a part of some shape and PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, TColgp_SequenceOfPnt& Points, const Standard_Integer aNbPoints = 30, const Standard_Boolean drawCurve = Standard_True);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing of the curve is less than aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing of the curve is less than aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real aDeflection, const Standard_Real aLimit, const Standard_Integer aNbPoints);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing of the curve aCurve is less than aDistance.
-  //! The drawing is considered between the points
-  //! of parameter U1 and U2;
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing of the curve aCurve is less than aDistance.
-  //! The drawing is considered between the points
-  //! of parameter U1 and U2;
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Standard_Real aDeflection, const Standard_Integer aNbPoints);
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Curve&            aCurve,
+                                  const Standard_Real               U1,
+                                  const Standard_Real               U2,
+                                  TColgp_SequenceOfPnt&             Points,
+                                  const Standard_Integer            aNbPoints = 30,
+                                  const Standard_Boolean            drawCurve = Standard_True);
 
+  //! returns true if the distance between the point (X,Y,Z) and the
+  //! drawing of the curve is less than aDistance.
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real         X,
+                                                const Standard_Real         Y,
+                                                const Standard_Real         Z,
+                                                const Standard_Real         aDistance,
+                                                const Adaptor3d_Curve&      aCurve,
+                                                const Handle(Prs3d_Drawer)& aDrawer);
+
+  //! returns true if the distance between the point (X,Y,Z) and the
+  //! drawing of the curve is less than aDistance.
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real    X,
+                                                const Standard_Real    Y,
+                                                const Standard_Real    Z,
+                                                const Standard_Real    aDistance,
+                                                const Adaptor3d_Curve& aCurve,
+                                                const Standard_Real    aDeflection,
+                                                const Standard_Real    aLimit,
+                                                const Standard_Integer aNbPoints);
+
+  //! returns true if the distance between the point (X,Y,Z) and the
+  //! drawing of the curve aCurve is less than aDistance.
+  //! The drawing is considered between the points
+  //! of parameter U1 and U2;
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real         X,
+                                                const Standard_Real         Y,
+                                                const Standard_Real         Z,
+                                                const Standard_Real         aDistance,
+                                                const Adaptor3d_Curve&      aCurve,
+                                                const Standard_Real         U1,
+                                                const Standard_Real         U2,
+                                                const Handle(Prs3d_Drawer)& aDrawer);
+
+  //! returns true if the distance between the point (X,Y,Z) and the
+  //! drawing of the curve aCurve is less than aDistance.
+  //! The drawing is considered between the points
+  //! of parameter U1 and U2;
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real    X,
+                                                const Standard_Real    Y,
+                                                const Standard_Real    Z,
+                                                const Standard_Real    aDistance,
+                                                const Adaptor3d_Curve& aCurve,
+                                                const Standard_Real    U1,
+                                                const Standard_Real    U2,
+                                                const Standard_Real    aDeflection,
+                                                const Standard_Integer aNbPoints);
 };
 
 #endif // _StdPrs_Curve_HeaderFile

@@ -11,105 +11,118 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,StepRepr_RepresentationContext)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,
+                           StepRepr_RepresentationContext)
 
-StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext ()  {}
+StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext()
+{
+}
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType,
-	const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
-	const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)
+  const Handle(TCollection_HAsciiString)&                aContextIdentifier,
+  const Handle(TCollection_HAsciiString)&                aContextType,
+  const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
+  const Handle(StepRepr_GlobalUnitAssignedContext)&      aGlobalUnitAssignedContext)
 {
-	// --- classe own fields ---
-	geometricRepresentationContext = aGeometricRepresentationContext;
-	globalUnitAssignedContext = aGlobalUnitAssignedContext;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
+  // --- classe own fields ---
+  geometricRepresentationContext = aGeometricRepresentationContext;
+  globalUnitAssignedContext      = aGlobalUnitAssignedContext;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
 }
-
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType,
-	const Standard_Integer aCoordinateSpaceDimension,
-	const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+  const Handle(TCollection_HAsciiString)&     aContextIdentifier,
+  const Handle(TCollection_HAsciiString)&     aContextType,
+  const Standard_Integer                      aCoordinateSpaceDimension,
+  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
 {
-	// --- classe inherited fields ---
+  // --- classe inherited fields ---
 
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
+  StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
 
-	// --- ANDOR component fields ---
+  // --- ANDOR component fields ---
 
-	geometricRepresentationContext = new StepGeom_GeometricRepresentationContext();
-	geometricRepresentationContext->Init(aContextIdentifier, aContextType, aCoordinateSpaceDimension);
+  geometricRepresentationContext = new StepGeom_GeometricRepresentationContext();
+  geometricRepresentationContext->Init(aContextIdentifier, aContextType, aCoordinateSpaceDimension);
 
-	// --- ANDOR component fields ---
+  // --- ANDOR component fields ---
 
-	globalUnitAssignedContext = new StepRepr_GlobalUnitAssignedContext();
-	globalUnitAssignedContext->Init(aContextIdentifier, aContextType, aUnits);
+  globalUnitAssignedContext = new StepRepr_GlobalUnitAssignedContext();
+  globalUnitAssignedContext->Init(aContextIdentifier, aContextType, aUnits);
 }
 
-
-void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetGeometricRepresentationContext(const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext)
+void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  SetGeometricRepresentationContext(
+    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext)
 {
-	geometricRepresentationContext = aGeometricRepresentationContext;
+  geometricRepresentationContext = aGeometricRepresentationContext;
 }
 
-Handle(StepGeom_GeometricRepresentationContext) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::GeometricRepresentationContext() const
+Handle(StepGeom_GeometricRepresentationContext)
+  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+    GeometricRepresentationContext() const
 {
-	return geometricRepresentationContext;
+  return geometricRepresentationContext;
 }
 
-void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetGlobalUnitAssignedContext(const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)
+void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  SetGlobalUnitAssignedContext(
+    const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)
 {
-	globalUnitAssignedContext = aGlobalUnitAssignedContext;
+  globalUnitAssignedContext = aGlobalUnitAssignedContext;
 }
 
-Handle(StepRepr_GlobalUnitAssignedContext) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::GlobalUnitAssignedContext() const
+Handle(StepRepr_GlobalUnitAssignedContext)
+  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::GlobalUnitAssignedContext()
+    const
 {
-	return globalUnitAssignedContext;
+  return globalUnitAssignedContext;
 }
 
-	//--- Specific Methods for AND classe field access ---
+//--- Specific Methods for AND classe field access ---
 
-
-void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetCoordinateSpaceDimension(const Standard_Integer aCoordinateSpaceDimension)
+void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  SetCoordinateSpaceDimension(const Standard_Integer aCoordinateSpaceDimension)
 {
-	geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
+  geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
 }
 
-Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::CoordinateSpaceDimension() const
+Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  CoordinateSpaceDimension() const
 {
-	return geometricRepresentationContext->CoordinateSpaceDimension();
+  return geometricRepresentationContext->CoordinateSpaceDimension();
 }
 
-	//--- Specific Methods for AND classe field access ---
+//--- Specific Methods for AND classe field access ---
 
-
-void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetUnits(const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetUnits(
+  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
 {
-	globalUnitAssignedContext->SetUnits(aUnits);
+  globalUnitAssignedContext->SetUnits(aUnits);
 }
 
-Handle(StepBasic_HArray1OfNamedUnit) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Units() const
+Handle(StepBasic_HArray1OfNamedUnit)
+  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Units() const
 {
-	return globalUnitAssignedContext->Units();
+  return globalUnitAssignedContext->Units();
 }
 
-Handle(StepBasic_NamedUnit) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::UnitsValue(const Standard_Integer num) const
+Handle(StepBasic_NamedUnit) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  UnitsValue(const Standard_Integer num) const
 {
-	return globalUnitAssignedContext->UnitsValue(num);
+  return globalUnitAssignedContext->UnitsValue(num);
 }
 
-Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits () const
+Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits()
+  const
 {
-	return globalUnitAssignedContext->NbUnits();
+  return globalUnitAssignedContext->NbUnits();
 }

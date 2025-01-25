@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 
-
 class IGESSolid_BooleanTree;
 DEFINE_STANDARD_HANDLE(IGESSolid_BooleanTree, IGESData_IGESEntity)
 
@@ -37,57 +36,39 @@ class IGESSolid_BooleanTree : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_BooleanTree();
-  
+
   //! This method is used to set the fields of the class
   //! BooleanTree
   //! - operands   : Array containing pointer to DE of operands
   //! - operations : Array containing integer type for operations
-  Standard_EXPORT void Init (const Handle(IGESData_HArray1OfIGESEntity)& operands, const Handle(TColStd_HArray1OfInteger)& operations);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)& operands,
+                            const Handle(TColStd_HArray1OfInteger)&     operations);
+
   //! returns the length of the post-order list
   Standard_EXPORT Standard_Integer Length() const;
-  
+
   //! returns True if Index'th value in the post-order list is an Operand;
   //! else returns False if it is an Integer Operations
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Standard_Boolean IsOperand (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Boolean IsOperand(const Standard_Integer Index) const;
+
   //! returns the Index'th value in the post-order list only if it is
   //! an operand else returns NULL
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Operand (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) Operand(const Standard_Integer Index) const;
+
   //! returns the Index'th value in the post-order list only if it is
   //! an operation else returns 0
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Standard_Integer Operation (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Integer Operation(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_BooleanTree,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_BooleanTree, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_HArray1OfIGESEntity) theOperands;
-  Handle(TColStd_HArray1OfInteger) theOperations;
-
-
+  Handle(TColStd_HArray1OfInteger)     theOperations;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_BooleanTree_HeaderFile

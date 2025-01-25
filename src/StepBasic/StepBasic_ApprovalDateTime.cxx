@@ -11,29 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_DateTimeSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime, Standard_Transient)
 
-StepBasic_ApprovalDateTime::StepBasic_ApprovalDateTime ()  {  }
+StepBasic_ApprovalDateTime::StepBasic_ApprovalDateTime() {}
 
-void  StepBasic_ApprovalDateTime::Init (const StepBasic_DateTimeSelect& aDateTime, const Handle(StepBasic_Approval)& aDatedApproval)
+void StepBasic_ApprovalDateTime::Init(const StepBasic_DateTimeSelect&   aDateTime,
+                                      const Handle(StepBasic_Approval)& aDatedApproval)
 {
-  theDateTime = aDateTime;
+  theDateTime      = aDateTime;
   theDatedApproval = aDatedApproval;
 }
 
-void  StepBasic_ApprovalDateTime::SetDateTime (const StepBasic_DateTimeSelect& aDateTime)
-{  theDateTime = aDateTime;  }
+void StepBasic_ApprovalDateTime::SetDateTime(const StepBasic_DateTimeSelect& aDateTime)
+{
+  theDateTime = aDateTime;
+}
 
-StepBasic_DateTimeSelect  StepBasic_ApprovalDateTime::DateTime () const
-{  return theDateTime;  }
+StepBasic_DateTimeSelect StepBasic_ApprovalDateTime::DateTime() const
+{
+  return theDateTime;
+}
 
-void  StepBasic_ApprovalDateTime::SetDatedApproval (const Handle(StepBasic_Approval)& aDatedApproval)
-{  theDatedApproval = aDatedApproval;  }
+void StepBasic_ApprovalDateTime::SetDatedApproval(const Handle(StepBasic_Approval)& aDatedApproval)
+{
+  theDatedApproval = aDatedApproval;
+}
 
-Handle(StepBasic_Approval)  StepBasic_ApprovalDateTime::DatedApproval () const
-{  return theDatedApproval;  }
+Handle(StepBasic_Approval) StepBasic_ApprovalDateTime::DatedApproval() const
+{
+  return theDatedApproval;
+}

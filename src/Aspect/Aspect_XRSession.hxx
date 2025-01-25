@@ -36,16 +36,16 @@ class Aspect_XRSession : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_XRSession, Standard_Transient)
 public:
-
-  //! Identifies which style of tracking origin the application wants to use for the poses it is requesting.
+  //! Identifies which style of tracking origin the application wants to use for the poses it is
+  //! requesting.
   enum TrackingUniverseOrigin
   {
     TrackingUniverseOrigin_Seated,   //! poses are provided relative to the seated zero pose
-    TrackingUniverseOrigin_Standing, //! poses are provided relative to the safe bounds configured by the user
+    TrackingUniverseOrigin_Standing, //! poses are provided relative to the safe bounds configured
+                                     //! by the user
   };
 
 public:
-
   //! Return TRUE if session is opened.
   virtual bool IsOpen() const = 0;
 
@@ -62,22 +62,23 @@ public:
   virtual NCollection_Vec2<int> RecommendedViewport() const = 0;
 
   //! Return transformation from eye to head.
-  virtual NCollection_Mat4<double> EyeToHeadTransform (Aspect_Eye theEye) const = 0;
+  virtual NCollection_Mat4<double> EyeToHeadTransform(Aspect_Eye theEye) const = 0;
 
   //! Return transformation from head to eye.
-  NCollection_Mat4<double> HeadToEyeTransform (Aspect_Eye theEye) const
+  NCollection_Mat4<double> HeadToEyeTransform(Aspect_Eye theEye) const
   {
     NCollection_Mat4<double> aMat;
-    EyeToHeadTransform (theEye).Inverted (aMat);
+    EyeToHeadTransform(theEye).Inverted(aMat);
     return aMat;
   }
 
   //! Return projection matrix.
-  virtual NCollection_Mat4<double> ProjectionMatrix (Aspect_Eye theEye,
-                                                     double theZNear,
-                                                     double theZFar) const = 0;
+  virtual NCollection_Mat4<double> ProjectionMatrix(Aspect_Eye theEye,
+                                                    double     theZNear,
+                                                    double     theZFar) const = 0;
 
-  //! Return FALSE if projection frustums are unsupported and general 4x4 projection matrix should be fetched instead
+  //! Return FALSE if projection frustums are unsupported and general 4x4 projection matrix should
+  //! be fetched instead
   virtual bool HasProjectionFrustums() const = 0;
 
   //! Receive XR events.
@@ -91,16 +92,16 @@ public:
   //!                            Linear means to sRGB color conversion by composer
   //! @param[in] theEye  eye to display
   //! @return FALSE on error
-  virtual bool SubmitEye (void* theTexture,
-                          Aspect_GraphicsLibrary theGraphicsLib,
-                          Aspect_ColorSpace theColorSpace,
-                          Aspect_Eye theEye) = 0;
+  virtual bool SubmitEye(void*                  theTexture,
+                         Aspect_GraphicsLibrary theGraphicsLib,
+                         Aspect_ColorSpace      theColorSpace,
+                         Aspect_Eye             theEye) = 0;
 
   //! Return unit scale factor defined as scale factor for m (meters); 1.0 by default.
   Standard_Real UnitFactor() const { return myUnitFactor; }
 
   //! Set unit scale factor.
-  void SetUnitFactor (Standard_Real theFactor) { myUnitFactor = theFactor; }
+  void SetUnitFactor(Standard_Real theFactor) { myUnitFactor = theFactor; }
 
   //! Return aspect ratio.
   Standard_Real Aspect() const { return myAspect; }
@@ -117,7 +118,7 @@ public:
 
   //! Return projection frustum.
   //! @sa HasProjectionFrustums().
-  const Aspect_FrustumLRBT<double>& ProjectionFrustum (Aspect_Eye theEye) const
+  const Aspect_FrustumLRBT<double>& ProjectionFrustum(Aspect_Eye theEye) const
   {
     return theEye == Aspect_Eye_Right ? myFrustumR : myFrustumL;
   }
@@ -130,16 +131,16 @@ public:
   const gp_Trsf& HeadPose() const { return myHeadPose; }
 
   //! Return left hand orientation.
-  gp_Trsf LeftHandPose()  const
+  gp_Trsf LeftHandPose() const
   {
-    const Standard_Integer aDevice = NamedTrackedDevice (Aspect_XRTrackedDeviceRole_LeftHand);
+    const Standard_Integer aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_LeftHand);
     return aDevice != -1 ? myTrackedPoses[aDevice].Orientation : gp_Trsf();
   }
 
   //! Return right hand orientation.
   gp_Trsf RightHandPose() const
   {
-    const Standard_Integer aDevice = NamedTrackedDevice (Aspect_XRTrackedDeviceRole_RightHand);
+    const Standard_Integer aDevice = NamedTrackedDevice(Aspect_XRTrackedDeviceRole_RightHand);
     return aDevice != -1 ? myTrackedPoses[aDevice].Orientation : gp_Trsf();
   }
 
@@ -147,19 +148,22 @@ public:
   const Aspect_TrackedDevicePoseArray& TrackedPoses() const { return myTrackedPoses; }
 
   //! Return TRUE if device orientation is defined.
-  bool HasTrackedPose (Standard_Integer theDevice) const { return myTrackedPoses[theDevice].IsValidPose; }
+  bool HasTrackedPose(Standard_Integer theDevice) const
+  {
+    return myTrackedPoses[theDevice].IsValidPose;
+  }
 
   //! Return index of tracked device of known role, or -1 if undefined.
-  virtual Standard_Integer NamedTrackedDevice (Aspect_XRTrackedDeviceRole theDevice) const = 0;
+  virtual Standard_Integer NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const = 0;
 
   //! Load model for displaying device.
   //! @param[in] theDevice   device index
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel (Standard_Integer theDevice,
-                                                      Handle(Image_Texture)& theTexture)
+  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel(Standard_Integer       theDevice,
+                                                     Handle(Image_Texture)& theTexture)
   {
-    return loadRenderModel (theDevice, true, theTexture);
+    return loadRenderModel(theDevice, true, theTexture);
   }
 
   //! Load model for displaying device.
@@ -167,49 +171,51 @@ public:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel (Standard_Integer theDevice,
-                                                      Standard_Boolean theToApplyUnitFactor,
-                                                      Handle(Image_Texture)& theTexture)
+  Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel(Standard_Integer       theDevice,
+                                                     Standard_Boolean       theToApplyUnitFactor,
+                                                     Handle(Image_Texture)& theTexture)
   {
-    return loadRenderModel (theDevice, theToApplyUnitFactor, theTexture);
+    return loadRenderModel(theDevice, theToApplyUnitFactor, theTexture);
   }
 
   //! Fetch data for digital input action (like button).
   //! @param[in] theAction  action of Aspect_XRActionType_InputDigital type
-  virtual Aspect_XRDigitalActionData GetDigitalActionData (const Handle(Aspect_XRAction)& theAction) const = 0;
+  virtual Aspect_XRDigitalActionData GetDigitalActionData(
+    const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Fetch data for digital input action (like axis).
   //! @param[in] theAction  action of Aspect_XRActionType_InputAnalog type
-  virtual Aspect_XRAnalogActionData GetAnalogActionData (const Handle(Aspect_XRAction)& theAction) const = 0;
+  virtual Aspect_XRAnalogActionData GetAnalogActionData(
+    const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Fetch data for pose input action (like fingertip position).
   //! The returned values will match the values returned by the last call to WaitPoses().
   //! @param[in] theAction  action of Aspect_XRActionType_InputPose type
-  virtual Aspect_XRPoseActionData GetPoseActionDataForNextFrame (const Handle(Aspect_XRAction)& theAction) const = 0;
+  virtual Aspect_XRPoseActionData GetPoseActionDataForNextFrame(
+    const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Trigger vibration.
-  Standard_EXPORT void TriggerHapticVibrationAction (const Handle(Aspect_XRAction)& theAction,
-                                                     const Aspect_XRHapticActionData& theParams);
+  Standard_EXPORT void TriggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
+                                                    const Aspect_XRHapticActionData& theParams);
 
   //! Abort vibration.
-  Standard_EXPORT void AbortHapticVibrationAction (const Handle(Aspect_XRAction)& theAction);
+  Standard_EXPORT void AbortHapticVibrationAction(const Handle(Aspect_XRAction)& theAction);
 
   //! Return tracking origin.
   TrackingUniverseOrigin TrackingOrigin() const { return myTrackOrigin; }
 
   //! Set tracking origin.
-  virtual void SetTrackingOrigin (TrackingUniverseOrigin theOrigin) { myTrackOrigin = theOrigin; }
+  virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin) { myTrackOrigin = theOrigin; }
 
   //! Return generic action for specific hand or NULL if undefined.
-  const Handle(Aspect_XRAction)& GenericAction (Aspect_XRTrackedDeviceRole theDevice,
-                                                Aspect_XRGenericAction theAction) const
+  const Handle(Aspect_XRAction)& GenericAction(Aspect_XRTrackedDeviceRole theDevice,
+                                               Aspect_XRGenericAction     theAction) const
   {
     const NCollection_Array1<Handle(Aspect_XRAction)>& anActions = myRoleActions[theDevice];
     return anActions[theAction];
   }
 
 public:
-
   //! Info string enumeration.
   enum InfoString
   {
@@ -220,10 +226,9 @@ public:
   };
 
   //! Query information.
-  virtual TCollection_AsciiString GetString (InfoString theInfo) const = 0;
+  virtual TCollection_AsciiString GetString(InfoString theInfo) const = 0;
 
 protected:
-
   //! Empty constructor.
   Standard_EXPORT Aspect_XRSession();
 
@@ -232,18 +237,17 @@ protected:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  virtual Handle(Graphic3d_ArrayOfTriangles) loadRenderModel (Standard_Integer theDevice,
-                                                              Standard_Boolean theToApplyUnitFactor,
-                                                              Handle(Image_Texture)& theTexture) = 0;
+  virtual Handle(Graphic3d_ArrayOfTriangles) loadRenderModel(Standard_Integer theDevice,
+                                                             Standard_Boolean theToApplyUnitFactor,
+                                                             Handle(Image_Texture)& theTexture) = 0;
 
   //! Trigger vibration.
-  virtual void triggerHapticVibrationAction (const Handle(Aspect_XRAction)& theAction,
-                                             const Aspect_XRHapticActionData& theParams) = 0;
+  virtual void triggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
+                                            const Aspect_XRHapticActionData& theParams) = 0;
 
 protected:
-
   NCollection_Array1<Handle(Aspect_XRAction)>
-// clang-format off
+    // clang-format off
                                   myRoleActions[Aspect_XRTrackedDeviceRole_NB]; //!< generic actions
   Aspect_XRActionSetMap           myActionSets;   //!< actions sets
   TrackingUniverseOrigin          myTrackOrigin;  //!< tracking origin
@@ -253,12 +257,11 @@ protected:
   Aspect_FrustumLRBT<double>      myFrustumL;     //!< left  eye projection frustum
   Aspect_FrustumLRBT<double>      myFrustumR;     //!< right eye projection frustum
   Standard_Real                   myUnitFactor;   //!< unit scale factor defined as scale factor for m (meters)
-// clang-format on
-  Standard_Real                   myAspect;       //!< aspect ratio
-  Standard_Real                   myFieldOfView;  //!< field of view
-  Standard_Real                   myIod;          //!< intra-ocular distance in meters
-  Standard_ShortReal              myDispFreq;     //!< display frequency
-
+  // clang-format on
+  Standard_Real      myAspect;      //!< aspect ratio
+  Standard_Real      myFieldOfView; //!< field of view
+  Standard_Real      myIod;         //!< intra-ocular distance in meters
+  Standard_ShortReal myDispFreq;    //!< display frequency
 };
 
 #endif // _Aspect_XRSession_HeaderFile

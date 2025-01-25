@@ -28,51 +28,30 @@
 class AdvApp2Var_Patch;
 class AdvApp2Var_Context;
 
-
-
 //! this class contains a given criterion to be satisfied
-class AdvApp2Var_Criterion 
+class AdvApp2Var_Criterion
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT virtual ~AdvApp2Var_Criterion();
-  
-  Standard_EXPORT virtual void Value (AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const = 0;
-  
-  Standard_EXPORT virtual Standard_Boolean IsSatisfied (const AdvApp2Var_Patch& P) const = 0;
-  
+
+  Standard_EXPORT virtual void Value(AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const = 0;
+
+  Standard_EXPORT virtual Standard_Boolean IsSatisfied(const AdvApp2Var_Patch& P) const = 0;
+
   Standard_EXPORT Standard_Real MaxValue() const;
-  
+
   Standard_EXPORT AdvApp2Var_CriterionType Type() const;
-  
+
   Standard_EXPORT AdvApp2Var_CriterionRepartition Repartition() const;
 
-
-
-
 protected:
-
-
-
-  Standard_Real myMaxValue;
-  AdvApp2Var_CriterionType myType;
+  Standard_Real                   myMaxValue;
+  AdvApp2Var_CriterionType        myType;
   AdvApp2Var_CriterionRepartition myRepartition;
 
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _AdvApp2Var_Criterion_HeaderFile

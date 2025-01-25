@@ -27,64 +27,44 @@
 class HLRBRep_CurveTool;
 class math_Matrix;
 
-
-
-class HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter  : public math_FunctionSetWithDerivatives
+class HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
+    : public math_FunctionSetWithDerivatives
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(const Standard_Address& curve1, const Standard_Address& curve2);
-  
+  Standard_EXPORT HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(
+    const Standard_Address& curve1,
+    const Standard_Address& curve2);
+
   //! returns 2.
   Standard_EXPORT Standard_Integer NbVariables() const;
-  
+
   //! returns 2.
   Standard_EXPORT Standard_Integer NbEquations() const;
-  
+
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, math_Vector& F);
-  
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& X, math_Matrix& D);
-  
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& X, math_Vector& F, math_Matrix& D);
-
-
-
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Address thecurve1;
   Standard_Address thecurve2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter_HeaderFile

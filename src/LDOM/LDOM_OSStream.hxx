@@ -24,7 +24,7 @@
 
 //! Class LDOM_SBuffer inherits std::streambuf and
 //! redefines some virtual methods of it (overflow() and xsputn()).
-//! This class contains pointers on first and current element 
+//! This class contains pointers on first and current element
 //! of sequence, also it has methods for the sequence management.
 class LDOM_SBuffer : public std::streambuf
 {
@@ -43,48 +43,48 @@ class LDOM_SBuffer : public std::streambuf
     ~LDOM_StringElem();
 
   private:
-    LDOM_StringElem (const LDOM_StringElem&);
-    LDOM_StringElem& operator= (const LDOM_StringElem&);
+    LDOM_StringElem(const LDOM_StringElem&);
+    LDOM_StringElem& operator=(const LDOM_StringElem&);
   };
 
 public:
   //! Constructor. Sets a default value for the
   //!              length of each sequence element.
-  Standard_EXPORT LDOM_SBuffer (const Standard_Integer theMaxBuf);
+  Standard_EXPORT LDOM_SBuffer(const Standard_Integer theMaxBuf);
 
   //! Concatenates strings of all sequence elements
   //! into one string. Space for output string is allocated
   //! with operator new.
   //! Caller of this function is responsible
   //! for memory release after the string usage.
-  Standard_EXPORT Standard_CString str () const;
+  Standard_EXPORT Standard_CString str() const;
 
   //! Returns full length of data contained
-  Standard_Integer Length () const {return myLength;}
+  Standard_Integer Length() const { return myLength; }
 
   //! Clears first element of sequence and removes all others
-  Standard_EXPORT void Clear ();
+  Standard_EXPORT void Clear();
 
   // Methods of std::streambuf
 
   Standard_EXPORT virtual int overflow(int c = EOF) Standard_OVERRIDE;
   Standard_EXPORT virtual int underflow() Standard_OVERRIDE;
-  //virtual int uflow();
+  // virtual int uflow();
 
-  Standard_EXPORT virtual std::streamsize xsputn(const char* s, std::streamsize n) Standard_OVERRIDE;
-  //virtual int xsgetn(char* s, int n);
-  //virtual int sync();
+  Standard_EXPORT virtual std::streamsize xsputn(const char*     s,
+                                                 std::streamsize n) Standard_OVERRIDE;
+  // virtual int xsgetn(char* s, int n);
+  // virtual int sync();
 
-  Standard_EXPORT ~LDOM_SBuffer ();
+  Standard_EXPORT ~LDOM_SBuffer();
   // Destructor
 
 private:
-
-  Standard_Integer      myMaxBuf; // default length of one element
-  Standard_Integer      myLength; // full length of contained data
-  LDOM_StringElem* myFirstString; // the head of the sequence
-  LDOM_StringElem* myCurString;   // current element of the sequence
-  Handle(NCollection_BaseAllocator) myAlloc; //allocator for chunks
+  Standard_Integer                  myMaxBuf;      // default length of one element
+  Standard_Integer                  myLength;      // full length of contained data
+  LDOM_StringElem*                  myFirstString; // the head of the sequence
+  LDOM_StringElem*                  myCurString;   // current element of the sequence
+  Handle(NCollection_BaseAllocator) myAlloc;       // allocator for chunks
 };
 
 //! Subclass if std::ostream allowing to increase performance
@@ -102,18 +102,19 @@ public:
 
   Standard_EXPORT virtual ~LDOM_OSStream();
 
-  Standard_CString str () const {return myBuffer.str();}
+  Standard_CString str() const { return myBuffer.str(); }
 
-  Standard_Integer Length () const { return myBuffer.Length(); }
+  Standard_Integer Length() const { return myBuffer.Length(); }
 
-  void Clear () { myBuffer.Clear(); }
+  void Clear() { myBuffer.Clear(); }
 
- private:
+private:
   LDOM_SBuffer myBuffer;
 
 public:
   // byte order mark defined at the start of a stream
-  enum BOMType {
+  enum BOMType
+  {
     BOM_UNDEFINED,
     BOM_UTF8,
     BOM_UTF16BE,

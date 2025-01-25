@@ -23,42 +23,20 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_GeometryData.hxx>
 
-
-
-class TopOpeBRepDS_SurfaceData  : public TopOpeBRepDS_GeometryData
+class TopOpeBRepDS_SurfaceData : public TopOpeBRepDS_GeometryData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_SurfaceData();
-  
+
   Standard_EXPORT TopOpeBRepDS_SurfaceData(const TopOpeBRepDS_Surface& S);
 
-
-friend class TopOpeBRepDS_DataStructure;
-
+  friend class TopOpeBRepDS_DataStructure;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopOpeBRepDS_Surface mySurface;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_SurfaceData_HeaderFile

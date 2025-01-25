@@ -22,8 +22,11 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,Handle(TopTools_HArray2OfShape),TopTools_ShapeMapHasher> BRepFill_DataMapOfShapeHArray2OfShape;
-typedef NCollection_DataMap<TopoDS_Shape,Handle(TopTools_HArray2OfShape),TopTools_ShapeMapHasher>::Iterator BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape;
-
+typedef NCollection_DataMap<TopoDS_Shape, Handle(TopTools_HArray2OfShape), TopTools_ShapeMapHasher>
+  BRepFill_DataMapOfShapeHArray2OfShape;
+typedef NCollection_DataMap<TopoDS_Shape,
+                            Handle(TopTools_HArray2OfShape),
+                            TopTools_ShapeMapHasher>::Iterator
+  BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape;
 
 #endif

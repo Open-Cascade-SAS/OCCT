@@ -19,30 +19,29 @@
 #include <IGESGraph_HighLight.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_HighLight,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_HighLight, IGESData_IGESEntity)
 
-IGESGraph_HighLight::IGESGraph_HighLight ()    {  }
+IGESGraph_HighLight::IGESGraph_HighLight() {}
 
-
-    void IGESGraph_HighLight::Init
-  (const Standard_Integer nbProps, const Standard_Integer aHighLightStatus)
+void IGESGraph_HighLight::Init(const Standard_Integer nbProps,
+                               const Standard_Integer aHighLightStatus)
 {
   theNbPropertyValues = nbProps;
   theHighLight        = aHighLightStatus;
-  InitTypeAndForm(406,20);
+  InitTypeAndForm(406, 20);
 }
 
-    Standard_Integer IGESGraph_HighLight::NbPropertyValues () const
+Standard_Integer IGESGraph_HighLight::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-    Standard_Integer IGESGraph_HighLight::HighLightStatus () const
+Standard_Integer IGESGraph_HighLight::HighLightStatus() const
 {
   return theHighLight;
 }
 
-    Standard_Boolean IGESGraph_HighLight::IsHighLighted () const
+Standard_Boolean IGESGraph_HighLight::IsHighLighted() const
 {
   return (theHighLight != 0);
 }

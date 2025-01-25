@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _ShapePersistent_HeaderFile
 #define _ShapePersistent_HeaderFile
 
@@ -23,7 +22,7 @@ class ShapePersistent
 {
 public:
   //! Register types.
-  Standard_EXPORT static void BindTypes (StdObjMgt_MapOfInstantiators& theMap);
+  Standard_EXPORT static void BindTypes(StdObjMgt_MapOfInstantiators& theMap);
 };
 
 #endif

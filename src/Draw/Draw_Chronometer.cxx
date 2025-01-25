@@ -21,26 +21,26 @@
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Chronometer, Draw_Drawable3D)
 
 //=======================================================================
-//function : Draw_Chronometer
-//purpose  :
+// function : Draw_Chronometer
+// purpose  :
 //=======================================================================
-Draw_Chronometer::Draw_Chronometer() 
+Draw_Chronometer::Draw_Chronometer()
 {
   //
 }
 
 //=======================================================================
-//function : DrawOn
-//purpose  :
+// function : DrawOn
+// purpose  :
 //=======================================================================
-void Draw_Chronometer::DrawOn (Draw_Display& ) const
+void Draw_Chronometer::DrawOn(Draw_Display&) const
 {
   //
 }
 
 //=======================================================================
-//function : Copy
-//purpose  :
+// function : Copy
+// purpose  :
 //=======================================================================
 Handle(Draw_Drawable3D) Draw_Chronometer::Copy() const
 {
@@ -49,23 +49,21 @@ Handle(Draw_Drawable3D) Draw_Chronometer::Copy() const
 }
 
 //=======================================================================
-//function : Dump
-//purpose  :
+// function : Dump
+// purpose  :
 //=======================================================================
-void  Draw_Chronometer::Dump (Standard_OStream& S) const
+void Draw_Chronometer::Dump(Standard_OStream& S) const
 {
   S << "Chronometer, ";
-  myTimer.Show (S);
+  myTimer.Show(S);
 }
 
 //=======================================================================
-//function : Whatis
-//purpose  : 
+// function : Whatis
+// purpose  :
 //=======================================================================
 
-void  Draw_Chronometer::Whatis(Draw_Interpretor& i)const 
+void Draw_Chronometer::Whatis(Draw_Interpretor& i) const
 {
   i << "chronometer";
 }
-
-

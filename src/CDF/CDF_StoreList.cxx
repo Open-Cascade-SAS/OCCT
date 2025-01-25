@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
 #include <CDF_StoreList.hxx>
@@ -24,56 +23,75 @@
 #include <PCDM_StorageDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(CDF_StoreList,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(CDF_StoreList, Standard_Transient)
 
-static void CAUGHT(const Standard_Failure& theException,TCollection_ExtendedString& status,const TCollection_ExtendedString& what) {
+static void CAUGHT(const Standard_Failure&           theException,
+                   TCollection_ExtendedString&       status,
+                   const TCollection_ExtendedString& what)
+{
   status += what;
   status += theException.GetMessageString();
 }
 
-CDF_StoreList::CDF_StoreList(const Handle(CDM_Document)& aDocument) {
+CDF_StoreList::CDF_StoreList(const Handle(CDM_Document)& aDocument)
+{
   myMainDocument = aDocument;
   Add(aDocument);
 }
 
-void CDF_StoreList::Add(const Handle(CDM_Document)& aDocument) {
+void CDF_StoreList::Add(const Handle(CDM_Document)& aDocument)
+{
 
-  if(!myItems.Contains(aDocument) && aDocument != myMainDocument) myItems.Add(aDocument);
+  if (!myItems.Contains(aDocument) && aDocument != myMainDocument)
+    myItems.Add(aDocument);
   myStack.Prepend(aDocument);
-  
+
   CDM_ReferenceIterator it(aDocument);
-  for (;it.More();it.Next()) {
-    if(it.Document()->IsModified())  Add(it.Document());
+  for (; it.More(); it.Next())
+  {
+    if (it.Document()->IsModified())
+      Add(it.Document());
   }
 }
-Standard_Boolean CDF_StoreList::IsConsistent () const {
-  Standard_Boolean yes = Standard_True;
-  CDM_MapIteratorOfMapOfDocument it (myItems); 
-  for ( ; it.More() && yes ; it.Next()) {
+
+Standard_Boolean CDF_StoreList::IsConsistent() const
+{
+  Standard_Boolean               yes = Standard_True;
+  CDM_MapIteratorOfMapOfDocument it(myItems);
+  for (; it.More() && yes; it.Next())
+  {
     yes = it.Key()->HasRequestedFolder();
   }
   return yes && myMainDocument->HasRequestedFolder();
 }
-void CDF_StoreList::Init() {
+
+void CDF_StoreList::Init()
+{
   myIterator = CDM_MapIteratorOfMapOfDocument(myItems);
 }
-Standard_Boolean CDF_StoreList::More() const {
+
+Standard_Boolean CDF_StoreList::More() const
+{
   return myIterator.More();
 }
 
-void CDF_StoreList::Next() {
+void CDF_StoreList::Next()
+{
   myIterator.Next();
 }
 
-Handle(CDM_Document) CDF_StoreList::Value() const {
+Handle(CDM_Document) CDF_StoreList::Value() const
+{
   return myIterator.Key();
 }
-PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, 
-                                      TCollection_ExtendedString& aStatusAssociatedText, 
+
+PCDM_StoreStatus CDF_StoreList::Store(Handle(CDM_MetaData)&        aMetaData,
+                                      TCollection_ExtendedString&  aStatusAssociatedText,
                                       const Message_ProgressRange& theRange)
 {
-  PCDM_StoreStatus status = PCDM_SS_OK;
-  Handle(CDF_MetaDataDriver) theMetaDataDriver = Handle(CDF_Application)::DownCast ((myMainDocument->Application()))->MetaDataDriver();
+  PCDM_StoreStatus           status = PCDM_SS_OK;
+  Handle(CDF_MetaDataDriver) theMetaDataDriver =
+    Handle(CDF_Application)::DownCast((myMainDocument->Application()))->MetaDataDriver();
   for (; !myStack.IsEmpty(); myStack.RemoveFirst())
   {
     Handle(CDM_Document) theDocument = myStack.First();
@@ -82,26 +100,30 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData,
       try
       {
         OCC_CATCH_SIGNALS
-        Handle(CDF_Application) anApp = Handle(CDF_Application)::DownCast (theDocument->Application());
+        Handle(CDF_Application) anApp =
+          Handle(CDF_Application)::DownCast(theDocument->Application());
         if (anApp.IsNull())
         {
           aStatusAssociatedText = "driver failed; reason: ";
           aStatusAssociatedText += "document has no application, cannot save!";
-          status = PCDM_SS_Failure; 
+          status = PCDM_SS_Failure;
         }
         else
         {
-          Handle(PCDM_StorageDriver) aDocumentStorageDriver = anApp->WriterFromFormat(theDocument->StorageFormat());
+          Handle(PCDM_StorageDriver) aDocumentStorageDriver =
+            anApp->WriterFromFormat(theDocument->StorageFormat());
           if (aDocumentStorageDriver.IsNull())
           {
-            aStatusAssociatedText = "driver not found; reason: no storage driver does exist for this format: ";
+            aStatusAssociatedText =
+              "driver not found; reason: no storage driver does exist for this format: ";
             aStatusAssociatedText += theDocument->StorageFormat();
             status = PCDM_SS_UnrecognizedFormat;
           }
           else
           {
             // Reset the store-status.
-            // It has sense in multi-threaded access to the storage driver - this way we reset the status for each call.
+            // It has sense in multi-threaded access to the storage driver - this way we reset the
+            // status for each call.
             aDocumentStorageDriver->SetStoreStatus(PCDM_SS_OK);
 
             if (!theMetaDataDriver->FindFolder(theDocument->RequestedFolder()))
@@ -113,22 +135,27 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData,
             }
             else
             {
-              TCollection_ExtendedString theName = theMetaDataDriver->BuildFileName (theDocument);
-              aDocumentStorageDriver->Write (theDocument, theName, theRange);
-              status = aDocumentStorageDriver->GetStoreStatus();
-              aMetaData = theMetaDataDriver->CreateMetaData (theDocument, theName);
-              theDocument->SetMetaData (aMetaData);
+              TCollection_ExtendedString theName = theMetaDataDriver->BuildFileName(theDocument);
+              aDocumentStorageDriver->Write(theDocument, theName, theRange);
+              status    = aDocumentStorageDriver->GetStoreStatus();
+              aMetaData = theMetaDataDriver->CreateMetaData(theDocument, theName);
+              theDocument->SetMetaData(aMetaData);
 
-              CDM_ReferenceIterator it (theDocument);
+              CDM_ReferenceIterator it(theDocument);
               for (; it.More(); it.Next())
-                theMetaDataDriver->CreateReference (aMetaData, it.Document()->MetaData(), it.ReferenceIdentifier(), it.DocumentVersion());
+                theMetaDataDriver->CreateReference(aMetaData,
+                                                   it.Document()->MetaData(),
+                                                   it.ReferenceIdentifier(),
+                                                   it.DocumentVersion());
             }
           }
         }
       }
       catch (Standard_Failure const& anException)
       {
-        CAUGHT (anException, aStatusAssociatedText, TCollection_ExtendedString ("driver failed; reason: "));
+        CAUGHT(anException,
+               aStatusAssociatedText,
+               TCollection_ExtendedString("driver failed; reason: "));
         status = PCDM_SS_DriverFailure;
       }
     }

@@ -26,8 +26,9 @@ class Standard_NegativeValue;
 DEFINE_STANDARD_HANDLE(Standard_NegativeValue, Standard_RangeError)
 
 #if !defined No_Exception && !defined No_Standard_NegativeValue
-  #define Standard_NegativeValue_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_NegativeValue(MESSAGE);
+  #define Standard_NegativeValue_Raise_if(CONDITION, MESSAGE)                                      \
+    if (CONDITION)                                                                                 \
+      throw Standard_NegativeValue(MESSAGE);
 #else
   #define Standard_NegativeValue_Raise_if(CONDITION, MESSAGE)
 #endif

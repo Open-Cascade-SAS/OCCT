@@ -24,8 +24,9 @@ class Standard_OutOfMemory;
 DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 
 #if !defined No_Exception && !defined No_Standard_OutOfMemory
-  #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_OutOfMemory(MESSAGE);
+  #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE)                                        \
+    if (CONDITION)                                                                                 \
+      throw Standard_OutOfMemory(MESSAGE);
 #else
   #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE)
 #endif
@@ -33,31 +34,30 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 //! Standard_OutOfMemory exception is defined explicitly and not by
 //! macro DEFINE_STANDARD_EXCEPTION, to avoid necessity of dynamic
 //! memory allocations during throwing and stack unwinding:
-//! 
+//!
 //! - method NewInstance() returns static instance (singleton)
-//! - method Raise() raises copy of that singleton, resetting 
+//! - method Raise() raises copy of that singleton, resetting
 //!   its message string
 //! - message string is stored as field, not allocated dynamically
 //!   (storable message length is limited by buffer size)
 //!
-//! The reason is that in out-of-memory condition any memory allocation can 
-//! fail, thus use of operator new for allocation of new exception instance 
+//! The reason is that in out-of-memory condition any memory allocation can
+//! fail, thus use of operator new for allocation of new exception instance
 //! is dangerous (can cause recursion until stack overflow, see #24836).
 
 class Standard_OutOfMemory : public Standard_ProgramError
 {
-  Standard_EXPORT void Throw () const Standard_OVERRIDE;
+  Standard_EXPORT void Throw() const Standard_OVERRIDE;
 
 public:
-
   //! Constructor is kept public for backward compatibility
   Standard_EXPORT Standard_OutOfMemory(const Standard_CString theMessage = 0);
 
   //! Returns error message
   Standard_EXPORT Standard_CString GetMessageString() const Standard_OVERRIDE;
-  
+
   //! Sets error message
-  Standard_EXPORT void SetMessageString (const Standard_CString aMessage) Standard_OVERRIDE;
+  Standard_EXPORT void SetMessageString(const Standard_CString aMessage) Standard_OVERRIDE;
 
   //! Raises exception with specified message string
   Standard_EXPORT static void Raise(const Standard_CString theMessage = "");
@@ -66,13 +66,13 @@ public:
   Standard_EXPORT static void Raise(Standard_SStream& theMessage);
 
   //! Returns global instance of exception
-  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance (Standard_CString theMessage = "");
+  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance(Standard_CString theMessage = "");
 
   //! Returns global instance of exception
-  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance (Standard_CString theMessage,
-                                                                   Standard_CString theStackTrace);
+  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance(Standard_CString theMessage,
+                                                                  Standard_CString theStackTrace);
 
-  DEFINE_STANDARD_RTTIEXT(Standard_OutOfMemory,Standard_ProgramError)
+  DEFINE_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
 
 protected:
   char myBuffer[1024];

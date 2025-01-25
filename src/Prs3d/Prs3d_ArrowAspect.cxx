@@ -24,10 +24,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect, Prs3d_BasicAspect)
 // purpose  :
 // =======================================================================
 Prs3d_ArrowAspect::Prs3d_ArrowAspect()
-: myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
-  myAngle (M_PI / 180.0 * 10.0),
-  myLength (1.0),
-  myIsZoomable (Standard_True)
+    : myArrowAspect(
+        new Graphic3d_AspectLine3d(Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
+      myAngle(M_PI / 180.0 * 10.0),
+      myLength(1.0),
+      myIsZoomable(Standard_True)
 {
   //
 }
@@ -36,11 +37,11 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect()
 // function : Prs3d_ArrowAspect
 // purpose  :
 // =======================================================================
-Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Standard_Real theAngle,
-                                      const Standard_Real theLength)
-: myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
-  myAngle (theAngle),
-  myLength(theLength)
+Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Standard_Real theAngle, const Standard_Real theLength)
+    : myArrowAspect(
+        new Graphic3d_AspectLine3d(Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
+      myAngle(theAngle),
+      myLength(theLength)
 {
   //
 }
@@ -49,10 +50,10 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Standard_Real theAngle,
 // function : Prs3d_ArrowAspect
 // purpose  :
 // =======================================================================
-Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Handle(Graphic3d_AspectLine3d)& theAspect)
-: myArrowAspect (theAspect),
-  myAngle (M_PI / 180.0 * 10.0),
-  myLength(1.0)
+Prs3d_ArrowAspect::Prs3d_ArrowAspect(const Handle(Graphic3d_AspectLine3d)& theAspect)
+    : myArrowAspect(theAspect),
+      myAngle(M_PI / 180.0 * 10.0),
+      myLength(1.0)
 {
   //
 }
@@ -61,10 +62,10 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Handle(Graphic3d_AspectLine3d)& theA
 // function : SetAngle
 // purpose  :
 // =======================================================================
-void Prs3d_ArrowAspect::SetAngle (const Standard_Real theAngle)
+void Prs3d_ArrowAspect::SetAngle(const Standard_Real theAngle)
 {
-  Prs3d_InvalidAngle_Raise_if (theAngle <= 0.0
-                            || theAngle >= M_PI / 2.0, "Prs3d_ArrowAspect::SetAngle() - angle out of range");
+  Prs3d_InvalidAngle_Raise_if(theAngle <= 0.0 || theAngle >= M_PI / 2.0,
+                              "Prs3d_ArrowAspect::SetAngle() - angle out of range");
   myAngle = theAngle;
 }
 
@@ -72,11 +73,11 @@ void Prs3d_ArrowAspect::SetAngle (const Standard_Real theAngle)
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_ArrowAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_ArrowAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myArrowAspect.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLength)
 }

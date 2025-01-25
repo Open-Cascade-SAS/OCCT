@@ -14,10 +14,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetStatus
-//purpose  : 
+// function : GetStatus
+// purpose  :
 //=======================================================================
 
-inline PCDM_ReaderStatus PCDM_Reader::GetStatus() const {
+inline PCDM_ReaderStatus PCDM_Reader::GetStatus() const
+{
   return myReaderStatus;
 }

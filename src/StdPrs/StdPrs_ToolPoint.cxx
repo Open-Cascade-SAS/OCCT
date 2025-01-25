@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_Point.hxx>
 #include <StdPrs_ToolPoint.hxx>
 
-void StdPrs_ToolPoint::Coord (const Handle(Geom_Point)& aPoint,
-			       Standard_Real& X,
-			       Standard_Real& Y,
-			       Standard_Real& Z) {
-  aPoint->Coord(X,Y,Z);
+void StdPrs_ToolPoint::Coord(const Handle(Geom_Point)& aPoint,
+                             Standard_Real&            X,
+                             Standard_Real&            Y,
+                             Standard_Real&            Z)
+{
+  aPoint->Coord(X, Y, Z);
 }

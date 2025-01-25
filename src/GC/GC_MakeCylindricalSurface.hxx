@@ -30,7 +30,6 @@ class gp_Pnt;
 class gp_Ax1;
 class gp_Circ;
 
-
 //! This class implements the following algorithms used
 //! to create a CylindricalSurface from Geom.
 //! * Create a CylindricalSurface parallel to another and
@@ -55,13 +54,10 @@ class gp_Circ;
 //! the symmetry axis. The "XAxis" defines the origin of the
 //! parameter U = 0.  The trigonometric sense gives the positive
 //! orientation for the parameter U.
-class GC_MakeCylindricalSurface  : public GC_Root
+class GC_MakeCylindricalSurface : public GC_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! A2 defines the local coordinate system of the cylindrical surface.
   //! The "ZDirection" of A2 defines the direction of the surface's
@@ -74,18 +70,17 @@ public:
   //! Radius = 0.0
   //! Status is "NegativeRadius" if Radius < 0.0
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax2& A2, const Standard_Real Radius);
-  
 
   //! Creates a CylindricalSurface from a non persistent Cylinder
   //! from package gp.
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& C);
-  
+
   //! Make a CylindricalSurface from Geom <TheCylinder>
   //! parallel to another
   //! CylindricalSurface <Cylinder> and passing through a
   //! Pnt <Point>.
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const gp_Pnt& Point);
-  
+
   //! Make a CylindricalSurface from Geom <TheCylinder>
   //! parallel to another
   //! CylindricalSurface <Cylinder> at the distance <Dist>
@@ -93,25 +88,25 @@ public:
   //! The radius of the result is the absolute value of the
   //! radius of <Cyl> plus <Dist>
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const Standard_Real Dist);
-  
+
   //! Make a CylindricalSurface from Geom <TheCylinder>
   //! passing through 3 Pnt <P1>,<P2>,<P3>.
   //! Its axis is <P1P2> and its radius is the distance
   //! between <P3> and <P1P2>
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
-  
+
   //! Make a CylindricalSurface by its axis <Axis> and radius
   //! <Radius>.
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax1& Axis, const Standard_Real Radius);
-  
+
   //! Make a CylindricalSurface by its circular base.
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Circ& Circ);
-  
+
   //! Returns the constructed cylinder.
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
   Standard_EXPORT const Handle(Geom_CylindricalSurface)& Value() const;
 
-  operator const Handle(Geom_CylindricalSurface)& () const { return Value(); }
+  operator const Handle(Geom_CylindricalSurface) & () const { return Value(); }
 
 private:
   Handle(Geom_CylindricalSurface) TheCylinder;

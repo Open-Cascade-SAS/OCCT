@@ -17,14 +17,13 @@
 #ifndef _TFunction_ExecutionStatus_HeaderFile
 #define _TFunction_ExecutionStatus_HeaderFile
 
-
 enum TFunction_ExecutionStatus
 {
-TFunction_ES_WrongDefinition,
-TFunction_ES_NotExecuted,
-TFunction_ES_Executing,
-TFunction_ES_Succeeded,
-TFunction_ES_Failed
+  TFunction_ES_WrongDefinition,
+  TFunction_ES_NotExecuted,
+  TFunction_ES_Executing,
+  TFunction_ES_Succeeded,
+  TFunction_ES_Failed
 };
 
 #endif // _TFunction_ExecutionStatus_HeaderFile

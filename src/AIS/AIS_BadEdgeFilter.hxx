@@ -26,7 +26,6 @@
 class SelectMgr_EntityOwner;
 class TopoDS_Edge;
 
-
 class AIS_BadEdgeFilter;
 DEFINE_STANDARD_HANDLE(AIS_BadEdgeFilter, SelectMgr_Filter)
 
@@ -35,50 +34,33 @@ class AIS_BadEdgeFilter : public SelectMgr_Filter
 {
 
 public:
-
-  
   //! Constructs an empty filter object for bad edges.
   Standard_EXPORT AIS_BadEdgeFilter();
-  
-  Standard_EXPORT virtual Standard_Boolean ActsOn (const TopAbs_ShapeEnum aType) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& EO) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aType) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+    Standard_OVERRIDE;
+
   //! sets  <myContour> with  current  contour. used  by
   //! IsOk.
-  Standard_EXPORT void SetContour (const Standard_Integer Index);
-  
+  Standard_EXPORT void SetContour(const Standard_Integer Index);
+
   //! Adds an  edge  to the list  of non-selectionnable
   //! edges.
-  Standard_EXPORT void AddEdge (const TopoDS_Edge& anEdge, const Standard_Integer Index);
-  
+  Standard_EXPORT void AddEdge(const TopoDS_Edge& anEdge, const Standard_Integer Index);
+
   //! removes from the  list of non-selectionnable edges
   //! all edges in the contour <Index>.
-  Standard_EXPORT void RemoveEdges (const Standard_Integer Index);
+  Standard_EXPORT void RemoveEdges(const Standard_Integer Index);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_BadEdgeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_BadEdgeFilter, SelectMgr_Filter)
 
 protected:
-
-
-
-
 private:
-
-
   TopTools_DataMapOfIntegerListOfShape myBadEdges;
-  Standard_Integer myContour;
-
-
+  Standard_Integer                     myContour;
 };
-
-
-
-
-
-
 
 #endif // _AIS_BadEdgeFilter_HeaderFile

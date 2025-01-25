@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<BRepBlend_PointOnRst> BRepBlend_SequenceOfPointOnRst;
 
-
 #endif

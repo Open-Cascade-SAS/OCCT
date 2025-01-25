@@ -17,9 +17,9 @@
 #define IntPolyh_ArrayOfTriangles_HeaderFile
 
 #include <IntPolyh_Array.hxx>
-//#include <IntPolyh_Triangle.hxx>
+// #include <IntPolyh_Triangle.hxx>
 class IntPolyh_Triangle;
 
-typedef IntPolyh_Array <IntPolyh_Triangle> IntPolyh_ArrayOfTriangles;
+typedef IntPolyh_Array<IntPolyh_Triangle> IntPolyh_ArrayOfTriangles;
 
 #endif

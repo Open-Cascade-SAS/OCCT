@@ -26,57 +26,35 @@
 #include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 
-
-
-class TopOpeBRepDS_ShapeWithState 
+class TopOpeBRepDS_ShapeWithState
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_ShapeWithState();
-  
-  Standard_EXPORT const TopTools_ListOfShape& Part (const TopAbs_State aState) const;
-  
-  Standard_EXPORT void AddPart (const TopoDS_Shape& aShape, const TopAbs_State aState);
-  
-  Standard_EXPORT void AddParts (const TopTools_ListOfShape& aListOfShape, const TopAbs_State aState);
-  
-  Standard_EXPORT void SetState (const TopAbs_State aState);
-  
+
+  Standard_EXPORT const TopTools_ListOfShape& Part(const TopAbs_State aState) const;
+
+  Standard_EXPORT void AddPart(const TopoDS_Shape& aShape, const TopAbs_State aState);
+
+  Standard_EXPORT void AddParts(const TopTools_ListOfShape& aListOfShape,
+                                const TopAbs_State          aState);
+
+  Standard_EXPORT void SetState(const TopAbs_State aState);
+
   Standard_EXPORT TopAbs_State State() const;
-  
-  Standard_EXPORT void SetIsSplitted (const Standard_Boolean anIsSplitted);
-  
+
+  Standard_EXPORT void SetIsSplitted(const Standard_Boolean anIsSplitted);
+
   Standard_EXPORT Standard_Boolean IsSplitted() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_ListOfShape myPartIn;
   TopTools_ListOfShape myPartOut;
   TopTools_ListOfShape myPartOn;
-  TopAbs_State myState;
-  Standard_Boolean myIsSplitted;
-
-
+  TopAbs_State         myState;
+  Standard_Boolean     myIsSplitted;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_ShapeWithState_HeaderFile

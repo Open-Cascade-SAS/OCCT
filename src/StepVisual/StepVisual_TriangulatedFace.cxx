@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -19,28 +19,29 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TriangulatedFace, StepVisual_TessellatedFace)
 
 //=======================================================================
-//function : StepVisual_TriangulatedFace
-//purpose  : 
+// function : StepVisual_TriangulatedFace
+// purpose  :
 //=======================================================================
 
 StepVisual_TriangulatedFace::StepVisual_TriangulatedFace()
-  : StepVisual_TessellatedFace()
+    : StepVisual_TessellatedFace()
 {
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepVisual_TriangulatedFace::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                        const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-                                        const Standard_Integer theTessellatedFace_Pnmax,
-                                        const Handle(TColStd_HArray2OfReal)& theTessellatedFace_Normals,
-                                        const Standard_Boolean theHasTessellatedFace_GeometricLink,
-                                        const StepVisual_FaceOrSurface& theTessellatedFace_GeometricLink,
-                                        const Handle(TColStd_HArray1OfInteger)& thePnindex,
-                                        const Handle(TColStd_HArray2OfInteger)& theTriangles)
+void StepVisual_TriangulatedFace::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
+  const Standard_Integer                    theTessellatedFace_Pnmax,
+  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
+  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
+  const Handle(TColStd_HArray2OfInteger)&   theTriangles)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -55,18 +56,18 @@ void StepVisual_TriangulatedFace::Init (const Handle(TCollection_HAsciiString)& 
 }
 
 //=======================================================================
-//function : Pnindex
-//purpose  : 
+// function : Pnindex
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TriangulatedFace::Pnindex () const
+Handle(TColStd_HArray1OfInteger) StepVisual_TriangulatedFace::Pnindex() const
 {
   return myPnindex;
 }
 
 //=======================================================================
-//function : SetPnindex
-//purpose  : 
+// function : SetPnindex
+// purpose  :
 //=======================================================================
 
 void StepVisual_TriangulatedFace::SetPnindex(const Handle(TColStd_HArray1OfInteger)& thePnindex)
@@ -74,10 +75,9 @@ void StepVisual_TriangulatedFace::SetPnindex(const Handle(TColStd_HArray1OfInteg
   myPnindex = thePnindex;
 }
 
-
 //=======================================================================
-//function : NbPnindex
-//purpose  : 
+// function : NbPnindex
+// purpose  :
 //=======================================================================
 
 Standard_Integer StepVisual_TriangulatedFace::NbPnindex() const
@@ -89,10 +89,9 @@ Standard_Integer StepVisual_TriangulatedFace::NbPnindex() const
   return myPnindex->Length();
 }
 
-
 //=======================================================================
-//function : PnindexValue
-//purpose  : 
+// function : PnindexValue
+// purpose  :
 //=======================================================================
 
 Standard_Integer StepVisual_TriangulatedFace::PnindexValue(const Standard_Integer theNum) const
@@ -101,18 +100,18 @@ Standard_Integer StepVisual_TriangulatedFace::PnindexValue(const Standard_Intege
 }
 
 //=======================================================================
-//function : Triangles
-//purpose  : 
+// function : Triangles
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HArray2OfInteger) StepVisual_TriangulatedFace::Triangles () const
+Handle(TColStd_HArray2OfInteger) StepVisual_TriangulatedFace::Triangles() const
 {
   return myTriangles;
 }
 
 //=======================================================================
-//function : NbTriangles
-//purpose  : 
+// function : NbTriangles
+// purpose  :
 //=======================================================================
 
 Standard_Integer StepVisual_TriangulatedFace::NbTriangles() const
@@ -125,8 +124,8 @@ Standard_Integer StepVisual_TriangulatedFace::NbTriangles() const
 }
 
 //=======================================================================
-//function : SetTriangles
-//purpose  : 
+// function : SetTriangles
+// purpose  :
 //=======================================================================
 
 void StepVisual_TriangulatedFace::SetTriangles(const Handle(TColStd_HArray2OfInteger)& theTriangles)

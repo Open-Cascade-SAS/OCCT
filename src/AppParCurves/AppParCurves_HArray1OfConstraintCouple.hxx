@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(AppParCurves_HArray1OfConstraintCouple, AppParCurves_Array1OfConstraintCouple)
 
-
 #endif

@@ -19,102 +19,151 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
-
 inline Standard_Boolean AppBlend_AppSurf::IsDone() const
 {
   return done;
 }
 
-
 inline Standard_Integer AppBlend_AppSurf::UDegree() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return udeg;
 }
 
 inline Standard_Integer AppBlend_AppSurf::VDegree() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return vdeg;
 }
 
 inline const TColgp_Array2OfPnt& AppBlend_AppSurf::SurfPoles() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabPoles->Array2();
 }
 
 inline const TColStd_Array2OfReal& AppBlend_AppSurf::SurfWeights() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabWeights->Array2();
 }
 
-
 inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfUKnots() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabUKnots->Array1();
 }
 
 inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfVKnots() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabVKnots->Array1();
 }
 
 inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfUMults() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabUMults->Array1();
 }
 
 inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfVMults() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return tabVMults->Array1();
 }
 
-inline Standard_Integer AppBlend_AppSurf::NbCurves2d () const
+inline Standard_Integer AppBlend_AppSurf::NbCurves2d() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return seqPoles2d.Length();
 }
 
 inline Standard_Integer AppBlend_AppSurf::Curves2dDegree() const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
   return vdeg;
 }
 
-inline const TColgp_Array1OfPnt2d& AppBlend_AppSurf::
-  Curve2dPoles(const Standard_Integer Index) const
+inline const TColgp_Array1OfPnt2d& AppBlend_AppSurf::Curve2dPoles(
+  const Standard_Integer Index) const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
   return seqPoles2d(Index)->Array1();
 }
 
-inline const TColStd_Array1OfReal& AppBlend_AppSurf::Curves2dKnots () const
+inline const TColStd_Array1OfReal& AppBlend_AppSurf::Curves2dKnots() const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
   return tabVKnots->Array1();
 }
 
-inline const TColStd_Array1OfInteger& AppBlend_AppSurf::Curves2dMults () const
+inline const TColStd_Array1OfInteger& AppBlend_AppSurf::Curves2dMults() const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (seqPoles2d.Length() == 0)
+  {
+    throw Standard_DomainError();
+  }
   return tabVMults->Array1();
 }
 
-inline void AppBlend_AppSurf::TolReached (Standard_Real& Tol3d,
-					  Standard_Real& Tol2d) const
+inline void AppBlend_AppSurf::TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d) const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   Tol3d = tol3dreached;
   Tol2d = tol2dreached;
 }
-

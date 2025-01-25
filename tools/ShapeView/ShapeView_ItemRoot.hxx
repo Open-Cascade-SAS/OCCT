@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ShapeView_ItemRoot_H
 #define ShapeView_ItemRoot_H
@@ -25,33 +25,35 @@ class ShapeView_ItemRoot;
 typedef QExplicitlySharedDataPointer<ShapeView_ItemRoot> ShapeView_ItemRootPtr;
 
 //! \class ShapeView_ItemRoot
-//! Collects shapes that should be visualized in tree view. Shapes are cached and if shapes are not needed,
-//! cache should be cleared using RemoveAllShapes.
-//! Parent is NULL, children are ShapeView_ItemShape items.
+//! Collects shapes that should be visualized in tree view. Shapes are cached and if shapes are not
+//! needed, cache should be cleared using RemoveAllShapes. Parent is NULL, children are
+//! ShapeView_ItemShape items.
 class ShapeView_ItemRoot : public TreeModel_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static ShapeView_ItemRootPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    { return ShapeView_ItemRootPtr (new ShapeView_ItemRoot (theParent, theRow, theColumn)); }
+  static ShapeView_ItemRootPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                          const int             theRow,
+                                          const int             theColumn)
+  {
+    return ShapeView_ItemRootPtr(new ShapeView_ItemRoot(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~ShapeView_ItemRoot() {}
 
   //! Appends new shape
   //! \param theShape a shape instance
-  void AddShape (const TopoDS_Shape& theShape) { myShapes.Append (theShape); }
+  void AddShape(const TopoDS_Shape& theShape) { myShapes.Append(theShape); }
 
   //! Clears internal container of added shapes
   void RemoveAllShapes() { myShapes.Clear(); }
 
   //! Returns shape by the number
   //! \param theRowId an index of the shape in the internal container.
-  Standard_EXPORT const TopoDS_Shape& Shape (const int theRowId);
+  Standard_EXPORT const TopoDS_Shape& Shape(const int theRowId);
 
 protected:
-
   //! Returns data value for the role.
   //! \param theItemRole a value role
   //! \return the value
@@ -64,17 +66,17 @@ protected:
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! \param theParent a parent item
   ShapeView_ItemRoot(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : TreeModel_ItemBase (theParent, theRow, theColumn) {}
+      : TreeModel_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
 private:
-
   NCollection_List<TopoDS_Shape> myShapes; //!< shapes presented in tree view
 };
 

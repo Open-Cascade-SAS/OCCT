@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFGraph_AllConnected.hxx>
 #include <IFGraph_ConnectedComponants.hxx>
 #include <Interface_Graph.hxx>
@@ -23,22 +22,26 @@
 // On recommence jusqu'a ce qu'il n'y ait plus de Vertex libre
 //  Honnetement, si ca ne marche pas, cf classe ConnectedVerticesIterator
 //  de GraphTools  qui fait en principe la meme chose
-IFGraph_ConnectedComponants::IFGraph_ConnectedComponants
-  (const Interface_Graph& agraph, const Standard_Boolean whole)
-      :  IFGraph_SubPartsIterator (agraph, whole)    {  }
-
-    void  IFGraph_ConnectedComponants::Evaluate()
+IFGraph_ConnectedComponants::IFGraph_ConnectedComponants(const Interface_Graph& agraph,
+                                                         const Standard_Boolean whole)
+    : IFGraph_SubPartsIterator(agraph, whole)
 {
-//  On part des "loaded"
-//  Pour chacun : s il est note dans le graphe, on passe
-//  Sinon, on ajoute les AllConnected en tant que sub-part
+}
+
+void IFGraph_ConnectedComponants::Evaluate()
+{
+  //  On part des "loaded"
+  //  Pour chacun : s il est note dans le graphe, on passe
+  //  Sinon, on ajoute les AllConnected en tant que sub-part
   Interface_EntityIterator loaded = Loaded();
   Reset();
-  for (loaded.Start(); loaded.More(); loaded.Next()) {
+  for (loaded.Start(); loaded.More(); loaded.Next())
+  {
     const Handle(Standard_Transient)& ent = loaded.Value();
-    if (IsInPart(ent)) continue;
-    IFGraph_AllConnected connect(Model(),ent);
+    if (IsInPart(ent))
+      continue;
+    IFGraph_AllConnected connect(Model(), ent);
     AddPart();
-    GetFromIter (connect);
+    GetFromIter(connect);
   }
 }

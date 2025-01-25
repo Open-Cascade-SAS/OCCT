@@ -29,33 +29,33 @@ class StepRepr_DescriptiveRepresentationItem;
 class StepRepr_MeasureRepresentationItem;
 class StepGeom_Placement;
 
-class StepShape_ShapeDimensionRepresentationItem  : public StepData_SelectType
+class StepShape_ShapeDimensionRepresentationItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a ShapeDimensionRepresentationItem select type
   Standard_EXPORT StepShape_ShapeDimensionRepresentationItem();
-  
+
   //! Recognizes a ShapeDimensionRepresentationItem Kind Entity that is :
   //! 1 -> CompoundRepresentationItem
   //! 2 -> DescriptiveRepresentationItem
   //! 3 -> MeasureRepresentationItem
   //! 4 -> Placement
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a CompoundRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_CompoundRepresentationItem) CompoundRepresentationItem()  const;
-  
+  Standard_EXPORT Handle(StepRepr_CompoundRepresentationItem) CompoundRepresentationItem() const;
+
   //! returns Value as a DescriptiveRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_DescriptiveRepresentationItem) DescriptiveRepresentationItem()  const;
-  
+  Standard_EXPORT Handle(StepRepr_DescriptiveRepresentationItem) DescriptiveRepresentationItem()
+    const;
+
   //! returns Value as a MeasureRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_MeasureRepresentationItem) MeasureRepresentationItem()  const;
-  
+  Standard_EXPORT Handle(StepRepr_MeasureRepresentationItem) MeasureRepresentationItem() const;
+
   //! returns Value as a Placement (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Placement) Placement()  const; 
+  Standard_EXPORT Handle(StepGeom_Placement) Placement() const;
 };
 #endif // _StepShape_ShapeDimensionRepresentationItem_HeaderFile

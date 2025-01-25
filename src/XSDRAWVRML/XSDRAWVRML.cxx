@@ -37,11 +37,10 @@
 #include <XSDRAW.hxx>
 
 //=============================================================================
-//function : parseCoordinateSystem
-//purpose  : Parse RWMesh_CoordinateSystem enumeration
+// function : parseCoordinateSystem
+// purpose  : Parse RWMesh_CoordinateSystem enumeration
 //=============================================================================
-static bool parseCoordinateSystem(const char* theArg,
-                                  RWMesh_CoordinateSystem& theSystem)
+static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& theSystem)
 {
   TCollection_AsciiString aCSStr(theArg);
   aCSStr.LowerCase();
@@ -61,32 +60,33 @@ static bool parseCoordinateSystem(const char* theArg,
 }
 
 //=======================================================================
-//function : ReadVrml
-//purpose  :
+// function : ReadVrml
+// purpose  :
 //=======================================================================
 static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
                                  Standard_Integer  theArgc,
                                  const char**      theArgv)
 {
-  if(theArgc < 3)
+  if (theArgc < 3)
   {
     theDI.PrintHelp(theArgv[0]);
     return 1;
   }
 
   Handle(TDocStd_Document) aDoc;
-  Standard_Real aFileUnitFactor = 1.0;
-  RWMesh_CoordinateSystem aFileCoordSys = RWMesh_CoordinateSystem_Yup, aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
-  Standard_Boolean toUseExistingDoc = Standard_False;
-  Standard_Boolean toFillIncomplete = Standard_True;
-  Standard_CString aDocName = NULL;
+  Standard_Real            aFileUnitFactor = 1.0;
+  RWMesh_CoordinateSystem  aFileCoordSys   = RWMesh_CoordinateSystem_Yup,
+                          aSystemCoordSys  = RWMesh_CoordinateSystem_Zup;
+  Standard_Boolean        toUseExistingDoc = Standard_False;
+  Standard_Boolean        toFillIncomplete = Standard_True;
+  Standard_CString        aDocName         = NULL;
   TCollection_AsciiString aFilePath;
 
-  for(Standard_Integer anArgIt = 1; anArgIt < theArgc; anArgIt++)
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgc; anArgIt++)
   {
     TCollection_AsciiString anArg(theArgv[anArgIt]);
     anArg.LowerCase();
-    if(anArgIt + 1 < theArgc && anArg == "-fileunit")
+    if (anArgIt + 1 < theArgc && anArg == "-fileunit")
     {
       const TCollection_AsciiString aUnitStr(theArgv[++anArgIt]);
       aFileUnitFactor = UnitsAPI::AnyToSI(1.0, aUnitStr.ToCString());
@@ -129,7 +129,7 @@ static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
       aDocName = theArgv[anArgIt];
       DDocStd::GetDocument(aDocName, aDoc, Standard_False);
     }
-    else if(aFilePath.IsEmpty())
+    else if (aFilePath.IsEmpty())
     {
       aFilePath = theArgv[anArgIt];
     }
@@ -145,10 +145,10 @@ static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
     Message::SendFail() << "Syntax error: wrong number of arguments";
     return 1;
   }
-  
+
   if (aDoc.IsNull())
   {
-    if(toUseExistingDoc)
+    if (toUseExistingDoc)
     {
       Message::SendFail() << "Error: document with name " << aDocName << " does not exist";
       return 1;
@@ -185,8 +185,9 @@ static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
       Message::SendFail() << "Error: file reading failed '" << aFilePath << "'";
       return 1;
     }
-    Message::SendWarning() <<
-      "Warning: file has been read paratially (due to unexpected EOF, syntax error, memory limit) " << aFilePath;
+    Message::SendWarning() << "Warning: file has been read paratially (due to unexpected EOF, "
+                              "syntax error, memory limit) "
+                           << aFilePath;
   }
 
   TDataStd_Name::Set(aDoc->GetData()->Root(), aDocName);
@@ -197,8 +198,8 @@ static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : WriteVrml
-//purpose  : Write DECAF document to Vrml
+// function : WriteVrml
+// purpose  : Write DECAF document to Vrml
 //=======================================================================
 static Standard_Integer WriteVrml(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -239,26 +240,28 @@ static Standard_Integer WriteVrml(Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 //=======================================================================
-//function : loadvrml
-//purpose  :
+// function : loadvrml
+// purpose  :
 //=======================================================================
 
-static Standard_Integer loadvrml
-(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer loadvrml(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) di << "wrong number of parameters"    << "\n";
-  else {
-    TopoDS_Shape aShape ;
+  if (argc < 3)
+    di << "wrong number of parameters" << "\n";
+  else
+  {
+    TopoDS_Shape                      aShape;
     VrmlData_DataMapOfShapeAppearance aShapeAppMap;
 
     //-----------------------------------------------------------
     std::filebuf aFic;
-    std::istream aStream (&aFic);
+    std::istream aStream(&aFic);
 
-    if (aFic.open(argv[2], std::ios::in)) {
+    if (aFic.open(argv[2], std::ios::in))
+    {
 
       // Get path of the VRML file.
-      OSD_Path aPath(argv[2]);
+      OSD_Path                aPath(argv[2]);
       TCollection_AsciiString aVrmlDir(".");
       TCollection_AsciiString aDisk = aPath.Disk();
       TCollection_AsciiString aTrek = aPath.Trek();
@@ -272,52 +275,87 @@ static Standard_Integer loadvrml
         aVrmlDir += aTrek;
       }
 
-      VrmlData_Scene aScene;
+      VrmlData_Scene      aScene;
       const Standard_Real anOCCUnitMM = XSDRAW::GetLengthUnit();
       aScene.SetLinearScale(1000. / anOCCUnitMM);
 
-      aScene.SetVrmlDir (aVrmlDir);
+      aScene.SetVrmlDir(aVrmlDir);
       aScene << aStream;
-      const char * aStr = 0L;
-      switch (aScene.Status()) {
+      const char* aStr = 0L;
+      switch (aScene.Status())
+      {
 
-      case VrmlData_StatusOK:
-        {
+        case VrmlData_StatusOK: {
           aShape = aScene.GetShape(aShapeAppMap);
           break;
         }
-      case VrmlData_EmptyData:            aStr = "EmptyData"; break;
-      case VrmlData_UnrecoverableError:   aStr = "UnrecoverableError"; break;
-      case VrmlData_GeneralError:         aStr = "GeneralError"; break;
-      case VrmlData_EndOfFile:            aStr = "EndOfFile"; break;
-      case VrmlData_NotVrmlFile:          aStr = "NotVrmlFile"; break;
-      case VrmlData_CannotOpenFile:       aStr = "CannotOpenFile"; break;
-      case VrmlData_VrmlFormatError:      aStr = "VrmlFormatError"; break;
-      case VrmlData_NumericInputError:    aStr = "NumericInputError"; break;
-      case VrmlData_IrrelevantNumber:     aStr = "IrrelevantNumber"; break;
-      case VrmlData_BooleanInputError:    aStr = "BooleanInputError"; break;
-      case VrmlData_StringInputError:     aStr = "StringInputError"; break;
-      case VrmlData_NodeNameUnknown:      aStr = "NodeNameUnknown"; break;
-      case VrmlData_NonPositiveSize:      aStr = "NonPositiveSize"; break;
-      case VrmlData_ReadUnknownNode:      aStr = "ReadUnknownNode"; break;
-      case VrmlData_NonSupportedFeature:  aStr = "NonSupportedFeature"; break;
-      case VrmlData_OutputStreamUndefined:aStr = "OutputStreamUndefined"; break;
-      case VrmlData_NotImplemented:       aStr = "NotImplemented"; break;
-      default:
-        break;
+        case VrmlData_EmptyData:
+          aStr = "EmptyData";
+          break;
+        case VrmlData_UnrecoverableError:
+          aStr = "UnrecoverableError";
+          break;
+        case VrmlData_GeneralError:
+          aStr = "GeneralError";
+          break;
+        case VrmlData_EndOfFile:
+          aStr = "EndOfFile";
+          break;
+        case VrmlData_NotVrmlFile:
+          aStr = "NotVrmlFile";
+          break;
+        case VrmlData_CannotOpenFile:
+          aStr = "CannotOpenFile";
+          break;
+        case VrmlData_VrmlFormatError:
+          aStr = "VrmlFormatError";
+          break;
+        case VrmlData_NumericInputError:
+          aStr = "NumericInputError";
+          break;
+        case VrmlData_IrrelevantNumber:
+          aStr = "IrrelevantNumber";
+          break;
+        case VrmlData_BooleanInputError:
+          aStr = "BooleanInputError";
+          break;
+        case VrmlData_StringInputError:
+          aStr = "StringInputError";
+          break;
+        case VrmlData_NodeNameUnknown:
+          aStr = "NodeNameUnknown";
+          break;
+        case VrmlData_NonPositiveSize:
+          aStr = "NonPositiveSize";
+          break;
+        case VrmlData_ReadUnknownNode:
+          aStr = "ReadUnknownNode";
+          break;
+        case VrmlData_NonSupportedFeature:
+          aStr = "NonSupportedFeature";
+          break;
+        case VrmlData_OutputStreamUndefined:
+          aStr = "OutputStreamUndefined";
+          break;
+        case VrmlData_NotImplemented:
+          aStr = "NotImplemented";
+          break;
+        default:
+          break;
       }
-      if (aStr) {
-        di << " ++ VRML Error: " << aStr << " in line "
-          << aScene.GetLineError() << "\n";
+      if (aStr)
+      {
+        di << " ++ VRML Error: " << aStr << " in line " << aScene.GetLineError() << "\n";
       }
-      else {
-        DBRep::Set(argv[1],aShape);
+      else
+      {
+        DBRep::Set(argv[1], aShape);
       }
     }
-    else {
+    else
+    {
       di << "cannot open file\n";
     }
-
 
     //-----------------------------------------------------------
   }
@@ -325,13 +363,12 @@ static Standard_Integer loadvrml
 }
 
 //=============================================================================
-//function : writevrml
-//purpose  :
+// function : writevrml
+// purpose  :
 //=============================================================================
-static Standard_Integer writevrml
-(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer writevrml(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3 || argc > 5) 
+  if (argc < 3 || argc > 5)
   {
     di << "wrong number of parameters\n";
     return 0;
@@ -341,7 +378,7 @@ static Standard_Integer writevrml
 
   // Get the optional parameters
   Standard_Integer aVersion = 2;
-  Standard_Integer aType = 1;
+  Standard_Integer aType    = 1;
   if (argc >= 4)
   {
     aVersion = Draw::Atoi(argv[3]);
@@ -352,16 +389,22 @@ static Standard_Integer writevrml
   // Bound parameters
   aVersion = Max(1, aVersion);
   aVersion = Min(2, aVersion);
-  aType = Max(0, aType);
-  aType = Min(2, aType);
+  aType    = Max(0, aType);
+  aType    = Min(2, aType);
 
   VrmlAPI_Writer writer;
 
   switch (aType)
   {
-  case 0: writer.SetRepresentation(VrmlAPI_ShadedRepresentation); break;
-  case 1: writer.SetRepresentation(VrmlAPI_WireFrameRepresentation); break;
-  case 2: writer.SetRepresentation(VrmlAPI_BothRepresentation); break;
+    case 0:
+      writer.SetRepresentation(VrmlAPI_ShadedRepresentation);
+      break;
+    case 1:
+      writer.SetRepresentation(VrmlAPI_WireFrameRepresentation);
+      break;
+    case 2:
+      writer.SetRepresentation(VrmlAPI_BothRepresentation);
+      break;
   }
 
   if (!writer.Write(aShape, argv[2], aVersion))
@@ -373,8 +416,8 @@ static Standard_Integer writevrml
 }
 
 //=============================================================================
-//function : Factory
-//purpose  :
+// function : Factory
+// purpose  :
 //=============================================================================
 void XSDRAWVRML::Factory(Draw_Interpretor& theDI)
 {
@@ -386,22 +429,35 @@ void XSDRAWVRML::Factory(Draw_Interpretor& theDI)
   anInitActor = Standard_True;
 
   Standard_CString aGroup = "XDE translation commands";
-  theDI.Add("ReadVrml",
-            "ReadVrml docName filePath [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
-            "\n\t\t:                   [-systemCoordSys {Zup|Yup}] [-noCreateDoc] [-fillIncomplete {ON|OFF}]"
-            "\n\t\t: Read Vrml file into XDE document."
-            "\n\t\t:   -fileCoordSys   coordinate system defined by Vrml file; Yup when not specified."
-            "\n\t\t:   -fileUnit       length unit of Vrml file content."
-            "\n\t\t:   -systemCoordSys result coordinate system; Zup when not specified."
-            "\n\t\t:   -noCreateDoc    read into existing XDE document."
-            "\n\t\t:   -fillIncomplete fill the document with partially retrieved data even if reader has failed with "
-            "error; true when not specified",
-            __FILE__, ReadVrml, aGroup);
+  theDI.Add(
+    "ReadVrml",
+    "ReadVrml docName filePath [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
+    "\n\t\t:                   [-systemCoordSys {Zup|Yup}] [-noCreateDoc] [-fillIncomplete "
+    "{ON|OFF}]"
+    "\n\t\t: Read Vrml file into XDE document."
+    "\n\t\t:   -fileCoordSys   coordinate system defined by Vrml file; Yup when not specified."
+    "\n\t\t:   -fileUnit       length unit of Vrml file content."
+    "\n\t\t:   -systemCoordSys result coordinate system; Zup when not specified."
+    "\n\t\t:   -noCreateDoc    read into existing XDE document."
+    "\n\t\t:   -fillIncomplete fill the document with partially retrieved data even if reader has "
+    "failed with "
+    "error; true when not specified",
+    __FILE__,
+    ReadVrml,
+    aGroup);
   theDI.Add("WriteVrml",
-            "WriteVrml Doc filename [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 0 by default]",
-            __FILE__, WriteVrml, aGroup);
+            "WriteVrml Doc filename [version VRML#1.0/VRML#2.0 (1/2): 2 by default] "
+            "[representation shaded/wireframe/both (0/1/2): 0 by default]",
+            __FILE__,
+            WriteVrml,
+            aGroup);
   theDI.Add("loadvrml", "shape file", __FILE__, loadvrml, aGroup);
-  theDI.Add("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]", __FILE__, writevrml, aGroup);
+  theDI.Add("writevrml",
+            "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation "
+            "shaded/wireframe/both (0/1/2): 1 by default]",
+            __FILE__,
+            writevrml,
+            aGroup);
 
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);

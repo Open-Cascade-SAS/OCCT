@@ -27,49 +27,31 @@ class TCollection_HAsciiString;
 class StepShape_Edge;
 DEFINE_STANDARD_HANDLE(StepShape_Edge, StepShape_TopologicalRepresentationItem)
 
-
 class StepShape_Edge : public StepShape_TopologicalRepresentationItem
 {
 
 public:
-
-  
   //! Returns a Edge
   Standard_EXPORT StepShape_Edge();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd);
-  
-  Standard_EXPORT virtual void SetEdgeStart (const Handle(StepShape_Vertex)& aEdgeStart);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_Vertex)&         aEdgeStart,
+                            const Handle(StepShape_Vertex)&         aEdgeEnd);
+
+  Standard_EXPORT virtual void SetEdgeStart(const Handle(StepShape_Vertex)& aEdgeStart);
+
   Standard_EXPORT virtual Handle(StepShape_Vertex) EdgeStart() const;
-  
-  Standard_EXPORT virtual void SetEdgeEnd (const Handle(StepShape_Vertex)& aEdgeEnd);
-  
+
+  Standard_EXPORT virtual void SetEdgeEnd(const Handle(StepShape_Vertex)& aEdgeEnd);
+
   Standard_EXPORT virtual Handle(StepShape_Vertex) EdgeEnd() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_Edge,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_Edge, StepShape_TopologicalRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_Vertex) edgeStart;
   Handle(StepShape_Vertex) edgeEnd;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_Edge_HeaderFile

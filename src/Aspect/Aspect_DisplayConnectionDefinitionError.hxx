@@ -25,8 +25,9 @@ class Aspect_DisplayConnectionDefinitionError;
 DEFINE_STANDARD_HANDLE(Aspect_DisplayConnectionDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Aspect_DisplayConnectionDefinitionError
-  #define Aspect_DisplayConnectionDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Aspect_DisplayConnectionDefinitionError(MESSAGE);
+  #define Aspect_DisplayConnectionDefinitionError_Raise_if(CONDITION, MESSAGE)                     \
+    if (CONDITION)                                                                                 \
+      throw Aspect_DisplayConnectionDefinitionError(MESSAGE);
 #else
   #define Aspect_DisplayConnectionDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

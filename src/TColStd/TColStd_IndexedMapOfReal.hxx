@@ -19,5 +19,4 @@
 
 typedef NCollection_IndexedMap<Standard_Real> TColStd_IndexedMapOfReal;
 
-
 #endif

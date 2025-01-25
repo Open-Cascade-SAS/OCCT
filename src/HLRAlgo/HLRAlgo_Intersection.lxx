@@ -15,113 +15,141 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::Orientation (const TopAbs_Orientation Ori)
-{ myOrien = Ori; }
+inline void HLRAlgo_Intersection::Orientation(const TopAbs_Orientation Ori)
+{
+  myOrien = Ori;
+}
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
 inline TopAbs_Orientation HLRAlgo_Intersection::Orientation() const
-{ return myOrien; }
+{
+  return myOrien;
+}
 
 //=======================================================================
-//function : Level
-//purpose  : 
+// function : Level
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::Level (const Standard_Integer Lev)
-{ myLevel = Lev; }
+inline void HLRAlgo_Intersection::Level(const Standard_Integer Lev)
+{
+  myLevel = Lev;
+}
 
 //=======================================================================
-//function : Level
-//purpose  : 
+// function : Level
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::Level () const
-{ return myLevel; }
+inline Standard_Integer HLRAlgo_Intersection::Level() const
+{
+  return myLevel;
+}
 
 //=======================================================================
-//function : SegIndex
-//purpose  : 
+// function : SegIndex
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::SegIndex (const Standard_Integer SegInd)
-{ mySegIndex = SegInd; }
+inline void HLRAlgo_Intersection::SegIndex(const Standard_Integer SegInd)
+{
+  mySegIndex = SegInd;
+}
 
 //=======================================================================
-//function : SegIndex
-//purpose  : 
+// function : SegIndex
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::SegIndex () const
-{ return mySegIndex; }
+inline Standard_Integer HLRAlgo_Intersection::SegIndex() const
+{
+  return mySegIndex;
+}
 
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::Index (const Standard_Integer Ind)
-{ myIndex = Ind; }
+inline void HLRAlgo_Intersection::Index(const Standard_Integer Ind)
+{
+  myIndex = Ind;
+}
 
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::Index () const
-{ return myIndex; }
+inline Standard_Integer HLRAlgo_Intersection::Index() const
+{
+  return myIndex;
+}
 
 //=======================================================================
-//function : Parameter
-//purpose  : 
+// function : Parameter
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::Parameter (const Standard_Real P)
-{ myParam = P; }
+inline void HLRAlgo_Intersection::Parameter(const Standard_Real P)
+{
+  myParam = P;
+}
 
 //=======================================================================
-//function : Parameter
-//purpose  : 
+// function : Parameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real HLRAlgo_Intersection::Parameter () const
-{ return myParam; }
+inline Standard_Real HLRAlgo_Intersection::Parameter() const
+{
+  return myParam;
+}
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::Tolerance (const Standard_ShortReal T)
-{ myToler = T; }
+inline void HLRAlgo_Intersection::Tolerance(const Standard_ShortReal T)
+{
+  myToler = T;
+}
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_ShortReal HLRAlgo_Intersection::Tolerance () const
-{ return myToler; }
+inline Standard_ShortReal HLRAlgo_Intersection::Tolerance() const
+{
+  return myToler;
+}
 
 //=======================================================================
-//function : State
-//purpose  : 
+// function : State
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Intersection::State (const TopAbs_State St)
-{ myState = St; }
+inline void HLRAlgo_Intersection::State(const TopAbs_State St)
+{
+  myState = St;
+}
 
 //=======================================================================
-//function : State
-//purpose  : 
+// function : State
+// purpose  :
 //=======================================================================
 
 inline TopAbs_State HLRAlgo_Intersection::State() const
-{ return myState; }
+{
+  return myState;
+}

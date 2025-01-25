@@ -24,17 +24,15 @@
 class StepData_Factors
 {
 public:
-
   DEFINE_STANDARD_ALLOC
- 
+
   //! Constructor
   Standard_EXPORT StepData_Factors();
 
   //! Initializes the 3 factors for the conversion of units
-  Standard_EXPORT void InitializeFactors(
-    const Standard_Real theLengthFactor,
-    const Standard_Real thePlaneAngleFactor,
-    const Standard_Real theSolidAngleFactor);
+  Standard_EXPORT void InitializeFactors(const Standard_Real theLengthFactor,
+                                         const Standard_Real thePlaneAngleFactor,
+                                         const Standard_Real theSolidAngleFactor);
 
   //! Sets length unit for current transfer process
   Standard_EXPORT void SetCascadeUnit(const Standard_Real theUnit);
@@ -63,7 +61,6 @@ public:
   Standard_EXPORT Standard_Real FactorDegreeRadian() const;
 
 private:
-
   Standard_Real myLengthFactor;
   Standard_Real myPlaneAngleFactor;
   Standard_Real mySolidAngleFactor;

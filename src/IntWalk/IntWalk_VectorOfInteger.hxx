@@ -21,7 +21,7 @@
 
 // Defines a dynamic vector of integer.
 
-typedef std::vector<Standard_Integer, NCollection_OccAllocator<Standard_Integer> >
-    IntWalk_VectorOfInteger;
+typedef std::vector<Standard_Integer, NCollection_OccAllocator<Standard_Integer>>
+  IntWalk_VectorOfInteger;
 
 #endif

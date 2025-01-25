@@ -26,7 +26,6 @@
 class gp_Ax2;
 class gp_Pnt;
 
-
 //! This class implements the following algorithms used to
 //! create Hyperbola from gp.
 //! * Create an Hyperbola from its center, and two points:
@@ -64,13 +63,10 @@ class gp_Pnt;
 //! Warnings :
 //! The major radius (on the major axis) can be lower than the
 //! minor radius (on the minor axis).
-class gce_MakeHypr  : public gce_Root
+class gce_MakeHypr : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! A2 is the local coordinate system of the hyperbola.
   //! In the local coordinates system A2 the equation of the
@@ -82,8 +78,10 @@ public:
   //! MinorRadius.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 and
   //! "InvertRadius" if MinorRadius > MajorRadius.
-  Standard_EXPORT gce_MakeHypr(const gp_Ax2& A2, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
+  Standard_EXPORT gce_MakeHypr(const gp_Ax2&       A2,
+                               const Standard_Real MajorRadius,
+                               const Standard_Real MinorRadius);
+
   //! Constructs a hyperbola
   //! -   centered on the point Center, where:
   //! -   the plane of the hyperbola is defined by Center, S1 and S2,
@@ -100,36 +98,17 @@ public:
   //! -   MajorRadius is less than MinorRadius; or
   //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
   Standard_EXPORT gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
-  
+
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const gp_Hypr& Value() const;
-  
+
   Standard_EXPORT const gp_Hypr& Operator() const;
-Standard_EXPORT operator gp_Hypr() const;
-
-
-
+  Standard_EXPORT                operator gp_Hypr() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Hypr TheHypr;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeHypr_HeaderFile

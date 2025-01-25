@@ -26,81 +26,81 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <V3d_View.hxx>
 
-
 #define MEMORY_BLOCK_SIZE 512 * 7
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_RubberBand, AIS_InteractiveObject)
+
 //=======================================================================
-//function : Constructor
-//purpose  :
+// function : Constructor
+// purpose  :
 //=======================================================================
 AIS_RubberBand::AIS_RubberBand()
-: myIsPolygonClosed(Standard_True)
+    : myIsPolygonClosed(Standard_True)
 {
-  myDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0));
-  myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
-  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
-  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend);
-  myDrawer->ShadingAspect()->SetTransparency (1.0);
-  myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
+  myDrawer->SetLineAspect(new Prs3d_LineAspect(Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0));
+  myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial(Graphic3d_NameOfMaterial_Plastified);
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(Aspect_IS_EMPTY);
+  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode(Graphic3d_AlphaMode_Blend);
+  myDrawer->ShadingAspect()->SetTransparency(1.0);
+  myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
 
-  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
-  SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  SetTransformPersistence(new Graphic3d_TransformPers(Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
+  SetZLayer(Graphic3d_ZLayerId_TopOSD);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  :
+// function : Constructor
+// purpose  :
 //=======================================================================
-AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
-                                const Aspect_TypeOfLine theLineType,
-                                const Standard_Real theWidth,
-                                const Standard_Boolean theIsPolygonClosed)
-: myIsPolygonClosed(theIsPolygonClosed)
+AIS_RubberBand::AIS_RubberBand(const Quantity_Color&   theLineColor,
+                               const Aspect_TypeOfLine theLineType,
+                               const Standard_Real     theWidth,
+                               const Standard_Boolean  theIsPolygonClosed)
+    : myIsPolygonClosed(theIsPolygonClosed)
 {
-  myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theWidth));
-  myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
-  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
-  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend);
-  myDrawer->ShadingAspect()->SetTransparency (1.0);
-  myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
+  myDrawer->SetLineAspect(new Prs3d_LineAspect(theLineColor, theLineType, theWidth));
+  myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial(Graphic3d_NameOfMaterial_Plastified);
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(Aspect_IS_EMPTY);
+  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode(Graphic3d_AlphaMode_Blend);
+  myDrawer->ShadingAspect()->SetTransparency(1.0);
+  myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
 
-  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
-  SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  SetTransformPersistence(new Graphic3d_TransformPers(Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
+  SetZLayer(Graphic3d_ZLayerId_TopOSD);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  :
+// function : Constructor
+// purpose  :
 //=======================================================================
-AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
-                                const Aspect_TypeOfLine theLineType,
-                                const Quantity_Color theFillColor,
-                                const Standard_Real theTransparency,
-                                const Standard_Real theLineWidth,
-                                const Standard_Boolean theIsPolygonClosed)
-: myIsPolygonClosed (theIsPolygonClosed)
+AIS_RubberBand::AIS_RubberBand(const Quantity_Color&   theLineColor,
+                               const Aspect_TypeOfLine theLineType,
+                               const Quantity_Color    theFillColor,
+                               const Standard_Real     theTransparency,
+                               const Standard_Real     theLineWidth,
+                               const Standard_Boolean  theIsPolygonClosed)
+    : myIsPolygonClosed(theIsPolygonClosed)
 {
-  myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theLineWidth));
-  myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
-  myDrawer->ShadingAspect()->SetColor (theFillColor);
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
-  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
-  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend);
-  myDrawer->ShadingAspect()->SetTransparency (theTransparency);
+  myDrawer->SetLineAspect(new Prs3d_LineAspect(theLineColor, theLineType, theLineWidth));
+  myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial(Graphic3d_NameOfMaterial_Plastified);
+  myDrawer->ShadingAspect()->SetColor(theFillColor);
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
+  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode(Graphic3d_AlphaMode_Blend);
+  myDrawer->ShadingAspect()->SetTransparency(theTransparency);
 
-  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
-  SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  SetTransformPersistence(new Graphic3d_TransformPers(Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
+  SetZLayer(Graphic3d_ZLayerId_TopOSD);
 }
 
 //=======================================================================
-//function : Destructor
-//purpose  :
+// function : Destructor
+// purpose  :
 //=======================================================================
 AIS_RubberBand::~AIS_RubberBand()
 {
@@ -110,40 +110,42 @@ AIS_RubberBand::~AIS_RubberBand()
 }
 
 //=======================================================================
-//function : SetRectangle
-//purpose  :
+// function : SetRectangle
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetRectangle (const Standard_Integer theMinX, const Standard_Integer theMinY,
-                                   const Standard_Integer theMaxX, const Standard_Integer theMaxY)
+void AIS_RubberBand::SetRectangle(const Standard_Integer theMinX,
+                                  const Standard_Integer theMinY,
+                                  const Standard_Integer theMaxX,
+                                  const Standard_Integer theMaxY)
 {
   myPoints.Clear();
-  myPoints.Append (Graphic3d_Vec2i (theMinX, theMinY));
-  myPoints.Append (Graphic3d_Vec2i (theMinX, theMaxY));
-  myPoints.Append (Graphic3d_Vec2i (theMaxX, theMaxY));
-  myPoints.Append (Graphic3d_Vec2i (theMaxX, theMinY));
+  myPoints.Append(Graphic3d_Vec2i(theMinX, theMinY));
+  myPoints.Append(Graphic3d_Vec2i(theMinX, theMaxY));
+  myPoints.Append(Graphic3d_Vec2i(theMaxX, theMaxY));
+  myPoints.Append(Graphic3d_Vec2i(theMaxX, theMinY));
 }
 
 //=======================================================================
-//function : AddPoint
-//purpose  :
+// function : AddPoint
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::AddPoint (const Graphic3d_Vec2i& thePoint)
+void AIS_RubberBand::AddPoint(const Graphic3d_Vec2i& thePoint)
 {
-  myPoints.Append (thePoint);
+  myPoints.Append(thePoint);
 }
 
 //=======================================================================
-//function : AddPoint
-//purpose  :
+// function : AddPoint
+// purpose  :
 //=======================================================================
 void AIS_RubberBand::RemoveLastPoint()
 {
-  myPoints.Remove (myPoints.Length());
+  myPoints.Remove(myPoints.Length());
 }
 
 //=======================================================================
-//function : GetPoints
-//purpose  :
+// function : GetPoints
+// purpose  :
 //=======================================================================
 const NCollection_Sequence<Graphic3d_Vec2i>& AIS_RubberBand::Points() const
 {
@@ -151,8 +153,8 @@ const NCollection_Sequence<Graphic3d_Vec2i>& AIS_RubberBand::Points() const
 }
 
 //=======================================================================
-//function : LineColor
-//purpose  :
+// function : LineColor
+// purpose  :
 //=======================================================================
 Quantity_Color AIS_RubberBand::LineColor() const
 {
@@ -160,17 +162,17 @@ Quantity_Color AIS_RubberBand::LineColor() const
 }
 
 //=======================================================================
-//function : SetLineColor
-//purpose  :
+// function : SetLineColor
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetLineColor (const Quantity_Color& theColor)
+void AIS_RubberBand::SetLineColor(const Quantity_Color& theColor)
 {
-  myDrawer->LineAspect()->SetColor (theColor);
+  myDrawer->LineAspect()->SetColor(theColor);
 }
 
 //=======================================================================
-//function : FillColor
-//purpose  :
+// function : FillColor
+// purpose  :
 //=======================================================================
 Quantity_Color AIS_RubberBand::FillColor() const
 {
@@ -178,26 +180,26 @@ Quantity_Color AIS_RubberBand::FillColor() const
 }
 
 //=======================================================================
-//function : SetFillColor
-//purpose  :
+// function : SetFillColor
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetFillColor (const Quantity_Color& theColor)
+void AIS_RubberBand::SetFillColor(const Quantity_Color& theColor)
 {
-  myDrawer->ShadingAspect()->SetColor (theColor);
+  myDrawer->ShadingAspect()->SetColor(theColor);
 }
 
 //=======================================================================
-//function : SetLineWidth
-//purpose  :
+// function : SetLineWidth
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetLineWidth (const Standard_Real theWidth) const
+void AIS_RubberBand::SetLineWidth(const Standard_Real theWidth) const
 {
-  myDrawer->LineAspect()->SetWidth (theWidth);
+  myDrawer->LineAspect()->SetWidth(theWidth);
 }
 
 //=======================================================================
-//function : SetLineWidth
-//purpose  :
+// function : SetLineWidth
+// purpose  :
 //=======================================================================
 Standard_Real AIS_RubberBand::LineWidth() const
 {
@@ -205,17 +207,17 @@ Standard_Real AIS_RubberBand::LineWidth() const
 }
 
 //=======================================================================
-//function : SetLineType
-//purpose  :
+// function : SetLineType
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetLineType (const Aspect_TypeOfLine theType)
+void AIS_RubberBand::SetLineType(const Aspect_TypeOfLine theType)
 {
-  myDrawer->LineAspect()->SetTypeOfLine (theType);
+  myDrawer->LineAspect()->SetTypeOfLine(theType);
 }
 
 //=======================================================================
-//function : LineType
-//purpose  :
+// function : LineType
+// purpose  :
 //=======================================================================
 Aspect_TypeOfLine AIS_RubberBand::LineType() const
 {
@@ -223,17 +225,17 @@ Aspect_TypeOfLine AIS_RubberBand::LineType() const
 }
 
 //=======================================================================
-//function : SetFillTransparency
-//purpose  :
+// function : SetFillTransparency
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetFillTransparency (const Standard_Real theValue) const
+void AIS_RubberBand::SetFillTransparency(const Standard_Real theValue) const
 {
-  myDrawer->ShadingAspect()->SetTransparency (theValue);
+  myDrawer->ShadingAspect()->SetTransparency(theValue);
 }
 
 //=======================================================================
-//function : SetFillTransparency
-//purpose  :
+// function : SetFillTransparency
+// purpose  :
 //=======================================================================
 Standard_Real AIS_RubberBand::FillTransparency() const
 {
@@ -241,28 +243,29 @@ Standard_Real AIS_RubberBand::FillTransparency() const
 }
 
 //=======================================================================
-//function : SetFilling
-//purpose  :
+// function : SetFilling
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetFilling (const Standard_Boolean theIsFilling)
+void AIS_RubberBand::SetFilling(const Standard_Boolean theIsFilling)
 {
-  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (theIsFilling ? Aspect_IS_SOLID : Aspect_IS_EMPTY);
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(theIsFilling ? Aspect_IS_SOLID
+                                                                     : Aspect_IS_EMPTY);
 }
 
 //=======================================================================
-//function : SetFilling
-//purpose  :
+// function : SetFilling
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::SetFilling (const Quantity_Color theColor, const Standard_Real theTransparency)
+void AIS_RubberBand::SetFilling(const Quantity_Color theColor, const Standard_Real theTransparency)
 {
-  SetFilling (Standard_True);
-  SetFillTransparency (theTransparency);
-  SetFillColor (theColor);
+  SetFilling(Standard_True);
+  SetFillTransparency(theTransparency);
+  SetFillColor(theColor);
 }
 
 //=======================================================================
-//function : IsFilling
-//purpose  :
+// function : IsFilling
+// purpose  :
 //=======================================================================
 Standard_Boolean AIS_RubberBand::IsFilling() const
 {
@@ -271,8 +274,8 @@ Standard_Boolean AIS_RubberBand::IsFilling() const
 }
 
 //=======================================================================
-//function : IsPolygonClosed
-//purpose  :
+// function : IsPolygonClosed
+// purpose  :
 //=======================================================================
 Standard_Boolean AIS_RubberBand::IsPolygonClosed() const
 {
@@ -280,8 +283,8 @@ Standard_Boolean AIS_RubberBand::IsPolygonClosed() const
 }
 
 //=======================================================================
-//function : SetPolygonClosed
-//purpose  :
+// function : SetPolygonClosed
+// purpose  :
 //=======================================================================
 void AIS_RubberBand::SetPolygonClosed(Standard_Boolean theIsPolygonClosed)
 {
@@ -289,74 +292,71 @@ void AIS_RubberBand::SetPolygonClosed(Standard_Boolean theIsPolygonClosed)
 }
 
 //=======================================================================
-//function : fillTriangles
-//purpose  :
+// function : fillTriangles
+// purpose  :
 //=======================================================================
 Standard_Boolean AIS_RubberBand::fillTriangles()
 {
-  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator (MEMORY_BLOCK_SIZE);
-  Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure = new BRepMesh_DataStructureOfDelaun(anAllocator);
-  Standard_Integer aPtsLower = myPoints.Lower();
-  Standard_Integer aPtsUpper = myPoints.Upper();
-  IMeshData::VectorOfInteger anIndexes (myPoints.Length(), anAllocator);
+  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
+  Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure =
+    new BRepMesh_DataStructureOfDelaun(anAllocator);
+  Standard_Integer           aPtsLower = myPoints.Lower();
+  Standard_Integer           aPtsUpper = myPoints.Upper();
+  IMeshData::VectorOfInteger anIndexes(myPoints.Length(), anAllocator);
   for (Standard_Integer aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
-    gp_XY aP ((Standard_Real)myPoints.Value (aPtIdx).x(),
-              (Standard_Real)myPoints.Value (aPtIdx).y());
-    BRepMesh_Vertex aVertex (aP, aPtIdx, BRepMesh_Frontier);
-    anIndexes.Append (aMeshStructure->AddNode (aVertex));
+    gp_XY aP((Standard_Real)myPoints.Value(aPtIdx).x(), (Standard_Real)myPoints.Value(aPtIdx).y());
+    BRepMesh_Vertex aVertex(aP, aPtIdx, BRepMesh_Frontier);
+    anIndexes.Append(aMeshStructure->AddNode(aVertex));
   }
 
   Standard_Real aPtSum = 0;
   for (Standard_Integer aIdx = aPtsLower; aIdx <= aPtsUpper; ++aIdx)
   {
     Standard_Integer aNextIdx = (aIdx % myPoints.Length()) + 1;
-    aPtSum += (Standard_Real)(myPoints.Value (aNextIdx).x() - myPoints.Value (aIdx).x())
-             * (Standard_Real)(myPoints.Value (aNextIdx).y() + myPoints.Value (aIdx).y());
+    aPtSum += (Standard_Real)(myPoints.Value(aNextIdx).x() - myPoints.Value(aIdx).x())
+              * (Standard_Real)(myPoints.Value(aNextIdx).y() + myPoints.Value(aIdx).y());
   }
   Standard_Boolean isClockwiseOrdered = aPtSum < 0;
 
   for (Standard_Integer aIdx = 0; aIdx < anIndexes.Length(); ++aIdx)
   {
-    Standard_Integer aPtIdx = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
+    Standard_Integer aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
     Standard_Integer aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
-    BRepMesh_Edge anEdge (anIndexes.Value (aPtIdx),
-                          anIndexes.Value (aNextPtIdx),
-                          BRepMesh_Frontier);
-    aMeshStructure->AddLink (anEdge);
+    BRepMesh_Edge anEdge(anIndexes.Value(aPtIdx), anIndexes.Value(aNextPtIdx), BRepMesh_Frontier);
+    aMeshStructure->AddLink(anEdge);
   }
 
-  BRepMesh_Delaun aTriangulation (aMeshStructure, anIndexes);
+  BRepMesh_Delaun                aTriangulation(aMeshStructure, anIndexes);
   const IMeshData::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
   if (aTriangles.Extent() < 1)
     return Standard_False;
 
-
   Standard_Boolean toFill = Standard_False;
   if (myTriangles.IsNull() || myTriangles->VertexNumber() != aTriangles.Extent() * 3)
   {
-    toFill = Standard_True;
-    myTriangles = new Graphic3d_ArrayOfTriangles (aTriangles.Extent() * 3, 0, Standard_True);
+    toFill      = Standard_True;
+    myTriangles = new Graphic3d_ArrayOfTriangles(aTriangles.Extent() * 3, 0, Standard_True);
   }
 
-  Standard_Integer aVertexIndex = 1;
-  IMeshData::IteratorOfMapOfInteger aTriangleIt (aTriangles);
+  Standard_Integer                  aVertexIndex = 1;
+  IMeshData::IteratorOfMapOfInteger aTriangleIt(aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
   {
-    const Standard_Integer aTriangleId = aTriangleIt.Key();
-    const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement (aTriangleId);
+    const Standard_Integer   aTriangleId      = aTriangleIt.Key();
+    const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
       continue;
 
     Standard_Integer aTriangleVerts[3];
-    aMeshStructure->ElementNodes (aCurrentTriangle, aTriangleVerts);
+    aMeshStructure->ElementNodes(aCurrentTriangle, aTriangleVerts);
 
     gp_Pnt2d aPts[3];
     for (Standard_Integer aVertIdx = 0; aVertIdx < 3; ++aVertIdx)
     {
-      const BRepMesh_Vertex& aVertex = aMeshStructure->GetNode (aTriangleVerts[aVertIdx]);
-      aPts[aVertIdx] = aVertex.Coord();
+      const BRepMesh_Vertex& aVertex = aMeshStructure->GetNode(aTriangleVerts[aVertIdx]);
+      aPts[aVertIdx]                 = aVertex.Coord();
     }
 
     if (toFill)
@@ -364,15 +364,18 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
       gp_Dir aNorm = gp::DZ();
       for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
       {
-        myTriangles->AddVertex (aPts[anIt].X(), aPts[anIt].Y(), 0.0,
-                                aNorm.X(), aNorm.Y(), aNorm.Z());
+        myTriangles
+          ->AddVertex(aPts[anIt].X(), aPts[anIt].Y(), 0.0, aNorm.X(), aNorm.Y(), aNorm.Z());
       }
     }
     else
     {
       for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
       {
-        myTriangles->SetVertice (aVertexIndex++, (Standard_ShortReal)aPts[anIt].X(), (Standard_ShortReal)aPts[anIt].Y(), 0.0f);
+        myTriangles->SetVertice(aVertexIndex++,
+                                (Standard_ShortReal)aPts[anIt].X(),
+                                (Standard_ShortReal)aPts[anIt].Y(),
+                                0.0f);
       }
     }
   }
@@ -384,12 +387,12 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
 }
 
 //=======================================================================
-//function : Compute
-//purpose  :
+// function : Compute
+// purpose  :
 //=======================================================================
-void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager)& ,
-                              const Handle(Prs3d_Presentation)& thePresentation,
-                              const Standard_Integer theMode)
+void AIS_RubberBand::Compute(const Handle(PrsMgr_PresentationManager)&,
+                             const Handle(Prs3d_Presentation)& thePresentation,
+                             const Standard_Integer            theMode)
 {
   if (theMode != 0)
   {
@@ -400,43 +403,49 @@ void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager)& ,
   if (IsFilling() && fillTriangles())
   {
     Handle(Graphic3d_Group) aGroup1 = thePresentation->NewGroup();
-    aGroup1->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
-    aGroup1->AddPrimitiveArray (myTriangles);
+    aGroup1->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
+    aGroup1->AddPrimitiveArray(myTriangles);
   }
 
   // Draw frame
-  if (myBorders.IsNull() || myBorders->VertexNumber() != myPoints.Length() + (myIsPolygonClosed ? 1 : 0))
+  if (myBorders.IsNull()
+      || myBorders->VertexNumber() != myPoints.Length() + (myIsPolygonClosed ? 1 : 0))
   {
     myBorders = new Graphic3d_ArrayOfPolylines(myPoints.Length() + (myIsPolygonClosed ? 1 : 0));
-     for (Standard_Integer anIt = 1; anIt <= myPoints.Length(); anIt++)
-     {
-       myBorders->AddVertex ((Standard_Real)myPoints.Value (anIt).x(),
-                             (Standard_Real)myPoints.Value (anIt).y(), 0.0);
-     }
+    for (Standard_Integer anIt = 1; anIt <= myPoints.Length(); anIt++)
+    {
+      myBorders->AddVertex((Standard_Real)myPoints.Value(anIt).x(),
+                           (Standard_Real)myPoints.Value(anIt).y(),
+                           0.0);
+    }
 
-     if (myIsPolygonClosed)
-     {
-       myBorders->AddVertex((Standard_Real)myPoints.Value(1).x(),
-                            (Standard_Real)myPoints.Value(1).y(), 0.0);
-     }
-
+    if (myIsPolygonClosed)
+    {
+      myBorders->AddVertex((Standard_Real)myPoints.Value(1).x(),
+                           (Standard_Real)myPoints.Value(1).y(),
+                           0.0);
+    }
   }
   else
   {
     for (Standard_Integer anIt = 1; anIt <= myPoints.Length(); anIt++)
     {
-          myBorders->SetVertice (anIt, (Standard_ShortReal)myPoints.Value (anIt).x(),
-                                 (Standard_ShortReal)myPoints.Value (anIt).y(), 0.0f);
+      myBorders->SetVertice(anIt,
+                            (Standard_ShortReal)myPoints.Value(anIt).x(),
+                            (Standard_ShortReal)myPoints.Value(anIt).y(),
+                            0.0f);
     }
 
     if (myIsPolygonClosed)
     {
-      myBorders->SetVertice(myPoints.Length() + 1, (Standard_ShortReal)myPoints.Value(1).x(),
-                           (Standard_ShortReal)myPoints.Value(1).y(), 0.0f);
+      myBorders->SetVertice(myPoints.Length() + 1,
+                            (Standard_ShortReal)myPoints.Value(1).x(),
+                            (Standard_ShortReal)myPoints.Value(1).y(),
+                            0.0f);
     }
   }
 
   Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
-  aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  aGroup->AddPrimitiveArray (myBorders);
+  aGroup->SetGroupPrimitivesAspect(myDrawer->LineAspect()->Aspect());
+  aGroup->AddPrimitiveArray(myBorders);
 }

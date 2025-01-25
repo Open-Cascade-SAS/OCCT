@@ -19,5 +19,4 @@
 
 typedef BlendFunc_ConstThroatWithPenetration BRepBlend_ConstThroatWithPenetration;
 
-
 #endif // _BRepBlend_ConstThroatWithPenetration_HeaderFile

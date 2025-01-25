@@ -17,28 +17,31 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <IntSurf_Transition.hxx>
 
-BRepBlend_PointOnRst::BRepBlend_PointOnRst ()
-: prm(0.0)
+BRepBlend_PointOnRst::BRepBlend_PointOnRst()
+    : prm(0.0)
 {
 }
 
-
 BRepBlend_PointOnRst::BRepBlend_PointOnRst(const Handle(Adaptor2d_Curve2d)& A,
-				   const Standard_Real Param,
-				   const IntSurf_Transition& TLine,
-				   const IntSurf_Transition& TArc):
+                                           const Standard_Real              Param,
+                                           const IntSurf_Transition&        TLine,
+                                           const IntSurf_Transition&        TArc)
+    :
 
-       arc(A),traline(TLine),traarc(TArc),prm(Param)
-{}
+      arc(A),
+      traline(TLine),
+      traarc(TArc),
+      prm(Param)
+{
+}
 
 void BRepBlend_PointOnRst::SetArc(const Handle(Adaptor2d_Curve2d)& A,
-			      const Standard_Real Param,
-			      const IntSurf_Transition& TLine,
-			      const IntSurf_Transition& TArc)
+                                  const Standard_Real              Param,
+                                  const IntSurf_Transition&        TLine,
+                                  const IntSurf_Transition&        TArc)
 {
   arc     = A;
   prm     = Param;
   traline = TLine;
   traarc  = TArc;
 }
-

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Hatch_Line> Hatch_SequenceOfLine;
 
-
 #endif

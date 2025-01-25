@@ -11,29 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_Vector.hxx>
 #include <StepGeom_VectorOrDirection.hxx>
 
-StepGeom_VectorOrDirection::StepGeom_VectorOrDirection () {  }
+StepGeom_VectorOrDirection::StepGeom_VectorOrDirection() {}
 
 Standard_Integer StepGeom_VectorOrDirection::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-	if (ent.IsNull()) return 0;
-	if (ent->IsKind(STANDARD_TYPE(StepGeom_Vector))) return 1;
-	if (ent->IsKind(STANDARD_TYPE(StepGeom_Direction))) return 2;
-	return 0;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_Vector)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_Direction)))
+    return 2;
+  return 0;
 }
 
-Handle(StepGeom_Vector) StepGeom_VectorOrDirection::Vector () const
+Handle(StepGeom_Vector) StepGeom_VectorOrDirection::Vector() const
 {
-	return GetCasted(StepGeom_Vector,Value());
+  return GetCasted(StepGeom_Vector, Value());
 }
 
-Handle(StepGeom_Direction) StepGeom_VectorOrDirection::Direction () const
+Handle(StepGeom_Direction) StepGeom_VectorOrDirection::Direction() const
 {
-	return GetCasted(StepGeom_Direction,Value());
+  return GetCasted(StepGeom_Direction, Value());
 }

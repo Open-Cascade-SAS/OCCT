@@ -16,9 +16,9 @@
 #include <math_Vector.hxx>
 
 inline Standard_Boolean math_Powell::IsSolutionReached(math_MultipleVarFunction&)
-{  
-  return 2.0  *  fabs(PreviousMinimum - TheMinimum) <= 
-         XTol * (fabs(PreviousMinimum) + fabs(TheMinimum) + EPSZ);
+{
+  return 2.0 * fabs(PreviousMinimum - TheMinimum)
+         <= XTol * (fabs(PreviousMinimum) + fabs(TheMinimum) + EPSZ);
 }
 
 inline Standard_Boolean math_Powell::IsDone() const
@@ -26,33 +26,32 @@ inline Standard_Boolean math_Powell::IsDone() const
   return Done;
 }
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_Powell& P) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Powell& P)
 {
   P.Dump(o);
   return o;
 }
 
-inline const math_Vector& math_Powell::Location() const{
+inline const math_Vector& math_Powell::Location() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheLocation;
 }
 
-
-inline void math_Powell::Location(math_Vector& Loc) const{
+inline void math_Powell::Location(math_Vector& Loc) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   Loc = TheLocation;
 }
 
-
-inline Standard_Real math_Powell::Minimum() const{
+inline Standard_Real math_Powell::Minimum() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheMinimum;
 }
 
-
-inline Standard_Integer math_Powell::NbIterations() const{
+inline Standard_Integer math_Powell::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Iter;
 }
-

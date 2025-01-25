@@ -23,63 +23,45 @@
 #include <Standard_Transient.hxx>
 class StepGeom_CartesianPoint;
 
-
 class StepShape_BoxDomain;
 DEFINE_STANDARD_HANDLE(StepShape_BoxDomain, Standard_Transient)
-
 
 class StepShape_BoxDomain : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a BoxDomain
   Standard_EXPORT StepShape_BoxDomain();
-  
-  Standard_EXPORT void Init (const Handle(StepGeom_CartesianPoint)& aCorner, const Standard_Real aXlength, const Standard_Real aYlength, const Standard_Real aZlength);
-  
-  Standard_EXPORT void SetCorner (const Handle(StepGeom_CartesianPoint)& aCorner);
-  
+
+  Standard_EXPORT void Init(const Handle(StepGeom_CartesianPoint)& aCorner,
+                            const Standard_Real                    aXlength,
+                            const Standard_Real                    aYlength,
+                            const Standard_Real                    aZlength);
+
+  Standard_EXPORT void SetCorner(const Handle(StepGeom_CartesianPoint)& aCorner);
+
   Standard_EXPORT Handle(StepGeom_CartesianPoint) Corner() const;
-  
-  Standard_EXPORT void SetXlength (const Standard_Real aXlength);
-  
+
+  Standard_EXPORT void SetXlength(const Standard_Real aXlength);
+
   Standard_EXPORT Standard_Real Xlength() const;
-  
-  Standard_EXPORT void SetYlength (const Standard_Real aYlength);
-  
+
+  Standard_EXPORT void SetYlength(const Standard_Real aYlength);
+
   Standard_EXPORT Standard_Real Ylength() const;
-  
-  Standard_EXPORT void SetZlength (const Standard_Real aZlength);
-  
+
+  Standard_EXPORT void SetZlength(const Standard_Real aZlength);
+
   Standard_EXPORT Standard_Real Zlength() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_BoxDomain,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BoxDomain, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_CartesianPoint) corner;
-  Standard_Real xlength;
-  Standard_Real ylength;
-  Standard_Real zlength;
-
-
+  Standard_Real                   xlength;
+  Standard_Real                   ylength;
+  Standard_Real                   zlength;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_BoxDomain_HeaderFile

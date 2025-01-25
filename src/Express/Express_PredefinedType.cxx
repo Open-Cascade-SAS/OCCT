@@ -22,9 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_PredefinedType, Express_Type)
 // purpose  :
 //=======================================================================
 
-Express_PredefinedType::Express_PredefinedType()
-{
-}
+Express_PredefinedType::Express_PredefinedType() {}
 
 //=======================================================================
 // function : IsStandard
@@ -35,4 +33,3 @@ Standard_Boolean Express_PredefinedType::IsStandard() const
 {
   return Standard_True;
 }
-

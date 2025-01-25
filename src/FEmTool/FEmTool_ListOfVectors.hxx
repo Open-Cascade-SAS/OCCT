@@ -23,7 +23,7 @@
 //! To  define  list  of  segments with  non-zero  coefficients of constraint
 
 typedef NCollection_List<Handle(TColStd_HArray1OfReal)> FEmTool_ListOfVectors;
-typedef NCollection_List<Handle(TColStd_HArray1OfReal)>::Iterator FEmTool_ListIteratorOfListOfVectors;
-
+typedef NCollection_List<Handle(TColStd_HArray1OfReal)>::Iterator
+  FEmTool_ListIteratorOfListOfVectors;
 
 #endif

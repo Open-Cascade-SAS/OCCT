@@ -20,8 +20,8 @@
 #include <Bisector_Bisec.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Bisector_Bisec> MAT2d_DataMapOfIntegerBisec;
-typedef NCollection_DataMap<Standard_Integer,Bisector_Bisec>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerBisec;
-
+typedef NCollection_DataMap<Standard_Integer, Bisector_Bisec> MAT2d_DataMapOfIntegerBisec;
+typedef NCollection_DataMap<Standard_Integer, Bisector_Bisec>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerBisec;
 
 #endif

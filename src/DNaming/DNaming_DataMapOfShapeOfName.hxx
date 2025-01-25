@@ -22,8 +22,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,TCollection_AsciiString,TopTools_ShapeMapHasher> DNaming_DataMapOfShapeOfName;
-typedef NCollection_DataMap<TopoDS_Shape,TCollection_AsciiString,TopTools_ShapeMapHasher>::Iterator DNaming_DataMapIteratorOfDataMapOfShapeOfName;
-
+typedef NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>
+  DNaming_DataMapOfShapeOfName;
+typedef NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::
+  Iterator DNaming_DataMapIteratorOfDataMapOfShapeOfName;
 
 #endif

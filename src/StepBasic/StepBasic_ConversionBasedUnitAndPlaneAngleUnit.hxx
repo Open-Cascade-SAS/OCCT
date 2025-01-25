@@ -26,48 +26,31 @@ class StepBasic_DimensionalExponents;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
-
 class StepBasic_ConversionBasedUnitAndPlaneAngleUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit, StepBasic_ConversionBasedUnit)
-
+DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,
+                       StepBasic_ConversionBasedUnit)
 
 class StepBasic_ConversionBasedUnitAndPlaneAngleUnit : public StepBasic_ConversionBasedUnit
 {
 
 public:
-
-  
   //! Returns a ConversionBasedUnitAndPlaneAngleUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndPlaneAngleUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
-  
-  Standard_EXPORT void SetPlaneAngleUnit (const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
+                            const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+
+  Standard_EXPORT void SetPlaneAngleUnit(const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit);
+
   Standard_EXPORT Handle(StepBasic_PlaneAngleUnit) PlaneAngleUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,
+                          StepBasic_ConversionBasedUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_PlaneAngleUnit) planeAngleUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ConversionBasedUnitAndPlaneAngleUnit_HeaderFile

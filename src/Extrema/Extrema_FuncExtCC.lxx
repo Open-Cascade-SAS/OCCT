@@ -12,36 +12,45 @@
 // commercial license or contractual agreement.
 
 //=============================================================================
-inline void Extrema_FuncExtCC::SetTolerance (const Standard_Real theTol)
+inline void Extrema_FuncExtCC::SetTolerance(const Standard_Real theTol)
 {
   myTol = theTol;
 }
 
 //=============================================================================
 
-inline Standard_Integer Extrema_FuncExtCC::NbVariables () const { return 2; }
+inline Standard_Integer Extrema_FuncExtCC::NbVariables() const
+{
+  return 2;
+}
 
 //=============================================================================
 
-inline Standard_Integer Extrema_FuncExtCC::NbEquations () const { return 2; }
+inline Standard_Integer Extrema_FuncExtCC::NbEquations() const
+{
+  return 2;
+}
 
 //=============================================================================
 
-inline Standard_Integer Extrema_FuncExtCC::NbExt () const { return mySqDist.Length(); }
+inline Standard_Integer Extrema_FuncExtCC::NbExt() const
+{
+  return mySqDist.Length();
+}
 
 //=============================================================================
 
-inline Standard_Real Extrema_FuncExtCC::SquareDistance (const Standard_Integer N) const
+inline Standard_Real Extrema_FuncExtCC::SquareDistance(const Standard_Integer N) const
 {
   return mySqDist.Value(N);
 }
 
 //=============================================================================
 
-inline Standard_Address Extrema_FuncExtCC::CurvePtr (const Standard_Integer theRank) const
+inline Standard_Address Extrema_FuncExtCC::CurvePtr(const Standard_Integer theRank) const
 {
-  Standard_OutOfRange_Raise_if (theRank < 1 || theRank > 2, "Extrema_FuncExtCC::SetCurve()")
-  return (theRank == 1 ? myC1 : myC2);
+  Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2,
+                               "Extrema_FuncExtCC::SetCurve()") return (theRank == 1 ? myC1 : myC2);
 }
 
 //=============================================================================

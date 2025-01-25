@@ -30,42 +30,26 @@ class BRepApprox_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfApprox;
 class BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox;
 class math_MultipleVarFunctionWithGradient;
 
-
-
-class BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox  : public math_BFGS
+class BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox : public math_BFGS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint, const Standard_Real Tolerance3d, const Standard_Real Tolerance2d, const Standard_Real Eps, const Standard_Integer NbIterations = 200);
-  
-  Standard_EXPORT virtual Standard_Boolean IsSolutionReached (math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
+  Standard_EXPORT BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations = 200);
 
-
-
+  Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
+    math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myTol3d;
   Standard_Real myTol2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepApprox_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfApprox_HeaderFile

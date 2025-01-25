@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TreeModel_ContextMenu.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
@@ -29,45 +29,51 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-TreeModel_ContextMenu::TreeModel_ContextMenu (QTreeView* theTreeView)
-  : QObject (theTreeView), myTreeView (theTreeView)
+TreeModel_ContextMenu::TreeModel_ContextMenu(QTreeView* theTreeView)
+    : QObject(theTreeView),
+      myTreeView(theTreeView)
 {
-  myTreeView->header()->setContextMenuPolicy (Qt::CustomContextMenu);
+  myTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
 #if QT_VERSION >= 0x050000
-  myTreeView->header()->setSectionsClickable (true);
+  myTreeView->header()->setSectionsClickable(true);
 #endif
-  myTreeView->header()->setHighlightSections (true);
-  connect (myTreeView->header(), SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT (onTreeViewHeaderContextMenuRequested (const QPoint&)));
+  myTreeView->header()->setHighlightSections(true);
+  connect(myTreeView->header(),
+          SIGNAL(customContextMenuRequested(const QPoint&)),
+          this,
+          SLOT(onTreeViewHeaderContextMenuRequested(const QPoint&)));
 }
 
 // =======================================================================
 // function : onTreeViewHeaderContextMenuRequested
 // purpose :
 // =======================================================================
-void TreeModel_ContextMenu::onTreeViewHeaderContextMenuRequested (const QPoint& thePosition)
+void TreeModel_ContextMenu::onTreeViewHeaderContextMenuRequested(const QPoint& thePosition)
 {
-  TreeModel_ModelBase* aModel = dynamic_cast<TreeModel_ModelBase*> (myTreeView->model());
+  TreeModel_ModelBase* aModel = dynamic_cast<TreeModel_ModelBase*>(myTreeView->model());
   if (!aModel)
     return;
 
-  QMenu* aMenu = new QMenu (myTreeView);
-  int aNbSections = aModel->columnCount();
+  QMenu* aMenu       = new QMenu(myTreeView);
+  int    aNbSections = aModel->columnCount();
   for (int aColumnId = 0; aColumnId < aNbSections; aColumnId++)
   {
-    QAction* anAction = ViewControl_Tools::CreateAction (aModel->ChangeHeaderItem (aColumnId)->GetName(),
-                                                       SLOT (onColumnVisibilityChanged()), myTreeView, this);
-    anAction->setCheckable (true);
-    anAction->setChecked (!myTreeView->isColumnHidden (aColumnId));
-    anAction->setData (aColumnId);
-    aMenu->addAction (anAction);
+    QAction* anAction =
+      ViewControl_Tools::CreateAction(aModel->ChangeHeaderItem(aColumnId)->GetName(),
+                                      SLOT(onColumnVisibilityChanged()),
+                                      myTreeView,
+                                      this);
+    anAction->setCheckable(true);
+    anAction->setChecked(!myTreeView->isColumnHidden(aColumnId));
+    anAction->setData(aColumnId);
+    aMenu->addAction(anAction);
   }
 
   if (aMenu->actions().isEmpty())
     return;
 
-  QPoint aPoint = myTreeView->mapToGlobal (thePosition);
-  aMenu->exec (aPoint);
+  QPoint aPoint = myTreeView->mapToGlobal(thePosition);
+  aMenu->exec(aPoint);
 }
 
 // =======================================================================

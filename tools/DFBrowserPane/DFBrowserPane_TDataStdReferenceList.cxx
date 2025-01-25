@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TDataStdReferenceList.hxx>
 
@@ -30,16 +30,18 @@
 // function : GetValues
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdReferenceList::GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
+void DFBrowserPane_TDataStdReferenceList::GetValues(const Handle(TDF_Attribute)& theAttribute,
+                                                    QList<QVariant>&             theValues)
 {
-  Handle(TDataStd_ReferenceList) anAttribute = Handle(TDataStd_ReferenceList)::DownCast (theAttribute);
+  Handle(TDataStd_ReferenceList) anAttribute =
+    Handle(TDataStd_ReferenceList)::DownCast(theAttribute);
   if (anAttribute.IsNull())
     return;
 
   for (TDF_ListIteratorOfLabelList aLabelIt(anAttribute->List()); aLabelIt.More(); aLabelIt.Next())
   {
-    theValues.append ("Value");
-    theValues.append (DFBrowserPane_Tools::GetEntry (aLabelIt.Value()).ToCString());
+    theValues.append("Value");
+    theValues.append(DFBrowserPane_Tools::GetEntry(aLabelIt.Value()).ToCString());
   }
 }
 
@@ -47,18 +49,21 @@ void DFBrowserPane_TDataStdReferenceList::GetValues (const Handle(TDF_Attribute)
 // function : GetReferences
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdReferenceList::GetReferences (const Handle(TDF_Attribute)& theAttribute,
-                                                         NCollection_List<TDF_Label>& theRefLabels,
-                                                         Handle(Standard_Transient)& /*theRefPresentation*/)
+void DFBrowserPane_TDataStdReferenceList::GetReferences(
+  const Handle(TDF_Attribute)& theAttribute,
+  NCollection_List<TDF_Label>& theRefLabels,
+  Handle(Standard_Transient)& /*theRefPresentation*/)
 {
-  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 1);
-  Handle(TDataStd_ReferenceList) anAttribute = Handle(TDataStd_ReferenceList)::DownCast (theAttribute);
+  QStringList aSelectedEntries =
+    DFBrowserPane_TableView::GetSelectedColumnValues(getTableView()->GetTableView(), 1);
+  Handle(TDataStd_ReferenceList) anAttribute =
+    Handle(TDataStd_ReferenceList)::DownCast(theAttribute);
   if (anAttribute.IsNull())
     return;
   for (TDF_ListIteratorOfLabelList aLabelIt(anAttribute->List()); aLabelIt.More(); aLabelIt.Next())
   {
     const TDF_Label& aLabel = aLabelIt.Value();
-    if (aSelectedEntries.contains (DFBrowserPane_Tools::GetEntry (aLabel).ToCString()))
-      theRefLabels.Append (aLabel);
+    if (aSelectedEntries.contains(DFBrowserPane_Tools::GetEntry(aLabel).ToCString()))
+      theRefLabels.Append(aLabel);
   }
 }

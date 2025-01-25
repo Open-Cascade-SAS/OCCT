@@ -17,17 +17,16 @@
 #ifndef _AppParCurves_Constraint_HeaderFile
 #define _AppParCurves_Constraint_HeaderFile
 
-
 //! -   NoConstraint: this point has no constraints.
 //! -   PassPoint: the approximation curve passes through this point.
 //! -   TangencyPoint: this point has a tangency constraint.
 //! -   CurvaturePoint: this point has a curvature constraint.
 enum AppParCurves_Constraint
 {
-AppParCurves_NoConstraint,
-AppParCurves_PassPoint,
-AppParCurves_TangencyPoint,
-AppParCurves_CurvaturePoint
+  AppParCurves_NoConstraint,
+  AppParCurves_PassPoint,
+  AppParCurves_TangencyPoint,
+  AppParCurves_CurvaturePoint
 };
 
 #endif // _AppParCurves_Constraint_HeaderFile

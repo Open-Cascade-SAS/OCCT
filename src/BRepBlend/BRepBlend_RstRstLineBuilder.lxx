@@ -15,9 +15,10 @@
 // commercial license or contractual agreement.
 
 #include <StdFail_NotDone.hxx>
+
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
@@ -26,67 +27,67 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
 }
 
 //=======================================================================
-//function : Line
-//purpose  : 
+// function : Line
+// purpose  :
 //=======================================================================
 
 inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return line;
 }
 
-
 //=======================================================================
-//function : Decroch1Start
-//purpose  : 
+// function : Decroch1Start
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
 {
-  if (decrochdeb == Blend_DecrochRst1 
-      || decrochdeb == Blend_DecrochBoth)  return Standard_True;
-
-  return Standard_False; 
-}
-
-
-//=======================================================================
-//function : Decroch1End
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
-{
-  if (decrochfin == Blend_DecrochRst1 
-      || decrochfin == Blend_DecrochBoth)  return Standard_True;
+  if (decrochdeb == Blend_DecrochRst1 || decrochdeb == Blend_DecrochBoth)
+    return Standard_True;
 
   return Standard_False;
 }
 
 //=======================================================================
-//function : Decroch2Start
-//purpose  : 
+// function : Decroch1End
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
+{
+  if (decrochfin == Blend_DecrochRst1 || decrochfin == Blend_DecrochBoth)
+    return Standard_True;
+
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Decroch2Start
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
 {
-  if (decrochdeb == Blend_DecrochRst2 
-      || decrochdeb == Blend_DecrochBoth)  return Standard_True;
+  if (decrochdeb == Blend_DecrochRst2 || decrochdeb == Blend_DecrochBoth)
+    return Standard_True;
 
-  return Standard_False; 
+  return Standard_False;
 }
 
-
 //=======================================================================
-//function : Decroch2End
-//purpose  : 
+// function : Decroch2End
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2End() const
 {
-  if (decrochfin == Blend_DecrochRst2 
-      || decrochfin == Blend_DecrochBoth)  return Standard_True;
+  if (decrochfin == Blend_DecrochRst2 || decrochfin == Blend_DecrochBoth)
+    return Standard_True;
 
   return Standard_False;
 }

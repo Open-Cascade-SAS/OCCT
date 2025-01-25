@@ -22,33 +22,32 @@
 #include <IGESGeom_TabulatedCylinder.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
 
-IGESGeom_TabulatedCylinder::IGESGeom_TabulatedCylinder ()    {  }
+IGESGeom_TabulatedCylinder::IGESGeom_TabulatedCylinder() {}
 
-
-    void IGESGeom_TabulatedCylinder::Init
-  (const Handle(IGESData_IGESEntity)& aDirectrix,
-   const gp_XYZ&                      anEnd)
+void IGESGeom_TabulatedCylinder::Init(const Handle(IGESData_IGESEntity)& aDirectrix,
+                                      const gp_XYZ&                      anEnd)
 {
   theDirectrix = aDirectrix;
   theEnd       = anEnd;
-  InitTypeAndForm(122,0);
+  InitTypeAndForm(122, 0);
 }
 
-    Handle(IGESData_IGESEntity) IGESGeom_TabulatedCylinder::Directrix () const 
+Handle(IGESData_IGESEntity) IGESGeom_TabulatedCylinder::Directrix() const
 {
   return theDirectrix;
 }
 
-    gp_Pnt IGESGeom_TabulatedCylinder::EndPoint () const
+gp_Pnt IGESGeom_TabulatedCylinder::EndPoint() const
 {
-  return ( gp_Pnt(theEnd) );
+  return (gp_Pnt(theEnd));
 }
 
-    gp_Pnt IGESGeom_TabulatedCylinder::TransformedEndPoint () const
+gp_Pnt IGESGeom_TabulatedCylinder::TransformedEndPoint() const
 {
   gp_XYZ EndPoint = theEnd;
-  if (HasTransf()) Location().Transforms(EndPoint);
-  return ( gp_Pnt(EndPoint) );
+  if (HasTransf())
+    Location().Transforms(EndPoint);
+  return (gp_Pnt(EndPoint));
 }

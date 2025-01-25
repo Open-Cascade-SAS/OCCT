@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFView_Object_HeaderFile
 #define _XCAFView_Object_HeaderFile
 
@@ -28,116 +27,58 @@
 
 class XCAFView_Object;
 DEFINE_STANDARD_HANDLE(XCAFView_Object, Standard_Transient)
-                            
+
 //! Access object for saved view
 class XCAFView_Object : public Standard_Transient
 {
 
 public:
-  
   Standard_EXPORT XCAFView_Object();
-  
+
   Standard_EXPORT XCAFView_Object(const Handle(XCAFView_Object)& theObj);
 
-  void SetName(Handle(TCollection_HAsciiString) theName)
-  {
-    myName = theName;
-  }
+  void SetName(Handle(TCollection_HAsciiString) theName) { myName = theName; }
 
-  Handle(TCollection_HAsciiString) Name()
-  {
-    return myName;
-  }
+  Handle(TCollection_HAsciiString) Name() { return myName; }
 
-  void SetType(XCAFView_ProjectionType theType)
-  {
-    myType = theType;
-  }
+  void SetType(XCAFView_ProjectionType theType) { myType = theType; }
 
-  XCAFView_ProjectionType Type()
-  {
-    return myType;
-  }
+  XCAFView_ProjectionType Type() { return myType; }
 
-  void SetProjectionPoint(const gp_Pnt& thePoint)
-  {
-    myProjectionPoint = thePoint;
-  }
+  void SetProjectionPoint(const gp_Pnt& thePoint) { myProjectionPoint = thePoint; }
 
-  gp_Pnt ProjectionPoint()
-  {
-    return myProjectionPoint;
-  }
+  gp_Pnt ProjectionPoint() { return myProjectionPoint; }
 
-  void SetViewDirection(const gp_Dir& theDirection)
-  {
-    myViewDirection = theDirection;
-  }
+  void SetViewDirection(const gp_Dir& theDirection) { myViewDirection = theDirection; }
 
-  gp_Dir ViewDirection()
-  {
-    return myViewDirection;
-  }
+  gp_Dir ViewDirection() { return myViewDirection; }
 
-  void SetUpDirection(const gp_Dir& theDirection)
-  {
-    myUpDirection = theDirection;
-  }
+  void SetUpDirection(const gp_Dir& theDirection) { myUpDirection = theDirection; }
 
-  gp_Dir UpDirection()
-  {
-    return myUpDirection;
-  }
+  gp_Dir UpDirection() { return myUpDirection; }
 
-  void SetZoomFactor(Standard_Real theZoomFactor)
-  {
-    myZoomFactor = theZoomFactor;
-  }
+  void SetZoomFactor(Standard_Real theZoomFactor) { myZoomFactor = theZoomFactor; }
 
-  Standard_Real ZoomFactor()
-  {
-    return myZoomFactor;
-  }
+  Standard_Real ZoomFactor() { return myZoomFactor; }
 
-  void SetWindowHorizontalSize(Standard_Real theSize)
-  {
-    myWindowHorizontalSize = theSize;
-  }
+  void SetWindowHorizontalSize(Standard_Real theSize) { myWindowHorizontalSize = theSize; }
 
-  Standard_Real WindowHorizontalSize()
-  {
-    return myWindowHorizontalSize;
-  }
+  Standard_Real WindowHorizontalSize() { return myWindowHorizontalSize; }
 
-  void SetWindowVerticalSize(Standard_Real theSize)
-  {
-    myWindowVerticalSize = theSize;
-  }
+  void SetWindowVerticalSize(Standard_Real theSize) { myWindowVerticalSize = theSize; }
 
-  Standard_Real WindowVerticalSize()
-  {
-    return myWindowVerticalSize;
-  }
+  Standard_Real WindowVerticalSize() { return myWindowVerticalSize; }
 
   void SetClippingExpression(Handle(TCollection_HAsciiString) theExpression)
   {
     myClippingExpression = theExpression;
   }
 
-  Handle(TCollection_HAsciiString) ClippingExpression()
-  {
-    return myClippingExpression;
-  }
+  Handle(TCollection_HAsciiString) ClippingExpression() { return myClippingExpression; }
 
-  void UnsetFrontPlaneClipping()
-  {
-    myFrontPlaneClipping = Standard_False;
-  }
+  void UnsetFrontPlaneClipping() { myFrontPlaneClipping = Standard_False; }
 
-  Standard_Boolean HasFrontPlaneClipping()
-  {
-    return myFrontPlaneClipping;
-  }
+  Standard_Boolean HasFrontPlaneClipping() { return myFrontPlaneClipping; }
 
   void SetFrontPlaneDistance(Standard_Real theDistance)
   {
@@ -145,20 +86,11 @@ public:
     myFrontPlaneClipping = Standard_True;
   }
 
-  Standard_Real FrontPlaneDistance()
-  {
-    return myFrontPlaneDistance;
-  }
+  Standard_Real FrontPlaneDistance() { return myFrontPlaneDistance; }
 
-  void UnsetBackPlaneClipping()
-  {
-    myBackPlaneClipping = Standard_False;
-  }
+  void UnsetBackPlaneClipping() { myBackPlaneClipping = Standard_False; }
 
-  Standard_Boolean HasBackPlaneClipping()
-  {
-    return myBackPlaneClipping;
-  }
+  Standard_Boolean HasBackPlaneClipping() { return myBackPlaneClipping; }
 
   void SetBackPlaneDistance(Standard_Real theDistance)
   {
@@ -166,20 +98,14 @@ public:
     myBackPlaneClipping = Standard_True;
   }
 
-  Standard_Real BackPlaneDistance()
-  {
-    return myBackPlaneDistance;
-  }
+  Standard_Real BackPlaneDistance() { return myBackPlaneDistance; }
 
   void SetViewVolumeSidesClipping(Standard_Boolean theViewVolumeSidesClipping)
   {
     myViewVolumeSidesClipping = theViewVolumeSidesClipping;
   }
 
-  Standard_Boolean HasViewVolumeSidesClipping()
-  {
-    return myViewVolumeSidesClipping;
-  }
+  Standard_Boolean HasViewVolumeSidesClipping() { return myViewVolumeSidesClipping; }
 
   void CreateGDTPoints(const Standard_Integer theLenght)
   {
@@ -187,10 +113,7 @@ public:
       myGDTPoints = new TColgp_HArray1OfPnt(1, theLenght);
   }
 
-  Standard_Boolean HasGDTPoints()
-  {
-    return (!myGDTPoints.IsNull());
-  }
+  Standard_Boolean HasGDTPoints() { return (!myGDTPoints.IsNull()); }
 
   Standard_Integer NbGDTPoints()
   {
@@ -216,28 +139,27 @@ public:
     else
       return gp_Pnt();
   }
-  
-  DEFINE_STANDARD_RTTIEXT(XCAFView_Object,Standard_Transient)
+
+  DEFINE_STANDARD_RTTIEXT(XCAFView_Object, Standard_Transient)
 
 private:
-
   Handle(TCollection_HAsciiString) myName;
-  XCAFView_ProjectionType myType;
-  gp_Pnt myProjectionPoint;
-  gp_Dir myViewDirection;
-  gp_Dir myUpDirection;
-  Standard_Real myZoomFactor;
-  Standard_Real myWindowHorizontalSize;
-  Standard_Real myWindowVerticalSize;
+  XCAFView_ProjectionType          myType;
+  gp_Pnt                           myProjectionPoint;
+  gp_Dir                           myViewDirection;
+  gp_Dir                           myUpDirection;
+  Standard_Real                    myZoomFactor;
+  Standard_Real                    myWindowHorizontalSize;
+  Standard_Real                    myWindowVerticalSize;
   Handle(TCollection_HAsciiString) myClippingExpression;
-  Standard_Boolean myFrontPlaneClipping;
-  Standard_Real myFrontPlaneDistance;
-  Standard_Boolean myBackPlaneClipping;
-  Standard_Real myBackPlaneDistance;
-  Standard_Boolean myViewVolumeSidesClipping;
-// clang-format off
+  Standard_Boolean                 myFrontPlaneClipping;
+  Standard_Real                    myFrontPlaneDistance;
+  Standard_Boolean                 myBackPlaneClipping;
+  Standard_Real                    myBackPlaneDistance;
+  Standard_Boolean                 myViewVolumeSidesClipping;
+  // clang-format off
   Handle(TColgp_HArray1OfPnt) myGDTPoints; // Point for each GDT to describe position of GDT frame in View.
-// clang-format on
+  // clang-format on
 };
 
 #endif // _XCAFView_Object_HeaderFile

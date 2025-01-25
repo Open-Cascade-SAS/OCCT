@@ -26,7 +26,6 @@ class Media_BufferPool : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_BufferPool, Standard_Transient)
 public:
-
   //! Empty constructor
   Standard_EXPORT Media_BufferPool();
 
@@ -37,7 +36,7 @@ public:
   Standard_EXPORT void Release();
 
   //! (Re-)initialize the pool.
-  Standard_EXPORT bool Init (int theBufferSize);
+  Standard_EXPORT bool Init(int theBufferSize);
 
   //! Return buffer size within the pool.
   int BufferSize() const { return myBufferSize; }
@@ -46,16 +45,13 @@ public:
   Standard_EXPORT AVBufferRef* GetBuffer();
 
 private:
-
   // prevent copies
-  Media_BufferPool           (const Media_BufferPool& theCopy);
+  Media_BufferPool(const Media_BufferPool& theCopy);
   Media_BufferPool& operator=(const Media_BufferPool& theCopy);
 
 protected:
-
   AVBufferPool* myPool;
   int           myBufferSize;
-
 };
 
 #endif // _Media_BufferPool_HeaderFile

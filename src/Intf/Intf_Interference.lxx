@@ -19,7 +19,7 @@
 // Return the number of sections points in an interference.
 //=======================================================================
 
-inline Standard_Integer Intf_Interference::NbSectionPoints () const
+inline Standard_Integer Intf_Interference::NbSectionPoints() const
 {
   return mySPoins.Length();
 }
@@ -28,7 +28,7 @@ inline Standard_Integer Intf_Interference::NbSectionPoints () const
 // Give the section point of range Index in the interference.
 //=======================================================================
 
-inline const Intf_SectionPoint& Intf_Interference::PntValue (const Standard_Integer Index) const
+inline const Intf_SectionPoint& Intf_Interference::PntValue(const Standard_Integer Index) const
 {
   return mySPoins(Index);
 }
@@ -37,7 +37,7 @@ inline const Intf_SectionPoint& Intf_Interference::PntValue (const Standard_Inte
 // Return the number of sections lines in an interference.
 //=======================================================================
 
-inline Standard_Integer Intf_Interference::NbSectionLines () const
+inline Standard_Integer Intf_Interference::NbSectionLines() const
 {
   return mySLines.Length();
 }
@@ -46,7 +46,7 @@ inline Standard_Integer Intf_Interference::NbSectionLines () const
 // Give the section line of range Index in the interference.
 //=======================================================================
 
-inline const Intf_SectionLine& Intf_Interference::LineValue (const Standard_Integer Index) const
+inline const Intf_SectionLine& Intf_Interference::LineValue(const Standard_Integer Index) const
 {
   return mySLines(Index);
 }
@@ -55,7 +55,7 @@ inline const Intf_SectionLine& Intf_Interference::LineValue (const Standard_Inte
 // Return the number of sections TangentZones in an interference.
 //=======================================================================
 
-inline Standard_Integer Intf_Interference::NbTangentZones () const
+inline Standard_Integer Intf_Interference::NbTangentZones() const
 {
   return myTZones.Length();
 }
@@ -64,17 +64,17 @@ inline Standard_Integer Intf_Interference::NbTangentZones () const
 // Give the tangentzone of range Index in the interference.
 //=======================================================================
 
-inline const Intf_TangentZone& Intf_Interference::ZoneValue (const Standard_Integer Index) const
+inline const Intf_TangentZone& Intf_Interference::ZoneValue(const Standard_Integer Index) const
 {
   return myTZones(Index);
 }
 
 //=======================================================================
-//function : GetTolerance
-//purpose  : 
+// function : GetTolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_Real Intf_Interference::GetTolerance () const
+inline Standard_Real Intf_Interference::GetTolerance() const
 {
   return Tolerance;
 }

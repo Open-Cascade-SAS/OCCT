@@ -23,62 +23,62 @@
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ToroidalSurface,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ToroidalSurface, IGESData_IGESEntity)
 
-IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface ()    {  }
+IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface() {}
 
-
-    void  IGESSolid_ToroidalSurface::Init
-  (const Handle(IGESGeom_Point)& aCenter,
-   const Handle(IGESGeom_Direction)& anAxis,
-   const Standard_Real majRadius, const Standard_Real minRadius,
-   const Handle(IGESGeom_Direction)& Refdir)
+void IGESSolid_ToroidalSurface::Init(const Handle(IGESGeom_Point)&     aCenter,
+                                     const Handle(IGESGeom_Direction)& anAxis,
+                                     const Standard_Real               majRadius,
+                                     const Standard_Real               minRadius,
+                                     const Handle(IGESGeom_Direction)& Refdir)
 {
   theCenter      = aCenter;
   theAxis        = anAxis;
   theMajorRadius = majRadius;
   theMinorRadius = minRadius;
   theRefDir      = Refdir;
-  InitTypeAndForm(198, (theRefDir.IsNull() ? 0 : 1) );
+  InitTypeAndForm(198, (theRefDir.IsNull() ? 0 : 1));
 }
 
-    Handle(IGESGeom_Point)  IGESSolid_ToroidalSurface::Center () const
+Handle(IGESGeom_Point) IGESSolid_ToroidalSurface::Center() const
 {
   return theCenter;
 }
 
-    gp_Pnt  IGESSolid_ToroidalSurface::TransformedCenter () const
+gp_Pnt IGESSolid_ToroidalSurface::TransformedCenter() const
 {
-  if (!HasTransf()) return theCenter->Value();
+  if (!HasTransf())
+    return theCenter->Value();
   else
-    {
-      gp_XYZ tmp = theCenter->Value().XYZ();
-      Location().Transforms(tmp);
-      return gp_Pnt(tmp);
-    }
+  {
+    gp_XYZ tmp = theCenter->Value().XYZ();
+    Location().Transforms(tmp);
+    return gp_Pnt(tmp);
+  }
 }
 
-    Handle(IGESGeom_Direction)  IGESSolid_ToroidalSurface::Axis () const
+Handle(IGESGeom_Direction) IGESSolid_ToroidalSurface::Axis() const
 {
   return theAxis;
 }
 
-    Standard_Real  IGESSolid_ToroidalSurface::MajorRadius () const
+Standard_Real IGESSolid_ToroidalSurface::MajorRadius() const
 {
   return theMajorRadius;
 }
 
-    Standard_Real  IGESSolid_ToroidalSurface::MinorRadius () const
+Standard_Real IGESSolid_ToroidalSurface::MinorRadius() const
 {
   return theMinorRadius;
 }
 
-    Handle(IGESGeom_Direction)  IGESSolid_ToroidalSurface::ReferenceDir () const
+Handle(IGESGeom_Direction) IGESSolid_ToroidalSurface::ReferenceDir() const
 {
   return theRefDir;
 }
 
-    Standard_Boolean  IGESSolid_ToroidalSurface::IsParametrised () const
+Standard_Boolean IGESSolid_ToroidalSurface::IsParametrised() const
 {
   return !(theRefDir.IsNull());
 }

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Surface.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Dir.hxx>
@@ -28,115 +27,123 @@
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Plane.hxx>
 
-void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
-                        const Adaptor3d_Surface&           aPlane,
-                        const Handle (Prs3d_Drawer)&       aDrawer)
+void StdPrs_Plane::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                       const Adaptor3d_Surface&          aPlane,
+                       const Handle(Prs3d_Drawer)&       aDrawer)
 {
-//  aPresentation->NewGroup();
+  //  aPresentation->NewGroup();
   Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
-  if (aPlane.GetType() != GeomAbs_Plane) return;
+  if (aPlane.GetType() != GeomAbs_Plane)
+    return;
   Handle(Geom_Plane) thegeom = new Geom_Plane(aPlane.Plane());
 
   Handle(Prs3d_PlaneAspect) theaspect = aDrawer->PlaneAspect();
 
-  gp_Pnt p1;
-  Standard_Real Xmax,Ymax;
-  Xmax = 0.5*Standard_Real(theaspect->PlaneXLength());
-  Ymax = 0.5*Standard_Real(theaspect->PlaneYLength());
-  if (theaspect->DisplayEdges()) {
+  gp_Pnt        p1;
+  Standard_Real Xmax, Ymax;
+  Xmax = 0.5 * Standard_Real(theaspect->PlaneXLength());
+  Ymax = 0.5 * Standard_Real(theaspect->PlaneYLength());
+  if (theaspect->DisplayEdges())
+  {
     TheGroup->SetPrimitivesAspect(theaspect->EdgesAspect()->Aspect());
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(5);
-    p1 = thegeom->Value(-Xmax,Ymax);
+    p1                                        = thegeom->Value(-Xmax, Ymax);
     aPrims->AddVertex(p1);
-    aPrims->AddVertex(thegeom->Value( Xmax, Ymax));
-    aPrims->AddVertex(thegeom->Value( Xmax,-Ymax));
-    aPrims->AddVertex(thegeom->Value(-Xmax,-Ymax));
+    aPrims->AddVertex(thegeom->Value(Xmax, Ymax));
+    aPrims->AddVertex(thegeom->Value(Xmax, -Ymax));
+    aPrims->AddVertex(thegeom->Value(-Xmax, -Ymax));
     aPrims->AddVertex(p1);
     TheGroup->AddPrimitiveArray(aPrims);
   }
 
-  if (theaspect->DisplayIso()) {
+  if (theaspect->DisplayIso())
+  {
     TheGroup->SetPrimitivesAspect(theaspect->IsoAspect()->Aspect());
-    const Standard_Real dist = theaspect->IsoDistance();
-    const Standard_Integer nbx = Standard_Integer(Abs(2.*Xmax) / dist) - 1;
-    const Standard_Integer nby = Standard_Integer(Abs(2.*Ymax) / dist) - 1;
-    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2*(nbx+nby));
-    Standard_Integer i;
-    Standard_Real cur = -Xmax+dist;
-    for (i = 0; i < nbx; i++, cur += dist) {
+    const Standard_Real               dist   = theaspect->IsoDistance();
+    const Standard_Integer            nbx    = Standard_Integer(Abs(2. * Xmax) / dist) - 1;
+    const Standard_Integer            nby    = Standard_Integer(Abs(2. * Ymax) / dist) - 1;
+    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2 * (nbx + nby));
+    Standard_Integer                  i;
+    Standard_Real                     cur = -Xmax + dist;
+    for (i = 0; i < nbx; i++, cur += dist)
+    {
       aPrims->AddVertex(thegeom->Value(cur, Ymax));
-      aPrims->AddVertex(thegeom->Value(cur,-Ymax));
+      aPrims->AddVertex(thegeom->Value(cur, -Ymax));
     }
-    cur = -Ymax+dist;
-    for (i = 0; i < nby; i++, cur += dist) {
-      aPrims->AddVertex(thegeom->Value( Xmax,cur));
-      aPrims->AddVertex(thegeom->Value(-Xmax,cur));
+    cur = -Ymax + dist;
+    for (i = 0; i < nby; i++, cur += dist)
+    {
+      aPrims->AddVertex(thegeom->Value(Xmax, cur));
+      aPrims->AddVertex(thegeom->Value(-Xmax, cur));
     }
     TheGroup->AddPrimitiveArray(aPrims);
   }
 
-  gp_Dir norm = thegeom->Pln().Axis().Direction();
-  gp_Pnt loc;
+  gp_Dir        norm = thegeom->Pln().Axis().Direction();
+  gp_Pnt        loc;
   Standard_Real siz = theaspect->ArrowsSize();
   Standard_Real len = theaspect->ArrowsLength();
   Standard_Real ang = theaspect->ArrowsAngle();
-  gp_Vec trans(norm);
+  gp_Vec        trans(norm);
   trans.Scale(Standard_Real(siz));
 
   TheGroup->SetPrimitivesAspect(theaspect->ArrowAspect()->Aspect());
-  if (theaspect->DisplayCenterArrow()) {
-    loc = thegeom->Location();
-    p1 = loc.Translated(trans);
+  if (theaspect->DisplayCenterArrow())
+  {
+    loc                                      = thegeom->Location();
+    p1                                       = loc.Translated(trans);
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
     TheGroup->AddPrimitiveArray(aPrims);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(), p1, norm, ang, len);
   }
-  if (theaspect->DisplayEdgesArrows()) {
+  if (theaspect->DisplayEdgesArrows())
+  {
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(8);
     //
-    thegeom->D0(-Xmax,-Ymax,loc);
+    thegeom->D0(-Xmax, -Ymax, loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
-    thegeom->D0(-Xmax,Ymax,loc);
+    thegeom->D0(-Xmax, Ymax, loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
-    thegeom->D0(Xmax,Ymax,loc);
+    thegeom->D0(Xmax, Ymax, loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
-    thegeom->D0(Xmax,-Ymax,loc);
+    thegeom->D0(Xmax, -Ymax, loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
     TheGroup->AddPrimitiveArray(aPrims);
   }
 }
 
-Standard_Boolean StdPrs_Plane::Match
-  (const Standard_Real X,
-   const Standard_Real Y,
-   const Standard_Real Z,
-   const Standard_Real aDistance,
-   const Adaptor3d_Surface& aPlane,
-   const Handle (Prs3d_Drawer)&)
+Standard_Boolean StdPrs_Plane::Match(const Standard_Real      X,
+                                     const Standard_Real      Y,
+                                     const Standard_Real      Z,
+                                     const Standard_Real      aDistance,
+                                     const Adaptor3d_Surface& aPlane,
+                                     const Handle(Prs3d_Drawer)&)
 {
-  if (aPlane.GetType() == GeomAbs_Plane) {  
+  if (aPlane.GetType() == GeomAbs_Plane)
+  {
     gp_Pln theplane = aPlane.Plane();
-    gp_Pnt thepoint (X,Y,Z);
-    
+    gp_Pnt thepoint(X, Y, Z);
+
     return (Abs(theplane.Distance(thepoint)) <= aDistance);
   }
-  else return Standard_False;
+  else
+    return Standard_False;
 }

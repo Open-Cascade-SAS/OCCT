@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Quantity_Color> Quantity_Array1OfColor;
 
-
 #endif

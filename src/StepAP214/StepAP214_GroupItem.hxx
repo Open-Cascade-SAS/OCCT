@@ -39,17 +39,14 @@ class StepRepr_ShapeRepresentationRelationship;
 class StepVisual_StyledItem;
 class StepShape_TopologicalRepresentationItem;
 
-
-class StepAP214_GroupItem  : public StepData_SelectType
+class StepAP214_GroupItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a GroupItem SelectType
   Standard_EXPORT StepAP214_GroupItem();
-  
+
   //! Recognizes a GroupItem Kind Entity that is :
   //! 1 ->  GeometricRepresentationItem
   //! 2 ->  GroupRelationship
@@ -66,10 +63,11 @@ public:
   //! 13 -> StyledItem
   //! 14 -> TopologicalRepresentationItem
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a  GeometricRepresentationItem (Null if another type)
-  Standard_EXPORT virtual Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem() const;
+  Standard_EXPORT virtual Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem()
+    const;
 
   //! returns Value as a  GroupRelationship (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_GroupRelationship) GroupRelationship() const;
@@ -81,10 +79,12 @@ public:
   Standard_EXPORT virtual Handle(StepBasic_ProductDefinition) ProductDefinition() const;
 
   //! returns Value as a  ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
+  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation()
+    const;
 
   //! returns Value as a  PropertyDefinitionRepresentation (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_PropertyDefinitionRepresentation) PropertyDefinitionRepresentation() const;
+  Standard_EXPORT virtual Handle(StepRepr_PropertyDefinitionRepresentation)
+    PropertyDefinitionRepresentation() const;
 
   //! returns Value as a  Representation (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_Representation) Representation() const;
@@ -93,7 +93,8 @@ public:
   Standard_EXPORT virtual Handle(StepRepr_RepresentationItem) RepresentationItem() const;
 
   //! returns Value as a  RepresentationRelationshipWithTransformation (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_RepresentationRelationshipWithTransformation) RepresentationRelationshipWithTransformation() const;
+  Standard_EXPORT virtual Handle(StepRepr_RepresentationRelationshipWithTransformation)
+    RepresentationRelationshipWithTransformation() const;
 
   //! returns Value as a  ShapeAspect (Null if another type)
   Standard_EXPORT virtual Handle(StepRepr_ShapeAspect) ShapeAspect() const;
@@ -102,31 +103,18 @@ public:
   Standard_EXPORT virtual Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
 
   //! returns Value as a  ShapeRepresentationRelationship (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ShapeRepresentationRelationship) ShapeRepresentationRelationship() const;
+  Standard_EXPORT virtual Handle(StepRepr_ShapeRepresentationRelationship)
+    ShapeRepresentationRelationship() const;
 
   //! returns Value as a  StyledItem (Null if another type)
   Standard_EXPORT virtual Handle(StepVisual_StyledItem) StyledItem() const;
 
   //! returns Value as a  TopologicalRepresentationItem (Null if another type)
-  Standard_EXPORT virtual Handle(StepShape_TopologicalRepresentationItem) TopologicalRepresentationItem() const;
+  Standard_EXPORT virtual Handle(StepShape_TopologicalRepresentationItem)
+    TopologicalRepresentationItem() const;
+
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_GroupItem_HeaderFile

@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBndLib.hxx>
@@ -36,85 +35,77 @@
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
-//function : DistanceOut
-//purpose  : Compute the minimum distance between input shapes 
+// function : DistanceOut
+// purpose  : Compute the minimum distance between input shapes
 //           (using Bounding Boxes of each Shape)
 //=======================================================================
-static Standard_Real DistanceOut (const TopoDS_Shape& S1, const TopoDS_Shape& S2) 
+static Standard_Real DistanceOut(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   Bnd_Box BBox1, BBox2;
-  BRepBndLib::Add(S1,BBox1);
-  BRepBndLib::Add(S2,BBox2);
+  BRepBndLib::Add(S1, BBox1);
+  BRepBndLib::Add(S2, BBox2);
   return BBox1.Distance(BBox2);
 }
-  
+
 //=======================================================================
-//function : DistanceIn
-//purpose  : Compute the maximum distance between input Shapes
+// function : DistanceIn
+// purpose  : Compute the maximum distance between input Shapes
 //           we compute the maximum dimension of each Bounding Box and then
 //           add each other with the minimum distance of shapes.
 //=======================================================================
 
-static Standard_Real DistanceIn (const TopoDS_Shape& S1, const TopoDS_Shape& S2) 
+static Standard_Real DistanceIn(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
-  Bnd_Box LBBox,SBBox;
-  BRepBndLib::Add(S1,SBBox);
-  BRepBndLib::Add(S2,LBBox);
+  Bnd_Box LBBox, SBBox;
+  BRepBndLib::Add(S1, SBBox);
+  BRepBndLib::Add(S2, LBBox);
 
-  Standard_Real LXmin, LYmin, LZmin, LXmax, LYmax, LZmax, 
-                SXmin, SYmin, SZmin, SXmax, SYmax, SZmax; 
-  SBBox.Get(SXmin, SYmin, SZmin, 
-            SXmax, SYmax, SZmax);
-  LBBox.Get(LXmin, LYmin, LZmin, 
-            LXmax, LYmax, LZmax);
+  Standard_Real LXmin, LYmin, LZmin, LXmax, LYmax, LZmax, SXmin, SYmin, SZmin, SXmax, SYmax, SZmax;
+  SBBox.Get(SXmin, SYmin, SZmin, SXmax, SYmax, SZmax);
+  LBBox.Get(LXmin, LYmin, LZmin, LXmax, LYmax, LZmax);
 
-  //Compute the max distance between input shapes------------//
-  gp_XYZ Lmin(LXmin, LYmin, LZmin), 
-         Lmax(LXmax, LYmax, LZmax);
-  gp_XYZ Smin(SXmin, SYmin, SZmin), 
-         Smax(SXmax, SYmax, SZmax);
+  // Compute the max distance between input shapes------------//
+  gp_XYZ Lmin(LXmin, LYmin, LZmin), Lmax(LXmax, LYmax, LZmax);
+  gp_XYZ Smin(SXmin, SYmin, SZmin), Smax(SXmax, SYmax, SZmax);
   Lmax.Subtract(Lmin);
   Smax.Subtract(Smin);
   return Lmax.Modulus() + Smax.Modulus() + DistanceOut(S1, S2);
 }
 
 //=======================================================================
-//function : BuildSection
-//purpose  : Cuts theShape by theTool using BRepAlgoAPI_Section and 
+// function : BuildSection
+// purpose  : Cuts theShape by theTool using BRepAlgoAPI_Section and
 //           stores result as set of connected wires and compound
 //=======================================================================
 
-void BRepProj_Projection::BuildSection (const TopoDS_Shape& theShape,
-                                        const TopoDS_Shape& theTool)
+void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoDS_Shape& theTool)
 {
   myIsDone = Standard_False;
   mySection.Nullify();
   myShape.Nullify();
   myItr = 0;
 
-  // if theShape is compound, extract only faces -- section algorithm 
+  // if theShape is compound, extract only faces -- section algorithm
   // may refuse to work if e.g. vertex is present
   TopoDS_Shape aShape;
-  if (theShape.ShapeType() == TopAbs_FACE ||
-      theShape.ShapeType() == TopAbs_SHELL ||
-      theShape.ShapeType() == TopAbs_SOLID ||
-      theShape.ShapeType() == TopAbs_COMPSOLID)
+  if (theShape.ShapeType() == TopAbs_FACE || theShape.ShapeType() == TopAbs_SHELL
+      || theShape.ShapeType() == TopAbs_SOLID || theShape.ShapeType() == TopAbs_COMPSOLID)
     aShape = theShape;
   else if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
     TopoDS_Compound C;
-    BRep_Builder B;
-    TopExp_Explorer exp (theShape, TopAbs_FACE);
+    BRep_Builder    B;
+    TopExp_Explorer exp(theShape, TopAbs_FACE);
     for (; exp.More(); exp.Next())
     {
-      if ( C.IsNull() )
-        B.MakeCompound (C);
-      B.Add (C, exp.Current());
+      if (C.IsNull())
+        B.MakeCompound(C);
+      B.Add(C, exp.Current());
     }
     aShape = C;
   }
-  if ( aShape.IsNull() )
-    throw Standard_ConstructionError(__FILE__": target shape has no faces");
+  if (aShape.IsNull())
+    throw Standard_ConstructionError(__FILE__ ": target shape has no faces");
 
   // build section computing p-curves on both shapes to get higher precision
   BRepAlgoAPI_Section aSectionTool(aShape, theTool, Standard_False);
@@ -131,26 +122,28 @@ void BRepProj_Projection::BuildSection (const TopoDS_Shape& theShape,
 
   // get edges of the result
   Handle(TopTools_HSequenceOfShape) anEdges = new TopTools_HSequenceOfShape;
-  TopExp_Explorer exp(aSectionTool.Shape(), TopAbs_EDGE);
+  TopExp_Explorer                   exp(aSectionTool.Shape(), TopAbs_EDGE);
   for (; exp.More(); exp.Next())
-    anEdges->Append (exp.Current());
+    anEdges->Append(exp.Current());
 
   // if no edges are found, this means that this section yields no result
-  if (anEdges->Length() <= 0) 
+  if (anEdges->Length() <= 0)
     return;
 
   // connect edges to wires using ShapeAnalysis functionality
-  ShapeAnalysis_FreeBounds::ConnectEdgesToWires (anEdges, Precision::Confusion(), 
-                                                 Standard_True, mySection);
-  myIsDone = (! mySection.IsNull() && mySection->Length() > 0);
+  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges,
+                                                Precision::Confusion(),
+                                                Standard_True,
+                                                mySection);
+  myIsDone = (!mySection.IsNull() && mySection->Length() > 0);
 
   // collect all resulting wires to compound
-  if ( myIsDone )
+  if (myIsDone)
   {
     BRep_Builder B;
-    B.MakeCompound (myShape);
-    for (Standard_Integer i=1; i <= mySection->Length(); i++)
-      B.Add (myShape, mySection->Value(i));
+    B.MakeCompound(myShape);
+    for (Standard_Integer i = 1; i <= mySection->Length(); i++)
+      B.Add(myShape, mySection->Value(i));
 
     // initialize iteration (for compatibility with previous versions)
     myItr = 1;
@@ -158,103 +151,103 @@ void BRepProj_Projection::BuildSection (const TopoDS_Shape& theShape,
 }
 
 //=======================================================================
-//function : BRepProj_Projection    
-//purpose  : Cylindrical Projection
+// function : BRepProj_Projection
+// purpose  : Cylindrical Projection
 //=======================================================================
 
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,
-                                         const gp_Dir& D)
-: myIsDone(Standard_False), myItr(0) 
+                                         const gp_Dir&       D)
+    : myIsDone(Standard_False),
+      myItr(0)
 {
   // Check the input
-  Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()),__FILE__": null input shape");
-  if (Wire.ShapeType() != TopAbs_EDGE && 
-      Wire.ShapeType() != TopAbs_WIRE ) 
-    throw Standard_ConstructionError(__FILE__": projected shape is neither wire nor edge");
+  Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()), __FILE__ ": null input shape");
+  if (Wire.ShapeType() != TopAbs_EDGE && Wire.ShapeType() != TopAbs_WIRE)
+    throw Standard_ConstructionError(__FILE__ ": projected shape is neither wire nor edge");
 
   // compute the "length" of the cylindrical surface to build
   Standard_Real mdis = DistanceIn(Wire, Shape);
-  gp_Vec Vsup (D.XYZ() * 2 * mdis);
-  gp_Vec Vinf (D.XYZ() * -mdis);
+  gp_Vec        Vsup(D.XYZ() * 2 * mdis);
+  gp_Vec        Vinf(D.XYZ() * -mdis);
 
   // move the base of the cylindrical surface by translating it by -mdis
   gp_Trsf T;
   T.SetTranslation(Vinf);
   // Note: it is necessary to create copy of wire to avoid adding new pcurves into it
   Handle(BRepTools_TrsfModification) Trsf = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier Modif (Wire, Trsf);
-  const TopoDS_Shape& WireBase = Modif.ModifiedShape(Wire);
+  BRepTools_Modifier                 Modif(Wire, Trsf);
+  const TopoDS_Shape&                WireBase = Modif.ModifiedShape(Wire);
 
   // Creation of a cylindrical surface
-  BRepSweep_Prism CylSurf (WireBase, Vsup, Standard_False);
+  BRepSweep_Prism CylSurf(WireBase, Vsup, Standard_False);
 
   // Perform section
-  BuildSection (Shape, CylSurf.Shape());
+  BuildSection(Shape, CylSurf.Shape());
 }
 
 //=======================================================================
-//function : BRepProj_Projection
-//purpose  : Conical projection
+// function : BRepProj_Projection
+// purpose  : Conical projection
 //=======================================================================
 
-BRepProj_Projection::BRepProj_Projection (const TopoDS_Shape& Wire,
-                                          const TopoDS_Shape& Shape,
-                                          const gp_Pnt& P)
-: myIsDone(Standard_False), myItr(0)
+BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
+                                         const TopoDS_Shape& Shape,
+                                         const gp_Pnt&       P)
+    : myIsDone(Standard_False),
+      myItr(0)
 {
   // Check the input
-  Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()),__FILE__": null input shape");
-  if (Wire.ShapeType() != TopAbs_EDGE && 
-      Wire.ShapeType() != TopAbs_WIRE ) 
-    throw Standard_ConstructionError(__FILE__": projected shape is neither wire nor edge");
+  Standard_NullObject_Raise_if((Wire.IsNull() || Shape.IsNull()), __FILE__ ": null input shape");
+  if (Wire.ShapeType() != TopAbs_EDGE && Wire.ShapeType() != TopAbs_WIRE)
+    throw Standard_ConstructionError(__FILE__ ": projected shape is neither wire nor edge");
 
   // if Wire is only an edge, transform it into a Wire
   TopoDS_Wire aWire;
-  if (Wire.ShapeType() == TopAbs_EDGE) 
+  if (Wire.ShapeType() == TopAbs_EDGE)
   {
     BRep_Builder BB;
     BB.MakeWire(aWire);
     BB.Add(aWire, Wire);
   }
-  else 
+  else
     aWire = TopoDS::Wire(Wire);
-  
+
   // compute the "length" of the conical surface to build
   Standard_Real mdis = DistanceIn(Wire, Shape);
 
   // Initialize iterator to get first sub-shape of Wire
-  TopExp_Explorer ExpWire; 
-  ExpWire.Init (aWire, TopAbs_VERTEX);
-  
+  TopExp_Explorer ExpWire;
+  ExpWire.Init(aWire, TopAbs_VERTEX);
+
   // get the first Point of the first sub-shape os the Wire
   gp_Pnt PC = BRep_Tool::Pnt(TopoDS::Vertex(ExpWire.Current()));
-  
+
   // compute the ratio of the scale transformation
   Standard_Real Scale = PC.Distance(P);
-  if ( Abs (Scale) < Precision::Confusion() ) 
+  if (Abs(Scale) < Precision::Confusion())
     throw Standard_ConstructionError("Projection");
   Scale = 1. + mdis / Scale;
-  
+
   // move the base of the conical surface by scaling it with ratio Scale
   gp_Trsf T;
   T.SetScale(P, Scale);
   Handle(BRepTools_TrsfModification) Tsca = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier ModifScale(aWire,Tsca);
-  TopoDS_Shape ShapeGen1 = ModifScale.ModifiedShape(aWire);
+  BRepTools_Modifier                 ModifScale(aWire, Tsca);
+  TopoDS_Shape                       ShapeGen1 = ModifScale.ModifiedShape(aWire);
 
   TopoDS_Vertex aVertex = BRepLib_MakeVertex(P);
-  TopoDS_Edge DegEdge;
-  BRep_Builder BB;
-  BB.MakeEdge( DegEdge );
-  BB.Add( DegEdge, aVertex.Oriented(TopAbs_FORWARD) );
-  BB.Add( DegEdge, aVertex.Oriented(TopAbs_REVERSED) );
-  BB.Degenerated( DegEdge, Standard_True );
+  TopoDS_Edge   DegEdge;
+  BRep_Builder  BB;
+  BB.MakeEdge(DegEdge);
+  BB.Add(DegEdge, aVertex.Oriented(TopAbs_FORWARD));
+  BB.Add(DegEdge, aVertex.Oriented(TopAbs_REVERSED));
+  BB.Degenerated(DegEdge, Standard_True);
 
   TopoDS_Wire DegWire;
-  BB.MakeWire( DegWire );
-  BB.Add( DegWire, DegEdge );
-  DegWire.Closed( Standard_True );
+  BB.MakeWire(DegWire);
+  BB.Add(DegWire, DegEdge);
+  DegWire.Closed(Standard_True);
 
   // Build the Ruled surface based shape
   BRepFill_Generator RuledSurf;
@@ -264,5 +257,5 @@ BRepProj_Projection::BRepProj_Projection (const TopoDS_Shape& Wire,
   TopoDS_Shell SurfShell = RuledSurf.Shell();
 
   // Perform section
-  BuildSection (Shape, SurfShell);
+  BuildSection(Shape, SurfShell);
 }

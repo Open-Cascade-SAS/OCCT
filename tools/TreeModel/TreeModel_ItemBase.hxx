@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_ItemBase_H
 #define TreeModel_ItemBase_H
@@ -76,7 +76,6 @@ typedef QExplicitlySharedDataPointer<TreeModel_ItemBase> TreeModel_ItemBasePtr;
 class TreeModel_ItemBase : public QSharedData
 {
 public:
-
   //! Destructor
   virtual ~TreeModel_ItemBase() {}
 
@@ -107,9 +106,15 @@ public:
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  virtual bool SetStream (const Standard_SStream& theSStream, Standard_Integer& theStartPos,
-                          Standard_Integer& theLastPos) const
-  { (void)theSStream; (void)theStartPos; (void)theLastPos; return false; }
+  virtual bool SetStream(const Standard_SStream& theSStream,
+                         Standard_Integer&       theStartPos,
+                         Standard_Integer&       theLastPos) const
+  {
+    (void)theSStream;
+    (void)theStartPos;
+    (void)theLastPos;
+    return false;
+  }
 
   //! Gets the parent of the item, or TreeModel_ItemBasePtr() if it has no parent.
   //! \return pointer to the item
@@ -130,18 +135,26 @@ public:
   //! \param theColumn the column of the child item
   //! \param isToCreate the flag whether the item should be created if it is not created yet
   //! \return the child item or TreeModel_ItemBasePtr() if it does not exist
-  Standard_EXPORT TreeModel_ItemBasePtr Child (int theRow, int theColumn, const bool isToCreate = true);
+  Standard_EXPORT TreeModel_ItemBasePtr Child(int        theRow,
+                                              int        theColumn,
+                                              const bool isToCreate = true);
 
   //! Sets a custom value for the role in an internal cache
   //! \param theValue a value
   //! \param theRole a value role
-  void SetCustomData(const QVariant& theValue, int theRole) { myCachedValues.insert (theRole, theValue); }
+  void SetCustomData(const QVariant& theValue, int theRole)
+  {
+    myCachedValues.insert(theRole, theValue);
+  }
 
   //! Returns the data stored under the given role for the current item
   //! \param theIndex the item model index
   //! \param theRole the item model role
-  virtual QVariant data (const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const
-  { (void)theIndex; return cachedValue(theRole); }
+  virtual QVariant data(const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const
+  {
+    (void)theIndex;
+    return cachedValue(theRole);
+  }
 
   //! Returns number of rows where the children are
   //! \return the row count
@@ -151,18 +164,24 @@ public:
   const Handle(TreeModel_ItemProperties)& Properties() const { return myProperties; }
 
   //! Updates item by the item properties value
-  virtual void StoreItemProperties (const int theRow, const int theColumn, const QVariant& theValue)
-    { (void)theRow, (void)theColumn; (void)theValue; }
+  virtual void StoreItemProperties(const int theRow, const int theColumn, const QVariant& theValue)
+  {
+    (void)theRow, (void)theColumn;
+    (void)theValue;
+  }
 
   //! Returns presentation of the item to be visualized in the view
   //! \thePresentations[out]  container of presentation handles
-  Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
-protected:
+  Standard_EXPORT virtual void Presentations(
+    NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
+protected:
   //! \param theParent the parent item
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
-  Standard_EXPORT TreeModel_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
+  Standard_EXPORT TreeModel_ItemBase(TreeModel_ItemBasePtr theParent,
+                                     const int             theRow,
+                                     const int             theColumn);
 
   //! Initializes the current item. It creates a backup of the specific item information
   virtual void initItem() const {}
@@ -171,18 +190,21 @@ protected:
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn)
-  { (void)theRow; (void)theColumn; return TreeModel_ItemBasePtr(); }
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn)
+  {
+    (void)theRow;
+    (void)theColumn;
+    return TreeModel_ItemBasePtr();
+  }
 
   //! Wraps the current item by shared pointer
   //! \return the shared pointer to the current item
   Standard_EXPORT const TreeModel_ItemBasePtr currentItem();
 
   //! Returns the cached value for the role. Init the value if it is requested the first time
-  //! By default, it calls initRowCount(TreeModel_ItemRole_RowCountRole) or initValue for the item role
-  //! \param theItemRole a value role
-  //! \return the value
-  Standard_EXPORT QVariant cachedValue (const int theItemRole) const;
+  //! By default, it calls initRowCount(TreeModel_ItemRole_RowCountRole) or initValue for the item
+  //! role \param theItemRole a value role \return the value
+  Standard_EXPORT QVariant cachedValue(const int theItemRole) const;
 
   //! \return number of children. It should be reimplemented in child
   virtual int initRowCount() const = 0;
@@ -193,40 +215,40 @@ protected:
   //! Returns data value for the role. It should be reimplemented in child
   //! \param theItemRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const;
+  Standard_EXPORT virtual QVariant initValue(const int theItemRole) const;
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  virtual void initStream (Standard_OStream& theOStream) const { (void)theOStream; }
+  virtual void initStream(Standard_OStream& theOStream) const { (void)theOStream; }
 
 protected:
-  Handle(TreeModel_ItemProperties) myProperties; //!< the properties
-  int m_iStreamChildren; //!< the count of stream items
-  Standard_SStream myStream; //!< stream value
+  Handle(TreeModel_ItemProperties) myProperties;      //!< the properties
+  int                              m_iStreamChildren; //!< the count of stream items
+  Standard_SStream                 myStream;          //!< stream value
 
 private:
-
-  typedef QHash< QPair<int, int>, TreeModel_ItemBasePtr > PositionToItemHash;
-  PositionToItemHash m_ChildItems; //!< the hash of item children
+  typedef QHash<QPair<int, int>, TreeModel_ItemBasePtr> PositionToItemHash;
+  PositionToItemHash                                    m_ChildItems; //!< the hash of item children
 
   mutable QMap<int, QVariant> myCachedValues; //!< cached values, should be cleared by reset
-  TreeModel_ItemBasePtr m_pParent; //!< the parent item
-  int m_iRow;          //!< the item row position in the parent item
-  int m_iColumn;       //!< the item column position in the parent item
+  TreeModel_ItemBasePtr       m_pParent;      //!< the parent item
+  int                         m_iRow;         //!< the item row position in the parent item
+  int                         m_iColumn;      //!< the item column position in the parent item
   bool m_bInitialized; //!< the state whether the item content is already initialized
 };
 
 //! Returns an explicitly shared pointer to the pointer held by other, using a
 //! dynamic cast to type X to obtain an internal pointer of the appropriate type.
 //! If the dynamic_cast fails, the object returned will be null.
-//! Example of using: 
+//! Example of using:
 //! TreeModel_ItemBase* aParent;
 //! TreeModel_CustomItemPtr aParentItem = itemDynamicCast<TreeModel_CustomItem>(aParent);
 //! \param theItem a source item
 //! \return a converted item
-template <class X, class T> QExplicitlySharedDataPointer<X> itemDynamicCast (const QExplicitlySharedDataPointer<T>& theItem)
+template <class X, class T>
+QExplicitlySharedDataPointer<X> itemDynamicCast(const QExplicitlySharedDataPointer<T>& theItem)
 {
-  X* ptr = dynamic_cast<X*> (theItem.data());
+  X* ptr = dynamic_cast<X*>(theItem.data());
 
   QExplicitlySharedDataPointer<X> result;
   result = ptr;

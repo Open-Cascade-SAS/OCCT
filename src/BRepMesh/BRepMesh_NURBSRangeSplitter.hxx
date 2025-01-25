@@ -25,17 +25,14 @@
 class BRepMesh_NURBSRangeSplitter : public BRepMesh_UVParamRangeSplitter
 {
 public:
-
   //! Constructor.
   BRepMesh_NURBSRangeSplitter()
-  : mySurfaceType(GeomAbs_OtherSurface)
+      : mySurfaceType(GeomAbs_OtherSurface)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_NURBSRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_NURBSRangeSplitter() {}
 
   //! Updates discrete range of surface according to its geometric range.
   Standard_EXPORT virtual void AdjustRange() Standard_OVERRIDE;
@@ -45,7 +42,6 @@ public:
     const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
 
 protected:
-
   //! Initializes U and V parameters lists using CN continuity intervals.
   Standard_EXPORT virtual Standard_Boolean initParameters() const;
 
@@ -56,14 +52,13 @@ protected:
     const GeomAbs_Shape              theContinuity) const;
 
 private:
-  //! Tries to compute intervals even for cases with no intervals 
+  //! Tries to compute intervals even for cases with no intervals
   //! at all using available geometrical parameters.
-  void getUndefinedInterval(
-    const Handle(Adaptor3d_Surface)&               theSurface,
-    const Standard_Boolean                         isU,
-    const GeomAbs_Shape                            theContinuity,
-    const std::pair<Standard_Real, Standard_Real>& theRange,
-    TColStd_Array1OfReal&                          theIntervals) const;
+  void getUndefinedInterval(const Handle(Adaptor3d_Surface)&               theSurface,
+                            const Standard_Boolean                         isU,
+                            const GeomAbs_Shape                            theContinuity,
+                            const std::pair<Standard_Real, Standard_Real>& theRange,
+                            TColStd_Array1OfReal&                          theIntervals) const;
 
   //! Computes parameters of filter and applies it to the source parameters.
   Handle(IMeshData::SequenceOfReal) computeGrainAndFilterParameters(
@@ -93,13 +88,12 @@ private:
     Param_V = 0x2
   };
 
-  //! Finds edges of discrete face and uses its points 
+  //! Finds edges of discrete face and uses its points
   //! as auxiliary control parameters for generation of nodes.
-  Standard_Boolean grabParamsOfEdges (const EdgeType         theEdgeType,
-                                      const Standard_Integer theParamDimensionFlag) const;
+  Standard_Boolean grabParamsOfEdges(const EdgeType         theEdgeType,
+                                     const Standard_Integer theParamDimensionFlag) const;
 
 private:
-
   GeomAbs_SurfaceType mySurfaceType;
 };
 

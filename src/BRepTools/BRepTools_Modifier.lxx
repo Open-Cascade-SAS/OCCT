@@ -17,24 +17,24 @@
 #include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
-//function : ModifiedShape
-//purpose  : 
+// function : ModifiedShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape
-  (const TopoDS_Shape& S) const
+inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape(const TopoDS_Shape& S) const
 {
-  if (!myMap.IsBound(S)) { throw Standard_NoSuchObject();}
+  if (!myMap.IsBound(S))
+  {
+    throw Standard_NoSuchObject();
+  }
   return myMap(S);
 }
 
-
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BRepTools_Modifier::IsDone () const
+inline Standard_Boolean BRepTools_Modifier::IsDone() const
 {
   return myDone;
 }
-

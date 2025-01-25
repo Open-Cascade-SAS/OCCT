@@ -11,31 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_SignCategory.hxx>
 #include <Interface_Category.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignCategory,IFSelect_Signature)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignCategory, IFSelect_Signature)
 
 static Standard_CString nulsign = "";
 
-
-    IFSelect_SignCategory::IFSelect_SignCategory ()
-    : IFSelect_Signature ("Category")
+IFSelect_SignCategory::IFSelect_SignCategory()
+    : IFSelect_Signature("Category")
 {
-  Interface_Category::Init();  // si pas deja fait
+  Interface_Category::Init(); // si pas deja fait
   Standard_Integer i, nb = Interface_Category::NbCategories();
-  for (i = 1; i <= nb; i ++)  AddCase (Interface_Category::Name(i));
+  for (i = 1; i <= nb; i++)
+    AddCase(Interface_Category::Name(i));
 }
 
-
-    Standard_CString IFSelect_SignCategory::Value
-  (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+Standard_CString IFSelect_SignCategory::Value(const Handle(Standard_Transient)&       ent,
+                                              const Handle(Interface_InterfaceModel)& model) const
 {
-  if (ent.IsNull() || model.IsNull()) return nulsign;
-  return Interface_Category::Name(model->CategoryNumber (model->Number(ent)));
+  if (ent.IsNull() || model.IsNull())
+    return nulsign;
+  return Interface_Category::Name(model->CategoryNumber(model->Number(ent)));
 }

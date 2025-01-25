@@ -21,8 +21,9 @@
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,TopOpeBRepTool_C2DF> TopOpeBRepTool_DataMapOfOrientedShapeC2DF;
-typedef NCollection_DataMap<TopoDS_Shape,TopOpeBRepTool_C2DF>::Iterator TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF;
-
+typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>
+  TopOpeBRepTool_DataMapOfOrientedShapeC2DF;
+typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>::Iterator
+  TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF;
 
 #endif

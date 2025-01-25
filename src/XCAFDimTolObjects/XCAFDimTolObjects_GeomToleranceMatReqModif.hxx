@@ -13,16 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_GeomToleranceMatReqModif_HeaderFile
 #define _XCAFDimTolObjects_GeomToleranceMatReqModif_HeaderFile
 
 //! Defines types of material requirement
 enum XCAFDimTolObjects_GeomToleranceMatReqModif
 {
-XCAFDimTolObjects_GeomToleranceMatReqModif_None,
-XCAFDimTolObjects_GeomToleranceMatReqModif_M,
-XCAFDimTolObjects_GeomToleranceMatReqModif_L
+  XCAFDimTolObjects_GeomToleranceMatReqModif_None,
+  XCAFDimTolObjects_GeomToleranceMatReqModif_M,
+  XCAFDimTolObjects_GeomToleranceMatReqModif_L
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceMatReqModif_HeaderFile

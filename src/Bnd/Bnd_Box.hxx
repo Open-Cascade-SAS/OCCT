@@ -30,7 +30,6 @@ class gp_Trsf;
 class gp_Lin;
 class gp_Pln;
 
-
 //! Describes a bounding box in 3D space.
 //! A bounding box is parallel to the axes of the coordinates
 //! system. If it is finite, it is defined by the three intervals:
@@ -57,13 +56,11 @@ class gp_Pln;
 //! bounding box if it is infinite or empty, and
 //! -   a gap, which is included on both sides in any direction
 //! when consulting the finite bounds of the box.
-class Bnd_Box 
+class Bnd_Box
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty Box.
   //! The constructed box is qualified Void. Its gap is null.
   Standard_EXPORT Bnd_Box();
@@ -71,7 +68,7 @@ public:
   //! Creates a bounding box, it contains:
   //! -   minimum/maximum point of bounding box,
   //! The constructed box is qualified Void. Its gap is null.
-  Standard_EXPORT Bnd_Box (const gp_Pnt& theMin, const gp_Pnt& theMax);
+  Standard_EXPORT Bnd_Box(const gp_Pnt& theMin, const gp_Pnt& theMax);
 
   //! Sets this bounding box so that it covers the whole of 3D space.
   //! It is infinitely long in all directions.
@@ -80,12 +77,12 @@ public:
   //! Sets this bounding box so that it is empty. All points are outside a void box.
   void SetVoid()
   {
-    Xmin =  RealLast();
-    Xmax = -RealLast();
-    Ymin =  RealLast();
-    Ymax = -RealLast();
-    Zmin =  RealLast();
-    Zmax = -RealLast();
+    Xmin  = RealLast();
+    Xmax  = -RealLast();
+    Ymin  = RealLast();
+    Ymax  = -RealLast();
+    Zmin  = RealLast();
+    Zmax  = -RealLast();
     Flags = VoidMask;
     Gap   = 0.0;
   }
@@ -93,53 +90,63 @@ public:
   //! Sets this bounding box so that it bounds
   //! -   the point P. This involves first setting this bounding box
   //! to be void and then adding the point P.
-  Standard_EXPORT void Set (const gp_Pnt& P);
-  
+  Standard_EXPORT void Set(const gp_Pnt& P);
+
   //! Sets this bounding box so that it bounds
   //! the half-line defined by point P and direction D, i.e. all
   //! points M defined by M=P+u*D, where u is greater than
   //! or equal to 0, are inside the bounding volume. This
   //! involves first setting this box to be void and then adding   the half-line.
-  Standard_EXPORT void Set (const gp_Pnt& P, const gp_Dir& D);
-  
+  Standard_EXPORT void Set(const gp_Pnt& P, const gp_Dir& D);
+
   //! Enlarges this bounding box, if required, so that it
   //! contains at least:
   //! -   interval [ aXmin,aXmax ] in the "X Direction",
   //! -   interval [ aYmin,aYmax ] in the "Y Direction",
   //! -   interval [ aZmin,aZmax ] in the "Z Direction";
-  Standard_EXPORT void Update (const Standard_Real aXmin, const Standard_Real aYmin, const Standard_Real aZmin, const Standard_Real aXmax, const Standard_Real aYmax, const Standard_Real aZmax);
-  
+  Standard_EXPORT void Update(const Standard_Real aXmin,
+                              const Standard_Real aYmin,
+                              const Standard_Real aZmin,
+                              const Standard_Real aXmax,
+                              const Standard_Real aYmax,
+                              const Standard_Real aZmax);
+
   //! Adds a point of coordinates (X,Y,Z) to this bounding box.
-  Standard_EXPORT void Update (const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
-  
+  Standard_EXPORT void Update(const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
+
   //! Returns the gap of this bounding box.
   Standard_EXPORT Standard_Real GetGap() const;
-  
+
   //! Set the gap of this bounding box to abs(Tol).
-  Standard_EXPORT void SetGap (const Standard_Real Tol);
-  
+  Standard_EXPORT void SetGap(const Standard_Real Tol);
+
   //! Enlarges the      box    with    a   tolerance   value.
   //! (minvalues-Abs(<tol>) and maxvalues+Abs(<tol>))
   //! This means that the minimum values of its X, Y and Z
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are
   //! increased by the same amount.
-  Standard_EXPORT void Enlarge (const Standard_Real Tol);
-  
+  Standard_EXPORT void Enlarge(const Standard_Real Tol);
+
   //! Returns the bounds of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values
   //! may be equal to +/- Precision::Infinite().
   //! Standard_ConstructionError exception will be thrown if the box is void.
   //! if IsVoid()
-  Standard_EXPORT void Get (Standard_Real& theXmin, Standard_Real& theYmin, Standard_Real& theZmin, Standard_Real& theXmax, Standard_Real& theYmax, Standard_Real& theZmax) const;
-  
+  Standard_EXPORT void Get(Standard_Real& theXmin,
+                           Standard_Real& theYmin,
+                           Standard_Real& theZmin,
+                           Standard_Real& theXmax,
+                           Standard_Real& theYmax,
+                           Standard_Real& theZmax) const;
+
   //! Returns the lower corner of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values
   //! may be equal to +/- Precision::Infinite().
   //! Standard_ConstructionError exception will be thrown if the box is void.
   //! if IsVoid()
   Standard_EXPORT gp_Pnt CornerMin() const;
-  
+
   //! Returns the upper corner of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values
   //! may be equal to +/- Precision::Infinite().
@@ -193,74 +200,76 @@ public:
   Standard_Boolean IsOpenZmax() const { return (Flags & ZmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).
-  Standard_Boolean IsWhole()    const { return (Flags & WholeMask) == WholeMask; }
+  Standard_Boolean IsWhole() const { return (Flags & WholeMask) == WholeMask; }
 
   //! Returns true if this bounding box is empty (Void flag).
-  Standard_Boolean IsVoid()     const { return (Flags & VoidMask) != 0; }
+  Standard_Boolean IsVoid() const { return (Flags & VoidMask) != 0; }
 
   //! true if xmax-xmin < tol.
-  Standard_EXPORT Standard_Boolean IsXThin (const Standard_Real tol) const;
-  
+  Standard_EXPORT Standard_Boolean IsXThin(const Standard_Real tol) const;
+
   //! true if ymax-ymin < tol.
-  Standard_EXPORT Standard_Boolean IsYThin (const Standard_Real tol) const;
-  
+  Standard_EXPORT Standard_Boolean IsYThin(const Standard_Real tol) const;
+
   //! true if zmax-zmin < tol.
-  Standard_EXPORT Standard_Boolean IsZThin (const Standard_Real tol) const;
-  
+  Standard_EXPORT Standard_Boolean IsZThin(const Standard_Real tol) const;
+
   //! Returns true if IsXThin, IsYThin and IsZThin are all true,
   //! i.e. if the box is thin in all three dimensions.
-  Standard_EXPORT Standard_Boolean IsThin (const Standard_Real tol) const;
-  
+  Standard_EXPORT Standard_Boolean IsThin(const Standard_Real tol) const;
+
   //! Returns a bounding box which is the result of applying the
   //! transformation T to this bounding box.
   //! Warning
   //! Applying a geometric transformation (for example, a
   //! rotation) to a bounding box generally increases its
   //! dimensions. This is not optimal for algorithms which use it.
-  Standard_NODISCARD Standard_EXPORT Bnd_Box Transformed (const gp_Trsf& T) const;
-  
+  Standard_NODISCARD Standard_EXPORT Bnd_Box Transformed(const gp_Trsf& T) const;
+
   //! Adds the box <Other> to <me>.
-  Standard_EXPORT void Add (const Bnd_Box& Other);
-  
+  Standard_EXPORT void Add(const Bnd_Box& Other);
+
   //! Adds a Pnt to the box.
-  Standard_EXPORT void Add (const gp_Pnt& P);
-  
+  Standard_EXPORT void Add(const gp_Pnt& P);
+
   //! Extends  <me> from the Pnt <P> in the direction <D>.
-  Standard_EXPORT void Add (const gp_Pnt& P, const gp_Dir& D);
-  
+  Standard_EXPORT void Add(const gp_Pnt& P, const gp_Dir& D);
+
   //! Extends the Box  in the given Direction, i.e. adds
   //! an  half-line. The   box  may become   infinite in
   //! 1,2 or 3 directions.
-  Standard_EXPORT void Add (const gp_Dir& D);
-  
+  Standard_EXPORT void Add(const gp_Dir& D);
+
   //! Returns True if the Pnt is out the box.
-  Standard_EXPORT Standard_Boolean IsOut (const gp_Pnt& P) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt& P) const;
+
   //! Returns False if the line intersects the box.
-  Standard_EXPORT Standard_Boolean IsOut (const gp_Lin& L) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const gp_Lin& L) const;
+
   //! Returns False if the plane intersects the box.
-  Standard_EXPORT Standard_Boolean IsOut (const gp_Pln& P) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const gp_Pln& P) const;
+
   //! Returns False if the <Box> intersects or is inside <me>.
-  Standard_EXPORT Standard_Boolean IsOut (const Bnd_Box& Other) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other) const;
+
   //! Returns False if  the transformed <Box> intersects
   //! or  is inside <me>.
-  Standard_EXPORT Standard_Boolean IsOut (const Bnd_Box& Other, const gp_Trsf& T) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other, const gp_Trsf& T) const;
+
   //! Returns False  if the transformed <Box> intersects
   //! or  is inside the transformed box <me>.
-  Standard_EXPORT Standard_Boolean IsOut (const gp_Trsf& T1, const Bnd_Box& Other, const gp_Trsf& T2) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const gp_Trsf& T1,
+                                         const Bnd_Box& Other,
+                                         const gp_Trsf& T2) const;
+
   //! Returns False  if the flat band lying between two parallel
   //! lines represented by their reference points <P1>, <P2> and
   //! direction <D> intersects the box.
-  Standard_EXPORT Standard_Boolean IsOut (const gp_Pnt& P1, const gp_Pnt& P2, const gp_Dir& D) const;
-  
+  Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Dir& D) const;
+
   //! Computes the minimum distance between two boxes.
-  Standard_EXPORT Standard_Real Distance (const Bnd_Box& Other) const;
-  
+  Standard_EXPORT Standard_Real Distance(const Bnd_Box& Other) const;
+
   Standard_EXPORT void Dump() const;
 
   //! Computes the squared diagonal of me.
@@ -277,9 +286,10 @@ public:
     return aDx * aDx + aDy * aDy + aDz * aDz;
   }
 
-  //! Returns a finite part of an infinite bounding box (returns self if this is already finite box).
-  //! This can be a Void box in case if its sides has been defined as infinite (Open) without adding any finite points.
-  //! WARNING! This method relies on Open flags, the infinite points added using Add() method will be returned as is.
+  //! Returns a finite part of an infinite bounding box (returns self if this is already finite
+  //! box). This can be a Void box in case if its sides has been defined as infinite (Open) without
+  //! adding any finite points. WARNING! This method relies on Open flags, the infinite points added
+  //! using Add() method will be returned as is.
   Bnd_Box FinitePart() const
   {
     if (!HasFinitePart())
@@ -288,26 +298,22 @@ public:
     }
 
     Bnd_Box aBox;
-    aBox.Update (Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-    aBox.SetGap (Gap);
+    aBox.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    aBox.SetGap(Gap);
     return aBox;
   }
 
   //! Returns TRUE if this box has finite part.
-  Standard_Boolean HasFinitePart() const
-  {
-    return !IsVoid()
-         && Xmax >= Xmin;
-  }
+  Standard_Boolean HasFinitePart() const { return !IsVoid() && Xmax >= Xmin; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos);
+  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
+                                                Standard_Integer&       theStreamPos);
 
 protected:
-
   //! Bit flags.
   enum MaskFlags
   {
@@ -322,16 +328,14 @@ protected:
   };
 
 private:
-
-  Standard_Real Xmin;
-  Standard_Real Xmax;
-  Standard_Real Ymin;
-  Standard_Real Ymax;
-  Standard_Real Zmin;
-  Standard_Real Zmax;
-  Standard_Real Gap;
+  Standard_Real    Xmin;
+  Standard_Real    Xmax;
+  Standard_Real    Ymin;
+  Standard_Real    Ymax;
+  Standard_Real    Zmin;
+  Standard_Real    Zmax;
+  Standard_Real    Gap;
   Standard_Integer Flags;
-
 };
 
 #endif // _Bnd_Box_HeaderFile

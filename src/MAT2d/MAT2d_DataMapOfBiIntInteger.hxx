@@ -21,8 +21,8 @@
 #include <MAT2d_BiInt.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<MAT2d_BiInt,Standard_Integer> MAT2d_DataMapOfBiIntInteger;
-typedef NCollection_DataMap<MAT2d_BiInt,Standard_Integer>::Iterator MAT2d_DataMapIteratorOfDataMapOfBiIntInteger;
-
+typedef NCollection_DataMap<MAT2d_BiInt, Standard_Integer> MAT2d_DataMapOfBiIntInteger;
+typedef NCollection_DataMap<MAT2d_BiInt, Standard_Integer>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfBiIntInteger;
 
 #endif

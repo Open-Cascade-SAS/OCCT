@@ -24,9 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Boolean, Express_PredefinedType)
 // purpose  :
 //=======================================================================
 
-Express_Boolean::Express_Boolean()
-{
-}
+Express_Boolean::Express_Boolean() {}
 
 //=======================================================================
 // function : CPPName

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepShape_Face)> StepShape_Array1OfFace;
 
-
 #endif

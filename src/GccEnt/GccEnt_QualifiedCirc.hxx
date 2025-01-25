@@ -25,7 +25,6 @@
 #include <GccEnt_Position.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! Creates a qualified 2d Circle.
 //! A qualified 2D circle is a circle (gp_Circ2d circle) with a
 //! qualifier which specifies whether the solution of a
@@ -34,13 +33,11 @@
 //! -   is enclosed by the circle, or
 //! -   is built so that both the circle and it are external to   one another, or
 //! -   is undefined (all solutions apply).
-class GccEnt_QualifiedCirc 
+class GccEnt_QualifiedCirc
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a qualified circle by assigning the qualifier
   //! Qualifier to the circle Qualified. Qualifier may be:
   //! -   GccEnt_enclosing if the solution computed by a
@@ -51,56 +48,37 @@ public:
   //! are external to one another, or
   //! -   GccEnt_unqualified if all solutions apply.
   Standard_EXPORT GccEnt_QualifiedCirc(const gp_Circ2d& Qualified, const GccEnt_Position Qualifier);
-  
+
   //! Returns a 2D circle to which the qualifier is assigned.
   Standard_EXPORT gp_Circ2d Qualified() const;
-  
+
   //! Returns
   //! -   the qualifier of this qualified circle, if it is enclosing,
   //! enclosed or outside, or
   //! -   GccEnt_noqualifier if it is unqualified.
   Standard_EXPORT GccEnt_Position Qualifier() const;
-  
+
   //! Returns true if the Circ2d is Unqualified and false in
   //! the other cases.
   Standard_EXPORT Standard_Boolean IsUnqualified() const;
-  
+
   //! Returns true if the solution computed by a construction
   //! algorithm using this qualified circle encloses the circle.
   Standard_EXPORT Standard_Boolean IsEnclosing() const;
-  
+
   //! Returns true if the solution computed by a construction
   //! algorithm using this qualified circle is enclosed by the circle.
   Standard_EXPORT Standard_Boolean IsEnclosed() const;
-  
+
   //! Returns true if both the solution computed by a
   //! construction algorithm using this qualified circle and the
   //! circle are external to one another.
   Standard_EXPORT Standard_Boolean IsOutside() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Circ2d TheQualified;
+  gp_Circ2d       TheQualified;
   GccEnt_Position TheQualifier;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccEnt_QualifiedCirc_HeaderFile

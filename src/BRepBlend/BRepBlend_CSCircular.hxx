@@ -21,5 +21,4 @@
 
 typedef BlendFunc_CSCircular BRepBlend_CSCircular;
 
-
 #endif // _BRepBlend_CSCircular_HeaderFile

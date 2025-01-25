@@ -23,23 +23,23 @@ class Image_SupportedFormats;
 class Image_PixMap;
 
 //! Texture image definition.
-//! The image can be stored as path to image file, as file path with the given offset and as a data buffer of encoded image.
+//! The image can be stored as path to image file, as file path with the given offset and as a data
+//! buffer of encoded image.
 class Image_Texture : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Image_Texture, Standard_Transient)
 public:
-
   //! Constructor pointing to file location.
-  Standard_EXPORT explicit Image_Texture (const TCollection_AsciiString& theFileName);
+  Standard_EXPORT explicit Image_Texture(const TCollection_AsciiString& theFileName);
 
   //! Constructor pointing to file part.
-  Standard_EXPORT explicit Image_Texture (const TCollection_AsciiString& theFileName,
-                                          int64_t theOffset,
-                                          int64_t theLength);
+  Standard_EXPORT explicit Image_Texture(const TCollection_AsciiString& theFileName,
+                                         int64_t                        theOffset,
+                                         int64_t                        theLength);
 
   //! Constructor pointing to buffer.
-  Standard_EXPORT explicit Image_Texture (const Handle(NCollection_Buffer)& theBuffer,
-                                          const TCollection_AsciiString& theId);
+  Standard_EXPORT explicit Image_Texture(const Handle(NCollection_Buffer)& theBuffer,
+                                         const TCollection_AsciiString&    theId);
 
   //! Return generated texture id.
   const TCollection_AsciiString& TextureId() const { return myTextureId; }
@@ -63,77 +63,76 @@ public:
   Standard_EXPORT TCollection_AsciiString ProbeImageFileFormat() const;
 
   //! Image reader without decoding data for formats supported natively by GPUs.
-  Standard_EXPORT virtual Handle(Image_CompressedPixMap) ReadCompressedImage (const Handle(Image_SupportedFormats)& theSupported) const;
+  Standard_EXPORT virtual Handle(Image_CompressedPixMap) ReadCompressedImage(
+    const Handle(Image_SupportedFormats)& theSupported) const;
 
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_PixMap) ReadImage (const Handle(Image_SupportedFormats)& theSupported) const;
+  Standard_EXPORT virtual Handle(Image_PixMap) ReadImage(
+    const Handle(Image_SupportedFormats)& theSupported) const;
 
   //! Write image to specified file without decoding data.
-  Standard_EXPORT virtual Standard_Boolean WriteImage (const TCollection_AsciiString& theFile);
+  Standard_EXPORT virtual Standard_Boolean WriteImage(const TCollection_AsciiString& theFile);
 
   //! Write image to specified stream without decoding data.
-  Standard_EXPORT virtual Standard_Boolean WriteImage (std::ostream& theStream,
-                                                       const TCollection_AsciiString& theFile);
+  Standard_EXPORT virtual Standard_Boolean WriteImage(std::ostream&                  theStream,
+                                                      const TCollection_AsciiString& theFile);
 
 public: //! @name hasher interface
-  
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
 protected:
-
   //! Read image from normal image file.
-  Standard_EXPORT virtual Handle(Image_PixMap) loadImageFile (const TCollection_AsciiString& thePath) const;
+  Standard_EXPORT virtual Handle(Image_PixMap) loadImageFile(
+    const TCollection_AsciiString& thePath) const;
 
   //! Read image from file with some offset.
-  Standard_EXPORT virtual Handle(Image_PixMap) loadImageOffset (const TCollection_AsciiString& thePath,
-                                                                int64_t theOffset,
-                                                                int64_t theLength) const;
+  Standard_EXPORT virtual Handle(Image_PixMap) loadImageOffset(
+    const TCollection_AsciiString& thePath,
+    int64_t                        theOffset,
+    int64_t                        theLength) const;
 
   //! Read image from buffer.
-  Standard_EXPORT virtual Handle(Image_PixMap) loadImageBuffer (const Handle(NCollection_Buffer)& theBuffer,
-                                                                const TCollection_AsciiString& theId) const;
+  Standard_EXPORT virtual Handle(Image_PixMap) loadImageBuffer(
+    const Handle(NCollection_Buffer)& theBuffer,
+    const TCollection_AsciiString&    theId) const;
 
 protected:
-
-  TCollection_AsciiString myTextureId; //!< generated texture id
-  TCollection_AsciiString myImagePath; //!< image file path
-  Handle(NCollection_Buffer) myBuffer; //!< image buffer
-  int64_t                    myOffset; //!< offset within file
-  int64_t                    myLength; //!< length within file
-
+  TCollection_AsciiString    myTextureId; //!< generated texture id
+  TCollection_AsciiString    myImagePath; //!< image file path
+  Handle(NCollection_Buffer) myBuffer;    //!< image buffer
+  int64_t                    myOffset;    //!< offset within file
+  int64_t                    myLength;    //!< length within file
 };
 
 namespace std
 {
-  template<>
-  struct equal_to<Handle(Image_Texture)>
+template <>
+struct equal_to<Handle(Image_Texture)>
+{
+  bool operator()(const Handle(Image_Texture)& theTex1, const Handle(Image_Texture)& theTex2) const
   {
-    bool operator()(const Handle(Image_Texture)& theTex1,
-                    const Handle(Image_Texture)& theTex2) const
+    if (theTex1.IsNull() != theTex2.IsNull())
     {
-      if (theTex1.IsNull() != theTex2.IsNull())
-      {
-        return Standard_False;
-      }
-      else if (theTex1.IsNull())
-      {
-        return Standard_True;
-      }
-      return theTex1->TextureId().IsEqual(theTex2->TextureId());
+      return Standard_False;
     }
-  };
+    else if (theTex1.IsNull())
+    {
+      return Standard_True;
+    }
+    return theTex1->TextureId().IsEqual(theTex2->TextureId());
+  }
+};
 
-  template<>
-  struct hash<Handle(Image_Texture)>
+template <>
+struct hash<Handle(Image_Texture)>
+{
+  size_t operator()(const Handle(Image_Texture)& theTexture) const noexcept
   {
-    size_t operator()(const Handle(Image_Texture)& theTexture) const noexcept
-    {
-      return !theTexture.IsNull()
-        ? std::hash<TCollection_AsciiString>{}(theTexture->TextureId())
-        : 0;
-    }
-  };
-}
+    return !theTexture.IsNull() ? std::hash<TCollection_AsciiString>{}(theTexture->TextureId()) : 0;
+  }
+};
+} // namespace std
 
 #endif // _Image_Texture_HeaderFile

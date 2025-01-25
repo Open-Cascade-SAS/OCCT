@@ -13,39 +13,40 @@
 
 #include <StdLPersistent_Dependency.hxx>
 
+static void ImportName(const Handle(TDataStd_Expression)& theAttribute,
+                       const TCollection_ExtendedString&  theName)
+{
+  theAttribute->SetExpression(theName);
+}
 
-static void ImportName (const Handle(TDataStd_Expression)& theAttribute,
-                        const TCollection_ExtendedString&  theName)
-  { theAttribute->SetExpression (theName); }
-
-static void ImportName (const Handle(TDataStd_Relation)&  theAttribute,
-                        const TCollection_ExtendedString& theName)
-  { theAttribute->SetRelation (theName); }
-
+static void ImportName(const Handle(TDataStd_Relation)&  theAttribute,
+                       const TCollection_ExtendedString& theName)
+{
+  theAttribute->SetRelation(theName);
+}
 
 //=======================================================================
-//function : Import
-//purpose  : Import transient attribute from the persistent data
+// function : Import
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <class AttribClass>
-void StdLPersistent_Dependency::instance<AttribClass>::Import
-  (const Handle(AttribClass)& theAttribute) const
+void StdLPersistent_Dependency::instance<AttribClass>::Import(
+  const Handle(AttribClass)& theAttribute) const
 {
   if (myName)
-    ImportName (theAttribute, myName->Value()->String());
+    ImportName(theAttribute, myName->Value()->String());
 
   if (myVariables)
   {
-    StdLPersistent_HArray1OfPersistent::Iterator anIter (*myVariables->Array());
+    StdLPersistent_HArray1OfPersistent::Iterator anIter(*myVariables->Array());
     for (; anIter.More(); anIter.Next())
     {
       const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
       if (aPersistent)
-        theAttribute->GetVariables().Append (aPersistent->GetAttribute());
+        theAttribute->GetVariables().Append(aPersistent->GetAttribute());
     }
   }
 }
-
 
 template class StdLPersistent_Dependency::instance<TDataStd_Expression>;
 template class StdLPersistent_Dependency::instance<TDataStd_Relation>;

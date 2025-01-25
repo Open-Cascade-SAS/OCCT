@@ -33,59 +33,44 @@ class StepBasic_ApplicationContext;
 class StepBasic_ApplicationProtocolDefinition;
 DEFINE_STANDARD_HANDLE(StepBasic_ApplicationProtocolDefinition, Standard_Transient)
 
-
 class StepBasic_ApplicationProtocolDefinition : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a ApplicationProtocolDefinition
   Standard_EXPORT StepBasic_ApplicationProtocolDefinition();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aStatus, const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName, const Standard_Integer aApplicationProtocolYear, const Handle(StepBasic_ApplicationContext)& aApplication);
-  
-  Standard_EXPORT void SetStatus (const Handle(TCollection_HAsciiString)& aStatus);
-  
+
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&     aStatus,
+    const Handle(TCollection_HAsciiString)&     aApplicationInterpretedModelSchemaName,
+    const Standard_Integer                      aApplicationProtocolYear,
+    const Handle(StepBasic_ApplicationContext)& aApplication);
+
+  Standard_EXPORT void SetStatus(const Handle(TCollection_HAsciiString)& aStatus);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Status() const;
-  
-  Standard_EXPORT void SetApplicationInterpretedModelSchemaName (const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName);
-  
+
+  Standard_EXPORT void SetApplicationInterpretedModelSchemaName(
+    const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) ApplicationInterpretedModelSchemaName() const;
-  
-  Standard_EXPORT void SetApplicationProtocolYear (const Standard_Integer aApplicationProtocolYear);
-  
+
+  Standard_EXPORT void SetApplicationProtocolYear(const Standard_Integer aApplicationProtocolYear);
+
   Standard_EXPORT Standard_Integer ApplicationProtocolYear() const;
-  
-  Standard_EXPORT void SetApplication (const Handle(StepBasic_ApplicationContext)& aApplication);
-  
+
+  Standard_EXPORT void SetApplication(const Handle(StepBasic_ApplicationContext)& aApplication);
+
   Standard_EXPORT Handle(StepBasic_ApplicationContext) Application() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) status;
-  Handle(TCollection_HAsciiString) applicationInterpretedModelSchemaName;
-  Standard_Integer applicationProtocolYear;
+  Handle(TCollection_HAsciiString)     status;
+  Handle(TCollection_HAsciiString)     applicationInterpretedModelSchemaName;
+  Standard_Integer                     applicationProtocolYear;
   Handle(StepBasic_ApplicationContext) application;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ApplicationProtocolDefinition_HeaderFile

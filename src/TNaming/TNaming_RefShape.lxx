@@ -15,44 +15,49 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : TNaming_RefShape
-//purpose  : 
+// function : TNaming_RefShape
+// purpose  :
 //=======================================================================
 
-inline TNaming_RefShape::TNaming_RefShape() :myFirstUse(0) {}
-
-
-//=======================================================================
-//function : TNaming_RefShape
-//purpose  : 
-//=======================================================================
-
-inline TNaming_RefShape::TNaming_RefShape(const TopoDS_Shape& S) 
-:myShape(S),myFirstUse(0){}
+inline TNaming_RefShape::TNaming_RefShape()
+    : myFirstUse(0)
+{
+}
 
 //=======================================================================
-//function : FirstUse
-//purpose  : 
+// function : TNaming_RefShape
+// purpose  :
 //=======================================================================
 
-inline void TNaming_RefShape::FirstUse(const TNaming_PtrNode& pdn) 
+inline TNaming_RefShape::TNaming_RefShape(const TopoDS_Shape& S)
+    : myShape(S),
+      myFirstUse(0)
+{
+}
+
+//=======================================================================
+// function : FirstUse
+// purpose  :
+//=======================================================================
+
+inline void TNaming_RefShape::FirstUse(const TNaming_PtrNode& pdn)
 {
   myFirstUse = pdn;
 }
 
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
-inline void TNaming_RefShape::Shape(const TopoDS_Shape& S) 
+inline void TNaming_RefShape::Shape(const TopoDS_Shape& S)
 {
   myShape = S;
 }
 
 //=======================================================================
-//function : FirstUse
-//purpose  : 
+// function : FirstUse
+// purpose  :
 //=======================================================================
 
 inline TNaming_PtrNode TNaming_RefShape::FirstUse() const
@@ -61,12 +66,11 @@ inline TNaming_PtrNode TNaming_RefShape::FirstUse() const
 }
 
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& TNaming_RefShape::Shape() const
 {
   return myShape;
 }
-

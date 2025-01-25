@@ -20,8 +20,12 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Integer,TopoDS_Shape,NCollection_DefaultHasher<int>,TopTools_ShapeMapHasher> TopOpeBRepDS_DoubleMapOfIntegerShape;
-typedef TopOpeBRepDS_DoubleMapOfIntegerShape::Iterator TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape;
-
+typedef NCollection_DoubleMap<Standard_Integer,
+                              TopoDS_Shape,
+                              NCollection_DefaultHasher<int>,
+                              TopTools_ShapeMapHasher>
+  TopOpeBRepDS_DoubleMapOfIntegerShape;
+typedef TopOpeBRepDS_DoubleMapOfIntegerShape::Iterator
+  TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape;
 
 #endif

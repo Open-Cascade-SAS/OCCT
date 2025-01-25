@@ -24,7 +24,6 @@
 class Message_Msg;
 class TopoDS_Shape;
 
-
 class ShapeExtend_BasicMsgRegistrator;
 DEFINE_STANDARD_HANDLE(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
 
@@ -41,42 +40,27 @@ class ShapeExtend_BasicMsgRegistrator : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor.
   Standard_EXPORT ShapeExtend_BasicMsgRegistrator();
-  
+
   //! Sends a message to be attached to the object.
   //! Object can be of any type interpreted by redefined MsgRegistrator.
-  Standard_EXPORT virtual void Send (const Handle(Standard_Transient)& object, const Message_Msg& message, const Message_Gravity gravity);
-  
+  Standard_EXPORT virtual void Send(const Handle(Standard_Transient)& object,
+                                    const Message_Msg&                message,
+                                    const Message_Gravity             gravity);
+
   //! Sends a message to be attached to the shape.
-  Standard_EXPORT virtual void Send (const TopoDS_Shape& shape, const Message_Msg& message, const Message_Gravity gravity);
-  
+  Standard_EXPORT virtual void Send(const TopoDS_Shape&   shape,
+                                    const Message_Msg&    message,
+                                    const Message_Gravity gravity);
+
   //! Calls Send method with Null Transient.
-  Standard_EXPORT virtual void Send (const Message_Msg& message, const Message_Gravity gravity);
+  Standard_EXPORT virtual void Send(const Message_Msg& message, const Message_Gravity gravity);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeExtend_BasicMsgRegistrator_HeaderFile

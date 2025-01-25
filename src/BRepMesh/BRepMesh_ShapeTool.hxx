@@ -33,11 +33,9 @@ class Bnd_Box;
 class BRepMesh_ShapeTool : public Standard_Transient
 {
 public:
-
   //! Returns maximum tolerance of the given face.
   //! Considers tolerances of edges and vertices contained in the given face.
-  Standard_EXPORT static Standard_Real MaxFaceTolerance(
-    const TopoDS_Face& theFace);
+  Standard_EXPORT static Standard_Real MaxFaceTolerance(const TopoDS_Face& theFace);
 
   //! Gets the maximum dimension of the given bounding box.
   //! If the given bounding box is void leaves the resulting value unchanged.
@@ -49,57 +47,51 @@ public:
   //! Checks same parameter, same range and degenerativity attributes
   //! using geometrical data of the given edge and updates edge model
   //! by computed parameters in case of worst case - it can drop flags
-  //! same parameter and same range to False but never to True if it is 
-  //! already set to False. In contrary, it can also drop degenerated 
+  //! same parameter and same range to False but never to True if it is
+  //! already set to False. In contrary, it can also drop degenerated
   //! flag to True, but never to False if it is already set to True.
-  Standard_EXPORT static void CheckAndUpdateFlags (
-    const IMeshData::IEdgeHandle&   theEdge,
-    const IMeshData::IPCurveHandle& thePCurve);
+  Standard_EXPORT static void CheckAndUpdateFlags(const IMeshData::IEdgeHandle&   theEdge,
+                                                  const IMeshData::IPCurveHandle& thePCurve);
 
   //! Stores the given triangulation into the given face.
   //! @param theFace face to be updated by triangulation.
   //! @param theTriangulation triangulation to be stored into the face.
-  Standard_EXPORT static void AddInFace(
-    const TopoDS_Face&          theFace,
-    Handle(Poly_Triangulation)& theTriangulation);
+  Standard_EXPORT static void AddInFace(const TopoDS_Face&          theFace,
+                                        Handle(Poly_Triangulation)& theTriangulation);
 
   //! Nullifies triangulation stored in the face.
   //! @param theFace face to be updated by null triangulation.
-  Standard_EXPORT static void NullifyFace (const TopoDS_Face& theFace);
+  Standard_EXPORT static void NullifyFace(const TopoDS_Face& theFace);
 
   //! Nullifies polygon on triangulation stored in the edge.
   //! @param theEdge edge to be updated by null polygon.
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
-  Standard_EXPORT static void NullifyEdge (
-    const TopoDS_Edge&                 theEdge,
-    const Handle (Poly_Triangulation)& theTriangulation,
-    const TopLoc_Location&             theLocation);
+  Standard_EXPORT static void NullifyEdge(const TopoDS_Edge&                theEdge,
+                                          const Handle(Poly_Triangulation)& theTriangulation,
+                                          const TopLoc_Location&            theLocation);
 
   //! Nullifies 3d polygon stored in the edge.
   //! @param theEdge edge to be updated by null polygon.
   //! @param theLocation face location.
-  Standard_EXPORT static void NullifyEdge (
-    const TopoDS_Edge&     theEdge,
-    const TopLoc_Location& theLocation);
+  Standard_EXPORT static void NullifyEdge(const TopoDS_Edge&     theEdge,
+                                          const TopLoc_Location& theLocation);
 
   //! Updates the given edge by the given tessellated representation.
   //! @param theEdge edge to be updated.
   //! @param thePolygon tessellated representation of the edge to be stored.
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
-  Standard_EXPORT static void UpdateEdge (
-    const TopoDS_Edge&                          theEdge,
-    const Handle (Poly_PolygonOnTriangulation)& thePolygon,
-    const Handle (Poly_Triangulation)&          theTriangulation,
-    const TopLoc_Location&                      theLocation);
+  Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&                         theEdge,
+                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon,
+                                         const Handle(Poly_Triangulation)& theTriangulation,
+                                         const TopLoc_Location&            theLocation);
 
   //! Updates the given edge by the given tessellated representation.
   //! @param theEdge edge to be updated.
   //! @param thePolygon tessellated representation of the edge to be stored.
-  Standard_EXPORT static void UpdateEdge(
-    const TopoDS_Edge&            theEdge,
-    const Handle(Poly_Polygon3D)& thePolygon);
+  Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&            theEdge,
+                                         const Handle(Poly_Polygon3D)& thePolygon);
 
   //! Updates the given seam edge by the given tessellated representations.
   //! @param theEdge edge to be updated.
@@ -109,44 +101,41 @@ public:
   //! reversed direction of the seam edge.
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
-  Standard_EXPORT static void UpdateEdge (
-    const TopoDS_Edge&                          theEdge,
-    const Handle (Poly_PolygonOnTriangulation)& thePolygon1,
-    const Handle (Poly_PolygonOnTriangulation)& thePolygon2,
-    const Handle (Poly_Triangulation)&          theTriangulation,
-    const TopLoc_Location&                      theLocation);
+  Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&                         theEdge,
+                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon1,
+                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon2,
+                                         const Handle(Poly_Triangulation)& theTriangulation,
+                                         const TopLoc_Location&            theLocation);
 
   //! Applies location to the given point and return result.
   //! @param thePnt point to be transformed.
   //! @param theLoc location to be applied.
-  Standard_EXPORT static gp_Pnt UseLocation (
-    const gp_Pnt&          thePnt,
-    const TopLoc_Location& theLoc);
+  Standard_EXPORT static gp_Pnt UseLocation(const gp_Pnt& thePnt, const TopLoc_Location& theLoc);
 
   //! Gets the strict UV locations of the extremities of the edge using pcurve.
-  Standard_EXPORT static Standard_Boolean UVPoints (
-    const TopoDS_Edge&      theEdge,
-    const TopoDS_Face&      theFace,
-    gp_Pnt2d&               theFirstPoint2d,
-    gp_Pnt2d&               theLastPoint2d,
-    const Standard_Boolean  isConsiderOrientation = Standard_False);
+  Standard_EXPORT static Standard_Boolean UVPoints(
+    const TopoDS_Edge&     theEdge,
+    const TopoDS_Face&     theFace,
+    gp_Pnt2d&              theFirstPoint2d,
+    gp_Pnt2d&              theLastPoint2d,
+    const Standard_Boolean isConsiderOrientation = Standard_False);
 
   //! Gets the parametric range of the given edge on the given face.
-  Standard_EXPORT static Standard_Boolean Range (
-    const TopoDS_Edge&      theEdge,
-    const TopoDS_Face&      theFace,
-    Handle (Geom2d_Curve)&  thePCurve,
-    Standard_Real&          theFirstParam,
-    Standard_Real&          theLastParam,
-    const Standard_Boolean  isConsiderOrientation = Standard_False);
+  Standard_EXPORT static Standard_Boolean Range(
+    const TopoDS_Edge&     theEdge,
+    const TopoDS_Face&     theFace,
+    Handle(Geom2d_Curve)&  thePCurve,
+    Standard_Real&         theFirstParam,
+    Standard_Real&         theLastParam,
+    const Standard_Boolean isConsiderOrientation = Standard_False);
 
   //! Gets the 3d range of the given edge.
-  Standard_EXPORT static Standard_Boolean Range (
-    const TopoDS_Edge&      theEdge,
-    Handle (Geom_Curve)&    theCurve,
-    Standard_Real&          theFirstParam,
-    Standard_Real&          theLastParam,
-    const Standard_Boolean  isConsiderOrientation = Standard_False);
+  Standard_EXPORT static Standard_Boolean Range(
+    const TopoDS_Edge&     theEdge,
+    Handle(Geom_Curve)&    theCurve,
+    Standard_Real&         theFirstParam,
+    Standard_Real&         theLastParam,
+    const Standard_Boolean isConsiderOrientation = Standard_False);
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeTool, Standard_Transient)
 };

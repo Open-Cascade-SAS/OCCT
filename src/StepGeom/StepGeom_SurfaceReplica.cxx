@@ -11,44 +11,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepGeom_SurfaceReplica.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceReplica,StepGeom_Surface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceReplica, StepGeom_Surface)
 
-StepGeom_SurfaceReplica::StepGeom_SurfaceReplica ()  {}
+StepGeom_SurfaceReplica::StepGeom_SurfaceReplica() {}
 
 void StepGeom_SurfaceReplica::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Surface)& aParentSurface,
-	const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation)
+  const Handle(TCollection_HAsciiString)&                   aName,
+  const Handle(StepGeom_Surface)&                           aParentSurface,
+  const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation)
 {
-	// --- classe own fields ---
-	parentSurface = aParentSurface;
-	transformation = aTransformation;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  parentSurface  = aParentSurface;
+  transformation = aTransformation;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepGeom_SurfaceReplica::SetParentSurface(const Handle(StepGeom_Surface)& aParentSurface)
 {
-	parentSurface = aParentSurface;
+  parentSurface = aParentSurface;
 }
 
 Handle(StepGeom_Surface) StepGeom_SurfaceReplica::ParentSurface() const
 {
-	return parentSurface;
+  return parentSurface;
 }
 
-void StepGeom_SurfaceReplica::SetTransformation(const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation)
+void StepGeom_SurfaceReplica::SetTransformation(
+  const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation)
 {
-	transformation = aTransformation;
+  transformation = aTransformation;
 }
 
 Handle(StepGeom_CartesianTransformationOperator3d) StepGeom_SurfaceReplica::Transformation() const
 {
-	return transformation;
+  return transformation;
 }

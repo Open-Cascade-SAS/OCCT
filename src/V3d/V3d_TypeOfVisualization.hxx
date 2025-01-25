@@ -21,8 +21,8 @@
 //! WIREFRAME or ZBUFFER (shading).
 enum V3d_TypeOfVisualization
 {
-V3d_WIREFRAME,
-V3d_ZBUFFER
+  V3d_WIREFRAME,
+  V3d_ZBUFFER
 };
 
 #endif // _V3d_TypeOfVisualization_HeaderFile

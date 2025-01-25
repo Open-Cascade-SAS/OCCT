@@ -26,33 +26,36 @@ struct Aspect_ScrollDelta
   Aspect_VKeyFlags      Flags; //!< key flags
 
   //! Return true if action has point defined.
-  bool HasPoint() const
-  {
-    return Point.x() >= 0
-        && Point.y() >= 0;
-  }
+  bool HasPoint() const { return Point.x() >= 0 && Point.y() >= 0; }
 
   //! Reset at point.
-  void ResetPoint()
-  {
-    Point.SetValues (-1, -1);
-  }
+  void ResetPoint() { Point.SetValues(-1, -1); }
 
   //! Empty constructor.
   Aspect_ScrollDelta()
-  : Point (-1, -1), Delta (0.0), Flags (Aspect_VKeyFlags_NONE) {}
+      : Point(-1, -1),
+        Delta(0.0),
+        Flags(Aspect_VKeyFlags_NONE)
+  {
+  }
 
   //! Constructor.
-  Aspect_ScrollDelta (const NCollection_Vec2<int>& thePnt,
-                      Standard_Real theValue,
-                      Aspect_VKeyFlags theFlags = Aspect_VKeyFlags_NONE)
-  : Point (thePnt), Delta (theValue), Flags (theFlags) {}
+  Aspect_ScrollDelta(const NCollection_Vec2<int>& thePnt,
+                     Standard_Real                theValue,
+                     Aspect_VKeyFlags             theFlags = Aspect_VKeyFlags_NONE)
+      : Point(thePnt),
+        Delta(theValue),
+        Flags(theFlags)
+  {
+  }
 
   //! Constructor with undefined point.
-  Aspect_ScrollDelta (Standard_Real theValue,
-                      Aspect_VKeyFlags theFlags = Aspect_VKeyFlags_NONE)
-  : Point (-1, -1), Delta (theValue), Flags (theFlags) {}
-
+  Aspect_ScrollDelta(Standard_Real theValue, Aspect_VKeyFlags theFlags = Aspect_VKeyFlags_NONE)
+      : Point(-1, -1),
+        Delta(theValue),
+        Flags(theFlags)
+  {
+  }
 };
 
 #endif // _Aspect_ScrollDelta_HeaderFile

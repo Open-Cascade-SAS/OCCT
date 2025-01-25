@@ -28,67 +28,54 @@ class TopoDS_Face;
 
 class BRepExtrema_ExtCF
 {
- public:
-
+public:
   DEFINE_STANDARD_ALLOC
 
-  BRepExtrema_ExtCF()
-  {
-  }
+  BRepExtrema_ExtCF() {}
+
   //! It calculates all the distances. <br>
-  Standard_EXPORT BRepExtrema_ExtCF(const TopoDS_Edge& E,const TopoDS_Face& F);
+  Standard_EXPORT BRepExtrema_ExtCF(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   Standard_EXPORT void Initialize(const TopoDS_Edge& E, const TopoDS_Face& F);
   //! An exception is raised if the fields have not been initialized. <br>
   //! Be careful: this method uses the Face only for classify not for the fields. <br>
-  Standard_EXPORT void Perform(const TopoDS_Edge& E,const TopoDS_Face& F);
+  Standard_EXPORT void Perform(const TopoDS_Edge& E, const TopoDS_Face& F);
+
   //! True if the distances are found. <br>
-  Standard_Boolean IsDone() const
-  {
-    return myExtCS.IsDone();
-  }
+  Standard_Boolean IsDone() const { return myExtCS.IsDone(); }
+
   //! Returns the number of extremum distances. <br>
-  Standard_Integer NbExt() const
-  {
-    return mySqDist.Length();
-  }
+  Standard_Integer NbExt() const { return mySqDist.Length(); }
+
   //! Returns the value of the <N>th extremum square distance. <br>
-  Standard_Real SquareDistance(const Standard_Integer N) const
-  {
-    return mySqDist.Value(N);
-  }
+  Standard_Real SquareDistance(const Standard_Integer N) const { return mySqDist.Value(N); }
+
   //! Returns True if the curve is on a parallel surface. <br>
-  Standard_Boolean IsParallel() const
-  {
-    return myExtCS.IsParallel();
-  }
+  Standard_Boolean IsParallel() const { return myExtCS.IsParallel(); }
+
   //! Returns the parameters on the Edge of the <N>th extremum distance. <br>
   Standard_Real ParameterOnEdge(const Standard_Integer N) const
   {
     return myPointsOnC.Value(N).Parameter();
   }
+
   //! Returns the parameters on the Face of the <N>th extremum distance. <br>
-  void ParameterOnFace(const Standard_Integer N,Standard_Real& U,Standard_Real& V) const
+  void ParameterOnFace(const Standard_Integer N, Standard_Real& U, Standard_Real& V) const
   {
     myPointsOnS.Value(N).Parameter(U, V);
   }
-  //! Returns the Point of the <N>th extremum distance. <br>
-  gp_Pnt PointOnEdge(const Standard_Integer N) const
-  {
-    return myPointsOnC.Value(N).Value();
-  }
-  //! Returns the Point of the <N>th extremum distance. <br>
-  gp_Pnt PointOnFace(const Standard_Integer N) const
-  {
-    return myPointsOnS.Value(N).Value();
-  }
 
- private:
+  //! Returns the Point of the <N>th extremum distance. <br>
+  gp_Pnt PointOnEdge(const Standard_Integer N) const { return myPointsOnC.Value(N).Value(); }
 
-  Extrema_ExtCS myExtCS;
-  TColStd_SequenceOfReal mySqDist;
-  Extrema_SequenceOfPOnSurf myPointsOnS;
-  Extrema_SequenceOfPOnCurv myPointsOnC;
+  //! Returns the Point of the <N>th extremum distance. <br>
+  gp_Pnt PointOnFace(const Standard_Integer N) const { return myPointsOnS.Value(N).Value(); }
+
+private:
+  Extrema_ExtCS               myExtCS;
+  TColStd_SequenceOfReal      mySqDist;
+  Extrema_SequenceOfPOnSurf   myPointsOnS;
+  Extrema_SequenceOfPOnCurv   myPointsOnC;
   Handle(BRepAdaptor_Surface) myHS;
 };
 

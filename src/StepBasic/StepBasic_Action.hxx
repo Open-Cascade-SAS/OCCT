@@ -25,7 +25,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ActionMethod;
 
-
 class StepBasic_Action;
 DEFINE_STANDARD_HANDLE(StepBasic_Action, Standard_Transient)
 
@@ -34,60 +33,44 @@ class StepBasic_Action : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_Action();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasDescription, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_ActionMethod)& aChosenMethod);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Standard_Boolean                  hasDescription,
+                            const Handle(TCollection_HAsciiString)& aDescription,
+                            const Handle(StepBasic_ActionMethod)&   aChosenMethod);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns True if optional field Description is defined
   Standard_EXPORT Standard_Boolean HasDescription() const;
-  
+
   //! Returns field ChosenMethod
   Standard_EXPORT Handle(StepBasic_ActionMethod) ChosenMethod() const;
-  
+
   //! Set field ChosenMethod
-  Standard_EXPORT void SetChosenMethod (const Handle(StepBasic_ActionMethod)& ChosenMethod);
+  Standard_EXPORT void SetChosenMethod(const Handle(StepBasic_ActionMethod)& ChosenMethod);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Action,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Action, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theName;
   Handle(TCollection_HAsciiString) theDescription;
-  Handle(StepBasic_ActionMethod) theChosenMethod;
-  Standard_Boolean defDescription;
-
-
+  Handle(StepBasic_ActionMethod)   theChosenMethod;
+  Standard_Boolean                 defDescription;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Action_HeaderFile

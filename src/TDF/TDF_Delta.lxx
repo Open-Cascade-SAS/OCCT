@@ -16,31 +16,45 @@
 //      	-------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Sep  8 1997	Creation
 
-
 inline Standard_Boolean TDF_Delta::IsEmpty() const
-{ return myAttDeltaList.IsEmpty(); }
+{
+  return myAttDeltaList.IsEmpty();
+}
 
-inline Standard_Boolean TDF_Delta::IsApplicable
-(const Standard_Integer aCurrentTime) const
-{ return (myEndTime     == aCurrentTime); }
+inline Standard_Boolean TDF_Delta::IsApplicable(const Standard_Integer aCurrentTime) const
+{
+  return (myEndTime == aCurrentTime);
+}
 
-inline Standard_Integer TDF_Delta::BeginTime () const
-{ return myBeginTime; }
+inline Standard_Integer TDF_Delta::BeginTime() const
+{
+  return myBeginTime;
+}
 
-inline Standard_Integer TDF_Delta::EndTime () const
-{ return myEndTime; }
+inline Standard_Integer TDF_Delta::EndTime() const
+{
+  return myEndTime;
+}
 
-inline const TDF_AttributeDeltaList& TDF_Delta::AttributeDeltas () const
-{ return myAttDeltaList; }
+inline const TDF_AttributeDeltaList& TDF_Delta::AttributeDeltas() const
+{
+  return myAttDeltaList;
+}
 
-inline void TDF_Delta::SetName (const TCollection_ExtendedString& theName)
-{ myName = theName; }
+inline void TDF_Delta::SetName(const TCollection_ExtendedString& theName)
+{
+  myName = theName;
+}
 
-inline TCollection_ExtendedString TDF_Delta::Name () const
-{ return myName; }
+inline TCollection_ExtendedString TDF_Delta::Name() const
+{
+  return myName;
+}
 
 inline void TDF_Delta::ReplaceDeltaList(const TDF_AttributeDeltaList& theList)
-{ myAttDeltaList = theList;}
+{
+  myAttDeltaList = theList;
+}

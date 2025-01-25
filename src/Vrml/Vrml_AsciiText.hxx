@@ -25,7 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-
 class Vrml_AsciiText;
 DEFINE_STANDARD_HANDLE(Vrml_AsciiText, Standard_Transient)
 
@@ -43,55 +42,39 @@ class Vrml_AsciiText : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Vrml_AsciiText();
-  
-  Standard_EXPORT Vrml_AsciiText(const Handle(TColStd_HArray1OfAsciiString)& aString, const Standard_Real aSpacing, const Vrml_AsciiTextJustification aJustification, const Standard_Real aWidth);
-  
-  Standard_EXPORT void SetString (const Handle(TColStd_HArray1OfAsciiString)& aString);
-  
+
+  Standard_EXPORT Vrml_AsciiText(const Handle(TColStd_HArray1OfAsciiString)& aString,
+                                 const Standard_Real                         aSpacing,
+                                 const Vrml_AsciiTextJustification           aJustification,
+                                 const Standard_Real                         aWidth);
+
+  Standard_EXPORT void SetString(const Handle(TColStd_HArray1OfAsciiString)& aString);
+
   Standard_EXPORT Handle(TColStd_HArray1OfAsciiString) String() const;
-  
-  Standard_EXPORT void SetSpacing (const Standard_Real aSpacing);
-  
+
+  Standard_EXPORT void SetSpacing(const Standard_Real aSpacing);
+
   Standard_EXPORT Standard_Real Spacing() const;
-  
-  Standard_EXPORT void SetJustification (const Vrml_AsciiTextJustification aJustification);
-  
+
+  Standard_EXPORT void SetJustification(const Vrml_AsciiTextJustification aJustification);
+
   Standard_EXPORT Vrml_AsciiTextJustification Justification() const;
-  
-  Standard_EXPORT void SetWidth (const Standard_Real aWidth);
-  
+
+  Standard_EXPORT void SetWidth(const Standard_Real aWidth);
+
   Standard_EXPORT Standard_Real Width() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Vrml_AsciiText,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Vrml_AsciiText, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfAsciiString) myString;
-  Standard_Real mySpacing;
-  Vrml_AsciiTextJustification myJustification;
-  Standard_Real myWidth;
-
-
+  Standard_Real                        mySpacing;
+  Vrml_AsciiTextJustification          myJustification;
+  Standard_Real                        myWidth;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_AsciiText_HeaderFile

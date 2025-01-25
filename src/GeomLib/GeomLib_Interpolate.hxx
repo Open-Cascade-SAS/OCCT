@@ -27,7 +27,6 @@
 #include <TColStd_Array1OfReal.hxx>
 class Geom_BSplineCurve;
 
-
 //! this class is used to construct a BSpline curve by
 //! interpolation  of points  at given parameters  The
 //! continuity   of the curve   is degree -  1 and the
@@ -36,50 +35,32 @@ class Geom_BSplineCurve;
 //! both sides from degree -1 down to (degree+1) / 2
 //! When even degree is given the returned curve is of
 //! degree - 1 so that the degree of the curve is odd
-class GeomLib_Interpolate 
+class GeomLib_Interpolate
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomLib_Interpolate(const Standard_Integer Degree, const Standard_Integer NumPoints, const TColgp_Array1OfPnt& Points, const TColStd_Array1OfReal& Parameters);
-  
+  Standard_EXPORT GeomLib_Interpolate(const Standard_Integer      Degree,
+                                      const Standard_Integer      NumPoints,
+                                      const TColgp_Array1OfPnt&   Points,
+                                      const TColStd_Array1OfReal& Parameters);
 
   //! returns if everything went OK
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! returns the error type if any
-    GeomLib_InterpolationErrors Error() const;
-  
+  GeomLib_InterpolationErrors Error() const;
+
   //! returns the interpolated curve of the requested degree
   Standard_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(Geom_BSplineCurve) myCurve;
-  Standard_Boolean myIsDone;
+  Handle(Geom_BSplineCurve)   myCurve;
+  Standard_Boolean            myIsDone;
   GeomLib_InterpolationErrors myError;
-
-
 };
 
-
 #include <GeomLib_Interpolate.lxx>
-
-
-
-
 
 #endif // _GeomLib_Interpolate_HeaderFile

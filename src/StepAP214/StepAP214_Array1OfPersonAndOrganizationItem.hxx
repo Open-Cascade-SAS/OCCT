@@ -20,7 +20,7 @@
 #include <StepAP214_PersonAndOrganizationItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_PersonAndOrganizationItem> StepAP214_Array1OfPersonAndOrganizationItem;
-
+typedef NCollection_Array1<StepAP214_PersonAndOrganizationItem>
+  StepAP214_Array1OfPersonAndOrganizationItem;
 
 #endif

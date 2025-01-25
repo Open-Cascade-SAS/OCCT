@@ -17,12 +17,11 @@
 #ifndef _IntRes2d_Situation_HeaderFile
 #define _IntRes2d_Situation_HeaderFile
 
-
 enum IntRes2d_Situation
 {
-IntRes2d_Inside,
-IntRes2d_Outside,
-IntRes2d_Unknown
+  IntRes2d_Inside,
+  IntRes2d_Outside,
+  IntRes2d_Unknown
 };
 
 #endif // _IntRes2d_Situation_HeaderFile

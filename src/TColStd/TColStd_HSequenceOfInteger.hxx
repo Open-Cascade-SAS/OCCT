@@ -21,5 +21,4 @@
 
 DEFINE_HSEQUENCE(TColStd_HSequenceOfInteger, TColStd_SequenceOfInteger)
 
-
 #endif

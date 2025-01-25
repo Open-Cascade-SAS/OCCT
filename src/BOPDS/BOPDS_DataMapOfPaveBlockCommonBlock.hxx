@@ -1,4 +1,4 @@
-// Created on: 2013-05-23 
+// Created on: 2013-05-23
 // Created by: Eugeny MALTCHIKOV
 // Copyright (c) 2013-2014 OPEN CASCADE SAS
 //
@@ -19,7 +19,9 @@
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_CommonBlock.hxx>
 
-typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), Handle(BOPDS_CommonBlock)> BOPDS_DataMapOfPaveBlockCommonBlock; 
-typedef BOPDS_DataMapOfPaveBlockCommonBlock::Iterator BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock;
- 
+typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), Handle(BOPDS_CommonBlock)>
+  BOPDS_DataMapOfPaveBlockCommonBlock;
+typedef BOPDS_DataMapOfPaveBlockCommonBlock::Iterator
+  BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock;
+
 #endif

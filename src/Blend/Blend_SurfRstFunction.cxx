@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Blend_Point.hxx>
 #include <Blend_SurfRstFunction.hxx>
 #include <gp_Pnt.hxx>
@@ -31,4 +30,6 @@ const gp_Pnt& Blend_SurfRstFunction::Pnt2() const
 }
 
 Standard_Real Blend_SurfRstFunction::GetMinimalDistance() const
-{  throw Standard_NotImplemented("Blend_SurfRstFunction::GetMinimalDistance");}
+{
+  throw Standard_NotImplemented("Blend_SurfRstFunction::GetMinimalDistance");
+}

@@ -29,47 +29,32 @@ class StepData_StepWriter;
 class Interface_EntityIterator;
 class Interface_ShareTool;
 
-
 //! Read & Write Module for BSplineSurfaceWithKnots
 //! Check added by CKY , 7-OCT-1996
-class RWStepGeom_RWBSplineSurfaceWithKnots 
+class RWStepGeom_RWBSplineSurfaceWithKnots
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepGeom_RWBSplineSurfaceWithKnots();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const;
-  
-  Standard_HIDDEN void Share (const Handle(StepGeom_BSplineSurfaceWithKnots)& ent, Interface_EntityIterator& iter) const;
-  
-  Standard_HIDDEN void Check (const Handle(StepGeom_BSplineSurfaceWithKnots)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
 
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&          data,
+                                const Standard_Integer                          num,
+                                Handle(Interface_Check)&                        ach,
+                                const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const;
 
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                            SW,
+                                 const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const;
 
+  Standard_HIDDEN void Share(const Handle(StepGeom_BSplineSurfaceWithKnots)& ent,
+                             Interface_EntityIterator&                       iter) const;
+
+  Standard_HIDDEN void Check(const Handle(StepGeom_BSplineSurfaceWithKnots)& ent,
+                             const Interface_ShareTool&                      shares,
+                             Handle(Interface_Check)&                        ach) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepGeom_RWBSplineSurfaceWithKnots_HeaderFile

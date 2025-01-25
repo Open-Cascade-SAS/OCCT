@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_Plane.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Plane,StepGeom_ElementarySurface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Plane, StepGeom_ElementarySurface)
 
-StepGeom_Plane::StepGeom_Plane ()  {}
-
+StepGeom_Plane::StepGeom_Plane() {}

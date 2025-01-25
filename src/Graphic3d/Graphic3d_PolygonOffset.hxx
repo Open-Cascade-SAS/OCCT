@@ -26,19 +26,21 @@ struct Graphic3d_PolygonOffset
   Standard_ShortReal       Units;
 
   //! Empty constructor.
-  Graphic3d_PolygonOffset() : Mode(Aspect_POM_Fill), Factor (1.0f), Units (1.0f) {}
+  Graphic3d_PolygonOffset()
+      : Mode(Aspect_POM_Fill),
+        Factor(1.0f),
+        Units(1.0f)
+  {
+  }
 
   //! Equality comparison.
-  bool operator== (const Graphic3d_PolygonOffset& theOther) const
+  bool operator==(const Graphic3d_PolygonOffset& theOther) const
   {
-    return Mode == theOther.Mode
-        && Factor == theOther.Factor
-        && Units == theOther.Units;
+    return Mode == theOther.Mode && Factor == theOther.Factor && Units == theOther.Units;
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
-
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 };
 
 #endif // _Graphic3d_PolygonOffset_HeaderFile

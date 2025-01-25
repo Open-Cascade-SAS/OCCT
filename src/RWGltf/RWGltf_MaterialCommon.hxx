@@ -22,7 +22,6 @@
 class RWGltf_MaterialCommon : public Standard_Transient
 {
 public:
-
   Handle(Image_Texture)   AmbientTexture;  //!< image defining ambient color
   Handle(Image_Texture)   DiffuseTexture;  //!< image defining diffuse color
   Handle(Image_Texture)   SpecularTexture; //!< image defining specular color
@@ -36,13 +35,14 @@ public:
   Standard_ShortReal      Transparency;
 
   RWGltf_MaterialCommon()
-  : AmbientColor (0.1, 0.1, 0.1, Quantity_TOC_sRGB),
-    DiffuseColor (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
-    SpecularColor(0.2, 0.2, 0.2, Quantity_TOC_sRGB),
-    EmissiveColor(Quantity_NOC_BLACK),
-    Shininess (1.0f),
-    Transparency (0.0f) {}
-
+      : AmbientColor(0.1, 0.1, 0.1, Quantity_TOC_sRGB),
+        DiffuseColor(0.8, 0.8, 0.8, Quantity_TOC_sRGB),
+        SpecularColor(0.2, 0.2, 0.2, Quantity_TOC_sRGB),
+        EmissiveColor(Quantity_NOC_BLACK),
+        Shininess(1.0f),
+        Transparency(0.0f)
+  {
+  }
 };
 
 #endif // _RWGltf_MaterialCommon_HeaderFile

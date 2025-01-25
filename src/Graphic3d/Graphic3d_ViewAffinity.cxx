@@ -17,15 +17,15 @@
 
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ViewAffinity,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ViewAffinity, Standard_Transient)
 
 // =======================================================================
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Graphic3d_ViewAffinity::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Graphic3d_ViewAffinity::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMask)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMask)
 }

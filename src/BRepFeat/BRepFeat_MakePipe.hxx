@@ -29,7 +29,6 @@
 class Geom_Curve;
 class TopoDS_Edge;
 
-
 //! Constructs compound shapes with pipe
 //! features. These can be depressions or protrusions.
 //! The semantics of pipe feature creation is based on the construction of shapes:
@@ -47,16 +46,14 @@ class TopoDS_Edge;
 //! could, for example, cut it out and move it to a
 //! different height which will define the limiting
 //! face of a protrusion or depression.
-class BRepFeat_MakePipe  : public BRepFeat_Form
+class BRepFeat_MakePipe : public BRepFeat_Form
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! initializes the pipe class.
-    BRepFeat_MakePipe();
-  
+  BRepFeat_MakePipe();
+
   //! A face Pbase is selected in the
   //! shape Sbase to serve as the basis for the
   //! pipe. It will be defined by the wire Spine.
@@ -66,8 +63,13 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-    BRepFeat_MakePipe(const TopoDS_Shape& Sbase, const TopoDS_Shape& Pbase, const TopoDS_Face& Skface, const TopoDS_Wire& Spine, const Standard_Integer Fuse, const Standard_Boolean Modify);
-  
+  BRepFeat_MakePipe(const TopoDS_Shape&    Sbase,
+                    const TopoDS_Shape&    Pbase,
+                    const TopoDS_Face&     Skface,
+                    const TopoDS_Wire&     Spine,
+                    const Standard_Integer Fuse,
+                    const Standard_Boolean Modify);
+
   //! Initializes this algorithm for adding pipes to shapes.
   //! A face Pbase is selected in the shape Sbase to
   //! serve as the basis for the pipe. It will be defined by the wire Spine.
@@ -77,55 +79,42 @@ public:
   //! The sketch face Skface serves to determine
   //! the type of operation. If it is inside the basis
   //! shape, a local operation such as glueing can be performed.
-  Standard_EXPORT void Init (const TopoDS_Shape& Sbase, const TopoDS_Shape& Pbase, const TopoDS_Face& Skface, const TopoDS_Wire& Spine, const Standard_Integer Fuse, const Standard_Boolean Modify);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
+                            const TopoDS_Shape&    Pbase,
+                            const TopoDS_Face&     Skface,
+                            const TopoDS_Wire&     Spine,
+                            const Standard_Integer Fuse,
+                            const Standard_Boolean Modify);
+
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError  if the  face does not belong to the
   //! basis shape, or the edge to the prismed shape.
-  Standard_EXPORT void Add (const TopoDS_Edge& E, const TopoDS_Face& OnFace);
-  
+  Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
+
   Standard_EXPORT void Perform();
-  
-  Standard_EXPORT void Perform (const TopoDS_Shape& Until);
-  
+
+  Standard_EXPORT void Perform(const TopoDS_Shape& Until);
+
   //! Assigns one of the following semantics
   //! -   to a face Until
   //! -   from a face From to a height Until.
   //! Reconstructs the feature topologically according to the semantic option chosen.
-  Standard_EXPORT void Perform (const TopoDS_Shape& From, const TopoDS_Shape& Until);
-  
-  Standard_EXPORT void Curves (TColGeom_SequenceOfCurve& S);
-  
+  Standard_EXPORT void Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until);
+
+  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& S);
+
   Standard_EXPORT Handle(Geom_Curve) BarycCurve();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Shape myPbase;
-  TopoDS_Face mySkface;
+  TopoDS_Shape                       myPbase;
+  TopoDS_Face                        mySkface;
   TopTools_DataMapOfShapeListOfShape mySlface;
-  TopoDS_Wire mySpine;
-  TColGeom_SequenceOfCurve myCurves;
-  Handle(Geom_Curve) myBCurve;
-
-
+  TopoDS_Wire                        mySpine;
+  TColGeom_SequenceOfCurve           myCurves;
+  Handle(Geom_Curve)                 myBCurve;
 };
 
-
 #include <BRepFeat_MakePipe.lxx>
-
-
-
-
 
 #endif // _BRepFeat_MakePipe_HeaderFile

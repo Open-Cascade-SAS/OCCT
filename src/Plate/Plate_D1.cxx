@@ -14,17 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Plate_D1.hxx>
 #include <Plate_GtoCConstraint.hxx>
 
 Plate_D1::Plate_D1(const gp_XYZ& du, const gp_XYZ& dv)
-:Du(du),Dv(dv)
+    : Du(du),
+      Dv(dv)
 {
 }
 
-
 Plate_D1::Plate_D1(const Plate_D1& ref)
-:Du(ref.Du),Dv(ref.Dv)
+    : Du(ref.Du),
+      Dv(ref.Dv)
 {
 }

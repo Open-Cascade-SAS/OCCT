@@ -18,38 +18,38 @@
 #include <gp_Cone.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 
-inline GeomAbs_SurfaceType IntSurf_Quadric::TypeQuadric () const {
+inline GeomAbs_SurfaceType IntSurf_Quadric::TypeQuadric() const
+{
 
   return typ;
 }
 
-
-inline gp_Pln IntSurf_Quadric::Plane () const {
+inline gp_Pln IntSurf_Quadric::Plane() const
+{
 
   return gp_Pln(ax3);
 }
 
+inline gp_Sphere IntSurf_Quadric::Sphere() const
+{
 
-inline gp_Sphere IntSurf_Quadric::Sphere () const {
-
-  return gp_Sphere(ax3,prm1);
+  return gp_Sphere(ax3, prm1);
 }
 
+inline gp_Cylinder IntSurf_Quadric::Cylinder() const
+{
 
-inline gp_Cylinder IntSurf_Quadric::Cylinder () const {
-
-  return gp_Cylinder(ax3,prm1);
+  return gp_Cylinder(ax3, prm1);
 }
 
+inline gp_Cone IntSurf_Quadric::Cone() const
+{
 
-inline gp_Cone IntSurf_Quadric::Cone () const {
-
-  return gp_Cone(ax3,prm2,prm1);
+  return gp_Cone(ax3, prm2, prm1);
 }
 
-inline gp_Torus IntSurf_Quadric::Torus () const {
+inline gp_Torus IntSurf_Quadric::Torus() const
+{
 
   return gp_Torus(ax3, prm1, prm2);
 }
-
-

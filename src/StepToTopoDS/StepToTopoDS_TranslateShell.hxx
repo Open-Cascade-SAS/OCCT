@@ -31,57 +31,35 @@ class StepVisual_TessellatedShell;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
 
-
-class StepToTopoDS_TranslateShell  : public StepToTopoDS_Root
+class StepToTopoDS_TranslateShell : public StepToTopoDS_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepToTopoDS_TranslateShell();
-  
-  Standard_EXPORT void Init (const Handle(StepShape_ConnectedFaceSet)& CFS,
-                             StepToTopoDS_Tool& T,
-                             StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors = StepData_Factors(),
-                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedShell)& theTSh,
-                             StepToTopoDS_Tool& theTool,
-                             StepToTopoDS_NMTool& theNMTool,
-                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
-                             Standard_Boolean& theHasGeom,
-                             const StepData_Factors& theLocalFactors = StepData_Factors(),
-                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
+  Standard_EXPORT void Init(const Handle(StepShape_ConnectedFaceSet)& CFS,
+                            StepToTopoDS_Tool&                        T,
+                            StepToTopoDS_NMTool&                      NMTool,
+                            const StepData_Factors&      theLocalFactors = StepData_Factors(),
+                            const Message_ProgressRange& theProgress     = Message_ProgressRange());
+
+  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedShell)& theTSh,
+                            StepToTopoDS_Tool&                         theTool,
+                            StepToTopoDS_NMTool&                       theNMTool,
+                            const Standard_Boolean       theReadTessellatedWhenNoBRepOnly,
+                            Standard_Boolean&            theHasGeom,
+                            const StepData_Factors&      theLocalFactors = StepData_Factors(),
+                            const Message_ProgressRange& theProgress     = Message_ProgressRange());
+
   Standard_EXPORT const TopoDS_Shape& Value() const;
-  
+
   Standard_EXPORT StepToTopoDS_TranslateShellError Error() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   StepToTopoDS_TranslateShellError myError;
-  TopoDS_Shape myResult;
-
-
+  TopoDS_Shape                     myResult;
 };
-
-
-
-
-
-
 
 #endif // _StepToTopoDS_TranslateShell_HeaderFile

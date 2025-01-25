@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ItemPresentableObject_H
 #define VInspector_ItemPresentableObject_H
@@ -25,7 +25,8 @@
 class QItemSelectionModel;
 
 class VInspector_ItemPresentableObject;
-typedef QExplicitlySharedDataPointer<VInspector_ItemPresentableObject> VInspector_ItemPresentableObjectPtr;
+typedef QExplicitlySharedDataPointer<VInspector_ItemPresentableObject>
+  VInspector_ItemPresentableObjectPtr;
 
 //! \class VInspector_ItemPresentableObject
 //! Item presents information about AIS_InteractiveObject.
@@ -34,23 +35,35 @@ class VInspector_ItemPresentableObject : public VInspector_ItemBase
 {
 
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static VInspector_ItemPresentableObjectPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return VInspector_ItemPresentableObjectPtr (new VInspector_ItemPresentableObject (theParent, theRow, theColumn)); }
+  static VInspector_ItemPresentableObjectPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                                        const int             theRow,
+                                                        const int             theColumn)
+  {
+    return VInspector_ItemPresentableObjectPtr(
+      new VInspector_ItemPresentableObject(theParent, theRow, theColumn));
+  }
+
   //! Destructor
   virtual ~VInspector_ItemPresentableObject() {}
 
   //! Returns data object of the item.
   //! \return object
-  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE { initItem(); return myIO; }
+  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE
+  {
+    initItem();
+    return myIO;
+  }
 
   //! Returns the current interactive object, init item if it was not initialized yet
   //! \return interactive object
-  Handle(AIS_InteractiveObject) GetInteractiveObject() const { return Handle(AIS_InteractiveObject)::DownCast (Object()); }
+  Handle(AIS_InteractiveObject) GetInteractiveObject() const
+  {
+    return Handle(AIS_InteractiveObject)::DownCast(Object());
+  }
 
-  //! Returns pointer information for the current interactive object, init item if it was not initialized yet
-  //! \return string value
+  //! Returns pointer information for the current interactive object, init item if it was not
+  //! initialized yet \return string value
   Standard_EXPORT QString PointerInfo() const;
 
   //! Inits the item, fills internal containers
@@ -61,10 +74,10 @@ public:
 
   //! Returns presentation of the attribute to be visualized in the view
   //! \thePresentations[out]  container of presentation handles to be visualized
-  Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Presentations(
+    NCollection_List<Handle(Standard_Transient)>& thePresentations) Standard_OVERRIDE;
 
 protected:
-
   //! Initialize the current item. It is empty because Reset() is also empty.
   virtual void initItem() const Standard_OVERRIDE;
 
@@ -75,11 +88,11 @@ protected:
   //! Returns item information for the given role. Fills internal container if it was not filled yet
   //! \param theItemRole a value role
   //! \return the value
-  virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void initStream(Standard_OStream& theOStream) const Standard_OVERRIDE;
 
 protected:
   //! Build presentation shape
@@ -88,17 +101,19 @@ protected:
 
   //! Set interactive object into the current field
   //! \param theIO a presentation
-  void setInteractiveObject (Handle(AIS_InteractiveObject) theIO) { myIO = theIO; }
+  void setInteractiveObject(Handle(AIS_InteractiveObject) theIO) { myIO = theIO; }
 
 private:
-
   //! Constructor
   //! \param theParent a parent item
-  VInspector_ItemPresentableObject(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : VInspector_ItemBase(theParent, theRow, theColumn) {}
+  VInspector_ItemPresentableObject(TreeModel_ItemBasePtr theParent,
+                                   const int             theRow,
+                                   const int             theColumn)
+      : VInspector_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
 protected:
-
   Handle(AIS_InteractiveObject) myIO; //!< the current interactive context
 };
 

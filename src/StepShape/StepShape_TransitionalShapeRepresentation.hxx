@@ -22,41 +22,20 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_TransitionalShapeRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_TransitionalShapeRepresentation, StepShape_ShapeRepresentation)
-
 
 class StepShape_TransitionalShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
 public:
-
-  
   //! Returns a TransitionalShapeRepresentation
   Standard_EXPORT StepShape_TransitionalShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_TransitionalShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_TransitionalShapeRepresentation, StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_TransitionalShapeRepresentation_HeaderFile

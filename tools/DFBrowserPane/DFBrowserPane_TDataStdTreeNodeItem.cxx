@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
@@ -38,19 +38,21 @@
 // =======================================================================
 void DFBrowserPane_TDataStdTreeNodeItem::Init()
 {
-  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem> (Parent());
-  // if aParentItem is empty, it is the root item, an attribute field is already filled by SetAttribute method
+  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem =
+    itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(Parent());
+  // if aParentItem is empty, it is the root item, an attribute field is already filled by
+  // SetAttribute method
   if (aParentItem)
-    myAttribute = aParentItem->getChildAttribute (Row());
+    myAttribute = aParentItem->getChildAttribute(Row());
 
-  Handle(TDataStd_TreeNode) aTreeNode = Handle(TDataStd_TreeNode)::DownCast (myAttribute);
+  Handle(TDataStd_TreeNode) aTreeNode = Handle(TDataStd_TreeNode)::DownCast(myAttribute);
   if (aTreeNode.IsNull())
     return;
 
   TreeModel_ItemBase::Init();
 
-  myRowCount = aTreeNode->NbChildren (false);
-  myLabelName = QString (DFBrowserPane_Tools::GetEntry (aTreeNode->Label()).ToCString());
+  myRowCount  = aTreeNode->NbChildren(false);
+  myLabelName = QString(DFBrowserPane_Tools::GetEntry(aTreeNode->Label()).ToCString());
 }
 
 // =======================================================================
@@ -59,12 +61,13 @@ void DFBrowserPane_TDataStdTreeNodeItem::Init()
 // =======================================================================
 void DFBrowserPane_TDataStdTreeNodeItem::Reset()
 {
-  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem> (Parent());
+  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem =
+    itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(Parent());
   if (aParentItem)
   {
     Handle(TDF_Attribute) anAttribute;
-    SetAttribute (anAttribute);
-    myRowCount = 0;
+    SetAttribute(anAttribute);
+    myRowCount  = 0;
     myLabelName = QString();
   }
   myIsCurrentItem = false;
@@ -75,7 +78,7 @@ void DFBrowserPane_TDataStdTreeNodeItem::Reset()
 // function : data
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_TDataStdTreeNodeItem::initValue (const int theRole) const
+QVariant DFBrowserPane_TDataStdTreeNodeItem::initValue(const int theRole) const
 {
   if (Column() != 0)
     return QVariant();
@@ -83,10 +86,14 @@ QVariant DFBrowserPane_TDataStdTreeNodeItem::initValue (const int theRole) const
   switch (theRole)
   {
     case Qt::DisplayRole:
-    case Qt::ToolTipRole:    return getName();
-    case Qt::ForegroundRole: return myIsCurrentItem ? QColor (Qt::darkBlue) : QColor (Qt::black);
-    case Qt::BackgroundRole: return myIsCurrentItem ? DFBrowserPane_Tools::LightHighlightColor() : QVariant();
-    default: break;
+    case Qt::ToolTipRole:
+      return getName();
+    case Qt::ForegroundRole:
+      return myIsCurrentItem ? QColor(Qt::darkBlue) : QColor(Qt::black);
+    case Qt::BackgroundRole:
+      return myIsCurrentItem ? DFBrowserPane_Tools::LightHighlightColor() : QVariant();
+    default:
+      break;
   }
   return QVariant();
 }
@@ -115,13 +122,15 @@ void DFBrowserPane_TDataStdTreeNodeItem::initItem() const
 // function : getChildAttribute
 // purpose :
 // =======================================================================
-Handle(TDF_Attribute) DFBrowserPane_TDataStdTreeNodeItem::getChildAttribute (const int theChildRow) const
+Handle(TDF_Attribute) DFBrowserPane_TDataStdTreeNodeItem::getChildAttribute(
+  const int theChildRow) const
 {
   Handle(TDF_Attribute) aResult;
-  
-  Handle(TDataStd_TreeNode) aTreeNode = Handle(TDataStd_TreeNode)::DownCast (myAttribute);
-  int aChildNodeId = 0;
-  for (TDataStd_ChildNodeIterator aChildIt (aTreeNode); aChildIt.More(); aChildIt.Next(), aChildNodeId++)
+
+  Handle(TDataStd_TreeNode) aTreeNode    = Handle(TDataStd_TreeNode)::DownCast(myAttribute);
+  int                       aChildNodeId = 0;
+  for (TDataStd_ChildNodeIterator aChildIt(aTreeNode); aChildIt.More();
+       aChildIt.Next(), aChildNodeId++)
   {
     if (aChildNodeId != theChildRow)
       continue;

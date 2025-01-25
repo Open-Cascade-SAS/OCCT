@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -28,25 +28,23 @@ DEFINE_STANDARD_HANDLE(StepKinematics_PrismaticPairValue, StepKinematics_PairVal
 //! Representation of STEP entity PrismaticPairValue
 class StepKinematics_PrismaticPairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PrismaticPairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Standard_Real theActualTranslation);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Standard_Real                         theActualTranslation);
 
   //! Returns field ActualTranslation
   Standard_EXPORT Standard_Real ActualTranslation() const;
   //! Sets field ActualTranslation
-  Standard_EXPORT void SetActualTranslation (const Standard_Real theActualTranslation);
+  Standard_EXPORT void SetActualTranslation(const Standard_Real theActualTranslation);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PrismaticPairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PrismaticPairValue, StepKinematics_PairValue)
 
 private:
   Standard_Real myActualTranslation;
-
 };
 #endif // _StepKinematics_PrismaticPairValue_HeaderFile_

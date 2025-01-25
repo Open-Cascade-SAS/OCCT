@@ -20,8 +20,7 @@
 #include <ChFiDS_Stripe.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(ChFiDS_Stripe)> ChFiDS_ListOfStripe;
+typedef NCollection_List<Handle(ChFiDS_Stripe)>           ChFiDS_ListOfStripe;
 typedef NCollection_List<Handle(ChFiDS_Stripe)>::Iterator ChFiDS_ListIteratorOfListOfStripe;
-
 
 #endif

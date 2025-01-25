@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Contap_Point> Contap_TheSequenceOfPoint;
 
-
 #endif

@@ -14,46 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_AttributeFilter.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_AttributeFilter,SelectMgr_Filter)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_AttributeFilter, SelectMgr_Filter)
 
-AIS_AttributeFilter::AIS_AttributeFilter():
-hasC(Standard_False),
-hasW(Standard_False){}
-
-
-AIS_AttributeFilter::AIS_AttributeFilter(const Quantity_NameOfColor aCol):
-myCol(aCol),
-hasC(Standard_True),
-hasW(Standard_False){}
-
-
-AIS_AttributeFilter::AIS_AttributeFilter(const Standard_Real aWid):
-myWid(aWid),
-hasC(Standard_False),
-hasW(Standard_True){}
-
-
-Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const 
+AIS_AttributeFilter::AIS_AttributeFilter()
+    : hasC(Standard_False),
+      hasW(Standard_False)
 {
-  Handle(AIS_InteractiveObject) aSelectable (Handle(AIS_InteractiveObject)::DownCast (anObj->Selectable()));
+}
+
+AIS_AttributeFilter::AIS_AttributeFilter(const Quantity_NameOfColor aCol)
+    : myCol(aCol),
+      hasC(Standard_True),
+      hasW(Standard_False)
+{
+}
+
+AIS_AttributeFilter::AIS_AttributeFilter(const Standard_Real aWid)
+    : myWid(aWid),
+      hasC(Standard_False),
+      hasW(Standard_True)
+{
+}
+
+Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
+{
+  Handle(AIS_InteractiveObject) aSelectable(
+    Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable()));
   if (aSelectable.IsNull())
     return Standard_False;
-  
+
   Standard_Boolean okstat = Standard_True;
-  if( hasC && aSelectable->HasColor() )
+  if (hasC && aSelectable->HasColor())
   {
     Quantity_Color aColor;
-    aSelectable->Color (aColor);
+    aSelectable->Color(aColor);
     okstat = (myCol == aColor.Name());
   }
 
-  if( hasW && aSelectable->HasWidth() )
+  if (hasW && aSelectable->HasWidth())
     okstat = (myWid == aSelectable->Width()) && okstat;
 
   return okstat;

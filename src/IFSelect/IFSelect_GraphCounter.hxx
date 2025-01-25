@@ -24,7 +24,6 @@
 class IFSelect_SelectDeduct;
 class Interface_Graph;
 
-
 class IFSelect_GraphCounter;
 DEFINE_STANDARD_HANDLE(IFSelect_GraphCounter, IFSelect_SignCounter)
 
@@ -38,45 +37,28 @@ class IFSelect_GraphCounter : public IFSelect_SignCounter
 {
 
 public:
-
-  
   //! Creates a GraphCounter, without applied selection
-  Standard_EXPORT IFSelect_GraphCounter(const Standard_Boolean withmap = Standard_True, const Standard_Boolean withlist = Standard_False);
-  
+  Standard_EXPORT IFSelect_GraphCounter(const Standard_Boolean withmap  = Standard_True,
+                                        const Standard_Boolean withlist = Standard_False);
+
   //! Returns the applied selection
   Standard_EXPORT Handle(IFSelect_SelectDeduct) Applied() const;
-  
+
   //! Sets a new applied selection
-  Standard_EXPORT void SetApplied (const Handle(IFSelect_SelectDeduct)& sel);
-  
+  Standard_EXPORT void SetApplied(const Handle(IFSelect_SelectDeduct)& sel);
+
   //! Adds a list of entities in the context given by the graph
   //! Default takes the count of entities selected by the applied
   //! selection, when it is given each entity of the list
   //! Can be redefined
-  Standard_EXPORT virtual void AddWithGraph (const Handle(TColStd_HSequenceOfTransient)& list, const Interface_Graph& graph) Standard_OVERRIDE;
+  Standard_EXPORT virtual void AddWithGraph(const Handle(TColStd_HSequenceOfTransient)& list,
+                                            const Interface_Graph& graph) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter,IFSelect_SignCounter)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IFSelect_SelectDeduct) theapplied;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_GraphCounter_HeaderFile

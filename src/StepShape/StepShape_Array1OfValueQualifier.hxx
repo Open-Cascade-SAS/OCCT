@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepShape_ValueQualifier> StepShape_Array1OfValueQualifier;
 
-
 #endif

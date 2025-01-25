@@ -23,7 +23,6 @@
 #include <Geom_Curve.hxx>
 class gp_Pnt;
 
-
 class Geom_BoundedCurve;
 DEFINE_STANDARD_HANDLE(Geom_BoundedCurve, Geom_Curve)
 
@@ -46,38 +45,20 @@ class Geom_BoundedCurve : public Geom_Curve
 {
 
 public:
-
-  
   //! Returns the end point of the curve.
   Standard_EXPORT virtual gp_Pnt EndPoint() const = 0;
-  
+
   //! Returns the start point of the curve.
   Standard_EXPORT virtual gp_Pnt StartPoint() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom_BoundedCurve,Geom_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom_BoundedCurve, Geom_Curve)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_BoundedCurve_HeaderFile

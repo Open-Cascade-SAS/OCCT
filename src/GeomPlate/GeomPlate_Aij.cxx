@@ -14,20 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomPlate_Aij.hxx>
 #include <GeomPlate_BuildAveragePlane.hxx>
 #include <gp_Vec.hxx>
 
 GeomPlate_Aij::GeomPlate_Aij()
-: Ind1(0),
-  Ind2(0)
+    : Ind1(0),
+      Ind2(0)
 {
 }
 
-GeomPlate_Aij::GeomPlate_Aij( const Standard_Integer anInd1,
-			      const Standard_Integer anInd2,
-			      const gp_Vec& aVec )
+GeomPlate_Aij::GeomPlate_Aij(const Standard_Integer anInd1,
+                             const Standard_Integer anInd2,
+                             const gp_Vec&          aVec)
 {
   Ind1 = anInd1;
   Ind2 = anInd2;

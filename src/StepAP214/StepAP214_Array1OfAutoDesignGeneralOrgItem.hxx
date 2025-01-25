@@ -20,7 +20,7 @@
 #include <StepAP214_AutoDesignGeneralOrgItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_AutoDesignGeneralOrgItem> StepAP214_Array1OfAutoDesignGeneralOrgItem;
-
+typedef NCollection_Array1<StepAP214_AutoDesignGeneralOrgItem>
+  StepAP214_Array1OfAutoDesignGeneralOrgItem;
 
 #endif

@@ -17,39 +17,35 @@
 #include <TopoDS.hxx>
 
 //=======================================================================
-//function : LocOpe_FindEdgesInFace
-//purpose  : 
+// function : LocOpe_FindEdgesInFace
+// purpose  :
 //=======================================================================
 
-inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace()
-{}
+inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace() {}
 
 //=======================================================================
-//function : LocOpe_FindEdgesInFace
-//purpose  : 
+// function : LocOpe_FindEdgesInFace
+// purpose  :
 //=======================================================================
 
-inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace(const TopoDS_Shape& S,
-						      const TopoDS_Face& F)
+inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace(const TopoDS_Shape& S, const TopoDS_Face& F)
 {
-  Set(S,F);
+  Set(S, F);
 }
 
-
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-inline void LocOpe_FindEdgesInFace::Init ()
+inline void LocOpe_FindEdgesInFace::Init()
 {
   myIt.Initialize(myList);
 }
 
-
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_FindEdgesInFace::More() const
@@ -57,10 +53,9 @@ inline Standard_Boolean LocOpe_FindEdgesInFace::More() const
   return myIt.More();
 }
 
-
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Edge& LocOpe_FindEdgesInFace::Edge() const
@@ -69,8 +64,8 @@ inline const TopoDS_Edge& LocOpe_FindEdgesInFace::Edge() const
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 inline void LocOpe_FindEdgesInFace::Next()

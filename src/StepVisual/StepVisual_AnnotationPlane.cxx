@@ -15,22 +15,23 @@
 
 #include <StepVisual_AnnotationPlane.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationPlane,StepVisual_AnnotationOccurrence)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationPlane, StepVisual_AnnotationOccurrence)
 
 //=======================================================================
-//function : StepVisual_AnnotationPlane
-//purpose  : 
+// function : StepVisual_AnnotationPlane
+// purpose  :
 //=======================================================================
-StepVisual_AnnotationPlane::StepVisual_AnnotationPlane ()  {}
+StepVisual_AnnotationPlane::StepVisual_AnnotationPlane() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
-void StepVisual_AnnotationPlane::Init (const Handle(TCollection_HAsciiString)& theName,
-                                       const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-                                       const Handle(Standard_Transient)& theItem,
-                                       const Handle(StepVisual_HArray1OfAnnotationPlaneElement)& theElements)
+void StepVisual_AnnotationPlane::Init(
+  const Handle(TCollection_HAsciiString)&                        theName,
+  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
+  const Handle(Standard_Transient)&                              theItem,
+  const Handle(StepVisual_HArray1OfAnnotationPlaneElement)&      theElements)
 {
   StepVisual_AnnotationOccurrence::Init(theName, theStyles, theItem);
   myElements = theElements;

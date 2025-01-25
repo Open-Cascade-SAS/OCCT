@@ -15,47 +15,49 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline Standard_Boolean math_BFGS::IsDone() const { return Done; }
+inline Standard_Boolean math_BFGS::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o, 
-				    const math_BFGS& B) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_BFGS& B)
 {
   B.Dump(o);
   return o;
 }
 
-
-inline  const math_Vector&  math_BFGS::Location() const{ 
+inline const math_Vector& math_BFGS::Location() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
-  return TheLocation; 
+  return TheLocation;
 }
 
-inline  void math_BFGS::Location(math_Vector& Loc) const{ 
+inline void math_BFGS::Location(math_Vector& Loc) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
-  Loc = TheLocation; 
+  Loc = TheLocation;
 }
 
-
-inline Standard_Real math_BFGS::Minimum() const{ 
+inline Standard_Real math_BFGS::Minimum() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheMinimum;
 }
 
-
-inline const math_Vector& math_BFGS::Gradient() const {
+inline const math_Vector& math_BFGS::Gradient() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheGradient;
 }
 
-
-inline void math_BFGS::Gradient(math_Vector& Grad) const {
+inline void math_BFGS::Gradient(math_Vector& Grad) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   Grad = TheGradient;
 }
 
-
-inline Standard_Integer math_BFGS::NbIterations() const {
+inline Standard_Integer math_BFGS::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return nbiter;
 }
-

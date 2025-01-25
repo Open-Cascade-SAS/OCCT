@@ -35,60 +35,51 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a LinearDimension. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDimen_ToolLinearDimension 
+class IGESDimen_ToolLinearDimension
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolLinearDimension, ready to work
   Standard_EXPORT IGESDimen_ToolLinearDimension();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDimen_LinearDimension)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_LinearDimension)& ent,
+                                     const Handle(IGESData_IGESReaderData)&   IR,
+                                     IGESData_ParamReader&                    PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDimen_LinearDimension)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_LinearDimension)& ent,
+                                      IGESData_IGESWriter&                     IW) const;
+
   //! Lists the Entities shared by a LinearDimension <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDimen_LinearDimension)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDimen_LinearDimension)& ent,
+                                 Interface_EntityIterator&                iter) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDimen_LinearDimension)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const Handle(IGESDimen_LinearDimension)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDimen_LinearDimension)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_LinearDimension)& ent,
+                                const Interface_ShareTool&               shares,
+                                Handle(Interface_Check)&                 ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDimen_LinearDimension)& entfrom, const Handle(IGESDimen_LinearDimension)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_LinearDimension)& entfrom,
+                               const Handle(IGESDimen_LinearDimension)& entto,
+                               Interface_CopyTool&                      TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_LinearDimension)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDimen_LinearDimension)& ent,
+                               const IGESData_IGESDumper&               dumper,
+                               Standard_OStream&                        S,
+                               const Standard_Integer                   own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_ToolLinearDimension_HeaderFile

@@ -29,56 +29,56 @@
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
-GccAna_LinPnt2dBisec::
-   GccAna_LinPnt2dBisec (const gp_Lin2d& Line1 ,
-		         const gp_Pnt2d& Point2) {
+GccAna_LinPnt2dBisec::GccAna_LinPnt2dBisec(const gp_Lin2d& Line1, const gp_Pnt2d& Point2)
+{
 
-   WellDone = Standard_False;
+  WellDone = Standard_False;
 
-   Standard_Real xdir = Line1.Direction().X();
-   Standard_Real ydir = Line1.Direction().Y();
-   Standard_Real xloc = Line1.Location().X();
-   Standard_Real yloc = Line1.Location().Y();
-   Standard_Real dist = Line1.Distance(Point2);
-//   if ( dist > gp::Resolution()) {
-   if ( dist > 1.e-10)
-     {
-       Standard_Real xpoint2 = Point2.X();
-       Standard_Real ypoint2 = Point2.Y();
-       if ((-ydir*(xpoint2-xloc)+xdir*(ypoint2-yloc)) > 0.0)
-	 {
-	   gp_Ax2d axeparab(gp_Pnt2d(Point2.XY()-dist/2.*gp_XY(-ydir,xdir)),
-			    gp_Dir2d(-ydir,xdir));
-	   gp_Parab2d bislinpnt(axeparab,dist/2.0);
-	   bissol = new GccInt_BParab(bislinpnt);
-//         =====================================
-	 }
-       else
-	 {
-	   gp_Ax2d axeparab(gp_Pnt2d(Point2.XY()+dist/2.*gp_XY(-ydir,xdir)),
-			    gp_Dir2d(ydir,-xdir));
-	   gp_Parab2d bislinpnt(axeparab,dist/2.0);
-	   bissol = new GccInt_BParab(bislinpnt);
-//         =====================================
-	 }
-       WellDone = Standard_True;
-     }
-   else
-     {
-       gp_Lin2d bislinpnt(Point2,gp_Dir2d(-ydir,xdir));
-       bissol = new GccInt_BLine(bislinpnt);
-//     ====================================
-       WellDone = Standard_True;
-     }
- }
+  Standard_Real xdir = Line1.Direction().X();
+  Standard_Real ydir = Line1.Direction().Y();
+  Standard_Real xloc = Line1.Location().X();
+  Standard_Real yloc = Line1.Location().Y();
+  Standard_Real dist = Line1.Distance(Point2);
+  //   if ( dist > gp::Resolution()) {
+  if (dist > 1.e-10)
+  {
+    Standard_Real xpoint2 = Point2.X();
+    Standard_Real ypoint2 = Point2.Y();
+    if ((-ydir * (xpoint2 - xloc) + xdir * (ypoint2 - yloc)) > 0.0)
+    {
+      gp_Ax2d    axeparab(gp_Pnt2d(Point2.XY() - dist / 2. * gp_XY(-ydir, xdir)),
+                       gp_Dir2d(-ydir, xdir));
+      gp_Parab2d bislinpnt(axeparab, dist / 2.0);
+      bissol = new GccInt_BParab(bislinpnt);
+      //         =====================================
+    }
+    else
+    {
+      gp_Ax2d    axeparab(gp_Pnt2d(Point2.XY() + dist / 2. * gp_XY(-ydir, xdir)),
+                       gp_Dir2d(ydir, -xdir));
+      gp_Parab2d bislinpnt(axeparab, dist / 2.0);
+      bissol = new GccInt_BParab(bislinpnt);
+      //         =====================================
+    }
+    WellDone = Standard_True;
+  }
+  else
+  {
+    gp_Lin2d bislinpnt(Point2, gp_Dir2d(-ydir, xdir));
+    bissol = new GccInt_BLine(bislinpnt);
+    //     ====================================
+    WellDone = Standard_True;
+  }
+}
 
 //=========================================================================
 
-Standard_Boolean GccAna_LinPnt2dBisec::
-   IsDone () const { return WellDone; }
+Standard_Boolean GccAna_LinPnt2dBisec::IsDone() const
+{
+  return WellDone;
+}
 
-Handle(GccInt_Bisec) GccAna_LinPnt2dBisec::
-   ThisSolution () const 
+Handle(GccInt_Bisec) GccAna_LinPnt2dBisec::ThisSolution() const
 {
   if (!WellDone)
     throw StdFail_NotDone();

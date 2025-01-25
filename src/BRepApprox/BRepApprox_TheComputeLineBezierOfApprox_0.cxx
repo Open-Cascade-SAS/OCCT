@@ -25,7 +25,6 @@
 #include <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
- 
 
 #define MultiLine BRepApprox_TheMultiLineOfApprox
 #define MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
@@ -33,23 +32,38 @@
 #define LineTool_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #define Approx_MyGradient BRepApprox_MyGradientOfTheComputeLineBezierOfApprox
 #define Approx_MyGradient_hxx <BRepApprox_MyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ParLeastSquareOfMyGradient BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ParLeastSquareOfMyGradient_hxx <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ResConstraintOfMyGradient BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ResConstraintOfMyGradient_hxx <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ParFunctionOfMyGradient BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ParFunctionOfMyGradient_hxx <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_Gradient_BFGSOfMyGradient BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_Gradient_BFGSOfMyGradient_hxx <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ParLeastSquareOfMyGradient BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ParLeastSquareOfMyGradient_hxx <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ResConstraintOfMyGradient BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ResConstraintOfMyGradient_hxx <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_ParFunctionOfMyGradient BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_ParFunctionOfMyGradient_hxx <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#define Approx_Gradient_BFGSOfMyGradient BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox
-#define Approx_Gradient_BFGSOfMyGradient_hxx <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ParLeastSquareOfMyGradient                                                          \
+  BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ParLeastSquareOfMyGradient_hxx                                                      \
+  <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ResConstraintOfMyGradient                                                           \
+  BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ResConstraintOfMyGradient_hxx                                                       \
+  <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ParFunctionOfMyGradient                                                             \
+  BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ParFunctionOfMyGradient_hxx                                                         \
+  <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_Gradient_BFGSOfMyGradient                                                           \
+  BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_Gradient_BFGSOfMyGradient_hxx                                                       \
+  <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ParLeastSquareOfMyGradient                                                          \
+  BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ParLeastSquareOfMyGradient_hxx                                                      \
+  <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ResConstraintOfMyGradient                                                           \
+  BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ResConstraintOfMyGradient_hxx                                                       \
+  <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_ParFunctionOfMyGradient                                                             \
+  BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_ParFunctionOfMyGradient_hxx                                                         \
+  <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define Approx_Gradient_BFGSOfMyGradient                                                           \
+  BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox
+#define Approx_Gradient_BFGSOfMyGradient_hxx                                                       \
+  <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #define Approx_ComputeLine BRepApprox_TheComputeLineBezierOfApprox
 #define Approx_ComputeLine_hxx <BRepApprox_TheComputeLineBezierOfApprox.hxx>
 #include "../Approx/Approx_ComputeLine.gxx"
-

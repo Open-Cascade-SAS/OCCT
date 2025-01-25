@@ -17,15 +17,14 @@
 #ifndef _Geom2dGcc_Type1_HeaderFile
 #define _Geom2dGcc_Type1_HeaderFile
 
-
 enum Geom2dGcc_Type1
 {
-Geom2dGcc_CuCuCu,
-Geom2dGcc_CiCuCu,
-Geom2dGcc_CiCiCu,
-Geom2dGcc_CiLiCu,
-Geom2dGcc_LiLiCu,
-Geom2dGcc_LiCuCu
+  Geom2dGcc_CuCuCu,
+  Geom2dGcc_CiCuCu,
+  Geom2dGcc_CiCiCu,
+  Geom2dGcc_CiLiCu,
+  Geom2dGcc_LiLiCu,
+  Geom2dGcc_LiCuCu
 };
 
 #endif // _Geom2dGcc_Type1_HeaderFile

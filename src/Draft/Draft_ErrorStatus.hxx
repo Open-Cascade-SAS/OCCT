@@ -17,13 +17,12 @@
 #ifndef _Draft_ErrorStatus_HeaderFile
 #define _Draft_ErrorStatus_HeaderFile
 
-
 enum Draft_ErrorStatus
 {
-Draft_NoError,
-Draft_FaceRecomputation,
-Draft_EdgeRecomputation,
-Draft_VertexRecomputation
+  Draft_NoError,
+  Draft_FaceRecomputation,
+  Draft_EdgeRecomputation,
+  Draft_VertexRecomputation
 };
 
 #endif // _Draft_ErrorStatus_HeaderFile

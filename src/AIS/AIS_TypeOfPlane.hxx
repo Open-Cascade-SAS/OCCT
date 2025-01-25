@@ -20,10 +20,10 @@
 //! Declares the type of plane.
 enum AIS_TypeOfPlane
 {
-AIS_TOPL_Unknown,
-AIS_TOPL_XYPlane,
-AIS_TOPL_XZPlane,
-AIS_TOPL_YZPlane
+  AIS_TOPL_Unknown,
+  AIS_TOPL_XYPlane,
+  AIS_TOPL_XZPlane,
+  AIS_TOPL_YZPlane
 };
 
 #endif // _AIS_TypeOfPlane_HeaderFile

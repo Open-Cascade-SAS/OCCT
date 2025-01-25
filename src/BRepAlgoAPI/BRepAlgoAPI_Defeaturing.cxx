@@ -12,12 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAlgoAPI_Defeaturing.hxx>
 
 //=======================================================================
-//function : Build
-//purpose  : 
+// function : Build
+// purpose  :
 //=======================================================================
 void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& theRange)
 {
@@ -50,8 +49,8 @@ void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& theRange)
 }
 
 //=======================================================================
-//function : Modified
-//purpose  : 
+// function : Modified
+// purpose  :
 //=======================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS)
 {
@@ -59,8 +58,8 @@ const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape
 }
 
 //=======================================================================
-//function : Generated
-//purpose  : 
+// function : Generated
+// purpose  :
 //=======================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS)
 {
@@ -68,8 +67,8 @@ const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shap
 }
 
 //=======================================================================
-//function : IsDeleted
-//purpose  : 
+// function : IsDeleted
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS)
 {
@@ -77,8 +76,8 @@ Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS)
 }
 
 //=======================================================================
-//function : HasModified
-//purpose  : 
+// function : HasModified
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasModified() const
 {
@@ -86,8 +85,8 @@ Standard_Boolean BRepAlgoAPI_Defeaturing::HasModified() const
 }
 
 //=======================================================================
-//function : HasGenerated
-//purpose  : 
+// function : HasGenerated
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasGenerated() const
 {
@@ -95,8 +94,8 @@ Standard_Boolean BRepAlgoAPI_Defeaturing::HasGenerated() const
 }
 
 //=======================================================================
-//function : HasDeleted
-//purpose  : 
+// function : HasDeleted
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasDeleted() const
 {

@@ -25,21 +25,20 @@ DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_NoteBinDataDriver, XmlMXCAFDoc_NoteDriver)
 class XmlMXCAFDoc_NoteBinDataDriver : public XmlMXCAFDoc_NoteDriver
 {
 public:
-
   Standard_EXPORT XmlMXCAFDoc_NoteBinDataDriver(const Handle(Message_Messenger)& theMessageDriver);
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
-                                         const Handle(TDF_Attribute)& theTarget,
-                                         XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    Paste(const XmlObjMgt_Persistent&  theSource,
+          const Handle(TDF_Attribute)& theTarget,
+          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
                              XmlObjMgt_Persistent&        theTarget,
                              XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteBinDataDriver, XmlMXCAFDoc_NoteDriver)
-
 };
 
 #endif // _XmlMXCAFDoc_NoteBinDataDriver_HeaderFile

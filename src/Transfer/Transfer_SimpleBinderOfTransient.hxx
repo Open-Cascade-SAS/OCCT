@@ -22,7 +22,6 @@
 
 #include <Transfer_Binder.hxx>
 
-
 class Transfer_SimpleBinderOfTransient;
 DEFINE_STANDARD_HANDLE(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
@@ -33,28 +32,26 @@ class Transfer_SimpleBinderOfTransient : public Transfer_Binder
 {
 
 public:
-
-  
   //! Creates an empty SimpleBinderOfTransient
   //! Returns True if a starting object is bound with SEVERAL
   //! results : Here, returns always False
   //! See Binder itself
   Standard_EXPORT Transfer_SimpleBinderOfTransient();
-  
+
   //! Returns the Effective (Dynamic) Type of the Result
   //! (Standard_Transient if no Result is defined)
   Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
-  
+
   //! Returns the Effective Name of (Dynamic) Type of the Result
   //! (void) if no result is defined
   Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
-  
+
   //! Defines the Result
-  Standard_EXPORT void SetResult (const Handle(Standard_Transient)& res);
-  
+  Standard_EXPORT void SetResult(const Handle(Standard_Transient)& res);
+
   //! Returns the defined Result, if there is one
   Standard_EXPORT const Handle(Standard_Transient)& Result() const;
-  
+
   //! Returns a transient result according to its type (IsKind)
   //! i.e. the result itself if IsKind(atype), else searches in
   //! NextResult, until first found, then returns True
@@ -63,30 +60,15 @@ public:
   //! This syntactic form avoids to do DownCast : if a result is
   //! found with the good type, it is loaded in <res> and can be
   //! immediately used, well initialised
-  Standard_EXPORT static Standard_Boolean GetTypedResult (const Handle(Transfer_Binder)& bnd, const Handle(Standard_Type)& atype, Handle(Standard_Transient)& res);
+  Standard_EXPORT static Standard_Boolean GetTypedResult(const Handle(Transfer_Binder)& bnd,
+                                                         const Handle(Standard_Type)&   atype,
+                                                         Handle(Standard_Transient)&    res);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Standard_Transient) theres;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_SimpleBinderOfTransient_HeaderFile

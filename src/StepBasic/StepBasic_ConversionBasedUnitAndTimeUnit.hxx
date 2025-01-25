@@ -26,48 +26,29 @@ class StepBasic_DimensionalExponents;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
-
 class StepBasic_ConversionBasedUnitAndTimeUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndTimeUnit, StepBasic_ConversionBasedUnit)
-
 
 class StepBasic_ConversionBasedUnitAndTimeUnit : public StepBasic_ConversionBasedUnit
 {
 
 public:
-
-  
   //! Returns a ConversionBasedUnitAndTimeUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndTimeUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
-  
-  Standard_EXPORT void SetTimeUnit (const Handle(StepBasic_TimeUnit)& aTimeUnit);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
+                            const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+
+  Standard_EXPORT void SetTimeUnit(const Handle(StepBasic_TimeUnit)& aTimeUnit);
+
   Standard_EXPORT Handle(StepBasic_TimeUnit) TimeUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndTimeUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndTimeUnit, StepBasic_ConversionBasedUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_TimeUnit) timeUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ConversionBasedUnitAndTimeUnit_HeaderFile

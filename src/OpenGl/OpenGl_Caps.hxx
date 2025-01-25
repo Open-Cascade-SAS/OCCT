@@ -21,14 +21,15 @@
 #include <OpenGl_ShaderProgramDumpLevel.hxx>
 
 //! Class to define graphic driver capabilities.
-//! Notice that these options will be ignored if particular functionality does not provided by GL driver
+//! Notice that these options will be ignored if particular functionality does not provided by GL
+//! driver
 class OpenGl_Caps : public Standard_Transient
 {
 
-public: //! @name flags to disable particular functionality, should be used only for testing purposes!
-
-  Standard_Boolean sRGBDisable;       //!< Disables sRGB rendering (OFF by default)
-// clang-format off
+public
+    : //! @name flags to disable particular functionality, should be used only for testing purposes!
+  Standard_Boolean sRGBDisable; //!< Disables sRGB rendering (OFF by default)
+  // clang-format off
   Standard_Boolean compressedTexturesDisable; //!< Disables uploading of compressed texture formats native to GPU (OFF by default)
   Standard_Boolean vboDisable;        //!< disallow VBO usage for debugging purposes (OFF by default)
   Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
@@ -38,10 +39,9 @@ public: //! @name flags to disable particular functionality, should be used only
   Standard_Boolean useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
   Standard_Integer swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
   Standard_Boolean useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
-// clang-format on
+  // clang-format on
 
 public: //! @name context creation parameters
-
   /**
    * Specify that driver should not swap back/front buffers at the end of frame.
    * Useful when OCCT Viewer is integrated into existing OpenGL rendering pipeline as part,
@@ -74,8 +74,8 @@ public: //! @name context creation parameters
    *   but with 30-bit RGB color being activated systemwide (e.g. Windows);
    * - ignored on systems with deep color defined as preferred pixel format (e.g. Linux / X11),
    *   deep 30-bit RGB color will be used regardless of the flag value;
-   * - ignored on configurations not supporting deep color (incompatible display / system / GPU / driver),
-   *   standard 24-bit RGB color will be used instead.
+   * - ignored on configurations not supporting deep color (incompatible display / system / GPU /
+   * driver), standard 24-bit RGB color will be used instead.
    *
    * OFF by default.
    */
@@ -115,7 +115,8 @@ public: //! @name context creation parameters
   /**
    * Disable hardware acceleration.
    *
-   * This flag overrides default behavior, when accelerated context always preferred over software ones:
+   * This flag overrides default behavior, when accelerated context always preferred over software
+   * ones:
    * - on Windows will force Microsoft software implementation;
    * - on Mac OS X, forces Apple software implementation.
    *
@@ -128,11 +129,12 @@ public: //! @name context creation parameters
   /**
    * Request backward-compatible GL context. This flag requires support in OpenGL driver.
    *
-   * Backward-compatible profile includes deprecated functionality like FFP (fixed-function pipeline),
-   * and might be useful for compatibility with application OpenGL code.
+   * Backward-compatible profile includes deprecated functionality like FFP (fixed-function
+   * pipeline), and might be useful for compatibility with application OpenGL code.
    *
    * Most drivers support all features within backward-compatibility profile,
-   * but some limit functionality to OpenGL 2.1 (e.g. OS X) when core profile is not explicitly requested.
+   * but some limit functionality to OpenGL 2.1 (e.g. OS X) when core profile is not explicitly
+   * requested.
    *
    * Requires OpenGL 3.2+ drivers.
    * Has no effect on OpenGL ES 2.0+ drivers (which do not provide FFP compatibility).
@@ -173,7 +175,6 @@ public: //! @name context creation parameters
   Standard_Boolean isTopDownTextureUV;
 
 public: //! @name flags to activate verbose output
-
   //! Print GLSL program compilation/linkage warnings, if any. OFF by default.
   Standard_Boolean glslWarnings;
 
@@ -184,7 +185,6 @@ public: //! @name flags to activate verbose output
   OpenGl_ShaderProgramDumpLevel glslDumpLevel;
 
 public: //! @name class methods
-
   //! Default constructor - initialize with most optimal values.
   Standard_EXPORT OpenGl_Caps();
 
@@ -192,17 +192,14 @@ public: //! @name class methods
   Standard_EXPORT virtual ~OpenGl_Caps();
 
   //! Copy maker.
-  Standard_EXPORT OpenGl_Caps& operator= (const OpenGl_Caps& theCopy);
+  Standard_EXPORT OpenGl_Caps& operator=(const OpenGl_Caps& theCopy);
 
 private:
-
   //! Not implemented
-  OpenGl_Caps (const OpenGl_Caps& );
+  OpenGl_Caps(const OpenGl_Caps&);
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_Caps,Standard_Transient) // Type definition
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient) // Type definition
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_Caps, Standard_Transient)

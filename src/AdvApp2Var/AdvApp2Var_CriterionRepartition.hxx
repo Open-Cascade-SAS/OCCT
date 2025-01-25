@@ -24,8 +24,8 @@
 //! of cutting process
 enum AdvApp2Var_CriterionRepartition
 {
-AdvApp2Var_Regular,
-AdvApp2Var_Incremental
+  AdvApp2Var_Regular,
+  AdvApp2Var_Incremental
 };
 
 #endif // _AdvApp2Var_CriterionRepartition_HeaderFile

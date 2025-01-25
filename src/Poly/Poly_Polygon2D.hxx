@@ -31,9 +31,8 @@ DEFINE_STANDARD_HANDLE(Poly_Polygon2D, Standard_Transient)
 class Poly_Polygon2D : public Standard_Transient
 {
 public:
-
   //! Constructs a 2D polygon with specified number of nodes.
-  Standard_EXPORT explicit Poly_Polygon2D (const Standard_Integer theNbNodes);
+  Standard_EXPORT explicit Poly_Polygon2D(const Standard_Integer theNbNodes);
 
   //! Constructs a 2D polygon defined by the table of points, <Nodes>.
   Standard_EXPORT Poly_Polygon2D(const TColgp_Array1OfPnt2d& Nodes);
@@ -60,7 +59,7 @@ public:
   Standard_Real Deflection() const { return myDeflection; }
 
   //! Sets the deflection of this polygon.
-  void Deflection (const Standard_Real theDefl) { myDeflection = theDefl; }
+  void Deflection(const Standard_Real theDefl) { myDeflection = theDefl; }
 
   //! Returns the number of nodes in this polygon.
   //! Note: If the polygon is closed, the point of closure is
@@ -73,17 +72,16 @@ public:
 
   //! Returns the table of nodes for this polygon.
   TColgp_Array1OfPnt2d& ChangeNodes() { return myNodes; }
-  
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,Standard_Transient)
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
+
+  DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D, Standard_Transient)
 
 private:
-
-  Standard_Real myDeflection;
+  Standard_Real        myDeflection;
   TColgp_Array1OfPnt2d myNodes;
-
 };
 
 #endif // _Poly_Polygon2D_HeaderFile

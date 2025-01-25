@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_ItemApplication_H
 #define DFBrowser_ItemApplication_H
@@ -29,24 +29,27 @@ typedef QExplicitlySharedDataPointer<DFBrowser_ItemApplication> DFBrowser_ItemAp
 class DFBrowser_ItemApplication : public DFBrowser_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static DFBrowser_ItemApplicationPtr CreateItem (TreeModel_ItemBasePtr theParent)
-  { return DFBrowser_ItemApplicationPtr (new DFBrowser_ItemApplication (theParent)); }
+  static DFBrowser_ItemApplicationPtr CreateItem(TreeModel_ItemBasePtr theParent)
+  {
+    return DFBrowser_ItemApplicationPtr(new DFBrowser_ItemApplication(theParent));
+  }
 
   //! Destructor
   virtual ~DFBrowser_ItemApplication() {}
 
   //! Sets the item label
   //! \param theLabel an object where the child items structure is found
-  void SetApplication (const Handle(TDocStd_Application)& theApplication) { myApplication = theApplication; }
+  void SetApplication(const Handle(TDocStd_Application)& theApplication)
+  {
+    myApplication = theApplication;
+  }
 
   //! Returns the current label
   //! \return a label
   const Handle(TDocStd_Application)& GetApplication() const { return myApplication; }
 
 protected:
-
   //! Returns number of documents if the application is not NULL
   //! \return rows count
   virtual int initRowCount() const Standard_OVERRIDE;
@@ -54,24 +57,24 @@ protected:
   //! Returns fixed item text or empty.
   //! \param theItemRole a value role
   //! \return the value
-  virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
 protected:
-
   //! Creates a child item in the given position.
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! \param theParent a parent item
-  DFBrowser_ItemApplication(TreeModel_ItemBasePtr theParent) : DFBrowser_ItemBase(theParent, 0, 0) {}
+  DFBrowser_ItemApplication(TreeModel_ItemBasePtr theParent)
+      : DFBrowser_ItemBase(theParent, 0, 0)
+  {
+  }
 
 private:
-
   Handle(TDocStd_Application) myApplication; //!<! OCAF application
 };
 

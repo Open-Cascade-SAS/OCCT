@@ -29,15 +29,17 @@
 class Adaptor3d_HSurfaceTool;
 class math_FunctionSetRoot;
 
-class IntWalk_TheInt2S 
+class IntWalk_TheInt2S
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! compute the solution point with the close point
-  Standard_EXPORT IntWalk_TheInt2S(const TColStd_Array1OfReal& Param, const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Standard_Real TolTangency);
-  
+  Standard_EXPORT IntWalk_TheInt2S(const TColStd_Array1OfReal&      Param,
+                                   const Handle(Adaptor3d_Surface)& S1,
+                                   const Handle(Adaptor3d_Surface)& S2,
+                                   const Standard_Real              TolTangency);
+
   //! initialize the parameters to compute the solution point
   //! it 's possible to write to optimize:
   //! IntImp_Int2S inter(S1,S2,Func,TolTangency);
@@ -48,90 +50,82 @@ public:
   //! param(3)=...
   //! inter.Perform(Param,rsnld);
   //! }
-  Standard_EXPORT IntWalk_TheInt2S(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Standard_Real TolTangency);
-  
+  Standard_EXPORT IntWalk_TheInt2S(const Handle(Adaptor3d_Surface)& S1,
+                                   const Handle(Adaptor3d_Surface)& S2,
+                                   const Standard_Real              TolTangency);
+
   //! returns the best constant isoparametric to find
   //! the next intersection's point +stores the solution
   //! point (the solution point is found with the close point
   //! to intersect the isoparametric with the other patch;
   //! the choice of the isoparametic is calculated)
-  Standard_EXPORT IntImp_ConstIsoparametric Perform (const TColStd_Array1OfReal& Param, math_FunctionSetRoot& Rsnld);
-  
+  Standard_EXPORT IntImp_ConstIsoparametric Perform(const TColStd_Array1OfReal& Param,
+                                                    math_FunctionSetRoot&       Rsnld);
+
   //! returns the best constant isoparametric to find
   //! the next intersection's point +stores the solution
   //! point (the solution point is found with the close point
   //! to intersect the isoparametric with the other patch;
   //! the choice of the isoparametic is given by ChoixIso)
-  Standard_EXPORT IntImp_ConstIsoparametric Perform (const TColStd_Array1OfReal& Param, math_FunctionSetRoot& Rsnld, const IntImp_ConstIsoparametric ChoixIso);
-  
+  Standard_EXPORT IntImp_ConstIsoparametric Perform(const TColStd_Array1OfReal&     Param,
+                                                    math_FunctionSetRoot&           Rsnld,
+                                                    const IntImp_ConstIsoparametric ChoixIso);
+
   //! Returns TRUE if the creation completed without failure.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns TRUE when there is no solution to the problem.
-    Standard_Boolean IsEmpty() const;
-  
+  Standard_Boolean IsEmpty() const;
+
   //! Returns the intersection point.
-    const IntSurf_PntOn2S& Point() const;
-  
+  const IntSurf_PntOn2S& Point() const;
+
   //! Returns True if the surfaces are tangent at the
   //! intersection point.
-    Standard_Boolean IsTangent() const;
-  
+  Standard_Boolean IsTangent() const;
+
   //! Returns the tangent at the intersection line.
-    const gp_Dir& Direction() const;
-  
+  const gp_Dir& Direction() const;
+
   //! Returns the tangent at the intersection line in the
   //! parametric space of the first surface.
-    const gp_Dir2d& DirectionOnS1() const;
-  
+  const gp_Dir2d& DirectionOnS1() const;
+
   //! Returns the tangent at the intersection line in the
   //! parametric space of the second surface.
-    const gp_Dir2d& DirectionOnS2() const;
-  
+  const gp_Dir2d& DirectionOnS2() const;
+
   //! return the math function which
   //! is used to compute the intersection
-    IntWalk_TheFunctionOfTheInt2S& Function();
-  
+  IntWalk_TheFunctionOfTheInt2S& Function();
+
   //! return the intersection point which is
   //! enable for changing.
-    IntSurf_PntOn2S& ChangePoint();
-
-
-
+  IntSurf_PntOn2S& ChangePoint();
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean done;
-  Standard_Boolean empty;
-  IntSurf_PntOn2S pint;
-  Standard_Boolean tangent;
-  gp_Dir d3d;
-  gp_Dir2d d2d1;
-  gp_Dir2d d2d2;
+  Standard_Boolean              done;
+  Standard_Boolean              empty;
+  IntSurf_PntOn2S               pint;
+  Standard_Boolean              tangent;
+  gp_Dir                        d3d;
+  gp_Dir2d                      d2d1;
+  gp_Dir2d                      d2d2;
   IntWalk_TheFunctionOfTheInt2S myZerParFunc;
-  Standard_Real tol;
-  Standard_Real ua0;
-  Standard_Real va0;
-  Standard_Real ua1;
-  Standard_Real va1;
-  Standard_Real ub0;
-  Standard_Real vb0;
-  Standard_Real ub1;
-  Standard_Real vb1;
-  Standard_Real ures1;
-  Standard_Real ures2;
-  Standard_Real vres1;
-  Standard_Real vres2;
-
-
+  Standard_Real                 tol;
+  Standard_Real                 ua0;
+  Standard_Real                 va0;
+  Standard_Real                 ua1;
+  Standard_Real                 va1;
+  Standard_Real                 ub0;
+  Standard_Real                 vb0;
+  Standard_Real                 ub1;
+  Standard_Real                 vb1;
+  Standard_Real                 ures1;
+  Standard_Real                 ures2;
+  Standard_Real                 vres1;
+  Standard_Real                 vres2;
 };
 
 #define ThePSurface Handle(Adaptor3d_Surface)
@@ -153,8 +147,5 @@ private:
 #undef IntImp_TheFunction_hxx
 #undef IntImp_Int2S
 #undef IntImp_Int2S_hxx
-
-
-
 
 #endif // _IntWalk_TheInt2S_HeaderFile

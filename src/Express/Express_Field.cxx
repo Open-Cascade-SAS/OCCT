@@ -25,13 +25,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Field, Standard_Transient)
 // purpose  :
 //=======================================================================
 
-Express_Field::Express_Field (const Standard_CString theName,
-                              const Handle(Express_Type)& theType,
-                              const Standard_Boolean theOpt)
+Express_Field::Express_Field(const Standard_CString      theName,
+                             const Handle(Express_Type)& theType,
+                             const Standard_Boolean      theOpt)
 {
-  myName = new TCollection_HAsciiString (theName);
+  myName = new TCollection_HAsciiString(theName);
   myType = theType;
-  myOpt = theOpt;
+  myOpt  = theOpt;
 }
 
 //=======================================================================
@@ -39,13 +39,13 @@ Express_Field::Express_Field (const Standard_CString theName,
 // purpose  :
 //=======================================================================
 
-Express_Field::Express_Field (const Handle(TCollection_HAsciiString)& theName,
-                              const Handle(Express_Type)& theType,
-                              const Standard_Boolean theOpt)
+Express_Field::Express_Field(const Handle(TCollection_HAsciiString)& theName,
+                             const Handle(Express_Type)&             theType,
+                             const Standard_Boolean                  theOpt)
 {
   myName = theName;
   myType = theType;
-  myOpt = theOpt;
+  myOpt  = theOpt;
 }
 
 //=======================================================================

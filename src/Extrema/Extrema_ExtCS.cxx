@@ -35,63 +35,69 @@
 #include <Extrema_ExtPS.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS()
-: myS(NULL),
-  myDone(Standard_False),
-  myIsPar(Standard_False),
-  myuinf(0.0),
-  myusup(0.0),
-  myvinf(0.0),
-  myvsup(0.0),
-  mytolC(0.0),
-  mytolS(0.0),
-  myucinf(0.0),
-  myucsup(0.0),
-  myStype(GeomAbs_OtherSurface)
+    : myS(NULL),
+      myDone(Standard_False),
+      myIsPar(Standard_False),
+      myuinf(0.0),
+      myusup(0.0),
+      myvinf(0.0),
+      myvsup(0.0),
+      mytolC(0.0),
+      mytolS(0.0),
+      myucinf(0.0),
+      myucsup(0.0),
+      myStype(GeomAbs_OtherSurface)
 {
 }
 
 Extrema_ExtCS::Extrema_ExtCS(const Adaptor3d_Curve&   C,
-  const Adaptor3d_Surface& S,
-  const Standard_Real    TolC,
-  const Standard_Real    TolS)
+                             const Adaptor3d_Surface& S,
+                             const Standard_Real      TolC,
+                             const Standard_Real      TolS)
 
 {
-  Initialize (S, TolC, TolS);
+  Initialize(S, TolC, TolS);
   Perform(C, C.FirstParameter(), C.LastParameter());
 }
 
 Extrema_ExtCS::Extrema_ExtCS(const Adaptor3d_Curve&   C,
-  const Adaptor3d_Surface& S,
-  const Standard_Real    UCinf,
-  const Standard_Real    UCsup,
-  const Standard_Real    Uinf,	
-  const Standard_Real    Usup,
-  const Standard_Real    Vinf,	
-  const Standard_Real    Vsup,
-  const Standard_Real    TolC,
-  const Standard_Real    TolS)
+                             const Adaptor3d_Surface& S,
+                             const Standard_Real      UCinf,
+                             const Standard_Real      UCsup,
+                             const Standard_Real      Uinf,
+                             const Standard_Real      Usup,
+                             const Standard_Real      Vinf,
+                             const Standard_Real      Vsup,
+                             const Standard_Real      TolC,
+                             const Standard_Real      TolS)
 
 {
   Initialize(S, Uinf, Usup, Vinf, Vsup, TolC, TolS);
   Perform(C, UCinf, UCsup);
 }
 
-void Extrema_ExtCS::Initialize (const Adaptor3d_Surface& S, const Standard_Real TolC, const Standard_Real TolS)
+void Extrema_ExtCS::Initialize(const Adaptor3d_Surface& S,
+                               const Standard_Real      TolC,
+                               const Standard_Real      TolS)
 {
-  Initialize (S, S.FirstUParameter(), S.LastUParameter(),
-              S.FirstVParameter(), S.LastVParameter(),
-              TolC, TolS);
+  Initialize(S,
+             S.FirstUParameter(),
+             S.LastUParameter(),
+             S.FirstVParameter(),
+             S.LastVParameter(),
+             TolC,
+             TolS);
 }
 
 void Extrema_ExtCS::Initialize(const Adaptor3d_Surface& S,
-  const Standard_Real    Uinf,	
-  const Standard_Real    Usup,
-  const Standard_Real    Vinf,	
-  const Standard_Real    Vsup,
-  const Standard_Real    TolC,
-  const Standard_Real    TolS)
+                               const Standard_Real      Uinf,
+                               const Standard_Real      Usup,
+                               const Standard_Real      Vinf,
+                               const Standard_Real      Vsup,
+                               const Standard_Real      TolC,
+                               const Standard_Real      TolS)
 {
-  myS = &S;
+  myS     = &S;
   myIsPar = Standard_False;
   myuinf  = Uinf;
   myusup  = Usup;
@@ -99,13 +105,12 @@ void Extrema_ExtCS::Initialize(const Adaptor3d_Surface& S,
   myvsup  = Vsup;
   mytolC  = TolC;
   mytolS  = TolS;
-  myStype  = myS->GetType();
+  myStype = myS->GetType();
 }
 
-
 void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
-  const Standard_Real  Uinf,
-  const Standard_Real  Usup)
+                            const Standard_Real    Uinf,
+                            const Standard_Real    Usup)
 {
   myucinf = Uinf;
   myucsup = Usup;
@@ -114,54 +119,62 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   mySqDist.Clear();
   Standard_Integer i, j;
   Standard_Integer NbT, NbU, NbV;
-  NbT = 12; NbU = NbV = 10;
-  GeomAbs_CurveType myCtype  = C.GetType();
+  NbT = 12;
+  NbU = NbV                 = 10;
+  GeomAbs_CurveType myCtype = C.GetType();
 
   myDone = Standard_False;
   // Try analytic computation of extrema
   Standard_Boolean isComputeAnalytic = Standard_True;
 
-  switch(myCtype) {
+  switch (myCtype)
+  {
 
-  case GeomAbs_Line: 
-    {
+    case GeomAbs_Line: {
 
-      switch(myStype) {
-      case GeomAbs_Sphere:
-        myExtElCS.Perform(C.Line(), myS->Sphere());
-        break;   
-      case GeomAbs_Cylinder:
-        myExtElCS.Perform(C.Line(), myS->Cylinder());
-        break;
-      case GeomAbs_Plane:
-        myExtElCS.Perform(C.Line(), myS->Plane());
-        if (myExtElCS.IsParallel())   break;
-        Standard_FALLTHROUGH
+      switch (myStype)
+      {
+        case GeomAbs_Sphere:
+          myExtElCS.Perform(C.Line(), myS->Sphere());
+          break;
+        case GeomAbs_Cylinder:
+          myExtElCS.Perform(C.Line(), myS->Cylinder());
+          break;
+        case GeomAbs_Plane:
+          myExtElCS.Perform(C.Line(), myS->Plane());
+          if (myExtElCS.IsParallel())
+            break;
+          Standard_FALLTHROUGH
 
-      case GeomAbs_Torus:
-      case GeomAbs_Cone:
-      case GeomAbs_BezierSurface:
-      case GeomAbs_BSplineSurface:
-      case GeomAbs_SurfaceOfRevolution:
-      case GeomAbs_SurfaceOfExtrusion:
-      case GeomAbs_OffsetSurface:
-      case GeomAbs_OtherSurface:
-        {
+        case GeomAbs_Torus:
+        case GeomAbs_Cone:
+        case GeomAbs_BezierSurface:
+        case GeomAbs_BSplineSurface:
+        case GeomAbs_SurfaceOfRevolution:
+        case GeomAbs_SurfaceOfExtrusion:
+        case GeomAbs_OffsetSurface:
+        case GeomAbs_OtherSurface: {
           Standard_Real cfirst = myucinf, clast = myucsup;
-          Standard_Real ufirst = myS->FirstUParameter(), ulast = myS->LastUParameter(), 
-            vfirst = myS->FirstVParameter(), vlast = myS->LastVParameter();
+          Standard_Real ufirst = myS->FirstUParameter(), ulast = myS->LastUParameter(),
+                        vfirst = myS->FirstVParameter(), vlast = myS->LastVParameter();
 
-          if (!(Precision::IsInfinite(ufirst) || Precision::IsInfinite(ulast) ||
-            Precision::IsInfinite(vfirst) || Precision::IsInfinite(vlast)))
+          if (!(Precision::IsInfinite(ufirst) || Precision::IsInfinite(ulast)
+                || Precision::IsInfinite(vfirst) || Precision::IsInfinite(vlast)))
           {
             Standard_Real tmin = Precision::Infinite(), tmax = -tmin;
             Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-            Bnd_Box aSurfBox;
-            BndLib_AddSurface::Add(*myS, ufirst, ulast, vfirst, vlast, Precision::Confusion(), aSurfBox);
+            Bnd_Box       aSurfBox;
+            BndLib_AddSurface::Add(*myS,
+                                   ufirst,
+                                   ulast,
+                                   vfirst,
+                                   vlast,
+                                   Precision::Confusion(),
+                                   aSurfBox);
             aSurfBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-            gp_Lin aLin = C.Line();
+            gp_Lin        aLin = C.Line();
             Standard_Real aParOnLin;
-            gp_Pnt aLimPntArray[8];
+            gp_Pnt        aLimPntArray[8];
 
             aLimPntArray[0].SetCoord(xmin, ymin, zmin);
             aLimPntArray[1].SetCoord(xmax, ymin, zmin);
@@ -172,13 +185,14 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             aLimPntArray[6].SetCoord(xmin, ymax, zmax);
             aLimPntArray[7].SetCoord(xmax, ymax, zmax);
 
-            for (i = 0; i <= 7; i++) {
+            for (i = 0; i <= 7; i++)
+            {
               aParOnLin = ElCLib::Parameter(aLin, aLimPntArray[i]);
-              tmin = Min(aParOnLin, tmin);
-              tmax = Max(aParOnLin, tmax);
+              tmin      = Min(aParOnLin, tmin);
+              tmax      = Max(aParOnLin, tmax);
             }
             cfirst = Max(cfirst, tmin);
-            clast = Min(clast, tmax);
+            clast  = Min(clast, tmax);
           }
 
           if (myS->IsUPeriodic())
@@ -189,16 +203,18 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
           if (clast - cfirst <= Precision::Confusion())
           {
             Standard_Real aCPar = (cfirst + clast) / 2.;
-            gp_Pnt aPm = C.Value(aCPar);
-            Extrema_ExtPS anExtPS(aPm, *myS, ufirst, ulast,
-              vfirst, vlast, mytolS, mytolS, Extrema_ExtFlag_MIN);
+            gp_Pnt        aPm   = C.Value(aCPar);
+            Extrema_ExtPS
+              anExtPS(aPm, *myS, ufirst, ulast, vfirst, vlast, mytolS, mytolS, Extrema_ExtFlag_MIN);
             myDone = anExtPS.IsDone();
-            if (myDone) {
+            if (myDone)
+            {
               Standard_Integer NbExt = anExtPS.NbExt();
-              Standard_Real T = aCPar, U, V;
-              Extrema_POnCurv PC;
-              Extrema_POnSurf PS;
-              for (i = 1; i <= NbExt; i++) {
+              Standard_Real    T     = aCPar, U, V;
+              Extrema_POnCurv  PC;
+              Extrema_POnSurf  PS;
+              for (i = 1; i <= NbExt; i++)
+              {
                 PS = anExtPS.Point(i);
                 PS.Parameter(U, V);
                 AddSolution(C, T, U, V, PC.Value(), PS.Value(), anExtPS.SquareDistance(i));
@@ -207,19 +223,32 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             return;
           }
 
-          Extrema_GenExtCS Ext(C, *myS, NbT, NbU, NbV, cfirst, clast, ufirst, ulast,
-            vfirst, vlast, mytolC, mytolS);
+          Extrema_GenExtCS Ext(C,
+                               *myS,
+                               NbT,
+                               NbU,
+                               NbV,
+                               cfirst,
+                               clast,
+                               ufirst,
+                               ulast,
+                               vfirst,
+                               vlast,
+                               mytolC,
+                               mytolS);
 
           myDone = Ext.IsDone();
-          if (myDone) {
+          if (myDone)
+          {
             Standard_Integer NbExt = Ext.NbExt();
-            Standard_Real T,U,V;
-            Extrema_POnCurv PC;
-            Extrema_POnSurf PS;
-            for (i = 1; i <= NbExt; i++) {
+            Standard_Real    T, U, V;
+            Extrema_POnCurv  PC;
+            Extrema_POnSurf  PS;
+            for (i = 1; i <= NbExt; i++)
+            {
               PC = Ext.PointOnCurve(i);
               PS = Ext.PointOnSurface(i);
-              T = PC.Parameter();
+              T  = PC.Parameter();
               PS.Parameter(U, V);
               AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
             }
@@ -229,14 +258,14 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
       }
       break;
     }
-    //  Modified by skv - Thu Jul  7 12:29:34 2005 OCC9134 Begin
-  case GeomAbs_Circle:
-    {
-      if(myStype == GeomAbs_Cylinder) {
+      //  Modified by skv - Thu Jul  7 12:29:34 2005 OCC9134 Begin
+    case GeomAbs_Circle: {
+      if (myStype == GeomAbs_Cylinder)
+      {
         myExtElCS.Perform(C.Circle(), myS->Cylinder());
         break;
       }
-      else if(myStype == GeomAbs_Plane)
+      else if (myStype == GeomAbs_Plane)
       {
         myExtElCS.Perform(C.Circle(), myS->Plane());
         break;
@@ -247,18 +276,17 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         break;
       }
     }
-    Standard_FALLTHROUGH
-  case GeomAbs_Hyperbola: 
-    {
-      if(myCtype == GeomAbs_Hyperbola && myStype == GeomAbs_Plane) {
+      Standard_FALLTHROUGH
+    case GeomAbs_Hyperbola: {
+      if (myCtype == GeomAbs_Hyperbola && myStype == GeomAbs_Plane)
+      {
         //  Modified by skv - Thu Jul  7 12:29:34 2005 OCC9134 End
         myExtElCS.Perform(C.Hyperbola(), myS->Plane());
         break;
       }
     }
-    Standard_FALLTHROUGH
-  default:
-    {
+      Standard_FALLTHROUGH
+    default: {
       isComputeAnalytic = Standard_False;
       break;
     }
@@ -268,7 +296,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   {
     if (myExtElCS.IsDone())
     {
-      myDone = Standard_True;
+      myDone  = Standard_True;
       myIsPar = myExtElCS.IsParallel();
       if (myIsPar)
       {
@@ -292,9 +320,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         {
           // Analytical extrema seem to be out of curve/surface boundaries.
           // Try extremity points of curve.
-          gp_Pnt aPOnC[2], aPOnS[2];
-          Standard_Real aT[2] = { myucinf, myucsup }, U[2], V[2];
-          Standard_Real aDist[2] = { -1, -1 };
+          gp_Pnt        aPOnC[2], aPOnS[2];
+          Standard_Real aT[2]    = {myucinf, myucsup}, U[2], V[2];
+          Standard_Real aDist[2] = {-1, -1};
           for (i = 0; i < 2; ++i)
           {
             if (Precision::IsInfinite(aT[i]))
@@ -303,32 +331,27 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             aPOnC[i] = C.Value(aT[i]);
             switch (myStype)
             {
-              case GeomAbs_Plane:
-              {
+              case GeomAbs_Plane: {
                 ElSLib::Parameters(myS->Plane(), aPOnC[i], U[i], V[i]);
                 aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Plane());
                 break;
               }
-              case GeomAbs_Sphere:
-              {
+              case GeomAbs_Sphere: {
                 ElSLib::Parameters(myS->Sphere(), aPOnC[i], U[i], V[i]);
                 aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Sphere());
                 break;
               }
-              case GeomAbs_Cylinder:
-              {
+              case GeomAbs_Cylinder: {
                 ElSLib::Parameters(myS->Cylinder(), aPOnC[i], U[i], V[i]);
                 aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Cylinder());
                 break;
               }
-              case GeomAbs_Torus:
-              {
+              case GeomAbs_Torus: {
                 ElSLib::Parameters(myS->Torus(), aPOnC[i], U[i], V[i]);
                 aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Torus());
                 break;
               }
-              case GeomAbs_Cone:
-              {
+              case GeomAbs_Cone: {
                 ElSLib::Parameters(myS->Cone(), aPOnC[i], U[i], V[i]);
                 aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Cone());
                 break;
@@ -378,14 +401,15 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   // Elementary extrema is not done, try generic solution
   Extrema_GenExtCS Ext;
   Ext.Initialize(*myS, NbU, NbV, mytolS);
-  if (myCtype == GeomAbs_Hyperbola) {
+  if (myCtype == GeomAbs_Hyperbola)
+  {
     Standard_Real tmin = Max(-20., C.FirstParameter());
     Standard_Real tmax = Min(20., C.LastParameter());
     Ext.Perform(C, NbT, tmin, tmax, mytolC); // to avoid overflow
   }
-  else {
-    if ((myCtype == GeomAbs_Circle       && NbT < 13) ||
-      (myCtype == GeomAbs_BSplineCurve && NbT < 13))
+  else
+  {
+    if ((myCtype == GeomAbs_Circle && NbT < 13) || (myCtype == GeomAbs_BSplineCurve && NbT < 13))
     {
       NbT = 13;
     }
@@ -393,62 +417,63 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   }
 
   myDone = Ext.IsDone();
-  if (myDone) {
+  if (myDone)
+  {
     Standard_Integer NbExt = Ext.NbExt();
-    Standard_Real T, U, V;
-    Extrema_POnCurv PC;
-    Extrema_POnSurf PS;
-    for (i = 1; i <= NbExt; i++) {
+    Standard_Real    T, U, V;
+    Extrema_POnCurv  PC;
+    Extrema_POnSurf  PS;
+    for (i = 1; i <= NbExt; i++)
+    {
       PC = Ext.PointOnCurve(i);
       PS = Ext.PointOnSurface(i);
-      T = PC.Parameter();
+      T  = PC.Parameter();
       PS.Parameter(U, V);
       AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
     }
 
-    //Add sharp points
-    Standard_Integer SolNumber = mySqDist.Length();
-    Standard_Address CopyC = (Standard_Address)&C;
-    Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)CopyC;
-    Standard_Integer NbIntervals = aC.NbIntervals(GeomAbs_C1);
+    // Add sharp points
+    Standard_Integer     SolNumber   = mySqDist.Length();
+    Standard_Address     CopyC       = (Standard_Address)&C;
+    Adaptor3d_Curve&     aC          = *(Adaptor3d_Curve*)CopyC;
+    Standard_Integer     NbIntervals = aC.NbIntervals(GeomAbs_C1);
     TColStd_Array1OfReal SharpPoints(1, NbIntervals + 1);
     aC.Intervals(SharpPoints, GeomAbs_C1);
 
     Extrema_ExtPS aProjPS;
     aProjPS.Initialize(*myS,
-      myS->FirstUParameter(),
-      myS->LastUParameter(),
-      myS->FirstVParameter(),
-      myS->LastVParameter(),
-      mytolS,
-      mytolS);
+                       myS->FirstUParameter(),
+                       myS->LastUParameter(),
+                       myS->FirstVParameter(),
+                       myS->LastVParameter(),
+                       mytolS,
+                       mytolS);
 
     for (i = 2; i < SharpPoints.Upper(); ++i)
     {
-      T = SharpPoints(i);
+      T           = SharpPoints(i);
       gp_Pnt aPnt = C.Value(T);
       aProjPS.Perform(aPnt);
       if (!aProjPS.IsDone())
         continue;
       Standard_Integer NbProj = aProjPS.NbExt(), jmin = 0;
-      Standard_Real MinSqDist = RealLast();
+      Standard_Real    MinSqDist = RealLast();
       for (j = 1; j <= NbProj; j++)
       {
         Standard_Real aSqDist = aProjPS.SquareDistance(j);
         if (aSqDist < MinSqDist)
         {
           MinSqDist = aSqDist;
-          jmin = j;
+          jmin      = j;
         }
       }
       if (jmin != 0)
       {
         aProjPS.Point(jmin).Parameter(U, V);
-        AddSolution(C, T, U, V,
-          aPnt, aProjPS.Point(jmin).Value(), MinSqDist);
+        AddSolution(C, T, U, V, aPnt, aProjPS.Point(jmin).Value(), MinSqDist);
       }
     }
-    //Cut sharp solutions to keep only minimum and maximum
+    // Cut sharp solutions to keep only minimum and maximum
     Standard_Integer imin = SolNumber + 1, imax = mySqDist.Length();
     for (i = SolNumber + 1; i <= mySqDist.Length(); i++)
     {
@@ -459,12 +484,12 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
     }
     if (mySqDist.Length() > SolNumber + 2)
     {
-      Standard_Real MinSqDist = mySqDist(imin);
-      Standard_Real MaxSqDist = mySqDist(imax);
-      Extrema_POnCurv MinPC = myPOnC(imin);
-      Extrema_POnCurv MaxPC = myPOnC(imax);
-      Extrema_POnSurf MinPS = myPOnS(imin);
-      Extrema_POnSurf MaxPS = myPOnS(imax);
+      Standard_Real   MinSqDist = mySqDist(imin);
+      Standard_Real   MaxSqDist = mySqDist(imax);
+      Extrema_POnCurv MinPC     = myPOnC(imin);
+      Extrema_POnCurv MaxPC     = myPOnC(imax);
+      Extrema_POnSurf MinPS     = myPOnS(imin);
+      Extrema_POnSurf MaxPS     = myPOnS(imax);
 
       mySqDist.Remove(SolNumber + 1, mySqDist.Length());
       myPOnC.Remove(SolNumber + 1, myPOnC.Length());
@@ -479,7 +504,6 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
     }
   }
 }
-
 
 Standard_Boolean Extrema_ExtCS::IsDone() const
 {
@@ -496,7 +520,6 @@ Standard_Boolean Extrema_ExtCS::IsParallel() const
   return myIsPar;
 }
 
-
 Standard_Real Extrema_ExtCS::SquareDistance(const Standard_Integer N) const
 {
   if (N < 1 || N > NbExt())
@@ -506,7 +529,6 @@ Standard_Real Extrema_ExtCS::SquareDistance(const Standard_Integer N) const
 
   return mySqDist.Value(N);
 }
-
 
 Standard_Integer Extrema_ExtCS::NbExt() const
 {
@@ -518,11 +540,7 @@ Standard_Integer Extrema_ExtCS::NbExt() const
   return mySqDist.Length();
 }
 
-
-
-void Extrema_ExtCS::Points(const Standard_Integer N,
-                           Extrema_POnCurv&       P1,
-                           Extrema_POnSurf&       P2) const
+void Extrema_ExtCS::Points(const Standard_Integer N, Extrema_POnCurv& P1, Extrema_POnSurf& P2) const
 {
   if (N < 1 || N > NbExt())
   {
@@ -534,12 +552,12 @@ void Extrema_ExtCS::Points(const Standard_Integer N,
 }
 
 Standard_Boolean Extrema_ExtCS::AddSolution(const Adaptor3d_Curve& theCurve,
-  const Standard_Real aT,
-  const Standard_Real aU,
-  const Standard_Real aV,
-  const gp_Pnt& PointOnCurve,
-  const gp_Pnt& PointOnSurf,
-  const Standard_Real SquareDist)
+                                            const Standard_Real    aT,
+                                            const Standard_Real    aU,
+                                            const Standard_Real    aV,
+                                            const gp_Pnt&          PointOnCurve,
+                                            const gp_Pnt&          PointOnSurf,
+                                            const Standard_Real    SquareDist)
 {
   Standard_Boolean Added = Standard_False;
 
@@ -554,21 +572,18 @@ Standard_Boolean Extrema_ExtCS::AddSolution(const Adaptor3d_Curve& theCurve,
 
   Extrema_POnCurv aPC;
   Extrema_POnSurf aPS;
-  if ((myucinf-T) <= mytolC && (T-myucsup) <= mytolC &&
-    (myuinf-U) <= mytolS && (U-myusup) <= mytolS &&
-    (myvinf-V) <= mytolS && (V-myvsup) <= mytolS)
+  if ((myucinf - T) <= mytolC && (T - myucsup) <= mytolC && (myuinf - U) <= mytolS
+      && (U - myusup) <= mytolS && (myvinf - V) <= mytolS && (V - myvsup) <= mytolS)
   {
     Standard_Boolean IsNewSolution = Standard_True;
     for (Standard_Integer j = 1; j <= mySqDist.Length(); j++)
     {
-      aPC = myPOnC(j);
-      aPS = myPOnS(j);
+      aPC              = myPOnC(j);
+      aPS              = myPOnS(j);
       Standard_Real Tj = aPC.Parameter();
       Standard_Real Uj, Vj;
       aPS.Parameter(Uj, Vj);
-      if (Abs(T - Tj) <= mytolC &&
-        Abs(U - Uj) <= mytolS &&
-        Abs(V - Vj) <= mytolS)
+      if (Abs(T - Tj) <= mytolC && Abs(U - Uj) <= mytolS && Abs(V - Vj) <= mytolS)
       {
         IsNewSolution = Standard_False;
         break;

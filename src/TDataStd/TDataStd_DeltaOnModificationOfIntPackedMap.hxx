@@ -22,7 +22,6 @@
 class TColStd_HPackedMapOfInteger;
 class TDataStd_IntPackedMap;
 
-
 class TDataStd_DeltaOnModificationOfIntPackedMap;
 DEFINE_STANDARD_HANDLE(TDataStd_DeltaOnModificationOfIntPackedMap, TDF_DeltaOnModification)
 
@@ -32,37 +31,19 @@ class TDataStd_DeltaOnModificationOfIntPackedMap : public TDF_DeltaOnModificatio
 {
 
 public:
-
-  
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TDataStd_DeltaOnModificationOfIntPackedMap(const Handle(TDataStd_IntPackedMap)& Arr);
-  
+  Standard_EXPORT TDataStd_DeltaOnModificationOfIntPackedMap(
+    const Handle(TDataStd_IntPackedMap)& Arr);
+
   //! Applies the delta to the attribute.
   Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap, TDF_DeltaOnModification)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HPackedMapOfInteger) myAddition;
   Handle(TColStd_HPackedMapOfInteger) myDeletion;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataStd_DeltaOnModificationOfIntPackedMap_HeaderFile

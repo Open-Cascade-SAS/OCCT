@@ -26,46 +26,25 @@
 class StepGeom_SweptSurface;
 class Geom_SweptSurface;
 
-
 //! This class implements the mapping between classes
 //! SweptSurface from Geom and the class SweptSurface from
 //! StepGeom which describes a SweptSurface from prostep.
 //! As SweptSurface is an abstract SweptSurface this class
 //! is an access to the sub-class required.
-class GeomToStep_MakeSweptSurface  : public GeomToStep_Root
+class GeomToStep_MakeSweptSurface : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomToStep_MakeSweptSurface(const Handle(Geom_SweptSurface)& S,
-                                              const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+  Standard_EXPORT GeomToStep_MakeSweptSurface(
+    const Handle(Geom_SweptSurface)& S,
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const Handle(StepGeom_SweptSurface)& Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepGeom_SweptSurface) theSweptSurface;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeSweptSurface_HeaderFile

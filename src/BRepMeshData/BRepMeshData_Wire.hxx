@@ -23,41 +23,38 @@
 class BRepMeshData_Wire : public IMeshData_Wire
 {
 public:
-
   DEFINE_INC_ALLOC
 
   //! Constructor.
-  Standard_EXPORT BRepMeshData_Wire (
-    const TopoDS_Wire&                       theWire,
-    const Standard_Integer                   theEdgeNb, 
-    const Handle (NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMeshData_Wire(const TopoDS_Wire&                      theWire,
+                                    const Standard_Integer                  theEdgeNb,
+                                    const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Wire ();
+  Standard_EXPORT virtual ~BRepMeshData_Wire();
 
   //! Gets number of children.
-  Standard_EXPORT virtual Standard_Integer EdgesNb () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer EdgesNb() const Standard_OVERRIDE;
 
   //! Adds new discrete edge with specified orientation to wire chain.
   //! @return index of added edge in wire chain.
-  Standard_EXPORT virtual Standard_Integer AddEdge (
-    const IMeshData::IEdgePtr& theDEdge,
-    const TopAbs_Orientation   theOrientation) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer AddEdge(const IMeshData::IEdgePtr& theDEdge,
+                                                   const TopAbs_Orientation   theOrientation)
+    Standard_OVERRIDE;
 
   //! Gets edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IEdgePtr& GetEdge (
-    const Standard_Integer theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual const IMeshData::IEdgePtr& GetEdge(const Standard_Integer theIndex) const
+    Standard_OVERRIDE;
 
   //! Returns True if orientation of discrete edge with the given index is forward.
-  Standard_EXPORT virtual TopAbs_Orientation GetEdgeOrientation (
+  Standard_EXPORT virtual TopAbs_Orientation GetEdgeOrientation(
     const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Wire, IMeshData_Wire)
 
 private:
-
-  IMeshData::VectorOfIEdgePtrs    myDEdges;
-  IMeshData::VectorOfOrientation  myDEdgesOri;
+  IMeshData::VectorOfIEdgePtrs   myDEdges;
+  IMeshData::VectorOfOrientation myDEdgesOri;
 };
 
 #endif

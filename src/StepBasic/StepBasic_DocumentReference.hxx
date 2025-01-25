@@ -24,50 +24,30 @@
 class StepBasic_Document;
 class TCollection_HAsciiString;
 
-
 class StepBasic_DocumentReference;
 DEFINE_STANDARD_HANDLE(StepBasic_DocumentReference, Standard_Transient)
-
 
 class StepBasic_DocumentReference : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Init0(const Handle(StepBasic_Document)&       aAssignedDocument,
+                             const Handle(TCollection_HAsciiString)& aSource);
 
-  
-  Standard_EXPORT void Init0 (const Handle(StepBasic_Document)& aAssignedDocument, const Handle(TCollection_HAsciiString)& aSource);
-  
   Standard_EXPORT Handle(StepBasic_Document) AssignedDocument() const;
-  
-  Standard_EXPORT void SetAssignedDocument (const Handle(StepBasic_Document)& aAssignedDocument);
-  
+
+  Standard_EXPORT void SetAssignedDocument(const Handle(StepBasic_Document)& aAssignedDocument);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Source() const;
-  
-  Standard_EXPORT void SetSource (const Handle(TCollection_HAsciiString)& aSource);
 
+  Standard_EXPORT void SetSource(const Handle(TCollection_HAsciiString)& aSource);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentReference,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentReference, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepBasic_Document) theAssignedDocument;
+  Handle(StepBasic_Document)       theAssignedDocument;
   Handle(TCollection_HAsciiString) theSource;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DocumentReference_HeaderFile

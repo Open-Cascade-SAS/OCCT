@@ -20,10 +20,10 @@
 //! Describes type of view background.
 enum Graphic3d_TypeOfBackground
 {
-Graphic3d_TOB_NONE = -1,
-Graphic3d_TOB_GRADIENT,
-Graphic3d_TOB_TEXTURE,
-Graphic3d_TOB_CUBEMAP
+  Graphic3d_TOB_NONE = -1,
+  Graphic3d_TOB_GRADIENT,
+  Graphic3d_TOB_TEXTURE,
+  Graphic3d_TOB_CUBEMAP
 };
 
 enum

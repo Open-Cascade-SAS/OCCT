@@ -14,20 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw_Color.hxx>
 
-Draw_Color::Draw_Color () :
-       myKind(Draw_blanc)
+Draw_Color::Draw_Color()
+    : myKind(Draw_blanc)
 {
 }
 
-Draw_Color::Draw_Color (const Draw_ColorKind c) :
-       myKind(c)
+Draw_Color::Draw_Color(const Draw_ColorKind c)
+    : myKind(c)
 {
 }
 
-Draw_ColorKind Draw_Color::ID () const
+Draw_ColorKind Draw_Color::ID() const
 {
   return myKind;
 }

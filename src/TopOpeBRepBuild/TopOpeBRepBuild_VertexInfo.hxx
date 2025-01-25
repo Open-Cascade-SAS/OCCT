@@ -26,83 +26,60 @@
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
 
-
-
-class TopOpeBRepBuild_VertexInfo 
+class TopOpeBRepBuild_VertexInfo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepBuild_VertexInfo();
-  
-  Standard_EXPORT void SetVertex (const TopoDS_Vertex& aV);
-  
+
+  Standard_EXPORT void SetVertex(const TopoDS_Vertex& aV);
+
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
-  
-  Standard_EXPORT void SetSmart (const Standard_Boolean aFlag);
-  
+
+  Standard_EXPORT void SetSmart(const Standard_Boolean aFlag);
+
   Standard_EXPORT Standard_Boolean Smart() const;
-  
+
   Standard_EXPORT Standard_Integer NbCases() const;
-  
+
   Standard_EXPORT Standard_Integer FoundOut() const;
-  
-  Standard_EXPORT void AddIn (const TopoDS_Edge& anE);
-  
-  Standard_EXPORT void AddOut (const TopoDS_Edge& anE);
-  
-  Standard_EXPORT void SetCurrentIn (const TopoDS_Edge& anE);
-  
+
+  Standard_EXPORT void AddIn(const TopoDS_Edge& anE);
+
+  Standard_EXPORT void AddOut(const TopoDS_Edge& anE);
+
+  Standard_EXPORT void SetCurrentIn(const TopoDS_Edge& anE);
+
   Standard_EXPORT const TopTools_IndexedMapOfOrientedShape& EdgesIn() const;
-  
+
   Standard_EXPORT const TopTools_IndexedMapOfOrientedShape& EdgesOut() const;
-  
+
   Standard_EXPORT TopTools_IndexedMapOfOrientedShape& ChangeEdgesOut();
-  
+
   Standard_EXPORT void Dump() const;
-  
+
   Standard_EXPORT const TopoDS_Edge& CurrentOut();
-  
-  Standard_EXPORT void AppendPassed (const TopoDS_Edge& anE);
-  
+
+  Standard_EXPORT void AppendPassed(const TopoDS_Edge& anE);
+
   Standard_EXPORT void RemovePassed();
-  
+
   Standard_EXPORT const TopTools_ListOfShape& ListPassed() const;
-  
-  Standard_EXPORT void Prepare (const TopTools_ListOfShape& aL);
 
-
-
+  Standard_EXPORT void Prepare(const TopTools_ListOfShape& aL);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Vertex myVertex;
-  TopoDS_Edge myCurrent;
-  TopoDS_Edge myCurrentIn;
-  Standard_Boolean mySmart;
+  TopoDS_Vertex                      myVertex;
+  TopoDS_Edge                        myCurrent;
+  TopoDS_Edge                        myCurrentIn;
+  Standard_Boolean                   mySmart;
   TopTools_IndexedMapOfOrientedShape myEdgesIn;
   TopTools_IndexedMapOfOrientedShape myEdgesOut;
   TopTools_IndexedMapOfOrientedShape myLocalEdgesOut;
-  TopTools_ListOfShape myEdgesPassed;
-  Standard_Integer myFoundOut;
-
-
+  TopTools_ListOfShape               myEdgesPassed;
+  Standard_Integer                   myFoundOut;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_VertexInfo_HeaderFile

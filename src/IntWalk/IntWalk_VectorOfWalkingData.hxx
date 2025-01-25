@@ -23,12 +23,12 @@
 
 struct IntWalk_WalkingData
 {
-    Standard_Real    ustart;
-    Standard_Real    vstart;
-    Standard_Integer etat;
+  Standard_Real    ustart;
+  Standard_Real    vstart;
+  Standard_Integer etat;
 };
 
-typedef std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData> >
-    IntWalk_VectorOfWalkingData;
+typedef std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData>>
+  IntWalk_VectorOfWalkingData;
 
 #endif

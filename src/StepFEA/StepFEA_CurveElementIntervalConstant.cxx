@@ -21,24 +21,23 @@
 #include <StepFEA_CurveElementIntervalConstant.hxx>
 #include <StepFEA_CurveElementLocation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalConstant,StepFEA_CurveElementInterval)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalConstant, StepFEA_CurveElementInterval)
 
 //=======================================================================
-//function : StepFEA_CurveElementIntervalConstant
-//purpose  : 
+// function : StepFEA_CurveElementIntervalConstant
+// purpose  :
 //=======================================================================
-StepFEA_CurveElementIntervalConstant::StepFEA_CurveElementIntervalConstant ()
-{
-}
+StepFEA_CurveElementIntervalConstant::StepFEA_CurveElementIntervalConstant() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepFEA_CurveElementIntervalConstant::Init (const Handle(StepFEA_CurveElementLocation) &aCurveElementInterval_FinishPosition,
-                                                 const Handle(StepBasic_EulerAngles) &aCurveElementInterval_EuAngles,
-                                                 const Handle(StepElement_CurveElementSectionDefinition) &aSection)
+void StepFEA_CurveElementIntervalConstant::Init(
+  const Handle(StepFEA_CurveElementLocation)&              aCurveElementInterval_FinishPosition,
+  const Handle(StepBasic_EulerAngles)&                     aCurveElementInterval_EuAngles,
+  const Handle(StepElement_CurveElementSectionDefinition)& aSection)
 {
   StepFEA_CurveElementInterval::Init(aCurveElementInterval_FinishPosition,
                                      aCurveElementInterval_EuAngles);
@@ -47,21 +46,23 @@ void StepFEA_CurveElementIntervalConstant::Init (const Handle(StepFEA_CurveEleme
 }
 
 //=======================================================================
-//function : Section
-//purpose  : 
+// function : Section
+// purpose  :
 //=======================================================================
 
-Handle(StepElement_CurveElementSectionDefinition) StepFEA_CurveElementIntervalConstant::Section () const
+Handle(StepElement_CurveElementSectionDefinition) StepFEA_CurveElementIntervalConstant::Section()
+  const
 {
   return theSection;
 }
 
 //=======================================================================
-//function : SetSection
-//purpose  : 
+// function : SetSection
+// purpose  :
 //=======================================================================
 
-void StepFEA_CurveElementIntervalConstant::SetSection (const Handle(StepElement_CurveElementSectionDefinition) &aSection)
+void StepFEA_CurveElementIntervalConstant::SetSection(
+  const Handle(StepElement_CurveElementSectionDefinition)& aSection)
 {
   theSection = aSection;
 }

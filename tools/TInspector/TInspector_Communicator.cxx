@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TInspector_Communicator.hxx>
 
@@ -36,14 +36,14 @@ TInspector_Communicator::TInspector_Communicator()
 {
   if (!qApp)
   {
-    static int argc = 1;
-    static char* argv[] = { (char*)"", 0 };
+    static int   argc   = 1;
+    static char* argv[] = {(char*)"", 0};
 #if QT_VERSION > 0x050000
     TCollection_AsciiString aPlugindsDirName;
-    if (TInspector_Communicator::PluginsDir (aPlugindsDirName))
-      QApplication::addLibraryPath (aPlugindsDirName.ToCString());
+    if (TInspector_Communicator::PluginsDir(aPlugindsDirName))
+      QApplication::addLibraryPath(aPlugindsDirName.ToCString());
 #endif
-    new QApplication (argc, argv);
+    new QApplication(argc, argv);
   }
   myWindow = new TInspector_Window();
 }
@@ -52,16 +52,16 @@ TInspector_Communicator::TInspector_Communicator()
 // function : PluginsDir
 // purpose :
 // =======================================================================
-Standard_Boolean TInspector_Communicator::PluginsDir (TCollection_AsciiString& thePlugindsDirName)
+Standard_Boolean TInspector_Communicator::PluginsDir(TCollection_AsciiString& thePlugindsDirName)
 {
-  OSD_Environment anEnvironment ("QTDIR");
+  OSD_Environment         anEnvironment("QTDIR");
   TCollection_AsciiString aQtDirValue = anEnvironment.Value();
   if (!aQtDirValue.IsEmpty())
   {
     thePlugindsDirName = aQtDirValue + "/plugins";
     return Standard_True;
   }
-  anEnvironment = OSD_Environment ("PATH");
+  anEnvironment                      = OSD_Environment("PATH");
   TCollection_AsciiString aPathValue = anEnvironment.Value();
   TCollection_AsciiString aPathSep =
 #ifdef _WIN32
@@ -71,18 +71,20 @@ Standard_Boolean TInspector_Communicator::PluginsDir (TCollection_AsciiString& t
 #endif
   for (int i = 1; !aPathValue.IsEmpty(); i++)
   {
-    Standard_Integer aSepIndex = aPathValue.FirstLocationInSet (aPathSep, 1, aPathValue.Length());
+    Standard_Integer aSepIndex = aPathValue.FirstLocationInSet(aPathSep, 1, aPathValue.Length());
     if (aSepIndex <= 1)
       break;
 
-    TCollection_AsciiString aCurPath = aPathValue.SubString (1, aSepIndex - 1);
-    aPathValue = aSepIndex < aPathValue.Length() ? aPathValue.SubString (aSepIndex + 1, aPathValue.Length()) : "";
+    TCollection_AsciiString aCurPath = aPathValue.SubString(1, aSepIndex - 1);
+    aPathValue                       = aSepIndex < aPathValue.Length()
+                                         ? aPathValue.SubString(aSepIndex + 1, aPathValue.Length())
+                                         : "";
     if (aCurPath.IsEmpty())
       continue;
 
     aCurPath += "/../plugins";
-    OSD_Path aPath (aCurPath);
-    OSD_Directory aCurDir (aPath);
+    OSD_Path      aPath(aCurPath);
+    OSD_Directory aCurDir(aPath);
     if (aCurDir.Exists())
     {
       thePlugindsDirName = aCurPath;
@@ -96,9 +98,9 @@ Standard_Boolean TInspector_Communicator::PluginsDir (TCollection_AsciiString& t
 // function : SetVisible
 // purpose :
 // =======================================================================
-void TInspector_Communicator::SetVisible (const bool theVisible)
+void TInspector_Communicator::SetVisible(const bool theVisible)
 {
-  myWindow->GetMainWindow()->setVisible (theVisible);
+  myWindow->GetMainWindow()->setVisible(theVisible);
 #ifndef _WIN32
   // window is not visualized on X11 patform under DRAW tool without the next row
   QApplication::processEvents();
@@ -109,7 +111,7 @@ void TInspector_Communicator::SetVisible (const bool theVisible)
 // function : Move
 // purpose :
 // =======================================================================
-void TInspector_Communicator::Move (const int theXPosition, const int theYPosition)
+void TInspector_Communicator::Move(const int theXPosition, const int theYPosition)
 {
-  myWindow->GetMainWindow()->move (theXPosition, theYPosition);
+  myWindow->GetMainWindow()->move(theXPosition, theYPosition);
 }

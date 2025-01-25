@@ -22,7 +22,6 @@
 class TopoDS_Solid;
 class TopoDS_Shape;
 
-
 class BRepCheck_Solid;
 DEFINE_STANDARD_HANDLE(BRepCheck_Solid, BRepCheck_Result)
 
@@ -31,18 +30,13 @@ class BRepCheck_Solid : public BRepCheck_Result
 {
 
 public:
-
-  
-
   //! Constructor
   //! <theS> is the solid to check
   Standard_EXPORT BRepCheck_Solid(const TopoDS_Solid& theS);
-  
 
   //! Checks the solid in context of
   //! the shape <theContextShape>
-  Standard_EXPORT virtual void InContext (const TopoDS_Shape& theContextShape) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void InContext(const TopoDS_Shape& theContextShape) Standard_OVERRIDE;
 
   //! Checks the solid per se.
   //!
@@ -63,32 +57,14 @@ public:
   //! (for non-holes)
   //! Status:  BRepCheck_EnclosedRegion
   Standard_EXPORT virtual void Minimum() Standard_OVERRIDE;
-  
 
   //! see the parent class for more details
   Standard_EXPORT virtual void Blind() Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Solid, BRepCheck_Result)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepCheck_Solid_HeaderFile

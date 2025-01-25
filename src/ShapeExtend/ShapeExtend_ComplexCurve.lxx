@@ -15,72 +15,71 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : ReversedParameter
-//purpose  : 
+// function : ReversedParameter
+// purpose  :
 //=======================================================================
 
-inline  Standard_Real ShapeExtend_ComplexCurve::ReversedParameter(const Standard_Real U) const
+inline Standard_Real ShapeExtend_ComplexCurve::ReversedParameter(const Standard_Real U) const
 {
   return (1 - U);
 }
- 
+
 //=======================================================================
-//function : FirstParameter
-//purpose  : 
+// function : FirstParameter
+// purpose  :
 //=======================================================================
 
-inline  Standard_Real ShapeExtend_ComplexCurve::FirstParameter() const
+inline Standard_Real ShapeExtend_ComplexCurve::FirstParameter() const
 {
   return 0;
 }
- 
+
 //=======================================================================
-//function : LastParameter
-//purpose  : 
+// function : LastParameter
+// purpose  :
 //=======================================================================
 
-inline  Standard_Real ShapeExtend_ComplexCurve::LastParameter() const
+inline Standard_Real ShapeExtend_ComplexCurve::LastParameter() const
 {
   return 1;
 }
- 
+
 //=======================================================================
-//function : IsClosed
-//purpose  : 
+// function : IsClosed
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean ShapeExtend_ComplexCurve::IsClosed() const
+inline Standard_Boolean ShapeExtend_ComplexCurve::IsClosed() const
 {
   return myClosed;
 }
 
 //=======================================================================
-//function : IsPeriodic
-//purpose  : 
+// function : IsPeriodic
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean ShapeExtend_ComplexCurve::IsPeriodic() const
+inline Standard_Boolean ShapeExtend_ComplexCurve::IsPeriodic() const
 {
   return Standard_False;
 }
 
 //=======================================================================
-//function : Continuity
-//purpose  : 
+// function : Continuity
+// purpose  :
 //=======================================================================
 
-inline  GeomAbs_Shape ShapeExtend_ComplexCurve::Continuity() const
+inline GeomAbs_Shape ShapeExtend_ComplexCurve::Continuity() const
 {
   return GeomAbs_C0;
 }
 
 //=======================================================================
-//function : IsCN
-//purpose  : 
+// function : IsCN
+// purpose  :
 //=======================================================================
 
-inline  Standard_Boolean ShapeExtend_ComplexCurve::IsCN(const Standard_Integer N) const
+inline Standard_Boolean ShapeExtend_ComplexCurve::IsCN(const Standard_Integer N) const
 {
-  return N <=0;
+  return N <= 0;
 }
-

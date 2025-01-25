@@ -24,7 +24,6 @@
 #include <ShapeUpgrade_FaceDivide.hxx>
 class TopoDS_Face;
 
-
 class ShapeUpgrade_ClosedFaceDivide;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_ClosedFaceDivide, ShapeUpgrade_FaceDivide)
 
@@ -35,31 +34,28 @@ class ShapeUpgrade_ClosedFaceDivide : public ShapeUpgrade_FaceDivide
 {
 
 public:
-
   //! Creates empty  constructor.
   Standard_EXPORT ShapeUpgrade_ClosedFaceDivide();
-  
+
   //! Initialize by a Face.
   Standard_EXPORT ShapeUpgrade_ClosedFaceDivide(const TopoDS_Face& F);
-  
+
   //! Performs splitting of surface and computes the shell
   //! from source face.
-  Standard_EXPORT virtual Standard_Boolean SplitSurface(const Standard_Real theArea = 0.) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean SplitSurface(const Standard_Real theArea = 0.)
+    Standard_OVERRIDE;
+
   //! Sets the number of cutting lines by which closed face will be split.
   //! The resulting faces will be num+1.
-  Standard_EXPORT void SetNbSplitPoints (const Standard_Integer num);
-  
+  Standard_EXPORT void SetNbSplitPoints(const Standard_Integer num);
+
   //! Returns the number of splitting points
   Standard_EXPORT Standard_Integer GetNbSplitPoints() const;
 
-
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide,ShapeUpgrade_FaceDivide)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide, ShapeUpgrade_FaceDivide)
 
 private:
-
   Standard_Integer myNbSplit;
-
 };
 
 #endif // _ShapeUpgrade_ClosedFaceDivide_HeaderFile

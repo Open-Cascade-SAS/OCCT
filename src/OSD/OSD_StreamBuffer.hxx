@@ -22,17 +22,18 @@ template <typename T>
 class OSD_StreamBuffer : public T
 {
 public:
-
   //! Main constructor.
-  OSD_StreamBuffer (const std::string& theUrl,
-                    const std::shared_ptr<std::streambuf>& theBuffer)
-  : T (theBuffer.get()), myUrl (theUrl), myBuffer (theBuffer) {}
+  OSD_StreamBuffer(const std::string& theUrl, const std::shared_ptr<std::streambuf>& theBuffer)
+      : T(theBuffer.get()),
+        myUrl(theUrl),
+        myBuffer(theBuffer)
+  {
+  }
 
   //! Return an opened URL.
   const std::string& Url() const { return myUrl; }
 
 protected:
-
   std::string                     myUrl;
   std::shared_ptr<std::streambuf> myBuffer;
 };

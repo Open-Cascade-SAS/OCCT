@@ -15,23 +15,21 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Extent
-//purpose  : 
+// function : Extent
+// purpose  :
 //=======================================================================
 
-
-inline Standard_Integer ChFiDS_StripeMap::Extent() const {
+inline Standard_Integer ChFiDS_StripeMap::Extent() const
+{
   return mymap.Extent();
 }
 
 //=======================================================================
-//function : FindKey
-//purpose  : 
+// function : FindKey
+// purpose  :
 //=======================================================================
 
-
-inline const TopoDS_Vertex& ChFiDS_StripeMap::FindKey
-(const Standard_Integer I) const {
-  return mymap.FindKey(I);  
+inline const TopoDS_Vertex& ChFiDS_StripeMap::FindKey(const Standard_Integer I) const
+{
+  return mymap.FindKey(I);
 }
-

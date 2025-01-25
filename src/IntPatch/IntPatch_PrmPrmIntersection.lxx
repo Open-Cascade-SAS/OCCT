@@ -15,96 +15,106 @@
 #include <StdFail_NotDone.hxx>
 #include <IntPatch_Line.hxx>
 
-
-
-#define _DECAL    7
-#define _DECAL2   14
-#define _BASE     128
-#define _BASEM1   127
-
+#define _DECAL 7
+#define _DECAL2 14
+#define _BASE 128
+#define _BASEM1 127
 
 //======================================================================
-inline Standard_Integer IntPatch_PrmPrmIntersection::NbLines() const { 
-  if(!done) 
+inline Standard_Integer IntPatch_PrmPrmIntersection::NbLines() const
+{
+  if (!done)
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
-  return(SLin.Length());
+  return (SLin.Length());
 }
 
 //======================================================================
-inline const Handle(IntPatch_Line)& IntPatch_PrmPrmIntersection::Line
-  (const Standard_Integer n) const {
-  if(!done) 
+inline const Handle(IntPatch_Line)& IntPatch_PrmPrmIntersection::Line(
+  const Standard_Integer n) const
+{
+  if (!done)
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
-  return(SLin.Value(n));
+  return (SLin.Value(n));
 }
 
 //======================================================================
-inline Standard_Boolean IntPatch_PrmPrmIntersection::IsEmpty() const { 
-  if(!done) 
+inline Standard_Boolean IntPatch_PrmPrmIntersection::IsEmpty() const
+{
+  if (!done)
     throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
-  return(empt);
+  return (empt);
 }
 
 //======================================================================
-inline Standard_Boolean IntPatch_PrmPrmIntersection::IsDone() const { 
-  return(done);
+inline Standard_Boolean IntPatch_PrmPrmIntersection::IsDone() const
+{
+  return (done);
 }
 
 inline Standard_Integer IntPatch_PrmPrmIntersection::GrilleInteger(const Standard_Integer ix,
-								   const Standard_Integer iy,
-								   const Standard_Integer iz) const 
-{ 
-  Standard_Integer tz = iz<<_DECAL2;
-  Standard_Integer ty = iy<<_DECAL;
+                                                                   const Standard_Integer iy,
+                                                                   const Standard_Integer iz) const
+{
+  Standard_Integer tz = iz << _DECAL2;
+  Standard_Integer ty = iy << _DECAL;
   Standard_Integer t  = ix;
-  t|=ty;
-  t|=tz;
-  return(t);
+  t |= ty;
+  t |= tz;
+  return (t);
 }
 
 inline void IntPatch_PrmPrmIntersection::IntegerGrille(const Standard_Integer tt,
-						       Standard_Integer &ix,
-						       Standard_Integer &iy,
-						       Standard_Integer &iz) const 
-{ 
+                                                       Standard_Integer&      ix,
+                                                       Standard_Integer&      iy,
+                                                       Standard_Integer&      iz) const
+{
   Standard_Integer t = tt;
-  ix = t & _BASEM1;
-  t>>=_DECAL;
+  ix                 = t & _BASEM1;
+  t >>= _DECAL;
   iy = t & _BASEM1;
-  t>>=_DECAL;
+  t >>= _DECAL;
   iz = t;
 }
 
-inline Standard_Integer IntPatch_PrmPrmIntersection::DansGrille(const Standard_Integer t) const 
+inline Standard_Integer IntPatch_PrmPrmIntersection::DansGrille(const Standard_Integer t) const
 {
-  if(t>=0) {
-    if(t<_BASE){ 
-      return(1);
+  if (t >= 0)
+  {
+    if (t < _BASE)
+    {
+      return (1);
     }
   }
-  return(0);
+  return (0);
 }
 
 inline Standard_Integer IntPatch_PrmPrmIntersection::NbPointsGrille() const
-{ return(_BASE); } 
-
+{
+  return (_BASE);
+}
 
 inline Standard_Integer IntPatch_PrmPrmIntersection::CodeReject(const Standard_Real x0,
-								const Standard_Real y0,
-								const Standard_Real z0,
-								const Standard_Real x1,
-								const Standard_Real y1,
-								const Standard_Real z1,
-								const Standard_Real x,
-								const Standard_Real y,
-								const Standard_Real z) const 
-{      
+                                                                const Standard_Real y0,
+                                                                const Standard_Real z0,
+                                                                const Standard_Real x1,
+                                                                const Standard_Real y1,
+                                                                const Standard_Real z1,
+                                                                const Standard_Real x,
+                                                                const Standard_Real y,
+                                                                const Standard_Real z) const
+{
   int code = 0;
-  if(x<x0) code =1; 
-  if(y<y0) code|=2;
-  if(z<z0) code|=4;
-  if(x>x1) code|=8;
-  if(y>y1) code|=16;
-  if(z>z1) code|=32;
-  return(code);
+  if (x < x0)
+    code = 1;
+  if (y < y0)
+    code |= 2;
+  if (z < z0)
+    code |= 4;
+  if (x > x1)
+    code |= 8;
+  if (y > y1)
+    code |= 16;
+  if (z > z1)
+    code |= 32;
+  return (code);
 }

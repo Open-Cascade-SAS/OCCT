@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_HArray1_HeaderFile
 #define _StdLPersistent_HArray1_HeaderFile
 
@@ -26,11 +25,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
-
-
-DEFINE_HARRAY1 (StdLPersistent_HArray1OfPersistent,
-                NCollection_Array1<Handle(StdObjMgt_Persistent)>)
-
+DEFINE_HARRAY1(StdLPersistent_HArray1OfPersistent, NCollection_Array1<Handle(StdObjMgt_Persistent)>)
 
 class StdLPersistent_HArray1
 {
@@ -38,20 +33,19 @@ class StdLPersistent_HArray1
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
 
   protected:
-    virtual Standard_Integer lowerBound() const = 0;
-    virtual Standard_Integer upperBound() const = 0;
-    virtual void createArray (const Standard_Integer theLowerBound,
-                              const Standard_Integer theUpperBound) = 0;
+    virtual Standard_Integer lowerBound() const                                = 0;
+    virtual Standard_Integer upperBound() const                                = 0;
+    virtual void             createArray(const Standard_Integer theLowerBound,
+                                         const Standard_Integer theUpperBound) = 0;
 
-    virtual void readValue (StdObjMgt_ReadData& theReadData,
-                            const Standard_Integer theIndex) = 0;
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData,
-                            const Standard_Integer theIndex) const = 0;
+    virtual void readValue(StdObjMgt_ReadData& theReadData, const Standard_Integer theIndex) = 0;
+    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
+                            const Standard_Integer theIndex) const                           = 0;
   };
 
 protected:
@@ -67,30 +61,43 @@ protected:
 
   public:
     //! Get the array.
-    const Handle(ArrayClass)& Array() const  { return myArray; }
+    const Handle(ArrayClass)& Array() const { return myArray; }
 
   protected:
     virtual Standard_Integer lowerBound() const { return myArray->Lower(); }
-    virtual Standard_Integer upperBound() const { return myArray->Upper(); }
-    virtual void createArray(const Standard_Integer theLowerBound,
-                              const Standard_Integer theUpperBound)
-      { myArray = new ArrayClass (theLowerBound, theUpperBound); }
 
-    virtual void readValue (StdObjMgt_ReadData& theReadData,
-                            const Standard_Integer theIndex)
-      { theReadData >> myArray->ChangeValue (theIndex); }
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData,
-                            const Standard_Integer theIndex) const
-      { theWriteData << myArray->Value(theIndex); }
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
-      { return PChildrenT(theChildren); }
-    virtual Standard_CString PName() const
-      { return PNameT(); }
-    Standard_CString PNameT() const 
+    virtual Standard_Integer upperBound() const { return myArray->Upper(); }
+
+    virtual void createArray(const Standard_Integer theLowerBound,
+                             const Standard_Integer theUpperBound)
     {
-      Standard_NotImplemented::Raise("StdLPersistent_HArray1::instance::PName - not implemented"); 
+      myArray = new ArrayClass(theLowerBound, theUpperBound);
+    }
+
+    virtual void readValue(StdObjMgt_ReadData& theReadData, const Standard_Integer theIndex)
+    {
+      theReadData >> myArray->ChangeValue(theIndex);
+    }
+
+    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
+                            const Standard_Integer theIndex) const
+    {
+      theWriteData << myArray->Value(theIndex);
+    }
+
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      return PChildrenT(theChildren);
+    }
+
+    virtual Standard_CString PName() const { return PNameT(); }
+
+    Standard_CString PNameT() const
+    {
+      Standard_NotImplemented::Raise("StdLPersistent_HArray1::instance::PName - not implemented");
       return "";
     }
+
     void PChildrenT(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
   protected:
@@ -104,14 +111,17 @@ protected:
 
   public:
     virtual Standard_CString PName() const
-    { 
+    {
       Standard_NullValue_Raise_if(!myPName,
-        "StdLPersistent_HArray1::named_instance::PName - name not set");
-      return myPName; 
+                                  "StdLPersistent_HArray1::named_instance::PName - name not set");
+      return myPName;
     }
 
   protected:
-    named_instance(Standard_CString thePName) : myPName(thePName) {}
+    named_instance(Standard_CString thePName)
+        : myPName(thePName)
+    {
+    }
 
     Standard_CString myPName;
   };
@@ -127,48 +137,59 @@ public:
   static Handle(instance<ArrayClass>) Translate(const ArrayClass& theArray)
   {
     Handle(instance<ArrayClass>) aPArray = new instance<ArrayClass>;
-    aPArray->myArray = new ArrayClass(theArray.Lower(), theArray.Upper());
+    aPArray->myArray                     = new ArrayClass(theArray.Lower(), theArray.Upper());
     for (Standard_Integer i = theArray.Lower(); i <= theArray.Upper(); ++i)
       aPArray->myArray->ChangeValue(i) = theArray.Value(i);
     return aPArray;
   }
+
   template <class ArrayClass>
-  static Handle(instance<ArrayClass>) Translate(Standard_CString thePName, const ArrayClass& theArray)
+  static Handle(instance<ArrayClass>) Translate(Standard_CString  thePName,
+                                                const ArrayClass& theArray)
   {
     Handle(named_instance<ArrayClass>) aPArray = new named_instance<ArrayClass>(thePName);
-    aPArray->myArray = new ArrayClass(theArray.Lower(), theArray.Upper());
+    aPArray->myArray                           = new ArrayClass(theArray.Lower(), theArray.Upper());
     for (Standard_Integer i = theArray.Lower(); i <= theArray.Upper(); ++i)
       aPArray->myArray->ChangeValue(i) = theArray.Value(i);
     return aPArray;
   }
 };
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_HArray1::instance<TColStd_HArray1OfInteger>::PNameT() const
-  { return "PColStd_HArray1OfInteger"; }
+{
+  return "PColStd_HArray1OfInteger";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_HArray1::instance<TColStd_HArray1OfReal>::PNameT() const
-  { return "PColStd_HArray1OfReal"; }
+{
+  return "PColStd_HArray1OfReal";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_HArray1::instance<TColStd_HArray1OfByte>::PNameT() const
-  { return "PColStd_HArray1OfByte"; }
+{
+  return "PColStd_HArray1OfByte";
+}
 
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, Standard_Byte& theByte)
-    { return theReadData >> reinterpret_cast<Standard_Character&> (theByte); }
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, Standard_Byte& theByte)
+{
+  return theReadData >> reinterpret_cast<Standard_Character&>(theByte);
+}
 
-inline StdObjMgt_WriteData& operator >>
-  (StdObjMgt_WriteData& theWriteData, const Standard_Byte& theByte)
-    { return theWriteData << reinterpret_cast<const Standard_Character&> (theByte); }
+inline StdObjMgt_WriteData& operator>>(StdObjMgt_WriteData& theWriteData,
+                                       const Standard_Byte& theByte)
+{
+  return theWriteData << reinterpret_cast<const Standard_Character&>(theByte);
+}
 
-template<>
-inline void StdLPersistent_HArray1::instance<StdLPersistent_HArray1OfPersistent>::PChildrenT
-  (StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
-  { 
-    for (Standard_Integer i = myArray->Lower(); i <= myArray->Upper(); ++i)
-      theChildren.Append(myArray->Value(i));
-  }
+template <>
+inline void StdLPersistent_HArray1::instance<StdLPersistent_HArray1OfPersistent>::PChildrenT(
+  StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+{
+  for (Standard_Integer i = myArray->Lower(); i <= myArray->Upper(); ++i)
+    theChildren.Append(myArray->Value(i));
+}
 
 #endif

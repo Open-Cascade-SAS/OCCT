@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Intf_SectionPoint> Intf_SeqOfSectionPoint;
 
-
 #endif

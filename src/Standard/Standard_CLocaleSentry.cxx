@@ -24,39 +24,37 @@
 namespace
 {
 
-  //! CLocalePtr - static object representing C locale
-  class CLocalePtr
+//! CLocalePtr - static object representing C locale
+class CLocalePtr
+{
+public:
+  CLocalePtr()
+  #ifdef OCCT_CLOCALE_POSIX2008
+      : myLocale(newlocale(LC_ALL_MASK, "C", NULL))
+  #elif defined(_MSC_VER)
+      : myLocale(_create_locale(LC_ALL, "C"))
+  #else
+      : myLocale(NULL)
+  #endif
   {
-  public:
+  }
 
-    CLocalePtr()
-    #ifdef OCCT_CLOCALE_POSIX2008
-    : myLocale (newlocale (LC_ALL_MASK, "C", NULL))
-    #elif defined(_MSC_VER)
-    : myLocale (_create_locale (LC_ALL, "C"))
-    #else
-    : myLocale (NULL)
-    #endif
-    {}
+  ~CLocalePtr()
+  {
+  #ifdef OCCT_CLOCALE_POSIX2008
+    freelocale(myLocale);
+  #elif defined(_MSC_VER)
+    _free_locale(myLocale);
+  #endif
+  }
 
-    ~CLocalePtr()
-    {
-    #ifdef OCCT_CLOCALE_POSIX2008
-      freelocale (myLocale);
-    #elif defined(_MSC_VER)
-      _free_locale (myLocale);
-    #endif
-    }
+public:
+  Standard_CLocaleSentry::clocale_t myLocale;
+};
 
-  public:
+static CLocalePtr theCLocale;
 
-    Standard_CLocaleSentry::clocale_t myLocale;
-
-  };
-
-  static CLocalePtr theCLocale;
-
-}
+} // namespace
 
 // =======================================================================
 // function : GetCLocale
@@ -72,30 +70,31 @@ Standard_CLocaleSentry::clocale_t Standard_CLocaleSentry::GetCLocale()
 // purpose  :
 // =======================================================================
 Standard_CLocaleSentry::Standard_CLocaleSentry()
-#ifdef OCCT_CLOCALE_POSIX2008
-: myPrevLocale (uselocale (theCLocale.myLocale)) // switch to C locale within this thread only using xlocale API
-#else
-: myPrevLocale (setlocale (LC_ALL, 0))
-#if defined(_MSC_VER) && (_MSC_VER > 1400)
-, myPrevTLocaleState (_configthreadlocale (_ENABLE_PER_THREAD_LOCALE))
-#endif
-#endif
+  #ifdef OCCT_CLOCALE_POSIX2008
+    : myPrevLocale(uselocale(
+        theCLocale.myLocale)) // switch to C locale within this thread only using xlocale API
+  #else
+    : myPrevLocale(setlocale(LC_ALL, 0))
+    #if defined(_MSC_VER) && (_MSC_VER > 1400)
+      ,
+      myPrevTLocaleState(_configthreadlocale(_ENABLE_PER_THREAD_LOCALE))
+    #endif
+  #endif
 {
-#if !defined(OCCT_CLOCALE_POSIX2008)
-  const char* aPrevLocale = (const char* )myPrevLocale;
-  if (myPrevLocale == NULL
-   || (aPrevLocale[0] == 'C' && aPrevLocale[1] == '\0'))
+  #if !defined(OCCT_CLOCALE_POSIX2008)
+  const char* aPrevLocale = (const char*)myPrevLocale;
+  if (myPrevLocale == NULL || (aPrevLocale[0] == 'C' && aPrevLocale[1] == '\0'))
   {
     myPrevLocale = NULL; // already C locale
     return;
   }
   // copy string as following setlocale calls may invalidate returned pointer
-  Standard_Size aLen = std::strlen (aPrevLocale) + 1;
-  myPrevLocale = new char[aLen];
-  memcpy (myPrevLocale, aPrevLocale, aLen);
+  Standard_Size aLen = std::strlen(aPrevLocale) + 1;
+  myPrevLocale       = new char[aLen];
+  memcpy(myPrevLocale, aPrevLocale, aLen);
 
-  setlocale (LC_ALL, "C");
-#endif
+  setlocale(LC_ALL, "C");
+  #endif
 }
 
 // =======================================================================
@@ -104,22 +103,22 @@ Standard_CLocaleSentry::Standard_CLocaleSentry()
 // =======================================================================
 Standard_CLocaleSentry::~Standard_CLocaleSentry()
 {
-#if defined(OCCT_CLOCALE_POSIX2008)
-  uselocale ((locale_t )myPrevLocale);
-#else
+  #if defined(OCCT_CLOCALE_POSIX2008)
+  uselocale((locale_t)myPrevLocale);
+  #else
   if (myPrevLocale != NULL)
   {
-    const char* aPrevLocale = (const char* )myPrevLocale;
-    setlocale (LC_ALL, aPrevLocale);
+    const char* aPrevLocale = (const char*)myPrevLocale;
+    setlocale(LC_ALL, aPrevLocale);
     delete[] aPrevLocale;
   }
-#if defined(_MSC_VER) && (_MSC_VER > 1400)
+    #if defined(_MSC_VER) && (_MSC_VER > 1400)
   if (myPrevTLocaleState != _ENABLE_PER_THREAD_LOCALE)
   {
-    _configthreadlocale (myPrevTLocaleState);
+    _configthreadlocale(myPrevTLocaleState);
   }
-#endif
-#endif
+    #endif
+  #endif
 }
 
 #endif // __ANDROID__

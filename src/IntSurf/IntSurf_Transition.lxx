@@ -14,56 +14,62 @@
 
 #include <Standard_DomainError.hxx>
 
-
-inline void IntSurf_Transition::SetValue (const Standard_Boolean Tangent,
-				   const IntSurf_TypeTrans Type) {
+inline void IntSurf_Transition::SetValue(const Standard_Boolean  Tangent,
+                                         const IntSurf_TypeTrans Type)
+{
   tangent = Tangent;
   typetra = Type;
 }
 
-
-inline void IntSurf_Transition::SetValue (const Standard_Boolean Tangent,
-				   const IntSurf_Situation Situ,
-				   const Standard_Boolean Oppos) {
+inline void IntSurf_Transition::SetValue(const Standard_Boolean  Tangent,
+                                         const IntSurf_Situation Situ,
+                                         const Standard_Boolean  Oppos)
+{
 
   tangent = Tangent;
   typetra = IntSurf_Touch;
-  situat = Situ;
-  oppos = Oppos;
+  situat  = Situ;
+  oppos   = Oppos;
 }
 
-
-inline void IntSurf_Transition::SetValue () {
+inline void IntSurf_Transition::SetValue()
+{
 
   typetra = IntSurf_Undecided;
 }
 
-
-inline IntSurf_TypeTrans IntSurf_Transition::TransitionType () const {
+inline IntSurf_TypeTrans IntSurf_Transition::TransitionType() const
+{
 
   return typetra;
 }
 
+inline Standard_Boolean IntSurf_Transition::IsTangent() const
+{
 
-inline Standard_Boolean IntSurf_Transition::IsTangent () const {
-
-  if (typetra == IntSurf_Undecided) {throw Standard_DomainError();}
+  if (typetra == IntSurf_Undecided)
+  {
+    throw Standard_DomainError();
+  }
   return tangent;
 }
 
+inline IntSurf_Situation IntSurf_Transition::Situation() const
+{
 
-inline IntSurf_Situation IntSurf_Transition::Situation () const {
-
-  if (typetra != IntSurf_Touch) {throw Standard_DomainError();}
+  if (typetra != IntSurf_Touch)
+  {
+    throw Standard_DomainError();
+  }
   return situat;
 }
 
+inline Standard_Boolean IntSurf_Transition::IsOpposite() const
+{
 
-inline Standard_Boolean IntSurf_Transition::IsOpposite () const {
-
-  if (typetra != IntSurf_Touch) {throw Standard_DomainError();}
+  if (typetra != IntSurf_Touch)
+  {
+    throw Standard_DomainError();
+  }
   return oppos;
 }
-
-
-

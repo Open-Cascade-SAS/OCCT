@@ -24,9 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Integer, Express_PredefinedType)
 // purpose  :
 //=======================================================================
 
-Express_Integer::Express_Integer()
-{
-}
+Express_Integer::Express_Integer() {}
 
 //=======================================================================
 // function : CPPName

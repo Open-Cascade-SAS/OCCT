@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Extrema_FuncPSNorm.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -24,23 +23,22 @@
 #include <Precision.hxx>
 #include <Standard_TypeMismatch.hxx>
 
-Extrema_FuncPSNorm::Extrema_FuncPSNorm ()
-: myS(NULL),
-  myU(0.0),
-  myV(0.0)
+Extrema_FuncPSNorm::Extrema_FuncPSNorm()
+    : myS(NULL),
+      myU(0.0),
+      myV(0.0)
 {
   myPinit = Standard_False;
   mySinit = Standard_False;
 }
 
 //=============================================================================
-Extrema_FuncPSNorm::Extrema_FuncPSNorm (const gp_Pnt& P,
-                                      const Adaptor3d_Surface& S)
-: myU(0.0),
-  myV(0.0)
+Extrema_FuncPSNorm::Extrema_FuncPSNorm(const gp_Pnt& P, const Adaptor3d_Surface& S)
+    : myU(0.0),
+      myV(0.0)
 {
-  myP = P;
-  myS = &S;
+  myP     = P;
+  myS     = &S;
   myPinit = Standard_True;
   mySinit = Standard_True;
 }
@@ -48,7 +46,7 @@ Extrema_FuncPSNorm::Extrema_FuncPSNorm (const gp_Pnt& P,
 //=============================================================================
 void Extrema_FuncPSNorm::Initialize(const Adaptor3d_Surface& S)
 {
-  myS = &S;
+  myS     = &S;
   mySinit = Standard_True;
   myPoint.Clear();
   mySqDist.Clear();
@@ -58,7 +56,7 @@ void Extrema_FuncPSNorm::Initialize(const Adaptor3d_Surface& S)
 
 void Extrema_FuncPSNorm::SetPoint(const gp_Pnt& P)
 {
-  myP = P;
+  myP     = P;
   myPinit = Standard_True;
   myPoint.Clear();
   mySqDist.Clear();
@@ -68,54 +66,62 @@ void Extrema_FuncPSNorm::SetPoint(const gp_Pnt& P)
 
 //=============================================================================
 
-Standard_Integer Extrema_FuncPSNorm::NbVariables () const { return 2;}
-//=============================================================================
-
-Standard_Integer Extrema_FuncPSNorm::NbEquations () const { return 2;}
-//=============================================================================
-
-Standard_Boolean Extrema_FuncPSNorm::Value (const math_Vector& UV, 
-                                           math_Vector& F)
+Standard_Integer Extrema_FuncPSNorm::NbVariables() const
 {
-  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
+  return 2;
+}
+
+//=============================================================================
+
+Standard_Integer Extrema_FuncPSNorm::NbEquations() const
+{
+  return 2;
+}
+
+//=============================================================================
+
+Standard_Boolean Extrema_FuncPSNorm::Value(const math_Vector& UV, math_Vector& F)
+{
+  if (!myPinit || !mySinit)
+    throw Standard_TypeMismatch();
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs;
-  myS->D1(myU,myV,myPs,Dus,Dvs);
+  myS->D1(myU, myV, myPs, Dus, Dvs);
 
-  gp_Vec PPs (myP,myPs);
+  gp_Vec PPs(myP, myPs);
 
   F(1) = PPs.Dot(Dus);
   F(2) = PPs.Dot(Dvs);
 
   return Standard_True;
 }
+
 //=============================================================================
 
-Standard_Boolean Extrema_FuncPSNorm::Derivatives (const math_Vector& UV, 
-                                                 math_Matrix& Df)
+Standard_Boolean Extrema_FuncPSNorm::Derivatives(const math_Vector& UV, math_Matrix& Df)
 {
-  math_Vector F(1,2);
-  return Values(UV,F,Df);
+  math_Vector F(1, 2);
+  return Values(UV, F, Df);
 }
+
 //=============================================================================
 
-Standard_Boolean Extrema_FuncPSNorm::Values (const math_Vector& UV, 
-                                            math_Vector& F,
-                                            math_Matrix& Df)
+Standard_Boolean Extrema_FuncPSNorm::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
 {
-  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
+  if (!myPinit || !mySinit)
+    throw Standard_TypeMismatch();
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs, Duus, Dvvs, Duvs;
-  myS->D2(myU,myV,myPs,Dus,Dvs,Duus,Dvvs,Duvs);
+  myS->D2(myU, myV, myPs, Dus, Dvs, Duus, Dvvs, Duvs);
 
-  gp_Vec PPs (myP,myPs);
+  gp_Vec PPs(myP, myPs);
 
-  Df(1,1) = Dus.SquareMagnitude() + PPs.Dot(Duus);
-  Df(1,2) = Dvs.Dot(Dus)          + PPs.Dot(Duvs);
-  Df(2,1) = Df(1,2);
-  Df(2,2) = Dvs.SquareMagnitude() + PPs.Dot(Dvvs);
+  Df(1, 1) = Dus.SquareMagnitude() + PPs.Dot(Duus);
+  Df(1, 2) = Dvs.Dot(Dus) + PPs.Dot(Duvs);
+  Df(2, 1) = Df(1, 2);
+  Df(2, 2) = Dvs.SquareMagnitude() + PPs.Dot(Dvvs);
 
   // 3. Value
   F(1) = PPs.Dot(Dus);
@@ -123,45 +129,52 @@ Standard_Boolean Extrema_FuncPSNorm::Values (const math_Vector& UV,
 
   return Standard_True;
 }
+
 //=============================================================================
 
-Standard_Integer Extrema_FuncPSNorm::GetStateNumber ()
+Standard_Integer Extrema_FuncPSNorm::GetStateNumber()
 {
-  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
-  //comparison of solution with previous solutions
-  Standard_Integer i = 1, nbSol = mySqDist.Length();
+  if (!myPinit || !mySinit)
+    throw Standard_TypeMismatch();
+  // comparison of solution with previous solutions
+  Standard_Integer        i = 1, nbSol = mySqDist.Length();
   constexpr Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
-   
-  for( ; i <=  nbSol; i++)
+
+  for (; i <= nbSol; i++)
   {
     Standard_Real aU, aV;
-	myPoint(i).Parameter(aU, aV);
-	if( ((myU - aU ) * (myU - aU ) + (myV - aV ) * (myV - aV )) <= tol2d )
+    myPoint(i).Parameter(aU, aV);
+    if (((myU - aU) * (myU - aU) + (myV - aV) * (myV - aV)) <= tol2d)
       break;
   }
-  if( i <= nbSol)
-	  return 0;
+  if (i <= nbSol)
+    return 0;
   mySqDist.Append(myPs.SquareDistance(myP));
-  myPoint.Append(Extrema_POnSurf(myU,myV,myPs));
+  myPoint.Append(Extrema_POnSurf(myU, myV, myPs));
   return 0;
 }
+
 //=============================================================================
 
-Standard_Integer Extrema_FuncPSNorm::NbExt () const
+Standard_Integer Extrema_FuncPSNorm::NbExt() const
 {
   return mySqDist.Length();
 }
+
 //=============================================================================
 
-Standard_Real Extrema_FuncPSNorm::SquareDistance (const Standard_Integer N) const
+Standard_Real Extrema_FuncPSNorm::SquareDistance(const Standard_Integer N) const
 {
-  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
+  if (!myPinit || !mySinit)
+    throw Standard_TypeMismatch();
   return mySqDist.Value(N);
 }
+
 //=============================================================================
 
-const Extrema_POnSurf& Extrema_FuncPSNorm::Point (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_FuncPSNorm::Point(const Standard_Integer N) const
 {
-  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
+  if (!myPinit || !mySinit)
+    throw Standard_TypeMismatch();
   return myPoint.Value(N);
 }

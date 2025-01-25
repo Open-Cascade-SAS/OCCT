@@ -75,136 +75,116 @@ class TopoDS_Wire;
 //!
 //! TopoDS_Wire W = MW;
 
-class BRepLib_MakeWire  : public BRepLib_MakeShape
+class BRepLib_MakeWire : public BRepLib_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! NotDone MakeWire.
   Standard_EXPORT BRepLib_MakeWire();
-  
+
   //! Make a Wire from an edge.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E);
-  
+
   //! Make a Wire from two edges.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2);
-  
+
   //! Make a Wire from three edges.
-  Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2, const TopoDS_Edge& E3);
-  
+  Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1,
+                                   const TopoDS_Edge& E2,
+                                   const TopoDS_Edge& E3);
+
   //! Make a Wire from four edges.
-  Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2, const TopoDS_Edge& E3, const TopoDS_Edge& E4);
-  
+  Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1,
+                                   const TopoDS_Edge& E2,
+                                   const TopoDS_Edge& E3,
+                                   const TopoDS_Edge& E4);
+
   //! Make a Wire from a Wire. Useful for adding later.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Wire& W);
-  
+
   //! Add an edge to a wire.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Wire& W, const TopoDS_Edge& E);
-  
+
   //! Add the edge <E> to the current wire.
-  Standard_EXPORT void Add (const TopoDS_Edge& E);
-  
+  Standard_EXPORT void Add(const TopoDS_Edge& E);
+
   //! Add the edges of <W> to the current wire.
-  Standard_EXPORT void Add (const TopoDS_Wire& W);
-  
+  Standard_EXPORT void Add(const TopoDS_Wire& W);
+
   //! Add the edges of <L> to the current wire.
   //! The edges are not to be consecutive.  But they are
   //! to be all connected geometrically or topologically.
-  Standard_EXPORT void Add (const TopTools_ListOfShape& L);
-  
+  Standard_EXPORT void Add(const TopTools_ListOfShape& L);
+
   Standard_EXPORT BRepLib_WireError Error() const;
-  
+
   //! Returns the new wire.
   Standard_EXPORT const TopoDS_Wire& Wire();
-  Standard_EXPORT operator TopoDS_Wire();
-  
+  Standard_EXPORT                    operator TopoDS_Wire();
+
   //! Returns the last edge added to the wire.
   Standard_EXPORT const TopoDS_Edge& Edge() const;
-  
+
   //! Returns the last connecting vertex.
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
 private:
-  class BRepLib_BndBoxVertexSelector : public NCollection_UBTree <Standard_Integer,Bnd_Box>::Selector
+  class BRepLib_BndBoxVertexSelector
+      : public NCollection_UBTree<Standard_Integer, Bnd_Box>::Selector
   {
   public:
     BRepLib_BndBoxVertexSelector(const TopTools_IndexedMapOfShape& theMapOfShape)
-    : BRepLib_BndBoxVertexSelector::Selector(),
-      myMapOfShape (theMapOfShape),
-      myTolP(0.0),
-      myVInd(0)
+        : BRepLib_BndBoxVertexSelector::Selector(),
+          myMapOfShape(theMapOfShape),
+          myTolP(0.0),
+          myVInd(0)
     {
     }
 
-    Standard_Boolean Reject (const Bnd_Box& theBox) const
-    {
-      return theBox.IsOut(myVBox);
-    }
+    Standard_Boolean Reject(const Bnd_Box& theBox) const { return theBox.IsOut(myVBox); }
 
-    Standard_Boolean Accept (const Standard_Integer& theObj);
+    Standard_Boolean Accept(const Standard_Integer& theObj);
 
-    void SetCurrentVertex (const gp_Pnt& theP, Standard_Real theTol, 
-                           Standard_Integer theVInd);
+    void SetCurrentVertex(const gp_Pnt& theP, Standard_Real theTol, Standard_Integer theVInd);
 
-    const NCollection_List<Standard_Integer>& GetResultInds () const
-    { 
-      return myResultInd;
-    }
+    const NCollection_List<Standard_Integer>& GetResultInds() const { return myResultInd; }
 
-    void ClearResInds()
-    { 
-      myResultInd.Clear();
-    }
+    void ClearResInds() { myResultInd.Clear(); }
 
   private:
+    BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector&);
+    BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector&);
 
-    BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector& );
-    BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector& );
-
-    const TopTools_IndexedMapOfShape& myMapOfShape; //vertices
-    gp_Pnt myP;
-    Standard_Real myTolP;
-    Standard_Integer myVInd;
-    Bnd_Box myVBox;
-    NCollection_List<Standard_Integer> myResultInd; 
+    const TopTools_IndexedMapOfShape&  myMapOfShape; // vertices
+    gp_Pnt                             myP;
+    Standard_Real                      myTolP;
+    Standard_Integer                   myVInd;
+    Bnd_Box                            myVBox;
+    NCollection_List<Standard_Integer> myResultInd;
   };
 
-  void CollectCoincidentVertices(const TopTools_ListOfShape& theL,
+  void CollectCoincidentVertices(const TopTools_ListOfShape&                        theL,
                                  NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL);
 
-  void CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL, 
-                         TopTools_DataMapOfShapeShape& theO2NV);
+  void CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL,
+                         TopTools_DataMapOfShapeShape&                            theO2NV);
 
-  void CreateNewListOfEdges(const TopTools_ListOfShape& theL,
+  void CreateNewListOfEdges(const TopTools_ListOfShape&         theL,
                             const TopTools_DataMapOfShapeShape& theO2NV,
-                            TopTools_ListOfShape& theNewEList);
+                            TopTools_ListOfShape&               theNewEList);
 
   void Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometryProximity);
 
-
-
 protected:
-
-
-
 private:
-
-  BRepLib_WireError myError;
-  TopoDS_Edge myEdge;
-  TopoDS_Vertex myVertex;
+  BRepLib_WireError          myError;
+  TopoDS_Edge                myEdge;
+  TopoDS_Vertex              myVertex;
   TopTools_IndexedMapOfShape myVertices;
-  TopoDS_Vertex FirstVertex;
-  TopoDS_Vertex VF;
-  TopoDS_Vertex VL;
-
+  TopoDS_Vertex              FirstVertex;
+  TopoDS_Vertex              VF;
+  TopoDS_Vertex              VL;
 };
-
-
-
-
-
-
 
 #endif // _BRepLib_MakeWire_HeaderFile

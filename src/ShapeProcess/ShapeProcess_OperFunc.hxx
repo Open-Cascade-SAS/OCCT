@@ -20,7 +20,7 @@
 
 class Message_ProgressRange;
 
-typedef Standard_Boolean (*ShapeProcess_OperFunc) (const Handle(ShapeProcess_Context)& context,
-                                                   const Message_ProgressRange& theProgress);
+typedef Standard_Boolean (*ShapeProcess_OperFunc)(const Handle(ShapeProcess_Context)& context,
+                                                  const Message_ProgressRange&        theProgress);
 
 #endif

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_TreeLevelLineDelegate.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
@@ -24,8 +24,8 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_TreeLevelLineDelegate::DFBrowser_TreeLevelLineDelegate (QObject* theParent)
-: QItemDelegate (theParent)
+DFBrowser_TreeLevelLineDelegate::DFBrowser_TreeLevelLineDelegate(QObject* theParent)
+    : QItemDelegate(theParent)
 {
 }
 
@@ -33,22 +33,25 @@ DFBrowser_TreeLevelLineDelegate::DFBrowser_TreeLevelLineDelegate (QObject* thePa
 // function : paint
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelLineDelegate::paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                             const QModelIndex& theIndex) const
+void DFBrowser_TreeLevelLineDelegate::paint(QPainter*                   thePainter,
+                                            const QStyleOptionViewItem& theOption,
+                                            const QModelIndex&          theIndex) const
 {
   // highlight cell
   if (theOption.state & QStyle::State_MouseOver)
-    thePainter->fillRect (theOption.rect, DFBrowserPane_Tools::LightHighlightColor());
+    thePainter->fillRect(theOption.rect, DFBrowserPane_Tools::LightHighlightColor());
 
   // action icon for all indices before the last one
-  if (theIndex.column() < theIndex.model()->columnCount()-1)
+  if (theIndex.column() < theIndex.model()->columnCount() - 1)
   {
-    QIcon anIcon (":/icons/level_change.png");
-    QSize anIconSize (10, 20);
-    thePainter->drawPixmap (QRect (theOption.rect.right() - anIconSize.width(), theOption.rect.top(),
-                                   anIconSize.width(), anIconSize.height()),
-                            anIcon.pixmap (anIconSize.width(), anIconSize.height()));
+    QIcon anIcon(":/icons/level_change.png");
+    QSize anIconSize(10, 20);
+    thePainter->drawPixmap(QRect(theOption.rect.right() - anIconSize.width(),
+                                 theOption.rect.top(),
+                                 anIconSize.width(),
+                                 anIconSize.height()),
+                           anIcon.pixmap(anIconSize.width(), anIconSize.height()));
   }
   // default paint
-  QItemDelegate::paint (thePainter, theOption, theIndex);
+  QItemDelegate::paint(thePainter, theOption, theIndex);
 }

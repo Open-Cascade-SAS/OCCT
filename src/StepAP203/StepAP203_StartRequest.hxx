@@ -23,7 +23,6 @@
 #include <StepBasic_ActionRequestAssignment.hxx>
 class StepBasic_VersionedActionRequest;
 
-
 class StepAP203_StartRequest;
 DEFINE_STANDARD_HANDLE(StepAP203_StartRequest, StepBasic_ActionRequestAssignment)
 
@@ -32,42 +31,25 @@ class StepAP203_StartRequest : public StepBasic_ActionRequestAssignment
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_StartRequest();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest, const Handle(StepAP203_HArray1OfStartRequestItem)& aItems);
-  
+  Standard_EXPORT void Init(
+    const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest,
+    const Handle(StepAP203_HArray1OfStartRequestItem)& aItems);
+
   //! Returns field Items
   Standard_EXPORT Handle(StepAP203_HArray1OfStartRequestItem) Items() const;
-  
+
   //! Set field Items
-  Standard_EXPORT void SetItems (const Handle(StepAP203_HArray1OfStartRequestItem)& Items);
+  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfStartRequestItem)& Items);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP203_StartRequest,StepBasic_ActionRequestAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_StartRequest, StepBasic_ActionRequestAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP203_HArray1OfStartRequestItem) theItems;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_StartRequest_HeaderFile

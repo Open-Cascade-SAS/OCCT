@@ -20,7 +20,7 @@
 #include <StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepBasic_HArray1OfUncertaintyMeasureWithUnit, StepBasic_Array1OfUncertaintyMeasureWithUnit)
-
+DEFINE_HARRAY1(StepBasic_HArray1OfUncertaintyMeasureWithUnit,
+               StepBasic_Array1OfUncertaintyMeasureWithUnit)
 
 #endif

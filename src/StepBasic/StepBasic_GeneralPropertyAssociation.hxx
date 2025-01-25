@@ -30,15 +30,13 @@ class StepBasic_GeneralPropertyAssociation : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_GeneralPropertyAssociation();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(StepBasic_GeneralProperty)& aGeneralProperty,
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
+                            const Handle(TCollection_HAsciiString)&    aDescription,
+                            const Handle(StepBasic_GeneralProperty)&   aGeneralProperty,
                             const Handle(StepRepr_PropertyDefinition)& aPropertyDefinition);
 
   //! Returns field Name
@@ -63,22 +61,17 @@ public:
   Standard_EXPORT Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
 
   //! Set field PropertyDefinition
-  Standard_EXPORT void SetPropertyDefinition(const Handle(StepRepr_PropertyDefinition)& PropertyDefinition);
+  Standard_EXPORT void SetPropertyDefinition(
+    const Handle(StepRepr_PropertyDefinition)& PropertyDefinition);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralPropertyAssociation, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
-  Handle(StepBasic_GeneralProperty) theGeneralProperty;
+  Handle(TCollection_HAsciiString)    theName;
+  Handle(TCollection_HAsciiString)    theDescription;
+  Handle(StepBasic_GeneralProperty)   theGeneralProperty;
   Handle(StepRepr_PropertyDefinition) thePropertyDefinition;
-
 };
 
 #endif // _StepBasic_GeneralPropertyAssociation_HeaderFile

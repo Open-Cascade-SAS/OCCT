@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TInspectorAPI_Communicator.hxx>
 
@@ -20,9 +20,9 @@
 #include <iostream>
 
 #ifdef _WIN32
-#include <windows.h>
+  #include <windows.h>
 #else
-#include <dlfcn.h>
+  #include <dlfcn.h>
 #endif
 
 #define LIB_HANDLE HINSTANCE
@@ -31,8 +31,8 @@
 // function :  LoadPluginLibrary
 // purpose :
 // =======================================================================
-TInspectorAPI_Communicator* TInspectorAPI_Communicator::LoadPluginLibrary
-                                         (const TCollection_AsciiString& thePluginName)
+TInspectorAPI_Communicator* TInspectorAPI_Communicator::LoadPluginLibrary(
+  const TCollection_AsciiString& thePluginName)
 {
   if (thePluginName.IsEmpty())
     std::cout << thePluginName.ToCString() << "%s plugin could not be loaded." << std::endl;
@@ -40,10 +40,10 @@ TInspectorAPI_Communicator* TInspectorAPI_Communicator::LoadPluginLibrary
 #ifdef _WIN32
   aPluginLibraryName += ".dll";
 #elif __APPLE__
-  aPluginLibraryName.Prepend ("lib");
-  aPluginLibraryName += ".dylib";  
+  aPluginLibraryName.Prepend("lib");
+  aPluginLibraryName += ".dylib";
 #else
-  aPluginLibraryName.Prepend ("lib");
+  aPluginLibraryName.Prepend("lib");
   aPluginLibraryName += ".so";
 #endif
 
@@ -64,7 +64,8 @@ TInspectorAPI_Communicator* TInspectorAPI_Communicator::LoadPluginLibrary
     crtInst = (COMMUNICATOR_INSTANCE)dlsym(modLib, CREATE_COMMUNICATOR_FUNCTION_NAME);
 #endif
     if (!crtInst)
-      std::cout << "Failed to find " << CREATE_COMMUNICATOR_FUNCTION_NAME << " function." << std::endl;
+      std::cout << "Failed to find " << CREATE_COMMUNICATOR_FUNCTION_NAME << " function."
+                << std::endl;
   }
   TInspectorAPI_Communicator* aModule = crtInst ? crtInst() : 0;
   return aModule;

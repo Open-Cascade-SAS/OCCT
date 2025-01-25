@@ -20,7 +20,7 @@ StaticHandle(StepAP214_Protocol, proto);
 
 Handle(StepAP214_Protocol) StepAP214::Protocol()
 
-	{
-		InitHandleVoid(StepAP214_Protocol, proto);
-		return proto;
-	}
+{
+  InitHandleVoid(StepAP214_Protocol, proto);
+  return proto;
+}

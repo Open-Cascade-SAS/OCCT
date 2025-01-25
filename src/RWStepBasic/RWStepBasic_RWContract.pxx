@@ -28,48 +28,31 @@ class StepBasic_Contract;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for Contract
-class RWStepBasic_RWContract 
+class RWStepBasic_RWContract
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepBasic_RWContract();
-  
+
   //! Reads Contract
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepBasic_Contract)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepBasic_Contract)&      ent) const;
+
   //! Writes Contract
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepBasic_Contract)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&              SW,
+                                 const Handle(StepBasic_Contract)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepBasic_Contract)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepBasic_Contract)& ent,
+                             Interface_EntityIterator&         iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepBasic_RWContract_HeaderFile

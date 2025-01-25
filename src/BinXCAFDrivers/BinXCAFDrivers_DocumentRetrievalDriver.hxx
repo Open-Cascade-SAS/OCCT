@@ -23,43 +23,24 @@
 class BinMDF_ADriverTable;
 class Message_Messenger;
 
-
 class BinXCAFDrivers_DocumentRetrievalDriver;
 DEFINE_STANDARD_HANDLE(BinXCAFDrivers_DocumentRetrievalDriver, BinDrivers_DocumentRetrievalDriver)
-
 
 class BinXCAFDrivers_DocumentRetrievalDriver : public BinDrivers_DocumentRetrievalDriver
 {
 
 public:
-
-  
   //! Constructor
   Standard_EXPORT BinXCAFDrivers_DocumentRetrievalDriver();
-  
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,
+                          BinDrivers_DocumentRetrievalDriver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BinXCAFDrivers_DocumentRetrievalDriver_HeaderFile

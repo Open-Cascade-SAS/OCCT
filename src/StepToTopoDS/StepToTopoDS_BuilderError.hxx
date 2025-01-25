@@ -17,11 +17,10 @@
 #ifndef _StepToTopoDS_BuilderError_HeaderFile
 #define _StepToTopoDS_BuilderError_HeaderFile
 
-
 enum StepToTopoDS_BuilderError
 {
-StepToTopoDS_BuilderDone,
-StepToTopoDS_BuilderOther
+  StepToTopoDS_BuilderDone,
+  StepToTopoDS_BuilderOther
 };
 
 #endif // _StepToTopoDS_BuilderError_HeaderFile

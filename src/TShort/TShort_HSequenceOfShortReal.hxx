@@ -21,5 +21,4 @@
 
 DEFINE_HSEQUENCE(TShort_HSequenceOfShortReal, TShort_SequenceOfShortReal)
 
-
 #endif

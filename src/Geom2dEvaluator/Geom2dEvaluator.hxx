@@ -30,56 +30,47 @@ class gp_Vec2d;
 class Geom2dEvaluator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Recalculate D1 values of base curve into D0 value of offset curve
-  Standard_EXPORT static void CalculateD0(gp_Pnt2d& theValue,
-                                          const gp_Vec2d& theD1, const Standard_Real theOffset);
-  
+  Standard_EXPORT static void CalculateD0(gp_Pnt2d&           theValue,
+                                          const gp_Vec2d&     theD1,
+                                          const Standard_Real theOffset);
+
   //! Recalculate D2 values of base curve into D1 values of offset curve
-  Standard_EXPORT static  void CalculateD1(gp_Pnt2d& theValue,
-                                           gp_Vec2d& theD1,
-                                           const gp_Vec2d& theD2, const Standard_Real theOffset);
+  Standard_EXPORT static void CalculateD1(gp_Pnt2d&           theValue,
+                                          gp_Vec2d&           theD1,
+                                          const gp_Vec2d&     theD2,
+                                          const Standard_Real theOffset);
 
-  
   //! Recalculate D3 values of base curve into D2 values of offset curve
-  Standard_EXPORT static   void CalculateD2(gp_Pnt2d& theValue,
-                                            gp_Vec2d& theD1,
-                                            gp_Vec2d& theD2,
-                                            const gp_Vec2d& theD3, const Standard_Boolean theIsDirChange, 
-                                            const Standard_Real theOffset);
+  Standard_EXPORT static void CalculateD2(gp_Pnt2d&              theValue,
+                                          gp_Vec2d&              theD1,
+                                          gp_Vec2d&              theD2,
+                                          const gp_Vec2d&        theD3,
+                                          const Standard_Boolean theIsDirChange,
+                                          const Standard_Real    theOffset);
 
-  
   //! Recalculate D3 values of base curve into D3 values of offset curve
-  Standard_EXPORT static void CalculateD3(gp_Pnt2d& theValue,
-                                          gp_Vec2d& theD1,
-                                          gp_Vec2d& theD2,
-                                          gp_Vec2d& theD3,
-                                          const gp_Vec2d& theD4, const Standard_Boolean theIsDirChange,
-                                          const Standard_Real theOffset); 
+  Standard_EXPORT static void CalculateD3(gp_Pnt2d&              theValue,
+                                          gp_Vec2d&              theD1,
+                                          gp_Vec2d&              theD2,
+                                          gp_Vec2d&              theD3,
+                                          const gp_Vec2d&        theD4,
+                                          const Standard_Boolean theIsDirChange,
+                                          const Standard_Real    theOffset);
 
-  
   //! Recalculate derivatives in the singular point
   //! Returns true if the direction of derivatives is changed
   Standard_EXPORT static Standard_Boolean AdjustDerivative(const Standard_Integer theMaxDerivative,
-                                                           const Standard_Real theU,
-                                                           gp_Vec2d& theD1,
-                                                           gp_Vec2d& theD2,
-                                                           gp_Vec2d& theD3,
-                                                           gp_Vec2d& theD4);
-  
-  
+                                                           const Standard_Real    theU,
+                                                           gp_Vec2d&              theD1,
+                                                           gp_Vec2d&              theD2,
+                                                           gp_Vec2d&              theD3,
+                                                           gp_Vec2d&              theD4);
+
 protected:
-
-
-
-
-
 private:
-
 };
-
 
 #endif // _Geom2dEvaluator_HeaderFile

@@ -23,7 +23,8 @@ enum Graphic3d_CappingFlags
   Graphic3d_CappingFlags_ObjectTexture  = 0x0002, //!< use object texture
   Graphic3d_CappingFlags_ObjectShader   = 0x0008, //!< use object GLSL program
   Graphic3d_CappingFlags_ObjectAspect =
-    Graphic3d_CappingFlags_ObjectMaterial | Graphic3d_CappingFlags_ObjectTexture | Graphic3d_CappingFlags_ObjectShader //!< use entire fill area aspect from object
+    Graphic3d_CappingFlags_ObjectMaterial | Graphic3d_CappingFlags_ObjectTexture
+    | Graphic3d_CappingFlags_ObjectShader //!< use entire fill area aspect from object
 };
 
 #endif // _Graphic3d_CappingFlags_HeaderFile

@@ -27,112 +27,100 @@ class TopoDS_Shape;
 class ShapeUpgrade_FaceDivide;
 class Message_Msg;
 
-
 //! API class for performing conversion of 3D, 2D curves to bezier curves
 //! and surfaces to bezier based surfaces (
 //! bezier surface,
 //! surface of revolution based on bezier curve,
 //! offset surface based on any previous type).
-class ShapeUpgrade_ShapeConvertToBezier  : public ShapeUpgrade_ShapeDivide
+class ShapeUpgrade_ShapeConvertToBezier : public ShapeUpgrade_ShapeDivide
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_ShapeConvertToBezier();
-  
+
   //! Initialize by a Shape.
   Standard_EXPORT ShapeUpgrade_ShapeConvertToBezier(const TopoDS_Shape& S);
-  
+
   //! Sets mode for conversion 2D curves to bezier.
-    void Set2dConversion (const Standard_Boolean mode);
-  
+  void Set2dConversion(const Standard_Boolean mode);
+
   //! Returns the 2D conversion mode.
-    Standard_Boolean Get2dConversion() const;
-  
+  Standard_Boolean Get2dConversion() const;
+
   //! Sets mode for conversion 3d curves to bezier.
-    void Set3dConversion (const Standard_Boolean mode);
-  
+  void Set3dConversion(const Standard_Boolean mode);
+
   //! Returns the 3D conversion mode.
-    Standard_Boolean Get3dConversion() const;
-  
+  Standard_Boolean Get3dConversion() const;
+
   //! Sets mode for conversion surfaces curves to
   //! bezier basis.
-    void SetSurfaceConversion (const Standard_Boolean mode);
-  
+  void SetSurfaceConversion(const Standard_Boolean mode);
+
   //! Returns the surface conversion mode.
-    Standard_Boolean GetSurfaceConversion() const;
-  
+  Standard_Boolean GetSurfaceConversion() const;
+
   //! Sets mode for conversion Geom_Line to bezier.
-    void Set3dLineConversion (const Standard_Boolean mode);
-  
+  void Set3dLineConversion(const Standard_Boolean mode);
+
   //! Returns the Geom_Line conversion mode.
-    Standard_Boolean Get3dLineConversion() const;
-  
+  Standard_Boolean Get3dLineConversion() const;
+
   //! Sets mode for conversion Geom_Circle to bezier.
-    void Set3dCircleConversion (const Standard_Boolean mode);
-  
+  void Set3dCircleConversion(const Standard_Boolean mode);
+
   //! Returns the Geom_Circle conversion mode.
-    Standard_Boolean Get3dCircleConversion() const;
-  
+  Standard_Boolean Get3dCircleConversion() const;
+
   //! Sets mode for conversion Geom_Conic to bezier.
-    void Set3dConicConversion (const Standard_Boolean mode);
-  
+  void Set3dConicConversion(const Standard_Boolean mode);
+
   //! Returns the Geom_Conic conversion mode.
-    Standard_Boolean Get3dConicConversion() const;
-  
+  Standard_Boolean Get3dConicConversion() const;
+
   //! Sets mode for conversion Geom_Plane to Bezier
-    void SetPlaneMode (const Standard_Boolean mode);
-  
+  void SetPlaneMode(const Standard_Boolean mode);
+
   //! Returns the Geom_Pline conversion mode.
-    Standard_Boolean GetPlaneMode() const;
-  
+  Standard_Boolean GetPlaneMode() const;
+
   //! Sets mode for conversion Geom_SurfaceOfRevolution to Bezier
-    void SetRevolutionMode (const Standard_Boolean mode);
-  
+  void SetRevolutionMode(const Standard_Boolean mode);
+
   //! Returns the Geom_SurfaceOfRevolution conversion mode.
-    Standard_Boolean GetRevolutionMode() const;
-  
+  Standard_Boolean GetRevolutionMode() const;
+
   //! Sets mode for conversion Geom_SurfaceOfLinearExtrusion to Bezier
-    void SetExtrusionMode (const Standard_Boolean mode);
-  
+  void SetExtrusionMode(const Standard_Boolean mode);
+
   //! Returns the Geom_SurfaceOfLinearExtrusion conversion mode.
-    Standard_Boolean GetExtrusionMode() const;
-  
+  Standard_Boolean GetExtrusionMode() const;
+
   //! Sets mode for conversion Geom_BSplineSurface to Bezier
-    void SetBSplineMode (const Standard_Boolean mode);
-  
+  void SetBSplineMode(const Standard_Boolean mode);
+
   //! Returns the Geom_BSplineSurface conversion mode.
-    Standard_Boolean GetBSplineMode() const;
-  
+  Standard_Boolean GetBSplineMode() const;
+
   //! Performs converting and computes the resulting shape
-  Standard_EXPORT virtual Standard_Boolean Perform (const Standard_Boolean newContext = Standard_True) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Perform(
+    const Standard_Boolean newContext = Standard_True) Standard_OVERRIDE;
 
 protected:
-
-  
   //! Returns the tool for dividing faces.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const
+    Standard_OVERRIDE;
+
   Standard_EXPORT virtual Message_Msg GetFaceMsg() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Message_Msg GetWireMsg() const Standard_OVERRIDE;
-  
+
   //! Returns a message describing modification of a shape.
   Standard_EXPORT virtual Message_Msg GetEdgeMsg() const Standard_OVERRIDE;
 
-
-
-
 private:
-
-
-
   Standard_Boolean my2dMode;
   Standard_Boolean my3dMode;
   Standard_Boolean mySurfaceMode;
@@ -144,15 +132,8 @@ private:
   Standard_Boolean myExtrusionMode;
   Standard_Boolean myBSplineMode;
   Standard_Integer myLevel;
-
-
 };
 
-
 #include <ShapeUpgrade_ShapeConvertToBezier.lxx>
-
-
-
-
 
 #endif // _ShapeUpgrade_ShapeConvertToBezier_HeaderFile

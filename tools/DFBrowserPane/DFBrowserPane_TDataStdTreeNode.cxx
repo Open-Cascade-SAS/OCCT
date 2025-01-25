@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TDataStdTreeNode.hxx>
 
@@ -38,40 +38,41 @@
 // purpose :
 // =======================================================================
 DFBrowserPane_TDataStdTreeNode::DFBrowserPane_TDataStdTreeNode()
-: DFBrowserPane_AttributePane(), myTreeNodeView (0)
+    : DFBrowserPane_AttributePane(),
+      myTreeNodeView(0)
 {
-  myModel = new DFBrowserPane_TDataStdTreeNodeModel (0);
+  myModel = new DFBrowserPane_TDataStdTreeNodeModel(0);
   myModel->InitColumns();
   mySelectionModels.clear(); // do not use selection model of parent pane
-  mySelectionModels.push_back (new QItemSelectionModel (myModel));
+  mySelectionModels.push_back(new QItemSelectionModel(myModel));
 }
 
 // =======================================================================
 // function : CreateWidget
 // purpose :
 // =======================================================================
-QWidget* DFBrowserPane_TDataStdTreeNode::CreateWidget (QWidget* theParent)
+QWidget* DFBrowserPane_TDataStdTreeNode::CreateWidget(QWidget* theParent)
 {
-  QWidget* aMainWidget = new QWidget (theParent);
-  aMainWidget->setVisible (false);
+  QWidget* aMainWidget = new QWidget(theParent);
+  aMainWidget->setVisible(false);
 
-  myTableView = new DFBrowserPane_TableView (aMainWidget, getTableColumnWidths());
-  myTableView->SetVisibleHorizontalHeader (false);
-  DFBrowserPane_TableView::SetFixedRowCount (1, myTableView->GetTableView());
-  myTableView->SetModel (myPaneModel);
+  myTableView = new DFBrowserPane_TableView(aMainWidget, getTableColumnWidths());
+  myTableView->SetVisibleHorizontalHeader(false);
+  DFBrowserPane_TableView::SetFixedRowCount(1, myTableView->GetTableView());
+  myTableView->SetModel(myPaneModel);
 
-  QVBoxLayout* aLay = new QVBoxLayout (aMainWidget);
-  aLay->setContentsMargins (0, 0, 0, 0);
-  aLay->addWidget (myTableView);
+  QVBoxLayout* aLay = new QVBoxLayout(aMainWidget);
+  aLay->setContentsMargins(0, 0, 0, 0);
+  aLay->addWidget(myTableView);
 
-  myTreeNodeView = new QTreeView (theParent);
-  myTreeNodeView->header()->setVisible (false);
-  myTreeNodeView->setModel (myModel);
-  myTreeNodeView->setSelectionModel (mySelectionModels.front());
-  myTreeNodeView->setSelectionBehavior (QAbstractItemView::SelectRows);
+  myTreeNodeView = new QTreeView(theParent);
+  myTreeNodeView->header()->setVisible(false);
+  myTreeNodeView->setModel(myModel);
+  myTreeNodeView->setSelectionModel(mySelectionModels.front());
+  myTreeNodeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  aLay->addWidget (myTreeNodeView);
-  aLay->setStretch (1, 1);
+  aLay->addWidget(myTreeNodeView);
+  aLay->setStretch(1, 1);
   return aMainWidget;
 }
 
@@ -79,44 +80,43 @@ QWidget* DFBrowserPane_TDataStdTreeNode::CreateWidget (QWidget* theParent)
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdTreeNode::Init (const Handle(TDF_Attribute)& theAttribute)
+void DFBrowserPane_TDataStdTreeNode::Init(const Handle(TDF_Attribute)& theAttribute)
 {
-  Handle(TDataStd_TreeNode) aTreeNode = Handle(TDataStd_TreeNode)::DownCast (theAttribute);
+  Handle(TDataStd_TreeNode) aTreeNode = Handle(TDataStd_TreeNode)::DownCast(theAttribute);
 
   bool aDefaultGUID = aTreeNode->ID() != aTreeNode->GetDefaultTreeID();
   if (myTableView)
-    myTableView->setVisible (!aDefaultGUID);
+    myTableView->setVisible(!aDefaultGUID);
 
   if (!aDefaultGUID)
   {
     QList<QVariant> aValues;
-    char aStr[256];
-    aTreeNode->ID().ToCString (aStr);
+    char            aStr[256];
+    aTreeNode->ID().ToCString(aStr);
     TCollection_AsciiString aString(aStr);
-    aValues << "GetDefaultTreeID" << DFBrowserPane_Tools::ToString (aString);
-    getPaneModel()->Init (aValues);
+    aValues << "GetDefaultTreeID" << DFBrowserPane_Tools::ToString(aString);
+    getPaneModel()->Init(aValues);
     if (myTableView)
-      myTableView->GetTableView()->resizeColumnToContents (0);
+      myTableView->GetTableView()->resizeColumnToContents(0);
   }
-
 
   myModel->Reset();
 
   if (!aTreeNode.IsNull())
   {
     Handle(TDataStd_TreeNode) aRootItem = aTreeNode->Root();
-    myModel->SetAttribute (aRootItem);
+    myModel->SetAttribute(aRootItem);
 
-    QModelIndex anIndex = myModel->FindIndex (theAttribute, QModelIndex());
+    QModelIndex anIndex = myModel->FindIndex(theAttribute, QModelIndex());
     if (myTreeNodeView && anIndex.isValid())
     {
-      myTreeNodeView->setExpanded (anIndex.parent(), true);
-      myTreeNodeView->scrollTo (anIndex);
+      myTreeNodeView->setExpanded(anIndex.parent(), true);
+      myTreeNodeView->scrollTo(anIndex);
 
-      TreeModel_ItemBasePtr anAttributeItem = TreeModel_ModelBase::GetItemByIndex (anIndex);
+      TreeModel_ItemBasePtr anAttributeItem = TreeModel_ModelBase::GetItemByIndex(anIndex);
       DFBrowserPane_TDataStdTreeNodeItemPtr anAttributeNodeItem =
-              itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anAttributeItem);
-      anAttributeNodeItem->setCurrentAttribute (true);
+        itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anAttributeItem);
+      anAttributeNodeItem->setCurrentAttribute(true);
     }
   }
   myModel->EmitLayoutChanged();
@@ -126,16 +126,18 @@ void DFBrowserPane_TDataStdTreeNode::Init (const Handle(TDF_Attribute)& theAttri
 // function : GetShortAttributeInfo
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdTreeNode::GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute,
-                                                            QList<QVariant>& theValues)
+void DFBrowserPane_TDataStdTreeNode::GetShortAttributeInfo(
+  const Handle(TDF_Attribute)& theAttribute,
+  QList<QVariant>&             theValues)
 {
-  Handle(TDataStd_TreeNode) aTNAttribute = Handle(TDataStd_TreeNode)::DownCast (theAttribute);
-  bool aDefaultGUID = aTNAttribute->ID() != aTNAttribute->GetDefaultTreeID();
-  QString aGUIDPrefix;
-  if (!aDefaultGUID) {
+  Handle(TDataStd_TreeNode) aTNAttribute = Handle(TDataStd_TreeNode)::DownCast(theAttribute);
+  bool                      aDefaultGUID = aTNAttribute->ID() != aTNAttribute->GetDefaultTreeID();
+  QString                   aGUIDPrefix;
+  if (!aDefaultGUID)
+  {
     QList<QVariant> aValues;
-    char aStr[256];
-    aTNAttribute->ID().ToCString (aStr);
+    char            aStr[256];
+    aTNAttribute->ID().ToCString(aStr);
     TCollection_AsciiString aString(aStr);
     aGUIDPrefix = DFBrowserPane_Tools::ToString(aString);
   }
@@ -143,19 +145,20 @@ void DFBrowserPane_TDataStdTreeNode::GetShortAttributeInfo (const Handle(TDF_Att
   if (aTNAttribute->HasFather())
   {
     TDF_Label aLabel = aTNAttribute->Father()->Label();
-    theValues.append (QString ("%1 ==> %2").arg(aGUIDPrefix).arg (DFBrowserPane_Tools::GetEntry (aLabel).ToCString()));
+    theValues.append(
+      QString("%1 ==> %2").arg(aGUIDPrefix).arg(DFBrowserPane_Tools::GetEntry(aLabel).ToCString()));
   }
-  else 
+  else
   {
     Handle(TDataStd_TreeNode) aFirstChild = aTNAttribute->First();
-    QStringList aRefs;
-    while (! aFirstChild.IsNull() ) 
+    QStringList               aRefs;
+    while (!aFirstChild.IsNull())
     {
       TDF_Label aLabel = aFirstChild->Label();
-      aRefs.append (DFBrowserPane_Tools::GetEntry (aLabel).ToCString());
+      aRefs.append(DFBrowserPane_Tools::GetEntry(aLabel).ToCString());
       aFirstChild = aFirstChild->Next();
     }
-    theValues.append (QString ("%1 <== (%2)").arg(aGUIDPrefix).arg (aRefs.join (", ")));
+    theValues.append(QString("%1 <== (%2)").arg(aGUIDPrefix).arg(aRefs.join(", ")));
   }
 }
 
@@ -163,11 +166,11 @@ void DFBrowserPane_TDataStdTreeNode::GetShortAttributeInfo (const Handle(TDF_Att
 // function : GetReferences
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdTreeNode::GetReferences (const Handle(TDF_Attribute)& theAttribute,
-                                                    NCollection_List<TDF_Label>& theRefLabels,
-                                                    Handle(Standard_Transient)&)
+void DFBrowserPane_TDataStdTreeNode::GetReferences(const Handle(TDF_Attribute)& theAttribute,
+                                                   NCollection_List<TDF_Label>& theRefLabels,
+                                                   Handle(Standard_Transient)&)
 {
-  Handle(TDataStd_TreeNode) anAttribute = Handle(TDataStd_TreeNode)::DownCast (theAttribute);
+  Handle(TDataStd_TreeNode) anAttribute = Handle(TDataStd_TreeNode)::DownCast(theAttribute);
   if (anAttribute.IsNull())
     return;
 
@@ -176,14 +179,14 @@ void DFBrowserPane_TDataStdTreeNode::GetReferences (const Handle(TDF_Attribute)&
   {
     QModelIndex anIndex = aSelectedIndices[aSelectedId];
 
-    TreeModel_ItemBasePtr anAttributeItem = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    TreeModel_ItemBasePtr anAttributeItem = TreeModel_ModelBase::GetItemByIndex(anIndex);
     DFBrowserPane_TDataStdTreeNodeItemPtr anAttributeNodeItem =
-              itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anAttributeItem);
+      itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anAttributeItem);
 
     Handle(TDF_Attribute) aNodeAttribute = anAttributeNodeItem->GetAttribute();
     if (aNodeAttribute.IsNull())
       continue;
 
-    theRefLabels.Append (aNodeAttribute->Label());
+    theRefLabels.Append(aNodeAttribute->Label());
   }
 }

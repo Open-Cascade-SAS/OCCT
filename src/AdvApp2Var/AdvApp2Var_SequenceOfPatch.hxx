@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(AdvApp2Var_Patch)> AdvApp2Var_SequenceOfPatch;
 
-
 #endif

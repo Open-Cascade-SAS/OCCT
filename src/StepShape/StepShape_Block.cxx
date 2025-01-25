@@ -11,68 +11,65 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepShape_Block.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Block,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Block, StepGeom_GeometricRepresentationItem)
 
-StepShape_Block::StepShape_Block ()  {}
+StepShape_Block::StepShape_Block() {}
 
-void StepShape_Block::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition,
-	const Standard_Real aX,
-	const Standard_Real aY,
-	const Standard_Real aZ)
+void StepShape_Block::Init(const Handle(TCollection_HAsciiString)&  aName,
+                           const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                           const Standard_Real                      aX,
+                           const Standard_Real                      aY,
+                           const Standard_Real                      aZ)
 {
-	// --- classe own fields ---
-	position = aPosition;
-	x = aX;
-	y = aY;
-	z = aZ;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  position = aPosition;
+  x        = aX;
+  y        = aY;
+  z        = aZ;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_Block::SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition)
 {
-	position = aPosition;
+  position = aPosition;
 }
 
 Handle(StepGeom_Axis2Placement3d) StepShape_Block::Position() const
 {
-	return position;
+  return position;
 }
 
 void StepShape_Block::SetX(const Standard_Real aX)
 {
-	x = aX;
+  x = aX;
 }
 
 Standard_Real StepShape_Block::X() const
 {
-	return x;
+  return x;
 }
 
 void StepShape_Block::SetY(const Standard_Real aY)
 {
-	y = aY;
+  y = aY;
 }
 
 Standard_Real StepShape_Block::Y() const
 {
-	return y;
+  return y;
 }
 
 void StepShape_Block::SetZ(const Standard_Real aZ)
 {
-	z = aZ;
+  z = aZ;
 }
 
 Standard_Real StepShape_Block::Z() const
 {
-	return z;
+  return z;
 }

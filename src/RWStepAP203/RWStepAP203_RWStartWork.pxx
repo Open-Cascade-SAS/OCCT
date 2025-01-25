@@ -28,48 +28,31 @@ class StepAP203_StartWork;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for StartWork
-class RWStepAP203_RWStartWork 
+class RWStepAP203_RWStartWork
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepAP203_RWStartWork();
-  
+
   //! Reads StartWork
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepAP203_StartWork)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepAP203_StartWork)&     ent) const;
+
   //! Writes StartWork
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepAP203_StartWork)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&               SW,
+                                 const Handle(StepAP203_StartWork)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepAP203_StartWork)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepAP203_StartWork)& ent,
+                             Interface_EntityIterator&          iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepAP203_RWStartWork_HeaderFile

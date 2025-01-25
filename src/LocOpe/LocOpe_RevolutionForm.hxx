@@ -27,67 +27,49 @@
 #include <gp_Pnt.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-
 //! Defines a revolution form (using Revol from BRepSweep)
 //! with modifications provided for the RevolutionForm feature.
-class LocOpe_RevolutionForm 
+class LocOpe_RevolutionForm
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT LocOpe_RevolutionForm();
-  
-  Standard_EXPORT LocOpe_RevolutionForm(const TopoDS_Shape& Base, const gp_Ax1& Axe, const Standard_Real Angle);
-  
-  Standard_EXPORT void Perform (const TopoDS_Shape& Base, const gp_Ax1& Axe, const Standard_Real Angle);
-  
+
+  Standard_EXPORT LocOpe_RevolutionForm(const TopoDS_Shape& Base,
+                                        const gp_Ax1&       Axe,
+                                        const Standard_Real Angle);
+
+  Standard_EXPORT void Perform(const TopoDS_Shape& Base,
+                               const gp_Ax1&       Axe,
+                               const Standard_Real Angle);
+
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
-  
+
   Standard_EXPORT const TopoDS_Shape& LastShape() const;
-  
+
   Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
-  Standard_EXPORT const TopTools_ListOfShape& Shapes (const TopoDS_Shape& S) const;
 
-
-
+  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   Standard_EXPORT void IntPerf();
 
-
-  TopoDS_Shape myBase;
-  gp_Vec myVec;
-  gp_Vec myTra;
-  Standard_Real myAngle;
-  gp_Ax1 myAxis;
-  Standard_Real myAngTra;
-  Standard_Boolean myDone;
-  Standard_Boolean myIsTrans;
-  TopoDS_Shape myRes;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
+  TopoDS_Shape                       myBase;
+  gp_Vec                             myVec;
+  gp_Vec                             myTra;
+  Standard_Real                      myAngle;
+  gp_Ax1                             myAxis;
+  Standard_Real                      myAngTra;
+  Standard_Boolean                   myDone;
+  Standard_Boolean                   myIsTrans;
+  TopoDS_Shape                       myRes;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
   TopTools_DataMapOfShapeListOfShape myMap;
-  gp_Pnt myPnt1;
-  gp_Pnt myPnt2;
-
-
+  gp_Pnt                             myPnt1;
+  gp_Pnt                             myPnt2;
 };
-
-
-
-
-
-
 
 #endif // _LocOpe_RevolutionForm_HeaderFile

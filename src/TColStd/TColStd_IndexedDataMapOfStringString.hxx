@@ -17,6 +17,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString> TColStd_IndexedDataMapOfStringString;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>
+  TColStd_IndexedDataMapOfStringString;
 
 #endif // TColStd_IndexedDataMapOfStringString_HeaderFile

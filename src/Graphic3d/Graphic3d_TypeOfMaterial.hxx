@@ -20,7 +20,8 @@
 //! Types of materials specifies if a material can change color.
 enum Graphic3d_TypeOfMaterial
 {
-  Graphic3d_MATERIAL_ASPECT, //!< aspect   material definition with configurable color (like plastic)
+  Graphic3d_MATERIAL_ASPECT, //!< aspect   material definition with configurable color (like
+                             //!< plastic)
   Graphic3d_MATERIAL_PHYSIC  //!< physical material definition with fixed color (like gold)
 };
 

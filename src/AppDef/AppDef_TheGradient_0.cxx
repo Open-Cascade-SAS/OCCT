@@ -25,7 +25,6 @@
 #include <AppDef_ParFunctionOfTheGradient.hxx>
 #include <AppDef_Gradient_BFGSOfTheGradient.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -42,4 +41,3 @@
 #define AppParCurves_Gradient AppDef_TheGradient
 #define AppParCurves_Gradient_hxx <AppDef_TheGradient.hxx>
 #include "../AppParCurves/AppParCurves_Gradient.gxx"
-

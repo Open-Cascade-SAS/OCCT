@@ -13,25 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ShapeAlgo_ToolContainer.hxx>
 #include <ShapeFix_EdgeProjAux.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer, Standard_Transient)
 
 //=======================================================================
-//function : ShapeAlgo_ToolContainer
-//purpose  : 
+// function : ShapeAlgo_ToolContainer
+// purpose  :
 //=======================================================================
-ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer()
-{
-}
+ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer() {}
 
 //=======================================================================
-//function : FixShape
-//purpose  : 
+// function : FixShape
+// purpose  :
 //=======================================================================
 
 Handle(ShapeFix_Shape) ShapeAlgo_ToolContainer::FixShape() const
@@ -40,8 +37,8 @@ Handle(ShapeFix_Shape) ShapeAlgo_ToolContainer::FixShape() const
 }
 
 //=======================================================================
-//function : EdgeProjAux
-//purpose  : 
+// function : EdgeProjAux
+// purpose  :
 //=======================================================================
 
 Handle(ShapeFix_EdgeProjAux) ShapeAlgo_ToolContainer::EdgeProjAux() const

@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(Extrema_HArray1OfPOnCurv2d, Extrema_Array1OfPOnCurv2d)
 
-
 #endif

@@ -1,5 +1,5 @@
 // Created on: 2004-06-29
-// Created by: Eugeny NAPALKOV 
+// Created by: Eugeny NAPALKOV
 // Copyright (c) 2004-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -13,16 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
+// AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
 #include <AppStdL_Application.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AppStdL_Application,TDocStd_Application)
+IMPLEMENT_STANDARD_RTTIEXT(AppStdL_Application, TDocStd_Application)
 
 //=======================================================================
-//function : ResourcesName
-//purpose  : 
+// function : ResourcesName
+// purpose  :
 //=======================================================================
 
 Standard_CString AppStdL_Application::ResourcesName()
@@ -32,12 +32,12 @@ Standard_CString AppStdL_Application::ResourcesName()
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void AppStdL_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void AppStdL_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDocStd_Application)
 }

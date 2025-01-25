@@ -26,8 +26,9 @@ class ExprIntrp_SyntaxError;
 DEFINE_STANDARD_HANDLE(ExprIntrp_SyntaxError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_ExprIntrp_SyntaxError
-  #define ExprIntrp_SyntaxError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw ExprIntrp_SyntaxError(MESSAGE);
+  #define ExprIntrp_SyntaxError_Raise_if(CONDITION, MESSAGE)                                       \
+    if (CONDITION)                                                                                 \
+      throw ExprIntrp_SyntaxError(MESSAGE);
 #else
   #define ExprIntrp_SyntaxError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -19,9 +19,9 @@
 #include <BVH_SweepPlaneBuilder.hxx>
 #include <BVH_SpatialMedianBuilder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BVH_BuilderTransient,  Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BVH_BuilderTransient, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(BVH_TreeBaseTransient, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BVH_ObjectTransient,   Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BVH_ObjectTransient, Standard_Transient)
 
 // Specific instantiations of struct templates to avoid compilation warnings
 

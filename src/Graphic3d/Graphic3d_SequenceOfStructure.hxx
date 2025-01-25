@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Graphic3d_Structure)> Graphic3d_SequenceOfStructure;
 
-
 #endif

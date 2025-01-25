@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ViewControl_MessageDialog.hxx>
 
@@ -28,37 +28,41 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-ViewControl_MessageDialog::ViewControl_MessageDialog (QWidget* theParent, const QString& theInformation,
-                                                  const QString& theQuestion)
-: QDialog (theParent), myDoNotShowItAgain (false), myPreviousAnswer (false), myInformation (theInformation),
- myQuestion (theQuestion)
+ViewControl_MessageDialog::ViewControl_MessageDialog(QWidget*       theParent,
+                                                     const QString& theInformation,
+                                                     const QString& theQuestion)
+    : QDialog(theParent),
+      myDoNotShowItAgain(false),
+      myPreviousAnswer(false),
+      myInformation(theInformation),
+      myQuestion(theQuestion)
 {
-  setWindowTitle ("Information");
+  setWindowTitle("Information");
 
-  QGridLayout* aLayout = new QGridLayout (this);
-  QString anInformation = theInformation;
+  QGridLayout* aLayout       = new QGridLayout(this);
+  QString      anInformation = theInformation;
   if (!theQuestion.isEmpty())
-    anInformation += QString("\n\n%2").arg (myQuestion);
-  myInformationLabel = new QLabel (anInformation, this);
-  myInformationLabel->setWordWrap (true);
-  aLayout->addWidget (myInformationLabel, 0, 0, 1, 3);
+    anInformation += QString("\n\n%2").arg(myQuestion);
+  myInformationLabel = new QLabel(anInformation, this);
+  myInformationLabel->setWordWrap(true);
+  aLayout->addWidget(myInformationLabel, 0, 0, 1, 3);
 
-  myDoNotShowCheckBox = new QCheckBox ("Don't show this dialog again. Do the same next time.", this);
-  connect (myDoNotShowCheckBox, SIGNAL (toggled (bool)), this, SLOT (onDonNotShowToggled (bool) ));
-  aLayout->addWidget (myDoNotShowCheckBox, 1, 0, 1, 3);
+  myDoNotShowCheckBox = new QCheckBox("Don't show this dialog again. Do the same next time.", this);
+  connect(myDoNotShowCheckBox, SIGNAL(toggled(bool)), this, SLOT(onDonNotShowToggled(bool)));
+  aLayout->addWidget(myDoNotShowCheckBox, 1, 0, 1, 3);
 
-  myOkButton = new QPushButton ("Ok", this);
-  myCancelButton = new QPushButton ("Cancel", this);
-  connect (myOkButton, SIGNAL (clicked()), this, SLOT (onOkClicked() ));
-  connect (myCancelButton, SIGNAL (clicked()), this, SLOT (onCancelClicked() ));
-  aLayout->addWidget (myOkButton, 2, 1);
-  aLayout->addWidget (myCancelButton, 2, 2);
+  myOkButton     = new QPushButton("Ok", this);
+  myCancelButton = new QPushButton("Cancel", this);
+  connect(myOkButton, SIGNAL(clicked()), this, SLOT(onOkClicked()));
+  connect(myCancelButton, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
+  aLayout->addWidget(myOkButton, 2, 1);
+  aLayout->addWidget(myCancelButton, 2, 2);
 
-  aLayout->setColumnStretch (0, 1);
+  aLayout->setColumnStretch(0, 1);
 
-  myCancelButton->setDefault (true);
+  myCancelButton->setDefault(true);
 
-  SetInformation (theInformation);
+  SetInformation(theInformation);
 }
 
 // =======================================================================
@@ -71,8 +75,8 @@ void ViewControl_MessageDialog::Start()
   {
     QString anInformation = myInformation;
     if (!myQuestion.isEmpty())
-      anInformation += QString("\n\n%2").arg (myQuestion);
-    myInformationLabel->setText (anInformation);
+      anInformation += QString("\n\n%2").arg(myQuestion);
+    myInformationLabel->setText(anInformation);
     exec();
     return;
   }
@@ -81,9 +85,9 @@ void ViewControl_MessageDialog::Start()
     return;
 
   // tool tip information window
-  QWidget* aWidget = new QWidget (this, Qt::Popup);
-  QVBoxLayout* aLayout = new QVBoxLayout (aWidget);
-  aLayout->addWidget (new QLabel(myInformation, aWidget));
+  QWidget*     aWidget = new QWidget(this, Qt::Popup);
+  QVBoxLayout* aLayout = new QVBoxLayout(aWidget);
+  aLayout->addWidget(new QLabel(myInformation, aWidget));
   aWidget->move(QCursor::pos());
   aWidget->show();
 }
@@ -120,8 +124,8 @@ void ViewControl_MessageDialog::onCancelClicked()
 // =======================================================================
 void ViewControl_MessageDialog::setToolTipInfoMode()
 {
-  //setWindowFlags (Qt::FramelessWindowHint);
-  //myDoNotShowCheckBox->setVisible (false);
-  //myOkButton->setVisible (false);
-  //myCancelButton->setVisible (false);
+  // setWindowFlags (Qt::FramelessWindowHint);
+  // myDoNotShowCheckBox->setVisible (false);
+  // myOkButton->setVisible (false);
+  // myCancelButton->setVisible (false);
 }

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_GenericEmpty.hxx>
@@ -19,21 +18,21 @@
 #include <XmlMDataStd_GenericEmptyDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_GenericEmptyDriver,XmlMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_GenericEmptyDriver, XmlMDF_ADriver)
 
 //=======================================================================
-//function : XmlMDataStd_GenericEmptyDriver
-//purpose  : Constructor
+// function : XmlMDataStd_GenericEmptyDriver
+// purpose  : Constructor
 //=======================================================================
-XmlMDataStd_GenericEmptyDriver::XmlMDataStd_GenericEmptyDriver(const Handle(Message_Messenger)& theMsgDriver)
-: XmlMDF_ADriver (theMsgDriver, NULL)
+XmlMDataStd_GenericEmptyDriver::XmlMDataStd_GenericEmptyDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
 {
-
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
+// function : NewEmpty
+// purpose  :
 //=======================================================================
 Handle(TDF_Attribute) XmlMDataStd_GenericEmptyDriver::NewEmpty() const
 {
@@ -41,8 +40,8 @@ Handle(TDF_Attribute) XmlMDataStd_GenericEmptyDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : SourceType
-//purpose  : 
+// function : SourceType
+// purpose  :
 //=======================================================================
 Handle(Standard_Type) XmlMDataStd_GenericEmptyDriver::SourceType() const
 {
@@ -50,23 +49,22 @@ Handle(Standard_Type) XmlMDataStd_GenericEmptyDriver::SourceType() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : Paste
+// purpose  :
 //=======================================================================
 Standard_Boolean XmlMDataStd_GenericEmptyDriver::Paste(const XmlObjMgt_Persistent&,
-					       const Handle(TDF_Attribute)&,
-					       XmlObjMgt_RRelocationTable& ) const
+                                                       const Handle(TDF_Attribute)&,
+                                                       XmlObjMgt_RRelocationTable&) const
 {
   return Standard_True;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : Paste
+// purpose  :
 //=======================================================================
 void XmlMDataStd_GenericEmptyDriver::Paste(const Handle(TDF_Attribute)&,
-				   XmlObjMgt_Persistent&,
-				   XmlObjMgt_SRelocationTable&  ) const
+                                           XmlObjMgt_Persistent&,
+                                           XmlObjMgt_SRelocationTable&) const
 {
-
 }

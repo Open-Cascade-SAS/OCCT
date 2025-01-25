@@ -14,11 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 25.12.98 pdn renaming methods GetWires and GetEdges to GetClosedWires and GetOpenWires respectively
+// 25.12.98 pdn renaming methods GetWires and GetEdges to GetClosedWires and GetOpenWires
+// respectively
 
 //=======================================================================
-//function : GetClosedWires
-//purpose  : 
+// function : GetClosedWires
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetClosedWires() const
@@ -27,12 +28,11 @@ inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetClosedWires() const
 }
 
 //=======================================================================
-//function : GetOpenWires
-//purpose  : 
+// function : GetOpenWires
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetOpenWires() const
 {
   return myEdges;
 }
-

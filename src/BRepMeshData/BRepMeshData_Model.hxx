@@ -25,56 +25,50 @@
 class BRepMeshData_Model : public IMeshData_Model
 {
 public:
-
   //! Constructor.
   //! Initializes empty model.
-  Standard_EXPORT BRepMeshData_Model (const TopoDS_Shape& theShape);
+  Standard_EXPORT BRepMeshData_Model(const TopoDS_Shape& theShape);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Model ();
+  Standard_EXPORT virtual ~BRepMeshData_Model();
 
   //! Returns maximum size of shape's bounding box.
-  virtual Standard_Real GetMaxSize () const Standard_OVERRIDE
-  {
-    return myMaxSize;
-  }
+  virtual Standard_Real GetMaxSize() const Standard_OVERRIDE { return myMaxSize; }
 
   //! Sets maximum size of shape's bounding box.
-  void SetMaxSize (const Standard_Real theValue)
-  {
-    myMaxSize = theValue;
-  }
+  void SetMaxSize(const Standard_Real theValue) { myMaxSize = theValue; }
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
 
 public: //! @name discrete faces
-
   //! Returns number of faces in discrete model.
-  Standard_EXPORT virtual Standard_Integer FacesNb () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer FacesNb() const Standard_OVERRIDE;
 
   //! Adds new face to shape model.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace (const TopoDS_Face& theFace) Standard_OVERRIDE;
+  Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace)
+    Standard_OVERRIDE;
 
   //! Gets model's face with the given index.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace (const Standard_Integer theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(
+    const Standard_Integer theIndex) const Standard_OVERRIDE;
 
 public: //! @name discrete edges
-
   //! Returns number of edges in discrete model.
-  Standard_EXPORT virtual Standard_Integer EdgesNb () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer EdgesNb() const Standard_OVERRIDE;
 
   //! Adds new edge to shape model.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge (const TopoDS_Edge& theEdge) Standard_OVERRIDE;
+  Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge)
+    Standard_OVERRIDE;
 
   //! Gets model's edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge (const Standard_Integer theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(
+    const Standard_Integer theIndex) const Standard_OVERRIDE;
 
 private:
-
-  Standard_Real                     myMaxSize;
-  Handle (NCollection_IncAllocator) myAllocator;
-  IMeshData::VectorOfIFaceHandles   myDFaces;
-  IMeshData::VectorOfIEdgeHandles   myDEdges;
+  Standard_Real                    myMaxSize;
+  Handle(NCollection_IncAllocator) myAllocator;
+  IMeshData::VectorOfIFaceHandles  myDFaces;
+  IMeshData::VectorOfIEdgeHandles  myDEdges;
 };
 
 #endif

@@ -21,42 +21,43 @@
 #include <StepFEA_ElementRepresentation.hxx>
 
 //=======================================================================
-//function : StepFEA_ElementOrElementGroup
-//purpose  : 
+// function : StepFEA_ElementOrElementGroup
+// purpose  :
 //=======================================================================
-StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup ()
-{
-}
+StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup() {}
 
 //=======================================================================
-//function : CaseNum
-//purpose  : 
+// function : CaseNum
+// purpose  :
 //=======================================================================
 
-Standard_Integer StepFEA_ElementOrElementGroup::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepFEA_ElementOrElementGroup::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepFEA_ElementRepresentation))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepFEA_ElementGroup))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepFEA_ElementRepresentation)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepFEA_ElementGroup)))
+    return 2;
   return 0;
 }
 
 //=======================================================================
-//function : ElementRepresentation
-//purpose  : 
+// function : ElementRepresentation
+// purpose  :
 //=======================================================================
 
-Handle(StepFEA_ElementRepresentation) StepFEA_ElementOrElementGroup::ElementRepresentation () const
+Handle(StepFEA_ElementRepresentation) StepFEA_ElementOrElementGroup::ElementRepresentation() const
 {
   return Handle(StepFEA_ElementRepresentation)::DownCast(Value());
 }
 
 //=======================================================================
-//function : ElementGroup
-//purpose  : 
+// function : ElementGroup
+// purpose  :
 //=======================================================================
 
-Handle(StepFEA_ElementGroup) StepFEA_ElementOrElementGroup::ElementGroup () const
+Handle(StepFEA_ElementGroup) StepFEA_ElementOrElementGroup::ElementGroup() const
 {
   return Handle(StepFEA_ElementGroup)::DownCast(Value());
 }

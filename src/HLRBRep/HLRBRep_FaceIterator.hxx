@@ -27,78 +27,56 @@ class HLRAlgo_WiresBlock;
 class HLRAlgo_EdgesBlock;
 class HLRBRep_FaceData;
 
-
-
-class HLRBRep_FaceIterator 
+class HLRBRep_FaceIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRBRep_FaceIterator();
-  
+
   //! Begin an exploration of the edges of the face <fd>
-  Standard_EXPORT void InitEdge (HLRBRep_FaceData& fd);
-  
-    Standard_Boolean MoreEdge() const;
-  
+  Standard_EXPORT void InitEdge(HLRBRep_FaceData& fd);
+
+  Standard_Boolean MoreEdge() const;
+
   Standard_EXPORT void NextEdge();
-  
+
   //! Returns True if the current edge is the first of a
   //! wire.
-    Standard_Boolean BeginningOfWire() const;
-  
+  Standard_Boolean BeginningOfWire() const;
+
   //! Returns True if the current edge is the  last of a
   //! wire.
-    Standard_Boolean EndOfWire() const;
-  
+  Standard_Boolean EndOfWire() const;
+
   //! Skip the current wire in the exploration.
-    void SkipWire();
-  
+  void SkipWire();
+
   //! Returns the edges of the current wire.
-    Handle(HLRAlgo_EdgesBlock) Wire() const;
-  
-    Standard_Integer Edge() const;
-  
-    TopAbs_Orientation Orientation() const;
-  
-    Standard_Boolean OutLine() const;
-  
-    Standard_Boolean Internal() const;
-  
-    Standard_Boolean Double() const;
-  
-    Standard_Boolean IsoLine() const;
+  Handle(HLRAlgo_EdgesBlock) Wire() const;
 
+  Standard_Integer Edge() const;
 
+  TopAbs_Orientation Orientation() const;
 
+  Standard_Boolean OutLine() const;
+
+  Standard_Boolean Internal() const;
+
+  Standard_Boolean Double() const;
+
+  Standard_Boolean IsoLine() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Integer iWire;
-  Standard_Integer nbWires;
-  Standard_Integer iEdge;
-  Standard_Integer nbEdges;
+  Standard_Integer           iWire;
+  Standard_Integer           nbWires;
+  Standard_Integer           iEdge;
+  Standard_Integer           nbEdges;
   Handle(HLRAlgo_WiresBlock) myWires;
   Handle(HLRAlgo_EdgesBlock) myEdges;
-
-
 };
 
-
 #include <HLRBRep_FaceIterator.lxx>
-
-
-
-
 
 #endif // _HLRBRep_FaceIterator_HeaderFile

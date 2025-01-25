@@ -23,44 +23,25 @@
 
 #include <gp_Vec.hxx>
 
-
 //! A structure containing indexes of two normals and its cross product
-class GeomPlate_Aij 
+class GeomPlate_Aij
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomPlate_Aij();
-  
-  Standard_EXPORT GeomPlate_Aij(const Standard_Integer anInd1, const Standard_Integer anInd2, const gp_Vec& aVec);
 
+  Standard_EXPORT GeomPlate_Aij(const Standard_Integer anInd1,
+                                const Standard_Integer anInd2,
+                                const gp_Vec&          aVec);
 
-friend class GeomPlate_BuildAveragePlane;
-
+  friend class GeomPlate_BuildAveragePlane;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Integer Ind1;
   Standard_Integer Ind2;
-  gp_Vec Vec;
-
-
+  gp_Vec           Vec;
 };
-
-
-
-
-
-
 
 #endif // _GeomPlate_Aij_HeaderFile

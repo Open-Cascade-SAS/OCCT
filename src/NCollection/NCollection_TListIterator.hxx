@@ -20,41 +20,53 @@
 #include <NCollection_TListNode.hxx>
 
 /**
- * Purpose:     This Iterator class iterates on BaseList of TListNode and is 
+ * Purpose:     This Iterator class iterates on BaseList of TListNode and is
  *              instantiated in List/Set/Queue/Stack
  * Remark:      TListIterator is internal class
  */
-template <class TheItemType> class NCollection_TListIterator 
-  : public NCollection_BaseList::Iterator
+template <class TheItemType>
+class NCollection_TListIterator : public NCollection_BaseList::Iterator
 {
- public:
+public:
   //! Empty constructor - for later Init
-  NCollection_TListIterator  (void) :
-    NCollection_BaseList::Iterator () {}
+  NCollection_TListIterator(void)
+      : NCollection_BaseList::Iterator()
+  {
+  }
+
   //! Constructor with initialisation
-  NCollection_TListIterator  (const NCollection_BaseList& theList) :
-    NCollection_BaseList::Iterator (theList) {}
+  NCollection_TListIterator(const NCollection_BaseList& theList)
+      : NCollection_BaseList::Iterator(theList)
+  {
+  }
+
   //! Check end
-  Standard_Boolean More (void) const
-  { return (myCurrent!=NULL); }
+  Standard_Boolean More(void) const { return (myCurrent != NULL); }
+
   //! Make step
-  void Next (void)
+  void Next(void)
   {
     myPrevious = myCurrent;
-    myCurrent = myCurrent->Next();
+    myCurrent  = myCurrent->Next();
   }
 
   //! Constant Value access
-  const TheItemType& Value (void) const
-  { return ((const NCollection_TListNode<TheItemType>*) myCurrent)->Value(); }
+  const TheItemType& Value(void) const
+  {
+    return ((const NCollection_TListNode<TheItemType>*)myCurrent)->Value();
+  }
 
   //! Non-const Value access
-  TheItemType& Value (void)
-  { return ((NCollection_TListNode<TheItemType>*) myCurrent)->ChangeValue(); }
+  TheItemType& Value(void)
+  {
+    return ((NCollection_TListNode<TheItemType>*)myCurrent)->ChangeValue();
+  }
 
   //! Non-const Value access
-  TheItemType& ChangeValue (void) const
-  { return ((NCollection_TListNode<TheItemType> *)myCurrent)->ChangeValue(); }
+  TheItemType& ChangeValue(void) const
+  {
+    return ((NCollection_TListNode<TheItemType>*)myCurrent)->ChangeValue();
+  }
 };
 
 #endif

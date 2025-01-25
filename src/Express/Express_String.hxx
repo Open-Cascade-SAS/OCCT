@@ -24,7 +24,6 @@ class Express_String : public Express_PredefinedType
 {
 
 public:
-
   //! Empty constructor
   Standard_EXPORT Express_String();
 
@@ -37,9 +36,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_String, Express_PredefinedType)
 
 protected:
-
 private:
-
 };
 
 #endif // _Express_String_HeaderFile

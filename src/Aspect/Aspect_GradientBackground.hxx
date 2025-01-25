@@ -20,10 +20,9 @@
 #include <Aspect_Background.hxx>
 
 //! This class allows the definition of a window gradient background.
-class Aspect_GradientBackground  : public Aspect_Background
+class Aspect_GradientBackground : public Aspect_Background
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a window gradient background.
@@ -32,29 +31,29 @@ public:
   Standard_EXPORT Aspect_GradientBackground();
 
   //! Creates a window gradient background with two colours.
-  Standard_EXPORT Aspect_GradientBackground (const Quantity_Color& theColor1,
-                                             const Quantity_Color& theColor2,
-                                             const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
+  Standard_EXPORT Aspect_GradientBackground(
+    const Quantity_Color&           theColor1,
+    const Quantity_Color&           theColor2,
+    const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
 
   //! Modifies the colours of the window gradient background.
-  Standard_EXPORT void SetColors (const Quantity_Color& theColor1,
-                                  const Quantity_Color& theColor2,
-                                  const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
+  Standard_EXPORT void SetColors(
+    const Quantity_Color&           theColor1,
+    const Quantity_Color&           theColor2,
+    const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
 
   //! Returns colours of the window gradient background.
-  Standard_EXPORT void Colors (Quantity_Color& theColor1, Quantity_Color& theColor2) const;
+  Standard_EXPORT void Colors(Quantity_Color& theColor1, Quantity_Color& theColor2) const;
 
   //! Returns the current gradient background fill mode.
   Standard_EXPORT Aspect_GradientFillMethod BgGradientFillMethod() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-
-  Quantity_Color MyColor2;
+  Quantity_Color            MyColor2;
   Aspect_GradientFillMethod MyGradientMethod;
-
 };
 
 #endif // _Aspect_GradientBackground_HeaderFile

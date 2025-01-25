@@ -19,12 +19,13 @@
 #include <Geom_Plane.hxx>
 
 //=======================================================================
-//function : PlaneXOY
-//purpose  : 
+// function : PlaneXOY
+// purpose  :
 //=======================================================================
 Handle(Geom_Plane) ShapeBuild::PlaneXOY()
 {
   static Handle(Geom_Plane) xoy;
-  if (xoy.IsNull()) xoy = new Geom_Plane (0,0,1,0);
+  if (xoy.IsNull())
+    xoy = new Geom_Plane(0, 0, 1, 0);
   return xoy;
 }

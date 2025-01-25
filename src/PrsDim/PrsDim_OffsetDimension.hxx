@@ -31,45 +31,50 @@ class PrsDim_OffsetDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_OffsetDimension, PrsDim_Relation)
 public:
-
   //! Constructs the offset display object defined by the
   //! first shape aFShape, the second shape aSShape, the
   //! dimension aVal, and the text aText.
-  Standard_EXPORT PrsDim_OffsetDimension(const TopoDS_Shape& FistShape, const TopoDS_Shape& SecondShape, const Standard_Real aVal, const TCollection_ExtendedString& aText);
+  Standard_EXPORT PrsDim_OffsetDimension(const TopoDS_Shape&               FistShape,
+                                         const TopoDS_Shape&               SecondShape,
+                                         const Standard_Real               aVal,
+                                         const TCollection_ExtendedString& aText);
 
   //! Indicates that the dimension we are concerned with is an offset.
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE { return PrsDim_KOD_OFFSET; }
+  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  {
+    return PrsDim_KOD_OFFSET;
+  }
 
   //! Returns true if the offset datum is movable.
   virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
   //! Sets a transformation aTrsf for presentation and
   //! selection to a relative position.
-  void SetRelativePos (const gp_Trsf& aTrsf) { myRelativePos = aTrsf; }
+  void SetRelativePos(const gp_Trsf& aTrsf) { myRelativePos = aTrsf; }
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT void ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)& aPresentation,
+                                             const gp_Trsf&                    aTrsf);
 
-  Standard_EXPORT void ComputeTwoFacesOffset (const Handle(Prs3d_Presentation)& aPresentation, const gp_Trsf& aTrsf);
+  Standard_EXPORT void ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)& aPresentation,
+                                            const gp_Trsf&                    aTrsf);
 
-  Standard_EXPORT void ComputeTwoAxesOffset (const Handle(Prs3d_Presentation)& aPresentation, const gp_Trsf& aTrsf);
-
-  Standard_EXPORT void ComputeAxeFaceOffset (const Handle(Prs3d_Presentation)& aPresentation, const gp_Trsf& aTrsf);
+  Standard_EXPORT void ComputeAxeFaceOffset(const Handle(Prs3d_Presentation)& aPresentation,
+                                            const gp_Trsf&                    aTrsf);
 
 private:
-
-  gp_Pnt myFAttach;
-  gp_Pnt mySAttach;
-  gp_Dir myDirAttach;
-  gp_Dir myDirAttach2;
+  gp_Pnt  myFAttach;
+  gp_Pnt  mySAttach;
+  gp_Dir  myDirAttach;
+  gp_Dir  myDirAttach2;
   gp_Trsf myRelativePos;
-
 };
 
 #endif // _PrsDim_OffsetDimension_HeaderFile

@@ -28,8 +28,7 @@ class Prs3d_BasicAspect : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Prs3d_BasicAspect, Standard_Transient)
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const = 0;
-
+  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const = 0;
 };
 
 DEFINE_STANDARD_HANDLE(Prs3d_BasicAspect, Standard_Transient)

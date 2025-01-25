@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(AppParCurves_HArray1OfMultiCurve, AppParCurves_Array1OfMultiCurve)
 
-
 #endif

@@ -25,7 +25,6 @@
 #include <Standard_OStream.hxx>
 #include <TDataStd_RealEnum.hxx>
 
-
 //! This  package  defines   standard attributes for
 //! modelling.
 //! These allow you to create and modify labels
@@ -44,22 +43,19 @@
 //! Note
 //! For information on the relations between this
 //! component of OCAF and the others, refer to the OCAF User's Guide.
-class TDataStd 
+class TDataStd
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package. CAUTION: <anIDList> is NOT
   //! cleared before use.
-  Standard_EXPORT static void IDList (TDF_IDList& anIDList);
-  
+  Standard_EXPORT static void IDList(TDF_IDList& anIDList);
+
   //! Prints the name of the real dimension <DIM> as a String on
   //! the Stream <S> and returns <S>.
-  Standard_EXPORT static Standard_OStream& Print (const TDataStd_RealEnum DIM, Standard_OStream& S);
-
+  Standard_EXPORT static Standard_OStream& Print(const TDataStd_RealEnum DIM, Standard_OStream& S);
 };
 
 #endif // _TDataStd_HeaderFile

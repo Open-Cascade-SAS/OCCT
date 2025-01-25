@@ -22,8 +22,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,Bnd_Box2d,TopTools_ShapeMapHasher> ShapeFix_DataMapOfShapeBox2d;
-typedef NCollection_DataMap<TopoDS_Shape,Bnd_Box2d,TopTools_ShapeMapHasher>::Iterator ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d;
-
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>
+  ShapeFix_DataMapOfShapeBox2d;
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>::Iterator
+  ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d;
 
 #endif

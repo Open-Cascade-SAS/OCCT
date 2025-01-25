@@ -29,7 +29,6 @@ class TopoDS_Shape;
 class HLRBRep_Data;
 class HLRBRep_EdgeData;
 
-
 //! A framework for filtering the computation
 //! results of an HLRBRep_Algo algorithm by extraction.
 //! From the results calculated by the algorithm on
@@ -58,106 +57,102 @@ class HLRBRep_EdgeData;
 //! new computation of the algorithm, but only
 //! reads its internal results.
 //! The methods of this shape are almost identic to those of the HLRBrep_PolyHLRToShape class.
-class HLRBRep_HLRToShape 
+class HLRBRep_HLRToShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a framework for filtering the
   //! results of the HLRBRep_Algo algorithm, A.
   //! Use the extraction filters to obtain the results you want for A.
   Standard_EXPORT HLRBRep_HLRToShape(const Handle(HLRBRep_Algo)& A);
-  
-    TopoDS_Shape VCompound();
-  
-    TopoDS_Shape VCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape Rg1LineVCompound();
-  
-    TopoDS_Shape Rg1LineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape RgNLineVCompound();
-  
-    TopoDS_Shape RgNLineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape OutLineVCompound();
-  
-    TopoDS_Shape OutLineVCompound3d();
-  
-    TopoDS_Shape OutLineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape IsoLineVCompound();
-  
-    TopoDS_Shape IsoLineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape HCompound();
-  
-    TopoDS_Shape HCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape Rg1LineHCompound();
-  
-    TopoDS_Shape Rg1LineHCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape RgNLineHCompound();
-  
-    TopoDS_Shape RgNLineHCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape OutLineHCompound();
-  
-    TopoDS_Shape OutLineHCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape IsoLineHCompound();
-  
-    TopoDS_Shape IsoLineHCompound (const TopoDS_Shape& S);
-  
-    //! Returns compound of resulting edges
-    //! of required type and visibility,
-    //! taking into account the kind of space
-    //! (2d or 3d)
-    TopoDS_Shape CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
-                                 const Standard_Boolean            visible,
-                                 const Standard_Boolean            In3d);
 
-    //! For specified shape 
-    //! returns compound of resulting edges
-    //! of required type and visibility,
-    //! taking into account the kind of space
-    //! (2d or 3d)
-    TopoDS_Shape CompoundOfEdges(const TopoDS_Shape& S,
-                                 const HLRBRep_TypeOfResultingEdge type,
-                                 const Standard_Boolean            visible,
-                                 const Standard_Boolean            In3d);
+  TopoDS_Shape VCompound();
 
+  TopoDS_Shape VCompound(const TopoDS_Shape& S);
 
+  TopoDS_Shape Rg1LineVCompound();
+
+  TopoDS_Shape Rg1LineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape RgNLineVCompound();
+
+  TopoDS_Shape RgNLineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape OutLineVCompound();
+
+  TopoDS_Shape OutLineVCompound3d();
+
+  TopoDS_Shape OutLineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape IsoLineVCompound();
+
+  TopoDS_Shape IsoLineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape HCompound();
+
+  TopoDS_Shape HCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape Rg1LineHCompound();
+
+  TopoDS_Shape Rg1LineHCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape RgNLineHCompound();
+
+  TopoDS_Shape RgNLineHCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape OutLineHCompound();
+
+  TopoDS_Shape OutLineHCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape IsoLineHCompound();
+
+  TopoDS_Shape IsoLineHCompound(const TopoDS_Shape& S);
+
+  //! Returns compound of resulting edges
+  //! of required type and visibility,
+  //! taking into account the kind of space
+  //! (2d or 3d)
+  TopoDS_Shape CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
+                               const Standard_Boolean            visible,
+                               const Standard_Boolean            In3d);
+
+  //! For specified shape
+  //! returns compound of resulting edges
+  //! of required type and visibility,
+  //! taking into account the kind of space
+  //! (2d or 3d)
+  TopoDS_Shape CompoundOfEdges(const TopoDS_Shape&               S,
+                               const HLRBRep_TypeOfResultingEdge type,
+                               const Standard_Boolean            visible,
+                               const Standard_Boolean            In3d);
 
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT TopoDS_Shape InternalCompound(const Standard_Integer typ,
+                                                const Standard_Boolean visible,
+                                                const TopoDS_Shape&    S,
+                                                const Standard_Boolean In3d = Standard_False);
 
-  
-  Standard_EXPORT TopoDS_Shape InternalCompound (const Standard_Integer typ, const Standard_Boolean visible, const TopoDS_Shape& S, const Standard_Boolean In3d = Standard_False);
-  
-  Standard_EXPORT void DrawFace (const Standard_Boolean visible, const Standard_Integer typ, const Standard_Integer iface, Handle(HLRBRep_Data)& DS, TopoDS_Shape& Result, Standard_Boolean& added, const Standard_Boolean In3d = Standard_False) const;
-  
-  Standard_EXPORT void DrawEdge (const Standard_Boolean visible, const Standard_Boolean inFace, const Standard_Integer typ, HLRBRep_EdgeData& ed, TopoDS_Shape& Result, Standard_Boolean& added, const Standard_Boolean In3d = Standard_False) const;
+  Standard_EXPORT void DrawFace(const Standard_Boolean visible,
+                                const Standard_Integer typ,
+                                const Standard_Integer iface,
+                                Handle(HLRBRep_Data)&  DS,
+                                TopoDS_Shape&          Result,
+                                Standard_Boolean&      added,
+                                const Standard_Boolean In3d = Standard_False) const;
 
+  Standard_EXPORT void DrawEdge(const Standard_Boolean visible,
+                                const Standard_Boolean inFace,
+                                const Standard_Integer typ,
+                                HLRBRep_EdgeData&      ed,
+                                TopoDS_Shape&          Result,
+                                Standard_Boolean&      added,
+                                const Standard_Boolean In3d = Standard_False) const;
 
   Handle(HLRBRep_Algo) myAlgo;
-
-
 };
 
-
 #include <HLRBRep_HLRToShape.lxx>
-
-
-
-
 
 #endif // _HLRBRep_HLRToShape_HeaderFile

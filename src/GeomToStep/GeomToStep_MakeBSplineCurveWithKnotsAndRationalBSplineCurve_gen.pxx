@@ -15,77 +15,81 @@
 // commercial license or contractual agreement.
 
 Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) BSWK;
-  Standard_Integer Deg, N, i, Nknots, itampon;
-  Standard_Real rtampon;
-  Handle(StepGeom_CartesianPoint) Pt = new StepGeom_CartesianPoint; 
-  Handle(StepGeom_HArray1OfCartesianPoint) Listpoints;
-  StepGeom_BSplineCurveForm Form;
-  StepData_Logical Fermeture, Selfinter;
-  Handle(TColStd_HArray1OfInteger) Mult;
-  Handle(TColStd_HArray1OfReal) ListKnots, ListWeights;
-  GeomAbs_BSplKnotDistribution Distribution;
-  StepGeom_KnotType KnotSpec;
+Standard_Integer                                              Deg, N, i, Nknots, itampon;
+Standard_Real                                                 rtampon;
+Handle(StepGeom_CartesianPoint)                               Pt = new StepGeom_CartesianPoint;
+Handle(StepGeom_HArray1OfCartesianPoint)                      Listpoints;
+StepGeom_BSplineCurveForm                                     Form;
+StepData_Logical                                              Fermeture, Selfinter;
+Handle(TColStd_HArray1OfInteger)                              Mult;
+Handle(TColStd_HArray1OfReal)                                 ListKnots, ListWeights;
+GeomAbs_BSplKnotDistribution                                  Distribution;
+StepGeom_KnotType                                             KnotSpec;
 
-  Deg = BS->Degree();
+Deg = BS->Degree();
 
-  N   = BS->NbPoles();
-  Array1OfPnt_gen P(1,N);
-  BS->Poles(P);
-  Listpoints = new StepGeom_HArray1OfCartesianPoint(1,N);
-  for ( i=P.Lower(); i<=P.Upper(); i++) { 
-    GeomToStep_MakeCartesianPoint MkPoint(P.Value(i), theLocalFactors.LengthFactor());
-    Pt = MkPoint.Value();
-    Listpoints->SetValue(i, Pt);
-  }
+N = BS->NbPoles();
+Array1OfPnt_gen P(1, N);
+BS->Poles(P);
+Listpoints = new StepGeom_HArray1OfCartesianPoint(1, N);
+for (i = P.Lower(); i <= P.Upper(); i++)
+{
+  GeomToStep_MakeCartesianPoint MkPoint(P.Value(i), theLocalFactors.LengthFactor());
+  Pt = MkPoint.Value();
+  Listpoints->SetValue(i, Pt);
+}
 
-  Form = StepGeom_bscfUnspecified;
+Form = StepGeom_bscfUnspecified;
 
-  if (BS->IsClosed())
-    Fermeture = StepData_LTrue;
-  else
-   Fermeture = StepData_LFalse;
+if (BS->IsClosed())
+  Fermeture = StepData_LTrue;
+else
+  Fermeture = StepData_LFalse;
 
-  Selfinter = StepData_LFalse;
+Selfinter = StepData_LFalse;
 
-  Nknots = BS->NbKnots();
-  TColStd_Array1OfInteger M(1,Nknots);
-  BS->Multiplicities(M);
-  Mult = new TColStd_HArray1OfInteger(1,Nknots);
-  for ( i=M.Lower(); i<=M.Upper(); i++)  { 
-    itampon = M.Value(i);
-    Mult->SetValue(i, itampon);
-  }
+Nknots = BS->NbKnots();
+TColStd_Array1OfInteger M(1, Nknots);
+BS->Multiplicities(M);
+Mult = new TColStd_HArray1OfInteger(1, Nknots);
+for (i = M.Lower(); i <= M.Upper(); i++)
+{
+  itampon = M.Value(i);
+  Mult->SetValue(i, itampon);
+}
 
-  TColStd_Array1OfReal K(1,Nknots);
-  BS->Knots(K);
-  ListKnots = new TColStd_HArray1OfReal(1,Nknots);
-  for ( i=K.Lower(); i<=K.Upper(); i++) { 
-    rtampon = K.Value(i);
-    ListKnots->SetValue(i, rtampon);
-  }
+TColStd_Array1OfReal K(1, Nknots);
+BS->Knots(K);
+ListKnots = new TColStd_HArray1OfReal(1, Nknots);
+for (i = K.Lower(); i <= K.Upper(); i++)
+{
+  rtampon = K.Value(i);
+  ListKnots->SetValue(i, rtampon);
+}
 
-  Distribution = BS->KnotDistribution();
-  if ( Distribution == GeomAbs_NonUniform )
-    KnotSpec = StepGeom_ktUnspecified;
-  else if ( Distribution == GeomAbs_Uniform )
-    KnotSpec = StepGeom_ktUniformKnots;
-  else if ( Distribution == GeomAbs_QuasiUniform )
-    KnotSpec = StepGeom_ktQuasiUniformKnots;
-  else 
-    KnotSpec = StepGeom_ktPiecewiseBezierKnots;
-  
-  TColStd_Array1OfReal W(1,N);
-  BS->Weights(W);
-  ListWeights = new TColStd_HArray1OfReal(1,N);
-  for ( i=W.Lower(); i<=W.Upper(); i++) { 
-    rtampon = W.Value(i);
-    ListWeights->SetValue(i, rtampon);
-  }
+Distribution = BS->KnotDistribution();
+if (Distribution == GeomAbs_NonUniform)
+  KnotSpec = StepGeom_ktUnspecified;
+else if (Distribution == GeomAbs_Uniform)
+  KnotSpec = StepGeom_ktUniformKnots;
+else if (Distribution == GeomAbs_QuasiUniform)
+  KnotSpec = StepGeom_ktQuasiUniformKnots;
+else
+  KnotSpec = StepGeom_ktPiecewiseBezierKnots;
 
-  BSWK = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve; 
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  BSWK->Init(name, Deg, Listpoints, Form, Fermeture, Selfinter, Mult, 
-	     ListKnots, KnotSpec, ListWeights );
+TColStd_Array1OfReal W(1, N);
+BS->Weights(W);
+ListWeights = new TColStd_HArray1OfReal(1, N);
+for (i = W.Lower(); i <= W.Upper(); i++)
+{
+  rtampon = W.Value(i);
+  ListWeights->SetValue(i, rtampon);
+}
 
-  theBSplineCurveWithKnotsAndRationalBSplineCurve = BSWK;
-  done = Standard_True;
+BSWK                                  = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
+Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+BSWK
+  ->Init(name, Deg, Listpoints, Form, Fermeture, Selfinter, Mult, ListKnots, KnotSpec, ListWeights);
+
+theBSplineCurveWithKnotsAndRationalBSplineCurve = BSWK;
+done                                            = Standard_True;

@@ -42,86 +42,86 @@ class MeshTest_CheckTopology
 public:
   //! constructor
   MeshTest_CheckTopology(const TopoDS_Shape& theShape)
-    : myShape(theShape) {}
+      : myShape(theShape)
+  {
+  }
 
   //! performs checking
   Standard_EXPORT void Perform(Draw_Interpretor& di);
 
   //! returns the number of faces with free links
-  Standard_Integer NbFacesWithFL() const
-  { return myMapFaceLinks.Extent(); }
+  Standard_Integer NbFacesWithFL() const { return myMapFaceLinks.Extent(); }
 
   //! returns the number (in the shape) of a face with free links
   //! with the given index
   Standard_Integer GetFaceNumWithFL(const Standard_Integer theIndex) const
-  { return myMapFaceLinks.FindKey(theIndex); }
+  {
+    return myMapFaceLinks.FindKey(theIndex);
+  }
 
   //! returns the number free links on a face with the given index
   Standard_Integer NbFreeLinks(const Standard_Integer theIndex) const
-  { return myMapFaceLinks(theIndex)->Length() / 2; }
+  {
+    return myMapFaceLinks(theIndex)->Length() / 2;
+  }
 
   //! gets the numbers of nodes of a free link with the given index
   //! in the face with the given index
   Standard_EXPORT void GetFreeLink(const Standard_Integer theFaceIndex,
-				   const Standard_Integer theLinkIndex,
-				   Standard_Integer& theNode1,
-				   Standard_Integer& theNode2) const;
+                                   const Standard_Integer theLinkIndex,
+                                   Standard_Integer&      theNode1,
+                                   Standard_Integer&      theNode2) const;
 
   //! returns the number of cross face errors
-  Standard_Integer NbCrossFaceErrors() const
-  { return myErrorsVal.Length(); }
+  Standard_Integer NbCrossFaceErrors() const { return myErrorsVal.Length(); }
 
   //! gets the attributes of a cross face error with the given index
   Standard_EXPORT void GetCrossFaceError(const Standard_Integer theIndex,
-					 Standard_Integer& theFace1,
-					 Standard_Integer& theNode1,
-					 Standard_Integer& theFace2,
-					 Standard_Integer& theNode2,
-					 Standard_Real&    theValue) const;
+                                         Standard_Integer&      theFace1,
+                                         Standard_Integer&      theNode1,
+                                         Standard_Integer&      theFace2,
+                                         Standard_Integer&      theNode2,
+                                         Standard_Real&         theValue) const;
 
   //! returns the number of async edges
-  Standard_Integer NbAsyncEdges() const
-  { return myAsyncEdges.Length(); }
+  Standard_Integer NbAsyncEdges() const { return myAsyncEdges.Length(); }
 
   //! returns the number (in the shape) of an async edge with the given index
   Standard_Integer GetAsyncEdgeNum(const Standard_Integer theIndex) const
-  { return myAsyncEdges(theIndex); }
+  {
+    return myAsyncEdges(theIndex);
+  }
 
   //! returns the number of free nodes
-  Standard_Integer NbFreeNodes() const
-  { return myFreeNodeFaces.Length(); }
+  Standard_Integer NbFreeNodes() const { return myFreeNodeFaces.Length(); }
 
   //! returns the number of face containing the Index-th detected free node,
   //! and number of this node in the triangulation of that face
-  void GetFreeNodeNum (const Standard_Integer theIndex, 
-                       Standard_Integer& theFaceNum, 
-		       Standard_Integer& theNodeNum) const
-  { 
+  void GetFreeNodeNum(const Standard_Integer theIndex,
+                      Standard_Integer&      theFaceNum,
+                      Standard_Integer&      theNodeNum) const
+  {
     theFaceNum = myFreeNodeFaces(theIndex);
     theNodeNum = myFreeNodeNums(theIndex);
   }
 
   //! Returns number of triangles with null area
-  Standard_Integer NbSmallTriangles() const
-  {
-    return mySmallTrianglesFaces.Length();
-  }
+  Standard_Integer NbSmallTriangles() const { return mySmallTrianglesFaces.Length(); }
 
-  //! returns the number of face containing the Index-th detected 
+  //! returns the number of face containing the Index-th detected
   //! small triangle and number of the problematic triangle in
   //! this face.
   void GetSmallTriangle(const Standard_Integer theIndex,
-                        Standard_Integer& theFaceNum,
-                        Standard_Integer& theNodeNum) const
+                        Standard_Integer&      theFaceNum,
+                        Standard_Integer&      theNodeNum) const
   {
     theFaceNum = mySmallTrianglesFaces(theIndex);
     theNodeNum = mySmallTrianglesTriangles(theIndex);
   }
 
 private:
-  TopoDS_Shape myShape;
-  NCollection_IndexedDataMap<Standard_Integer,Handle(TColStd_HSequenceOfInteger)>
-               myMapFaceLinks;
+  TopoDS_Shape                                                                     myShape;
+  NCollection_IndexedDataMap<Standard_Integer, Handle(TColStd_HSequenceOfInteger)> myMapFaceLinks;
 
   TColStd_SequenceOfInteger myErrors;
   TColStd_SequenceOfReal    myErrorsVal;
@@ -131,7 +131,6 @@ private:
   TColStd_SequenceOfInteger myFreeNodeNums;
   TColStd_SequenceOfInteger mySmallTrianglesFaces;
   TColStd_SequenceOfInteger mySmallTrianglesTriangles;
-
 };
 
 #endif

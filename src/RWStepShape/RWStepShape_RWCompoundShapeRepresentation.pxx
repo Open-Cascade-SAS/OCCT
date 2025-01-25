@@ -27,48 +27,31 @@ class StepShape_CompoundShapeRepresentation;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for CompoundShapeRepresentation
-class RWStepShape_RWCompoundShapeRepresentation 
+class RWStepShape_RWCompoundShapeRepresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepShape_RWCompoundShapeRepresentation();
-  
+
   //! Reads CompoundShapeRepresentation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepShape_CompoundShapeRepresentation)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&               data,
+                                const Standard_Integer                               num,
+                                Handle(Interface_Check)&                             ach,
+                                const Handle(StepShape_CompoundShapeRepresentation)& ent) const;
+
   //! Writes CompoundShapeRepresentation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepShape_CompoundShapeRepresentation)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 SW,
+                                 const Handle(StepShape_CompoundShapeRepresentation)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepShape_CompoundShapeRepresentation)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepShape_CompoundShapeRepresentation)& ent,
+                             Interface_EntityIterator&                            iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepShape_RWCompoundShapeRepresentation_HeaderFile

@@ -15,29 +15,27 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeat_MakeRevol
-//purpose  : 
+// function : BRepFeat_MakeRevol
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeRevol::BRepFeat_MakeRevol ()
-: myStatusError(BRepFeat_OK)
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol()
+    : myStatusError(BRepFeat_OK)
 {
 }
 
-
 //=======================================================================
-//function : BRepFeat_MakeRevol
-//purpose  : 
+// function : BRepFeat_MakeRevol
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeRevol::BRepFeat_MakeRevol (const TopoDS_Shape& Sbase,
-					       const TopoDS_Shape& Pbase,
-					       const TopoDS_Face& Skface,
-					       const gp_Ax1& Axis,
-					       const Standard_Integer Fuse,
-					       const Standard_Boolean Modify)
-					       
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol(const TopoDS_Shape&    Sbase,
+                                              const TopoDS_Shape&    Pbase,
+                                              const TopoDS_Face&     Skface,
+                                              const gp_Ax1&          Axis,
+                                              const Standard_Integer Fuse,
+                                              const Standard_Boolean Modify)
+
 {
-  Init(Sbase,Pbase,Skface,Axis,Fuse,Modify);
+  Init(Sbase, Pbase, Skface, Axis, Fuse, Modify);
 }
-

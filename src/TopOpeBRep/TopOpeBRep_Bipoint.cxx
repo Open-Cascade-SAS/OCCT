@@ -14,18 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRep_Bipoint.hxx>
 
-TopOpeBRep_Bipoint::TopOpeBRep_Bipoint():myI1(0),myI2(0){}
-TopOpeBRep_Bipoint::TopOpeBRep_Bipoint
-(const Standard_Integer I1,const Standard_Integer I2):myI1(I1),myI2(I2){}
-Standard_Integer TopOpeBRep_Bipoint::I1() const {
-if(myI1<=0)throw Standard_ProgramError("TopOpeBRep_Bipoint I1=0");
-return myI1;
+TopOpeBRep_Bipoint::TopOpeBRep_Bipoint()
+    : myI1(0),
+      myI2(0)
+{
 }
-Standard_Integer TopOpeBRep_Bipoint::I2() const {
-if(myI2<=0)throw Standard_ProgramError("TopOpeBRep_Bipoint I2=0");
-return myI2;
+
+TopOpeBRep_Bipoint::TopOpeBRep_Bipoint(const Standard_Integer I1, const Standard_Integer I2)
+    : myI1(I1),
+      myI2(I2)
+{
+}
+
+Standard_Integer TopOpeBRep_Bipoint::I1() const
+{
+  if (myI1 <= 0)
+    throw Standard_ProgramError("TopOpeBRep_Bipoint I1=0");
+  return myI1;
+}
+
+Standard_Integer TopOpeBRep_Bipoint::I2() const
+{
+  if (myI2 <= 0)
+    throw Standard_ProgramError("TopOpeBRep_Bipoint I2=0");
+  return myI2;
 }

@@ -17,56 +17,58 @@
 
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation,StepShape_ShapeRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation, StepShape_ShapeRepresentation)
 
 //=======================================================================
-//function : StepShape_ShapeDimensionRepresentation
-//purpose  : 
+// function : StepShape_ShapeDimensionRepresentation
+// purpose  :
 //=======================================================================
-StepShape_ShapeDimensionRepresentation::StepShape_ShapeDimensionRepresentation ()
-{
-}
+StepShape_ShapeDimensionRepresentation::StepShape_ShapeDimensionRepresentation() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
-void StepShape_ShapeDimensionRepresentation::Init (const Handle(TCollection_HAsciiString)& theName, 
-                                                   const Handle(StepRepr_HArray1OfRepresentationItem)& theItems, 
-                                                   const Handle(StepRepr_RepresentationContext)& theContextOfItems)
+void StepShape_ShapeDimensionRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&             theName,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
+  const Handle(StepRepr_RepresentationContext)&       theContextOfItems)
 {
   StepRepr_Representation::Init(theName, theItems, theContextOfItems);
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepShape_ShapeDimensionRepresentation::Init (const Handle(TCollection_HAsciiString)& theName, 
-                                                   const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems, 
-                                                   const Handle(StepRepr_RepresentationContext)& theContextOfItems)
+void StepShape_ShapeDimensionRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&                            theName,
+  const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems,
+  const Handle(StepRepr_RepresentationContext)&                      theContextOfItems)
 {
   StepRepr_Representation::Init(theName, NULL, theContextOfItems);
   itemsAP242 = theItems;
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepShape_ShapeDimensionRepresentation::SetItemsAP242 (const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems)
+void StepShape_ShapeDimensionRepresentation::SetItemsAP242(
+  const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems)
 {
   itemsAP242 = theItems;
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
-  
-Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) StepShape_ShapeDimensionRepresentation::ItemsAP242() const
+
+Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) StepShape_ShapeDimensionRepresentation::
+  ItemsAP242() const
 {
   return itemsAP242;
 }

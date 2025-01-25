@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_DumpView_H
 #define DFBrowser_DumpView_H
@@ -33,9 +33,12 @@ class DFBrowser_DumpView : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  DFBrowser_DumpView (QWidget* theParent) : QObject(theParent), myTextEdit( new QPlainTextEdit(theParent) ) {}
+  DFBrowser_DumpView(QWidget* theParent)
+      : QObject(theParent),
+        myTextEdit(new QPlainTextEdit(theParent))
+  {
+  }
 
   //! Destructor
   virtual ~DFBrowser_DumpView() {}
@@ -48,10 +51,10 @@ public slots:
   //! Listens selection change and update the current control content by selection
   //! \param theSelected container of selected items
   //! \param theDeselected container of items that become deselected
-  Standard_EXPORT void OnTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+  Standard_EXPORT void OnTreeViewSelectionChanged(const QItemSelection& theSelected,
+                                                  const QItemSelection& theDeselected);
 
 private:
-
   QPlainTextEdit* myTextEdit; //!< information view
 };
 #endif

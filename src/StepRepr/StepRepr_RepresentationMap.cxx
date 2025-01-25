@@ -11,42 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationMap.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap, Standard_Transient)
 
-StepRepr_RepresentationMap::StepRepr_RepresentationMap ()  {}
+StepRepr_RepresentationMap::StepRepr_RepresentationMap() {}
 
-void StepRepr_RepresentationMap::Init(
-	const Handle(StepRepr_RepresentationItem)& aMappingOrigin,
-	const Handle(StepRepr_Representation)& aMappedRepresentation)
+void StepRepr_RepresentationMap::Init(const Handle(StepRepr_RepresentationItem)& aMappingOrigin,
+                                      const Handle(StepRepr_Representation)& aMappedRepresentation)
 {
-	// --- classe own fields ---
-	mappingOrigin = aMappingOrigin;
-	mappedRepresentation = aMappedRepresentation;
+  // --- classe own fields ---
+  mappingOrigin        = aMappingOrigin;
+  mappedRepresentation = aMappedRepresentation;
 }
 
-
-void StepRepr_RepresentationMap::SetMappingOrigin(const Handle(StepRepr_RepresentationItem)& aMappingOrigin)
+void StepRepr_RepresentationMap::SetMappingOrigin(
+  const Handle(StepRepr_RepresentationItem)& aMappingOrigin)
 {
-	mappingOrigin = aMappingOrigin;
+  mappingOrigin = aMappingOrigin;
 }
 
 Handle(StepRepr_RepresentationItem) StepRepr_RepresentationMap::MappingOrigin() const
 {
-	return mappingOrigin;
+  return mappingOrigin;
 }
 
-void StepRepr_RepresentationMap::SetMappedRepresentation(const Handle(StepRepr_Representation)& aMappedRepresentation)
+void StepRepr_RepresentationMap::SetMappedRepresentation(
+  const Handle(StepRepr_Representation)& aMappedRepresentation)
 {
-	mappedRepresentation = aMappedRepresentation;
+  mappedRepresentation = aMappedRepresentation;
 }
 
 Handle(StepRepr_Representation) StepRepr_RepresentationMap::MappedRepresentation() const
 {
-	return mappedRepresentation;
+  return mappedRepresentation;
 }

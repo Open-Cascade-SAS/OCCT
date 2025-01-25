@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_Tools_H
 #define DFBrowser_Tools_H
@@ -42,18 +42,18 @@ class DFBrowserPane_AttributePaneAPI;
 namespace DFBrowser_Tools
 {
 
-  //! Returns true if the label is not root, has attribute or at least one sub-label with attribute
-  //! \param theLabel a label
-  //! \return boolean result
-  Standard_EXPORT bool IsEmptyLabel (const TDF_Label& theLabel);
+//! Returns true if the label is not root, has attribute or at least one sub-label with attribute
+//! \param theLabel a label
+//! \return boolean result
+Standard_EXPORT bool IsEmptyLabel(const TDF_Label& theLabel);
 
-  //! Returns the label entry
-  //! \param isUseShortInfo boolean value if value of name attribute should be included to result
-  //! \return string value
-  Standard_EXPORT QString GetLabelInfo (const TDF_Label& theLabel, const bool isUseShortInfo = true);
+//! Returns the label entry
+//! \param isUseShortInfo boolean value if value of name attribute should be included to result
+//! \return string value
+Standard_EXPORT QString GetLabelInfo(const TDF_Label& theLabel, const bool isUseShortInfo = true);
 
-  //! Returns the label icon
-  Standard_EXPORT QIcon GetLabelIcon (const TDF_Label& theLabel, bool isStandard16x16 = true);
-}
+//! Returns the label icon
+Standard_EXPORT QIcon GetLabelIcon(const TDF_Label& theLabel, bool isStandard16x16 = true);
+} // namespace DFBrowser_Tools
 
 #endif

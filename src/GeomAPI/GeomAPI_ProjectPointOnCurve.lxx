@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Extrema
-//purpose  : 
+// function : Extrema
+// purpose  :
 //=======================================================================
 
 inline const Extrema_ExtPC& GeomAPI_ProjectPointOnCurve::Extrema() const

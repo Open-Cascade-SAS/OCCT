@@ -41,30 +41,29 @@ DEFINE_STANDARD_HANDLE(Geom2d_Conic, Geom2d_Curve)
 class Geom2d_Conic : public Geom2d_Curve
 {
 public:
-
   //! Modifies this conic, redefining its local coordinate system
   //! partially, by assigning theA as its axis
-  void SetAxis (const gp_Ax22d& theA) { pos.SetAxis(theA); }
-  
+  void SetAxis(const gp_Ax22d& theA) { pos.SetAxis(theA); }
+
   //! Assigns the origin and unit vector of axis theA to the
   //! origin of the local coordinate system of this conic and X Direction.
   //! The other unit vector of the local coordinate system
   //! of this conic is recomputed normal to theA, without
   //! changing the orientation of the local coordinate
   //! system (right-handed or left-handed).
-  void SetXAxis (const gp_Ax2d& theAX) { pos.SetXAxis(theAX); }
-  
+  void SetXAxis(const gp_Ax2d& theAX) { pos.SetXAxis(theAX); }
+
   //! Assigns the origin and unit vector of axis theA to the
   //! origin of the local coordinate system of this conic and Y Direction.
   //! The other unit vector of the local coordinate system
   //! of this conic is recomputed normal to theA, without
   //! changing the orientation of the local coordinate
   //! system (right-handed or left-handed).
-  void SetYAxis (const gp_Ax2d& theAY) { pos.SetYAxis(theAY); }
-  
+  void SetYAxis(const gp_Ax2d& theAY) { pos.SetYAxis(theAY); }
+
   //! Modifies this conic, redefining its local coordinate
   //! system partially, by assigning theP as its origin.
-  void SetLocation (const gp_Pnt2d& theP) { pos.SetLocation(theP); }
+  void SetLocation(const gp_Pnt2d& theP) { pos.SetLocation(theP); }
 
   //! Returns the "XAxis" of the conic.
   //! This axis defines the origin of parametrization of the conic.
@@ -72,12 +71,10 @@ public:
   //! of the conic.
   //! -C++: return const&
   Standard_EXPORT gp_Ax2d XAxis() const;
-  
 
   //! Returns the "YAxis" of the conic.
   //! The "YAxis" is perpendicular to the "Xaxis".
   Standard_EXPORT gp_Ax2d YAxis() const;
-  
 
   //! returns the eccentricity value of the conic e.
   //! e = 0 for a circle
@@ -85,34 +82,35 @@ public:
   //! e > 1 for a hyperbola
   //! e = 1 for a parabola
   Standard_EXPORT virtual Standard_Real Eccentricity() const = 0;
-  
 
   //! Returns the location point of the conic.
   //! For the circle, the ellipse and the hyperbola it is the center of
   //! the conic. For the parabola it is the vertex of the parabola.
   const gp_Pnt2d& Location() const { return pos.Location(); }
-  
+
   //! Returns the local coordinates system of the conic.
   const gp_Ax22d& Position() const { return pos; }
 
   //! Reverses the direction of parameterization of <me>.
   //! The local coordinate system of the conic is modified.
   Standard_EXPORT void Reverse() Standard_OVERRIDE;
-  
+
   //! Returns the  parameter on the  reversed  curve for
   //! the point of parameter U on <me>.
-  Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE = 0;
-  
+  Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const
+    Standard_OVERRIDE = 0;
+
   //! Returns GeomAbs_CN which is the global continuity of any conic.
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
-  
+
   //! Returns True, the order of continuity of a conic is infinite.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Conic,Geom2d_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Conic, Geom2d_Curve)
 
 protected:
   gp_Ax22d pos;

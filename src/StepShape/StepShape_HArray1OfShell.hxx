@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfShell, StepShape_Array1OfShell)
 
-
 #endif

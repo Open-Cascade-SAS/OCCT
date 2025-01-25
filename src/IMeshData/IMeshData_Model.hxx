@@ -28,45 +28,41 @@ class TopoDS_Edge;
 class IMeshData_Model : public IMeshData_Shape
 {
 public:
-
   //! Destructor.
-  virtual ~IMeshData_Model()
-  {
-  }
+  virtual ~IMeshData_Model() {}
 
   //! Returns maximum size of shape model.
-  Standard_EXPORT virtual Standard_Real GetMaxSize () const = 0;
+  Standard_EXPORT virtual Standard_Real GetMaxSize() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IMeshData_Model, IMeshData_Shape)
 
 public: //! @name discrete faces
-
   //! Returns number of faces in discrete model.
-  Standard_EXPORT virtual Standard_Integer FacesNb () const = 0;
+  Standard_EXPORT virtual Standard_Integer FacesNb() const = 0;
 
   //! Adds new face to shape model.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace (const TopoDS_Face& theFace) = 0;
+  Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace) = 0;
 
   //! Gets model's face with the given index.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace (const Standard_Integer theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(
+    const Standard_Integer theIndex) const = 0;
 
 public: //! @name discrete edges
-
   //! Returns number of edges in discrete model.
-  Standard_EXPORT virtual Standard_Integer EdgesNb () const = 0;
+  Standard_EXPORT virtual Standard_Integer EdgesNb() const = 0;
 
   //! Adds new edge to shape model.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge (const TopoDS_Edge& theEdge) = 0;
+  Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge) = 0;
 
   //! Gets model's edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge (const Standard_Integer theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(
+    const Standard_Integer theIndex) const = 0;
 
 protected:
-
   //! Constructor.
   //! Initializes empty model.
-  IMeshData_Model (const TopoDS_Shape& theShape)
-    : IMeshData_Shape(theShape)
+  IMeshData_Model(const TopoDS_Shape& theShape)
+      : IMeshData_Shape(theShape)
   {
   }
 };

@@ -21,26 +21,27 @@
 //! A framework to define selection by a sensitive cylinder or cone.
 class Select3D_SensitiveCylinder : public Select3D_SensitiveEntity
 {
-  DEFINE_STANDARD_RTTIEXT (Select3D_SensitiveCylinder, Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCylinder, Select3D_SensitiveEntity)
 
 public:
   //! Constructs a sensitive cylinder object defined by the owner theOwnerId,
   //! @param[in] theBottomRad cylinder bottom radius
   //! @param[in] theTopRad    cylinder top radius
   //! @param[in] theHeight    cylinder height
-  Standard_EXPORT Select3D_SensitiveCylinder (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                              const Standard_Real theBottomRad,
-                                              const Standard_Real theTopRad,
-                                              const Standard_Real theHeight,
-                                              const gp_Trsf& theTrsf,
-                                              const Standard_Boolean theIsHollow = Standard_False);
+  Standard_EXPORT Select3D_SensitiveCylinder(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                             const Standard_Real                  theBottomRad,
+                                             const Standard_Real                  theTopRad,
+                                             const Standard_Real                  theHeight,
+                                             const gp_Trsf&                       theTrsf,
+                                             const Standard_Boolean theIsHollow = Standard_False);
 
   //! Checks whether the cylinder overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle (Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Returns bounding box of the cylinder.
   //! If location transformation is set, it will be applied

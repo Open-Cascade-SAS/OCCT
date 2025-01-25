@@ -34,7 +34,6 @@ DEFINE_STANDARD_HANDLE(XCAFDoc_AssemblyGraph, Standard_Transient)
 class XCAFDoc_AssemblyGraph : public Standard_Transient
 {
 public:
-
   //! \brief Type of the graph node.
   enum NodeType
   {
@@ -46,17 +45,15 @@ public:
     NodeType_Subshape       //!< Subshape node.
   };
 
-  //! \brief Type definition for graph adjacency matrix. 
+  //! \brief Type definition for graph adjacency matrix.
   //! This is how parent-component links are realized in the assembly graph.
   typedef NCollection_DataMap<Standard_Integer, TColStd_PackedMapOfInteger> AdjacencyMap;
 
 public:
-
   //! \brief Graph iterator.
   class Iterator
   {
   public:
-
     //! \brief Accepting the assembly graph and starting node to iterate.
     //! Iteration starts from the specified node.
     //! \param[in]  theGraph - assembly graph to iterate.
@@ -66,32 +63,20 @@ public:
 
     //! Checks if there are more graph nodes to iterate.
     //! \return true/false.
-    Standard_Boolean More() const
-    {
-      return myCurrentIndex <= myGraph->NbNodes();
-    }
+    Standard_Boolean More() const { return myCurrentIndex <= myGraph->NbNodes(); }
 
     //! \return 1-based ID of the current node.
-    Standard_Integer Current() const
-    {
-      return myCurrentIndex;
-    }
+    Standard_Integer Current() const { return myCurrentIndex; }
 
     //! Moves iterator to the next position.
-    void Next()
-    {
-      ++myCurrentIndex;
-    }
+    void Next() { ++myCurrentIndex; }
 
   private:
-
     Handle(XCAFDoc_AssemblyGraph) myGraph;        //!< Assembly graph to iterate.
     Standard_Integer              myCurrentIndex; //!< Current 1-based node ID.
-
   };
 
 public:
-
   //! \brief Constructs graph from XCAF document.
   //! Construction of a formal graph will be done immediately.
   //! \param[in]  theDoc - document to iterate.
@@ -105,17 +90,11 @@ public:
   Standard_EXPORT XCAFDoc_AssemblyGraph(const TDF_Label& theLabel);
 
   //! \return Document shape tool.
-  const Handle(XCAFDoc_ShapeTool)& GetShapeTool() const
-  {
-    return myShapeTool;
-  }
+  const Handle(XCAFDoc_ShapeTool)& GetShapeTool() const { return myShapeTool; }
 
   //! \brief Returns IDs of the root nodes.
   //! \return IDs of the root nodes.
-  const TColStd_PackedMapOfInteger& GetRoots() const
-  {
-    return myRoots;
-  }
+  const TColStd_PackedMapOfInteger& GetRoots() const { return myRoots; }
 
   //! \brief Checks whether the assembly graph contains (n1, n2) directed link.
   //! \param[in]  theNode1 - one-based ID of the first node.
@@ -149,31 +128,19 @@ public:
   //! \brief returns object ID by node ID.
   //! \param[in]  theNode - one-based node ID.
   //! \return persistent ID.
-  const TDF_Label& GetNode(const Standard_Integer theNode) const
-  {
-    return myNodes(theNode);
-  }
+  const TDF_Label& GetNode(const Standard_Integer theNode) const { return myNodes(theNode); }
 
   //! \brief Returns the unordered set of graph nodes.
   //! \return graph nodes.
-  const TDF_LabelIndexedMap& GetNodes() const
-  {
-    return myNodes;
-  }
+  const TDF_LabelIndexedMap& GetNodes() const { return myNodes; }
 
   //! \brief Returns the number of graph nodes.
   //! \return number of graph nodes.
-  Standard_Integer NbNodes() const
-  {
-    return myNodes.Extent();
-  }
+  Standard_Integer NbNodes() const { return myNodes.Extent(); }
 
   //! \brief Returns the collection of graph links in the form of adjacency matrix.
   //! \return graph links.
-  const AdjacencyMap& GetLinks() const
-  {
-    return myAdjacencyMap;
-  }
+  const AdjacencyMap& GetLinks() const { return myAdjacencyMap; }
 
   //! \brief Returns the number of graph links.
   //! \return number of graph links.
@@ -185,7 +152,6 @@ public:
   Standard_EXPORT Standard_Integer NbOccurrences(const Standard_Integer theNode) const;
 
 private:
-
   //! Builds graph out of OCAF XDE structure.
   //! \param[in]  theLabel - optional starting position.
   Standard_EXPORT void buildGraph(const TDF_Label& theLabel);
@@ -206,17 +172,15 @@ private:
                                            const Standard_Integer theParentId);
 
 private:
-
-  Handle(XCAFDoc_ShapeTool)                       myShapeTool;    //!< Document shape tool.
-  TColStd_PackedMapOfInteger                      myRoots;        //!< IDs of the root nodes.
-// clang-format off
+  Handle(XCAFDoc_ShapeTool)  myShapeTool;                         //!< Document shape tool.
+  TColStd_PackedMapOfInteger myRoots;                             //!< IDs of the root nodes.
+                                                                  // clang-format off
   TDF_LabelIndexedMap                             myNodes;        //!< Maps assembly/part entries to graph node IDs.
-// clang-format on
+                                                                  // clang-format on
   AdjacencyMap                                    myAdjacencyMap; //!< "Part-of" relations.
   NCollection_DataMap<Standard_Integer, NodeType> myNodeTypes;    //!< Node types.
-  NCollection_DataMap<Standard_Integer, 
-                      Standard_Integer>           myUsages;       //!< Occurrences usage.
-
+  NCollection_DataMap<Standard_Integer,
+                      Standard_Integer>           myUsages; //!< Occurrences usage.
 };
 
 #endif // _XCAFDoc_AssemblyGraph_HeaderFile

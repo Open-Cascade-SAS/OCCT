@@ -52,156 +52,184 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_Surface, Standard_Transient)
 //! Warning: All the methods are virtual and implemented with a
 //! raise to allow to redefined only the methods really used.
 //!
-//! Polynomial coefficients of BSpline surfaces used for their evaluation are cached for better performance.
-//! Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
+//! Polynomial coefficients of BSpline surfaces used for their evaluation are cached for better
+//! performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be
+//! prevented.
 class Adaptor3d_Surface : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
 public:
-
   //! Shallow copy of adaptor
   Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const;
 
   Standard_EXPORT virtual Standard_Real FirstUParameter() const;
-  
+
   Standard_EXPORT virtual Standard_Real LastUParameter() const;
-  
+
   Standard_EXPORT virtual Standard_Real FirstVParameter() const;
-  
+
   Standard_EXPORT virtual Standard_Real LastVParameter() const;
-  
+
   Standard_EXPORT virtual GeomAbs_Shape UContinuity() const;
-  
+
   Standard_EXPORT virtual GeomAbs_Shape VContinuity() const;
-  
+
   //! Returns the number of U intervals for  continuity
   //! <S>. May be one if UContinuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbUIntervals (const GeomAbs_Shape S) const;
-  
+  Standard_EXPORT virtual Standard_Integer NbUIntervals(const GeomAbs_Shape S) const;
+
   //! Returns the number of V intervals for  continuity
   //! <S>. May be one if VContinuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbVIntervals (const GeomAbs_Shape S) const;
-  
+  Standard_EXPORT virtual Standard_Integer NbVIntervals(const GeomAbs_Shape S) const;
+
   //! Returns the  intervals with the requested continuity
   //! in the U direction.
-  Standard_EXPORT virtual void UIntervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
-  
+  Standard_EXPORT virtual void UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
+
   //! Returns the  intervals with the requested continuity
   //! in the V direction.
-  Standard_EXPORT virtual void VIntervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
-  
+  Standard_EXPORT virtual void VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
+
   //! Returns    a  surface trimmed in the U direction
   //! equivalent   of  <me>  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor3d_Surface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
-  
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) UTrim(const Standard_Real First,
+                                                          const Standard_Real Last,
+                                                          const Standard_Real Tol) const;
+
   //! Returns    a  surface trimmed in the V direction  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor3d_Surface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
-  
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) VTrim(const Standard_Real First,
+                                                          const Standard_Real Last,
+                                                          const Standard_Real Tol) const;
+
   Standard_EXPORT virtual Standard_Boolean IsUClosed() const;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsVClosed() const;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsUPeriodic() const;
-  
+
   Standard_EXPORT virtual Standard_Real UPeriod() const;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsVPeriodic() const;
-  
+
   Standard_EXPORT virtual Standard_Real VPeriod() const;
 
   //! Computes the point of parameters U,V on the surface.
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  Standard_EXPORT virtual gp_Pnt Value (const Standard_Real U, const Standard_Real V) const;
+  Standard_EXPORT virtual gp_Pnt Value(const Standard_Real U, const Standard_Real V) const;
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT virtual void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
-  
+  Standard_EXPORT virtual void D0(const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
+
   //! Computes the point  and the first derivatives on the surface.
   //! Raised if the continuity of the current intervals is not C1.
   //!
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  Standard_EXPORT virtual void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
+  Standard_EXPORT virtual void D1(const Standard_Real U,
+                                  const Standard_Real V,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V) const;
 
   //! Computes   the point,  the  first  and  second
   //! derivatives on the surface.
   //! Raised  if   the   continuity   of the current
   //! intervals is not C2.
-  Standard_EXPORT virtual void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
-  
+  Standard_EXPORT virtual void D2(const Standard_Real U,
+                                  const Standard_Real V,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V,
+                                  gp_Vec&             D2U,
+                                  gp_Vec&             D2V,
+                                  gp_Vec&             D2UV) const;
+
   //! Computes the point,  the first, second and third
   //! derivatives on the surface.
   //! Raised  if   the   continuity   of the current
   //! intervals is not C3.
-  Standard_EXPORT virtual void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
-  
+  Standard_EXPORT virtual void D3(const Standard_Real U,
+                                  const Standard_Real V,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V,
+                                  gp_Vec&             D2U,
+                                  gp_Vec&             D2V,
+                                  gp_Vec&             D2UV,
+                                  gp_Vec&             D3U,
+                                  gp_Vec&             D3V,
+                                  gp_Vec&             D3UUV,
+                                  gp_Vec&             D3UVV) const;
+
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
   //! Raised if the current U  interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT virtual gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
-  
+  Standard_EXPORT virtual gp_Vec DN(const Standard_Real    U,
+                                    const Standard_Real    V,
+                                    const Standard_Integer Nu,
+                                    const Standard_Integer Nv) const;
+
   //! Returns the parametric U  resolution corresponding
   //! to the real space resolution <R3d>.
-  Standard_EXPORT virtual Standard_Real UResolution (const Standard_Real R3d) const;
-  
+  Standard_EXPORT virtual Standard_Real UResolution(const Standard_Real R3d) const;
+
   //! Returns the parametric V  resolution corresponding
   //! to the real space resolution <R3d>.
-  Standard_EXPORT virtual Standard_Real VResolution (const Standard_Real R3d) const;
-  
+  Standard_EXPORT virtual Standard_Real VResolution(const Standard_Real R3d) const;
+
   //! Returns the type of the surface : Plane, Cylinder,
   //! Cone,      Sphere,        Torus,    BezierSurface,
   //! BSplineSurface,               SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
   Standard_EXPORT virtual GeomAbs_SurfaceType GetType() const;
-  
+
   Standard_EXPORT virtual gp_Pln Plane() const;
-  
+
   Standard_EXPORT virtual gp_Cylinder Cylinder() const;
-  
+
   Standard_EXPORT virtual gp_Cone Cone() const;
-  
+
   Standard_EXPORT virtual gp_Sphere Sphere() const;
-  
+
   Standard_EXPORT virtual gp_Torus Torus() const;
-  
+
   Standard_EXPORT virtual Standard_Integer UDegree() const;
-  
+
   Standard_EXPORT virtual Standard_Integer NbUPoles() const;
-  
+
   Standard_EXPORT virtual Standard_Integer VDegree() const;
-  
+
   Standard_EXPORT virtual Standard_Integer NbVPoles() const;
-  
+
   Standard_EXPORT virtual Standard_Integer NbUKnots() const;
-  
+
   Standard_EXPORT virtual Standard_Integer NbVKnots() const;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsURational() const;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsVRational() const;
-  
+
   Standard_EXPORT virtual Handle(Geom_BezierSurface) Bezier() const;
-  
+
   Standard_EXPORT virtual Handle(Geom_BSplineSurface) BSpline() const;
-  
+
   Standard_EXPORT virtual gp_Ax1 AxeOfRevolution() const;
-  
+
   Standard_EXPORT virtual gp_Dir Direction() const;
-  
+
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) BasisCurve() const;
-  
+
   Standard_EXPORT virtual Handle(Adaptor3d_Surface) BasisSurface() const;
-  
+
   Standard_EXPORT virtual Standard_Real OffsetValue() const;
   Standard_EXPORT virtual ~Adaptor3d_Surface();
-
 };
 
 #endif // _Adaptor3d_Surface_HeaderFile

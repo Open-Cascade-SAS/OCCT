@@ -28,56 +28,35 @@ class TopoDS_Wire;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;
 
-
 //! This class implements the mapping between classes
 //! Wire from TopoDS and TopologicalRepresentationItem from
 //! StepShape.
-class TopoDSToStep_MakeStepWire  : public TopoDSToStep_Root
+class TopoDSToStep_MakeStepWire : public TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopoDSToStep_MakeStepWire();
-  
-  Standard_EXPORT TopoDSToStep_MakeStepWire(const TopoDS_Wire& W,
-                                            TopoDSToStep_Tool& T,
-                                            const Handle(Transfer_FinderProcess)& FP,
-                                            const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT void Init (const TopoDS_Wire& W,
-                             TopoDSToStep_Tool& T,
-                             const Handle(Transfer_FinderProcess)& FP,
-                             const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+
+  Standard_EXPORT TopoDSToStep_MakeStepWire(
+    const TopoDS_Wire&                    W,
+    TopoDSToStep_Tool&                    T,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT void Init(const TopoDS_Wire&                    W,
+                            TopoDSToStep_Tool&                    T,
+                            const Handle(Transfer_FinderProcess)& FP,
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const Handle(StepShape_TopologicalRepresentationItem)& Value() const;
-  
+
   Standard_EXPORT TopoDSToStep_MakeWireError Error() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepShape_TopologicalRepresentationItem) myResult;
-  TopoDSToStep_MakeWireError myError;
-
-
+  TopoDSToStep_MakeWireError                      myError;
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_MakeStepWire_HeaderFile

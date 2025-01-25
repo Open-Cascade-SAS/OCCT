@@ -28,56 +28,35 @@ class gp_Lin;
 class HLRBRep_LineTool;
 class HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf;
 
-
-
-class HLRBRep_TheQuadCurvExactInterCSurf 
+class HLRBRep_TheQuadCurvExactInterCSurf
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Provides the signed distance function : Q(w)
   //! and its first derivative dQ(w)/dw
   Standard_EXPORT HLRBRep_TheQuadCurvExactInterCSurf(const Standard_Address& S, const gp_Lin& C);
-  
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   Standard_EXPORT Standard_Integer NbRoots() const;
-  
-  Standard_EXPORT Standard_Real Root (const Standard_Integer Index) const;
-  
+
+  Standard_EXPORT Standard_Real Root(const Standard_Integer Index) const;
+
   Standard_EXPORT Standard_Integer NbIntervals() const;
-  
+
   //! U1 and U2 are the parameters of
   //! a segment on the curve.
-  Standard_EXPORT void Intervals (const Standard_Integer Index, Standard_Real& U1, Standard_Real& U2) const;
-
-
-
+  Standard_EXPORT void Intervals(const Standard_Integer Index,
+                                 Standard_Real&         U1,
+                                 Standard_Real&         U2) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Integer nbpnts;
+  Standard_Integer       nbpnts;
   TColStd_SequenceOfReal pnts;
-  Standard_Integer nbintv;
+  Standard_Integer       nbintv;
   TColStd_SequenceOfReal intv;
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_TheQuadCurvExactInterCSurf_HeaderFile

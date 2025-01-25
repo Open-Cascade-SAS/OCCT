@@ -19,36 +19,39 @@
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship, Standard_Transient)
 
 //=======================================================================
-//function : StepRepr_ShapeAspectRelationship
-//purpose  : 
+// function : StepRepr_ShapeAspectRelationship
+// purpose  :
 //=======================================================================
-StepRepr_ShapeAspectRelationship::StepRepr_ShapeAspectRelationship ()
+StepRepr_ShapeAspectRelationship::StepRepr_ShapeAspectRelationship()
 {
   defDescription = Standard_False;
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepRepr_ShapeAspectRelationship::Init (const Handle(TCollection_HAsciiString) &aName,
-                                             const Standard_Boolean hasDescription,
-                                             const Handle(TCollection_HAsciiString) &aDescription,
-                                             const Handle(StepRepr_ShapeAspect) &aRelatingShapeAspect,
-                                             const Handle(StepRepr_ShapeAspect) &aRelatedShapeAspect)
+void StepRepr_ShapeAspectRelationship::Init(
+  const Handle(TCollection_HAsciiString)& aName,
+  const Standard_Boolean                  hasDescription,
+  const Handle(TCollection_HAsciiString)& aDescription,
+  const Handle(StepRepr_ShapeAspect)&     aRelatingShapeAspect,
+  const Handle(StepRepr_ShapeAspect)&     aRelatedShapeAspect)
 {
 
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theRelatingShapeAspect = aRelatingShapeAspect;
 
@@ -56,91 +59,94 @@ void StepRepr_ShapeAspectRelationship::Init (const Handle(TCollection_HAsciiStri
 }
 
 //=======================================================================
-//function : Name
-//purpose  : 
+// function : Name
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Name () const
+Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Name() const
 {
   return theName;
 }
 
 //=======================================================================
-//function : SetName
-//purpose  : 
+// function : SetName
+// purpose  :
 //=======================================================================
 
-void StepRepr_ShapeAspectRelationship::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepRepr_ShapeAspectRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
 //=======================================================================
-//function : Description
-//purpose  : 
+// function : Description
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Description () const
+Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Description() const
 {
   return theDescription;
 }
 
 //=======================================================================
-//function : SetDescription
-//purpose  : 
+// function : SetDescription
+// purpose  :
 //=======================================================================
 
-void StepRepr_ShapeAspectRelationship::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepRepr_ShapeAspectRelationship::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=======================================================================
-//function : HasDescription
-//purpose  : 
+// function : HasDescription
+// purpose  :
 //=======================================================================
 
-Standard_Boolean StepRepr_ShapeAspectRelationship::HasDescription () const
+Standard_Boolean StepRepr_ShapeAspectRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=======================================================================
-//function : RelatingShapeAspect
-//purpose  : 
+// function : RelatingShapeAspect
+// purpose  :
 //=======================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatingShapeAspect () const
+Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatingShapeAspect() const
 {
   return theRelatingShapeAspect;
 }
 
 //=======================================================================
-//function : SetRelatingShapeAspect
-//purpose  : 
+// function : SetRelatingShapeAspect
+// purpose  :
 //=======================================================================
 
-void StepRepr_ShapeAspectRelationship::SetRelatingShapeAspect (const Handle(StepRepr_ShapeAspect) &aRelatingShapeAspect)
+void StepRepr_ShapeAspectRelationship::SetRelatingShapeAspect(
+  const Handle(StepRepr_ShapeAspect)& aRelatingShapeAspect)
 {
   theRelatingShapeAspect = aRelatingShapeAspect;
 }
 
 //=======================================================================
-//function : RelatedShapeAspect
-//purpose  : 
+// function : RelatedShapeAspect
+// purpose  :
 //=======================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatedShapeAspect () const
+Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatedShapeAspect() const
 {
   return theRelatedShapeAspect;
 }
 
 //=======================================================================
-//function : SetRelatedShapeAspect
-//purpose  : 
+// function : SetRelatedShapeAspect
+// purpose  :
 //=======================================================================
 
-void StepRepr_ShapeAspectRelationship::SetRelatedShapeAspect (const Handle(StepRepr_ShapeAspect) &aRelatedShapeAspect)
+void StepRepr_ShapeAspectRelationship::SetRelatedShapeAspect(
+  const Handle(StepRepr_ShapeAspect)& aRelatedShapeAspect)
 {
   theRelatedShapeAspect = aRelatedShapeAspect;
 }

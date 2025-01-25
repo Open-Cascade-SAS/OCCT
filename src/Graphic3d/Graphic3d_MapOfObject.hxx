@@ -19,6 +19,7 @@
 #include <Graphic3d_ViewAffinity.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<const Standard_Transient* , Handle(Graphic3d_ViewAffinity)> Graphic3d_MapOfObject;
+typedef NCollection_DataMap<const Standard_Transient*, Handle(Graphic3d_ViewAffinity)>
+  Graphic3d_MapOfObject;
 
 #endif // _Graphic3d_MapOfObject

@@ -68,12 +68,14 @@ public:
   //! Merge the results of the shape processing with the transfer process.
   //! @param theTransientProcess Transfer process to merge with.
   //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
-  Standard_EXPORT void MergeTransferInfo(const Handle(Transfer_TransientProcess)& theTransientProcess,
-                                         const Standard_Integer                   theFirstTPItemIndex) const;
+  Standard_EXPORT void MergeTransferInfo(
+    const Handle(Transfer_TransientProcess)& theTransientProcess,
+    const Standard_Integer                   theFirstTPItemIndex) const;
 
   //! Merge the results of the shape processing with the finder process.
   //! @param theFinderProcess Finder process to merge with.
-  Standard_EXPORT void MergeTransferInfo(const Handle(Transfer_FinderProcess)& theFinderProcess) const;
+  Standard_EXPORT void MergeTransferInfo(
+    const Handle(Transfer_FinderProcess)& theFinderProcess) const;
 
   //! Check quality of pcurve of the edge on the given face, and correct it if necessary.
   //! @param theEdge Edge to check.
@@ -88,16 +90,19 @@ public:
 
   //! Reads the parameter map from and operation flags from the file specified in static interface.
   //! @param theFileResourceName Name of the parameter in interface static that contains the name
-  //!        of the file. For example, parameter "read.iges.resource.name" may contain string "IGES".
+  //!        of the file. For example, parameter "read.iges.resource.name" may contain string
+  //!        "IGES".
   //! @param theScopeResourceName Name of the parameter in interface static that contains the name
-  //!        of the scope. For example, parameter "read.iges.sequence" may contain string "FromIGES".
+  //!        of the scope. For example, parameter "read.iges.sequence" may contain string
+  //!        "FromIGES".
   //! @return Read parameter map.
   Standard_EXPORT static ProcessingData ReadProcessingData(const std::string& theFileResourceName,
                                                            const std::string& theScopeResourceName);
 
   //! Fill the parameter map with the values from the specified parameters.
   //! @param theParameters Parameters to be used in the processing.
-  //! @param theIsForce Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theIsForce Flag indicating whether parameter should be replaced if it already exists in
+  //! the map.
   //! @param theMap Map to fill.
   Standard_EXPORT static void FillParameterMap(const DE_ShapeFixParameters& theParameters,
                                                const bool                   theIsReplace,
@@ -106,7 +111,8 @@ public:
   //! Set the parameter in the map.
   //! @param theKey Key of the parameter.
   //! @param theValue Value of the parameter.
-  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists
+  //! in the map.
   //! @param theMap Map to set the parameter in.
   Standard_EXPORT static void SetParameter(const char*                    theKey,
                                            DE_ShapeFixParameters::FixMode theValue,
@@ -116,14 +122,19 @@ public:
   //! Set the parameter in the map.
   //! @param theKey Key of the parameter.
   //! @param theValue Value of the parameter.
-  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists
+  //! in the map.
   //! @param theMap Map to set the parameter in.
-  Standard_EXPORT static void SetParameter(const char* theKey, double theValue, const bool theIsReplace, ParameterMap& theMap);
+  Standard_EXPORT static void SetParameter(const char*   theKey,
+                                           double        theValue,
+                                           const bool    theIsReplace,
+                                           ParameterMap& theMap);
 
   //! Set the parameter in the map.
   //! @param theKey Key of the parameter.
   //! @param theValue Value of the parameter.
-  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists
+  //! in the map.
   //! @param theMap Map to set the parameter in.
   Standard_EXPORT static void SetParameter(const char*   theKey,
                                            std::string&& theValue,
@@ -142,9 +153,9 @@ public:
   //! @param theMessages Messages to add.
   Standard_EXPORT static void MergeShapeTransferInfo(
     const Handle(Transfer_TransientProcess)& theFinderProcess,
-    const TopTools_DataMapOfShapeShape&   theModifiedShapesMap,
-    const Standard_Integer                theFirstTPItemIndex,
-    Handle(ShapeExtend_MsgRegistrator)    theMessages);
+    const TopTools_DataMapOfShapeShape&      theModifiedShapesMap,
+    const Standard_Integer                   theFirstTPItemIndex,
+    Handle(ShapeExtend_MsgRegistrator)       theMessages);
 
   //! Merge the results of the shape processing with the transfer process.
   //! @param theTransientProcess Transfer process to merge with.

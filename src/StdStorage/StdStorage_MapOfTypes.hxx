@@ -23,5 +23,4 @@
 
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer> StdStorage_MapOfTypes;
 
-
 #endif

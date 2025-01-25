@@ -18,8 +18,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Standard_Integer> TColStd_MapOfInteger;
+typedef NCollection_Map<Standard_Integer>           TColStd_MapOfInteger;
 typedef NCollection_Map<Standard_Integer>::Iterator TColStd_MapIteratorOfMapOfInteger;
-
 
 #endif

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageView_MetricStatisticModel.hxx>
 #include <inspector/MessageModel_ItemAlert.hxx>
@@ -27,42 +27,44 @@
 // function : Init
 // purpose :
 // =======================================================================
-void MessageView_MetricStatisticModel::Init (const TreeModel_ItemBasePtr theItemBase)
+void MessageView_MetricStatisticModel::Init(const TreeModel_ItemBasePtr theItemBase)
 {
-  MessageModel_ItemReportPtr aReportItem = itemDynamicCast<MessageModel_ItemReport> (theItemBase);
+  MessageModel_ItemReportPtr aReportItem = itemDynamicCast<MessageModel_ItemReport>(theItemBase);
   if (aReportItem)
   {
-    Handle(Message_Report) aReport = aReportItem->GetReport();
-    const Message_ListOfAlert& anAlerts = aReport->GetAlerts (Message_Info);
+    Handle(Message_Report)     aReport  = aReportItem->GetReport();
+    const Message_ListOfAlert& anAlerts = aReport->GetAlerts(Message_Info);
     for (Message_ListOfAlert::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
     {
-      appendAlert (anIt.Value());
+      appendAlert(anIt.Value());
     }
   }
   else
   {
-    MessageModel_ItemAlertPtr anAlertItem = itemDynamicCast<MessageModel_ItemAlert> (theItemBase);
+    MessageModel_ItemAlertPtr anAlertItem = itemDynamicCast<MessageModel_ItemAlert>(theItemBase);
     if (anAlertItem)
     {
-      appendAlert (anAlertItem->GetAlert());
+      appendAlert(anAlertItem->GetAlert());
     }
   }
   std::map<double, std::list<QString>> aTmpMap;
-  std::list<double> aTimes;
-  for (QMap<QString, QPair<int, double> >::Iterator anIterValue = myValues.begin();
-       anIterValue != myValues.end(); ++anIterValue)
+  std::list<double>                    aTimes;
+  for (QMap<QString, QPair<int, double>>::Iterator anIterValue = myValues.begin();
+       anIterValue != myValues.end();
+       ++anIterValue)
   {
-    std::map<double, std::list<QString>>::iterator anIter = aTmpMap.find (anIterValue.value().second);
+    std::map<double, std::list<QString>>::iterator anIter =
+      aTmpMap.find(anIterValue.value().second);
     if (anIter != aTmpMap.end())
     {
-      aTmpMap.at (anIterValue.value().second).push_back (anIterValue.key());
+      aTmpMap.at(anIterValue.value().second).push_back(anIterValue.key());
     }
     else
     {
       std::list<QString> list;
-      list.push_back (anIterValue.key());
-      aTmpMap.insert (std::pair<double, std::list<QString> > (anIterValue.value().second, list));
-      aTimes.push_back (anIterValue.value().second);
+      list.push_back(anIterValue.key());
+      aTmpMap.insert(std::pair<double, std::list<QString>>(anIterValue.value().second, list));
+      aTimes.push_back(anIterValue.value().second);
     }
   }
   aTimes.sort();
@@ -70,13 +72,13 @@ void MessageView_MetricStatisticModel::Init (const TreeModel_ItemBasePtr theItem
 
   for (std::list<double>::iterator anIter = aTimes.begin(); anIter != aTimes.end(); anIter++)
   {
-    double aTime = *anIter;
-    std::list<QString> names = aTmpMap.at (aTime);
+    double             aTime = *anIter;
+    std::list<QString> names = aTmpMap.at(aTime);
     for (std::list<QString>::iterator name = names.begin(); name != names.end(); name++)
     {
-      int nb = myValues.find (*name).value().first;
+      int       nb    = myValues.find(*name).value().first;
       RowValues value = {*name, nb, aTime};
-      setValueByIndex (-1, value);
+      setValueByIndex(-1, value);
     }
   }
 }
@@ -87,39 +89,39 @@ void MessageView_MetricStatisticModel::Init (const TreeModel_ItemBasePtr theItem
 // =======================================================================
 void MessageView_MetricStatisticModel::appendAlert(const Handle(Message_Alert)& theAlert)
 {
-  Handle(Message_AlertExtended) anExtAlert = Handle(Message_AlertExtended)::DownCast (theAlert);
+  Handle(Message_AlertExtended) anExtAlert = Handle(Message_AlertExtended)::DownCast(theAlert);
   if (anExtAlert.IsNull())
   {
     return;
   }
-  Handle(Message_Attribute) anAttr = anExtAlert->Attribute();
-  Handle(Message_AttributeMeter) anAttrMeter = Handle(Message_AttributeMeter)::DownCast (anAttr);
-  if(anAttrMeter.IsNull())
+  Handle(Message_Attribute)      anAttr      = anExtAlert->Attribute();
+  Handle(Message_AttributeMeter) anAttrMeter = Handle(Message_AttributeMeter)::DownCast(anAttr);
+  if (anAttrMeter.IsNull())
   {
     return;
   }
 
-  int aCount = 1;
-  double aTime = 0;
-  if (myValues.contains (anAttr->GetName().ToCString()))
+  int    aCount = 1;
+  double aTime  = 0;
+  if (myValues.contains(anAttr->GetName().ToCString()))
   {
-    aCount = myValues.value (anAttr->GetName().ToCString()).first + 1;
-    aTime = myValues.value (anAttr->GetName().ToCString()).second
-          + anAttrMeter->StopValue (myMetricType) - anAttrMeter->StartValue (myMetricType);
+    aCount = myValues.value(anAttr->GetName().ToCString()).first + 1;
+    aTime  = myValues.value(anAttr->GetName().ToCString()).second
+            + anAttrMeter->StopValue(myMetricType) - anAttrMeter->StartValue(myMetricType);
   }
   else
   {
     aCount = 1;
-    aTime = anAttrMeter->StopValue (myMetricType) - anAttrMeter->StartValue (myMetricType);
+    aTime  = anAttrMeter->StopValue(myMetricType) - anAttrMeter->StartValue(myMetricType);
   }
-  myValues[anAttr->GetName().ToCString()] = qMakePair (aCount, aTime);
+  myValues[anAttr->GetName().ToCString()] = qMakePair(aCount, aTime);
 
   if (!anExtAlert->CompositeAlerts().IsNull())
   {
-    const Message_ListOfAlert& anAlerts = anExtAlert->CompositeAlerts()->Alerts (Message_Info);
-    for (Message_ListOfAlert::Iterator anIt (anAlerts); anIt.More(); anIt.Next())
+    const Message_ListOfAlert& anAlerts = anExtAlert->CompositeAlerts()->Alerts(Message_Info);
+    for (Message_ListOfAlert::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
     {
-      appendAlert (anIt.Value());
+      appendAlert(anIt.Value());
     }
   }
 }
@@ -128,21 +130,24 @@ void MessageView_MetricStatisticModel::appendAlert(const Handle(Message_Alert)& 
 // function : data
 // purpose :
 // =======================================================================
-QVariant MessageView_MetricStatisticModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant MessageView_MetricStatisticModel::data(const QModelIndex& theIndex, int theRole) const
 {
   switch (theRole)
   {
-    case Qt::DisplayRole:
-    {
+    case Qt::DisplayRole: {
       switch (theIndex.column())
       {
-        case 0: return mySortValues[theIndex.row()].myName;
-        case 1: return mySortValues[theIndex.row()].myCounter;
-        case 2: return mySortValues[theIndex.row()].myTime;
+        case 0:
+          return mySortValues[theIndex.row()].myName;
+        case 1:
+          return mySortValues[theIndex.row()].myCounter;
+        case 2:
+          return mySortValues[theIndex.row()].myTime;
       }
       break;
     }
-    default: break;
+    default:
+      break;
   }
   return QVariant();
 }
@@ -151,7 +156,7 @@ QVariant MessageView_MetricStatisticModel::data (const QModelIndex& theIndex, in
 // function : setValueByIndex
 // purpose :
 // =======================================================================
-void MessageView_MetricStatisticModel::setValueByIndex (const int theIndex, const RowValues theValue)
+void MessageView_MetricStatisticModel::setValueByIndex(const int theIndex, const RowValues theValue)
 {
-  mySortValues.insert (theIndex == -1 ? mySortValues.size() : theIndex, theValue);
+  mySortValues.insert(theIndex == -1 ? mySortValues.size() : theIndex, theValue);
 }

@@ -13,11 +13,11 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator, Standard_Transient)
 
 //=======================================================================
-//function : Allocate
-//purpose  : Standard allocation
+// function : Allocate
+// purpose  : Standard allocation
 //=======================================================================
 void* NCollection_BaseAllocator::Allocate(const size_t theSize)
 {
@@ -25,8 +25,8 @@ void* NCollection_BaseAllocator::Allocate(const size_t theSize)
 }
 
 //=======================================================================
-//function : AllocateOptimal
-//purpose  : Optimal allocation
+// function : AllocateOptimal
+// purpose  : Optimal allocation
 //=======================================================================
 void* NCollection_BaseAllocator::AllocateOptimal(const size_t theSize)
 {
@@ -34,22 +34,20 @@ void* NCollection_BaseAllocator::AllocateOptimal(const size_t theSize)
 }
 
 //=======================================================================
-//function : Free
-//purpose  : Standard deallocation
+// function : Free
+// purpose  : Standard deallocation
 //=======================================================================
-void  NCollection_BaseAllocator::Free(void* theAddress)
+void NCollection_BaseAllocator::Free(void* theAddress)
 {
   Standard::Free(theAddress);
 }
 
 //=======================================================================
-//function : CommonBaseAllocator
-//purpose  : Creates the only one BaseAllocator
+// function : CommonBaseAllocator
+// purpose  : Creates the only one BaseAllocator
 //=======================================================================
-const Handle(NCollection_BaseAllocator)& 
-       NCollection_BaseAllocator::CommonBaseAllocator(void)
-{ 
-  static Handle(NCollection_BaseAllocator) THE_SINGLETON_ALLOC =
-    new NCollection_BaseAllocator;
+const Handle(NCollection_BaseAllocator)& NCollection_BaseAllocator::CommonBaseAllocator(void)
+{
+  static Handle(NCollection_BaseAllocator) THE_SINGLETON_ALLOC = new NCollection_BaseAllocator;
   return THE_SINGLETON_ALLOC;
 }

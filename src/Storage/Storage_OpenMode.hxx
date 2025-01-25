@@ -17,7 +17,6 @@
 #ifndef _Storage_OpenMode_HeaderFile
 #define _Storage_OpenMode_HeaderFile
 
-
 //! Specifies opening modes for a file:
 //! -   Storage_VSNone : no mode is specified
 //! -   Storage_VSRead : the file is open for  reading operations
@@ -26,10 +25,10 @@
 //! for both reading and writing operations.
 enum Storage_OpenMode
 {
-Storage_VSNone,
-Storage_VSRead,
-Storage_VSWrite,
-Storage_VSReadWrite
+  Storage_VSNone,
+  Storage_VSRead,
+  Storage_VSWrite,
+  Storage_VSReadWrite
 };
 
 #endif // _Storage_OpenMode_HeaderFile

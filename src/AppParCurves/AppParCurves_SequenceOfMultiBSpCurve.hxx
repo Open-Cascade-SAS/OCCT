@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<AppParCurves_MultiBSpCurve> AppParCurves_SequenceOfMultiBSpCurve;
 
-
 #endif

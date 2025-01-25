@@ -21,30 +21,28 @@
 #include <BinLDrivers_DocumentRetrievalDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 
-
 // Retrieval driver of a TObj Bin document
 //
 
-class BinTObjDrivers_DocumentRetrievalDriver :
-  public BinLDrivers_DocumentRetrievalDriver
+class BinTObjDrivers_DocumentRetrievalDriver : public BinLDrivers_DocumentRetrievalDriver
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
-  Standard_EXPORT BinTObjDrivers_DocumentRetrievalDriver ();
+  Standard_EXPORT BinTObjDrivers_DocumentRetrievalDriver();
   // Constructor
 
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers
-                        (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
- public:
+public:
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,
+                          BinLDrivers_DocumentRetrievalDriver)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (BinTObjDrivers_DocumentRetrievalDriver,
-                        BinLDrivers_DocumentRetrievalDriver)
+DEFINE_STANDARD_HANDLE(BinTObjDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
 
 #endif
 

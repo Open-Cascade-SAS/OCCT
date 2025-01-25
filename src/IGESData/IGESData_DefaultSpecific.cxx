@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData.hxx>
 #include <IGESData_DefaultSpecific.hxx>
 #include <IGESData_IGESDumper.hxx>
@@ -23,36 +22,47 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_DefaultSpecific,IGESData_SpecificModule)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_DefaultSpecific, IGESData_SpecificModule)
 
-IGESData_DefaultSpecific::IGESData_DefaultSpecific ()
-{  IGESData_SpecificLib::SetGlobal(this, IGESData::Protocol());  }
-
-    void  IGESData_DefaultSpecific::OwnDump
-  (const Standard_Integer /*CN*/, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, Standard_OStream& S,
-   const Standard_Integer /*own*/) const 
+IGESData_DefaultSpecific::IGESData_DefaultSpecific()
 {
-  DeclareAndCast(IGESData_UndefinedEntity,lent,ent);
-  if (lent.IsNull()) return;
+  IGESData_SpecificLib::SetGlobal(this, IGESData::Protocol());
+}
+
+void IGESData_DefaultSpecific::OwnDump(const Standard_Integer /*CN*/,
+                                       const Handle(IGESData_IGESEntity)& ent,
+                                       const IGESData_IGESDumper&         dumper,
+                                       Standard_OStream&                  S,
+                                       const Standard_Integer /*own*/) const
+{
+  DeclareAndCast(IGESData_UndefinedEntity, lent, ent);
+  if (lent.IsNull())
+    return;
 
   Standard_Integer dstat = lent->DirStatus();
-  if (dstat != 0) 
+  if (dstat != 0)
     S << " --  Directory Entry Error Status = " << dstat << "  --\n";
   Handle(Interface_UndefinedContent) cont = lent->UndefinedContent();
-  Standard_Integer nb = cont->NbParams();
-  S << " UNDEFINED ENTITY ...\n"<<nb
-    <<" Parameters (WARNING : Odd Integer Values Interpreted as Entities)\n";
-  for (Standard_Integer i = 1; i <= nb; i ++) {
+  Standard_Integer                   nb   = cont->NbParams();
+  S << " UNDEFINED ENTITY ...\n"
+    << nb << " Parameters (WARNING : Odd Integer Values Interpreted as Entities)\n";
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
     Interface_ParamType ptyp = cont->ParamType(i);
-    if (ptyp == Interface_ParamVoid) S <<"	["<<i<<":Void]";
-    else if (cont->IsParamEntity(i)) {
-      DeclareAndCast(IGESData_IGESEntity,anent,cont->ParamEntity(i));
-      S <<"	["<<i<<":IGES]=";  
-      dumper.PrintDNum(anent,S);
+    if (ptyp == Interface_ParamVoid)
+      S << "	[" << i << ":Void]";
+    else if (cont->IsParamEntity(i))
+    {
+      DeclareAndCast(IGESData_IGESEntity, anent, cont->ParamEntity(i));
+      S << "	[" << i << ":IGES]=";
+      dumper.PrintDNum(anent, S);
     }
-    else {  S <<"	["<<i<<"]=" << cont->ParamValue(i)->String();  }
-    if ( i == (i%5)*5) S << "\n";
+    else
+    {
+      S << "	[" << i << "]=" << cont->ParamValue(i)->String();
+    }
+    if (i == (i % 5) * 5)
+      S << "\n";
   }
   S << std::endl;
 }

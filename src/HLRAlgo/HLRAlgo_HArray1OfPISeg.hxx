@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(HLRAlgo_HArray1OfPISeg, HLRAlgo_Array1OfPISeg)
 
-
 #endif

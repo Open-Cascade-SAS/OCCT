@@ -11,35 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_SelectControl.hxx>
 #include <IFSelect_Selection.hxx>
 #include <IFSelect_SelectionIterator.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectControl,IFSelect_Selection)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectControl, IFSelect_Selection)
 
-Handle(IFSelect_Selection)  IFSelect_SelectControl::MainInput () const 
-      {  return themain;  }
+Handle(IFSelect_Selection) IFSelect_SelectControl::MainInput() const
+{
+  return themain;
+}
 
-    Handle(IFSelect_Selection)  IFSelect_SelectControl::SecondInput () const
-      {  return thesecond;  }
+Handle(IFSelect_Selection) IFSelect_SelectControl::SecondInput() const
+{
+  return thesecond;
+}
 
-    Standard_Boolean  IFSelect_SelectControl::HasSecondInput () const
-      {  return (!thesecond.IsNull());  }
+Standard_Boolean IFSelect_SelectControl::HasSecondInput() const
+{
+  return (!thesecond.IsNull());
+}
 
-    void  IFSelect_SelectControl::SetMainInput
-  (const Handle(IFSelect_Selection)& sel)
-      {  themain = sel;  }
+void IFSelect_SelectControl::SetMainInput(const Handle(IFSelect_Selection)& sel)
+{
+  themain = sel;
+}
 
-    void  IFSelect_SelectControl::SetSecondInput
-  (const Handle(IFSelect_Selection)& sel)
-      {  thesecond = sel;  }
+void IFSelect_SelectControl::SetSecondInput(const Handle(IFSelect_Selection)& sel)
+{
+  thesecond = sel;
+}
 
-
-    void  IFSelect_SelectControl::FillIterator
-  (IFSelect_SelectionIterator& iter) const 
+void IFSelect_SelectControl::FillIterator(IFSelect_SelectionIterator& iter) const
 {
   iter.AddItem(themain);
-  if (!thesecond.IsNull()) iter.AddItem(thesecond);
+  if (!thesecond.IsNull())
+    iter.AddItem(thesecond);
 }

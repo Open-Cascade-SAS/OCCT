@@ -25,115 +25,131 @@
 #include <HLRAlgo_HArray1OfPINod.hxx>
 
 //=======================================================================
-//function : DecTData
-//purpose  : 
+// function : DecTData
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_PolyInternalData::DecTData ()
-{ myNbTData--; }
+inline void HLRAlgo_PolyInternalData::DecTData()
+{
+  myNbTData--;
+}
 
 //=======================================================================
-//function : DecPISeg
-//purpose  : 
+// function : DecPISeg
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_PolyInternalData::DecPISeg ()
-{ myNbPISeg--; }
+inline void HLRAlgo_PolyInternalData::DecPISeg()
+{
+  myNbPISeg--;
+}
 
 //=======================================================================
-//function : DecPINod
-//purpose  : 
+// function : DecPINod
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_PolyInternalData::DecPINod ()
-{ myNbPINod--; }
+inline void HLRAlgo_PolyInternalData::DecPINod()
+{
+  myNbPINod--;
+}
 
 //=======================================================================
-//function : NbTData
-//purpose  : 
+// function : NbTData
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRAlgo_PolyInternalData::NbTData () const
-{ return myNbTData; }
+inline Standard_Integer HLRAlgo_PolyInternalData::NbTData() const
+{
+  return myNbTData;
+}
 
 //=======================================================================
-//function : NbPISeg
-//purpose  : 
+// function : NbPISeg
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRAlgo_PolyInternalData::NbPISeg () const
-{ return myNbPISeg; }
+inline Standard_Integer HLRAlgo_PolyInternalData::NbPISeg() const
+{
+  return myNbPISeg;
+}
 
 //=======================================================================
-//function : NbPINod
-//purpose  : 
+// function : NbPINod
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRAlgo_PolyInternalData::NbPINod () const
-{ return myNbPINod; }
+inline Standard_Integer HLRAlgo_PolyInternalData::NbPINod() const
+{
+  return myNbPINod;
+}
 
 //=======================================================================
-//function : Planar
-//purpose  : 
+// function : Planar
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-HLRAlgo_PolyInternalData::Planar () const
-{ return myPlanar; }
+inline Standard_Boolean HLRAlgo_PolyInternalData::Planar() const
+{
+  return myPlanar;
+}
 
 //=======================================================================
-//function : Planar
-//purpose  : 
+// function : Planar
+// purpose  :
 //=======================================================================
 
-inline void
-HLRAlgo_PolyInternalData::Planar (const Standard_Boolean B)
-{ myPlanar = B; }
+inline void HLRAlgo_PolyInternalData::Planar(const Standard_Boolean B)
+{
+  myPlanar = B;
+}
 
 //=======================================================================
-//function : IntOutL
-//purpose  : 
+// function : IntOutL
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-HLRAlgo_PolyInternalData::IntOutL () const
-{ return myIntOutL; }
+inline Standard_Boolean HLRAlgo_PolyInternalData::IntOutL() const
+{
+  return myIntOutL;
+}
 
 //=======================================================================
-//function : IntOutL
-//purpose  : 
+// function : IntOutL
+// purpose  :
 //=======================================================================
 
-inline void
-HLRAlgo_PolyInternalData::IntOutL (const Standard_Boolean B)
-{ myIntOutL = B; }
+inline void HLRAlgo_PolyInternalData::IntOutL(const Standard_Boolean B)
+{
+  myIntOutL = B;
+}
 
 //=======================================================================
-//function : TData
-//purpose  : 
+// function : TData
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Array1OfTData &
-HLRAlgo_PolyInternalData::TData () const
-{ return myTData->ChangeArray1(); }
+inline HLRAlgo_Array1OfTData& HLRAlgo_PolyInternalData::TData() const
+{
+  return myTData->ChangeArray1();
+}
 
 //=======================================================================
-//function : PINod
-//purpose  : 
+// function : PINod
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Array1OfPINod &
-HLRAlgo_PolyInternalData::PINod () const
-{ return myPINod->ChangeArray1(); }
+inline HLRAlgo_Array1OfPINod& HLRAlgo_PolyInternalData::PINod() const
+{
+  return myPINod->ChangeArray1();
+}
 
 //=======================================================================
-//function : PISeg
-//purpose  : 
+// function : PISeg
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Array1OfPISeg &
-HLRAlgo_PolyInternalData::PISeg () const
-{ return myPISeg->ChangeArray1(); }
+inline HLRAlgo_Array1OfPISeg& HLRAlgo_PolyInternalData::PISeg() const
+{
+  return myPISeg->ChangeArray1();
+}

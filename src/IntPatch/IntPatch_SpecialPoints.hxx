@@ -29,7 +29,8 @@ class gp_XYZ;
 class IntPatch_Point;
 class IntSurf_PntOn2S;
 
-template<typename T> class math_VectorBase;
+template <typename T>
+class math_VectorBase;
 using math_Vector = math_VectorBase<double>;
 
 class IntPatch_SpecialPoints
@@ -38,22 +39,21 @@ public:
   //! Adds the point defined as intersection
   //! of two isolines (U = 0 and V = 0) on theQSurf in theLine.
   //! theRefPt is used to correct adjusting parameters.
-  //! If theIsReversed is TRUE then theQSurf correspond to the 
+  //! If theIsReversed is TRUE then theQSurf correspond to the
   //! second (otherwise, the first) surface while forming
   //! intersection point IntSurf_PntOn2S.
-  Standard_EXPORT static Standard_Boolean 
-                      AddCrossUVIsoPoint(const Handle(Adaptor3d_Surface)& theQSurf,
-                                         const Handle(Adaptor3d_Surface)& thePSurf,
-                                         const IntSurf_PntOn2S& theRefPt,
-                                         const Standard_Real theTol3d,
-                                         IntSurf_PntOn2S& theAddedPoint,
-                                         const Standard_Boolean theIsReversed
-                                                                = Standard_False);
+  Standard_EXPORT static Standard_Boolean AddCrossUVIsoPoint(
+    const Handle(Adaptor3d_Surface)& theQSurf,
+    const Handle(Adaptor3d_Surface)& thePSurf,
+    const IntSurf_PntOn2S&           theRefPt,
+    const Standard_Real              theTol3d,
+    IntSurf_PntOn2S&                 theAddedPoint,
+    const Standard_Boolean           theIsReversed = Standard_False);
 
   //! Adds the point lain strictly in the isoline U = 0 or V = 0 of theQSurf,
   //! in theLine.
   //! theRefPt is used to correct adjusting parameters.
-  //! If theIsReversed is TRUE then theQSurf corresponds to the 
+  //! If theIsReversed is TRUE then theQSurf corresponds to the
   //! second (otherwise, the first) surface while forming
   //! intersection point IntSurf_PntOn2S.
   //! All math_Vector-objects must be filled as follows:
@@ -61,19 +61,18 @@ public:
   //!   [2] - V-parameter of thePSurf;
   //!   [3] - U- (if V-isoline is considered) or V-parameter
   //!         (if U-isoline is considered) of theQSurf.
-  Standard_EXPORT static Standard_Boolean
-                      AddPointOnUorVIso(const Handle(Adaptor3d_Surface)& theQSurf,
-                                        const Handle(Adaptor3d_Surface)& thePSurf,
-                                        const IntSurf_PntOn2S& theRefPt,
-                                        const Standard_Boolean theIsU,
-                                        const Standard_Real theIsoParameter,
-                                        const math_Vector& theToler,
-                                        const math_Vector& theInitPoint,
-                                        const math_Vector& theInfBound,
-                                        const math_Vector& theSupBound,
-                                        IntSurf_PntOn2S& theAddedPoint,
-                                        const Standard_Boolean theIsReversed
-                                                                = Standard_False);
+  Standard_EXPORT static Standard_Boolean AddPointOnUorVIso(
+    const Handle(Adaptor3d_Surface)& theQSurf,
+    const Handle(Adaptor3d_Surface)& thePSurf,
+    const IntSurf_PntOn2S&           theRefPt,
+    const Standard_Boolean           theIsU,
+    const Standard_Real              theIsoParameter,
+    const math_Vector&               theToler,
+    const math_Vector&               theInitPoint,
+    const math_Vector&               theInfBound,
+    const math_Vector&               theSupBound,
+    IntSurf_PntOn2S&                 theAddedPoint,
+    const Standard_Boolean           theIsReversed = Standard_False);
 
   //! Computes the pole of sphere to add it in the intersection line.
   //! Stores the result in theAddedPoint variable (does not add in the line).
@@ -86,32 +85,29 @@ public:
   //!
   //! ATTENTION!!!
   //!   theVertex must be initialized before calling the method .
-  Standard_EXPORT static Standard_Boolean
-                      AddSingularPole(const Handle(Adaptor3d_Surface)& theQSurf,
-                                      const Handle(Adaptor3d_Surface)& thePSurf,
-                                      const IntSurf_PntOn2S& thePtIso,
-                                      IntPatch_Point& theVertex,
-                                      IntSurf_PntOn2S& theAddedPoint,                                      
-                                      const Standard_Boolean theIsReversed =
-                                                                Standard_False,
-                                      const Standard_Boolean theIsReqRefCheck = 
-                                                                Standard_False);
+  Standard_EXPORT static Standard_Boolean AddSingularPole(
+    const Handle(Adaptor3d_Surface)& theQSurf,
+    const Handle(Adaptor3d_Surface)& thePSurf,
+    const IntSurf_PntOn2S&           thePtIso,
+    IntPatch_Point&                  theVertex,
+    IntSurf_PntOn2S&                 theAddedPoint,
+    const Standard_Boolean           theIsReversed    = Standard_False,
+    const Standard_Boolean           theIsReqRefCheck = Standard_False);
 
   //! Special point has already been added in the line. Now, we need in correct
   //! prolongation of the line or in start new line. This function returns new point.
   //!
   //! ATTENTION!!!
-  //!   theNewPoint is not only Output parameter. It is Input/Output one. I.e. 
+  //!   theNewPoint is not only Output parameter. It is Input/Output one. I.e.
   //! theNewPoint is reference point together with theRefPt.
-  Standard_EXPORT static Standard_Boolean
-                    ContinueAfterSpecialPoint(const Handle(Adaptor3d_Surface)& theQSurf,
-                                              const Handle(Adaptor3d_Surface)& thePSurf,
-                                              const IntSurf_PntOn2S& theRefPt,
-                                              const IntPatch_SpecPntType theSPType,
-                                              const Standard_Real theTol2D,
-                                              IntSurf_PntOn2S& theNewPoint,
-                                              const Standard_Boolean theIsReversed
-                                                                = Standard_False);
+  Standard_EXPORT static Standard_Boolean ContinueAfterSpecialPoint(
+    const Handle(Adaptor3d_Surface)& theQSurf,
+    const Handle(Adaptor3d_Surface)& thePSurf,
+    const IntSurf_PntOn2S&           theRefPt,
+    const IntPatch_SpecPntType       theSPType,
+    const Standard_Real              theTol2D,
+    IntSurf_PntOn2S&                 theNewPoint,
+    const Standard_Boolean           theIsReversed = Standard_False);
 
   //! Sets theNewPoint parameters in 2D-space the closest to
   //! theRefPoint with help of adding/subtracting corresponding periods.
@@ -122,13 +118,12 @@ public:
   //! corresponding parameters of theNewPoint.
   //!
   //! ATTENTION!!!
-  //!   theNewPoint is not only Output parameter. It is Input/Output one. I.e. 
+  //!   theNewPoint is not only Output parameter. It is Input/Output one. I.e.
   //! theNewPoint is reference point together with theRefPt.
-  Standard_EXPORT static void 
-                      AdjustPointAndVertex(const IntSurf_PntOn2S &theRefPoint,
-                                           const Standard_Real theArrPeriods[4],
-                                           IntSurf_PntOn2S &theNewPoint,
-                                           IntPatch_Point* const theVertex = 0);
+  Standard_EXPORT static void AdjustPointAndVertex(const IntSurf_PntOn2S& theRefPoint,
+                                                   const Standard_Real    theArrPeriods[4],
+                                                   IntSurf_PntOn2S&       theNewPoint,
+                                                   IntPatch_Point* const  theVertex = 0);
 
 protected:
   //! Computes "special point" in the sphere
@@ -136,32 +131,33 @@ protected:
   //! Therefore it must be adjusted to valid range by
   //! the high-level algorithm
   static Standard_EXPORT Standard_Boolean ProcessSphere(const IntSurf_PntOn2S& thePtIso,
-                                                        const gp_Vec& theDUofPSurf,
-                                                        const gp_Vec& theDVofPSurf,
+                                                        const gp_Vec&          theDUofPSurf,
+                                                        const gp_Vec&          theDVofPSurf,
                                                         const Standard_Boolean theIsReversed,
-                                                        const Standard_Real theVquad,
-                                                        Standard_Real& theUquad,
-                                                        Standard_Boolean& theIsIsoChoosen);
+                                                        const Standard_Real    theVquad,
+                                                        Standard_Real&         theUquad,
+                                                        Standard_Boolean&      theIsIsoChoosen);
 
   //! Computes "special point" in the cone.
   //! The parameter will be found in the range [0, 2*PI].
   //! Therefore it must be adjusted to valid range by
   //! the high-level algorithm.
   static Standard_EXPORT Standard_Boolean ProcessCone(const IntSurf_PntOn2S& thePtIso,
-                                                      const gp_Vec& theDUofPSurf,
-                                                      const gp_Vec& theDVofPSurf,
-                                                      const gp_Cone& theCone,
+                                                      const gp_Vec&          theDUofPSurf,
+                                                      const gp_Vec&          theDVofPSurf,
+                                                      const gp_Cone&         theCone,
                                                       const Standard_Boolean theIsReversed,
-                                                      Standard_Real& theUquad,
-                                                      Standard_Boolean& theIsIsoChoosen);
+                                                      Standard_Real&         theUquad,
+                                                      Standard_Boolean&      theIsIsoChoosen);
 
   //! Computes vector tangent to the intersection line in cone apex.
   //! There exist not more than 2 tangent. They will be stores in theResult vector.
   //! Returns the number of found tangents.
   //! thePlnNormal is the normalized vector of the normal to the plane intersected the cone.
-  static Standard_EXPORT Standard_Integer GetTangentToIntLineForCone(const Standard_Real theConeSemiAngle,
-                                                                     const gp_XYZ& thePlnNormal,
-                                                                     gp_XYZ theResult[2]);
+  static Standard_EXPORT Standard_Integer
+    GetTangentToIntLineForCone(const Standard_Real theConeSemiAngle,
+                               const gp_XYZ&       thePlnNormal,
+                               gp_XYZ              theResult[2]);
 };
 
 #endif // _IntPatch_AddSpecialPoints_HeaderFile

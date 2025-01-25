@@ -21,8 +21,8 @@
 #include <TPrsStd_Driver.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_GUID,Handle(TPrsStd_Driver)> TPrsStd_DataMapOfGUIDDriver;
-typedef NCollection_DataMap<Standard_GUID,Handle(TPrsStd_Driver)>::Iterator TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver;
-
+typedef NCollection_DataMap<Standard_GUID, Handle(TPrsStd_Driver)> TPrsStd_DataMapOfGUIDDriver;
+typedef NCollection_DataMap<Standard_GUID, Handle(TPrsStd_Driver)>::Iterator
+  TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver;
 
 #endif

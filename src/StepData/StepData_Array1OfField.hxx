@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepData_Field> StepData_Array1OfField;
 
-
 #endif

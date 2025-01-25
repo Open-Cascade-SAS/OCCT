@@ -17,29 +17,28 @@
 
 #include <Select3D_InteriorSensitivePointSet.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet,Select3D_SensitiveSet)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
-namespace {
+namespace
+{
 
 // Internal class for creation of planar polygons
 class Select3D_Plane
 {
 public:
-
   Select3D_Plane()
-    : myPlane (0.0),
-      myIsInitialized (Standard_False)
-  {}
+      : myPlane(0.0),
+        myIsInitialized(Standard_False)
+  {
+  }
 
-  Standard_Boolean Contains (const gp_Pnt& thePnt) const
+  Standard_Boolean Contains(const gp_Pnt& thePnt) const
   {
     if (!myIsInitialized)
       return Standard_False;
 
-    Standard_Real aRes = myPlane.x() * thePnt.X() +
-                         myPlane.y() * thePnt.Y() +
-                         myPlane.z() * thePnt.Z() +
-                         myPlane.w();
+    Standard_Real aRes =
+      myPlane.x() * thePnt.X() + myPlane.y() * thePnt.Y() + myPlane.z() * thePnt.Z() + myPlane.w();
 
     if (aRes < Precision::Confusion())
       return Standard_True;
@@ -47,27 +46,19 @@ public:
     return Standard_False;
   }
 
-  void MakePlane (const gp_Pnt& thePnt1,
-                  const gp_Pnt& thePnt2,
-                  const gp_Pnt& thePnt3)
+  void MakePlane(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2, const gp_Pnt& thePnt3)
   {
     const gp_XYZ& aVec1 = thePnt2.XYZ() - thePnt1.XYZ();
     const gp_XYZ& aVec2 = thePnt3.XYZ() - thePnt1.XYZ();
-    const gp_XYZ& aDir  = aVec1.Crossed (aVec2);
-    Standard_Real aD = aDir.Dot (thePnt1.XYZ().Reversed());
-    myPlane = NCollection_Vec4<Standard_Real> (aDir.X(), aDir.Y(), aDir.Z(), aD);
-    myIsInitialized = Standard_True;
+    const gp_XYZ& aDir  = aVec1.Crossed(aVec2);
+    Standard_Real aD    = aDir.Dot(thePnt1.XYZ().Reversed());
+    myPlane             = NCollection_Vec4<Standard_Real>(aDir.X(), aDir.Y(), aDir.Z(), aD);
+    myIsInitialized     = Standard_True;
   }
 
-  void Invalidate()
-  {
-    myIsInitialized = Standard_False;
-  }
+  void Invalidate() { myIsInitialized = Standard_False; }
 
-  Standard_Boolean IsValid() const
-  {
-    return myIsInitialized;
-  }
+  Standard_Boolean IsValid() const { return myIsInitialized; }
 
 private:
   NCollection_Vec4<Standard_Real> myPlane;
@@ -76,73 +67,71 @@ private:
 
 } // anonymous namespace
 
-
 // =======================================================================
 // function : Select3D_InteriorSensitivePointSet
 // purpose  : Splits the given point set thePoints onto planar convex
 //            polygons
 // =======================================================================
-Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                                        const TColgp_Array1OfPnt& thePoints)
-  : Select3D_SensitiveSet (theOwnerId)
+Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet(
+  const Handle(SelectMgr_EntityOwner)& theOwnerId,
+  const TColgp_Array1OfPnt&            thePoints)
+    : Select3D_SensitiveSet(theOwnerId)
 {
-  Select3D_Plane aPlane;
-  Standard_Integer aLowerIdx = thePoints.Lower();
-  Standard_Integer anUpperIdx = thePoints.Upper();
-  Standard_Integer aStartIdx = aLowerIdx, anEndIdx = 0;
+  Select3D_Plane    aPlane;
+  Standard_Integer  aLowerIdx  = thePoints.Lower();
+  Standard_Integer  anUpperIdx = thePoints.Upper();
+  Standard_Integer  aStartIdx = aLowerIdx, anEndIdx = 0;
   Select3D_BndBox3d aBndBox;
-  gp_XYZ aPntSum (0.0, 0.0, 0.0);
+  gp_XYZ            aPntSum(0.0, 0.0, 0.0);
   for (Standard_Integer aPntIter = aLowerIdx; aPntIter <= anUpperIdx; ++aPntIter)
   {
-    gp_Pnt aPnt1, aPnt2;
-    const gp_Pnt& aPnt3 = thePoints.Value (aPntIter);
+    gp_Pnt        aPnt1, aPnt2;
+    const gp_Pnt& aPnt3 = thePoints.Value(aPntIter);
     aPntSum += aPnt3.XYZ();
-    SelectMgr_Vec3 aCurrPnt (aPnt3.X(), aPnt3.Y(), aPnt3.Z());
-    aBndBox.Add (aCurrPnt);
+    SelectMgr_Vec3 aCurrPnt(aPnt3.X(), aPnt3.Y(), aPnt3.Z());
+    aBndBox.Add(aCurrPnt);
     if (aPntIter - aLowerIdx >= 2)
     {
-      aPnt1 = thePoints.Value (aPntIter - 2);
-      aPnt2 = thePoints.Value (aPntIter - 1);
+      aPnt1 = thePoints.Value(aPntIter - 2);
+      aPnt2 = thePoints.Value(aPntIter - 1);
     }
     if (aPntIter - aStartIdx == 2 && !aPlane.IsValid())
     {
-      aPlane.MakePlane (aPnt1, aPnt2, aPnt3);
+      aPlane.MakePlane(aPnt1, aPnt2, aPnt3);
       aStartIdx = aPntIter - 2;
-      anEndIdx = aPntIter;
+      anEndIdx  = aPntIter;
 
       if (anEndIdx == anUpperIdx)
       {
-        Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anEndIdx - aStartIdx);
+        Handle(TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt(0, anEndIdx - aStartIdx);
         for (Standard_Integer aIdx = aStartIdx; aIdx <= anEndIdx; ++aIdx)
         {
-          aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value(aIdx));
+          aPointsArray->SetValue(aIdx - aStartIdx, thePoints.Value(aIdx));
         }
-        Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                                 aPointsArray,
-                                                                                 Standard_False);
-        myPlanarPolygons.Append (aPlanarPolyg);
+        Handle(Select3D_SensitivePoly) aPlanarPolyg =
+          new Select3D_SensitivePoly(theOwnerId, aPointsArray, Standard_False);
+        myPlanarPolygons.Append(aPlanarPolyg);
       }
     }
     else if (aPlane.IsValid())
     {
-      const gp_XYZ& aVec1 = aPnt1.XYZ() - aPnt2.XYZ();
-      const gp_XYZ& aVec2 = aPnt3.XYZ() - aPnt2.XYZ();
-      Standard_Real anAngle = aVec1.Dot (aVec2);
-      if (!aPlane.Contains (thePoints.Value (aPntIter)) || anAngle > Precision::Confusion())
+      const gp_XYZ& aVec1   = aPnt1.XYZ() - aPnt2.XYZ();
+      const gp_XYZ& aVec2   = aPnt3.XYZ() - aPnt2.XYZ();
+      Standard_Real anAngle = aVec1.Dot(aVec2);
+      if (!aPlane.Contains(thePoints.Value(aPntIter)) || anAngle > Precision::Confusion())
       {
         // subtract 1 due to indexation from zero in sub-polygons
-        Standard_Integer anUpperBound = aPntIter - aStartIdx - 1;
-        Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anUpperBound);
+        Standard_Integer            anUpperBound = aPntIter - aStartIdx - 1;
+        Handle(TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt(0, anUpperBound);
         for (Standard_Integer aIdx = aStartIdx; aIdx <= aStartIdx + anUpperBound; ++aIdx)
         {
-          aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
+          aPointsArray->SetValue(aIdx - aStartIdx, thePoints.Value(aIdx));
         }
-        Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                                  aPointsArray,
-                                                                                  Standard_True);
-        myPlanarPolygons.Append (aPlanarPolyg);
+        Handle(Select3D_SensitivePoly) aPlanarPolyg =
+          new Select3D_SensitivePoly(theOwnerId, aPointsArray, Standard_True);
+        myPlanarPolygons.Append(aPlanarPolyg);
         aStartIdx = aPntIter;
-        anEndIdx = aPntIter;
+        anEndIdx  = aPntIter;
         aPlane.Invalidate();
       }
       else
@@ -150,27 +139,27 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
         anEndIdx++;
         if (anEndIdx == anUpperIdx)
         {
-          Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anEndIdx - aStartIdx);
+          Handle(TColgp_HArray1OfPnt) aPointsArray =
+            new TColgp_HArray1OfPnt(0, anEndIdx - aStartIdx);
           for (Standard_Integer aIdx = aStartIdx; aIdx <= anEndIdx; ++aIdx)
           {
-            aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
+            aPointsArray->SetValue(aIdx - aStartIdx, thePoints.Value(aIdx));
           }
-          Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                                    aPointsArray,
-                                                                                    Standard_True);
-          myPlanarPolygons.Append (aPlanarPolyg);
+          Handle(Select3D_SensitivePoly) aPlanarPolyg =
+            new Select3D_SensitivePoly(theOwnerId, aPointsArray, Standard_True);
+          myPlanarPolygons.Append(aPlanarPolyg);
         }
       }
     }
   }
 
-  myCOG = aPntSum / thePoints.Length();
+  myCOG    = aPntSum / thePoints.Length();
   myBndBox = aBndBox;
 
-  myPolygonsIdxs = new TColStd_HArray1OfInteger (0, myPlanarPolygons.Length() - 1);
+  myPolygonsIdxs = new TColStd_HArray1OfInteger(0, myPlanarPolygons.Length() - 1);
   for (Standard_Integer aIdx = 0; aIdx < myPlanarPolygons.Length(); ++aIdx)
   {
-    myPolygonsIdxs->SetValue (aIdx, aIdx);
+    myPolygonsIdxs->SetValue(aIdx, aIdx);
   }
 }
 
@@ -179,27 +168,28 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
 // purpose  : Initializes the given array theHArrayOfPnt by 3d
 //            coordinates of vertices of the whole point set
 // =======================================================================
-void Select3D_InteriorSensitivePointSet::GetPoints (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
+void Select3D_InteriorSensitivePointSet::GetPoints(Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
 {
   Standard_Integer aSize = 0;
   for (Standard_Integer anIdx = 0; anIdx < myPlanarPolygons.Length(); ++anIdx)
   {
-    const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (anIdx);
+    const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value(anIdx);
     aSize += aPolygon->NbSubElements();
   }
 
-  theHArrayOfPnt = new TColgp_HArray1OfPnt (1, aSize);
+  theHArrayOfPnt                       = new TColgp_HArray1OfPnt(1, aSize);
   Standard_Integer anOutputPntArrayIdx = 1;
 
   for (Standard_Integer aPolygIdx = 0; aPolygIdx < myPlanarPolygons.Length(); ++aPolygIdx)
   {
-    const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (aPolygIdx);
-    Handle(TColgp_HArray1OfPnt) aPoints;
-    aPolygon->Points3D (aPoints);
-    Standard_Integer anUpper = aPolygIdx < myPlanarPolygons.Length() - 1 ? aPoints->Upper() : aPoints->Upper() + 1;
+    const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value(aPolygIdx);
+    Handle(TColgp_HArray1OfPnt)           aPoints;
+    aPolygon->Points3D(aPoints);
+    Standard_Integer anUpper =
+      aPolygIdx < myPlanarPolygons.Length() - 1 ? aPoints->Upper() : aPoints->Upper() + 1;
     for (Standard_Integer aPntIter = 1; aPntIter < anUpper; ++aPntIter)
     {
-      theHArrayOfPnt->SetValue (anOutputPntArrayIdx, aPoints->Value (aPntIter));
+      theHArrayOfPnt->SetValue(anOutputPntArrayIdx, aPoints->Value(aPntIter));
       anOutputPntArrayIdx++;
     }
     aPoints.Nullify();
@@ -220,10 +210,10 @@ Standard_Integer Select3D_InteriorSensitivePointSet::Size() const
 // purpose  : Returns bounding box of planar convex polygon with index
 //            theIdx
 //=======================================================================
-Select3D_BndBox3d Select3D_InteriorSensitivePointSet::Box (const Standard_Integer theIdx) const
+Select3D_BndBox3d Select3D_InteriorSensitivePointSet::Box(const Standard_Integer theIdx) const
 {
-  Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theIdx);
-  return myPlanarPolygons.Value (aPolygIdx)->BoundingBox();
+  Standard_Integer aPolygIdx = myPolygonsIdxs->Value(theIdx);
+  return myPlanarPolygons.Value(aPolygIdx)->BoundingBox();
 }
 
 //=======================================================================
@@ -231,54 +221,56 @@ Select3D_BndBox3d Select3D_InteriorSensitivePointSet::Box (const Standard_Intege
 // purpose  : Returns geometry center of planar convex polygon with index
 //            theIdx in the vector along the given axis theAxis
 //=======================================================================
-Standard_Real Select3D_InteriorSensitivePointSet::Center (const Standard_Integer theIdx,
-                                                          const Standard_Integer theAxis) const
+Standard_Real Select3D_InteriorSensitivePointSet::Center(const Standard_Integer theIdx,
+                                                         const Standard_Integer theAxis) const
 {
-  const Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theIdx);
-  const gp_Pnt aCOG = myPlanarPolygons.Value (aPolygIdx)->CenterOfGeometry();
-  return aCOG.Coord (theAxis - 1);
+  const Standard_Integer aPolygIdx = myPolygonsIdxs->Value(theIdx);
+  const gp_Pnt           aCOG      = myPlanarPolygons.Value(aPolygIdx)->CenterOfGeometry();
+  return aCOG.Coord(theAxis - 1);
 }
 
 //=======================================================================
 // function : Swap
 // purpose  : Swaps items with indexes theIdx1 and theIdx2 in the vector
 //=======================================================================
-void Select3D_InteriorSensitivePointSet::Swap (const Standard_Integer theIdx1,
-                                               const Standard_Integer theIdx2)
+void Select3D_InteriorSensitivePointSet::Swap(const Standard_Integer theIdx1,
+                                              const Standard_Integer theIdx2)
 {
-  Standard_Integer aPolygIdx1 = myPolygonsIdxs->Value (theIdx1);
-  Standard_Integer aPolygIdx2 = myPolygonsIdxs->Value (theIdx2);
+  Standard_Integer aPolygIdx1 = myPolygonsIdxs->Value(theIdx1);
+  Standard_Integer aPolygIdx2 = myPolygonsIdxs->Value(theIdx2);
 
-  myPolygonsIdxs->ChangeValue (theIdx1) = aPolygIdx2;
-  myPolygonsIdxs->ChangeValue (theIdx2) = aPolygIdx1;
+  myPolygonsIdxs->ChangeValue(theIdx1) = aPolygIdx2;
+  myPolygonsIdxs->ChangeValue(theIdx2) = aPolygIdx1;
 }
 
 // =======================================================================
 // function : overlapsElement
 // purpose  :
 // =======================================================================
-Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasics_PickResult& thePickResult,
-                                                                      SelectBasics_SelectingVolumeManager& theMgr,
-                                                                      Standard_Integer theElemIdx,
-                                                                      Standard_Boolean )
+Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_Integer                     theElemIdx,
+  Standard_Boolean)
 {
-  Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theElemIdx);
-  const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (aPolygIdx);
-  Handle(TColgp_HArray1OfPnt) aPoints;
-  aPolygon->Points3D (aPoints);
-  return theMgr.OverlapsPolygon (aPoints->Array1(), Select3D_TOS_INTERIOR, thePickResult);
+  Standard_Integer                      aPolygIdx = myPolygonsIdxs->Value(theElemIdx);
+  const Handle(Select3D_SensitivePoly)& aPolygon  = myPlanarPolygons.Value(aPolygIdx);
+  Handle(TColgp_HArray1OfPnt)           aPoints;
+  aPolygon->Points3D(aPoints);
+  return theMgr.OverlapsPolygon(aPoints->Array1(), Select3D_TOS_INTERIOR, thePickResult);
 }
 
 // =======================================================================
 // function : elementIsInside
 // purpose  :
 // =======================================================================
-Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                                      Standard_Integer theElemIdx,
-                                                                      Standard_Boolean theIsFullInside)
+Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_Integer                     theElemIdx,
+  Standard_Boolean                     theIsFullInside)
 {
   SelectBasics_PickResult aDummy;
-  return overlapsElement (aDummy, theMgr, theElemIdx, theIsFullInside);
+  return overlapsElement(aDummy, theMgr, theElemIdx, theIsFullInside);
 }
 
 // =======================================================================
@@ -286,9 +278,10 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside (SelectBasi
 // purpose  : Calculates distance from the 3d projection of used-picked
 //            screen point to center of the geometry
 // =======================================================================
-Standard_Real Select3D_InteriorSensitivePointSet::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
+Standard_Real Select3D_InteriorSensitivePointSet::distanceToCOG(
+  SelectBasics_SelectingVolumeManager& theMgr)
 {
-  return theMgr.DistToGeometryCenter (myCOG);
+  return theMgr.DistToGeometryCenter(myCOG);
 }
 
 //=======================================================================
@@ -324,10 +317,11 @@ Standard_Integer Select3D_InteriorSensitivePointSet::NbSubElements() const
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Select3D_InteriorSensitivePointSet::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Select3D_InteriorSensitivePointSet::DumpJson(Standard_OStream& theOStream,
+                                                  Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveSet)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBndBox)
 }

@@ -25,19 +25,9 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <gp_Vec.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define TheStartPoint IntSurf_PathPoint
 #define TheStartPoint_hxx <IntSurf_PathPoint.hxx>
 #define IntWalk_IWLine IntPatch_TheIWLineOfTheIWalking
 #define IntWalk_IWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_IWLine Handle(IntPatch_TheIWLineOfTheIWalking)
 #include "../IntWalk/IntWalk_IWLine.gxx"
-

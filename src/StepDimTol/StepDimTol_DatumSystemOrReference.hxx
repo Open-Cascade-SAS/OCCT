@@ -27,25 +27,24 @@ class Standard_Transient;
 class StepDimTol_DatumSystem;
 class StepDimTol_DatumReference;
 
-class StepDimTol_DatumSystemOrReference  : public StepData_SelectType
+class StepDimTol_DatumSystemOrReference : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a DatumSystemOrReference select type
   Standard_EXPORT StepDimTol_DatumSystemOrReference();
-  
+
   //! Recognizes a DatumSystemOrReference Kind Entity that is :
   //! 1 -> DatumSystem
   //! 2 -> DatumReference
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a DatumSystem (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_DatumSystem) DatumSystem()  const;
-  
+  Standard_EXPORT Handle(StepDimTol_DatumSystem) DatumSystem() const;
+
   //! returns Value as a DatumReference (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_DatumReference) DatumReference()  const;
+  Standard_EXPORT Handle(StepDimTol_DatumReference) DatumReference() const;
 };
 #endif // _StepDimTol_DatumSystemOrReference_HeaderFile

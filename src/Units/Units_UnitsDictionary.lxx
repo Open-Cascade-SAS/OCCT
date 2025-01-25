@@ -19,8 +19,8 @@
 #include <Units_Explorer.hxx>
 
 //=======================================================================
-//function : Sequence
-//purpose  : 
+// function : Sequence
+// purpose  :
 //=======================================================================
 
 inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
@@ -29,47 +29,47 @@ inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 
 inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
 {
   Standard_Integer index;
-  switch (alevel) {
-  case 2: 
-    if( !thequantitiessequence.IsNull() ) {
-      for(index=1;index<=thequantitiessequence->Length();index++)
-        thequantitiessequence->Value(index)->Dump(0,1);
-    }
-    break;
-    
-  case 1:
-  default:
-    Units_Explorer explorer(this);
-    std::cout<<" UNITS DICTIONARY : "<<std::endl;
-    for(;explorer.MoreQuantity();explorer.NextQuantity())
+  switch (alevel)
+  {
+    case 2:
+      if (!thequantitiessequence.IsNull())
       {
-	std::cout<<explorer.Quantity()<<std::endl;
-	for(; explorer.MoreUnit(); explorer.NextUnit())
-	  std::cout<<"  "<<explorer.Unit()<<std::endl;
+        for (index = 1; index <= thequantitiessequence->Length(); index++)
+          thequantitiessequence->Value(index)->Dump(0, 1);
       }
+      break;
 
-  
+    case 1:
+    default:
+      Units_Explorer explorer(this);
+      std::cout << " UNITS DICTIONARY : " << std::endl;
+      for (; explorer.MoreQuantity(); explorer.NextQuantity())
+      {
+        std::cout << explorer.Quantity() << std::endl;
+        for (; explorer.MoreUnit(); explorer.NextUnit())
+          std::cout << "  " << explorer.Unit() << std::endl;
+      }
   }
 }
+
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 
 inline void Units_UnitsDictionary::Dump(const Handle(Units_Dimensions)& adimensions) const
 {
   Standard_Integer index;
-  for(index=1;index<=thequantitiessequence->Length();index++)
-    {
-      if(thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))
-	thequantitiessequence->Value(index)->Dump(0,1);
-    }
+  for (index = 1; index <= thequantitiessequence->Length(); index++)
+  {
+    if (thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))
+      thequantitiessequence->Value(index)->Dump(0, 1);
+  }
 }
-

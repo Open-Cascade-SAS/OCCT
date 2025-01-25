@@ -11,22 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_SelectErrorEntities.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities,IFSelect_SelectExtract)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities, IFSelect_SelectExtract)
 
-IFSelect_SelectErrorEntities::IFSelect_SelectErrorEntities ()    {  }
+IFSelect_SelectErrorEntities::IFSelect_SelectErrorEntities() {}
 
-    Standard_Boolean  IFSelect_SelectErrorEntities::Sort
-  (const Standard_Integer , const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const 
+Standard_Boolean IFSelect_SelectErrorEntities::Sort(
+  const Standard_Integer,
+  const Handle(Standard_Transient)&       ent,
+  const Handle(Interface_InterfaceModel)& model) const
 //.. ne peut pas marcher, il faut aussi le modele ! ex. via le graphe ...
-      {  return model->IsErrorEntity (model->Number(ent));  }
+{
+  return model->IsErrorEntity(model->Number(ent));
+}
 
-    TCollection_AsciiString IFSelect_SelectErrorEntities::ExtractLabel () const
-      {  return TCollection_AsciiString("Error Entities");  }
+TCollection_AsciiString IFSelect_SelectErrorEntities::ExtractLabel() const
+{
+  return TCollection_AsciiString("Error Entities");
+}

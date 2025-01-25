@@ -27,20 +27,18 @@ class Media_Frame : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_Frame, Standard_Transient)
 public:
-
   //! Convert pixel format from FFmpeg (AVPixelFormat) to OCCT.
-  Standard_EXPORT static Image_Format FormatFFmpeg2Occt (int theFormat);
+  Standard_EXPORT static Image_Format FormatFFmpeg2Occt(int theFormat);
 
   //! Convert pixel format from OCCT to FFmpeg (AVPixelFormat).
   //! Returns -1 (AV_PIX_FMT_NONE) if undefined.
-  Standard_EXPORT static int FormatOcct2FFmpeg (Image_Format theFormat);
+  Standard_EXPORT static int FormatOcct2FFmpeg(Image_Format theFormat);
 
   //! Swap AVFrame* within two frames.
-  Standard_EXPORT static void Swap (const Handle(Media_Frame)& theFrame1,
-                                    const Handle(Media_Frame)& theFrame2);
+  Standard_EXPORT static void Swap(const Handle(Media_Frame)& theFrame1,
+                                   const Handle(Media_Frame)& theFrame2);
 
 public:
-
   //! Empty constructor
   Standard_EXPORT Media_Frame();
 
@@ -54,7 +52,7 @@ public:
   Standard_EXPORT void Unref();
 
   //! Return image dimensions.
-  Graphic3d_Vec2i Size() const { return Graphic3d_Vec2i (SizeX(), SizeY()); }
+  Graphic3d_Vec2i Size() const { return Graphic3d_Vec2i(SizeX(), SizeY()); }
 
   //! Return image width.
   Standard_EXPORT int SizeX() const;
@@ -69,10 +67,10 @@ public:
   Standard_EXPORT bool IsFullRangeYUV() const;
 
   //! Access data plane for specified Id.
-  Standard_EXPORT uint8_t* Plane (int thePlaneId) const;
+  Standard_EXPORT uint8_t* Plane(int thePlaneId) const;
 
   //! @return linesize in bytes for specified data plane
-  Standard_EXPORT int LineSize (int thePlaneId) const;
+  Standard_EXPORT int LineSize(int thePlaneId) const;
 
   //! @return frame timestamp estimated using various heuristics, in stream time base
   Standard_EXPORT int64_t BestEffortTimestamp() const;
@@ -87,32 +85,29 @@ public:
   double Pts() const { return myFramePts; }
 
   //! Set presentation timestamp (PTS).
-  void SetPts (double thePts) { myFramePts = thePts; }
+  void SetPts(double thePts) { myFramePts = thePts; }
 
   //! Return PAR.
   float PixelAspectRatio() const { return myPixelRatio; }
 
   //! Set PAR.
-  void SetPixelAspectRatio (float theRatio) { myPixelRatio = theRatio; }
+  void SetPixelAspectRatio(float theRatio) { myPixelRatio = theRatio; }
 
   //! Return locked state.
   bool IsLocked() const { return myIsLocked; }
 
   //! Lock/free frame for edition.
-  void SetLocked (bool theToLock) { myIsLocked = theToLock; }
+  void SetLocked(bool theToLock) { myIsLocked = theToLock; }
 
 public:
-
   //! Wrap allocated image pixmap.
-  Standard_EXPORT bool InitWrapper (const Handle(Image_PixMap)& thePixMap);
+  Standard_EXPORT bool InitWrapper(const Handle(Image_PixMap)& thePixMap);
 
 protected:
-
   AVFrame* myFrame;      //!< frame
   double   myFramePts;   //!< presentation timestamp
   float    myPixelRatio; //!< pixel aspect ratio
   bool     myIsLocked;   //!< locked state
-
 };
 
 #endif // _Media_Frame_HeaderFile

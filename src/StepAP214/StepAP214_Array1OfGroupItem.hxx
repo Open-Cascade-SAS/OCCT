@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepAP214_GroupItem> StepAP214_Array1OfGroupItem;
 
-
 #endif

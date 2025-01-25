@@ -37,95 +37,111 @@
 
 //! The first character in a UTF-8 sequence indicates how many bytes
 //! to read (among other things).
-template<typename Type>
-const unsigned char NCollection_UtfIterator<Type>::UTF8_BYTES_MINUS_ONE[256] =
-{
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
-};
+template <typename Type>
+const unsigned char NCollection_UtfIterator<Type>::UTF8_BYTES_MINUS_ONE[256] = {
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 
 //! Magic values subtracted from a buffer value during UTF-8 conversion.
 //! This table contains as many values as there might be trailing bytes
 //! in a UTF-8 sequence.
-template<typename Type>
+template <typename Type>
 const Standard_Utf32Char NCollection_UtfIterator<Type>::offsetsFromUTF8[6] =
-{
-  0x00000000UL, 0x00003080UL, 0x000E2080UL,
-  0x03C82080UL, 0xFA082080UL, 0x82082080UL
-};
+  {0x00000000UL, 0x00003080UL, 0x000E2080UL, 0x03C82080UL, 0xFA082080UL, 0x82082080UL};
 
 //! The first character in a UTF-8 sequence indicates how many bytes to read.
-template<typename Type>
-const unsigned char NCollection_UtfIterator<Type>::UTF8_FIRST_BYTE_MARK[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+template <typename Type>
+const unsigned char NCollection_UtfIterator<Type>::UTF8_FIRST_BYTE_MARK[7] =
+  {0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
 
 // =======================================================================
 // function : readUTF8
 // purpose  : Get a UTF-8 character; leave the tracking pointer at the start of the next character.
 //            Not protected against invalid UTF-8.
 // =======================================================================
-template<typename Type>
+template <typename Type>
 inline void NCollection_UtfIterator<Type>::readUTF8()
 {
   // unsigned arithmetic used
-  Standard_Utf8UChar* aPos = (Standard_Utf8UChar* )myPosNext;
+  Standard_Utf8UChar* aPos         = (Standard_Utf8UChar*)myPosNext;
   const unsigned char aBytesToRead = UTF8_BYTES_MINUS_ONE[*aPos];
-  myCharUtf32 = 0;
+  myCharUtf32                      = 0;
   switch (aBytesToRead)
   {
-    case 5: myCharUtf32 += *aPos++; myCharUtf32 <<= 6; // remember, illegal UTF-8
+    case 5:
+      myCharUtf32 += *aPos++;
+      myCharUtf32 <<= 6; // remember, illegal UTF-8
       Standard_FALLTHROUGH
-    case 4: myCharUtf32 += *aPos++; myCharUtf32 <<= 6; // remember, illegal UTF-8
+    case 4:
+      myCharUtf32 += *aPos++;
+      myCharUtf32 <<= 6; // remember, illegal UTF-8
       Standard_FALLTHROUGH
-    case 3: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+    case 3:
+      myCharUtf32 += *aPos++;
+      myCharUtf32 <<= 6;
       Standard_FALLTHROUGH
-    case 2: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+    case 2:
+      myCharUtf32 += *aPos++;
+      myCharUtf32 <<= 6;
       Standard_FALLTHROUGH
-    case 1: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+    case 1:
+      myCharUtf32 += *aPos++;
+      myCharUtf32 <<= 6;
       Standard_FALLTHROUGH
-    case 0: myCharUtf32 += *aPos++;
+    case 0:
+      myCharUtf32 += *aPos++;
   }
   myCharUtf32 -= offsetsFromUTF8[aBytesToRead];
-  myPosNext = (Type* )aPos;
+  myPosNext = (Type*)aPos;
 }
 
 // magic numbers
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MASK = 0xBF;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MARK = 0x80;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_START = 0xD800;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_END   = 0xDBFF;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_START  = 0xDC00;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_END    = 0xDFFF;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_SHIFT = 10;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_BMP   = 0x0000FFFFUL;
-template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_LEGAL = 0x0010FFFFUL;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MASK = 0xBF;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MARK = 0x80;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_START = 0xD800;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_END = 0xDBFF;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_START = 0xDC00;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_END = 0xDFFF;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_SHIFT = 10;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_BASE = 0x0010000UL;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_MASK = 0x3FFUL;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_BMP = 0x0000FFFFUL;
+template <typename Type>
+const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_LEGAL = 0x0010FFFFUL;
 
 // =======================================================================
 // function : readUTF16
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-void NCollection_UtfIterator<Type>::readUTF16()
+template <typename Type>
+inline void NCollection_UtfIterator<Type>::readUTF16()
 {
   Standard_Utf32Char aChar = *myPosNext++;
   // if we have the first half of the surrogate pair
-  if (aChar >= UTF16_SURROGATE_HIGH_START
-   && aChar <= UTF16_SURROGATE_HIGH_END)
+  if (aChar >= UTF16_SURROGATE_HIGH_START && aChar <= UTF16_SURROGATE_HIGH_END)
   {
     const Standard_Utf32Char aChar2 = *myPosNext;
     // complete the surrogate pair
-    if (aChar2 >= UTF16_SURROGATE_LOW_START
-     && aChar2 <= UTF16_SURROGATE_LOW_END)
+    if (aChar2 >= UTF16_SURROGATE_LOW_START && aChar2 <= UTF16_SURROGATE_LOW_END)
     {
       aChar = ((aChar - UTF16_SURROGATE_HIGH_START) << UTF16_SURROGATE_HIGH_SHIFT)
-            + (aChar2 - UTF16_SURROGATE_LOW_START)   + UTF16_SURROGATE_LOW_BASE;
+              + (aChar2 - UTF16_SURROGATE_LOW_START) + UTF16_SURROGATE_LOW_BASE;
       ++myPosNext;
     }
   }
@@ -136,12 +152,11 @@ void NCollection_UtfIterator<Type>::readUTF16()
 // function : AdvanceBytesUtf8
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
+template <typename Type>
+inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
 {
-  if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START
-   && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
-   {
+  if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
+  {
     // UTF-16 surrogate values are illegal in UTF-32
     return 0;
   }
@@ -172,53 +187,59 @@ Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
 // function : GetUtf8
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Utf8Char* NCollection_UtfIterator<Type>::GetUtf8 (Standard_Utf8Char* theBuffer) const
+template <typename Type>
+inline Standard_Utf8Char* NCollection_UtfIterator<Type>::GetUtf8(Standard_Utf8Char* theBuffer) const
 {
   // unsigned arithmetic used
-  return (Standard_Utf8Char* )GetUtf8 ((Standard_Utf8UChar* )theBuffer);
+  return (Standard_Utf8Char*)GetUtf8((Standard_Utf8UChar*)theBuffer);
 }
 
 // =======================================================================
 // function : GetUtf8
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8 (Standard_Utf8UChar* theBuffer) const
+template <typename Type>
+inline Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8(
+  Standard_Utf8UChar* theBuffer) const
 {
   Standard_Utf32Char aChar = myCharUtf32;
-  if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START
-   && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
+  if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
   {
     // UTF-16 surrogate values are illegal in UTF-32
     return theBuffer;
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x80))
   {
-    *theBuffer++ = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[1]);
+    *theBuffer++ = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[1]);
     return theBuffer;
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x800))
   {
-    *++theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[2]);
+    *++theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[2]);
     return theBuffer + 2;
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x10000))
   {
     theBuffer += 3;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[3]);
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[3]);
     return theBuffer + 3;
   }
   else if (myCharUtf32 <= UTF32_MAX_LEGAL)
   {
     theBuffer += 4;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[4]);
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[4]);
     return theBuffer + 4;
   }
   else
@@ -232,8 +253,8 @@ Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8 (Standard_Utf8UChar* 
 // function : AdvanceBytesUtf16
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
+template <typename Type>
+inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
 {
   return AdvanceCodeUnitsUtf16() * sizeof(Standard_Utf16Char);
 }
@@ -242,14 +263,13 @@ Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
 // function : AdvanceCodeUnitsUtf16
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
+template <typename Type>
+inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
 {
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
     // UTF-16 surrogate values are illegal in UTF-32; 0xffff or 0xfffe are both reserved values
-    if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START
-     && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
+    if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
     {
       return 0;
     }
@@ -275,14 +295,14 @@ Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
 // function : GetUtf16
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char* theBuffer) const
+template <typename Type>
+inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
+  Standard_Utf16Char* theBuffer) const
 {
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
     // UTF-16 surrogate values are illegal in UTF-32; 0xffff or 0xfffe are both reserved values
-    if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START
-     && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
+    if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
     {
       return theBuffer;
     }
@@ -301,8 +321,10 @@ Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char*
   {
     // surrogate pair
     Standard_Utf32Char aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
-    *theBuffer++ = Standard_Utf16Char((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
-    *theBuffer++ = Standard_Utf16Char((aChar &  UTF16_SURROGATE_LOW_MASK)   + UTF16_SURROGATE_LOW_START);
+    *theBuffer++ =
+      Standard_Utf16Char((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
+    *theBuffer++ =
+      Standard_Utf16Char((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
     return theBuffer;
   }
 }
@@ -311,8 +333,9 @@ Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char*
 // function : GetUtf32
 // purpose  :
 // =======================================================================
-template<typename Type> inline
-Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32 (Standard_Utf32Char* theBuffer) const
+template <typename Type>
+inline Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32(
+  Standard_Utf32Char* theBuffer) const
 {
   *theBuffer++ = myCharUtf32;
   return theBuffer;

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(TDocStd_Document)> TDocStd_SequenceOfDocument;
 
-
 #endif

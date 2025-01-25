@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepShape_Edge)> StepShape_Array1OfEdge;
 
-
 #endif

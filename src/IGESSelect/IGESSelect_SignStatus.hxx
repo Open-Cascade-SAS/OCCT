@@ -26,7 +26,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class IGESSelect_SignStatus;
 DEFINE_STANDARD_HANDLE(IGESSelect_SignStatus, IFSelect_Signature)
 
@@ -48,37 +47,24 @@ class IGESSelect_SignStatus : public IFSelect_Signature
 {
 
 public:
-
-  
   Standard_EXPORT IGESSelect_SignStatus();
-  
+
   //! Returns the value (see above)
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+
   //! Performs the match rule (see above)
-  Standard_EXPORT virtual Standard_Boolean Matches (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model, const TCollection_AsciiString& text, const Standard_Boolean exact) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
+                                                   const Handle(Interface_InterfaceModel)& model,
+                                                   const TCollection_AsciiString&          text,
+                                                   const Standard_Boolean exact) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus, IFSelect_Signature)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SignStatus_HeaderFile

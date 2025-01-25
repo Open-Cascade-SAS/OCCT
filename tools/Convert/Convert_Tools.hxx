@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef Convert_Tools_H
 #define Convert_Tools_H
@@ -30,7 +30,7 @@
 #include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS_Shape.hxx> 
+#include <TopoDS_Shape.hxx>
 #include <Standard_SStream.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -50,60 +50,64 @@ public:
   //! Reads Shape using BREP reader
   //! \param theFileName a file name
   //! \return shape or NULL
-  Standard_EXPORT static TopoDS_Shape ReadShape (const TCollection_AsciiString& theFileName);
+  Standard_EXPORT static TopoDS_Shape ReadShape(const TCollection_AsciiString& theFileName);
 
-
-  //! Creates shape presentations on the stream if possible. Tries to init some OCCT base for a new presentation
-  //! \param theStream source of presentation
-  //! \param thePresentations container to collect new presentations
-  Standard_EXPORT static void ConvertStreamToPresentations (const Standard_SStream& theSStream,
-                                                            const Standard_Integer theStartPos,
-                                                            const Standard_Integer theLastPos,
-                                                            NCollection_List<Handle(Standard_Transient)>& thePresentations);
+  //! Creates shape presentations on the stream if possible. Tries to init some OCCT base for a new
+  //! presentation \param theStream source of presentation \param thePresentations container to
+  //! collect new presentations
+  Standard_EXPORT static void ConvertStreamToPresentations(
+    const Standard_SStream&                       theSStream,
+    const Standard_Integer                        theStartPos,
+    const Standard_Integer                        theLastPos,
+    NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Converts stream to color if possible. It processes Quantity_Color, Quantity_ColorRGBA
   //! \param theStream source of presentation
   //! \param[out] theColor  converted color
   //! \returns true if done
-  Standard_EXPORT static Standard_Boolean ConvertStreamToColor (const Standard_SStream& theSStream,
-                                                                Quantity_Color& theColor);
+  Standard_EXPORT static Standard_Boolean ConvertStreamToColor(const Standard_SStream& theSStream,
+                                                               Quantity_Color&         theColor);
 
   //! Creates box shape
   //! \param theBoundingBox box shape parameters
   //! \return created shape
-  Standard_EXPORT static Standard_Boolean CreateShape (const Bnd_Box& theBoundingBox, TopoDS_Shape& theShape);
+  Standard_EXPORT static Standard_Boolean CreateShape(const Bnd_Box& theBoundingBox,
+                                                      TopoDS_Shape&  theShape);
 
   //! Creates box shape
   //! \param theBoundingBox box shape parameters
   //! \return created shape
-  Standard_EXPORT static Standard_Boolean CreateShape (const Bnd_OBB& theBoundingBox, TopoDS_Shape& theShape);
+  Standard_EXPORT static Standard_Boolean CreateShape(const Bnd_OBB& theBoundingBox,
+                                                      TopoDS_Shape&  theShape);
 
   //! Creates box shape
   //! \param thePntMin minimum point on the bounding box
   //! \param thePntMax maximum point on the bounding box
   //! \return created shape
-  Standard_EXPORT static Standard_Boolean CreateBoxShape (const gp_Pnt& thePntMin,
-                                                          const gp_Pnt& thePntMax,
-                                                          TopoDS_Shape& theShape);
+  Standard_EXPORT static Standard_Boolean CreateBoxShape(const gp_Pnt& thePntMin,
+                                                         const gp_Pnt& thePntMax,
+                                                         TopoDS_Shape& theShape);
 
   //! Creates presentation AIS_Line
   //! \param theLine source line
   //! \param thePresentations container to collect new presentations
-  Standard_EXPORT static void CreatePresentation (const Handle(Geom_Line)& theLine,
+  Standard_EXPORT static void CreatePresentation(
+    const Handle(Geom_Line)&                      theLine,
     NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Creates presentation AIS_Plane
   //! \param thePlane source plane
   //! \param thePresentations container to collect new presentations
-  Standard_EXPORT static void CreatePresentation (const Handle(Geom_Plane)& thePlane,
+  Standard_EXPORT static void CreatePresentation(
+    const Handle(Geom_Plane)&                     thePlane,
     NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Creates two presentations base on gp_Trsf: box in initial place and transformed box
   //! \param thePlane source plane
   //! \param thePresentations container to collect new presentations
-  Standard_EXPORT static void CreatePresentation (const gp_Trsf& theTrsf,
+  Standard_EXPORT static void CreatePresentation(
+    const gp_Trsf&                                theTrsf,
     NCollection_List<Handle(Standard_Transient)>& thePresentations);
-
 };
 
 #endif

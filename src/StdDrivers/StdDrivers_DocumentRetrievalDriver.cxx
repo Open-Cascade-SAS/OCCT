@@ -14,13 +14,13 @@
 #include <StdDrivers_DocumentRetrievalDriver.hxx>
 #include <StdDrivers.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (StdDrivers_DocumentRetrievalDriver, StdLDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(StdDrivers_DocumentRetrievalDriver, StdLDrivers_DocumentRetrievalDriver)
 
 //=======================================================================
-//function : bindTypes
-//purpose  : Register types
+// function : bindTypes
+// purpose  : Register types
 //=======================================================================
-void StdDrivers_DocumentRetrievalDriver::bindTypes (StdObjMgt_MapOfInstantiators& theMap)
+void StdDrivers_DocumentRetrievalDriver::bindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
-  StdDrivers::BindTypes (theMap);
+  StdDrivers::BindTypes(theMap);
 }

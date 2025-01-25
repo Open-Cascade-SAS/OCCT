@@ -31,16 +31,16 @@
 // Purpose : Empty Constructor
 // ============================================================================
 StepToTopoDS_Tool::StepToTopoDS_Tool()
-: myComputePC(Standard_False),
-  myNbC0Surf(0),
-  myNbC1Surf(0),
-  myNbC2Surf(0),
-  myNbC0Cur2(0),
-  myNbC1Cur2(0),
-  myNbC2Cur2(0),
-  myNbC0Cur3(0),
-  myNbC1Cur3(0),
-  myNbC2Cur3(0)
+    : myComputePC(Standard_False),
+      myNbC0Surf(0),
+      myNbC1Surf(0),
+      myNbC2Surf(0),
+      myNbC0Cur2(0),
+      myNbC1Cur2(0),
+      myNbC2Cur2(0),
+      myNbC0Cur3(0),
+      myNbC1Cur3(0),
+      myNbC2Cur3(0)
 {
 }
 
@@ -49,8 +49,8 @@ StepToTopoDS_Tool::StepToTopoDS_Tool()
 // Purpose : Constructor with a Map and a TransientProcess
 // ============================================================================
 
-StepToTopoDS_Tool::StepToTopoDS_Tool(const StepToTopoDS_DataMapOfTRI& Map, 
-				   const Handle(Transfer_TransientProcess)& TP)
+StepToTopoDS_Tool::StepToTopoDS_Tool(const StepToTopoDS_DataMapOfTRI&         Map,
+                                     const Handle(Transfer_TransientProcess)& TP)
 {
   Init(Map, TP);
 }
@@ -60,14 +60,14 @@ StepToTopoDS_Tool::StepToTopoDS_Tool(const StepToTopoDS_DataMapOfTRI& Map,
 // Purpose : Init with a Map
 // ============================================================================
 
-void StepToTopoDS_Tool::Init(const StepToTopoDS_DataMapOfTRI& Map, 
-			    const Handle(Transfer_TransientProcess)& TP)
-{ 
+void StepToTopoDS_Tool::Init(const StepToTopoDS_DataMapOfTRI&         Map,
+                             const Handle(Transfer_TransientProcess)& TP)
+{
   myComputePC = Standard_False;
 
   StepToTopoDS_PointVertexMap aVertexMap;
   StepToTopoDS_PointEdgeMap   aEdgeMap;
-  
+
   myDataMap   = Map;
   myVertexMap = aVertexMap;
   myEdgeMap   = aEdgeMap;
@@ -76,8 +76,6 @@ void StepToTopoDS_Tool::Init(const StepToTopoDS_DataMapOfTRI& Map,
   myNbC0Surf = myNbC1Surf = myNbC2Surf = 0;
   myNbC0Cur2 = myNbC1Cur2 = myNbC2Cur2 = 0;
   myNbC0Cur3 = myNbC1Cur3 = myNbC2Cur3 = 0;
-
-
 }
 
 // ============================================================================
@@ -85,7 +83,8 @@ void StepToTopoDS_Tool::Init(const StepToTopoDS_DataMapOfTRI& Map,
 // Purpose : Indicates weither a TRI is bound or not in the Map
 // ============================================================================
 
-Standard_Boolean StepToTopoDS_Tool::IsBound(const Handle(StepShape_TopologicalRepresentationItem)& TRI)
+Standard_Boolean StepToTopoDS_Tool::IsBound(
+  const Handle(StepShape_TopologicalRepresentationItem)& TRI)
 {
   return myDataMap.IsBound(TRI);
 }
@@ -95,10 +94,11 @@ Standard_Boolean StepToTopoDS_Tool::IsBound(const Handle(StepShape_TopologicalRe
 // Purpose : Binds a TRI with a Shape in the Map
 // ============================================================================
 
-void StepToTopoDS_Tool::Bind(const Handle(StepShape_TopologicalRepresentationItem)& TRI, const TopoDS_Shape& S)
+void StepToTopoDS_Tool::Bind(const Handle(StepShape_TopologicalRepresentationItem)& TRI,
+                             const TopoDS_Shape&                                    S)
 {
   myDataMap.Bind(TRI, S);
-  TransferBRep::SetShapeResult (myTransProc,TRI,S);
+  TransferBRep::SetShapeResult(myTransProc, TRI, S);
 }
 
 // ============================================================================
@@ -106,15 +106,15 @@ void StepToTopoDS_Tool::Bind(const Handle(StepShape_TopologicalRepresentationIte
 // Purpose : Returns the Shape corresponding to the bounded TRI
 // ============================================================================
 
-const TopoDS_Shape& StepToTopoDS_Tool::Find(const Handle(StepShape_TopologicalRepresentationItem)& TRI)
+const TopoDS_Shape& StepToTopoDS_Tool::Find(
+  const Handle(StepShape_TopologicalRepresentationItem)& TRI)
 {
   return myDataMap.Find(TRI);
 }
 
-
 // ============================================================================
 // Method  : StepToTopoDS_Tool::ClearEdgeMap
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 void StepToTopoDS_Tool::ClearEdgeMap()
@@ -124,7 +124,7 @@ void StepToTopoDS_Tool::ClearEdgeMap()
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::IsEdgeBound
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 Standard_Boolean StepToTopoDS_Tool::IsEdgeBound(const StepToTopoDS_PointPair& PP)
@@ -134,7 +134,7 @@ Standard_Boolean StepToTopoDS_Tool::IsEdgeBound(const StepToTopoDS_PointPair& PP
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool_BindEdge
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 void StepToTopoDS_Tool::BindEdge(const StepToTopoDS_PointPair& PP, const TopoDS_Edge& E)
@@ -144,7 +144,7 @@ void StepToTopoDS_Tool::BindEdge(const StepToTopoDS_PointPair& PP, const TopoDS_
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::FindEdge
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 const TopoDS_Edge& StepToTopoDS_Tool::FindEdge(const StepToTopoDS_PointPair& PP)
@@ -154,7 +154,7 @@ const TopoDS_Edge& StepToTopoDS_Tool::FindEdge(const StepToTopoDS_PointPair& PP)
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::ClearVertexMap
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 void StepToTopoDS_Tool::ClearVertexMap()
@@ -164,7 +164,7 @@ void StepToTopoDS_Tool::ClearVertexMap()
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::IsVertexBound
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 Standard_Boolean StepToTopoDS_Tool::IsVertexBound(const Handle(StepGeom_CartesianPoint)& PG)
@@ -174,20 +174,20 @@ Standard_Boolean StepToTopoDS_Tool::IsVertexBound(const Handle(StepGeom_Cartesia
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::BindVertex
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 void StepToTopoDS_Tool::BindVertex(const Handle(StepGeom_CartesianPoint)& P, const TopoDS_Vertex& V)
 {
   myVertexMap.Bind(P, V);
 #ifdef OCCT_DEBUG
-  TransferBRep::SetShapeResult (myTransProc,P,V);
+  TransferBRep::SetShapeResult(myTransProc, P, V);
 #endif
 }
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::FindVertex
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 const TopoDS_Vertex& StepToTopoDS_Tool::FindVertex(const Handle(StepGeom_CartesianPoint)& P)
@@ -197,7 +197,7 @@ const TopoDS_Vertex& StepToTopoDS_Tool::FindVertex(const Handle(StepGeom_Cartesi
 
 // ============================================================================
 // Method  : ComputePCurve
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 void StepToTopoDS_Tool::ComputePCurve(const Standard_Boolean B)
@@ -207,7 +207,7 @@ void StepToTopoDS_Tool::ComputePCurve(const Standard_Boolean B)
 
 // ============================================================================
 // Method  : ComputePCurve
-// Purpose : 
+// Purpose :
 // ============================================================================
 
 Standard_Boolean StepToTopoDS_Tool::ComputePCurve() const
@@ -225,39 +225,53 @@ Handle(Transfer_TransientProcess) StepToTopoDS_Tool::TransientProcess() const
   return myTransProc;
 }
 
-
 //===========
 // AddStatistics
 //===========
 
-void  StepToTopoDS_Tool::AddContinuity (const Handle(Geom_Surface)& GeomSurf)
+void StepToTopoDS_Tool::AddContinuity(const Handle(Geom_Surface)& GeomSurf)
 {
-  switch(GeomSurf->Continuity())
-    {
-    case GeomAbs_C0:	myNbC0Surf ++;  break;
-    case GeomAbs_C1:	myNbC1Surf ++;  break;
-    default:		myNbC2Surf ++;
-    }
+  switch (GeomSurf->Continuity())
+  {
+    case GeomAbs_C0:
+      myNbC0Surf++;
+      break;
+    case GeomAbs_C1:
+      myNbC1Surf++;
+      break;
+    default:
+      myNbC2Surf++;
+  }
 }
 
-void  StepToTopoDS_Tool::AddContinuity (const Handle(Geom_Curve)&   GeomCurve)
+void StepToTopoDS_Tool::AddContinuity(const Handle(Geom_Curve)& GeomCurve)
 {
-  switch(GeomCurve->Continuity())
-    {
-    case GeomAbs_C0:	myNbC0Cur3 ++;  break;
-    case GeomAbs_C1:	myNbC1Cur3 ++;  break;
-    default:		myNbC2Cur3 ++;
-    }
+  switch (GeomCurve->Continuity())
+  {
+    case GeomAbs_C0:
+      myNbC0Cur3++;
+      break;
+    case GeomAbs_C1:
+      myNbC1Cur3++;
+      break;
+    default:
+      myNbC2Cur3++;
+  }
 }
 
-void  StepToTopoDS_Tool::AddContinuity (const Handle(Geom2d_Curve)& GeomCur2d)
+void StepToTopoDS_Tool::AddContinuity(const Handle(Geom2d_Curve)& GeomCur2d)
 {
-  switch(GeomCur2d->Continuity())
-    {
-    case GeomAbs_C0:	myNbC0Cur2 ++;  break;
-    case GeomAbs_C1:	myNbC1Cur2 ++;  break;
-    default:		myNbC2Cur2 ++;
-    }
+  switch (GeomCur2d->Continuity())
+  {
+    case GeomAbs_C0:
+      myNbC0Cur2++;
+      break;
+    case GeomAbs_C1:
+      myNbC1Cur2++;
+      break;
+    default:
+      myNbC2Cur2++;
+  }
 }
 
 //===========
@@ -269,18 +283,15 @@ Standard_Integer StepToTopoDS_Tool::C0Surf() const
   return myNbC0Surf;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C1Surf() const
 {
   return myNbC1Surf;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C2Surf() const
 {
   return myNbC2Surf;
 }
-
 
 //===========
 // Statistics
@@ -291,18 +302,15 @@ Standard_Integer StepToTopoDS_Tool::C0Cur2() const
   return myNbC0Cur2;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C1Cur2() const
 {
   return myNbC1Cur2;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C2Cur2() const
 {
   return myNbC2Cur2;
 }
-
 
 //===========
 // Statistics
@@ -313,15 +321,12 @@ Standard_Integer StepToTopoDS_Tool::C0Cur3() const
   return myNbC0Cur3;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C1Cur3() const
 {
   return myNbC1Cur3;
 }
 
-
 Standard_Integer StepToTopoDS_Tool::C2Cur3() const
 {
   return myNbC2Cur3;
 }
-

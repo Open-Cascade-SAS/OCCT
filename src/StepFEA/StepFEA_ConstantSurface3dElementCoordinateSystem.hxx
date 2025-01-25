@@ -24,58 +24,42 @@
 #include <StepFEA_FeaRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-
 class StepFEA_ConstantSurface3dElementCoordinateSystem;
-DEFINE_STANDARD_HANDLE(StepFEA_ConstantSurface3dElementCoordinateSystem, StepFEA_FeaRepresentationItem)
+DEFINE_STANDARD_HANDLE(StepFEA_ConstantSurface3dElementCoordinateSystem,
+                       StepFEA_FeaRepresentationItem)
 
 //! Representation of STEP entity ConstantSurface3dElementCoordinateSystem
 class StepFEA_ConstantSurface3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_ConstantSurface3dElementCoordinateSystem();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const Standard_Integer aAxis, const Standard_Real aAngle);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                            const Standard_Integer                  aAxis,
+                            const Standard_Real                     aAngle);
+
   //! Returns field Axis
   Standard_EXPORT Standard_Integer Axis() const;
-  
+
   //! Set field Axis
-  Standard_EXPORT void SetAxis (const Standard_Integer Axis);
-  
+  Standard_EXPORT void SetAxis(const Standard_Integer Axis);
+
   //! Returns field Angle
   Standard_EXPORT Standard_Real Angle() const;
-  
+
   //! Set field Angle
-  Standard_EXPORT void SetAngle (const Standard_Real Angle);
+  Standard_EXPORT void SetAngle(const Standard_Real Angle);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_ConstantSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ConstantSurface3dElementCoordinateSystem,
+                          StepFEA_FeaRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer theAxis;
-  Standard_Real theAngle;
-
-
+  Standard_Real    theAngle;
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_ConstantSurface3dElementCoordinateSystem_HeaderFile

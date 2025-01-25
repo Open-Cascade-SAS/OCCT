@@ -24,53 +24,35 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement;
 
-
 class StepGeom_Ellipse;
 DEFINE_STANDARD_HANDLE(StepGeom_Ellipse, StepGeom_Conic)
-
 
 class StepGeom_Ellipse : public StepGeom_Conic
 {
 
 public:
-
-  
   //! Returns a Ellipse
   Standard_EXPORT StepGeom_Ellipse();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aSemiAxis1, const Standard_Real aSemiAxis2);
-  
-  Standard_EXPORT void SetSemiAxis1 (const Standard_Real aSemiAxis1);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const StepGeom_Axis2Placement&          aPosition,
+                            const Standard_Real                     aSemiAxis1,
+                            const Standard_Real                     aSemiAxis2);
+
+  Standard_EXPORT void SetSemiAxis1(const Standard_Real aSemiAxis1);
+
   Standard_EXPORT Standard_Real SemiAxis1() const;
-  
-  Standard_EXPORT void SetSemiAxis2 (const Standard_Real aSemiAxis2);
-  
+
+  Standard_EXPORT void SetSemiAxis2(const Standard_Real aSemiAxis2);
+
   Standard_EXPORT Standard_Real SemiAxis2() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_Ellipse,StepGeom_Conic)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Ellipse, StepGeom_Conic)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real semiAxis1;
   Standard_Real semiAxis2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_Ellipse_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESGraph_TextFontDef)> IGESGraph_Array1OfTextFontDef;
 
-
 #endif

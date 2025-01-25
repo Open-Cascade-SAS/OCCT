@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_SingleParent.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -26,75 +25,92 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFaces,IFSelect_SelectExplore)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFaces, IFSelect_SelectExplore)
 
-IGESSelect_SelectFaces::IGESSelect_SelectFaces ()
-    : IFSelect_SelectExplore (-1)    {  }
-
-
-    Standard_Boolean  IGESSelect_SelectFaces::Explore
-  (const Standard_Integer /*level*/, const Handle(Standard_Transient)& ent,
-   const Interface_Graph& /*G*/, Interface_EntityIterator& explored) const
+IGESSelect_SelectFaces::IGESSelect_SelectFaces()
+    : IFSelect_SelectExplore(-1)
 {
-  DeclareAndCast(IGESData_IGESEntity,igesent,ent);
-  if (igesent.IsNull()) return Standard_False;
+}
+
+Standard_Boolean IGESSelect_SelectFaces::Explore(const Standard_Integer /*level*/,
+                                                 const Handle(Standard_Transient)& ent,
+                                                 const Interface_Graph& /*G*/,
+                                                 Interface_EntityIterator& explored) const
+{
+  DeclareAndCast(IGESData_IGESEntity, igesent, ent);
+  if (igesent.IsNull())
+    return Standard_False;
   Standard_Integer igt = igesent->TypeNumber();
 
-//   Cas clairs et nets : Faces typees comme telles
+  //   Cas clairs et nets : Faces typees comme telles
 
-  if (igt == 510 || igt == 144 || igt == 143) return Standard_True;
+  if (igt == 510 || igt == 144 || igt == 143)
+    return Standard_True;
 
-//   Surfaces Libres
+  //   Surfaces Libres
   if (igt == 114 || igt == 118 || igt == 120 || igt == 122 || igt == 128 || igt == 140)
     return Standard_True;
 
-//   Cas du Plane
-  if (igt == 108) {
-    DeclareAndCast(IGESGeom_Plane,pln,ent);
+  //   Cas du Plane
+  if (igt == 108)
+  {
+    DeclareAndCast(IGESGeom_Plane, pln, ent);
     return pln->HasBoundingCurve();
   }
 
-//   A present, contenants possibles
+  //   A present, contenants possibles
 
-//  SingleParent
-  if (igt == 402 && igesent->FormNumber() == 9) {
-    DeclareAndCast(IGESBasic_SingleParent,sp,ent);
-    if (sp.IsNull()) return Standard_False;
-    explored.AddItem (sp->SingleParent());
-    Standard_Integer i,nb = sp->NbChildren();
-    for (i = 1; i <= nb; i ++) explored.AddItem (sp->Child(i));
+  //  SingleParent
+  if (igt == 402 && igesent->FormNumber() == 9)
+  {
+    DeclareAndCast(IGESBasic_SingleParent, sp, ent);
+    if (sp.IsNull())
+      return Standard_False;
+    explored.AddItem(sp->SingleParent());
+    Standard_Integer i, nb = sp->NbChildren();
+    for (i = 1; i <= nb; i++)
+      explored.AddItem(sp->Child(i));
     return Standard_True;
   }
 
-//  Groups ... en dernier de la serie 402
-  if (igt == 402) {
-    DeclareAndCast(IGESBasic_Group,gr,ent);
-    if (gr.IsNull()) return Standard_False;
+  //  Groups ... en dernier de la serie 402
+  if (igt == 402)
+  {
+    DeclareAndCast(IGESBasic_Group, gr, ent);
+    if (gr.IsNull())
+      return Standard_False;
     Standard_Integer i, nb = gr->NbEntities();
-    for (i = 1; i <= nb; i ++)  explored.AddItem (gr->Entity(i));
+    for (i = 1; i <= nb; i++)
+      explored.AddItem(gr->Entity(i));
     return Standard_True;
   }
 
-//  ManifoldSolid 186  -> Shells
-  if (igt == 186) {
-    DeclareAndCast(IGESSolid_ManifoldSolid,msb,ent);
-    explored.AddItem (msb->Shell());
+  //  ManifoldSolid 186  -> Shells
+  if (igt == 186)
+  {
+    DeclareAndCast(IGESSolid_ManifoldSolid, msb, ent);
+    explored.AddItem(msb->Shell());
     Standard_Integer i, nb = msb->NbVoidShells();
-    for (i = 1; i <= nb; i ++)  explored.AddItem (msb->VoidShell(i));
+    for (i = 1; i <= nb; i++)
+      explored.AddItem(msb->VoidShell(i));
     return Standard_True;
   }
 
-//  Shell 514 -> Faces
-  if (igt == 514) {
-    DeclareAndCast(IGESSolid_Shell,sh,ent);
+  //  Shell 514 -> Faces
+  if (igt == 514)
+  {
+    DeclareAndCast(IGESSolid_Shell, sh, ent);
     Standard_Integer i, nb = sh->NbFaces();
-    for (i = 1; i <= nb; i ++)  explored.AddItem (sh->Face(i));
+    for (i = 1; i <= nb; i++)
+      explored.AddItem(sh->Face(i));
     return Standard_True;
   }
 
-//  Pas trouve
+  //  Pas trouve
   return Standard_False;
 }
 
-    TCollection_AsciiString IGESSelect_SelectFaces::ExploreLabel () const
-      {  return TCollection_AsciiString ("Faces");  }
+TCollection_AsciiString IGESSelect_SelectFaces::ExploreLabel() const
+{
+  return TCollection_AsciiString("Faces");
+}

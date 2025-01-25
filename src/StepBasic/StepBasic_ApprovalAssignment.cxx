@@ -11,27 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment, Standard_Transient)
 
-void StepBasic_ApprovalAssignment::Init(
-	const Handle(StepBasic_Approval)& aAssignedApproval)
+void StepBasic_ApprovalAssignment::Init(const Handle(StepBasic_Approval)& aAssignedApproval)
 {
-	// --- classe own fields ---
-	assignedApproval = aAssignedApproval;
+  // --- classe own fields ---
+  assignedApproval = aAssignedApproval;
 }
 
-
-void StepBasic_ApprovalAssignment::SetAssignedApproval(const Handle(StepBasic_Approval)& aAssignedApproval)
+void StepBasic_ApprovalAssignment::SetAssignedApproval(
+  const Handle(StepBasic_Approval)& aAssignedApproval)
 {
-	assignedApproval = aAssignedApproval;
+  assignedApproval = aAssignedApproval;
 }
 
 Handle(StepBasic_Approval) StepBasic_ApprovalAssignment::AssignedApproval() const
 {
-	return assignedApproval;
+  return assignedApproval;
 }

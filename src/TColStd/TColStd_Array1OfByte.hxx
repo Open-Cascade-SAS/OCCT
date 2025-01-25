@@ -19,5 +19,4 @@
 
 typedef NCollection_Array1<Standard_Byte> TColStd_Array1OfByte;
 
-
 #endif

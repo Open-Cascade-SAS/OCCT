@@ -22,30 +22,28 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Area,TDataStd_Real,"xcaf","Area")
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Area, TDataStd_Real, "xcaf", "Area")
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-XCAFDoc_Area::XCAFDoc_Area()
+XCAFDoc_Area::XCAFDoc_Area() {}
+
+//=======================================================================
+// function : GetID
+// purpose  :
+//=======================================================================
+
+const Standard_GUID& XCAFDoc_Area::GetID()
 {
-}
-
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-
-const Standard_GUID& XCAFDoc_Area::GetID() 
-{
-  static Standard_GUID AreaID ("efd212f2-6dfd-11d4-b9c8-0060b0ee281b");
+  static Standard_GUID AreaID("efd212f2-6dfd-11d4-b9c8-0060b0ee281b");
   return AreaID;
 }
 
 //=======================================================================
-//function : ID
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
 
 const Standard_GUID& XCAFDoc_Area::ID() const
@@ -54,34 +52,35 @@ const Standard_GUID& XCAFDoc_Area::ID() const
 }
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
-Handle(XCAFDoc_Area) XCAFDoc_Area::Set (const TDF_Label& L,const Standard_Real V) 
+Handle(XCAFDoc_Area) XCAFDoc_Area::Set(const TDF_Label& L, const Standard_Real V)
 {
   Handle(XCAFDoc_Area) A;
-  if (!L.FindAttribute(XCAFDoc_Area::GetID(), A)) {
+  if (!L.FindAttribute(XCAFDoc_Area::GetID(), A))
+  {
     A = new XCAFDoc_Area;
     L.AddAttribute(A);
   }
-  A->Set(V); 
+  A->Set(V);
   return A;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
-void XCAFDoc_Area::Set (const Standard_Real V) 
+void XCAFDoc_Area::Set(const Standard_Real V)
 {
   TDataStd_Real::Set(V);
 }
 
 //=======================================================================
-//function : Get
-//purpose  : 
+// function : Get
+// purpose  :
 //=======================================================================
 
 Standard_Real XCAFDoc_Area::Get() const
@@ -90,41 +89,41 @@ Standard_Real XCAFDoc_Area::Get() const
 }
 
 //=======================================================================
-//function : Get
-//purpose  : 
+// function : Get
+// purpose  :
 //=======================================================================
 
-Standard_Boolean XCAFDoc_Area::Get(const TDF_Label& label,Standard_Real& area) 
+Standard_Boolean XCAFDoc_Area::Get(const TDF_Label& label, Standard_Real& area)
 {
   Handle(XCAFDoc_Area) anArea;
   if (!label.FindAttribute(XCAFDoc_Area::GetID(), anArea))
     return Standard_False;
-  
+
   area = anArea->Get();
   return Standard_True;
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 
-Standard_OStream& XCAFDoc_Area::Dump (Standard_OStream& anOS) const
-{  
-  anOS << "Area "; 
+Standard_OStream& XCAFDoc_Area::Dump(Standard_OStream& anOS) const
+{
+  anOS << "Area ";
   anOS << Get();
   return anOS;
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void XCAFDoc_Area::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Area::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue)
 }

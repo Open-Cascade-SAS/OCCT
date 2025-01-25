@@ -15,22 +15,32 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DomainError.hxx>
 
-
-inline Standard_Boolean IntAna_Int3Pln::IsDone () const {
+inline Standard_Boolean IntAna_Int3Pln::IsDone() const
+{
 
   return done;
 }
 
-inline Standard_Boolean IntAna_Int3Pln::IsEmpty () const {
+inline Standard_Boolean IntAna_Int3Pln::IsEmpty() const
+{
 
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return empt;
 }
 
-inline const gp_Pnt& IntAna_Int3Pln::Value () const {
+inline const gp_Pnt& IntAna_Int3Pln::Value() const
+{
 
-  if (!done) {throw StdFail_NotDone();}
-  if (empt) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (empt)
+  {
+    throw Standard_DomainError();
+  }
   return pnt;
 }
-

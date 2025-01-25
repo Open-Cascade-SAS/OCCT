@@ -19,19 +19,19 @@
 
 #include <StepRepr_RepresentationRelationship.hxx>
 
-
 class StepRepr_MechanicalDesignAndDraughtingRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_MechanicalDesignAndDraughtingRelationship, StepRepr_RepresentationRelationship)
+DEFINE_STANDARD_HANDLE(StepRepr_MechanicalDesignAndDraughtingRelationship,
+                       StepRepr_RepresentationRelationship)
 
-
-class StepRepr_MechanicalDesignAndDraughtingRelationship : public StepRepr_RepresentationRelationship
+class StepRepr_MechanicalDesignAndDraughtingRelationship
+    : public StepRepr_RepresentationRelationship
 {
 public:
-  
   //! Returns a MechanicalDesignAndDraughtingRelationship
   Standard_EXPORT StepRepr_MechanicalDesignAndDraughtingRelationship();
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_MechanicalDesignAndDraughtingRelationship, StepRepr_RepresentationRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MechanicalDesignAndDraughtingRelationship,
+                          StepRepr_RepresentationRelationship)
 };
 
 #endif // _StepRepr_MechanicalDesignAndDraughtingRelationship_HeaderFile

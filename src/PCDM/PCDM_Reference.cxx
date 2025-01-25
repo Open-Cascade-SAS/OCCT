@@ -14,27 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <PCDM_Reference.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 PCDM_Reference::PCDM_Reference()
-: myReferenceIdentifier(0),
-  myDocumentVersion(0)
+    : myReferenceIdentifier(0),
+      myDocumentVersion(0)
 {
 }
 
-PCDM_Reference::PCDM_Reference(const Standard_Integer aReferenceIdentifier, const TCollection_ExtendedString& aFileName, const Standard_Integer aDocumentVersion):myReferenceIdentifier(aReferenceIdentifier),myFileName(aFileName),myDocumentVersion(aDocumentVersion) {}
+PCDM_Reference::PCDM_Reference(const Standard_Integer            aReferenceIdentifier,
+                               const TCollection_ExtendedString& aFileName,
+                               const Standard_Integer            aDocumentVersion)
+    : myReferenceIdentifier(aReferenceIdentifier),
+      myFileName(aFileName),
+      myDocumentVersion(aDocumentVersion)
+{
+}
 
-
-Standard_Integer PCDM_Reference::ReferenceIdentifier() const {
+Standard_Integer PCDM_Reference::ReferenceIdentifier() const
+{
   return myReferenceIdentifier;
 }
 
-TCollection_ExtendedString PCDM_Reference::FileName() const {
+TCollection_ExtendedString PCDM_Reference::FileName() const
+{
   return myFileName;
 }
 
-Standard_Integer PCDM_Reference::DocumentVersion() const {
+Standard_Integer PCDM_Reference::DocumentVersion() const
+{
   return myDocumentVersion;
 }

@@ -27,7 +27,6 @@ class Interface_Graph;
 class Interface_EntityIterator;
 class TCollection_AsciiString;
 
-
 class IGESSelect_SelectBypassSubfigure;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectBypassSubfigure, IFSelect_SelectExplore)
 
@@ -49,40 +48,25 @@ class IGESSelect_SelectBypassSubfigure : public IFSelect_SelectExplore
 {
 
 public:
-
-  
   //! Creates a SelectBypassSubfigure, by default all level
   //! (level = 1 explores at first level)
   Standard_EXPORT IGESSelect_SelectBypassSubfigure(const Standard_Integer level = 0);
-  
+
   //! Explores an entity : for a Subfigure, gives its elements
   //! Else, takes the entity itself
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Explore(const Standard_Integer            level,
+            const Handle(Standard_Transient)& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+
   //! Returns a text defining the criterium : "Content of Subfigure"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure, IFSelect_SelectExplore)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SelectBypassSubfigure_HeaderFile

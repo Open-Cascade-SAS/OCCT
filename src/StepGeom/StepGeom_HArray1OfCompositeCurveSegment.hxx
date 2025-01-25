@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepGeom_HArray1OfCompositeCurveSegment, StepGeom_Array1OfCompositeCurveSegment)
 
-
 #endif

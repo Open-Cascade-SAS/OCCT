@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESAppli_DrilledHole.hxx>
 #include <IGESAppli_ElementResults.hxx>
 #include <IGESAppli_FiniteElement.hxx>
@@ -57,224 +56,256 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_SpecificModule,IGESData_SpecificModule)
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_SpecificModule, IGESData_SpecificModule)
 
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESAppli_SpecificModule::IGESAppli_SpecificModule()    {  }
+IGESAppli_SpecificModule::IGESAppli_SpecificModule() {}
 
-
-    void  IGESAppli_SpecificModule::OwnDump
-  (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, Standard_OStream& S,
-   const Standard_Integer own) const 
+void IGESAppli_SpecificModule::OwnDump(const Standard_Integer             CN,
+                                       const Handle(IGESData_IGESEntity)& ent,
+                                       const IGESData_IGESDumper&         dumper,
+                                       Standard_OStream&                  S,
+                                       const Standard_Integer             own) const
 {
-  switch (CN) {
-    case  1 : {
-      DeclareAndCast(IGESAppli_DrilledHole,anent,ent);
-      if (anent.IsNull()) return;
+  switch (CN)
+  {
+    case 1: {
+      DeclareAndCast(IGESAppli_DrilledHole, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolDrilledHole tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  2 : {
-      DeclareAndCast(IGESAppli_ElementResults,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 2: {
+      DeclareAndCast(IGESAppli_ElementResults, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolElementResults tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  3 : {
-      DeclareAndCast(IGESAppli_FiniteElement,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 3: {
+      DeclareAndCast(IGESAppli_FiniteElement, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolFiniteElement tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  4 : {
-      DeclareAndCast(IGESAppli_Flow,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 4: {
+      DeclareAndCast(IGESAppli_Flow, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolFlow tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  5 : {
-      DeclareAndCast(IGESAppli_FlowLineSpec,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 5: {
+      DeclareAndCast(IGESAppli_FlowLineSpec, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolFlowLineSpec tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  6 : {
-      DeclareAndCast(IGESAppli_LevelFunction,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 6: {
+      DeclareAndCast(IGESAppli_LevelFunction, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolLevelFunction tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  7 : {
-      DeclareAndCast(IGESAppli_LevelToPWBLayerMap,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 7: {
+      DeclareAndCast(IGESAppli_LevelToPWBLayerMap, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolLevelToPWBLayerMap tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  8 : {
-      DeclareAndCast(IGESAppli_LineWidening,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 8: {
+      DeclareAndCast(IGESAppli_LineWidening, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolLineWidening tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  9 : {
-      DeclareAndCast(IGESAppli_NodalConstraint,anent,ent) ;
-      if (anent.IsNull()) return;
+    break;
+    case 9: {
+      DeclareAndCast(IGESAppli_NodalConstraint, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolNodalConstraint tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 10 : {
-      DeclareAndCast(IGESAppli_NodalDisplAndRot,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 10: {
+      DeclareAndCast(IGESAppli_NodalDisplAndRot, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolNodalDisplAndRot tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 11 : {
-      DeclareAndCast(IGESAppli_NodalResults,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 11: {
+      DeclareAndCast(IGESAppli_NodalResults, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolNodalResults tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 12 : {
-      DeclareAndCast(IGESAppli_Node,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 12: {
+      DeclareAndCast(IGESAppli_Node, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolNode tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 13 : {
-      DeclareAndCast(IGESAppli_PWBArtworkStackup,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 13: {
+      DeclareAndCast(IGESAppli_PWBArtworkStackup, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolPWBArtworkStackup tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 14 : {
-      DeclareAndCast(IGESAppli_PWBDrilledHole,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 14: {
+      DeclareAndCast(IGESAppli_PWBDrilledHole, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolPWBDrilledHole tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 15 : {
-      DeclareAndCast(IGESAppli_PartNumber,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 15: {
+      DeclareAndCast(IGESAppli_PartNumber, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolPartNumber tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 16 : {
-      DeclareAndCast(IGESAppli_PinNumber,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 16: {
+      DeclareAndCast(IGESAppli_PinNumber, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolPinNumber tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 17 : {
-      DeclareAndCast(IGESAppli_PipingFlow,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 17: {
+      DeclareAndCast(IGESAppli_PipingFlow, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolPipingFlow tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 18 : {
-      DeclareAndCast(IGESAppli_ReferenceDesignator,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 18: {
+      DeclareAndCast(IGESAppli_ReferenceDesignator, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolReferenceDesignator tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case 19 : {
-      DeclareAndCast(IGESAppli_RegionRestriction,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 19: {
+      DeclareAndCast(IGESAppli_RegionRestriction, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESAppli_ToolRegionRestriction tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
+    break;
+    default:
       break;
-    default : break;
   }
 }
 
-
-    Standard_Boolean  IGESAppli_SpecificModule::OwnCorrect
-  (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent) const
+Standard_Boolean IGESAppli_SpecificModule::OwnCorrect(const Standard_Integer             CN,
+                                                      const Handle(IGESData_IGESEntity)& ent) const
 {
-//   Applies only on some types
-  switch (CN) {
-    case  1 : {
-      DeclareAndCast(IGESAppli_DrilledHole,anent,ent);
-      if (anent.IsNull()) break;
+  //   Applies only on some types
+  switch (CN)
+  {
+    case 1: {
+      DeclareAndCast(IGESAppli_DrilledHole, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolDrilledHole tool;
       return tool.OwnCorrect(anent);
     }
-    case  4 : {
-      DeclareAndCast(IGESAppli_Flow,anent,ent);
-      if (anent.IsNull()) break;
+    case 4: {
+      DeclareAndCast(IGESAppli_Flow, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolFlow tool;
       return tool.OwnCorrect(anent);
     }
-    case  6 : {
-      DeclareAndCast(IGESAppli_LevelFunction,anent,ent);
-      if (anent.IsNull()) break;
+    case 6: {
+      DeclareAndCast(IGESAppli_LevelFunction, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolLevelFunction tool;
       return tool.OwnCorrect(anent);
     }
-    case  8 : {
-      DeclareAndCast(IGESAppli_LineWidening,anent,ent);
-      if (anent.IsNull()) break;
+    case 8: {
+      DeclareAndCast(IGESAppli_LineWidening, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolLineWidening tool;
       return tool.OwnCorrect(anent);
     }
-    case 14 : {
-      DeclareAndCast(IGESAppli_PWBDrilledHole,anent,ent);
-      if (anent.IsNull()) break;
+    case 14: {
+      DeclareAndCast(IGESAppli_PWBDrilledHole, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolPWBDrilledHole tool;
       return tool.OwnCorrect(anent);
     }
-    case 15 : {
-      DeclareAndCast(IGESAppli_PartNumber,anent,ent);
-      if (anent.IsNull()) break;
+    case 15: {
+      DeclareAndCast(IGESAppli_PartNumber, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolPartNumber tool;
       return tool.OwnCorrect(anent);
     }
-    case 16 : {
-      DeclareAndCast(IGESAppli_PinNumber,anent,ent);
-      if (anent.IsNull()) break;
+    case 16: {
+      DeclareAndCast(IGESAppli_PinNumber, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolPinNumber tool;
       return tool.OwnCorrect(anent);
     }
-    case 17 : {
-      DeclareAndCast(IGESAppli_PipingFlow,anent,ent);
-      if (anent.IsNull()) break;
+    case 17: {
+      DeclareAndCast(IGESAppli_PipingFlow, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolPipingFlow tool;
       return tool.OwnCorrect(anent);
     }
-    case 18 : {
-      DeclareAndCast(IGESAppli_ReferenceDesignator,anent,ent);
-      if (anent.IsNull()) break;
+    case 18: {
+      DeclareAndCast(IGESAppli_ReferenceDesignator, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolReferenceDesignator tool;
       return tool.OwnCorrect(anent);
     }
-    case 19 : {
-      DeclareAndCast(IGESAppli_RegionRestriction,anent,ent);
-      if (anent.IsNull()) break;
+    case 19: {
+      DeclareAndCast(IGESAppli_RegionRestriction, anent, ent);
+      if (anent.IsNull())
+        break;
       IGESAppli_ToolRegionRestriction tool;
       return tool.OwnCorrect(anent);
     }
-    default : break;
+    default:
+      break;
   }
   return Standard_False;
 }

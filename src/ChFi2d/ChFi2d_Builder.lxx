@@ -21,13 +21,12 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
 
-
 //=======================================================================
-//function : Result
-//purpose  : 
+// function : Result
+// purpose  :
 //=======================================================================
 
-inline TopoDS_Face ChFi2d_Builder::Result() const 
+inline TopoDS_Face ChFi2d_Builder::Result() const
 {
   TopoDS_Face aFace = newFace;
   aFace.Orientation(refFace.Orientation());
@@ -35,84 +34,81 @@ inline TopoDS_Face ChFi2d_Builder::Result() const
 }
 
 //=======================================================================
-//function : IsModified
-//purpose  : 
+// function : IsModified
+// purpose  :
 //=======================================================================
 
- inline Standard_Boolean ChFi2d_Builder::IsModified
- (const TopoDS_Edge& E) const 
+inline Standard_Boolean ChFi2d_Builder::IsModified(const TopoDS_Edge& E) const
 {
   return history.IsBound(E);
 }
 
 //=======================================================================
-//function : FilletEdges
-//purpose  : 
+// function : FilletEdges
+// purpose  :
 //=======================================================================
 
- inline const TopTools_SequenceOfShape& ChFi2d_Builder::FilletEdges() const 
+inline const TopTools_SequenceOfShape& ChFi2d_Builder::FilletEdges() const
 {
   return fillets;
 }
 
 //=======================================================================
-//function : ChamferEdges
-//purpose  : 
+// function : ChamferEdges
+// purpose  :
 //=======================================================================
 
- inline const TopTools_SequenceOfShape& ChFi2d_Builder::ChamferEdges() const 
+inline const TopTools_SequenceOfShape& ChFi2d_Builder::ChamferEdges() const
 {
   return chamfers;
 }
 
 //=======================================================================
-//function : NbFillet
-//purpose  : 
+// function : NbFillet
+// purpose  :
 //=======================================================================
 
- inline Standard_Integer ChFi2d_Builder::NbFillet() const 
+inline Standard_Integer ChFi2d_Builder::NbFillet() const
 {
   return fillets.Length();
 }
 
 //=======================================================================
-//function : NbChamfer
-//purpose  : 
+// function : NbChamfer
+// purpose  :
 //=======================================================================
 
- inline Standard_Integer ChFi2d_Builder::NbChamfer() const 
+inline Standard_Integer ChFi2d_Builder::NbChamfer() const
 {
   return chamfers.Length();
 }
 
 //=======================================================================
-//function : HasDescendant
-//purpose  : 
+// function : HasDescendant
+// purpose  :
 //=======================================================================
 
- inline Standard_Boolean ChFi2d_Builder::HasDescendant
- (const TopoDS_Edge& E) const 
+inline Standard_Boolean ChFi2d_Builder::HasDescendant(const TopoDS_Edge& E) const
 {
   return history.IsBound(E);
 }
 
 //=======================================================================
-//function : DescendantEdge
-//purpose  : 
+// function : DescendantEdge
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Edge& ChFi2d_Builder::DescendantEdge(const TopoDS_Edge& E) const 
+inline const TopoDS_Edge& ChFi2d_Builder::DescendantEdge(const TopoDS_Edge& E) const
 {
   return TopoDS::Edge(history.Find(E));
 } // DescendantEdge
 
-
 //=======================================================================
-//function : Status
-//purpose  : 
+// function : Status
+// purpose  :
 //=======================================================================
 
- inline ChFi2d_ConstructionError ChFi2d_Builder::Status() const 
-{ 
-  return status; 
+inline ChFi2d_ConstructionError ChFi2d_Builder::Status() const
+{
+  return status;
 }

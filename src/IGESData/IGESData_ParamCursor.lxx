@@ -13,23 +13,37 @@
 
 // IGESData_ParamCursor inline
 
-inline    Standard_Integer  IGESData_ParamCursor::Start () const
-      {  return thestart;  }
+inline Standard_Integer IGESData_ParamCursor::Start() const
+{
+  return thestart;
+}
 
-inline    Standard_Integer  IGESData_ParamCursor::Limit () const
-      {  return thelimit;  }
+inline Standard_Integer IGESData_ParamCursor::Limit() const
+{
+  return thelimit;
+}
 
-inline    Standard_Integer  IGESData_ParamCursor::Count () const 
-      {  return thecount;  }
+inline Standard_Integer IGESData_ParamCursor::Count() const
+{
+  return thecount;
+}
 
-inline    Standard_Integer  IGESData_ParamCursor::ItemSize () const 
-      {  return theisize;  }
+inline Standard_Integer IGESData_ParamCursor::ItemSize() const
+{
+  return theisize;
+}
 
-inline    Standard_Integer  IGESData_ParamCursor::TermSize () const 
-      {  return thetsize;  }
+inline Standard_Integer IGESData_ParamCursor::TermSize() const
+{
+  return thetsize;
+}
 
-inline    Standard_Integer  IGESData_ParamCursor::Offset () const 
-      {  return theoffst;  }
+inline Standard_Integer IGESData_ParamCursor::Offset() const
+{
+  return theoffst;
+}
 
-inline    Standard_Boolean  IGESData_ParamCursor::Advance() const 
-      {  return theadv;  }
+inline Standard_Boolean IGESData_ParamCursor::Advance() const
+{
+  return theadv;
+}

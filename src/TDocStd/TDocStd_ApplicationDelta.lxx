@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetDocuments
-//purpose  : 
+// function : GetDocuments
+// purpose  :
 //=======================================================================
 
 inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
@@ -24,8 +24,8 @@ inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
 }
 
 //=======================================================================
-//function : GetName
-//purpose  : 
+// function : GetName
+// purpose  :
 //=======================================================================
 
 inline const TCollection_ExtendedString& TDocStd_ApplicationDelta::GetName() const
@@ -34,12 +34,11 @@ inline const TCollection_ExtendedString& TDocStd_ApplicationDelta::GetName() con
 }
 
 //=======================================================================
-//function : SetName
-//purpose  : 
+// function : SetName
+// purpose  :
 //=======================================================================
 
 inline void TDocStd_ApplicationDelta::SetName(const TCollection_ExtendedString& theName)
 {
   myName = theName;
 }
-

@@ -18,8 +18,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Standard_Integer> TColStd_DataMapOfIntegerInteger;
-typedef NCollection_DataMap<Standard_Integer,Standard_Integer>::Iterator TColStd_DataMapIteratorOfDataMapOfIntegerInteger;
-
+typedef NCollection_DataMap<Standard_Integer, Standard_Integer> TColStd_DataMapOfIntegerInteger;
+typedef NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator
+  TColStd_DataMapIteratorOfDataMapOfIntegerInteger;
 
 #endif

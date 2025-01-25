@@ -23,7 +23,6 @@
 
 #include <TDF_IDList.hxx>
 
-
 //! This package define  CAF main classes.
 //!
 //! * The standard application root class
@@ -54,20 +53,17 @@
 //! For information on the relations between this
 //! component of OCAF and the others, refer to the
 //! OCAF User's Guide.
-class TDocStd 
+class TDocStd
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! specific GUID of this package
   //! =============================
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package. CAUTION: <anIDList> is NOT
   //! cleared before use.
-  Standard_EXPORT static void IDList (TDF_IDList& anIDList);
-
+  Standard_EXPORT static void IDList(TDF_IDList& anIDList);
 };
 
 #endif // _TDocStd_HeaderFile

@@ -25,8 +25,6 @@
 class gp_Pnt;
 class gp_Mat;
 
-
-
 //! This package defines algorithms to compute the global properties
 //! of a set of points, a curve, a surface, a solid (non infinite
 //! region of space delimited with geometric entities), a compound
@@ -42,13 +40,11 @@ class gp_Mat;
 //!
 //! It provides  also a class to  compile the average point or
 //! line of a set of points.
-class GProp 
+class GProp
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! methods of package
   //! Computes the matrix Operator, referred to as the
   //! "Huyghens Operator" of a geometric system at the
@@ -62,8 +58,10 @@ public:
   //! where Inertia/G is the matrix of inertia of the
   //! system relative to its center of mass as returned by
   //! the function MatrixOfInertia on any GProp_GProps object.
-  Standard_EXPORT static void HOperator (const gp_Pnt& G, const gp_Pnt& Q, const Standard_Real Mass, gp_Mat& Operator);
-
+  Standard_EXPORT static void HOperator(const gp_Pnt&       G,
+                                        const gp_Pnt&       Q,
+                                        const Standard_Real Mass,
+                                        gp_Mat&             Operator);
 };
 
 #endif // _GProp_HeaderFile

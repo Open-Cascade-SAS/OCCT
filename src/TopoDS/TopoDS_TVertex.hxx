@@ -41,7 +41,8 @@ public:
 
 protected:
   //! Construct a vertex.
-  TopoDS_TVertex() : TopoDS_TShape()
+  TopoDS_TVertex()
+      : TopoDS_TShape()
   {
     Closed(Standard_True);
     Convex(Standard_True);

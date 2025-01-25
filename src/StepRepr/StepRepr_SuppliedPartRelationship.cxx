@@ -11,9 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepRepr_SuppliedPartRelationship.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,StepBasic_ProductDefinitionRelationship)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,
+                           StepBasic_ProductDefinitionRelationship)
 
-StepRepr_SuppliedPartRelationship::StepRepr_SuppliedPartRelationship ()    {  }
+StepRepr_SuppliedPartRelationship::StepRepr_SuppliedPartRelationship() {}

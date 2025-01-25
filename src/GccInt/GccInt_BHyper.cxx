@@ -14,24 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccInt_BHyper.hxx>
 #include <gp_Hypr2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_BHyper,GccInt_Bisec)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BHyper, GccInt_Bisec)
 
-GccInt_BHyper::
-   GccInt_BHyper(const gp_Hypr2d& Hyper) {
-   hyp = gp_Hypr2d(Hyper);
- }
+GccInt_BHyper::GccInt_BHyper(const gp_Hypr2d& Hyper)
+{
+  hyp = gp_Hypr2d(Hyper);
+}
 
-GccInt_IType GccInt_BHyper::
-   ArcType() const {
-   return GccInt_Hpr;
- }
+GccInt_IType GccInt_BHyper::ArcType() const
+{
+  return GccInt_Hpr;
+}
 
-gp_Hypr2d GccInt_BHyper::
-  Hyperbola() const { return hyp; }
-
-
+gp_Hypr2d GccInt_BHyper::Hyperbola() const
+{
+  return hyp;
+}

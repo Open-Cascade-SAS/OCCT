@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -29,26 +29,26 @@ DEFINE_STANDARD_HANDLE(StepKinematics_KinematicLinkRepresentation, StepRepr_Repr
 //! Representation of STEP entity KinematicLinkRepresentation
 class StepKinematics_KinematicLinkRepresentation : public StepRepr_Representation
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_KinematicLinkRepresentation();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                           const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                           const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                           const Handle(StepKinematics_KinematicLink)& theRepresentedLink);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&             theRepresentation_Name,
+    const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
+    const Handle(StepRepr_RepresentationContext)&       theRepresentation_ContextOfItems,
+    const Handle(StepKinematics_KinematicLink)&         theRepresentedLink);
 
   //! Returns field RepresentedLink
   Standard_EXPORT Handle(StepKinematics_KinematicLink) RepresentedLink() const;
   //! Sets field RepresentedLink
-  Standard_EXPORT void SetRepresentedLink (const Handle(StepKinematics_KinematicLink)& theRepresentedLink);
+  Standard_EXPORT void SetRepresentedLink(
+    const Handle(StepKinematics_KinematicLink)& theRepresentedLink);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentation, StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentation, StepRepr_Representation)
 
 private:
   Handle(StepKinematics_KinematicLink) myRepresentedLink;
-
 };
 #endif // _StepKinematics_KinematicLinkRepresentation_HeaderFile_

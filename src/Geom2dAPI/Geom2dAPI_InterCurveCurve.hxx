@@ -26,7 +26,6 @@
 class Geom2d_Curve;
 class gp_Pnt2d;
 
-
 //! This class implements methods for computing
 //! -       the intersections between  two 2D curves,
 //! -       the self-intersections of a  2D curve.
@@ -34,22 +33,21 @@ class gp_Pnt2d;
 //! -      intersection points in the  case of cross intersections,
 //! -      intersection segments in the case of tangential intersections,
 //! -       nothing in the case of no intersections.
-class Geom2dAPI_InterCurveCurve 
+class Geom2dAPI_InterCurveCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Create an empty intersector. Use the
   //! function Init for further initialization of the intersection
   //! algorithm by curves or curve.
   Standard_EXPORT Geom2dAPI_InterCurveCurve();
-  
+
   //! Creates an object and computes the
   //! intersections between the curves C1 and C2.
-  Standard_EXPORT Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1, const Handle(Geom2d_Curve)& C2, const Standard_Real Tol = 1.0e-6);
-  
+  Standard_EXPORT Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1,
+                                            const Handle(Geom2d_Curve)& C2,
+                                            const Standard_Real         Tol = 1.0e-6);
 
   //! Creates an object and computes self-intersections of the curve C1.
   //! Tolerance value Tol, defaulted to 1.0e-6, defines the precision of
@@ -62,12 +60,15 @@ public:
   //! Use functions NbPoints and NbSegments to obtain the number of
   //! solutions. If the algorithm finds no intersections NbPoints and
   //! NbSegments return 0.
-  Standard_EXPORT Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1, const Standard_Real Tol = 1.0e-6);
-  
+  Standard_EXPORT Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1,
+                                            const Standard_Real         Tol = 1.0e-6);
+
   //! Initializes an algorithm with the
   //! given arguments and computes the intersections between the curves C1. and C2.
-  Standard_EXPORT void Init (const Handle(Geom2d_Curve)& C1, const Handle(Geom2d_Curve)& C2, const Standard_Real Tol = 1.0e-6);
-  
+  Standard_EXPORT void Init(const Handle(Geom2d_Curve)& C1,
+                            const Handle(Geom2d_Curve)& C2,
+                            const Standard_Real         Tol = 1.0e-6);
+
   //! Initializes an algorithm with the
   //! given arguments and computes the self-intersections of the curve C1.
   //! Tolerance value Tol, defaulted to 1.0e-6, defines the precision of
@@ -79,12 +80,12 @@ public:
   //! Use functions NbPoints and NbSegments to obtain the number
   //! of solutions. If the algorithm finds no intersections NbPoints
   //! and NbSegments return 0.
-  Standard_EXPORT void Init (const Handle(Geom2d_Curve)& C1, const Standard_Real Tol = 1.0e-6);
-  
+  Standard_EXPORT void Init(const Handle(Geom2d_Curve)& C1, const Standard_Real Tol = 1.0e-6);
+
   //! Returns the number of intersection-points in case of cross intersections.
   //! NbPoints returns 0 if no intersections were found.
   Standard_EXPORT Standard_Integer NbPoints() const;
-  
+
   //! Returns the intersection point of index Index.
   //! Intersection points are computed in case of cross intersections with a
   //! precision equal to the tolerance value assigned at the time of
@@ -92,12 +93,12 @@ public:
   //! Exceptions
   //! Standard_OutOfRange if index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of computed intersection points
-  Standard_EXPORT gp_Pnt2d Point (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Pnt2d Point(const Standard_Integer Index) const;
+
   //! Returns the number of tangential intersections.
   //! NbSegments returns 0 if no intersections were found
   Standard_EXPORT Standard_Integer NbSegments() const;
-  
+
   //! Use this syntax only to get
   //! solutions of tangential intersection between two curves.
   //! Output values Curve1 and Curve2 are the intersection segments on the
@@ -112,37 +113,21 @@ public:
   //! where NbSegments is the number of computed tangential intersections.
   //! Standard_NullObject if the algorithm is initialized for the
   //! computing of self-intersections on a curve.
-  Standard_EXPORT void Segment (const Standard_Integer Index, Handle(Geom2d_Curve)& Curve1, Handle(Geom2d_Curve)& Curve2) const;
-  
+  Standard_EXPORT void Segment(const Standard_Integer Index,
+                               Handle(Geom2d_Curve)&  Curve1,
+                               Handle(Geom2d_Curve)&  Curve2) const;
+
   //! return the algorithmic object from Intersection.
-    const Geom2dInt_GInter& Intersector() const;
-
-
-
+  const Geom2dInt_GInter& Intersector() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myIsDone;
+  Standard_Boolean     myIsDone;
   Handle(Geom2d_Curve) myCurve1;
   Handle(Geom2d_Curve) myCurve2;
-  Geom2dInt_GInter myIntersector;
-
-
+  Geom2dInt_GInter     myIntersector;
 };
 
-
 #include <Geom2dAPI_InterCurveCurve.lxx>
-
-
-
-
 
 #endif // _Geom2dAPI_InterCurveCurve_HeaderFile

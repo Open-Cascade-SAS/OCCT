@@ -25,15 +25,6 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReaderLib.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define TheObject Handle(Standard_Transient)
 #define TheObject_hxx <Standard_Transient.hxx>
 #define Handle_TheModule Handle(Interface_ReaderModule)
@@ -51,4 +42,3 @@
 #define LibCtl_Library Interface_ReaderLib
 #define LibCtl_Library_hxx <Interface_ReaderLib.hxx>
 #include "../LibCtl/LibCtl_Node.gxx"
-

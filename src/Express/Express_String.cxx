@@ -23,9 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_String, Express_PredefinedType)
 // purpose  :
 //=======================================================================
 
-Express_String::Express_String()
-{
-}
+Express_String::Express_String() {}
 
 //=======================================================================
 // function : CPPName
@@ -46,4 +44,3 @@ Standard_Boolean Express_String::IsStandard() const
 {
   return Standard_False;
 }
-

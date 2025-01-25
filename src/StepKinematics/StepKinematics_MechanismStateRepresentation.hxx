@@ -26,24 +26,26 @@ class StepKinematics_MechanismRepresentation;
 class StepKinematics_MechanismStateRepresentation;
 DEFINE_STANDARD_HANDLE(StepKinematics_MechanismStateRepresentation, StepRepr_Representation)
 
-
 class StepKinematics_MechanismStateRepresentation : public StepRepr_Representation
 {
 public:
-  
   //! Returns a MechanismStateRepresentation
   Standard_EXPORT StepKinematics_MechanismStateRepresentation();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName, const Handle(StepRepr_HArray1OfRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems, const Handle(StepKinematics_MechanismRepresentation)& theMechanism);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&               theName,
+                            const Handle(StepRepr_HArray1OfRepresentationItem)&   theItems,
+                            const Handle(StepRepr_RepresentationContext)&         theContextOfItems,
+                            const Handle(StepKinematics_MechanismRepresentation)& theMechanism);
 
-  Standard_EXPORT void SetMechanism(const Handle(StepKinematics_MechanismRepresentation)& theMechanism);
+  Standard_EXPORT void SetMechanism(
+    const Handle(StepKinematics_MechanismRepresentation)& theMechanism);
 
   Standard_EXPORT Handle(StepKinematics_MechanismRepresentation) Mechanism() const;
 
 private:
   Handle(StepKinematics_MechanismRepresentation) myRepresentedMechanism;
 
-  DEFINE_STANDARD_RTTIEXT(StepKinematics_MechanismStateRepresentation,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_MechanismStateRepresentation, StepRepr_Representation)
 };
 
 #endif // _StepKinematics_MechanismStateRepresentation_HeaderFile

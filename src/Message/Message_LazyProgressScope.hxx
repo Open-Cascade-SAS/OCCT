@@ -19,29 +19,31 @@
 //! Progress scope with lazy updates and abort fetches.
 //!
 //! Although Message_ProgressIndicator implementation is encouraged to spare GUI updates,
-//! even optimized implementation might show a noticeable overhead on a very small update step (e.g. per triangle).
+//! even optimized implementation might show a noticeable overhead on a very small update step (e.g.
+//! per triangle).
 //!
-//! The class splits initial (displayed) number of overall steps into larger chunks specified in constructor,
-//! so that displayed progress is updated at larger steps.
+//! The class splits initial (displayed) number of overall steps into larger chunks specified in
+//! constructor, so that displayed progress is updated at larger steps.
 class Message_LazyProgressScope : protected Message_ProgressScope
 {
 public:
-
   //! Main constructor.
   //! @param[in] theRange  progress range to scope
   //! @param[in] theName   name of this scope
   //! @param[in] theMax    number of steps within this scope
   //! @param[in] thePatchStep  number of steps to update progress
   //! @param[in] theIsInf  infinite flag
-  Message_LazyProgressScope (const Message_ProgressRange& theRange,
-                             const char* theName,
-                             const Standard_Real theMax,
-                             const Standard_Real thePatchStep,
-                             const Standard_Boolean theIsInf = Standard_False)
-  : Message_ProgressScope (theRange, theName, theMax, theIsInf),
-    myPatchStep (thePatchStep),
-    myPatchProgress (0.0),
-    myIsLazyAborted (Standard_False) {}
+  Message_LazyProgressScope(const Message_ProgressRange& theRange,
+                            const char*                  theName,
+                            const Standard_Real          theMax,
+                            const Standard_Real          thePatchStep,
+                            const Standard_Boolean       theIsInf = Standard_False)
+      : Message_ProgressScope(theRange, theName, theMax, theIsInf),
+        myPatchStep(thePatchStep),
+        myPatchProgress(0.0),
+        myIsLazyAborted(Standard_False)
+  {
+  }
 
   //! Increment progress with 1.
   void Next()
@@ -52,15 +54,12 @@ public:
     }
 
     myPatchProgress = 0.0;
-    Message_ProgressScope::Next (myPatchStep);
+    Message_ProgressScope::Next(myPatchStep);
     IsAborted();
   }
 
   //! Return TRUE if progress has been aborted - return the cached state lazily updated.
-  Standard_Boolean More() const
-  {
-    return !myIsLazyAborted;
-  }
+  Standard_Boolean More() const { return !myIsLazyAborted; }
 
   //! Return TRUE if progress has been aborted - fetches actual value from the Progress.
   Standard_Boolean IsAborted()
@@ -70,11 +69,9 @@ public:
   }
 
 protected:
-
   Standard_Real    myPatchStep;
   Standard_Real    myPatchProgress;
   Standard_Boolean myIsLazyAborted;
-
 };
 
 #endif // _Message_LazyProgressScope_HeaderFiler

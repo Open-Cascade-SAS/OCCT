@@ -26,52 +26,34 @@ class StepBasic_Organization;
 class StepBasic_OrganizationRole;
 class StepAP214_AutoDesignGeneralOrgItem;
 
-
 class StepAP214_AutoDesignOrganizationAssignment;
 DEFINE_STANDARD_HANDLE(StepAP214_AutoDesignOrganizationAssignment, StepBasic_OrganizationAssignment)
-
 
 class StepAP214_AutoDesignOrganizationAssignment : public StepBasic_OrganizationAssignment
 {
 
 public:
-
-  
   //! Returns a AutoDesignOrganizationAssignment
   Standard_EXPORT StepAP214_AutoDesignOrganizationAssignment();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
-  
-  Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_Organization)&     aAssignedOrganization,
+                            const Handle(StepBasic_OrganizationRole)& aRole,
+                            const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
+
+  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
+
   Standard_EXPORT Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem) Items() const;
-  
-  Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem ItemsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem ItemsValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbItems() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,StepBasic_OrganizationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,
+                          StepBasic_OrganizationAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem) items;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_AutoDesignOrganizationAssignment_HeaderFile

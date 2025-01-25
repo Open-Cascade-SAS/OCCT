@@ -25,7 +25,6 @@ class Aspect_XRAction : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_XRAction, Standard_Transient)
 public:
-
   //! Return action id.
   const TCollection_AsciiString& Id() const { return myId; }
 
@@ -39,12 +38,15 @@ public:
   uint64_t RawHandle() const { return myRawHandle; }
 
   //! Set action handle.
-  void SetRawHandle (uint64_t theHande) { myRawHandle = theHande; }
+  void SetRawHandle(uint64_t theHande) { myRawHandle = theHande; }
 
   //! Main constructor.
-  Aspect_XRAction (const TCollection_AsciiString& theId,
-                   const Aspect_XRActionType theType)
-  : myId (theId), myRawHandle (0), myType (theType) {}
+  Aspect_XRAction(const TCollection_AsciiString& theId, const Aspect_XRActionType theType)
+      : myId(theId),
+        myRawHandle(0),
+        myType(theType)
+  {
+  }
 
 protected:
   TCollection_AsciiString myId;        //!< action id
@@ -53,6 +55,7 @@ protected:
 };
 
 //! Map of actions with action Id as a key.
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRAction)> Aspect_XRActionMap;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRAction)>
+  Aspect_XRActionMap;
 
 #endif // _Aspect_XRAction_HeaderFile

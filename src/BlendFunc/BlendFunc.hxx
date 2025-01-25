@@ -27,32 +27,45 @@
 class gp_Pnt2d;
 class gp_Vec;
 
-
 //! This package provides a set of generic functions, that can
 //! instantiated to compute blendings between two surfaces
 //! (Constant radius, Evolutive radius, Ruled surface).
-class BlendFunc 
+class BlendFunc
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void GetShape (const BlendFunc_SectionShape SectShape, const Standard_Real MaxAng, Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Convert_ParameterisationType& TypeConv);
-  
-  Standard_EXPORT static void Knots (const BlendFunc_SectionShape SectShape, TColStd_Array1OfReal& TKnots);
-  
-  Standard_EXPORT static void Mults (const BlendFunc_SectionShape SectShape, TColStd_Array1OfInteger& TMults);
-  
-  Standard_EXPORT static void GetMinimalWeights (const BlendFunc_SectionShape SectShape, const Convert_ParameterisationType TConv, const Standard_Real AngleMin, const Standard_Real AngleMax, TColStd_Array1OfReal& Weigths);
-  
-  //! Used  to obtain the next level of continuity.
-  Standard_EXPORT static GeomAbs_Shape NextShape (const GeomAbs_Shape S);
-  
-  Standard_EXPORT static Standard_Boolean ComputeNormal (const Handle(Adaptor3d_Surface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal);
-  
-  Standard_EXPORT static Standard_Boolean ComputeDNormal (const Handle(Adaptor3d_Surface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal, gp_Vec& DNu, gp_Vec& DNv);
+  Standard_EXPORT static void GetShape(const BlendFunc_SectionShape  SectShape,
+                                       const Standard_Real           MaxAng,
+                                       Standard_Integer&             NbPoles,
+                                       Standard_Integer&             NbKnots,
+                                       Standard_Integer&             Degree,
+                                       Convert_ParameterisationType& TypeConv);
 
+  Standard_EXPORT static void Knots(const BlendFunc_SectionShape SectShape,
+                                    TColStd_Array1OfReal&        TKnots);
+
+  Standard_EXPORT static void Mults(const BlendFunc_SectionShape SectShape,
+                                    TColStd_Array1OfInteger&     TMults);
+
+  Standard_EXPORT static void GetMinimalWeights(const BlendFunc_SectionShape       SectShape,
+                                                const Convert_ParameterisationType TConv,
+                                                const Standard_Real                AngleMin,
+                                                const Standard_Real                AngleMax,
+                                                TColStd_Array1OfReal&              Weigths);
+
+  //! Used  to obtain the next level of continuity.
+  Standard_EXPORT static GeomAbs_Shape NextShape(const GeomAbs_Shape S);
+
+  Standard_EXPORT static Standard_Boolean ComputeNormal(const Handle(Adaptor3d_Surface)& Surf,
+                                                        const gp_Pnt2d&                  p2d,
+                                                        gp_Vec&                          Normal);
+
+  Standard_EXPORT static Standard_Boolean ComputeDNormal(const Handle(Adaptor3d_Surface)& Surf,
+                                                         const gp_Pnt2d&                  p2d,
+                                                         gp_Vec&                          Normal,
+                                                         gp_Vec&                          DNu,
+                                                         gp_Vec&                          DNv);
 };
 
 #endif // _BlendFunc_HeaderFile

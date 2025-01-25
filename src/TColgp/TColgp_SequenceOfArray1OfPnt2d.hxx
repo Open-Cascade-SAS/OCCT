@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(TColgp_HArray1OfPnt2d)> TColgp_SequenceOfArray1OfPnt2d;
 
-
 #endif

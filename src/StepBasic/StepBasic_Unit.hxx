@@ -27,50 +27,28 @@ class Standard_Transient;
 class StepBasic_NamedUnit;
 class StepBasic_DerivedUnit;
 
-
 //! Implements a select type unit (NamedUnit or DerivedUnit)
-class StepBasic_Unit  : public StepData_SelectType
+class StepBasic_Unit : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates empty object
   Standard_EXPORT StepBasic_Unit();
-  
+
   //! Recognizes a type of Unit Entity
   //! 1 -> NamedUnit
   //! 2 -> DerivedUnit
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a NamedUnit (Null if another type)
   Standard_EXPORT Handle(StepBasic_NamedUnit) NamedUnit() const;
-  
+
   //! returns Value as a DerivedUnit (Null if another type)
   Standard_EXPORT Handle(StepBasic_DerivedUnit) DerivedUnit() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Unit_HeaderFile

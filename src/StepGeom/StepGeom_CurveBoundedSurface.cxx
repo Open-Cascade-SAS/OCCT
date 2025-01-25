@@ -20,25 +20,24 @@
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveBoundedSurface,StepGeom_BoundedSurface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveBoundedSurface, StepGeom_BoundedSurface)
 
 //=======================================================================
-//function : StepGeom_CurveBoundedSurface
-//purpose  : 
+// function : StepGeom_CurveBoundedSurface
+// purpose  :
 //=======================================================================
-StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface ()
-{
-}
+StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepGeom_CurveBoundedSurface::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                         const Handle(StepGeom_Surface) &aBasisSurface,
-                                         const Handle(StepGeom_HArray1OfSurfaceBoundary) &aBoundaries,
-                                         const Standard_Boolean aImplicitOuter)
+void StepGeom_CurveBoundedSurface::Init(
+  const Handle(TCollection_HAsciiString)&          aRepresentationItem_Name,
+  const Handle(StepGeom_Surface)&                  aBasisSurface,
+  const Handle(StepGeom_HArray1OfSurfaceBoundary)& aBoundaries,
+  const Standard_Boolean                           aImplicitOuter)
 {
   StepGeom_BoundedSurface::Init(aRepresentationItem_Name);
 
@@ -50,61 +49,62 @@ void StepGeom_CurveBoundedSurface::Init (const Handle(TCollection_HAsciiString) 
 }
 
 //=======================================================================
-//function : BasisSurface
-//purpose  : 
+// function : BasisSurface
+// purpose  :
 //=======================================================================
 
-Handle(StepGeom_Surface) StepGeom_CurveBoundedSurface::BasisSurface () const
+Handle(StepGeom_Surface) StepGeom_CurveBoundedSurface::BasisSurface() const
 {
   return theBasisSurface;
 }
 
 //=======================================================================
-//function : SetBasisSurface
-//purpose  : 
+// function : SetBasisSurface
+// purpose  :
 //=======================================================================
 
-void StepGeom_CurveBoundedSurface::SetBasisSurface (const Handle(StepGeom_Surface) &aBasisSurface)
+void StepGeom_CurveBoundedSurface::SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface)
 {
   theBasisSurface = aBasisSurface;
 }
 
 //=======================================================================
-//function : Boundaries
-//purpose  : 
+// function : Boundaries
+// purpose  :
 //=======================================================================
 
-Handle(StepGeom_HArray1OfSurfaceBoundary) StepGeom_CurveBoundedSurface::Boundaries () const
+Handle(StepGeom_HArray1OfSurfaceBoundary) StepGeom_CurveBoundedSurface::Boundaries() const
 {
   return theBoundaries;
 }
 
 //=======================================================================
-//function : SetBoundaries
-//purpose  : 
+// function : SetBoundaries
+// purpose  :
 //=======================================================================
 
-void StepGeom_CurveBoundedSurface::SetBoundaries (const Handle(StepGeom_HArray1OfSurfaceBoundary) &aBoundaries)
+void StepGeom_CurveBoundedSurface::SetBoundaries(
+  const Handle(StepGeom_HArray1OfSurfaceBoundary)& aBoundaries)
 {
   theBoundaries = aBoundaries;
 }
 
 //=======================================================================
-//function : ImplicitOuter
-//purpose  : 
+// function : ImplicitOuter
+// purpose  :
 //=======================================================================
 
-Standard_Boolean StepGeom_CurveBoundedSurface::ImplicitOuter () const
+Standard_Boolean StepGeom_CurveBoundedSurface::ImplicitOuter() const
 {
   return theImplicitOuter;
 }
 
 //=======================================================================
-//function : SetImplicitOuter
-//purpose  : 
+// function : SetImplicitOuter
+// purpose  :
 //=======================================================================
 
-void StepGeom_CurveBoundedSurface::SetImplicitOuter (const Standard_Boolean aImplicitOuter)
+void StepGeom_CurveBoundedSurface::SetImplicitOuter(const Standard_Boolean aImplicitOuter)
 {
   theImplicitOuter = aImplicitOuter;
 }

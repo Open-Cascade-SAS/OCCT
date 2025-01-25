@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
@@ -25,46 +25,49 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneModel::DFBrowserPane_AttributePaneModel (QObject* theParent)
-: QAbstractTableModel (theParent), myOrientation (Qt::Vertical), myColumnCount (1)
+DFBrowserPane_AttributePaneModel::DFBrowserPane_AttributePaneModel(QObject* theParent)
+    : QAbstractTableModel(theParent),
+      myOrientation(Qt::Vertical),
+      myColumnCount(1)
 {
-  myItalicColumns.append (0);
+  myItalicColumns.append(0);
 }
 
 // =======================================================================
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePaneModel::Init (const QList<QVariant>& theValues)
+void DFBrowserPane_AttributePaneModel::Init(const QList<QVariant>& theValues)
 {
   myValuesMap.clear();
 
   if (myOrientation == Qt::Vertical)
   {
-    int aRows = theValues.size() / myColumnCount;
+    int             aRows = theValues.size() / myColumnCount;
     QList<QVariant> aRowValues;
-    int aValuesIndex = 0;
+    int             aValuesIndex = 0;
     for (int aRowId = 0; aRowId < aRows; aRowId++)
     {
       aRowValues.clear();
       for (int aColumnId = 0; aColumnId < myColumnCount; aColumnId++)
       {
-        aRowValues.append (theValues[aValuesIndex]);
+        aRowValues.append(theValues[aValuesIndex]);
         aValuesIndex++;
       }
       myValuesMap[aRowId] = aRowValues;
     }
   }
-  else {
-    int aCols = theValues.size() / myColumnCount;
+  else
+  {
+    int             aCols = theValues.size() / myColumnCount;
     QList<QVariant> aColValues;
-    int aValuesIndex = 0;
+    int             aValuesIndex = 0;
     for (int aColumnId = 0; aColumnId < aCols; aColumnId++)
     {
       aColValues.clear();
       for (int aRowId = 0; aRowId < myColumnCount; aRowId++)
       {
-        aColValues.append (theValues[aValuesIndex]);
+        aColValues.append(theValues[aValuesIndex]);
         aValuesIndex++;
       }
       myValuesMap[aColumnId] = aColValues;
@@ -77,8 +80,8 @@ void DFBrowserPane_AttributePaneModel::Init (const QList<QVariant>& theValues)
 // function : SetHeaderValues
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePaneModel::SetHeaderValues (const QList<QVariant>& theValues,
-                                                        Qt::Orientation theOrientation)
+void DFBrowserPane_AttributePaneModel::SetHeaderValues(const QList<QVariant>& theValues,
+                                                       Qt::Orientation        theOrientation)
 {
   if (theOrientation == Qt::Horizontal)
     myHorizontalHeaderValues = theValues;
@@ -90,7 +93,7 @@ void DFBrowserPane_AttributePaneModel::SetHeaderValues (const QList<QVariant>& t
 // function : columnCount
 // purpose :
 // =======================================================================
-int DFBrowserPane_AttributePaneModel::columnCount (const QModelIndex&/* theParent*/) const
+int DFBrowserPane_AttributePaneModel::columnCount(const QModelIndex& /* theParent*/) const
 {
   return myOrientation == Qt::Vertical ? myColumnCount : myValuesMap.size();
 }
@@ -99,7 +102,7 @@ int DFBrowserPane_AttributePaneModel::columnCount (const QModelIndex&/* theParen
 // function : rowCount
 // purpose :
 // =======================================================================
-int DFBrowserPane_AttributePaneModel::rowCount (const QModelIndex&/* theParent*/) const
+int DFBrowserPane_AttributePaneModel::rowCount(const QModelIndex& /* theParent*/) const
 {
   return myOrientation == Qt::Vertical ? myValuesMap.size() : myColumnCount;
 }
@@ -108,7 +111,7 @@ int DFBrowserPane_AttributePaneModel::rowCount (const QModelIndex&/* theParent*/
 // function : data
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_AttributePaneModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant DFBrowserPane_AttributePaneModel::data(const QModelIndex& theIndex, int theRole) const
 {
   QVariant aValue;
 
@@ -116,25 +119,25 @@ QVariant DFBrowserPane_AttributePaneModel::data (const QModelIndex& theIndex, in
   {
     if (myOrientation == Qt::Vertical)
     {
-      int aRowId = theIndex.row();
+      int             aRowId     = theIndex.row();
       QList<QVariant> aRowValues = myValuesMap[aRowId];
-      aValue = aRowValues.at (theIndex.column());
+      aValue                     = aRowValues.at(theIndex.column());
     }
     else
     {
-      int aColId = theIndex.column();
+      int             aColId     = theIndex.column();
       QList<QVariant> aColValues = myValuesMap[aColId];
-      aValue = aColValues.at (theIndex.row());
+      aValue                     = aColValues.at(theIndex.row());
     }
   }
-  if (myItalicColumns.contains (theIndex.column()) && theRole == Qt::FontRole)
+  if (myItalicColumns.contains(theIndex.column()) && theRole == Qt::FontRole)
   {
     QFont aFont = qApp->font();
-    aFont.setItalic (true);
+    aFont.setItalic(true);
     return aFont;
   }
-  if (myItalicColumns.contains (theIndex.column()) && theRole == Qt::ForegroundRole)
-    return QColor (Qt::darkGray).darker(150);
+  if (myItalicColumns.contains(theIndex.column()) && theRole == Qt::ForegroundRole)
+    return QColor(Qt::darkGray).darker(150);
 
   return aValue;
 }
@@ -143,10 +146,11 @@ QVariant DFBrowserPane_AttributePaneModel::data (const QModelIndex& theIndex, in
 // function : headerData
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_AttributePaneModel::headerData (int theSection, Qt::Orientation theOrientation,
-                                                       int theRole) const
+QVariant DFBrowserPane_AttributePaneModel::headerData(int             theSection,
+                                                      Qt::Orientation theOrientation,
+                                                      int             theRole) const
 {
-  QVariant aValue = QAbstractTableModel::headerData (theSection, theOrientation, theRole);
+  QVariant aValue = QAbstractTableModel::headerData(theSection, theOrientation, theRole);
   if (theRole == Qt::DisplayRole)
   {
     if (theOrientation == Qt::Horizontal)

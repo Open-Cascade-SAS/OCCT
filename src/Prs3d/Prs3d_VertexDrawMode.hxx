@@ -23,9 +23,9 @@
 //! VDM_Inherited - the global settings are inherited and applied to the shape's presentation.
 enum Prs3d_VertexDrawMode
 {
-Prs3d_VDM_Isolated,
-Prs3d_VDM_All,
-Prs3d_VDM_Inherited
+  Prs3d_VDM_Isolated,
+  Prs3d_VDM_All,
+  Prs3d_VDM_Inherited
 };
 
 #endif // _Prs3d_VertexDrawMode_HeaderFile

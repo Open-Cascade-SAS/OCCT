@@ -25,18 +25,19 @@
 //! from a user-defined bitmap
 class Graphic3d_HatchStyle : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT (Graphic3d_HatchStyle, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_HatchStyle, Standard_Transient) // Type definition
 
 public:
-
   //! Creates a new custom hatch style with the given pattern and unique style id
   //! @warning Raises a program error if given pattern image is not a valid 32*32 bitmap
-  Standard_EXPORT Graphic3d_HatchStyle (const Handle(Image_PixMap)& thePattern);
+  Standard_EXPORT Graphic3d_HatchStyle(const Handle(Image_PixMap)& thePattern);
 
   //! Creates a new predefined hatch style with the given id in Aspect_HatchStyle enum.
   //! GPU memory for the pattern will not be allocated.
-  Graphic3d_HatchStyle (const Aspect_HatchStyle theType)
-  : myHatchType (theType) {}
+  Graphic3d_HatchStyle(const Aspect_HatchStyle theType)
+      : myHatchType(theType)
+  {
+  }
 
   //! Returns the pattern of custom hatch style
   Standard_EXPORT const Standard_Byte* Pattern() const;
@@ -44,20 +45,16 @@ public:
   //! In case if predefined OCCT style is used, returns
   //! index in Aspect_HatchStyle enumeration. If the style
   //! is custom, returns unique index of the style
-  Standard_Integer HatchType() const
-  {
-    return myHatchType;
-  }
+  Standard_Integer HatchType() const { return myHatchType; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-
   Handle(NCollection_Buffer) myPattern;   //!< Image bitmap with custom hatch pattern
   Standard_Integer           myHatchType; //!< Index of used style
 };
 
-DEFINE_STANDARD_HANDLE (Graphic3d_HatchStyle, Standard_Transient)
+DEFINE_STANDARD_HANDLE(Graphic3d_HatchStyle, Standard_Transient)
 
 #endif // _Graphic3d_HatchStyle_HeaderFile

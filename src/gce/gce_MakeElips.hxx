@@ -26,20 +26,17 @@
 class gp_Ax2;
 class gp_Pnt;
 
-
 //! This class implements the following algorithms used to
 //! create an ellipse from gp.
 //!
 //! * Create an ellipse from its center, and two points:
 //! one on the ciconference giving the major radius, the
 //! other giving the value of the small radius.
-class gce_MakeElips  : public gce_Root
+class gce_MakeElips : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! The major radius of the ellipse is on the "XAxis" and the
   //! minor radius is on the "YAxis" of the ellipse. The "XAxis"
   //! is defined with the "XDirection" of A2 and the "YAxis" is
@@ -47,8 +44,10 @@ public:
   //! Warnings :
   //! It is not forbidden to create an ellipse with
   //! MajorRadius = MinorRadius.
-  Standard_EXPORT gce_MakeElips(const gp_Ax2& A2, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
+  Standard_EXPORT gce_MakeElips(const gp_Ax2&       A2,
+                                const Standard_Real MajorRadius,
+                                const Standard_Real MinorRadius);
+
   //! Make an ellipse with its center and two points.
   //! Warning
   //! The MakeElips class does not prevent the
@@ -64,36 +63,17 @@ public:
   //! is less than the minor radius computed with Center, S1 and S2, or
   //! -   Center, S1 and S2 are collinear.
   Standard_EXPORT gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
-  
+
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const gp_Elips& Value() const;
-  
+
   Standard_EXPORT const gp_Elips& Operator() const;
-Standard_EXPORT operator gp_Elips() const;
-
-
-
+  Standard_EXPORT                 operator gp_Elips() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Elips TheElips;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeElips_HeaderFile

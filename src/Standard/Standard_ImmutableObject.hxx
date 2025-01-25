@@ -26,8 +26,9 @@ class Standard_ImmutableObject;
 DEFINE_STANDARD_HANDLE(Standard_ImmutableObject, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_ImmutableObject
-  #define Standard_ImmutableObject_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_ImmutableObject(MESSAGE);
+  #define Standard_ImmutableObject_Raise_if(CONDITION, MESSAGE)                                    \
+    if (CONDITION)                                                                                 \
+      throw Standard_ImmutableObject(MESSAGE);
 #else
   #define Standard_ImmutableObject_Raise_if(CONDITION, MESSAGE)
 #endif

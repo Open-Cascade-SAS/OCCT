@@ -24,53 +24,32 @@
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 
-
-
-class GeomInt_ParameterAndOrientation 
+class GeomInt_ParameterAndOrientation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomInt_ParameterAndOrientation();
-  
-  Standard_EXPORT GeomInt_ParameterAndOrientation(const Standard_Real P, const TopAbs_Orientation Or1, const TopAbs_Orientation Or2);
-  
-  Standard_EXPORT void SetOrientation1 (const TopAbs_Orientation Or);
-  
-  Standard_EXPORT void SetOrientation2 (const TopAbs_Orientation Or);
-  
+
+  Standard_EXPORT GeomInt_ParameterAndOrientation(const Standard_Real      P,
+                                                  const TopAbs_Orientation Or1,
+                                                  const TopAbs_Orientation Or2);
+
+  Standard_EXPORT void SetOrientation1(const TopAbs_Orientation Or);
+
+  Standard_EXPORT void SetOrientation2(const TopAbs_Orientation Or);
+
   Standard_EXPORT Standard_Real Parameter() const;
-  
+
   Standard_EXPORT TopAbs_Orientation Orientation1() const;
-  
+
   Standard_EXPORT TopAbs_Orientation Orientation2() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real prm;
+  Standard_Real      prm;
   TopAbs_Orientation or1;
   TopAbs_Orientation or2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomInt_ParameterAndOrientation_HeaderFile

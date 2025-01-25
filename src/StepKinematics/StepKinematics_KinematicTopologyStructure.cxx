@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,9 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyStructure, StepRepr_Representation)
 
 //=======================================================================
-//function : StepKinematics_KinematicTopologyStructure
-//purpose  :
+// function : StepKinematics_KinematicTopologyStructure
+// purpose  :
 //=======================================================================
-StepKinematics_KinematicTopologyStructure::StepKinematics_KinematicTopologyStructure ()
-{
-}
+StepKinematics_KinematicTopologyStructure::StepKinematics_KinematicTopologyStructure() {}

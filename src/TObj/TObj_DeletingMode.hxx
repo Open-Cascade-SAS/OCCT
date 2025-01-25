@@ -20,10 +20,10 @@
 
 typedef enum
 {
-  TObj_FreeOnly = 0,   //!< Delete objects only without dependence.
-  TObj_KeepDepending,  //!< Remove object if depending one will be correct elsewhere.
-  TObj_Forced          //!< Delete this object and all depenging object.
-} TObj_DeletingMode;     
+  TObj_FreeOnly = 0,  //!< Delete objects only without dependence.
+  TObj_KeepDepending, //!< Remove object if depending one will be correct elsewhere.
+  TObj_Forced         //!< Delete this object and all depenging object.
+} TObj_DeletingMode;
 
 #endif
 

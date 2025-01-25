@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_ItemApplication.hxx>
 
@@ -31,11 +31,12 @@
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr DFBrowser_ItemApplication::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr DFBrowser_ItemApplication::createChild(int theRow, int theColumn)
 {
-  TreeModel_ItemBasePtr anItem = DFBrowser_ItemDocument::CreateItem (currentItem(), theRow, theColumn);
-  DFBrowser_ItemBasePtr aBaseItem = itemDynamicCast<DFBrowser_ItemBase> (anItem);
-  aBaseItem->SetModule (GetModule());
+  TreeModel_ItemBasePtr anItem =
+    DFBrowser_ItemDocument::CreateItem(currentItem(), theRow, theColumn);
+  DFBrowser_ItemBasePtr aBaseItem = itemDynamicCast<DFBrowser_ItemBase>(anItem);
+  aBaseItem->SetModule(GetModule());
 
   return anItem;
 }
@@ -56,13 +57,11 @@ int DFBrowser_ItemApplication::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant DFBrowser_ItemApplication::initValue (const int theItemRole) const
+QVariant DFBrowser_ItemApplication::initValue(const int theItemRole) const
 {
-  if (theItemRole == Qt::DisplayRole ||
-      theItemRole == Qt::EditRole ||
-      theItemRole == Qt::ToolTipRole ||
-      theItemRole == DFBrowserPane_ItemRole_DisplayExtended ||
-      theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
+  if (theItemRole == Qt::DisplayRole || theItemRole == Qt::EditRole
+      || theItemRole == Qt::ToolTipRole || theItemRole == DFBrowserPane_ItemRole_DisplayExtended
+      || theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
   {
     return "TDocStd_Application";
   }

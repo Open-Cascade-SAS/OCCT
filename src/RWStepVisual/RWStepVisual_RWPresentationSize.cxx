@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepVisual_RWPresentationSize.pxx"
 #include <StepData_StepReaderData.hxx>
@@ -20,60 +19,55 @@
 #include <StepVisual_PresentationSize.hxx>
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 
-RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize () {}
+RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize() {}
 
-void RWStepVisual_RWPresentationSize::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepVisual_PresentationSize)& ent) const
+void RWStepVisual_RWPresentationSize::ReadStep(const Handle(StepData_StepReaderData)&     data,
+                                               const Standard_Integer                     num,
+                                               Handle(Interface_Check)&                   ach,
+                                               const Handle(StepVisual_PresentationSize)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "presentation_size"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"presentation_size")) return;
+  // --- own field : unit ---
 
-	// --- own field : unit ---
+  StepVisual_PresentationSizeAssignmentSelect aUnit;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num, 1, "unit", ach, aUnit);
 
-	StepVisual_PresentationSizeAssignmentSelect aUnit;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num,1,"unit",ach,aUnit);
+  // --- own field : size ---
 
-	// --- own field : size ---
+  Handle(StepVisual_PlanarBox) aSize;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadEntity(num, 2, "size", ach, STANDARD_TYPE(StepVisual_PlanarBox), aSize);
 
-	Handle(StepVisual_PlanarBox) aSize;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"size", ach, STANDARD_TYPE(StepVisual_PlanarBox), aSize);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aUnit, aSize);
+  ent->Init(aUnit, aSize);
 }
 
-
-void RWStepVisual_RWPresentationSize::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepVisual_PresentationSize)& ent) const
+void RWStepVisual_RWPresentationSize::WriteStep(
+  StepData_StepWriter&                       SW,
+  const Handle(StepVisual_PresentationSize)& ent) const
 {
 
-	// --- own field : unit ---
+  // --- own field : unit ---
 
-	SW.Send(ent->Unit().Value());
+  SW.Send(ent->Unit().Value());
 
-	// --- own field : size ---
+  // --- own field : size ---
 
-	SW.Send(ent->Size());
+  SW.Send(ent->Size());
 }
 
-
-void RWStepVisual_RWPresentationSize::Share(const Handle(StepVisual_PresentationSize)& ent, Interface_EntityIterator& iter) const
+void RWStepVisual_RWPresentationSize::Share(const Handle(StepVisual_PresentationSize)& ent,
+                                            Interface_EntityIterator&                  iter) const
 {
 
-	iter.GetOneItem(ent->Unit().Value());
+  iter.GetOneItem(ent->Unit().Value());
 
-
-	iter.GetOneItem(ent->Size());
+  iter.GetOneItem(ent->Size());
 }
-

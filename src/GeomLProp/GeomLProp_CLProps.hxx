@@ -38,15 +38,11 @@ class gp_Pnt;
 class gp_Dir;
 class GeomLProp_CurveTool;
 
-
-
-class GeomLProp_CLProps 
+class GeomLProp_CLProps
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes the local properties of the curve <C>
   //! The current point and the derivatives are
   //! computed at the same time, which allows an
@@ -56,13 +52,18 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT GeomLProp_CLProps(const Handle(Geom_Curve)& C, const Standard_Integer N, const Standard_Real Resolution);
-  
+  Standard_EXPORT GeomLProp_CLProps(const Handle(Geom_Curve)& C,
+                                    const Standard_Integer    N,
+                                    const Standard_Real       Resolution);
+
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT GeomLProp_CLProps(const Handle(Geom_Curve)& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
-  
+  Standard_EXPORT GeomLProp_CLProps(const Handle(Geom_Curve)& C,
+                                    const Standard_Real       U,
+                                    const Standard_Integer    N,
+                                    const Standard_Real       Resolution);
+
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
   //! with SetCurve.
@@ -70,79 +71,60 @@ public:
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
   Standard_EXPORT GeomLProp_CLProps(const Standard_Integer N, const Standard_Real Resolution);
-  
+
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
-  Standard_EXPORT void SetParameter (const Standard_Real U);
-  
+  Standard_EXPORT void SetParameter(const Standard_Real U);
+
   //! Initializes the local properties of the curve
   //! for the new curve.
-  Standard_EXPORT void SetCurve (const Handle(Geom_Curve)& C);
-  
+  Standard_EXPORT void SetCurve(const Handle(Geom_Curve)& C);
+
   //! Returns the Point.
   Standard_EXPORT const gp_Pnt& Value() const;
-  
+
   //! Returns the first derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec& D1();
-  
+
   //! Returns the second derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec& D2();
-  
+
   //! Returns the third derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec& D3();
-  
+
   //! Returns True if the tangent is defined.
   //! For example, the tangent is not defined if the
   //! three first derivatives are all null.
   Standard_EXPORT Standard_Boolean IsTangentDefined();
-  
+
   //! output  the tangent direction <D>
-  Standard_EXPORT void Tangent (gp_Dir& D);
-  
+  Standard_EXPORT void Tangent(gp_Dir& D);
+
   //! Returns the curvature.
   Standard_EXPORT Standard_Real Curvature();
-  
+
   //! Returns the normal direction <N>.
-  Standard_EXPORT void Normal (gp_Dir& N);
-  
+  Standard_EXPORT void Normal(gp_Dir& N);
+
   //! Returns the centre of curvature <P>.
-  Standard_EXPORT void CentreOfCurvature (gp_Pnt& P);
-
-
-
+  Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom_Curve) myCurve;
-  Standard_Real myU;
-  Standard_Integer myDerOrder;
-  Standard_Real myCN;
-  Standard_Real myLinTol;
-  gp_Pnt myPnt;
-  gp_Vec myDerivArr[3];
-  gp_Dir myTangent;
-  Standard_Real myCurvature;
-  LProp_Status myTangentStatus;
-  Standard_Integer mySignificantFirstDerivativeOrder;
-
-
+  Standard_Real      myU;
+  Standard_Integer   myDerOrder;
+  Standard_Real      myCN;
+  Standard_Real      myLinTol;
+  gp_Pnt             myPnt;
+  gp_Vec             myDerivArr[3];
+  gp_Dir             myTangent;
+  Standard_Real      myCurvature;
+  LProp_Status       myTangentStatus;
+  Standard_Integer   mySignificantFirstDerivativeOrder;
 };
-
-
-
-
-
-
 
 #endif // _GeomLProp_CLProps_HeaderFile

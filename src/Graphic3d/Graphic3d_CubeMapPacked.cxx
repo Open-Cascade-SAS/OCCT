@@ -23,26 +23,25 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapPacked, Graphic3d_CubeMap)
 // function : Graphic3d_CubeMapPacked
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const TCollection_AsciiString&        theFilePath,
-                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
-  :
-  Graphic3d_CubeMap (theFilePath),
-  myOrder           (theOrder),
-  myTileNumberX     (1)
-{}
+Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const TCollection_AsciiString&         theFilePath,
+                                                 const Graphic3d_ValidatedCubeMapOrder& theOrder)
+    : Graphic3d_CubeMap(theFilePath),
+      myOrder(theOrder),
+      myTileNumberX(1)
+{
+}
 
 // =======================================================================
 // function : Graphic3d_CubeMapPacked
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const Handle(Image_PixMap)&           theImage,
-                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
-  :
-  Graphic3d_CubeMap (Handle(Image_PixMap)()),
-  myOrder           (theOrder),
-  myTileNumberX     (1)
+Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const Handle(Image_PixMap)&            theImage,
+                                                 const Graphic3d_ValidatedCubeMapOrder& theOrder)
+    : Graphic3d_CubeMap(Handle(Image_PixMap)()),
+      myOrder(theOrder),
+      myTileNumberX(1)
 {
-  if (checkImage (theImage, myTileNumberX))
+  if (checkImage(theImage, myTileNumberX))
   {
     myPixMap = theImage;
   }
@@ -52,23 +51,22 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const Handle(Image_PixMap)&   
 // function : CompressedValue
 // purpose  :
 // =======================================================================
-Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
-  if (myTileNumberX == 0
-  || !myPixMap.IsNull())
+  if (myTileNumberX == 0 || !myPixMap.IsNull())
   {
     return Handle(Image_CompressedPixMap)();
   }
 
   TCollection_AsciiString aFilePath;
-  myPath.SystemName (aFilePath);
+  myPath.SystemName(aFilePath);
   if (!aFilePath.IsEmpty())
   {
-    const unsigned int aTileIndex = myOrder[myCurrentSide];
-    Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, (Standard_Integer )aTileIndex);
-    if (!anImage.IsNull()
-      && anImage->NbFaces() == 6
-      && anImage->SizeX() == anImage->SizeY())
+    const unsigned int             aTileIndex = myOrder[myCurrentSide];
+    Handle(Image_CompressedPixMap) anImage =
+      Image_DDSParser::Load(theSupported, aFilePath, (Standard_Integer)aTileIndex);
+    if (!anImage.IsNull() && anImage->NbFaces() == 6 && anImage->SizeX() == anImage->SizeY())
     {
       myIsTopDown = anImage->IsTopDown();
       return anImage;
@@ -81,17 +79,18 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue (const H
 // function : Value
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
   if (myTileNumberX != 0)
   {
     if (myPixMap.IsNull())
     {
       TCollection_AsciiString aFilePath;
-      myPath.SystemName (aFilePath);
+      myPath.SystemName(aFilePath);
       if (!aFilePath.IsEmpty())
       {
-        tryLoadImage (theSupported, aFilePath);
+        tryLoadImage(theSupported, aFilePath);
       }
     }
 
@@ -107,8 +106,8 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value (const Handle(Image_Supporte
 
       if (!myIsTopDown)
       {
-        myPixMap->SetTopDown (true);
-        anOrder.Swap (Graphic3d_CMS_POS_Y, Graphic3d_CMS_NEG_Y);
+        myPixMap->SetTopDown(true);
+        anOrder.Swap(Graphic3d_CMS_POS_Y, Graphic3d_CMS_NEG_Y);
       }
 
       unsigned int aTileIndexX = anOrder[myCurrentSide] % myTileNumberX;
@@ -116,13 +115,14 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value (const Handle(Image_Supporte
 
       aTileIndexY = myIsTopDown ? aTileIndexY : (6 / myTileNumberX - 1 - aTileIndexY);
 
-      if (aWrapper->InitWrapper (myPixMap->Format(),
-                                 myPixMap->ChangeRawValue(aTileIndexY * aTileSize, aTileIndexX * aTileSize),
-                                 aTileSize,
-                                 aTileSize,
-                                 myPixMap->SizeRowBytes()))
+      if (aWrapper->InitWrapper(
+            myPixMap->Format(),
+            myPixMap->ChangeRawValue(aTileIndexY * aTileSize, aTileIndexX * aTileSize),
+            aTileSize,
+            aTileSize,
+            myPixMap->SizeRowBytes()))
       {
-        myPixMap->SetTopDown (myIsTopDown);
+        myPixMap->SetTopDown(myIsTopDown);
         return aWrapper;
       }
       else
@@ -139,7 +139,8 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value (const Handle(Image_Supporte
 // function : checkOrder
 // purpose  :
 // =======================================================================
-Standard_Boolean Graphic3d_CubeMapPacked::checkOrder (const NCollection_Array1<unsigned int>& theOrder)
+Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
+  const NCollection_Array1<unsigned int>& theOrder)
 {
   Standard_Boolean anOrderIsValid = Standard_True;
 
@@ -161,7 +162,7 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder (const NCollection_Array1<u
       {
         if (theOrder[i] == theOrder[j])
         {
-          anOrderIsValid =  Standard_False;
+          anOrderIsValid = Standard_False;
           break;
         }
       }
@@ -170,7 +171,7 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder (const NCollection_Array1<u
 
   if (!anOrderIsValid)
   {
-    throw Standard_Failure ("Invalid order format in tiles of Graphic3d_CubeMapPacked");
+    throw Standard_Failure("Invalid order format in tiles of Graphic3d_CubeMapPacked");
   }
 
   return anOrderIsValid;
@@ -180,8 +181,8 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder (const NCollection_Array1<u
 // function : checkImage
 // purpose  :
 // =======================================================================
-Standard_Boolean Graphic3d_CubeMapPacked::checkImage (const Handle(Image_PixMap)& theImage,
-                                                      unsigned int&               theTileNumberX)
+Standard_Boolean Graphic3d_CubeMapPacked::checkImage(const Handle(Image_PixMap)& theImage,
+                                                     unsigned int&               theTileNumberX)
 {
   Standard_Size aSizeX = theImage->SizeX();
   Standard_Size aSizeY = theImage->SizeY();
@@ -214,15 +215,15 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkImage (const Handle(Image_PixMap)
 // function : tryLoadImage
 // purpose  :
 // =======================================================================
-void Graphic3d_CubeMapPacked::tryLoadImage (const Handle(Image_SupportedFormats)& theSupported,
-                                            const TCollection_AsciiString& theFilePath)
+void Graphic3d_CubeMapPacked::tryLoadImage(const Handle(Image_SupportedFormats)& theSupported,
+                                           const TCollection_AsciiString&        theFilePath)
 {
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
-  if (anImage->Load (theFilePath))
+  if (anImage->Load(theFilePath))
   {
-    if (checkImage (anImage, myTileNumberX))
+    if (checkImage(anImage, myTileNumberX))
     {
-      convertToCompatible (theSupported, anImage);
+      convertToCompatible(theSupported, anImage);
       myPixMap = anImage;
     }
   }

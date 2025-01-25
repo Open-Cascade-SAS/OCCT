@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Circ> LocOpe_SequenceOfCirc;
 
-
 #endif

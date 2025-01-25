@@ -28,43 +28,42 @@
 
 //=======================================================================
 // Function: Transfer_ActorOfProcessForTransient
-// Purpose : 
+// Purpose :
 //=======================================================================
-Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient()
-{}
-
+Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient() {}
 
 //=======================================================================
 // Function: Recognize
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Boolean  Transfer_ActorOfProcessForTransient::Recognize(const Handle(Standard_Transient)& /*start*/)
+Standard_Boolean Transfer_ActorOfProcessForTransient::Recognize(
+  const Handle(Standard_Transient)& /*start*/)
 {
   return Standard_True;
 }
 
 //=======================================================================
 // Function: Transferring
-// Purpose : 
+// Purpose :
 //=======================================================================
-Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::Transferring
-(const Handle(Standard_Transient)& /*start*/,
- const Handle(Transfer_ProcessForTransient)& /*TP*/,
- const Message_ProgressRange& /*theProgress*/)
+Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::Transferring(
+  const Handle(Standard_Transient)& /*start*/,
+  const Handle(Transfer_ProcessForTransient)& /*TP*/,
+  const Message_ProgressRange& /*theProgress*/)
 {
   return NullResult();
 }
 
 //=======================================================================
 // Function: TransientResult
-// Purpose : 
+// Purpose :
 //=======================================================================
-Handle(Transfer_SimpleBinderOfTransient)
-Transfer_ActorOfProcessForTransient::TransientResult
-(const Handle(Standard_Transient)& res) const
+Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForTransient::TransientResult(
+  const Handle(Standard_Transient)& res) const
 {
   Handle(Transfer_SimpleBinderOfTransient) binder;
-  if (res.IsNull()) return binder;
+  if (res.IsNull())
+    return binder;
   binder = new Transfer_SimpleBinderOfTransient;
   binder->SetResult(res);
   return binder;
@@ -72,7 +71,7 @@ Transfer_ActorOfProcessForTransient::TransientResult
 
 //=======================================================================
 // Function: NullResult
-// Purpose : 
+// Purpose :
 //=======================================================================
 Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::NullResult() const
 {
@@ -82,10 +81,10 @@ Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::NullResult() const
 
 //=======================================================================
 // Function: SetNext
-// Purpose : 
+// Purpose :
 //=======================================================================
-void Transfer_ActorOfProcessForTransient::SetNext
-(const Handle(Transfer_ActorOfProcessForTransient)& next)
+void Transfer_ActorOfProcessForTransient::SetNext(
+  const Handle(Transfer_ActorOfProcessForTransient)& next)
 {
   if (thenext == next)
     return;
@@ -100,33 +99,29 @@ void Transfer_ActorOfProcessForTransient::SetNext
     thenext->SetNext(next);
 }
 
-
 //=======================================================================
 // Function: Next
-// Purpose : 
+// Purpose :
 //=======================================================================
 Handle(Transfer_ActorOfProcessForTransient) Transfer_ActorOfProcessForTransient::Next() const
 {
   return thenext;
 }
 
-
 //=======================================================================
 // Function: SetLast
-// Purpose : 
+// Purpose :
 //=======================================================================
 void Transfer_ActorOfProcessForTransient::SetLast(const Standard_Boolean mode)
 {
   thelast = mode;
 }
 
-
 //=======================================================================
 // Function: IsLast
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Boolean  Transfer_ActorOfProcessForTransient::IsLast() const
+Standard_Boolean Transfer_ActorOfProcessForTransient::IsLast() const
 {
   return thelast;
 }
-

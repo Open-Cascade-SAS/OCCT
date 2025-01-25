@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(IGESAppli_HArray1OfFlow, IGESAppli_Array1OfFlow)
 
-
 #endif

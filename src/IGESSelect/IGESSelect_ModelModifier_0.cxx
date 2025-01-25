@@ -25,15 +25,6 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_CopyTool.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define Handle_Model Handle(IGESData_IGESModel)
 #define Model IGESData_IGESModel
 #define Model_hxx <IGESData_IGESModel.hxx>
@@ -44,4 +35,3 @@
 #define IFSelect_ModelModifier_hxx <IGESSelect_ModelModifier.hxx>
 #define Handle_IFSelect_ModelModifier Handle(IGESSelect_ModelModifier)
 #include "../IFSelect/IFSelect_ModelModifier.gxx"
-

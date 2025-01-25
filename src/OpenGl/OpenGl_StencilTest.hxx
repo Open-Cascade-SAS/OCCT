@@ -21,22 +21,22 @@
 class OpenGl_StencilTest : public OpenGl_Element
 {
 public:
-
   //! Default constructor
-  Standard_EXPORT OpenGl_StencilTest ();
+  Standard_EXPORT OpenGl_StencilTest();
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) Standard_OVERRIDE;
 
-  Standard_EXPORT void SetOptions (const Standard_Boolean theIsEnabled);
+  Standard_EXPORT void SetOptions(const Standard_Boolean theIsEnabled);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_StencilTest();
 
@@ -44,8 +44,7 @@ private:
   Standard_Boolean myIsEnabled;
 
 public:
-
   DEFINE_STANDARD_ALLOC
 };
 
-#endif //OpenGl_StencilOptions_Header
+#endif // OpenGl_StencilOptions_Header

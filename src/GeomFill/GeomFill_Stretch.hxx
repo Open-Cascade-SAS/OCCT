@@ -25,46 +25,43 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-
-
-class GeomFill_Stretch  : public GeomFill_Filling
+class GeomFill_Stretch : public GeomFill_Filling
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomFill_Stretch();
-  
-  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4);
-  
-  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3, const TColStd_Array1OfReal& W4);
-  
-  Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4);
-  
-  Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3, const TColStd_Array1OfReal& W4);
 
+  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt& P1,
+                                   const TColgp_Array1OfPnt& P2,
+                                   const TColgp_Array1OfPnt& P3,
+                                   const TColgp_Array1OfPnt& P4);
 
+  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt&   P1,
+                                   const TColgp_Array1OfPnt&   P2,
+                                   const TColgp_Array1OfPnt&   P3,
+                                   const TColgp_Array1OfPnt&   P4,
+                                   const TColStd_Array1OfReal& W1,
+                                   const TColStd_Array1OfReal& W2,
+                                   const TColStd_Array1OfReal& W3,
+                                   const TColStd_Array1OfReal& W4);
 
+  Standard_EXPORT void Init(const TColgp_Array1OfPnt& P1,
+                            const TColgp_Array1OfPnt& P2,
+                            const TColgp_Array1OfPnt& P3,
+                            const TColgp_Array1OfPnt& P4);
+
+  Standard_EXPORT void Init(const TColgp_Array1OfPnt&   P1,
+                            const TColgp_Array1OfPnt&   P2,
+                            const TColgp_Array1OfPnt&   P3,
+                            const TColgp_Array1OfPnt&   P4,
+                            const TColStd_Array1OfReal& W1,
+                            const TColStd_Array1OfReal& W2,
+                            const TColStd_Array1OfReal& W3,
+                            const TColStd_Array1OfReal& W4);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_Stretch_HeaderFile

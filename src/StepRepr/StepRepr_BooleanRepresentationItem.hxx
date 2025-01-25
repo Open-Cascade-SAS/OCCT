@@ -26,26 +26,19 @@ DEFINE_STANDARD_HANDLE(StepRepr_BooleanRepresentationItem, StepRepr_Representati
 class StepRepr_BooleanRepresentationItem : public StepRepr_RepresentationItem
 {
 public:
-
   //! Returns a BooleanRepresentationItem
   Standard_EXPORT StepRepr_BooleanRepresentationItem();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Standard_Boolean theValue);
-  
-  inline void SetValue(const Standard_Boolean theValue)
-  {
-    value = theValue;
-  }
-  
-  inline Standard_Boolean Value() const 
-  {
-    return value;
-  }
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
+                            const Standard_Boolean                  theValue);
+
+  inline void SetValue(const Standard_Boolean theValue) { value = theValue; }
+
+  inline Standard_Boolean Value() const { return value; }
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_BooleanRepresentationItem, StepRepr_RepresentationItem)
 
 private:
-
   Standard_Boolean value;
 };
 

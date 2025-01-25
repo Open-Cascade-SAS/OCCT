@@ -16,42 +16,42 @@
 
 #ifdef _WIN32
 
-// include windows.h first to have all definitions available
-#include <windows.h>
+  // include windows.h first to have all definitions available
+  #include <windows.h>
 
-#include "Draw_Window.hxx"
-#include "Draw_WNTRessource.pxx"
-#include "Draw_WNTInit.pxx"
-#include "Draw_WNTMainWindow.pxx"
-#include "Draw_WNTCommandWindow.pxx"
+  #include "Draw_Window.hxx"
+  #include "Draw_WNTRessource.pxx"
+  #include "Draw_WNTInit.pxx"
+  #include "Draw_WNTMainWindow.pxx"
+  #include "Draw_WNTCommandWindow.pxx"
 
-#define USEDEFAULT 200
+  #define USEDEFAULT 200
 
 /*--------------------------------------------------------*\
 |  REGISTER APPLICATION CLASS
 |  Enregistrement des classes de fenetres de l'application
 |
 \*--------------------------------------------------------*/
-BOOL RegisterAppClass (HINSTANCE theInstance)
+BOOL RegisterAppClass(HINSTANCE theInstance)
 {
   WNDCLASSW wndClass;
 
   // Parametres communs aux classes
   //-----
-  wndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_CLASSDC;
-  wndClass.cbClsExtra    = 0;
-  wndClass.hCursor       = LoadCursor (NULL, IDC_ARROW);
-  wndClass.hInstance     = theInstance;
+  wndClass.style      = CS_HREDRAW | CS_VREDRAW | CS_CLASSDC;
+  wndClass.cbClsExtra = 0;
+  wndClass.hCursor    = LoadCursor(NULL, IDC_ARROW);
+  wndClass.hInstance  = theInstance;
 
   // Enregistrement de la fenetre principale
   //-----
   wndClass.cbWndExtra    = sizeof(void*);
   wndClass.lpfnWndProc   = (WNDPROC)WndProc;
-  wndClass.hIcon         = LoadIconW (theInstance, MAKEINTRESOURCEW(IDI_ICON1));
-  wndClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
+  wndClass.hIcon         = LoadIconW(theInstance, MAKEINTRESOURCEW(IDI_ICON1));
+  wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName  = MAKEINTRESOURCEW(APPMENU);
   wndClass.lpszClassName = APPCLASS;
-  if (!RegisterClassW (&wndClass))
+  if (!RegisterClassW(&wndClass))
   {
     return FALSE;
   }
@@ -61,12 +61,12 @@ BOOL RegisterAppClass (HINSTANCE theInstance)
   wndClass.cbWndExtra    = sizeof(void*); // Extra Memory
   wndClass.lpfnWndProc   = (WNDPROC)Draw_Window::DrawProc;
   wndClass.hIcon         = 0;
-  wndClass.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
+  wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
   wndClass.lpszMenuName  = NULL;
   wndClass.lpszClassName = DRAWCLASS;
-  if (!RegisterClassW (&wndClass))
+  if (!RegisterClassW(&wndClass))
   {
-    UnregisterClassW (APPCLASS, theInstance);
+    UnregisterClassW(APPCLASS, theInstance);
     return FALSE;
   }
 
@@ -77,10 +77,10 @@ BOOL RegisterAppClass (HINSTANCE theInstance)
   wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName  = NULL;
   wndClass.lpszClassName = COMMANDCLASS;
-  if (!RegisterClassW (&wndClass))
+  if (!RegisterClassW(&wndClass))
   {
-    UnregisterClassW (APPCLASS,  theInstance);
-    UnregisterClassW (DRAWCLASS, theInstance);
+    UnregisterClassW(APPCLASS, theInstance);
+    UnregisterClassW(DRAWCLASS, theInstance);
     return FALSE;
   }
 
@@ -92,10 +92,10 @@ BOOL RegisterAppClass (HINSTANCE theInstance)
 |    Suppression des classes de fenetres de l'application
 |
 \*--------------------------------------------------------*/
-VOID UnregisterAppClass (HINSTANCE theInstance)
+VOID UnregisterAppClass(HINSTANCE theInstance)
 {
-  UnregisterClassW (APPCLASS,  theInstance);
-  UnregisterClassW (DRAWCLASS, theInstance);
+  UnregisterClassW(APPCLASS, theInstance);
+  UnregisterClassW(DRAWCLASS, theInstance);
 }
 
 /*--------------------------------------------------------*\
@@ -103,13 +103,19 @@ VOID UnregisterAppClass (HINSTANCE theInstance)
 |    Creation de la fenetre Top-Level
 |
 \*--------------------------------------------------------*/
-HWND CreateAppWindow (HINSTANCE theInstance)
+HWND CreateAppWindow(HINSTANCE theInstance)
 {
-  return CreateWindowW (APPCLASS, APPTITLE,
-                        WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                        400, 0,
-                        623,767,
-                        NULL, NULL, theInstance, NULL);
+  return CreateWindowW(APPCLASS,
+                       APPTITLE,
+                       WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                       400,
+                       0,
+                       623,
+                       767,
+                       NULL,
+                       NULL,
+                       theInstance,
+                       NULL);
 }
 
 /*--------------------------------------------------------*\
@@ -117,18 +123,24 @@ HWND CreateAppWindow (HINSTANCE theInstance)
 |    Creation de la fenetre qui contient des fenetres MDI
 |
 \*--------------------------------------------------------*/
-HWND CreateMDIClientWindow (HWND theWndFrame)
+HWND CreateMDIClientWindow(HWND theWndFrame)
 {
   CLIENTCREATESTRUCT ccs;
-  ccs.hWindowMenu = NULL;
+  ccs.hWindowMenu  = NULL;
   ccs.idFirstChild = 0;
 
-  HINSTANCE hInstance = (HINSTANCE )GetWindowLongPtrW (theWndFrame, GWLP_HINSTANCE);
-  HWND hWndClient = CreateWindowW (L"MDICLIENT", NULL,
-                                   WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | MDIS_ALLCHILDSTYLES,
-                                   0, 0, 1, 1,
-                                   theWndFrame, NULL,
-                                   hInstance, (LPVOID )&ccs);
+  HINSTANCE hInstance  = (HINSTANCE)GetWindowLongPtrW(theWndFrame, GWLP_HINSTANCE);
+  HWND      hWndClient = CreateWindowW(L"MDICLIENT",
+                                  NULL,
+                                  WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | MDIS_ALLCHILDSTYLES,
+                                  0,
+                                  0,
+                                  1,
+                                  1,
+                                  theWndFrame,
+                                  NULL,
+                                  hInstance,
+                                  (LPVOID)&ccs);
   return hWndClient;
 }
 #endif

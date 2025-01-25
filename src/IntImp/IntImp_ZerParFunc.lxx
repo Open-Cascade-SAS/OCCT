@@ -18,36 +18,44 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Dir.hxx>
 
-inline Standard_Real IntImp_ZerParFunc::Root() const {
+inline Standard_Real IntImp_ZerParFunc::Root() const
+{
 
-  return f[0]*f[0]+f[1]*f[1]+f[2]*f[2];
+  return f[0] * f[0] + f[1] * f[1] + f[2] * f[2];
 }
 
-
-inline gp_Pnt IntImp_ZerParFunc::Point() const {
-  return  gp_Pnt((pntsol1.XYZ()+ pntsol2.XYZ())/2.);
+inline gp_Pnt IntImp_ZerParFunc::Point() const
+{
+  return gp_Pnt((pntsol1.XYZ() + pntsol2.XYZ()) / 2.);
 }
 
-inline gp_Dir IntImp_ZerParFunc::Direction() const {
-  if (tangent ) throw StdFail_UndefinedDerivative();
-  return gp_Dir(tgduv[0]*dpuv[0].XYZ() + tgduv[1]*dpuv[1].XYZ());
+inline gp_Dir IntImp_ZerParFunc::Direction() const
+{
+  if (tangent)
+    throw StdFail_UndefinedDerivative();
+  return gp_Dir(tgduv[0] * dpuv[0].XYZ() + tgduv[1] * dpuv[1].XYZ());
 }
 
-inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS1() const {
-  if (tangent ) throw StdFail_UndefinedDerivative();
-  return gp_Dir2d(tgduv[0],tgduv[1]);
+inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS1() const
+{
+  if (tangent)
+    throw StdFail_UndefinedDerivative();
+  return gp_Dir2d(tgduv[0], tgduv[1]);
 }
 
-inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS2() const {
-  if (tangent ) throw StdFail_UndefinedDerivative();
-  return gp_Dir2d(tgduv[2],tgduv[3]);
+inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS2() const
+{
+  if (tangent)
+    throw StdFail_UndefinedDerivative();
+  return gp_Dir2d(tgduv[2], tgduv[3]);
 }
 
-inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface1() const { 
-  return *((const ThePSurface* )surf1);
+inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface1() const
+{
+  return *((const ThePSurface*)surf1);
 }
 
-inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface2() const {
-  return *((const ThePSurface* )surf2);
+inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface2() const
+{
+  return *((const ThePSurface*)surf2);
 }
-

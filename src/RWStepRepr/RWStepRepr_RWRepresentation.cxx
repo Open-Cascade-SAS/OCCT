@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepRepr_RWRepresentation.pxx"
@@ -21,88 +20,94 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 
-RWStepRepr_RWRepresentation::RWStepRepr_RWRepresentation () {}
+RWStepRepr_RWRepresentation::RWStepRepr_RWRepresentation() {}
 
-void RWStepRepr_RWRepresentation::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepRepr_Representation)& ent) const
+void RWStepRepr_RWRepresentation::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                           const Standard_Integer                 num,
+                                           Handle(Interface_Check)&               ach,
+                                           const Handle(StepRepr_Representation)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 3, ach, "representation"))
+    return;
 
-	if (!data->CheckNbParams(num,3,ach,"representation")) return;
+  // --- own field : name ---
 
-	// --- own field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- own field : items ---
 
-	// --- own field : items ---
+  Handle(StepRepr_HArray1OfRepresentationItem) aItems;
+  Handle(StepRepr_RepresentationItem)          anent2;
+  Standard_Integer                             nsub2;
+  if (data->ReadSubList(num, 2, "items", ach, nsub2))
+  {
+    Standard_Integer nb2 = data->NbParams(nsub2);
+    aItems               = new StepRepr_HArray1OfRepresentationItem(1, nb2);
+    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      if (data->ReadEntity(nsub2,
+                           i2,
+                           "representation_item",
+                           ach,
+                           STANDARD_TYPE(StepRepr_RepresentationItem),
+                           anent2))
+        aItems->SetValue(i2, anent2);
+    }
+  }
 
-	Handle(StepRepr_HArray1OfRepresentationItem) aItems;
-	Handle(StepRepr_RepresentationItem) anent2;
-	Standard_Integer nsub2;
-	if (data->ReadSubList (num,2,"items",ach,nsub2)) {
-	  Standard_Integer nb2 = data->NbParams(nsub2);
-	  aItems = new StepRepr_HArray1OfRepresentationItem (1, nb2);
-	  for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	    if (data->ReadEntity (nsub2, i2,"representation_item", ach,
-				  STANDARD_TYPE(StepRepr_RepresentationItem), anent2))
-	      aItems->SetValue(i2, anent2);
-	  }
-	}
+  // --- own field : contextOfItems ---
 
-	// --- own field : contextOfItems ---
+  Handle(StepRepr_RepresentationContext) aContextOfItems;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  data->ReadEntity(num,
+                   3,
+                   "context_of_items",
+                   ach,
+                   STANDARD_TYPE(StepRepr_RepresentationContext),
+                   aContextOfItems);
 
-	Handle(StepRepr_RepresentationContext) aContextOfItems;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	data->ReadEntity(num, 3,"context_of_items", ach, STANDARD_TYPE(StepRepr_RepresentationContext), aContextOfItems);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aName, aItems, aContextOfItems);
+  ent->Init(aName, aItems, aContextOfItems);
 }
 
-
-void RWStepRepr_RWRepresentation::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepRepr_Representation)& ent) const
+void RWStepRepr_RWRepresentation::WriteStep(StepData_StepWriter&                   SW,
+                                            const Handle(StepRepr_Representation)& ent) const
 {
 
-	// --- own field : name ---
+  // --- own field : name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- own field : items ---
+  // --- own field : items ---
 
-	SW.OpenSub();
-	for (Standard_Integer i2 = 1;  i2 <= ent->NbItems();  i2 ++) {
-	  SW.Send(ent->ItemsValue(i2));
-	}
-	SW.CloseSub();
+  SW.OpenSub();
+  for (Standard_Integer i2 = 1; i2 <= ent->NbItems(); i2++)
+  {
+    SW.Send(ent->ItemsValue(i2));
+  }
+  SW.CloseSub();
 
-	// --- own field : contextOfItems ---
+  // --- own field : contextOfItems ---
 
-	SW.Send(ent->ContextOfItems());
+  SW.Send(ent->ContextOfItems());
 }
 
-
-void RWStepRepr_RWRepresentation::Share(const Handle(StepRepr_Representation)& ent, Interface_EntityIterator& iter) const
+void RWStepRepr_RWRepresentation::Share(const Handle(StepRepr_Representation)& ent,
+                                        Interface_EntityIterator&              iter) const
 {
 
-	Standard_Integer nbElem1 = ent->NbItems();
-	for (Standard_Integer is1=1; is1<=nbElem1; is1 ++) {
-	  iter.GetOneItem(ent->ItemsValue(is1));
-	}
+  Standard_Integer nbElem1 = ent->NbItems();
+  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  {
+    iter.GetOneItem(ent->ItemsValue(is1));
+  }
 
-
-
-	iter.GetOneItem(ent->ContextOfItems());
+  iter.GetOneItem(ent->ContextOfItems());
 }
-

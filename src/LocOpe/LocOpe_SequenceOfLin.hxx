@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Lin> LocOpe_SequenceOfLin;
 
-
 #endif

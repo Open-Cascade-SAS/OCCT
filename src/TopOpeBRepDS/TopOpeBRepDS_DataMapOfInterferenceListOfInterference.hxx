@@ -20,8 +20,10 @@
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(TopOpeBRepDS_Interference),TopOpeBRepDS_ListOfInterference> TopOpeBRepDS_DataMapOfInterferenceListOfInterference;
-typedef NCollection_DataMap<Handle(TopOpeBRepDS_Interference),TopOpeBRepDS_ListOfInterference>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference;
-
+typedef NCollection_DataMap<Handle(TopOpeBRepDS_Interference), TopOpeBRepDS_ListOfInterference>
+  TopOpeBRepDS_DataMapOfInterferenceListOfInterference;
+typedef NCollection_DataMap<Handle(TopOpeBRepDS_Interference),
+                            TopOpeBRepDS_ListOfInterference>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference;
 
 #endif

@@ -24,7 +24,6 @@ class TDF_Label;
 class AIS_InteractiveObject;
 class Standard_GUID;
 
-
 class XCAFPrs_Driver;
 DEFINE_STANDARD_HANDLE(XCAFPrs_Driver, TPrsStd_Driver)
 
@@ -35,34 +34,17 @@ class XCAFPrs_Driver : public TPrsStd_Driver
 {
 
 public:
+  Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               L,
+                                                  Handle(AIS_InteractiveObject)& ais)
+    Standard_OVERRIDE;
 
-  
-  Standard_EXPORT virtual Standard_Boolean Update (const TDF_Label& L, Handle(AIS_InteractiveObject)& ais) Standard_OVERRIDE;
-  
   //! returns GUID of the driver
   Standard_EXPORT static const Standard_GUID& GetID();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(XCAFPrs_Driver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(XCAFPrs_Driver, TPrsStd_Driver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFPrs_Driver_HeaderFile

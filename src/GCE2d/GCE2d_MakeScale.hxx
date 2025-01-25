@@ -25,7 +25,6 @@
 class Geom2d_Transformation;
 class gp_Pnt2d;
 
-
 //! This class implements an elementary construction algorithm for
 //! a scaling transformation in 2D space. The result is a
 //! Geom2d_Transformation transformation.
@@ -33,44 +32,24 @@ class gp_Pnt2d;
 //! -   defining the construction of the transformation,
 //! -   implementing the construction algorithm, and
 //! -   consulting the result.
-class GCE2d_MakeScale 
+class GCE2d_MakeScale
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a scaling transformation with
   //! -   Point as the center of the transformation, and
   //! -   Scale as the scale factor.
   Standard_EXPORT GCE2d_MakeScale(const gp_Pnt2d& Point, const Standard_Real Scale);
-  
+
   //! Returns the constructed transformation.
   Standard_EXPORT const Handle(Geom2d_Transformation)& Value() const;
-operator const Handle(Geom2d_Transformation)& () const { return Value(); }
 
-
-
+  operator const Handle(Geom2d_Transformation) & () const { return Value(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom2d_Transformation) TheScale;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeScale_HeaderFile

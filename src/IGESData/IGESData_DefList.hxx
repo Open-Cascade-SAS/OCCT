@@ -35,11 +35,11 @@
 //! items, but that at least one of them is incorrect.
 enum IGESData_DefList
 {
-IGESData_DefNone,
-IGESData_DefOne,
-IGESData_DefSeveral,
-IGESData_ErrorOne,
-IGESData_ErrorSeveral
+  IGESData_DefNone,
+  IGESData_DefOne,
+  IGESData_DefSeveral,
+  IGESData_ErrorOne,
+  IGESData_ErrorSeveral
 };
 
 #endif // _IGESData_DefList_HeaderFile

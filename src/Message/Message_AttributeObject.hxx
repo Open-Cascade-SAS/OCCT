@@ -17,15 +17,15 @@
 #include <Message_Attribute.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
-
 //! Alert object storing a transient object
 class Message_AttributeObject : public Message_Attribute
 {
   DEFINE_STANDARD_RTTIEXT(Message_AttributeObject, Message_Attribute)
 public:
   //! Constructor with string argument
-  Standard_EXPORT Message_AttributeObject (const Handle(Standard_Transient)& theObject,
-                                           const TCollection_AsciiString& theName = TCollection_AsciiString());
+  Standard_EXPORT Message_AttributeObject(
+    const Handle(Standard_Transient)& theObject,
+    const TCollection_AsciiString&    theName = TCollection_AsciiString());
 
   //! Returns object
   //! @return the object instance
@@ -33,11 +33,11 @@ public:
 
   //! Sets the object
   //! @param theObject an instance
-  void SetObject (const Handle(Standard_Transient)& theObject) { myObject = theObject; }
+  void SetObject(const Handle(Standard_Transient)& theObject) { myObject = theObject; }
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson (Standard_OStream& theOStream,
-                                         Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
   Handle(Standard_Transient) myObject; //!< alert object

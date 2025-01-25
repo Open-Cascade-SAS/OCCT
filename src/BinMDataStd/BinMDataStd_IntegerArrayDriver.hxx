@@ -26,7 +26,6 @@ class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
-
 class BinMDataStd_IntegerArrayDriver;
 DEFINE_STANDARD_HANDLE(BinMDataStd_IntegerArrayDriver, BinMDF_ADriver)
 
@@ -35,37 +34,24 @@ class BinMDataStd_IntegerArrayDriver : public BinMDF_ADriver
 {
 
 public:
-
-  
   Standard_EXPORT BinMDataStd_IntegerArrayDriver(const Handle(Message_Messenger)& theMessageDriver);
-  
+
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean Paste (const BinObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, BinObjMgt_RRelocationTable& RelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& Source, BinObjMgt_Persistent& Target, BinObjMgt_SRelocationTable& RelocTable) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  Source,
+                                                 const Handle(TDF_Attribute)& Target,
+                                                 BinObjMgt_RRelocationTable&  RelocTable) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& Source,
+                                     BinObjMgt_Persistent&        Target,
+                                     BinObjMgt_SRelocationTable&  RelocTable) const
+    Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver, BinMDF_ADriver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BinMDataStd_IntegerArrayDriver_HeaderFile

@@ -25,59 +25,40 @@
 #include <math_Function.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! This class compute the Heigth of an batten
-class FairCurve_BattenLaw  : public math_Function
+class FairCurve_BattenLaw : public math_Function
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructor of linear batten with
   //! Heigth : the Heigth at the middle point
   //! Slope  : the geometric slope of the batten
   //! Sliding : Active Length of the batten without extension
-  Standard_EXPORT FairCurve_BattenLaw(const Standard_Real Heigth, const Standard_Real Slope, const Standard_Real Sliding);
-  
+  Standard_EXPORT FairCurve_BattenLaw(const Standard_Real Heigth,
+                                      const Standard_Real Slope,
+                                      const Standard_Real Sliding);
+
   //! Change the value of sliding
-    void SetSliding (const Standard_Real Sliding);
-  
+  void SetSliding(const Standard_Real Sliding);
+
   //! Change the value of Heigth at the middle point.
-    void SetHeigth (const Standard_Real Heigth);
-  
+  void SetHeigth(const Standard_Real Heigth);
+
   //! Change the value of the geometric slope.
-    void SetSlope (const Standard_Real Slope);
-  
+  void SetSlope(const Standard_Real Slope);
+
   //! computes the value of  the heigth for the parameter T
   //! on  the neutral fibber
-    virtual Standard_Boolean Value (const Standard_Real T, Standard_Real& THeigth) Standard_OVERRIDE;
-
-
-
+  virtual Standard_Boolean Value(const Standard_Real T, Standard_Real& THeigth) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real MiddleHeigth;
   Standard_Real GeometricSlope;
   Standard_Real LengthSliding;
-
-
 };
 
-
 #include <FairCurve_BattenLaw.lxx>
-
-
-
-
 
 #endif // _FairCurve_BattenLaw_HeaderFile

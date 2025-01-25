@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs.hxx>
 #include <DsgPrs_Chamf2dPresentation.hxx>
 #include <gp_Dir.hxx>
@@ -27,56 +26,57 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_Chamf2dPresentation::Add(
-			   const Handle(Prs3d_Presentation)& aPresentation,
-			   const Handle(Prs3d_Drawer)& aDrawer,
-			   const gp_Pnt& aPntAttach,
-			   const gp_Pnt& aPntEnd,
-			   const TCollection_ExtendedString& aText)
+void DsgPrs_Chamf2dPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const gp_Pnt&                     aPntAttach,
+                                     const gp_Pnt&                     aPntEnd,
+                                     const TCollection_ExtendedString& aText)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  
+
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  
+
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
-  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), aPntAttach, ArrowDir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
-		     
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
-}
+  gp_Dir ArrowDir(aPntAttach.XYZ() - aPntEnd.XYZ());
+  Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
+                    aPntAttach,
+                    ArrowDir,
+                    LA->ArrowAspect()->Angle(),
+                    LA->ArrowAspect()->Length());
 
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
+}
 
 //==========================================================================
 // function : DsgPrs_Chamf2dPresentation::Add
 // purpose  : it is possible to choose the symbol of extremities of the face (arrow, point ...)
 //==========================================================================
 
-void DsgPrs_Chamf2dPresentation::Add(
-			   const Handle(Prs3d_Presentation)& aPresentation,
-			   const Handle(Prs3d_Drawer)& aDrawer,
-			   const gp_Pnt& aPntAttach,
-			   const gp_Pnt& aPntEnd,
-			   const TCollection_ExtendedString& aText,
-			   const DsgPrs_ArrowSide ArrowPrs) 
+void DsgPrs_Chamf2dPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const gp_Pnt&                     aPntAttach,
+                                     const gp_Pnt&                     aPntEnd,
+                                     const TCollection_ExtendedString& aText,
+                                     const DsgPrs_ArrowSide            ArrowPrs)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  
+
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  
+
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
 
-  gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
+  gp_Dir ArrowDir(aPntAttach.XYZ() - aPntEnd.XYZ());
   gp_Dir ArrowDir1 = ArrowDir;
   ArrowDir1.Reverse();
 
-  DsgPrs::ComputeSymbol(aPresentation,LA,aPntEnd,aPntAttach,ArrowDir1,ArrowDir,ArrowPrs);
+  DsgPrs::ComputeSymbol(aPresentation, LA, aPntEnd, aPntAttach, ArrowDir1, ArrowDir, ArrowPrs);
 }

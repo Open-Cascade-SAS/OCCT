@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepAP203_CertifiedItem> StepAP203_Array1OfCertifiedItem;
 
-
 #endif

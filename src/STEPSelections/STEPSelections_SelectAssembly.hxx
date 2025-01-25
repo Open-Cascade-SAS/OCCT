@@ -27,47 +27,30 @@ class Interface_Graph;
 class Interface_EntityIterator;
 class TCollection_AsciiString;
 
-
 class STEPSelections_SelectAssembly;
 DEFINE_STANDARD_HANDLE(STEPSelections_SelectAssembly, IFSelect_SelectExplore)
-
 
 class STEPSelections_SelectAssembly : public IFSelect_SelectExplore
 {
 
 public:
-
-  
   Standard_EXPORT STEPSelections_SelectAssembly();
-  
+
   //! Explores an entity, to take its faces
   //! Works recursively
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Explore(const Standard_Integer            level,
+            const Handle(Standard_Transient)& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+
   //! Returns a text defining the criterium : "Assembly structures"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectAssembly,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectAssembly, IFSelect_SelectExplore)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _STEPSelections_SelectAssembly_HeaderFile

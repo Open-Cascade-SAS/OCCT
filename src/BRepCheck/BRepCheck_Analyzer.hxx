@@ -33,10 +33,9 @@ class BRepCheck_Result;
 //! Once you have determined whether a shape is valid or not, you can
 //! diagnose its specific anomalies and correct them using the services of
 //! the ShapeAnalysis, ShapeUpgrade, and ShapeFix packages.
-class BRepCheck_Analyzer 
+class BRepCheck_Analyzer
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a shape validation object defined by the shape S.
@@ -56,14 +55,14 @@ public:
   //! BRepCheck_InvalidToleranceValue  NYI
   //! For a wire :
   //! BRepCheck_SelfIntersectingWire
-  BRepCheck_Analyzer (const TopoDS_Shape& S,
-                      const Standard_Boolean GeomControls = Standard_True,
-                      const Standard_Boolean theIsParallel = Standard_False,
-                      const Standard_Boolean theIsExact = Standard_False)
-    : myIsParallel(theIsParallel),
-      myIsExact(theIsExact)
+  BRepCheck_Analyzer(const TopoDS_Shape&    S,
+                     const Standard_Boolean GeomControls  = Standard_True,
+                     const Standard_Boolean theIsParallel = Standard_False,
+                     const Standard_Boolean theIsExact    = Standard_False)
+      : myIsParallel(theIsParallel),
+        myIsExact(theIsExact)
   {
-    Init (S, GeomControls);
+    Init(S, GeomControls);
   }
 
   //! <S> is the  shape  to control.  <GeomControls>  If
@@ -82,42 +81,30 @@ public:
   //! BRepCheck_InvalidTolerance  NYI
   //! For a wire :
   //! BRepCheck_SelfIntersectingWire
-  Standard_EXPORT void Init (const TopoDS_Shape& S,
-                             const Standard_Boolean GeomControls = Standard_True);
+  Standard_EXPORT void Init(const TopoDS_Shape&    S,
+                            const Standard_Boolean GeomControls = Standard_True);
 
   //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
-  //! is false, faster, but possible not correct result) or exact calculating by using 
+  //! is false, faster, but possible not correct result) or exact calculating by using
   //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
   //! Exact method is used only when edge is SameParameter.
   //! Default method is calculating in finite number of points
-  void SetExactMethod(const Standard_Boolean theIsExact)
-  {
-    myIsExact = theIsExact;
-  }
+  void SetExactMethod(const Standard_Boolean theIsExact) { myIsExact = theIsExact; }
 
   //! Returns true if exact method selected
-  Standard_Boolean IsExactMethod()
-  {
-    return myIsExact;
-  }
+  Standard_Boolean IsExactMethod() { return myIsExact; }
 
   //! Sets parallel flag
-  void SetParallel(const Standard_Boolean theIsParallel)
-  {
-    myIsParallel = theIsParallel;
-  }
+  void SetParallel(const Standard_Boolean theIsParallel) { myIsParallel = theIsParallel; }
 
   //! Returns true if parallel flag is set
-  Standard_Boolean IsParallel()
-  {
-    return myIsParallel;
-  }
+  Standard_Boolean IsParallel() { return myIsParallel; }
 
   //! <S> is a  subshape of the  original shape. Returns
   //! <STandard_True> if no default has been detected on
   //! <S> and any of its subshape.
-  Standard_EXPORT Standard_Boolean IsValid (const TopoDS_Shape& S) const;
-  
+  Standard_EXPORT Standard_Boolean IsValid(const TopoDS_Shape& S) const;
+
   //! Returns true if no defect is
   //! detected on the shape S or any of its subshapes.
   //! Returns true if the shape S is valid.
@@ -157,32 +144,26 @@ public:
   //! surface of the reference face), this checks that |C(t) - S(P(t))|
   //! is less than or equal to tolerance, where tolerance is the tolerance
   //! value coded on the edge.
-  Standard_Boolean IsValid() const
-  {
-    return IsValid (myShape);
-  }
+  Standard_Boolean IsValid() const { return IsValid(myShape); }
 
-  const Handle(BRepCheck_Result)& Result (const TopoDS_Shape& theSubS) const
+  const Handle(BRepCheck_Result)& Result(const TopoDS_Shape& theSubS) const
   {
-    return myMap.FindFromKey (theSubS);
+    return myMap.FindFromKey(theSubS);
   }
 
 private:
-
-  Standard_EXPORT void Put (const TopoDS_Shape& S,
-                            const Standard_Boolean Gctrl);
+  Standard_EXPORT void Put(const TopoDS_Shape& S, const Standard_Boolean Gctrl);
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean ValidSub (const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const;
+  Standard_EXPORT Standard_Boolean ValidSub(const TopoDS_Shape&    S,
+                                            const TopAbs_ShapeEnum SubType) const;
 
 private:
-
-  TopoDS_Shape myShape;
+  TopoDS_Shape                          myShape;
   BRepCheck_IndexedDataMapOfShapeResult myMap;
-  Standard_Boolean myIsParallel;
-  Standard_Boolean myIsExact;
-
+  Standard_Boolean                      myIsParallel;
+  Standard_Boolean                      myIsExact;
 };
 
 #endif // _BRepCheck_Analyzer_HeaderFile

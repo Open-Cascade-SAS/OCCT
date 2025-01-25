@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TDF_Label> TDataStd_LabelArray1;
 
-
 #endif

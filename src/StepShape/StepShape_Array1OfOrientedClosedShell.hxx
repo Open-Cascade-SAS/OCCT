@@ -20,7 +20,7 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepShape_OrientedClosedShell)> StepShape_Array1OfOrientedClosedShell;
-
+typedef NCollection_Array1<Handle(StepShape_OrientedClosedShell)>
+  StepShape_Array1OfOrientedClosedShell;
 
 #endif

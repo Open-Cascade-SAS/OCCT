@@ -20,33 +20,29 @@
 #include <Standard_GUID.hxx>
 #include <TDF_RelocationTable.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TModel,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TObj_TModel, TDF_Attribute)
 
 //=======================================================================
-//function : GetID
-//purpose  : 
+// function : GetID
+// purpose  :
 //=======================================================================
 
-const Standard_GUID& TObj_TModel::GetID() 
+const Standard_GUID& TObj_TModel::GetID()
 {
-  static Standard_GUID GModelID ("bbdab6a6-dca9-11d4-ba37-0060b0ee18ea");
-  return GModelID; 
+  static Standard_GUID GModelID("bbdab6a6-dca9-11d4-ba37-0060b0ee18ea");
+  return GModelID;
 }
 
 //=======================================================================
-//function : TObj_TModel
-//purpose  : 
+// function : TObj_TModel
+// purpose  :
 //=======================================================================
 
-TObj_TModel::TObj_TModel()
-{
-}
-
+TObj_TModel::TObj_TModel() {}
 
 //=======================================================================
-//function : ID
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
 
 const Standard_GUID& TObj_TModel::ID() const
@@ -55,8 +51,8 @@ const Standard_GUID& TObj_TModel::ID() const
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
+// function : NewEmpty
+// purpose  :
 //=======================================================================
 
 Handle(TDF_Attribute) TObj_TModel::NewEmpty() const
@@ -65,8 +61,8 @@ Handle(TDF_Attribute) TObj_TModel::NewEmpty() const
 }
 
 //=======================================================================
-//function : Model
-//purpose  : 
+// function : Model
+// purpose  :
 //=======================================================================
 
 Handle(TObj_Model) TObj_TModel::Model() const
@@ -75,8 +71,8 @@ Handle(TObj_Model) TObj_TModel::Model() const
 }
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
 void TObj_TModel::Set(const Handle(TObj_Model)& theModel)
@@ -86,24 +82,24 @@ void TObj_TModel::Set(const Handle(TObj_Model)& theModel)
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : 
+// function : Restore
+// purpose  :
 //=======================================================================
 
-void TObj_TModel::Restore(const Handle(TDF_Attribute)& theWith) 
+void TObj_TModel::Restore(const Handle(TDF_Attribute)& theWith)
 {
-  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast (theWith);
-  myModel = R->Model();
+  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast(theWith);
+  myModel               = R->Model();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : Paste
+// purpose  :
 //=======================================================================
 
-void TObj_TModel::Paste (const Handle(TDF_Attribute)& theInto ,
-                             const Handle(TDF_RelocationTable)& /* RT */) const
+void TObj_TModel::Paste(const Handle(TDF_Attribute)& theInto,
+                        const Handle(TDF_RelocationTable)& /* RT */) const
 {
-  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast (theInto);
+  Handle(TObj_TModel) R = Handle(TObj_TModel)::DownCast(theInto);
   R->Set(myModel);
 }

@@ -17,12 +17,10 @@
 
 #include <StepRepr_ProductDefinitionShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape,StepRepr_PropertyDefinition)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape, StepRepr_PropertyDefinition)
 
 //=======================================================================
-//function : StepRepr_ProductDefinitionShape
-//purpose  : 
+// function : StepRepr_ProductDefinitionShape
+// purpose  :
 //=======================================================================
-StepRepr_ProductDefinitionShape::StepRepr_ProductDefinitionShape ()
-{
-}
+StepRepr_ProductDefinitionShape::StepRepr_ProductDefinitionShape() {}

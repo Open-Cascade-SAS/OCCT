@@ -25,7 +25,8 @@
 
 #include <Standard_Boolean.hxx>
 
-template<typename T> class math_VectorBase;
+template <typename T>
+class math_VectorBase;
 using math_Vector = math_VectorBase<double>;
 
 //! Functional for search of extremum of the square Euclidean distance between point P and
@@ -42,31 +43,29 @@ using math_Vector = math_VectorBase<double>;
 //! F2(u,v) = (S(u,v) - P) * Sv
 //!
 //! Su and Sv are first derivatives of the surface, * symbol means dot product.
-class Extrema_FuncPSDist  : public math_MultipleVarFunctionWithGradient
+class Extrema_FuncPSDist : public math_MultipleVarFunctionWithGradient
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT Extrema_FuncPSDist(const Adaptor3d_Surface& theS,
-                                     const gp_Pnt& theP);
+  Standard_EXPORT Extrema_FuncPSDist(const Adaptor3d_Surface& theS, const gp_Pnt& theP);
 
   //! Number of variables.
   Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X,Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
 
   //! Gradient.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X,math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
 
   //! Value and gradient.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,Standard_Real& F,math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
+                                          Standard_Real&     F,
+                                          math_Vector&       G) Standard_OVERRIDE;
 
 private:
-
-
   //! Check point is inside of the surface parameter space.
   //! Returns true if inside and false otherwise.
   Standard_Boolean IsInside(const math_Vector& X);
@@ -74,7 +73,7 @@ private:
   const Extrema_FuncPSDist& operator=(const Extrema_FuncPSDist&);
   Extrema_FuncPSDist(const Extrema_FuncPSDist&);
 
-  const Adaptor3d_Surface &mySurf;
-  const gp_Pnt &myP;
+  const Adaptor3d_Surface& mySurf;
+  const gp_Pnt&            myP;
 };
 #endif // _Extrema_FuncPSDsit_HeaderFile

@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(TopTools_HArray1OfListOfShape, TopTools_Array1OfListOfShape)
 
-
 #endif

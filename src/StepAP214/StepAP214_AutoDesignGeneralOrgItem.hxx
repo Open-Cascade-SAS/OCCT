@@ -33,18 +33,14 @@ class StepRepr_Representation;
 class StepRepr_ExternallyDefinedRepresentation;
 class StepAP214_AutoDesignDocumentReference;
 
-
-
-class StepAP214_AutoDesignGeneralOrgItem  : public StepData_SelectType
+class StepAP214_AutoDesignGeneralOrgItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a AutoDesignGeneralOrgItem SelectType
   Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem();
-  
+
   //! Recognizes a AutoDesignGeneralOrgItem Kind Entity that is :
   //! 1     Product from StepBasic,
   //! 2     ProductDefinition from StepBasic,
@@ -55,52 +51,36 @@ public:
   //! 7     ExternallyDefinedRepresentation from StepRepr,
   //! 8     AutoDesignDocumentReference from StepAP214,
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Product (Null if another type)
   Standard_EXPORT Handle(StepBasic_Product) Product() const;
-  
+
   //! returns Value as a ProductDefinition (Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
-  
+
   //! returns Value as a ProductDefinitionFormation (Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
-  
+
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship() const;
-  
+  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
+    const;
+
   //! returns Value as a ProductDefinitionWithAssociatedDocuments (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) ProductDefinitionWithAssociatedDocuments() const;
-  
+  Standard_EXPORT Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)
+    ProductDefinitionWithAssociatedDocuments() const;
+
   //! returns Value as a Representation (Null if another type)
   Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
-  
+
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ExternallyDefinedRepresentation) ExternallyDefinedRepresentation() const;
-  
+  Standard_EXPORT Handle(StepRepr_ExternallyDefinedRepresentation) ExternallyDefinedRepresentation()
+    const;
+
   Standard_EXPORT Handle(StepAP214_AutoDesignDocumentReference) AutoDesignDocumentReference() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_AutoDesignGeneralOrgItem_HeaderFile

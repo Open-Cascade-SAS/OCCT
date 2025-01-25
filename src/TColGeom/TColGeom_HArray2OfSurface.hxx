@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY2(TColGeom_HArray2OfSurface, TColGeom_Array2OfSurface)
 
-
 #endif

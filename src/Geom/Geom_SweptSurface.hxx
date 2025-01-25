@@ -25,7 +25,6 @@
 #include <Geom_Surface.hxx>
 class Geom_Curve;
 
-
 class Geom_SweptSurface;
 DEFINE_STANDARD_HANDLE(Geom_SweptSurface, Geom_Surface)
 
@@ -38,9 +37,6 @@ class Geom_SweptSurface : public Geom_Surface
 {
 
 public:
-
-  
-
   //! returns the continuity of the surface :
   //! C0 : only geometric continuity,
   //! C1 : continuity of the first derivative all along the surface,
@@ -50,14 +46,12 @@ public:
   //! G2 : curvature continuity all along the surface,
   //! CN : the order of continuity is infinite.
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
-  
 
   //! Returns the reference direction of the swept surface.
   //! For a surface of revolution it is the direction of the
   //! revolution axis, for a surface of linear extrusion it is
   //! the direction of extrusion.
   Standard_EXPORT const gp_Dir& Direction() const;
-  
 
   //! Returns the referenced curve of the surface.
   //! For a surface of revolution it is the revolution curve,
@@ -65,32 +59,17 @@ public:
   Standard_EXPORT Handle(Geom_Curve) BasisCurve() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface, Geom_Surface)
 
 protected:
-
-
   Handle(Geom_Curve) basisCurve;
-  gp_Dir direction;
-  GeomAbs_Shape smooth;
-
+  gp_Dir             direction;
+  GeomAbs_Shape      smooth;
 
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_SweptSurface_HeaderFile

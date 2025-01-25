@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,10 +19,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ActuatedKinematicPair, StepKinematics_KinematicPair)
 
 //=======================================================================
-//function : StepKinematics_ActuatedKinematicPair
-//purpose  :
+// function : StepKinematics_ActuatedKinematicPair
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedKinematicPair::StepKinematics_ActuatedKinematicPair ()
+StepKinematics_ActuatedKinematicPair::StepKinematics_ActuatedKinematicPair()
 {
   defTX = Standard_False;
   defTY = Standard_False;
@@ -33,28 +33,29 @@ StepKinematics_ActuatedKinematicPair::StepKinematics_ActuatedKinematicPair ()
 }
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                 const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                                 const Standard_Boolean hasItemDefinedTransformation_Description,
-                                                 const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                                 const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                                 const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                                 const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                                 const Standard_Boolean hasTX,
-                                                 const StepKinematics_ActuatedDirection theTX,
-                                                 const Standard_Boolean hasTY,
-                                                 const StepKinematics_ActuatedDirection theTY,
-                                                 const Standard_Boolean hasTZ,
-                                                 const StepKinematics_ActuatedDirection theTZ,
-                                                 const Standard_Boolean hasRX,
-                                                 const StepKinematics_ActuatedDirection theRX,
-                                                 const Standard_Boolean hasRY,
-                                                 const StepKinematics_ActuatedDirection theRY,
-                                                 const Standard_Boolean hasRZ,
-                                                 const StepKinematics_ActuatedDirection theRZ)
+void StepKinematics_ActuatedKinematicPair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Boolean                       hasTX,
+  const StepKinematics_ActuatedDirection       theTX,
+  const Standard_Boolean                       hasTY,
+  const StepKinematics_ActuatedDirection       theTY,
+  const Standard_Boolean                       hasTZ,
+  const StepKinematics_ActuatedDirection       theTZ,
+  const Standard_Boolean                       hasRX,
+  const StepKinematics_ActuatedDirection       theRX,
+  const Standard_Boolean                       hasRY,
+  const StepKinematics_ActuatedDirection       theRY,
+  const Standard_Boolean                       hasRZ,
+  const StepKinematics_ActuatedDirection       theRZ)
 {
   StepKinematics_KinematicPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,
@@ -65,200 +66,212 @@ void StepKinematics_ActuatedKinematicPair::Init (const Handle(TCollection_HAscii
                                      theKinematicPair_Joint);
 
   defTX = hasTX;
-  if (defTX) {
+  if (defTX)
+  {
     myTX = theTX;
   }
-  else myTX = StepKinematics_ActuatedDirection();
+  else
+    myTX = StepKinematics_ActuatedDirection();
 
   defTY = hasTY;
-  if (defTY) {
+  if (defTY)
+  {
     myTY = theTY;
   }
-  else myTY = StepKinematics_ActuatedDirection();
+  else
+    myTY = StepKinematics_ActuatedDirection();
 
   defTZ = hasTZ;
-  if (defTZ) {
+  if (defTZ)
+  {
     myTZ = theTZ;
   }
-  else myTZ = StepKinematics_ActuatedDirection();
+  else
+    myTZ = StepKinematics_ActuatedDirection();
 
   defRX = hasRX;
-  if (defRX) {
+  if (defRX)
+  {
     myRX = theRX;
   }
-  else myRX = StepKinematics_ActuatedDirection();
+  else
+    myRX = StepKinematics_ActuatedDirection();
 
   defRY = hasRY;
-  if (defRY) {
+  if (defRY)
+  {
     myRY = theRY;
   }
-  else myRY = StepKinematics_ActuatedDirection();
+  else
+    myRY = StepKinematics_ActuatedDirection();
 
   defRZ = hasRZ;
-  if (defRZ) {
+  if (defRZ)
+  {
     myRZ = theRZ;
   }
-  else myRZ = StepKinematics_ActuatedDirection();
+  else
+    myRZ = StepKinematics_ActuatedDirection();
 }
 
 //=======================================================================
-//function : TX
-//purpose  :
+// function : TX
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TX () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TX() const
 {
   return myTX;
 }
 
 //=======================================================================
-//function : SetTX
-//purpose  :
+// function : SetTX
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetTX (const StepKinematics_ActuatedDirection theTX)
+void StepKinematics_ActuatedKinematicPair::SetTX(const StepKinematics_ActuatedDirection theTX)
 {
   myTX = theTX;
 }
 
 //=======================================================================
-//function : HasTX
-//purpose  :
+// function : HasTX
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTX () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTX() const
 {
   return defTX;
 }
 
 //=======================================================================
-//function : TY
-//purpose  :
+// function : TY
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TY () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TY() const
 {
   return myTY;
 }
 
 //=======================================================================
-//function : SetTY
-//purpose  :
+// function : SetTY
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetTY (const StepKinematics_ActuatedDirection theTY)
+void StepKinematics_ActuatedKinematicPair::SetTY(const StepKinematics_ActuatedDirection theTY)
 {
   myTY = theTY;
 }
 
 //=======================================================================
-//function : HasTY
-//purpose  :
+// function : HasTY
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTY () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTY() const
 {
   return defTY;
 }
 
 //=======================================================================
-//function : TZ
-//purpose  :
+// function : TZ
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TZ () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::TZ() const
 {
   return myTZ;
 }
 
 //=======================================================================
-//function : SetTZ
-//purpose  :
+// function : SetTZ
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetTZ (const StepKinematics_ActuatedDirection theTZ)
+void StepKinematics_ActuatedKinematicPair::SetTZ(const StepKinematics_ActuatedDirection theTZ)
 {
   myTZ = theTZ;
 }
 
 //=======================================================================
-//function : HasTZ
-//purpose  :
+// function : HasTZ
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTZ () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasTZ() const
 {
   return defTZ;
 }
 
 //=======================================================================
-//function : RX
-//purpose  :
+// function : RX
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RX () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RX() const
 {
   return myRX;
 }
 
 //=======================================================================
-//function : SetRX
-//purpose  :
+// function : SetRX
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetRX (const StepKinematics_ActuatedDirection theRX)
+void StepKinematics_ActuatedKinematicPair::SetRX(const StepKinematics_ActuatedDirection theRX)
 {
   myRX = theRX;
 }
 
 //=======================================================================
-//function : HasRX
-//purpose  :
+// function : HasRX
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRX () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRX() const
 {
   return defRX;
 }
 
 //=======================================================================
-//function : RY
-//purpose  :
+// function : RY
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RY () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RY() const
 {
   return myRY;
 }
 
 //=======================================================================
-//function : SetRY
-//purpose  :
+// function : SetRY
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetRY (const StepKinematics_ActuatedDirection theRY)
+void StepKinematics_ActuatedKinematicPair::SetRY(const StepKinematics_ActuatedDirection theRY)
 {
   myRY = theRY;
 }
 
 //=======================================================================
-//function : HasRY
-//purpose  :
+// function : HasRY
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRY () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRY() const
 {
   return defRY;
 }
 
 //=======================================================================
-//function : RZ
-//purpose  :
+// function : RZ
+// purpose  :
 //=======================================================================
-StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RZ () const
+StepKinematics_ActuatedDirection StepKinematics_ActuatedKinematicPair::RZ() const
 {
   return myRZ;
 }
 
 //=======================================================================
-//function : SetRZ
-//purpose  :
+// function : SetRZ
+// purpose  :
 //=======================================================================
-void StepKinematics_ActuatedKinematicPair::SetRZ (const StepKinematics_ActuatedDirection theRZ)
+void StepKinematics_ActuatedKinematicPair::SetRZ(const StepKinematics_ActuatedDirection theRZ)
 {
   myRZ = theRZ;
 }
 
 //=======================================================================
-//function : HasRZ
-//purpose  :
+// function : HasRZ
+// purpose  :
 //=======================================================================
-Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRZ () const
+Standard_Boolean StepKinematics_ActuatedKinematicPair::HasRZ() const
 {
   return defRZ;
 }

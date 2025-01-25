@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_ColumnType_H
 #define TreeModel_ColumnType_H
@@ -23,9 +23,9 @@
 //! Sets custom item role of Tree view wmodel
 enum TreeModel_ColumnType
 {
-  TreeModel_ColumnType_Name = 0, //! name column
+  TreeModel_ColumnType_Name = 0,   //! name column
   TreeModel_ColumnType_Visibility, //! visibility state column
-  TreeModel_ColumnType_Row //! row of the item column
+  TreeModel_ColumnType_Row         //! row of the item column
 };
 
 #endif

@@ -21,58 +21,38 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-
 //! This class implements the common services for
 //! all classes of StepToTopoDS which report error
 //! and sets and returns precision.
-class StepToTopoDS_Root 
+class StepToTopoDS_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns the value of "MyPrecision"
-    Standard_Real Precision() const;
-  
+  Standard_Real Precision() const;
+
   //! Sets the value of "MyPrecision"
-    void SetPrecision (const Standard_Real preci);
-  
+  void SetPrecision(const Standard_Real preci);
+
   //! Returns the value of "MaxTol"
-    Standard_Real MaxTol() const;
-  
+  Standard_Real MaxTol() const;
+
   //! Sets the value of MaxTol
-    void SetMaxTol (const Standard_Real maxpreci);
-
-
-
+  void SetMaxTol(const Standard_Real maxpreci);
 
 protected:
-
-  
   Standard_EXPORT StepToTopoDS_Root();
-
 
   Standard_Boolean done;
 
-
 private:
-
-
-
   Standard_Real myPrecision;
   Standard_Real myMaxTol;
-
-
 };
 
-
 #include <StepToTopoDS_Root.lxx>
-
-
-
-
 
 #endif // _StepToTopoDS_Root_HeaderFile

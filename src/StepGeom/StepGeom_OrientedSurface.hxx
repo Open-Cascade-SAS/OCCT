@@ -23,7 +23,6 @@
 #include <StepGeom_Surface.hxx>
 class TCollection_HAsciiString;
 
-
 class StepGeom_OrientedSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_OrientedSurface, StepGeom_Surface)
 
@@ -32,42 +31,24 @@ class StepGeom_OrientedSurface : public StepGeom_Surface
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepGeom_OrientedSurface();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const Standard_Boolean aOrientation);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                            const Standard_Boolean                  aOrientation);
+
   //! Returns field Orientation
   Standard_EXPORT Standard_Boolean Orientation() const;
-  
+
   //! Set field Orientation
-  Standard_EXPORT void SetOrientation (const Standard_Boolean Orientation);
+  Standard_EXPORT void SetOrientation(const Standard_Boolean Orientation);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_OrientedSurface,StepGeom_Surface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_OrientedSurface, StepGeom_Surface)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Boolean theOrientation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_OrientedSurface_HeaderFile

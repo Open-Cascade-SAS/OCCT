@@ -19,20 +19,19 @@ inline const Standard_Integer& Plate_FreeGtoCConstraint::nb_PPC() const
   return nb_PPConstraints;
 }
 
- 
-inline const Plate_PinpointConstraint& Plate_FreeGtoCConstraint::GetPPC(const Standard_Integer Index) const
+inline const Plate_PinpointConstraint& Plate_FreeGtoCConstraint::GetPPC(
+  const Standard_Integer Index) const
 {
   return myPPC[Index];
 }
 
- 
 inline const Standard_Integer& Plate_FreeGtoCConstraint::nb_LSC() const
 {
   return nb_LSConstraints;
 }
 
- 
-inline const Plate_LinearScalarConstraint& Plate_FreeGtoCConstraint::LSC(const Standard_Integer Index) const
+inline const Plate_LinearScalarConstraint& Plate_FreeGtoCConstraint::LSC(
+  const Standard_Integer Index) const
 {
   return myLSC[Index];
 }

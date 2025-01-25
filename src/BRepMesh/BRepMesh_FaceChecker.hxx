@@ -23,42 +23,39 @@
 #include <NCollection_Shared.hxx>
 
 //! Auxiliary class checking wires of target face for self-intersections.
-//! Explodes wires of discrete face on sets of segments using tessellation 
+//! Explodes wires of discrete face on sets of segments using tessellation
 //! data stored in model. Each segment is then checked for intersection with
 //! other ones. All collisions are registered and returned as result of check.
 class BRepMesh_FaceChecker : public Standard_Transient
 {
 public: //! @name mesher API
-
   //! Identifies segment inside face.
   struct Segment
   {
-    IMeshData::IEdgePtr      EdgePtr;
-    gp_Pnt2d*                Point1; // \ Use explicit pointers to points instead of accessing
-    gp_Pnt2d*                Point2; // / using indices.
+    IMeshData::IEdgePtr EdgePtr;
+    gp_Pnt2d*           Point1; // \ Use explicit pointers to points instead of accessing
+    gp_Pnt2d*           Point2; // / using indices.
 
     Segment()
-    : EdgePtr(NULL),
-      Point1(NULL),
-      Point2(NULL)
+        : EdgePtr(NULL),
+          Point1(NULL),
+          Point2(NULL)
     {
     }
 
-    Segment(const IMeshData::IEdgePtr& theEdgePtr,
-            gp_Pnt2d*                  thePoint1,
-            gp_Pnt2d*                  thePoint2)
-      : EdgePtr(theEdgePtr)
-      , Point1(thePoint1)
-      , Point2(thePoint2)
+    Segment(const IMeshData::IEdgePtr& theEdgePtr, gp_Pnt2d* thePoint1, gp_Pnt2d* thePoint2)
+        : EdgePtr(theEdgePtr),
+          Point1(thePoint1),
+          Point2(thePoint2)
     {
     }
   };
 
-  typedef NCollection_Shared<NCollection_Vector<Segment> >                          Segments;
-  typedef NCollection_Shared<NCollection_Array1<Handle(Segments)> >                 ArrayOfSegments;
-  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::BndBox2dTree)> >  ArrayOfBndBoxTree;
-  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::MapOfIEdgePtr)> > ArrayOfMapOfIEdgePtr;
-
+  typedef NCollection_Shared<NCollection_Vector<Segment>>                         Segments;
+  typedef NCollection_Shared<NCollection_Array1<Handle(Segments)>>                ArrayOfSegments;
+  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::BndBox2dTree)>> ArrayOfBndBoxTree;
+  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::MapOfIEdgePtr)>>
+    ArrayOfMapOfIEdgePtr;
 
   //! Default constructor
   Standard_EXPORT BRepMesh_FaceChecker(const IMeshData::IFaceHandle& theFace,
@@ -78,15 +75,11 @@ public: //! @name mesher API
   }
 
   //! Checks wire with the given index for intersection with others.
-  void operator()(const Standard_Integer theWireIndex) const
-  {
-    perform(theWireIndex);
-  }
+  void operator()(const Standard_Integer theWireIndex) const { perform(theWireIndex); }
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_FaceChecker, Standard_Transient)
 
 private:
-
   //! Returns True in case if check can be performed in parallel mode.
   Standard_Boolean isParallel() const
   {
@@ -103,21 +96,18 @@ private:
   void perform(const Standard_Integer theWireIndex) const;
 
 private:
-
-  BRepMesh_FaceChecker (const BRepMesh_FaceChecker& theOther);
+  BRepMesh_FaceChecker(const BRepMesh_FaceChecker& theOther);
 
   void operator=(const BRepMesh_FaceChecker& theOther);
 
 private:
+  IMeshData::IFaceHandle       myDFace;
+  const IMeshTools_Parameters& myParameters;
 
-  IMeshData::IFaceHandle            myDFace;
-  const IMeshTools_Parameters&      myParameters;
-
-  Handle(ArrayOfSegments)           myWiresSegments;
-  Handle(ArrayOfBndBoxTree)         myWiresBndBoxTree;
-  Handle(ArrayOfMapOfIEdgePtr)      myWiresIntersectingEdges;
-  Handle(IMeshData::MapOfIEdgePtr)  myIntersectingEdges;
-
+  Handle(ArrayOfSegments)          myWiresSegments;
+  Handle(ArrayOfBndBoxTree)        myWiresBndBoxTree;
+  Handle(ArrayOfMapOfIEdgePtr)     myWiresIntersectingEdges;
+  Handle(IMeshData::MapOfIEdgePtr) myIntersectingEdges;
 };
 
 #endif

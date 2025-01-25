@@ -11,19 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_TrimmingMember.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmingMember,StepData_SelectReal)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmingMember, StepData_SelectReal)
 
-StepGeom_TrimmingMember::StepGeom_TrimmingMember  ()    {  }
+StepGeom_TrimmingMember::StepGeom_TrimmingMember() {}
 
-    Standard_Boolean  StepGeom_TrimmingMember::HasName () const
-      {  return Standard_True;  }
+Standard_Boolean StepGeom_TrimmingMember::HasName() const
+{
+  return Standard_True;
+}
 
-    Standard_CString  StepGeom_TrimmingMember::Name () const
-      {  return "PARAMETER_VALUE";  }
+Standard_CString StepGeom_TrimmingMember::Name() const
+{
+  return "PARAMETER_VALUE";
+}
 
-    Standard_Boolean  StepGeom_TrimmingMember::SetName (const Standard_CString /*name*/)
-      {  return Standard_True;  }
+Standard_Boolean StepGeom_TrimmingMember::SetName(const Standard_CString /*name*/)
+{
+  return Standard_True;
+}

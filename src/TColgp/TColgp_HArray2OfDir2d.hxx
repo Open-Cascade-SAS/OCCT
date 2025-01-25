@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY2(TColgp_HArray2OfDir2d, TColgp_Array2OfDir2d)
 
-
 #endif

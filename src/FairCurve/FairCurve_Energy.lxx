@@ -14,18 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer FairCurve_Energy::NbVariables() const 
+inline Standard_Integer FairCurve_Energy::NbVariables() const
 {
   return MyNbVar;
 }
 
-inline const Handle(TColgp_HArray1OfPnt2d)& FairCurve_Energy::Poles() const 
+inline const Handle(TColgp_HArray1OfPnt2d)& FairCurve_Energy::Poles() const
 {
   return MyPoles;
 }
 
-inline Standard_Integer FairCurve_Energy::Indice(const Standard_Integer i, 
-						 const Standard_Integer j) const
+inline Standard_Integer FairCurve_Energy::Indice(const Standard_Integer i,
+                                                 const Standard_Integer j) const
 {
-  return MyNbValues + j + i*(i-1) / 2;
+  return MyNbValues + j + i * (i - 1) / 2;
 }

@@ -35,64 +35,56 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a DimensionedGeometry. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDimen_ToolDimensionedGeometry 
+class IGESDimen_ToolDimensionedGeometry
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolDimensionedGeometry, ready to work
   Standard_EXPORT IGESDimen_ToolDimensionedGeometry();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDimen_DimensionedGeometry)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_DimensionedGeometry)& ent,
+                                     const Handle(IGESData_IGESReaderData)&       IR,
+                                     IGESData_ParamReader&                        PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDimen_DimensionedGeometry)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_DimensionedGeometry)& ent,
+                                      IGESData_IGESWriter&                         IW) const;
+
   //! Lists the Entities shared by a DimensionedGeometry <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDimen_DimensionedGeometry)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDimen_DimensionedGeometry)& ent,
+                                 Interface_EntityIterator&                    iter) const;
+
   //! Sets automatic unambiguous Correction on a DimensionedGeometry
   //! (NbDimensions forced to 1)
-  Standard_EXPORT Standard_Boolean OwnCorrect (const Handle(IGESDimen_DimensionedGeometry)& ent) const;
-  
+  Standard_EXPORT Standard_Boolean
+    OwnCorrect(const Handle(IGESDimen_DimensionedGeometry)& ent) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDimen_DimensionedGeometry)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const Handle(IGESDimen_DimensionedGeometry)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDimen_DimensionedGeometry)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_DimensionedGeometry)& ent,
+                                const Interface_ShareTool&                   shares,
+                                Handle(Interface_Check)&                     ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDimen_DimensionedGeometry)& entfrom, const Handle(IGESDimen_DimensionedGeometry)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_DimensionedGeometry)& entfrom,
+                               const Handle(IGESDimen_DimensionedGeometry)& entto,
+                               Interface_CopyTool&                          TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_DimensionedGeometry)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDimen_DimensionedGeometry)& ent,
+                               const IGESData_IGESDumper&                   dumper,
+                               Standard_OStream&                            S,
+                               const Standard_Integer                       own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_ToolDimensionedGeometry_HeaderFile

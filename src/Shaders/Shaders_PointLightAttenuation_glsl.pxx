@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PointLightAttenuation.glsl
+// This file has been automatically generated from resource file
+// src/Shaders/PointLightAttenuation.glsl
 
 static const char Shaders_PointLightAttenuation_glsl[] =
   "//! Returns point light source attenuation factor\n"
@@ -17,7 +18,8 @@ static const char Shaders_PointLightAttenuation_glsl[] =
   "  return -1.0;\n"
   "}\n"
   "\n"
-  "//! Returns point light source attenuation factor with quadratic attenuation in case of zero range.\n"
+  "//! Returns point light source attenuation factor with quadratic attenuation in case of zero "
+  "range.\n"
   "float occPointLightAttenuation (in float theDistance, in float theRange)\n"
   "{\n"
   "  if (theRange == 0.0)\n"
@@ -27,8 +29,10 @@ static const char Shaders_PointLightAttenuation_glsl[] =
   "  return occRangedPointLightAttenuation (theDistance, theRange);\n"
   "}\n"
   "\n"
-  "//! Returns point light source attenuation factor with linear attenuation in case of zero range.\n"
-  "float occPointLightAttenuation (in float theDistance, in float theRange, in float theLinearAttenuation, in float theConstAttenuation)\n"
+  "//! Returns point light source attenuation factor with linear attenuation in case of zero "
+  "range.\n"
+  "float occPointLightAttenuation (in float theDistance, in float theRange, in float "
+  "theLinearAttenuation, in float theConstAttenuation)\n"
   "{\n"
   "  if (theRange == 0.0)\n"
   "  {\n"

@@ -26,33 +26,29 @@ class TCollection_HAsciiString;
 
 class StepShape_ValueFormatTypeQualifier;
 DEFINE_STANDARD_HANDLE(StepShape_ValueFormatTypeQualifier, Standard_Transient)
+
 //! Added for Dimensional Tolerances
 class StepShape_ValueFormatTypeQualifier : public Standard_Transient
 {
 
 public:
-  
   Standard_EXPORT StepShape_ValueFormatTypeQualifier();
-  
+
   //! Init all field own and inherited
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theFormatType);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theFormatType);
+
   //! Returns field FormatType
-  inline Handle(TCollection_HAsciiString) FormatType()
-  {
-    return formatType;
-  }
-  
+  inline Handle(TCollection_HAsciiString) FormatType() { return formatType; }
+
   //! Set field FormatType
-  inline void SetFormatType(const Handle(TCollection_HAsciiString) &theFormatType)
+  inline void SetFormatType(const Handle(TCollection_HAsciiString)& theFormatType)
   {
     formatType = theFormatType;
   }
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier,Standard_Transient)
-  
+  DEFINE_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier, Standard_Transient)
+
 private:
   Handle(TCollection_HAsciiString) formatType;
-
 };
 #endif // _StepShape_ValueFormatTypeQualifier_HeaderFile

@@ -11,65 +11,60 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepBasic_RWCalendarDate.pxx"
 #include <StepBasic_CalendarDate.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWCalendarDate::RWStepBasic_RWCalendarDate () {}
+RWStepBasic_RWCalendarDate::RWStepBasic_RWCalendarDate() {}
 
-void RWStepBasic_RWCalendarDate::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_CalendarDate)& ent) const
+void RWStepBasic_RWCalendarDate::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                          const Standard_Integer                 num,
+                                          Handle(Interface_Check)&               ach,
+                                          const Handle(StepBasic_CalendarDate)&  ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 3, ach, "calendar_date"))
+    return;
 
-	if (!data->CheckNbParams(num,3,ach,"calendar_date")) return;
+  // --- inherited field : yearComponent ---
 
-	// --- inherited field : yearComponent ---
+  Standard_Integer aYearComponent;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadInteger(num, 1, "year_component", ach, aYearComponent);
 
-	Standard_Integer aYearComponent;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadInteger (num,1,"year_component",ach,aYearComponent);
+  // --- own field : dayComponent ---
 
-	// --- own field : dayComponent ---
+  Standard_Integer aDayComponent;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadInteger(num, 2, "day_component", ach, aDayComponent);
 
-	Standard_Integer aDayComponent;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadInteger (num,2,"day_component",ach,aDayComponent);
+  // --- own field : monthComponent ---
 
-	// --- own field : monthComponent ---
+  Standard_Integer aMonthComponent;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  data->ReadInteger(num, 3, "month_component", ach, aMonthComponent);
 
-	Standard_Integer aMonthComponent;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	data->ReadInteger (num,3,"month_component",ach,aMonthComponent);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aYearComponent, aDayComponent, aMonthComponent);
+  ent->Init(aYearComponent, aDayComponent, aMonthComponent);
 }
 
-
-void RWStepBasic_RWCalendarDate::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_CalendarDate)& ent) const
+void RWStepBasic_RWCalendarDate::WriteStep(StepData_StepWriter&                  SW,
+                                           const Handle(StepBasic_CalendarDate)& ent) const
 {
 
-	// --- inherited field yearComponent ---
+  // --- inherited field yearComponent ---
 
-	SW.Send(ent->YearComponent());
+  SW.Send(ent->YearComponent());
 
-	// --- own field : dayComponent ---
+  // --- own field : dayComponent ---
 
-	SW.Send(ent->DayComponent());
+  SW.Send(ent->DayComponent());
 
-	// --- own field : monthComponent ---
+  // --- own field : monthComponent ---
 
-	SW.Send(ent->MonthComponent());
+  SW.Send(ent->MonthComponent());
 }

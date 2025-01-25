@@ -23,7 +23,6 @@
 #include <IGESData_Protocol.hxx>
 #include <IGESData_GlobalNodeOfWriterLib.hxx>
 #include <Standard_Transient.hxx>
- 
 
 #define TheObject Handle(IGESData_IGESEntity)
 #define TheObject_hxx <IGESData_IGESEntity.hxx>
@@ -42,4 +41,3 @@
 #define LibCtl_Library IGESData_WriterLib
 #define LibCtl_Library_hxx <IGESData_WriterLib.hxx>
 #include "../LibCtl/LibCtl_Library.gxx"
-

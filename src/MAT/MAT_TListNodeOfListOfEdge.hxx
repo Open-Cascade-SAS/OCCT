@@ -24,53 +24,38 @@
 class MAT_Edge;
 class MAT_ListOfEdge;
 
-
 class MAT_TListNodeOfListOfEdge;
 DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfEdge, Standard_Transient)
-
 
 class MAT_TListNodeOfListOfEdge : public Standard_Transient
 {
 
 public:
+  MAT_TListNodeOfListOfEdge();
 
-  
-    MAT_TListNodeOfListOfEdge();
-  
-    MAT_TListNodeOfListOfEdge(const Handle(MAT_Edge)& anitem);
-  
-    Handle(MAT_Edge) GetItem() const;
-  
-    Handle(MAT_TListNodeOfListOfEdge) Next() const;
-  
-    Handle(MAT_TListNodeOfListOfEdge) Previous() const;
-  
-    void SetItem (const Handle(MAT_Edge)& anitem);
-  
-    void Next (const Handle(MAT_TListNodeOfListOfEdge)& atlistnode);
-  
-    void Previous (const Handle(MAT_TListNodeOfListOfEdge)& atlistnode);
-  
+  MAT_TListNodeOfListOfEdge(const Handle(MAT_Edge)& anitem);
+
+  Handle(MAT_Edge) GetItem() const;
+
+  Handle(MAT_TListNodeOfListOfEdge) Next() const;
+
+  Handle(MAT_TListNodeOfListOfEdge) Previous() const;
+
+  void SetItem(const Handle(MAT_Edge)& anitem);
+
+  void Next(const Handle(MAT_TListNodeOfListOfEdge)& atlistnode);
+
+  void Previous(const Handle(MAT_TListNodeOfListOfEdge)& atlistnode);
+
   Standard_EXPORT void Dummy() const;
 
-
-
-
-  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfEdge,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfEdge, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(MAT_TListNodeOfListOfEdge) thenext;
   Handle(MAT_TListNodeOfListOfEdge) theprevious;
-  Handle(MAT_Edge) theitem;
-
-
+  Handle(MAT_Edge)                  theitem;
 };
 
 #define Item Handle(MAT_Edge)
@@ -92,8 +77,5 @@ private:
 #undef MAT_TList
 #undef MAT_TList_hxx
 #undef Handle_MAT_TList
-
-
-
 
 #endif // _MAT_TListNodeOfListOfEdge_HeaderFile

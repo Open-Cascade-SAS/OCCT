@@ -11,27 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepBasic_SecurityClassificationAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment, Standard_Transient)
 
 void StepBasic_SecurityClassificationAssignment::Init(
-	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
+  const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
 {
-	// --- classe own fields ---
-	assignedSecurityClassification = aAssignedSecurityClassification;
+  // --- classe own fields ---
+  assignedSecurityClassification = aAssignedSecurityClassification;
 }
 
-
-void StepBasic_SecurityClassificationAssignment::SetAssignedSecurityClassification(const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
+void StepBasic_SecurityClassificationAssignment::SetAssignedSecurityClassification(
+  const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
 {
-	assignedSecurityClassification = aAssignedSecurityClassification;
+  assignedSecurityClassification = aAssignedSecurityClassification;
 }
 
-Handle(StepBasic_SecurityClassification) StepBasic_SecurityClassificationAssignment::AssignedSecurityClassification() const
+Handle(StepBasic_SecurityClassification) StepBasic_SecurityClassificationAssignment::
+  AssignedSecurityClassification() const
 {
-	return assignedSecurityClassification;
+  return assignedSecurityClassification;
 }

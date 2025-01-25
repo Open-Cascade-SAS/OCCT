@@ -24,10 +24,18 @@ struct Graphic3d_BufferRange
   Standard_Integer Length; //!< number of elements within the range
 
   //! Empty constructor.
-  Graphic3d_BufferRange() : Start (0), Length (0) {}
+  Graphic3d_BufferRange()
+      : Start(0),
+        Length(0)
+  {
+  }
 
   //! Constructor.
-  Graphic3d_BufferRange (Standard_Integer theStart, Standard_Integer theLength) : Start (theStart), Length (theLength) {}
+  Graphic3d_BufferRange(Standard_Integer theStart, Standard_Integer theLength)
+      : Start(theStart),
+        Length(theLength)
+  {
+  }
 
   //! Return TRUE if range is empty.
   Standard_Boolean IsEmpty() const { return Length == 0; }
@@ -43,7 +51,7 @@ struct Graphic3d_BufferRange
   }
 
   //! Add another range to this one.
-  void Unite (const Graphic3d_BufferRange& theRange)
+  void Unite(const Graphic3d_BufferRange& theRange)
   {
     if (IsEmpty())
     {
@@ -55,10 +63,10 @@ struct Graphic3d_BufferRange
       return;
     }
 
-    const Standard_Integer aStart = Min (Start,   theRange.Start);
-    const Standard_Integer aLast  = Max (Upper(), theRange.Upper());
-    Start  = aStart;
-    Length = aLast - aStart + 1;
+    const Standard_Integer aStart = Min(Start, theRange.Start);
+    const Standard_Integer aLast  = Max(Upper(), theRange.Upper());
+    Start                         = aStart;
+    Length                        = aLast - aStart + 1;
   }
 };
 

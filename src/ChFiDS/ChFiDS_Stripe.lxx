@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetOfSurfData
-//purpose  : 
+// function : SetOfSurfData
+// purpose  :
 //=======================================================================
 
 inline const Handle(ChFiDS_HData)& ChFiDS_Stripe::SetOfSurfData() const
@@ -25,168 +25,162 @@ inline const Handle(ChFiDS_HData)& ChFiDS_Stripe::SetOfSurfData() const
 }
 
 //=======================================================================
-//function : Spine
-//purpose  : 
+// function : Spine
+// purpose  :
 //=======================================================================
- 
+
 inline const Handle(ChFiDS_Spine)& ChFiDS_Stripe::Spine() const
 {
   return mySpine;
 }
- 
+
 //=======================================================================
-//function : OrientationOnFace1
-//purpose  : 
+// function : OrientationOnFace1
+// purpose  :
 //=======================================================================
- 
-inline TopAbs_Orientation  ChFiDS_Stripe::OrientationOnFace1() const
+
+inline TopAbs_Orientation ChFiDS_Stripe::OrientationOnFace1() const
 {
   return myOr1;
 }
 
 //=======================================================================
-//function : OrientationOnFace2
-//purpose  : 
+// function : OrientationOnFace2
+// purpose  :
 //=======================================================================
- 
-inline TopAbs_Orientation  ChFiDS_Stripe::OrientationOnFace2() const
+
+inline TopAbs_Orientation ChFiDS_Stripe::OrientationOnFace2() const
 {
   return myOr2;
 }
 
 //=======================================================================
-//function : Choix
-//purpose  : 
+// function : Choix
+// purpose  :
 //=======================================================================
- 
+
 inline Standard_Integer ChFiDS_Stripe::Choix() const
 {
   return myChoix;
 }
 
 //=======================================================================
-//function : ChangeSetOfSurfData
-//purpose  : 
+// function : ChangeSetOfSurfData
+// purpose  :
 //=======================================================================
- 
-inline Handle(ChFiDS_HData)& ChFiDS_Stripe::ChangeSetOfSurfData() 
+
+inline Handle(ChFiDS_HData)& ChFiDS_Stripe::ChangeSetOfSurfData()
 {
   return myHdata;
 }
 
 //=======================================================================
-//function : ChangeSpine
-//purpose  : 
+// function : ChangeSpine
+// purpose  :
 //=======================================================================
- 
-inline Handle(ChFiDS_Spine)& ChFiDS_Stripe::ChangeSpine() 
+
+inline Handle(ChFiDS_Spine)& ChFiDS_Stripe::ChangeSpine()
 {
   return mySpine;
 }
 
 //=======================================================================
-//function : OrientationOnFace1
-//purpose  : 
+// function : OrientationOnFace1
+// purpose  :
 //=======================================================================
- 
-inline void ChFiDS_Stripe::OrientationOnFace1(const TopAbs_Orientation Or1) 
+
+inline void ChFiDS_Stripe::OrientationOnFace1(const TopAbs_Orientation Or1)
 {
   myOr1 = Or1;
 }
 
 //=======================================================================
-//function : OrientationOnFace2
-//purpose  : 
+// function : OrientationOnFace2
+// purpose  :
 //=======================================================================
- 
-inline void ChFiDS_Stripe::OrientationOnFace2(const TopAbs_Orientation Or2) 
+
+inline void ChFiDS_Stripe::OrientationOnFace2(const TopAbs_Orientation Or2)
 {
   myOr2 = Or2;
 }
 
+//=======================================================================
+// function : Choix
+// purpose  :
+//=======================================================================
 
-//=======================================================================
-//function : Choix
-//purpose  : 
-//=======================================================================
- 
-inline void ChFiDS_Stripe::Choix(const Standard_Integer C) 
+inline void ChFiDS_Stripe::Choix(const Standard_Integer C)
 {
   myChoix = C;
 }
 
 //=======================================================================
-//function : FirstParameters
-//purpose  : 
+// function : FirstParameters
+// purpose  :
 //=======================================================================
 
-inline void  ChFiDS_Stripe::FirstParameters(Standard_Real& Pdeb,
-					       Standard_Real& Pfin) const 
+inline void ChFiDS_Stripe::FirstParameters(Standard_Real& Pdeb, Standard_Real& Pfin) const
 {
   Pdeb = pardeb1;
   Pfin = parfin1;
 }
 
 //=======================================================================
-//function : lastParameters
-//purpose  : 
+// function : lastParameters
+// purpose  :
 //=======================================================================
 
-inline void  ChFiDS_Stripe::LastParameters(Standard_Real& Pdeb,
-					      Standard_Real& Pfin) const 
+inline void ChFiDS_Stripe::LastParameters(Standard_Real& Pdeb, Standard_Real& Pfin) const
 {
   Pdeb = pardeb2;
   Pfin = parfin2;
 }
 
-
 //=======================================================================
-//function : ChangeFirstParameters
-//purpose  : 
+// function : ChangeFirstParameters
+// purpose  :
 //=======================================================================
 
-inline void  ChFiDS_Stripe::ChangeFirstParameters(const Standard_Real Pdeb,
-						     const Standard_Real Pfin)
+inline void ChFiDS_Stripe::ChangeFirstParameters(const Standard_Real Pdeb, const Standard_Real Pfin)
 {
   pardeb1 = Pdeb;
   parfin1 = Pfin;
 }
 
 //=======================================================================
-//function : ChangeLastParameters
-//purpose  : 
+// function : ChangeLastParameters
+// purpose  :
 //=======================================================================
 
-inline void  ChFiDS_Stripe::ChangeLastParameters(const Standard_Real Pdeb,
-						    const Standard_Real Pfin)
+inline void ChFiDS_Stripe::ChangeLastParameters(const Standard_Real Pdeb, const Standard_Real Pfin)
 {
   pardeb2 = Pdeb;
   parfin2 = Pfin;
 }
 
 //=======================================================================
-//function : FirstCurve
-//purpose  : 
+// function : FirstCurve
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer ChFiDS_Stripe::FirstCurve()const 
+inline Standard_Integer ChFiDS_Stripe::FirstCurve() const
 {
   return indexOfcurve1;
 }
 
 //=======================================================================
-//function : LastCurve
-//purpose  : 
+// function : LastCurve
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer ChFiDS_Stripe::LastCurve()const 
+inline Standard_Integer ChFiDS_Stripe::LastCurve() const
 {
   return indexOfcurve2;
 }
 
 //=======================================================================
-//function : ChangeFirstCurve
-//purpose  : 
+// function : ChangeFirstCurve
+// purpose  :
 //=======================================================================
 
 inline void ChFiDS_Stripe::ChangeFirstCurve(const Standard_Integer Index)
@@ -195,8 +189,8 @@ inline void ChFiDS_Stripe::ChangeFirstCurve(const Standard_Integer Index)
 }
 
 //=======================================================================
-//function : ChangeLastCurve
-//purpose  : 
+// function : ChangeLastCurve
+// purpose  :
 //=======================================================================
 
 inline void ChFiDS_Stripe::ChangeLastCurve(const Standard_Integer Index)
@@ -205,173 +199,161 @@ inline void ChFiDS_Stripe::ChangeLastCurve(const Standard_Integer Index)
 }
 
 //=======================================================================
-//function : FirstPCurve
-//purpose  : 
+// function : FirstPCurve
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom2d_Curve)&  ChFiDS_Stripe::FirstPCurve()const 
+inline const Handle(Geom2d_Curve)& ChFiDS_Stripe::FirstPCurve() const
 {
   return pcrv1;
 }
 
 //=======================================================================
-//function : LastPCurve
-//purpose  : 
+// function : LastPCurve
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom2d_Curve)&  ChFiDS_Stripe::LastPCurve()const 
+inline const Handle(Geom2d_Curve)& ChFiDS_Stripe::LastPCurve() const
 {
   return pcrv2;
 }
 
 //=======================================================================
-//function : ChangeFirstPCurve
-//purpose  : 
+// function : ChangeFirstPCurve
+// purpose  :
 //=======================================================================
 
-inline Handle(Geom2d_Curve)&  ChFiDS_Stripe::ChangeFirstPCurve()
+inline Handle(Geom2d_Curve)& ChFiDS_Stripe::ChangeFirstPCurve()
 {
   return pcrv1;
 }
 
 //=======================================================================
-//function : ChangeLastPCurve
-//purpose  : 
+// function : ChangeLastPCurve
+// purpose  :
 //=======================================================================
 
-inline Handle(Geom2d_Curve)&  ChFiDS_Stripe::ChangeLastPCurve()
+inline Handle(Geom2d_Curve)& ChFiDS_Stripe::ChangeLastPCurve()
 {
   return pcrv2;
 }
 
 //=======================================================================
-//function : IndexFirstPointOnS1
-//purpose  : 
+// function : IndexFirstPointOnS1
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  ChFiDS_Stripe::IndexFirstPointOnS1() const
+inline Standard_Integer ChFiDS_Stripe::IndexFirstPointOnS1() const
 {
   return indexfirstPOnS1;
 }
 
 //=======================================================================
-//function : IndexLastPointOnS1
-//purpose  : 
+// function : IndexLastPointOnS1
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  ChFiDS_Stripe::IndexLastPointOnS1() const
+inline Standard_Integer ChFiDS_Stripe::IndexLastPointOnS1() const
 {
   return indexlastPOnS1;
 }
 
 //=======================================================================
-//function : IndexFirstPointOnS2
-//purpose  : 
+// function : IndexFirstPointOnS2
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  ChFiDS_Stripe::IndexFirstPointOnS2() const
+inline Standard_Integer ChFiDS_Stripe::IndexFirstPointOnS2() const
 {
   return indexfirstPOnS2;
 }
 
 //=======================================================================
-//function : IndexLastPointOnS2
-//purpose  : 
+// function : IndexLastPointOnS2
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  ChFiDS_Stripe::IndexLastPointOnS2() const
+inline Standard_Integer ChFiDS_Stripe::IndexLastPointOnS2() const
 {
   return indexlastPOnS2;
 }
 
-
 //=======================================================================
-//function : ChangeIndexFirstPointOnS1
-//purpose  : 
+// function : ChangeIndexFirstPointOnS1
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::ChangeIndexFirstPointOnS1
-  (const Standard_Integer Index) 
+inline void ChFiDS_Stripe::ChangeIndexFirstPointOnS1(const Standard_Integer Index)
 {
   indexfirstPOnS1 = Index;
 }
 
 //=======================================================================
-//function : ChangeIndexLastPointOnS1
-//purpose  : 
+// function : ChangeIndexLastPointOnS1
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::ChangeIndexLastPointOnS1
-  (const Standard_Integer Index) 
+inline void ChFiDS_Stripe::ChangeIndexLastPointOnS1(const Standard_Integer Index)
 {
   indexlastPOnS1 = Index;
 }
 
-
 //=======================================================================
-//function : ChangeIndexFirstPointOnS2
-//purpose  : 
+// function : ChangeIndexFirstPointOnS2
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::ChangeIndexFirstPointOnS2
-  (const Standard_Integer Index) 
+inline void ChFiDS_Stripe::ChangeIndexFirstPointOnS2(const Standard_Integer Index)
 {
   indexfirstPOnS2 = Index;
 }
 
 //=======================================================================
-//function : ChangeIndexLastPointOnS2
-//purpose  : 
+// function : ChangeIndexLastPointOnS2
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::ChangeIndexLastPointOnS2
-  (const Standard_Integer Index) 
+inline void ChFiDS_Stripe::ChangeIndexLastPointOnS2(const Standard_Integer Index)
 {
   indexlastPOnS2 = Index;
 }
 
 //=======================================================================
-//function : FirstPCurveOrientation
-//purpose  : 
+// function : FirstPCurveOrientation
+// purpose  :
 //=======================================================================
 
-inline TopAbs_Orientation ChFiDS_Stripe::FirstPCurveOrientation()const
+inline TopAbs_Orientation ChFiDS_Stripe::FirstPCurveOrientation() const
 {
   return orcurv1;
 }
 
 //=======================================================================
-//function : LastPCurveOrientation
-//purpose  : 
+// function : LastPCurveOrientation
+// purpose  :
 //=======================================================================
 
-inline TopAbs_Orientation ChFiDS_Stripe::LastPCurveOrientation()const
+inline TopAbs_Orientation ChFiDS_Stripe::LastPCurveOrientation() const
 {
   return orcurv2;
 }
 
-
 //=======================================================================
-//function : FirstPCurveOrientation
-//purpose  : 
+// function : FirstPCurveOrientation
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::FirstPCurveOrientation
-  (const TopAbs_Orientation O)
+inline void ChFiDS_Stripe::FirstPCurveOrientation(const TopAbs_Orientation O)
 {
   orcurv1 = O;
 }
 
-
 //=======================================================================
-//function : LastPCurveOrientation
-//purpose  : 
+// function : LastPCurveOrientation
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_Stripe::LastPCurveOrientation
-  (const TopAbs_Orientation O)
+inline void ChFiDS_Stripe::LastPCurveOrientation(const TopAbs_Orientation O)
 {
   orcurv2 = O;
 }
-
-

@@ -23,7 +23,6 @@
 class Standard_CStringHasher
 {
 public:
-
   size_t operator()(const Standard_CString& theString) const noexcept
   {
     const int aLen = static_cast<int>(strlen(theString));
@@ -39,7 +38,6 @@ public:
   {
     return strcmp(theString1, theString2) == 0;
   }
-
 };
 
 #endif

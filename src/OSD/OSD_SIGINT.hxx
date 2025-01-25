@@ -23,8 +23,9 @@ class OSD_SIGINT;
 DEFINE_STANDARD_HANDLE(OSD_SIGINT, OSD_Signal)
 
 #if !defined No_Exception && !defined No_OSD_SIGINT
-  #define OSD_SIGINT_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw OSD_SIGINT(MESSAGE);
+  #define OSD_SIGINT_Raise_if(CONDITION, MESSAGE)                                                  \
+    if (CONDITION)                                                                                 \
+      throw OSD_SIGINT(MESSAGE);
 #else
   #define OSD_SIGINT_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetCheckInterior
-//purpose  : 
+// function : SetCheckInterior
+// purpose  :
 //=======================================================================
 
 inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
@@ -25,8 +25,8 @@ inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheck
 }
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_WiresOnShape::IsDone() const
@@ -35,8 +35,8 @@ inline Standard_Boolean LocOpe_WiresOnShape::IsDone() const
 }
 
 //=======================================================================
-//function : IsFaceWithSection
-//purpose  : 
+// function : IsFaceWithSection
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_WiresOnShape::IsFaceWithSection(const TopoDS_Shape& aFace) const

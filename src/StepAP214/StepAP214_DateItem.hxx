@@ -29,16 +29,14 @@ class StepAP214_AppliedPersonAndOrganizationAssignment;
 class StepAP214_AppliedOrganizationAssignment;
 class StepAP214_AppliedSecurityClassificationAssignment;
 
-class StepAP214_DateItem  : public StepAP214_ApprovalItem
+class StepAP214_DateItem : public StepAP214_ApprovalItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a DateItem SelectType
   Standard_EXPORT StepAP214_DateItem();
-  
+
   //! Recognizes a DateItem Kind Entity that is :
   //! 1 -> ApprovalPersonOrganization
   //! 2 -> AppliedDateAndPersonAssignment
@@ -58,38 +56,26 @@ public:
   //! 16 -> AppliedSecurityClassificationAssignment
   //! 17 -> Document
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const
+    Standard_OVERRIDE;
+
   //! returns Value as a ApprovalPersonOrganization (Null if another type)
   Standard_EXPORT Handle(StepBasic_ApprovalPersonOrganization) ApprovalPersonOrganization() const;
-  
+
   //! returns Value as a AppliedDateAndPersonAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment) AppliedPersonAndOrganizationAssignment() const;
-  
+  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment)
+    AppliedPersonAndOrganizationAssignment() const;
+
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment() const;
+  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()
+    const;
 
   //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment) AppliedSecurityClassificationAssignment() const;
+  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment)
+    AppliedSecurityClassificationAssignment() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_DateItem_HeaderFile

@@ -26,54 +26,35 @@
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
 
-
-
-class TopOpeBRepDS_Filter 
+class TopOpeBRepDS_Filter
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT TopOpeBRepDS_Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS, const TopOpeBRepTool_PShapeClassifier& pClassif = 0);
-  
+  Standard_EXPORT TopOpeBRepDS_Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+                                      const TopOpeBRepTool_PShapeClassifier&     pClassif = 0);
+
   Standard_EXPORT void ProcessInterferences();
-  
-  Standard_EXPORT void ProcessFaceInterferences (const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
-  
-  Standard_EXPORT void ProcessFaceInterferences (const Standard_Integer I, const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
-  
+
+  Standard_EXPORT void ProcessFaceInterferences(
+    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
+
+  Standard_EXPORT void ProcessFaceInterferences(
+    const Standard_Integer                                I,
+    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp);
+
   Standard_EXPORT void ProcessEdgeInterferences();
-  
-  Standard_EXPORT void ProcessEdgeInterferences (const Standard_Integer I);
-  
+
+  Standard_EXPORT void ProcessEdgeInterferences(const Standard_Integer I);
+
   Standard_EXPORT void ProcessCurveInterferences();
-  
-  Standard_EXPORT void ProcessCurveInterferences (const Standard_Integer I);
 
-
-
+  Standard_EXPORT void ProcessCurveInterferences(const Standard_Integer I);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TopOpeBRepDS_HDataStructure) myHDS;
-  TopOpeBRepTool_PShapeClassifier myPShapeClassif;
-
-
+  TopOpeBRepTool_PShapeClassifier     myPShapeClassif;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_Filter_HeaderFile

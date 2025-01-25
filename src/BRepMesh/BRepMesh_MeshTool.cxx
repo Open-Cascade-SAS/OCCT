@@ -28,46 +28,40 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_MeshTool, Standard_Transient)
 
 namespace
 {
-  //! Returns index of triangle node opposite to the given link.
-  Standard_Integer findApexIndex(
-    const Standard_Integer(&aNodes)[3],
-    const BRepMesh_Edge&   theLink)
+//! Returns index of triangle node opposite to the given link.
+Standard_Integer findApexIndex(const Standard_Integer (&aNodes)[3], const BRepMesh_Edge& theLink)
+{
+  Standard_Integer i = 0;
+  for (; i < 3; ++i)
   {
-    Standard_Integer i = 0;
-    for (; i < 3; ++i)
+    if (aNodes[i] != theLink.FirstNode() && aNodes[i] != theLink.LastNode())
     {
-      if (aNodes[i] != theLink.FirstNode() &&
-          aNodes[i] != theLink.LastNode())
-      {
-        break;
-      }
+      break;
     }
-
-    return i;
   }
+
+  return i;
 }
+} // namespace
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_MeshTool::BRepMesh_MeshTool(
-  const Handle(BRepMesh_DataStructureOfDelaun)& theStructure)
-  : myStructure(theStructure)
+BRepMesh_MeshTool::BRepMesh_MeshTool(const Handle(BRepMesh_DataStructureOfDelaun)& theStructure)
+    : myStructure(theStructure)
 {
 }
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_MeshTool::~BRepMesh_MeshTool()
-{
-}
+BRepMesh_MeshTool::~BRepMesh_MeshTool() {}
 
 //=======================================================================
-//function : Legalize
-//purpose  :
+// function : Legalize
+// purpose  :
 //=======================================================================
 void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
 {
@@ -79,7 +73,7 @@ void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
   {
     const Standard_Integer aLinkIndex = aStack.top();
     aStack.pop();
-    
+
     aUsedLinks.Add(aLinkIndex);
     const BRepMesh_Edge& aLink = myStructure->GetLink(aLinkIndex);
     if (aLink.Movability() != BRepMesh_Frontier)
@@ -94,29 +88,27 @@ void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
         myStructure->ElementNodes(aTriangle1, aNodes[0]);
         myStructure->ElementNodes(aTriangle2, aNodes[1]);
 
-        const Standard_Integer aApexIndex[2] = {
-          findApexIndex(aNodes[0], aLink),
-          findApexIndex(aNodes[1], aLink)
-        };
+        const Standard_Integer aApexIndex[2] = {findApexIndex(aNodes[0], aLink),
+                                                findApexIndex(aNodes[1], aLink)};
 
-        if (checkCircle(aNodes[0], aNodes[1][aApexIndex[1]]) ||
-            checkCircle(aNodes[1], aNodes[0][aApexIndex[0]]))
+        if (checkCircle(aNodes[0], aNodes[1][aApexIndex[1]])
+            || checkCircle(aNodes[1], aNodes[0][aApexIndex[0]]))
         {
           myStructure->RemoveElement(aPair.FirstIndex());
           myStructure->RemoveElement(aPair.LastIndex());
           myStructure->RemoveLink(aLinkIndex);
 
-          addTriangleAndUpdateStack(
-            aNodes[0][(aApexIndex[0])],
-            aNodes[0][(aApexIndex[0] + 1) % 3],
-            aNodes[1][(aApexIndex[1])],
-            aUsedLinks, aStack);
+          addTriangleAndUpdateStack(aNodes[0][(aApexIndex[0])],
+                                    aNodes[0][(aApexIndex[0] + 1) % 3],
+                                    aNodes[1][(aApexIndex[1])],
+                                    aUsedLinks,
+                                    aStack);
 
-          addTriangleAndUpdateStack(
-            aNodes[1][(aApexIndex[1])],
-            aNodes[1][(aApexIndex[1] + 1) % 3],
-            aNodes[0][(aApexIndex[0])],
-            aUsedLinks, aStack);
+          addTriangleAndUpdateStack(aNodes[1][(aApexIndex[1])],
+                                    aNodes[1][(aApexIndex[1] + 1) % 3],
+                                    aNodes[0][(aApexIndex[0])],
+                                    aUsedLinks,
+                                    aStack);
         }
       }
     }
@@ -124,11 +116,10 @@ void BRepMesh_MeshTool::Legalize(const Standard_Integer theLinkIndex)
 }
 
 //=======================================================================
-//function : EraseItemsConnectedTo
-//purpose  :
+// function : EraseItemsConnectedTo
+// purpose  :
 //=======================================================================
-void BRepMesh_MeshTool::EraseItemsConnectedTo(
-  const Standard_Integer theNodeIndex)
+void BRepMesh_MeshTool::EraseItemsConnectedTo(const Standard_Integer theNodeIndex)
 {
   BRepMesh_SelectorOfDataStructureOfDelaun aSelector(myStructure);
   aSelector.NeighboursOfNode(theNodeIndex);
@@ -140,30 +131,30 @@ void BRepMesh_MeshTool::EraseItemsConnectedTo(
 }
 
 //=======================================================================
-//function : CleanFrontierLinks
-//purpose  : 
+// function : CleanFrontierLinks
+// purpose  :
 //=======================================================================
 void BRepMesh_MeshTool::CleanFrontierLinks()
 {
   Handle(NCollection_IncAllocator) aAlloc = new NCollection_IncAllocator;
-  IMeshData::MapOfInteger aTrianglesToErase;
-  IMeshData::MapOfIntegerInteger aLoopEdges(1, aAlloc);
+  IMeshData::MapOfInteger          aTrianglesToErase;
+  IMeshData::MapOfIntegerInteger   aLoopEdges(1, aAlloc);
 
-  Handle(IMeshData::MapOfInteger) aFrontier = GetEdgesByType(BRepMesh_Frontier);
+  Handle(IMeshData::MapOfInteger)   aFrontier = GetEdgesByType(BRepMesh_Frontier);
   IMeshData::IteratorOfMapOfInteger aFrontierIt(*aFrontier);
   for (; aFrontierIt.More(); aFrontierIt.Next())
   {
-    Standard_Integer aFrontierId = aFrontierIt.Key();
-    const BRepMesh_Edge& aLink = myStructure->GetLink(aFrontierId);
+    Standard_Integer     aFrontierId = aFrontierIt.Key();
+    const BRepMesh_Edge& aLink       = myStructure->GetLink(aFrontierId);
 
-    Standard_Boolean isTriangleFound = Standard_False;
-    const BRepMesh_PairOfIndex& aPair = myStructure->ElementsConnectedTo(aFrontierId);
+    Standard_Boolean            isTriangleFound = Standard_False;
+    const BRepMesh_PairOfIndex& aPair           = myStructure->ElementsConnectedTo(aFrontierId);
     for (Standard_Integer aElemIt = 1; aElemIt <= aPair.Extent() && !isTriangleFound; ++aElemIt)
     {
-      const Standard_Integer aPriorElemId = aPair.Index(aElemIt);
-      const BRepMesh_Triangle& aElement = myStructure->GetElement(aPriorElemId);
-      const Standard_Integer(&e)[3] = aElement.myEdges;
-      const Standard_Boolean(&o)[3] = aElement.myOrientations;
+      const Standard_Integer   aPriorElemId = aPair.Index(aElemIt);
+      const BRepMesh_Triangle& aElement     = myStructure->GetElement(aPriorElemId);
+      const Standard_Integer(&e)[3]         = aElement.myEdges;
+      const Standard_Boolean(&o)[3]         = aElement.myOrientations;
 
       for (Standard_Integer n = 0; n < 3 && !isTriangleFound; ++n)
       {
@@ -185,12 +176,11 @@ void BRepMesh_MeshTool::CleanFrontierLinks()
 }
 
 //=======================================================================
-//function : EraseTriangles
-//purpose  : 
+// function : EraseTriangles
+// purpose  :
 //=======================================================================
-void BRepMesh_MeshTool::EraseTriangles(
-  const IMeshData::MapOfInteger&  theTriangles,
-  IMeshData::MapOfIntegerInteger& theLoopEdges)
+void BRepMesh_MeshTool::EraseTriangles(const IMeshData::MapOfInteger&  theTriangles,
+                                       IMeshData::MapOfIntegerInteger& theLoopEdges)
 {
   IMeshData::IteratorOfMapOfInteger aFreeTriangles(theTriangles);
   for (; aFreeTriangles.More(); aFreeTriangles.Next())
@@ -200,16 +190,15 @@ void BRepMesh_MeshTool::EraseTriangles(
 }
 
 //=======================================================================
-//function : EraseTriangle
-//purpose  : 
+// function : EraseTriangle
+// purpose  :
 //=======================================================================
-void BRepMesh_MeshTool::EraseTriangle(
-  const Standard_Integer          theTriangleIndex,
-  IMeshData::MapOfIntegerInteger& theLoopEdges)
+void BRepMesh_MeshTool::EraseTriangle(const Standard_Integer          theTriangleIndex,
+                                      IMeshData::MapOfIntegerInteger& theLoopEdges)
 {
   const BRepMesh_Triangle& aElement = myStructure->GetElement(theTriangleIndex);
-  const Standard_Integer(&e)[3] = aElement.myEdges;
-  const Standard_Boolean(&o)[3] = aElement.myOrientations;
+  const Standard_Integer(&e)[3]     = aElement.myEdges;
+  const Standard_Boolean(&o)[3]     = aElement.myOrientations;
 
   myStructure->RemoveElement(theTriangleIndex);
 
@@ -224,8 +213,8 @@ void BRepMesh_MeshTool::EraseTriangle(
 }
 
 //=======================================================================
-//function : EraseFreeLinks
-//purpose  :
+// function : EraseFreeLinks
+// purpose  :
 //=======================================================================
 void BRepMesh_MeshTool::EraseFreeLinks()
 {
@@ -233,7 +222,7 @@ void BRepMesh_MeshTool::EraseFreeLinks()
   {
     if (myStructure->ElementsConnectedTo(i).IsEmpty())
     {
-      BRepMesh_Edge& anEdge = (BRepMesh_Edge&) myStructure->GetLink(i);
+      BRepMesh_Edge& anEdge = (BRepMesh_Edge&)myStructure->GetLink(i);
       if (anEdge.Movability() == BRepMesh_Deleted)
       {
         continue;
@@ -246,15 +235,15 @@ void BRepMesh_MeshTool::EraseFreeLinks()
 }
 
 //=======================================================================
-//function : collectTrianglesOnFreeLinksAroundNodesOf
-//purpose  :
+// function : collectTrianglesOnFreeLinksAroundNodesOf
+// purpose  :
 //=======================================================================
 void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
   const BRepMesh_Edge&     theConstraint,
   const Standard_Integer   theStartLink,
   IMeshData::MapOfInteger& theTriangles)
 {
-  IMeshData::MapOfInteger aUsedLinks;
+  IMeshData::MapOfInteger      aUsedLinks;
   std::stack<Standard_Integer> aStack;
   aStack.push(theStartLink);
   aUsedLinks.Add(theStartLink);
@@ -265,11 +254,11 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
     aStack.pop();
 
     const BRepMesh_Edge& aLink = myStructure->GetLink(aLinkIndex);
-    if (aLink.Movability() == BRepMesh_Free &&
-        (aLink.FirstNode() == theConstraint.FirstNode() ||
-         aLink.LastNode () == theConstraint.FirstNode() ||
-         aLink.FirstNode() == theConstraint.LastNode () ||
-         aLink.LastNode () == theConstraint.LastNode ()))
+    if (aLink.Movability() == BRepMesh_Free
+        && (aLink.FirstNode() == theConstraint.FirstNode()
+            || aLink.LastNode() == theConstraint.FirstNode()
+            || aLink.FirstNode() == theConstraint.LastNode()
+            || aLink.LastNode() == theConstraint.LastNode()))
     {
       const BRepMesh_PairOfIndex& aPair = myStructure->ElementsConnectedTo(aLinkIndex);
       for (Standard_Integer aElemIt = 1; aElemIt <= aPair.Extent(); ++aElemIt)
@@ -277,7 +266,7 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
         const Standard_Integer aIndex = aPair.Index(aElemIt);
         theTriangles.Add(aIndex);
 
-        const BRepMesh_Triangle& aElement = myStructure->GetElement(aIndex);
+        const BRepMesh_Triangle& aElement  = myStructure->GetElement(aIndex);
         const Standard_Integer(&aEdges)[3] = aElement.myEdges;
 
         for (Standard_Integer i = 0; i < 3; ++i)
@@ -285,7 +274,7 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
           if (aEdges[i] != aLinkIndex && !aUsedLinks.Contains(aEdges[i]))
           {
             aUsedLinks.Add(aEdges[i]);
-            aStack   .push(aEdges[i]);
+            aStack.push(aEdges[i]);
           }
         }
       }
@@ -294,11 +283,10 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
 }
 
 //=======================================================================
-//function : EraseFreeLinks
-//purpose  :
+// function : EraseFreeLinks
+// purpose  :
 //=======================================================================
-void BRepMesh_MeshTool::EraseFreeLinks(
-  const IMeshData::MapOfIntegerInteger& theLinks)
+void BRepMesh_MeshTool::EraseFreeLinks(const IMeshData::MapOfIntegerInteger& theLinks)
 {
   IMeshData::MapOfIntegerInteger::Iterator aFreeEdges(theLinks);
   for (; aFreeEdges.More(); aFreeEdges.Next())
@@ -311,13 +299,13 @@ void BRepMesh_MeshTool::EraseFreeLinks(
 }
 
 //=======================================================================
-//function : GetEdgesByType
-//purpose  : 
+// function : GetEdgesByType
+// purpose  :
 //=======================================================================
 Handle(IMeshData::MapOfInteger) BRepMesh_MeshTool::GetEdgesByType(
   const BRepMesh_DegreeOfFreedom theEdgeType) const
 {
-  Handle(IMeshData::MapOfInteger) aResult = new IMeshData::MapOfInteger;
+  Handle(IMeshData::MapOfInteger)   aResult = new IMeshData::MapOfInteger;
   IMeshData::IteratorOfMapOfInteger aEdgeIt(myStructure->LinksOfDomain());
 
   for (; aEdgeIt.More(); aEdgeIt.Next())
@@ -333,13 +321,13 @@ Handle(IMeshData::MapOfInteger) BRepMesh_MeshTool::GetEdgesByType(
 }
 
 //=======================================================================
-//function : DumpStruct
-//purpose  : 
+// function : DumpStruct
+// purpose  :
 //=======================================================================
 void BRepMesh_MeshTool::DumpTriangles(const Standard_CString   theFileName,
                                       IMeshData::MapOfInteger* theTriangles)
 {
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aResult;
   aBuilder.MakeCompound(aResult);
 
@@ -349,7 +337,7 @@ void BRepMesh_MeshTool::DumpTriangles(const Standard_CString   theFileName,
     if (theTriangles != NULL && !theTriangles->Contains(aIt.Key()))
       continue;
 
-    Standard_Integer aNodes[3];
+    Standard_Integer         aNodes[3];
     const BRepMesh_Triangle& aTri = myStructure->GetElement(aIt.Key());
     myStructure->ElementNodes(aTri, aNodes);
 

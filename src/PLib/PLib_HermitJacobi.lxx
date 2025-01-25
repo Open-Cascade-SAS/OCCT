@@ -16,12 +16,12 @@
 
 #include <PLib_JacobiPolynomial.hxx>
 
-inline  Standard_Integer PLib_HermitJacobi::WorkDegree() const
+inline Standard_Integer PLib_HermitJacobi::WorkDegree() const
 {
   return myJacobi->WorkDegree();
 }
 
-inline  Standard_Integer PLib_HermitJacobi::NivConstr() const
+inline Standard_Integer PLib_HermitJacobi::NivConstr() const
 {
   return myJacobi->NivConstr();
 }

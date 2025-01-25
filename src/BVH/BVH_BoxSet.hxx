@@ -31,51 +31,43 @@
 //! \tparam Dimension Vector dimension
 //! \tparam DataType Type of elements on which the boxes are built
 template <class NumType, int Dimension, class DataType = Standard_Integer>
-class BVH_BoxSet : public BVH_PrimitiveSet <NumType, Dimension>
+class BVH_BoxSet : public BVH_PrimitiveSet<NumType, Dimension>
 {
 public: //! @name Constructors
-
   //! Empty constructor for use the default BVH_Builder
   BVH_BoxSet()
-    : BVH_PrimitiveSet <NumType, Dimension>()
+      : BVH_PrimitiveSet<NumType, Dimension>()
   {
   }
-  
+
   //! Constructor for usage the custom BVH builder
-  BVH_BoxSet (const opencascade::handle <BVH_Builder <NumType, Dimension> >& theBuilder)
-    : BVH_PrimitiveSet <NumType, Dimension> (theBuilder)
+  BVH_BoxSet(const opencascade::handle<BVH_Builder<NumType, Dimension>>& theBuilder)
+      : BVH_PrimitiveSet<NumType, Dimension>(theBuilder)
   {
   }
 
 public: //! @name Setting expected size of the BVH
-
   //! Sets the expected size of BVH tree
-  virtual void SetSize (const Standard_Size theSize)
+  virtual void SetSize(const Standard_Size theSize)
   {
-    myElements.reserve (theSize);
-    myBoxes.reserve (theSize);
+    myElements.reserve(theSize);
+    myBoxes.reserve(theSize);
   }
 
 public: //! @name Adding elements in BVH
-
   //! Adds the element into BVH
-  virtual void Add (const DataType& theElement, const BVH_Box<NumType, Dimension>& theBox)
+  virtual void Add(const DataType& theElement, const BVH_Box<NumType, Dimension>& theBox)
   {
-    myElements.push_back (theElement);
-    myBoxes.push_back (theBox);
+    myElements.push_back(theElement);
+    myBoxes.push_back(theBox);
     BVH_Object<NumType, Dimension>::myIsDirty = Standard_True;
   }
 
 public: //! @name BVH construction
-
   //! BVH construction
-  void Build()
-  {
-    BVH_PrimitiveSet <NumType, Dimension>::Update();
-  }
+  void Build() { BVH_PrimitiveSet<NumType, Dimension>::Update(); }
 
 public: //! @name Clearing the elements and boxes
-
   //! Clears the vectors of elements and boxes
   virtual void Clear()
   {
@@ -85,48 +77,42 @@ public: //! @name Clearing the elements and boxes
   }
 
 public: //! @name Necessary overrides for BVH construction
-
   //! Make inherited method Box() visible to avoid CLang warning
-  using BVH_PrimitiveSet <NumType, Dimension>::Box;
+  using BVH_PrimitiveSet<NumType, Dimension>::Box;
 
   //! Returns the bounding box with the given index.
-  virtual BVH_Box <NumType, Dimension> Box (const Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual BVH_Box<NumType, Dimension> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
   {
     return myBoxes[theIndex];
   }
 
   //! Returns centroid position along specified axis.
-  virtual Standard_Real Center (const Standard_Integer theIndex,
-                                const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual Standard_Real Center(const Standard_Integer theIndex,
+                               const Standard_Integer theAxis) const Standard_OVERRIDE
   {
-    return Box (theIndex).Center (theAxis);
+    return Box(theIndex).Center(theAxis);
   }
 
   //! Returns the number of boxes.
   virtual Standard_Integer Size() const Standard_OVERRIDE
   {
-    return static_cast<Standard_Integer> (myBoxes.size());
+    return static_cast<Standard_Integer>(myBoxes.size());
   }
 
   //! Swaps indices of two specified boxes.
-  virtual void Swap (const Standard_Integer theIndex1,
-                     const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const Standard_Integer theIndex1,
+                    const Standard_Integer theIndex2) Standard_OVERRIDE
   {
-    std::swap (myElements[theIndex1], myElements[theIndex2]);
-    std::swap (myBoxes   [theIndex1], myBoxes   [theIndex2]);
+    std::swap(myElements[theIndex1], myElements[theIndex2]);
+    std::swap(myBoxes[theIndex1], myBoxes[theIndex2]);
   }
 
   //! Returns the Element with the index theIndex.
-  virtual DataType Element (const Standard_Integer theIndex) const
-  {
-    return myElements[theIndex];
-  }
+  virtual DataType Element(const Standard_Integer theIndex) const { return myElements[theIndex]; }
 
-protected: //! @name Fields
-
-  std::vector <DataType> myElements;                   //!< Elements
-  std::vector <BVH_Box <NumType, Dimension> > myBoxes; //!< Boxes for the elements
-
+protected:                                             //! @name Fields
+  std::vector<DataType>                    myElements; //!< Elements
+  std::vector<BVH_Box<NumType, Dimension>> myBoxes;    //!< Boxes for the elements
 };
 
 #endif // _BVH_BoxSet_Header

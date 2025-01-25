@@ -14,39 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <FairCurve_DistributionOfEnergy.hxx>
 
-Standard_Integer FairCurve_DistributionOfEnergy::NbVariables() const 
+Standard_Integer FairCurve_DistributionOfEnergy::NbVariables() const
 {
- return MyNbVar;
+  return MyNbVar;
 }
 
-Standard_Integer FairCurve_DistributionOfEnergy::NbEquations() const 
+Standard_Integer FairCurve_DistributionOfEnergy::NbEquations() const
 {
- return MyNbEqua;
+  return MyNbEqua;
 }
 
- FairCurve_DistributionOfEnergy::FairCurve_DistributionOfEnergy(const Standard_Integer BSplOrder, 
-								const Handle(TColStd_HArray1OfReal)& FlatKnots, 
-								const Handle(TColgp_HArray1OfPnt2d)& Poles, 
-								const Standard_Integer DerivativeOrder,
-								const Standard_Integer NbValAux)
-                               : MyBSplOrder (BSplOrder), 
-				 MyFlatKnots (FlatKnots), 
-                                 MyPoles (Poles), 
-				 MyDerivativeOrder (DerivativeOrder),
-				 MyNbValAux (NbValAux)
+FairCurve_DistributionOfEnergy::FairCurve_DistributionOfEnergy(
+  const Standard_Integer               BSplOrder,
+  const Handle(TColStd_HArray1OfReal)& FlatKnots,
+  const Handle(TColgp_HArray1OfPnt2d)& Poles,
+  const Standard_Integer               DerivativeOrder,
+  const Standard_Integer               NbValAux)
+    : MyBSplOrder(BSplOrder),
+      MyFlatKnots(FlatKnots),
+      MyPoles(Poles),
+      MyDerivativeOrder(DerivativeOrder),
+      MyNbValAux(NbValAux)
 {
   MyNbVar = 1;
-  SetDerivativeOrder( DerivativeOrder);
-
+  SetDerivativeOrder(DerivativeOrder);
 }
 
 void FairCurve_DistributionOfEnergy::SetDerivativeOrder(const Standard_Integer DerivativeOrder)
 {
   MyNbEqua = 1;
-  if (DerivativeOrder>= 1) MyNbEqua +=  2*MyPoles->Length() + MyNbValAux;
-  if (DerivativeOrder>= 2) MyNbEqua = MyNbEqua + (MyNbEqua-1)*MyNbEqua / 2;
-  MyDerivativeOrder = DerivativeOrder; 
+  if (DerivativeOrder >= 1)
+    MyNbEqua += 2 * MyPoles->Length() + MyNbValAux;
+  if (DerivativeOrder >= 2)
+    MyNbEqua = MyNbEqua + (MyNbEqua - 1) * MyNbEqua / 2;
+  MyDerivativeOrder = DerivativeOrder;
 }

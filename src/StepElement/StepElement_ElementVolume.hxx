@@ -14,10 +14,9 @@
 #ifndef _StepElement_ElementVolume_HeaderFile
 #define _StepElement_ElementVolume_HeaderFile
 
-
 enum StepElement_ElementVolume
 {
-StepElement_Volume
+  StepElement_Volume
 };
 
 #endif // _StepElement_ElementVolume_HeaderFile

@@ -20,9 +20,9 @@
 //! Declares the type of isoparameter displayed.
 enum AIS_TypeOfIso
 {
-AIS_TOI_IsoU,
-AIS_TOI_IsoV,
-AIS_TOI_Both
+  AIS_TOI_IsoU,
+  AIS_TOI_IsoV,
+  AIS_TOI_Both
 };
 
 #endif // _AIS_TypeOfIso_HeaderFile

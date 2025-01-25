@@ -33,16 +33,16 @@ public:
   //! This constructor calls perform method. This constructor is deprecated.
   Standard_DEPRECATED(
     "This constructor is deprecated. Use other constructor and perform method instead.")
-    Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2D,
-                                          const Handle(Adaptor3d_Surface)& Surf,
-                                          const Standard_Real              First,
-                                          const Standard_Real              Last,
-                                          const Standard_Real              Tol,
-                                          const GeomAbs_Shape              Continuity,
-                                          const Standard_Integer           MaxDegree,
-                                          const Standard_Integer           MaxSegments,
-                                          const Standard_Boolean           Only3d = Standard_False,
-                                          const Standard_Boolean           Only2d = Standard_False);
+  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2D,
+                                        const Handle(Adaptor3d_Surface)& Surf,
+                                        const Standard_Real              First,
+                                        const Standard_Real              Last,
+                                        const Standard_Real              Tol,
+                                        const GeomAbs_Shape              Continuity,
+                                        const Standard_Integer           MaxDegree,
+                                        const Standard_Integer           MaxSegments,
+                                        const Standard_Boolean           Only3d = Standard_False,
+                                        const Standard_Boolean           Only2d = Standard_False);
 
   //! This constructor does not call perform method.
   //! @param theC2D   2D Curve to be approximated in 3D.

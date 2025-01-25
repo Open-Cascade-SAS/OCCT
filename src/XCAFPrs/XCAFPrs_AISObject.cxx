@@ -33,182 +33,195 @@
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject,AIS_ColoredShape)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject, AIS_ColoredShape)
 
 //=======================================================================
-//function : XCAFPrs_AISObject
-//purpose  : 
+// function : XCAFPrs_AISObject
+// purpose  :
 //=======================================================================
 
-XCAFPrs_AISObject::XCAFPrs_AISObject (const TDF_Label& theLabel)
-: AIS_ColoredShape(TopoDS_Shape()),
-  myToSyncStyles (Standard_True)
+XCAFPrs_AISObject::XCAFPrs_AISObject(const TDF_Label& theLabel)
+    : AIS_ColoredShape(TopoDS_Shape()),
+      myToSyncStyles(Standard_True)
 {
   // define plastic material by default for proper color reproduction
-  setMaterial (myDrawer, Graphic3d_NameOfMaterial_Plastified, Standard_False, Standard_False);
+  setMaterial(myDrawer, Graphic3d_NameOfMaterial_Plastified, Standard_False, Standard_False);
   hasOwnMaterial = Standard_True;
 
   myLabel = theLabel;
 }
 
 //=======================================================================
-//function : DisplayText
-//purpose  : 
+// function : DisplayText
+// purpose  :
 //=======================================================================
 
-static void DisplayText (const TDF_Label& aLabel,
-			 const Handle(Prs3d_Presentation)& aPrs,
-			 const Handle(Prs3d_TextAspect)& anAspect,
-			 const TopLoc_Location& aLocation)
+static void DisplayText(const TDF_Label&                  aLabel,
+                        const Handle(Prs3d_Presentation)& aPrs,
+                        const Handle(Prs3d_TextAspect)&   anAspect,
+                        const TopLoc_Location&            aLocation)
 {
   // first label itself
-  Handle (TDataStd_Name) aName;
-  if (aLabel.FindAttribute (TDataStd_Name::GetID(), aName)) {
+  Handle(TDataStd_Name) aName;
+  if (aLabel.FindAttribute(TDataStd_Name::GetID(), aName))
+  {
     TopoDS_Shape aShape;
-    if (XCAFDoc_ShapeTool::GetShape (aLabel, aShape)) {
+    if (XCAFDoc_ShapeTool::GetShape(aLabel, aShape))
+    {
       // find the position to display as middle of the bounding box
-      aShape.Move (aLocation);
+      aShape.Move(aLocation);
       Bnd_Box aBox;
-      BRepBndLib::Add (aShape, aBox);
-      if ( ! aBox.IsVoid() ) 
+      BRepBndLib::Add(aShape, aBox);
+      if (!aBox.IsVoid())
       {
-	Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-	aBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-	gp_Pnt aPnt (0.5 * (aXmin + aXmax), 0.5 * (aYmin + aYmax), 0.5 * (aZmin + aZmax));
-	Prs3d_Text::Draw (aPrs->CurrentGroup(), anAspect, aName->Get(), aPnt);
+        Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+        aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+        gp_Pnt aPnt(0.5 * (aXmin + aXmax), 0.5 * (aYmin + aYmax), 0.5 * (aZmin + aZmax));
+        Prs3d_Text::Draw(aPrs->CurrentGroup(), anAspect, aName->Get(), aPnt);
       }
     }
   }
 
   TDF_LabelSequence seq;
-  
+
   // attributes of subshapes
-  if (XCAFDoc_ShapeTool::GetSubShapes (aLabel, seq)) {
+  if (XCAFDoc_ShapeTool::GetSubShapes(aLabel, seq))
+  {
     Standard_Integer i = 1;
-    for (i = 1; i <= seq.Length(); i++) {
-      TDF_Label aL = seq.Value (i);
-// clang-format off
+    for (i = 1; i <= seq.Length(); i++)
+    {
+      TDF_Label aL = seq.Value(i);
+      // clang-format off
       DisplayText (aL, aPrs, anAspect, aLocation); //suppose that subshapes do not contain locations
-// clang-format on
+      // clang-format on
     }
   }
-  
+
   // attributes of components
   seq.Clear();
-  if (XCAFDoc_ShapeTool::GetComponents (aLabel, seq)) {
+  if (XCAFDoc_ShapeTool::GetComponents(aLabel, seq))
+  {
     Standard_Integer i = 1;
-    for (i = 1; i <= seq.Length(); i++) {
-      TDF_Label aL = seq.Value (i);
-      DisplayText (aL, aPrs, anAspect, aLocation);
+    for (i = 1; i <= seq.Length(); i++)
+    {
+      TDF_Label aL = seq.Value(i);
+      DisplayText(aL, aPrs, anAspect, aLocation);
       TDF_Label aRefLabel;
-      
+
       // attributes of references
-      TopLoc_Location aLoc = XCAFDoc_ShapeTool::GetLocation (aL);
-      if (XCAFDoc_ShapeTool::GetReferredShape (aL, aRefLabel)) {
-	DisplayText (aRefLabel, aPrs, anAspect, aLoc);
+      TopLoc_Location aLoc = XCAFDoc_ShapeTool::GetLocation(aL);
+      if (XCAFDoc_ShapeTool::GetReferredShape(aL, aRefLabel))
+      {
+        DisplayText(aRefLabel, aPrs, anAspect, aLoc);
       }
     }
   }
 }
 
 //=======================================================================
-//function : DispatchStyles
-//purpose  :
+// function : DispatchStyles
+// purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
+void XCAFPrs_AISObject::DispatchStyles(const Standard_Boolean theToSyncStyles)
 {
   myToSyncStyles = theToSyncStyles;
   myShapeColors.Clear();
 
   TopoDS_Shape aShape;
-  if (!XCAFDoc_ShapeTool::GetShape (myLabel, aShape) || aShape.IsNull())
+  if (!XCAFDoc_ShapeTool::GetShape(myLabel, aShape) || aShape.IsNull())
   {
-    Set (TopoDS_Shape());
+    Set(TopoDS_Shape());
     return;
   }
-  Set (aShape);
+  Set(aShape);
 
   // Collecting information on colored subshapes
-  TopLoc_Location aLoc;
+  TopLoc_Location                    aLoc;
   XCAFPrs_IndexedDataMapOfShapeStyle aSettings;
-  XCAFPrs::CollectStyleSettings (myLabel, aLoc, aSettings);
+  XCAFPrs::CollectStyleSettings(myLabel, aLoc, aSettings);
 
   // Getting default colors
   XCAFPrs_Style aDefStyle;
-  DefaultStyle (aDefStyle);
-  setStyleToDrawer (myDrawer, aDefStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
+  DefaultStyle(aDefStyle);
+  setStyleToDrawer(myDrawer,
+                   aDefStyle,
+                   aDefStyle,
+                   myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
 
   // collect sub-shapes with the same style into compounds
-  BRep_Builder aBuilder;
+  BRep_Builder                                               aBuilder;
   NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound> aStyleGroups;
-  for (XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle aStyledShapeIter (aSettings);
-       aStyledShapeIter.More(); aStyledShapeIter.Next())
+  for (XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle aStyledShapeIter(aSettings);
+       aStyledShapeIter.More();
+       aStyledShapeIter.Next())
   {
     TopoDS_Compound aComp;
-    if (aStyleGroups.FindFromKey (aStyledShapeIter.Value(), aComp))
+    if (aStyleGroups.FindFromKey(aStyledShapeIter.Value(), aComp))
     {
-      aBuilder.Add (aComp, aStyledShapeIter.Key());
+      aBuilder.Add(aComp, aStyledShapeIter.Key());
       continue;
     }
 
-    aBuilder.MakeCompound (aComp);
-    aBuilder.Add (aComp, aStyledShapeIter.Key());
-    TopoDS_Compound* aMapShape = aStyleGroups.ChangeSeek (aStyledShapeIter.Value());
+    aBuilder.MakeCompound(aComp);
+    aBuilder.Add(aComp, aStyledShapeIter.Key());
+    TopoDS_Compound* aMapShape = aStyleGroups.ChangeSeek(aStyledShapeIter.Value());
     if (aMapShape == NULL)
-      aStyleGroups.Add (aStyledShapeIter.Value(), aComp);
+      aStyleGroups.Add(aStyledShapeIter.Value(), aComp);
     else
       *aMapShape = aComp;
   }
   aSettings.Clear();
 
   // assign custom aspects
-  for (NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound>::Iterator aStyleGroupIter (aStyleGroups);
-       aStyleGroupIter.More(); aStyleGroupIter.Next())
+  for (NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound>::Iterator aStyleGroupIter(
+         aStyleGroups);
+       aStyleGroupIter.More();
+       aStyleGroupIter.Next())
   {
     const TopoDS_Compound& aComp = aStyleGroupIter.Value();
-    TopoDS_Iterator aShapeIter (aComp);
-    TopoDS_Shape aShapeCur = aShapeIter.Value();
+    TopoDS_Iterator        aShapeIter(aComp);
+    TopoDS_Shape           aShapeCur = aShapeIter.Value();
     aShapeIter.Next();
     if (aShapeIter.More())
     {
       aShapeCur = aComp;
     }
 
-    Handle(AIS_ColoredDrawer) aDrawer = new AIS_ColoredDrawer (myDrawer);
-    myShapeColors.Bind (aShapeCur, aDrawer);
+    Handle(AIS_ColoredDrawer) aDrawer = new AIS_ColoredDrawer(myDrawer);
+    myShapeColors.Bind(aShapeCur, aDrawer);
     const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
-    aDrawer->SetHidden (!aStyle.IsVisible());
-    if (!aStyle.Material().IsNull()
-     && !aStyle.Material()->IsEmpty())
+    aDrawer->SetHidden(!aStyle.IsVisible());
+    if (!aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty())
     {
       aDrawer->SetOwnMaterial();
     }
-    if (aStyle.IsSetColorSurf()
-     || aStyle.IsSetColorCurv())
+    if (aStyle.IsSetColorSurf() || aStyle.IsSetColorCurv())
     {
-      aDrawer->SetOwnColor (Quantity_Color());
+      aDrawer->SetOwnColor(Quantity_Color());
     }
-    setStyleToDrawer (aDrawer, aStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
+    setStyleToDrawer(aDrawer,
+                     aStyle,
+                     aDefStyle,
+                     myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
   }
   aStyleGroups.Clear();
 }
 
 //=======================================================================
-//function : Compute
-//purpose  :
+// function : Compute
+// purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePresentationManager,
-                                 const Handle(Prs3d_Presentation)& thePrs,
-                                 const Standard_Integer theMode)
+void XCAFPrs_AISObject::Compute(const Handle(PrsMgr_PresentationManager)& thePresentationManager,
+                                const Handle(Prs3d_Presentation)&         thePrs,
+                                const Standard_Integer                    theMode)
 {
   // update shape and sub-shapes styles only on first compute, or on first recompute
   if (myToSyncStyles)
   {
     Standard_Boolean toMapStyles = myToSyncStyles;
-    for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
+    for (PrsMgr_Presentations::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
     {
-      if (aPrsIter.Value() != thePrs
-      && !aPrsIter.Value()->MustBeUpdated())
+      if (aPrsIter.Value() != thePrs && !aPrsIter.Value()->MustBeUpdated())
       {
         toMapStyles = Standard_False;
         break;
@@ -216,7 +229,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePr
     }
     if (toMapStyles)
     {
-      DispatchStyles (Standard_True);
+      DispatchStyles(Standard_True);
     }
   }
   if (myshape.IsNull())
@@ -232,84 +245,87 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePr
     }
   }
 
-  AIS_ColoredShape::Compute (thePresentationManager, thePrs, theMode);
+  AIS_ColoredShape::Compute(thePresentationManager, thePrs, theMode);
 
   if (XCAFPrs::GetViewNameMode())
   {
     // Displaying Name attributes
-    thePrs->SetDisplayPriority (Graphic3d_DisplayPriority_Topmost);
-// clang-format off
+    thePrs->SetDisplayPriority(Graphic3d_DisplayPriority_Topmost);
+    // clang-format off
     DisplayText (myLabel, thePrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
-// clang-format on
+    // clang-format on
   }
 }
 
 //=======================================================================
-//function : setStyleToDrawer
-//purpose  :
+// function : setStyleToDrawer
+// purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::setStyleToDrawer (const Handle(Prs3d_Drawer)& theDrawer,
-                                          const XCAFPrs_Style& theStyle,
-                                          const XCAFPrs_Style& theDefStyle,
-                                          const Graphic3d_MaterialAspect& theDefMaterial)
+void XCAFPrs_AISObject::setStyleToDrawer(const Handle(Prs3d_Drawer)&     theDrawer,
+                                         const XCAFPrs_Style&            theStyle,
+                                         const XCAFPrs_Style&            theDefStyle,
+                                         const Graphic3d_MaterialAspect& theDefMaterial)
 {
   theDrawer->SetupOwnShadingAspect();
   theDrawer->SetOwnLineAspects();
 
-  Quantity_ColorRGBA aSurfColor = theDefStyle.GetColorSurfRGBA();
-  Quantity_Color     aCurvColor = theDefStyle.GetColorCurv();
-  Graphic3d_MaterialAspect aMaterial = theDefMaterial;
-  const Handle(XCAFDoc_VisMaterial)& anXMat = !theStyle.Material().IsNull() ? theStyle.Material() : theDefStyle.Material();
-  if (!anXMat.IsNull()
-   && !anXMat->IsEmpty())
+  Quantity_ColorRGBA                 aSurfColor = theDefStyle.GetColorSurfRGBA();
+  Quantity_Color                     aCurvColor = theDefStyle.GetColorCurv();
+  Graphic3d_MaterialAspect           aMaterial  = theDefMaterial;
+  const Handle(XCAFDoc_VisMaterial)& anXMat =
+    !theStyle.Material().IsNull() ? theStyle.Material() : theDefStyle.Material();
+  if (!anXMat.IsNull() && !anXMat->IsEmpty())
   {
-    anXMat->FillAspect (theDrawer->ShadingAspect()->Aspect());
-    aMaterial = theDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-    aSurfColor = Quantity_ColorRGBA (aMaterial.Color(), aMaterial.Alpha());
+    anXMat->FillAspect(theDrawer->ShadingAspect()->Aspect());
+    aMaterial  = theDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+    aSurfColor = Quantity_ColorRGBA(aMaterial.Color(), aMaterial.Alpha());
     aCurvColor = aMaterial.Color();
   }
   if (theStyle.IsSetColorSurf())
   {
     aSurfColor = theStyle.GetColorSurfRGBA();
-    aMaterial.SetColor (aSurfColor.GetRGB());
-    aMaterial.SetAlpha (aSurfColor.Alpha());
+    aMaterial.SetColor(aSurfColor.GetRGB());
+    aMaterial.SetAlpha(aSurfColor.Alpha());
   }
   if (theStyle.IsSetColorCurv())
   {
     aCurvColor = theStyle.GetColorCurv();
   }
 
-  theDrawer->UnFreeBoundaryAspect()->SetColor (aCurvColor);
-  theDrawer->FreeBoundaryAspect()->SetColor (aCurvColor);
-  theDrawer->WireAspect()->SetColor (aCurvColor);
+  theDrawer->UnFreeBoundaryAspect()->SetColor(aCurvColor);
+  theDrawer->FreeBoundaryAspect()->SetColor(aCurvColor);
+  theDrawer->WireAspect()->SetColor(aCurvColor);
 
-  theDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aSurfColor);
-  theDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
-  theDrawer->UIsoAspect()->SetColor (aSurfColor.GetRGB());
-  theDrawer->VIsoAspect()->SetColor (aSurfColor.GetRGB());
+  theDrawer->ShadingAspect()->Aspect()->SetInteriorColor(aSurfColor);
+  theDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(aMaterial);
+  theDrawer->UIsoAspect()->SetColor(aSurfColor.GetRGB());
+  theDrawer->VIsoAspect()->SetColor(aSurfColor.GetRGB());
 }
 
 //=======================================================================
-//function : DefaultStyle
-//purpose  : DefaultStyle() can be redefined by subclasses in order to set custom default style
+// function : DefaultStyle
+// purpose  : DefaultStyle() can be redefined by subclasses in order to set custom default style
 //=======================================================================
-void XCAFPrs_AISObject::DefaultStyle (XCAFPrs_Style& theStyle) const
+void XCAFPrs_AISObject::DefaultStyle(XCAFPrs_Style& theStyle) const
 {
-  theStyle.SetColorSurf (Quantity_NOC_WHITE);
-  theStyle.SetColorCurv (Quantity_NOC_WHITE);
+  theStyle.SetColorSurf(Quantity_NOC_WHITE);
+  theStyle.SetColorCurv(Quantity_NOC_WHITE);
 }
 
 // =======================================================================
 // function : SetMaterial
 // purpose  :
 // =======================================================================
-void XCAFPrs_AISObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
+void XCAFPrs_AISObject::SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
 {
   XCAFPrs_Style aDefStyle;
-  DefaultStyle (aDefStyle);
-  setMaterial (myDrawer, theMaterial, HasColor(), IsTransparent());
-  setStyleToDrawer (myDrawer, aDefStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
-  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  DefaultStyle(aDefStyle);
+  setMaterial(myDrawer, theMaterial, HasColor(), IsTransparent());
+  setStyleToDrawer(myDrawer,
+                   aDefStyle,
+                   aDefStyle,
+                   myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter(myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
     if (aDrawer->HasOwnMaterial())
@@ -321,11 +337,11 @@ void XCAFPrs_AISObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial
     {
       // take current color
       const Quantity_ColorRGBA aSurfColor = aDrawer->ShadingAspect()->Aspect()->InteriorColorRGBA();
-      Graphic3d_MaterialAspect aMaterial = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-      aMaterial.SetColor (aSurfColor.GetRGB());
-      aMaterial.SetAlpha (aSurfColor.Alpha());
-      aDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aSurfColor);
-      aDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
+      Graphic3d_MaterialAspect aMaterial  = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+      aMaterial.SetColor(aSurfColor.GetRGB());
+      aMaterial.SetAlpha(aSurfColor.Alpha());
+      aDrawer->ShadingAspect()->Aspect()->SetInteriorColor(aSurfColor);
+      aDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(aMaterial);
     }
   }
   SynchronizeAspects();

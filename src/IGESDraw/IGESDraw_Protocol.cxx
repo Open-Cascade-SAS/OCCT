@@ -33,8 +33,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Protocol, IGESData_Protocol)
 
-IGESDraw_Protocol::IGESDraw_Protocol()
-{}
+IGESDraw_Protocol::IGESDraw_Protocol() {}
 
 Standard_Integer IGESDraw_Protocol::NbResources() const
 {

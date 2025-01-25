@@ -24,7 +24,6 @@ class StepBasic_CharacterizedObject;
 class TCollection_HAsciiString;
 class StepBasic_DocumentType;
 
-
 class StepBasic_DocumentFile;
 DEFINE_STANDARD_HANDLE(StepBasic_DocumentFile, StepBasic_Document)
 
@@ -33,42 +32,32 @@ class StepBasic_DocumentFile : public StepBasic_Document
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_DocumentFile();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aDocument_Id, const Handle(TCollection_HAsciiString)& aDocument_Name, const Standard_Boolean hasDocument_Description, const Handle(TCollection_HAsciiString)& aDocument_Description, const Handle(StepBasic_DocumentType)& aDocument_Kind, const Handle(TCollection_HAsciiString)& aCharacterizedObject_Name, const Standard_Boolean hasCharacterizedObject_Description, const Handle(TCollection_HAsciiString)& aCharacterizedObject_Description);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)& aDocument_Id,
+    const Handle(TCollection_HAsciiString)& aDocument_Name,
+    const Standard_Boolean                  hasDocument_Description,
+    const Handle(TCollection_HAsciiString)& aDocument_Description,
+    const Handle(StepBasic_DocumentType)&   aDocument_Kind,
+    const Handle(TCollection_HAsciiString)& aCharacterizedObject_Name,
+    const Standard_Boolean                  hasCharacterizedObject_Description,
+    const Handle(TCollection_HAsciiString)& aCharacterizedObject_Description);
+
   //! Returns data for supertype CharacterizedObject
   Standard_EXPORT Handle(StepBasic_CharacterizedObject) CharacterizedObject() const;
-  
+
   //! Set data for supertype CharacterizedObject
-  Standard_EXPORT void SetCharacterizedObject (const Handle(StepBasic_CharacterizedObject)& CharacterizedObject);
+  Standard_EXPORT void SetCharacterizedObject(
+    const Handle(StepBasic_CharacterizedObject)& CharacterizedObject);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentFile,StepBasic_Document)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentFile, StepBasic_Document)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_CharacterizedObject) theCharacterizedObject;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DocumentFile_HeaderFile

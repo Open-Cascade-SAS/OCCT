@@ -24,7 +24,6 @@
 class TDF_Attribute;
 class Standard_GUID;
 
-
 class TDF_AttributeDelta;
 DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, Standard_Transient)
 
@@ -44,55 +43,35 @@ class TDF_AttributeDelta : public Standard_Transient
 {
 
 public:
-
-  
   //! Applies the delta to the attribute.
   Standard_EXPORT virtual void Apply() = 0;
-  
+
   //! Returns the label concerned by <me>.
   Standard_EXPORT TDF_Label Label() const;
-  
+
   //! Returns the reference attribute.
   Standard_EXPORT Handle(TDF_Attribute) Attribute() const;
-  
+
   //! Returns the ID of the attribute concerned by <me>.
   Standard_EXPORT Standard_GUID ID() const;
-  
+
   //! Dumps the contents.
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& OS) const;
-Standard_OStream& operator<< (Standard_OStream& OS) const
-{
-  return Dump(OS);
-}
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& OS) const;
+
+  Standard_OStream& operator<<(Standard_OStream& OS) const { return Dump(OS); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta, Standard_Transient)
 
 protected:
-
-  
   Standard_EXPORT TDF_AttributeDelta(const Handle(TDF_Attribute)& anAttribute);
 
-
-
 private:
-
-
   Handle(TDF_Attribute) myAttribute;
-  TDF_Label myLabel;
-
-
+  TDF_Label             myLabel;
 };
-
-
-
-
-
-
 
 #endif // _TDF_AttributeDelta_HeaderFile

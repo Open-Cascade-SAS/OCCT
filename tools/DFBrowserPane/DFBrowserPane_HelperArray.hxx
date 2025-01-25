@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_HelperArray_H
 #define DFBrowserPane_HelperArray_H
@@ -30,13 +30,13 @@ class QWidget;
 #include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowserPane_HelperArray
-//! \brief Class that is used for list and array attributes. Two tables, the first for bounds, the second for values.
-//! Bound table contains two values: Lower and Upper values of the container.
-//! So, the first and the second values in GetValue() are these bounds, other values are used to fill usual table view.
+//! \brief Class that is used for list and array attributes. Two tables, the first for bounds, the
+//! second for values. Bound table contains two values: Lower and Upper values of the container. So,
+//! the first and the second values in GetValue() are these bounds, other values are used to fill
+//! usual table view.
 class DFBrowserPane_HelperArray
 {
 public:
-
   //! Constructor
   Standard_EXPORT DFBrowserPane_HelperArray(DFBrowserPane_AttributePaneModel* theValuesModel);
 
@@ -55,13 +55,13 @@ public:
   //! Returns only values of values view model
   //! \param theAttribute a current attribute
   //! \param theValues a container of result values
-  Standard_EXPORT virtual void GetShortAttributeInfo(const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues);
+  Standard_EXPORT virtual void GetShortAttributeInfo(const Handle(TDF_Attribute)& theAttribute,
+                                                     QList<QVariant>&             theValues);
 
 private:
-
   DFBrowserPane_AttributePaneModel* myValuesModel; //!< model of table view
   DFBrowserPane_AttributePaneModel* myBoundsModel; //!< model of bounds view
-  DFBrowserPane_TableView* myArrayBounds; //!< bounds view
-  DFBrowserPane_TableView* myValuesView; //!< values view
+  DFBrowserPane_TableView*          myArrayBounds; //!< bounds view
+  DFBrowserPane_TableView*          myValuesView;  //!< values view
 };
 #endif

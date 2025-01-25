@@ -23,56 +23,55 @@
 #include <IGESSolid_SphericalSurface.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SphericalSurface,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SphericalSurface, IGESData_IGESEntity)
 
-IGESSolid_SphericalSurface::IGESSolid_SphericalSurface ()    {  }
+IGESSolid_SphericalSurface::IGESSolid_SphericalSurface() {}
 
-
-    void  IGESSolid_SphericalSurface::Init
-  (const Handle(IGESGeom_Point)& aCenter,
-   const Standard_Real aRadius,
-   const Handle(IGESGeom_Direction)& anAxis,
-   const Handle(IGESGeom_Direction)& aRefdir)
+void IGESSolid_SphericalSurface::Init(const Handle(IGESGeom_Point)&     aCenter,
+                                      const Standard_Real               aRadius,
+                                      const Handle(IGESGeom_Direction)& anAxis,
+                                      const Handle(IGESGeom_Direction)& aRefdir)
 {
-  theCenter     = aCenter;
-  theRadius     = aRadius;
-  theAxis       = anAxis;
-  theRefDir     = aRefdir;
-  InitTypeAndForm(196, (theRefDir.IsNull() ? 0 : 1) );
+  theCenter = aCenter;
+  theRadius = aRadius;
+  theAxis   = anAxis;
+  theRefDir = aRefdir;
+  InitTypeAndForm(196, (theRefDir.IsNull() ? 0 : 1));
 }
 
-    Handle(IGESGeom_Point)  IGESSolid_SphericalSurface::Center () const
+Handle(IGESGeom_Point) IGESSolid_SphericalSurface::Center() const
 {
   return theCenter;
 }
 
-    gp_Pnt  IGESSolid_SphericalSurface::TransformedCenter () const
+gp_Pnt IGESSolid_SphericalSurface::TransformedCenter() const
 {
-  if (!HasTransf()) return theCenter->Value();
+  if (!HasTransf())
+    return theCenter->Value();
   else
-    {
-      gp_XYZ tmp = (theCenter->Value()).XYZ();
-      Location().Transforms(tmp);
-      return gp_Pnt(tmp);
-    }
+  {
+    gp_XYZ tmp = (theCenter->Value()).XYZ();
+    Location().Transforms(tmp);
+    return gp_Pnt(tmp);
+  }
 }
 
-    Standard_Real  IGESSolid_SphericalSurface::Radius () const
+Standard_Real IGESSolid_SphericalSurface::Radius() const
 {
   return theRadius;
 }
 
-    Handle(IGESGeom_Direction)  IGESSolid_SphericalSurface::Axis () const
+Handle(IGESGeom_Direction) IGESSolid_SphericalSurface::Axis() const
 {
   return theAxis;
 }
 
-    Handle(IGESGeom_Direction)  IGESSolid_SphericalSurface::ReferenceDir () const
+Handle(IGESGeom_Direction) IGESSolid_SphericalSurface::ReferenceDir() const
 {
   return theRefDir;
 }
 
-    Standard_Boolean  IGESSolid_SphericalSurface::IsParametrised () const
+Standard_Boolean IGESSolid_SphericalSurface::IsParametrised() const
 {
   return !(theRefDir.IsNull());
 }

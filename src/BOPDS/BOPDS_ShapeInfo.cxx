@@ -12,22 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPDS_ShapeInfo.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <stdio.h>
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
-  void BOPDS_ShapeInfo::Dump()const
+void BOPDS_ShapeInfo::Dump() const
 {
   const TopAbs_ShapeEnum aTS = ShapeType();
-  printf(" %s", TopAbs::ShapeTypeToString (aTS));
+  printf(" %s", TopAbs::ShapeTypeToString(aTS));
   printf(" {");
-  for (TColStd_ListOfInteger::Iterator aIt(mySubShapes); aIt.More(); aIt.Next()) {
+  for (TColStd_ListOfInteger::Iterator aIt(mySubShapes); aIt.More(); aIt.Next())
+  {
     Standard_Integer n = aIt.Value();
     printf(" %d", n);
   }

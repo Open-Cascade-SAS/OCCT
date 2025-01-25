@@ -29,21 +29,20 @@ class StdSelect_ShapeTypeFilter : public SelectMgr_Filter
 {
   DEFINE_STANDARD_RTTIEXT(StdSelect_ShapeTypeFilter, SelectMgr_Filter)
 public:
-
   //! Constructs a filter object defined by the shape type aType.
   Standard_EXPORT StdSelect_ShapeTypeFilter(const TopAbs_ShapeEnum aType);
 
   //! Returns the type of shape selected by the filter.
-  TopAbs_ShapeEnum Type() const {return myType;}
+  TopAbs_ShapeEnum Type() const { return myType; }
 
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean ActsOn (const TopAbs_ShapeEnum aStandardMode) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    Standard_OVERRIDE;
 
 private:
-
   TopAbs_ShapeEnum myType;
-
 };
 
 #endif // _StdSelect_ShapeTypeFilter_HeaderFile

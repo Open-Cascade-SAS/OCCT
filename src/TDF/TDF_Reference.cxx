@@ -24,60 +24,60 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_Reference,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_Reference, TDF_Attribute)
 
 //=======================================================================
-//function : GetID
-//purpose  : 
+// function : GetID
+// purpose  :
 //=======================================================================
-const Standard_GUID& TDF_Reference::GetID () 
+const Standard_GUID& TDF_Reference::GetID()
 {
   static Standard_GUID TDF_ReferenceID("2a96b610-ec8b-11d0-bee7-080009dc3333");
   return TDF_ReferenceID;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
-Handle(TDF_Reference) TDF_Reference::Set (const TDF_Label& L,
-					  const TDF_Label& Origin) 
+Handle(TDF_Reference) TDF_Reference::Set(const TDF_Label& L, const TDF_Label& Origin)
 {
   Handle(TDF_Reference) A;
-  if (!L.FindAttribute (TDF_Reference::GetID (),A)) {
-    A = new TDF_Reference ();
-    L.AddAttribute (A);
+  if (!L.FindAttribute(TDF_Reference::GetID(), A))
+  {
+    A = new TDF_Reference();
+    L.AddAttribute(A);
   }
-  A->Set (Origin); 
+  A->Set(Origin);
   return A;
 }
 
 //=======================================================================
-//function : TDF_Reference
-//purpose  : Empty Constructor
+// function : TDF_Reference
+// purpose  : Empty Constructor
 //=======================================================================
 
-TDF_Reference::TDF_Reference () { }
-
+TDF_Reference::TDF_Reference() {}
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Set
+// purpose  :
 //=======================================================================
 
-void TDF_Reference::Set(const TDF_Label& Origin) 
+void TDF_Reference::Set(const TDF_Label& Origin)
 {
   // OCC2932 correction
-  if(myOrigin == Origin) return;
+  if (myOrigin == Origin)
+    return;
 
   Backup();
   myOrigin = Origin;
 }
 
 //=======================================================================
-//function : Get
-//purpose  : 
+// function : Get
+// purpose  :
 //=======================================================================
 
 TDF_Label TDF_Reference::Get() const
@@ -85,83 +85,87 @@ TDF_Label TDF_Reference::Get() const
   return myOrigin;
 }
 
-
 //=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
-
-const Standard_GUID& TDF_Reference::ID() const { return GetID(); }
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
 
-Handle(TDF_Attribute) TDF_Reference::NewEmpty () const
-{  
-  return new TDF_Reference(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDF_Reference::Restore(const Handle(TDF_Attribute)& With) 
+const Standard_GUID& TDF_Reference::ID() const
 {
-  myOrigin = Handle(TDF_Reference)::DownCast (With)->Get ();
+  return GetID();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : NewEmpty
+// purpose  :
 //=======================================================================
 
-void TDF_Reference::Paste (const Handle(TDF_Attribute)& Into,
-				const Handle(TDF_RelocationTable)& RT) const
+Handle(TDF_Attribute) TDF_Reference::NewEmpty() const
+{
+  return new TDF_Reference();
+}
+
+//=======================================================================
+// function : Restore
+// purpose  :
+//=======================================================================
+
+void TDF_Reference::Restore(const Handle(TDF_Attribute)& With)
+{
+  myOrigin = Handle(TDF_Reference)::DownCast(With)->Get();
+}
+
+//=======================================================================
+// function : Paste
+// purpose  :
+//=======================================================================
+
+void TDF_Reference::Paste(const Handle(TDF_Attribute)&       Into,
+                          const Handle(TDF_RelocationTable)& RT) const
 {
   TDF_Label tLab;
-  if (!myOrigin.IsNull()) {
-    if (!RT->HasRelocation(myOrigin,tLab)) tLab = myOrigin;
+  if (!myOrigin.IsNull())
+  {
+    if (!RT->HasRelocation(myOrigin, tLab))
+      tLab = myOrigin;
   }
   Handle(TDF_Reference)::DownCast(Into)->Set(tLab);
 }
+
 //=======================================================================
-//function : References
-//purpose  : Adds the referenced attributes or labels.
+// function : References
+// purpose  : Adds the referenced attributes or labels.
 //=======================================================================
 
 void TDF_Reference::References(const Handle(TDF_DataSet)& aDataSet) const
 {
-// clang-format off
+  // clang-format off
   if (!Label().IsImported()) aDataSet->AddLabel( myOrigin); //pour real et entier mais surtout pas les parts ...
-// clang-format on
+  // clang-format on
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 
-Standard_OStream& TDF_Reference::Dump (Standard_OStream& anOS) const
-{  
+Standard_OStream& TDF_Reference::Dump(Standard_OStream& anOS) const
+{
   anOS << "Reference";
   return anOS;
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void TDF_Reference::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_Reference::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
   TCollection_AsciiString aLabel;
-  TDF_Tool::Entry (myOrigin, aLabel);
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  TDF_Tool::Entry(myOrigin, aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aLabel)
 }

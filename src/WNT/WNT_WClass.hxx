@@ -21,11 +21,11 @@
 
 #if defined(_WIN32) && !defined(OCCT_UWP)
 
-#include <Aspect_Handle.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <NCollection_DefineAlloc.hxx>
-#include <TCollection_AsciiString.hxx>
+  #include <Aspect_Handle.hxx>
+  #include <Standard_Integer.hxx>
+  #include <Standard_Transient.hxx>
+  #include <NCollection_DefineAlloc.hxx>
+  #include <TCollection_AsciiString.hxx>
 
 //! This class defines a Windows NT window class.
 //! A window in Windows NT is always created based on a
@@ -51,16 +51,16 @@ class WNT_WClass : public Standard_Transient
   friend class WNT_Window;
   DEFINE_STANDARD_RTTIEXT(WNT_WClass, Standard_Transient)
 public:
-  
   //! Creates a Windows NT window class and registers it.
-  Standard_EXPORT WNT_WClass (const TCollection_AsciiString& theClassName,
-                              const Standard_Address theWndProc,
-                              const unsigned int theStyle,
-                              const Standard_Integer theClassExtra  = 0,
-                              const Standard_Integer theWindowExtra = 0,
-                              const Aspect_Handle theCursor = NULL,
-                              const Aspect_Handle theIcon   = NULL,
-                              const TCollection_AsciiString& theMenuName = TCollection_AsciiString());
+  Standard_EXPORT WNT_WClass(
+    const TCollection_AsciiString& theClassName,
+    const Standard_Address         theWndProc,
+    const unsigned int             theStyle,
+    const Standard_Integer         theClassExtra  = 0,
+    const Standard_Integer         theWindowExtra = 0,
+    const Aspect_Handle            theCursor      = NULL,
+    const Aspect_Handle            theIcon        = NULL,
+    const TCollection_AsciiString& theMenuName    = TCollection_AsciiString());
 
   //! Destroys all resources attached to the class
   Standard_EXPORT ~WNT_WClass();
@@ -75,11 +75,9 @@ public:
   Aspect_Handle Instance() const { return myAppInstance; }
 
 protected:
-
   TCollection_AsciiString myClassName;
   Aspect_Handle           myAppInstance;
   Standard_Address        myWndProc;
-
 };
 
 DEFINE_STANDARD_HANDLE(WNT_WClass, Standard_Transient)

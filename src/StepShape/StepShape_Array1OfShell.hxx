@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepShape_Shell> StepShape_Array1OfShell;
 
-
 #endif

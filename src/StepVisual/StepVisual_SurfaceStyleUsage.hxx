@@ -24,53 +24,33 @@
 #include <Standard_Transient.hxx>
 class StepVisual_SurfaceSideStyle;
 
-
 class StepVisual_SurfaceStyleUsage;
 DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleUsage, Standard_Transient)
-
 
 class StepVisual_SurfaceStyleUsage : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a SurfaceStyleUsage
   Standard_EXPORT StepVisual_SurfaceStyleUsage();
-  
-  Standard_EXPORT void Init (const StepVisual_SurfaceSide aSide, const Handle(StepVisual_SurfaceSideStyle)& aStyle);
-  
-  Standard_EXPORT void SetSide (const StepVisual_SurfaceSide aSide);
-  
+
+  Standard_EXPORT void Init(const StepVisual_SurfaceSide               aSide,
+                            const Handle(StepVisual_SurfaceSideStyle)& aStyle);
+
+  Standard_EXPORT void SetSide(const StepVisual_SurfaceSide aSide);
+
   Standard_EXPORT StepVisual_SurfaceSide Side() const;
-  
-  Standard_EXPORT void SetStyle (const Handle(StepVisual_SurfaceSideStyle)& aStyle);
-  
+
+  Standard_EXPORT void SetStyle(const Handle(StepVisual_SurfaceSideStyle)& aStyle);
+
   Standard_EXPORT Handle(StepVisual_SurfaceSideStyle) Style() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  StepVisual_SurfaceSide side;
+  StepVisual_SurfaceSide              side;
   Handle(StepVisual_SurfaceSideStyle) style;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_SurfaceStyleUsage_HeaderFile

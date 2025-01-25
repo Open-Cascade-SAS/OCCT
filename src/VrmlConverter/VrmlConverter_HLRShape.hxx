@@ -26,7 +26,6 @@ class TopoDS_Shape;
 class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
 
-
 //! HLRShape  -  computes the presentation  of objects
 //! with removal of their hidden  lines for a specific
 //! projector, converts them into VRML  objects  and
@@ -41,36 +40,18 @@ class VrmlConverter_Projector;
 //! PointLight,
 //! SpotLight
 //! from  Vrml  package.
-class VrmlConverter_HLRShape 
+class VrmlConverter_HLRShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const TopoDS_Shape& aShape, const Handle(VrmlConverter_Drawer)& aDrawer, const Handle(VrmlConverter_Projector)& aProjector);
-
-
-
+  Standard_EXPORT static void Add(Standard_OStream&                      anOStream,
+                                  const TopoDS_Shape&                    aShape,
+                                  const Handle(VrmlConverter_Drawer)&    aDrawer,
+                                  const Handle(VrmlConverter_Projector)& aProjector);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_HLRShape_HeaderFile

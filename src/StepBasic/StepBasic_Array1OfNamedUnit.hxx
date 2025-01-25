@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepBasic_NamedUnit)> StepBasic_Array1OfNamedUnit;
 
-
 #endif

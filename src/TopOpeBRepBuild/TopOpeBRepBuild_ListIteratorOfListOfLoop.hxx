@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef TopOpeBRepBuild_ListIteratorOfListOfLoop_HeaderFile
 #define TopOpeBRepBuild_ListIteratorOfListOfLoop_HeaderFile
 

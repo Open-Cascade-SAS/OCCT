@@ -24,53 +24,34 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-
 class StepVisual_PlanarExtent;
 DEFINE_STANDARD_HANDLE(StepVisual_PlanarExtent, StepGeom_GeometricRepresentationItem)
-
 
 class StepVisual_PlanarExtent : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a PlanarExtent
   Standard_EXPORT StepVisual_PlanarExtent();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY);
-  
-  Standard_EXPORT void SetSizeInX (const Standard_Real aSizeInX);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Standard_Real                     aSizeInX,
+                            const Standard_Real                     aSizeInY);
+
+  Standard_EXPORT void SetSizeInX(const Standard_Real aSizeInX);
+
   Standard_EXPORT Standard_Real SizeInX() const;
-  
-  Standard_EXPORT void SetSizeInY (const Standard_Real aSizeInY);
-  
+
+  Standard_EXPORT void SetSizeInY(const Standard_Real aSizeInY);
+
   Standard_EXPORT Standard_Real SizeInY() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarExtent,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarExtent, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real sizeInX;
   Standard_Real sizeInY;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PlanarExtent_HeaderFile

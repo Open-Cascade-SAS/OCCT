@@ -21,7 +21,6 @@
 #include <AppDef_ParLeastSquareOfTheGradient.hxx>
 #include <AppDef_ResConstraintOfTheGradient.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -34,4 +33,3 @@
 #define AppParCurves_Function AppDef_ParFunctionOfTheGradient
 #define AppParCurves_Function_hxx <AppDef_ParFunctionOfTheGradient.hxx>
 #include "../AppParCurves/AppParCurves_Function.gxx"
-

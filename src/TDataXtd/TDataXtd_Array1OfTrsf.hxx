@@ -21,5 +21,4 @@
 
 typedef NCollection_Array1<gp_Trsf> TDataXtd_Array1OfTrsf;
 
-
 #endif

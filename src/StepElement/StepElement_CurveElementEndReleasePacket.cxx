@@ -18,23 +18,22 @@
 #include <StepElement_CurveElementEndReleasePacket.hxx>
 #include <StepElement_CurveElementFreedom.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket, Standard_Transient)
 
 //=======================================================================
-//function : StepElement_CurveElementEndReleasePacket
-//purpose  : 
+// function : StepElement_CurveElementEndReleasePacket
+// purpose  :
 //=======================================================================
-StepElement_CurveElementEndReleasePacket::StepElement_CurveElementEndReleasePacket ()
-{
-}
+StepElement_CurveElementEndReleasePacket::StepElement_CurveElementEndReleasePacket() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementEndReleasePacket::Init (const StepElement_CurveElementFreedom &aReleaseFreedom,
-                                                     const Standard_Real aReleaseStiffness)
+void StepElement_CurveElementEndReleasePacket::Init(
+  const StepElement_CurveElementFreedom& aReleaseFreedom,
+  const Standard_Real                    aReleaseStiffness)
 {
 
   theReleaseFreedom = aReleaseFreedom;
@@ -43,41 +42,43 @@ void StepElement_CurveElementEndReleasePacket::Init (const StepElement_CurveElem
 }
 
 //=======================================================================
-//function : ReleaseFreedom
-//purpose  : 
+// function : ReleaseFreedom
+// purpose  :
 //=======================================================================
 
-StepElement_CurveElementFreedom StepElement_CurveElementEndReleasePacket::ReleaseFreedom () const
+StepElement_CurveElementFreedom StepElement_CurveElementEndReleasePacket::ReleaseFreedom() const
 {
   return theReleaseFreedom;
 }
 
 //=======================================================================
-//function : SetReleaseFreedom
-//purpose  : 
+// function : SetReleaseFreedom
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementEndReleasePacket::SetReleaseFreedom (const StepElement_CurveElementFreedom &aReleaseFreedom)
+void StepElement_CurveElementEndReleasePacket::SetReleaseFreedom(
+  const StepElement_CurveElementFreedom& aReleaseFreedom)
 {
   theReleaseFreedom = aReleaseFreedom;
 }
 
 //=======================================================================
-//function : ReleaseStiffness
-//purpose  : 
+// function : ReleaseStiffness
+// purpose  :
 //=======================================================================
 
-Standard_Real StepElement_CurveElementEndReleasePacket::ReleaseStiffness () const
+Standard_Real StepElement_CurveElementEndReleasePacket::ReleaseStiffness() const
 {
   return theReleaseStiffness;
 }
 
 //=======================================================================
-//function : SetReleaseStiffness
-//purpose  : 
+// function : SetReleaseStiffness
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementEndReleasePacket::SetReleaseStiffness (const Standard_Real aReleaseStiffness)
+void StepElement_CurveElementEndReleasePacket::SetReleaseStiffness(
+  const Standard_Real aReleaseStiffness)
 {
   theReleaseStiffness = aReleaseStiffness;
 }

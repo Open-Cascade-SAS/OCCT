@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_Value_HeaderFile
 #define _StdLPersistent_Value_HeaderFile
 
@@ -26,7 +25,6 @@
 #include <TDataStd_Comment.hxx>
 #include <TDataStd_AsciiString.hxx>
 
-
 class StdLPersistent_Value
 {
   template <class AttribClass>
@@ -37,8 +35,7 @@ class StdLPersistent_Value
     Standard_EXPORT virtual void ImportAttribute();
   };
 
-  template <class AttribClass,
-            class HStringClass = StdLPersistent_HString::Extended>
+  template <class AttribClass, class HStringClass = StdLPersistent_HString::Extended>
   class string : public StdObjMgt_Attribute<AttribClass>::SingleRef
   {
   public:
@@ -47,68 +44,82 @@ class StdLPersistent_Value
   };
 
 public:
-
-  class TagSource : public integer <TDF_TagSource> {
+  class TagSource : public integer<TDF_TagSource>
+  {
   public:
     Standard_CString PName() const { return "PDF_TagSource"; }
   };
 
-  class Reference : public string <TDF_Reference> {
+  class Reference : public string<TDF_Reference>
+  {
   public:
     Standard_CString PName() const { return "PDF_Reference"; }
   };
 
-  class Comment : public string <TDataStd_Comment> {
+  class Comment : public string<TDataStd_Comment>
+  {
   public:
     Standard_CString PName() const { return "PDF_Comment"; }
   };
 
-  class UAttribute : public string <TDataStd_UAttribute>
+  class UAttribute : public string<TDataStd_UAttribute>
   {
   public:
     //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+
     Standard_CString PName() const { return "PDataStd_UAttribute"; }
   };
 
-  class Integer : public integer <TDataStd_Integer>
+  class Integer : public integer<TDataStd_Integer>
   {
   public:
     //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+
     Standard_CString PName() const { return "PDataStd_Integer"; }
   };
 
-  class Name : public string <TDataStd_Name>
+  class Name : public string<TDataStd_Name>
   {
   public:
     //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+
     Standard_CString PName() const { return "PDataStd_Name"; }
   };
 
-  class AsciiString : public string <TDataStd_AsciiString, StdLPersistent_HString::Ascii>
+  class AsciiString : public string<TDataStd_AsciiString, StdLPersistent_HString::Ascii>
   {
   public:
     //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+
     Standard_CString PName() const { return "PDataStd_AsciiString"; }
   };
 };
 
-template<>
-template<>
+template <>
+template <>
 inline Standard_CString StdObjMgt_Attribute<TDF_TagSource>::Simple<Standard_Integer>::PName() const
-  { return "PDF_TagSource"; }
+{
+  return "PDF_TagSource";
+}
 
-template<>
-template<>
-inline Standard_CString StdObjMgt_Attribute<TDF_Reference>::Simple<Handle(StdObjMgt_Persistent)>::PName() const
-  { return "PDF_Reference"; }
+template <>
+template <>
+inline Standard_CString StdObjMgt_Attribute<TDF_Reference>::Simple<
+  Handle(StdObjMgt_Persistent)>::PName() const
+{
+  return "PDF_Reference";
+}
 
-template<>
-template<>
-inline Standard_CString StdObjMgt_Attribute<TDataStd_Comment>::Simple<Handle(StdObjMgt_Persistent)>::PName() const
-  { return "PDataStd_Comment"; }
+template <>
+template <>
+inline Standard_CString StdObjMgt_Attribute<TDataStd_Comment>::Simple<
+  Handle(StdObjMgt_Persistent)>::PName() const
+{
+  return "PDataStd_Comment";
+}
 
 #endif

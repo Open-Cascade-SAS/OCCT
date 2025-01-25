@@ -25,9 +25,8 @@ private:
   typedef OpenGl_GlCore13 theBaseClass_t;
 
 public: //! @name OpenGL 1.4 additives to 1.3
-
-  using theBaseClass_t::glMultiDrawElements;
   using theBaseClass_t::glBlendFuncSeparate;
+  using theBaseClass_t::glMultiDrawElements;
 
 #if !defined(GL_ES_VERSION_2_0)
   using theBaseClass_t::glMultiDrawArrays;
@@ -36,7 +35,6 @@ public: //! @name OpenGL 1.4 additives to 1.3
   using theBaseClass_t::glPointParameteri;
   using theBaseClass_t::glPointParameteriv;
 #endif
-
 };
 
 #endif // _OpenGl_GlCore14_Header

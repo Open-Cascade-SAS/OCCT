@@ -15,32 +15,31 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : HLRTopoBRep_VData
-//purpose  : 
+// function : HLRTopoBRep_VData
+// purpose  :
 //=======================================================================
 
 inline HLRTopoBRep_VData::HLRTopoBRep_VData()
-: myParameter(0.0)
+    : myParameter(0.0)
 {
 }
 
 //=======================================================================
-//function : Parameter
-//purpose  : 
+// function : Parameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real HLRTopoBRep_VData::Parameter() const 
+inline Standard_Real HLRTopoBRep_VData::Parameter() const
 {
   return myParameter;
 }
 
 //=======================================================================
-//function : Vertex
-//purpose  : 
+// function : Vertex
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape & HLRTopoBRep_VData::Vertex() const 
+inline const TopoDS_Shape& HLRTopoBRep_VData::Vertex() const
 {
   return myVertex;
 }
-

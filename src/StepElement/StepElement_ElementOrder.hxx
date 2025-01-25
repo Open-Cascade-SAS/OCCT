@@ -14,12 +14,11 @@
 #ifndef _StepElement_ElementOrder_HeaderFile
 #define _StepElement_ElementOrder_HeaderFile
 
-
 enum StepElement_ElementOrder
 {
-StepElement_Linear,
-StepElement_Quadratic,
-StepElement_Cubic
+  StepElement_Linear,
+  StepElement_Quadratic,
+  StepElement_Cubic
 };
 
 #endif // _StepElement_ElementOrder_HeaderFile

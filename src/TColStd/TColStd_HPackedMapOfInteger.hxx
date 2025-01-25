@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
-
 class TColStd_HPackedMapOfInteger;
 DEFINE_STANDARD_HANDLE(TColStd_HPackedMapOfInteger, Standard_Transient)
 
@@ -31,39 +30,21 @@ class TColStd_HPackedMapOfInteger : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT TColStd_HPackedMapOfInteger(const Standard_Integer NbBuckets = 1);
-  
+
   Standard_EXPORT TColStd_HPackedMapOfInteger(const TColStd_PackedMapOfInteger& theOther);
-  
-    const TColStd_PackedMapOfInteger& Map() const;
-  
-    TColStd_PackedMapOfInteger& ChangeMap();
 
+  const TColStd_PackedMapOfInteger& Map() const;
 
+  TColStd_PackedMapOfInteger& ChangeMap();
 
-
-  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   TColStd_PackedMapOfInteger myMap;
-
-
 };
 
-
 #include <TColStd_HPackedMapOfInteger.lxx>
-
-
-
-
 
 #endif // _TColStd_HPackedMapOfInteger_HeaderFile

@@ -11,9 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepData_Described.hxx>
 #include <StepData_EDescr.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_EDescr,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_EDescr, Standard_Transient)

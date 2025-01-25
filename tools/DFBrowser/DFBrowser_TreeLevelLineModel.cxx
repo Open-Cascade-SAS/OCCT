@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_TreeLevelLineModel.hxx>
 
@@ -27,18 +27,18 @@
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelLineModel::Init (const QModelIndex& theTreeIndex)
+void DFBrowser_TreeLevelLineModel::Init(const QModelIndex& theTreeIndex)
 {
   myTreeIndex = theTreeIndex;
   myLevelItems.clear();
 
   if (theTreeIndex.isValid())
   {
-    myLevelItems.prepend (theTreeIndex);
+    myLevelItems.prepend(theTreeIndex);
     QModelIndex aParent = theTreeIndex.parent();
     while (aParent.isValid())
     {
-      myLevelItems.prepend (aParent);
+      myLevelItems.prepend(aParent);
       aParent = aParent.parent();
     }
   }
@@ -49,26 +49,26 @@ void DFBrowser_TreeLevelLineModel::Init (const QModelIndex& theTreeIndex)
 // function : data
 // purpose :
 // =======================================================================
-QVariant DFBrowser_TreeLevelLineModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant DFBrowser_TreeLevelLineModel::data(const QModelIndex& theIndex, int theRole) const
 {
   QVariant aValue;
-  int aColumns = theIndex.column();
+  int      aColumns = theIndex.column();
   if (aColumns < myLevelItems.size())
   {
     QModelIndex aTreeIndex = myLevelItems[aColumns];
     if (theRole == Qt::DecorationRole) //! do not show icons presented in tree view
       return aValue;
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (aTreeIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(aTreeIndex);
     if (!anItemBase)
       return aValue;
 
-    DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
+    DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase>(anItemBase);
     if (!aDBrowserItem)
       return aValue;
 
-    bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
-    aValue = aDBrowserItem->data (aTreeIndex, theRole);
-    aDBrowserItem->SetUseAdditionalInfo (aPrevValue);
+    bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo(false);
+    aValue          = aDBrowserItem->data(aTreeIndex, theRole);
+    aDBrowserItem->SetUseAdditionalInfo(aPrevValue);
 
     if (theRole == Qt::DisplayRole)
       aValue = aValue.toString() + "  "; //! TEMPORARY to leave place for the action icon
@@ -80,7 +80,9 @@ QVariant DFBrowser_TreeLevelLineModel::data (const QModelIndex& theIndex, int th
 // function : headerData
 // purpose :
 // =======================================================================
-QVariant DFBrowser_TreeLevelLineModel::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
+QVariant DFBrowser_TreeLevelLineModel::headerData(int             theSection,
+                                                  Qt::Orientation theOrientation,
+                                                  int             theRole) const
 {
   QVariant aValue;
   if (theOrientation == Qt::Horizontal && theSection < myLevelItems.size())
@@ -89,7 +91,7 @@ QVariant DFBrowser_TreeLevelLineModel::headerData (int theSection, Qt::Orientati
     if (!aTreeIndex.isValid()) // level change action
     {
       if (theRole == Qt::SizeHintRole)
-        aValue = QSize (2, 2);
+        aValue = QSize(2, 2);
       else if (theRole == Qt::DisplayRole)
         aValue = "";
     }

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -32,7 +32,6 @@ class StepKinematics_SphericalPairSelect : public StepData_SelectType
 {
 
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -41,13 +40,13 @@ public:
   //! Recognizes a kind of SphericalPairSelect select type
   //! -- 1 -> SphericalPair
   //! -- 2 -> SphericalPairWithPin
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns Value as SphericalPair (or Null if another type)
   Standard_EXPORT Handle(StepKinematics_SphericalPair) SphericalPair() const;
 
   //! Returns Value as SphericalPairWithPin (or Null if another type)
   Standard_EXPORT Handle(StepKinematics_SphericalPairWithPin) SphericalPairWithPin() const;
-
 };
 #endif // _StepKinematics_SphericalPairSelect_HeaderFile

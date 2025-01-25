@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Handle(Expr_GeneralRelation)> ExprIntrp_StackOfGeneralRelation;
-typedef NCollection_List<Handle(Expr_GeneralRelation)>::Iterator ExprIntrp_ListIteratorOfStackOfGeneralRelation;
-
+typedef NCollection_List<Handle(Expr_GeneralRelation)>::Iterator
+  ExprIntrp_ListIteratorOfStackOfGeneralRelation;
 
 #endif

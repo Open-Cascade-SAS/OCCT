@@ -34,7 +34,6 @@ class gp_Pln;
 class gp_Lin;
 class gp_Pnt;
 
-
 //! A wedge is defined by  :
 //!
 //! Axes : an Axis2 (coordinate system)
@@ -54,15 +53,14 @@ class gp_Pnt;
 //!
 //! The wedge can be open in the corresponding direction
 //! of its Boolean myInfinite
-class BRepPrim_GWedge 
+class BRepPrim_GWedge
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
   Standard_EXPORT BRepPrim_GWedge();
-  
+
   //! Creates a  GWedge  algorithm.   <Axes> is  the axis
   //! system for the primitive.
   //!
@@ -74,8 +72,12 @@ public:
   //! X2Max = XMax
   //! The result is a box
   //! dx,dy,dz should be positive
-  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B, const gp_Ax2& Axes, const Standard_Real dx, const Standard_Real dy, const Standard_Real dz);
-  
+  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
+                                  const gp_Ax2&           Axes,
+                                  const Standard_Real     dx,
+                                  const Standard_Real     dy,
+                                  const Standard_Real     dz);
+
   //! Creates  a GWedge  primitive. <Axes> is   the  axis
   //! system for the primitive.
   //!
@@ -88,147 +90,153 @@ public:
   //! The result is a STEP right angular wedge
   //! dx,dy,dz should be positive
   //! ltx should not be negative
-  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B, const gp_Ax2& Axes, const Standard_Real dx, const Standard_Real dy, const Standard_Real dz, const Standard_Real ltx);
-  
+  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
+                                  const gp_Ax2&           Axes,
+                                  const Standard_Real     dx,
+                                  const Standard_Real     dy,
+                                  const Standard_Real     dz,
+                                  const Standard_Real     ltx);
+
   //! Create  a GWedge primitive.   <Axes>  is  the  axis
   //! system for the primitive.
   //!
   //! all the fields are set to the corresponding value
   //! XYZMax - XYZMin should be positive
   //! ZX2Max - ZX2Min should not be negative
-  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B, const gp_Ax2& Axes, const Standard_Real xmin, const Standard_Real ymin, const Standard_Real zmin, const Standard_Real z2min, const Standard_Real x2min, const Standard_Real xmax, const Standard_Real ymax, const Standard_Real zmax, const Standard_Real z2max, const Standard_Real x2max);
-  
+  Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
+                                  const gp_Ax2&           Axes,
+                                  const Standard_Real     xmin,
+                                  const Standard_Real     ymin,
+                                  const Standard_Real     zmin,
+                                  const Standard_Real     z2min,
+                                  const Standard_Real     x2min,
+                                  const Standard_Real     xmax,
+                                  const Standard_Real     ymax,
+                                  const Standard_Real     zmax,
+                                  const Standard_Real     z2max,
+                                  const Standard_Real     x2max);
+
   //! Returns the coordinates system from <me>.
   Standard_EXPORT gp_Ax2 Axes() const;
-  
+
   //! Returns Xmin value from <me>.
   Standard_EXPORT Standard_Real GetXMin() const;
-  
+
   //! Returns YMin value from <me>.
   Standard_EXPORT Standard_Real GetYMin() const;
-  
+
   //! Returns ZMin value from <me>.
   Standard_EXPORT Standard_Real GetZMin() const;
-  
+
   //! Returns Z2Min value from <me>.
   Standard_EXPORT Standard_Real GetZ2Min() const;
-  
+
   //! Returns X2Min value from <me>.
   Standard_EXPORT Standard_Real GetX2Min() const;
-  
+
   //! Returns XMax value from <me>.
   Standard_EXPORT Standard_Real GetXMax() const;
-  
+
   //! Returns YMax value from <me>.
   Standard_EXPORT Standard_Real GetYMax() const;
-  
+
   //! Returns ZMax value from <me>.
   Standard_EXPORT Standard_Real GetZMax() const;
-  
+
   //! Returns Z2Max value from <me>.
   Standard_EXPORT Standard_Real GetZ2Max() const;
-  
+
   //! Returns X2Max value from <me>.
   Standard_EXPORT Standard_Real GetX2Max() const;
-  
+
   //! Opens <me> in <d1> direction. A face and its edges
   //! or vertices are said nonexistant.
-  Standard_EXPORT void Open (const BRepPrim_Direction d1);
-  
+  Standard_EXPORT void Open(const BRepPrim_Direction d1);
+
   //! Closes   <me>  in <d1>  direction.  A face and its
   //! edges or vertices are said existant.
-  Standard_EXPORT void Close (const BRepPrim_Direction d1);
-  
+  Standard_EXPORT void Close(const BRepPrim_Direction d1);
+
   //! Returns True if <me> is open in <d1> direction.
-  Standard_EXPORT Standard_Boolean IsInfinite (const BRepPrim_Direction d1) const;
-  
+  Standard_EXPORT Standard_Boolean IsInfinite(const BRepPrim_Direction d1) const;
+
   //! Returns the Shell containing the Faces of <me>.
   Standard_EXPORT const TopoDS_Shell& Shell();
-  
+
   //! Returns True if <me> has a Face in <d1> direction.
-  Standard_EXPORT Standard_Boolean HasFace (const BRepPrim_Direction d1) const;
-  
+  Standard_EXPORT Standard_Boolean HasFace(const BRepPrim_Direction d1) const;
+
   //! Returns the Face of <me> located in <d1> direction.
-  Standard_EXPORT const TopoDS_Face& Face (const BRepPrim_Direction d1);
-  
+  Standard_EXPORT const TopoDS_Face& Face(const BRepPrim_Direction d1);
+
   //! Returns the plane  of the Face  of <me> located in
   //! <d1> direction.
-  Standard_EXPORT gp_Pln Plane (const BRepPrim_Direction d1);
-  
+  Standard_EXPORT gp_Pln Plane(const BRepPrim_Direction d1);
+
   //! Returns True if <me> has a Wire in <d1> direction.
-  Standard_EXPORT Standard_Boolean HasWire (const BRepPrim_Direction d1) const;
-  
+  Standard_EXPORT Standard_Boolean HasWire(const BRepPrim_Direction d1) const;
+
   //! Returns the Wire of <me> located in <d1> direction.
-  Standard_EXPORT const TopoDS_Wire& Wire (const BRepPrim_Direction d1);
-  
+  Standard_EXPORT const TopoDS_Wire& Wire(const BRepPrim_Direction d1);
+
   //! Returns True if <me> has an Edge in <d1><d2> direction.
-  Standard_EXPORT Standard_Boolean HasEdge (const BRepPrim_Direction d1, const BRepPrim_Direction d2) const;
-  
+  Standard_EXPORT Standard_Boolean HasEdge(const BRepPrim_Direction d1,
+                                           const BRepPrim_Direction d2) const;
+
   //! Returns the Edge of <me> located in <d1><d2> direction.
-  Standard_EXPORT const TopoDS_Edge& Edge (const BRepPrim_Direction d1, const BRepPrim_Direction d2);
-  
+  Standard_EXPORT const TopoDS_Edge& Edge(const BRepPrim_Direction d1, const BRepPrim_Direction d2);
+
   //! Returns the line of  the Edge of <me>  located  in
   //! <d1><d2> direction.
-  Standard_EXPORT gp_Lin Line (const BRepPrim_Direction d1, const BRepPrim_Direction d2);
-  
+  Standard_EXPORT gp_Lin Line(const BRepPrim_Direction d1, const BRepPrim_Direction d2);
+
   //! Returns True if <me> has a  Vertex in <d1><d2><d3>
   //! direction.
-  Standard_EXPORT Standard_Boolean HasVertex (const BRepPrim_Direction d1, const BRepPrim_Direction d2, const BRepPrim_Direction d3) const;
-  
+  Standard_EXPORT Standard_Boolean HasVertex(const BRepPrim_Direction d1,
+                                             const BRepPrim_Direction d2,
+                                             const BRepPrim_Direction d3) const;
+
   //! Returns the Vertex of <me> located in <d1><d2><d3>
   //! direction.
-  Standard_EXPORT const TopoDS_Vertex& Vertex (const BRepPrim_Direction d1, const BRepPrim_Direction d2, const BRepPrim_Direction d3);
-  
+  Standard_EXPORT const TopoDS_Vertex& Vertex(const BRepPrim_Direction d1,
+                                              const BRepPrim_Direction d2,
+                                              const BRepPrim_Direction d3);
+
   //! Returns the point of the Vertex of <me> located in
   //! <d1><d2><d3> direction.
-  Standard_EXPORT gp_Pnt Point (const BRepPrim_Direction d1, const BRepPrim_Direction d2, const BRepPrim_Direction d3);
+  Standard_EXPORT gp_Pnt Point(const BRepPrim_Direction d1,
+                               const BRepPrim_Direction d2,
+                               const BRepPrim_Direction d3);
 
   //! Checks a shape on degeneracy
   //! @return TRUE if a shape is degenerated
   Standard_EXPORT Standard_Boolean IsDegeneratedShape();
 
-
 protected:
-
-
-
-
-
 private:
-
-
-
   BRepPrim_Builder myBuilder;
-  gp_Ax2 myAxes;
-  Standard_Real XMin;
-  Standard_Real XMax;
-  Standard_Real YMin;
-  Standard_Real YMax;
-  Standard_Real ZMin;
-  Standard_Real ZMax;
-  Standard_Real Z2Min;
-  Standard_Real Z2Max;
-  Standard_Real X2Min;
-  Standard_Real X2Max;
-  TopoDS_Shell myShell;
+  gp_Ax2           myAxes;
+  Standard_Real    XMin;
+  Standard_Real    XMax;
+  Standard_Real    YMin;
+  Standard_Real    YMax;
+  Standard_Real    ZMin;
+  Standard_Real    ZMax;
+  Standard_Real    Z2Min;
+  Standard_Real    Z2Max;
+  Standard_Real    X2Min;
+  Standard_Real    X2Max;
+  TopoDS_Shell     myShell;
   Standard_Boolean ShellBuilt;
-  TopoDS_Vertex myVertices[8];
+  TopoDS_Vertex    myVertices[8];
   Standard_Boolean VerticesBuilt[8];
-  TopoDS_Edge myEdges[12];
+  TopoDS_Edge      myEdges[12];
   Standard_Boolean EdgesBuilt[12];
-  TopoDS_Wire myWires[6];
+  TopoDS_Wire      myWires[6];
   Standard_Boolean WiresBuilt[6];
-  TopoDS_Face myFaces[6];
+  TopoDS_Face      myFaces[6];
   Standard_Boolean FacesBuilt[6];
   Standard_Boolean myInfinite[6];
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepPrim_GWedge_HeaderFile

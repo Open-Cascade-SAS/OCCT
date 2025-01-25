@@ -14,19 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Standard_Integer                             N, i;
-  Handle(StepGeom_HArray1OfCartesianPoint) aPoints;
-  Handle(StepGeom_CartesianPoint)          P2;
+Standard_Integer                         N, i;
+Handle(StepGeom_HArray1OfCartesianPoint) aPoints;
+Handle(StepGeom_CartesianPoint)          P2;
 
-  N = P.Length();
-  aPoints = new StepGeom_HArray1OfCartesianPoint(1,N);
-  for (i=P.Lower(); i<=P.Upper(); i++) {
-    P1 = P.Value(i);
-    GeomToStep_MakeCartesianPoint MkPoint(P1, theLocalFactors.LengthFactor());
-    P2 = MkPoint.Value();
-    aPoints->SetValue(i,P2);
-  }
-  thePolyline = new StepGeom_Polyline;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  thePolyline->Init(name, aPoints);
-  done = Standard_True;
+N       = P.Length();
+aPoints = new StepGeom_HArray1OfCartesianPoint(1, N);
+for (i = P.Lower(); i <= P.Upper(); i++)
+{
+  P1 = P.Value(i);
+  GeomToStep_MakeCartesianPoint MkPoint(P1, theLocalFactors.LengthFactor());
+  P2 = MkPoint.Value();
+  aPoints->SetValue(i, P2);
+}
+thePolyline                           = new StepGeom_Polyline;
+Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+thePolyline->Init(name, aPoints);
+done = Standard_True;

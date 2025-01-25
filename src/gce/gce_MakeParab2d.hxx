@@ -28,7 +28,6 @@ class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-
 //! This class implements the following algorithms used to
 //! create Parab2d from gp.
 //! Defines an infinite parabola.
@@ -52,32 +51,30 @@ class gp_Pnt2d;
 //! * Create a Parab2d with the directrix and the focus point.
 //! * Create a Parab2d with its vertex point and its axis
 //! of symmetry and its focus length.
-class gce_MakeParab2d  : public gce_Root
+class gce_MakeParab2d : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Creates a parabola with its axis of symmetry ("MirrorAxis")
   //! and its focal length.
   //! Warnings : It is possible to have Focal = 0.
   //! The status is "NullFocalLength" Raised if Focal < 0.0
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d& MirrorAxis, const Standard_Real Focal, const Standard_Boolean Sense = Standard_True);
-  
+  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d&         MirrorAxis,
+                                  const Standard_Real    Focal,
+                                  const Standard_Boolean Sense = Standard_True);
 
   //! Creates a parabola with its local coordinate system <A>
   //! and its focal length.
   //! Warnings : It is possible to have Focal = 0.
   //! The status is "NullFocalLength" Raised if Focal < 0.0
   Standard_EXPORT gce_MakeParab2d(const gp_Ax22d& A, const Standard_Real Focal);
-  
 
   //! Creates a parabola with the directrix and the focus point.
   //! The sense of parametrization is given by Sense.
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d& D, const gp_Pnt2d& F, const Standard_Boolean Sense = Standard_True);
-  
+  Standard_EXPORT gce_MakeParab2d(const gp_Ax2d&         D,
+                                  const gp_Pnt2d&        F,
+                                  const Standard_Boolean Sense = Standard_True);
 
   //! Make an Parab2d with S1 as the Focal point and Center
   //! as the apex of the parabola
@@ -88,37 +85,20 @@ public:
   //! false), the Status function returns:
   //! -   gce_NullFocusLength if Focal is less than 0.0, or
   //! -   gce_NullAxis if S1 and Center are coincident.
-  Standard_EXPORT gce_MakeParab2d(const gp_Pnt2d& S1, const gp_Pnt2d& Center, const Standard_Boolean Sense = Standard_True);
-  
+  Standard_EXPORT gce_MakeParab2d(const gp_Pnt2d&        S1,
+                                  const gp_Pnt2d&        Center,
+                                  const Standard_Boolean Sense = Standard_True);
+
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
   Standard_EXPORT const gp_Parab2d& Value() const;
-  
+
   Standard_EXPORT const gp_Parab2d& Operator() const;
-Standard_EXPORT operator gp_Parab2d() const;
-
-
-
+  Standard_EXPORT                   operator gp_Parab2d() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Parab2d TheParab2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeParab2d_HeaderFile

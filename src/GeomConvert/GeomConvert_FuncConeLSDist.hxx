@@ -23,44 +23,34 @@
 #include <math_Vector.hxx>
 #include <gp_Dir.hxx>
 
-//! Function for search of Cone canonic parameters: coordinates of center local coordinate system, 
+//! Function for search of Cone canonic parameters: coordinates of center local coordinate system,
 //! direction of axis, radius and semi-angle from set of points
 //! by least square method.
-//! 
+//!
 //!
 class GeomConvert_FuncConeLSDist : public math_MultipleVarFunction
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncConeLSDist() {};
-  
+
   Standard_EXPORT GeomConvert_FuncConeLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
-                                                   const gp_Dir& theDir);
+                                             const gp_Dir&                      theDir);
 
-  void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints)
-  {
-    myPoints = thePoints;
-  }
+  void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints) { myPoints = thePoints; }
 
-  void SetDir(const gp_Dir& theDir)
-  {
-    myDir = theDir;
-  }
+  void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
   //! Number of variables.
   Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X,Standard_Real& F) Standard_OVERRIDE;
-
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
 
 private:
-
   Handle(TColgp_HArray1OfXYZ) myPoints;
-  gp_Dir myDir;
-  
+  gp_Dir                      myDir;
 };
 #endif // _GeomConvert_FuncConeLSDist_HeaderFile

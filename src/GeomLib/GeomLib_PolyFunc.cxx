@@ -14,47 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomLib_PolyFunc.hxx>
 #include <math_Vector.hxx>
 #include <PLib.hxx>
 
-GeomLib_PolyFunc::GeomLib_PolyFunc(const math_Vector& Coeffs) 
-                                  :myCoeffs(1, Coeffs.Length()-1)
+GeomLib_PolyFunc::GeomLib_PolyFunc(const math_Vector& Coeffs)
+    : myCoeffs(1, Coeffs.Length() - 1)
 { // On construit le polynome derive
-  for (Standard_Integer ii=1; ii<=myCoeffs.Length(); ii++)
-    myCoeffs(ii) = ii*Coeffs(ii+1);
+  for (Standard_Integer ii = 1; ii <= myCoeffs.Length(); ii++)
+    myCoeffs(ii) = ii * Coeffs(ii + 1);
 }
 
- Standard_Boolean GeomLib_PolyFunc::Value(const Standard_Real X,
-					  Standard_Real& F) 
+Standard_Boolean GeomLib_PolyFunc::Value(const Standard_Real X, Standard_Real& F)
 {
-  Standard_Real * coeff = &myCoeffs(1);
-  Standard_Real * ff = &F;
-  PLib::EvalPolynomial(X, 0, myCoeffs.Length()-1, 1,  coeff[0], ff[0]);
+  Standard_Real* coeff = &myCoeffs(1);
+  Standard_Real* ff    = &F;
+  PLib::EvalPolynomial(X, 0, myCoeffs.Length() - 1, 1, coeff[0], ff[0]);
   return Standard_True;
 }
 
- Standard_Boolean GeomLib_PolyFunc::Derivative(const Standard_Real X,
-					       Standard_Real& D) 
+Standard_Boolean GeomLib_PolyFunc::Derivative(const Standard_Real X, Standard_Real& D)
 {
-  Standard_Real * coeff = &myCoeffs(1);
-  math_Vector Aux(1, 2);
-  Standard_Real * ff = &Aux(1);  
-  PLib::EvalPolynomial(X, 1, myCoeffs.Length()-1, 1,  coeff[0], ff[0]);
+  Standard_Real* coeff = &myCoeffs(1);
+  math_Vector    Aux(1, 2);
+  Standard_Real* ff = &Aux(1);
+  PLib::EvalPolynomial(X, 1, myCoeffs.Length() - 1, 1, coeff[0], ff[0]);
   D = Aux(2);
   return Standard_True;
 }
 
- Standard_Boolean GeomLib_PolyFunc::Values(const Standard_Real X,
-					   Standard_Real& F,
-					   Standard_Real& D) 
+Standard_Boolean GeomLib_PolyFunc::Values(const Standard_Real X, Standard_Real& F, Standard_Real& D)
 {
- Standard_Real * coeff = &myCoeffs(1);
- math_Vector Aux(1, 2);
- Standard_Real * ff = &Aux(1);  
- PLib::EvalPolynomial(X, 1, myCoeffs.Length()-1, 1,  coeff[0], ff[0]);
- F = Aux(1);
- D = Aux(2);
- return Standard_True;
+  Standard_Real* coeff = &myCoeffs(1);
+  math_Vector    Aux(1, 2);
+  Standard_Real* ff = &Aux(1);
+  PLib::EvalPolynomial(X, 1, myCoeffs.Length() - 1, 1, coeff[0], ff[0]);
+  F = Aux(1);
+  D = Aux(2);
+  return Standard_True;
 }

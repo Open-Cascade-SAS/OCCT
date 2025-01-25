@@ -23,43 +23,24 @@
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
 
-
 //! FaceInterferenceReducer
-class TopOpeBRepDS_FIR 
+class TopOpeBRepDS_FIR
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_FIR(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
-  Standard_EXPORT void ProcessFaceInterferences (const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M);
-  
-  Standard_EXPORT void ProcessFaceInterferences (const Standard_Integer I, const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M);
 
+  Standard_EXPORT void ProcessFaceInterferences(
+    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M);
 
-
+  Standard_EXPORT void ProcessFaceInterferences(
+    const Standard_Integer                                I,
+    const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TopOpeBRepDS_HDataStructure) myHDS;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_FIR_HeaderFile

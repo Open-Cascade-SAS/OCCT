@@ -66,7 +66,9 @@ public:
   const Handle(BRepBlend_Line)& Line() const;
 
 private:
-  Standard_EXPORT void InternalPerform(Blend_CSFunction& F, math_Vector& Sol, const Standard_Real Bound);
+  Standard_EXPORT void InternalPerform(Blend_CSFunction&   F,
+                                       math_Vector&        Sol,
+                                       const Standard_Real Bound);
 
   Standard_EXPORT void Transition(const Handle(Adaptor2d_Curve2d)& A,
                                   const Standard_Real              Param,
@@ -84,7 +86,9 @@ private:
                                                      const gp_Vec&   Tgsurf,
                                                      const gp_Vec2d& Tgonsurf);
 
-  Standard_EXPORT Blend_Status CheckDeflectionOnCurv(const gp_Pnt& Pcurv, const Standard_Real Poncurv, const gp_Vec& Tgcurv);
+  Standard_EXPORT Blend_Status CheckDeflectionOnCurv(const gp_Pnt&       Pcurv,
+                                                     const Standard_Real Poncurv,
+                                                     const gp_Vec&       Tgcurv);
 
   Standard_EXPORT Blend_Status TestArret(Blend_CSFunction&      F,
                                          const math_Vector&     Sol,

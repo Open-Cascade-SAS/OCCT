@@ -20,7 +20,7 @@
 #include <StepVisual_BoxCharacteristicSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepVisual_BoxCharacteristicSelect> StepVisual_Array1OfBoxCharacteristicSelect;
-
+typedef NCollection_Array1<StepVisual_BoxCharacteristicSelect>
+  StepVisual_Array1OfBoxCharacteristicSelect;
 
 #endif

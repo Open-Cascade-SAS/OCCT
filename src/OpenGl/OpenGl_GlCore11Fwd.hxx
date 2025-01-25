@@ -26,30 +26,28 @@ struct OpenGl_GlCore11Fwd : protected OpenGl_GlFunctions
 {
 
 public: //! @name Miscellaneous
-
-  using OpenGl_GlFunctions::glClearColor;
-  using OpenGl_GlFunctions::glClear;
-  using OpenGl_GlFunctions::glColorMask;
   using OpenGl_GlFunctions::glBlendFunc;
+  using OpenGl_GlFunctions::glClear;
+  using OpenGl_GlFunctions::glClearColor;
+  using OpenGl_GlFunctions::glColorMask;
   using OpenGl_GlFunctions::glCullFace;
+  using OpenGl_GlFunctions::glDisable;
+  using OpenGl_GlFunctions::glEnable;
+  using OpenGl_GlFunctions::glFinish;
+  using OpenGl_GlFunctions::glFlush;
   using OpenGl_GlFunctions::glFrontFace;
+  using OpenGl_GlFunctions::glGetBooleanv;
+  using OpenGl_GlFunctions::glGetError;
+  using OpenGl_GlFunctions::glGetFloatv;
+  using OpenGl_GlFunctions::glGetIntegerv;
+  using OpenGl_GlFunctions::glGetString;
+  using OpenGl_GlFunctions::glHint;
+  using OpenGl_GlFunctions::glIsEnabled;
   using OpenGl_GlFunctions::glLineWidth;
   using OpenGl_GlFunctions::glPolygonOffset;
   using OpenGl_GlFunctions::glScissor;
-  using OpenGl_GlFunctions::glEnable;
-  using OpenGl_GlFunctions::glDisable;
-  using OpenGl_GlFunctions::glIsEnabled;
-  using OpenGl_GlFunctions::glGetBooleanv;
-  using OpenGl_GlFunctions::glGetFloatv;
-  using OpenGl_GlFunctions::glGetIntegerv;
-  using OpenGl_GlFunctions::glGetError;
-  using OpenGl_GlFunctions::glGetString;
-  using OpenGl_GlFunctions::glFinish;
-  using OpenGl_GlFunctions::glFlush;
-  using OpenGl_GlFunctions::glHint;
 
 public: //! @name Depth Buffer
-
   using OpenGl_GlFunctions::glClearDepth;
   using OpenGl_GlFunctions::glClearDepthf;
   using OpenGl_GlFunctions::glDepthFunc;
@@ -58,56 +56,50 @@ public: //! @name Depth Buffer
   using OpenGl_GlFunctions::glDepthRangef;
 
 public: //! @name Transformation
-
   using OpenGl_GlFunctions::glViewport;
 
 public: //! @name Vertex Arrays
-
   using OpenGl_GlFunctions::glDrawArrays;
   using OpenGl_GlFunctions::glDrawElements;
 
 public: //! @name Raster functions
-
   using OpenGl_GlFunctions::glPixelStorei;
   using OpenGl_GlFunctions::glReadPixels;
 
 public: //! @name Stenciling
-
+  using OpenGl_GlFunctions::glClearStencil;
   using OpenGl_GlFunctions::glStencilFunc;
   using OpenGl_GlFunctions::glStencilMask;
   using OpenGl_GlFunctions::glStencilOp;
-  using OpenGl_GlFunctions::glClearStencil;
 
 public: //! @name Texture mapping
-
-  using OpenGl_GlFunctions::glTexParameterf;
-  using OpenGl_GlFunctions::glTexParameteri;
-  using OpenGl_GlFunctions::glTexParameterfv;
-  using OpenGl_GlFunctions::glTexParameteriv;
-  using OpenGl_GlFunctions::glGetTexParameterfv;
-  using OpenGl_GlFunctions::glGetTexParameteriv;
-  using OpenGl_GlFunctions::glTexImage2D;
-  using OpenGl_GlFunctions::glGenTextures;
-  using OpenGl_GlFunctions::glDeleteTextures;
   using OpenGl_GlFunctions::glBindTexture;
-  using OpenGl_GlFunctions::glIsTexture;
-  using OpenGl_GlFunctions::glTexSubImage2D;
   using OpenGl_GlFunctions::glCopyTexImage2D;
   using OpenGl_GlFunctions::glCopyTexSubImage2D;
+  using OpenGl_GlFunctions::glDeleteTextures;
+  using OpenGl_GlFunctions::glGenTextures;
+  using OpenGl_GlFunctions::glGetTexParameterfv;
+  using OpenGl_GlFunctions::glGetTexParameteriv;
+  using OpenGl_GlFunctions::glIsTexture;
+  using OpenGl_GlFunctions::glTexImage2D;
+  using OpenGl_GlFunctions::glTexParameterf;
+  using OpenGl_GlFunctions::glTexParameterfv;
+  using OpenGl_GlFunctions::glTexParameteri;
+  using OpenGl_GlFunctions::glTexParameteriv;
+  using OpenGl_GlFunctions::glTexSubImage2D;
 
 public: //! @name desktop extensions - not supported in OpenGL ES 2..0
-
-  using OpenGl_GlFunctions::glTexImage1D;
-  using OpenGl_GlFunctions::glTexSubImage1D;
+  using OpenGl_GlFunctions::glAlphaFunc;
   using OpenGl_GlFunctions::glCopyTexImage1D;
   using OpenGl_GlFunctions::glCopyTexSubImage1D;
   using OpenGl_GlFunctions::glGetTexImage;
-  using OpenGl_GlFunctions::glAlphaFunc;
   using OpenGl_GlFunctions::glPointSize;
+  using OpenGl_GlFunctions::glTexImage1D;
+  using OpenGl_GlFunctions::glTexSubImage1D;
 
   // added to OpenGL ES 3.0
-  using OpenGl_GlFunctions::glReadBuffer;
   using OpenGl_GlFunctions::glDrawBuffer;
+  using OpenGl_GlFunctions::glReadBuffer;
 
   // added to OpenGL ES 3.1
   using OpenGl_GlFunctions::glGetTexLevelParameteriv;
@@ -115,9 +107,8 @@ public: //! @name desktop extensions - not supported in OpenGL ES 2..0
   // added to OpenGL ES 3.2
   using OpenGl_GlFunctions::glGetPointerv;
 
-  using OpenGl_GlFunctions::glPolygonMode;
   using OpenGl_GlFunctions::glLogicOp;
-
+  using OpenGl_GlFunctions::glPolygonMode;
 };
 
 #endif // _OpenGl_GlCore11Fwd_Header

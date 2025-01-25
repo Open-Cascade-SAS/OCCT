@@ -23,21 +23,21 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape,PrsMgr_PresentableObject)
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 
-StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape,
-                                  const Handle(Prs3d_Drawer)& theDrawer)
-: mysh (theShape)
+StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape&         theShape,
+                                 const Handle(Prs3d_Drawer)& theDrawer)
+    : mysh(theShape)
 {
   if (!theDrawer.IsNull())
   {
-    myDrawer->SetLink (theDrawer);
+    myDrawer->SetLink(theDrawer);
   }
 }
 
-void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)& ,
-			      const Handle(Prs3d_Presentation)& thePrs,
-			      const Standard_Integer theMode)
+void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)&,
+                              const Handle(Prs3d_Presentation)& thePrs,
+                              const Standard_Integer            theMode)
 {
   if (mysh.IsNull())
   {
@@ -49,24 +49,24 @@ void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)& ,
   {
     if (canShade)
     {
-      StdPrs_ShadedShape::Add (thePrs, mysh, myDrawer);
+      StdPrs_ShadedShape::Add(thePrs, mysh, myDrawer);
     }
     else
     {
-      StdPrs_WFShape::Add (thePrs, mysh, myDrawer);
+      StdPrs_WFShape::Add(thePrs, mysh, myDrawer);
     }
   }
   else if (theMode == 0)
   {
-    StdPrs_WFShape::Add (thePrs, mysh, myDrawer);
+    StdPrs_WFShape::Add(thePrs, mysh, myDrawer);
   }
 }
 
-void StdSelect_Shape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void StdSelect_Shape::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, PrsMgr_PresentableObject)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, PrsMgr_PresentableObject)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mysh)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &mysh)
 }

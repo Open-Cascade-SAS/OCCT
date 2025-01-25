@@ -34,98 +34,78 @@ class gp_Cone;
 class gp_Torus;
 class Extrema_POnSurf;
 
-
 //! It calculates all the distances between 2 elementary
 //! surfaces.
 //! These distances can be maximum or minimum.
-class Extrema_ExtElSS 
+class Extrema_ExtElSS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Extrema_ExtElSS();
-  
+
   //! Calculates the distances between 2 planes.
   //! These planes can be parallel.
   Standard_EXPORT Extrema_ExtElSS(const gp_Pln& S1, const gp_Pln& S2);
-  
-  Standard_EXPORT void Perform (const gp_Pln& S1, const gp_Pln& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Pln& S1, const gp_Pln& S2);
+
   //! Calculates the distances between a plane
   //! and a sphere.
   Standard_EXPORT Extrema_ExtElSS(const gp_Pln& S1, const gp_Sphere& S2);
-  
-  Standard_EXPORT void Perform (const gp_Pln& S1, const gp_Sphere& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Pln& S1, const gp_Sphere& S2);
+
   //! Calculates the distances between 2 spheres.
   //! These spheres can be parallel.
   Standard_EXPORT Extrema_ExtElSS(const gp_Sphere& S1, const gp_Sphere& S2);
-  
-  Standard_EXPORT void Perform (const gp_Sphere& S1, const gp_Sphere& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Sphere& S1, const gp_Sphere& S2);
+
   //! Calculates the distances between a sphere
   //! and a cylinder.
   Standard_EXPORT Extrema_ExtElSS(const gp_Sphere& S1, const gp_Cylinder& S2);
-  
-  Standard_EXPORT void Perform (const gp_Sphere& S1, const gp_Cylinder& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Sphere& S1, const gp_Cylinder& S2);
+
   //! Calculates the distances between a sphere
   //! and a cone.
   Standard_EXPORT Extrema_ExtElSS(const gp_Sphere& S1, const gp_Cone& S2);
-  
-  Standard_EXPORT void Perform (const gp_Sphere& S1, const gp_Cone& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Sphere& S1, const gp_Cone& S2);
+
   //! Calculates the distances between a sphere
   //! and a torus.
   Standard_EXPORT Extrema_ExtElSS(const gp_Sphere& S1, const gp_Torus& S2);
-  
-  Standard_EXPORT void Perform (const gp_Sphere& S1, const gp_Torus& S2);
-  
+
+  Standard_EXPORT void Perform(const gp_Sphere& S1, const gp_Torus& S2);
+
   //! Returns True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns True if the two surfaces are parallel.
   Standard_EXPORT Standard_Boolean IsParallel() const;
-  
+
   //! Returns the number of extremum distances.
   Standard_EXPORT Standard_Integer NbExt() const;
-  
+
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance (const Standard_Integer N = 1) const;
-  
+  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N = 1) const;
+
   //! Returns the points for the Nth resulting distance.
   //! P1 is on the first surface, P2 on the second one.
-  Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
-
-
-
+  Standard_EXPORT void Points(const Standard_Integer N,
+                              Extrema_POnSurf&       P1,
+                              Extrema_POnSurf&       P2) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myDone;
-  Standard_Boolean myIsPar;
-  Standard_Integer myNbExt;
-  Handle(TColStd_HArray1OfReal) mySqDist;
+  Standard_Boolean                 myDone;
+  Standard_Boolean                 myIsPar;
+  Standard_Integer                 myNbExt;
+  Handle(TColStd_HArray1OfReal)    mySqDist;
   Handle(Extrema_HArray1OfPOnSurf) myPOnS1;
   Handle(Extrema_HArray1OfPOnSurf) myPOnS2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtElSS_HeaderFile

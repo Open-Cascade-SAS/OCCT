@@ -16,37 +16,34 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-
-
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const AppParCurves_MultiPoint& M)
+inline Standard_OStream& operator<<(Standard_OStream& o, const AppParCurves_MultiPoint& M)
 {
   M.Dump(o);
   return o;
 }
 
-
-
-inline Standard_Integer AppParCurves_MultiPoint::NbPoints() const {
+inline Standard_Integer AppParCurves_MultiPoint::NbPoints() const
+{
   return nbP;
 }
 
-
-inline Standard_Integer AppParCurves_MultiPoint::NbPoints2d() const {
+inline Standard_Integer AppParCurves_MultiPoint::NbPoints2d() const
+{
   return nbP2d;
 }
 
-
 inline Standard_Integer AppParCurves_MultiPoint::Dimension(const Standard_Integer Index) const
 {
-  if (Index < 0 || Index > (nbP + nbP2d)) {
+  if (Index < 0 || Index > (nbP + nbP2d))
+  {
     throw Standard_OutOfRange();
   }
-  if (Index <= nbP) {
+  if (Index <= nbP)
+  {
     return 3;
   }
-  else {
+  else
+  {
     return 2;
   }
 }
-

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ViewModel.hxx>
 
@@ -30,8 +30,8 @@ const int COLUMN_POINTER_WIDTH = 70;
 // function : Constructor
 // purpose :
 // =======================================================================
-VInspector_ViewModel::VInspector_ViewModel (QObject* theParent)
-  : TreeModel_ModelBase (theParent)
+VInspector_ViewModel::VInspector_ViewModel(QObject* theParent)
+    : TreeModel_ModelBase(theParent)
 {
 }
 
@@ -43,17 +43,17 @@ void VInspector_ViewModel::InitColumns()
 {
   TreeModel_ModelBase::InitColumns();
 
-  setHeaderItem (3, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
-  setHeaderItem (4, TreeModel_HeaderSection ("SelectedOwners", -1));
+  setHeaderItem(3, TreeModel_HeaderSection("Pointer", COLUMN_POINTER_WIDTH));
+  setHeaderItem(4, TreeModel_HeaderSection("SelectedOwners", -1));
 }
 
 // =======================================================================
 // function : createRootItem
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr VInspector_ViewModel::createRootItem (const int theColumnId)
+TreeModel_ItemBasePtr VInspector_ViewModel::createRootItem(const int theColumnId)
 {
-  return VInspector_ItemContext::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
+  return VInspector_ItemContext::CreateItem(TreeModel_ItemBasePtr(), 0, theColumnId);
 }
 
 // =======================================================================
@@ -62,18 +62,18 @@ TreeModel_ItemBasePtr VInspector_ViewModel::createRootItem (const int theColumnI
 // =======================================================================
 Handle(AIS_InteractiveContext) VInspector_ViewModel::GetContext() const
 {
-  return itemDynamicCast<VInspector_ItemContext> (RootItem (0))->GetContext();
+  return itemDynamicCast<VInspector_ItemContext>(RootItem(0))->GetContext();
 }
 
 // =======================================================================
 // function : SetContext
 // purpose :
 // =======================================================================
-void VInspector_ViewModel::SetContext (const Handle(AIS_InteractiveContext)& theContext)
+void VInspector_ViewModel::SetContext(const Handle(AIS_InteractiveContext)& theContext)
 {
   // fill root item by the application
   for (int aColId = 0, aNbColumns = columnCount(); aColId < aNbColumns; aColId++)
-    itemDynamicCast<VInspector_ItemContext>(myRootItems[aColId])->SetContext (theContext);
+    itemDynamicCast<VInspector_ItemContext>(myRootItems[aColId])->SetContext(theContext);
 
   UpdateTreeModel();
 }
@@ -82,9 +82,9 @@ void VInspector_ViewModel::SetContext (const Handle(AIS_InteractiveContext)& the
 // function : FindPointers
 // purpose :
 // =======================================================================
-void VInspector_ViewModel::FindPointers (const QStringList& thePointers,
-                                         const QModelIndex& theParent,
-                                         QModelIndexList& theFoundIndices)
+void VInspector_ViewModel::FindPointers(const QStringList& thePointers,
+                                        const QModelIndex& theParent,
+                                        QModelIndexList&   theFoundIndices)
 {
   (void)thePointers;
   (void)theParent;
@@ -95,8 +95,8 @@ void VInspector_ViewModel::FindPointers (const QStringList& thePointers,
     return;
 
   QModelIndex aParentIndex = theParent.isValid() ? theParent : index (0, 0);
-  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // context item
-  for (int aRowId = 0, aCount = aParentItem->rowCount(); aRowId < aCount; aRowId++)
+  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // context
+  item for (int aRowId = 0, aCount = aParentItem->rowCount(); aRowId < aCount; aRowId++)
   {
     QModelIndex anIndex = index (aRowId, 0, aParentIndex);
     TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
@@ -116,15 +116,18 @@ void VInspector_ViewModel::FindPointers (const QStringList& thePointers,
 // function : FindIndex
 // purpose :
 // =======================================================================
-QModelIndex VInspector_ViewModel::FindIndex (const Handle(AIS_InteractiveObject)& thePresentation) const
+QModelIndex VInspector_ViewModel::FindIndex(
+  const Handle(AIS_InteractiveObject)& thePresentation) const
 {
-  QModelIndex aParentIndex = index (0, 0);
-  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // context item
+  QModelIndex           aParentIndex = index(0, 0);
+  TreeModel_ItemBasePtr aParentItem =
+    TreeModel_ModelBase::GetItemByIndex(aParentIndex); // context item
   for (int aRowId = 0, aCount = aParentItem->rowCount(); aRowId < aCount; aRowId++)
   {
-    QModelIndex anIndex = index (aRowId, 0, aParentIndex);
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-    VInspector_ItemPresentableObjectPtr anItemPrs = itemDynamicCast<VInspector_ItemPresentableObject>(anItemBase);
+    QModelIndex                         anIndex    = index(aRowId, 0, aParentIndex);
+    TreeModel_ItemBasePtr               anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+    VInspector_ItemPresentableObjectPtr anItemPrs =
+      itemDynamicCast<VInspector_ItemPresentableObject>(anItemBase);
     if (!anItemPrs)
       continue;
     if (anItemPrs->GetInteractiveObject() == thePresentation)

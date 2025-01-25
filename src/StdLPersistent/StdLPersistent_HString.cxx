@@ -17,84 +17,81 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
 template <class StringClass, typename CharType>
-void StdLPersistent_HString::instance<StringClass, CharType>::Read
-  (StdObjMgt_ReadData& theReadData)
+void StdLPersistent_HString::instance<StringClass, CharType>::Read(StdObjMgt_ReadData& theReadData)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   Standard_Integer aSize;
   theReadData >> aSize;
-  myValue = new StringClass (aSize, 0);
+  myValue = new StringClass(aSize, 0);
 
   for (Standard_Integer i = 1; i <= aSize; i++)
   {
     CharType aChar;
     theReadData >> aChar;
-    myValue->SetValue (i, aChar);
+    myValue->SetValue(i, aChar);
   }
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
 template <class StringClass, typename CharType>
-void StdLPersistent_HString::instance<StringClass, CharType>::Write
-  (StdObjMgt_WriteData& theWriteData) const
+void StdLPersistent_HString::instance<StringClass, CharType>::Write(
+  StdObjMgt_WriteData& theWriteData) const
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   Standard_Integer aSize = myValue->Length();
   theWriteData << aSize;
 
   for (Standard_Integer i = 1; i <= aSize; i++)
   {
-    CharType aChar (0);
+    CharType aChar(0);
     theWriteData << aChar;
   }
 }
 
 //=======================================================================
-//function : Label
-//purpose  : Get/create a label defined by referenced string
+// function : Label
+// purpose  : Get/create a label defined by referenced string
 //=======================================================================
 template <class StringClass, typename CharType>
-TDF_Label StdLPersistent_HString::instance<StringClass, CharType>::Label
-  (const Handle(TDF_Data)& theDF) const
+TDF_Label StdLPersistent_HString::instance<StringClass, CharType>::Label(
+  const Handle(TDF_Data)& theDF) const
 {
   TDF_Label aLabel;
 
   if (!myValue.IsNull())
-    TDF_Tool::Label (theDF, myValue->String(), aLabel, Standard_True);
+    TDF_Tool::Label(theDF, myValue->String(), aLabel, Standard_True);
 
   return aLabel;
 }
 
 //=======================================================================
-//function : AsciiString
-//purpose  : Get referenced ASCII string
+// function : AsciiString
+// purpose  : Get referenced ASCII string
 //=======================================================================
-Handle(TCollection_HAsciiString)
-  StdLPersistent_HString::Ascii::AsciiString() const
-    { return myValue; }
+Handle(TCollection_HAsciiString) StdLPersistent_HString::Ascii::AsciiString() const
+{
+  return myValue;
+}
 
 //=======================================================================
-//function : ExtString
-//purpose  : Get referenced extended string
+// function : ExtString
+// purpose  : Get referenced extended string
 //=======================================================================
-Handle(TCollection_HExtendedString)
-  StdLPersistent_HString::Extended::ExtString() const
-    { return myValue; }
+Handle(TCollection_HExtendedString) StdLPersistent_HString::Extended::ExtString() const
+{
+  return myValue;
+}
 
+template class StdLPersistent_HString::instance<TCollection_HAsciiString, Standard_Character>;
 
-template class StdLPersistent_HString::instance
-  <TCollection_HAsciiString, Standard_Character>;
-
-template class StdLPersistent_HString::instance
-  <TCollection_HExtendedString, Standard_ExtCharacter>;
+template class StdLPersistent_HString::instance<TCollection_HExtendedString, Standard_ExtCharacter>;

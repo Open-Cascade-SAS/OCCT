@@ -22,21 +22,20 @@
 #include <OSD_Path.hxx>
 
 //! Disk management (a set of disk oriented tools)
-class OSD_Disk 
+class OSD_Disk
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a disk object.
   //! This is used only when a class contains a Disk field.
   //! By default, its name is initialized to current working disk.
   Standard_EXPORT OSD_Disk();
-  
+
   //! Initializes the object Disk with the disk name
   //! associated to the OSD_Path.
   Standard_EXPORT OSD_Disk(const OSD_Path& Name);
-  
+
   //! Initializes the object Disk with <PathName>.
   //! <PathName> specifies any file within the mounted
   //! file system.
@@ -44,19 +43,19 @@ public:
   //! Initializes a disk object with the mounted
   //! file associated to /tmp.
   Standard_EXPORT OSD_Disk(const Standard_CString PathName);
-  
+
   //! Returns disk name of <me>.
   Standard_EXPORT OSD_Path Name() const;
-  
+
   //! Instantiates <me> with <Name>.
-  Standard_EXPORT void SetName (const OSD_Path& Name);
-  
+  Standard_EXPORT void SetName(const OSD_Path& Name);
+
   //! Returns total disk capacity in 512 bytes blocks.
   Standard_EXPORT Standard_Integer DiskSize();
-  
+
   //! Returns free available 512 bytes blocks on disk.
   Standard_EXPORT Standard_Integer DiskFree();
-  
+
   //! Returns TRUE if an error occurs
   Standard_Boolean Failed() const { return myError.Failed(); }
 
@@ -70,10 +69,8 @@ public:
   Standard_Integer Error() const { return myError.Error(); }
 
 private:
-
   TCollection_AsciiString myDiskName;
-  OSD_Error myError;
-
+  OSD_Error               myError;
 };
 
 #endif // _OSD_Disk_HeaderFile

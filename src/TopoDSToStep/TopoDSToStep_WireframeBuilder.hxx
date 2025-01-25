@@ -31,75 +31,57 @@ class Transfer_FinderProcess;
 class TopoDS_Edge;
 class TopoDS_Face;
 
-
 //! This builder Class provides services to build
 //! a ProSTEP Wireframemodel from a Cas.Cad BRep.
-class TopoDSToStep_WireframeBuilder  : public TopoDSToStep_Root
+class TopoDSToStep_WireframeBuilder : public TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopoDSToStep_WireframeBuilder();
-  
-  Standard_EXPORT TopoDSToStep_WireframeBuilder(const TopoDS_Shape& S,
-                                                TopoDSToStep_Tool& T,
-                                                const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT void Init (const TopoDS_Shape& S,
-                             TopoDSToStep_Tool& T,
-                             const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+
+  Standard_EXPORT TopoDSToStep_WireframeBuilder(
+    const TopoDS_Shape&     S,
+    TopoDSToStep_Tool&      T,
+    const StepData_Factors& theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT void Init(const TopoDS_Shape&     S,
+                            TopoDSToStep_Tool&      T,
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
+
   Standard_EXPORT TopoDSToStep_BuilderError Error() const;
-  
+
   Standard_EXPORT const Handle(TColStd_HSequenceOfTransient)& Value() const;
-  
+
   //! Extraction of Trimmed Curves from TopoDS_Edge for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean GetTrimmedCurveFromEdge (const TopoDS_Edge& E,
-                                                            const TopoDS_Face& F,
-                                                            MoniTool_DataMapOfShapeTransient& M,
-                                                            Handle(TColStd_HSequenceOfTransient)& L,
-                                                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
-  
+  Standard_EXPORT Standard_Boolean
+    GetTrimmedCurveFromEdge(const TopoDS_Edge&                    E,
+                            const TopoDS_Face&                    F,
+                            MoniTool_DataMapOfShapeTransient&     M,
+                            Handle(TColStd_HSequenceOfTransient)& L,
+                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+
   //! Extraction of Trimmed Curves from TopoDS_Face for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean GetTrimmedCurveFromFace (const TopoDS_Face& F,
-                                                            MoniTool_DataMapOfShapeTransient& M,
-                                                            Handle(TColStd_HSequenceOfTransient)& L,
-                                                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
-  
+  Standard_EXPORT Standard_Boolean
+    GetTrimmedCurveFromFace(const TopoDS_Face&                    F,
+                            MoniTool_DataMapOfShapeTransient&     M,
+                            Handle(TColStd_HSequenceOfTransient)& L,
+                            const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+
   //! Extraction of Trimmed Curves from any TopoDS_Shape for the
   //! Creation of a GeometricallyBoundedWireframeRepresentation
-  Standard_EXPORT Standard_Boolean GetTrimmedCurveFromShape (const TopoDS_Shape& S,
-                                                             MoniTool_DataMapOfShapeTransient& M,
-                                                             Handle(TColStd_HSequenceOfTransient)& L,
-                                                             const StepData_Factors& theLocalFactors = StepData_Factors()) const;
-
-
-
+  Standard_EXPORT Standard_Boolean
+    GetTrimmedCurveFromShape(const TopoDS_Shape&                   S,
+                             MoniTool_DataMapOfShapeTransient&     M,
+                             Handle(TColStd_HSequenceOfTransient)& L,
+                             const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TColStd_HSequenceOfTransient) myResult;
-  TopoDSToStep_BuilderError myError;
-
-
+  TopoDSToStep_BuilderError            myError;
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_WireframeBuilder_HeaderFile

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
 #include <CDM_Document.hxx>
@@ -22,46 +21,58 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory, Standard_Transient)
 
-CDF_Directory::CDF_Directory () {}
+CDF_Directory::CDF_Directory() {}
 
-void CDF_Directory::Add(const Handle(CDM_Document)& aDocument) {
-  if(!Contains(aDocument)) myDocuments.Append(aDocument);
+void CDF_Directory::Add(const Handle(CDM_Document)& aDocument)
+{
+  if (!Contains(aDocument))
+    myDocuments.Append(aDocument);
 }
 
-void CDF_Directory::Remove(const Handle(CDM_Document)& aDocument) {
-  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next()) {
-    if (aDocument == it.Value()) {
+void CDF_Directory::Remove(const Handle(CDM_Document)& aDocument)
+{
+  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next())
+  {
+    if (aDocument == it.Value())
+    {
       myDocuments.Remove(it);
       break;
     }
   }
 }
 
-Standard_Boolean CDF_Directory::Contains(const Handle(CDM_Document)& aDocument) const {
-  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next()) {
+Standard_Boolean CDF_Directory::Contains(const Handle(CDM_Document)& aDocument) const
+{
+  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next())
+  {
     if (aDocument == it.Value())
       return Standard_True;
   }
   return Standard_False;
 }
 
-Standard_Integer CDF_Directory::Length() const {
+Standard_Integer CDF_Directory::Length() const
+{
   return myDocuments.Extent();
 }
 
-const CDM_ListOfDocument& CDF_Directory::List() const {
+const CDM_ListOfDocument& CDF_Directory::List() const
+{
 
   return myDocuments;
-
 }
 
-Standard_Boolean CDF_Directory::IsEmpty() const {
+Standard_Boolean CDF_Directory::IsEmpty() const
+{
   return myDocuments.IsEmpty();
 }
 
-Handle(CDM_Document) CDF_Directory::Last() {
-  Standard_NoSuchObject_Raise_if(IsEmpty(),"CDF_Directory::Last: the directory does not contain any document");
+Handle(CDM_Document) CDF_Directory::Last()
+{
+  Standard_NoSuchObject_Raise_if(
+    IsEmpty(),
+    "CDF_Directory::Last: the directory does not contain any document");
   return myDocuments.Last();
 }

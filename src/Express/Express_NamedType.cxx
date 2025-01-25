@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_NamedType, Express_Type)
 // purpose  :
 //=======================================================================
 
-Express_NamedType::Express_NamedType (const Standard_CString theName)
+Express_NamedType::Express_NamedType(const Standard_CString theName)
 {
-  myName = new TCollection_HAsciiString (theName);
+  myName = new TCollection_HAsciiString(theName);
 }
 
 //=======================================================================
@@ -38,7 +38,7 @@ Express_NamedType::Express_NamedType (const Standard_CString theName)
 // purpose  :
 //=======================================================================
 
-Express_NamedType::Express_NamedType (const Handle(TCollection_HAsciiString)& theName)
+Express_NamedType::Express_NamedType(const Handle(TCollection_HAsciiString)& theName)
 {
   myName = theName;
 }
@@ -78,7 +78,7 @@ const Handle(Express_Item)& Express_NamedType::Item() const
 // purpose  :
 //=======================================================================
 
-void Express_NamedType::SetItem (const Handle(Express_Item)& theItem)
+void Express_NamedType::SetItem(const Handle(Express_Item)& theItem)
 {
   myItem = theItem;
 }
@@ -100,9 +100,9 @@ const TCollection_AsciiString Express_NamedType::CPPName() const
 
 Standard_Boolean Express_NamedType::IsStandard() const
 {
-  if (myItem->IsKind (STANDARD_TYPE(Express_Alias)))
+  if (myItem->IsKind(STANDARD_TYPE(Express_Alias)))
   {
-    Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast (myItem);
+    Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast(myItem);
     return anAlias->Type()->IsStandard();
   }
   return Standard_False;
@@ -115,12 +115,12 @@ Standard_Boolean Express_NamedType::IsStandard() const
 
 Standard_Boolean Express_NamedType::IsSimple() const
 {
-  if (myItem->IsKind (STANDARD_TYPE(Express_Alias)))
+  if (myItem->IsKind(STANDARD_TYPE(Express_Alias)))
   {
-    Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast (myItem);
+    Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast(myItem);
     return anAlias->Type()->IsSimple();
   }
-  if (myItem->IsKind (STANDARD_TYPE(Express_Enum)))
+  if (myItem->IsKind(STANDARD_TYPE(Express_Enum)))
   {
     return Standard_True;
   }
@@ -134,12 +134,12 @@ Standard_Boolean Express_NamedType::IsSimple() const
 
 Standard_Boolean Express_NamedType::IsHandle() const
 {
-  if (myItem->IsKind (STANDARD_TYPE(Express_Alias)))
+  if (myItem->IsKind(STANDARD_TYPE(Express_Alias)))
   {
-    Handle(Express_Alias) alias = Handle(Express_Alias)::DownCast (myItem);
+    Handle(Express_Alias) alias = Handle(Express_Alias)::DownCast(myItem);
     return alias->Type()->IsHandle();
   }
-  if (myItem->IsKind (STANDARD_TYPE(Express_Entity)))
+  if (myItem->IsKind(STANDARD_TYPE(Express_Entity)))
   {
     return Standard_True;
   }
@@ -161,7 +161,8 @@ Standard_Boolean Express_NamedType::Use() const
 // purpose  :
 //=======================================================================
 
-void Express_NamedType::Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack) const
+void Express_NamedType::Use2(const TCollection_AsciiString& theRefName,
+                             const TCollection_AsciiString& theRefPack) const
 {
-  myItem->Use2 (theRefName, theRefPack);
+  myItem->Use2(theRefName, theRefPack);
 }

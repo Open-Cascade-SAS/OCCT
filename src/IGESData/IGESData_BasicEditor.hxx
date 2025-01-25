@@ -30,7 +30,6 @@ class IGESData_Protocol;
 class IGESData_IGESModel;
 class IGESData_IGESEntity;
 
-
 //! This class provides various functions of basic edition,
 //! such as :
 //! - setting header unit (WARNING : DOES NOT convert entities)
@@ -40,61 +39,61 @@ class IGESData_IGESEntity;
 //! and by specific service AutoCorrect
 //! (this auto correction performs non-ambigious, rather logic,
 //! editions)
-class IGESData_BasicEditor 
+class IGESData_BasicEditor
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty Basic Editor which should be initialized via Init() method.
   Standard_EXPORT IGESData_BasicEditor();
-  
+
   //! Creates a Basic Editor, with a new IGESModel, ready to run
   Standard_EXPORT IGESData_BasicEditor(const Handle(IGESData_Protocol)& protocol);
-  
+
   //! Creates a Basic Editor for IGES Data, ready to run
-  Standard_EXPORT IGESData_BasicEditor(const Handle(IGESData_IGESModel)& model, const Handle(IGESData_Protocol)& protocol);
-  
+  Standard_EXPORT IGESData_BasicEditor(const Handle(IGESData_IGESModel)& model,
+                                       const Handle(IGESData_Protocol)&  protocol);
+
   //! Initialize a Basic Editor, with a new IGESModel, ready to run
-  Standard_EXPORT void Init (const Handle(IGESData_Protocol)& protocol);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_Protocol)& protocol);
+
   //! Initialize a Basic Editor for IGES Data, ready to run
-  Standard_EXPORT void Init (const Handle(IGESData_IGESModel)& model, const Handle(IGESData_Protocol)& protocol);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESModel)& model,
+                            const Handle(IGESData_Protocol)&  protocol);
+
   //! Returns the designated model
   Standard_EXPORT Handle(IGESData_IGESModel) Model() const;
-  
+
   //! Sets a new unit from its flag (param 14 of Global Section)
   //! Returns True if done, False if <flag> is incorrect
-  Standard_EXPORT Standard_Boolean SetUnitFlag (const Standard_Integer flag);
-  
+  Standard_EXPORT Standard_Boolean SetUnitFlag(const Standard_Integer flag);
+
   //! Sets a new unit from its value in meters (rounded to the
   //! closest one, max gap 1%)
   //! Returns True if done, False if <val> is too far from a
   //! suitable value
-  Standard_EXPORT Standard_Boolean SetUnitValue (const Standard_Real val);
-  
+  Standard_EXPORT Standard_Boolean SetUnitValue(const Standard_Real val);
+
   //! Sets a new unit from its name (param 15 of Global Section)
   //! Returns True if done, False if <name> is incorrect
   //! Remark : if <flag> has been set to 3 (user defined), <name>
   //! is then free
-  Standard_EXPORT Standard_Boolean SetUnitName (const Standard_CString name);
-  
+  Standard_EXPORT Standard_Boolean SetUnitName(const Standard_CString name);
+
   //! Applies unit value to convert header data : Resolution,
   //! MaxCoord, MaxLineWeight
   //! Applies unit only once after SetUnit... has been called,
   //! if <enforce> is given as True.
   //! It can be called just before writing the model to a file,
   //! i.e. when definitive values are finally known
-  Standard_EXPORT void ApplyUnit (const Standard_Boolean enforce = Standard_False);
-  
+  Standard_EXPORT void ApplyUnit(const Standard_Boolean enforce = Standard_False);
+
   //! Performs the re-computation of status on the whole model
   //! (Subordinate Status and Use Flag of each IGES Entity), which
   //! can have required values according the way they are referenced
   //! (see definitions of Logical use, Physical use, etc...)
   Standard_EXPORT void ComputeStatus();
-  
+
   //! Performs auto-correction on an IGESEntity
   //! Returns True if something has changed, False if nothing done.
   //!
@@ -103,31 +102,31 @@ public:
   //! as required values for status, or references to be null), and
   //! the specific IGES service OwnCorrect, which is specialised for
   //! each type of entity.
-  Standard_EXPORT Standard_Boolean AutoCorrect (const Handle(IGESData_IGESEntity)& ent);
-  
+  Standard_EXPORT Standard_Boolean AutoCorrect(const Handle(IGESData_IGESEntity)& ent);
+
   //! Performs auto-correction on the whole Model
   //! Returns the count of modified entities
   Standard_EXPORT Standard_Integer AutoCorrectModel();
-  
+
   //! From the name of unit, computes flag number, 0 if incorrect
   //! (in this case, user defined entity remains possible)
-  Standard_EXPORT static Standard_Integer UnitNameFlag (const Standard_CString name);
-  
+  Standard_EXPORT static Standard_Integer UnitNameFlag(const Standard_CString name);
+
   //! From the flag of unit, determines value in MM, 0 if incorrect
-  Standard_EXPORT static Standard_Real UnitFlagValue (const Standard_Integer flag);
-  
+  Standard_EXPORT static Standard_Real UnitFlagValue(const Standard_Integer flag);
+
   //! From the flag of unit, determines its name, "" if incorrect
-  Standard_EXPORT static Standard_CString UnitFlagName (const Standard_Integer flag);
-  
+  Standard_EXPORT static Standard_CString UnitFlagName(const Standard_Integer flag);
+
   //! From the flag of IGES version, returns name, "" if incorrect
-  Standard_EXPORT static Standard_CString IGESVersionName (const Standard_Integer flag);
-  
+  Standard_EXPORT static Standard_CString IGESVersionName(const Standard_Integer flag);
+
   //! Returns the maximum allowed value for IGESVersion Flag
   Standard_EXPORT static Standard_Integer IGESVersionMax();
-  
+
   //! From the flag of drafting standard, returns name, "" if incorrect
-  Standard_EXPORT static Standard_CString DraftingName (const Standard_Integer flag);
-  
+  Standard_EXPORT static Standard_CString DraftingName(const Standard_Integer flag);
+
   //! Returns the maximum allowed value for Drafting Flag
   Standard_EXPORT static Standard_Integer DraftingMax();
 
@@ -135,32 +134,13 @@ public:
   //! Returns 0 if there's no such flag.
   Standard_EXPORT static Standard_Integer GetFlagByValue(const Standard_Real theValue);
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean theunit;
-  Handle(IGESData_Protocol) theproto;
+  Standard_Boolean           theunit;
+  Handle(IGESData_Protocol)  theproto;
   Handle(IGESData_IGESModel) themodel;
-  Interface_GeneralLib theglib;
-  IGESData_SpecificLib theslib;
-
-
+  Interface_GeneralLib       theglib;
+  IGESData_SpecificLib       theslib;
 };
-
-
-
-
-
-
 
 #endif // _IGESData_BasicEditor_HeaderFile

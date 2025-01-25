@@ -28,54 +28,32 @@ class Standard_NoSuchObject;
 class TNaming_ShapesSet;
 class TopoDS_Shape;
 
-
-
-class TNaming_IteratorOnShapesSet 
+class TNaming_IteratorOnShapesSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    TNaming_IteratorOnShapesSet();
-  
-    TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S);
-  
+  TNaming_IteratorOnShapesSet();
+
+  TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S);
+
   //! Initialize the iteration
-    void Init (const TNaming_ShapesSet& S);
-  
+  void Init(const TNaming_ShapesSet& S);
+
   //! Returns True if there is a current Item in
   //! the iteration.
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const;
+
   //! Move to the next Item
-    void Next();
-  
+  void Next();
+
   const TopoDS_Shape& Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_MapIteratorOfMapOfShape myIt;
-
-
 };
 
-
 #include <TNaming_IteratorOnShapesSet.lxx>
-
-
-
-
 
 #endif // _TNaming_IteratorOnShapesSet_HeaderFile

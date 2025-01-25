@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepVisual_HArray1OfInvisibleItem, StepVisual_Array1OfInvisibleItem)
 
-
 #endif

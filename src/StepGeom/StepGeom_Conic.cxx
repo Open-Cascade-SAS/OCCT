@@ -11,31 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Conic.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Conic,StepGeom_Curve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Conic, StepGeom_Curve)
 
-StepGeom_Conic::StepGeom_Conic ()  {}
+StepGeom_Conic::StepGeom_Conic() {}
 
-void StepGeom_Conic::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition)
+void StepGeom_Conic::Init(const Handle(TCollection_HAsciiString)& aName,
+                          const StepGeom_Axis2Placement&          aPosition)
 {
-	// --- classe own fields ---
-	position = aPosition;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  position = aPosition;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepGeom_Conic::SetPosition(const StepGeom_Axis2Placement& aPosition)
 {
-	position = aPosition;
+  position = aPosition;
 }
 
 StepGeom_Axis2Placement StepGeom_Conic::Position() const
 {
-	return position;
+  return position;
 }

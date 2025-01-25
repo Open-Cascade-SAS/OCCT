@@ -18,24 +18,17 @@
 
 #include <Standard_OutOfRange.hxx>
 
-//! This class represents a pair of integer indices to store 
-//! element indices connected to link. It is restricted to 
+//! This class represents a pair of integer indices to store
+//! element indices connected to link. It is restricted to
 //! store more than two indices in it.
 class BRepMesh_PairOfIndex
 {
 public:
-
   //! Default constructor
-  BRepMesh_PairOfIndex()
-  {
-    Clear();
-  }
+  BRepMesh_PairOfIndex() { Clear(); }
 
   //! Clears indices.
-  void Clear()
-  {
-    myIndex[0] = myIndex[1] = -1;
-  }
+  void Clear() { myIndex[0] = myIndex[1] = -1; }
 
   //! Appends index to the pair.
   void Append(const Standard_Integer theIndex)
@@ -70,22 +63,13 @@ public:
   }
 
   //! Returns number of initialized indices.
-  Standard_Integer Extent() const
-  {
-    return (myIndex[0] < 0 ? 0 : (myIndex[1] < 0 ? 1 : 2));
-  }
+  Standard_Integer Extent() const { return (myIndex[0] < 0 ? 0 : (myIndex[1] < 0 ? 1 : 2)); }
 
   //! Returns first index of pair.
-  Standard_Integer FirstIndex() const
-  {
-    return myIndex[0];
-  }
+  Standard_Integer FirstIndex() const { return myIndex[0]; }
 
   //! Returns last index of pair
-  Standard_Integer LastIndex() const
-  {
-    return (myIndex[1] < 0 ? myIndex[0] : myIndex[1]);
-  }
+  Standard_Integer LastIndex() const { return (myIndex[1] < 0 ? myIndex[0] : myIndex[1]); }
 
   //! Returns index corresponding to the given position in the pair.
   //! @param thePairPos position of index in the pair (1 or 2).
@@ -100,8 +84,7 @@ public:
   //! Sets index corresponding to the given position in the pair.
   //! @param thePairPos position of index in the pair (1 or 2).
   //! @param theIndex index to be stored.
-  void SetIndex(const Standard_Integer thePairPos,
-                const Standard_Integer theIndex)
+  void SetIndex(const Standard_Integer thePairPos, const Standard_Integer theIndex)
   {
     if (thePairPos != 1 && thePairPos != 2)
       throw Standard_OutOfRange("BRepMesh_PairOfIndex::SetIndex, requested index is out of range");
@@ -114,9 +97,10 @@ public:
   void RemoveIndex(const Standard_Integer thePairPos)
   {
     if (thePairPos != 1 && thePairPos != 2)
-      throw Standard_OutOfRange("BRepMesh_PairOfIndex::RemoveIndex, requested index is out of range");
+      throw Standard_OutOfRange(
+        "BRepMesh_PairOfIndex::RemoveIndex, requested index is out of range");
 
-    if ( thePairPos == 1 )
+    if (thePairPos == 1)
       myIndex[0] = myIndex[1];
 
     myIndex[1] = -1;

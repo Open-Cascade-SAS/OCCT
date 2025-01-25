@@ -22,41 +22,20 @@
 
 #include <StepGeom_BoundaryCurve.hxx>
 
-
 class StepGeom_OuterBoundaryCurve;
 DEFINE_STANDARD_HANDLE(StepGeom_OuterBoundaryCurve, StepGeom_BoundaryCurve)
-
 
 class StepGeom_OuterBoundaryCurve : public StepGeom_BoundaryCurve
 {
 
 public:
-
-  
   //! Returns a OuterBoundaryCurve
   Standard_EXPORT StepGeom_OuterBoundaryCurve();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_OuterBoundaryCurve,StepGeom_BoundaryCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_OuterBoundaryCurve, StepGeom_BoundaryCurve)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_OuterBoundaryCurve_HeaderFile

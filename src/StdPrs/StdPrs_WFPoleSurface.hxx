@@ -27,41 +27,22 @@ class Adaptor3d_Surface;
 //! in the two parametric direction.
 //! The number of lines to be drawn is controlled
 //! by the NetworkNumber of the given Drawer.
-class StdPrs_WFPoleSurface  : public Prs3d_Root
+class StdPrs_WFPoleSurface : public Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the surface aSurface to the presentation object aPresentation.
   //! The shape's display attributes are set in the attribute manager aDrawer.
   //! The surface aSurface is a surface object from
   //! Adaptor3d, and provides data from a Geom surface.
   //! This makes it possible to use the surface in a geometric algorithm.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Surface& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Surface&          aSurface,
+                                  const Handle(Prs3d_Drawer)&       aDrawer);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_WFPoleSurface_HeaderFile

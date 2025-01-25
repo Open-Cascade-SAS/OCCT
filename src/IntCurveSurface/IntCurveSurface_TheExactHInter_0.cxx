@@ -25,7 +25,6 @@
 #include <IntCurveSurface_TheCSFunctionOfHInter.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define ThePSurface Handle(Adaptor3d_Surface)
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
@@ -40,4 +39,3 @@
 #define IntImp_IntCS IntCurveSurface_TheExactHInter
 #define IntImp_IntCS_hxx <IntCurveSurface_TheExactHInter.hxx>
 #include "../IntImp/IntImp_IntCS.gxx"
-

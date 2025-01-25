@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeExtend.hxx>
@@ -21,15 +20,16 @@
 static Handle(ShapeAlgo_AlgoContainer) theContainer;
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
- void ShapeAlgo::Init() 
+void ShapeAlgo::Init()
 {
   static Standard_Boolean init = Standard_False;
-  if (init) return;
-  init = Standard_True;
+  if (init)
+    return;
+  init         = Standard_True;
   theContainer = new ShapeAlgo_AlgoContainer;
 
   // initialization of Standard Shape Healing
@@ -37,21 +37,21 @@ static Handle(ShapeAlgo_AlgoContainer) theContainer;
 }
 
 //=======================================================================
-//function : SetAlgoContainer
-//purpose  : 
+// function : SetAlgoContainer
+// purpose  :
 //=======================================================================
 
- void ShapeAlgo::SetAlgoContainer(const Handle(ShapeAlgo_AlgoContainer)& aContainer) 
+void ShapeAlgo::SetAlgoContainer(const Handle(ShapeAlgo_AlgoContainer)& aContainer)
 {
   theContainer = aContainer;
 }
 
 //=======================================================================
-//function : AlgoContainer
-//purpose  : 
+// function : AlgoContainer
+// purpose  :
 //=======================================================================
 
- Handle(ShapeAlgo_AlgoContainer) ShapeAlgo::AlgoContainer() 
+Handle(ShapeAlgo_AlgoContainer) ShapeAlgo::AlgoContainer()
 {
   return theContainer;
 }

@@ -24,7 +24,6 @@ class Express_Real : public Express_PredefinedType
 {
 
 public:
-
   //! Empty constructor
   Standard_EXPORT Express_Real();
 
@@ -34,9 +33,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Real, Express_PredefinedType)
 
 protected:
-
 private:
-
 };
 
 #endif // _Express_Real_HeaderFile

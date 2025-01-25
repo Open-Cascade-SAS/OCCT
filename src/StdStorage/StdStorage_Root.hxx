@@ -24,14 +24,12 @@ class StdObjMgt_Persistent;
 
 DEFINE_STANDARD_HANDLE(StdStorage_Root, Standard_Transient)
 
-//! Describes a named persistent root 
-class StdStorage_Root
-  : public Standard_Transient
+//! Describes a named persistent root
+class StdStorage_Root : public Standard_Transient
 {
   friend class StdStorage_RootData;
 
 public:
-
   DEFINE_STANDARD_RTTIEXT(StdStorage_Root, Standard_Transient)
 
   //! Creates an empty root
@@ -63,18 +61,16 @@ public:
   Standard_EXPORT Standard_Integer Reference() const;
 
 private:
-
   Standard_EXPORT StdStorage_Root(const TCollection_AsciiString& theName,
                                   const Standard_Integer         theRef,
                                   const TCollection_AsciiString& theType);
 
   Standard_EXPORT void SetReference(const Standard_Integer aRef);
 
-  TCollection_AsciiString myName;
-  TCollection_AsciiString myType;
+  TCollection_AsciiString      myName;
+  TCollection_AsciiString      myType;
   Handle(StdObjMgt_Persistent) myObject;
-  Standard_Integer myRef;
-
+  Standard_Integer             myRef;
 };
 
 #endif // _StdStorage_Root_HeaderFile

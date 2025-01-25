@@ -25,17 +25,14 @@ class Adaptor2d_Curve2d;
 class Bnd_Box2d;
 class Geom2d_Curve;
 
-
 //! Computes the bounding box for a curve in 2d .
 //! Functions to add a 2D curve to a bounding box.
 //! The 2D curve is defined from a Geom2d curve.
-class BndLib_Add2dCurve 
+class BndLib_Add2dCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds to the bounding box B the curve C
   //! B is then enlarged by the tolerance value Tol.
   //! Note: depending on the type of curve, one of the following
@@ -63,8 +60,10 @@ public:
   //! -   a Geom_Hyperbola,
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add (const Adaptor2d_Curve2d& C, const Standard_Real Tol, Bnd_Box2d& B);
-  
+  Standard_EXPORT static void Add(const Adaptor2d_Curve2d& C,
+                                  const Standard_Real      Tol,
+                                  Bnd_Box2d&               B);
+
   //! Adds to the bounding box Bthe arc of the curve C limited by the two parameter
   //! values P1 and P2.
   //! B is then enlarged by the tolerance value Tol.
@@ -93,8 +92,12 @@ public:
   //! -   a Geom_Hyperbola,
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add (const Adaptor2d_Curve2d& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Bnd_Box2d& B);
-  
+  Standard_EXPORT static void Add(const Adaptor2d_Curve2d& C,
+                                  const Standard_Real      U1,
+                                  const Standard_Real      U2,
+                                  const Standard_Real      Tol,
+                                  Bnd_Box2d&               B);
+
   //! Adds to the bounding box B the curve C
   //! B is then enlarged by the tolerance value Tol.
   //! Note: depending on the type of curve, one of the following
@@ -102,8 +105,10 @@ public:
   //! -   an exact representation if C is built from a line, a circle or a conic curve,
   //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
-  Standard_EXPORT static void Add (const Handle(Geom2d_Curve)& C, const Standard_Real Tol, Bnd_Box2d& Box);
-  
+  Standard_EXPORT static void Add(const Handle(Geom2d_Curve)& C,
+                                  const Standard_Real         Tol,
+                                  Bnd_Box2d&                  Box);
+
   //! Adds to the bounding box B the part of curve C
   //! B is then enlarged by the tolerance value Tol.
   //! U1, U2 - the parametric range to compute the bounding box;
@@ -112,7 +117,11 @@ public:
   //! -   an exact representation if C is built from a line, a circle or a conic curve,
   //! -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
   //! -   if not, the points of an approximation of the curve C.
-  Standard_EXPORT static void Add (const Handle(Geom2d_Curve)& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Bnd_Box2d& B);
+  Standard_EXPORT static void Add(const Handle(Geom2d_Curve)& C,
+                                  const Standard_Real         U1,
+                                  const Standard_Real         U2,
+                                  const Standard_Real         Tol,
+                                  Bnd_Box2d&                  B);
 
   //! Adds to the bounding box B the part of curve C
   //! B is then enlarged by the tolerance value Tol.
@@ -120,33 +129,17 @@ public:
   //! Note: depending on the type of curve, one of the following
   //! algorithms  is used to include it in the bounding box B:
   //! -   an exact analytical if C is built from a line, a circle or a conic curve,
-  //! -   numerical calculation of bounding box sizes, based on minimization algorithm,  for other types of curve
-  //! If Tol = < Precision::PConfusion(), Precision::PConfusion is used as tolerance for calculation
+  //! -   numerical calculation of bounding box sizes, based on minimization algorithm,  for other
+  //! types of curve If Tol = < Precision::PConfusion(), Precision::PConfusion is used as tolerance
+  //! for calculation
   Standard_EXPORT static void AddOptimal(const Handle(Geom2d_Curve)& C,
-			                                   const Standard_Real U1,
-			                                   const Standard_Real U2,
-			                                   const Standard_Real Tol,
-			                                   Bnd_Box2d& B);
-
+                                         const Standard_Real         U1,
+                                         const Standard_Real         U2,
+                                         const Standard_Real         Tol,
+                                         Bnd_Box2d&                  B);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BndLib_Add2dCurve_HeaderFile

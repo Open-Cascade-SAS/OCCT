@@ -20,49 +20,69 @@
 #include <TopAbs_State.hxx>
 
 //============================================================================
-inline Standard_Boolean IntCurvesFace_Intersector::IsDone() const { 
-  return(done);
+inline Standard_Boolean IntCurvesFace_Intersector::IsDone() const
+{
+  return (done);
 }
+
 //============================================================================
-inline Standard_Integer IntCurvesFace_Intersector::NbPnt() const { 
-  return(nbpnt);
+inline Standard_Integer IntCurvesFace_Intersector::NbPnt() const
+{
+  return (nbpnt);
 }
+
 //============================================================================
-inline const gp_Pnt& IntCurvesFace_Intersector::Pnt(const Standard_Integer i ) const { 
-  return(SeqPnt.Value(i).Pnt()); 
+inline const gp_Pnt& IntCurvesFace_Intersector::Pnt(const Standard_Integer i) const
+{
+  return (SeqPnt.Value(i).Pnt());
 }
+
 //============================================================================
-inline Standard_Real IntCurvesFace_Intersector::UParameter(const Standard_Integer i) const { 
-  return(SeqPnt.Value(i).U()); 
+inline Standard_Real IntCurvesFace_Intersector::UParameter(const Standard_Integer i) const
+{
+  return (SeqPnt.Value(i).U());
 }
+
 //============================================================================
-inline Standard_Real IntCurvesFace_Intersector::VParameter(const Standard_Integer i) const { 
-  return(SeqPnt.Value(i).V()); 
+inline Standard_Real IntCurvesFace_Intersector::VParameter(const Standard_Integer i) const
+{
+  return (SeqPnt.Value(i).V());
 }
+
 //============================================================================
-inline Standard_Real IntCurvesFace_Intersector::WParameter(const Standard_Integer i) const { 
-  return(SeqPnt.Value(i).W()); 
+inline Standard_Real IntCurvesFace_Intersector::WParameter(const Standard_Integer i) const
+{
+  return (SeqPnt.Value(i).W());
 }
+
 //============================================================================
-inline IntCurveSurface_TransitionOnCurve IntCurvesFace_Intersector::Transition(const Standard_Integer i) const { 
-  return(SeqPnt.Value(i).Transition()); 
+inline IntCurveSurface_TransitionOnCurve IntCurvesFace_Intersector::Transition(
+  const Standard_Integer i) const
+{
+  return (SeqPnt.Value(i).Transition());
 }
+
 //============================================================================
 //  Modified by skv - Wed Sep  3 15:34:18 2003 OCC578 Begin
-//  //inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer i) const { 
-// inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer ) const { 
+//  //inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer i) const {
+// inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer ) const {
 //   return(TopAbs_IN);
 // }
-inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer i) const { 
+inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer i) const
+{
   return (mySeqState.Value(i) == 0) ? TopAbs_IN : TopAbs_ON;
 }
+
 //  Modified by skv - Wed Sep  3 15:34:20 2003 OCC578 End
 //============================================================================
-inline Standard_Boolean IntCurvesFace_Intersector::IsParallel() const {
+inline Standard_Boolean IntCurvesFace_Intersector::IsParallel() const
+{
   return myIsParallel;
 }
-inline const TopoDS_Face&  IntCurvesFace_Intersector::Face() const {
-  return(face);
-}
-//============================================================================
 
+inline const TopoDS_Face& IntCurvesFace_Intersector::Face() const
+{
+  return (face);
+}
+
+//============================================================================

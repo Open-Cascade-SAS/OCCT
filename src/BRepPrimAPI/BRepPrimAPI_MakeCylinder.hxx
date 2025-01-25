@@ -25,16 +25,14 @@
 #include <BRepPrimAPI_MakeOneAxis.hxx>
 class gp_Ax2;
 
-
 //! Describes functions to build cylinders or portions of  cylinders.
 //! A MakeCylinder object provides a framework for:
 //! -   defining the construction of a cylinder,
 //! -   implementing the construction algorithm, and
 //! -   consulting the result.
-class BRepPrimAPI_MakeCylinder  : public BRepPrimAPI_MakeOneAxis
+class BRepPrimAPI_MakeCylinder : public BRepPrimAPI_MakeOneAxis
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Make a cylinder.
@@ -46,13 +44,17 @@ public:
   //! @param[in] R      cylinder radius
   //! @param[in] H      cylinder height
   //! @param[in] Angle  defines the missing portion of the cylinder
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const Standard_Real R, const Standard_Real H, const Standard_Real Angle);
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const Standard_Real R,
+                                           const Standard_Real H,
+                                           const Standard_Real Angle);
 
   //! Make a cylinder of radius R and length H.
   //! @param[in] Axes  coordinate system for the construction of the cylinder
   //! @param[in] R     cylinder radius
   //! @param[in] H     cylinder height
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2& Axes, const Standard_Real R, const Standard_Real H);
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
+                                           const Standard_Real R,
+                                           const Standard_Real H);
 
   //! Make a cylinder   of  radius R  and  length H with
   //! angle  H.
@@ -80,36 +82,20 @@ public:
   //! Exceptions Standard_DomainError if:
   //! -   R is less than or equal to Precision::Confusion(), or
   //! -   H is less than or equal to Precision::Confusion().
-  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2& Axes, const Standard_Real R, const Standard_Real H, const Standard_Real Angle);
-  
+  Standard_EXPORT BRepPrimAPI_MakeCylinder(const gp_Ax2&       Axes,
+                                           const Standard_Real R,
+                                           const Standard_Real H,
+                                           const Standard_Real Angle);
+
   //! Returns the algorithm.
   Standard_EXPORT Standard_Address OneAxis();
-  
+
   //! Returns the algorithm.
   Standard_EXPORT BRepPrim_Cylinder& Cylinder();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   BRepPrim_Cylinder myCylinder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepPrimAPI_MakeCylinder_HeaderFile

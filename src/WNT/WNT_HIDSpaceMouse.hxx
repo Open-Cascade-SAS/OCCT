@@ -18,8 +18,8 @@
 #include <Graphic3d_Vec.hxx>
 
 //! Wrapper over Space Mouse data chunk within WM_INPUT event (known also as Raw Input in WinAPI).
-//! This class predefines specific list of supported devices, which does not depend on 3rdparty library provided by mouse vendor.
-//! Supported input chunks:
+//! This class predefines specific list of supported devices, which does not depend on 3rdparty
+//! library provided by mouse vendor. Supported input chunks:
 //! - Rotation (3 directions);
 //! - Translation (3 directions);
 //! - Pressed buttons.
@@ -43,8 +43,9 @@
 //!  {
 //!    UINT aSize = 0;
 //!    ::GetRawInputData ((HRAWINPUT )theLParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
-//!    NCollection_LocalArray<BYTE> aRawData (aSize); // receive Raw Input for any device and process known devices
-//!    if (aSize == 0 || ::GetRawInputData ((HRAWINPUT )theLParam, RID_INPUT, aRawData, &aSize, sizeof(RAWINPUTHEADER)) != aSize)
+//!    NCollection_LocalArray<BYTE> aRawData (aSize); // receive Raw Input for any device and
+//!    process known devices if (aSize == 0 || ::GetRawInputData ((HRAWINPUT )theLParam, RID_INPUT,
+//!    aRawData, &aSize, sizeof(RAWINPUTHEADER)) != aSize)
 //!    {
 //!      break;
 //!    }
@@ -56,7 +57,8 @@
 //!
 //!    RID_DEVICE_INFO aDevInfo; aDevInfo.cbSize = sizeof(RID_DEVICE_INFO);
 //!    UINT aDevInfoSize = sizeof(RID_DEVICE_INFO);
-//!    if (::GetRawInputDeviceInfoW (aRawInput->header.hDevice, RIDI_DEVICEINFO, &aDevInfo, &aDevInfoSize) != sizeof(RID_DEVICE_INFO)
+//!    if (::GetRawInputDeviceInfoW (aRawInput->header.hDevice, RIDI_DEVICEINFO, &aDevInfo,
+//!    &aDevInfoSize) != sizeof(RID_DEVICE_INFO)
 //!     || (aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_LOGITECH
 //!      && aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_3DCONNEXION))
 //!    {
@@ -65,15 +67,16 @@
 //!
 //!    Aspect_VKeySet& aKeys = theViewCtrl.ChangeKeys();
 //!    const double aTimeStamp = theViewCtrl.EventTime();
-//!    WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData, aRawInput->data.hid.dwSizeHid);
-//!    if (aSpaceData.IsTranslation())
+//!    WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData,
+//!    aRawInput->data.hid.dwSizeHid); if (aSpaceData.IsTranslation())
 //!    {
 //!      // process translation input
 //!      bool isIdle = true, isQuadric = true;
 //!      const Graphic3d_Vec3d aTrans = aSpaceData.Translation (isIdle, isQuadric);
-//!      aKeys.KeyFromAxis (Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp, aTrans.x());
-//!      aKeys.KeyFromAxis (Aspect_VKey_NavForward,   Aspect_VKey_NavBackward,   aTimeStamp, aTrans.y());
-//!      aKeys.KeyFromAxis (Aspect_VKey_NavSlideUp,   Aspect_VKey_NavSlideDown,  aTimeStamp, aTrans.z());
+//!      aKeys.KeyFromAxis (Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp,
+//!      aTrans.x()); aKeys.KeyFromAxis (Aspect_VKey_NavForward,   Aspect_VKey_NavBackward,
+//!      aTimeStamp, aTrans.y()); aKeys.KeyFromAxis (Aspect_VKey_NavSlideUp,
+//!      Aspect_VKey_NavSlideDown,  aTimeStamp, aTrans.z());
 //!    }
 //!    if (aSpaceData.IsRotation()) {} // process rotation input
 //!    if (aSpaceData.IsKeyState()) {} // process keys input
@@ -84,43 +87,49 @@ class WNT_HIDSpaceMouse
 {
 public:
   //! Vendor HID identifier.
-  enum { VENDOR_ID_LOGITECH = 0x46D, VENDOR_ID_3DCONNEXION = 0x256F };
+  enum
+  {
+    VENDOR_ID_LOGITECH    = 0x46D,
+    VENDOR_ID_3DCONNEXION = 0x256F
+  };
 
   //! Return if product id is known by this class.
-  Standard_EXPORT static bool IsKnownProduct (unsigned long theProductId);
+  Standard_EXPORT static bool IsKnownProduct(unsigned long theProductId);
 
 public:
   //! Main constructor.
-  Standard_EXPORT WNT_HIDSpaceMouse (unsigned long theProductId,
-                                     const Standard_Byte* theData,
-                                     Standard_Size theSize);
+  Standard_EXPORT WNT_HIDSpaceMouse(unsigned long        theProductId,
+                                    const Standard_Byte* theData,
+                                    Standard_Size        theSize);
 
   //! Return the raw value range.
   int16_t RawValueRange() const { return myValueRange; }
 
   //! Set the raw value range.
-  void SetRawValueRange (int16_t theRange) { myValueRange = theRange > myValueRange ? theRange : myValueRange; }
+  void SetRawValueRange(int16_t theRange)
+  {
+    myValueRange = theRange > myValueRange ? theRange : myValueRange;
+  }
 
   //! Return TRUE if data chunk defines new translation values.
   bool IsTranslation() const
   {
-    return myData[0] == SpaceRawInput_Translation
-        && (mySize == 7 || mySize == 13);
+    return myData[0] == SpaceRawInput_Translation && (mySize == 7 || mySize == 13);
   }
 
   //! Return new translation values.
   //! @param[out] theIsIdle  flag indicating idle state (no translation)
   //! @param[in] theIsQuadric  flag to apply non-linear scale factor
   //! @return vector of 3 elements defining translation values within [-1..1] range, 0 meaning idle,
-  //!         .x defining left/right slide, .y defining forward/backward and .z defining up/down slide.
-  Standard_EXPORT Graphic3d_Vec3d Translation (bool& theIsIdle,
-                                               bool theIsQuadric) const;
+  //!         .x defining left/right slide, .y defining forward/backward and .z defining up/down
+  //!         slide.
+  Standard_EXPORT Graphic3d_Vec3d Translation(bool& theIsIdle, bool theIsQuadric) const;
 
   //! Return TRUE if data chunk defines new rotation values.
   bool IsRotation() const
   {
-    return (myData[0] == SpaceRawInput_Rotation    && mySize == 7)
-        || (myData[0] == SpaceRawInput_Translation && mySize == 13);
+    return (myData[0] == SpaceRawInput_Rotation && mySize == 7)
+           || (myData[0] == SpaceRawInput_Translation && mySize == 13);
   }
 
   //! Return new rotation values.
@@ -128,8 +137,7 @@ public:
   //! @param[in] theIsQuadric  flag to apply non-linear scale factor
   //! @return vector of 3 elements defining rotation values within [-1..1] range, 0 meaning idle,
   //!         .x defining tilt, .y defining roll and .z defining spin.
-  Standard_EXPORT Graphic3d_Vec3d Rotation (bool& theIsIdle,
-                                            bool theIsQuadric) const;
+  Standard_EXPORT Graphic3d_Vec3d Rotation(bool& theIsIdle, bool theIsQuadric) const;
 
   //! Return TRUE for key state data chunk.
   bool IsKeyState() const { return myData[0] == SpaceRawInput_KeyState; }
@@ -138,16 +146,15 @@ public:
   uint32_t KeyState() const { return *reinterpret_cast<const uint32_t*>(myData + 1); }
 
   //! Convert key state bit into virtual key.
-  Standard_EXPORT Aspect_VKey HidToSpaceKey (unsigned short theKeyBit) const;
+  Standard_EXPORT Aspect_VKey HidToSpaceKey(unsigned short theKeyBit) const;
 
 private:
-
   //! Translate raw data chunk of 3 int16 values into normalized vec3.
   //! The values are considered within the range [-350; 350], with 0 as neutral state.
-  Graphic3d_Vec3d fromRawVec3 (bool& theIsIdle,
-                               const Standard_Byte* theData,
-                               bool theIsTrans,
-                               bool theIsQuadric) const;
+  Graphic3d_Vec3d fromRawVec3(bool&                theIsIdle,
+                              const Standard_Byte* theData,
+                              bool                 theIsTrans,
+                              bool                 theIsQuadric) const;
 
   //! Data chunk type.
   enum

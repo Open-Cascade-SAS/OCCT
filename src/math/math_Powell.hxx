@@ -27,97 +27,79 @@
 #include <Standard_OStream.hxx>
 class math_MultipleVarFunction;
 
-
-
 //! This class implements the Powell method to find the minimum of
 //! function of multiple variables (the gradient does not have to be known).
-class math_Powell 
+class math_Powell
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructor. Initialize new entity.
-  Standard_EXPORT math_Powell(const math_MultipleVarFunction& theFunction, const Standard_Real theTolerance, const Standard_Integer theNbIterations = 200, const Standard_Real theZEPS = 1.0e-12);
-  
+  Standard_EXPORT math_Powell(const math_MultipleVarFunction& theFunction,
+                              const Standard_Real             theTolerance,
+                              const Standard_Integer          theNbIterations = 200,
+                              const Standard_Real             theZEPS         = 1.0e-12);
+
   //! Destructor
   Standard_EXPORT virtual ~math_Powell();
-  
 
   //! Computes Powell minimization on the function F given
   //! theStartingPoint, and an initial matrix theStartingDirection
   //! whose columns contain the initial set of directions.
   //! The solution F = Fi is found when:
   //! 2.0 * abs(Fi - Fi-1) =< Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
-  Standard_EXPORT void Perform (math_MultipleVarFunction& theFunction, const math_Vector& theStartingPoint, const math_Matrix& theStartingDirections);
-  
+  Standard_EXPORT void Perform(math_MultipleVarFunction& theFunction,
+                               const math_Vector&        theStartingPoint,
+                               const math_Matrix&        theStartingDirections);
 
   //! Solution F = Fi is found when:
   //! 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
   //! The maximum number of iterations allowed is given by NbIterations.
-    virtual Standard_Boolean IsSolutionReached (math_MultipleVarFunction& theFunction);
-  
+  virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunction& theFunction);
+
   //! Returns true if the computations are successful, otherwise returns false.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! returns the location vector of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-    const math_Vector& Location() const;
-  
+  const math_Vector& Location() const;
+
   //! outputs the location vector of the minimum in Loc.
   //! Exception NotDone is raised if the minimum was not found.
   //! Exception DimensionError is raised if the range of Loc is not
   //! equal to the range of the StartingPoint.
-    void Location (math_Vector& Loc) const;
-  
+  void Location(math_Vector& Loc) const;
+
   //! Returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-    Standard_Real Minimum() const;
-  
+  Standard_Real Minimum() const;
+
   //! Returns the number of iterations really done during the
   //! computation of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-    Standard_Integer NbIterations() const;
-  
+  Standard_Integer NbIterations() const;
+
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-  math_Vector TheLocation;
+  math_Vector   TheLocation;
   Standard_Real TheMinimum;
   Standard_Real TheLocationError;
   Standard_Real PreviousMinimum;
   Standard_Real XTol;
   Standard_Real EPSZ;
 
-
 private:
-
-
-
   Standard_Boolean Done;
   Standard_Integer Iter;
-  math_Status TheStatus;
-  math_Matrix TheDirections;
+  math_Status      TheStatus;
+  math_Matrix      TheDirections;
   Standard_Integer State;
   Standard_Integer Itermax;
-
-
 };
 
-
 #include <math_Powell.lxx>
-
-
-
-
 
 #endif // _math_Powell_HeaderFile

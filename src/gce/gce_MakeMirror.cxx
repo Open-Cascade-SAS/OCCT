@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gce_MakeMirror.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
@@ -24,27 +23,27 @@
 //=========================================================================
 //   Creation d une symetrie  de gp par rapport a un point.             +
 //=========================================================================
-gce_MakeMirror::gce_MakeMirror(const gp_Pnt&  Point ) 
-{ 
-  TheMirror.SetMirror(Point); 
-}
-
-//=========================================================================
-//   Creation d une symetrie  de gp par rapport a une droite.           +
-//=========================================================================
-
-gce_MakeMirror::gce_MakeMirror(const gp_Ax1& Axis ) 
-{ 
-  TheMirror.SetMirror(Axis); 
-}
-
-//=========================================================================
-//   Creation d une symetrie  de gp par rapport a une droite.           +
-//=========================================================================
-
-gce_MakeMirror::gce_MakeMirror(const gp_Lin&  Line ) 
+gce_MakeMirror::gce_MakeMirror(const gp_Pnt& Point)
 {
-  TheMirror.SetMirror(gp_Ax1(Line.Location(),Line.Direction()));
+  TheMirror.SetMirror(Point);
+}
+
+//=========================================================================
+//   Creation d une symetrie  de gp par rapport a une droite.           +
+//=========================================================================
+
+gce_MakeMirror::gce_MakeMirror(const gp_Ax1& Axis)
+{
+  TheMirror.SetMirror(Axis);
+}
+
+//=========================================================================
+//   Creation d une symetrie  de gp par rapport a une droite.           +
+//=========================================================================
+
+gce_MakeMirror::gce_MakeMirror(const gp_Lin& Line)
+{
+  TheMirror.SetMirror(gp_Ax1(Line.Location(), Line.Direction()));
 }
 
 //=========================================================================
@@ -52,10 +51,9 @@ gce_MakeMirror::gce_MakeMirror(const gp_Lin&  Line )
 //   par un point et une direction.                                       +
 //=========================================================================
 
-gce_MakeMirror::gce_MakeMirror(const gp_Pnt&  Point ,
-			       const gp_Dir&  Direc ) 
+gce_MakeMirror::gce_MakeMirror(const gp_Pnt& Point, const gp_Dir& Direc)
 {
-  TheMirror.SetMirror(gp_Ax1(Point,Direc));
+  TheMirror.SetMirror(gp_Ax1(Point, Direc));
 }
 
 //=========================================================================
@@ -63,26 +61,26 @@ gce_MakeMirror::gce_MakeMirror(const gp_Pnt&  Point ,
 //   un Ax2 (Normale au plan et axe x du plan).                           +
 //=========================================================================
 
-gce_MakeMirror::gce_MakeMirror(const gp_Ax2&  Plane ) 
-{ 
-  TheMirror.SetMirror(Plane); 
+gce_MakeMirror::gce_MakeMirror(const gp_Ax2& Plane)
+{
+  TheMirror.SetMirror(Plane);
 }
 
 //=========================================================================
 //   Creation d une symetrie 3d de gp par rapport a un plan Plane.        +
 //=========================================================================
 
-gce_MakeMirror::gce_MakeMirror(const gp_Pln& Plane ) 
+gce_MakeMirror::gce_MakeMirror(const gp_Pln& Plane)
 {
   TheMirror.SetMirror(Plane.Position().Ax2());
 }
 
 const gp_Trsf& gce_MakeMirror::Value() const
-{ 
-  return TheMirror; 
+{
+  return TheMirror;
 }
 
-const gp_Trsf& gce_MakeMirror::Operator() const 
+const gp_Trsf& gce_MakeMirror::Operator() const
 {
   return TheMirror;
 }

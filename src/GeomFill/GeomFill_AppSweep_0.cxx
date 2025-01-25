@@ -21,7 +21,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <GeomFill_SweepSectionGenerator.hxx>
 #include <GeomFill_Line.hxx>
- 
 
 #define TheSectionGenerator GeomFill_SweepSectionGenerator
 #define TheSectionGenerator_hxx <GeomFill_SweepSectionGenerator.hxx>
@@ -31,4 +30,3 @@
 #define AppBlend_AppSurf GeomFill_AppSweep
 #define AppBlend_AppSurf_hxx <GeomFill_AppSweep.hxx>
 #include "../AppBlend/AppBlend_AppSurf.gxx"
-

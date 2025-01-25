@@ -29,7 +29,6 @@ class Interface_InterfaceModel;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-
 class IGESSelect_SplineToBSpline;
 DEFINE_STANDARD_HANDLE(IGESSelect_SplineToBSpline, IFSelect_Transformer)
 
@@ -50,19 +49,21 @@ class IGESSelect_SplineToBSpline : public IFSelect_Transformer
 {
 
 public:
-
-  
   //! Creates a Transformer SplineToBSpline. If <tryC2> is True,
   //! it will in addition try to upgrade continuity up to C2.
   Standard_EXPORT IGESSelect_SplineToBSpline(const Standard_Boolean tryC2);
-  
+
   //! Returns the option TryC2 given at creation time
   Standard_EXPORT Standard_Boolean OptionTryC2() const;
-  
+
   //! Performs the transformation, if there is at least one Spline
   //! Curve (112) or Surface (126). Does nothing if there is none.
-  Standard_EXPORT Standard_Boolean Perform (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Perform(const Interface_Graph&            G,
+                                           const Handle(Interface_Protocol)& protocol,
+                                           Interface_CheckIterator&          checks,
+                                           Handle(Interface_InterfaceModel)& newmod)
+    Standard_OVERRIDE;
+
   //! Returns the transformed entities.
   //! If original data contained no Spline Curve or Surface,
   //! the result is identity : <entto> = <entfrom>
@@ -70,37 +71,22 @@ public:
   //! or Surface, it is a converted BSpline Curve or Surface. Else,
   //! it is the result of general service Copy (rebuilt as necessary
   //! by BSPlines replacing Splines).
-  Standard_EXPORT Standard_Boolean Updated (const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Updated(const Handle(Standard_Transient)& entfrom,
+            Handle(Standard_Transient)&       entto) const Standard_OVERRIDE;
+
   //! Returns a text which defines the way a Transformer works :
   //! "Conversion Spline to BSpline" and as opted,
   //! " trying to upgrade continuity"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline,IFSelect_Transformer)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline, IFSelect_Transformer)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Boolean thetryc2;
-  Standard_Boolean thefound;
+  Standard_Boolean              thetryc2;
+  Standard_Boolean              thefound;
   Handle(Interface_CopyControl) themap;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SplineToBSpline_HeaderFile

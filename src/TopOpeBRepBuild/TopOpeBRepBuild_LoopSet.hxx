@@ -27,54 +27,31 @@
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_Loop;
 
-
-
-class TopOpeBRepBuild_LoopSet 
+class TopOpeBRepBuild_LoopSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepBuild_LoopSet();
-  
+
   Standard_EXPORT virtual ~TopOpeBRepBuild_LoopSet();
-  
+
   Standard_EXPORT TopOpeBRepBuild_ListOfLoop& ChangeListOfLoop();
-  
+
   Standard_EXPORT virtual void InitLoop();
-  
+
   Standard_EXPORT virtual Standard_Boolean MoreLoop() const;
-  
+
   Standard_EXPORT virtual void NextLoop();
-  
+
   Standard_EXPORT virtual Handle(TopOpeBRepBuild_Loop) Loop() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopOpeBRepBuild_ListOfLoop myListOfLoop;
+  TopOpeBRepBuild_ListOfLoop               myListOfLoop;
   TopOpeBRepBuild_ListIteratorOfListOfLoop myLoopIterator;
-  Standard_Integer myLoopIndex;
-  Standard_Integer myNbLoop;
-
-
+  Standard_Integer                         myLoopIndex;
+  Standard_Integer                         myNbLoop;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_LoopSet_HeaderFile

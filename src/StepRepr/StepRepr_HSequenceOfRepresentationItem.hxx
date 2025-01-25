@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(StepRepr_HSequenceOfRepresentationItem, StepRepr_SequenceOfRepresentationItem)
 
-
 #endif

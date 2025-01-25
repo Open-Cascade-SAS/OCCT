@@ -26,9 +26,9 @@ class Express_Alias : public Express_Item
 {
 
 public:
-
   //! Create ALIAS item and initialize it
-  Standard_EXPORT Express_Alias (const Standard_CString theName, const Handle(Express_Type)& theType);
+  Standard_EXPORT Express_Alias(const Standard_CString      theName,
+                                const Handle(Express_Type)& theType);
 
   //! Returns aliased type
   Standard_EXPORT const Handle(Express_Type)& Type() const;
@@ -45,11 +45,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Alias, Express_Item)
 
 protected:
-
 private:
-
   Handle(Express_Type) myType;
-
 };
 
 #endif // _Express_Alias_HeaderFile

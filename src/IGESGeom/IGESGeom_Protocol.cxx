@@ -41,8 +41,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Protocol, IGESData_Protocol)
 
-IGESGeom_Protocol::IGESGeom_Protocol()
-{}
+IGESGeom_Protocol::IGESGeom_Protocol() {}
 
 Standard_Integer IGESGeom_Protocol::NbResources() const
 {

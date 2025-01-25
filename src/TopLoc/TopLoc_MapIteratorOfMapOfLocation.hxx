@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef TopLoc_MapIteratorOfMapOfLocation_HeaderFile
 #define TopLoc_MapIteratorOfMapOfLocation_HeaderFile
 

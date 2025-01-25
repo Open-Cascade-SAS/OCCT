@@ -24,7 +24,6 @@
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 
-
 class Draw_Box;
 DEFINE_STANDARD_HANDLE(Draw_Box, Draw_Drawable3D)
 
@@ -32,23 +31,20 @@ DEFINE_STANDARD_HANDLE(Draw_Box, Draw_Drawable3D)
 class Draw_Box : public Draw_Drawable3D
 {
 public:
-  
   //! Constructor
-  Standard_EXPORT Draw_Box(const Bnd_OBB& theOBB,
-                           const Draw_Color& theColor);
+  Standard_EXPORT Draw_Box(const Bnd_OBB& theOBB, const Draw_Color& theColor);
 
   //! Draws myOBB
-  Standard_EXPORT void DrawOn (Draw_Display& theDis) const Standard_OVERRIDE;
-  
-  DEFINE_STANDARD_RTTIEXT(Draw_Box,Draw_Drawable3D)
+  Standard_EXPORT void DrawOn(Draw_Display& theDis) const Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTIEXT(Draw_Box, Draw_Drawable3D)
 
 protected:
-
   //! Converts the point (theX, theY, theZ) in local coordinate system to WCS.
-  void ToWCS(const Standard_Real theX, 
+  void ToWCS(const Standard_Real theX,
              const Standard_Real theY,
              const Standard_Real theZ,
-             gp_Pnt& theP) const;
+             gp_Pnt&             theP) const;
 
   //! Moves the point thePt along X-direction of myOBB on the distance theShift.
   void MoveX(const Standard_Real theShift, gp_Pnt& thePt) const;
@@ -60,7 +56,6 @@ protected:
   void MoveZ(const Standard_Real theShift, gp_Pnt& thePt) const;
 
 private:
-
   //! Oriented bounding box
   Bnd_OBB myOBB;
 

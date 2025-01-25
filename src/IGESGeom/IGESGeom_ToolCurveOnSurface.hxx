@@ -35,64 +35,54 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a CurveOnSurface. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESGeom_ToolCurveOnSurface 
+class IGESGeom_ToolCurveOnSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolCurveOnSurface, ready to work
   Standard_EXPORT IGESGeom_ToolCurveOnSurface();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESGeom_CurveOnSurface)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESGeom_CurveOnSurface)& ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESGeom_CurveOnSurface)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESGeom_CurveOnSurface)& ent,
+                                      IGESData_IGESWriter&                   IW) const;
+
   //! Lists the Entities shared by a CurveOnSurface <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESGeom_CurveOnSurface)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESGeom_CurveOnSurface)& ent,
+                                 Interface_EntityIterator&              iter) const;
+
   //! Sets automatic unambiguous Correction on a CurveOnSurface
   //! (its CurveUV must have UseFlag at 5)
-  Standard_EXPORT Standard_Boolean OwnCorrect (const Handle(IGESGeom_CurveOnSurface)& ent) const;
-  
+  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESGeom_CurveOnSurface)& ent) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESGeom_CurveOnSurface)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESGeom_CurveOnSurface)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESGeom_CurveOnSurface)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESGeom_CurveOnSurface)& ent,
+                                const Interface_ShareTool&             shares,
+                                Handle(Interface_Check)&               ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESGeom_CurveOnSurface)& entfrom, const Handle(IGESGeom_CurveOnSurface)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESGeom_CurveOnSurface)& entfrom,
+                               const Handle(IGESGeom_CurveOnSurface)& entto,
+                               Interface_CopyTool&                    TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESGeom_CurveOnSurface)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESGeom_CurveOnSurface)& ent,
+                               const IGESData_IGESDumper&             dumper,
+                               Standard_OStream&                      S,
+                               const Standard_Integer                 own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_ToolCurveOnSurface_HeaderFile

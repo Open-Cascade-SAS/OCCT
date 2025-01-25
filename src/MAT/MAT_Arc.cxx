@@ -14,28 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MAT_Arc.hxx>
 #include <MAT_Node.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MAT_Arc,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Arc, Standard_Transient)
 
 //========================================================================
 // function:
 // purpose :
 //========================================================================
-MAT_Arc::MAT_Arc (const Standard_Integer      ArcIndex, 
-		  const Standard_Integer      GeomIndex, 
-		  const Handle(MAT_BasicElt)& FirstElement, 
-		  const Handle(MAT_BasicElt)& SecondElement)
- : arcIndex(ArcIndex),
-   geomIndex(GeomIndex),
-   firstArcLeft  (0),
-   firstArcRight (0),
-   secondArcRight (0),
-   secondArcLeft (0)   
+MAT_Arc::MAT_Arc(const Standard_Integer      ArcIndex,
+                 const Standard_Integer      GeomIndex,
+                 const Handle(MAT_BasicElt)& FirstElement,
+                 const Handle(MAT_BasicElt)& SecondElement)
+    : arcIndex(ArcIndex),
+      geomIndex(GeomIndex),
+      firstArcLeft(0),
+      firstArcRight(0),
+      secondArcRight(0),
+      secondArcLeft(0)
 {
   firstElement  = FirstElement;
   secondElement = SecondElement;
@@ -45,7 +44,7 @@ MAT_Arc::MAT_Arc (const Standard_Integer      ArcIndex,
 // function: Index
 // purpose :
 //========================================================================
-Standard_Integer  MAT_Arc::Index() const
+Standard_Integer MAT_Arc::Index() const
 {
   return arcIndex;
 }
@@ -54,7 +53,7 @@ Standard_Integer  MAT_Arc::Index() const
 // function: GeomIndex
 // purpose :
 //========================================================================
-Standard_Integer  MAT_Arc::GeomIndex() const
+Standard_Integer MAT_Arc::GeomIndex() const
 {
   return geomIndex;
 }
@@ -63,7 +62,7 @@ Standard_Integer  MAT_Arc::GeomIndex() const
 // function: FirstElement
 // purpose :
 //========================================================================
-Handle(MAT_BasicElt)  MAT_Arc::FirstElement() const
+Handle(MAT_BasicElt) MAT_Arc::FirstElement() const
 {
   return firstElement;
 }
@@ -72,7 +71,7 @@ Handle(MAT_BasicElt)  MAT_Arc::FirstElement() const
 // function: SecondElement
 // purpose :
 //========================================================================
-Handle(MAT_BasicElt)  MAT_Arc::SecondElement() const
+Handle(MAT_BasicElt) MAT_Arc::SecondElement() const
 {
   return secondElement;
 }
@@ -81,16 +80,16 @@ Handle(MAT_BasicElt)  MAT_Arc::SecondElement() const
 // function: FirstNode
 // purpose :
 //========================================================================
-Handle(MAT_Node)  MAT_Arc::FirstNode() const
+Handle(MAT_Node) MAT_Arc::FirstNode() const
 {
-  return firstNode; 
+  return firstNode;
 }
 
 //========================================================================
 // function: SecondNode
 // purpose :
 //========================================================================
-Handle(MAT_Node)  MAT_Arc::SecondNode() const
+Handle(MAT_Node) MAT_Arc::SecondNode() const
 {
   return secondNode;
 }
@@ -99,13 +98,14 @@ Handle(MAT_Node)  MAT_Arc::SecondNode() const
 // function: TheOtherNode
 // purpose :
 //========================================================================
-Handle(MAT_Node) MAT_Arc::TheOtherNode(const Handle(MAT_Node)& aNode)const 
+Handle(MAT_Node) MAT_Arc::TheOtherNode(const Handle(MAT_Node)& aNode) const
 {
   if (FirstNode() == aNode)
     return SecondNode();
   else if (SecondNode() == aNode)
     return FirstNode();
-  else {
+  else
+  {
     throw Standard_DomainError("MAT_Arc::TheOtherNode");
   }
 }
@@ -114,20 +114,25 @@ Handle(MAT_Node) MAT_Arc::TheOtherNode(const Handle(MAT_Node)& aNode)const
 // function: HasNeighbour
 // purpose :
 //========================================================================
-Standard_Boolean MAT_Arc::HasNeighbour(const Handle(MAT_Node)& aNode,
-				       const MAT_Side          aSide ) const
+Standard_Boolean MAT_Arc::HasNeighbour(const Handle(MAT_Node)& aNode, const MAT_Side aSide) const
 {
-  if (aSide == MAT_Left) {
-//    if (aNode == FirstNode())  return (!firstArcLeft  == NULL);
-    if (aNode == FirstNode())  return (firstArcLeft != 0);
-//    if (aNode == SecondNode()) return (!secondArcLeft == NULL);
-    if (aNode == SecondNode()) return (secondArcLeft != 0);
+  if (aSide == MAT_Left)
+  {
+    //    if (aNode == FirstNode())  return (!firstArcLeft  == NULL);
+    if (aNode == FirstNode())
+      return (firstArcLeft != 0);
+    //    if (aNode == SecondNode()) return (!secondArcLeft == NULL);
+    if (aNode == SecondNode())
+      return (secondArcLeft != 0);
   }
-  else {
-//    if (aNode == FirstNode())  return (!firstArcRight  == NULL);
-    if (aNode == FirstNode())  return (firstArcRight != 0);
-//    if (aNode == SecondNode()) return (!secondArcRight == NULL);
-    if (aNode == SecondNode()) return (secondArcRight != 0);
+  else
+  {
+    //    if (aNode == FirstNode())  return (!firstArcRight  == NULL);
+    if (aNode == FirstNode())
+      return (firstArcRight != 0);
+    //    if (aNode == SecondNode()) return (!secondArcRight == NULL);
+    if (aNode == SecondNode())
+      return (secondArcRight != 0);
   }
   throw Standard_DomainError("MAT_Arc::HasNeighbour");
 }
@@ -136,18 +141,22 @@ Standard_Boolean MAT_Arc::HasNeighbour(const Handle(MAT_Node)& aNode,
 // function: Neighbour
 // purpose :
 //========================================================================
-Handle(MAT_Arc)  MAT_Arc::Neighbour(const Handle(MAT_Node)& aNode,
-				    const MAT_Side          aSide ) 
-const
+Handle(MAT_Arc) MAT_Arc::Neighbour(const Handle(MAT_Node)& aNode, const MAT_Side aSide) const
 
 {
-  if (aSide == MAT_Left) {
-    if (aNode == FirstNode())  return (MAT_Arc*)firstArcLeft;
-    if (aNode == SecondNode()) return (MAT_Arc*)secondArcLeft;
+  if (aSide == MAT_Left)
+  {
+    if (aNode == FirstNode())
+      return (MAT_Arc*)firstArcLeft;
+    if (aNode == SecondNode())
+      return (MAT_Arc*)secondArcLeft;
   }
-  else {
-    if (aNode == FirstNode())  return (MAT_Arc*)firstArcRight;
-    if (aNode == SecondNode()) return (MAT_Arc*)secondArcRight;
+  else
+  {
+    if (aNode == FirstNode())
+      return (MAT_Arc*)firstArcRight;
+    if (aNode == SecondNode())
+      return (MAT_Arc*)secondArcRight;
   }
   throw Standard_DomainError("MAT_Arc::Neighbour");
 }
@@ -156,7 +165,7 @@ const
 // function: SetIndex
 // purpose :
 //========================================================================
-void  MAT_Arc::SetIndex(const Standard_Integer anInteger)
+void MAT_Arc::SetIndex(const Standard_Integer anInteger)
 {
   arcIndex = anInteger;
 }
@@ -165,7 +174,7 @@ void  MAT_Arc::SetIndex(const Standard_Integer anInteger)
 // function: SetGeomIndex
 // purpose :
 //========================================================================
-void  MAT_Arc::SetGeomIndex(const Standard_Integer anInteger)
+void MAT_Arc::SetGeomIndex(const Standard_Integer anInteger)
 {
   geomIndex = anInteger;
 }
@@ -174,7 +183,7 @@ void  MAT_Arc::SetGeomIndex(const Standard_Integer anInteger)
 // function: SetFirstElement
 // purpose :
 //========================================================================
-void  MAT_Arc::SetFirstElement(const Handle(MAT_BasicElt)& aBasicElt)
+void MAT_Arc::SetFirstElement(const Handle(MAT_BasicElt)& aBasicElt)
 {
   firstElement = aBasicElt;
 }
@@ -183,7 +192,7 @@ void  MAT_Arc::SetFirstElement(const Handle(MAT_BasicElt)& aBasicElt)
 // function: SetSecondElement
 // purpose :
 //========================================================================
-void  MAT_Arc::SetSecondElement(const Handle(MAT_BasicElt)& aBasicElt)
+void MAT_Arc::SetSecondElement(const Handle(MAT_BasicElt)& aBasicElt)
 {
   secondElement = aBasicElt;
 }
@@ -192,7 +201,7 @@ void  MAT_Arc::SetSecondElement(const Handle(MAT_BasicElt)& aBasicElt)
 // function: SetFirstNode
 // purpose :
 //========================================================================
-void  MAT_Arc::SetFirstNode(const Handle(MAT_Node)& aNode)
+void MAT_Arc::SetFirstNode(const Handle(MAT_Node)& aNode)
 {
   firstNode = aNode;
 }
@@ -201,7 +210,7 @@ void  MAT_Arc::SetFirstNode(const Handle(MAT_Node)& aNode)
 // function: SetSecondNode
 // purpose :
 //========================================================================
-void  MAT_Arc::SetSecondNode(const Handle(MAT_Node)& aNode)
+void MAT_Arc::SetSecondNode(const Handle(MAT_Node)& aNode)
 {
   secondNode = aNode;
 }
@@ -210,11 +219,10 @@ void  MAT_Arc::SetSecondNode(const Handle(MAT_Node)& aNode)
 // function: SetFirstArc
 // purpose :
 //========================================================================
-void  MAT_Arc::SetFirstArc(const MAT_Side aSide ,
-			   const Handle(MAT_Arc)& anArc)
+void MAT_Arc::SetFirstArc(const MAT_Side aSide, const Handle(MAT_Arc)& anArc)
 {
-  if (aSide == MAT_Left) 
-    firstArcLeft  = anArc.get();
+  if (aSide == MAT_Left)
+    firstArcLeft = anArc.get();
   else
     firstArcRight = anArc.get();
 }
@@ -223,10 +231,9 @@ void  MAT_Arc::SetFirstArc(const MAT_Side aSide ,
 // function: SetSecondArc
 // purpose :
 //========================================================================
-void  MAT_Arc::SetSecondArc(const MAT_Side aSide ,
-			    const Handle(MAT_Arc)& anArc)
-{ 
-  if (aSide == MAT_Left) 
+void MAT_Arc::SetSecondArc(const MAT_Side aSide, const Handle(MAT_Arc)& anArc)
+{
+  if (aSide == MAT_Left)
     secondArcLeft = anArc.get();
   else
     secondArcRight = anArc.get();
@@ -236,35 +243,26 @@ void  MAT_Arc::SetSecondArc(const MAT_Side aSide ,
 // function: SetNeighbour
 // purpose :
 //========================================================================
-void  MAT_Arc::SetNeighbour(const MAT_Side aSide, 
-			    const Handle(MAT_Node)& aNode, 
-			    const Handle(MAT_Arc)& anArc)
+void MAT_Arc::SetNeighbour(const MAT_Side          aSide,
+                           const Handle(MAT_Node)& aNode,
+                           const Handle(MAT_Arc)&  anArc)
 {
-  if (aSide == MAT_Left) {
-    if (aNode == FirstNode())  
-      firstArcLeft  = anArc.get();
+  if (aSide == MAT_Left)
+  {
+    if (aNode == FirstNode())
+      firstArcLeft = anArc.get();
     else if (aNode == SecondNode())
       secondArcLeft = anArc.get();
     else
-     throw Standard_DomainError("MAT_Arc::SetNeighbour");
+      throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }
-  else {
-    if (aNode == FirstNode())  
-      firstArcRight  = anArc.get();
+  else
+  {
+    if (aNode == FirstNode())
+      firstArcRight = anArc.get();
     else if (aNode == SecondNode())
       secondArcRight = anArc.get();
     else
       throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }
 }
-
-
-
-
-
-
-
-
-
-
-

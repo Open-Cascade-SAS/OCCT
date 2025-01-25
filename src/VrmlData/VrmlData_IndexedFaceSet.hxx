@@ -27,81 +27,81 @@
 /**
  *  Implementation of IndexedFaceSet node
  */
-class VrmlData_IndexedFaceSet : public VrmlData_Faceted 
+class VrmlData_IndexedFaceSet : public VrmlData_Faceted
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  inline VrmlData_IndexedFaceSet ()
-    : myArrPolygons     (0L),
-      myArrNormalInd    (0L),
-      myArrColorInd     (0L),
-      myArrTextureInd   (0L),
-      myNbPolygons      (0),
-      myNbNormals       (0),
-      myNbColors        (0),
-      myNbTextures      (0),
-      myNormalPerVertex (Standard_True),
-      myColorPerVertex  (Standard_True)
-  {}
+  inline VrmlData_IndexedFaceSet()
+      : myArrPolygons(0L),
+        myArrNormalInd(0L),
+        myArrColorInd(0L),
+        myArrTextureInd(0L),
+        myNbPolygons(0),
+        myNbNormals(0),
+        myNbColors(0),
+        myNbTextures(0),
+        myNormalPerVertex(Standard_True),
+        myColorPerVertex(Standard_True)
+  {
+  }
 
   /**
    * Constructor
    */
-  inline VrmlData_IndexedFaceSet (const VrmlData_Scene&  theScene,
-                                  const char             * theName,
-                                  const Standard_Boolean isCCW   =Standard_True,
-                                  const Standard_Boolean isSolid =Standard_True,
-                                  const Standard_Boolean isConvex=Standard_True,
-                                  const Standard_Real    theCreaseAngle = 0.)
-    : VrmlData_Faceted (theScene, theName, isCCW, isSolid, isConvex,
-                        theCreaseAngle),
-      myArrPolygons     (0L),
-      myArrNormalInd    (0L),
-      myArrColorInd     (0L),
-      myArrTextureInd   (0L),
-      myNbPolygons      (0),
-      myNbNormals       (0),
-      myNbColors        (0),
-      myNbTextures      (0),
-      myNormalPerVertex (Standard_True),
-      myColorPerVertex  (Standard_True)
-  {}
+  inline VrmlData_IndexedFaceSet(const VrmlData_Scene&  theScene,
+                                 const char*            theName,
+                                 const Standard_Boolean isCCW          = Standard_True,
+                                 const Standard_Boolean isSolid        = Standard_True,
+                                 const Standard_Boolean isConvex       = Standard_True,
+                                 const Standard_Real    theCreaseAngle = 0.)
+      : VrmlData_Faceted(theScene, theName, isCCW, isSolid, isConvex, theCreaseAngle),
+        myArrPolygons(0L),
+        myArrNormalInd(0L),
+        myArrColorInd(0L),
+        myArrTextureInd(0L),
+        myNbPolygons(0),
+        myNbNormals(0),
+        myNbColors(0),
+        myNbTextures(0),
+        myNormalPerVertex(Standard_True),
+        myColorPerVertex(Standard_True)
+  {
+  }
 
   /**
    * Query the Normals.
    */
-  inline const Handle(VrmlData_Normal)&
-                Normals         () const        { return myNormals; }
+  inline const Handle(VrmlData_Normal)& Normals() const { return myNormals; }
 
   /**
    * Query the Colors.
    */
-  inline const Handle(VrmlData_Color)&
-                Colors          () const        { return myColors; }
+  inline const Handle(VrmlData_Color)& Colors() const { return myColors; }
 
   /**
    * Query the Texture Coordinates.
    */
-  inline const Handle(VrmlData_TextureCoordinate)&
-                TextureCoords   () const      { return myTxCoords; }
+  inline const Handle(VrmlData_TextureCoordinate)& TextureCoords() const { return myTxCoords; }
 
   // ========================================================================
   // =========================== TRIANGULATION GRID =========================
   /**
    * Query the Coordinates.
    */
-  inline const Handle(VrmlData_Coordinate)&
-                Coordinates     () const        { return myCoords; }
+  inline const Handle(VrmlData_Coordinate)& Coordinates() const { return myCoords; }
 
   /**
    * Query the array of polygons
    */
-  inline size_t Polygons        (const Standard_Integer**& arrPolygons) const
-  { arrPolygons = myArrPolygons; return myNbPolygons; }
+  inline size_t Polygons(const Standard_Integer**& arrPolygons) const
+  {
+    arrPolygons = myArrPolygons;
+    return myNbPolygons;
+  }
 
   /**
    * Query one polygon.
@@ -112,23 +112,24 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   number of vertice in the polygon - the dimension of outIndice array
    */
-  inline Standard_Integer
-                Polygon         (const Standard_Integer         iFace,
-                                 const Standard_Integer *&      outIndice)
-  { return * (outIndice = myArrPolygons[iFace])++; }
+  inline Standard_Integer Polygon(const Standard_Integer iFace, const Standard_Integer*& outIndice)
+  {
+    return *(outIndice = myArrPolygons[iFace])++;
+  }
 
   /**
    * Set the nodes
    */
-  inline void   SetCoordinates  (const Handle(VrmlData_Coordinate)& theCoord)
-  { myCoords = theCoord; }
+  inline void SetCoordinates(const Handle(VrmlData_Coordinate)& theCoord) { myCoords = theCoord; }
 
   /**
    * Set the polygons
    */
-  inline void   SetPolygons     (const Standard_Size       nPolygons,
-                                 const Standard_Integer ** thePolygons)
-  { myNbPolygons = nPolygons; myArrPolygons = thePolygons; }
+  inline void SetPolygons(const Standard_Size nPolygons, const Standard_Integer** thePolygons)
+  {
+    myNbPolygons  = nPolygons;
+    myArrPolygons = thePolygons;
+  }
 
   // ========================================================================
   // ================================ NORMALS ===============================
@@ -140,8 +141,11 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   Number of integers in the array arrNormalInd.
    */
-  inline size_t ArrayNormalInd  (const Standard_Integer**& arrNormalInd) const
-  { arrNormalInd = myArrNormalInd; return myNbNormals; }
+  inline size_t ArrayNormalInd(const Standard_Integer**& arrNormalInd) const
+  {
+    arrNormalInd = myArrNormalInd;
+    return myNbNormals;
+  }
 
   /**
    * Query normals indice for one face. This method should be called after
@@ -153,10 +157,11 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   number of indice in the array - the dimension of outIndice array
    */
-  inline Standard_Integer
-                IndiceNormals   (const Standard_Integer         iFace,
-                                 const Standard_Integer *&      outIndice)
-  { return * (outIndice = myArrNormalInd[iFace])++; }
+  inline Standard_Integer IndiceNormals(const Standard_Integer   iFace,
+                                        const Standard_Integer*& outIndice)
+  {
+    return *(outIndice = myArrNormalInd[iFace])++;
+  }
 
   /**
    * Query a normal for one node in the given element. The normal is
@@ -170,28 +175,29 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   Normal vector; if the normal is indefinite then returns (0., 0., 0.)
    */
-  Standard_EXPORT gp_XYZ
-                GetNormal       (const Standard_Integer         iFace,
-                                 const Standard_Integer         iVertex);
+  Standard_EXPORT gp_XYZ GetNormal(const Standard_Integer iFace, const Standard_Integer iVertex);
 
   /**
    * Set the normals array of indice
    */
-  inline void   SetNormalInd    (const Standard_Size       nIndice,
-                                 const Standard_Integer ** theIndice)
-  { myNbNormals = nIndice; myArrNormalInd = theIndice; }
+  inline void SetNormalInd(const Standard_Size nIndice, const Standard_Integer** theIndice)
+  {
+    myNbNormals    = nIndice;
+    myArrNormalInd = theIndice;
+  }
 
   /**
    * Set the normals node
    */
-  inline void   SetNormals      (const Handle(VrmlData_Normal)& theNormals)
-  { myNormals = theNormals; }
+  inline void SetNormals(const Handle(VrmlData_Normal)& theNormals) { myNormals = theNormals; }
 
   /**
    * Set the boolean value "normalPerVertex"
    */
-  inline void   SetNormalPerVertex (const Standard_Boolean isNormalPerVertex)
-  { myNormalPerVertex = isNormalPerVertex; }
+  inline void SetNormalPerVertex(const Standard_Boolean isNormalPerVertex)
+  {
+    myNormalPerVertex = isNormalPerVertex;
+  }
 
   // ========================================================================
   // ================================ COLORS ================================
@@ -203,8 +209,11 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   Number of integers in the array arrColorInd.
    */
-  inline size_t ArrayColorInd   (const Standard_Integer**& arrColorInd) const
-  { arrColorInd = myArrColorInd; return myNbColors; }
+  inline size_t ArrayColorInd(const Standard_Integer**& arrColorInd) const
+  {
+    arrColorInd = myArrColorInd;
+    return myNbColors;
+  }
 
   /**
    * Query a color for one node in the given element. The color is
@@ -218,28 +227,30 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   Color value (RGB); if the color is indefinite then returns (0., 0., 0.)
    */
-  Standard_EXPORT Quantity_Color
-                GetColor        (const Standard_Integer         iFace,
-                                 const Standard_Integer         iVertex);
+  Standard_EXPORT Quantity_Color GetColor(const Standard_Integer iFace,
+                                          const Standard_Integer iVertex);
 
   /**
    * Set the colors array of indice
    */
-  inline void   SetColorInd     (const Standard_Size       nIndice,
-                                 const Standard_Integer ** theIndice)
-  { myNbColors = nIndice; myArrColorInd = theIndice; }
+  inline void SetColorInd(const Standard_Size nIndice, const Standard_Integer** theIndice)
+  {
+    myNbColors    = nIndice;
+    myArrColorInd = theIndice;
+  }
 
   /**
    * Set the Color node
    */
-  inline void   SetColors       (const Handle(VrmlData_Color)& theColors)
-  { myColors = theColors; }
+  inline void SetColors(const Handle(VrmlData_Color)& theColors) { myColors = theColors; }
 
   /**
    * Set the boolean value "colorPerVertex"
    */
-  inline void   SetColorPerVertex (const Standard_Boolean isColorPerVertex)
-  { myColorPerVertex = isColorPerVertex; }
+  inline void SetColorPerVertex(const Standard_Boolean isColorPerVertex)
+  {
+    myColorPerVertex = isColorPerVertex;
+  }
 
   // ========================================================================
   // ========================== TEXTURE COIRDINATES =========================
@@ -251,93 +262,92 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * @return
    *   Number of integers in the array texCoordIndex.
    */
-  inline size_t ArrayTextureCoordInd
-                            (const Standard_Integer**& arrTextureCoordInd) const
-  { arrTextureCoordInd = myArrTextureInd; return myNbTextures; }
+  inline size_t ArrayTextureCoordInd(const Standard_Integer**& arrTextureCoordInd) const
+  {
+    arrTextureCoordInd = myArrTextureInd;
+    return myNbTextures;
+  }
 
   /**
    * Set the TexCoordiante array of indice
    */
-  inline void   SetTextureCoordInd (const Standard_Size       nIndice,
-                                    const Standard_Integer ** theIndice)
-  { myNbTextures = nIndice; myArrTextureInd = theIndice; }
+  inline void SetTextureCoordInd(const Standard_Size nIndice, const Standard_Integer** theIndice)
+  {
+    myNbTextures    = nIndice;
+    myArrTextureInd = theIndice;
+  }
 
   /**
    * Set the Texture Coordinate node
    */
-  inline void   SetTextureCoords(const Handle(VrmlData_TextureCoordinate)& tc)
-  { myTxCoords = tc; }
+  inline void SetTextureCoords(const Handle(VrmlData_TextureCoordinate)& tc) { myTxCoords = tc; }
 
   /**
    * Query the shape. This method checks the flag myIsModified; if True it
    * should rebuild the shape presentation.
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)&  TShape () Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(TopoDS_TShape)& TShape() Standard_OVERRIDE;
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node)
-                Clone              (const Handle(VrmlData_Node)& theOther)const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
+    Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                Read               (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                Write              (const char * thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean
-                IsDefault          () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-//   /**
-//    * If the normals are not defined, here we compute them from the polygons.
-//    * @param theArray
-//    *   Array of float values having length:<ul>
-//    *   <li>if myNormalPerVertex==TRUE : 3 * myCoords->Length()</li>
-//    *   <li>if myNormalPerVertex==FALSE: 9 * number_of_triangles </li>
-//    *   </ul>
-//    */
-//   Standard_EXPORT void
-//                 computeNormals     (Standard_ShortReal * theArray);
+  //   /**
+  //    * If the normals are not defined, here we compute them from the polygons.
+  //    * @param theArray
+  //    *   Array of float values having length:<ul>
+  //    *   <li>if myNormalPerVertex==TRUE : 3 * myCoords->Length()</li>
+  //    *   <li>if myNormalPerVertex==FALSE: 9 * number_of_triangles </li>
+  //    *   </ul>
+  //    */
+  //   Standard_EXPORT void
+  //                 computeNormals     (Standard_ShortReal * theArray);
 
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
-  Handle(VrmlData_Coordinate)           myCoords;
-  Handle(VrmlData_Normal)               myNormals;
-  Handle(VrmlData_Color)                myColors;
-  Handle(VrmlData_TextureCoordinate)    myTxCoords;
-  const Standard_Integer                ** myArrPolygons;
-  const Standard_Integer                ** myArrNormalInd;
-  const Standard_Integer                ** myArrColorInd;
-  const Standard_Integer                ** myArrTextureInd;
-  Standard_Size                         myNbPolygons;
-  Standard_Size                         myNbNormals;
-  Standard_Size                         myNbColors;
-  Standard_Size                         myNbTextures;
-  Standard_Boolean                      myNormalPerVertex;
-  Standard_Boolean                      myColorPerVertex;
+  Handle(VrmlData_Coordinate)        myCoords;
+  Handle(VrmlData_Normal)            myNormals;
+  Handle(VrmlData_Color)             myColors;
+  Handle(VrmlData_TextureCoordinate) myTxCoords;
+  const Standard_Integer**           myArrPolygons;
+  const Standard_Integer**           myArrNormalInd;
+  const Standard_Integer**           myArrColorInd;
+  const Standard_Integer**           myArrTextureInd;
+  Standard_Size                      myNbPolygons;
+  Standard_Size                      myNbNormals;
+  Standard_Size                      myNbColors;
+  Standard_Size                      myNbTextures;
+  Standard_Boolean                   myNormalPerVertex;
+  Standard_Boolean                   myColorPerVertex;
 
- public:
-// Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet,VrmlData_Faceted)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet, VrmlData_Faceted)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_IndexedFaceSet, VrmlData_Faceted)
-
+DEFINE_STANDARD_HANDLE(VrmlData_IndexedFaceSet, VrmlData_Faceted)
 
 #endif

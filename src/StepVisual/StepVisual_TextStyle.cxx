@@ -11,41 +11,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_TextStyle.hxx>
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle, Standard_Transient)
 
-StepVisual_TextStyle::StepVisual_TextStyle ()  {}
+StepVisual_TextStyle::StepVisual_TextStyle() {}
 
 void StepVisual_TextStyle::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
+  const Handle(TCollection_HAsciiString)&           aName,
+  const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
 {
-	// --- classe own fields ---
-	name = aName;
-	characterAppearance = aCharacterAppearance;
+  // --- classe own fields ---
+  name                = aName;
+  characterAppearance = aCharacterAppearance;
 }
-
 
 void StepVisual_TextStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
-	name = aName;
+  name = aName;
 }
 
 Handle(TCollection_HAsciiString) StepVisual_TextStyle::Name() const
 {
-	return name;
+  return name;
 }
 
-void StepVisual_TextStyle::SetCharacterAppearance(const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
+void StepVisual_TextStyle::SetCharacterAppearance(
+  const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
 {
-	characterAppearance = aCharacterAppearance;
+  characterAppearance = aCharacterAppearance;
 }
 
 Handle(StepVisual_TextStyleForDefinedFont) StepVisual_TextStyle::CharacterAppearance() const
 {
-	return characterAppearance;
+  return characterAppearance;
 }

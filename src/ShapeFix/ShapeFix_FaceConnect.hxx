@@ -24,49 +24,29 @@
 class TopoDS_Face;
 class TopoDS_Shell;
 
-
 //! Rebuilds connectivity between faces in shell
-class ShapeFix_FaceConnect 
+class ShapeFix_FaceConnect
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT ShapeFix_FaceConnect();
-  
-  Standard_EXPORT Standard_Boolean Add (const TopoDS_Face& aFirst, const TopoDS_Face& aSecond);
-  
-  Standard_EXPORT TopoDS_Shell Build (const TopoDS_Shell& shell, const Standard_Real sewtoler, const Standard_Real fixtoler);
-  
+
+  Standard_EXPORT Standard_Boolean Add(const TopoDS_Face& aFirst, const TopoDS_Face& aSecond);
+
+  Standard_EXPORT TopoDS_Shell Build(const TopoDS_Shell& shell,
+                                     const Standard_Real sewtoler,
+                                     const Standard_Real fixtoler);
+
   //! Clears internal data structure
   Standard_EXPORT void Clear();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_DataMapOfShapeListOfShape myConnected;
   TopTools_DataMapOfShapeListOfShape myOriFreeEdges;
   TopTools_DataMapOfShapeListOfShape myResFreeEdges;
   TopTools_DataMapOfShapeListOfShape myResSharEdges;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeFix_FaceConnect_HeaderFile

@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Certification;
 
-
 class StepBasic_CertificationAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_CertificationAssignment, Standard_Transient)
 
@@ -32,42 +31,24 @@ class StepBasic_CertificationAssignment : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_CertificationAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_Certification)& aAssignedCertification);
-  
+  Standard_EXPORT void Init(const Handle(StepBasic_Certification)& aAssignedCertification);
+
   //! Returns field AssignedCertification
   Standard_EXPORT Handle(StepBasic_Certification) AssignedCertification() const;
-  
+
   //! Set field AssignedCertification
-  Standard_EXPORT void SetAssignedCertification (const Handle(StepBasic_Certification)& AssignedCertification);
+  Standard_EXPORT void SetAssignedCertification(
+    const Handle(StepBasic_Certification)& AssignedCertification);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_Certification) theAssignedCertification;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_CertificationAssignment_HeaderFile

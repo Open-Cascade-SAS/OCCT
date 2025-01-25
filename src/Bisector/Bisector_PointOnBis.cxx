@@ -14,142 +14,141 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bisector_PointOnBis.hxx>
 #include <gp_Pnt2d.hxx>
 
 //=============================================================================
-//function :
+// function :
 // purpose :
 //=============================================================================
 Bisector_PointOnBis::Bisector_PointOnBis()
-: param1(0.0),
-  param2(0.0),
-  paramBis(0.0),
-  distance(0.0),
-  infinite(Standard_False)
+    : param1(0.0),
+      param2(0.0),
+      paramBis(0.0),
+      distance(0.0),
+      infinite(Standard_False)
 {
 }
 
 //=============================================================================
-//function :
+// function :
 // purpose :
 //=============================================================================
-Bisector_PointOnBis::Bisector_PointOnBis(const Standard_Real Param1, 
-					 const Standard_Real Param2, 
-					 const Standard_Real ParamBis,
-					 const Standard_Real Distance,
-					 const gp_Pnt2d&     P)
-: param1   (Param1),
-  param2   (Param2),
-  paramBis (ParamBis),
-  distance (Distance),
-  point    (P)
+Bisector_PointOnBis::Bisector_PointOnBis(const Standard_Real Param1,
+                                         const Standard_Real Param2,
+                                         const Standard_Real ParamBis,
+                                         const Standard_Real Distance,
+                                         const gp_Pnt2d&     P)
+    : param1(Param1),
+      param2(Param2),
+      paramBis(ParamBis),
+      distance(Distance),
+      point(P)
 {
   infinite = Standard_False;
 }
 
 //=============================================================================
-//function : ParamOnC1
+// function : ParamOnC1
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::ParamOnC1(const Standard_Real Param)
+void Bisector_PointOnBis::ParamOnC1(const Standard_Real Param)
 {
   param1 = Param;
 }
 
 //=============================================================================
-//function : ParamOnC2
+// function : ParamOnC2
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::ParamOnC2(const Standard_Real Param)
+void Bisector_PointOnBis::ParamOnC2(const Standard_Real Param)
 {
   param2 = Param;
 }
 
 //=============================================================================
-//function : ParamOnBis
+// function : ParamOnBis
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::ParamOnBis(const Standard_Real Param)
+void Bisector_PointOnBis::ParamOnBis(const Standard_Real Param)
 {
   paramBis = Param;
 }
 
 //=============================================================================
-//function : Distance
+// function : Distance
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::Distance(const Standard_Real Distance)
+void Bisector_PointOnBis::Distance(const Standard_Real Distance)
 {
   distance = Distance;
 }
 
 //=============================================================================
-//function : Point
+// function : Point
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::Point (const gp_Pnt2d& P)
+void Bisector_PointOnBis::Point(const gp_Pnt2d& P)
 {
   point = P;
 }
 
 //=============================================================================
-//function : IsInfinite
+// function : IsInfinite
 // purpose :
 //=============================================================================
-void  Bisector_PointOnBis::IsInfinite(const Standard_Boolean  Infinite)
+void Bisector_PointOnBis::IsInfinite(const Standard_Boolean Infinite)
 {
   infinite = Infinite;
 }
 
 //=============================================================================
-//function : ParamOnC1
+// function : ParamOnC1
 // purpose :
 //=============================================================================
-Standard_Real  Bisector_PointOnBis::ParamOnC1()const
+Standard_Real Bisector_PointOnBis::ParamOnC1() const
 {
   return param1;
 }
 
 //=============================================================================
-//function : ParamOnC2
+// function : ParamOnC2
 // purpose :
 //=============================================================================
-Standard_Real  Bisector_PointOnBis::ParamOnC2()const 
+Standard_Real Bisector_PointOnBis::ParamOnC2() const
 {
   return param2;
 }
 
 //=============================================================================
-//function : ParamOnBis
+// function : ParamOnBis
 // purpose :
 //=============================================================================
-Standard_Real  Bisector_PointOnBis::ParamOnBis()const 
+Standard_Real Bisector_PointOnBis::ParamOnBis() const
 {
   return paramBis;
 }
 
 //=============================================================================
-//function : Distance
+// function : Distance
 // purpose :
 //=============================================================================
-Standard_Real  Bisector_PointOnBis::Distance()const 
+Standard_Real Bisector_PointOnBis::Distance() const
 {
   return distance;
 }
 
 //=============================================================================
-//function : Point
+// function : Point
 // purpose :
 //=============================================================================
-gp_Pnt2d  Bisector_PointOnBis::Point ()const
+gp_Pnt2d Bisector_PointOnBis::Point() const
 {
   return point;
 }
 
 //=============================================================================
-//function : IsInfinite
+// function : IsInfinite
 // purpose :
 //=============================================================================
 Standard_Boolean Bisector_PointOnBis::IsInfinite() const
@@ -158,13 +157,13 @@ Standard_Boolean Bisector_PointOnBis::IsInfinite() const
 }
 
 //=============================================================================
-//function : Dump
+// function : Dump
 // purpose :
 //=============================================================================
-void Bisector_PointOnBis::Dump() const 
+void Bisector_PointOnBis::Dump() const
 {
-  std::cout <<"Param1    :"<<param1<<std::endl;
-  std::cout <<"Param2    :"<<param2<<std::endl;
-  std::cout <<"Param Bis :"<<paramBis<<std::endl;
-  std::cout <<"Distance  :"<<distance<<std::endl;
+  std::cout << "Param1    :" << param1 << std::endl;
+  std::cout << "Param2    :" << param2 << std::endl;
+  std::cout << "Param Bis :" << paramBis << std::endl;
+  std::cout << "Distance  :" << distance << std::endl;
 }

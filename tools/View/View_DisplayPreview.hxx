@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_DisplayPreview_H
 #define View_DisplayPreview_H
@@ -31,12 +31,11 @@ class View_PreviewParameters;
 //! - display/erase presentations;
 //! - change display mode of visualized presentations (Shaded or WireFrame mode)
 //!
-//! It contains containers of visualized presentations to obtain presentations relating only to this displayer.
-//! Displayer is connected to AIS Interactive Context
+//! It contains containers of visualized presentations to obtain presentations relating only to this
+//! displayer. Displayer is connected to AIS Interactive Context
 class View_DisplayPreview
 {
 public:
-
   //! Constructor
   Standard_EXPORT View_DisplayPreview();
 
@@ -46,14 +45,15 @@ public:
   //! Stores the current context where the presentations will be displayed/erased.
   //! Erases previously displayed presentations if there were some displayed
   //! \param theContext a context instance
-  Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& theContext);
+  Standard_EXPORT void SetContext(const Handle(AIS_InteractiveContext)& theContext);
 
   //! Returns preview parameters
   View_PreviewParameters* GetPreviewParameters() const { return myPreviewParameters; }
 
   //! Updates visibility of the presentations for the display type
-  Standard_EXPORT void UpdatePreview (const View_DisplayActionType theType,
-                                      const NCollection_List<Handle(Standard_Transient)>& thePresentations);
+  Standard_EXPORT void UpdatePreview(
+    const View_DisplayActionType                        theType,
+    const NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Returns true if preview presentation is shown
   Standard_Boolean HasPreview() const { return !myPreviewPresentation.IsNull(); }
@@ -62,17 +62,17 @@ public:
   static Standard_Integer PreviewSelectionMode() { return 100; }
 
 private:
-
   //! Returns the current context
   const Handle(AIS_InteractiveContext)& GetContext() const { return myContext; }
 
 private:
-
   Handle(AIS_InteractiveContext) myContext; //!< context, where the displayer works
 
   View_PreviewParameters* myPreviewParameters; //!< drawer of preview presentation
-  Handle(AIS_InteractiveObject) myPreviewPresentation; //!< presentation of preview for a selected object
-  NCollection_List<Handle(AIS_InteractiveObject)> myPreviewReadyPresentations; //!< presentation of preview for a selected object
+  Handle(AIS_InteractiveObject)
+    myPreviewPresentation; //!< presentation of preview for a selected object
+  NCollection_List<Handle(AIS_InteractiveObject)>
+    myPreviewReadyPresentations; //!< presentation of preview for a selected object
 };
 
 #endif

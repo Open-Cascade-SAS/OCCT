@@ -33,18 +33,16 @@ class Transfer_FinderProcess : public Transfer_ProcessForFinder
 {
 
 public:
-
-  
   //! Sets FinderProcess at initial state, with an initial size
   Standard_EXPORT Transfer_FinderProcess(const Standard_Integer nb = 10000);
-  
+
   //! Sets an InterfaceModel, which can be used during transfer
   //! for instance if a context must be managed, it is in the Model
-  Standard_EXPORT void SetModel (const Handle(Interface_InterfaceModel)& model);
-  
+  Standard_EXPORT void SetModel(const Handle(Interface_InterfaceModel)& model);
+
   //! Returns the Model which can be used for context
   Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
-  
+
   //! In the list of mapped items (between 1 and NbMapped),
   //! searches for the first mapped item which follows <num0>
   //! (not included) and which has an attribute named <name>
@@ -59,21 +57,24 @@ public:
   //! num = FP->NextMappedWithAttribute(name,num) {
   //! .. process mapped item <num>
   //! }
-  Standard_EXPORT Standard_Integer NextMappedWithAttribute (const Standard_CString name, const Standard_Integer num0) const;
-  
+  Standard_EXPORT Standard_Integer NextMappedWithAttribute(const Standard_CString name,
+                                                           const Standard_Integer num0) const;
+
   //! Returns a TransientMapper for a given Transient Object
   //! Either <obj> is already mapped, then its Mapper is returned
   //! Or it is not, then a new one is created then returned, BUT
   //! it is not mapped here (use Bind or FindElseBind to do this)
-  Standard_EXPORT Handle(Transfer_TransientMapper) TransientMapper (const Handle(Standard_Transient)& obj) const;
-  
-  //! Specific printing to trace a Finder (by its method ValueType)
-  Standard_EXPORT virtual void PrintTrace (const Handle(Transfer_Finder)& start, Standard_OStream& S) const Standard_OVERRIDE;
-  
-  //! Prints statistics on a given output, according mode
-  Standard_EXPORT void PrintStats (const Standard_Integer mode, Standard_OStream& S) const;
+  Standard_EXPORT Handle(Transfer_TransientMapper) TransientMapper(
+    const Handle(Standard_Transient)& obj) const;
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_FinderProcess,Transfer_ProcessForFinder)
+  //! Specific printing to trace a Finder (by its method ValueType)
+  Standard_EXPORT virtual void PrintTrace(const Handle(Transfer_Finder)& start,
+                                          Standard_OStream&              S) const Standard_OVERRIDE;
+
+  //! Prints statistics on a given output, according mode
+  Standard_EXPORT void PrintStats(const Standard_Integer mode, Standard_OStream& S) const;
+
+  DEFINE_STANDARD_RTTIEXT(Transfer_FinderProcess, Transfer_ProcessForFinder)
 
 private:
   Handle(Interface_InterfaceModel) themodel;

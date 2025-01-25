@@ -15,19 +15,18 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetContext
-//purpose  : 
+// function : SetContext
+// purpose  :
 //=======================================================================
 
-inline void ShapeUpgrade_Tool::SetContext (const Handle(ShapeBuild_ReShape)& context) 
+inline void ShapeUpgrade_Tool::SetContext(const Handle(ShapeBuild_ReShape)& context)
 {
   myContext = context;
 }
 
-
 //=======================================================================
-//function : Context
-//purpose  : 
+// function : Context
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeBuild_ReShape) ShapeUpgrade_Tool::Context() const
@@ -35,23 +34,23 @@ inline Handle(ShapeBuild_ReShape) ShapeUpgrade_Tool::Context() const
   return myContext;
 }
 
-
 //=======================================================================
-//function : SetPrecision
-//purpose  : 
+// function : SetPrecision
+// purpose  :
 //=======================================================================
 
-inline void ShapeUpgrade_Tool::SetPrecision (const Standard_Real preci) 
+inline void ShapeUpgrade_Tool::SetPrecision(const Standard_Real preci)
 {
   myPrecision = preci;
-  if(myMaxTol < myPrecision) myMaxTol = myPrecision;
-  if(myMinTol > myPrecision) myMinTol = myPrecision;
+  if (myMaxTol < myPrecision)
+    myMaxTol = myPrecision;
+  if (myMinTol > myPrecision)
+    myMinTol = myPrecision;
 }
 
-
 //=======================================================================
-//function : Precision
-//purpose  : 
+// function : Precision
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeUpgrade_Tool::Precision() const
@@ -59,21 +58,19 @@ inline Standard_Real ShapeUpgrade_Tool::Precision() const
   return myPrecision;
 }
 
-
 //=======================================================================
-//function : SetMinTolerance
-//purpose  : 
+// function : SetMinTolerance
+// purpose  :
 //=======================================================================
 
-inline void ShapeUpgrade_Tool::SetMinTolerance (const Standard_Real mintol) 
+inline void ShapeUpgrade_Tool::SetMinTolerance(const Standard_Real mintol)
 {
   myMinTol = mintol;
 }
 
-
 //=======================================================================
-//function : MinTolerance
-//purpose  : 
+// function : MinTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeUpgrade_Tool::MinTolerance() const
@@ -81,21 +78,19 @@ inline Standard_Real ShapeUpgrade_Tool::MinTolerance() const
   return myMinTol;
 }
 
-
 //=======================================================================
-//function : SetMaxTolerance
-//purpose  : 
+// function : SetMaxTolerance
+// purpose  :
 //=======================================================================
 
-inline void ShapeUpgrade_Tool::SetMaxTolerance (const Standard_Real maxtol) 
+inline void ShapeUpgrade_Tool::SetMaxTolerance(const Standard_Real maxtol)
 {
   myMaxTol = maxtol;
 }
 
-
 //=======================================================================
-//function : MaxTolerance
-//purpose  : 
+// function : MaxTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeUpgrade_Tool::MaxTolerance() const
@@ -104,12 +99,12 @@ inline Standard_Real ShapeUpgrade_Tool::MaxTolerance() const
 }
 
 //=======================================================================
-//function : LimitTolerance
-//purpose  : 
+// function : LimitTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeUpgrade_Tool::LimitTolerance(const Standard_Real toler) const
 {
-  //only maximal restriction implemented.
-  return Min(myMaxTol,toler);
+  // only maximal restriction implemented.
+  return Min(myMaxTol, toler);
 }

@@ -49,99 +49,98 @@
 
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
 
-
 //=======================================================================
 // static methods declaration
 //=======================================================================
 
-static void MakeRemoved(const TopTools_ListOfShape& theShapes,
-                        BRepTools_History& theHistory,
-                        const TopTools_IndexedMapOfShape& theKeepShapes = TopTools_IndexedMapOfShape());
+static void MakeRemoved(
+  const TopTools_ListOfShape&       theShapes,
+  BRepTools_History&                theHistory,
+  const TopTools_IndexedMapOfShape& theKeepShapes = TopTools_IndexedMapOfShape());
 
-static void FindInternals(const TopoDS_Shape& theS,
-                          TopTools_ListOfShape& theLInt);
+static void FindInternals(const TopoDS_Shape& theS, TopTools_ListOfShape& theLInt);
 
 static void RemoveInternalWires(const TopTools_ListOfShape& theShapes,
-                                TopTools_ListOfShape* theRemoved = NULL);
+                                TopTools_ListOfShape*       theRemoved = NULL);
 
-static void GetOriginalFaces(const TopoDS_Shape& theShape,
-                             const TopTools_IndexedMapOfShape& theSolids,
-                             const TopTools_MapOfShape& theFeatureFacesMap,
+static void GetOriginalFaces(const TopoDS_Shape&                              theShape,
+                             const TopTools_IndexedMapOfShape&                theSolids,
+                             const TopTools_MapOfShape&                       theFeatureFacesMap,
                              const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                             const Handle(BRepTools_History)& theHistory,
-                             TopTools_IndexedMapOfShape& theFacesToBeKept,
-                             TopTools_ListOfShape& theInternalShapes,
-                             TopTools_MapOfShape& theFacesToCheckOri,
-                             TopTools_IndexedMapOfShape& theSolidsToRebuild,
-                             TopTools_ListOfShape& theSharedFaces,
-                             TopTools_ListOfShape& theUnTouchedSolids);
+                             const Handle(BRepTools_History)&                 theHistory,
+                             TopTools_IndexedMapOfShape&                      theFacesToBeKept,
+                             TopTools_ListOfShape&                            theInternalShapes,
+                             TopTools_MapOfShape&                             theFacesToCheckOri,
+                             TopTools_IndexedMapOfShape&                      theSolidsToRebuild,
+                             TopTools_ListOfShape&                            theSharedFaces,
+                             TopTools_ListOfShape&                            theUnTouchedSolids);
 
 static void FindShape(const TopoDS_Shape& theSWhat,
                       const TopoDS_Shape& theSWhere,
-                      TopoDS_Shape& theSFound);
+                      TopoDS_Shape&       theSFound);
 
-static void GetValidSolids(BOPAlgo_MakerVolume& theMV,
-                           const TopTools_MapOfShape& theFacesToCheckOri,
+static void GetValidSolids(BOPAlgo_MakerVolume&        theMV,
+                           const TopTools_MapOfShape&  theFacesToCheckOri,
                            const TopTools_ListOfShape& aSharedFaces,
-                           const TopoDS_Shape& theOrigFaces,
-                           const Standard_Integer theNbSol,
-                           TopTools_ListOfShape& theLSRes,
-                           TopTools_ListOfShape& theRemovedShapes);
+                           const TopoDS_Shape&         theOrigFaces,
+                           const Standard_Integer      theNbSol,
+                           TopTools_ListOfShape&       theLSRes,
+                           TopTools_ListOfShape&       theRemovedShapes);
 
 static void FindExtraShapes(const TopTools_IndexedDataMapOfShapeListOfShape& theConnectionMap,
-                            const TopTools_MapOfShape& theShapesToCheckOri,
-                            BOPAlgo_Builder& theBuilder,
-                            TopTools_MapOfShape& theShapesToAvoid,
-                            TopTools_MapOfShape* theValidShapes = NULL);
+                            const TopTools_MapOfShape&                       theShapesToCheckOri,
+                            BOPAlgo_Builder&                                 theBuilder,
+                            TopTools_MapOfShape&                             theShapesToAvoid,
+                            TopTools_MapOfShape*                             theValidShapes = NULL);
 
-static void AvoidExtraSharedFaces(TopTools_ListOfShape& theLSolids,
+static void AvoidExtraSharedFaces(TopTools_ListOfShape&       theLSolids,
                                   const TopTools_ListOfShape& theLFSharedToAvoid,
-                                  BOPAlgo_Builder& theBuilder,
-                                  TopTools_ListOfShape& theExtraFaces);
+                                  BOPAlgo_Builder&            theBuilder,
+                                  TopTools_ListOfShape&       theExtraFaces);
 
-static void FillSolidsHistory(const TopTools_IndexedMapOfShape& theSolIn,
-                              TopTools_ListOfShape& theSolidsRes,
+static void FillSolidsHistory(const TopTools_IndexedMapOfShape&                theSolIn,
+                              TopTools_ListOfShape&                            theSolidsRes,
                               const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                              BOPAlgo_Builder& theBuilder,
-                              BRepTools_History& theSolidsHistory);
+                              BOPAlgo_Builder&                                 theBuilder,
+                              BRepTools_History&                               theSolidsHistory);
 
-static void TakeModified(const TopoDS_Shape& theS,
-                         BOPAlgo_Builder& theBuilder,
+static void TakeModified(const TopoDS_Shape&   theS,
+                         BOPAlgo_Builder&      theBuilder,
                          TopTools_ListOfShape& theList);
 
-static void TakeModified(const TopoDS_Shape& theS,
-                         BOPAlgo_Builder& theBuilder,
+static void TakeModified(const TopoDS_Shape&  theS,
+                         BOPAlgo_Builder&     theBuilder,
                          TopTools_MapOfShape& theMap);
 
-static void FindSolid(const TopoDS_Shape& theSolIn,
-                      const TopTools_ListOfShape& theSolidsRes,
+static void FindSolid(const TopoDS_Shape&                              theSolIn,
+                      const TopTools_ListOfShape&                      theSolidsRes,
                       const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                      BOPAlgo_Builder& theBuilder,
-                      TopoDS_Shape& theSolOut);
+                      BOPAlgo_Builder&                                 theBuilder,
+                      TopoDS_Shape&                                    theSolOut);
 
 namespace
 {
-  //=======================================================================
-  //function : BOPAlgo_PIOperation
-  //purpose  : List of operations to be supported by the Progress Indicator
-  //=======================================================================
-  enum BOPAlgo_PIOperation
-  {
-    PIOperation_PrepareFeatures = 0,
-    PIOperation_RemoveFeatures,
-    PIOperation_UpdateHistory,
-    PIOperation_SimplifyResult,
+//=======================================================================
+// function : BOPAlgo_PIOperation
+// purpose  : List of operations to be supported by the Progress Indicator
+//=======================================================================
+enum BOPAlgo_PIOperation
+{
+  PIOperation_PrepareFeatures = 0,
+  PIOperation_RemoveFeatures,
+  PIOperation_UpdateHistory,
+  PIOperation_SimplifyResult,
 
-    PIOperation_Last
-  };
-}
+  PIOperation_Last
+};
+} // namespace
 
 //=======================================================================
 // function: fillPISteps
-// purpose: 
+// purpose:
 //=======================================================================
-void BOPAlgo_RemoveFeatures::fillPIConstants (const Standard_Real theWhole,
-                                              BOPAlgo_PISteps& theSteps) const
+void BOPAlgo_RemoveFeatures::fillPIConstants(const Standard_Real theWhole,
+                                             BOPAlgo_PISteps&    theSteps) const
 {
   theSteps.SetStep(PIOperation_PrepareFeatures, 0.05 * theWhole);
   theSteps.SetStep(PIOperation_RemoveFeatures, 0.8 * theWhole);
@@ -167,7 +166,7 @@ void BOPAlgo_RemoveFeatures::Perform(const Message_ProgressRange& theRange)
     if (HasErrors())
       return;
     Message_ProgressScope aPS(theRange, "Removing features", 100);
-    BOPAlgo_PISteps aSteps(PIOperation_Last);
+    BOPAlgo_PISteps       aSteps(PIOperation_Last);
     analyzeProgress(100., aSteps);
 
     // Prepare the faces to remove.
@@ -223,7 +222,7 @@ void BOPAlgo_RemoveFeatures::CheckData()
   if (aType == TopAbs_COMPOUND)
   {
     TopTools_ListOfShape aShapes;
-    TopTools_MapOfShape aMFence;
+    TopTools_MapOfShape  aMFence;
     // Extract all shapes from the compound
     BOPTools_AlgoTools::TreatCompound(myInputShape, aShapes, &aMFence);
     if (aShapes.IsEmpty())
@@ -234,8 +233,8 @@ void BOPAlgo_RemoveFeatures::CheckData()
     }
 
     // Find all solids in the list of shapes
-    TopTools_ListOfShape aSolids;
-    TopTools_ListOfShape anOtherShapes;
+    TopTools_ListOfShape               aSolids;
+    TopTools_ListOfShape               anOtherShapes;
     TopTools_ListIteratorOfListOfShape aIt(aShapes);
     for (; aIt.More(); aIt.Next())
     {
@@ -293,14 +292,16 @@ void BOPAlgo_RemoveFeatures::PrepareFeatures(const Message_ProgressRange& theRan
   TopExp::MapShapes(myInputShape, myInputsMap);
 
   // Collect all faces of the input shape requested for removal
-  TopTools_ListOfShape aFacesToRemove;
+  TopTools_ListOfShape               aFacesToRemove;
   TopTools_ListIteratorOfListOfShape aIt(myFacesToRemove);
-  Message_ProgressScope aPSOuter(theRange, "Preparing features", 2);
-  Message_ProgressScope aPS(aPSOuter.Next(), "Preparing the faces to remove", myFacesToRemove.Size());
-  for (; aIt.More(); aIt.Next(),aPS.Next())
+  Message_ProgressScope              aPSOuter(theRange, "Preparing features", 2);
+  Message_ProgressScope              aPS(aPSOuter.Next(),
+                            "Preparing the faces to remove",
+                            myFacesToRemove.Size());
+  for (; aIt.More(); aIt.Next(), aPS.Next())
   {
     const TopoDS_Shape& aS = aIt.Value();
-    TopExp_Explorer anExpF(aS, TopAbs_FACE);
+    TopExp_Explorer     anExpF(aS, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
     {
       if (UserBreak(aPS))
@@ -341,15 +342,14 @@ void BOPAlgo_RemoveFeatures::PrepareFeatures(const Message_ProgressRange& theRan
 class FillGap
 {
 public: //! @name Constructors
-
   //! Empty constructor
-  FillGap() :
-    myRunParallel(Standard_False),
-    myHasAdjacentFaces(Standard_False)
-  {}
+  FillGap()
+      : myRunParallel(Standard_False),
+        myHasAdjacentFaces(Standard_False)
+  {
+  }
 
 public: //! @name Setters/Getters
-
   //! Sets the feature to remove
   void SetFeature(const TopoDS_Shape& theFeature) { myFeature = theFeature; }
 
@@ -372,18 +372,11 @@ public: //! @name Setters/Getters
   void SetRunParallel(const Standard_Boolean bRunParallel) { myRunParallel = bRunParallel; }
 
   //! Gets the History object
-  const Handle(BRepTools_History)& History()
-  {
-    return myHistory;
-  }
+  const Handle(BRepTools_History)& History() { return myHistory; }
 
-  void SetRange(const Message_ProgressRange& theRange)
-  {
-    myRange = theRange;
-  }
+  void SetRange(const Message_ProgressRange& theRange) { myRange = theRange; }
 
 public: //! @name Perform the operation
-
   //! Performs the extension of the adjacent faces and
   //! then trims the extended faces to fill the gaps
   void Perform()
@@ -428,7 +421,6 @@ public: //! @name Perform the operation
   }
 
 public: //! @name Obtain the result
-
   //! Returns the map of faces of the feature
   const TopTools_MapOfShape& FeatureFacesMap() const { return myFeatureFacesMap; }
 
@@ -441,11 +433,10 @@ public: //! @name Obtain the result
   //! Returns the initial solids participating in the feature removal
   const TopTools_IndexedMapOfShape& Solids() const { return mySolids; }
 
-
 private: //! @name Private methods performing the operation
-
   //! Finds the faces adjacent to the feature and stores them into outgoing map.
-  void FindAdjacentFaces(TopTools_IndexedMapOfShape& theMFAdjacent, const Message_ProgressRange& theRange)
+  void FindAdjacentFaces(TopTools_IndexedMapOfShape&  theMFAdjacent,
+                         const Message_ProgressRange& theRange)
   {
     // Map the faces of the feature to avoid them in the map of adjacent faces
     TopoDS_Iterator aIt(myFeature);
@@ -462,10 +453,10 @@ private: //! @name Private methods performing the operation
         return;
       }
       const TopoDS_Shape& aF = aIt.Value();
-      TopExp_Explorer anExpE(aF, TopAbs_EDGE);
+      TopExp_Explorer     anExpE(aF, TopAbs_EDGE);
       for (; anExpE.More(); anExpE.Next())
       {
-        const TopoDS_Shape& aE = anExpE.Current();
+        const TopoDS_Shape&         aE             = anExpE.Current();
         const TopTools_ListOfShape* pAdjacentFaces = myEFMap->Seek(aE);
         if (pAdjacentFaces)
         {
@@ -490,7 +481,7 @@ private: //! @name Private methods performing the operation
 
     // Find solids containing the edges of adjacent faces
     const Standard_Integer aNbFA = theMFAdjacent.Extent();
-    Message_ProgressScope aPSS(aPSOuter.Next(), "Looking for adjacent solids", aNbFA);
+    Message_ProgressScope  aPSS(aPSOuter.Next(), "Looking for adjacent solids", aNbFA);
     for (Standard_Integer i = 1; i <= aNbFA; ++i, aPSS.Next())
     {
       if (!aPSS.More())
@@ -522,9 +513,9 @@ private: //! @name Private methods performing the operation
   }
 
   //! Extends the found adjacent faces and binds them to the original faces.
-  void ExtendAdjacentFaces(const TopTools_IndexedMapOfShape& theMFAdjacent,
+  void ExtendAdjacentFaces(const TopTools_IndexedMapOfShape&    theMFAdjacent,
                            TopTools_IndexedDataMapOfShapeShape& theFaceExtFaceMap,
-                           const Message_ProgressRange& theRange)
+                           const Message_ProgressRange&         theRange)
   {
     // Get the extension value for the faces - half of the diagonal of bounding box of the feature
     Bnd_Box aFeatureBox;
@@ -533,15 +524,18 @@ private: //! @name Private methods performing the operation
     const Standard_Real anExtLength = sqrt(aFeatureBox.SquareExtent());
 
     const Standard_Integer aNbFA = theMFAdjacent.Extent();
-    Message_ProgressScope aPS(theRange, "Extending adjacent faces", aNbFA);
+    Message_ProgressScope  aPS(theRange, "Extending adjacent faces", aNbFA);
     for (Standard_Integer i = 1; i <= aNbFA && aPS.More(); ++i, aPS.Next())
     {
       const TopoDS_Face& aF = TopoDS::Face(theMFAdjacent(i));
       // Extend the face
       TopoDS_Face aFExt;
-      BRepLib::ExtendFace(aF, anExtLength,
-                          Standard_True, Standard_True,
-                          Standard_True, Standard_True,
+      BRepLib::ExtendFace(aF,
+                          anExtLength,
+                          Standard_True,
+                          Standard_True,
+                          Standard_True,
+                          Standard_True,
                           aFExt);
       theFaceExtFaceMap.Add(aF, aFExt);
       myHistory->AddModified(aF, aFExt);
@@ -551,7 +545,7 @@ private: //! @name Private methods performing the operation
   //! Trims the extended adjacent faces by intersection with each other
   //! and following intersection with the bounds of original faces.
   void TrimExtendedFaces(const TopTools_IndexedDataMapOfShapeShape& theFaceExtFaceMap,
-                         const Message_ProgressRange& theRange)
+                         const Message_ProgressRange&               theRange)
   {
     // Intersect the extended faces first
     BOPAlgo_Builder aGFInter;
@@ -563,7 +557,7 @@ private: //! @name Private methods performing the operation
     aGFInter.SetRunParallel(myRunParallel);
 
     // Intersection result
-    TopoDS_Shape anIntResult;
+    TopoDS_Shape          anIntResult;
     Message_ProgressScope aPSOuter(theRange, NULL, (aGFInter.Arguments().Extent() > 1) ? 2 : 1);
     if (aGFInter.Arguments().Extent() > 1)
     {
@@ -594,23 +588,23 @@ private: //! @name Private methods performing the operation
     for (Standard_Integer i = 1; i <= aNbF && aPS.More(); ++i, aPS.Next())
     {
       const TopoDS_Face& aFOriginal = TopoDS::Face(theFaceExtFaceMap.FindKey(i));
-      const TopoDS_Face& aFExt = TopoDS::Face(theFaceExtFaceMap(i));
+      const TopoDS_Face& aFExt      = TopoDS::Face(theFaceExtFaceMap(i));
       TrimFace(aFExt, aFOriginal, aFeatureEdgesMap, anEFExtMap, aGFInter);
     }
   }
 
   //! Trim the extended faces by the bounds of the original face,
   //! except those contained in the feature to remove.
-  void TrimFace(const TopoDS_Face& theFExt,
-                const TopoDS_Face& theFOriginal,
-                const TopTools_IndexedMapOfShape& theFeatureEdgesMap,
+  void TrimFace(const TopoDS_Face&                               theFExt,
+                const TopoDS_Face&                               theFOriginal,
+                const TopTools_IndexedMapOfShape&                theFeatureEdgesMap,
                 const TopTools_IndexedDataMapOfShapeListOfShape& theEFExtMap,
-                BOPAlgo_Builder& theGFInter)
+                BOPAlgo_Builder&                                 theGFInter)
   {
     // Map all edges of the extended face, to filter the result of trim
     // from the faces containing these edges
     TopTools_MapOfShape aMExtEdges;
-    TopExp_Explorer anExpE(theFExt, TopAbs_EDGE);
+    TopExp_Explorer     anExpE(theFExt, TopAbs_EDGE);
     for (; anExpE.More(); anExpE.Next())
     {
       const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());
@@ -645,8 +639,7 @@ private: //! @name Private methods performing the operation
       if (!theFeatureEdgesMap.Contains(aE))
       {
         aGFTrim.AddArgument(aE);
-        if (!BRep_Tool::Degenerated(aE) &&
-            !BRep_Tool::IsClosed(aE, theFOriginal))
+        if (!BRep_Tool::Degenerated(aE) && !BRep_Tool::IsClosed(aE, theFOriginal))
         {
           if (!aMEdgesToCheckOri.Add(aE))
             aMEdgesToCheckOri.Remove(aE);
@@ -687,7 +680,7 @@ private: //! @name Private methods performing the operation
       // Chose the correct faces - the ones that contains edges with proper
       // bi-normal direction
       TopTools_IndexedDataMapOfShapeListOfShape anEFMap;
-      TopTools_ListIteratorOfListOfShape itLF(aLFTrimmed);
+      TopTools_ListIteratorOfListOfShape        itLF(aLFTrimmed);
       for (; itLF.More(); itLF.Next())
         TopExp::MapShapesAndAncestors(itLF.Value(), TopAbs_EDGE, TopAbs_FACE, anEFMap);
 
@@ -717,7 +710,7 @@ private: //! @name Private methods performing the operation
           {
             // Check if the block contains any valid faces
             const TopoDS_Shape& aCB = itLCB.Value();
-            TopoDS_Iterator itF(aCB);
+            TopoDS_Iterator     itF(aCB);
             for (; itF.More(); itF.Next())
             {
               if (aValidFaces.Contains(itF.Value()))
@@ -765,7 +758,7 @@ private: //! @name Private methods performing the operation
     BRepTools_History aHistRem;
 
     // Map of the result splits
-    TopTools_IndexedMapOfShape aResMap;
+    TopTools_IndexedMapOfShape         aResMap;
     TopTools_ListIteratorOfListOfShape itLF(aLFTrimmed);
     for (; itLF.More(); itLF.Next())
       TopExp::MapShapes(itLF.Value(), aResMap);
@@ -779,9 +772,8 @@ private: //! @name Private methods performing the operation
   }
 
 private: //! @name Fields
-
   // Inputs
-// clang-format off
+  // clang-format off
   Standard_Boolean myRunParallel;                     //!< Defines the mode of processing of the single feature
   TopoDS_Shape myFeature;                             //!< Feature to remove
   TopTools_IndexedDataMapOfShapeListOfShape* myEFMap; //!< EF Connection map to find adjacent faces
@@ -794,7 +786,7 @@ private: //! @name Fields
   TopTools_IndexedMapOfShape mySolids;                //!< Solids participating in the feature removal
   TopTools_IndexedDataMapOfShapeListOfShape myFaces;  //!< Reconstructed adjacent faces
   Handle(BRepTools_History) myHistory;                //!< History of the adjacent faces reconstruction
-// clang-format on
+  // clang-format on
 };
 
 typedef NCollection_Vector<FillGap> VectorOfFillGap;
@@ -833,7 +825,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
   for (; itF.More(); itF.Next())
   {
     const TopoDS_Shape& aFeature = itF.Value();
-    FillGap& aFG = aVFG.Appended();
+    FillGap&            aFG      = aVFG.Appended();
     aFG.SetFeature(aFeature);
     aFG.SetEFConnectionMap(anEFMap);
     aFG.SetFSConnectionMap(anFSMap);
@@ -841,14 +833,14 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
   }
 
   const Standard_Integer aNbF = aVFG.Length();
-  Message_ProgressScope aPS(aPSOuter.Next(), "Filling gaps", aNbF);
+  Message_ProgressScope  aPS(aPSOuter.Next(), "Filling gaps", aNbF);
   for (Standard_Integer i = 0; i < aNbF; ++i)
   {
     FillGap& aFG = aVFG.ChangeValue(i);
     aFG.SetRange(aPS.Next());
   }
   // Perform the reconstruction of the adjacent faces
-  BOPTools_Parallel::Perform (myRunParallel, aVFG);
+  BOPTools_Parallel::Perform(myRunParallel, aVFG);
   if (UserBreak(aPSOuter))
   {
     return;
@@ -878,9 +870,14 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
     Standard_Boolean isSolidsHistoryNeeded = HasHistory() || (i < (aNbF - 1));
 
     // Perform removal of the single feature
-    RemoveFeature(aFG.Feature(), aFG.Solids(), aFG.FeatureFacesMap(),
-                  aFG.HasAdjacentFaces(), aFG.Faces(), aFG.History(),
-                  isSolidsHistoryNeeded, aPSLoop.Next());
+    RemoveFeature(aFG.Feature(),
+                  aFG.Solids(),
+                  aFG.FeatureFacesMap(),
+                  aFG.HasAdjacentFaces(),
+                  aFG.Faces(),
+                  aFG.History(),
+                  isSolidsHistoryNeeded,
+                  aPSLoop.Next());
   }
 }
 
@@ -888,18 +885,18 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
 // function: RemoveFeature
 // purpose: Remove the single feature
 //=======================================================================
-void BOPAlgo_RemoveFeatures::RemoveFeature
-  (const TopoDS_Shape& theFeature,
-   const TopTools_IndexedMapOfShape& theSolids,
-   const TopTools_MapOfShape& theFeatureFacesMap,
-   const Standard_Boolean theHasAdjacentFaces,
-   const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-   const Handle(BRepTools_History)& theAdjFacesHistory,
-   const Standard_Boolean theSolidsHistoryNeeded,
-   const Message_ProgressRange& theRange)
+void BOPAlgo_RemoveFeatures::RemoveFeature(
+  const TopoDS_Shape&                              theFeature,
+  const TopTools_IndexedMapOfShape&                theSolids,
+  const TopTools_MapOfShape&                       theFeatureFacesMap,
+  const Standard_Boolean                           theHasAdjacentFaces,
+  const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
+  const Handle(BRepTools_History)&                 theAdjFacesHistory,
+  const Standard_Boolean                           theSolidsHistoryNeeded,
+  const Message_ProgressRange&                     theRange)
 {
-  Standard_Boolean bFuseShapes = Standard_True;
-  const Standard_Integer aNbAF = theAdjFaces.Extent();
+  Standard_Boolean       bFuseShapes = Standard_True;
+  const Standard_Integer aNbAF       = theAdjFaces.Extent();
   if (aNbAF == 0)
   {
     if (theHasAdjacentFaces)
@@ -946,10 +943,18 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
   TopTools_ListOfShape anUnTouchedSolids;
 
   // Prepare to the feature removal - fill all necessary containers
-  GetOriginalFaces(myShape, theSolids, theFeatureFacesMap, theAdjFaces, myHistory,
-                   aFacesToBeKept, anInternalShapes, aFacesToCheckOri,
-                   aSolidsToRebuild, aSharedFaces, anUnTouchedSolids);
-  
+  GetOriginalFaces(myShape,
+                   theSolids,
+                   theFeatureFacesMap,
+                   theAdjFaces,
+                   myHistory,
+                   aFacesToBeKept,
+                   anInternalShapes,
+                   aFacesToCheckOri,
+                   aSolidsToRebuild,
+                   aSharedFaces,
+                   anUnTouchedSolids);
+
   aPS.Next(3);
   // To avoid excessive intersection of the faces collect the faces
   // of the input shape into a compound
@@ -1010,7 +1015,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
 
   // Result of MV operation
   const TopoDS_Shape& aSolids = aMV.Shape();
-  TopExp_Explorer anExpS(aSolids, TopAbs_SOLID);
+  TopExp_Explorer     anExpS(aSolids, TopAbs_SOLID);
   if (!anExpS.More())
   {
     // No solids have been built - add warning for the feature
@@ -1032,7 +1037,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
     {
       return;
     }
-    const TopoDS_Shape& aF = theAdjFaces.FindKey(i);
+    const TopoDS_Shape&         aF    = theAdjFaces.FindKey(i);
     const TopTools_ListOfShape& aLFIm = myHistory->Modified(aF);
     if (aLFIm.IsEmpty())
       anAdjFacesSplits.Add(aF);
@@ -1046,7 +1051,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
 
   // Validate the result
   Standard_Boolean bValid = Standard_True;
-  aNbFK = aFacesToBeKept.Extent();
+  aNbFK                   = aFacesToBeKept.Extent();
   for (Standard_Integer i = 1; i <= aNbFK && bValid; ++i)
   {
 
@@ -1079,7 +1084,13 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
   TopTools_ListOfShape aLSRes;
   // Remember the removed shapes
   TopTools_ListOfShape aRemovedShapes;
-  GetValidSolids(aMV, aFacesToCheckOri, aSharedFaces, anOrigF, theSolids.Extent(), aLSRes, aRemovedShapes);
+  GetValidSolids(aMV,
+                 aFacesToCheckOri,
+                 aSharedFaces,
+                 anOrigF,
+                 theSolids.Extent(),
+                 aLSRes,
+                 aRemovedShapes);
 
   if (aLSRes.Extent() != theSolids.Extent())
   {
@@ -1100,7 +1111,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
   if (HasHistory())
   {
     // Map the result to check if the shape is removed
-    TopTools_IndexedMapOfShape aMSRes;
+    TopTools_IndexedMapOfShape         aMSRes;
     TopTools_ListIteratorOfListOfShape itLS(aLSRes);
     for (; itLS.More(); itLS.Next())
       TopExp::MapShapes(itLS.Value(), aMSRes);
@@ -1153,7 +1164,7 @@ void BOPAlgo_RemoveFeatures::UpdateHistory(const Message_ProgressRange& theRange
   BRepTools_History aHistory;
 
   const Standard_Integer aNbS = myInputsMap.Extent();
-  Message_ProgressScope aPS(theRange, "Updating history", aNbS);
+  Message_ProgressScope  aPS(theRange, "Updating history", aNbS);
   for (Standard_Integer i = 1; i <= aNbS; ++i, aPS.Next())
   {
     const TopoDS_Shape& aS = myInputsMap(i);
@@ -1195,7 +1206,7 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
 {
   if (myShape.IsSame(myInputShape))
     return;
-  Message_ProgressScope aPSOuter(theRange, "Simplifyingthe result", 2);
+  Message_ProgressScope        aPSOuter(theRange, "Simplifyingthe result", 2);
   ShapeUpgrade_UnifySameDomain aSDTool;
   aSDTool.Initialize(myShape, Standard_True, Standard_True);
   // Do not allow producing internal edges
@@ -1205,7 +1216,7 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
     TopExp::MapShapes(myShape, myMapShape);
 
   const Standard_Integer aNbS = myInputsMap.Extent();
-  Message_ProgressScope aPS(aPSOuter.Next(), NULL, aNbS);
+  Message_ProgressScope  aPS(aPSOuter.Next(), NULL, aNbS);
   for (Standard_Integer i = 1; i <= aNbS; ++i, aPS.Next())
   {
     if (UserBreak(aPS))
@@ -1231,7 +1242,7 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
 void BOPAlgo_RemoveFeatures::PostTreat()
 {
   const TopAbs_ShapeEnum anInputType = myInputShape.ShapeType();
-  const TopAbs_ShapeEnum aResType = myShape.ShapeType();
+  const TopAbs_ShapeEnum aResType    = myShape.ShapeType();
   if (aResType == anInputType)
     return;
 
@@ -1264,11 +1275,11 @@ void BOPAlgo_RemoveFeatures::PostTreat()
 // purpose: Makes the shapes in the list removed in the history.
 //          Keeps the shapes contained in the map.
 //=======================================================================
-void MakeRemoved(const TopTools_ListOfShape& theShapes,
-                 BRepTools_History& theHistory,
+void MakeRemoved(const TopTools_ListOfShape&       theShapes,
+                 BRepTools_History&                theHistory,
                  const TopTools_IndexedMapOfShape& theKeepShapes)
 {
-  TopTools_IndexedMapOfShape aShapesMap;
+  TopTools_IndexedMapOfShape         aShapesMap;
   TopTools_ListIteratorOfListOfShape it(theShapes);
   for (; it.More(); it.Next())
     TopExp::MapShapes(it.Value(), aShapesMap);
@@ -1277,8 +1288,7 @@ void MakeRemoved(const TopTools_ListOfShape& theShapes,
   for (Standard_Integer i = 1; i <= aNbS; ++i)
   {
     const TopoDS_Shape& aS = aShapesMap(i);
-    if (!theKeepShapes.Contains(aS) &&
-        BRepTools_History::IsSupportedType(aS))
+    if (!theKeepShapes.Contains(aS) && BRepTools_History::IsSupportedType(aS))
     {
       theHistory.Remove(aS);
     }
@@ -1289,8 +1299,7 @@ void MakeRemoved(const TopTools_ListOfShape& theShapes,
 // function: FindInternals
 // purpose: Looks for internal shapes inside the face or solid
 //=======================================================================
-void FindInternals(const TopoDS_Shape& theS,
-                   TopTools_ListOfShape& theLInt)
+void FindInternals(const TopoDS_Shape& theS, TopTools_ListOfShape& theLInt)
 {
   TopoDS_Iterator itS(theS);
   for (; itS.More(); itS.Next())
@@ -1317,17 +1326,16 @@ void FindInternals(const TopoDS_Shape& theS,
 // function: RemoveInternalWires
 // purpose: Removes internal wires from the faces
 //=======================================================================
-void RemoveInternalWires(const TopTools_ListOfShape& theShapes,
-                         TopTools_ListOfShape *theRemoved)
+void RemoveInternalWires(const TopTools_ListOfShape& theShapes, TopTools_ListOfShape* theRemoved)
 {
   TopTools_ListIteratorOfListOfShape itLS(theShapes);
   for (; itLS.More(); itLS.Next())
   {
     const TopoDS_Shape& aShape = itLS.Value();
-    TopExp_Explorer anExpF(aShape, TopAbs_FACE);
+    TopExp_Explorer     anExpF(aShape, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
     {
-      TopoDS_Face& aF = *(TopoDS_Face*)&anExpF.Current();
+      TopoDS_Face&         aF = *(TopoDS_Face*)&anExpF.Current();
       TopTools_ListOfShape aLWToRemove;
       FindInternals(aF, aLWToRemove);
       if (aLWToRemove.Extent())
@@ -1350,17 +1358,17 @@ void RemoveInternalWires(const TopTools_ListOfShape& theShapes,
 // function: GetOriginalFaces
 // purpose: Get original faces from my face
 //=======================================================================
-void GetOriginalFaces(const TopoDS_Shape& theShape,
-                      const TopTools_IndexedMapOfShape& theSolids,
-                      const TopTools_MapOfShape& theFeatureFacesMap,
+void GetOriginalFaces(const TopoDS_Shape&                              theShape,
+                      const TopTools_IndexedMapOfShape&                theSolids,
+                      const TopTools_MapOfShape&                       theFeatureFacesMap,
                       const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                      const Handle(BRepTools_History)& theHistory,
-                      TopTools_IndexedMapOfShape& theFacesToBeKept,
-                      TopTools_ListOfShape& theInternalShapes,
-                      TopTools_MapOfShape& theFacesToCheckOri,
-                      TopTools_IndexedMapOfShape& theSolidsToRebuild,
-                      TopTools_ListOfShape& theSharedFaces,
-                      TopTools_ListOfShape& theUnTouchedSolids)
+                      const Handle(BRepTools_History)&                 theHistory,
+                      TopTools_IndexedMapOfShape&                      theFacesToBeKept,
+                      TopTools_ListOfShape&                            theInternalShapes,
+                      TopTools_MapOfShape&                             theFacesToCheckOri,
+                      TopTools_IndexedMapOfShape&                      theSolidsToRebuild,
+                      TopTools_ListOfShape&                            theSharedFaces,
+                      TopTools_ListOfShape&                            theUnTouchedSolids)
 {
   // Use only solids which has to be reconstructed by the feature.
   // All other solids should be avoided in the feature removal and added
@@ -1370,7 +1378,7 @@ void GetOriginalFaces(const TopoDS_Shape& theShape,
   const Standard_Integer aNbSols = theSolids.Extent();
   for (Standard_Integer i = 1; i <= aNbSols; ++i)
   {
-    const TopoDS_Shape& aSol = theSolids(i);
+    const TopoDS_Shape&         aSol  = theSolids(i);
     const TopTools_ListOfShape& aLFIm = theHistory->Modified(aSol);
     if (aLFIm.IsEmpty())
       theSolidsToRebuild.Add(aSol);
@@ -1379,11 +1387,11 @@ void GetOriginalFaces(const TopoDS_Shape& theShape,
   }
 
   // Splits of the feature faces
-  TopTools_MapOfShape aFeatureFacesSplits;
+  TopTools_MapOfShape              aFeatureFacesSplits;
   TopTools_MapIteratorOfMapOfShape itM(theFeatureFacesMap);
   for (; itM.More(); itM.Next())
   {
-    const TopoDS_Shape& aF = itM.Value();
+    const TopoDS_Shape&         aF    = itM.Value();
     const TopTools_ListOfShape& aLFIm = theHistory->Modified(aF);
     if (aLFIm.IsEmpty())
       aFeatureFacesSplits.Add(aF);
@@ -1451,9 +1459,7 @@ void GetOriginalFaces(const TopoDS_Shape& theShape,
 // function: FindShape
 // purpose: Find the shape in the other shape
 //=======================================================================
-void FindShape(const TopoDS_Shape& theSWhat,
-               const TopoDS_Shape& theSWhere,
-               TopoDS_Shape& theSFound)
+void FindShape(const TopoDS_Shape& theSWhat, const TopoDS_Shape& theSWhere, TopoDS_Shape& theSFound)
 {
   TopExp_Explorer anExp(theSWhere, theSWhat.ShapeType());
   for (; anExp.More(); anExp.Next())
@@ -1471,13 +1477,13 @@ void FindShape(const TopoDS_Shape& theSWhat,
 // function: GetValidSolids
 // purpose: Checks the validity of the solids and keeps only valid ones
 //=======================================================================
-void GetValidSolids(BOPAlgo_MakerVolume& theMV,
-                    const TopTools_MapOfShape& theFacesToCheckOri,
+void GetValidSolids(BOPAlgo_MakerVolume&        theMV,
+                    const TopTools_MapOfShape&  theFacesToCheckOri,
                     const TopTools_ListOfShape& aSharedFaces,
-                    const TopoDS_Shape& theOrigFaces,
-                    const Standard_Integer theNbSol,
-                    TopTools_ListOfShape& theLSRes,
-                    TopTools_ListOfShape& theRemovedShapes)
+                    const TopoDS_Shape&         theOrigFaces,
+                    const Standard_Integer      theNbSol,
+                    TopTools_ListOfShape&       theLSRes,
+                    TopTools_ListOfShape&       theRemovedShapes)
 {
   TopExp_Explorer anExpS(theMV.Shape(), TopAbs_SOLID);
   for (; anExpS.More(); anExpS.Next())
@@ -1486,13 +1492,13 @@ void GetValidSolids(BOPAlgo_MakerVolume& theMV,
   if (theLSRes.Extent() > theNbSol)
   {
     // Find Solids filling the holes in the initial shape
-    TopTools_MapOfShape aSolidsToAvoid;
+    TopTools_MapOfShape                       aSolidsToAvoid;
     TopTools_IndexedDataMapOfShapeListOfShape aFSMap;
     TopExp::MapShapesAndAncestors(theMV.Shape(), TopAbs_FACE, TopAbs_SOLID, aFSMap);
     FindExtraShapes(aFSMap, theFacesToCheckOri, theMV, aSolidsToAvoid);
 
     TopTools_ListIteratorOfListOfShape itLS(theLSRes);
-    for (; itLS.More(); )
+    for (; itLS.More();)
     {
       if (aSolidsToAvoid.Contains(itLS.Value()))
         theLSRes.Remove(itLS);
@@ -1511,12 +1517,12 @@ void GetValidSolids(BOPAlgo_MakerVolume& theMV,
   {
     // Remove solids containing only the adjacent faces
     TopTools_MapOfShape anOrigFacesRes;
-    TopExp_Explorer anExpF(theOrigFaces, TopAbs_FACE);
+    TopExp_Explorer     anExpF(theOrigFaces, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
       TakeModified(anExpF.Current(), theMV, anOrigFacesRes);
 
     TopTools_ListIteratorOfListOfShape itLS(theLSRes);
-    for (; itLS.More(); )
+    for (; itLS.More();)
     {
       anExpF.Init(itLS.Value(), TopAbs_FACE);
       for (; anExpF.More(); anExpF.Next())
@@ -1540,14 +1546,14 @@ void GetValidSolids(BOPAlgo_MakerVolume& theMV,
 // purpose: Find shapes possibly filling the holes in the original shape
 //=======================================================================
 void FindExtraShapes(const TopTools_IndexedDataMapOfShapeListOfShape& theConnectionMap,
-                     const TopTools_MapOfShape& theShapesToCheckOri,
-                     BOPAlgo_Builder& theBuilder,
-                     TopTools_MapOfShape& theShapesToAvoid,
-                     TopTools_MapOfShape* theValidShapes)
+                     const TopTools_MapOfShape&                       theShapesToCheckOri,
+                     BOPAlgo_Builder&                                 theBuilder,
+                     TopTools_MapOfShape&                             theShapesToAvoid,
+                     TopTools_MapOfShape*                             theValidShapes)
 {
-  Handle(IntTools_Context) aCtx = theBuilder.Context();
-  TopTools_MapOfShape aValidShapes;
-  TopTools_MapOfShape* pValidShapes = theValidShapes ? theValidShapes : &aValidShapes;
+  Handle(IntTools_Context)         aCtx = theBuilder.Context();
+  TopTools_MapOfShape              aValidShapes;
+  TopTools_MapOfShape*             pValidShapes = theValidShapes ? theValidShapes : &aValidShapes;
   TopTools_MapIteratorOfMapOfShape itM(theShapesToCheckOri);
   for (; itM.More(); itM.Next())
   {
@@ -1595,22 +1601,22 @@ void FindExtraShapes(const TopTools_IndexedDataMapOfShapeListOfShape& theConnect
 // function: AvoidExtraSharedFaces
 // purpose: Looks for the extra faces splitting the solids
 //=======================================================================
-void AvoidExtraSharedFaces(TopTools_ListOfShape& theLSolids,
+void AvoidExtraSharedFaces(TopTools_ListOfShape&       theLSolids,
                            const TopTools_ListOfShape& theLFSharedToAvoid,
-                           BOPAlgo_Builder& theBuilder,
-                           TopTools_ListOfShape& theExtraFaces)
+                           BOPAlgo_Builder&            theBuilder,
+                           TopTools_ListOfShape&       theExtraFaces)
 {
   // Get all splits of shared faces to avoid in the check
   TopTools_MapOfShape aMFSharedSp;
   {
-    TopTools_ListOfShape aLFSharedSp;
+    TopTools_ListOfShape               aLFSharedSp;
     TopTools_ListIteratorOfListOfShape itLFS(theLFSharedToAvoid);
     for (; itLFS.More(); itLFS.Next())
       TakeModified(itLFS.Value(), theBuilder, aMFSharedSp);
   }
 
   TopTools_IndexedDataMapOfShapeListOfShape aFSMap;
-  TopTools_ListIteratorOfListOfShape itLS(theLSolids);
+  TopTools_ListIteratorOfListOfShape        itLS(theLSolids);
   for (; itLS.More(); itLS.Next())
     TopExp::MapShapesAndAncestors(itLS.Value(), TopAbs_FACE, TopAbs_SOLID, aFSMap);
 
@@ -1620,10 +1626,10 @@ void AvoidExtraSharedFaces(TopTools_ListOfShape& theLSolids,
   for (; itLS.More(); itLS.Next())
   {
     const TopoDS_Shape& aSol = itLS.Value();
-    TopExp_Explorer anExpF(aSol, TopAbs_FACE);
+    TopExp_Explorer     anExpF(aSol, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
     {
-      const TopoDS_Shape& aF = anExpF.Current();
+      const TopoDS_Shape&         aF    = anExpF.Current();
       const TopTools_ListOfShape& aLSol = aFSMap.FindFromKey(aF);
       if (aLSol.Extent() != 2 || aMFSharedSp.Contains(aF))
         aLFArguments.Append(aF);
@@ -1651,11 +1657,11 @@ void AvoidExtraSharedFaces(TopTools_ListOfShape& theLSolids,
 // function: FillSolidsHistory
 // purpose: Fills the history of solids modifications
 //=======================================================================
-void FillSolidsHistory(const TopTools_IndexedMapOfShape& theSolIn,
-                       TopTools_ListOfShape& theSolidsOut,
+void FillSolidsHistory(const TopTools_IndexedMapOfShape&                theSolIn,
+                       TopTools_ListOfShape&                            theSolidsOut,
                        const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-                       BOPAlgo_Builder& theBuilder,
-                       BRepTools_History& theSolidsHistory)
+                       BOPAlgo_Builder&                                 theBuilder,
+                       BRepTools_History&                               theSolidsHistory)
 {
   const Standard_Integer aNbS = theSolIn.Extent();
   for (Standard_Integer i = 1; i <= aNbS; ++i)
@@ -1701,8 +1707,8 @@ void FillSolidsHistory(const TopTools_IndexedMapOfShape& theSolIn,
 // function: TakeModified
 // purpose: Stores the modified object into the list
 //=======================================================================
-void TakeModified(const TopoDS_Shape& theS,
-                  BOPAlgo_Builder& theBuilder,
+void TakeModified(const TopoDS_Shape&   theS,
+                  BOPAlgo_Builder&      theBuilder,
                   TopTools_ListOfShape& theList)
 {
   const TopTools_ListOfShape& aModified = theBuilder.Modified(theS);
@@ -1715,12 +1721,13 @@ void TakeModified(const TopoDS_Shape& theS,
       theList.Append(itM.Value());
   }
 }
+
 //=======================================================================
 // function: TakeModified
 // purpose: Stores the modified object into the map
 //=======================================================================
-void TakeModified(const TopoDS_Shape& theS,
-                  BOPAlgo_Builder& theBuilder,
+void TakeModified(const TopoDS_Shape&  theS,
+                  BOPAlgo_Builder&     theBuilder,
                   TopTools_MapOfShape& theMap)
 {
   const TopTools_ListOfShape& aModified = theBuilder.Modified(theS);
@@ -1738,11 +1745,11 @@ void TakeModified(const TopoDS_Shape& theS,
 // function: FindSolid
 // purpose: Looks for the image of the solid in the list of resulting solids
 //=======================================================================
-void FindSolid(const TopoDS_Shape& theSolIn,
-               const TopTools_ListOfShape& theSolidsRes,
+void FindSolid(const TopoDS_Shape&                              theSolIn,
+               const TopTools_ListOfShape&                      theSolidsRes,
                const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
-               BOPAlgo_Builder& theBuilder,
-               TopoDS_Shape& theSolOut)
+               BOPAlgo_Builder&                                 theBuilder,
+               TopoDS_Shape&                                    theSolOut)
 {
   Handle(IntTools_Context) aCtx = theBuilder.Context();
 
@@ -1752,7 +1759,7 @@ void FindSolid(const TopoDS_Shape& theSolIn,
   {
     const TopoDS_Shape& aFS = anExpF.Current();
     // Images of the face
-    TopTools_MapOfShape aMFSIm;
+    TopTools_MapOfShape         aMFSIm;
     const TopTools_ListOfShape* pLFA = theAdjFaces.Seek(aFS);
     if (pLFA)
     {
@@ -1770,7 +1777,7 @@ void FindSolid(const TopoDS_Shape& theSolIn,
     for (; itLS.More(); itLS.Next())
     {
       const TopoDS_Shape& aSol = itLS.Value();
-      TopExp_Explorer anExpFOut(aSol, TopAbs_FACE);
+      TopExp_Explorer     anExpFOut(aSol, TopAbs_FACE);
       for (; anExpFOut.More(); anExpFOut.Next())
       {
         const TopoDS_Shape& aF = anExpFOut.Current();

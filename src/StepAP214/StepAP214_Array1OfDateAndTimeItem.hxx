@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepAP214_DateAndTimeItem> StepAP214_Array1OfDateAndTimeItem;
 
-
 #endif

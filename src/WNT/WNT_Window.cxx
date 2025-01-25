@@ -21,54 +21,56 @@
 
 #if defined(_WIN32) && !defined(OCCT_UWP)
 
-#include <Aspect_ScrollDelta.hxx>
-#include <Aspect_WindowDefinitionError.hxx>
-#include <Aspect_WindowInputListener.hxx>
-#include <Message.hxx>
-#include <NCollection_LocalArray.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <WNT_WClass.hxx>
-#include <WNT_HIDSpaceMouse.hxx>
+  #include <Aspect_ScrollDelta.hxx>
+  #include <Aspect_WindowDefinitionError.hxx>
+  #include <Aspect_WindowInputListener.hxx>
+  #include <Message.hxx>
+  #include <NCollection_LocalArray.hxx>
+  #include <TCollection_ExtendedString.hxx>
+  #include <WNT_WClass.hxx>
+  #include <WNT_HIDSpaceMouse.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(WNT_Window, Aspect_Window)
 
-#ifndef MOUSEEVENTF_FROMTOUCH
-#define MOUSEEVENTF_FROMTOUCH 0xFF515700
-#endif
+  #ifndef MOUSEEVENTF_FROMTOUCH
+    #define MOUSEEVENTF_FROMTOUCH 0xFF515700
+  #endif
 
 //! Auxiliary tool for handling WM_TOUCH events.
 //! Dynamically loads functions from User32 available since Win7 and later.
 class WNT_Window::TouchInputHelper : public Standard_Transient
 {
 public:
-  typedef BOOL (WINAPI *RegisterTouchWindow_t)(HWND hwnd, ULONG ulFlags);
-  typedef BOOL (WINAPI *UnregisterTouchWindow_t)(HWND hwnd);
-  typedef BOOL (WINAPI *GetTouchInputInfo_t)(HTOUCHINPUT hTouchInput,
-                                             UINT cInputs,
-                                             PTOUCHINPUT pInputs,
-                                             int         cbSize);
-  typedef BOOL (WINAPI *CloseTouchInputHandle_t)(HTOUCHINPUT hTouchInput);
+  typedef BOOL(WINAPI* RegisterTouchWindow_t)(HWND hwnd, ULONG ulFlags);
+  typedef BOOL(WINAPI* UnregisterTouchWindow_t)(HWND hwnd);
+  typedef BOOL(WINAPI* GetTouchInputInfo_t)(HTOUCHINPUT hTouchInput,
+                                            UINT        cInputs,
+                                            PTOUCHINPUT pInputs,
+                                            int         cbSize);
+  typedef BOOL(WINAPI* CloseTouchInputHandle_t)(HTOUCHINPUT hTouchInput);
 
   typedef NCollection_LocalArray<TOUCHINPUT, 16> InnerTouchArray;
 
 public:
-
   //! Main constructor.
   TouchInputHelper()
-  : myRegisterTouchWindow (NULL),
-    myUnregisterTouchWindow (NULL),
-    myGetTouchInputInfo (NULL),
-    myCloseTouchInputHandle (NULL),
-    myIsRegistered (false)
+      : myRegisterTouchWindow(NULL),
+        myUnregisterTouchWindow(NULL),
+        myGetTouchInputInfo(NULL),
+        myCloseTouchInputHandle(NULL),
+        myIsRegistered(false)
   {
-    HMODULE aUser32Module = GetModuleHandleW (L"User32");
+    HMODULE aUser32Module = GetModuleHandleW(L"User32");
     if (aUser32Module != NULL)
     {
       // User32 should be already loaded
-      myRegisterTouchWindow   = (RegisterTouchWindow_t   )GetProcAddress (aUser32Module, "RegisterTouchWindow");
-      myUnregisterTouchWindow = (UnregisterTouchWindow_t )GetProcAddress (aUser32Module, "UnregisterTouchWindow");
-      myGetTouchInputInfo     = (GetTouchInputInfo_t     )GetProcAddress (aUser32Module, "GetTouchInputInfo");
-      myCloseTouchInputHandle = (CloseTouchInputHandle_t )GetProcAddress (aUser32Module, "CloseTouchInputHandle");
+      myRegisterTouchWindow =
+        (RegisterTouchWindow_t)GetProcAddress(aUser32Module, "RegisterTouchWindow");
+      myUnregisterTouchWindow =
+        (UnregisterTouchWindow_t)GetProcAddress(aUser32Module, "UnregisterTouchWindow");
+      myGetTouchInputInfo = (GetTouchInputInfo_t)GetProcAddress(aUser32Module, "GetTouchInputInfo");
+      myCloseTouchInputHandle =
+        (CloseTouchInputHandle_t)GetProcAddress(aUser32Module, "CloseTouchInputHandle");
     }
   }
 
@@ -76,19 +78,19 @@ public:
   bool IsRegistered() const { return myIsRegistered; }
 
   //! Register window to receive WM_TOUCH events.
-  bool Register (HWND theWin)
+  bool Register(HWND theWin)
   {
     if (myRegisterTouchWindow == NULL)
     {
       return false;
     }
 
-    if (myRegisterTouchWindow (theWin, TWF_FINETOUCH))
+    if (myRegisterTouchWindow(theWin, TWF_FINETOUCH))
     {
       myIsRegistered = true;
       return true;
     }
-    //Message::SendTrace() << "RegisterTouchWindow() FAILED";
+    // Message::SendTrace() << "RegisterTouchWindow() FAILED";
     return false;
   }
 
@@ -97,19 +99,17 @@ public:
   {
   public:
     //! Main constructor.
-    TouchInputInfo (const TouchInputHelper& theHelper,
-                    const MSG& theMsg)
-    : InnerTouchArray (0),
-      myHelper (&theHelper),
-      myHInput ((HTOUCHINPUT )theMsg.lParam)
+    TouchInputInfo(const TouchInputHelper& theHelper, const MSG& theMsg)
+        : InnerTouchArray(0),
+          myHelper(&theHelper),
+          myHInput((HTOUCHINPUT)theMsg.lParam)
     {
       const int aNbTouches = LOWORD(theMsg.wParam);
-      if (aNbTouches > 0
-       && theHelper.myGetTouchInputInfo != NULL)
+      if (aNbTouches > 0 && theHelper.myGetTouchInputInfo != NULL)
       {
-        InnerTouchArray::Allocate (aNbTouches);
+        InnerTouchArray::Allocate(aNbTouches);
         TOUCHINPUT* aTouches = InnerTouchArray::operator TOUCHINPUT*();
-        if (!theHelper.myGetTouchInputInfo (myHInput, aNbTouches, aTouches, sizeof(TOUCHINPUT)))
+        if (!theHelper.myGetTouchInputInfo(myHInput, aNbTouches, aTouches, sizeof(TOUCHINPUT)))
         {
           InnerTouchArray::Deallocate();
         }
@@ -121,49 +121,47 @@ public:
     {
       if (myHelper->myCloseTouchInputHandle != NULL)
       {
-        myHelper->myCloseTouchInputHandle (myHInput);
+        myHelper->myCloseTouchInputHandle(myHInput);
       }
     }
 
   private:
     const TouchInputHelper* myHelper;
-    HTOUCHINPUT myHInput;
+    HTOUCHINPUT             myHInput;
   };
 
 private:
-
   RegisterTouchWindow_t   myRegisterTouchWindow;
   UnregisterTouchWindow_t myUnregisterTouchWindow;
   GetTouchInputInfo_t     myGetTouchInputInfo;
   CloseTouchInputHandle_t myCloseTouchInputHandle;
   bool                    myIsRegistered;
-
 };
 
 // =======================================================================
 // function : WNT_Window
 // purpose  :
 // =======================================================================
-WNT_Window::WNT_Window (const Standard_CString           theTitle,
-                        const Handle(WNT_WClass)&        theClass,
-                        const WNT_Dword&                 theStyle,
-                        const Standard_Integer           thePxLeft,
-                        const Standard_Integer           thePxTop,
-                        const Standard_Integer           thePxWidth,
-                        const Standard_Integer           thePxHeight,
-                        const Quantity_NameOfColor       theBackColor,
-                        const Aspect_Handle              theParent,
-                        const Aspect_Handle              theMenu,
-                        const Standard_Address           theClientStruct)
-: Aspect_Window(),
-  myWClass (theClass),
-  myHWindow (NULL),
-  myHParentWindow (NULL),
-  myXLeft (thePxLeft),
-  myYTop  (thePxTop),
-  myXRight (thePxLeft + thePxWidth),
-  myYBottom (thePxTop + thePxHeight),
-  myIsForeign (Standard_False)
+WNT_Window::WNT_Window(const Standard_CString     theTitle,
+                       const Handle(WNT_WClass)&  theClass,
+                       const WNT_Dword&           theStyle,
+                       const Standard_Integer     thePxLeft,
+                       const Standard_Integer     thePxTop,
+                       const Standard_Integer     thePxWidth,
+                       const Standard_Integer     thePxHeight,
+                       const Quantity_NameOfColor theBackColor,
+                       const Aspect_Handle        theParent,
+                       const Aspect_Handle        theMenu,
+                       const Standard_Address     theClientStruct)
+    : Aspect_Window(),
+      myWClass(theClass),
+      myHWindow(NULL),
+      myHParentWindow(NULL),
+      myXLeft(thePxLeft),
+      myYTop(thePxTop),
+      myXRight(thePxLeft + thePxWidth),
+      myYBottom(thePxTop + thePxHeight),
+      myIsForeign(Standard_False)
 {
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
@@ -186,50 +184,52 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
   aRect.bottom = myYBottom;
   aRect.left   = myXLeft;
   aRect.right  = myXRight;
-  AdjustWindowRect (&aRect, aStyle, theMenu != NULL ? TRUE : FALSE);
+  AdjustWindowRect(&aRect, aStyle, theMenu != NULL ? TRUE : FALSE);
   myXLeft   = aRect.left;
   myYTop    = aRect.top;
   myXRight  = aRect.right;
   myYBottom = aRect.bottom;
 
-  const TCollection_ExtendedString aTitleW (theTitle);
-  const TCollection_ExtendedString aClassNameW (myWClass->Name());
-  myHWindow = CreateWindowW (aClassNameW.ToWideString(), aTitleW.ToWideString(),
-                             aStyle,
-                             myXLeft, myYTop,
-                             (myXRight - myXLeft), (myYBottom - myYTop),
-                             (HWND )theParent,
-                             (HMENU )theMenu,
-                             (HINSTANCE )myWClass->Instance(),
-                             theClientStruct);
+  const TCollection_ExtendedString aTitleW(theTitle);
+  const TCollection_ExtendedString aClassNameW(myWClass->Name());
+  myHWindow = CreateWindowW(aClassNameW.ToWideString(),
+                            aTitleW.ToWideString(),
+                            aStyle,
+                            myXLeft,
+                            myYTop,
+                            (myXRight - myXLeft),
+                            (myYBottom - myYTop),
+                            (HWND)theParent,
+                            (HMENU)theMenu,
+                            (HINSTANCE)myWClass->Instance(),
+                            theClientStruct);
   if (!myHWindow)
   {
     throw Aspect_WindowDefinitionError("Unable to create window");
   }
 
   myHParentWindow = theParent;
-  SetBackground (theBackColor);
+  SetBackground(theBackColor);
 }
 
 // =======================================================================
 // function : WNT_Window
 // purpose  :
 // =======================================================================
-WNT_Window::WNT_Window (const Aspect_Handle        theHandle,
-                        const Quantity_NameOfColor theBackColor)
-: myHWindow (theHandle),
-  myHParentWindow (GetParent ((HWND )theHandle)),
-  myXLeft (0),
-  myYTop  (0),
-  myXRight (0),
-  myYBottom (0),
-  myIsForeign (Standard_True)
+WNT_Window::WNT_Window(const Aspect_Handle theHandle, const Quantity_NameOfColor theBackColor)
+    : myHWindow(theHandle),
+      myHParentWindow(GetParent((HWND)theHandle)),
+      myXLeft(0),
+      myYTop(0),
+      myXRight(0),
+      myYBottom(0),
+      myIsForeign(Standard_True)
 {
-  SetBackground (theBackColor);
+  SetBackground(theBackColor);
 
   WINDOWPLACEMENT aPlace = {};
-  aPlace.length = sizeof(WINDOWPLACEMENT);
-  ::GetWindowPlacement ((HWND )myHWindow, &aPlace);
+  aPlace.length          = sizeof(WINDOWPLACEMENT);
+  ::GetWindowPlacement((HWND)myHWindow, &aPlace);
 
   myXLeft   = aPlace.rcNormalPosition.left;
   myYTop    = aPlace.rcNormalPosition.top;
@@ -243,13 +243,12 @@ WNT_Window::WNT_Window (const Aspect_Handle        theHandle,
 // =======================================================================
 WNT_Window::~WNT_Window()
 {
-  if (myHWindow == NULL
-   || myIsForeign)
+  if (myHWindow == NULL || myIsForeign)
   {
     return;
   }
 
-  DestroyWindow ((HWND )myHWindow);
+  DestroyWindow((HWND)myHWindow);
   myIsForeign = Standard_False;
 }
 
@@ -257,9 +256,9 @@ WNT_Window::~WNT_Window()
 // function : SetCursor
 // purpose  :
 // =======================================================================
-void WNT_Window::SetCursor (const Aspect_Handle theCursor) const
+void WNT_Window::SetCursor(const Aspect_Handle theCursor) const
 {
-  ::SetClassLongPtrW ((HWND )myHWindow, GCLP_HCURSOR, (LONG_PTR )theCursor);
+  ::SetClassLongPtrW((HWND)myHWindow, GCLP_HCURSOR, (LONG_PTR)theCursor);
 }
 
 // =======================================================================
@@ -274,10 +273,9 @@ Standard_Boolean WNT_Window::IsMapped() const
   }
 
   WINDOWPLACEMENT aPlace = {};
-  aPlace.length = sizeof(WINDOWPLACEMENT);
-  ::GetWindowPlacement ((HWND )myHWindow, &aPlace);
-  return !(aPlace.showCmd == SW_HIDE
-        || aPlace.showCmd == SW_MINIMIZE);
+  aPlace.length          = sizeof(WINDOWPLACEMENT);
+  ::GetWindowPlacement((HWND)myHWindow, &aPlace);
+  return !(aPlace.showCmd == SW_HIDE || aPlace.showCmd == SW_MINIMIZE);
 }
 
 // =======================================================================
@@ -288,7 +286,7 @@ void WNT_Window::Map() const
 {
   if (!IsVirtual())
   {
-    Map (SW_SHOW);
+    Map(SW_SHOW);
   }
 }
 
@@ -296,15 +294,15 @@ void WNT_Window::Map() const
 // function : Map
 // purpose  :
 // =======================================================================
-void WNT_Window::Map (const Standard_Integer theMapMode) const
+void WNT_Window::Map(const Standard_Integer theMapMode) const
 {
   if (IsVirtual())
   {
     return;
   }
 
-  ::ShowWindow   ((HWND )myHWindow, theMapMode);
-  ::UpdateWindow ((HWND )myHWindow);
+  ::ShowWindow((HWND)myHWindow, theMapMode);
+  ::UpdateWindow((HWND)myHWindow);
 }
 
 // =======================================================================
@@ -313,7 +311,7 @@ void WNT_Window::Map (const Standard_Integer theMapMode) const
 // =======================================================================
 void WNT_Window::Unmap() const
 {
-  Map (SW_HIDE);
+  Map(SW_HIDE);
 }
 
 // =======================================================================
@@ -328,18 +326,30 @@ Aspect_TypeOfResize WNT_Window::DoResize()
   }
 
   WINDOWPLACEMENT aPlace = {};
-  aPlace.length = sizeof(WINDOWPLACEMENT);
-  GetWindowPlacement ((HWND )myHWindow, &aPlace);
+  aPlace.length          = sizeof(WINDOWPLACEMENT);
+  GetWindowPlacement((HWND)myHWindow, &aPlace);
   if (aPlace.showCmd == SW_SHOWMINIMIZED)
   {
     return Aspect_TOR_UNKNOWN;
   }
 
   int aMask = 0;
-  if (Abs ((int )aPlace.rcNormalPosition.left   - myXLeft  ) > 2) { aMask |= 1; }
-  if (Abs ((int )aPlace.rcNormalPosition.right  - myXRight ) > 2) { aMask |= 2; }
-  if (Abs ((int )aPlace.rcNormalPosition.top    - myYTop   ) > 2) { aMask |= 4; }
-  if (Abs ((int )aPlace.rcNormalPosition.bottom - myYBottom) > 2) { aMask |= 8; }
+  if (Abs((int)aPlace.rcNormalPosition.left - myXLeft) > 2)
+  {
+    aMask |= 1;
+  }
+  if (Abs((int)aPlace.rcNormalPosition.right - myXRight) > 2)
+  {
+    aMask |= 2;
+  }
+  if (Abs((int)aPlace.rcNormalPosition.top - myYTop) > 2)
+  {
+    aMask |= 4;
+  }
+  if (Abs((int)aPlace.rcNormalPosition.bottom - myYBottom) > 2)
+  {
+    aMask |= 8;
+  }
 
   myXLeft   = aPlace.rcNormalPosition.left;
   myXRight  = aPlace.rcNormalPosition.right;
@@ -347,15 +357,24 @@ Aspect_TypeOfResize WNT_Window::DoResize()
   myYBottom = aPlace.rcNormalPosition.bottom;
   switch (aMask)
   {
-    case 0:  return Aspect_TOR_NO_BORDER;
-    case 1:  return Aspect_TOR_LEFT_BORDER;
-    case 2:  return Aspect_TOR_RIGHT_BORDER;
-    case 4:  return Aspect_TOR_TOP_BORDER;
-    case 5:  return Aspect_TOR_LEFT_AND_TOP_BORDER;
-    case 6:  return Aspect_TOR_TOP_AND_RIGHT_BORDER;
-    case 8:  return Aspect_TOR_BOTTOM_BORDER;
-    case 9:  return Aspect_TOR_BOTTOM_AND_LEFT_BORDER;
-    case 10: return Aspect_TOR_RIGHT_AND_BOTTOM_BORDER;
+    case 0:
+      return Aspect_TOR_NO_BORDER;
+    case 1:
+      return Aspect_TOR_LEFT_BORDER;
+    case 2:
+      return Aspect_TOR_RIGHT_BORDER;
+    case 4:
+      return Aspect_TOR_TOP_BORDER;
+    case 5:
+      return Aspect_TOR_LEFT_AND_TOP_BORDER;
+    case 6:
+      return Aspect_TOR_TOP_AND_RIGHT_BORDER;
+    case 8:
+      return Aspect_TOR_BOTTOM_BORDER;
+    case 9:
+      return Aspect_TOR_BOTTOM_AND_LEFT_BORDER;
+    case 10:
+      return Aspect_TOR_RIGHT_AND_BOTTOM_BORDER;
   }
   return Aspect_TOR_UNKNOWN;
 }
@@ -368,11 +387,11 @@ Standard_Real WNT_Window::Ratio() const
 {
   if (IsVirtual())
   {
-    return Standard_Real(myXRight - myXLeft)/ Standard_Real(myYBottom - myYTop);
+    return Standard_Real(myXRight - myXLeft) / Standard_Real(myYBottom - myYTop);
   }
 
   RECT aRect = {};
-  GetClientRect ((HWND )myHWindow, &aRect);
+  GetClientRect((HWND)myHWindow, &aRect);
   return Standard_Real(aRect.right - aRect.left) / Standard_Real(aRect.bottom - aRect.top);
 }
 
@@ -380,32 +399,34 @@ Standard_Real WNT_Window::Ratio() const
 // function : Position
 // purpose  :
 // =======================================================================
-void WNT_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
-                           Standard_Integer& theX2, Standard_Integer& theY2) const
+void WNT_Window::Position(Standard_Integer& theX1,
+                          Standard_Integer& theY1,
+                          Standard_Integer& theX2,
+                          Standard_Integer& theY2) const
 {
   if (IsVirtual())
   {
-    theX1  = myXLeft;
-    theX2  = myXRight;
-    theY1  = myYTop;
-    theY2  = myYBottom;
+    theX1 = myXLeft;
+    theX2 = myXRight;
+    theY1 = myYTop;
+    theY2 = myYBottom;
     return;
   }
 
   RECT aRect = {};
-  ::GetClientRect ((HWND )myHWindow, &aRect);
+  ::GetClientRect((HWND)myHWindow, &aRect);
 
   POINT aPntLeft, aPntRight;
   aPntLeft.x = aPntLeft.y = 0;
-  ::ClientToScreen ((HWND )myHWindow, &aPntLeft);
+  ::ClientToScreen((HWND)myHWindow, &aPntLeft);
   aPntRight.x = aRect.right;
   aPntRight.y = aRect.bottom;
-  ::ClientToScreen ((HWND )myHWindow, &aPntRight);
+  ::ClientToScreen((HWND)myHWindow, &aPntRight);
 
   if (myHParentWindow != NULL)
   {
-    ::ScreenToClient ((HWND )myHParentWindow, &aPntLeft);
-    ::ScreenToClient ((HWND )myHParentWindow, &aPntRight);
+    ::ScreenToClient((HWND)myHParentWindow, &aPntLeft);
+    ::ScreenToClient((HWND)myHParentWindow, &aPntRight);
   }
 
   theX1 = aPntLeft.x;
@@ -418,8 +439,7 @@ void WNT_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
 // function : Size
 // purpose  :
 // =======================================================================
-void WNT_Window::Size (Standard_Integer& theWidth,
-                       Standard_Integer& theHeight) const
+void WNT_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   if (IsVirtual())
   {
@@ -429,7 +449,7 @@ void WNT_Window::Size (Standard_Integer& theWidth,
   }
 
   RECT aRect = {};
-  ::GetClientRect ((HWND )myHWindow, &aRect);
+  ::GetClientRect((HWND)myHWindow, &aRect);
   theWidth  = aRect.right;
   theHeight = aRect.bottom;
 }
@@ -438,8 +458,10 @@ void WNT_Window::Size (Standard_Integer& theWidth,
 // function : SetPos
 // purpose  :
 // =======================================================================
-void WNT_Window::SetPos (const Standard_Integer theX,  const Standard_Integer theY,
-                         const Standard_Integer theX1, const Standard_Integer theY1)
+void WNT_Window::SetPos(const Standard_Integer theX,
+                        const Standard_Integer theY,
+                        const Standard_Integer theX1,
+                        const Standard_Integer theY1)
 {
   myXLeft   = theX;
   myYTop    = theY;
@@ -451,21 +473,21 @@ void WNT_Window::SetPos (const Standard_Integer theX,  const Standard_Integer th
 // function : SetTitle
 // purpose  :
 // =======================================================================
-void WNT_Window::SetTitle (const TCollection_AsciiString& theTitle)
+void WNT_Window::SetTitle(const TCollection_AsciiString& theTitle)
 {
-  const TCollection_ExtendedString aTitleW (theTitle);
-  SetWindowTextW ((HWND )myHWindow, aTitleW.ToWideString());
+  const TCollection_ExtendedString aTitleW(theTitle);
+  SetWindowTextW((HWND)myHWindow, aTitleW.ToWideString());
 }
 
 // =======================================================================
 // function : InvalidateContent
 // purpose  :
 // =======================================================================
-void WNT_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
+void WNT_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
 {
   if (myHWindow != NULL)
   {
-    ::InvalidateRect ((HWND )myHWindow, NULL, TRUE);
+    ::InvalidateRect((HWND)myHWindow, NULL, TRUE);
   }
 }
 
@@ -473,21 +495,18 @@ void WNT_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
 // function : VirtualKeyFromNative
 // purpose  :
 // =======================================================================
-Aspect_VKey WNT_Window::VirtualKeyFromNative (Standard_Integer theKey)
+Aspect_VKey WNT_Window::VirtualKeyFromNative(Standard_Integer theKey)
 {
-  if (theKey >= Standard_Integer('0')
-   && theKey <= Standard_Integer('9'))
+  if (theKey >= Standard_Integer('0') && theKey <= Standard_Integer('9'))
   {
     return Aspect_VKey((theKey - Standard_Integer('0')) + Aspect_VKey_0);
   }
-  if (theKey >= Standard_Integer('A')
-   && theKey <= Standard_Integer('Z'))
+  if (theKey >= Standard_Integer('A') && theKey <= Standard_Integer('Z'))
   {
     // main latin alphabet keys
     return Aspect_VKey((theKey - Standard_Integer('A')) + Aspect_VKey_A);
   }
-  if (theKey >= VK_F1
-   && theKey <= VK_F24)
+  if (theKey >= VK_F1 && theKey <= VK_F24)
   {
     // special keys
     if (theKey <= VK_F12)
@@ -496,8 +515,7 @@ Aspect_VKey WNT_Window::VirtualKeyFromNative (Standard_Integer theKey)
     }
     return Aspect_VKey_UNKNOWN;
   }
-  if (theKey >= VK_NUMPAD0
-   && theKey <= VK_NUMPAD9)
+  if (theKey >= VK_NUMPAD0 && theKey <= VK_NUMPAD9)
   {
     // numpad keys
     return Aspect_VKey((theKey - VK_NUMPAD0) + Aspect_VKey_Numpad0);
@@ -525,7 +543,7 @@ Aspect_VKey WNT_Window::VirtualKeyFromNative (Standard_Integer theKey)
     case VK_CONTROL:
       return Aspect_VKey_Control;
     case VK_MENU:
-      return Aspect_VKey_Alt; //Aspect_VKey_Menu;
+      return Aspect_VKey_Alt; // Aspect_VKey_Menu;
     case VK_PAUSE:
     case VK_CAPITAL:
       return Aspect_VKey_UNKNOWN;
@@ -649,7 +667,7 @@ Aspect_VKey WNT_Window::VirtualKeyFromNative (Standard_Integer theKey)
 // function : MouseKeyFlagsFromEvent
 // purpose  :
 // =======================================================================
-Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent (WPARAM theKeys)
+Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent(WPARAM theKeys)
 {
   Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
   if ((theKeys & MK_CONTROL) != 0)
@@ -660,7 +678,7 @@ Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent (WPARAM theKeys)
   {
     aFlags |= Aspect_VKeyFlags_SHIFT;
   }
-  if (GetKeyState (VK_MENU) < 0)
+  if (GetKeyState(VK_MENU) < 0)
   {
     aFlags |= Aspect_VKeyFlags_ALT;
   }
@@ -674,15 +692,15 @@ Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent (WPARAM theKeys)
 Aspect_VKeyFlags WNT_Window::MouseKeyFlagsAsync()
 {
   Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
-  if ((GetAsyncKeyState (VK_CONTROL) & 0x8000) != 0)
+  if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
   {
     aFlags |= Aspect_VKeyFlags_CTRL;
   }
-  if ((GetAsyncKeyState (VK_SHIFT) & 0x8000) != 0)
+  if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0)
   {
     aFlags |= Aspect_VKeyFlags_SHIFT;
   }
-  if ((GetAsyncKeyState (VK_MENU) & 0x8000) != 0)
+  if ((GetAsyncKeyState(VK_MENU) & 0x8000) != 0)
   {
     aFlags |= Aspect_VKeyFlags_ALT;
   }
@@ -693,7 +711,7 @@ Aspect_VKeyFlags WNT_Window::MouseKeyFlagsAsync()
 // function : MouseButtonsFromEvent
 // purpose  :
 // =======================================================================
-Aspect_VKeyMouse WNT_Window::MouseButtonsFromEvent (WPARAM theKeys)
+Aspect_VKeyMouse WNT_Window::MouseButtonsFromEvent(WPARAM theKeys)
 {
   Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
   if ((theKeys & MK_LBUTTON) != 0)
@@ -717,18 +735,18 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsFromEvent (WPARAM theKeys)
 // =======================================================================
 Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
 {
-  Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
-  const bool isSwapped = GetSystemMetrics (SM_SWAPBUTTON) != 0;
+  Aspect_VKeyMouse aButtons  = Aspect_VKeyMouse_NONE;
+  const bool       isSwapped = GetSystemMetrics(SM_SWAPBUTTON) != 0;
 
-  if ((GetAsyncKeyState (!isSwapped ? VK_LBUTTON : VK_RBUTTON) & 0x8000) != 0)
+  if ((GetAsyncKeyState(!isSwapped ? VK_LBUTTON : VK_RBUTTON) & 0x8000) != 0)
   {
     aButtons |= Aspect_VKeyMouse_LeftButton;
   }
-  if ((GetAsyncKeyState (VK_MBUTTON) & 0x8000) != 0)
+  if ((GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0)
   {
     aButtons |= Aspect_VKeyMouse_MiddleButton;
   }
-  if ((GetAsyncKeyState (!isSwapped ? VK_RBUTTON : VK_LBUTTON) & 0x8000) != 0)
+  if ((GetAsyncKeyState(!isSwapped ? VK_RBUTTON : VK_LBUTTON) & 0x8000) != 0)
   {
     aButtons |= Aspect_VKeyMouse_RightButton;
   }
@@ -739,53 +757,57 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
 // function : RegisterRawInputDevices
 // purpose  :
 // =======================================================================
-int WNT_Window::RegisterRawInputDevices (unsigned int theRawDeviceMask)
+int WNT_Window::RegisterRawInputDevices(unsigned int theRawDeviceMask)
 {
-  if (IsVirtual()
-   || myHWindow == NULL)
+  if (IsVirtual() || myHWindow == NULL)
   {
     return 0;
   }
 
   // hidusage.h
-  enum HidUsagePage { THE_HID_USAGE_PAGE_GENERIC = 0x01 }; // HID_USAGE_PAGE_GENERIC
+  enum HidUsagePage
+  {
+    THE_HID_USAGE_PAGE_GENERIC = 0x01
+  }; // HID_USAGE_PAGE_GENERIC
+
   enum HidUsage
   {
     THE_HID_USAGE_GENERIC_MOUSE                 = 0x02, // HID_USAGE_GENERIC_MOUSE
     THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER = 0x08, // HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
   };
 
-  int aNbDevices = 0;
+  int            aNbDevices = 0;
   RAWINPUTDEVICE aRawInDevList[2];
   if ((theRawDeviceMask & RawInputMask_Mouse) != 0)
   {
     // mouse
     RAWINPUTDEVICE& aRawMouse = aRawInDevList[aNbDevices++];
-    aRawMouse.usUsagePage = THE_HID_USAGE_PAGE_GENERIC;
-    aRawMouse.usUsage     = THE_HID_USAGE_GENERIC_MOUSE;
-    aRawMouse.dwFlags     = RIDEV_INPUTSINK;
-    aRawMouse.hwndTarget  = (HWND )myHWindow;
+    aRawMouse.usUsagePage     = THE_HID_USAGE_PAGE_GENERIC;
+    aRawMouse.usUsage         = THE_HID_USAGE_GENERIC_MOUSE;
+    aRawMouse.dwFlags         = RIDEV_INPUTSINK;
+    aRawMouse.hwndTarget      = (HWND)myHWindow;
   }
   if ((theRawDeviceMask & RawInputMask_SpaceMouse) != 0)
   {
     // space mouse
     RAWINPUTDEVICE& aRawSpace = aRawInDevList[aNbDevices++];
-    aRawSpace.usUsagePage = THE_HID_USAGE_PAGE_GENERIC;
-    aRawSpace.usUsage     = THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER;
-    aRawSpace.dwFlags     = 0; // RIDEV_DEVNOTIFY
-    aRawSpace.hwndTarget  = (HWND )myHWindow;
+    aRawSpace.usUsagePage     = THE_HID_USAGE_PAGE_GENERIC;
+    aRawSpace.usUsage         = THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER;
+    aRawSpace.dwFlags         = 0; // RIDEV_DEVNOTIFY
+    aRawSpace.hwndTarget      = (HWND)myHWindow;
   }
 
   for (int aTryIter = aNbDevices; aTryIter > 0; --aTryIter)
   {
-    if (::RegisterRawInputDevices (aRawInDevList, aTryIter, sizeof(aRawInDevList[0])))
+    if (::RegisterRawInputDevices(aRawInDevList, aTryIter, sizeof(aRawInDevList[0])))
     {
       return aTryIter;
     }
 
-    Message::SendTrace (aRawInDevList[aTryIter - 1].usUsage == THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
-                      ? "Warning: RegisterRawInputDevices() failed to register RAW multi-axis controller input"
-                      : "Warning: RegisterRawInputDevices() failed to register RAW mouse input");
+    Message::SendTrace(
+      aRawInDevList[aTryIter - 1].usUsage == THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
+        ? "Warning: RegisterRawInputDevices() failed to register RAW multi-axis controller input"
+        : "Warning: RegisterRawInputDevices() failed to register RAW mouse input");
   }
   return 0;
 }
@@ -794,20 +816,18 @@ int WNT_Window::RegisterRawInputDevices (unsigned int theRawDeviceMask)
 // function : ProcessMessage
 // purpose  :
 // =======================================================================
-bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
-                                 MSG& theMsg)
+bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& theMsg)
 {
   if (myTouchInputHelper.IsNull())
   {
     myTouchInputHelper = new TouchInputHelper();
-    myTouchInputHelper->Register ((HWND )myHWindow);
+    myTouchInputHelper->Register((HWND)myHWindow);
   }
 
   switch (theMsg.message)
   {
-    case WM_CLOSE:
-    {
-      if (theMsg.hwnd == (HWND )myHWindow)
+    case WM_CLOSE: {
+      if (theMsg.hwnd == (HWND)myHWindow)
       {
         theListener.ProcessClose();
         return true;
@@ -815,45 +835,41 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       return false;
     }
     case WM_SETFOCUS:
-    case WM_KILLFOCUS:
-    {
-      if (theMsg.hwnd == (HWND )myHWindow)
+    case WM_KILLFOCUS: {
+      if (theMsg.hwnd == (HWND)myHWindow)
       {
-        theListener.ProcessFocus (theMsg.message == WM_SETFOCUS);
+        theListener.ProcessFocus(theMsg.message == WM_SETFOCUS);
         return true;
       }
       return false;
     }
-    case WM_PAINT:
-    {
+    case WM_PAINT: {
       PAINTSTRUCT aPaint;
       BeginPaint(theMsg.hwnd, &aPaint);
-      EndPaint  (theMsg.hwnd, &aPaint);
+      EndPaint(theMsg.hwnd, &aPaint);
       theListener.ProcessExpose();
       return true;
     }
     case WM_SIZE:
     case WM_MOVE:
     case WM_MOVING:
-    case WM_SIZING:
-    {
-      theListener.ProcessConfigure (theMsg.message == WM_SIZE);
+    case WM_SIZING: {
+      theListener.ProcessConfigure(theMsg.message == WM_SIZE);
       return true;
     }
     case WM_KEYUP:
-    case WM_KEYDOWN:
-    {
-      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative ((Standard_Integer )theMsg.wParam);
+    case WM_KEYDOWN: {
+      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative((Standard_Integer)theMsg.wParam);
       if (aVKey != Aspect_VKey_UNKNOWN)
       {
         const double aTimeStamp = theListener.EventTime();
         if (theMsg.message == WM_KEYDOWN)
         {
-          theListener.KeyDown (aVKey, aTimeStamp);
+          theListener.KeyDown(aVKey, aTimeStamp);
         }
         else
         {
-          theListener.KeyUp (aVKey, aTimeStamp);
+          theListener.KeyUp(aVKey, aTimeStamp);
         }
         theListener.ProcessInput();
       }
@@ -864,24 +880,22 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     case WM_RBUTTONUP:
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-    {
+    case WM_RBUTTONDOWN: {
       const LPARAM anExtraInfo = GetMessageExtraInfo();
-      bool isEmulated = false;
+      bool         isEmulated  = false;
       if ((anExtraInfo & MOUSEEVENTF_FROMTOUCH) == MOUSEEVENTF_FROMTOUCH)
       {
         isEmulated = true;
-        if (!myTouchInputHelper.IsNull()
-          && myTouchInputHelper->IsRegistered())
+        if (!myTouchInputHelper.IsNull() && myTouchInputHelper->IsRegistered())
         {
-          //Message::SendTrace ("Skipping mouse message emulated from touches...");
+          // Message::SendTrace ("Skipping mouse message emulated from touches...");
           break;
         }
       }
 
-      const Graphic3d_Vec2i aPos (LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theMsg.wParam);
-      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
+      const Graphic3d_Vec2i  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      Aspect_VKeyMouse       aButton = Aspect_VKeyMouse_NONE;
       switch (theMsg.message)
       {
         case WM_LBUTTONUP:
@@ -897,157 +911,163 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
           aButton = Aspect_VKeyMouse_RightButton;
           break;
       }
-      if (theMsg.message == WM_LBUTTONDOWN
-       || theMsg.message == WM_MBUTTONDOWN
-       || theMsg.message == WM_RBUTTONDOWN)
+      if (theMsg.message == WM_LBUTTONDOWN || theMsg.message == WM_MBUTTONDOWN
+          || theMsg.message == WM_RBUTTONDOWN)
       {
-        SetFocus  (theMsg.hwnd);
+        SetFocus(theMsg.hwnd);
         SetCapture(theMsg.hwnd);
-        theListener.PressMouseButton (aPos, aButton, aFlags, isEmulated);
+        theListener.PressMouseButton(aPos, aButton, aFlags, isEmulated);
       }
       else
       {
         ReleaseCapture();
-        theListener.ReleaseMouseButton (aPos, aButton, aFlags, isEmulated);
+        theListener.ReleaseMouseButton(aPos, aButton, aFlags, isEmulated);
       }
       theListener.ProcessInput();
       return true;
     }
-    case WM_MOUSEWHEEL:
-    {
-      const int aDelta = GET_WHEEL_DELTA_WPARAM (theMsg.wParam);
-      const Standard_Real aDeltaF = Standard_Real(aDelta) / Standard_Real(WHEEL_DELTA);
-      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theMsg.wParam);
-      Graphic3d_Vec2i aPos (int(short(LOWORD(theMsg.lParam))), int(short(HIWORD(theMsg.lParam))));
-      POINT aCursorPnt = { aPos.x(), aPos.y() };
-      if (ScreenToClient (theMsg.hwnd, &aCursorPnt))
+    case WM_MOUSEWHEEL: {
+      const int              aDelta  = GET_WHEEL_DELTA_WPARAM(theMsg.wParam);
+      const Standard_Real    aDeltaF = Standard_Real(aDelta) / Standard_Real(WHEEL_DELTA);
+      const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      Graphic3d_Vec2i aPos(int(short(LOWORD(theMsg.lParam))), int(short(HIWORD(theMsg.lParam))));
+      POINT           aCursorPnt = {aPos.x(), aPos.y()};
+      if (ScreenToClient(theMsg.hwnd, &aCursorPnt))
       {
-        aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
+        aPos.SetValues(aCursorPnt.x, aCursorPnt.y);
       }
 
-      if (theMsg.hwnd != (HWND )myHWindow)
+      if (theMsg.hwnd != (HWND)myHWindow)
       {
         return false;
       }
 
-      theListener.UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
+      theListener.UpdateMouseScroll(Aspect_ScrollDelta(aPos, aDeltaF, aFlags));
       theListener.ProcessInput();
       return true;
     }
-    case WM_MOUSEMOVE:
-    {
-      Graphic3d_Vec2i aPos (LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent (theMsg.wParam);
+    case WM_MOUSEMOVE: {
+      Graphic3d_Vec2i  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent(theMsg.wParam);
       Aspect_VKeyFlags aFlags   = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
 
       // don't make a slide-show from input events - fetch the actual mouse cursor position
       CURSORINFO aCursor;
       aCursor.cbSize = sizeof(aCursor);
-      if (::GetCursorInfo (&aCursor) != FALSE)
+      if (::GetCursorInfo(&aCursor) != FALSE)
       {
-        POINT aCursorPnt = { aCursor.ptScreenPos.x, aCursor.ptScreenPos.y };
-        if (ScreenToClient (theMsg.hwnd, &aCursorPnt))
+        POINT aCursorPnt = {aCursor.ptScreenPos.x, aCursor.ptScreenPos.y};
+        if (ScreenToClient(theMsg.hwnd, &aCursorPnt))
         {
           // as we override mouse position, we need overriding also mouse state
-          aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
+          aPos.SetValues(aCursorPnt.x, aCursorPnt.y);
           aButtons = WNT_Window::MouseButtonsAsync();
           aFlags   = WNT_Window::MouseKeyFlagsAsync();
         }
       }
 
-      if (theMsg.hwnd != (HWND )myHWindow)
+      if (theMsg.hwnd != (HWND)myHWindow)
       {
         // mouse move events come also for inactive windows
         return false;
       }
 
-      theListener.UpdateMousePosition (aPos, aButtons, aFlags, false);
+      theListener.UpdateMousePosition(aPos, aButtons, aFlags, false);
       theListener.ProcessInput();
       return true;
     }
-    case WM_INPUT:
-    {
+    case WM_INPUT: {
       UINT aSize = 0;
-      ::GetRawInputData ((HRAWINPUT )theMsg.lParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
-      NCollection_LocalArray<BYTE> aRawData (aSize);
-      if (aSize == 0 || ::GetRawInputData ((HRAWINPUT )theMsg.lParam, RID_INPUT, aRawData, &aSize, sizeof(RAWINPUTHEADER)) != aSize)
+      ::GetRawInputData((HRAWINPUT)theMsg.lParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
+      NCollection_LocalArray<BYTE> aRawData(aSize);
+      if (aSize == 0
+          || ::GetRawInputData((HRAWINPUT)theMsg.lParam,
+                               RID_INPUT,
+                               aRawData,
+                               &aSize,
+                               sizeof(RAWINPUTHEADER))
+               != aSize)
       {
         return true;
       }
 
-      const RAWINPUT* aRawInput = (RAWINPUT* )(BYTE* )aRawData;
+      const RAWINPUT* aRawInput = (RAWINPUT*)(BYTE*)aRawData;
       if (aRawInput->header.dwType != RIM_TYPEHID)
       {
         return true;
       }
 
       RID_DEVICE_INFO aDevInfo;
-      aDevInfo.cbSize = sizeof(RID_DEVICE_INFO);
+      aDevInfo.cbSize   = sizeof(RID_DEVICE_INFO);
       UINT aDevInfoSize = sizeof(RID_DEVICE_INFO);
-      if (::GetRawInputDeviceInfoW (aRawInput->header.hDevice, RIDI_DEVICEINFO, &aDevInfo, &aDevInfoSize) != sizeof(RID_DEVICE_INFO)
-       || (aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_LOGITECH
-        && aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_3DCONNEXION))
+      if (::GetRawInputDeviceInfoW(aRawInput->header.hDevice,
+                                   RIDI_DEVICEINFO,
+                                   &aDevInfo,
+                                   &aDevInfoSize)
+            != sizeof(RID_DEVICE_INFO)
+          || (aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_LOGITECH
+              && aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_3DCONNEXION))
       {
         return true;
       }
 
-      WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData, aRawInput->data.hid.dwSizeHid);
-      if (theListener.Update3dMouse (aSpaceData))
+      WNT_HIDSpaceMouse aSpaceData(aDevInfo.hid.dwProductId,
+                                   aRawInput->data.hid.bRawData,
+                                   aRawInput->data.hid.dwSizeHid);
+      if (theListener.Update3dMouse(aSpaceData))
       {
-        InvalidateContent (Handle(Aspect_DisplayConnection)());
+        InvalidateContent(Handle(Aspect_DisplayConnection)());
       }
       return true;
     }
-    case WM_TOUCH:
-    {
-      if (theMsg.hwnd != (HWND )myHWindow
-       || myTouchInputHelper.IsNull())
+    case WM_TOUCH: {
+      if (theMsg.hwnd != (HWND)myHWindow || myTouchInputHelper.IsNull())
       {
         return false;
       }
 
-      TouchInputHelper::TouchInputInfo aSrcTouches (*myTouchInputHelper, theMsg);
+      TouchInputHelper::TouchInputInfo aSrcTouches(*myTouchInputHelper, theMsg);
       if (aSrcTouches.Size() < 1)
       {
         break;
       }
 
       Graphic3d_Vec2i aWinTopLeft, aWinBotRight;
-      Position (aWinTopLeft.x(),  aWinTopLeft.y(),
-                aWinBotRight.x(), aWinBotRight.y());
+      Position(aWinTopLeft.x(), aWinTopLeft.y(), aWinBotRight.x(), aWinBotRight.y());
 
       bool hasUpdates = false;
       for (size_t aTouchIter = 0; aTouchIter < aSrcTouches.Size(); ++aTouchIter)
       {
-        const TOUCHINPUT& aTouchSrc = aSrcTouches[aTouchIter];
-        const Standard_Size aTouchId = (Standard_Size )aTouchSrc.dwID;
-        //const Standard_Size aDeviceId = (Standard_Size )aTouchSrc.hSource;
+        const TOUCHINPUT&   aTouchSrc = aSrcTouches[aTouchIter];
+        const Standard_Size aTouchId  = (Standard_Size)aTouchSrc.dwID;
+        // const Standard_Size aDeviceId = (Standard_Size )aTouchSrc.hSource;
 
         const Graphic3d_Vec2i aSize = aWinBotRight - aWinTopLeft;
-        const Graphic3d_Vec2d aNewPos2d = Graphic3d_Vec2d (double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
-                                        - Graphic3d_Vec2d (aWinTopLeft);
-        const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i (aNewPos2d + Graphic3d_Vec2d (0.5));
+        const Graphic3d_Vec2d aNewPos2d =
+          Graphic3d_Vec2d(double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
+          - Graphic3d_Vec2d(aWinTopLeft);
+        const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i(aNewPos2d + Graphic3d_Vec2d(0.5));
         if ((aTouchSrc.dwFlags & TOUCHEVENTF_DOWN) == TOUCHEVENTF_DOWN)
         {
-          if (aNewPos2i.x() >= 0 && aNewPos2i.x() < aSize.x()
-           && aNewPos2i.y() >= 0 && aNewPos2i.y() < aSize.y())
+          if (aNewPos2i.x() >= 0 && aNewPos2i.x() < aSize.x() && aNewPos2i.y() >= 0
+              && aNewPos2i.y() < aSize.y())
           {
             hasUpdates = true;
-            theListener.AddTouchPoint (aTouchId, aNewPos2d);
+            theListener.AddTouchPoint(aTouchId, aNewPos2d);
           }
         }
         else if ((aTouchSrc.dwFlags & TOUCHEVENTF_MOVE) == TOUCHEVENTF_MOVE)
         {
-          const int anOldIndex = theListener.TouchPoints().FindIndex (aTouchId);
+          const int anOldIndex = theListener.TouchPoints().FindIndex(aTouchId);
           if (anOldIndex != 0)
           {
             hasUpdates = true;
-            theListener.UpdateTouchPoint (aTouchId, aNewPos2d);
+            theListener.UpdateTouchPoint(aTouchId, aNewPos2d);
           }
         }
         else if ((aTouchSrc.dwFlags & TOUCHEVENTF_UP) == TOUCHEVENTF_UP)
         {
-          if (theListener.RemoveTouchPoint (aTouchId))
+          if (theListener.RemoveTouchPoint(aTouchId))
           {
             hasUpdates = true;
           }
@@ -1056,7 +1076,7 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
 
       if (hasUpdates)
       {
-        InvalidateContent (Handle(Aspect_DisplayConnection)());
+        InvalidateContent(Handle(Aspect_DisplayConnection)());
       }
       return true;
     }

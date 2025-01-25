@@ -22,34 +22,35 @@
 #include <TColStd_HSequenceOfReal.hxx>
 
 //=======================================================================
-//function : StepFEA_SymmetricTensor42d
-//purpose  : 
+// function : StepFEA_SymmetricTensor42d
+// purpose  :
 //=======================================================================
-StepFEA_SymmetricTensor42d::StepFEA_SymmetricTensor42d ()
-{
-}
+StepFEA_SymmetricTensor42d::StepFEA_SymmetricTensor42d() {}
 
 //=======================================================================
-//function : CaseNum
-//purpose  : 
+// function : CaseNum
+// purpose  :
 //=======================================================================
 
-Standard_Integer StepFEA_SymmetricTensor42d::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepFEA_SymmetricTensor42d::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepData_SelectArrReal))) return 1;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepData_SelectArrReal)))
+    return 1;
   return 0;
 }
 
 //=======================================================================
-//function : AnisotropicSymmetricTensor42d
-//purpose  : 
+// function : AnisotropicSymmetricTensor42d
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d () const
+Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d() const
 {
-  //return Handle(TColStd_HArray1OfReal)::DownCast(Value());
+  // return Handle(TColStd_HArray1OfReal)::DownCast(Value());
   Handle(StepData_SelectArrReal) SSR = Handle(StepData_SelectArrReal)::DownCast(Value());
-  if(SSR.IsNull()) return new TColStd_HArray1OfReal(1,6);
+  if (SSR.IsNull())
+    return new TColStd_HArray1OfReal(1, 6);
   return SSR->ArrReal();
 }

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GCE2d_MakeLine.hxx>
 #include <gce_MakeLin2d.hxx>
 #include <Geom2d_Line.hxx>
@@ -30,55 +29,53 @@
 GCE2d_MakeLine::GCE2d_MakeLine(const gp_Ax2d& A)
 {
   TheError = gce_Done;
-  TheLine = new Geom2d_Line(A);
+  TheLine  = new Geom2d_Line(A);
 }
 
 GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& L)
 {
   TheError = gce_Done;
-  TheLine = new Geom2d_Line(L);
+  TheLine  = new Geom2d_Line(L);
 }
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P,
-			       const gp_Dir2d& V)
+GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P, const gp_Dir2d& V)
 {
   TheError = gce_Done;
-  TheLine = new Geom2d_Line(P,V);
+  TheLine  = new Geom2d_Line(P, V);
 }
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P1 ,
-			       const gp_Pnt2d& P2 ) 
+GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
-  gce_MakeLin2d L(P1,P2);
+  gce_MakeLin2d L(P1, P2);
   TheError = L.Status();
-  if (TheError == gce_Done) {
+  if (TheError == gce_Done)
+  {
     TheLine = new Geom2d_Line(L.Value());
   }
 }
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin   ,
-			       const gp_Pnt2d& Point ) 
+GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const gp_Pnt2d& Point)
 {
-  gce_MakeLin2d L(Lin,Point);
+  gce_MakeLin2d L(Lin, Point);
   TheError = L.Status();
-  if (TheError == gce_Done) {
+  if (TheError == gce_Done)
+  {
     TheLine = new Geom2d_Line(L.Value());
   }
 }
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d&     Lin  ,
-			       const Standard_Real Dist ) 
+GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const Standard_Real Dist)
 {
-  gce_MakeLin2d L(Lin,Dist);
+  gce_MakeLin2d L(Lin, Dist);
   TheError = L.Status();
-  if (TheError == gce_Done) {
+  if (TheError == gce_Done)
+  {
     TheLine = new Geom2d_Line(L.Value());
   }
 }
 
 const Handle(Geom2d_Line)& GCE2d_MakeLine::Value() const
-{ 
-  StdFail_NotDone_Raise_if (TheError != gce_Done,
-                            "GCE2d_MakeLine::Value() - no result");
+{
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeLine::Value() - no result");
   return TheLine;
 }

@@ -16,142 +16,132 @@
 #include <Standard_HashUtils.hxx>
 
 inline void IntTools_SurfaceRangeSample::SetRanges(const IntTools_CurveRangeSample& theRangeU,
-						   const IntTools_CurveRangeSample& theRangeV) 
+                                                   const IntTools_CurveRangeSample& theRangeV)
 {
   myRangeU = theRangeU;
   myRangeV = theRangeV;
 }
 
- 
 inline void IntTools_SurfaceRangeSample::GetRanges(IntTools_CurveRangeSample& theRangeU,
-					     IntTools_CurveRangeSample& theRangeV) const
+                                                   IntTools_CurveRangeSample& theRangeV) const
 {
   theRangeU = myRangeU;
   theRangeV = myRangeV;
 }
 
- 
 inline void IntTools_SurfaceRangeSample::SetIndexes(const Standard_Integer theIndexU,
-						    const Standard_Integer theIndexV) 
+                                                    const Standard_Integer theIndexV)
 {
   myRangeU.SetRangeIndex(theIndexU);
   myRangeV.SetRangeIndex(theIndexV);
 }
 
- 
-inline void IntTools_SurfaceRangeSample::GetIndexes(Standard_Integer& theIndexU,Standard_Integer& theIndexV) const
+inline void IntTools_SurfaceRangeSample::GetIndexes(Standard_Integer& theIndexU,
+                                                    Standard_Integer& theIndexV) const
 {
   theIndexU = myRangeU.GetRangeIndex();
   theIndexV = myRangeV.GetRangeIndex();
 }
 
- 
-inline void IntTools_SurfaceRangeSample::GetDepths(Standard_Integer& theDepthU,Standard_Integer& theDepthV) const
+inline void IntTools_SurfaceRangeSample::GetDepths(Standard_Integer& theDepthU,
+                                                   Standard_Integer& theDepthV) const
 {
   theDepthU = myRangeU.GetDepth();
   theDepthV = myRangeV.GetDepth();
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetSampleRangeU(const IntTools_CurveRangeSample& theRangeSampleU) 
+inline void IntTools_SurfaceRangeSample::SetSampleRangeU(
+  const IntTools_CurveRangeSample& theRangeSampleU)
 {
   myRangeU = theRangeSampleU;
 }
 
- 
 inline const IntTools_CurveRangeSample& IntTools_SurfaceRangeSample::GetSampleRangeU() const
 {
   return myRangeU;
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetSampleRangeV(const IntTools_CurveRangeSample& theRangeSampleV) 
+inline void IntTools_SurfaceRangeSample::SetSampleRangeV(
+  const IntTools_CurveRangeSample& theRangeSampleV)
 {
   myRangeV = theRangeSampleV;
 }
 
- 
 inline const IntTools_CurveRangeSample& IntTools_SurfaceRangeSample::GetSampleRangeV() const
 {
   return myRangeV;
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetIndexU(const Standard_Integer theIndexU) 
+inline void IntTools_SurfaceRangeSample::SetIndexU(const Standard_Integer theIndexU)
 {
   myRangeU.SetRangeIndex(theIndexU);
 }
 
- 
 inline Standard_Integer IntTools_SurfaceRangeSample::GetIndexU() const
 {
   return myRangeU.GetRangeIndex();
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetIndexV(const Standard_Integer theIndexV) 
+inline void IntTools_SurfaceRangeSample::SetIndexV(const Standard_Integer theIndexV)
 {
   myRangeV.SetRangeIndex(theIndexV);
 }
 
- 
 inline Standard_Integer IntTools_SurfaceRangeSample::GetIndexV() const
 {
   return myRangeV.GetRangeIndex();
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetDepthU(const Standard_Integer theDepthU) 
+inline void IntTools_SurfaceRangeSample::SetDepthU(const Standard_Integer theDepthU)
 {
   myRangeU.SetDepth(theDepthU);
 }
 
- 
 inline Standard_Integer IntTools_SurfaceRangeSample::GetDepthU() const
 {
   return myRangeU.GetDepth();
 }
 
- 
-inline void IntTools_SurfaceRangeSample::SetDepthV(const Standard_Integer theDepthV) 
+inline void IntTools_SurfaceRangeSample::SetDepthV(const Standard_Integer theDepthV)
 {
   myRangeV.SetDepth(theDepthV);
 }
 
- 
 inline Standard_Integer IntTools_SurfaceRangeSample::GetDepthV() const
 {
   return myRangeV.GetDepth();
 }
 
-inline Standard_Boolean IntTools_SurfaceRangeSample::IsEqual(const IntTools_SurfaceRangeSample& Other) const
+inline Standard_Boolean IntTools_SurfaceRangeSample::IsEqual(
+  const IntTools_SurfaceRangeSample& Other) const
 {
   return (myRangeU.IsEqual(Other.myRangeU) && myRangeV.IsEqual(Other.myRangeV));
 }
 
- 
-inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexUDeeper(const Standard_Integer theNbSampleU) const
+inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexUDeeper(
+  const Standard_Integer theNbSampleU) const
 {
   return myRangeU.GetRangeIndexDeeper(theNbSampleU);
 }
 
- 
-inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexVDeeper(const Standard_Integer theNbSampleV) const
+inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexVDeeper(
+  const Standard_Integer theNbSampleV) const
 {
   return myRangeV.GetRangeIndexDeeper(theNbSampleV);
 }
 
 namespace std
 {
-  template <>
-  struct hash<IntTools_SurfaceRangeSample>
+template <>
+struct hash<IntTools_SurfaceRangeSample>
+{
+  size_t operator()(const IntTools_SurfaceRangeSample& theSurfaceRangeSample) const noexcept
   {
-    size_t operator()(const IntTools_SurfaceRangeSample& theSurfaceRangeSample) const noexcept
-    {
-      // Combine two int values into a single hash value.
-      size_t aCombination[2]{ std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeU()),
-                              std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeV()) };
-      return opencascade::hashBytes(aCombination, sizeof(aCombination));
-    }
-  };
-}
+    // Combine two int values into a single hash value.
+    size_t aCombination[2]{
+      std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeU()),
+      std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeV())};
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+} // namespace std

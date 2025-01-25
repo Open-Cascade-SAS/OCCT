@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<TColStd_SequenceOfReal> BRepOffsetAPI_SequenceOfSequenceOfReal;
 
-
 #endif

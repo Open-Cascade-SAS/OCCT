@@ -19,5 +19,4 @@
 
 typedef NCollection_Array1<StepFEA_DegreeOfFreedom> StepFEA_Array1OfDegreeOfFreedom;
 
-
 #endif

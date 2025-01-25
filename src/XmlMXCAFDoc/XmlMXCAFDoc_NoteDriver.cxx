@@ -24,28 +24,28 @@ IMPLEMENT_DOMSTRING(UserName, "user_name")
 IMPLEMENT_DOMSTRING(TimeStamp, "time_stamp")
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                Standard_CString                 theName)
-  : XmlMDF_ADriver(theMsgDriver, theName)
+    : XmlMDF_ADriver(theMsgDriver, theName)
 {
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 Standard_Boolean XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theSource,
                                                const Handle(TDF_Attribute)& theTarget,
-                                               XmlObjMgt_RRelocationTable&  /*theRelocTable*/) const
+                                               XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = theSource;
 
-  XmlObjMgt_DOMString aUserName = anElement.getAttribute(::UserName());
+  XmlObjMgt_DOMString aUserName  = anElement.getAttribute(::UserName());
   XmlObjMgt_DOMString aTimeStamp = anElement.getAttribute(::TimeStamp());
-  if (aUserName == NULL || aTimeStamp == NULL) 
+  if (aUserName == NULL || aTimeStamp == NULL)
     return Standard_False;
 
   Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theTarget);
@@ -58,12 +58,12 @@ Standard_Boolean XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theS
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 void XmlMXCAFDoc_NoteDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                    XmlObjMgt_Persistent&        theTarget,
-                                   XmlObjMgt_SRelocationTable&  /*theRelocTable*/) const
+                                   XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theSource);
   if (aNote.IsNull())

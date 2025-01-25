@@ -17,12 +17,11 @@
 #ifndef _StepBasic_AheadOrBehind_HeaderFile
 #define _StepBasic_AheadOrBehind_HeaderFile
 
-
 enum StepBasic_AheadOrBehind
 {
-StepBasic_aobAhead,
-StepBasic_aobExact,
-StepBasic_aobBehind
+  StepBasic_aobAhead,
+  StepBasic_aobExact,
+  StepBasic_aobBehind
 };
 
 #endif // _StepBasic_AheadOrBehind_HeaderFile

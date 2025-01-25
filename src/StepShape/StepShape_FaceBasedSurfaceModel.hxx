@@ -23,7 +23,6 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-
 class StepShape_FaceBasedSurfaceModel;
 DEFINE_STANDARD_HANDLE(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
@@ -32,42 +31,24 @@ class StepShape_FaceBasedSurfaceModel : public StepGeom_GeometricRepresentationI
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_FaceBasedSurfaceModel();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                            const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces);
+
   //! Returns field FbsmFaces
   Standard_EXPORT Handle(StepShape_HArray1OfConnectedFaceSet) FbsmFaces() const;
-  
+
   //! Set field FbsmFaces
-  Standard_EXPORT void SetFbsmFaces (const Handle(StepShape_HArray1OfConnectedFaceSet)& FbsmFaces);
+  Standard_EXPORT void SetFbsmFaces(const Handle(StepShape_HArray1OfConnectedFaceSet)& FbsmFaces);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfConnectedFaceSet) theFbsmFaces;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_FaceBasedSurfaceModel_HeaderFile

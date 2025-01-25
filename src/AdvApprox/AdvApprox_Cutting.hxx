@@ -24,24 +24,17 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-
 //! to choose the way of cutting in approximation
-class AdvApprox_Cutting 
+class AdvApprox_Cutting
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT virtual ~AdvApprox_Cutting();
-  
-  Standard_EXPORT virtual Standard_Boolean Value (const Standard_Real a, const Standard_Real b, Standard_Real& cuttingvalue) const = 0;
 
+  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
+                                                 const Standard_Real b,
+                                                 Standard_Real&      cuttingvalue) const = 0;
 };
-
-
-
-
-
-
 
 #endif // _AdvApprox_Cutting_HeaderFile

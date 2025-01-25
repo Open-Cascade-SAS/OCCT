@@ -24,7 +24,6 @@
 class StepBasic_DateAndTime;
 class StepBasic_DateTimeRole;
 
-
 class StepAP203_CcDesignDateAndTimeAssignment;
 DEFINE_STANDARD_HANDLE(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 
@@ -33,42 +32,26 @@ class StepAP203_CcDesignDateAndTimeAssignment : public StepBasic_DateAndTimeAssi
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_CcDesignDateAndTimeAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_DateAndTime)& aDateAndTimeAssignment_AssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aDateAndTimeAssignment_Role, const Handle(StepAP203_HArray1OfDateTimeItem)& aItems);
-  
+  Standard_EXPORT void Init(
+    const Handle(StepBasic_DateAndTime)&           aDateAndTimeAssignment_AssignedDateAndTime,
+    const Handle(StepBasic_DateTimeRole)&          aDateAndTimeAssignment_Role,
+    const Handle(StepAP203_HArray1OfDateTimeItem)& aItems);
+
   //! Returns field Items
   Standard_EXPORT Handle(StepAP203_HArray1OfDateTimeItem) Items() const;
-  
+
   //! Set field Items
-  Standard_EXPORT void SetItems (const Handle(StepAP203_HArray1OfDateTimeItem)& Items);
+  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfDateTimeItem)& Items);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP203_HArray1OfDateTimeItem) theItems;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_CcDesignDateAndTimeAssignment_HeaderFile

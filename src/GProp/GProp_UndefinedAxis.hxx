@@ -28,8 +28,9 @@ class GProp_UndefinedAxis;
 DEFINE_STANDARD_HANDLE(GProp_UndefinedAxis, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_GProp_UndefinedAxis
-  #define GProp_UndefinedAxis_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw GProp_UndefinedAxis(MESSAGE);
+  #define GProp_UndefinedAxis_Raise_if(CONDITION, MESSAGE)                                         \
+    if (CONDITION)                                                                                 \
+      throw GProp_UndefinedAxis(MESSAGE);
 #else
   #define GProp_UndefinedAxis_Raise_if(CONDITION, MESSAGE)
 #endif

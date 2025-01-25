@@ -29,53 +29,59 @@
 #include <TopOpeBRepDS_Config.hxx>
 class TCollection_AsciiString;
 
-
 //! This package provides services used by the TopOpeBRepBuild
 //! package performing topological operations on the BRep
 //! data structure.
-class TopOpeBRepDS 
+class TopOpeBRepDS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! IN OU ON UN
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopAbs_State S);
-  
-  Standard_EXPORT static Standard_OStream& Print (const TopAbs_State S, Standard_OStream& OS);
-  
-  //! <K>
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopOpeBRepDS_Kind K);
-  
-  //! S1(<K>,<I>)S2
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopOpeBRepDS_Kind K, const Standard_Integer I, const TCollection_AsciiString& B = "", const TCollection_AsciiString& A = "");
-  
-  Standard_EXPORT static Standard_OStream& Print (const TopOpeBRepDS_Kind K, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_OStream& Print (const TopOpeBRepDS_Kind K, const Standard_Integer I, Standard_OStream& S, const TCollection_AsciiString& B = "", const TCollection_AsciiString& A = "");
-  
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopAbs_ShapeEnum T);
-  
-  //! (<T>,<I>)
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopAbs_ShapeEnum T, const Standard_Integer I);
-  
-  Standard_EXPORT static Standard_OStream& Print (const TopAbs_ShapeEnum T, const Standard_Integer I, Standard_OStream& S);
-  
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopAbs_Orientation O);
-  
-  Standard_EXPORT static TCollection_AsciiString SPrint (const TopOpeBRepDS_Config C);
-  
-  Standard_EXPORT static Standard_OStream& Print (const TopOpeBRepDS_Config C, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_Boolean IsGeometry (const TopOpeBRepDS_Kind K);
-  
-  Standard_EXPORT static Standard_Boolean IsTopology (const TopOpeBRepDS_Kind K);
-  
-  Standard_EXPORT static TopAbs_ShapeEnum KindToShape (const TopOpeBRepDS_Kind K);
-  
-  Standard_EXPORT static TopOpeBRepDS_Kind ShapeToKind (const TopAbs_ShapeEnum S);
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_State S);
 
+  Standard_EXPORT static Standard_OStream& Print(const TopAbs_State S, Standard_OStream& OS);
+
+  //! <K>
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopOpeBRepDS_Kind K);
+
+  //! S1(<K>,<I>)S2
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopOpeBRepDS_Kind        K,
+                                                        const Standard_Integer         I,
+                                                        const TCollection_AsciiString& B = "",
+                                                        const TCollection_AsciiString& A = "");
+
+  Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Kind K, Standard_OStream& S);
+
+  Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Kind        K,
+                                                 const Standard_Integer         I,
+                                                 Standard_OStream&              S,
+                                                 const TCollection_AsciiString& B = "",
+                                                 const TCollection_AsciiString& A = "");
+
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_ShapeEnum T);
+
+  //! (<T>,<I>)
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_ShapeEnum T,
+                                                        const Standard_Integer I);
+
+  Standard_EXPORT static Standard_OStream& Print(const TopAbs_ShapeEnum T,
+                                                 const Standard_Integer I,
+                                                 Standard_OStream&      S);
+
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopAbs_Orientation O);
+
+  Standard_EXPORT static TCollection_AsciiString SPrint(const TopOpeBRepDS_Config C);
+
+  Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepDS_Config C, Standard_OStream& S);
+
+  Standard_EXPORT static Standard_Boolean IsGeometry(const TopOpeBRepDS_Kind K);
+
+  Standard_EXPORT static Standard_Boolean IsTopology(const TopOpeBRepDS_Kind K);
+
+  Standard_EXPORT static TopAbs_ShapeEnum KindToShape(const TopOpeBRepDS_Kind K);
+
+  Standard_EXPORT static TopOpeBRepDS_Kind ShapeToKind(const TopAbs_ShapeEnum S);
 };
 
 #endif // _TopOpeBRepDS_HeaderFile

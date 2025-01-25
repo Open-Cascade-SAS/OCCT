@@ -16,15 +16,12 @@ inline Standard_Integer Interface_ParamList::Length() const
   return myVector.Length();
 }
 
- 
 inline Standard_Integer Interface_ParamList::Lower() const
 {
   return 1;
 }
 
- 
 inline Standard_Integer Interface_ParamList::Upper() const
 {
-   return (myVector.Length());
+  return (myVector.Length());
 }
-

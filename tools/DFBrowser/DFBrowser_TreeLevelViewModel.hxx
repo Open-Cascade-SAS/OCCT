@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_TreeLevelViewModel_H
 #define DFBrowser_TreeLevelViewModel_H
@@ -32,9 +32,12 @@ class QObject;
 class DFBrowser_TreeLevelViewModel : public QAbstractTableModel
 {
 public:
-
   //! Constructor
-  DFBrowser_TreeLevelViewModel (QObject* theParent) : QAbstractTableModel (theParent), myRowCount (0) {}
+  DFBrowser_TreeLevelViewModel(QObject* theParent)
+      : QAbstractTableModel(theParent),
+        myRowCount(0)
+  {
+  }
 
   //! Destructor
   virtual ~DFBrowser_TreeLevelViewModel() {}
@@ -44,7 +47,7 @@ public:
 
   //! Fills OCAF tree model index
   //! \param theTreeIndex an index
-  Standard_EXPORT void Init (const QModelIndex& theTreeIndex);
+  Standard_EXPORT void Init(const QModelIndex& theTreeIndex);
 
   //! Returns true if the index is filled
   bool IsInitialized() const { return myIndex.isValid(); }
@@ -52,50 +55,59 @@ public:
   //! Returns OCAF tree view model index on level defined by column of the parameter index
   //! \param theIndex a tree level view model index
   //! \return model index
-  Standard_EXPORT QModelIndex GetTreeViewIndex (const QModelIndex& theIndex) const;
+  Standard_EXPORT QModelIndex GetTreeViewIndex(const QModelIndex& theIndex) const;
 
   //! Emits the layoutChanged signal from outside of this class
   void EmitLayoutChanged() { emit layoutChanged(); }
 
   //! Returns value only for DisplayRole for column = 1
-  //! \param theSection an index of value in the container 
+  //! \param theSection an index of value in the container
   //! \param theIndex a model index
   //! \param theRole a view role
   //! \return value interpreted depending on the given role
-  Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
-                                               int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant headerData(int             theSection,
+                                              Qt::Orientation theOrientation,
+                                              int             theRole = Qt::DisplayRole) const
+    Standard_OVERRIDE;
 
   //! Creates new model index
   //! \param theRow the index row position
   //! \param theColummn the index column position
   //! \param theParent the parent index
   //! \return the model index
-  Standard_EXPORT virtual QModelIndex index (int theRow, int theColumn,
-                                             const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QModelIndex index(int                theRow,
+                                            int                theColumn,
+                                            const QModelIndex& theParent = QModelIndex()) const
+    Standard_OVERRIDE;
 
   //! Returns item information(short) for display role.
   //! \param theIndex a model index
   //! \param theRole a view role
   //! \return value interpreted depending on the given role
-  Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex,
-                                         int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant data(const QModelIndex& theIndex,
+                                        int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns Enabled and Selectable item for any index
   //! \param theIndex a model index
   //! \return flags
-  Standard_EXPORT virtual Qt::ItemFlags flags (const QModelIndex& theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Qt::ItemFlags flags(const QModelIndex& theIndex) const Standard_OVERRIDE;
 
   //! Returns number of rows
-  virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return myRowCount; }
+  virtual int rowCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
+  {
+    (void)theParent;
+    return myRowCount;
+  }
 
   //! Returns 2 columns
-  virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 2; }
+  virtual int columnCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
+  {
+    (void)theParent;
+    return 2;
+  }
 
 private:
-
-  QModelIndex myIndex; //!< OCAF tree view model index
-  int myRowCount; //!< number of rows of item of treeview model index
+  QModelIndex myIndex;    //!< OCAF tree view model index
+  int         myRowCount; //!< number of rows of item of treeview model index
 };
 #endif

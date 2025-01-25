@@ -25,46 +25,28 @@
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 
-
 class Draw_Circle3D;
 DEFINE_STANDARD_HANDLE(Draw_Circle3D, Draw_Drawable3D)
-
 
 class Draw_Circle3D : public Draw_Drawable3D
 {
 
 public:
+  Standard_EXPORT Draw_Circle3D(const gp_Circ&      C,
+                                const Standard_Real A1,
+                                const Standard_Real A2,
+                                const Draw_Color&   col);
 
-  
-  Standard_EXPORT Draw_Circle3D(const gp_Circ& C, const Standard_Real A1, const Standard_Real A2, const Draw_Color& col);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Draw_Circle3D,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Circle3D, Draw_Drawable3D)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_Circ myCirc;
+  gp_Circ       myCirc;
   Standard_Real myA1;
   Standard_Real myA2;
-  Draw_Color myColor;
-
-
+  Draw_Color    myColor;
 };
-
-
-
-
-
-
 
 #endif // _Draw_Circle3D_HeaderFile

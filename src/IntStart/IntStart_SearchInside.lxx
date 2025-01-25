@@ -14,25 +14,28 @@
 
 #include <StdFail_NotDone.hxx>
 
-
-inline Standard_Boolean IntStart_SearchInside::IsDone () const {
+inline Standard_Boolean IntStart_SearchInside::IsDone() const
+{
 
   return done;
 }
 
+inline Standard_Integer IntStart_SearchInside::NbPoints() const
+{
 
-inline Standard_Integer IntStart_SearchInside::NbPoints () const {
-
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return list.Length();
 }
 
-
-inline const IntSurf_InteriorPoint& IntStart_SearchInside::Value 
-     (const Standard_Integer Index) const
+inline const IntSurf_InteriorPoint& IntStart_SearchInside::Value(const Standard_Integer Index) const
 
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return list.Value(Index);
 }
-

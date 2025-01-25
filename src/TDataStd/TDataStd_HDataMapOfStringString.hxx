@@ -28,7 +28,6 @@ class TDataStd_HDataMapOfStringString : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringString, Standard_Transient)
 public:
-
   Standard_EXPORT TDataStd_HDataMapOfStringString(const Standard_Integer NbBuckets = 1);
 
   Standard_EXPORT TDataStd_HDataMapOfStringString(const TDataStd_DataMapOfStringString& theOther);
@@ -38,9 +37,7 @@ public:
   TDataStd_DataMapOfStringString& ChangeMap() { return myMap; }
 
 private:
-
   TDataStd_DataMapOfStringString myMap;
-
 };
 
 DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringString, Standard_Transient)

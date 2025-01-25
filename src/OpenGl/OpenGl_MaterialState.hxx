@@ -23,15 +23,19 @@
 class OpenGl_MaterialState : public OpenGl_StateInterface
 {
 public:
-
   //! Creates new material state.
-  OpenGl_MaterialState() : myAlphaCutoff (0.5f), myToDistinguish (false), myToMapTexture (false) {}
+  OpenGl_MaterialState()
+      : myAlphaCutoff(0.5f),
+        myToDistinguish(false),
+        myToMapTexture(false)
+  {
+  }
 
   //! Sets new material aspect.
-  void Set (const OpenGl_Material& theMat,
-            const float theAlphaCutoff,
-            const bool theToDistinguish,
-            const bool theToMapTexture)
+  void Set(const OpenGl_Material& theMat,
+           const float            theAlphaCutoff,
+           const bool             theToDistinguish,
+           const bool             theToMapTexture)
   {
     myMaterial      = theMat;
     myAlphaCutoff   = theAlphaCutoff;
@@ -52,15 +56,13 @@ public:
   bool ToDistinguish() const { return myToDistinguish; }
 
   //! Flag for mapping a texture.
-  bool ToMapTexture()  const { return myToMapTexture; }
+  bool ToMapTexture() const { return myToMapTexture; }
 
 private:
-
   OpenGl_Material myMaterial;      //!< material
   float           myAlphaCutoff;   //!< alpha cutoff value
   bool            myToDistinguish; //!< distinguish front/back flag
   bool            myToMapTexture;  //!< flag for mapping a texture
-
 };
 
 #endif // _OpenGl_MaterialState_HeaderFile

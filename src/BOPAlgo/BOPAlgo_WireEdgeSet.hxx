@@ -28,59 +28,38 @@
 class TopoDS_Face;
 class TopoDS_Shape;
 
-
-
-class BOPAlgo_WireEdgeSet 
+class BOPAlgo_WireEdgeSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    BOPAlgo_WireEdgeSet();
- virtual ~BOPAlgo_WireEdgeSet();
-  
-    BOPAlgo_WireEdgeSet(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
-    void Clear();
-  
-    void SetFace (const TopoDS_Face& aF);
-  
-    const TopoDS_Face& Face() const;
-  
-    void AddStartElement (const TopoDS_Shape& sS);
-  
-    const TopTools_ListOfShape& StartElements() const;
-  
-    void AddShape (const TopoDS_Shape& sS);
-  
-    const TopTools_ListOfShape& Shapes() const;
+  BOPAlgo_WireEdgeSet();
+  virtual ~BOPAlgo_WireEdgeSet();
 
+  BOPAlgo_WireEdgeSet(const Handle(NCollection_BaseAllocator)& theAllocator);
 
+  void Clear();
 
+  void SetFace(const TopoDS_Face& aF);
+
+  const TopoDS_Face& Face() const;
+
+  void AddStartElement(const TopoDS_Shape& sS);
+
+  const TopTools_ListOfShape& StartElements() const;
+
+  void AddShape(const TopoDS_Shape& sS);
+
+  const TopTools_ListOfShape& Shapes() const;
 
 protected:
-
-
-
-  TopoDS_Face myFace;
+  TopoDS_Face          myFace;
   TopTools_ListOfShape myStartShapes;
   TopTools_ListOfShape myShapes;
 
-
 private:
-
-
-
-
-
 };
 
-
 #include <BOPAlgo_WireEdgeSet.lxx>
-
-
-
-
 
 #endif // _BOPAlgo_WireEdgeSet_HeaderFile

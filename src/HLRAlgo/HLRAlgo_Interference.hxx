@@ -26,63 +26,50 @@
 class HLRAlgo_Intersection;
 class HLRAlgo_Coincidence;
 
-
-
-class HLRAlgo_Interference 
+class HLRAlgo_Interference
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRAlgo_Interference();
-  
-  Standard_EXPORT HLRAlgo_Interference(const HLRAlgo_Intersection& Inters, const HLRAlgo_Coincidence& Bound, const TopAbs_Orientation Orient, const TopAbs_Orientation Trans, const TopAbs_Orientation BTrans);
-  
-    void Intersection (const HLRAlgo_Intersection& I);
-  
-    void Boundary (const HLRAlgo_Coincidence& B);
-  
-    void Orientation (const TopAbs_Orientation O);
-  
-    void Transition (const TopAbs_Orientation Tr);
-  
-    void BoundaryTransition (const TopAbs_Orientation BTr);
-  
-    const HLRAlgo_Intersection& Intersection() const;
-  
-    HLRAlgo_Intersection& ChangeIntersection();
-  
-    const HLRAlgo_Coincidence& Boundary() const;
-  
-    HLRAlgo_Coincidence& ChangeBoundary();
-  
-    TopAbs_Orientation Orientation() const;
-  
-    TopAbs_Orientation Transition() const;
-  
-    TopAbs_Orientation BoundaryTransition() const;
 
+  Standard_EXPORT HLRAlgo_Interference(const HLRAlgo_Intersection& Inters,
+                                       const HLRAlgo_Coincidence&  Bound,
+                                       const TopAbs_Orientation    Orient,
+                                       const TopAbs_Orientation    Trans,
+                                       const TopAbs_Orientation    BTrans);
 
+  void Intersection(const HLRAlgo_Intersection& I);
 
+  void Boundary(const HLRAlgo_Coincidence& B);
+
+  void Orientation(const TopAbs_Orientation O);
+
+  void Transition(const TopAbs_Orientation Tr);
+
+  void BoundaryTransition(const TopAbs_Orientation BTr);
+
+  const HLRAlgo_Intersection& Intersection() const;
+
+  HLRAlgo_Intersection& ChangeIntersection();
+
+  const HLRAlgo_Coincidence& Boundary() const;
+
+  HLRAlgo_Coincidence& ChangeBoundary();
+
+  TopAbs_Orientation Orientation() const;
+
+  TopAbs_Orientation Transition() const;
+
+  TopAbs_Orientation BoundaryTransition() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   HLRAlgo_Intersection myIntersection;
-  HLRAlgo_Coincidence myBoundary;
-  TopAbs_Orientation myOrientation;
-  TopAbs_Orientation myTransition;
-  TopAbs_Orientation myBTransition;
-
-
+  HLRAlgo_Coincidence  myBoundary;
+  TopAbs_Orientation   myOrientation;
+  TopAbs_Orientation   myTransition;
+  TopAbs_Orientation   myBTransition;
 };
 
 #define TheSubShape HLRAlgo_Intersection
@@ -100,8 +87,5 @@ private:
 #undef TheShape_hxx
 #undef TopBas_Interference
 #undef TopBas_Interference_hxx
-
-
-
 
 #endif // _HLRAlgo_Interference_HeaderFile

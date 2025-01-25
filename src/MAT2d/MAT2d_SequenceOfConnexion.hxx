@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(MAT2d_Connexion)> MAT2d_SequenceOfConnexion;
 
-
 #endif

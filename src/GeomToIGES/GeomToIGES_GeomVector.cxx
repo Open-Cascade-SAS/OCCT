@@ -28,84 +28,83 @@
 // GeomToIGES_GeomVector
 //=============================================================================
 GeomToIGES_GeomVector::GeomToIGES_GeomVector()
-:GeomToIGES_GeomEntity()
+    : GeomToIGES_GeomEntity()
 {
 }
-
 
 //=============================================================================
 // GeomToIGES_GeomVector
 //=============================================================================
 
-GeomToIGES_GeomVector::GeomToIGES_GeomVector
-(const GeomToIGES_GeomEntity& GE)
-:GeomToIGES_GeomEntity(GE)
+GeomToIGES_GeomVector::GeomToIGES_GeomVector(const GeomToIGES_GeomEntity& GE)
+    : GeomToIGES_GeomEntity(GE)
 {
 }
-
 
 //=============================================================================
 // Transfer des Entites Vector de Geom vers IGES
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector
-(const Handle(Geom_Vector)& start)
+Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(const Handle(Geom_Vector)& start)
 {
   Handle(IGESGeom_Direction) res;
-  if (start.IsNull()) {
+  if (start.IsNull())
+  {
     return res;
   }
 
-  if (start->IsKind(STANDARD_TYPE(Geom_VectorWithMagnitude))) {
+  if (start->IsKind(STANDARD_TYPE(Geom_VectorWithMagnitude)))
+  {
     DeclareAndCast(Geom_VectorWithMagnitude, VMagn, start);
     res = TransferVector(VMagn);
   }
-  else if (start->IsKind(STANDARD_TYPE(Geom_Direction))) {
+  else if (start->IsKind(STANDARD_TYPE(Geom_Direction)))
+  {
     DeclareAndCast(Geom_Direction, Direction, start);
     res = TransferVector(Direction);
   }
 
   return res;
 }
- 
 
 //=============================================================================
 // Transfer des Entites VectorWithMagnitude de Geom vers IGES
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector
-(const Handle(Geom_VectorWithMagnitude)& start)
+Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
+  const Handle(Geom_VectorWithMagnitude)& start)
 {
   Handle(IGESGeom_Direction) Dir = new IGESGeom_Direction;
-  if (start.IsNull()) {
+  if (start.IsNull())
+  {
     return Dir;
   }
 
-  Standard_Real X,Y,Z;
-  start->Coord(X,Y,Z); 
+  Standard_Real X, Y, Z;
+  start->Coord(X, Y, Z);
   Standard_Real M = start->Magnitude();
-  Dir->Init(gp_XYZ(X/(M*GetUnit()),Y/(M*GetUnit()),Z/(M*GetUnit())));
+  Dir->Init(gp_XYZ(X / (M * GetUnit()), Y / (M * GetUnit()), Z / (M * GetUnit())));
   return Dir;
 }
- 
 
 //=============================================================================
 // Transfer des Entites Direction de Geom vers IGES
 // TransferVector
 //=============================================================================
 
-Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector
-(const Handle(Geom_Direction)& start)
+Handle(IGESGeom_Direction) GeomToIGES_GeomVector::TransferVector(
+  const Handle(Geom_Direction)& start)
 {
   Handle(IGESGeom_Direction) Dir = new IGESGeom_Direction;
-  if (start.IsNull()) {
+  if (start.IsNull())
+  {
     return Dir;
   }
 
-  Standard_Real X,Y,Z;
-  start->Coord(X,Y,Z);
-  Dir->Init(gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
+  Standard_Real X, Y, Z;
+  start->Coord(X, Y, Z);
+  Dir->Init(gp_XYZ(X / GetUnit(), Y / GetUnit(), Z / GetUnit()));
   return Dir;
 }

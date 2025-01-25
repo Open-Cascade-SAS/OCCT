@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean GeomLib_CheckBSplineCurve::IsDone() const 
+inline Standard_Boolean GeomLib_CheckBSplineCurve::IsDone() const
 {
-  return myDone ;
+  return myDone;
 }

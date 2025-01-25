@@ -14,19 +14,18 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetNbKronrodPoints
-//purpose  : 
+// function : SetNbKronrodPoints
+// purpose  :
 //=======================================================================
 
-inline void BRepGProp_TFunction::SetNbKronrodPoints
-                   (const Standard_Integer theNbPoints)
+inline void BRepGProp_TFunction::SetNbKronrodPoints(const Standard_Integer theNbPoints)
 {
-  myNbPntOuter = (theNbPoints%2 == 0) ? theNbPoints + 1 : theNbPoints;
+  myNbPntOuter = (theNbPoints % 2 == 0) ? theNbPoints + 1 : theNbPoints;
 }
- 
+
 //=======================================================================
-//function : SetValueType
-//purpose  : 
+// function : SetValueType
+// purpose  :
 //=======================================================================
 
 inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
@@ -36,8 +35,8 @@ inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
 }
 
 //=======================================================================
-//function : SetTolerance
-//purpose  : 
+// function : SetTolerance
+// purpose  :
 //=======================================================================
 
 inline void BRepGProp_TFunction::SetTolerance(const Standard_Real theTolerance)
@@ -46,8 +45,8 @@ inline void BRepGProp_TFunction::SetTolerance(const Standard_Real theTolerance)
 }
 
 //=======================================================================
-//function : TolReached
-//purpose  : 
+// function : TolReached
+// purpose  :
 //=======================================================================
 
 inline Standard_Real BRepGProp_TFunction::ErrorReached() const
@@ -56,8 +55,8 @@ inline Standard_Real BRepGProp_TFunction::ErrorReached() const
 }
 
 //=======================================================================
-//function : ErrorReached
-//purpose  : 
+// function : ErrorReached
+// purpose  :
 //=======================================================================
 
 inline Standard_Real BRepGProp_TFunction::AbsolutError() const

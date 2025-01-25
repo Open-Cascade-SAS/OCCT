@@ -11,95 +11,112 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_TransientListBinder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_TransientListBinder,Transfer_Binder)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_TransientListBinder, Transfer_Binder)
 
-//#include  <TColStd.hxx>
+// #include  <TColStd.hxx>
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-Transfer_TransientListBinder::Transfer_TransientListBinder  ()
-{  theres = new TColStd_HSequenceOfTransient();  }
-
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-
-Transfer_TransientListBinder::Transfer_TransientListBinder
-  (const Handle(TColStd_HSequenceOfTransient)& list)
-{  theres = list;  }
+Transfer_TransientListBinder::Transfer_TransientListBinder()
+{
+  theres = new TColStd_HSequenceOfTransient();
+}
 
 //=======================================================================
-//function : IsMultiple
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  Transfer_TransientListBinder::IsMultiple () const
-{  return (NbTransients() > 1);  }
+Transfer_TransientListBinder::Transfer_TransientListBinder(
+  const Handle(TColStd_HSequenceOfTransient)& list)
+{
+  theres = list;
+}
 
 //=======================================================================
-//function : ResultType
-//purpose  : 
+// function : IsMultiple
+// purpose  :
 //=======================================================================
 
-Handle(Standard_Type)  Transfer_TransientListBinder::ResultType () const
-{  return STANDARD_TYPE(Transfer_TransientListBinder);  }
+Standard_Boolean Transfer_TransientListBinder::IsMultiple() const
+{
+  return (NbTransients() > 1);
+}
 
 //=======================================================================
-//function : ResultTypeName
-//purpose  : 
+// function : ResultType
+// purpose  :
 //=======================================================================
 
-Standard_CString  Transfer_TransientListBinder::ResultTypeName () const
-{  return "list(Standard_Transient)";  }
-
-
-//=======================================================================
-//function : AddResult
-//purpose  : 
-//=======================================================================
-
-void  Transfer_TransientListBinder::AddResult (const Handle(Standard_Transient)& Transient)
-{  theres->Append(Transient);  }
+Handle(Standard_Type) Transfer_TransientListBinder::ResultType() const
+{
+  return STANDARD_TYPE(Transfer_TransientListBinder);
+}
 
 //=======================================================================
-//function : Result
-//purpose  : 
+// function : ResultTypeName
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HSequenceOfTransient) Transfer_TransientListBinder::Result () const
-{  return theres;  }
+Standard_CString Transfer_TransientListBinder::ResultTypeName() const
+{
+  return "list(Standard_Transient)";
+}
 
 //=======================================================================
-//function : SetResult
-//purpose  : 
+// function : AddResult
+// purpose  :
 //=======================================================================
 
-void  Transfer_TransientListBinder::SetResult
-  (const Standard_Integer num, const Handle(Standard_Transient)& Transient)
-{  theres->SetValue(num,Transient);  }
+void Transfer_TransientListBinder::AddResult(const Handle(Standard_Transient)& Transient)
+{
+  theres->Append(Transient);
+}
 
 //=======================================================================
-//function : NbTransients
-//purpose  : 
+// function : Result
+// purpose  :
 //=======================================================================
 
-Standard_Integer  Transfer_TransientListBinder::NbTransients () const
-{  return theres->Length();  }
+Handle(TColStd_HSequenceOfTransient) Transfer_TransientListBinder::Result() const
+{
+  return theres;
+}
 
 //=======================================================================
-//function : Transient
-//purpose  : 
+// function : SetResult
+// purpose  :
 //=======================================================================
 
-const Handle(Standard_Transient)&
-  Transfer_TransientListBinder::Transient (const Standard_Integer num) const
-{  return theres->Value(num);  }
+void Transfer_TransientListBinder::SetResult(const Standard_Integer            num,
+                                             const Handle(Standard_Transient)& Transient)
+{
+  theres->SetValue(num, Transient);
+}
 
+//=======================================================================
+// function : NbTransients
+// purpose  :
+//=======================================================================
+
+Standard_Integer Transfer_TransientListBinder::NbTransients() const
+{
+  return theres->Length();
+}
+
+//=======================================================================
+// function : Transient
+// purpose  :
+//=======================================================================
+
+const Handle(Standard_Transient)& Transfer_TransientListBinder::Transient(
+  const Standard_Integer num) const
+{
+  return theres->Value(num);
+}

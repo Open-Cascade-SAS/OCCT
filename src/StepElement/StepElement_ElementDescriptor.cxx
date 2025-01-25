@@ -18,23 +18,21 @@
 #include <StepElement_ElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementDescriptor,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementDescriptor, Standard_Transient)
 
 //=======================================================================
-//function : StepElement_ElementDescriptor
-//purpose  : 
+// function : StepElement_ElementDescriptor
+// purpose  :
 //=======================================================================
-StepElement_ElementDescriptor::StepElement_ElementDescriptor ()
-{
-}
+StepElement_ElementDescriptor::StepElement_ElementDescriptor() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepElement_ElementDescriptor::Init (const StepElement_ElementOrder aTopologyOrder,
-                                          const Handle(TCollection_HAsciiString) &aDescription)
+void StepElement_ElementDescriptor::Init(const StepElement_ElementOrder          aTopologyOrder,
+                                         const Handle(TCollection_HAsciiString)& aDescription)
 {
 
   theTopologyOrder = aTopologyOrder;
@@ -43,41 +41,42 @@ void StepElement_ElementDescriptor::Init (const StepElement_ElementOrder aTopolo
 }
 
 //=======================================================================
-//function : TopologyOrder
-//purpose  : 
+// function : TopologyOrder
+// purpose  :
 //=======================================================================
 
-StepElement_ElementOrder StepElement_ElementDescriptor::TopologyOrder () const
+StepElement_ElementOrder StepElement_ElementDescriptor::TopologyOrder() const
 {
   return theTopologyOrder;
 }
 
 //=======================================================================
-//function : SetTopologyOrder
-//purpose  : 
+// function : SetTopologyOrder
+// purpose  :
 //=======================================================================
 
-void StepElement_ElementDescriptor::SetTopologyOrder (const StepElement_ElementOrder aTopologyOrder)
+void StepElement_ElementDescriptor::SetTopologyOrder(const StepElement_ElementOrder aTopologyOrder)
 {
   theTopologyOrder = aTopologyOrder;
 }
 
 //=======================================================================
-//function : Description
-//purpose  : 
+// function : Description
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementDescriptor::Description () const
+Handle(TCollection_HAsciiString) StepElement_ElementDescriptor::Description() const
 {
   return theDescription;
 }
 
 //=======================================================================
-//function : SetDescription
-//purpose  : 
+// function : SetDescription
+// purpose  :
 //=======================================================================
 
-void StepElement_ElementDescriptor::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepElement_ElementDescriptor::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }

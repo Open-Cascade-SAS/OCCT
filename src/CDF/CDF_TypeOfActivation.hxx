@@ -17,12 +17,11 @@
 #ifndef _CDF_TypeOfActivation_HeaderFile
 #define _CDF_TypeOfActivation_HeaderFile
 
-
 enum CDF_TypeOfActivation
 {
-CDF_TOA_New,
-CDF_TOA_Modified,
-CDF_TOA_Unchanged
+  CDF_TOA_New,
+  CDF_TOA_Modified,
+  CDF_TOA_Unchanged
 };
 
 #endif // _CDF_TypeOfActivation_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<GccEnt_Position> GccEnt_Array1OfPosition;
 
-
 #endif

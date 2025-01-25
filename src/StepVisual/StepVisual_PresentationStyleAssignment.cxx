@@ -11,38 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
-StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment ()  {}
+StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment() {}
 
 void StepVisual_PresentationStyleAssignment::Init(
-	const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles)
+  const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles)
 {
-	// --- classe own fields ---
-	styles = aStyles;
+  // --- classe own fields ---
+  styles = aStyles;
 }
 
-
-void StepVisual_PresentationStyleAssignment::SetStyles(const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles)
+void StepVisual_PresentationStyleAssignment::SetStyles(
+  const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles)
 {
-	styles = aStyles;
+  styles = aStyles;
 }
 
-Handle(StepVisual_HArray1OfPresentationStyleSelect) StepVisual_PresentationStyleAssignment::Styles() const
+Handle(StepVisual_HArray1OfPresentationStyleSelect) StepVisual_PresentationStyleAssignment::Styles()
+  const
 {
-	return styles;
+  return styles;
 }
 
-StepVisual_PresentationStyleSelect StepVisual_PresentationStyleAssignment::StylesValue(const Standard_Integer num) const
+StepVisual_PresentationStyleSelect StepVisual_PresentationStyleAssignment::StylesValue(
+  const Standard_Integer num) const
 {
-	return styles->Value(num);
+  return styles->Value(num);
 }
 
-Standard_Integer StepVisual_PresentationStyleAssignment::NbStyles () const
+Standard_Integer StepVisual_PresentationStyleAssignment::NbStyles() const
 {
-  return (styles.IsNull()) ?  0 : styles->Length();
+  return (styles.IsNull()) ? 0 : styles->Length();
 }

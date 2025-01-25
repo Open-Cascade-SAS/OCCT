@@ -17,12 +17,11 @@
 #ifndef _StepBasic_Source_HeaderFile
 #define _StepBasic_Source_HeaderFile
 
-
 enum StepBasic_Source
 {
-StepBasic_sMade,
-StepBasic_sBought,
-StepBasic_sNotKnown
+  StepBasic_sMade,
+  StepBasic_sBought,
+  StepBasic_sNotKnown
 };
 
 #endif // _StepBasic_Source_HeaderFile

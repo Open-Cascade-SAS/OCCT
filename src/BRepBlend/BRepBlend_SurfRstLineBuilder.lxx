@@ -15,9 +15,10 @@
 // commercial license or contractual agreement.
 
 #include <StdFail_NotDone.hxx>
+
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::IsDone() const
@@ -26,19 +27,22 @@ inline Standard_Boolean BRepBlend_SurfRstLineBuilder::IsDone() const
 }
 
 //=======================================================================
-//function : Line
-//purpose  : 
+// function : Line
+// purpose  :
 //=======================================================================
 
 inline const Handle(BRepBlend_Line)& BRepBlend_SurfRstLineBuilder::Line() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return line;
 }
 
 //=======================================================================
-//function : DecrochStart
-//purpose  : 
+// function : DecrochStart
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochStart() const
@@ -46,10 +50,9 @@ inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochStart() const
   return decrochdeb;
 }
 
-
 //=======================================================================
-//function : DecrochEnd
-//purpose  : 
+// function : DecrochEnd
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochEnd() const

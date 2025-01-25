@@ -1,7 +1,7 @@
-// Created on: 2011-10-11 
+// Created on: 2011-10-11
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -11,20 +11,20 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <IVtk_IShapeMesher.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher,IVtk_Interface)
+IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher, IVtk_Interface)
 
 // ================================================================
 // Function : initialize
 // Purpose  :
 // ================================================================
-void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,
-                                    const IVtk_IShapeData::Handle& theData)
+void IVtk_IShapeMesher::initialize(const IVtk_IShape::Handle&     theShape,
+                                   const IVtk_IShapeData::Handle& theData)
 {
-  myShapeObj = theShape;
+  myShapeObj  = theShape;
   myShapeData = theData;
 }
 
@@ -32,12 +32,12 @@ void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,
 // Function : Build
 // Purpose  :
 // ================================================================
-void IVtk_IShapeMesher::Build (const IVtk_IShape::Handle&     theShape,
-                               const IVtk_IShapeData::Handle& theData)
+void IVtk_IShapeMesher::Build(const IVtk_IShape::Handle&     theShape,
+                              const IVtk_IShapeData::Handle& theData)
 {
   if (!theShape.IsNull())
   {
-    initialize (theShape, theData);
+    initialize(theShape, theData);
     internalBuild();
   }
 }

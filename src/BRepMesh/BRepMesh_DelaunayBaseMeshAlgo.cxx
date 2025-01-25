@@ -21,23 +21,19 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBa
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo()
-{
-}
+BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo() {}
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo()
-{
-}
+BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo() {}
 
 //=======================================================================
-//function : generateMesh
-//purpose  :
+// function : generateMesh
+// purpose  :
 //=======================================================================
 void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& theRange)
 {
@@ -50,8 +46,8 @@ void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& th
     aVerticesOrder.Append(i);
   }
 
-  std::pair<Standard_Integer, Standard_Integer> aCellsCount = getCellsCount (aVerticesOrder.Size ());
-  BRepMesh_Delaun aMesher(aStructure, aVerticesOrder, aCellsCount.first, aCellsCount.second);
+  std::pair<Standard_Integer, Standard_Integer> aCellsCount = getCellsCount(aVerticesOrder.Size());
+  BRepMesh_Delaun   aMesher(aStructure, aVerticesOrder, aCellsCount.first, aCellsCount.second);
   BRepMesh_MeshTool aCleaner(aStructure);
   aCleaner.EraseFreeLinks();
 

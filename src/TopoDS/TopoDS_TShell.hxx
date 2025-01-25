@@ -30,7 +30,10 @@ class TopoDS_TShell : public TopoDS_TShape
 {
 public:
   //! Creates an empty TShell.
-  TopoDS_TShell() : TopoDS_TShape() {}
+  TopoDS_TShell()
+      : TopoDS_TShape()
+  {
+  }
 
   //! Returns SHELL.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;

@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(TColGeom2d_HArray1OfCurve, TColGeom2d_Array1OfCurve)
 
-
 #endif

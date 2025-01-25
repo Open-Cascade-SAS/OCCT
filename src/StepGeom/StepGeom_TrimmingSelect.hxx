@@ -27,61 +27,40 @@ class Standard_Transient;
 class StepData_SelectMember;
 class StepGeom_CartesianPoint;
 
-
-
-class StepGeom_TrimmingSelect  : public StepData_SelectType
+class StepGeom_TrimmingSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a TrimmingSelect SelectType
   Standard_EXPORT StepGeom_TrimmingSelect();
-  
+
   //! Recognizes a TrimmingSelect Kind Entity that is :
   //! 1 -> CartesianPoint
   //! 0 else (i.e. Real)
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+
   //! Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
-  
+
   //! Recognizes a SelectMember as Real, named as PARAMETER_VALUE
   //! 1 -> ParameterValue i.e. Real
   //! 0 else (i.e. Entity)
-  Standard_EXPORT virtual Standard_Integer CaseMem (const Handle(StepData_SelectMember)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
+    Standard_OVERRIDE;
+
   //! returns Value as a CartesianPoint (Null if another type)
   Standard_EXPORT Handle(StepGeom_CartesianPoint) CartesianPoint() const;
-  
+
   //! sets the ParameterValue as Real
-  Standard_EXPORT void SetParameterValue (const Standard_Real aParameterValue);
-  
+  Standard_EXPORT void SetParameterValue(const Standard_Real aParameterValue);
+
   //! returns Value as a Real (0.0 if not a Real)
   Standard_EXPORT Standard_Real ParameterValue() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_TrimmingSelect_HeaderFile

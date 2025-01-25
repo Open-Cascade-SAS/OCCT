@@ -25,50 +25,27 @@
 #include <Standard_Integer.hxx>
 class CDM_Document;
 
-
-
-class CDM_ReferenceIterator 
+class CDM_ReferenceIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT CDM_ReferenceIterator(const Handle(CDM_Document)& aDocument);
-  
+
   Standard_EXPORT Standard_Boolean More() const;
-  
+
   Standard_EXPORT void Next();
-  
+
   Standard_EXPORT Handle(CDM_Document) Document() const;
-  
+
   Standard_EXPORT Standard_Integer ReferenceIdentifier() const;
-  
+
   //! returns the Document Version in the reference.
   Standard_EXPORT Standard_Integer DocumentVersion() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   CDM_ListIteratorOfListOfReferences myIterator;
-
-
 };
-
-
-
-
-
-
 
 #endif // _CDM_ReferenceIterator_HeaderFile

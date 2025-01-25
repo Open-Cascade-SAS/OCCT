@@ -24,7 +24,6 @@ DEFINE_STANDARD_HANDLE(StepVisual_RepositionedTessellatedItem, StepVisual_Tessel
 class StepVisual_RepositionedTessellatedItem : public StepVisual_TessellatedItem
 {
 public:
-
   DEFINE_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedItem, StepVisual_TessellatedItem)
 
   DEFINE_STANDARD_ALLOC
@@ -33,17 +32,19 @@ public:
   StepVisual_RepositionedTessellatedItem() {};
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  theName,
                             const Handle(StepGeom_Axis2Placement3d)& theLocation);
 
   //! Returns location
   Handle(StepGeom_Axis2Placement3d) Location() const { return myLocation; }
 
   //! Sets location
-  void SetLocation(const Handle(StepGeom_Axis2Placement3d)& theLocation) { myLocation = theLocation; }
+  void SetLocation(const Handle(StepGeom_Axis2Placement3d)& theLocation)
+  {
+    myLocation = theLocation;
+  }
 
 private:
-
   Handle(StepGeom_Axis2Placement3d) myLocation;
 };
 #endif // StepVisual_RepositionedTessellatedItem_HeaderFile

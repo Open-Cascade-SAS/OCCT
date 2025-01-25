@@ -15,97 +15,88 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Face&  DBRep_Face::Face()const 
+inline const TopoDS_Face& DBRep_Face::Face() const
 {
   return myFace;
 }
 
-
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Face::Face(const TopoDS_Face& F)
+inline void DBRep_Face::Face(const TopoDS_Face& F)
 {
   myFace = F;
 }
 
-
 //=======================================================================
-//function : NbIsos
-//purpose  : 
+// function : NbIsos
+// purpose  :
 //=======================================================================
 
- inline Standard_Integer  DBRep_Face::NbIsos()const 
+inline Standard_Integer DBRep_Face::NbIsos() const
 {
   return myTypes.Upper();
 }
 
-
 //=======================================================================
-//function : Iso
-//purpose  : 
+// function : Iso
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Face::Iso(const Standard_Integer I, 
-			      const GeomAbs_IsoType T, 
-			      const Standard_Real Par, 
-			      const Standard_Real T1, 
-			      const Standard_Real T2)
+inline void DBRep_Face::Iso(const Standard_Integer I,
+                            const GeomAbs_IsoType  T,
+                            const Standard_Real    Par,
+                            const Standard_Real    T1,
+                            const Standard_Real    T2)
 {
-  myTypes(I) = (Standard_Integer) T;
-  myParams(3*I - 2) = Par;
-  myParams(3*I - 1) = T1;
-  myParams(3*I)     = T2;
+  myTypes(I)          = (Standard_Integer)T;
+  myParams(3 * I - 2) = Par;
+  myParams(3 * I - 1) = T1;
+  myParams(3 * I)     = T2;
 }
 
-
 //=======================================================================
-//function : GetIso
-//purpose  : 
+// function : GetIso
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Face::GetIso(const Standard_Integer I, 
-				 GeomAbs_IsoType& T, 
-				 Standard_Real& Par, 
-				 Standard_Real& T1, 
-				 Standard_Real& T2)const 
+inline void DBRep_Face::GetIso(const Standard_Integer I,
+                               GeomAbs_IsoType&       T,
+                               Standard_Real&         Par,
+                               Standard_Real&         T1,
+                               Standard_Real&         T2) const
 {
-//JR/Hp :
+  // JR/Hp :
   Standard_Integer IntTyp = myTypes(I);
-  T   =  (GeomAbs_IsoType) IntTyp ;
-//  T   =  (GeomAbs_IsoType) myTypes(I);
-  Par =  myParams(3*I - 2);
-  T1  =  myParams(3*I - 1);
-  T2  =  myParams(3*I);                  
+  T                       = (GeomAbs_IsoType)IntTyp;
+  //  T   =  (GeomAbs_IsoType) myTypes(I);
+  Par = myParams(3 * I - 2);
+  T1  = myParams(3 * I - 1);
+  T2  = myParams(3 * I);
 }
 
-
-
 //=======================================================================
-//function : Color
-//purpose  : 
+// function : Color
+// purpose  :
 //=======================================================================
 
- inline const Draw_Color&  DBRep_Face::Color()const 
+inline const Draw_Color& DBRep_Face::Color() const
 {
   return myColor;
 }
 
-
 //=======================================================================
-//function : Color
-//purpose  : 
+// function : Color
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Face::Color(const Draw_Color& C)
+inline void DBRep_Face::Color(const Draw_Color& C)
 {
   myColor = C;
 }
-
-

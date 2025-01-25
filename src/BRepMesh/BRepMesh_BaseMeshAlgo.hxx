@@ -29,8 +29,7 @@ class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_BaseMeshAlgo : public IMeshTools_MeshAlgo
 {
 public:
-
-  typedef NCollection_Shared<NCollection_Vector<gp_Pnt> > VectorOfPnt;
+  typedef NCollection_Shared<NCollection_Vector<gp_Pnt>> VectorOfPnt;
 
   //! Constructor.
   Standard_EXPORT BRepMesh_BaseMeshAlgo();
@@ -47,39 +46,22 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 
 protected:
-
   //! Gets discrete face.
-  const IMeshData::IFaceHandle& getDFace() const
-  {
-    return myDFace;
-  }
+  const IMeshData::IFaceHandle& getDFace() const { return myDFace; }
 
   //! Gets meshing parameters.
-  const IMeshTools_Parameters& getParameters() const
-  {
-    return myParameters;
-  }
+  const IMeshTools_Parameters& getParameters() const { return myParameters; }
 
   //! Gets common allocator.
-  const Handle(NCollection_IncAllocator)& getAllocator() const
-  {
-    return myAllocator;
-  }
+  const Handle(NCollection_IncAllocator)& getAllocator() const { return myAllocator; }
 
   //! Gets mesh structure.
-  const Handle(BRepMesh_DataStructureOfDelaun)& getStructure() const
-  {
-    return myStructure;
-  }
+  const Handle(BRepMesh_DataStructureOfDelaun)& getStructure() const { return myStructure; }
 
   //! Gets 3d nodes map.
-  const Handle(VectorOfPnt)& getNodesMap() const
-  {
-    return myNodesMap;
-  }
+  const Handle(VectorOfPnt)& getNodesMap() const { return myNodesMap; }
 
 protected:
-
   //! Registers the given point in vertex map and adds 2d point to mesh data structure.
   //! Returns index of node in the structure.
   Standard_EXPORT virtual Standard_Integer registerNode(
@@ -106,19 +88,16 @@ protected:
   Standard_EXPORT virtual void generateMesh(const Message_ProgressRange& theRange) = 0;
 
 private:
-
   //! If the given edge has another pcurve for current face coinciding with specified one,
   //! returns TopAbs_INTERNAL flag. Elsewhere returns orientation of specified pcurve.
-  TopAbs_Orientation fixSeamEdgeOrientation(
-    const IMeshData::IEdgeHandle&   theDEdge,
-    const IMeshData::IPCurveHandle& thePCurve) const;
+  TopAbs_Orientation fixSeamEdgeOrientation(const IMeshData::IEdgeHandle&   theDEdge,
+                                            const IMeshData::IPCurveHandle& thePCurve) const;
 
   //! Adds new link to the mesh data structure.
   //! Movability of the link and order of nodes depend on orientation parameter.
-  Standard_Integer addLinkToMesh(
-    const Standard_Integer   theFirstNodeId,
-    const Standard_Integer   theLastNodeId,
-    const TopAbs_Orientation theOrientation);
+  Standard_Integer addLinkToMesh(const Standard_Integer   theFirstNodeId,
+                                 const Standard_Integer   theLastNodeId,
+                                 const TopAbs_Orientation theOrientation);
 
   //! Commits generated triangulation to TopoDS face.
   void commitSurfaceTriangulation();
@@ -130,7 +109,8 @@ private:
   void collectNodes(const Handle(Poly_Triangulation)& theTriangulation);
 
 private:
-  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, Standard_Integer> > DMapOfIntegerInteger;
+  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, Standard_Integer>>
+    DMapOfIntegerInteger;
 
   IMeshData::IFaceHandle                 myDFace;
   IMeshTools_Parameters                  myParameters;

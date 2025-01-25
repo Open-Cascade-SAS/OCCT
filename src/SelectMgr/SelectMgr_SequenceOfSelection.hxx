@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _SelectMgr_SequenceOfSelection_HeaderFile
 #define _SelectMgr_SequenceOfSelection_HeaderFile
 

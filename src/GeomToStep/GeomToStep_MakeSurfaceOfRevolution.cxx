@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <GeomToStep_MakeAxis1Placement.hxx>
 #include <GeomToStep_MakeCurve.hxx>
@@ -30,32 +29,31 @@
 // Creation d' une surface_of_revolution de prostep a partir d' une
 // SurfaceOfRevolution de Geom
 //=============================================================================
-GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution
-  ( const Handle(Geom_SurfaceOfRevolution)& S,
-    const StepData_Factors& theLocalFactors)
+GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution(
+  const Handle(Geom_SurfaceOfRevolution)& S,
+  const StepData_Factors&                 theLocalFactors)
 {
   Handle(StepGeom_SurfaceOfRevolution) Surf;
-  Handle(StepGeom_Curve) aSweptCurve;
-  Handle(StepGeom_Axis1Placement) aAxisPosition;
-  
-  GeomToStep_MakeCurve MkSwept(S->BasisCurve(), theLocalFactors);
+  Handle(StepGeom_Curve)               aSweptCurve;
+  Handle(StepGeom_Axis1Placement)      aAxisPosition;
+
+  GeomToStep_MakeCurve          MkSwept(S->BasisCurve(), theLocalFactors);
   GeomToStep_MakeAxis1Placement MkAxis1(S->Axis(), theLocalFactors);
-  aSweptCurve = MkSwept.Value();
-  aAxisPosition = MkAxis1.Value();
-  Surf = new StepGeom_SurfaceOfRevolution;
+  aSweptCurve                           = MkSwept.Value();
+  aAxisPosition                         = MkAxis1.Value();
+  Surf                                  = new StepGeom_SurfaceOfRevolution;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
   Surf->Init(name, aSweptCurve, aAxisPosition);
   theSurfaceOfRevolution = Surf;
-  done = Standard_True;
+  done                   = Standard_True;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_SurfaceOfRevolution) &
-      GeomToStep_MakeSurfaceOfRevolution::Value() const
+const Handle(StepGeom_SurfaceOfRevolution)& GeomToStep_MakeSurfaceOfRevolution::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeSurfaceOfRevolution::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSurfaceOfRevolution::Value() - no result");
   return theSurfaceOfRevolution;
 }

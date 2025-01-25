@@ -14,14 +14,13 @@
 #ifndef _StepElement_EnumeratedSurfaceElementPurpose_HeaderFile
 #define _StepElement_EnumeratedSurfaceElementPurpose_HeaderFile
 
-
 enum StepElement_EnumeratedSurfaceElementPurpose
 {
-StepElement_MembraneDirect,
-StepElement_MembraneShear,
-StepElement_BendingDirect,
-StepElement_BendingTorsion,
-StepElement_NormalToPlaneShear
+  StepElement_MembraneDirect,
+  StepElement_MembraneShear,
+  StepElement_BendingDirect,
+  StepElement_BendingTorsion,
+  StepElement_NormalToPlaneShear
 };
 
 #endif // _StepElement_EnumeratedSurfaceElementPurpose_HeaderFile

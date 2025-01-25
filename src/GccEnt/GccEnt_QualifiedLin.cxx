@@ -12,39 +12,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccEnt_QualifiedLin.hxx>
 #include <gp_Lin2d.hxx>
 
-gp_Lin2d GccEnt_QualifiedLin::
-   Qualified () const { return TheQualified; }
+gp_Lin2d GccEnt_QualifiedLin::Qualified() const
+{
+  return TheQualified;
+}
 
-GccEnt_Position GccEnt_QualifiedLin::
-   Qualifier () const { return TheQualifier; }
+GccEnt_Position GccEnt_QualifiedLin::Qualifier() const
+{
+  return TheQualifier;
+}
 
-Standard_Boolean GccEnt_QualifiedLin::
-   IsUnqualified () const {
-   if (TheQualifier == GccEnt_unqualified) { return Standard_True; }
-   else { return Standard_False; }
- }
+Standard_Boolean GccEnt_QualifiedLin::IsUnqualified() const
+{
+  if (TheQualifier == GccEnt_unqualified)
+  {
+    return Standard_True;
+  }
+  else
+  {
+    return Standard_False;
+  }
+}
 
-Standard_Boolean GccEnt_QualifiedLin::
-   IsEnclosed () const {
-   return (TheQualifier == GccEnt_enclosed);
- }
+Standard_Boolean GccEnt_QualifiedLin::IsEnclosed() const
+{
+  return (TheQualifier == GccEnt_enclosed);
+}
 
+Standard_Boolean GccEnt_QualifiedLin::IsOutside() const
+{
+  if (TheQualifier == GccEnt_outside)
+  {
+    return Standard_True;
+  }
+  else
+  {
+    return Standard_False;
+  }
+}
 
-Standard_Boolean GccEnt_QualifiedLin::
-   IsOutside () const {
-   if (TheQualifier == GccEnt_outside) { return Standard_True; }
-   else { return Standard_False; }
- }
-
-GccEnt_QualifiedLin::
-   GccEnt_QualifiedLin (const gp_Lin2d&       Qualified,
-			const GccEnt_Position Qualifier) {
-   TheQualified = Qualified;
-   TheQualifier = Qualifier;
- }
-
-
+GccEnt_QualifiedLin::GccEnt_QualifiedLin(const gp_Lin2d& Qualified, const GccEnt_Position Qualifier)
+{
+  TheQualified = Qualified;
+  TheQualifier = Qualifier;
+}

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_ToolButton_H
 #define View_ToolButton_H
@@ -30,34 +30,43 @@ class View_ToolButton : public QToolButton
   Q_OBJECT
 
 public:
-  View_ToolButton (QWidget* theParent) : QToolButton (theParent) {}
+  View_ToolButton(QWidget* theParent)
+      : QToolButton(theParent)
+  {
+  }
+
   ~View_ToolButton() {}
 
   //! Sets the button checkable, set whether the button checkable or not
   //! \param theChecked boolean value
-  void SetButtonChecked (const bool theChecked) {setCheckable (theChecked); setChecked (theChecked); emit checkedStateChanged (theChecked); }
+  void SetButtonChecked(const bool theChecked)
+  {
+    setCheckable(theChecked);
+    setChecked(theChecked);
+    emit checkedStateChanged(theChecked);
+  }
 
 signals:
   //! Sends a signal about checked state is changed
   //! \param theState the checked state
-  void checkedStateChanged (bool theState);
+  void checkedStateChanged(bool theState);
 
 protected:
   //! Sets the button unchecked if it was checked
-  virtual void mousePressEvent (QMouseEvent* theEvent)
+  virtual void mousePressEvent(QMouseEvent* theEvent)
   {
     if (isChecked())
-      SetButtonChecked (false);
+      SetButtonChecked(false);
     else
-      QToolButton::mousePressEvent (theEvent);
+      QToolButton::mousePressEvent(theEvent);
   }
 
   //! Sets the button checked if it was unchecked
-  virtual void mouseDoubleClickEvent (QMouseEvent* theEvent)
+  virtual void mouseDoubleClickEvent(QMouseEvent* theEvent)
   {
-    QToolButton::mouseDoubleClickEvent (theEvent);
+    QToolButton::mouseDoubleClickEvent(theEvent);
     if (!isChecked())
-      SetButtonChecked (true);
+      SetButtonChecked(true);
   }
 };
 

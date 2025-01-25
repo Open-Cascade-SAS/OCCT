@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TopOpeBRep_VPointInter> TopOpeBRep_Array1OfVPointInter;
 
-
 #endif

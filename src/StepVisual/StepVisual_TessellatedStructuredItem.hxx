@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -21,20 +21,17 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedStructuredItem, StepVisual_TessellatedItem)
 
 //! Representation of STEP entity TessellatedStructuredItem
 class StepVisual_TessellatedStructuredItem : public StepVisual_TessellatedItem
 {
 
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_TessellatedStructuredItem();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedStructuredItem, StepVisual_TessellatedItem)
-
 };
 
 #endif // _StepVisual_TessellatedStructuredItem_HeaderFile_

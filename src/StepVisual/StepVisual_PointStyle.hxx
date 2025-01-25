@@ -26,63 +26,45 @@
 class TCollection_HAsciiString;
 class StepVisual_Colour;
 
-
 class StepVisual_PointStyle;
 DEFINE_STANDARD_HANDLE(StepVisual_PointStyle, Standard_Transient)
-
 
 class StepVisual_PointStyle : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a PointStyle
   Standard_EXPORT StepVisual_PointStyle();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepVisual_MarkerSelect& aMarker, const StepBasic_SizeSelect& aMarkerSize, const Handle(StepVisual_Colour)& aMarkerColour);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const StepVisual_MarkerSelect&          aMarker,
+                            const StepBasic_SizeSelect&             aMarkerSize,
+                            const Handle(StepVisual_Colour)&        aMarkerColour);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetMarker (const StepVisual_MarkerSelect& aMarker);
-  
+
+  Standard_EXPORT void SetMarker(const StepVisual_MarkerSelect& aMarker);
+
   Standard_EXPORT StepVisual_MarkerSelect Marker() const;
-  
-  Standard_EXPORT void SetMarkerSize (const StepBasic_SizeSelect& aMarkerSize);
-  
+
+  Standard_EXPORT void SetMarkerSize(const StepBasic_SizeSelect& aMarkerSize);
+
   Standard_EXPORT StepBasic_SizeSelect MarkerSize() const;
-  
-  Standard_EXPORT void SetMarkerColour (const Handle(StepVisual_Colour)& aMarkerColour);
-  
+
+  Standard_EXPORT void SetMarkerColour(const Handle(StepVisual_Colour)& aMarkerColour);
+
   Standard_EXPORT Handle(StepVisual_Colour) MarkerColour() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PointStyle,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PointStyle, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) name;
-  StepVisual_MarkerSelect marker;
-  StepBasic_SizeSelect markerSize;
-  Handle(StepVisual_Colour) markerColour;
-
-
+  StepVisual_MarkerSelect          marker;
+  StepBasic_SizeSelect             markerSize;
+  Handle(StepVisual_Colour)        markerColour;
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PointStyle_HeaderFile

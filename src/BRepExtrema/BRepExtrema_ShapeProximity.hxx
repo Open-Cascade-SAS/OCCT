@@ -49,40 +49,31 @@ class BRepExtrema_ShapeProximity
 {
 
 public:
-
   //! Creates empty proximity tool.
-  Standard_EXPORT BRepExtrema_ShapeProximity (const Standard_Real theTolerance = Precision::Infinite());
+  Standard_EXPORT BRepExtrema_ShapeProximity(
+    const Standard_Real theTolerance = Precision::Infinite());
 
   //! Creates proximity tool for the given two shapes.
-  Standard_EXPORT BRepExtrema_ShapeProximity (const TopoDS_Shape& theShape1,
-                                              const TopoDS_Shape& theShape2,
-                                              const Standard_Real theTolerance = Precision::Infinite());
+  Standard_EXPORT BRepExtrema_ShapeProximity(
+    const TopoDS_Shape& theShape1,
+    const TopoDS_Shape& theShape2,
+    const Standard_Real theTolerance = Precision::Infinite());
 
 public:
-
   //! Returns tolerance value for overlap test (distance between shapes).
-  Standard_Real Tolerance() const
-  {
-    return myTolerance;
-  }
+  Standard_Real Tolerance() const { return myTolerance; }
 
   //! Sets tolerance value for overlap test (distance between shapes).
-  void SetTolerance (const Standard_Real theTolerance)
-  {
-    myTolerance = theTolerance;
-  }
+  void SetTolerance(const Standard_Real theTolerance) { myTolerance = theTolerance; }
 
   //! Returns proximity value calculated for the whole input shapes.
-  Standard_Real Proximity() const
-  {
-    return Tolerance();
-  }
+  Standard_Real Proximity() const { return Tolerance(); }
 
   //! Loads 1st shape into proximity tool.
-  Standard_EXPORT Standard_Boolean LoadShape1 (const TopoDS_Shape& theShape1);
+  Standard_EXPORT Standard_Boolean LoadShape1(const TopoDS_Shape& theShape1);
 
   //! Loads 2nd shape into proximity tool.
-  Standard_EXPORT Standard_Boolean LoadShape2 (const TopoDS_Shape& theShape2);
+  Standard_EXPORT Standard_Boolean LoadShape2(const TopoDS_Shape& theShape2);
 
   //! Set number of sample points on the 1st shape used to compute the proximity value.
   //! In case of 0, all triangulation nodes will be used.
@@ -96,10 +87,7 @@ public:
   Standard_EXPORT void Perform();
 
   //! True if the search is completed.
-  Standard_Boolean IsDone() const
-  { 
-    return myOverlapTool.IsDone() || myProxValTool.IsDone();
-  }
+  Standard_Boolean IsDone() const { return myOverlapTool.IsDone() || myProxValTool.IsDone(); }
 
   //! Returns set of IDs of overlapped faces of 1st shape (started from 0).
   const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes1() const
@@ -114,59 +102,40 @@ public:
   }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape1 (const Standard_Integer theID) const
+  const TopoDS_Shape& GetSubShape1(const Standard_Integer theID) const
   {
-    return myShapeList1.Value (theID);
+    return myShapeList1.Value(theID);
   }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape2 (const Standard_Integer theID) const
+  const TopoDS_Shape& GetSubShape2(const Standard_Integer theID) const
   {
-    return myShapeList2.Value (theID);
+    return myShapeList2.Value(theID);
   }
 
   //! Returns set of all the face triangles of the 1st shape.
-  const Handle(BRepExtrema_TriangleSet)& ElementSet1() const
-  {
-    return myElementSet1;
-  }
+  const Handle(BRepExtrema_TriangleSet)& ElementSet1() const { return myElementSet1; }
 
   //! Returns set of all the face triangles of the 2nd shape.
-  const Handle(BRepExtrema_TriangleSet)& ElementSet2() const
-  {
-    return myElementSet2;
-  }
+  const Handle(BRepExtrema_TriangleSet)& ElementSet2() const { return myElementSet2; }
 
   //! Returns the point on the 1st shape, which could be used as a reference point
   //! for the value of the proximity.
-  const gp_Pnt& ProximityPoint1() const
-  {
-    return myProxPoint1;
-  }
+  const gp_Pnt& ProximityPoint1() const { return myProxPoint1; }
 
   //! Returns the point on the 2nd shape, which could be used as a reference point
   //! for the value of the proximity.
-  const gp_Pnt& ProximityPoint2() const
-  {
-    return myProxPoint2;
-  }
+  const gp_Pnt& ProximityPoint2() const { return myProxPoint2; }
 
   //! Returns the status of point on the 1st shape, which could be used as a reference point
   //! for the value of the proximity.
-  const ProxPnt_Status& ProxPntStatus1() const
-  {
-    return myProxPntStatus1;
-  }
+  const ProxPnt_Status& ProxPntStatus1() const { return myProxPntStatus1; }
 
   //! Returns the status of point on the 2nd shape, which could be used as a reference point
   //! for the value of the proximity.
-  const ProxPnt_Status& ProxPntStatus2() const
-  {
-    return myProxPntStatus2;
-  }
+  const ProxPnt_Status& ProxPntStatus2() const { return myProxPntStatus2; }
 
 private:
-
   //! Maximum overlapping distance.
   Standard_Real myTolerance;
 
@@ -207,7 +176,6 @@ private:
   //! the minimal diameter of a tube containing both edges or
   //! the minimal thickness of a shell containing both faces.
   BRepExtrema_ProximityValueTool myProxValTool;
-
 };
 
 #endif // _BRepExtrema_ShapeProximity_HeaderFile

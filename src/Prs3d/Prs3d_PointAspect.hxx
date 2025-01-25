@@ -28,46 +28,52 @@ class Prs3d_PointAspect : public Prs3d_BasicAspect
 {
   DEFINE_STANDARD_RTTIEXT(Prs3d_PointAspect, Prs3d_BasicAspect)
 public:
+  Standard_EXPORT Prs3d_PointAspect(const Aspect_TypeOfMarker theType,
+                                    const Quantity_Color&     theColor,
+                                    const Standard_Real       theScale);
 
-  Standard_EXPORT Prs3d_PointAspect(const Aspect_TypeOfMarker theType, const Quantity_Color& theColor, const Standard_Real theScale);
-  
   //! Defines the user defined marker point.
-  Standard_EXPORT Prs3d_PointAspect (const Quantity_Color& theColor,
-                                     const Standard_Integer theWidth,
-                                     const Standard_Integer theHeight,
-                                     const Handle(TColStd_HArray1OfByte)& theTexture);
-  
-  Prs3d_PointAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) : myAspect (theAspect) {}
+  Standard_EXPORT Prs3d_PointAspect(const Quantity_Color&                theColor,
+                                    const Standard_Integer               theWidth,
+                                    const Standard_Integer               theHeight,
+                                    const Handle(TColStd_HArray1OfByte)& theTexture);
+
+  Prs3d_PointAspect(const Handle(Graphic3d_AspectMarker3d)& theAspect)
+      : myAspect(theAspect)
+  {
+  }
 
   //! defines the color to be used when drawing a point.
   //! Default value: Quantity_NOC_YELLOW
-  void SetColor (const Quantity_Color& theColor) { myAspect->SetColor (theColor); }
+  void SetColor(const Quantity_Color& theColor) { myAspect->SetColor(theColor); }
 
   //! defines the type of representation to be used when drawing a point.
   //! Default value: Aspect_TOM_PLUS
-  void SetTypeOfMarker (const Aspect_TypeOfMarker theType) { myAspect->SetType (theType); }
-  
+  void SetTypeOfMarker(const Aspect_TypeOfMarker theType) { myAspect->SetType(theType); }
+
   //! defines the size of the marker used when drawing a point.
   //! Default value: 1.
-  void SetScale (const Standard_Real theScale) { myAspect->SetScale (theScale); }
-  
+  void SetScale(const Standard_Real theScale) { myAspect->SetScale(theScale); }
+
   const Handle(Graphic3d_AspectMarker3d)& Aspect() const { return myAspect; }
 
-  void SetAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) { myAspect = theAspect; }
+  void SetAspect(const Handle(Graphic3d_AspectMarker3d)& theAspect) { myAspect = theAspect; }
 
   //! Returns marker's texture size.
-  void GetTextureSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const { myAspect->GetTextureSize (theWidth, theHeight); }
-  
+  void GetTextureSize(Standard_Integer& theWidth, Standard_Integer& theHeight) const
+  {
+    myAspect->GetTextureSize(theWidth, theHeight);
+  }
+
   //! Returns marker's texture.
   const Handle(Graphic3d_MarkerImage)& GetTexture() const { return myAspect->GetMarkerImage(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-
   Handle(Graphic3d_AspectMarker3d) myAspect;
-
 };
 
 DEFINE_STANDARD_HANDLE(Prs3d_PointAspect, Prs3d_BasicAspect)

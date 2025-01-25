@@ -22,106 +22,75 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
-
-
 //! The class BOPDS_Pave is to store
 //! information about vertex on an edge
-class BOPDS_Pave 
+class BOPDS_Pave
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-
   //! Empty constructor
-    BOPDS_Pave();
+  BOPDS_Pave();
 
   //! Modifier
   //! Sets the index of vertex <theIndex>
-    void SetIndex (const Standard_Integer theIndex);
-  
+  void SetIndex(const Standard_Integer theIndex);
 
   //! Selector
   //! Returns the index of vertex
-    Standard_Integer Index() const;
-  
+  Standard_Integer Index() const;
 
   //! Modifier
   //! Sets the parameter of vertex <theParameter>
-    void SetParameter (const Standard_Real theParameter);
-  
+  void SetParameter(const Standard_Real theParameter);
 
   //! Selector
   //! Returns the parameter of vertex
-    Standard_Real Parameter() const;
-  
+  Standard_Real Parameter() const;
 
   //! Selector
   //! Returns the index of vertex <theIndex>
   //! Returns the parameter of vertex <theParameter>
-    void Contents (Standard_Integer& theIndex, Standard_Real& theParameter) const;
-  
+  void Contents(Standard_Integer& theIndex, Standard_Real& theParameter) const;
 
   //! Query
   //! Returns true if thr parameter od this is less
   //! than the parameter of  <theOther>
-    Standard_Boolean IsLess (const BOPDS_Pave& theOther) const;
-  Standard_Boolean operator < (const BOPDS_Pave& theOther) const
-{
-  return IsLess(theOther);
-}
-  
+  Standard_Boolean IsLess(const BOPDS_Pave& theOther) const;
+
+  Standard_Boolean operator<(const BOPDS_Pave& theOther) const { return IsLess(theOther); }
 
   //! Query
   //! Returns true if thr parameter od this is equal
   //! to the parameter of  <theOther>
-    Standard_Boolean IsEqual (const BOPDS_Pave& theOther) const;
-  Standard_Boolean operator == (const BOPDS_Pave& theOther) const
-{
-  return IsEqual(theOther);
-}
-  
+  Standard_Boolean IsEqual(const BOPDS_Pave& theOther) const;
+
+  Standard_Boolean operator==(const BOPDS_Pave& theOther) const { return IsEqual(theOther); }
+
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
-
-
-
   Standard_Integer myIndex;
-  Standard_Real myParameter;
-
+  Standard_Real    myParameter;
 
 private:
-
-
-
-
-
 };
 
 namespace std
 {
-  template <>
-  struct hash<BOPDS_Pave>
+template <>
+struct hash<BOPDS_Pave>
+{
+  size_t operator()(const BOPDS_Pave& thePave) const noexcept
   {
-    size_t operator()(const BOPDS_Pave& thePave) const noexcept
-    {
-      size_t aCombination[2];
-      aCombination[0] = opencascade::hash(thePave.Index());
-      aCombination[1] = opencascade::hash(thePave.Parameter());
-      return opencascade::hashBytes(aCombination, sizeof(aCombination));
-    }
-  };
-}
+    size_t aCombination[2];
+    aCombination[0] = opencascade::hash(thePave.Index());
+    aCombination[1] = opencascade::hash(thePave.Parameter());
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+} // namespace std
 
 #include <BOPDS_Pave.lxx>
-
-
-
-
 
 #endif // _BOPDS_Pave_HeaderFile

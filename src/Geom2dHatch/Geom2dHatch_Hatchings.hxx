@@ -21,8 +21,8 @@
 #include <Geom2dHatch_Hatching.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Geom2dHatch_Hatching> Geom2dHatch_Hatchings;
-typedef NCollection_DataMap<Standard_Integer,Geom2dHatch_Hatching>::Iterator Geom2dHatch_DataMapIteratorOfHatchings;
-
+typedef NCollection_DataMap<Standard_Integer, Geom2dHatch_Hatching> Geom2dHatch_Hatchings;
+typedef NCollection_DataMap<Standard_Integer, Geom2dHatch_Hatching>::Iterator
+  Geom2dHatch_DataMapIteratorOfHatchings;
 
 #endif

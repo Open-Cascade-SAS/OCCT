@@ -11,43 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceBound.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Face,StepShape_TopologicalRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Face, StepShape_TopologicalRepresentationItem)
 
-StepShape_Face::StepShape_Face ()  {}
+StepShape_Face::StepShape_Face() {}
 
-void StepShape_Face::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_HArray1OfFaceBound)& aBounds)
+void StepShape_Face::Init(const Handle(TCollection_HAsciiString)&     aName,
+                          const Handle(StepShape_HArray1OfFaceBound)& aBounds)
 {
-	// --- classe own fields ---
-	bounds = aBounds;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  bounds = aBounds;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_Face::SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds)
 {
-	bounds = aBounds;
+  bounds = aBounds;
 }
 
 Handle(StepShape_HArray1OfFaceBound) StepShape_Face::Bounds() const
 {
-	return bounds;
+  return bounds;
 }
 
 Handle(StepShape_FaceBound) StepShape_Face::BoundsValue(const Standard_Integer num) const
 {
-	return bounds->Value(num);
+  return bounds->Value(num);
 }
 
-Standard_Integer StepShape_Face::NbBounds () const
+Standard_Integer StepShape_Face::NbBounds() const
 {
-	if (bounds.IsNull()) return 0;
-	return bounds->Length();
+  if (bounds.IsNull())
+    return 0;
+  return bounds->Length();
 }

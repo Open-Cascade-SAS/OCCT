@@ -31,7 +31,6 @@ class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
 
-
 class Geom_RectangularTrimmedSurface;
 DEFINE_STANDARD_HANDLE(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 
@@ -58,7 +57,6 @@ class Geom_RectangularTrimmedSurface : public Geom_BoundedSurface
 {
 
 public:
-
   //! The U parametric direction of the surface is oriented from U1
   //! to U2. The V parametric direction of the surface is oriented
   //! from V1 to V2.
@@ -75,7 +73,13 @@ public:
   //! S is not periodic in the VDirection and V1 or V2 are out of the
   //! bounds of S.
   //! U1 = U2 or V1 = V2
-  Standard_EXPORT Geom_RectangularTrimmedSurface(const Handle(Geom_Surface)& S, const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2, const Standard_Boolean USense = Standard_True, const Standard_Boolean VSense = Standard_True);
+  Standard_EXPORT Geom_RectangularTrimmedSurface(const Handle(Geom_Surface)& S,
+                                                 const Standard_Real         U1,
+                                                 const Standard_Real         U2,
+                                                 const Standard_Real         V1,
+                                                 const Standard_Real         V2,
+                                                 const Standard_Boolean      USense = Standard_True,
+                                                 const Standard_Boolean VSense = Standard_True);
 
   //! The basis surface S is only trim in one parametric direction.
   //! If UTrim = True the surface is trimmed in the U parametric
@@ -98,7 +102,11 @@ public:
   //! S is not periodic in the considered parametric direction and
   //! Param1 or Param2 are out of the bounds of S.
   //! Param1 = Param2
-  Standard_EXPORT Geom_RectangularTrimmedSurface(const Handle(Geom_Surface)& S, const Standard_Real Param1, const Standard_Real Param2, const Standard_Boolean UTrim, const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT Geom_RectangularTrimmedSurface(const Handle(Geom_Surface)& S,
+                                                 const Standard_Real         Param1,
+                                                 const Standard_Real         Param2,
+                                                 const Standard_Boolean      UTrim,
+                                                 const Standard_Boolean      Sense = Standard_True);
 
   //! Modifies this patch by changing the trim values
   //! applied to the original surface
@@ -117,7 +125,12 @@ public:
   //! The BasisSurface is not periodic in the VDirection and V1 or V2
   //! are out of the bounds of the BasisSurface.
   //! U1 = U2 or V1 = V2
-  Standard_EXPORT void SetTrim (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2, const Standard_Boolean USense = Standard_True, const Standard_Boolean VSense = Standard_True);
+  Standard_EXPORT void SetTrim(const Standard_Real    U1,
+                               const Standard_Real    U2,
+                               const Standard_Real    V1,
+                               const Standard_Real    V2,
+                               const Standard_Boolean USense = Standard_True,
+                               const Standard_Boolean VSense = Standard_True);
 
   //! Modifies this patch by changing the trim values
   //! applied to the original surface
@@ -138,7 +151,10 @@ public:
   //! The BasisSurface is not periodic in the considered direction and
   //! Param1 or Param2 are out of the bounds of the BasisSurface.
   //! Param1 = Param2
-  Standard_EXPORT void SetTrim (const Standard_Real Param1, const Standard_Real Param2, const Standard_Boolean UTrim, const Standard_Boolean Sense = Standard_True);
+  Standard_EXPORT void SetTrim(const Standard_Real    Param1,
+                               const Standard_Real    Param2,
+                               const Standard_Boolean UTrim,
+                               const Standard_Boolean Sense = Standard_True);
 
   //! Returns the Basis surface of <me>.
   Standard_EXPORT Handle(Geom_Surface) BasisSurface() const;
@@ -152,7 +168,7 @@ public:
   //! Computes the u  parameter on the modified
   //! surface, produced by when reversing its u
   //! parametric direction, for any point of u parameter U on this patch.
-  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real UReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Changes the orientation of this patch in the v
   //! parametric direction. The bounds of the surface are
@@ -163,10 +179,13 @@ public:
   //! Computes the v  parameter on the modified
   //! surface, produced by when reversing its v
   //! parametric direction, for any point of v parameter V on this patch.
-  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Real VReversedParameter(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this patch.
-  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(Standard_Real& U1,
+                              Standard_Real& U2,
+                              Standard_Real& V1,
+                              Standard_Real& V2) const Standard_OVERRIDE;
 
   //! Returns  the continuity of the surface :
   //! C0 : only geometric continuity,
@@ -185,12 +204,12 @@ public:
   //! Returns true if the order of derivation in the U parametric
   //! direction is N.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNu(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Returns true if the order of derivation in the V parametric
   //! direction is N.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean IsCNv(const Standard_Integer N) const Standard_OVERRIDE;
 
   //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
@@ -212,31 +231,55 @@ public:
   Standard_EXPORT virtual Standard_Real VPeriod() const Standard_OVERRIDE;
 
   //! computes the U isoparametric curve.
-  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U) const Standard_OVERRIDE;
 
   //! Computes the V isoparametric curve.
-  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V) const Standard_OVERRIDE;
 
   //! Can be raised if the basis surface is an OffsetSurface.
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real U,
+                          const Standard_Real V,
+                          gp_Pnt&             P) const Standard_OVERRIDE;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
   //! Warning!  UndefinedDerivative  raised if the continuity of the surface is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const Standard_Real U,
+                          const Standard_Real V,
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V) const Standard_OVERRIDE;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
   //! Warning! UndefinedDerivative raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
+  Standard_EXPORT void D2(const Standard_Real U,
+                          const Standard_Real V,
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V,
+                          gp_Vec&             D2U,
+                          gp_Vec&             D2V,
+                          gp_Vec&             D2UV) const Standard_OVERRIDE;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
   //! Warning UndefinedDerivative raised if the continuity of the surface is not C3.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
+  Standard_EXPORT void D3(const Standard_Real U,
+                          const Standard_Real V,
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V,
+                          gp_Vec&             D2U,
+                          gp_Vec&             D2V,
+                          gp_Vec&             D2UV,
+                          gp_Vec&             D3U,
+                          gp_Vec&             D3V,
+                          gp_Vec&             D3UUV,
+                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
 
   //! The returned derivative has the same orientation as the
   //! derivative of the basis surface even if the trimmed surface
@@ -244,13 +287,16 @@ public:
   //! Warning!  UndefinedDerivative raised if the continuity of the surface is not CNu in the U
   //! parametric direction and CNv in the V parametric direction.
   //! RangeError Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
+                            const Standard_Real    V,
+                            const Standard_Integer Nu,
+                            const Standard_Integer Nv) const Standard_OVERRIDE;
 
   //! Applies the transformation T to this patch.
   //! Warning
   //! As a consequence, the basis surface included in the
   //! data structure of this patch is also modified.
-  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 
   //! Computes the  parameters on the  transformed  surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -266,7 +312,9 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual void TransformParameters (Standard_Real& U, Standard_Real& V, const gp_Trsf& T) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void TransformParameters(Standard_Real& U,
+                                                   Standard_Real& V,
+                                                   const gp_Trsf& T) const Standard_OVERRIDE;
 
   //! Returns a 2d transformation  used to find the  new
   //! parameters of a point on the transformed surface.
@@ -283,30 +331,37 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation (const gp_Trsf& T) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
+    Standard_OVERRIDE;
 
   //! Creates a new object which is a copy of this patch.
   Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface,Geom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 
 private:
-
   //! General set trim,  to implement constructors and
   //! others set trim.
-  Standard_EXPORT void SetTrim (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2, const Standard_Boolean UTrim, const Standard_Boolean VTrim, const Standard_Boolean USense, const Standard_Boolean VSense);
+  Standard_EXPORT void SetTrim(const Standard_Real    U1,
+                               const Standard_Real    U2,
+                               const Standard_Real    V1,
+                               const Standard_Real    V2,
+                               const Standard_Boolean UTrim,
+                               const Standard_Boolean VTrim,
+                               const Standard_Boolean USense,
+                               const Standard_Boolean VSense);
 
   Handle(Geom_Surface) basisSurf;
-  Standard_Real utrim1;
-  Standard_Real vtrim1;
-  Standard_Real utrim2;
-  Standard_Real vtrim2;
-  Standard_Boolean isutrimmed;
-  Standard_Boolean isvtrimmed;
-
+  Standard_Real        utrim1;
+  Standard_Real        vtrim1;
+  Standard_Real        utrim2;
+  Standard_Real        vtrim2;
+  Standard_Boolean     isutrimmed;
+  Standard_Boolean     isvtrimmed;
 };
 
 #endif // _Geom_RectangularTrimmedSurface_HeaderFile

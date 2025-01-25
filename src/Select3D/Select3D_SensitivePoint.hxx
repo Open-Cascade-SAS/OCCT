@@ -25,10 +25,10 @@ class Select3D_SensitivePoint : public Select3D_SensitiveEntity
 {
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoint, Select3D_SensitiveEntity)
 public:
-
   //! Constructs a sensitive point object defined by the
   //! owner OwnerId and the point Point.
-  Standard_EXPORT Select3D_SensitivePoint (const Handle(SelectMgr_EntityOwner)& theOwnerId, const gp_Pnt& thePoint);
+  Standard_EXPORT Select3D_SensitivePoint(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                          const gp_Pnt&                        thePoint);
 
   //! Returns the amount of sub-entities in sensitive
   Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
@@ -36,8 +36,9 @@ public:
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Checks whether the point overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns the point used at the time of construction.
   const gp_Pnt& Point() const { return myPoint; }
@@ -54,11 +55,11 @@ public:
   virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
-  gp_Pnt myPoint;      //!< 3d coordinates of the point
+  gp_Pnt myPoint; //!< 3d coordinates of the point
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitivePoint, Select3D_SensitiveEntity)

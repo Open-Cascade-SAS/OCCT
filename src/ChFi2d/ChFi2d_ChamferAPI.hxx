@@ -24,7 +24,6 @@
 class ChFi2d_ChamferAPI
 {
 public:
-
   //! An empty constructor.
   Standard_EXPORT ChFi2d_ChamferAPI();
 
@@ -45,15 +44,16 @@ public:
   Standard_EXPORT Standard_Boolean Perform();
 
   // Returns the result (chamfer edge, modified edge1, modified edge2).
-  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge& theEdge1, TopoDS_Edge& theEdge2,
-                                     const Standard_Real theLength1, const Standard_Real theLength2);
+  Standard_EXPORT TopoDS_Edge Result(TopoDS_Edge&        theEdge1,
+                                     TopoDS_Edge&        theEdge2,
+                                     const Standard_Real theLength1,
+                                     const Standard_Real theLength2);
 
 private:
-
-  TopoDS_Edge myEdge1, myEdge2;
+  TopoDS_Edge        myEdge1, myEdge2;
   Handle(Geom_Curve) myCurve1, myCurve2;
-  Standard_Real myStart1, myEnd1, myStart2, myEnd2;
-  Standard_Boolean myCommonStart1, myCommonStart2;
+  Standard_Real      myStart1, myEnd1, myStart2, myEnd2;
+  Standard_Boolean   myCommonStart1, myCommonStart2;
 };
 
 #endif // _CHAMFERAPI_H_

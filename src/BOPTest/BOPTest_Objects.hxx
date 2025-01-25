@@ -30,48 +30,45 @@ class BOPAlgo_BOP;
 class BOPAlgo_Section;
 class BOPAlgo_Splitter;
 
-
 class BOPTest_Objects
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT static BOPAlgo_PaveFiller& PaveFiller();
-  
+
   Standard_EXPORT static void Init();
-  
+
   Standard_EXPORT static void Clear();
-  
+
   Standard_EXPORT static BOPDS_PDS PDS();
-  
+
   Standard_EXPORT static BOPAlgo_Builder& Builder();
-  
+
   Standard_EXPORT static BOPAlgo_BOP& BOP();
-  
+
   Standard_EXPORT static BOPAlgo_Section& Section();
-  
+
   Standard_EXPORT static BOPAlgo_CellsBuilder& CellsBuilder();
-  
+
   Standard_EXPORT static BOPAlgo_Splitter& Splitter();
-  
+
   Standard_EXPORT static TopTools_ListOfShape& Shapes();
-  
+
   Standard_EXPORT static TopTools_ListOfShape& Tools();
-  
-  Standard_EXPORT static void SetBuilder (const BOPAlgo_PBuilder& theBuilder);
-  
+
+  Standard_EXPORT static void SetBuilder(const BOPAlgo_PBuilder& theBuilder);
+
   Standard_EXPORT static void SetBuilderDefault();
 
   Standard_EXPORT static void SetDefaultOptions();
 
-  Standard_EXPORT static void SetRunParallel (const Standard_Boolean theFlag);
-  
+  Standard_EXPORT static void SetRunParallel(const Standard_Boolean theFlag);
+
   Standard_EXPORT static Standard_Boolean RunParallel();
-  
-  Standard_EXPORT static void SetFuzzyValue (const Standard_Real theValue);
-  
+
+  Standard_EXPORT static void SetFuzzyValue(const Standard_Real theValue);
+
   Standard_EXPORT static Standard_Real FuzzyValue();
 
   Standard_EXPORT static void SetNonDestructive(const Standard_Boolean theFlag);
@@ -94,19 +91,17 @@ public:
 
   Standard_EXPORT static Standard_Boolean UseOBB();
 
-  Standard_EXPORT static void SetUnifyEdges(const Standard_Boolean bUE);
+  Standard_EXPORT static void             SetUnifyEdges(const Standard_Boolean bUE);
   Standard_EXPORT static Standard_Boolean UnifyEdges();
 
-  Standard_EXPORT static void SetUnifyFaces(const Standard_Boolean bUF);
+  Standard_EXPORT static void             SetUnifyFaces(const Standard_Boolean bUF);
   Standard_EXPORT static Standard_Boolean UnifyFaces();
 
-  Standard_EXPORT static void SetAngular(const Standard_Real bAngTol);
+  Standard_EXPORT static void          SetAngular(const Standard_Real bAngTol);
   Standard_EXPORT static Standard_Real Angular();
 
 protected:
-
 private:
-
 };
 
 #endif // _BOPTest_Objects_HeaderFile

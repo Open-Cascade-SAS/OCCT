@@ -20,5 +20,4 @@
 
 typedef NCollection_IndexedMap<Handle(Standard_Transient)> TColStd_IndexedMapOfTransient;
 
-
 #endif

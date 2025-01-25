@@ -19,6 +19,6 @@
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_Edge.hxx>
 
-typedef IntPolyh_Array <IntPolyh_Edge> IntPolyh_ArrayOfEdges;
+typedef IntPolyh_Array<IntPolyh_Edge> IntPolyh_ArrayOfEdges;
 
 #endif

@@ -18,23 +18,25 @@
 #include <StepShape_DimensionalCharacteristicRepresentation.hxx>
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation, Standard_Transient)
 
 //=======================================================================
-//function : StepShape_DimensionalCharacteristicRepresentation
-//purpose  : 
+// function : StepShape_DimensionalCharacteristicRepresentation
+// purpose  :
 //=======================================================================
-StepShape_DimensionalCharacteristicRepresentation::StepShape_DimensionalCharacteristicRepresentation ()
+StepShape_DimensionalCharacteristicRepresentation::
+  StepShape_DimensionalCharacteristicRepresentation()
 {
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepShape_DimensionalCharacteristicRepresentation::Init (const StepShape_DimensionalCharacteristic &aDimension,
-                                                              const Handle(StepShape_ShapeDimensionRepresentation) &aRepresentation)
+void StepShape_DimensionalCharacteristicRepresentation::Init(
+  const StepShape_DimensionalCharacteristic&            aDimension,
+  const Handle(StepShape_ShapeDimensionRepresentation)& aRepresentation)
 {
 
   theDimension = aDimension;
@@ -43,41 +45,45 @@ void StepShape_DimensionalCharacteristicRepresentation::Init (const StepShape_Di
 }
 
 //=======================================================================
-//function : Dimension
-//purpose  : 
+// function : Dimension
+// purpose  :
 //=======================================================================
 
-StepShape_DimensionalCharacteristic StepShape_DimensionalCharacteristicRepresentation::Dimension () const
+StepShape_DimensionalCharacteristic StepShape_DimensionalCharacteristicRepresentation::Dimension()
+  const
 {
   return theDimension;
 }
 
 //=======================================================================
-//function : SetDimension
-//purpose  : 
+// function : SetDimension
+// purpose  :
 //=======================================================================
 
-void StepShape_DimensionalCharacteristicRepresentation::SetDimension (const StepShape_DimensionalCharacteristic &aDimension)
+void StepShape_DimensionalCharacteristicRepresentation::SetDimension(
+  const StepShape_DimensionalCharacteristic& aDimension)
 {
   theDimension = aDimension;
 }
 
 //=======================================================================
-//function : Representation
-//purpose  : 
+// function : Representation
+// purpose  :
 //=======================================================================
 
-Handle(StepShape_ShapeDimensionRepresentation) StepShape_DimensionalCharacteristicRepresentation::Representation () const
+Handle(StepShape_ShapeDimensionRepresentation) StepShape_DimensionalCharacteristicRepresentation::
+  Representation() const
 {
   return theRepresentation;
 }
 
 //=======================================================================
-//function : SetRepresentation
-//purpose  : 
+// function : SetRepresentation
+// purpose  :
 //=======================================================================
 
-void StepShape_DimensionalCharacteristicRepresentation::SetRepresentation (const Handle(StepShape_ShapeDimensionRepresentation) &aRepresentation)
+void StepShape_DimensionalCharacteristicRepresentation::SetRepresentation(
+  const Handle(StepShape_ShapeDimensionRepresentation)& aRepresentation)
 {
   theRepresentation = aRepresentation;
 }

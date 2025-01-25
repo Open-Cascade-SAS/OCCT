@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfConnectedEdgeSet, StepShape_Array1OfConnectedEdgeSet)
 
-
 #endif

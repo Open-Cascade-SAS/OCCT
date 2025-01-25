@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<GeomPlate_Aij> GeomPlate_SequenceOfAij;
 
-
 #endif

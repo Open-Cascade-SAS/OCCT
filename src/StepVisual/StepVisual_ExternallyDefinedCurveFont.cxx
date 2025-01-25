@@ -17,12 +17,10 @@
 
 #include <StepVisual_ExternallyDefinedCurveFont.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont,StepBasic_ExternallyDefinedItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont, StepBasic_ExternallyDefinedItem)
 
 //=======================================================================
-//function : StepVisual_ExternallyDefinedCurveFont
-//purpose  : 
+// function : StepVisual_ExternallyDefinedCurveFont
+// purpose  :
 //=======================================================================
-StepVisual_ExternallyDefinedCurveFont::StepVisual_ExternallyDefinedCurveFont ()
-{
-}
+StepVisual_ExternallyDefinedCurveFont::StepVisual_ExternallyDefinedCurveFont() {}

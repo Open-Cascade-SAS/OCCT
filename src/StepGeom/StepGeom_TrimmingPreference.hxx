@@ -17,12 +17,11 @@
 #ifndef _StepGeom_TrimmingPreference_HeaderFile
 #define _StepGeom_TrimmingPreference_HeaderFile
 
-
 enum StepGeom_TrimmingPreference
 {
-StepGeom_tpCartesian,
-StepGeom_tpParameter,
-StepGeom_tpUnspecified
+  StepGeom_tpCartesian,
+  StepGeom_tpParameter,
+  StepGeom_tpUnspecified
 };
 
 #endif // _StepGeom_TrimmingPreference_HeaderFile

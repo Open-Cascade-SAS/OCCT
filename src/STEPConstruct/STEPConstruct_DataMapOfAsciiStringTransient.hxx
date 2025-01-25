@@ -21,8 +21,9 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Standard_Transient)> STEPConstruct_DataMapOfAsciiStringTransient;
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Standard_Transient)>::Iterator STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient;
-
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>
+  STEPConstruct_DataMapOfAsciiStringTransient;
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator
+  STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient;
 
 #endif

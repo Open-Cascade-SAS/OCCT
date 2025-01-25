@@ -28,7 +28,7 @@
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
 #include <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
 #include <IntSurf_PntOn2S.hxx>
- 
+
 #define ThePointOfPath IntSurf_PathPoint
 #define ThePointOfPath_hxx <IntSurf_PathPoint.hxx>
 #define ThePointOfPathTool IntSurf_PathPointTool
@@ -55,4 +55,3 @@
 #define IntWalk_IWalking IntPatch_TheIWalking
 #define IntWalk_IWalking_hxx <IntPatch_TheIWalking.hxx>
 #include "../IntWalk/IntWalk_IWalking.gxx"
-

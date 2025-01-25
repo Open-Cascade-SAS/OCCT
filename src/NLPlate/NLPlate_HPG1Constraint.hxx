@@ -24,7 +24,6 @@
 #include <NLPlate_HGPPConstraint.hxx>
 class gp_XY;
 
-
 class NLPlate_HPG1Constraint;
 DEFINE_STANDARD_HANDLE(NLPlate_HPG1Constraint, NLPlate_HGPPConstraint)
 
@@ -34,48 +33,30 @@ class NLPlate_HPG1Constraint : public NLPlate_HGPPConstraint
 {
 
 public:
-
-  
   Standard_EXPORT NLPlate_HPG1Constraint(const gp_XY& UV, const Plate_D1& D1T);
-  
-  Standard_EXPORT virtual void SetIncrementalLoadAllowed (const Standard_Boolean ILA) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetOrientation (const Standard_Integer Orient = 0) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void SetIncrementalLoadAllowed(const Standard_Boolean ILA)
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetOrientation(const Standard_Integer Orient = 0) Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_Boolean IncrementalLoadAllowed() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsG0() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Integer Orientation() Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual const Plate_D1& G1Target() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG1Constraint,NLPlate_HGPPConstraint)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG1Constraint, NLPlate_HGPPConstraint)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Boolean IncrementalLoadingAllowed;
-  Plate_D1 myG1Target;
+  Plate_D1         myG1Target;
   Standard_Integer myOrientation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _NLPlate_HPG1Constraint_HeaderFile

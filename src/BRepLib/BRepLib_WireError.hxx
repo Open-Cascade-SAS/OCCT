@@ -21,10 +21,10 @@
 //! no error
 enum BRepLib_WireError
 {
-BRepLib_WireDone,
-BRepLib_EmptyWire,
-BRepLib_DisconnectedWire,
-BRepLib_NonManifoldWire
+  BRepLib_WireDone,
+  BRepLib_EmptyWire,
+  BRepLib_DisconnectedWire,
+  BRepLib_NonManifoldWire
 };
 
 #endif // _BRepLib_WireError_HeaderFile

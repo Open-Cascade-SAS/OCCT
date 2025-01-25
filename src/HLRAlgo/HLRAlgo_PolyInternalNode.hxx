@@ -25,7 +25,6 @@
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
 
-
 class HLRAlgo_PolyInternalNode;
 DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalNode, Standard_Transient)
 
@@ -41,13 +40,14 @@ public:
   struct NodeData
   {
     NodeData()
-    : PCu1(0.0),
-      PCu2(0.0),
-      Scal(0.0)
+        : PCu1(0.0),
+          PCu2(0.0),
+          Scal(0.0)
     {
     }
-    gp_XYZ Point, Normal;
-    gp_XY UV;
+
+    gp_XYZ        Point, Normal;
+    gp_XY         UV;
     Standard_Real PCu1, PCu2, Scal;
   };
 
@@ -59,21 +59,15 @@ public:
     myIndices.Edg2 = 0;
   }
 
-  NodeIndices& Indices()
-  {
-    return myIndices;
-  }
+  NodeIndices& Indices() { return myIndices; }
 
-  NodeData& Data()
-  {
-    return myData;
-  }
+  NodeData& Data() { return myData; }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode, Standard_Transient)
 
 private:
   NodeIndices myIndices;
-  NodeData myData;
+  NodeData    myData;
 };
 
 #endif // _HLRAlgo_PolyInternalNode_HeaderFile

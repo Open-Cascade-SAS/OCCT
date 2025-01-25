@@ -52,17 +52,17 @@
 //! Geom_ToroidalSurface which provides additional
 //! functions for constructing tori and works, in particular,
 //! with the parametric equations of tori.
-class gp_Torus 
+class gp_Torus
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! creates an indefinite Torus.
   gp_Torus()
-  : majorRadius (RealLast()),
-    minorRadius (RealSmall())
-  {}
+      : majorRadius(RealLast()),
+        minorRadius(RealSmall())
+  {
+  }
 
   //! a torus centered on the origin of coordinate system
   //! theA3, with major radius theMajorRadius and minor radius
@@ -72,13 +72,15 @@ public:
   //! It is not forbidden to create a torus with
   //! theMajorRadius = theMinorRadius = 0.0
   //! Raises ConstructionError if theMinorRadius < 0.0 or if theMajorRadius < 0.0
-  gp_Torus (const gp_Ax3& theA3, const Standard_Real theMajorRadius, const Standard_Real theMinorRadius)
-  : pos (theA3),
-    majorRadius (theMajorRadius),
-    minorRadius (theMinorRadius)
+  gp_Torus(const gp_Ax3&       theA3,
+           const Standard_Real theMajorRadius,
+           const Standard_Real theMinorRadius)
+      : pos(theA3),
+        majorRadius(theMajorRadius),
+        minorRadius(theMinorRadius)
   {
-    Standard_ConstructionError_Raise_if (theMinorRadius < 0.0 || theMajorRadius < 0.0,
-      "gp_Torus() - invalid construction parameters");
+    Standard_ConstructionError_Raise_if(theMinorRadius < 0.0 || theMajorRadius < 0.0,
+                                        "gp_Torus() - invalid construction parameters");
   }
 
   //! Modifies this torus, by redefining its local coordinate
@@ -87,32 +89,33 @@ public:
   //! axis theA1 (the "X Direction" and "Y Direction" are then recomputed).
   //! Raises ConstructionError if the direction of theA1 is parallel to the "XDirection"
   //! of the coordinate system of the toroidal surface.
-  void SetAxis (const gp_Ax1& theA1) { pos.SetAxis (theA1); }
+  void SetAxis(const gp_Ax1& theA1) { pos.SetAxis(theA1); }
 
   //! Changes the location of the torus.
-  void SetLocation (const gp_Pnt& theLoc) { pos.SetLocation (theLoc); }
+  void SetLocation(const gp_Pnt& theLoc) { pos.SetLocation(theLoc); }
 
   //! Assigns value to the major radius  of this torus.
   //! Raises ConstructionError if theMajorRadius - MinorRadius <= Resolution()
-  void SetMajorRadius (const Standard_Real theMajorRadius)
+  void SetMajorRadius(const Standard_Real theMajorRadius)
   {
-    Standard_ConstructionError_Raise_if (theMajorRadius - minorRadius <= gp::Resolution(),
-                                         "gp_Torus::SetMajorRadius() - invalid input parameters");
+    Standard_ConstructionError_Raise_if(theMajorRadius - minorRadius <= gp::Resolution(),
+                                        "gp_Torus::SetMajorRadius() - invalid input parameters");
     majorRadius = theMajorRadius;
   }
 
   //! Assigns value to the  minor radius of this torus.
   //! Raises ConstructionError if theMinorRadius < 0.0 or if
   //! MajorRadius - theMinorRadius <= Resolution from gp.
-  void SetMinorRadius (const Standard_Real theMinorRadius)
+  void SetMinorRadius(const Standard_Real theMinorRadius)
   {
-    Standard_ConstructionError_Raise_if (theMinorRadius < 0.0 || majorRadius - theMinorRadius <= gp::Resolution(),
-                                         "gp_Torus::SetMinorRadius() - invalid input parameters");
+    Standard_ConstructionError_Raise_if(theMinorRadius < 0.0
+                                          || majorRadius - theMinorRadius <= gp::Resolution(),
+                                        "gp_Torus::SetMinorRadius() - invalid input parameters");
     minorRadius = theMinorRadius;
   }
 
   //! Changes the local coordinate system of the surface.
-  void SetPosition (const gp_Ax3& theA3) { pos = theA3; }
+  void SetPosition(const gp_Ax3& theA3) { pos = theA3; }
 
   //! Computes the area of the torus.
   Standard_Real Area() const { return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
@@ -140,17 +143,17 @@ public:
   //!     Coef(10) * X^2 * Y^2 + Coef(11) * X^2 * Z^2 +
   //!     Coef(12) * Y^2 * Z^2 + Coef(13) * X^2 * Y * Z +
   //!     Coef(14) * X * Y^2 * Z + Coef(15) * X * Y * Z^2 +
-  //!     Coef(16) * X^3 + Coef(17) * Y^3 + Coef(18) * Z^3 + 
+  //!     Coef(16) * X^3 + Coef(17) * Y^3 + Coef(18) * Z^3 +
   //!     Coef(19) * X^2 * Y + Coef(20) * X^2 * Z + Coef(21) * Y^2 * X +
   //!     Coef(22) * Y^2 * Z + Coef(23) * Z^2 * X + Coef(24) * Z^2 * Y +
   //!     Coef(25) * X * Y * Z +
   //!     Coef(26) * X^2 + Coef(27) * Y^2 + Coef(28) * Z^2 +
   //!     Coef(29) * X * Y + Coef(30) * X * Z + Coef(31) * Y * Z +
-  //!     Coef(32) * X + Coef(33) * Y + Coef(34) *  Z + 
+  //!     Coef(32) * X + Coef(33) * Y + Coef(34) *  Z +
   //!     Coef(35) = 0.0
   //! @endcode
   //! Raises DimensionError if the length of theCoef is lower than 35.
-  Standard_EXPORT void Coefficients (TColStd_Array1OfReal& theCoef) const;
+  Standard_EXPORT void Coefficients(TColStd_Array1OfReal& theCoef) const;
 
   //! Returns the Torus's location.
   const gp_Pnt& Location() const { return pos.Location(); }
@@ -171,97 +174,88 @@ public:
   }
 
   //! returns the axis X of the torus.
-  gp_Ax1 XAxis() const
-  {
-    return gp_Ax1 (pos.Location(), pos.XDirection());
-  }
+  gp_Ax1 XAxis() const { return gp_Ax1(pos.Location(), pos.XDirection()); }
 
   //! returns the axis Y of the torus.
-  gp_Ax1 YAxis() const
-  {
-    return gp_Ax1 (pos.Location(), pos.YDirection());
-  }
+  gp_Ax1 YAxis() const { return gp_Ax1(pos.Location(), pos.YDirection()); }
 
-  Standard_EXPORT void Mirror (const gp_Pnt& theP);
+  Standard_EXPORT void Mirror(const gp_Pnt& theP);
 
   //! Performs the symmetrical transformation of a torus
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored (const gp_Pnt& theP) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Pnt& theP) const;
 
-  Standard_EXPORT void Mirror (const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a torus with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored (const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax1& theA1) const;
 
-  Standard_EXPORT void Mirror (const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a torus with respect
   //! to a plane. The axis placement theA2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored (const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Torus Mirrored(const gp_Ax2& theA2) const;
 
-  void Rotate (const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate (theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a torus. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Torus Rotated (const gp_Ax1& theA1, const Standard_Real theAng) const
+  Standard_NODISCARD gp_Torus Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
     gp_Torus aC = *this;
-    aC.pos.Rotate (theA1, theAng);
+    aC.pos.Rotate(theA1, theAng);
     return aC;
   }
 
-  void Scale (const gp_Pnt& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt& theP, const Standard_Real theS);
 
   //! Scales a torus. S is the scaling value.
   //! The absolute value of S is used to scale the torus
-  Standard_NODISCARD gp_Torus Scaled (const gp_Pnt& theP, const Standard_Real theS) const;
+  Standard_NODISCARD gp_Torus Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
 
-  void Transform (const gp_Trsf& theT);
+  void Transform(const gp_Trsf& theT);
 
   //! Transforms a torus with the transformation theT from class Trsf.
-  Standard_NODISCARD gp_Torus Transformed (const gp_Trsf& theT) const;
+  Standard_NODISCARD gp_Torus Transformed(const gp_Trsf& theT) const;
 
-  void Translate (const gp_Vec& theV) { pos.Translate (theV); }
+  void Translate(const gp_Vec& theV) { pos.Translate(theV); }
 
   //! Translates a torus in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Torus Translated (const gp_Vec& theV) const
+  Standard_NODISCARD gp_Torus Translated(const gp_Vec& theV) const
   {
     gp_Torus aC = *this;
-    aC.pos.Translate (theV);
+    aC.pos.Translate(theV);
     return aC;
   }
 
-  void Translate (const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate (theP1, theP2); }
+  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
 
   //! Translates a torus from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Torus Translated (const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD gp_Torus Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
   {
     gp_Torus aC = *this;
-    aC.pos.Translate (theP1, theP2);
+    aC.pos.Translate(theP1, theP2);
     return aC;
   }
 
 private:
-
-  gp_Ax3 pos;
+  gp_Ax3        pos;
   Standard_Real majorRadius;
   Standard_Real minorRadius;
-
 };
 
 //=======================================================================
-//function : Scale
+// function : Scale
 // purpose :
 //=======================================================================
-inline void gp_Torus::Scale (const gp_Pnt& theP,
-                             const Standard_Real theS)
+inline void gp_Torus::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
-  pos.Scale (theP, theS);
+  pos.Scale(theP, theS);
   Standard_Real s = theS;
   if (s < 0)
   {
@@ -272,14 +266,13 @@ inline void gp_Torus::Scale (const gp_Pnt& theP,
 }
 
 //=======================================================================
-//function : Scaled
+// function : Scaled
 // purpose :
 //=======================================================================
-inline gp_Torus gp_Torus::Scaled (const gp_Pnt& theP,
-                                  const Standard_Real theS) const
+inline gp_Torus gp_Torus::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Torus aC = *this;
-  aC.pos.Scale (theP, theS);
+  aC.pos.Scale(theP, theS);
   aC.majorRadius *= theS;
   if (aC.majorRadius < 0)
   {
@@ -294,12 +287,12 @@ inline gp_Torus gp_Torus::Scaled (const gp_Pnt& theP,
 }
 
 //=======================================================================
-//function : Transform
+// function : Transform
 // purpose :
 //=======================================================================
-inline void gp_Torus::Transform (const gp_Trsf& theT)
+inline void gp_Torus::Transform(const gp_Trsf& theT)
 {
-  pos.Transform (theT);
+  pos.Transform(theT);
   Standard_Real aT = theT.ScaleFactor();
   if (aT < 0)
   {
@@ -310,13 +303,13 @@ inline void gp_Torus::Transform (const gp_Trsf& theT)
 }
 
 //=======================================================================
-//function : Transformed
+// function : Transformed
 // purpose :
 //=======================================================================
-inline gp_Torus gp_Torus::Transformed (const gp_Trsf& theT) const
+inline gp_Torus gp_Torus::Transformed(const gp_Trsf& theT) const
 {
   gp_Torus aC = *this;
-  aC.pos.Transform (theT);
+  aC.pos.Transform(theT);
   aC.majorRadius *= theT.ScaleFactor();
   if (aC.majorRadius < 0)
   {

@@ -24,31 +24,30 @@
 // function : RWMesh_FaceIterator
 // purpose  :
 // =======================================================================
-RWMesh_FaceIterator::RWMesh_FaceIterator (const TDF_Label&       theLabel,
-                                          const TopLoc_Location& theLocation,
-                                          const Standard_Boolean theToMapColors,
-                                          const XCAFPrs_Style&   theStyle)
-: myDefStyle (theStyle),
-  myToMapColors (theToMapColors),
-  mySLTool  (1, 1e-12),
-  myHasNormals (false),
-  myIsMirrored (false),
-  myHasFaceColor (false)
+RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
+                                         const TopLoc_Location& theLocation,
+                                         const Standard_Boolean theToMapColors,
+                                         const XCAFPrs_Style&   theStyle)
+    : myDefStyle(theStyle),
+      myToMapColors(theToMapColors),
+      mySLTool(1, 1e-12),
+      myHasNormals(false),
+      myIsMirrored(false),
+      myHasFaceColor(false)
 {
   TopoDS_Shape aShape;
-  if (!XCAFDoc_ShapeTool::GetShape (theLabel, aShape)
-   ||  aShape.IsNull())
+  if (!XCAFDoc_ShapeTool::GetShape(theLabel, aShape) || aShape.IsNull())
   {
     return;
   }
 
-  aShape.Location (theLocation, false);
-  myFaceIter.Init (aShape, TopAbs_FACE);
+  aShape.Location(theLocation, false);
+  myFaceIter.Init(aShape, TopAbs_FACE);
 
   if (theToMapColors)
   {
-    dispatchStyles (theLabel, theLocation, theStyle);
-    myStyles.Bind (aShape, theStyle);
+    dispatchStyles(theLabel, theLocation, theStyle);
+    myStyles.Bind(aShape, theStyle);
   }
 
   Next();
@@ -58,21 +57,21 @@ RWMesh_FaceIterator::RWMesh_FaceIterator (const TDF_Label&       theLabel,
 // function : RWMesh_FaceIterator
 // purpose  :
 // =======================================================================
-RWMesh_FaceIterator::RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
-                                          const XCAFPrs_Style& theStyle)
-: myDefStyle (theStyle),
-  myToMapColors (true),
-  mySLTool  (1, 1e-12),
-  myHasNormals (false),
-  myIsMirrored (false),
-  myHasFaceColor (false)
+RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
+                                         const XCAFPrs_Style& theStyle)
+    : myDefStyle(theStyle),
+      myToMapColors(true),
+      mySLTool(1, 1e-12),
+      myHasNormals(false),
+      myIsMirrored(false),
+      myHasFaceColor(false)
 {
   if (theShape.IsNull())
   {
     return;
   }
 
-  myFaceIter.Init (theShape, TopAbs_FACE);
+  myFaceIter.Init(theShape, TopAbs_FACE);
   Next();
 }
 
@@ -80,24 +79,24 @@ RWMesh_FaceIterator::RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
 // function : dispatchStyles
 // purpose  :
 // =======================================================================
-void RWMesh_FaceIterator::dispatchStyles (const TDF_Label&       theLabel,
-                                          const TopLoc_Location& theLocation,
-                                          const XCAFPrs_Style&   theStyle)
+void RWMesh_FaceIterator::dispatchStyles(const TDF_Label&       theLabel,
+                                         const TopLoc_Location& theLocation,
+                                         const XCAFPrs_Style&   theStyle)
 {
-  TopLoc_Location aDummyLoc;
+  TopLoc_Location                    aDummyLoc;
   XCAFPrs_IndexedDataMapOfShapeStyle aStyles;
-  XCAFPrs::CollectStyleSettings (theLabel, aDummyLoc, aStyles);
+  XCAFPrs::CollectStyleSettings(theLabel, aDummyLoc, aStyles);
 
   Standard_Integer aNbTypes[TopAbs_SHAPE] = {};
   for (Standard_Integer aTypeIter = TopAbs_FACE; aTypeIter >= TopAbs_COMPOUND; --aTypeIter)
   {
-    if (aTypeIter != TopAbs_FACE
-     && aNbTypes[aTypeIter] == 0)
+    if (aTypeIter != TopAbs_FACE && aNbTypes[aTypeIter] == 0)
     {
       continue;
     }
 
-    for (XCAFPrs_IndexedDataMapOfShapeStyle::Iterator aStyleIter (aStyles); aStyleIter.More(); aStyleIter.Next())
+    for (XCAFPrs_IndexedDataMapOfShapeStyle::Iterator aStyleIter(aStyles); aStyleIter.More();
+         aStyleIter.Next())
     {
       const TopoDS_Shape&    aKeyShape     = aStyleIter.Key();
       const TopAbs_ShapeEnum aKeyShapeType = aKeyShape.ShapeType();
@@ -111,34 +110,32 @@ void RWMesh_FaceIterator::dispatchStyles (const TDF_Label&       theLabel,
       }
 
       XCAFPrs_Style aCafStyle = aStyleIter.Value();
-      if (!aCafStyle.IsSetColorCurv()
-         && theStyle.IsSetColorCurv())
+      if (!aCafStyle.IsSetColorCurv() && theStyle.IsSetColorCurv())
       {
-        aCafStyle.SetColorCurv (theStyle.GetColorCurv());
+        aCafStyle.SetColorCurv(theStyle.GetColorCurv());
       }
-      if (!aCafStyle.IsSetColorSurf()
-         && theStyle.IsSetColorSurf())
+      if (!aCafStyle.IsSetColorSurf() && theStyle.IsSetColorSurf())
       {
-        aCafStyle.SetColorSurf (theStyle.GetColorSurfRGBA());
+        aCafStyle.SetColorSurf(theStyle.GetColorSurfRGBA());
       }
-      if (aCafStyle.Material().IsNull()
-       && !theStyle.Material().IsNull())
+      if (aCafStyle.Material().IsNull() && !theStyle.Material().IsNull())
       {
-        aCafStyle.SetMaterial (theStyle.Material());
+        aCafStyle.SetMaterial(theStyle.Material());
       }
 
-      TopoDS_Shape aKeyShapeLocated = aKeyShape.Located (theLocation);
+      TopoDS_Shape aKeyShapeLocated = aKeyShape.Located(theLocation);
       if (aKeyShapeType == TopAbs_FACE)
       {
-        myStyles.Bind (aKeyShapeLocated, aCafStyle);
+        myStyles.Bind(aKeyShapeLocated, aCafStyle);
       }
       else
       {
-        for (TopExp_Explorer aFaceIter (aKeyShapeLocated, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+        for (TopExp_Explorer aFaceIter(aKeyShapeLocated, TopAbs_FACE); aFaceIter.More();
+             aFaceIter.Next())
         {
-          if (!myStyles.IsBound (aFaceIter.Current()))
+          if (!myStyles.IsBound(aFaceIter.Current()))
           {
-            myStyles.Bind (aFaceIter.Current(), aCafStyle);
+            myStyles.Bind(aFaceIter.Current(), aCafStyle);
           }
         }
       }
@@ -150,23 +147,22 @@ void RWMesh_FaceIterator::dispatchStyles (const TDF_Label&       theLabel,
 // function : normal
 // purpose  :
 // =======================================================================
-gp_Dir RWMesh_FaceIterator::normal (Standard_Integer theNode) const
+gp_Dir RWMesh_FaceIterator::normal(Standard_Integer theNode) const
 {
-  gp_Dir aNormal (gp::DZ());
+  gp_Dir aNormal(gp::DZ());
   if (myPolyTriang->HasNormals())
   {
     Graphic3d_Vec3 aNormVec3;
-    myPolyTriang->Normal (theNode, aNormVec3);
+    myPolyTriang->Normal(theNode, aNormVec3);
     if (aNormVec3.Modulus() != 0.0f)
     {
-      aNormal.SetCoord (aNormVec3.x(), aNormVec3.y(), aNormVec3.z());
+      aNormal.SetCoord(aNormVec3.x(), aNormVec3.y(), aNormVec3.z());
     }
   }
-  else if (myHasNormals
-        && myPolyTriang->HasUVNodes())
+  else if (myHasNormals && myPolyTriang->HasUVNodes())
   {
-    const gp_XY anUV = myPolyTriang->UVNode (theNode).XY();
-    mySLTool.SetParameters (anUV.X(), anUV.Y());
+    const gp_XY anUV = myPolyTriang->UVNode(theNode).XY();
+    mySLTool.SetParameters(anUV.X(), anUV.Y());
     if (mySLTool.IsNormalDefined())
     {
       aNormal = mySLTool.Normal();
@@ -183,11 +179,10 @@ void RWMesh_FaceIterator::Next()
 {
   for (; myFaceIter.More(); myFaceIter.Next())
   {
-    myFace       = TopoDS::Face (myFaceIter.Current());
-    myPolyTriang = BRep_Tool::Triangulation (myFace, myFaceLocation);
+    myFace       = TopoDS::Face(myFaceIter.Current());
+    myPolyTriang = BRep_Tool::Triangulation(myFace, myFaceLocation);
     myTrsf       = myFaceLocation.Transformation();
-    if (myPolyTriang.IsNull()
-     || myPolyTriang->NbTriangles() == 0)
+    if (myPolyTriang.IsNull() || myPolyTriang->NbTriangles() == 0)
     {
       resetFace();
       continue;
@@ -216,13 +211,13 @@ void RWMesh_FaceIterator::initFace()
   }
   if (myPolyTriang->HasUVNodes() && !myHasNormals)
   {
-    TopoDS_Face aFaceFwd = TopoDS::Face (myFace.Oriented (TopAbs_FORWARD));
-    aFaceFwd.Location (TopLoc_Location());
+    TopoDS_Face aFaceFwd = TopoDS::Face(myFace.Oriented(TopAbs_FORWARD));
+    aFaceFwd.Location(TopLoc_Location());
     TopLoc_Location aLoc;
-    if (!BRep_Tool::Surface (aFaceFwd, aLoc).IsNull())
+    if (!BRep_Tool::Surface(aFaceFwd, aLoc).IsNull())
     {
-      myFaceAdaptor.Initialize (aFaceFwd, false);
-      mySLTool.SetSurface (myFaceAdaptor);
+      myFaceAdaptor.Initialize(aFaceFwd, false);
+      mySLTool.SetSurface(myFaceAdaptor);
       myHasNormals = true;
     }
   }
@@ -231,7 +226,7 @@ void RWMesh_FaceIterator::initFace()
     return;
   }
 
-  if (!myStyles.Find (myFace, myFaceStyle))
+  if (!myStyles.Find(myFace, myFaceStyle))
   {
     myFaceStyle = myDefStyle;
   }
@@ -239,11 +234,11 @@ void RWMesh_FaceIterator::initFace()
   if (!myFaceStyle.Material().IsNull())
   {
     myHasFaceColor = true;
-    myFaceColor = myFaceStyle.Material()->BaseColor();
+    myFaceColor    = myFaceStyle.Material()->BaseColor();
   }
   else if (myFaceStyle.IsSetColorSurf())
   {
     myHasFaceColor = true;
-    myFaceColor = myFaceStyle.GetColorSurfRGBA();
+    myFaceColor    = myFaceStyle.GetColorSurfRGBA();
   }
 }

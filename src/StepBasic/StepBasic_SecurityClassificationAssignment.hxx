@@ -23,45 +23,26 @@
 #include <Standard_Transient.hxx>
 class StepBasic_SecurityClassification;
 
-
 class StepBasic_SecurityClassificationAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassificationAssignment, Standard_Transient)
-
 
 class StepBasic_SecurityClassificationAssignment : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Init(
+    const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
 
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
-  
-  Standard_EXPORT void SetAssignedSecurityClassification (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
-  
+  Standard_EXPORT void SetAssignedSecurityClassification(
+    const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
+
   Standard_EXPORT Handle(StepBasic_SecurityClassification) AssignedSecurityClassification() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_SecurityClassification) assignedSecurityClassification;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SecurityClassificationAssignment_HeaderFile

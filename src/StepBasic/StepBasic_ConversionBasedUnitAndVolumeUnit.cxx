@@ -14,18 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_ConversionBasedUnitAndVolumeUnit.hxx>
 #include <StepBasic_VolumeUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndVolumeUnit,StepBasic_ConversionBasedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndVolumeUnit,
+                           StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndVolumeUnit::StepBasic_ConversionBasedUnitAndVolumeUnit()
-{
-}
+StepBasic_ConversionBasedUnitAndVolumeUnit::StepBasic_ConversionBasedUnitAndVolumeUnit() {}
 
-void StepBasic_ConversionBasedUnitAndVolumeUnit::SetVolumeUnit(const Handle(StepBasic_VolumeUnit)& aVolumeUnit)
+void StepBasic_ConversionBasedUnitAndVolumeUnit::SetVolumeUnit(
+  const Handle(StepBasic_VolumeUnit)& aVolumeUnit)
 {
   volumeUnit = aVolumeUnit;
 }
@@ -34,4 +33,3 @@ Handle(StepBasic_VolumeUnit) StepBasic_ConversionBasedUnitAndVolumeUnit::VolumeU
 {
   return volumeUnit;
 }
-

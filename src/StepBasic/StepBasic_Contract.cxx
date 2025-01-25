@@ -20,24 +20,22 @@
 #include <StepBasic_ContractType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Contract,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Contract, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_Contract
-//purpose  : 
+// function : StepBasic_Contract
+// purpose  :
 //=======================================================================
-StepBasic_Contract::StepBasic_Contract ()
-{
-}
+StepBasic_Contract::StepBasic_Contract() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_Contract::Init (const Handle(TCollection_HAsciiString) &aName,
-                               const Handle(TCollection_HAsciiString) &aPurpose,
-                               const Handle(StepBasic_ContractType) &aKind)
+void StepBasic_Contract::Init(const Handle(TCollection_HAsciiString)& aName,
+                              const Handle(TCollection_HAsciiString)& aPurpose,
+                              const Handle(StepBasic_ContractType)&   aKind)
 {
 
   theName = aName;
@@ -48,61 +46,61 @@ void StepBasic_Contract::Init (const Handle(TCollection_HAsciiString) &aName,
 }
 
 //=======================================================================
-//function : Name
-//purpose  : 
+// function : Name
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Contract::Name () const
+Handle(TCollection_HAsciiString) StepBasic_Contract::Name() const
 {
   return theName;
 }
 
 //=======================================================================
-//function : SetName
-//purpose  : 
+// function : SetName
+// purpose  :
 //=======================================================================
 
-void StepBasic_Contract::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_Contract::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
 //=======================================================================
-//function : Purpose
-//purpose  : 
+// function : Purpose
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Contract::Purpose () const
+Handle(TCollection_HAsciiString) StepBasic_Contract::Purpose() const
 {
   return thePurpose;
 }
 
 //=======================================================================
-//function : SetPurpose
-//purpose  : 
+// function : SetPurpose
+// purpose  :
 //=======================================================================
 
-void StepBasic_Contract::SetPurpose (const Handle(TCollection_HAsciiString) &aPurpose)
+void StepBasic_Contract::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
 //=======================================================================
-//function : Kind
-//purpose  : 
+// function : Kind
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_ContractType) StepBasic_Contract::Kind () const
+Handle(StepBasic_ContractType) StepBasic_Contract::Kind() const
 {
   return theKind;
 }
 
 //=======================================================================
-//function : SetKind
-//purpose  : 
+// function : SetKind
+// purpose  :
 //=======================================================================
 
-void StepBasic_Contract::SetKind (const Handle(StepBasic_ContractType) &aKind)
+void StepBasic_Contract::SetKind(const Handle(StepBasic_ContractType)& aKind)
 {
   theKind = aKind;
 }

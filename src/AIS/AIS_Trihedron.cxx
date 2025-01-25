@@ -47,24 +47,24 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Trihedron, AIS_InteractiveObject)
 
 //=======================================================================
-//function : AIS_Trihedron
-//purpose  :
+// function : AIS_Trihedron
+// purpose  :
 //=======================================================================
-AIS_Trihedron::AIS_Trihedron (const Handle(Geom_Axis2Placement)& theComponent)
-: myComponent (theComponent),
-  myTrihDispMode (Prs3d_DM_WireFrame),
-  myHasOwnSize (Standard_False),
-  myHasOwnTextColor (Standard_False),
-  myHasOwnArrowColor (Standard_False)
+AIS_Trihedron::AIS_Trihedron(const Handle(Geom_Axis2Placement)& theComponent)
+    : myComponent(theComponent),
+      myTrihDispMode(Prs3d_DM_WireFrame),
+      myHasOwnSize(Standard_False),
+      myHasOwnTextColor(Standard_False),
+      myHasOwnArrowColor(Standard_False)
 {
   myAutoHilight = Standard_False;
 
   // selection priorities
-  memset (mySelectionPriority, 0, sizeof(mySelectionPriority));
-// clang-format off
+  memset(mySelectionPriority, 0, sizeof(mySelectionPriority));
+  // clang-format off
   mySelectionPriority[Prs3d_DatumParts_None] =    5; // complete trihedron: priority 5 (same as faces)
-// clang-format on
-  mySelectionPriority[Prs3d_DatumParts_Origin] =  8; // origin: priority 8
+  // clang-format on
+  mySelectionPriority[Prs3d_DatumParts_Origin] = 8; // origin: priority 8
   for (int aPartIter = Prs3d_DatumParts_XAxis; aPartIter <= Prs3d_DatumParts_ZAxis; ++aPartIter)
   {
     mySelectionPriority[aPartIter] = 7; // axes: priority: 7
@@ -73,7 +73,7 @@ AIS_Trihedron::AIS_Trihedron (const Handle(Geom_Axis2Placement)& theComponent)
   {
     mySelectionPriority[aPartIter] = 5; // planes: priority: 5
   }
-  myHiddenLineAspect = new Graphic3d_AspectLine3d (Quantity_NOC_WHITE, Aspect_TOL_EMPTY, 1.0f);
+  myHiddenLineAspect = new Graphic3d_AspectLine3d(Quantity_NOC_WHITE, Aspect_TOL_EMPTY, 1.0f);
 
   // trihedron labels
   myLabels[Prs3d_DatumParts_XAxis] = "X";
@@ -82,18 +82,18 @@ AIS_Trihedron::AIS_Trihedron (const Handle(Geom_Axis2Placement)& theComponent)
 }
 
 //=======================================================================
-//function : SetComponent
-//purpose  :
+// function : SetComponent
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetComponent (const Handle(Geom_Axis2Placement)& theComponent)
+void AIS_Trihedron::SetComponent(const Handle(Geom_Axis2Placement)& theComponent)
 {
   myComponent = theComponent;
   SetToUpdate();
 }
 
 //=======================================================================
-//function : setOwnDatumAspect
-//purpose  :
+// function : setOwnDatumAspect
+// purpose  :
 //=======================================================================
 void AIS_Trihedron::setOwnDatumAspect()
 {
@@ -103,31 +103,31 @@ void AIS_Trihedron::setOwnDatumAspect()
   }
 
   Handle(Prs3d_DatumAspect) aNewAspect = new Prs3d_DatumAspect();
-  myDrawer->SetDatumAspect (aNewAspect);
+  myDrawer->SetDatumAspect(aNewAspect);
   if (!myDrawer->Link().IsNull())
   {
-    aNewAspect->CopyAspectsFrom (myDrawer->Link()->DatumAspect());
+    aNewAspect->CopyAspectsFrom(myDrawer->Link()->DatumAspect());
   }
 }
 
 //=======================================================================
-//function : SetSize
-//purpose  :
+// function : SetSize
+// purpose  :
 //=======================================================================
 void AIS_Trihedron::SetSize(const Standard_Real theValue)
 {
   myHasOwnSize = Standard_True;
 
   setOwnDatumAspect();
-  myDrawer->DatumAspect()->SetAxisLength (theValue, theValue, theValue);
+  myDrawer->DatumAspect()->SetAxisLength(theValue, theValue, theValue);
 
   SetToUpdate();
   UpdateSelection();
 }
 
 //=======================================================================
-//function : UnsetSize
-//purpose  :
+// function : UnsetSize
+// purpose  :
 //=======================================================================
 void AIS_Trihedron::UnsetSize()
 {
@@ -139,12 +139,11 @@ void AIS_Trihedron::UnsetSize()
   myHasOwnSize = Standard_False;
   if (hasOwnColor)
   {
-    const Handle(Prs3d_DatumAspect) DA = myDrawer->HasLink()
-                                       ? myDrawer->Link()->DatumAspect()
-                                       : new Prs3d_DatumAspect();
-    myDrawer->DatumAspect()->SetAxisLength (DA->AxisLength (Prs3d_DatumParts_XAxis),
-                                            DA->AxisLength (Prs3d_DatumParts_YAxis),
-                                            DA->AxisLength (Prs3d_DatumParts_ZAxis));
+    const Handle(Prs3d_DatumAspect) DA =
+      myDrawer->HasLink() ? myDrawer->Link()->DatumAspect() : new Prs3d_DatumAspect();
+    myDrawer->DatumAspect()->SetAxisLength(DA->AxisLength(Prs3d_DatumParts_XAxis),
+                                           DA->AxisLength(Prs3d_DatumParts_YAxis),
+                                           DA->AxisLength(Prs3d_DatumParts_ZAxis));
   }
   else
   {
@@ -154,99 +153,105 @@ void AIS_Trihedron::UnsetSize()
 }
 
 //=======================================================================
-//function : Size
-//purpose  :
+// function : Size
+// purpose  :
 //=======================================================================
-Standard_Real AIS_Trihedron::Size() const 
+Standard_Real AIS_Trihedron::Size() const
 {
   return myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
 }
 
 //=======================================================================
-//function : Compute
-//purpose  :
+// function : Compute
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                             const Handle(Prs3d_Presentation)& thePrs,
-                             const Standard_Integer theMode)
+void AIS_Trihedron::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                            const Handle(Prs3d_Presentation)&         thePrs,
+                            const Standard_Integer                    theMode)
 {
   if (theMode != 0)
   {
     return;
   }
 
-  thePrs->SetInfiniteState (Standard_True);
+  thePrs->SetInfiniteState(Standard_True);
 
-  gp_Ax2 anAxis (myComponent->Ax2());
-  updatePrimitives (myDrawer->DatumAspect(), myTrihDispMode, anAxis.Location(),
-                    anAxis.XDirection(), anAxis.YDirection(), anAxis.Direction());
-  computePresentation (thePrsMgr, thePrs);
+  gp_Ax2 anAxis(myComponent->Ax2());
+  updatePrimitives(myDrawer->DatumAspect(),
+                   myTrihDispMode,
+                   anAxis.Location(),
+                   anAxis.XDirection(),
+                   anAxis.YDirection(),
+                   anAxis.Direction());
+  computePresentation(thePrsMgr, thePrs);
 }
 
 //=======================================================================
-//function : ComputeSelection
-//purpose  :
+// function : ComputeSelection
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                      const Standard_Integer theMode)
+void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
+                                     const Standard_Integer             theMode)
 {
   Handle(Prs3d_DatumAspect) anAspect = myDrawer->DatumAspect();
   switch (theMode)
   {
-    case AIS_TrihedronSelectionMode_EntireObject:
-    {
-      Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this, mySelectionPriority[Prs3d_DatumParts_None]);
+    case AIS_TrihedronSelectionMode_EntireObject: {
+      Handle(SelectMgr_EntityOwner) anOwner =
+        new SelectMgr_EntityOwner(this, mySelectionPriority[Prs3d_DatumParts_None]);
       const bool isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
-      for (int aPartIter = isShadingMode ? Prs3d_DatumParts_Origin : Prs3d_DatumParts_XAxis; aPartIter <= Prs3d_DatumParts_ZAxis;
+      for (int aPartIter = isShadingMode ? Prs3d_DatumParts_Origin : Prs3d_DatumParts_XAxis;
+           aPartIter <= Prs3d_DatumParts_ZAxis;
            ++aPartIter)
       {
-        const Prs3d_DatumParts aPart = (Prs3d_DatumParts )aPartIter;
-        if (!anAspect->DrawDatumPart (aPart))
+        const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPartIter;
+        if (!anAspect->DrawDatumPart(aPart))
         {
           continue;
         }
-        theSelection->Add (createSensitiveEntity (aPart, anOwner));
+        theSelection->Add(createSensitiveEntity(aPart, anOwner));
       }
       break;
     }
-    case AIS_TrihedronSelectionMode_Origin:
-    {
+    case AIS_TrihedronSelectionMode_Origin: {
       const Prs3d_DatumParts aPart = Prs3d_DatumParts_Origin;
-      if (anAspect->DrawDatumPart (aPart))
+      if (anAspect->DrawDatumPart(aPart))
       {
-        Handle(SelectMgr_EntityOwner) anOwner = new AIS_TrihedronOwner (this, aPart, mySelectionPriority[aPart]);
+        Handle(SelectMgr_EntityOwner) anOwner =
+          new AIS_TrihedronOwner(this, aPart, mySelectionPriority[aPart]);
         Handle(Graphic3d_ArrayOfPrimitives) aPrimitives = arrayOfPrimitives(aPart);
-        theSelection->Add (createSensitiveEntity (aPart, anOwner));
+        theSelection->Add(createSensitiveEntity(aPart, anOwner));
       }
       break;
     }
-    case AIS_TrihedronSelectionMode_Axes:
-    {
+    case AIS_TrihedronSelectionMode_Axes: {
       for (int aPartIter = Prs3d_DatumParts_XAxis; aPartIter <= Prs3d_DatumParts_ZAxis; ++aPartIter)
       {
-        const Prs3d_DatumParts aPart = (Prs3d_DatumParts )aPartIter;
-        if (!anAspect->DrawDatumPart (aPart))
+        const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPartIter;
+        if (!anAspect->DrawDatumPart(aPart))
         {
           continue;
         }
-        Handle(SelectMgr_EntityOwner) anOwner = new AIS_TrihedronOwner (this, aPart, mySelectionPriority[aPart]);
-        theSelection->Add (createSensitiveEntity (aPart, anOwner));
+        Handle(SelectMgr_EntityOwner) anOwner =
+          new AIS_TrihedronOwner(this, aPart, mySelectionPriority[aPart]);
+        theSelection->Add(createSensitiveEntity(aPart, anOwner));
       }
       break;
     }
-    case AIS_TrihedronSelectionMode_MainPlanes:
-    {
+    case AIS_TrihedronSelectionMode_MainPlanes: {
       // create owner for each trihedron plane
       {
-        for (int aPartIter = Prs3d_DatumParts_XOYAxis; aPartIter <= Prs3d_DatumParts_XOZAxis; ++aPartIter)
+        for (int aPartIter = Prs3d_DatumParts_XOYAxis; aPartIter <= Prs3d_DatumParts_XOZAxis;
+             ++aPartIter)
         {
-          const Prs3d_DatumParts aPart = (Prs3d_DatumParts )aPartIter;
-          if (!anAspect->DrawDatumPart (aPart))
+          const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPartIter;
+          if (!anAspect->DrawDatumPart(aPart))
           {
             continue;
           }
-          Handle(SelectMgr_EntityOwner) anOwner = new AIS_TrihedronOwner (this, aPart, mySelectionPriority[aPart]);
-          theSelection->Add (createSensitiveEntity (aPart, anOwner));
+          Handle(SelectMgr_EntityOwner) anOwner =
+            new AIS_TrihedronOwner(this, aPart, mySelectionPriority[aPart]);
+          theSelection->Add(createSensitiveEntity(aPart, anOwner));
         }
       }
       break;
@@ -255,47 +260,47 @@ void AIS_Trihedron::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
 }
 
 //=======================================================================
-//function : HilightOwnerWithColor
-//purpose  :
+// function : HilightOwnerWithColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
-                                           const Handle(Prs3d_Drawer)& theStyle,
-                                           const Handle(SelectMgr_EntityOwner)& theOwner)
+void AIS_Trihedron::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
+                                          const Handle(Prs3d_Drawer)&               theStyle,
+                                          const Handle(SelectMgr_EntityOwner)&      theOwner)
 {
-  Handle(AIS_TrihedronOwner) anOwner = Handle(AIS_TrihedronOwner)::DownCast (theOwner);
+  Handle(AIS_TrihedronOwner) anOwner = Handle(AIS_TrihedronOwner)::DownCast(theOwner);
   if (anOwner.IsNull())
   {
     // default 0 selection mode
     Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
-    thePM->Color (this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
+    thePM->Color(this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
     return;
   }
 
-  Handle(Prs3d_Presentation) aPresentation = GetHilightPresentation (thePM);
+  Handle(Prs3d_Presentation) aPresentation = GetHilightPresentation(thePM);
   if (aPresentation.IsNull())
   {
     return;
   }
 
   aPresentation->Clear();
-  const Prs3d_DatumParts aPart = anOwner->DatumPart();
+  const Prs3d_DatumParts  aPart  = anOwner->DatumPart();
   Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
   if (aPart >= Prs3d_DatumParts_XOYAxis && aPart <= Prs3d_DatumParts_XOZAxis)
   {
     // planes selection is equal in both shading and wireframe mode
-    aGroup->SetGroupPrimitivesAspect (theStyle->LineAspect()->Aspect());
+    aGroup->SetGroupPrimitivesAspect(theStyle->LineAspect()->Aspect());
   }
   else
   {
     if (myTrihDispMode == Prs3d_DM_Shaded)
     {
-      aGroup->SetGroupPrimitivesAspect (theStyle->ShadingAspect()->Aspect());
+      aGroup->SetGroupPrimitivesAspect(theStyle->ShadingAspect()->Aspect());
     }
     else
     {
       if (aPart == Prs3d_DatumParts_Origin)
       {
-        aGroup->SetGroupPrimitivesAspect (theStyle->PointAspect()->Aspect());
+        aGroup->SetGroupPrimitivesAspect(theStyle->PointAspect()->Aspect());
       }
       else
       {
@@ -303,24 +308,25 @@ void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManag
       }
     }
   }
-  aGroup->AddPrimitiveArray (arrayOfPrimitives(aPart));
+  aGroup->AddPrimitiveArray(arrayOfPrimitives(aPart));
 
-  const Graphic3d_ZLayerId aLayer = theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : myDrawer->ZLayer();
+  const Graphic3d_ZLayerId aLayer =
+    theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : myDrawer->ZLayer();
   if (aPresentation->GetZLayer() != aLayer)
   {
-    aPresentation->SetZLayer (aLayer);
+    aPresentation->SetZLayer(aLayer);
   }
 
-  aPresentation->Highlight (theStyle);
-  thePM->AddToImmediateList (aPresentation);
+  aPresentation->Highlight(theStyle);
+  thePM->AddToImmediateList(aPresentation);
 }
 
 //========================================================================
-//function : HilightSelected
-//purpose  :
+// function : HilightSelected
+// purpose  :
 //========================================================================
-void AIS_Trihedron::HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM,
-                                     const SelectMgr_SequenceOfOwner& theOwners)
+void AIS_Trihedron::HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
+                                    const SelectMgr_SequenceOfOwner&          theOwners)
 {
   if (theOwners.IsEmpty() || !HasInteractiveContext())
   {
@@ -329,83 +335,82 @@ void AIS_Trihedron::HilightSelected (const Handle(PrsMgr_PresentationManager)& t
 
   const bool isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
 
-  Handle(Prs3d_Drawer) anAspect = !myHilightDrawer.IsNull() ? myHilightDrawer : GetContext()->SelectionStyle();
-  for (SelectMgr_SequenceOfOwner::Iterator anIterator (theOwners); anIterator.More(); anIterator.Next())
+  Handle(Prs3d_Drawer) anAspect =
+    !myHilightDrawer.IsNull() ? myHilightDrawer : GetContext()->SelectionStyle();
+  for (SelectMgr_SequenceOfOwner::Iterator anIterator(theOwners); anIterator.More();
+       anIterator.Next())
   {
     const Handle(SelectMgr_EntityOwner)& anOwner = anIterator.Value();
-    Handle(AIS_TrihedronOwner) aTrihedronOwner = Handle(AIS_TrihedronOwner)::DownCast(anOwner);
+    Handle(AIS_TrihedronOwner) aTrihedronOwner   = Handle(AIS_TrihedronOwner)::DownCast(anOwner);
     if (aTrihedronOwner.IsNull())
     {
-      thePM->Color (this, anAspect, 0);
+      thePM->Color(this, anAspect, 0);
       continue;
     }
-      
+
     const Prs3d_DatumParts aPart = aTrihedronOwner->DatumPart();
-    if (myPartToGroup[aPart].IsNull()
-     || mySelectedParts.Contains (aPart))
+    if (myPartToGroup[aPart].IsNull() || mySelectedParts.Contains(aPart))
     {
       continue;
     }
 
     const Handle(Graphic3d_Group)& aGroup = myPartToGroup[aPart];
-    if (aPart >= Prs3d_DatumParts_XOYAxis
-     && aPart <= Prs3d_DatumParts_XOZAxis)
+    if (aPart >= Prs3d_DatumParts_XOYAxis && aPart <= Prs3d_DatumParts_XOZAxis)
     {
-      aGroup->SetGroupPrimitivesAspect (anAspect->LineAspect()->Aspect());
+      aGroup->SetGroupPrimitivesAspect(anAspect->LineAspect()->Aspect());
     }
     else
     {
       if (isShadingMode)
       {
-        aGroup->SetGroupPrimitivesAspect (anAspect->ShadingAspect()->Aspect());
+        aGroup->SetGroupPrimitivesAspect(anAspect->ShadingAspect()->Aspect());
       }
       else
       {
         if (aPart == Prs3d_DatumParts_Origin)
         {
-          aGroup->SetGroupPrimitivesAspect (anAspect->PointAspect()->Aspect());
+          aGroup->SetGroupPrimitivesAspect(anAspect->PointAspect()->Aspect());
         }
         else
         {
-          aGroup->SetGroupPrimitivesAspect (anAspect->LineAspect()->Aspect());
+          aGroup->SetGroupPrimitivesAspect(anAspect->LineAspect()->Aspect());
         }
       }
     }
-    mySelectedParts.Append (aPart);
+    mySelectedParts.Append(aPart);
   }
 }
 
 //=======================================================================
-//function : ClearSelected
-//purpose  :
+// function : ClearSelected
+// purpose  :
 //=======================================================================
 void AIS_Trihedron::ClearSelected()
 {
-  Handle(Prs3d_DatumAspect) anAspect = myDrawer->DatumAspect();
-  const bool isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
-  for (NCollection_List<Prs3d_DatumParts>::Iterator anIterator (mySelectedParts); anIterator.More();
+  Handle(Prs3d_DatumAspect) anAspect      = myDrawer->DatumAspect();
+  const bool                isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
+  for (NCollection_List<Prs3d_DatumParts>::Iterator anIterator(mySelectedParts); anIterator.More();
        anIterator.Next())
   {
-    const Prs3d_DatumParts aPart = anIterator.Value();
+    const Prs3d_DatumParts         aPart  = anIterator.Value();
     const Handle(Graphic3d_Group)& aGroup = myPartToGroup[aPart];
-    if (aPart >= Prs3d_DatumParts_XOYAxis
-     && aPart <= Prs3d_DatumParts_XOZAxis)
+    if (aPart >= Prs3d_DatumParts_XOYAxis && aPart <= Prs3d_DatumParts_XOZAxis)
     {
-      aGroup->SetGroupPrimitivesAspect (myHiddenLineAspect);
+      aGroup->SetGroupPrimitivesAspect(myHiddenLineAspect);
     }
     else if (isShadingMode)
     {
-      aGroup->SetGroupPrimitivesAspect (anAspect->ShadingAspect (aPart)->Aspect());
+      aGroup->SetGroupPrimitivesAspect(anAspect->ShadingAspect(aPart)->Aspect());
     }
     else
     {
       if (aPart == Prs3d_DatumParts_Origin)
       {
-        aGroup->SetGroupPrimitivesAspect (anAspect->PointAspect()->Aspect());
+        aGroup->SetGroupPrimitivesAspect(anAspect->PointAspect()->Aspect());
       }
       else
       {
-        aGroup->SetGroupPrimitivesAspect (anAspect->LineAspect (aPart)->Aspect());
+        aGroup->SetGroupPrimitivesAspect(anAspect->LineAspect(aPart)->Aspect());
       }
     }
   }
@@ -413,64 +418,65 @@ void AIS_Trihedron::ClearSelected()
 }
 
 //=======================================================================
-//function : computePresentation
-//purpose  :
+// function : computePresentation
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager)& /*thePrsMgr*/,
-                                         const Handle(Prs3d_Presentation)& thePrs)
+void AIS_Trihedron::computePresentation(const Handle(PrsMgr_PresentationManager)& /*thePrsMgr*/,
+                                        const Handle(Prs3d_Presentation)& thePrs)
 {
   for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DatumParts_NB; ++aPartIter)
   {
     myPartToGroup[aPartIter].Nullify();
   }
 
-  Handle(Prs3d_DatumAspect) anAspect = myDrawer->DatumAspect();
-  const bool isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
+  Handle(Prs3d_DatumAspect) anAspect      = myDrawer->DatumAspect();
+  const bool                isShadingMode = myTrihDispMode == Prs3d_DM_Shaded;
   // display origin
   {
     // Origin is visualized only in shading mode
     Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
-    const Prs3d_DatumParts aPart = Prs3d_DatumParts_Origin;
+    const Prs3d_DatumParts  aPart  = Prs3d_DatumParts_Origin;
     if (anAspect->DrawDatumPart(aPart))
     {
       myPartToGroup[aPart] = aGroup;
       if (isShadingMode)
       {
-        aGroup->SetGroupPrimitivesAspect (anAspect->ShadingAspect (aPart)->Aspect());
+        aGroup->SetGroupPrimitivesAspect(anAspect->ShadingAspect(aPart)->Aspect());
       }
       else
       {
-        aGroup->SetGroupPrimitivesAspect (anAspect->PointAspect()->Aspect());
+        aGroup->SetGroupPrimitivesAspect(anAspect->PointAspect()->Aspect());
       }
-      aGroup->AddPrimitiveArray (arrayOfPrimitives (aPart));
+      aGroup->AddPrimitiveArray(arrayOfPrimitives(aPart));
     }
   }
 
   // display axes
   {
-    for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis; ++anAxisIter)
+    for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis;
+         ++anAxisIter)
     {
-      Prs3d_DatumParts aPart = (Prs3d_DatumParts )anAxisIter;
-      if (!anAspect->DrawDatumPart (aPart))
+      Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
+      if (!anAspect->DrawDatumPart(aPart))
       {
         continue;
       }
 
       Handle(Graphic3d_Group) anAxisGroup = thePrs->NewGroup();
-      myPartToGroup[aPart] = anAxisGroup;
+      myPartToGroup[aPart]                = anAxisGroup;
       if (isShadingMode)
       {
-        anAxisGroup->SetGroupPrimitivesAspect (anAspect->ShadingAspect (aPart)->Aspect());
+        anAxisGroup->SetGroupPrimitivesAspect(anAspect->ShadingAspect(aPart)->Aspect());
       }
       else
       {
-        anAxisGroup->SetGroupPrimitivesAspect (anAspect->LineAspect (aPart)->Aspect());
+        anAxisGroup->SetGroupPrimitivesAspect(anAspect->LineAspect(aPart)->Aspect());
       }
-      anAxisGroup->AddPrimitiveArray (arrayOfPrimitives (aPart));
+      anAxisGroup->AddPrimitiveArray(arrayOfPrimitives(aPart));
 
       // draw arrow
-      const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis (aPart);
-      if (!anAspect->DrawDatumPart (anArrowPart))
+      const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis(aPart);
+      if (!anAspect->DrawDatumPart(anArrowPart))
       {
         continue;
       }
@@ -478,13 +484,13 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
       Handle(Graphic3d_Group) anArrowGroup = thePrs->NewGroup();
       if (isShadingMode)
       {
-        anArrowGroup->SetGroupPrimitivesAspect (anAspect->ShadingAspect (anArrowPart)->Aspect());
+        anArrowGroup->SetGroupPrimitivesAspect(anAspect->ShadingAspect(anArrowPart)->Aspect());
       }
       else
       {
-        anArrowGroup->SetGroupPrimitivesAspect (anAspect->LineAspect (anArrowPart)->Aspect());
+        anArrowGroup->SetGroupPrimitivesAspect(anAspect->LineAspect(anArrowPart)->Aspect());
       }
-      anArrowGroup->AddPrimitiveArray (arrayOfPrimitives (anArrowPart));
+      anArrowGroup->AddPrimitiveArray(arrayOfPrimitives(anArrowPart));
     }
   }
 
@@ -492,33 +498,43 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
   if (anAspect->ToDrawLabels())
   {
     Handle(Geom_Axis2Placement) aComponent = myComponent;
-    const gp_Pnt anOrigin = aComponent->Location();
-    for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis; ++anAxisIter)
+    const gp_Pnt                anOrigin   = aComponent->Location();
+    for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis;
+         ++anAxisIter)
     {
-      const Prs3d_DatumParts aPart = (Prs3d_DatumParts )anAxisIter;
-      if (!anAspect->DrawDatumPart (aPart))
+      const Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
+      if (!anAspect->DrawDatumPart(aPart))
       {
         continue;
       }
 
-      const Standard_Real anAxisLength = anAspect->AxisLength (aPart);
-      const TCollection_ExtendedString& aLabel = myLabels[aPart];
-      gp_Dir aDir;
+      const Standard_Real               anAxisLength = anAspect->AxisLength(aPart);
+      const TCollection_ExtendedString& aLabel       = myLabels[aPart];
+      gp_Dir                            aDir;
       switch (aPart)
       {
-        case Prs3d_DatumParts_XAxis: aDir = aComponent->XDirection(); break;
-        case Prs3d_DatumParts_YAxis: aDir = aComponent->YDirection(); break;
-        case Prs3d_DatumParts_ZAxis: aDir = aComponent->Direction();  break;
-        default: break;
+        case Prs3d_DatumParts_XAxis:
+          aDir = aComponent->XDirection();
+          break;
+        case Prs3d_DatumParts_YAxis:
+          aDir = aComponent->YDirection();
+          break;
+        case Prs3d_DatumParts_ZAxis:
+          aDir = aComponent->Direction();
+          break;
+        default:
+          break;
       }
       Handle(Graphic3d_Group) aLabelGroup = thePrs->NewGroup();
-      const gp_Pnt aPoint = anOrigin.XYZ() + aDir.XYZ() * anAxisLength;
-      Prs3d_Text::Draw (aLabelGroup, anAspect->TextAspect (aPart), aLabel, aPoint);
+      const gp_Pnt            aPoint      = anOrigin.XYZ() + aDir.XYZ() * anAxisLength;
+      Prs3d_Text::Draw(aLabelGroup, anAspect->TextAspect(aPart), aLabel, aPoint);
     }
   }
 
   // planes invisible group for planes selection
-  for (Standard_Integer anAxisIter = Prs3d_DatumParts_XOYAxis; anAxisIter <= Prs3d_DatumParts_XOZAxis; ++anAxisIter)
+  for (Standard_Integer anAxisIter = Prs3d_DatumParts_XOYAxis;
+       anAxisIter <= Prs3d_DatumParts_XOZAxis;
+       ++anAxisIter)
   {
     Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
     if (!anAspect->DrawDatumPart(aPart))
@@ -527,165 +543,164 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
     }
 
     Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
-    myPartToGroup[aPart] = aGroup;
+    myPartToGroup[aPart]           = aGroup;
 
-    aGroup->AddPrimitiveArray (arrayOfPrimitives (aPart));
-    aGroup->SetGroupPrimitivesAspect (myHiddenLineAspect);
+    aGroup->AddPrimitiveArray(arrayOfPrimitives(aPart));
+    aGroup->SetGroupPrimitivesAspect(myHiddenLineAspect);
   }
 }
 
 //=======================================================================
-//function : SetColor
-//purpose  :
+// function : SetColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetDatumPartColor (const Prs3d_DatumParts thePart,
-                                       const Quantity_Color&  theColor)
+void AIS_Trihedron::SetDatumPartColor(const Prs3d_DatumParts thePart,
+                                      const Quantity_Color&  theColor)
 {
   setOwnDatumAspect();
 
-  myDrawer->DatumAspect()->ShadingAspect (thePart)->SetColor (theColor);
+  myDrawer->DatumAspect()->ShadingAspect(thePart)->SetColor(theColor);
   if (thePart != Prs3d_DatumParts_Origin)
   {
-    myDrawer->DatumAspect()->LineAspect (thePart)->SetColor (theColor);
+    myDrawer->DatumAspect()->LineAspect(thePart)->SetColor(theColor);
   }
 }
 
 //=======================================================================
-//function : SetTextColor
-//purpose  :
+// function : SetTextColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetTextColor (const Prs3d_DatumParts thePart,
-                                  const Quantity_Color& theColor)
+void AIS_Trihedron::SetTextColor(const Prs3d_DatumParts thePart, const Quantity_Color& theColor)
 {
   setOwnDatumAspect();
-  myDrawer->DatumAspect()->TextAspect (thePart)->SetColor (theColor);
+  myDrawer->DatumAspect()->TextAspect(thePart)->SetColor(theColor);
 }
 
 //=======================================================================
-//function : SetTextColor
-//purpose  :
+// function : SetTextColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetTextColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetTextColor(const Quantity_Color& theColor)
 {
   setOwnDatumAspect();
-  myDrawer->DatumAspect()->TextAspect (Prs3d_DatumParts_XAxis)->SetColor (theColor);
-  myDrawer->DatumAspect()->TextAspect (Prs3d_DatumParts_YAxis)->SetColor (theColor);
-  myDrawer->DatumAspect()->TextAspect (Prs3d_DatumParts_ZAxis)->SetColor (theColor);
+  myDrawer->DatumAspect()->TextAspect(Prs3d_DatumParts_XAxis)->SetColor(theColor);
+  myDrawer->DatumAspect()->TextAspect(Prs3d_DatumParts_YAxis)->SetColor(theColor);
+  myDrawer->DatumAspect()->TextAspect(Prs3d_DatumParts_ZAxis)->SetColor(theColor);
 }
 
 //=======================================================================
-//function : Color
-//purpose  :
+// function : Color
+// purpose  :
 //=======================================================================
-Quantity_Color AIS_Trihedron::DatumPartColor (Prs3d_DatumParts thePart)
+Quantity_Color AIS_Trihedron::DatumPartColor(Prs3d_DatumParts thePart)
 {
   if (myTrihDispMode == Prs3d_DM_Shaded)
   {
-    return myDrawer->DatumAspect()->ShadingAspect (thePart)->Color();
+    return myDrawer->DatumAspect()->ShadingAspect(thePart)->Color();
   }
   else
   {
-    return myDrawer->DatumAspect()->LineAspect (thePart)->Aspect()->Color();
+    return myDrawer->DatumAspect()->LineAspect(thePart)->Aspect()->Color();
   }
 }
 
 //=======================================================================
-//function : SetOriginColor
-//purpose  :
+// function : SetOriginColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetOriginColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetOriginColor(const Quantity_Color& theColor)
 {
   if (myTrihDispMode == Prs3d_DM_Shaded)
   {
-    SetDatumPartColor (Prs3d_DatumParts_Origin, theColor);
+    SetDatumPartColor(Prs3d_DatumParts_Origin, theColor);
   }
 }
 
 //=======================================================================
-//function : SetXAxisColor
-//purpose  :
+// function : SetXAxisColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetXAxisColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetXAxisColor(const Quantity_Color& theColor)
 {
-  SetDatumPartColor (Prs3d_DatumParts_XAxis, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_XAxis, theColor);
 }
 
 //=======================================================================
-//function : SetYAxisColor
-//purpose  :
+// function : SetYAxisColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetYAxisColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetYAxisColor(const Quantity_Color& theColor)
 {
-  SetDatumPartColor (Prs3d_DatumParts_YAxis, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_YAxis, theColor);
 }
 
 //=======================================================================
-//function : SetAxisColor
-//purpose  :
+// function : SetAxisColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetAxisColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetAxisColor(const Quantity_Color& theColor)
 {
-  SetDatumPartColor (Prs3d_DatumParts_ZAxis, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_ZAxis, theColor);
 }
 
 //=======================================================================
-//function : SetColor
-//purpose  :
+// function : SetColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetColor(const Quantity_Color& theColor)
 {
   hasOwnColor = Standard_True;
-  myDrawer->SetColor (theColor);
+  myDrawer->SetColor(theColor);
 
-  SetDatumPartColor (Prs3d_DatumParts_Origin, theColor);
-  SetDatumPartColor (Prs3d_DatumParts_XAxis,  theColor);
-  SetDatumPartColor (Prs3d_DatumParts_YAxis,  theColor);
-  SetDatumPartColor (Prs3d_DatumParts_ZAxis,  theColor);
+  SetDatumPartColor(Prs3d_DatumParts_Origin, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_XAxis, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_YAxis, theColor);
+  SetDatumPartColor(Prs3d_DatumParts_ZAxis, theColor);
 }
 
 //=======================================================================
-//function : SetArrowColor
-//purpose  :
+// function : SetArrowColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetArrowColor (const Prs3d_DatumParts thePart,
-                                   const Quantity_Color& theColor)
+void AIS_Trihedron::SetArrowColor(const Prs3d_DatumParts thePart, const Quantity_Color& theColor)
 {
   setOwnDatumAspect();
-  myHasOwnArrowColor = Standard_True;
-  const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis (thePart);
-  myDrawer->DatumAspect()->ShadingAspect(anArrowPart)->SetColor (theColor);
-  myDrawer->DatumAspect()->LineAspect   (anArrowPart)->SetColor (theColor);
+  myHasOwnArrowColor                 = Standard_True;
+  const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis(thePart);
+  myDrawer->DatumAspect()->ShadingAspect(anArrowPart)->SetColor(theColor);
+  myDrawer->DatumAspect()->LineAspect(anArrowPart)->SetColor(theColor);
 }
 
 //=======================================================================
-//function : SetArrowColor
-//purpose  :
+// function : SetArrowColor
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetArrowColor (const Quantity_Color& theColor)
+void AIS_Trihedron::SetArrowColor(const Quantity_Color& theColor)
 {
   setOwnDatumAspect();
 
   myHasOwnArrowColor = Standard_True;
-  myDrawer->DatumAspect()->ArrowAspect()->SetColor (theColor);
-  for (Standard_Integer anAxisIter = Prs3d_DatumParts_XArrow; anAxisIter <= Prs3d_DatumParts_ZArrow; ++anAxisIter)
+  myDrawer->DatumAspect()->ArrowAspect()->SetColor(theColor);
+  for (Standard_Integer anAxisIter = Prs3d_DatumParts_XArrow; anAxisIter <= Prs3d_DatumParts_ZArrow;
+       ++anAxisIter)
   {
-    myDrawer->DatumAspect()->ShadingAspect((Prs3d_DatumParts )anAxisIter)->SetColor (theColor);
-    myDrawer->DatumAspect()->LineAspect   ((Prs3d_DatumParts )anAxisIter)->SetColor (theColor);
+    myDrawer->DatumAspect()->ShadingAspect((Prs3d_DatumParts)anAxisIter)->SetColor(theColor);
+    myDrawer->DatumAspect()->LineAspect((Prs3d_DatumParts)anAxisIter)->SetColor(theColor);
   }
 }
 
 //=======================================================================
-//function : TextColor
-//purpose  :
+// function : TextColor
+// purpose  :
 //=======================================================================
 Quantity_Color AIS_Trihedron::TextColor() const
 {
-  return myDrawer->DatumAspect()->TextAspect (Prs3d_DatumParts_XAxis)->Aspect()->Color();
+  return myDrawer->DatumAspect()->TextAspect(Prs3d_DatumParts_XAxis)->Aspect()->Color();
 }
 
 //=======================================================================
-//function : ArrowColor
-//purpose  :
+// function : ArrowColor
+// purpose  :
 //=======================================================================
 Quantity_Color AIS_Trihedron::ArrowColor() const
 {
@@ -693,29 +708,29 @@ Quantity_Color AIS_Trihedron::ArrowColor() const
 }
 
 //=======================================================================
-//function : UnsetColor
-//purpose  : 
+// function : UnsetColor
+// purpose  :
 //=======================================================================
 void AIS_Trihedron::UnsetColor()
 {
   hasOwnColor = Standard_False;
-  Quantity_Color aDefaultColor (Quantity_NOC_LIGHTSTEELBLUE4);
-  SetColor (aDefaultColor);
+  Quantity_Color aDefaultColor(Quantity_NOC_LIGHTSTEELBLUE4);
+  SetColor(aDefaultColor);
   if (HasTextColor())
   {
-    SetTextColor (aDefaultColor);
+    SetTextColor(aDefaultColor);
     myHasOwnTextColor = Standard_False;
   }
   if (HasArrowColor())
   {
-    SetArrowColor (aDefaultColor);
+    SetArrowColor(aDefaultColor);
     myHasOwnArrowColor = Standard_False;
   }
 }
 
 //=======================================================================
-//function : ToDrawArrows
-//purpose  :
+// function : ToDrawArrows
+// purpose  :
 //=======================================================================
 Standard_Boolean AIS_Trihedron::ToDrawArrows() const
 {
@@ -723,55 +738,60 @@ Standard_Boolean AIS_Trihedron::ToDrawArrows() const
 }
 
 //=======================================================================
-//function : SetDrawArrows
-//purpose  :
+// function : SetDrawArrows
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::SetDrawArrows (const Standard_Boolean theToDraw)
+void AIS_Trihedron::SetDrawArrows(const Standard_Boolean theToDraw)
 {
   setOwnDatumAspect();
-  myDrawer->DatumAspect()->SetDrawArrows (theToDraw);
+  myDrawer->DatumAspect()->SetDrawArrows(theToDraw);
 }
 
 //=======================================================================
-//function : createSensitiveEntity
-//purpose  :
+// function : createSensitiveEntity
+// purpose  :
 //=======================================================================
-Handle(Select3D_SensitiveEntity) AIS_Trihedron::createSensitiveEntity (const Prs3d_DatumParts thePart,
-                                                   const Handle(SelectMgr_EntityOwner)& theOwner) const
+Handle(Select3D_SensitiveEntity) AIS_Trihedron::createSensitiveEntity(
+  const Prs3d_DatumParts               thePart,
+  const Handle(SelectMgr_EntityOwner)& theOwner) const
 {
-  Handle(Prs3d_DatumAspect) anAspect = myDrawer->DatumAspect();
-  Handle(Graphic3d_ArrayOfPrimitives) aPrimitives = arrayOfPrimitives (thePart);
+  Handle(Prs3d_DatumAspect)           anAspect    = myDrawer->DatumAspect();
+  Handle(Graphic3d_ArrayOfPrimitives) aPrimitives = arrayOfPrimitives(thePart);
   if (aPrimitives.IsNull())
   {
     return Handle(Select3D_SensitiveEntity)();
   }
 
-  if (thePart >= Prs3d_DatumParts_XOYAxis
-   && thePart <= Prs3d_DatumParts_XOZAxis)
+  if (thePart >= Prs3d_DatumParts_XOYAxis && thePart <= Prs3d_DatumParts_XOZAxis)
   { // plane
-    const gp_Pnt anXYZ1 = aPrimitives->Vertice (1);
-    const gp_Pnt anXYZ2 = aPrimitives->Vertice (2);
-    const gp_Pnt anXYZ3 = aPrimitives->Vertice (3);
-    return new Select3D_SensitiveTriangle (theOwner, anXYZ1, anXYZ2, anXYZ3);
+    const gp_Pnt anXYZ1 = aPrimitives->Vertice(1);
+    const gp_Pnt anXYZ2 = aPrimitives->Vertice(2);
+    const gp_Pnt anXYZ3 = aPrimitives->Vertice(3);
+    return new Select3D_SensitiveTriangle(theOwner, anXYZ1, anXYZ2, anXYZ3);
   }
 
   if (myTrihDispMode == Prs3d_DM_Shaded)
   {
-    Handle(Select3D_SensitivePrimitiveArray) aSelArray = new Select3D_SensitivePrimitiveArray (theOwner);
-    aSelArray->InitTriangulation (aPrimitives->Attributes(), aPrimitives->Indices(), TopLoc_Location());
+    Handle(Select3D_SensitivePrimitiveArray) aSelArray =
+      new Select3D_SensitivePrimitiveArray(theOwner);
+    aSelArray->InitTriangulation(aPrimitives->Attributes(),
+                                 aPrimitives->Indices(),
+                                 TopLoc_Location());
     return aSelArray;
   }
 
-  if (Handle(Graphic3d_ArrayOfPoints) aPoints = Handle(Graphic3d_ArrayOfPoints)::DownCast(aPrimitives))
+  if (Handle(Graphic3d_ArrayOfPoints) aPoints =
+        Handle(Graphic3d_ArrayOfPoints)::DownCast(aPrimitives))
   {
-    const gp_Pnt anXYZ1 = aPoints->Vertice (1);
-    return new Select3D_SensitivePoint (theOwner, anXYZ1);
+    const gp_Pnt anXYZ1 = aPoints->Vertice(1);
+    return new Select3D_SensitivePoint(theOwner, anXYZ1);
   }
-  else if (Handle(Graphic3d_ArrayOfSegments) aSegments = Handle(Graphic3d_ArrayOfSegments)::DownCast(aPrimitives))
+  else if (Handle(Graphic3d_ArrayOfSegments) aSegments =
+             Handle(Graphic3d_ArrayOfSegments)::DownCast(aPrimitives))
   {
-    const gp_Pnt anXYZ1 = aSegments->Vertice (1);
-    const gp_Pnt anXYZ2 = aSegments->Vertice (2);
-    return new Select3D_SensitiveSegment (theOwner, anXYZ1, anXYZ2);
+    const gp_Pnt anXYZ1 = aSegments->Vertice(1);
+    const gp_Pnt anXYZ2 = aSegments->Vertice(2);
+    return new Select3D_SensitiveSegment(theOwner, anXYZ1, anXYZ2);
   }
   return Handle(Select3D_SensitiveEntity)();
 }
@@ -781,11 +801,11 @@ Handle(Select3D_SensitiveEntity) AIS_Trihedron::createSensitiveEntity (const Prs
 // purpose  :
 // =======================================================================
 void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
-                                     Prs3d_DatumMode theMode,
-                                     const gp_Pnt& theOrigin,
-                                     const gp_Dir& theXDirection,
-                                     const gp_Dir& theYDirection,
-                                     const gp_Dir& theZDirection)
+                                     Prs3d_DatumMode                  theMode,
+                                     const gp_Pnt&                    theOrigin,
+                                     const gp_Dir&                    theXDirection,
+                                     const gp_Dir&                    theYDirection,
+                                     const gp_Dir&                    theZDirection)
 {
   for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DatumParts_NB; ++aPartIter)
   {
@@ -798,12 +818,13 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
   anAxisDirs.Bind(Prs3d_DatumParts_ZAxis, theZDirection);
 
   NCollection_DataMap<Prs3d_DatumParts, gp_Pnt> anAxisPoints;
-  gp_XYZ anXYZOrigin = theOrigin.XYZ();
+  gp_XYZ                                        anXYZOrigin = theOrigin.XYZ();
   for (int anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis; ++anAxisIter)
   {
     Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
-    anAxisPoints.Bind(aPart, gp_Pnt(anXYZOrigin + anAxisDirs.Find(aPart).XYZ() *
-                                                   theAspect->AxisLength(aPart)));
+    anAxisPoints.Bind(
+      aPart,
+      gp_Pnt(anXYZOrigin + anAxisDirs.Find(aPart).XYZ() * theAspect->AxisLength(aPart)));
   }
 
   if (theMode == Prs3d_DM_WireFrame)
@@ -827,13 +848,16 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
         myPrimitives[aPart] = aPrims;
       }
 
-      const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis (aPart);
+      const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis(aPart);
       if (theAspect->DrawDatumPart(anArrowPart))
       {
-        myPrimitives[anArrowPart] = Prs3d_Arrow::DrawSegments (anAxisPoints.Find(aPart), anAxisDirs.Find(aPart),
-                                                               theAspect->ArrowAspect()->Angle(),
-                                                               theAspect->AxisLength(aPart) * theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeLengthPercent),
-                                                               (Standard_Integer) theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes));
+        myPrimitives[anArrowPart] = Prs3d_Arrow::DrawSegments(
+          anAxisPoints.Find(aPart),
+          anAxisDirs.Find(aPart),
+          theAspect->ArrowAspect()->Angle(),
+          theAspect->AxisLength(aPart)
+            * theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeLengthPercent),
+          (Standard_Integer)theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes));
       }
     }
   }
@@ -843,49 +867,65 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
     // origin
     if (theAspect->DrawDatumPart(Prs3d_DatumParts_Origin))
     {
-      const Standard_Real aSphereRadius = theAspect->AxisLength(Prs3d_DatumParts_XAxis) *
-                                          theAspect->Attribute(Prs3d_DatumAttribute_ShadingOriginRadiusPercent);
+      const Standard_Real aSphereRadius =
+        theAspect->AxisLength(Prs3d_DatumParts_XAxis)
+        * theAspect->Attribute(Prs3d_DatumAttribute_ShadingOriginRadiusPercent);
       const Standard_Integer aNbOfFacettes =
-                           (Standard_Integer)theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes);
+        (Standard_Integer)theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes);
       gp_Trsf aSphereTransform;
       aSphereTransform.SetTranslationPart(gp_Vec(gp::Origin(), theOrigin));
-      myPrimitives[Prs3d_DatumParts_Origin] = Prs3d_ToolSphere::Create (aSphereRadius, aNbOfFacettes, aNbOfFacettes, aSphereTransform);
+      myPrimitives[Prs3d_DatumParts_Origin] =
+        Prs3d_ToolSphere::Create(aSphereRadius, aNbOfFacettes, aNbOfFacettes, aSphereTransform);
     }
     // axes
     {
-      const Standard_Integer aNbOfFacettes = 
-                               (Standard_Integer)theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes);
-      const Standard_Real aTubeRadiusPercent = theAspect->Attribute(Prs3d_DatumAttribute_ShadingTubeRadiusPercent);
-      const Standard_Real aConeLengthPercent = theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeLengthPercent);
-      const Standard_Real aConeRadiusPercent = theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeRadiusPercent);
-      for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis; ++anAxisIter)
+      const Standard_Integer aNbOfFacettes =
+        (Standard_Integer)theAspect->Attribute(Prs3d_DatumAttribute_ShadingNumberOfFacettes);
+      const Standard_Real aTubeRadiusPercent =
+        theAspect->Attribute(Prs3d_DatumAttribute_ShadingTubeRadiusPercent);
+      const Standard_Real aConeLengthPercent =
+        theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeLengthPercent);
+      const Standard_Real aConeRadiusPercent =
+        theAspect->Attribute(Prs3d_DatumAttribute_ShadingConeRadiusPercent);
+      for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis;
+           anAxisIter <= Prs3d_DatumParts_ZAxis;
+           ++anAxisIter)
       {
-        const Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
-        const Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis (aPart);
-        const bool aDrawArrow = theAspect->DrawDatumPart(anArrowPart);
-        const Standard_Real anAxisLength = theAspect->AxisLength(aPart);
-        const gp_Ax1 anAxis(theOrigin, anAxisDirs.Find(aPart));
+        const Prs3d_DatumParts aPart        = (Prs3d_DatumParts)anAxisIter;
+        const Prs3d_DatumParts anArrowPart  = Prs3d_DatumAspect::ArrowPartForAxis(aPart);
+        const bool             aDrawArrow   = theAspect->DrawDatumPart(anArrowPart);
+        const Standard_Real    anAxisLength = theAspect->AxisLength(aPart);
+        const gp_Ax1           anAxis(theOrigin, anAxisDirs.Find(aPart));
 
         if (theAspect->DrawDatumPart(aPart))
         {
           // draw cylinder
-          myPrimitives[aPart] = Prs3d_Arrow::DrawShaded (anAxis, anAxisLength * aTubeRadiusPercent,
-                                                         aDrawArrow ? (anAxisLength - anAxisLength * aConeLengthPercent) : anAxisLength,
-                                                         0.0, 0.0, aNbOfFacettes);
+          myPrimitives[aPart] = Prs3d_Arrow::DrawShaded(
+            anAxis,
+            anAxisLength * aTubeRadiusPercent,
+            aDrawArrow ? (anAxisLength - anAxisLength * aConeLengthPercent) : anAxisLength,
+            0.0,
+            0.0,
+            aNbOfFacettes);
         }
 
         // draw arrow
         if (aDrawArrow)
         {
-          myPrimitives[anArrowPart] = Prs3d_Arrow::DrawShaded (anAxis, 0.0, anAxisLength,
-                                                               anAxisLength * aConeRadiusPercent,
-                                                               anAxisLength * aConeLengthPercent, aNbOfFacettes);
+          myPrimitives[anArrowPart] = Prs3d_Arrow::DrawShaded(anAxis,
+                                                              0.0,
+                                                              anAxisLength,
+                                                              anAxisLength * aConeRadiusPercent,
+                                                              anAxisLength * aConeLengthPercent,
+                                                              aNbOfFacettes);
         }
       }
     }
   }
   // planes
-  for (Standard_Integer aPlaneIter = Prs3d_DatumParts_XOYAxis; aPlaneIter <= Prs3d_DatumParts_XOZAxis; ++aPlaneIter)
+  for (Standard_Integer aPlaneIter = Prs3d_DatumParts_XOYAxis;
+       aPlaneIter <= Prs3d_DatumParts_XOZAxis;
+       ++aPlaneIter)
   {
     const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPlaneIter;
     if (!theAspect->DrawDatumPart(aPart))
@@ -897,27 +937,25 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
     aPrims->AddVertex(theOrigin);
 
     Prs3d_DatumParts aPart1 = Prs3d_DatumParts_XAxis, aPart2 = Prs3d_DatumParts_XAxis;
-    switch(aPart)
+    switch (aPart)
     {
-      case Prs3d_DatumParts_XOYAxis:
-      {
+      case Prs3d_DatumParts_XOYAxis: {
         aPart1 = Prs3d_DatumParts_XAxis;
         aPart2 = Prs3d_DatumParts_YAxis;
         break;
       }
-      case Prs3d_DatumParts_YOZAxis:
-      {
+      case Prs3d_DatumParts_YOZAxis: {
         aPart1 = Prs3d_DatumParts_YAxis;
         aPart2 = Prs3d_DatumParts_ZAxis;
         break;
       }
-      case Prs3d_DatumParts_XOZAxis:
-      {
+      case Prs3d_DatumParts_XOZAxis: {
         aPart1 = Prs3d_DatumParts_XAxis;
         aPart2 = Prs3d_DatumParts_ZAxis;
         break;
       }
-      default: break;
+      default:
+        break;
     }
     aPrims->AddVertex(anAxisPoints.Find(aPart1));
     aPrims->AddVertex(anAxisPoints.Find(aPart2));
@@ -928,17 +966,17 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void AIS_Trihedron::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void AIS_Trihedron::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, AIS_InteractiveObject)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, AIS_InteractiveObject)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnSize)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnTextColor)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnArrowColor)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTrihDispMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnTextColor)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnArrowColor)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTrihDispMode)
 }

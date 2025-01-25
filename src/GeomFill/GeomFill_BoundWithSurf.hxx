@@ -26,7 +26,6 @@ class Law_Function;
 class gp_Pnt;
 class gp_Vec;
 
-
 class GeomFill_BoundWithSurf;
 DEFINE_STANDARD_HANDLE(GeomFill_BoundWithSurf, GeomFill_Boundary)
 
@@ -43,9 +42,6 @@ class GeomFill_BoundWithSurf : public GeomFill_Boundary
 {
 
 public:
-
-  
-
   //! Constructs a boundary object defined by the 3d curve CurveOnSurf.
   //! The surface to be filled along this boundary will be in the
   //! tolerance range defined by Tol3d.
@@ -76,47 +72,40 @@ public:
   //! Standard_Real TolAng = ... ;
   //! myBoundary =  GeomFill_BoundWithSurf (
   //! CurveOnSurf, Tol, TolAng );
-  Standard_EXPORT GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf, const Standard_Real Tol3d, const Standard_Real Tolang);
-  
-  Standard_EXPORT gp_Pnt Value (const Standard_Real U) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
-  
+  Standard_EXPORT GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
+                                         const Standard_Real             Tol3d,
+                                         const Standard_Real             Tolang);
+
+  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+
+  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_Boolean HasNormals() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual gp_Vec Norm (const Standard_Real U) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void D1Norm (const Standard_Real U, gp_Vec& N, gp_Vec& DN) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Reparametrize (const Standard_Real First, const Standard_Real Last, const Standard_Boolean HasDF, const Standard_Boolean HasDL, const Standard_Real DF, const Standard_Real DL, const Standard_Boolean Rev) Standard_OVERRIDE;
-  
-  Standard_EXPORT void Bounds (Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual gp_Vec Norm(const Standard_Real U) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void D1Norm(const Standard_Real U,
+                                      gp_Vec&             N,
+                                      gp_Vec&             DN) const Standard_OVERRIDE;
+
+  Standard_EXPORT void Reparametrize(const Standard_Real    First,
+                                     const Standard_Real    Last,
+                                     const Standard_Boolean HasDF,
+                                     const Standard_Boolean HasDL,
+                                     const Standard_Real    DF,
+                                     const Standard_Real    DL,
+                                     const Standard_Boolean Rev) Standard_OVERRIDE;
+
+  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
+
   Standard_EXPORT Standard_Boolean IsDegenerated() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GeomFill_BoundWithSurf,GeomFill_Boundary)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_BoundWithSurf, GeomFill_Boundary)
 
 protected:
-
-
-
-
 private:
-
-
   Adaptor3d_CurveOnSurface myConS;
-  Handle(Law_Function) myPar;
-
-
+  Handle(Law_Function)     myPar;
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_BoundWithSurf_HeaderFile

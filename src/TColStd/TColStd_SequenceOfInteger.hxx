@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<Standard_Integer> TColStd_SequenceOfInteger;
 
-
 #endif

@@ -15,53 +15,61 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : FaceIntL
-//purpose  : 
+// function : FaceIntL
+// purpose  :
 //=======================================================================
 
-inline const TopTools_ListOfShape & 
-HLRTopoBRep_FaceData::FaceIntL () const
-{ return myIntL; }
+inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIntL() const
+{
+  return myIntL;
+}
 
 //=======================================================================
-//function : FaceOutL
-//purpose  : 
+// function : FaceOutL
+// purpose  :
 //=======================================================================
 
-inline const TopTools_ListOfShape & 
-HLRTopoBRep_FaceData::FaceOutL () const
-{ return myOutL; }
+inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceOutL() const
+{
+  return myOutL;
+}
 
 //=======================================================================
-//function : FaceIsoL
-//purpose  : 
+// function : FaceIsoL
+// purpose  :
 //=======================================================================
 
-inline const TopTools_ListOfShape & 
-HLRTopoBRep_FaceData::FaceIsoL () const
-{ return myIsoL; }
+inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIsoL() const
+{
+  return myIsoL;
+}
 
 //=======================================================================
-//function : AddIntL
-//purpose  : 
+// function : AddIntL
+// purpose  :
 //=======================================================================
 
-inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddIntL ()
-{ return myIntL; }
+inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIntL()
+{
+  return myIntL;
+}
 
 //=======================================================================
-//function : AddOutL
-//purpose  : 
+// function : AddOutL
+// purpose  :
 //=======================================================================
 
-inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddOutL ()
-{ return myOutL; }
+inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddOutL()
+{
+  return myOutL;
+}
 
 //=======================================================================
-//function : AddIsoL
-//purpose  : 
+// function : AddIsoL
+// purpose  :
 //=======================================================================
 
-inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddIsoL ()
-{ return myIsoL; }
-
+inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIsoL()
+{
+  return myIsoL;
+}

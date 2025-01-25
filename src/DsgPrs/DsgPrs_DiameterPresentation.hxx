@@ -28,15 +28,12 @@ class TCollection_ExtendedString;
 class gp_Pnt;
 class gp_Circ;
 
-
 //! A framework for displaying diameters in shapes.
-class DsgPrs_DiameterPresentation 
+class DsgPrs_DiameterPresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Draws the diameter of the circle aCircle displayed in
   //! the presentation aPresentation and with attributes
   //! defined by the attribute manager aDrawer. The point
@@ -45,8 +42,14 @@ public:
   //! The value of the enumeration ArrowSide controls
   //! whether arrows will be displayed at either or both
   //! ends of the length. The text aText labels the diameter.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const TCollection_ExtendedString& aText, const gp_Pnt& AttachmentPoint, const gp_Circ& aCircle, const DsgPrs_ArrowSide ArrowSide, const Standard_Boolean IsDiamSymbol);
-  
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const TCollection_ExtendedString& aText,
+                                  const gp_Pnt&                     AttachmentPoint,
+                                  const gp_Circ&                    aCircle,
+                                  const DsgPrs_ArrowSide            ArrowSide,
+                                  const Standard_Boolean            IsDiamSymbol);
+
   //! Draws the diameter of the arc anArc displayed in the
   //! presentation aPresentation and with attributes
   //! defined by the attribute manager aDrawer. The point
@@ -56,29 +59,18 @@ public:
   //! arrows will be displayed at either or both ends of the
   //! length. The parameters uFirst and uLast define the
   //! first and last points of the arc. The text aText labels the diameter.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const TCollection_ExtendedString& aText, const gp_Pnt& AttachmentPoint, const gp_Circ& aCircle, const Standard_Real uFirst, const Standard_Real uLast, const DsgPrs_ArrowSide ArrowSide, const Standard_Boolean IsDiamSymbol);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const TCollection_ExtendedString& aText,
+                                  const gp_Pnt&                     AttachmentPoint,
+                                  const gp_Circ&                    aCircle,
+                                  const Standard_Real               uFirst,
+                                  const Standard_Real               uLast,
+                                  const DsgPrs_ArrowSide            ArrowSide,
+                                  const Standard_Boolean            IsDiamSymbol);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DsgPrs_DiameterPresentation_HeaderFile

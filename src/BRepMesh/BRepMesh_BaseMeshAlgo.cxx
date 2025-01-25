@@ -26,28 +26,23 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_BaseMeshAlgo::BRepMesh_BaseMeshAlgo()
-{
-}
+BRepMesh_BaseMeshAlgo::BRepMesh_BaseMeshAlgo() {}
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMesh_BaseMeshAlgo::~BRepMesh_BaseMeshAlgo()
-{
-}
+BRepMesh_BaseMeshAlgo::~BRepMesh_BaseMeshAlgo() {}
 
 //=======================================================================
 // Function: Perform
-// Purpose : 
+// Purpose :
 //=======================================================================
-void BRepMesh_BaseMeshAlgo::Perform(
-  const IMeshData::IFaceHandle& theDFace,
-  const IMeshTools_Parameters&  theParameters,
-  const Message_ProgressRange&  theRange)
+void BRepMesh_BaseMeshAlgo::Perform(const IMeshData::IFaceHandle& theDFace,
+                                    const IMeshTools_Parameters&  theParameters,
+                                    const Message_ProgressRange&  theRange)
 {
   try
   {
@@ -76,14 +71,14 @@ void BRepMesh_BaseMeshAlgo::Perform(
 
   myDFace.Nullify(); // Do not hold link to face.
   myStructure.Nullify();
-  myNodesMap .Nullify();
+  myNodesMap.Nullify();
   myUsedNodes.Nullify();
   myAllocator.Nullify();
 }
 
 //=======================================================================
-//function : initDataStructure
-//purpose  :
+// function : initDataStructure
+// purpose  :
 //=======================================================================
 Standard_Boolean BRepMesh_BaseMeshAlgo::initDataStructure()
 {
@@ -101,19 +96,20 @@ Standard_Boolean BRepMesh_BaseMeshAlgo::initDataStructure()
     {
       const IMeshData::IEdgeHandle    aDEdge = aDWire->GetEdge(aEdgeIt);
       const IMeshData::ICurveHandle&  aCurve = aDEdge->GetCurve();
-      const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(
-        myDFace.get(), aDWire->GetEdgeOrientation(aEdgeIt));
+      const IMeshData::IPCurveHandle& aPCurve =
+        aDEdge->GetPCurve(myDFace.get(), aDWire->GetEdgeOrientation(aEdgeIt));
 
       const TopAbs_Orientation aOri = fixSeamEdgeOrientation(aDEdge, aPCurve);
 
-      Standard_Integer aPrevNodeIndex = -1;
-      const Standard_Integer aLastPoint = aPCurve->ParametersNb() - 1;
+      Standard_Integer       aPrevNodeIndex = -1;
+      const Standard_Integer aLastPoint     = aPCurve->ParametersNb() - 1;
       for (Standard_Integer aPointIt = 0; aPointIt <= aLastPoint; ++aPointIt)
       {
-        const Standard_Integer aNodeIndex = registerNode(
-          aCurve ->GetPoint(aPointIt),
-          aPCurve->GetPoint(aPointIt),
-          BRepMesh_Frontier, Standard_False/*aPointIt > 0 && aPointIt < aLastPoint*/);
+        const Standard_Integer aNodeIndex =
+          registerNode(aCurve->GetPoint(aPointIt),
+                       aPCurve->GetPoint(aPointIt),
+                       BRepMesh_Frontier,
+                       Standard_False /*aPointIt > 0 && aPointIt < aLastPoint*/);
 
         aPCurve->GetIndex(aPointIt) = aNodeIndex;
         myUsedNodes->Bind(aNodeIndex, aNodeIndex);
@@ -140,16 +136,15 @@ Standard_Boolean BRepMesh_BaseMeshAlgo::initDataStructure()
 
 //=======================================================================
 // Function: registerNode
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Integer BRepMesh_BaseMeshAlgo::registerNode(
-  const gp_Pnt&                  thePoint,
-  const gp_Pnt2d&                thePoint2d,
-  const BRepMesh_DegreeOfFreedom theMovability,
-  const Standard_Boolean         isForceAdd)
+Standard_Integer BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
+                                                     const gp_Pnt2d&                thePoint2d,
+                                                     const BRepMesh_DegreeOfFreedom theMovability,
+                                                     const Standard_Boolean         isForceAdd)
 {
-  const Standard_Integer aNodeIndex = addNodeToStructure(
-    thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
+  const Standard_Integer aNodeIndex =
+    addNodeToStructure(thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
 
   if (aNodeIndex > myNodesMap->Size())
   {
@@ -161,7 +156,7 @@ Standard_Integer BRepMesh_BaseMeshAlgo::registerNode(
 
 //=======================================================================
 // Function: addNode
-// Purpose : 
+// Purpose :
 //=======================================================================
 Standard_Integer BRepMesh_BaseMeshAlgo::addNodeToStructure(
   const gp_Pnt2d&                thePoint,
@@ -174,28 +169,29 @@ Standard_Integer BRepMesh_BaseMeshAlgo::addNodeToStructure(
 }
 
 //=======================================================================
-//function : addLinkToMesh
-//purpose  :
+// function : addLinkToMesh
+// purpose  :
 //=======================================================================
-Standard_Integer BRepMesh_BaseMeshAlgo::addLinkToMesh(
-  const Standard_Integer   theFirstNodeId,
-  const Standard_Integer   theLastNodeId,
-  const TopAbs_Orientation theOrientation)
+Standard_Integer BRepMesh_BaseMeshAlgo::addLinkToMesh(const Standard_Integer   theFirstNodeId,
+                                                      const Standard_Integer   theLastNodeId,
+                                                      const TopAbs_Orientation theOrientation)
 {
   Standard_Integer aLinkIndex;
   if (theOrientation == TopAbs_REVERSED)
-    aLinkIndex = myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
+    aLinkIndex =
+      myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
   else if (theOrientation == TopAbs_INTERNAL)
     aLinkIndex = myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
   else
-    aLinkIndex = myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
+    aLinkIndex =
+      myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
 
   return Abs(aLinkIndex);
 }
 
 //=======================================================================
-//function : fixSeamEdgeOrientation
-//purpose  :
+// function : fixSeamEdgeOrientation
+// purpose  :
 //=======================================================================
 TopAbs_Orientation BRepMesh_BaseMeshAlgo::fixSeamEdgeOrientation(
   const IMeshData::IEdgeHandle&   theDEdge,
@@ -213,10 +209,11 @@ TopAbs_Orientation BRepMesh_BaseMeshAlgo::fixSeamEdgeOrientation(
       const gp_Pnt2d& aPnt1_2 = aPCurve->GetPoint(0);
       const gp_Pnt2d& aPnt2_2 = aPCurve->GetPoint(aPCurve->ParametersNb() - 1);
 
-      const Standard_Real aSqDist1 = Min(aPnt1_1.SquareDistance(aPnt1_2), aPnt1_1.SquareDistance(aPnt2_2));
-      const Standard_Real aSqDist2 = Min(aPnt2_1.SquareDistance(aPnt1_2), aPnt2_1.SquareDistance(aPnt2_2));
-      if (aSqDist1 < Precision::SquareConfusion() &&
-          aSqDist2 < Precision::SquareConfusion())
+      const Standard_Real aSqDist1 =
+        Min(aPnt1_1.SquareDistance(aPnt1_2), aPnt1_1.SquareDistance(aPnt2_2));
+      const Standard_Real aSqDist2 =
+        Min(aPnt2_1.SquareDistance(aPnt1_2), aPnt2_1.SquareDistance(aPnt2_2));
+      if (aSqDist1 < Precision::SquareConfusion() && aSqDist2 < Precision::SquareConfusion())
       {
         return TopAbs_INTERNAL;
       }
@@ -227,8 +224,8 @@ TopAbs_Orientation BRepMesh_BaseMeshAlgo::fixSeamEdgeOrientation(
 }
 
 //=======================================================================
-//function : commitSurfaceTriangulation
-//purpose  :
+// function : commitSurfaceTriangulation
+// purpose  :
 //=======================================================================
 void BRepMesh_BaseMeshAlgo::commitSurfaceTriangulation()
 {
@@ -245,8 +242,8 @@ void BRepMesh_BaseMeshAlgo::commitSurfaceTriangulation()
 }
 
 //=======================================================================
-//function : collectTriangles
-//purpose  :
+// function : collectTriangles
+// purpose  :
 //=======================================================================
 Handle(Poly_Triangulation) BRepMesh_BaseMeshAlgo::collectTriangles()
 {
@@ -257,7 +254,7 @@ Handle(Poly_Triangulation) BRepMesh_BaseMeshAlgo::collectTriangles()
   }
 
   Handle(Poly_Triangulation) aRes = new Poly_Triangulation();
-  aRes->ResizeTriangles (aTriangles.Extent(), false);
+  aRes->ResizeTriangles(aTriangles.Extent(), false);
   IMeshData::IteratorOfMapOfInteger aTriIt(aTriangles);
   for (Standard_Integer aTriangeId = 1; aTriIt.More(); aTriIt.Next(), ++aTriangeId)
   {
@@ -276,19 +273,18 @@ Handle(Poly_Triangulation) BRepMesh_BaseMeshAlgo::collectTriangles()
       aNode[i] = myUsedNodes->Find(aNode[i]);
     }
 
-    aRes->SetTriangle (aTriangeId, Poly_Triangle (aNode[0], aNode[1], aNode[2]));
+    aRes->SetTriangle(aTriangeId, Poly_Triangle(aNode[0], aNode[1], aNode[2]));
   }
-  aRes->ResizeNodes (myUsedNodes->Extent(), false);
+  aRes->ResizeNodes(myUsedNodes->Extent(), false);
   aRes->AddUVNodes();
   return aRes;
 }
 
 //=======================================================================
-//function : collectNodes
-//purpose  :
+// function : collectNodes
+// purpose  :
 //=======================================================================
-void BRepMesh_BaseMeshAlgo::collectNodes(
-  const Handle(Poly_Triangulation)& theTriangulation)
+void BRepMesh_BaseMeshAlgo::collectNodes(const Handle(Poly_Triangulation)& theTriangulation)
 {
   for (Standard_Integer i = 1; i <= myNodesMap->Size(); ++i)
   {
@@ -297,18 +293,17 @@ void BRepMesh_BaseMeshAlgo::collectNodes(
       const BRepMesh_Vertex& aVertex = myStructure->GetNode(i);
 
       const Standard_Integer aNodeIndex = myUsedNodes->Find(i);
-      theTriangulation->SetNode  (aNodeIndex, myNodesMap->Value (aVertex.Location3d()));
-      theTriangulation->SetUVNode(aNodeIndex, getNodePoint2d (aVertex));
+      theTriangulation->SetNode(aNodeIndex, myNodesMap->Value(aVertex.Location3d()));
+      theTriangulation->SetUVNode(aNodeIndex, getNodePoint2d(aVertex));
     }
   }
 }
 
 //=======================================================================
 // Function: getNodePoint2d
-// Purpose : 
+// Purpose :
 //=======================================================================
-gp_Pnt2d BRepMesh_BaseMeshAlgo::getNodePoint2d(
-  const BRepMesh_Vertex& theVertex) const
+gp_Pnt2d BRepMesh_BaseMeshAlgo::getNodePoint2d(const BRepMesh_Vertex& theVertex) const
 {
   return theVertex.Coord();
 }

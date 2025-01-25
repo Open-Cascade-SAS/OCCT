@@ -27,27 +27,23 @@
 #include <Standard_Real.hxx>
 class IntRes2d_IntersectionPoint;
 
-
-
-class HatchGen_PointOnElement  : public HatchGen_IntersectionPoint
+class HatchGen_PointOnElement : public HatchGen_IntersectionPoint
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! ---Purpose; Creates an empty point on element
   Standard_EXPORT HatchGen_PointOnElement();
-  
+
   //! Creates a point from an intersection point.
   Standard_EXPORT HatchGen_PointOnElement(const IntRes2d_IntersectionPoint& Point);
-  
+
   //! Sets the intersection type at this point.
-    void SetIntersectionType (const HatchGen_IntersectionType Type);
-  
+  void SetIntersectionType(const HatchGen_IntersectionType Type);
+
   //! Returns the intersection type at this point.
-    HatchGen_IntersectionType IntersectionType() const;
-  
+  HatchGen_IntersectionType IntersectionType() const;
+
   //! Tests if the point is identical to an other.
   //! That is to say :
   //! P1.myIndex  = P2.myIndex
@@ -58,37 +54,22 @@ public:
   //! P1.mySegBeg = P2.mySegBeg
   //! P1.mySegEnd = P2.mySegEnd
   //! P1.myType   = P2.myType
-  Standard_EXPORT Standard_Boolean IsIdentical (const HatchGen_PointOnElement& Point, const Standard_Real Confusion) const;
-  
+  Standard_EXPORT Standard_Boolean IsIdentical(const HatchGen_PointOnElement& Point,
+                                               const Standard_Real            Confusion) const;
+
   //! Tests if the point is different from an other.
-  Standard_EXPORT Standard_Boolean IsDifferent (const HatchGen_PointOnElement& Point, const Standard_Real Confusion) const;
-  
+  Standard_EXPORT Standard_Boolean IsDifferent(const HatchGen_PointOnElement& Point,
+                                               const Standard_Real            Confusion) const;
+
   //! Dump of the point on element.
-  Standard_EXPORT void Dump (const Standard_Integer Index = 0) const;
-
-
-
+  Standard_EXPORT void Dump(const Standard_Integer Index = 0) const;
 
 protected:
-
-
-
   HatchGen_IntersectionType myType;
 
-
 private:
-
-
-
-
-
 };
 
-
 #include <HatchGen_PointOnElement.lxx>
-
-
-
-
 
 #endif // _HatchGen_PointOnElement_HeaderFile

@@ -22,32 +22,26 @@ class BRepMesh_Delaun;
 //! Class provides base functionality to build face triangulation using custom
 //! triangulation algorithm with possibility to modify final mesh.
 //! Performs generation of mesh using raw data from model.
-template<class BaseAlgo>
+template <class BaseAlgo>
 class BRepMesh_CustomDelaunayBaseMeshAlgo : public BaseAlgo
 {
 public:
-
   //! Constructor.
-  BRepMesh_CustomDelaunayBaseMeshAlgo ()
-  {
-  } 
+  BRepMesh_CustomDelaunayBaseMeshAlgo() {}
 
   //! Destructor.
-  virtual ~BRepMesh_CustomDelaunayBaseMeshAlgo ()
-  {
-  }
+  virtual ~BRepMesh_CustomDelaunayBaseMeshAlgo() {}
 
 protected:
-
   //! Performs processing of generated mesh.
-  virtual void postProcessMesh (BRepMesh_Delaun& theMesher,
-                                const Message_ProgressRange& theRange)
+  virtual void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange)
   {
-    const Handle(BRepMesh_DataStructureOfDelaun)& aStructure  = this->getStructure();
-    std::pair<Standard_Integer, Standard_Integer> aCellsCount = this->getCellsCount (aStructure->NbNodes());
-    theMesher.InitCirclesTool (aCellsCount.first, aCellsCount.second);
+    const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure();
+    std::pair<Standard_Integer, Standard_Integer> aCellsCount =
+      this->getCellsCount(aStructure->NbNodes());
+    theMesher.InitCirclesTool(aCellsCount.first, aCellsCount.second);
 
-    BaseAlgo::postProcessMesh (theMesher, theRange);
+    BaseAlgo::postProcessMesh(theMesher, theRange);
   }
 };
 

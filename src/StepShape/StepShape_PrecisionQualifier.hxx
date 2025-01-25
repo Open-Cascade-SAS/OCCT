@@ -22,7 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-
 class StepShape_PrecisionQualifier;
 DEFINE_STANDARD_HANDLE(StepShape_PrecisionQualifier, Standard_Transient)
 
@@ -31,38 +30,19 @@ class StepShape_PrecisionQualifier : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepShape_PrecisionQualifier();
-  
-  Standard_EXPORT void Init (const Standard_Integer precision_value);
-  
+
+  Standard_EXPORT void Init(const Standard_Integer precision_value);
+
   Standard_EXPORT Standard_Integer PrecisionValue() const;
-  
-  Standard_EXPORT void SetPrecisionValue (const Standard_Integer precision_value);
 
+  Standard_EXPORT void SetPrecisionValue(const Standard_Integer precision_value);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_PrecisionQualifier,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PrecisionQualifier, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer thePrecisionValue;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_PrecisionQualifier_HeaderFile

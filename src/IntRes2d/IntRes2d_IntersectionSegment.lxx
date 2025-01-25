@@ -14,88 +14,112 @@
 
 #include <Standard_DomainError.hxx>
 
-inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment (
-	 const IntRes2d_IntersectionPoint& P1, 
-	 const IntRes2d_IntersectionPoint& P2,
-	 const Standard_Boolean Oppos,
-	 const Standard_Boolean ReverseFlag):
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
+  const IntRes2d_IntersectionPoint& P1,
+  const IntRes2d_IntersectionPoint& P2,
+  const Standard_Boolean            Oppos,
+  const Standard_Boolean            ReverseFlag)
+    :
 
-  oppos(Oppos),
-  first(Standard_True),
-  last(Standard_True),
-  ptfirst(P1),
-  ptlast(P2)
-{ 
-  if(ReverseFlag) {
-    if(Oppos) {
-      ptfirst= P2;
-      ptlast = P1;
+      oppos(Oppos),
+      first(Standard_True),
+      last(Standard_True),
+      ptfirst(P1),
+      ptlast(P2)
+{
+  if (ReverseFlag)
+  {
+    if (Oppos)
+    {
+      ptfirst = P2;
+      ptlast  = P1;
     }
   }
 }
 
-inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment (
-	 const IntRes2d_IntersectionPoint& P, 
-	 const Standard_Boolean First,
-	 const Standard_Boolean Oppos,
-	 const Standard_Boolean ReverseFlag):
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
+  const IntRes2d_IntersectionPoint& P,
+  const Standard_Boolean            First,
+  const Standard_Boolean            Oppos,
+  const Standard_Boolean            ReverseFlag)
+    :
 
-  oppos(Oppos),
-  ptfirst(),
-  ptlast()
+      oppos(Oppos),
+      ptfirst(),
+      ptlast()
+{
+  if (ReverseFlag && Oppos)
+  {
+    if (First)
     {
-      if(ReverseFlag && Oppos) {
-	if (First) {
-	  first=Standard_False; last=Standard_True; ptlast=P;
-	}
-	else {
-	  first=Standard_True; last=Standard_False; ptfirst=P;
-	}
-      }
-      else {
-	if (First) {
-	  first=Standard_True; last=Standard_False; ptfirst=P;
-	}
-	else {
-	  first=Standard_False; last=Standard_True; ptlast=P;
-	}
-      }
+      first  = Standard_False;
+      last   = Standard_True;
+      ptlast = P;
     }
+    else
+    {
+      first   = Standard_True;
+      last    = Standard_False;
+      ptfirst = P;
+    }
+  }
+  else
+  {
+    if (First)
+    {
+      first   = Standard_True;
+      last    = Standard_False;
+      ptfirst = P;
+    }
+    else
+    {
+      first  = Standard_False;
+      last   = Standard_True;
+      ptlast = P;
+    }
+  }
+}
 
-inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment (
-                                            const Standard_Boolean Oppos):
-  oppos(Oppos),
-  first(Standard_False),
-  last(Standard_False),
-  ptfirst(),
-  ptlast()
-{ }
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(const Standard_Boolean Oppos)
+    : oppos(Oppos),
+      first(Standard_False),
+      last(Standard_False),
+      ptfirst(),
+      ptlast()
+{
+}
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::IsOpposite () const {
+inline Standard_Boolean IntRes2d_IntersectionSegment::IsOpposite() const
+{
   return oppos;
 }
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::HasFirstPoint () const {
-  return first; 
+inline Standard_Boolean IntRes2d_IntersectionSegment::HasFirstPoint() const
+{
+  return first;
 }
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::HasLastPoint () const {
+inline Standard_Boolean IntRes2d_IntersectionSegment::HasLastPoint() const
+{
   return last;
 }
 
-inline const IntRes2d_IntersectionPoint& 
-        IntRes2d_IntersectionSegment::FirstPoint () const {
+inline const IntRes2d_IntersectionPoint& IntRes2d_IntersectionSegment::FirstPoint() const
+{
 
-  if (!first) { throw Standard_DomainError(); }
+  if (!first)
+  {
+    throw Standard_DomainError();
+  }
   return ptfirst;
 }
 
+inline const IntRes2d_IntersectionPoint& IntRes2d_IntersectionSegment::LastPoint() const
+{
 
-inline const IntRes2d_IntersectionPoint&
-        IntRes2d_IntersectionSegment::LastPoint () const {
-
-  if (!last) { throw Standard_DomainError();}
+  if (!last)
+  {
+    throw Standard_DomainError();
+  }
   return ptlast;
 }
-
-

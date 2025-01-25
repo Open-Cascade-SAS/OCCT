@@ -23,7 +23,6 @@
 #include <StepShape_HArray1OfFace.hxx>
 class TCollection_HAsciiString;
 
-
 class StepShape_ConnectedFaceSubSet;
 DEFINE_STANDARD_HANDLE(StepShape_ConnectedFaceSubSet, StepShape_ConnectedFaceSet)
 
@@ -32,42 +31,25 @@ class StepShape_ConnectedFaceSubSet : public StepShape_ConnectedFaceSet
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_ConnectedFaceSubSet();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const Handle(StepShape_HArray1OfFace)& aConnectedFaceSet_CfsFaces, const Handle(StepShape_ConnectedFaceSet)& aParentFaceSet);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   aRepresentationItem_Name,
+                            const Handle(StepShape_HArray1OfFace)&    aConnectedFaceSet_CfsFaces,
+                            const Handle(StepShape_ConnectedFaceSet)& aParentFaceSet);
+
   //! Returns field ParentFaceSet
   Standard_EXPORT Handle(StepShape_ConnectedFaceSet) ParentFaceSet() const;
-  
+
   //! Set field ParentFaceSet
-  Standard_EXPORT void SetParentFaceSet (const Handle(StepShape_ConnectedFaceSet)& ParentFaceSet);
+  Standard_EXPORT void SetParentFaceSet(const Handle(StepShape_ConnectedFaceSet)& ParentFaceSet);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSubSet,StepShape_ConnectedFaceSet)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSubSet, StepShape_ConnectedFaceSet)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_ConnectedFaceSet) theParentFaceSet;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ConnectedFaceSubSet_HeaderFile

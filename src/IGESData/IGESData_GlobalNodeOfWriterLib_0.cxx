@@ -25,15 +25,6 @@
 #include <IGESData_WriterLib.hxx>
 #include <IGESData_NodeOfWriterLib.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define TheObject Handle(IGESData_IGESEntity)
 #define TheObject_hxx <IGESData_IGESEntity.hxx>
 #define Handle_TheModule Handle(IGESData_ReadWriteModule)
@@ -51,4 +42,3 @@
 #define LibCtl_Library IGESData_WriterLib
 #define LibCtl_Library_hxx <IGESData_WriterLib.hxx>
 #include "../LibCtl/LibCtl_GlobalNode.gxx"
-

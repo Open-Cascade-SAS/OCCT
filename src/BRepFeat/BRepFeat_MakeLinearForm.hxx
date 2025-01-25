@@ -34,7 +34,6 @@ class TopoDS_Edge;
 class TopoDS_Face;
 class gp_Pnt;
 
-
 //! Builds a rib or a groove along a developable, planar surface.
 //! The semantics of mechanical features is built around
 //! giving thickness to a contour. This thickness can either
@@ -47,16 +46,14 @@ class gp_Pnt;
 //! -   to a limiting face of the basis shape
 //! -   to or from a limiting plane
 //! -   to a height.
-class BRepFeat_MakeLinearForm  : public BRepFeat_RibSlot
+class BRepFeat_MakeLinearForm : public BRepFeat_RibSlot
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! initializes the linear form class
-    BRepFeat_MakeLinearForm();
-  
+  BRepFeat_MakeLinearForm();
+
   //! contour W, a shape Sbase and a
   //! plane P are initialized to serve as the basic
   //! elements in the construction of the rib or groove.
@@ -67,8 +64,14 @@ public:
   //! setting 0 in case of the groove
   //! -   adding matter with Boolean fusion using the
   //! setting 1 in case of the rib.
-    BRepFeat_MakeLinearForm(const TopoDS_Shape& Sbase, const TopoDS_Wire& W, const Handle(Geom_Plane)& P, const gp_Vec& Direction, const gp_Vec& Direction1, const Standard_Integer Fuse, const Standard_Boolean Modify);
-  
+  BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
+                          const TopoDS_Wire&        W,
+                          const Handle(Geom_Plane)& P,
+                          const gp_Vec&             Direction,
+                          const gp_Vec&             Direction1,
+                          const Standard_Integer    Fuse,
+                          const Standard_Boolean    Modify);
+
   //! Initializes this construction algorithm.
   //! A contour W, a shape Sbase and a plane P are
   //! initialized to serve as the basic elements in the
@@ -80,18 +83,24 @@ public:
   //! 0 in case of the groove
   //! -   adding matter with Boolean fusion using the setting 1
   //! in case of the rib.
-  Standard_EXPORT void Init (const TopoDS_Shape& Sbase, const TopoDS_Wire& W, const Handle(Geom_Plane)& P, const gp_Vec& Direction, const gp_Vec& Direction1, const Standard_Integer Fuse, const Standard_Boolean Modify);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&       Sbase,
+                            const TopoDS_Wire&        W,
+                            const Handle(Geom_Plane)& P,
+                            const gp_Vec&             Direction,
+                            const gp_Vec&             Direction1,
+                            const Standard_Integer    Fuse,
+                            const Standard_Boolean    Modify);
+
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
   //! Raises ConstructionError if the  face does not belong to the
   //! basis shape, or the edge to the prismed shape.
-  Standard_EXPORT void Add (const TopoDS_Edge& E, const TopoDS_Face& OnFace);
-  
+  Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
+
   //! Performs a prism from the wire to the plane along the
   //! basis shape Sbase. Reconstructs the feature topologically.
   Standard_EXPORT void Perform();
-  
+
   //! Limits construction of the linear form feature by using
   //! one of the following three semantics:
   //! -   from a limiting plane
@@ -100,40 +109,26 @@ public:
   //! The setting is provided by a flag, flag, which can be set
   //! to from and/or until. The third semantic possibility above
   //! is selected by showing both from and until at the same time.
-  Standard_EXPORT void TransformShapeFU (const Standard_Integer flag);
-  
-  Standard_EXPORT Standard_Boolean Propagate (TopTools_ListOfShape& L, const TopoDS_Face& F, const gp_Pnt& FPoint, const gp_Pnt& LPoint, Standard_Boolean& falseside);
+  Standard_EXPORT void TransformShapeFU(const Standard_Integer flag);
 
-
-
+  Standard_EXPORT Standard_Boolean Propagate(TopTools_ListOfShape& L,
+                                             const TopoDS_Face&    F,
+                                             const gp_Pnt&         FPoint,
+                                             const gp_Pnt&         LPoint,
+                                             Standard_Boolean&     falseside);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(Geom_Curve) myCrv;
-  gp_Vec myDir;
-  gp_Vec myDir1;
-  Handle(Geom_Plane) myPln;
-  Standard_Real myBnd;
+  Handle(Geom_Curve)                 myCrv;
+  gp_Vec                             myDir;
+  gp_Vec                             myDir1;
+  Handle(Geom_Plane)                 myPln;
+  Standard_Real                      myBnd;
   TopTools_DataMapOfShapeListOfShape mySlface;
-  TopTools_ListOfShape myListOfEdges;
-  Standard_Real myTol;
-
-
+  TopTools_ListOfShape               myListOfEdges;
+  Standard_Real                      myTol;
 };
 
-
 #include <BRepFeat_MakeLinearForm.lxx>
-
-
-
-
 
 #endif // _BRepFeat_MakeLinearForm_HeaderFile

@@ -26,7 +26,6 @@ class Interface_InterfaceModel;
 class Interface_Protocol;
 class Interface_CopyTool;
 
-
 class IFSelect_Modifier;
 DEFINE_STANDARD_HANDLE(IFSelect_Modifier, IFSelect_GeneralModifier)
 
@@ -40,8 +39,6 @@ class IFSelect_Modifier : public IFSelect_GeneralModifier
 {
 
 public:
-
-  
   //! This deferred method defines the action specific to each class
   //! of Modifier. It is called by a ModelCopier, once the Model
   //! generated and filled. ModelCopier has already checked the
@@ -54,33 +51,19 @@ public:
   //!
   //! In case of Error, use methods CCheck from the ContextModif
   //! to aknowledge an entity Check or a Global Check with messages
-  Standard_EXPORT virtual void Perform (IFSelect_ContextModif& ctx, const Handle(Interface_InterfaceModel)& target, const Handle(Interface_Protocol)& protocol, Interface_CopyTool& TC) const = 0;
+  Standard_EXPORT virtual void Perform(IFSelect_ContextModif&                  ctx,
+                                       const Handle(Interface_InterfaceModel)& target,
+                                       const Handle(Interface_Protocol)&       protocol,
+                                       Interface_CopyTool&                     TC) const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Modifier,IFSelect_GeneralModifier)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Modifier, IFSelect_GeneralModifier)
 
 protected:
-
-  
   //! Calls inherited Initialize, transmits to it the information
   //! <maychangegraph>
   Standard_EXPORT IFSelect_Modifier(const Standard_Boolean maychangegraph);
 
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_Modifier_HeaderFile

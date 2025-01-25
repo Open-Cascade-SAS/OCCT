@@ -19,48 +19,46 @@
 
 #include <TObj_Object.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(TObj_SequenceIterator,TObj_ObjectIterator)
+IMPLEMENT_STANDARD_RTTIEXT(TObj_SequenceIterator, TObj_ObjectIterator)
 
 //=======================================================================
-//function : TObj_SequenceIterator
-//purpose  :
+// function : TObj_SequenceIterator
+// purpose  :
 //=======================================================================
 
-TObj_SequenceIterator::TObj_SequenceIterator() :
-  myIndex( 1 )
+TObj_SequenceIterator::TObj_SequenceIterator()
+    : myIndex(1)
 {
 }
 
 //=======================================================================
-//function : TObj_SequenceIterator
-//purpose  :
+// function : TObj_SequenceIterator
+// purpose  :
 //=======================================================================
 
-TObj_SequenceIterator::TObj_SequenceIterator
-  (const Handle(TObj_HSequenceOfObject)& theObjects,
-   const Handle(Standard_Type)&              theType)
+TObj_SequenceIterator::TObj_SequenceIterator(const Handle(TObj_HSequenceOfObject)& theObjects,
+                                             const Handle(Standard_Type)&          theType)
 {
-  myIndex = 1;
-  myType = theType;
+  myIndex   = 1;
+  myType    = theType;
   myObjects = theObjects;
 }
 
 //=======================================================================
-//function : More
-//purpose  :
+// function : More
+// purpose  :
 //=======================================================================
 
 Standard_Boolean TObj_SequenceIterator::More() const
 {
-  const Standard_Boolean isMore = (!myObjects.IsNull() &&
-                                   (myIndex <= myObjects->Length() && myIndex > 0) &&
-                                   !myObjects->Value(myIndex).IsNull());
+  const Standard_Boolean isMore =
+    (!myObjects.IsNull() && (myIndex <= myObjects->Length() && myIndex > 0)
+     && !myObjects->Value(myIndex).IsNull());
 
   // check type
-  if (isMore && !myType.IsNull() && !myObjects->Value(myIndex)->IsKind( myType ))
+  if (isMore && !myType.IsNull() && !myObjects->Value(myIndex)->IsKind(myType))
   {
-    TObj_SequenceIterator* me = (TObj_SequenceIterator*) this;
+    TObj_SequenceIterator* me = (TObj_SequenceIterator*)this;
     me->Next();
     return More();
   }
@@ -69,16 +67,18 @@ Standard_Boolean TObj_SequenceIterator::More() const
 }
 
 //=======================================================================
-//function : Next
-//purpose  :
+// function : Next
+// purpose  :
 //=======================================================================
 
 void TObj_SequenceIterator::Next()
-{ myIndex++; }
+{
+  myIndex++;
+}
 
 //=======================================================================
-//function : Value
-//purpose  :
+// function : Value
+// purpose  :
 //=======================================================================
 
 Handle(TObj_Object) TObj_SequenceIterator::Value() const

@@ -18,7 +18,6 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntPatch_Point.hxx>
 
-
 inline const Handle(Adaptor2d_Curve2d)& IntPatch_RLine::ArcOnS1() const
 {
   return theArcOnS1;
@@ -30,30 +29,29 @@ inline const Handle(Adaptor2d_Curve2d)& IntPatch_RLine::ArcOnS2() const
 }
 
 //-- Il faut mettre cet include ici , car l include fait un define Handle(Adaptor2d_Curve2d) ...
-//-- et en fin de fichier un undef Handle(Adaptor2d_Curve2d) ... 
+//-- et en fin de fichier un undef Handle(Adaptor2d_Curve2d) ...
 
-inline void IntPatch_RLine::AddVertex (const IntPatch_Point& thePnt,
-                                       const Standard_Boolean theIsPrepend)
+inline void IntPatch_RLine::AddVertex(const IntPatch_Point&  thePnt,
+                                      const Standard_Boolean theIsPrepend)
 {
-  if(theIsPrepend)
+  if (theIsPrepend)
     svtx.Prepend(thePnt);
   else
     svtx.Append(thePnt);
 }
 
-inline void IntPatch_RLine::Replace (const Standard_Integer Index,
-				     const IntPatch_Point& Pnt)
+inline void IntPatch_RLine::Replace(const Standard_Integer Index, const IntPatch_Point& Pnt)
 {
   svtx(Index) = Pnt;
 }
 
-inline void IntPatch_RLine::SetFirstPoint (const Standard_Integer IndFirst)
+inline void IntPatch_RLine::SetFirstPoint(const Standard_Integer IndFirst)
 {
   fipt = Standard_True;
   indf = IndFirst;
 }
 
-inline void IntPatch_RLine::SetLastPoint (const Standard_Integer IndLast)
+inline void IntPatch_RLine::SetLastPoint(const Standard_Integer IndLast)
 {
   lapt = Standard_True;
   indl = IndLast;
@@ -74,68 +72,80 @@ inline Standard_Boolean IntPatch_RLine::IsArcOnS2() const
   return onS2;
 }
 
-inline Standard_Boolean IntPatch_RLine::HasFirstPoint () const
+inline Standard_Boolean IntPatch_RLine::HasFirstPoint() const
 {
   return fipt;
 }
 
-inline Standard_Boolean IntPatch_RLine::HasLastPoint () const
+inline Standard_Boolean IntPatch_RLine::HasLastPoint() const
 {
   return lapt;
 }
 
-inline const IntPatch_Point& IntPatch_RLine::FirstPoint () const
+inline const IntPatch_Point& IntPatch_RLine::FirstPoint() const
 {
-  if (!fipt) {throw Standard_DomainError();}
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indf);
 }
 
-inline const IntPatch_Point& IntPatch_RLine::LastPoint () const
+inline const IntPatch_Point& IntPatch_RLine::LastPoint() const
 {
-  if (!lapt) {throw Standard_DomainError();}
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indl);
 }
 
-inline Standard_Integer IntPatch_RLine::NbVertex () const
+inline Standard_Integer IntPatch_RLine::NbVertex() const
 {
   return svtx.Length();
 }
 
-inline const IntPatch_Point& IntPatch_RLine::Vertex (const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_RLine::Vertex(const Standard_Integer Index) const
 {
   return svtx(Index);
 }
 
-inline IntPatch_Point& IntPatch_RLine::ChangeVertex (const Standard_Integer Index)
+inline IntPatch_Point& IntPatch_RLine::ChangeVertex(const Standard_Integer Index)
 {
   return svtx(Index);
 }
 
 inline void IntPatch_RLine::RemoveVertex(const Standard_Integer theIndex)
 {
-  if((theIndex < 1) || (theIndex > NbVertex()))
+  if ((theIndex < 1) || (theIndex > NbVertex()))
     throw Standard_OutOfRange("Cannot delete not existing vertex");
   svtx.Remove(theIndex);
 }
 
-inline Standard_Boolean IntPatch_RLine::HasPolygon () const
+inline Standard_Boolean IntPatch_RLine::HasPolygon() const
 {
   return (!curv.IsNull());
 }
 
-inline Standard_Integer IntPatch_RLine::NbPnts () const
+inline Standard_Integer IntPatch_RLine::NbPnts() const
 {
-  if (curv.IsNull()) {throw Standard_DomainError();}
+  if (curv.IsNull())
+  {
+    throw Standard_DomainError();
+  }
   return curv->NbPoints();
 }
 
-inline const IntSurf_PntOn2S& IntPatch_RLine::Point (const Standard_Integer Index) const
+inline const IntSurf_PntOn2S& IntPatch_RLine::Point(const Standard_Integer Index) const
 {
-  if (curv.IsNull()) {throw Standard_DomainError();}
+  if (curv.IsNull())
+  {
+    throw Standard_DomainError();
+  }
   return curv->Value(Index);
 }
 
 inline Handle(IntSurf_LineOn2S) IntPatch_RLine::Curve() const
-{ 
-  return(curv);
+{
+  return (curv);
 }

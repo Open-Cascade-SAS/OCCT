@@ -25,5 +25,4 @@
 
 typedef NCollection_Array2<Handle(TColStd_HArray1OfInteger)> FEmTool_AssemblyTable;
 
-
 #endif

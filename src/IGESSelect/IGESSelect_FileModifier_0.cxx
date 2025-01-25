@@ -21,19 +21,9 @@
 #include <IGESData_IGESWriter.hxx>
 #include <IFSelect_ContextWrite.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define Writer IGESData_IGESWriter
 #define Writer_hxx <IGESData_IGESWriter.hxx>
 #define IFSelect_FileModifier IGESSelect_FileModifier
 #define IFSelect_FileModifier_hxx <IGESSelect_FileModifier.hxx>
 #define Handle_IFSelect_FileModifier Handle(IGESSelect_FileModifier)
 #include "../IFSelect/IFSelect_FileModifier.gxx"
-

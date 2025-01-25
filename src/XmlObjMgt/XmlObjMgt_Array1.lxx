@@ -14,41 +14,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Element
-//purpose  : 
+// function : Element
+// purpose  :
 //=======================================================================
 
-inline const XmlObjMgt_Element& XmlObjMgt_Array1::Element () const 
+inline const XmlObjMgt_Element& XmlObjMgt_Array1::Element() const
 {
   return myElement;
 }
 
 //=======================================================================
-//function : Length
-//purpose  : 
+// function : Length
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Length () const 
+inline Standard_Integer XmlObjMgt_Array1::Length() const
 {
   return myLast - myFirst + 1;
 }
 
 //=======================================================================
-//function : Lower
-//purpose  : 
+// function : Lower
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Lower () const
+inline Standard_Integer XmlObjMgt_Array1::Lower() const
 {
   return myFirst;
 }
 
 //=======================================================================
-//function : Upper
-//purpose  : 
+// function : Upper
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Upper () const
+inline Standard_Integer XmlObjMgt_Array1::Upper() const
 {
   return myLast;
 }

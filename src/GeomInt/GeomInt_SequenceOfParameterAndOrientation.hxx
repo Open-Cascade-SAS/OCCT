@@ -20,7 +20,7 @@
 #include <GeomInt_ParameterAndOrientation.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<GeomInt_ParameterAndOrientation> GeomInt_SequenceOfParameterAndOrientation;
-
+typedef NCollection_Sequence<GeomInt_ParameterAndOrientation>
+  GeomInt_SequenceOfParameterAndOrientation;
 
 #endif

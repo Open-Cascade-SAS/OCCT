@@ -21,7 +21,8 @@
 #include <Graphic3d_HatchStyle.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(Graphic3d_HatchStyle), unsigned int> OpenGl_MapOfHatchStylesAndIds;
+typedef NCollection_DataMap<Handle(Graphic3d_HatchStyle), unsigned int>
+  OpenGl_MapOfHatchStylesAndIds;
 
 class OpenGl_Context;
 
@@ -33,7 +34,6 @@ class OpenGl_LineAttributes : public OpenGl_Resource
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 public:
-
   //! Default constructor.
   Standard_EXPORT OpenGl_LineAttributes();
 
@@ -41,24 +41,20 @@ public:
   Standard_EXPORT virtual ~OpenGl_LineAttributes();
 
   //! Release GL resources.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   //! Returns estimated GPU memory usage - not implemented.
   virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
 
   //! Sets type of the hatch.
-  Standard_EXPORT bool SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
-                                       const Handle(Graphic3d_HatchStyle)& theStyle);
+  Standard_EXPORT bool SetTypeOfHatch(const OpenGl_Context*               theGlCtx,
+                                      const Handle(Graphic3d_HatchStyle)& theStyle);
 
 private:
-
-  unsigned int init (const OpenGl_Context* theGlCtx,
-                     const Handle(Graphic3d_HatchStyle)& theStyle);
+  unsigned int init(const OpenGl_Context* theGlCtx, const Handle(Graphic3d_HatchStyle)& theStyle);
 
 protected:
-
   OpenGl_MapOfHatchStylesAndIds myStyles; //!< Hatch patterns
-
 };
 
 #endif // _OpenGl_LineAttributes_Header

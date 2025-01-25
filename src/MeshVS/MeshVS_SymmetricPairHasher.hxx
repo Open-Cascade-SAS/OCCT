@@ -28,7 +28,7 @@ struct MeshVS_SymmetricPairHasher
   size_t operator()(const MeshVS_NodePair& theNodePair) const noexcept
   {
     // Combine two int values into a single hash value.
-    int aCombination[2]{ theNodePair.first, theNodePair.second };
+    int aCombination[2]{theNodePair.first, theNodePair.second};
     if (aCombination[0] > aCombination[1])
     {
       std::swap(aCombination[0], aCombination[1]);
@@ -39,7 +39,7 @@ struct MeshVS_SymmetricPairHasher
   bool operator()(const MeshVS_NodePair& thePair1, const MeshVS_NodePair& thePair2) const noexcept
   {
     return (thePair1.first == thePair2.first && thePair1.second == thePair2.second)
-      || (thePair1.first == thePair2.second && thePair1.second == thePair2.first);
+           || (thePair1.first == thePair2.second && thePair1.second == thePair2.first);
   }
 };
 

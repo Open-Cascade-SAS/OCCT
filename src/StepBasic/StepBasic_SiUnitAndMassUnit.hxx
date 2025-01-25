@@ -24,48 +24,29 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_MassUnit;
 
-
 class StepBasic_SiUnitAndMassUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndMassUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndMassUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndMassUnit
   Standard_EXPORT StepBasic_SiUnitAndMassUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetMassUnit (const Handle(StepBasic_MassUnit)& aMassUnit);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
+
+  Standard_EXPORT void SetMassUnit(const Handle(StepBasic_MassUnit)& aMassUnit);
+
   Standard_EXPORT Handle(StepBasic_MassUnit) MassUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_MassUnit) massUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndMassUnit_HeaderFile

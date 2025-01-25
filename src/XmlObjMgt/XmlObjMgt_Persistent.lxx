@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Element
-//purpose  : 
+// function : Element
+// purpose  :
 //=======================================================================
 inline const XmlObjMgt_Element& XmlObjMgt_Persistent::Element() const
 {
@@ -23,8 +23,8 @@ inline const XmlObjMgt_Element& XmlObjMgt_Persistent::Element() const
 }
 
 //=======================================================================
-//function : Element
-//purpose  : 
+// function : Element
+// purpose  :
 //=======================================================================
 inline XmlObjMgt_Element& XmlObjMgt_Persistent::Element()
 {
@@ -32,8 +32,8 @@ inline XmlObjMgt_Element& XmlObjMgt_Persistent::Element()
 }
 
 //=======================================================================
-//function : operator XmlObjMgt_Element
-//purpose  : 
+// function : operator XmlObjMgt_Element
+// purpose  :
 //=======================================================================
 
 inline XmlObjMgt_Persistent::operator const XmlObjMgt_Element&() const
@@ -42,8 +42,8 @@ inline XmlObjMgt_Persistent::operator const XmlObjMgt_Element&() const
 }
 
 //=======================================================================
-//function : operator XmlObjMgt_Element
-//purpose  : 
+// function : operator XmlObjMgt_Element
+// purpose  :
 //=======================================================================
 
 inline XmlObjMgt_Persistent::operator XmlObjMgt_Element&()
@@ -52,8 +52,8 @@ inline XmlObjMgt_Persistent::operator XmlObjMgt_Element&()
 }
 
 //=======================================================================
-//function : Id
-//purpose  : 
+// function : Id
+// purpose  :
 //=======================================================================
 inline Standard_Integer XmlObjMgt_Persistent::Id() const
 {

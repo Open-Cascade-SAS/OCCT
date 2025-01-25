@@ -37,92 +37,74 @@ class ChFiDS_FilSpine : public ChFiDS_Spine
 {
 
 public:
-
-  
   Standard_EXPORT ChFiDS_FilSpine();
-  
+
   Standard_EXPORT ChFiDS_FilSpine(const Standard_Real Tol);
-  
-  Standard_EXPORT virtual void Reset (const Standard_Boolean AllData = Standard_False) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void Reset(const Standard_Boolean AllData = Standard_False)
+    Standard_OVERRIDE;
+
   //! initializes the constant vector on edge E.
-  Standard_EXPORT void SetRadius (const Standard_Real Radius, const TopoDS_Edge& E);
-  
+  Standard_EXPORT void SetRadius(const Standard_Real Radius, const TopoDS_Edge& E);
+
   //! resets the constant vector  on   edge E.
-  Standard_EXPORT void UnSetRadius (const TopoDS_Edge& E);
-  
+  Standard_EXPORT void UnSetRadius(const TopoDS_Edge& E);
+
   //! initializes the  vector on Vertex V.
-  Standard_EXPORT void SetRadius (const Standard_Real Radius, const TopoDS_Vertex& V);
-  
+  Standard_EXPORT void SetRadius(const Standard_Real Radius, const TopoDS_Vertex& V);
+
   //! resets the vector on Vertex V.
-  Standard_EXPORT void UnSetRadius (const TopoDS_Vertex& V);
-  
+  Standard_EXPORT void UnSetRadius(const TopoDS_Vertex& V);
+
   //! initializes the vector on the point of parameter W.
-  Standard_EXPORT void SetRadius (const gp_XY& UandR, const Standard_Integer IinC);
-  
+  Standard_EXPORT void SetRadius(const gp_XY& UandR, const Standard_Integer IinC);
+
   //! initializes the constant vector on all spine.
-  Standard_EXPORT void SetRadius (const Standard_Real Radius);
-  
+  Standard_EXPORT void SetRadius(const Standard_Real Radius);
+
   //! initializes the rule of evolution on all spine.
-  Standard_EXPORT void SetRadius (const Handle(Law_Function)& C, const Standard_Integer IinC);
-  
+  Standard_EXPORT void SetRadius(const Handle(Law_Function)& C, const Standard_Integer IinC);
+
   //! returns true if the radius is constant
   //! all along the spine.
   Standard_EXPORT Standard_Boolean IsConstant() const;
-  
+
   //! returns true if the radius is constant
   //! all along the edge E.
-  Standard_EXPORT Standard_Boolean IsConstant (const Standard_Integer IE) const;
-  
+  Standard_EXPORT Standard_Boolean IsConstant(const Standard_Integer IE) const;
+
   //! returns the radius if the fillet is constant
   //! all along the spine.
   Standard_EXPORT Standard_Real Radius() const;
-  
+
   //! returns the radius if the fillet is constant
   //! all along the edge E.
-  Standard_EXPORT Standard_Real Radius (const Standard_Integer IE) const;
-  
+  Standard_EXPORT Standard_Real Radius(const Standard_Integer IE) const;
+
   //! returns the radius if the fillet is constant
   //! all along the edge E.
-  Standard_EXPORT Standard_Real Radius (const TopoDS_Edge& E) const;
-  
-  Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_ElSpine)& Els) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(Law_Composite) Law (const Handle(ChFiDS_ElSpine)& Els) const;
-  
+  Standard_EXPORT Standard_Real Radius(const TopoDS_Edge& E) const;
+
+  Standard_EXPORT virtual void AppendElSpine(const Handle(ChFiDS_ElSpine)& Els) Standard_OVERRIDE;
+
+  Standard_EXPORT Handle(Law_Composite) Law(const Handle(ChFiDS_ElSpine)& Els) const;
+
   //! returns the elementary law
-  Standard_EXPORT Handle(Law_Function)& ChangeLaw (const TopoDS_Edge& E);
-  
+  Standard_EXPORT Handle(Law_Function)& ChangeLaw(const TopoDS_Edge& E);
+
   //! returns the maximum radius if the fillet is non-constant
   Standard_EXPORT Standard_Real MaxRadFromSeqAndLaws() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ChFiDS_FilSpine,ChFiDS_Spine)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_FilSpine, ChFiDS_Spine)
 
 protected:
-
-
-
-
 private:
+  Standard_EXPORT Handle(Law_Composite) ComputeLaw(const Handle(ChFiDS_ElSpine)& Els);
 
-  
-  Standard_EXPORT Handle(Law_Composite) ComputeLaw (const Handle(ChFiDS_ElSpine)& Els);
-  
-  Standard_EXPORT void AppendLaw (const Handle(ChFiDS_ElSpine)& Els);
+  Standard_EXPORT void AppendLaw(const Handle(ChFiDS_ElSpine)& Els);
 
   TColgp_SequenceOfXY parandrad;
-  Law_Laws laws;
-
-
+  Law_Laws            laws;
 };
-
-
-
-
-
-
 
 #endif // _ChFiDS_FilSpine_HeaderFile

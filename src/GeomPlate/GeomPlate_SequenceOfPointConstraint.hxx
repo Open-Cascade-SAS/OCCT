@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(GeomPlate_PointConstraint)> GeomPlate_SequenceOfPointConstraint;
 
-
 #endif

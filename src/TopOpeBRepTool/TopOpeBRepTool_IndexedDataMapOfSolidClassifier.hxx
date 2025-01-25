@@ -21,7 +21,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,BRepClass3d_SolidClassifier,TopTools_ShapeMapHasher> TopOpeBRepTool_IndexedDataMapOfSolidClassifier;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   BRepClass3d_SolidClassifier,
+                                   TopTools_ShapeMapHasher>
+  TopOpeBRepTool_IndexedDataMapOfSolidClassifier;
 
 #endif

@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Effectivity;
 
-
 class StepBasic_EffectivityAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_EffectivityAssignment, Standard_Transient)
 
@@ -31,42 +30,24 @@ class StepBasic_EffectivityAssignment : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_EffectivityAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_Effectivity)& aAssignedEffectivity);
-  
+  Standard_EXPORT void Init(const Handle(StepBasic_Effectivity)& aAssignedEffectivity);
+
   //! Returns field AssignedEffectivity
   Standard_EXPORT Handle(StepBasic_Effectivity) AssignedEffectivity() const;
-  
+
   //! Set field AssignedEffectivity
-  Standard_EXPORT void SetAssignedEffectivity (const Handle(StepBasic_Effectivity)& AssignedEffectivity);
+  Standard_EXPORT void SetAssignedEffectivity(
+    const Handle(StepBasic_Effectivity)& AssignedEffectivity);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_EffectivityAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_EffectivityAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_Effectivity) theAssignedEffectivity;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_EffectivityAssignment_HeaderFile

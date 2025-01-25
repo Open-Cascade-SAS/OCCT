@@ -14,8 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_OStream& operator<< (Standard_OStream& o, 
-				    const FairCurve_MinimalVariation& MVC) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const FairCurve_MinimalVariation& MVC)
 {
   MVC.Dump(o);
   return o;
@@ -23,28 +22,29 @@ inline Standard_OStream& operator<< (Standard_OStream& o,
 
 inline void FairCurve_MinimalVariation::SetCurvature1(const Standard_Real Curvature)
 {
-  NewCurvature1 =  Curvature;
+  NewCurvature1 = Curvature;
 }
 
 inline void FairCurve_MinimalVariation::SetCurvature2(const Standard_Real Curvature)
 {
-  NewCurvature2 =  Curvature;
+  NewCurvature2 = Curvature;
 }
 
 inline void FairCurve_MinimalVariation::SetPhysicalRatio(const Standard_Real Ratio)
 {
-  Standard_DomainError_Raise_if(Ratio < 0 || Ratio > 1, "FairCurve_MinimalVariation::SetPhysicalRatio" );
+  Standard_DomainError_Raise_if(Ratio < 0 || Ratio > 1,
+                                "FairCurve_MinimalVariation::SetPhysicalRatio");
   NewPhysicalRatio = Ratio;
 }
 
-inline Standard_Real FairCurve_MinimalVariation::GetCurvature1() const 
+inline Standard_Real FairCurve_MinimalVariation::GetCurvature1() const
 {
- return OldCurvature1;
+  return OldCurvature1;
 }
 
-inline Standard_Real FairCurve_MinimalVariation::GetCurvature2() const 
+inline Standard_Real FairCurve_MinimalVariation::GetCurvature2() const
 {
- return OldCurvature2;
+  return OldCurvature2;
 }
 
 inline Standard_Real FairCurve_MinimalVariation::GetPhysicalRatio() const

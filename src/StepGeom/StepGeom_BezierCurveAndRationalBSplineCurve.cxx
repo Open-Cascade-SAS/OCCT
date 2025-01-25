@@ -11,102 +11,118 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_BezierCurve.hxx>
 #include <StepGeom_BezierCurveAndRationalBSplineCurve.hxx>
 #include <StepGeom_RationalBSplineCurve.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurveAndRationalBSplineCurve,StepGeom_BSplineCurve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurveAndRationalBSplineCurve, StepGeom_BSplineCurve)
 
-StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve ()  {}
-
-void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Integer aDegree,
-	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-	const StepGeom_BSplineCurveForm aCurveForm,
-	const StepData_Logical aClosedCurve,
-	const StepData_Logical aSelfIntersect,
-	const Handle(StepGeom_BezierCurve)& aBezierCurve,
-	const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
-{
-	// --- classe own fields ---
-	bezierCurve = aBezierCurve;
-	rationalBSplineCurve = aRationalBSplineCurve;
-	// --- classe inherited fields ---
-	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
-}
-
+StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve() {}
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Integer aDegree,
-	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-	const StepGeom_BSplineCurveForm aCurveForm,
-	const StepData_Logical aClosedCurve,
-	const StepData_Logical aSelfIntersect,
-	const Handle(TColStd_HArray1OfReal)& aWeightsData)
+  const Handle(TCollection_HAsciiString)&         aName,
+  const Standard_Integer                          aDegree,
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const StepGeom_BSplineCurveForm                 aCurveForm,
+  const StepData_Logical                          aClosedCurve,
+  const StepData_Logical                          aSelfIntersect,
+  const Handle(StepGeom_BezierCurve)&             aBezierCurve,
+  const Handle(StepGeom_RationalBSplineCurve)&    aRationalBSplineCurve)
 {
-	// --- classe inherited fields ---
-
-	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
-
-	// --- ANDOR component fields ---
-
-	bezierCurve = new StepGeom_BezierCurve();
-	bezierCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
-
-	// --- ANDOR component fields ---
-
-	rationalBSplineCurve = new StepGeom_RationalBSplineCurve();
-	rationalBSplineCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect, aWeightsData);
+  // --- classe own fields ---
+  bezierCurve          = aBezierCurve;
+  rationalBSplineCurve = aRationalBSplineCurve;
+  // --- classe inherited fields ---
+  StepGeom_BSplineCurve::Init(aName,
+                              aDegree,
+                              aControlPointsList,
+                              aCurveForm,
+                              aClosedCurve,
+                              aSelfIntersect);
 }
 
-
-void StepGeom_BezierCurveAndRationalBSplineCurve::SetBezierCurve(const Handle(StepGeom_BezierCurve)& aBezierCurve)
+void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
+  const Handle(TCollection_HAsciiString)&         aName,
+  const Standard_Integer                          aDegree,
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const StepGeom_BSplineCurveForm                 aCurveForm,
+  const StepData_Logical                          aClosedCurve,
+  const StepData_Logical                          aSelfIntersect,
+  const Handle(TColStd_HArray1OfReal)&            aWeightsData)
 {
-	bezierCurve = aBezierCurve;
+  // --- classe inherited fields ---
+
+  StepGeom_BSplineCurve::Init(aName,
+                              aDegree,
+                              aControlPointsList,
+                              aCurveForm,
+                              aClosedCurve,
+                              aSelfIntersect);
+
+  // --- ANDOR component fields ---
+
+  bezierCurve = new StepGeom_BezierCurve();
+  bezierCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
+
+  // --- ANDOR component fields ---
+
+  rationalBSplineCurve = new StepGeom_RationalBSplineCurve();
+  rationalBSplineCurve->Init(aName,
+                             aDegree,
+                             aControlPointsList,
+                             aCurveForm,
+                             aClosedCurve,
+                             aSelfIntersect,
+                             aWeightsData);
+}
+
+void StepGeom_BezierCurveAndRationalBSplineCurve::SetBezierCurve(
+  const Handle(StepGeom_BezierCurve)& aBezierCurve)
+{
+  bezierCurve = aBezierCurve;
 }
 
 Handle(StepGeom_BezierCurve) StepGeom_BezierCurveAndRationalBSplineCurve::BezierCurve() const
 {
-	return bezierCurve;
+  return bezierCurve;
 }
 
-void StepGeom_BezierCurveAndRationalBSplineCurve::SetRationalBSplineCurve(const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
+void StepGeom_BezierCurveAndRationalBSplineCurve::SetRationalBSplineCurve(
+  const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
 {
-	rationalBSplineCurve = aRationalBSplineCurve;
+  rationalBSplineCurve = aRationalBSplineCurve;
 }
 
-Handle(StepGeom_RationalBSplineCurve) StepGeom_BezierCurveAndRationalBSplineCurve::RationalBSplineCurve() const
+Handle(StepGeom_RationalBSplineCurve) StepGeom_BezierCurveAndRationalBSplineCurve::
+  RationalBSplineCurve() const
 {
-	return rationalBSplineCurve;
+  return rationalBSplineCurve;
 }
 
-	//--- Specific Methods for AND classe field access ---
+//--- Specific Methods for AND classe field access ---
 
+//--- Specific Methods for AND classe field access ---
 
-	//--- Specific Methods for AND classe field access ---
-
-
-void StepGeom_BezierCurveAndRationalBSplineCurve::SetWeightsData(const Handle(TColStd_HArray1OfReal)& aWeightsData)
+void StepGeom_BezierCurveAndRationalBSplineCurve::SetWeightsData(
+  const Handle(TColStd_HArray1OfReal)& aWeightsData)
 {
-	rationalBSplineCurve->SetWeightsData(aWeightsData);
+  rationalBSplineCurve->SetWeightsData(aWeightsData);
 }
 
 Handle(TColStd_HArray1OfReal) StepGeom_BezierCurveAndRationalBSplineCurve::WeightsData() const
 {
-	return rationalBSplineCurve->WeightsData();
+  return rationalBSplineCurve->WeightsData();
 }
 
-Standard_Real StepGeom_BezierCurveAndRationalBSplineCurve::WeightsDataValue(const Standard_Integer num) const
+Standard_Real StepGeom_BezierCurveAndRationalBSplineCurve::WeightsDataValue(
+  const Standard_Integer num) const
 {
-	return rationalBSplineCurve->WeightsDataValue(num);
+  return rationalBSplineCurve->WeightsDataValue(num);
 }
 
-Standard_Integer StepGeom_BezierCurveAndRationalBSplineCurve::NbWeightsData () const
+Standard_Integer StepGeom_BezierCurveAndRationalBSplineCurve::NbWeightsData() const
 {
-	return rationalBSplineCurve->NbWeightsData();
+  return rationalBSplineCurve->NbWeightsData();
 }

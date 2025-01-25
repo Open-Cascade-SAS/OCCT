@@ -22,30 +22,29 @@
 #include <IGESGeom_Direction.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Direction,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Direction, IGESData_IGESEntity)
 
-IGESGeom_Direction::IGESGeom_Direction ()    {  }
+IGESGeom_Direction::IGESGeom_Direction() {}
 
-
-    void IGESGeom_Direction::Init
-  (const gp_XYZ& aDirection)
+void IGESGeom_Direction::Init(const gp_XYZ& aDirection)
 {
   theDirection = aDirection;
-  InitTypeAndForm(123,0);
+  InitTypeAndForm(123, 0);
 }
 
-    gp_Vec IGESGeom_Direction::Value () const
+gp_Vec IGESGeom_Direction::Value() const
 {
   gp_Vec direction(theDirection);
   return direction;
 }
 
-    gp_Vec IGESGeom_Direction::TransformedValue () const
+gp_Vec IGESGeom_Direction::TransformedValue() const
 {
-  if (!HasTransf()) return gp_Vec(theDirection);
-  gp_XYZ xyz (theDirection);
+  if (!HasTransf())
+    return gp_Vec(theDirection);
+  gp_XYZ   xyz(theDirection);
   gp_GTrsf loc = Location();
-  loc.SetTranslationPart(gp_XYZ(0.,0.,0.));
+  loc.SetTranslationPart(gp_XYZ(0., 0., 0.));
   loc.Transforms(xyz);
   return gp_Vec(xyz);
 }

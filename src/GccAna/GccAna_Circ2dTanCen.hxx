@@ -32,7 +32,6 @@ class gp_Pnt2d;
 class gp_Lin2d;
 class gp_Circ2d;
 
-
 //! This class implements the algorithms used to
 //! create 2d circles tangent to an entity and
 //! centered on a point.
@@ -50,23 +49,23 @@ class gp_Circ2d;
 //! outside C1.
 //! With Tolerance we will give a solution if the distance
 //! between C1 and Pcenter is lower than or equal Tolerance.
-class GccAna_Circ2dTanCen 
+class GccAna_Circ2dTanCen
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and
   //! centered on a point.
-  Standard_EXPORT GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1, const gp_Pnt2d& Pcenter, const Standard_Real Tolerance);
-  
+  Standard_EXPORT GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
+                                      const gp_Pnt2d&             Pcenter,
+                                      const Standard_Real         Tolerance);
+
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and
   //! centered on a point.
   Standard_EXPORT GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d& Pcenter);
-  
+
   //! This method implements the algorithms used to
   //! create 2d circles passing through a point and
   //! centered on a point.
@@ -82,19 +81,19 @@ public:
   //! GccEnt_BadQualifier if a qualifier is inconsistent with
   //! the argument it qualifies (for example, enclosing for a line).
   Standard_EXPORT GccAna_Circ2dTanCen(const gp_Pnt2d& Point1, const gp_Pnt2d& Pcenter);
-  
+
   //! This method returns True if the construction
   //! algorithm succeeded.
   //! Note: IsDone protects against a failure arising from a
   //! more internal intersection algorithm, which has reached
   //! its numeric limits.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the number of circles, representing solutions
   //! computed by this algorithm and raises NotDone
   //! exception if the algorithm didn't succeed.
   Standard_EXPORT Standard_Integer NbSolutions() const;
-  
+
   //! Returns the circle, representing the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
   //! Be careful: the Index is only a way to get all the
@@ -103,8 +102,8 @@ public:
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zer
-  Standard_EXPORT gp_Circ2d ThisSolution (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Circ2d ThisSolution(const Standard_Integer Index) const;
+
   //! Returns the qualifier Qualif1 of the tangency argument
   //! for the solution of index Index computed by this algorithm.
   //! The returned qualifier is:
@@ -113,8 +112,8 @@ public:
   //! It returns the real qualifiers (the qualifiers given to the
   //! constructor method in case of enclosed, enclosing and outside
   //! and the qualifiers computedin case of unqualified).
-  Standard_EXPORT void WhichQualifier (const Standard_Integer Index, GccEnt_Position& Qualif1) const;
-  
+  Standard_EXPORT void WhichQualifier(const Standard_Integer Index, GccEnt_Position& Qualif1) const;
+
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol
@@ -125,45 +124,29 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
-  Standard_EXPORT void Tangency1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
-  
+  Standard_EXPORT void Tangency1(const Standard_Integer Index,
+                                 Standard_Real&         ParSol,
+                                 Standard_Real&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
+
   //! Returns True if the solution number Index is equal to
   //! the first argument.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
-  Standard_EXPORT Standard_Boolean IsTheSame1 (const Standard_Integer Index) const;
-
-
-
+  Standard_EXPORT Standard_Boolean IsTheSame1(const Standard_Integer Index) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean WellDone;
-  Standard_Integer NbrSol;
-  TColgp_Array1OfCirc2d cirsol;
+  Standard_Boolean        WellDone;
+  Standard_Integer        NbrSol;
+  TColgp_Array1OfCirc2d   cirsol;
   GccEnt_Array1OfPosition qualifier1;
   TColStd_Array1OfInteger TheSame1;
-  TColgp_Array1OfPnt2d pnttg1sol;
-  TColStd_Array1OfReal par1sol;
-  TColStd_Array1OfReal pararg1;
-
-
+  TColgp_Array1OfPnt2d    pnttg1sol;
+  TColStd_Array1OfReal    par1sol;
+  TColStd_Array1OfReal    pararg1;
 };
-
-
-
-
-
-
 
 #endif // _GccAna_Circ2dTanCen_HeaderFile

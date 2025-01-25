@@ -27,7 +27,6 @@ class TCollection_AsciiString;
 class Interface_Graph;
 class IFGraph_SubPartsIterator;
 
-
 class IFSelect_DispPerSignature;
 DEFINE_STANDARD_HANDLE(IFSelect_DispPerSignature, IFSelect_Dispatch)
 
@@ -37,56 +36,40 @@ class IFSelect_DispPerSignature : public IFSelect_Dispatch
 {
 
 public:
-
-  
   //! Creates a DispPerSignature with no SignCounter (by default,
   //! produces only one packet)
   Standard_EXPORT IFSelect_DispPerSignature();
-  
+
   //! Returns the SignCounter used for splitting
   Standard_EXPORT Handle(IFSelect_SignCounter) SignCounter() const;
-  
+
   //! Sets a SignCounter for sort
   //! Remark : it is set to record lists of entities, not only counts
-  Standard_EXPORT void SetSignCounter (const Handle(IFSelect_SignCounter)& sign);
-  
+  Standard_EXPORT void SetSignCounter(const Handle(IFSelect_SignCounter)& sign);
+
   //! Returns the name of the SignCounter, which caracterises the
   //! sorting criterium for this Dispatch
   Standard_EXPORT Standard_CString SignName() const;
-  
+
   //! Returns as Label, "One File per Signature <name>"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
-  
+
   //! Returns True, maximum count is given as <nbent>
-  Standard_EXPORT virtual Standard_Boolean LimitedMax (const Standard_Integer nbent, Standard_Integer& max) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean LimitedMax(const Standard_Integer nbent,
+                                                      Standard_Integer&      max) const
+    Standard_OVERRIDE;
+
   //! Computes the list of produced Packets. It defines Packets from
   //! the SignCounter, which sirts the input Entities per Signature
   //! (specific of the SignCounter).
-  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
+  Standard_EXPORT void Packets(const Interface_Graph&    G,
+                               IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerSignature,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerSignature, IFSelect_Dispatch)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IFSelect_SignCounter) thesign;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_DispPerSignature_HeaderFile

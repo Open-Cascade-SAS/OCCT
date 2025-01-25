@@ -18,23 +18,22 @@
 #include <StepGeom_OrientedSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OrientedSurface,StepGeom_Surface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OrientedSurface, StepGeom_Surface)
 
 //=======================================================================
-//function : StepGeom_OrientedSurface
-//purpose  : 
+// function : StepGeom_OrientedSurface
+// purpose  :
 //=======================================================================
-StepGeom_OrientedSurface::StepGeom_OrientedSurface ()
-{
-}
+StepGeom_OrientedSurface::StepGeom_OrientedSurface() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepGeom_OrientedSurface::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                     const Standard_Boolean aOrientation)
+void StepGeom_OrientedSurface::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const Standard_Boolean                  aOrientation)
 {
   StepGeom_Surface::Init(aRepresentationItem_Name);
 
@@ -42,21 +41,21 @@ void StepGeom_OrientedSurface::Init (const Handle(TCollection_HAsciiString) &aRe
 }
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
-Standard_Boolean StepGeom_OrientedSurface::Orientation () const
+Standard_Boolean StepGeom_OrientedSurface::Orientation() const
 {
   return theOrientation;
 }
 
 //=======================================================================
-//function : SetOrientation
-//purpose  : 
+// function : SetOrientation
+// purpose  :
 //=======================================================================
 
-void StepGeom_OrientedSurface::SetOrientation (const Standard_Boolean aOrientation)
+void StepGeom_OrientedSurface::SetOrientation(const Standard_Boolean aOrientation)
 {
   theOrientation = aOrientation;
 }

@@ -19,8 +19,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Real,Standard_Integer> QANCollection_DoubleMapOfRealInteger;
-typedef NCollection_DoubleMap<Standard_Real,Standard_Integer>::Iterator QANCollection_DoubleMapIteratorOfDoubleMapOfRealInteger;
-
+typedef NCollection_DoubleMap<Standard_Real, Standard_Integer> QANCollection_DoubleMapOfRealInteger;
+typedef NCollection_DoubleMap<Standard_Real, Standard_Integer>::Iterator
+  QANCollection_DoubleMapIteratorOfDoubleMapOfRealInteger;
 
 #endif

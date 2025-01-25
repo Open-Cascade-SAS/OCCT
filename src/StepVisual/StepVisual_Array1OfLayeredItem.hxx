@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepVisual_LayeredItem> StepVisual_Array1OfLayeredItem;
 
-
 #endif

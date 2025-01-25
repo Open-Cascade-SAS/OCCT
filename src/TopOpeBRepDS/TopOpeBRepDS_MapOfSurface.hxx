@@ -21,8 +21,8 @@
 #include <TopOpeBRepDS_SurfaceData.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData> TopOpeBRepDS_MapOfSurface;
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
-
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_SurfaceData> TopOpeBRepDS_MapOfSurface;
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_SurfaceData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
 
 #endif

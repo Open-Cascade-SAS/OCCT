@@ -25,7 +25,6 @@
 class BRepMesh_ModelPreProcessor : public IMeshTools_ModelAlgo
 {
 public:
-
   //! Constructor.
   Standard_EXPORT BRepMesh_ModelPreProcessor();
 
@@ -35,9 +34,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
 
 protected:
-
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual Standard_Boolean performInternal (
+  Standard_EXPORT virtual Standard_Boolean performInternal(
     const Handle(IMeshData_Model)& theModel,
     const IMeshTools_Parameters&   theParameters,
     const Message_ProgressRange&   theRange) Standard_OVERRIDE;

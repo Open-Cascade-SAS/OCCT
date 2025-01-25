@@ -25,7 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-
 class Vrml_LOD;
 DEFINE_STANDARD_HANDLE(Vrml_LOD, Standard_Transient)
 
@@ -54,46 +53,27 @@ class Vrml_LOD : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Vrml_LOD();
-  
+
   Standard_EXPORT Vrml_LOD(const Handle(TColStd_HArray1OfReal)& aRange, const gp_Vec& aCenter);
-  
-  Standard_EXPORT void SetRange (const Handle(TColStd_HArray1OfReal)& aRange);
-  
+
+  Standard_EXPORT void SetRange(const Handle(TColStd_HArray1OfReal)& aRange);
+
   Standard_EXPORT Handle(TColStd_HArray1OfReal) Range() const;
-  
-  Standard_EXPORT void SetCenter (const gp_Vec& aCenter);
-  
+
+  Standard_EXPORT void SetCenter(const gp_Vec& aCenter);
+
   Standard_EXPORT gp_Vec Center() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Vrml_LOD,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Vrml_LOD, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfReal) myRange;
-  gp_Vec myCenter;
-  Standard_Boolean myRangeFlag;
-
-
+  gp_Vec                        myCenter;
+  Standard_Boolean              myRangeFlag;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_LOD_HeaderFile

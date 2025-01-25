@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWProductRelatedProductCategory.pxx"
@@ -20,97 +19,102 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductRelatedProductCategory::RWStepBasic_RWProductRelatedProductCategory () {}
+RWStepBasic_RWProductRelatedProductCategory::RWStepBasic_RWProductRelatedProductCategory() {}
 
-void RWStepBasic_RWProductRelatedProductCategory::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
+void RWStepBasic_RWProductRelatedProductCategory::ReadStep(
+  const Handle(StepData_StepReaderData)&                 data,
+  const Standard_Integer                                 num,
+  Handle(Interface_Check)&                               ach,
+  const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 3, ach, "product_related_product_category"))
+    return;
 
-	if (!data->CheckNbParams(num,3,ach,"product_related_product_category")) return;
+  // --- inherited field : name ---
 
-	// --- inherited field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- inherited field : description ---
 
-	// --- inherited field : description ---
+  Handle(TCollection_HAsciiString) aDescription;
+  Standard_Boolean                 hasAdescription = Standard_True;
+  if (data->IsParamDefined(num, 2))
+  {
+    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    data->ReadString(num, 2, "description", ach, aDescription);
+  }
+  else
+  {
+    hasAdescription = Standard_False;
+    aDescription.Nullify();
+  }
 
-	Handle(TCollection_HAsciiString) aDescription;
-	Standard_Boolean hasAdescription = Standard_True;
-	if (data->IsParamDefined(num,2)) {
-	  //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	  data->ReadString (num,2,"description",ach,aDescription);
-	}
-	else {
-	  hasAdescription = Standard_False;
-	  aDescription.Nullify();
-	}
+  // --- own field : products ---
 
-	// --- own field : products ---
+  Handle(StepBasic_HArray1OfProduct) aProducts;
+  Handle(StepBasic_Product)          anent3;
+  Standard_Integer                   nsub3;
+  if (data->ReadSubList(num, 3, "products", ach, nsub3))
+  {
+    Standard_Integer nb3 = data->NbParams(nsub3);
+    aProducts            = new StepBasic_HArray1OfProduct(1, nb3);
+    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      if (data->ReadEntity(nsub3, i3, "product", ach, STANDARD_TYPE(StepBasic_Product), anent3))
+        aProducts->SetValue(i3, anent3);
+    }
+  }
 
-	Handle(StepBasic_HArray1OfProduct) aProducts;
-	Handle(StepBasic_Product) anent3;
-	Standard_Integer nsub3;
-	if (data->ReadSubList (num,3,"products",ach,nsub3)) {
-	  Standard_Integer nb3 = data->NbParams(nsub3);
-	  aProducts = new StepBasic_HArray1OfProduct (1, nb3);
-	  for (Standard_Integer i3 = 1; i3 <= nb3; i3 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	    if (data->ReadEntity (nsub3, i3,"product", ach, STANDARD_TYPE(StepBasic_Product), anent3))
-	      aProducts->SetValue(i3, anent3);
-	  }
-	}
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aName, hasAdescription, aDescription, aProducts);
+  ent->Init(aName, hasAdescription, aDescription, aProducts);
 }
 
-
-void RWStepBasic_RWProductRelatedProductCategory::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
+void RWStepBasic_RWProductRelatedProductCategory::WriteStep(
+  StepData_StepWriter&                                   SW,
+  const Handle(StepBasic_ProductRelatedProductCategory)& ent) const
 {
 
-	// --- inherited field name ---
+  // --- inherited field name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- inherited field description ---
+  // --- inherited field description ---
 
-	Standard_Boolean hasAdescription = ent->HasDescription();
-	if (hasAdescription) {
-	  SW.Send(ent->Description());
-	}
-	else {
-	  SW.SendUndef();
-	}
+  Standard_Boolean hasAdescription = ent->HasDescription();
+  if (hasAdescription)
+  {
+    SW.Send(ent->Description());
+  }
+  else
+  {
+    SW.SendUndef();
+  }
 
-	// --- own field : products ---
+  // --- own field : products ---
 
-	SW.OpenSub();
-	for (Standard_Integer i3 = 1;  i3 <= ent->NbProducts();  i3 ++) {
-	  SW.Send(ent->ProductsValue(i3));
-	}
-	SW.CloseSub();
+  SW.OpenSub();
+  for (Standard_Integer i3 = 1; i3 <= ent->NbProducts(); i3++)
+  {
+    SW.Send(ent->ProductsValue(i3));
+  }
+  SW.CloseSub();
 }
 
-
-void RWStepBasic_RWProductRelatedProductCategory::Share(const Handle(StepBasic_ProductRelatedProductCategory)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWProductRelatedProductCategory::Share(
+  const Handle(StepBasic_ProductRelatedProductCategory)& ent,
+  Interface_EntityIterator&                              iter) const
 {
 
-	Standard_Integer nbElem1 = ent->NbProducts();
-	for (Standard_Integer is1=1; is1<=nbElem1; is1 ++) {
-	  iter.GetOneItem(ent->ProductsValue(is1));
-	}
-
+  Standard_Integer nbElem1 = ent->NbProducts();
+  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  {
+    iter.GetOneItem(ent->ProductsValue(is1));
+  }
 }
-

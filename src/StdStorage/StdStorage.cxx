@@ -48,7 +48,7 @@ TCollection_AsciiString StdStorage::Version()
 // StdStorage::Read
 // Reads data from a file
 //=======================================================================
-Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName, 
+Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
                                Handle(StdStorage_Data)&       theData)
 {
   // Create a driver appropriate for the given file
@@ -74,8 +74,8 @@ Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
 // StdStorage::Read
 // Reads data from a pre-opened for reading driver
 //=======================================================================
-Storage_Error StdStorage::Read(const Handle(Storage_BaseDriver)& theDriver, 
-                               Handle(StdStorage_Data)& theData)
+Storage_Error StdStorage::Read(const Handle(Storage_BaseDriver)& theDriver,
+                               Handle(StdStorage_Data)&          theData)
 {
   if (theData.IsNull())
     theData = new StdStorage_Data;
@@ -95,12 +95,12 @@ Storage_Error StdStorage::Read(const Handle(Storage_BaseDriver)& theDriver,
     return aTypeData->ErrorStatus();
 
   // Select instantiators for the used types
-  NCollection_Array1<StdObjMgt_Persistent::Instantiator>
-    anInstantiators(1, aTypeData->NumberOfTypes());
+  NCollection_Array1<StdObjMgt_Persistent::Instantiator> anInstantiators(
+    1,
+    aTypeData->NumberOfTypes());
   for (Standard_Integer i = 1; i <= aTypeData->NumberOfTypes(); i++)
   {
-    StdObjMgt_Persistent::Instantiator anInstantiator = 
-      aTypeData->Instantiator(i);
+    StdObjMgt_Persistent::Instantiator anInstantiator = aTypeData->Instantiator(i);
     if (anInstantiator)
       anInstantiators(i) = anInstantiator;
     else
@@ -158,9 +158,18 @@ Storage_Error StdStorage::Read(const Handle(Storage_BaseDriver)& theDriver,
       aReadData.ReadPersistentObject(i);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError const&) { anError = Storage_VSTypeMismatch; }
-    catch (Storage_StreamFormatError const&) { anError = Storage_VSFormatError; }
-    catch (Storage_StreamReadError const&) { anError = Storage_VSFormatError; }
+    catch (Storage_StreamTypeMismatchError const&)
+    {
+      anError = Storage_VSTypeMismatch;
+    }
+    catch (Storage_StreamFormatError const&)
+    {
+      anError = Storage_VSFormatError;
+    }
+    catch (Storage_StreamReadError const&)
+    {
+      anError = Storage_VSFormatError;
+    }
 
     if (anError != Storage_VSOk)
       return anError;
@@ -190,9 +199,9 @@ static TCollection_AsciiString currentDate()
 {
 #define SLENGTH 80
 
-  char nowstr[SLENGTH];
-  time_t nowbin;
-  struct tm *nowstruct;
+  char       nowstr[SLENGTH];
+  time_t     nowbin;
+  struct tm* nowstruct;
   if (time(&nowbin) != (time_t)-1)
   {
     nowstruct = localtime(&nowbin);
@@ -207,14 +216,14 @@ static TCollection_AsciiString currentDate()
 //=======================================================================
 // StdStorage::Write
 //=======================================================================
-Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver, 
-                                const Handle(StdStorage_Data)& theData)
+Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver,
+                                const Handle(StdStorage_Data)&    theData)
 {
   Standard_NullObject_Raise_if(theData.IsNull(), "Null storage data");
 
   Handle(StdStorage_HeaderData) aHeaderData = theData->HeaderData();
-  Handle(StdStorage_TypeData)   aTypeData = theData->TypeData();
-  Handle(StdStorage_RootData)   aRootData = theData->RootData();
+  Handle(StdStorage_TypeData)   aTypeData   = theData->TypeData();
+  Handle(StdStorage_RootData)   aRootData   = theData->RootData();
 
   aHeaderData->SetCreationDate(currentDate());
 
@@ -227,16 +236,18 @@ Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver,
     StdObjMgt_Persistent::SequenceOfPersistent aPQueue;
     for (StdStorage_HSequenceOfRoots::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
     {
-      Handle(StdStorage_Root) aRoot = anIt.ChangeValue();
+      Handle(StdStorage_Root)      aRoot = anIt.ChangeValue();
       Handle(StdObjMgt_Persistent) aPObj = aRoot->Object();
-      if (!aPObj.IsNull()) {
+      if (!aPObj.IsNull())
+      {
         aPQueue.Append(aPObj);
       }
     }
     while (!aPQueue.IsEmpty())
     {
       StdObjMgt_Persistent::SequenceOfPersistent aPQueue1;
-      for (StdObjMgt_Persistent::SequenceOfPersistent::Iterator anIt(aPQueue); anIt.More(); anIt.Next())
+      for (StdObjMgt_Persistent::SequenceOfPersistent::Iterator anIt(aPQueue); anIt.More();
+           anIt.Next())
       {
         Handle(StdObjMgt_Persistent)& aPObj = anIt.ChangeValue();
         if (!aPObj.IsNull())
@@ -258,7 +269,8 @@ Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver,
   aHeaderData->SetStorageVersion(StdStorage::Version());
   aHeaderData->SetNumberOfObjects(aPObjs.Length());
 
-  try {
+  try
+  {
     // Write header section
     if (!aHeaderData->Write(theDriver))
       return aHeaderData->ErrorStatus();
@@ -307,7 +319,8 @@ Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver,
     if (anError != Storage_VSOk)
       return anError;
   }
-  catch (Storage_StreamWriteError const&) {
+  catch (Storage_StreamWriteError const&)
+  {
     return Storage_VSWriteError;
   }
 

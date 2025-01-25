@@ -24,44 +24,24 @@ class XSControl_TransferReader;
 class Interface_EntityIterator;
 class Interface_Graph;
 
-
 class STEPSelections_SelectForTransfer;
 DEFINE_STANDARD_HANDLE(STEPSelections_SelectForTransfer, XSControl_SelectForTransfer)
-
 
 class STEPSelections_SelectForTransfer : public XSControl_SelectForTransfer
 {
 
 public:
-
-  
   Standard_EXPORT STEPSelections_SelectForTransfer();
-  
+
   Standard_EXPORT STEPSelections_SelectForTransfer(const Handle(XSControl_TransferReader)& TR);
-  
-  Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
+    Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer,XSControl_SelectForTransfer)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer, XSControl_SelectForTransfer)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _STEPSelections_SelectForTransfer_HeaderFile

@@ -16,23 +16,28 @@
 
 #include <Precision.hxx>
 
-inline math_BracketMinimum::math_BracketMinimum(const Standard_Real A,
-                                                const Standard_Real B)
-: Done(Standard_False),
-  Ax(A), Bx(B), Cx(0.),
-  FAx(0.), FBx(0.), FCx(0.),
-  myLeft(-Precision::Infinite()),
-  myRight(Precision::Infinite()),
-  myIsLimited(Standard_False),
-  myFA(Standard_False),
-  myFB(Standard_False)
+inline math_BracketMinimum::math_BracketMinimum(const Standard_Real A, const Standard_Real B)
+    : Done(Standard_False),
+      Ax(A),
+      Bx(B),
+      Cx(0.),
+      FAx(0.),
+      FBx(0.),
+      FCx(0.),
+      myLeft(-Precision::Infinite()),
+      myRight(Precision::Infinite()),
+      myIsLimited(Standard_False),
+      myFA(Standard_False),
+      myFB(Standard_False)
 {
 }
 
-inline Standard_Boolean math_BracketMinimum::IsDone() const { return Done; }
+inline Standard_Boolean math_BracketMinimum::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o, 
-				    const math_BracketMinimum& Br)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_BracketMinimum& Br)
 {
   Br.Dump(o);
   return o;
@@ -41,25 +46,24 @@ inline Standard_OStream& operator<<(Standard_OStream& o,
 inline void math_BracketMinimum::SetLimits(const Standard_Real theLeft,
                                            const Standard_Real theRight)
 {
-  myLeft = theLeft;
-  myRight = theRight;
+  myLeft      = theLeft;
+  myRight     = theRight;
   myIsLimited = Standard_True;
 }
 
 inline void math_BracketMinimum::SetFA(const Standard_Real theValue)
 {
-  FAx = theValue;
+  FAx  = theValue;
   myFA = Standard_True;
 }
 
 inline void math_BracketMinimum::SetFB(const Standard_Real theValue)
 {
-  FBx = theValue;
+  FBx  = theValue;
   myFB = Standard_True;
 }
 
 inline Standard_Real math_BracketMinimum::Limited(const Standard_Real theValue) const
 {
-  return theValue < myLeft ? myLeft :
-    theValue > myRight ? myRight : theValue;
+  return theValue < myLeft ? myLeft : theValue > myRight ? myRight : theValue;
 }

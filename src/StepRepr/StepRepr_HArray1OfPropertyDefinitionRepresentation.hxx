@@ -20,7 +20,7 @@
 #include <StepRepr_Array1OfPropertyDefinitionRepresentation.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepRepr_HArray1OfPropertyDefinitionRepresentation, StepRepr_Array1OfPropertyDefinitionRepresentation)
-
+DEFINE_HARRAY1(StepRepr_HArray1OfPropertyDefinitionRepresentation,
+               StepRepr_Array1OfPropertyDefinitionRepresentation)
 
 #endif

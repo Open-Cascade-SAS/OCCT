@@ -27,51 +27,29 @@ class Standard_Transient;
 class StepBasic_ProductDefinition;
 class StepRepr_ShapeAspect;
 
-
 //! Representation of STEP SELECT type SpecifiedItem
-class StepAP203_SpecifiedItem  : public StepData_SelectType
+class StepAP203_SpecifiedItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_SpecifiedItem();
-  
+
   //! Recognizes a kind of SpecifiedItem select type
   //! 1 -> ProductDefinition from StepBasic
   //! 2 -> ShapeAspect from StepRepr
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as ProductDefinition (or Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
-  
+
   //! Returns Value as ShapeAspect (or Null if another type)
   Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_SpecifiedItem_HeaderFile

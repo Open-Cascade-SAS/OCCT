@@ -22,9 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Type, Standard_Transient)
 // purpose  :
 //=======================================================================
 
-Express_Type::Express_Type()
-{
-}
+Express_Type::Express_Type() {}
 
 //=======================================================================
 // function : IsStandard
@@ -71,6 +69,4 @@ Standard_Boolean Express_Type::Use() const
 // purpose  :
 //=======================================================================
 
-void Express_Type::Use2 (const TCollection_AsciiString&, const TCollection_AsciiString&) const
-{
-}
+void Express_Type::Use2(const TCollection_AsciiString&, const TCollection_AsciiString&) const {}

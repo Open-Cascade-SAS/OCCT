@@ -15,13 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Builder
-//purpose  : 
+// function : Builder
+// purpose  :
 //=======================================================================
 
-inline const BRep_Builder&  BRepSweep_Builder::Builder()const 
+inline const BRep_Builder& BRepSweep_Builder::Builder() const
 {
   return myBuilder;
 }
-
-

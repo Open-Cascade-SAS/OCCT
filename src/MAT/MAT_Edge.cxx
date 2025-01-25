@@ -14,20 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MAT_Bisector.hxx>
 #include <MAT_Edge.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MAT_Edge,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Edge, Standard_Transient)
 
 MAT_Edge::MAT_Edge()
-: theedgenumber(0),
-  thedistance(0.0),
-  theintersectionpoint(0)
+    : theedgenumber(0),
+      thedistance(0.0),
+      theintersectionpoint(0)
 {
 }
-    
+
 void MAT_Edge::EdgeNumber(const Standard_Integer anumber)
 {
   theedgenumber = anumber;
@@ -78,8 +77,4 @@ Standard_Integer MAT_Edge::IntersectionPoint() const
   return theintersectionpoint;
 }
 
-void MAT_Edge::Dump(const Standard_Integer,
-		     const Standard_Integer) const
-{
-}
-
+void MAT_Edge::Dump(const Standard_Integer, const Standard_Integer) const {}

@@ -14,26 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_Filter.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
 //=======================================================================
-//function : TopOpeBRepDS_Filter
-//purpose  : 
+// function : TopOpeBRepDS_Filter
+// purpose  :
 //=======================================================================
 
-TopOpeBRepDS_Filter::TopOpeBRepDS_Filter
-(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
- const TopOpeBRepTool_PShapeClassifier& pClassif)
-: myHDS(HDS),
-  myPShapeClassif(pClassif)
-{}
-
+TopOpeBRepDS_Filter::TopOpeBRepDS_Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+                                         const TopOpeBRepTool_PShapeClassifier&     pClassif)
+    : myHDS(HDS),
+      myPShapeClassif(pClassif)
+{
+}
 
 //=======================================================================
-//function : ProcessInterferences
-//purpose  : 
+// function : ProcessInterferences
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepDS_Filter::ProcessInterferences()
@@ -43,54 +41,61 @@ void TopOpeBRepDS_Filter::ProcessInterferences()
 }
 
 //=======================================================================
-//function : ProcessEdgeInterferences
-//purpose  : 
+// function : ProcessEdgeInterferences
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepDS_Filter::ProcessEdgeInterferences()
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer i,nshape = BDS.NbShapes();
+  Standard_Integer            i, nshape = BDS.NbShapes();
 
-  for (i = 1; i <= nshape; i++) {
+  for (i = 1; i <= nshape; i++)
+  {
     const TopoDS_Shape& S = BDS.Shape(i);
-    if(S.IsNull()) continue;
-    if ( S.ShapeType() == TopAbs_EDGE ) {
+    if (S.IsNull())
+      continue;
+    if (S.ShapeType() == TopAbs_EDGE)
+    {
       ProcessEdgeInterferences(i);
     }
   }
 }
 
 //=======================================================================
-//function : ProcessFaceInterferences
-//purpose  : 
+// function : ProcessFaceInterferences
+// purpose  :
 //=======================================================================
 
-void TopOpeBRepDS_Filter::ProcessFaceInterferences
-(const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
+void TopOpeBRepDS_Filter::ProcessFaceInterferences(
+  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer i,nshape = BDS.NbShapes();
+  Standard_Integer            i, nshape = BDS.NbShapes();
 
-  for (i = 1; i <= nshape; i++) {
+  for (i = 1; i <= nshape; i++)
+  {
     const TopoDS_Shape& S = BDS.Shape(i);
-    if(S.IsNull()) continue;
-    if ( S.ShapeType() == TopAbs_FACE ) {
-      ProcessFaceInterferences(i,MEsp);
+    if (S.IsNull())
+      continue;
+    if (S.ShapeType() == TopAbs_FACE)
+    {
+      ProcessFaceInterferences(i, MEsp);
     }
   }
 }
 
 //=======================================================================
-//function : ProcessCurveInterferences
-//purpose  : 
+// function : ProcessCurveInterferences
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepDS_Filter::ProcessCurveInterferences()
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
-  Standard_Integer i,ncurve = BDS.NbCurves();
-  for (i = 1; i <= ncurve; i++) {
+  Standard_Integer            i, ncurve = BDS.NbCurves();
+  for (i = 1; i <= ncurve; i++)
+  {
     ProcessCurveInterferences(i);
   }
 }

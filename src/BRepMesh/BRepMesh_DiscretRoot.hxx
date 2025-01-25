@@ -19,59 +19,41 @@
 #include <Standard_Transient.hxx>
 #include <Message_ProgressRange.hxx>
 
-//! This is a common interface for meshing algorithms 
+//! This is a common interface for meshing algorithms
 //! instantiated by Mesh Factory and implemented by plugins.
 class BRepMesh_DiscretRoot : public Standard_Transient
 {
 public:
-  
   //! Destructor
   Standard_EXPORT virtual ~BRepMesh_DiscretRoot();
 
   //! Set the shape to triangulate.
-  void SetShape(const TopoDS_Shape& theShape)
-  {
-    myShape = theShape;
-  }
-  
-  const TopoDS_Shape& Shape() const
-  {
-    return myShape;
-  }
-  
+  void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
+
+  const TopoDS_Shape& Shape() const { return myShape; }
+
   //! Returns true if triangualtion was performed and has success.
-  Standard_Boolean IsDone() const
-  {
-    return myIsDone;
-  }
+  Standard_Boolean IsDone() const { return myIsDone; }
 
   //! Compute triangulation for set shape.
   virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
-
-  DEFINE_STANDARD_RTTIEXT(BRepMesh_DiscretRoot,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DiscretRoot, Standard_Transient)
 
 protected:
-  
   //! Constructor
   Standard_EXPORT BRepMesh_DiscretRoot();
-  
+
   //! Sets IsDone flag.
-  void setDone()
-  {
-    myIsDone = Standard_True;
-  }
-  
+  void setDone() { myIsDone = Standard_True; }
+
   //! Clears IsDone flag.
-  void setNotDone()
-  {
-    myIsDone = Standard_False;
-  }
-  
+  void setNotDone() { myIsDone = Standard_False; }
+
   Standard_EXPORT virtual void init();
 
-  TopoDS_Shape      myShape;
-  Standard_Boolean  myIsDone;
+  TopoDS_Shape     myShape;
+  Standard_Boolean myIsDone;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_DiscretRoot, Standard_Transient)

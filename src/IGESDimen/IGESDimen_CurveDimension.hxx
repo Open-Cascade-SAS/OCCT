@@ -24,7 +24,6 @@ class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 class IGESDimen_WitnessLine;
 
-
 class IGESDimen_CurveDimension;
 DEFINE_STANDARD_HANDLE(IGESDimen_CurveDimension, IGESData_IGESEntity)
 
@@ -38,10 +37,8 @@ class IGESDimen_CurveDimension : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_CurveDimension();
-  
+
   //! This method is used to set the fields of the class
   //! CurveDimension
   //! - aNote         : General Note Entity
@@ -53,66 +50,55 @@ public:
   //! Handle
   //! - anotherLine   : Second Witness Line Entity or a Null
   //! Handle
-  Standard_EXPORT void Init (const Handle(IGESDimen_GeneralNote)& aNote, const Handle(IGESData_IGESEntity)& aCurve, const Handle(IGESData_IGESEntity)& anotherCurve, const Handle(IGESDimen_LeaderArrow)& aLeader, const Handle(IGESDimen_LeaderArrow)& anotherLeader, const Handle(IGESDimen_WitnessLine)& aLine, const Handle(IGESDimen_WitnessLine)& anotherLine);
-  
+  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
+                            const Handle(IGESData_IGESEntity)&   aCurve,
+                            const Handle(IGESData_IGESEntity)&   anotherCurve,
+                            const Handle(IGESDimen_LeaderArrow)& aLeader,
+                            const Handle(IGESDimen_LeaderArrow)& anotherLeader,
+                            const Handle(IGESDimen_WitnessLine)& aLine,
+                            const Handle(IGESDimen_WitnessLine)& anotherLine);
+
   //! returns the General Note Entity
   Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
-  
+
   //! returns the First curve Entity
   Standard_EXPORT Handle(IGESData_IGESEntity) FirstCurve() const;
-  
+
   //! returns False if theSecondCurve is a Null Handle.
   Standard_EXPORT Standard_Boolean HasSecondCurve() const;
-  
+
   //! returns the Second curve Entity or a Null Handle.
   Standard_EXPORT Handle(IGESData_IGESEntity) SecondCurve() const;
-  
+
   //! returns the First Leader Entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) FirstLeader() const;
-  
+
   //! returns the Second Leader Entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
-  
+
   //! returns False if theFirstWitnessLine is a Null Handle.
   Standard_EXPORT Standard_Boolean HasFirstWitnessLine() const;
-  
+
   //! returns the First Witness Line Entity or a Null Handle.
   Standard_EXPORT Handle(IGESDimen_WitnessLine) FirstWitnessLine() const;
-  
+
   //! returns False if theSecondWitnessLine is a Null Handle.
   Standard_EXPORT Standard_Boolean HasSecondWitnessLine() const;
-  
+
   //! returns the Second Witness Line Entity or a Null Handle.
   Standard_EXPORT Handle(IGESDimen_WitnessLine) SecondWitnessLine() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_CurveDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_CurveDimension, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDimen_GeneralNote) theNote;
-  Handle(IGESData_IGESEntity) theFirstCurve;
-  Handle(IGESData_IGESEntity) theSecondCurve;
+  Handle(IGESData_IGESEntity)   theFirstCurve;
+  Handle(IGESData_IGESEntity)   theSecondCurve;
   Handle(IGESDimen_LeaderArrow) theFirstLeader;
   Handle(IGESDimen_LeaderArrow) theSecondLeader;
   Handle(IGESDimen_WitnessLine) theFirstWitnessLine;
   Handle(IGESDimen_WitnessLine) theSecondWitnessLine;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_CurveDimension_HeaderFile

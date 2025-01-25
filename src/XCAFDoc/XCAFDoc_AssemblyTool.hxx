@@ -28,7 +28,6 @@ class XCAFDoc_ShapeTool;
 class XCAFDoc_AssemblyTool
 {
 public:
-
   //! \brief Generic method for traversing assembly tree.
   //! Performs in-depth traversing of the assembly tree and calls
   //! user defined function for each assembly tree node.
@@ -44,8 +43,7 @@ public:
   //! \param[in]  theIterator - starting position in the assembly tree.
   //! \param[in]  theFunc     - user function called for each assembly tree node.
   template <typename Func>
-  static void Traverse(XCAFDoc_AssemblyIterator theIterator,
-                       Func                     theFunc)
+  static void Traverse(XCAFDoc_AssemblyIterator theIterator, Func theFunc)
   {
     for (; theIterator.More(); theIterator.Next())
     {
@@ -58,7 +56,7 @@ public:
   //! Performs in-depth traversing of the assembly graph beginning from root nodes
   //! and calls user defined function for each assembly graph node accepted
   //! by the user defined filtering function. Filtering function takes
-  //! the assembly graph passed for traversing, current graph node ID 
+  //! the assembly graph passed for traversing, current graph node ID
   //! and returns true/false to accept/reject node.
   //! ~~~~~{.cpp}
   //! Standard_Boolean AcceptPartOnly(const Handle(XCAFDoc_AssemblyGraph)& theGraph,
@@ -91,7 +89,6 @@ public:
       }
     }
   }
-
 };
 
 #endif // _XCAFDoc_AssemblyTool_HeaderFile

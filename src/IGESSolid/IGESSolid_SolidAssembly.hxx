@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class IGESGeom_TransformationMatrix;
 
-
 class IGESSolid_SolidAssembly;
 DEFINE_STANDARD_HANDLE(IGESSolid_SolidAssembly, IGESData_IGESEntity)
 
@@ -41,10 +40,8 @@ class IGESSolid_SolidAssembly : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_SolidAssembly();
-  
+
   //! This method is used to set the fields of the class
   //! SolidAssembly
   //! - allItems    : the collection of items
@@ -52,49 +49,34 @@ public:
   //! item
   //! raises exception if the length of allItems & allMatrices
   //! do not match
-  Standard_EXPORT void Init (const Handle(IGESData_HArray1OfIGESEntity)& allItems, const Handle(IGESGeom_HArray1OfTransformationMatrix)& allMatrices);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)&           allItems,
+                            const Handle(IGESGeom_HArray1OfTransformationMatrix)& allMatrices);
+
   //! Tells if at least one item is a Brep, from FormNumber
   Standard_EXPORT Standard_Boolean HasBrep() const;
-  
+
   //! Sets or Unsets the status "HasBrep" from FormNumber
   //! Default is False
-  Standard_EXPORT void SetBrep (const Standard_Boolean hasbrep);
-  
+  Standard_EXPORT void SetBrep(const Standard_Boolean hasbrep);
+
   //! returns the number of items in the collection
   Standard_EXPORT Standard_Integer NbItems() const;
-  
+
   //! returns the Index'th item
   //! raises exception if Index <= 0 or Index > NbItems()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Item (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) Item(const Standard_Integer Index) const;
+
   //! returns the transformation matrix of the Index'th item
   //! raises exception if Index <= 0 or Index > NbItems()
-  Standard_EXPORT Handle(IGESGeom_TransformationMatrix) TransfMatrix (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESGeom_TransformationMatrix) TransfMatrix(
+    const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidAssembly,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidAssembly, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESData_HArray1OfIGESEntity) theItems;
+  Handle(IGESData_HArray1OfIGESEntity)           theItems;
   Handle(IGESGeom_HArray1OfTransformationMatrix) theMatrices;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_SolidAssembly_HeaderFile

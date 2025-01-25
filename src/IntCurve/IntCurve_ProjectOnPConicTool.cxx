@@ -14,113 +14,123 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ElCLib.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntCurve_PConic.hxx>
 #include <IntCurve_ProjectOnPConicTool.hxx>
 
-Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
-                                       (const IntCurve_PConic& ThePConic,
-					const gp_Pnt2d& P,
-					const Standard_Real LowParameter,
-					const Standard_Real HighParameter,
-					const Standard_Real)  {
+Standard_Real IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
+                                                          const gp_Pnt2d&        P,
+                                                          const Standard_Real    LowParameter,
+                                                          const Standard_Real    HighParameter,
+                                                          const Standard_Real)
+{
 
-
-  Standard_Real ParamSup,ParamInf,Param=0;
-  if(LowParameter>HighParameter) {
-    ParamSup=LowParameter;
-    ParamInf=HighParameter;
+  Standard_Real ParamSup, ParamInf, Param = 0;
+  if (LowParameter > HighParameter)
+  {
+    ParamSup = LowParameter;
+    ParamInf = HighParameter;
   }
-  else {
-    ParamInf=LowParameter;
-    ParamSup=HighParameter;
-  }    
-
-  switch(ThePConic.TypeCurve()) {
-
-  case GeomAbs_Line: 
-    Param=ElCLib::LineParameter(ThePConic.Axis2().XAxis(),P);
-    break;
-
-  case GeomAbs_Circle:
-    Param=ElCLib::CircleParameter(ThePConic.Axis2(),P);
-    if(Param<0.0) { Param+=M_PI+M_PI; }
-    break;
-
-  case GeomAbs_Ellipse: {
-    Param=ElCLib::EllipseParameter(ThePConic.Axis2()
-			   ,ThePConic.Param1()
-			   ,ThePConic.Param2()
-			   ,P);
-    if (Param < 0.0) { Param+=M_PI+M_PI; }
-    break;
+  else
+  {
+    ParamInf = LowParameter;
+    ParamSup = HighParameter;
   }
 
-  case GeomAbs_Parabola: {
-    Param=ElCLib::ParabolaParameter(ThePConic.Axis2(),P);
-    break;
+  switch (ThePConic.TypeCurve())
+  {
+
+    case GeomAbs_Line:
+      Param = ElCLib::LineParameter(ThePConic.Axis2().XAxis(), P);
+      break;
+
+    case GeomAbs_Circle:
+      Param = ElCLib::CircleParameter(ThePConic.Axis2(), P);
+      if (Param < 0.0)
+      {
+        Param += M_PI + M_PI;
+      }
+      break;
+
+    case GeomAbs_Ellipse: {
+      Param =
+        ElCLib::EllipseParameter(ThePConic.Axis2(), ThePConic.Param1(), ThePConic.Param2(), P);
+      if (Param < 0.0)
+      {
+        Param += M_PI + M_PI;
+      }
+      break;
+    }
+
+    case GeomAbs_Parabola: {
+      Param = ElCLib::ParabolaParameter(ThePConic.Axis2(), P);
+      break;
+    }
+    case GeomAbs_Hyperbola: {
+      Param =
+        ElCLib::HyperbolaParameter(ThePConic.Axis2(), ThePConic.Param1(), ThePConic.Param2(), P);
+      break;
+    }
+    default:
+      break;
   }
-  case GeomAbs_Hyperbola: {
-    Param=ElCLib::HyperbolaParameter(ThePConic.Axis2()
-			     ,ThePConic.Param1()
-			     ,ThePConic.Param2(),P);
-    break;
+  if (ParamInf != ParamSup)
+  {
+    if (Param < ParamInf)
+      return (ParamInf);
+    if (Param > ParamSup)
+      return (ParamSup);
   }
-  default:
-    break;
-  }
-  if(ParamInf!=ParamSup) {
-    if(Param<ParamInf) return(ParamInf);
-    if(Param>ParamSup) return(ParamSup);
-  }
-  return(Param);
+  return (Param);
 }
 
-    
-Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
-                                       (const IntCurve_PConic& ThePConic,
-					const gp_Pnt2d& P,
-					const Standard_Real)  {
+Standard_Real IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
+                                                          const gp_Pnt2d&        P,
+                                                          const Standard_Real)
+{
 
-  //std::cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();
+  // std::cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();
 
-  Standard_Real Param=0;
+  Standard_Real Param = 0;
 
-  switch(ThePConic.TypeCurve()) {
+  switch (ThePConic.TypeCurve())
+  {
 
-  case GeomAbs_Line: 
-    Param=ElCLib::LineParameter(ThePConic.Axis2().XAxis(),P);
-    break;
-    
-  case GeomAbs_Circle:
-    Param=ElCLib::CircleParameter(ThePConic.Axis2(),P);
-    if(Param<0.0) { Param+=M_PI+M_PI; }
-    break;
+    case GeomAbs_Line:
+      Param = ElCLib::LineParameter(ThePConic.Axis2().XAxis(), P);
+      break;
 
-  case GeomAbs_Ellipse: {
-    Param=ElCLib::EllipseParameter(ThePConic.Axis2()
-			   ,ThePConic.Param1()
-			   ,ThePConic.Param2()
-			   ,P);
-    if (Param < 0.0) { Param+=M_PI+M_PI; }
-    break;
+    case GeomAbs_Circle:
+      Param = ElCLib::CircleParameter(ThePConic.Axis2(), P);
+      if (Param < 0.0)
+      {
+        Param += M_PI + M_PI;
+      }
+      break;
+
+    case GeomAbs_Ellipse: {
+      Param =
+        ElCLib::EllipseParameter(ThePConic.Axis2(), ThePConic.Param1(), ThePConic.Param2(), P);
+      if (Param < 0.0)
+      {
+        Param += M_PI + M_PI;
+      }
+      break;
+    }
+
+    case GeomAbs_Parabola: {
+      Param = ElCLib::ParabolaParameter(ThePConic.Axis2(), P);
+      break;
+    }
+    case GeomAbs_Hyperbola: {
+      Param =
+        ElCLib::HyperbolaParameter(ThePConic.Axis2(), ThePConic.Param1(), ThePConic.Param2(), P);
+      break;
+    }
+    default:
+      break;
   }
 
-  case GeomAbs_Parabola: {
-    Param=ElCLib::ParabolaParameter(ThePConic.Axis2(),P);
-    break;
-  }
-  case GeomAbs_Hyperbola: {
-    Param=ElCLib::HyperbolaParameter(ThePConic.Axis2()
-			     ,ThePConic.Param1()
-			     ,ThePConic.Param2(),P);
-    break;
-  }
-  default:
-    break;
-  }
-
-  return(Param);
+  return (Param);
 }

@@ -18,6 +18,7 @@
 
 class Select3D_SensitiveEntity;
 typedef NCollection_Sequence<Handle(Select3D_SensitiveEntity)> Select3D_EntitySequence;
-typedef NCollection_Sequence<Handle(Select3D_SensitiveEntity)>::Iterator Select3D_EntitySequenceIter;
+typedef NCollection_Sequence<Handle(Select3D_SensitiveEntity)>::Iterator
+  Select3D_EntitySequenceIter;
 
 #endif // _Select3D_EntitySequence_Header

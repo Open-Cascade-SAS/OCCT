@@ -27,51 +27,28 @@ class Standard_Transient;
 class StepVisual_PresentationRepresentation;
 class StepRepr_RepresentationItem;
 
-
-
-class StepVisual_LayeredItem  : public StepData_SelectType
+class StepVisual_LayeredItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a LayeredItem SelectType
   Standard_EXPORT StepVisual_LayeredItem();
-  
+
   //! Recognizes a LayeredItem Kind Entity that is :
   //! 1 -> PresentationRepresentation
   //! 2 -> RepresentationItem
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a PresentationRepresentation (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationRepresentation) PresentationRepresentation() const;
-  
+
   //! returns Value as a RepresentationItem (Null if another type)
   Standard_EXPORT Handle(StepRepr_RepresentationItem) RepresentationItem() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_LayeredItem_HeaderFile

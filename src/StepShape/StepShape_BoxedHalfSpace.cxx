@@ -11,35 +11,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Surface.hxx>
 #include <StepShape_BoxDomain.hxx>
 #include <StepShape_BoxedHalfSpace.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace,StepShape_HalfSpaceSolid)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace, StepShape_HalfSpaceSolid)
 
-StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace ()  {}
+StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace() {}
 
-void StepShape_BoxedHalfSpace::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Surface)& aBaseSurface,
-	const Standard_Boolean aAgreementFlag,
-	const Handle(StepShape_BoxDomain)& aEnclosure)
+void StepShape_BoxedHalfSpace::Init(const Handle(TCollection_HAsciiString)& aName,
+                                    const Handle(StepGeom_Surface)&         aBaseSurface,
+                                    const Standard_Boolean                  aAgreementFlag,
+                                    const Handle(StepShape_BoxDomain)&      aEnclosure)
 {
-	// --- classe own fields ---
-	enclosure = aEnclosure;
-	// --- classe inherited fields ---
-	StepShape_HalfSpaceSolid::Init(aName, aBaseSurface, aAgreementFlag);
+  // --- classe own fields ---
+  enclosure = aEnclosure;
+  // --- classe inherited fields ---
+  StepShape_HalfSpaceSolid::Init(aName, aBaseSurface, aAgreementFlag);
 }
-
 
 void StepShape_BoxedHalfSpace::SetEnclosure(const Handle(StepShape_BoxDomain)& aEnclosure)
 {
-	enclosure = aEnclosure;
+  enclosure = aEnclosure;
 }
 
 Handle(StepShape_BoxDomain) StepShape_BoxedHalfSpace::Enclosure() const
 {
-	return enclosure;
+  return enclosure;
 }

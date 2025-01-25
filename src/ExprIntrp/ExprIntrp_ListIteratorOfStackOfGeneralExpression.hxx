@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef ExprIntrp_ListIteratorOfStackOfGeneralExpression_HeaderFile
 #define ExprIntrp_ListIteratorOfStackOfGeneralExpression_HeaderFile
 

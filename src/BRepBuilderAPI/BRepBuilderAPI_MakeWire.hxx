@@ -29,7 +29,6 @@ class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Vertex;
 
-
 //! Describes functions to build wires from edges. A wire can
 //! be built from any number of edges.
 //! To build a wire you first initialize the construction, then
@@ -61,13 +60,11 @@ class TopoDS_Vertex;
 //! -   initializing the construction of a wire,
 //! -   adding edges to the wire under construction, and
 //! -   consulting the result.
-class BRepBuilderAPI_MakeWire  : public BRepBuilderAPI_MakeShape
+class BRepBuilderAPI_MakeWire : public BRepBuilderAPI_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an empty wire framework, to which edges
   //! are added using the Add function.
   //! As soon as the wire contains one edge, it can return
@@ -77,16 +74,18 @@ public:
   //! BRepBuilderAPI_EmptyWire if it is called before at
   //! least one edge is added to the wire under construction.
   Standard_EXPORT BRepBuilderAPI_MakeWire();
-  
+
   //! Make a Wire from an edge.
   Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E);
-  
+
   //! Make a Wire from two edges.
   Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2);
-  
+
   //! Make a Wire from three edges.
-  Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2, const TopoDS_Edge& E3);
-  
+  Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E1,
+                                          const TopoDS_Edge& E2,
+                                          const TopoDS_Edge& E3);
+
   //! Make a Wire from four edges.
   //! Constructs a wire
   //! -   from the TopoDS_Wire W composed of the edge E, or
@@ -108,14 +107,17 @@ public:
   //! return BRepBuilderAPI_DisconnectedWire, the
   //! function IsDone will return false and the function Wire
   //! will raise an error, until a new connectable edge is added.
-  Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2, const TopoDS_Edge& E3, const TopoDS_Edge& E4);
-  
+  Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Edge& E1,
+                                          const TopoDS_Edge& E2,
+                                          const TopoDS_Edge& E3,
+                                          const TopoDS_Edge& E4);
+
   //! Make a Wire from a Wire. useful for adding later.
   Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Wire& W);
-  
+
   //! Add an edge to a wire.
   Standard_EXPORT BRepBuilderAPI_MakeWire(const TopoDS_Wire& W, const TopoDS_Edge& E);
-  
+
   //! Adds the edge E to the wire under construction.
   //! E must be connectable to the wire under construction, and, unless it
   //! is the first edge of the wire, must satisfy the following
@@ -129,11 +131,11 @@ public:
   //! BRepBuilderAPI_DisconnectedWire, the function IsDone will return
   //! false and the function Wire will raise an error, until a new
   //! connectable edge is added.
-  Standard_EXPORT void Add (const TopoDS_Edge& E);
-  
+  Standard_EXPORT void Add(const TopoDS_Edge& E);
+
   //! Add the edges of <W> to the current wire.
-  Standard_EXPORT void Add (const TopoDS_Wire& W);
-  
+  Standard_EXPORT void Add(const TopoDS_Wire& W);
+
   //! Adds  the edges of <L>   to the current  wire.  The
   //! edges are not to be consecutive.   But they are to
   //! be  all  connected geometrically or topologically.
@@ -141,26 +143,26 @@ public:
   //! DisconnectedWire but the "Maker" is Done() and you
   //! can get the  partial result. (ie connected to  the
   //! first edgeof the list <L>)
-  Standard_EXPORT void Add (const TopTools_ListOfShape& L);
-  
+  Standard_EXPORT void Add(const TopTools_ListOfShape& L);
+
   //! Returns true if this algorithm contains a valid wire.
   //! IsDone returns false if:
   //! -   there are no edges in the wire, or
   //! -   the last edge which you tried to add was not connectable.
   Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
-  
+
   //! Returns the construction status
   //! -   BRepBuilderAPI_WireDone if the wire is built, or
   //! -   another value of the BRepBuilderAPI_WireError
   //! enumeration indicating why the construction failed.
   Standard_EXPORT BRepBuilderAPI_WireError Error() const;
-  
+
   //! Returns the constructed wire; or the part of the wire
   //! under construction already built.
   //! Exceptions StdFail_NotDone if a wire is not built.
   Standard_EXPORT const TopoDS_Wire& Wire();
-  Standard_EXPORT operator TopoDS_Wire();
-  
+  Standard_EXPORT                    operator TopoDS_Wire();
+
   //! Returns the last edge added to the wire under construction.
   //! Warning
   //! -   This edge can be different from the original one (the
@@ -169,7 +171,7 @@ public:
   //! wire under construction, or if the last edge which you
   //! tried to add was not connectable..
   Standard_EXPORT const TopoDS_Edge& Edge() const;
-  
+
   //! Returns the last vertex of the last edge added to the
   //! wire under construction.
   //! Warning
@@ -178,28 +180,9 @@ public:
   //! add was not connectableR
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   BRepLib_MakeWire myMakeWire;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepBuilderAPI_MakeWire_HeaderFile

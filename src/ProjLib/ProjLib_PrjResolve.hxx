@@ -25,36 +25,40 @@
 class Adaptor3d_Curve;
 class Adaptor3d_Surface;
 
-
-class ProjLib_PrjResolve 
+class ProjLib_PrjResolve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT ProjLib_PrjResolve(const Adaptor3d_Curve& C, const Adaptor3d_Surface& S, const Standard_Integer Fix);
-  
+  Standard_EXPORT ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
+                                     const Adaptor3d_Surface& S,
+                                     const Standard_Integer   Fix);
+
   //! Calculates the ort from  C(t)  to  S  with a close point.
   //! The close point is defined by the parameter values U0 and V0.
   //! The function F(u,v)=distance(S(u,v),C(t)) has an extremum when gradient(F)=0.
   //! The algorithm searches a zero near the close point.
-  Standard_EXPORT void Perform (const Standard_Real t, const Standard_Real U, const Standard_Real V, const gp_Pnt2d& Tol, const gp_Pnt2d& Inf, const gp_Pnt2d& Sup, const Standard_Real FTol = -1, const Standard_Boolean StrictInside = Standard_False);
-  
+  Standard_EXPORT void Perform(const Standard_Real    t,
+                               const Standard_Real    U,
+                               const Standard_Real    V,
+                               const gp_Pnt2d&        Tol,
+                               const gp_Pnt2d&        Inf,
+                               const gp_Pnt2d&        Sup,
+                               const Standard_Real    FTol         = -1,
+                               const Standard_Boolean StrictInside = Standard_False);
+
   //! Returns True if the distance is found.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the point of the extremum distance.
   Standard_EXPORT gp_Pnt2d Solution() const;
 
 private:
-
-  const Adaptor3d_Curve* myCurve;
+  const Adaptor3d_Curve*   myCurve;
   const Adaptor3d_Surface* mySurface;
-  Standard_Boolean myDone;
-  gp_Pnt2d mySolution;
-  Standard_Integer myFix;
-
+  Standard_Boolean         myDone;
+  gp_Pnt2d                 mySolution;
+  Standard_Integer         myFix;
 };
 
 #endif // _ProjLib_PrjResolve_HeaderFile

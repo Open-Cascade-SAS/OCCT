@@ -14,19 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Handle(StepGeom_Ellipse) EStep = new StepGeom_Ellipse;
-  StepGeom_Axis2Placement Ax2;
-  Handle(StepGeom_Axis2Placement3d) Ax2Step;
-  Standard_Real majorR, minorR;
-  
-  GeomToStep_MakeAxis2Placement3d MkAxis2(E.Position(), theLocalFactors);
-  Ax2Step = MkAxis2.Value();
-  majorR = E.MajorRadius();
-  minorR = E.MinorRadius();
-  Ax2.SetValue(Ax2Step);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real fact = theLocalFactors.LengthFactor();
-  EStep->Init(name, Ax2,majorR/fact,minorR/fact);
-  theEllipse = EStep;
-  done = Standard_True;
+Handle(StepGeom_Ellipse)          EStep = new StepGeom_Ellipse;
+StepGeom_Axis2Placement           Ax2;
+Handle(StepGeom_Axis2Placement3d) Ax2Step;
+Standard_Real                     majorR, minorR;
 
+GeomToStep_MakeAxis2Placement3d MkAxis2(E.Position(), theLocalFactors);
+Ax2Step = MkAxis2.Value();
+majorR  = E.MajorRadius();
+minorR  = E.MinorRadius();
+Ax2.SetValue(Ax2Step);
+Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+Standard_Real                    fact = theLocalFactors.LengthFactor();
+EStep->Init(name, Ax2, majorR / fact, minorR / fact);
+theEllipse = EStep;
+done       = Standard_True;

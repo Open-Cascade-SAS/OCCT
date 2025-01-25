@@ -26,7 +26,6 @@ class TCollection_HAsciiString;
 class StepBasic_MeasureValueMember;
 class StepBasic_Unit;
 
-
 class StepRepr_MeasureRepresentationItem;
 DEFINE_STANDARD_HANDLE(StepRepr_MeasureRepresentationItem, StepRepr_RepresentationItem)
 
@@ -37,40 +36,23 @@ class StepRepr_MeasureRepresentationItem : public StepRepr_RepresentationItem
 {
 
 public:
-
-  
   //! Creates empty object
   Standard_EXPORT StepRepr_MeasureRepresentationItem();
-  
+
   //! Init all fields
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent);
-  
-  Standard_EXPORT void SetMeasure (const Handle(StepBasic_MeasureWithUnit)& Measure);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
+                            const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+                            const StepBasic_Unit&                       aUnitComponent);
+
+  Standard_EXPORT void SetMeasure(const Handle(StepBasic_MeasureWithUnit)& Measure);
+
   Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Measure() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem, StepRepr_RepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_MeasureWithUnit) myMeasure;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_MeasureRepresentationItem_HeaderFile

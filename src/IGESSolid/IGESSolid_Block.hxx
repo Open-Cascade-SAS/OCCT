@@ -25,7 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-
 class IGESSolid_Block;
 DEFINE_STANDARD_HANDLE(IGESSolid_Block, IGESData_IGESEntity)
 
@@ -38,10 +37,8 @@ class IGESSolid_Block : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_Block();
-  
+
   //! This method is used to set the fields of the class Block
   //! - aSize   : Length in each local directions
   //! - aCorner : Corner point coordinates. Default (0,0,0)
@@ -49,74 +46,60 @@ public:
   //! default (1,0,0)
   //! - aZAxis  : Unit vector defining local Z-axis
   //! default (0,0,1)
-  Standard_EXPORT void Init (const gp_XYZ& aSize, const gp_XYZ& aCorner, const gp_XYZ& aXAxis, const gp_XYZ& aZAxis);
-  
+  Standard_EXPORT void Init(const gp_XYZ& aSize,
+                            const gp_XYZ& aCorner,
+                            const gp_XYZ& aXAxis,
+                            const gp_XYZ& aZAxis);
+
   //! returns the size of the block
   Standard_EXPORT gp_XYZ Size() const;
-  
+
   //! returns the length of the Block along the local X-direction
   Standard_EXPORT Standard_Real XLength() const;
-  
+
   //! returns the length of the Block along the local Y-direction
   Standard_EXPORT Standard_Real YLength() const;
-  
+
   //! returns the length of the Block along the local Z-direction
   Standard_EXPORT Standard_Real ZLength() const;
-  
+
   //! returns the corner point coordinates of the Block
   Standard_EXPORT gp_Pnt Corner() const;
-  
+
   //! returns the corner point coordinates of the Block after applying
   //! the TransformationMatrix
   Standard_EXPORT gp_Pnt TransformedCorner() const;
-  
+
   //! returns the direction defining the local X-axis
   Standard_EXPORT gp_Dir XAxis() const;
-  
+
   //! returns the direction defining the local X-axis after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Dir TransformedXAxis() const;
-  
+
   //! returns the direction defining the local Y-axis
   //! it is the cross product of ZAxis and XAxis
   Standard_EXPORT gp_Dir YAxis() const;
-  
+
   //! returns the direction defining the local Y-axis after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Dir TransformedYAxis() const;
-  
+
   //! returns the direction defining the local X-axis
   Standard_EXPORT gp_Dir ZAxis() const;
-  
+
   //! returns the direction defining the local Z-axis after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Dir TransformedZAxis() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_Block,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Block, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   gp_XYZ theSize;
   gp_XYZ theCorner;
   gp_XYZ theXAxis;
   gp_XYZ theZAxis;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_Block_HeaderFile

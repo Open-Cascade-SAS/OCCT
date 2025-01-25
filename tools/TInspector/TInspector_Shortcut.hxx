@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspector_Shortcut_H
 #define TInspector_Shortcut_H
@@ -32,19 +32,17 @@ class QEvent;
 class TInspector_Shortcut : public QObject
 {
 public:
-
   //! Constructor
-  Standard_EXPORT TInspector_Shortcut (QObject* theParent, TInspector_Window* theWindow);
+  Standard_EXPORT TInspector_Shortcut(QObject* theParent, TInspector_Window* theWindow);
 
   //! Destructor
   virtual ~TInspector_Shortcut() {}
 
   //! Processes key release event to update view model, otherwise do usual QObject functionality
-  Standard_EXPORT virtual bool eventFilter (QObject *theObject, QEvent* theEvent) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool eventFilter(QObject* theObject, QEvent* theEvent) Standard_OVERRIDE;
 
 private:
   TInspector_Window* myWindow; //!< the current window
 };
-
 
 #endif

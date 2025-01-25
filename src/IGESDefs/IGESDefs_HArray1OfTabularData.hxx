@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESDefs_HArray1OfTabularData, IGESDefs_Array1OfTabularData)
 
-
 #endif

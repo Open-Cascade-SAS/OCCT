@@ -24,57 +24,41 @@
 class Geom2d_Curve;
 class LProp_CurAndInf;
 
-
 //! Computes the locals extremas of curvature and the
 //! inflections of a bounded curve in 2d.
-class Geom2dLProp_NumericCurInf2d 
+class Geom2dLProp_NumericCurInf2d
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Geom2dLProp_NumericCurInf2d();
-  
+
   //! Computes the locals extremas of curvature.
-  Standard_EXPORT void PerformCurExt (const Handle(Geom2d_Curve)& C, LProp_CurAndInf& Result);
-  
+  Standard_EXPORT void PerformCurExt(const Handle(Geom2d_Curve)& C, LProp_CurAndInf& Result);
+
   //! Computes the inflections.
-  Standard_EXPORT void PerformInf (const Handle(Geom2d_Curve)& C, LProp_CurAndInf& Result);
-  
+  Standard_EXPORT void PerformInf(const Handle(Geom2d_Curve)& C, LProp_CurAndInf& Result);
+
   //! Computes the locals extremas of curvature.
   //! in the interval of parameters [UMin,UMax].
-  Standard_EXPORT void PerformCurExt (const Handle(Geom2d_Curve)& C, const Standard_Real UMin, const Standard_Real UMax, LProp_CurAndInf& Result);
-  
+  Standard_EXPORT void PerformCurExt(const Handle(Geom2d_Curve)& C,
+                                     const Standard_Real         UMin,
+                                     const Standard_Real         UMax,
+                                     LProp_CurAndInf&            Result);
+
   //! Computes the inflections in the interval of
   //! parameters [UMin,UMax].
-  Standard_EXPORT void PerformInf (const Handle(Geom2d_Curve)& C, const Standard_Real UMin, const Standard_Real UMax, LProp_CurAndInf& Result);
-  
+  Standard_EXPORT void PerformInf(const Handle(Geom2d_Curve)& C,
+                                  const Standard_Real         UMin,
+                                  const Standard_Real         UMax,
+                                  LProp_CurAndInf&            Result);
+
   //! True if the solutions are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Boolean isDone;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dLProp_NumericCurInf2d_HeaderFile

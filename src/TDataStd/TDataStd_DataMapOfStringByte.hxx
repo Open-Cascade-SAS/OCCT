@@ -20,8 +20,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Byte> TDataStd_DataMapOfStringByte;
-typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Byte>::Iterator TDataStd_DataMapIteratorOfDataMapOfStringByte;
-
+typedef NCollection_DataMap<TCollection_ExtendedString, Standard_Byte> TDataStd_DataMapOfStringByte;
+typedef NCollection_DataMap<TCollection_ExtendedString, Standard_Byte>::Iterator
+  TDataStd_DataMapIteratorOfDataMapOfStringByte;
 
 #endif

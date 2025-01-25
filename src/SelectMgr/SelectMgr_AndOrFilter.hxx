@@ -30,15 +30,15 @@ class SelectMgr_AndOrFilter : public SelectMgr_CompositionFilter
 {
 
 public:
-
   //! Constructs an empty selection filter.
-  Standard_EXPORT SelectMgr_AndOrFilter (const SelectMgr_FilterType theFilterType);
+  Standard_EXPORT SelectMgr_AndOrFilter(const SelectMgr_FilterType theFilterType);
 
   //! Indicates that the selected Interactive Object passes the filter.
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& theObj) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
+    Standard_OVERRIDE;
 
   //! Disable selection of specified objects.
-  Standard_EXPORT void SetDisabledObjects (const Handle(Graphic3d_NMapOfTransient)& theObjects);
+  Standard_EXPORT void SetDisabledObjects(const Handle(Graphic3d_NMapOfTransient)& theObjects);
 
   //! @return a selection filter type (@sa SelectMgr_FilterType).
   SelectMgr_FilterType FilterType() const { return myFilterType; }
@@ -46,17 +46,17 @@ public:
   //! Sets a selection filter type.
   //! SelectMgr_FilterType_OR selection filter is used be default.
   //! @param theFilterType the filter type.
-  void SetFilterType (const SelectMgr_FilterType theFilterType) { myFilterType = theFilterType; }
+  void SetFilterType(const SelectMgr_FilterType theFilterType) { myFilterType = theFilterType; }
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_AndOrFilter, SelectMgr_CompositionFilter)
 
 private:
-
-  Handle(Graphic3d_NMapOfTransient) myDisabledObjects; //!< disabled objects.
-                                                       //!  Selection isn't applied to these objects.
-// clang-format off
+  Handle(Graphic3d_NMapOfTransient)
+    myDisabledObjects; //!< disabled objects.
+                       //!  Selection isn't applied to these objects.
+  // clang-format off
   SelectMgr_FilterType myFilterType; //!< selection filter type. SelectMgr_TypeFilter_OR by default.
-// clang-format on
+  // clang-format on
 };
 
 #endif // _SelectMgr_AndOrFilter_HeaderFile

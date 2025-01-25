@@ -24,8 +24,9 @@ class Aspect_AspectFillAreaDefinitionError;
 DEFINE_STANDARD_HANDLE(Aspect_AspectFillAreaDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Aspect_AspectFillAreaDefinitionError
-  #define Aspect_AspectFillAreaDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Aspect_AspectFillAreaDefinitionError(MESSAGE);
+  #define Aspect_AspectFillAreaDefinitionError_Raise_if(CONDITION, MESSAGE)                        \
+    if (CONDITION)                                                                                 \
+      throw Aspect_AspectFillAreaDefinitionError(MESSAGE);
 #else
   #define Aspect_AspectFillAreaDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

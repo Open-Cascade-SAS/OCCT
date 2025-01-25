@@ -28,29 +28,27 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-
 //! Provides  tools to implement local     topological
 //! operations on a shape.
-class LocOpe 
+class LocOpe
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns Standard_True  when the wire <W> is closed
   //! on the face <OnF>.
-  Standard_EXPORT static Standard_Boolean Closed (const TopoDS_Wire& W, const TopoDS_Face& OnF);
-  
+  Standard_EXPORT static Standard_Boolean Closed(const TopoDS_Wire& W, const TopoDS_Face& OnF);
+
   //! Returns Standard_True  when the edge <E> is closed
   //! on the face <OnF>.
-  Standard_EXPORT static Standard_Boolean Closed (const TopoDS_Edge& E, const TopoDS_Face& OnF);
-  
-  //! Returns Standard_True  when the faces are tangent
-  Standard_EXPORT static Standard_Boolean TgtFaces (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2);
-  
-  Standard_EXPORT static void SampleEdges (const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
+  Standard_EXPORT static Standard_Boolean Closed(const TopoDS_Edge& E, const TopoDS_Face& OnF);
 
+  //! Returns Standard_True  when the faces are tangent
+  Standard_EXPORT static Standard_Boolean TgtFaces(const TopoDS_Edge& E,
+                                                   const TopoDS_Face& F1,
+                                                   const TopoDS_Face& F2);
+
+  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
 };
 
 #endif // _LocOpe_HeaderFile

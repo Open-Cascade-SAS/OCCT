@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntSurf_Couple> IntSurf_SequenceOfCouple;
 
-
 #endif

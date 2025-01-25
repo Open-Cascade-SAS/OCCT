@@ -23,48 +23,28 @@
 #include <StepShape_SolidModel.hxx>
 class TCollection_HAsciiString;
 
-
 class StepShape_CsgSolid;
 DEFINE_STANDARD_HANDLE(StepShape_CsgSolid, StepShape_SolidModel)
-
 
 class StepShape_CsgSolid : public StepShape_SolidModel
 {
 
 public:
-
-  
   //! Returns a CsgSolid
   Standard_EXPORT StepShape_CsgSolid();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepShape_CsgSelect& aTreeRootExpression);
-  
-  Standard_EXPORT void SetTreeRootExpression (const StepShape_CsgSelect& aTreeRootExpression);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const StepShape_CsgSelect&              aTreeRootExpression);
+
+  Standard_EXPORT void SetTreeRootExpression(const StepShape_CsgSelect& aTreeRootExpression);
+
   Standard_EXPORT StepShape_CsgSelect TreeRootExpression() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_CsgSolid,StepShape_SolidModel)
+  DEFINE_STANDARD_RTTIEXT(StepShape_CsgSolid, StepShape_SolidModel)
 
 protected:
-
-
-
-
 private:
-
-
   StepShape_CsgSelect treeRootExpression;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_CsgSolid_HeaderFile

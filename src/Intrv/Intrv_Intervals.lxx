@@ -18,20 +18,21 @@
 #include <Intrv_Interval.hxx>
 
 //=======================================================================
-//function : NbIntervals
-//purpose  : returns the number of Intervals
+// function : NbIntervals
+// purpose  : returns the number of Intervals
 //=======================================================================
 
-inline Standard_Integer Intrv_Intervals::NbIntervals () const
-{ return myInter.Length(); }
+inline Standard_Integer Intrv_Intervals::NbIntervals() const
+{
+  return myInter.Length();
+}
 
 //=======================================================================
-//function : Value
-//purpose  : returns the Interval of rank Index
+// function : Value
+// purpose  : returns the Interval of rank Index
 //=======================================================================
 
-inline const Intrv_Interval& Intrv_Intervals::Value
-  (const Standard_Integer Index) const
-{ return myInter(Index); }
-
-
+inline const Intrv_Interval& Intrv_Intervals::Value(const Standard_Integer Index) const
+{
+  return myInter(Index);
+}

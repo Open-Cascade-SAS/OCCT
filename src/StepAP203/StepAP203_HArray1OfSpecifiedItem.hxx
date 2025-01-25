@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepAP203_HArray1OfSpecifiedItem, StepAP203_Array1OfSpecifiedItem)
 
-
 #endif

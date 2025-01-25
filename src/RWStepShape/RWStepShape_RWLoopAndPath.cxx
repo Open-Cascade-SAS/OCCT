@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepShape_RWLoopAndPath.pxx"
@@ -20,107 +19,114 @@
 #include <StepShape_LoopAndPath.hxx>
 #include <StepShape_OrientedEdge.hxx>
 
-RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath () {}
+RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath() {}
 
-void RWStepShape_RWLoopAndPath::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num0,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepShape_LoopAndPath)& ent) const
+void RWStepShape_RWLoopAndPath::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                         const Standard_Integer                 num0,
+                                         Handle(Interface_Check)&               ach,
+                                         const Handle(StepShape_LoopAndPath)&   ent) const
 {
 
-	Standard_Integer num = num0;
+  Standard_Integer num = num0;
 
+  // --- Instance of plex component Loop ---
 
-	// --- Instance of plex component Loop ---
+  if (!data->CheckNbParams(num, 0, ach, "loop"))
+    return;
 
-	if (!data->CheckNbParams(num,0,ach,"loop")) return;
+  num = data->NextForComplex(num);
 
-	num = data->NextForComplex(num);
+  // --- Instance of plex component Path ---
 
-	// --- Instance of plex component Path ---
+  if (!data->CheckNbParams(num, 1, ach, "path"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"path")) return;
+  // --- field : edgeList ---
 
-	// --- field : edgeList ---
+  Handle(StepShape_HArray1OfOrientedEdge) aEdgeList;
+  Handle(StepShape_OrientedEdge)          anent1;
+  Standard_Integer                        nsub1;
+  if (data->ReadSubList(num, 1, "edge_list", ach, nsub1))
+  {
+    Standard_Integer nb1 = data->NbParams(nsub1);
+    aEdgeList            = new StepShape_HArray1OfOrientedEdge(1, nb1);
+    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+      if (data->ReadEntity(nsub1,
+                           i1,
+                           "oriented_edge",
+                           ach,
+                           STANDARD_TYPE(StepShape_OrientedEdge),
+                           anent1))
+        aEdgeList->SetValue(i1, anent1);
+    }
+  }
 
-	Handle(StepShape_HArray1OfOrientedEdge) aEdgeList;
-	Handle(StepShape_OrientedEdge) anent1;
-	Standard_Integer nsub1;
-	if (data->ReadSubList (num,1,"edge_list",ach,nsub1)) {
-	  Standard_Integer nb1 = data->NbParams(nsub1);
-	  aEdgeList = new StepShape_HArray1OfOrientedEdge (1, nb1);
-	  for (Standard_Integer i1 = 1; i1 <= nb1; i1 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	    if (data->ReadEntity (nsub1, i1,"oriented_edge", ach, STANDARD_TYPE(StepShape_OrientedEdge), anent1))
-	      aEdgeList->SetValue(i1, anent1);
-	  }
-	}
+  num = data->NextForComplex(num);
 
-	num = data->NextForComplex(num);
+  // --- Instance of plex component RepresentationItem ---
 
-	// --- Instance of plex component RepresentationItem ---
+  if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
+  // --- field : name ---
 
-	// --- field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  num = data->NextForComplex(num);
 
-	num = data->NextForComplex(num);
+  // --- Instance of common supertype TopologicalRepresentationItem ---
 
-	// --- Instance of common supertype TopologicalRepresentationItem ---
+  if (!data->CheckNbParams(num, 0, ach, "topological_representation_item"))
+    return;
 
-	if (!data->CheckNbParams(num,0,ach,"topological_representation_item")) return;
+  //--- Initialisation of the red entity ---
 
-	//--- Initialisation of the red entity ---
-
-	ent->Init(aName,aEdgeList);
+  ent->Init(aName, aEdgeList);
 }
 
-
-void RWStepShape_RWLoopAndPath::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepShape_LoopAndPath)& ent) const
+void RWStepShape_RWLoopAndPath::WriteStep(StepData_StepWriter&                 SW,
+                                          const Handle(StepShape_LoopAndPath)& ent) const
 {
 
-	// --- Instance of plex component Loop ---
+  // --- Instance of plex component Loop ---
 
-	SW.StartEntity("LOOP");
+  SW.StartEntity("LOOP");
 
-	// --- Instance of plex component Path ---
+  // --- Instance of plex component Path ---
 
-	SW.StartEntity("PATH");
-	// --- field : edgeList ---
+  SW.StartEntity("PATH");
+  // --- field : edgeList ---
 
-	SW.OpenSub();
-	for (Standard_Integer i1 = 1;  i1 <= ent->NbEdgeList();  i1 ++) {
-	  SW.Send(ent->EdgeListValue(i1));
-	}
-	SW.CloseSub();
+  SW.OpenSub();
+  for (Standard_Integer i1 = 1; i1 <= ent->NbEdgeList(); i1++)
+  {
+    SW.Send(ent->EdgeListValue(i1));
+  }
+  SW.CloseSub();
 
-	// --- Instance of plex component RepresentationItem ---
+  // --- Instance of plex component RepresentationItem ---
 
-	SW.StartEntity("REPRESENTATION_ITEM");
-	// --- field : name ---
+  SW.StartEntity("REPRESENTATION_ITEM");
+  // --- field : name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- Instance of common supertype TopologicalRepresentationItem ---
+  // --- Instance of common supertype TopologicalRepresentationItem ---
 
-	SW.StartEntity("TOPOLOGICAL_REPRESENTATION_ITEM");
+  SW.StartEntity("TOPOLOGICAL_REPRESENTATION_ITEM");
 }
 
-
-void RWStepShape_RWLoopAndPath::Share(const Handle(StepShape_LoopAndPath)& ent, Interface_EntityIterator& iter) const
+void RWStepShape_RWLoopAndPath::Share(const Handle(StepShape_LoopAndPath)& ent,
+                                      Interface_EntityIterator&            iter) const
 {
 
-	Standard_Integer nbElem1 = ent->NbEdgeList();
-	for (Standard_Integer is1=1; is1<=nbElem1; is1 ++) {
-	  iter.GetOneItem(ent->EdgeListValue(is1));
-	}
-
+  Standard_Integer nbElem1 = ent->NbEdgeList();
+  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  {
+    iter.GetOneItem(ent->EdgeListValue(is1));
+  }
 }
-

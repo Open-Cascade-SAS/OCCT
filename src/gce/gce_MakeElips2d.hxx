@@ -28,7 +28,6 @@ class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-
 //! This class implements the following algorithms used to
 //! create Elips2d from gp.
 //!
@@ -37,13 +36,10 @@ class gp_Pnt2d;
 //! other giving the value of the small radius.
 //! * Create an ellipse from its major axis and its major
 //! radius and its minor radius.
-class gce_MakeElips2d  : public gce_Root
+class gce_MakeElips2d : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Creates an ellipse with the major axis, the major and the
   //! minor radius. The location of the MajorAxis is the center
@@ -52,8 +48,10 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
-  Standard_EXPORT gce_MakeElips2d(const gp_Ax2d& MajorAxis, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Boolean Sense = Standard_True);
-  
+  Standard_EXPORT gce_MakeElips2d(const gp_Ax2d&         MajorAxis,
+                                  const Standard_Real    MajorRadius,
+                                  const Standard_Real    MinorRadius,
+                                  const Standard_Boolean Sense = Standard_True);
 
   //! Axis defines the Xaxis and Yaxis of the ellipse which defines
   //! the origin and the sense of parametrization.
@@ -63,8 +61,10 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
-  Standard_EXPORT gce_MakeElips2d(const gp_Ax22d& A, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
+  Standard_EXPORT gce_MakeElips2d(const gp_Ax22d&     A,
+                                  const Standard_Real MajorRadius,
+                                  const Standard_Real MinorRadius);
+
   //! Makes an Elips2d with its center and two points.
   //! The sense of parametrization is given by S1, S2,
   //! and Center.
@@ -86,36 +86,17 @@ public:
   //! Center and S1 is less than the minor radius
   //! computed with Center, S1 and S2.
   Standard_EXPORT gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
-  
+
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const gp_Elips2d& Value() const;
-  
+
   Standard_EXPORT const gp_Elips2d& Operator() const;
-Standard_EXPORT operator gp_Elips2d() const;
-
-
-
+  Standard_EXPORT                   operator gp_Elips2d() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Elips2d TheElips2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeElips2d_HeaderFile

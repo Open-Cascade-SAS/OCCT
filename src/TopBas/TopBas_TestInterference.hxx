@@ -24,63 +24,50 @@
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 
-
-
-class TopBas_TestInterference 
+class TopBas_TestInterference
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopBas_TestInterference();
-  
-  Standard_EXPORT TopBas_TestInterference(const Standard_Real& Inters, const Standard_Integer& Bound, const TopAbs_Orientation Orient, const TopAbs_Orientation Trans, const TopAbs_Orientation BTrans);
-  
-    void Intersection (const Standard_Real& I);
-  
-    void Boundary (const Standard_Integer& B);
-  
-    void Orientation (const TopAbs_Orientation O);
-  
-    void Transition (const TopAbs_Orientation Tr);
-  
-    void BoundaryTransition (const TopAbs_Orientation BTr);
-  
-    const Standard_Real& Intersection() const;
-  
-    Standard_Real& ChangeIntersection();
-  
-    const Standard_Integer& Boundary() const;
-  
-    Standard_Integer& ChangeBoundary();
-  
-    TopAbs_Orientation Orientation() const;
-  
-    TopAbs_Orientation Transition() const;
-  
-    TopAbs_Orientation BoundaryTransition() const;
 
+  Standard_EXPORT TopBas_TestInterference(const Standard_Real&     Inters,
+                                          const Standard_Integer&  Bound,
+                                          const TopAbs_Orientation Orient,
+                                          const TopAbs_Orientation Trans,
+                                          const TopAbs_Orientation BTrans);
 
+  void Intersection(const Standard_Real& I);
 
+  void Boundary(const Standard_Integer& B);
+
+  void Orientation(const TopAbs_Orientation O);
+
+  void Transition(const TopAbs_Orientation Tr);
+
+  void BoundaryTransition(const TopAbs_Orientation BTr);
+
+  const Standard_Real& Intersection() const;
+
+  Standard_Real& ChangeIntersection();
+
+  const Standard_Integer& Boundary() const;
+
+  Standard_Integer& ChangeBoundary();
+
+  TopAbs_Orientation Orientation() const;
+
+  TopAbs_Orientation Transition() const;
+
+  TopAbs_Orientation BoundaryTransition() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real myIntersection;
-  Standard_Integer myBoundary;
+  Standard_Real      myIntersection;
+  Standard_Integer   myBoundary;
   TopAbs_Orientation myOrientation;
   TopAbs_Orientation myTransition;
   TopAbs_Orientation myBTransition;
-
-
 };
 
 #define TheSubShape Standard_Real
@@ -98,8 +85,5 @@ private:
 #undef TheShape_hxx
 #undef TopBas_Interference
 #undef TopBas_Interference_hxx
-
-
-
 
 #endif // _TopBas_TestInterference_HeaderFile

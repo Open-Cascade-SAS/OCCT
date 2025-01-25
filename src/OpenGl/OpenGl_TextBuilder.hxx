@@ -26,33 +26,32 @@
 
 class Font_TextFormatter;
 
-//! This class generates primitive array required for rendering textured text using OpenGl_Font instance.
+//! This class generates primitive array required for rendering textured text using OpenGl_Font
+//! instance.
 class OpenGl_TextBuilder
 {
 public:
-
   //! Creates empty object.
   Standard_EXPORT OpenGl_TextBuilder();
 
   //! Creates texture quads for the given text.
-  Standard_EXPORT void Perform (const Handle(Font_TextFormatter)&                theFormatter,
-                                const Handle(OpenGl_Context)&                    theContext,
-                                OpenGl_Font&                                     theFont,
-                                NCollection_Vector<GLuint>&                      theTextures,
-                                NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theVertsPerTexture,
-                                NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theTCrdsPerTexture);
+  Standard_EXPORT void Perform(const Handle(Font_TextFormatter)&                theFormatter,
+                               const Handle(OpenGl_Context)&                    theContext,
+                               OpenGl_Font&                                     theFont,
+                               NCollection_Vector<GLuint>&                      theTextures,
+                               NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theVertsPerTexture,
+                               NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theTCrdsPerTexture);
 
 protected: //! @name class auxiliary methods
-
-  Standard_EXPORT void createGlyphs (const Handle(Font_TextFormatter)&                                              theFormatter,
-                                     const Handle(OpenGl_Context)&                                                  theCtx,
-                                     OpenGl_Font&                                                                   theFont,
-                                     NCollection_Vector<GLuint>&                                                    theTextures,
-                                     NCollection_Vector< NCollection_Handle < NCollection_Vector <OpenGl_Vec2> > >& theVertsPerTexture,
-                                     NCollection_Vector< NCollection_Handle < NCollection_Vector <OpenGl_Vec2> > >& theTCrdsPerTexture);
+  Standard_EXPORT void createGlyphs(
+    const Handle(Font_TextFormatter)&                                        theFormatter,
+    const Handle(OpenGl_Context)&                                            theCtx,
+    OpenGl_Font&                                                             theFont,
+    NCollection_Vector<GLuint>&                                              theTextures,
+    NCollection_Vector<NCollection_Handle<NCollection_Vector<OpenGl_Vec2>>>& theVertsPerTexture,
+    NCollection_Vector<NCollection_Handle<NCollection_Vector<OpenGl_Vec2>>>& theTCrdsPerTexture);
 
 protected: //! @name class auxiliary fields
-
   NCollection_Vector<OpenGl_Font::Tile>  myTileRects;
   OpenGl_VertexBufferEditor<OpenGl_Vec2> myVboEditor;
 };

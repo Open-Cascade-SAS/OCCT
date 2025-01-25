@@ -15,8 +15,7 @@
 #ifndef _Standard_Boolean_HeaderFile
 #define _Standard_Boolean_HeaderFile
 
-//typedef unsigned integer  Standard_Boolean;
+// typedef unsigned integer  Standard_Boolean;
 #include <Standard_TypeDef.hxx>
 
 #endif
-

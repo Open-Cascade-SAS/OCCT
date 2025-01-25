@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESData_HArray1OfIGESEntity, IGESData_Array1OfIGESEntity)
 
-
 #endif

@@ -17,18 +17,17 @@
 #ifndef _TopOpeBRep_TypeLineCurve_HeaderFile
 #define _TopOpeBRep_TypeLineCurve_HeaderFile
 
-
 enum TopOpeBRep_TypeLineCurve
 {
-TopOpeBRep_ANALYTIC,
-TopOpeBRep_RESTRICTION,
-TopOpeBRep_WALKING,
-TopOpeBRep_LINE,
-TopOpeBRep_CIRCLE,
-TopOpeBRep_ELLIPSE,
-TopOpeBRep_PARABOLA,
-TopOpeBRep_HYPERBOLA,
-TopOpeBRep_OTHERTYPE
+  TopOpeBRep_ANALYTIC,
+  TopOpeBRep_RESTRICTION,
+  TopOpeBRep_WALKING,
+  TopOpeBRep_LINE,
+  TopOpeBRep_CIRCLE,
+  TopOpeBRep_ELLIPSE,
+  TopOpeBRep_PARABOLA,
+  TopOpeBRep_HYPERBOLA,
+  TopOpeBRep_OTHERTYPE
 };
 
 #endif // _TopOpeBRep_TypeLineCurve_HeaderFile

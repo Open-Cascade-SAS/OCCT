@@ -16,39 +16,43 @@
 
 #include <Adaptor3d_HVertex.hxx>
 
-inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMin (const Handle(Adaptor3d_Surface)& )
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMin(const Handle(Adaptor3d_Surface)&)
 {
   return Standard_False;
 }
 
-inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMax (const Handle(Adaptor3d_Surface)& )
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMax(const Handle(Adaptor3d_Surface)&)
 {
   return Standard_False;
 }
 
-inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMin (const Handle(Adaptor3d_Surface)& )
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMin(const Handle(Adaptor3d_Surface)&)
 {
   return Standard_False;
 }
 
-inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMax (const Handle(Adaptor3d_Surface)& )
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMax(const Handle(Adaptor3d_Surface)&)
 {
   return Standard_False;
 }
 
-inline Standard_Real BRepBlend_BlendTool::Tolerance (const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_Curve2d)& A)
+inline Standard_Real BRepBlend_BlendTool::Tolerance(const Handle(Adaptor3d_HVertex)& V,
+                                                    const Handle(Adaptor2d_Curve2d)& A)
 {
-//  return Adaptor2d_HCurve2dTool::Resolution(A,1.e-6); // a voir
+  //  return Adaptor2d_HCurve2dTool::Resolution(A,1.e-6); // a voir
   return V->Resolution(A); // a voir
 }
 
-inline Standard_Real BRepBlend_BlendTool::Parameter (const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_Curve2d)& C)
+inline Standard_Real BRepBlend_BlendTool::Parameter(const Handle(Adaptor3d_HVertex)& V,
+                                                    const Handle(Adaptor2d_Curve2d)& C)
 {
-//  return BRep_Tool::Parameter(V,A->Curve().Edge());
+  //  return BRep_Tool::Parameter(V,A->Curve().Edge());
   return V->Parameter(C);
 }
 
-inline Handle(Adaptor2d_Curve2d) BRepBlend_BlendTool::CurveOnSurf (const Handle(Adaptor2d_Curve2d)& C, const Handle(Adaptor3d_Surface)&)
+inline Handle(Adaptor2d_Curve2d) BRepBlend_BlendTool::CurveOnSurf(
+  const Handle(Adaptor2d_Curve2d)& C,
+  const Handle(Adaptor3d_Surface)&)
 {
   return C;
 }

@@ -27,7 +27,6 @@
 class HLRBRep_PolyAlgo;
 class TopoDS_Shape;
 
-
 //! A framework for filtering the computation
 //! results of an HLRBRep_Algo algorithm by extraction.
 //! From the results calculated by the algorithm on
@@ -55,92 +54,74 @@ class TopoDS_Shape;
 //! The construction of the shape does not call a
 //! new computation of the algorithm, but only
 //! reads its internal results.
-class HLRBRep_PolyHLRToShape 
+class HLRBRep_PolyHLRToShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a framework for filtering the results
   //! of the HLRBRep_Algo algorithm, A.
   //! Use the extraction filters to obtain the results you want for A.
   Standard_EXPORT HLRBRep_PolyHLRToShape();
-  
-  Standard_EXPORT void Update (const Handle(HLRBRep_PolyAlgo)& A);
-  
-    void Show();
-  
-    void Hide();
-  
-    TopoDS_Shape VCompound();
-  
-    TopoDS_Shape VCompound (const TopoDS_Shape& S);
-  
+
+  Standard_EXPORT void Update(const Handle(HLRBRep_PolyAlgo)& A);
+
+  void Show();
+
+  void Hide();
+
+  TopoDS_Shape VCompound();
+
+  TopoDS_Shape VCompound(const TopoDS_Shape& S);
+
   //! Sets the extraction filter for visible smooth edges.
-    TopoDS_Shape Rg1LineVCompound();
-  
-    TopoDS_Shape Rg1LineVCompound (const TopoDS_Shape& S);
-  
+  TopoDS_Shape Rg1LineVCompound();
+
+  TopoDS_Shape Rg1LineVCompound(const TopoDS_Shape& S);
+
   //! Sets the extraction filter for visible sewn edges.
-    TopoDS_Shape RgNLineVCompound();
-  
-    TopoDS_Shape RgNLineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape OutLineVCompound();
-  
+  TopoDS_Shape RgNLineVCompound();
+
+  TopoDS_Shape RgNLineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape OutLineVCompound();
+
   //! Sets the extraction filter for visible outlines.
-    TopoDS_Shape OutLineVCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape HCompound();
-  
-    TopoDS_Shape HCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape Rg1LineHCompound();
-  
+  TopoDS_Shape OutLineVCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape HCompound();
+
+  TopoDS_Shape HCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape Rg1LineHCompound();
+
   //! Sets the extraction filter for hidden smooth edges.
-    TopoDS_Shape Rg1LineHCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape RgNLineHCompound();
-  
+  TopoDS_Shape Rg1LineHCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape RgNLineHCompound();
+
   //! Sets the extraction filter for hidden sewn edges.
-    TopoDS_Shape RgNLineHCompound (const TopoDS_Shape& S);
-  
-    TopoDS_Shape OutLineHCompound();
-  
+  TopoDS_Shape RgNLineHCompound(const TopoDS_Shape& S);
+
+  TopoDS_Shape OutLineHCompound();
+
   //! Sets the extraction filter for hidden outlines.
   //! Hidden outlines occur, for instance, in tori. In
   //! this case, the inner outlines of the torus seen on its side are hidden.
-    TopoDS_Shape OutLineHCompound (const TopoDS_Shape& S);
-
-
-
+  TopoDS_Shape OutLineHCompound(const TopoDS_Shape& S);
 
 protected:
-
-
-
-
-
 private:
-
-  
-  Standard_EXPORT TopoDS_Shape InternalCompound (const Standard_Integer typ, const Standard_Boolean visible, const TopoDS_Shape& S);
-
+  Standard_EXPORT TopoDS_Shape InternalCompound(const Standard_Integer typ,
+                                                const Standard_Boolean visible,
+                                                const TopoDS_Shape&    S);
 
   Handle(HLRBRep_PolyAlgo) myAlgo;
-  HLRBRep_ListOfBPnt2D myBiPntVis;
-  HLRBRep_ListOfBPnt2D myBiPntHid;
-  Standard_Boolean myHideMode;
-
-
+  HLRBRep_ListOfBPnt2D     myBiPntVis;
+  HLRBRep_ListOfBPnt2D     myBiPntHid;
+  Standard_Boolean         myHideMode;
 };
 
-
 #include <HLRBRep_PolyHLRToShape.lxx>
-
-
-
-
 
 #endif // _HLRBRep_PolyHLRToShape_HeaderFile

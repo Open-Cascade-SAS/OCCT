@@ -17,8 +17,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(Media_Timer, Standard_Transient)
 
 //=============================================================================
-//function : Pause
-//purpose  :
+// function : Pause
+// purpose  :
 //=============================================================================
 void Media_Timer::Pause()
 {
@@ -28,8 +28,8 @@ void Media_Timer::Pause()
 }
 
 //=============================================================================
-//function : Stop
-//purpose  :
+// function : Stop
+// purpose  :
 //=============================================================================
 void Media_Timer::Stop()
 {
@@ -39,10 +39,10 @@ void Media_Timer::Stop()
 }
 
 //=============================================================================
-//function : SetPlaybackSpeed
-//purpose  :
+// function : SetPlaybackSpeed
+// purpose  :
 //=============================================================================
-void Media_Timer::SetPlaybackSpeed (const Standard_Real theSpeed)
+void Media_Timer::SetPlaybackSpeed(const Standard_Real theSpeed)
 {
   if (!myTimer.IsStarted())
   {
@@ -58,10 +58,10 @@ void Media_Timer::SetPlaybackSpeed (const Standard_Real theSpeed)
 }
 
 //=============================================================================
-//function : SetPlaybackSpeed
-//purpose  :
+// function : SetPlaybackSpeed
+// purpose  :
 //=============================================================================
-void Media_Timer::Seek (const Standard_Real theTime)
+void Media_Timer::Seek(const Standard_Real theTime)
 {
   const Standard_Boolean isStarted = myTimer.IsStarted();
   myTimer.Stop();

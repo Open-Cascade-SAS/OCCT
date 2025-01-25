@@ -21,28 +21,28 @@
 #include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder, Standard_Transient)
 
 //================================================================
 // Function : Constructor MeshVS_PrsBuilder
 // Purpose  :
 //================================================================
-MeshVS_PrsBuilder::MeshVS_PrsBuilder ( const Handle(MeshVS_Mesh)& Parent,
-                                       const MeshVS_DisplayModeFlags& Flags,
-                                       const Handle(MeshVS_DataSource)& DS,
-                                       const Standard_Integer Id,
-                                       const MeshVS_BuilderPriority& Priority )
+MeshVS_PrsBuilder::MeshVS_PrsBuilder(const Handle(MeshVS_Mesh)&       Parent,
+                                     const MeshVS_DisplayModeFlags&   Flags,
+                                     const Handle(MeshVS_DataSource)& DS,
+                                     const Standard_Integer           Id,
+                                     const MeshVS_BuilderPriority&    Priority)
 {
-  if (Id<0 && ! Parent.IsNull())
+  if (Id < 0 && !Parent.IsNull())
     myId = Parent->GetFreeId();
   else
     myId = Id;
 
   myParentMesh = Parent.operator->();
   myDataSource = DS;
-  myDrawer = 0;
+  myDrawer     = 0;
 
-  myFlags = Flags;
+  myFlags       = Flags;
   myIsExcluding = Standard_False;
 
   myPriority = Priority;
@@ -52,10 +52,10 @@ MeshVS_PrsBuilder::MeshVS_PrsBuilder ( const Handle(MeshVS_Mesh)& Parent,
 // Function : CustomDraw
 // Purpose  :
 //================================================================
-void MeshVS_PrsBuilder::CustomBuild ( const Handle(Prs3d_Presentation)&,
-                                      const TColStd_PackedMapOfInteger&,
-                                      TColStd_PackedMapOfInteger&,
-                                      const Standard_Integer ) const
+void MeshVS_PrsBuilder::CustomBuild(const Handle(Prs3d_Presentation)&,
+                                    const TColStd_PackedMapOfInteger&,
+                                    TColStd_PackedMapOfInteger&,
+                                    const Standard_Integer) const
 {
 }
 
@@ -63,9 +63,9 @@ void MeshVS_PrsBuilder::CustomBuild ( const Handle(Prs3d_Presentation)&,
 // Function : CustomSensitiveEntity
 // Purpose  :
 //================================================================
-Handle( Select3D_SensitiveEntity ) MeshVS_PrsBuilder::CustomSensitiveEntity
-  ( const Handle(SelectMgr_EntityOwner)&,
-    const Standard_Integer ) const
+Handle(Select3D_SensitiveEntity) MeshVS_PrsBuilder::CustomSensitiveEntity(
+  const Handle(SelectMgr_EntityOwner)&,
+  const Standard_Integer) const
 {
   return 0;
 }
@@ -74,7 +74,7 @@ Handle( Select3D_SensitiveEntity ) MeshVS_PrsBuilder::CustomSensitiveEntity
 // Function : DataSource
 // Purpose  :
 //================================================================
-Handle (MeshVS_DataSource) MeshVS_PrsBuilder::DataSource () const
+Handle(MeshVS_DataSource) MeshVS_PrsBuilder::DataSource() const
 {
   return myDataSource;
 }
@@ -83,9 +83,9 @@ Handle (MeshVS_DataSource) MeshVS_PrsBuilder::DataSource () const
 // Function : GetDataSource
 // Purpose  :
 //================================================================
-Handle (MeshVS_DataSource) MeshVS_PrsBuilder::GetDataSource () const
+Handle(MeshVS_DataSource) MeshVS_PrsBuilder::GetDataSource() const
 {
-  if ( myDataSource.IsNull() )
+  if (myDataSource.IsNull())
     return myParentMesh->GetDataSource();
   else
     return myDataSource;
@@ -95,7 +95,7 @@ Handle (MeshVS_DataSource) MeshVS_PrsBuilder::GetDataSource () const
 // Function : SetDataSource
 // Purpose  :
 //================================================================
-void MeshVS_PrsBuilder::SetDataSource ( const Handle (MeshVS_DataSource)& DS )
+void MeshVS_PrsBuilder::SetDataSource(const Handle(MeshVS_DataSource)& DS)
 {
   myDataSource = DS;
 }
@@ -104,7 +104,7 @@ void MeshVS_PrsBuilder::SetDataSource ( const Handle (MeshVS_DataSource)& DS )
 // Function : GetFlags
 // Purpose  :
 //================================================================
-Standard_Integer MeshVS_PrsBuilder::GetFlags () const
+Standard_Integer MeshVS_PrsBuilder::GetFlags() const
 {
   return myFlags;
 }
@@ -113,7 +113,7 @@ Standard_Integer MeshVS_PrsBuilder::GetFlags () const
 // Function : GetId
 // Purpose  :
 //================================================================
-Standard_Integer MeshVS_PrsBuilder::GetId () const
+Standard_Integer MeshVS_PrsBuilder::GetId() const
 {
   return myId;
 }
@@ -122,16 +122,16 @@ Standard_Integer MeshVS_PrsBuilder::GetId () const
 // Function : TestFlags
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_PrsBuilder::TestFlags ( const Standard_Integer DisplayMode ) const
+Standard_Boolean MeshVS_PrsBuilder::TestFlags(const Standard_Integer DisplayMode) const
 {
-  return ( ( DisplayMode & GetFlags() ) > 0 );
+  return ((DisplayMode & GetFlags()) > 0);
 }
 
 //================================================================
 // Function : SetExcluding
 // Purpose  :
 //================================================================
-void MeshVS_PrsBuilder::SetExcluding  ( const Standard_Boolean state )
+void MeshVS_PrsBuilder::SetExcluding(const Standard_Boolean state)
 {
   myIsExcluding = state;
 }
@@ -140,7 +140,7 @@ void MeshVS_PrsBuilder::SetExcluding  ( const Standard_Boolean state )
 // Function : IsExcludingOn
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_PrsBuilder::IsExcludingOn () const
+Standard_Boolean MeshVS_PrsBuilder::IsExcludingOn() const
 {
   return myIsExcluding;
 }
@@ -149,7 +149,7 @@ Standard_Boolean MeshVS_PrsBuilder::IsExcludingOn () const
 // Function : GetPriority
 // Purpose  :
 //================================================================
-Standard_Integer MeshVS_PrsBuilder::GetPriority () const
+Standard_Integer MeshVS_PrsBuilder::GetPriority() const
 {
   return myPriority;
 }
@@ -158,9 +158,9 @@ Standard_Integer MeshVS_PrsBuilder::GetPriority () const
 // Function : GetDrawer
 // Purpose  :
 //================================================================
-Handle (MeshVS_Drawer) MeshVS_PrsBuilder::GetDrawer () const
+Handle(MeshVS_Drawer) MeshVS_PrsBuilder::GetDrawer() const
 {
-  if ( myDrawer.IsNull() )
+  if (myDrawer.IsNull())
     return myParentMesh->GetDrawer();
   else
     return myDrawer;
@@ -170,7 +170,7 @@ Handle (MeshVS_Drawer) MeshVS_PrsBuilder::GetDrawer () const
 // Function : SetDataSource
 // Purpose  :
 //================================================================
-void MeshVS_PrsBuilder::SetDrawer ( const Handle (MeshVS_Drawer)& Dr )
+void MeshVS_PrsBuilder::SetDrawer(const Handle(MeshVS_Drawer)& Dr)
 {
   myDrawer = Dr;
 }
@@ -179,18 +179,18 @@ void MeshVS_PrsBuilder::SetDrawer ( const Handle (MeshVS_Drawer)& Dr )
 // Function : Drawer
 // Purpose  :
 //================================================================
-Handle (MeshVS_Drawer) MeshVS_PrsBuilder::Drawer () const
+Handle(MeshVS_Drawer) MeshVS_PrsBuilder::Drawer() const
 {
   return myDrawer;
 }
 
 //================================================================
 // Function : SetPresentationManager
-// Purpose  : Set presentation manager. This method is used by 
-//            MeshVS_Mesh::Compute methodto assign presentation 
-//            manager to the builder. 
+// Purpose  : Set presentation manager. This method is used by
+//            MeshVS_Mesh::Compute methodto assign presentation
+//            manager to the builder.
 //================================================================
-void MeshVS_PrsBuilder::SetPresentationManager( const Handle(PrsMgr_PresentationManager)& thePrsMgr )
+void MeshVS_PrsBuilder::SetPresentationManager(const Handle(PrsMgr_PresentationManager)& thePrsMgr)
 {
   myPrsMgr = thePrsMgr;
 }

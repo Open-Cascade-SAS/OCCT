@@ -21,17 +21,19 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 
 class StepAP242_GeometricItemSpecificUsage;
-DEFINE_STANDARD_HANDLE(StepAP242_GeometricItemSpecificUsage, StepAP242_ItemIdentifiedRepresentationUsage)
+DEFINE_STANDARD_HANDLE(StepAP242_GeometricItemSpecificUsage,
+                       StepAP242_ItemIdentifiedRepresentationUsage)
+
 //! Added for Dimensional Tolerances
 class StepAP242_GeometricItemSpecificUsage : public StepAP242_ItemIdentifiedRepresentationUsage
 {
 
 public:
-  
   Standard_EXPORT StepAP242_GeometricItemSpecificUsage();
 
-  DEFINE_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,StepAP242_ItemIdentifiedRepresentationUsage)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,
+                          StepAP242_ItemIdentifiedRepresentationUsage)
 
-private: 
+private:
 };
 #endif // _StepAP242_GeometricItemSpecificUsage_HeaderFile

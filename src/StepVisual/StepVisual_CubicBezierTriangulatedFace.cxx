@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:11 2022 
+// Created on : Thu Mar 24 18:30:11 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -19,26 +19,25 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CubicBezierTriangulatedFace, StepVisual_TessellatedFace)
 
 //=======================================================================
-//function : StepVisual_CubicBezierTriangulatedFace
-//purpose  : 
+// function : StepVisual_CubicBezierTriangulatedFace
+// purpose  :
 //=======================================================================
 
-StepVisual_CubicBezierTriangulatedFace::StepVisual_CubicBezierTriangulatedFace ()
-{
-}
+StepVisual_CubicBezierTriangulatedFace::StepVisual_CubicBezierTriangulatedFace() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepVisual_CubicBezierTriangulatedFace::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                   const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-                                                   const Standard_Integer theTessellatedFace_Pnmax,
-                                                   const Handle(TColStd_HArray2OfReal)& theTessellatedFace_Normals,
-                                                   const Standard_Boolean theHasTessellatedFace_GeometricLink,
-                                                   const StepVisual_FaceOrSurface& theTessellatedFace_GeometricLink,
-                                                   const Handle(TColStd_HArray2OfInteger)& theCtriangles)
+void StepVisual_CubicBezierTriangulatedFace::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
+  const Standard_Integer                    theTessellatedFace_Pnmax,
+  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
+  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+  const Handle(TColStd_HArray2OfInteger)&   theCtriangles)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -51,21 +50,22 @@ void StepVisual_CubicBezierTriangulatedFace::Init (const Handle(TCollection_HAsc
 }
 
 //=======================================================================
-//function : Ctriangles
-//purpose  : 
+// function : Ctriangles
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HArray2OfInteger) StepVisual_CubicBezierTriangulatedFace::Ctriangles () const
+Handle(TColStd_HArray2OfInteger) StepVisual_CubicBezierTriangulatedFace::Ctriangles() const
 {
   return myCtriangles;
 }
 
 //=======================================================================
-//function : SetCtriangles
-//purpose  : 
+// function : SetCtriangles
+// purpose  :
 //=======================================================================
 
-void StepVisual_CubicBezierTriangulatedFace::SetCtriangles(const Handle(TColStd_HArray2OfInteger)& theCtriangles)
+void StepVisual_CubicBezierTriangulatedFace::SetCtriangles(
+  const Handle(TColStd_HArray2OfInteger)& theCtriangles)
 {
   myCtriangles = theCtriangles;
 }

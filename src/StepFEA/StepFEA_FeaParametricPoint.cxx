@@ -18,23 +18,22 @@
 #include <StepFEA_FeaParametricPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaParametricPoint,StepGeom_Point)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaParametricPoint, StepGeom_Point)
 
 //=======================================================================
-//function : StepFEA_FeaParametricPoint
-//purpose  : 
+// function : StepFEA_FeaParametricPoint
+// purpose  :
 //=======================================================================
-StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint ()
-{
-}
+StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepFEA_FeaParametricPoint::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                       const Handle(TColStd_HArray1OfReal) &aCoordinates)
+void StepFEA_FeaParametricPoint::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const Handle(TColStd_HArray1OfReal)&    aCoordinates)
 {
   StepGeom_Point::Init(aRepresentationItem_Name);
 
@@ -42,21 +41,21 @@ void StepFEA_FeaParametricPoint::Init (const Handle(TCollection_HAsciiString) &a
 }
 
 //=======================================================================
-//function : Coordinates
-//purpose  : 
+// function : Coordinates
+// purpose  :
 //=======================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_FeaParametricPoint::Coordinates () const
+Handle(TColStd_HArray1OfReal) StepFEA_FeaParametricPoint::Coordinates() const
 {
   return theCoordinates;
 }
 
 //=======================================================================
-//function : SetCoordinates
-//purpose  : 
+// function : SetCoordinates
+// purpose  :
 //=======================================================================
 
-void StepFEA_FeaParametricPoint::SetCoordinates (const Handle(TColStd_HArray1OfReal) &aCoordinates)
+void StepFEA_FeaParametricPoint::SetCoordinates(const Handle(TColStd_HArray1OfReal)& aCoordinates)
 {
   theCoordinates = aCoordinates;
 }

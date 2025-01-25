@@ -14,11 +14,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetBorderDeflection
-//purpose  : This method returns a border deflection.
+// function : GetBorderDeflection
+// purpose  : This method returns a border deflection.
 //=======================================================================
 
-inline  Standard_Real IntCurveSurface_Polyhedron::GetBorderDeflection() const
+inline Standard_Real IntCurveSurface_Polyhedron::GetBorderDeflection() const
 {
   return TheBorderDeflection;
 }

@@ -26,15 +26,12 @@
 class Standard_GUID;
 class TDF_Attribute;
 
-
 //! This class offers filtering services around an ID list.
-class TDF_IDFilter 
+class TDF_IDFilter
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an ID/attribute filter based on an ID
   //! list. The default mode is "ignore all but...".
   //!
@@ -50,85 +47,77 @@ public:
   //! is possible set an ignored ID to be kept using
   //! Keep().
   Standard_EXPORT TDF_IDFilter(const Standard_Boolean ignoreMode = Standard_True);
-  
+
   //! The list of ID is cleared and the filter mode is
   //! set to ignore mode if <keep> is true; false
   //! otherwise.
-  Standard_EXPORT void IgnoreAll (const Standard_Boolean ignore);
-  
+  Standard_EXPORT void IgnoreAll(const Standard_Boolean ignore);
+
   //! Returns true is the mode is set to "ignore all
   //! but...".
-    Standard_Boolean IgnoreAll() const;
-  
+  Standard_Boolean IgnoreAll() const;
+
   //! An attribute with <anID> as ID is to be kept and
   //! the filter will answer true to the question
   //! IsKept(<anID>).
-  Standard_EXPORT void Keep (const Standard_GUID& anID);
-  
+  Standard_EXPORT void Keep(const Standard_GUID& anID);
+
   //! Attributes with ID owned by <anIDList> are to be kept and
   //! the filter will answer true to the question
   //! IsKept(<anID>) with ID from <anIDList>.
-  Standard_EXPORT void Keep (const TDF_IDList& anIDList);
-  
+  Standard_EXPORT void Keep(const TDF_IDList& anIDList);
+
   //! An attribute with <anID> as ID is to be ignored and
   //! the filter will answer false to the question
   //! IsKept(<anID>).
-  Standard_EXPORT void Ignore (const Standard_GUID& anID);
-  
+  Standard_EXPORT void Ignore(const Standard_GUID& anID);
+
   //! Attributes with ID owned by <anIDList> are to be
   //! ignored and the filter will answer false to the
   //! question IsKept(<anID>) with ID from <anIDList>.
-  Standard_EXPORT void Ignore (const TDF_IDList& anIDList);
-  
+  Standard_EXPORT void Ignore(const TDF_IDList& anIDList);
+
   //! Returns true if the ID is to be kept.
-    Standard_Boolean IsKept (const Standard_GUID& anID) const;
-  
+  Standard_Boolean IsKept(const Standard_GUID& anID) const;
+
   //! Returns true if the attribute is to be kept.
-    Standard_Boolean IsKept (const Handle(TDF_Attribute)& anAtt) const;
-  
+  Standard_Boolean IsKept(const Handle(TDF_Attribute)& anAtt) const;
+
   //! Returns true if the ID is to be ignored.
-    Standard_Boolean IsIgnored (const Standard_GUID& anID) const;
-  
+  Standard_Boolean IsIgnored(const Standard_GUID& anID) const;
+
   //! Returns true if the attribute is to be ignored.
-    Standard_Boolean IsIgnored (const Handle(TDF_Attribute)& anAtt) const;
-  
+  Standard_Boolean IsIgnored(const Handle(TDF_Attribute)& anAtt) const;
+
   //! Copies the list of ID to be kept or ignored in
   //! <anIDList>. <anIDList> is cleared before use.
-  Standard_EXPORT void IDList (TDF_IDList& anIDList) const;
-  
+  Standard_EXPORT void IDList(TDF_IDList& anIDList) const;
+
   //! Copies into <me> the contents of
   //! <fromFilter>. <me> is cleared before copy.
-  Standard_EXPORT void Copy (const TDF_IDFilter& fromFilter);
-  
+  Standard_EXPORT void Copy(const TDF_IDFilter& fromFilter);
+
   //! Writes the contents of <me> to <OS>.
-  Standard_EXPORT void Dump (Standard_OStream& anOS) const;
+  Standard_EXPORT void Dump(Standard_OStream& anOS) const;
 
   //! Assignment
-  void Assign (const TDF_IDFilter& theFilter)
+  void Assign(const TDF_IDFilter& theFilter)
   {
     myIgnore = theFilter.myIgnore;
     myIDMap  = theFilter.myIDMap;
   }
 
 private:
-
   //! Private, to forbid implicit or hidden accesses to
   //! the copy constructor.
   TDF_IDFilter(const TDF_IDFilter& aFilter);
-  TDF_IDFilter& operator= (const TDF_IDFilter& theOther);
+  TDF_IDFilter& operator=(const TDF_IDFilter& theOther);
 
 private:
-
   Standard_Boolean myIgnore;
-  TDF_IDMap myIDMap;
-
+  TDF_IDMap        myIDMap;
 };
 
-
 #include <TDF_IDFilter.lxx>
-
-
-
-
 
 #endif // _TDF_IDFilter_HeaderFile

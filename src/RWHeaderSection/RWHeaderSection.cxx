@@ -21,16 +21,15 @@
 
 /// #include <EuclidStandard.hxx>
 static Handle(RWHeaderSection_ReadWriteModule) rwm;
-static Handle(RWHeaderSection_GeneralModule) rwg;
-
+static Handle(RWHeaderSection_GeneralModule)   rwg;
 
 void RWHeaderSection::Init()
 {
-///   EuclidStandard::Init();
+  ///   EuclidStandard::Init();
   Handle(HeaderSection_Protocol) proto = HeaderSection::Protocol();
   StepData::AddHeaderProtocol(proto);
-  if (rwm.IsNull()) rwm = new RWHeaderSection_ReadWriteModule;
-  if (rwg.IsNull()) rwg = new RWHeaderSection_GeneralModule;
+  if (rwm.IsNull())
+    rwm = new RWHeaderSection_ReadWriteModule;
+  if (rwg.IsNull())
+    rwg = new RWHeaderSection_GeneralModule;
 }
-
-

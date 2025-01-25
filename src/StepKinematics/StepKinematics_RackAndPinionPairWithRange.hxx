@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -29,48 +29,50 @@ DEFINE_STANDARD_HANDLE(StepKinematics_RackAndPinionPairWithRange, StepKinematics
 //! Representation of STEP entity RackAndPinionPairWithRange
 class StepKinematics_RackAndPinionPairWithRange : public StepKinematics_RackAndPinionPair
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_RackAndPinionPairWithRange();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                           const Standard_Real theRackAndPinionPair_PinionRadius,
-                           const Standard_Boolean hasLowerLimitRackDisplacement,
-                           const Standard_Real theLowerLimitRackDisplacement,
-                           const Standard_Boolean hasUpperLimitRackDisplacement,
-                           const Standard_Real theUpperLimitRackDisplacement);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+    const Standard_Real                          theRackAndPinionPair_PinionRadius,
+    const Standard_Boolean                       hasLowerLimitRackDisplacement,
+    const Standard_Real                          theLowerLimitRackDisplacement,
+    const Standard_Boolean                       hasUpperLimitRackDisplacement,
+    const Standard_Real                          theUpperLimitRackDisplacement);
 
   //! Returns field LowerLimitRackDisplacement
   Standard_EXPORT Standard_Real LowerLimitRackDisplacement() const;
   //! Sets field LowerLimitRackDisplacement
-  Standard_EXPORT void SetLowerLimitRackDisplacement (const Standard_Real theLowerLimitRackDisplacement);
+  Standard_EXPORT void SetLowerLimitRackDisplacement(
+    const Standard_Real theLowerLimitRackDisplacement);
   //! Returns True if optional field LowerLimitRackDisplacement is defined
   Standard_EXPORT Standard_Boolean HasLowerLimitRackDisplacement() const;
 
   //! Returns field UpperLimitRackDisplacement
   Standard_EXPORT Standard_Real UpperLimitRackDisplacement() const;
   //! Sets field UpperLimitRackDisplacement
-  Standard_EXPORT void SetUpperLimitRackDisplacement (const Standard_Real theUpperLimitRackDisplacement);
+  Standard_EXPORT void SetUpperLimitRackDisplacement(
+    const Standard_Real theUpperLimitRackDisplacement);
   //! Returns True if optional field UpperLimitRackDisplacement is defined
   Standard_EXPORT Standard_Boolean HasUpperLimitRackDisplacement() const;
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange, StepKinematics_RackAndPinionPair)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange,
+                          StepKinematics_RackAndPinionPair)
 
 private:
   Standard_Real myLowerLimitRackDisplacement; //!< optional
   Standard_Real myUpperLimitRackDisplacement; //!< optional
-// clang-format off
+  // clang-format off
   Standard_Boolean defLowerLimitRackDisplacement; //!< flag "is LowerLimitRackDisplacement defined"
   Standard_Boolean defUpperLimitRackDisplacement; //!< flag "is UpperLimitRackDisplacement defined"
-// clang-format on
-
+  // clang-format on
 };
 #endif // _StepKinematics_RackAndPinionPairWithRange_HeaderFile_

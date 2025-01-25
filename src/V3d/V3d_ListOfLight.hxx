@@ -17,6 +17,6 @@
 #include <V3d_Light.hxx>
 
 typedef NCollection_List<Handle(Graphic3d_CLight)> V3d_ListOfLight;
-typedef V3d_ListOfLight::Iterator V3d_ListOfLightIterator;
+typedef V3d_ListOfLight::Iterator                  V3d_ListOfLightIterator;
 
 #endif // _V3d_ListOfLight_HeaderFile

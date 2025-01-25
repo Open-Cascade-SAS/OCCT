@@ -22,41 +22,20 @@
 
 #include <StepVisual_PreDefinedCurveFont.hxx>
 
-
 class StepVisual_DraughtingPreDefinedCurveFont;
 DEFINE_STANDARD_HANDLE(StepVisual_DraughtingPreDefinedCurveFont, StepVisual_PreDefinedCurveFont)
-
 
 class StepVisual_DraughtingPreDefinedCurveFont : public StepVisual_PreDefinedCurveFont
 {
 
 public:
-
-  
   //! Returns a DraughtingPreDefinedCurveFont
   Standard_EXPORT StepVisual_DraughtingPreDefinedCurveFont();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedCurveFont,StepVisual_PreDefinedCurveFont)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedCurveFont, StepVisual_PreDefinedCurveFont)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_DraughtingPreDefinedCurveFont_HeaderFile

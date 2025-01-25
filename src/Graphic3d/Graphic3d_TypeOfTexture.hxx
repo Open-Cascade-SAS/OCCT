@@ -21,7 +21,8 @@
 enum Graphic3d_TypeOfTexture
 {
   //! 1D texture (array).
-  //! Note that this texture type might be unsupported by graphics API (emulated by 2D texture with 1 pixel height).
+  //! Note that this texture type might be unsupported by graphics API (emulated by 2D texture with
+  //! 1 pixel height).
   Graphic3d_TypeOfTexture_1D,
 
   //! 2D texture (image plane).

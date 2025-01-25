@@ -16,27 +16,28 @@
 #include <math_PSOParticlesPool.hxx>
 #include <algorithm>
 
-
 //=======================================================================
-//function : math_PSOParticlesPool
-//purpose  : Constructor
+// function : math_PSOParticlesPool
+// purpose  : Constructor
 //=======================================================================
 math_PSOParticlesPool::math_PSOParticlesPool(const Standard_Integer theParticlesCount,
                                              const Standard_Integer theDimensionCount)
-: myParticlesPool(1, theParticlesCount),
-  myMemory(0, theParticlesCount * (theDimensionCount  // Position
-                                 + theDimensionCount  // Velocity
-                                 + theDimensionCount) // BestPosition
-                                 - 1) 
+    : myParticlesPool(1, theParticlesCount),
+      myMemory(0,
+               theParticlesCount
+                   * (theDimensionCount    // Position
+                      + theDimensionCount  // Velocity
+                      + theDimensionCount) // BestPosition
+                 - 1)
 {
   myParticlesCount = theParticlesCount;
   myDimensionCount = theDimensionCount;
   myMemory.Init(0.);
   // Pointers adjusting.
   Standard_Integer aParIdx, aShiftIdx;
-  for(aParIdx = 1; aParIdx <= myParticlesCount; ++aParIdx)
+  for (aParIdx = 1; aParIdx <= myParticlesCount; ++aParIdx)
   {
-    aShiftIdx = (theDimensionCount * 3) * (aParIdx - 1);
+    aShiftIdx                             = (theDimensionCount * 3) * (aParIdx - 1);
     myParticlesPool(aParIdx).Position     = &myMemory(aShiftIdx);
     myParticlesPool(aParIdx).Velocity     = &myMemory(aShiftIdx + theDimensionCount);
     myParticlesPool(aParIdx).BestPosition = &myMemory(aShiftIdx + 2 * theDimensionCount);
@@ -44,16 +45,14 @@ math_PSOParticlesPool::math_PSOParticlesPool(const Standard_Integer theParticles
 }
 
 //=======================================================================
-//function : ~math_PSOParticlesPool
-//purpose  : Destructor
+// function : ~math_PSOParticlesPool
+// purpose  : Destructor
 //=======================================================================
-math_PSOParticlesPool::~math_PSOParticlesPool()
-{
-}
+math_PSOParticlesPool::~math_PSOParticlesPool() {}
 
 //=======================================================================
-//function : GetParticle
-//purpose  : 
+// function : GetParticle
+// purpose  :
 //=======================================================================
 PSO_Particle* math_PSOParticlesPool::GetParticle(const Standard_Integer theIdx)
 {
@@ -61,8 +60,8 @@ PSO_Particle* math_PSOParticlesPool::GetParticle(const Standard_Integer theIdx)
 }
 
 //=======================================================================
-//function : GetBestParticle
-//purpose  : 
+// function : GetBestParticle
+// purpose  :
 //=======================================================================
 PSO_Particle* math_PSOParticlesPool::GetBestParticle()
 {
@@ -70,8 +69,8 @@ PSO_Particle* math_PSOParticlesPool::GetBestParticle()
 }
 
 //=======================================================================
-//function : GetWorstParticle
-//purpose  : 
+// function : GetWorstParticle
+// purpose  :
 //=======================================================================
 PSO_Particle* math_PSOParticlesPool::GetWorstParticle()
 {

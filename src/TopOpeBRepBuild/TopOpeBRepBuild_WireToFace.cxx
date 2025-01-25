@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_FaceBuilder.hxx>
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
@@ -22,16 +21,14 @@
 #include <TopOpeBRepDS_BuildTool.hxx>
 
 //=======================================================================
-//function : TopOpeBRepBuild_WireToFace
-//purpose  : 
+// function : TopOpeBRepBuild_WireToFace
+// purpose  :
 //=======================================================================
-TopOpeBRepBuild_WireToFace::TopOpeBRepBuild_WireToFace()
-{
-}
+TopOpeBRepBuild_WireToFace::TopOpeBRepBuild_WireToFace() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepBuild_WireToFace::Init()
@@ -39,10 +36,9 @@ void TopOpeBRepBuild_WireToFace::Init()
   myLW.Clear();
 }
 
-
 //=======================================================================
-//function : AddWire
-//purpose  : 
+// function : AddWire
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepBuild_WireToFace::AddWire(const TopoDS_Wire& W)
@@ -51,24 +47,23 @@ void TopOpeBRepBuild_WireToFace::AddWire(const TopoDS_Wire& W)
 }
 
 //=======================================================================
-//function : MakeFaces
-//purpose  : 
+// function : MakeFaces
+// purpose  :
 //=======================================================================
 
-void TopOpeBRepBuild_WireToFace::MakeFaces(const TopoDS_Face& F,
-					   TopTools_ListOfShape& LF)
+void TopOpeBRepBuild_WireToFace::MakeFaces(const TopoDS_Face& F, TopTools_ListOfShape& LF)
 {
   LF.Clear();
-  
+
   TopOpeBRepBuild_WireEdgeSet wes(F);
-  for (TopTools_ListIteratorOfListOfShape it(myLW);it.More();it.Next())
+  for (TopTools_ListIteratorOfListOfShape it(myLW); it.More(); it.Next())
     wes.AddShape(it.Value());
-  
-  Standard_Boolean ForceClass = Standard_True;
+
+  Standard_Boolean            ForceClass = Standard_True;
   TopOpeBRepBuild_FaceBuilder FB;
-  FB.InitFaceBuilder(wes,F,ForceClass);
-  
-  TopOpeBRepDS_BuildTool BT(TopOpeBRepTool_APPROX);
+  FB.InitFaceBuilder(wes, F, ForceClass);
+
+  TopOpeBRepDS_BuildTool  BT(TopOpeBRepTool_APPROX);
   TopOpeBRepBuild_Builder B(BT);
-  B.MakeFaces(F,FB,LF);
+  B.MakeFaces(F, FB, LF);
 }

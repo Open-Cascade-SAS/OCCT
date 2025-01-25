@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Intersector
-//purpose  : 
+// function : Intersector
+// purpose  :
 //=======================================================================
 
 inline const Geom2dInt_GInter& Geom2dAPI_InterCurveCurve::Intersector() const

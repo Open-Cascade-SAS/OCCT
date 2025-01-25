@@ -23,46 +23,25 @@
 #include <StepBasic_ConversionBasedUnit.hxx>
 class StepBasic_AreaUnit;
 
-
 class StepBasic_ConversionBasedUnitAndAreaUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndAreaUnit, StepBasic_ConversionBasedUnit)
-
 
 class StepBasic_ConversionBasedUnitAndAreaUnit : public StepBasic_ConversionBasedUnit
 {
 
 public:
-
-  
   //! Returns a ConversionBasedUnitAndAreaUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndAreaUnit();
-  
-  Standard_EXPORT void SetAreaUnit (const Handle(StepBasic_AreaUnit)& anAreaUnit);
-  
+
+  Standard_EXPORT void SetAreaUnit(const Handle(StepBasic_AreaUnit)& anAreaUnit);
+
   Standard_EXPORT Handle(StepBasic_AreaUnit) AreaUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndAreaUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndAreaUnit, StepBasic_ConversionBasedUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_AreaUnit) areaUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ConversionBasedUnitAndAreaUnit_HeaderFile

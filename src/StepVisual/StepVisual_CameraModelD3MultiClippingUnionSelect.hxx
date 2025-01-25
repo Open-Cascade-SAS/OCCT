@@ -26,26 +26,25 @@ class Standard_Transient;
 class StepGeom_Plane;
 class StepVisual_CameraModelD3MultiClippingIntersection;
 
-class StepVisual_CameraModelD3MultiClippingUnionSelect  : public StepData_SelectType
+class StepVisual_CameraModelD3MultiClippingUnionSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a CameraModelD3MultiClippingUnionSelect select type
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingUnionSelect();
-  
+
   //! Recognizes a IdAttributeSelect Kind Entity that is :
   //! 1 -> Plane
   //! 2 -> CameraModelD3MultiClippingIntersection
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Plane (Null if another type)
-  Standard_EXPORT Handle(StepGeom_Plane) Plane()  const;
+  Standard_EXPORT Handle(StepGeom_Plane) Plane() const;
 
   //! returns Value as a CameraModelD3MultiClippingIntersection (Null if another type)
-  Standard_EXPORT Handle(StepVisual_CameraModelD3MultiClippingIntersection) CameraModelD3MultiClippingIntersection()  const;
-
+  Standard_EXPORT Handle(StepVisual_CameraModelD3MultiClippingIntersection)
+    CameraModelD3MultiClippingIntersection() const;
 };
 #endif // StepVisual_CameraModelD3MultiClippingUnionSelect

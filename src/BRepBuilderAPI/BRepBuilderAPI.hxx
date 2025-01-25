@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 class Geom_Plane;
 
-
 //! The  BRepBuilderAPI  package   provides  an   Application
 //! Programming Interface  for the BRep  topology data
 //! structure.
@@ -83,26 +82,23 @@ class Geom_Plane;
 //! In  theory  the  comands can be    called with any
 //! arguments, argument  checking  is performed by the
 //! command.
-class BRepBuilderAPI 
+class BRepBuilderAPI
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Sets    the current plane.
-  Standard_EXPORT static void Plane (const Handle(Geom_Plane)& P);
-  
+  Standard_EXPORT static void Plane(const Handle(Geom_Plane)& P);
+
   //! Returns the current plane.
   Standard_EXPORT static const Handle(Geom_Plane)& Plane();
-  
+
   //! Sets the default precision.  The current Precision
   //! is returned.
-  Standard_EXPORT static void Precision (const Standard_Real P);
-  
+  Standard_EXPORT static void Precision(const Standard_Real P);
+
   //! Returns the default precision.
   Standard_EXPORT static Standard_Real Precision();
-
 };
 
 #endif // _BRepBuilderAPI_HeaderFile

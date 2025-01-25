@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESBasic.hxx>
 #include <IGESBasic_GeneralModule.hxx>
 #include <IGESBasic_Protocol.hxx>
@@ -27,20 +26,20 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESBasic_Protocol) protocol;
 
-
-    void  IGESBasic::Init ()
+void IGESBasic::Init()
 {
-  IGESData::Init();      // useful for Undefined Type or Erroneous Entities
-  if (protocol.IsNull()) {
+  IGESData::Init(); // useful for Undefined Type or Erroneous Entities
+  if (protocol.IsNull())
+  {
     protocol = new IGESBasic_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESBasic_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESBasic_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESBasic_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESBasic_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESBasic_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESBasic_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESBasic_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESBasic_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESBasic_Protocol)  IGESBasic::Protocol ()
+Handle(IGESBasic_Protocol) IGESBasic::Protocol()
 {
   return protocol;
 }

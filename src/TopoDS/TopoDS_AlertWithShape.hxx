@@ -20,11 +20,11 @@
 #include <TopoDS_Shape.hxx>
 
 //! Alert object storing TopoDS shape in its field
-class TopoDS_AlertWithShape : public Message_Alert 
+class TopoDS_AlertWithShape : public Message_Alert
 {
 public:
   //! Constructor with shape argument
-  Standard_EXPORT TopoDS_AlertWithShape (const TopoDS_Shape& theShape);
+  Standard_EXPORT TopoDS_AlertWithShape(const TopoDS_Shape& theShape);
 
   //! Returns contained shape
   const TopoDS_Shape& GetShape() const { return myShape; }
@@ -33,10 +33,11 @@ public:
   void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
 
   //! Returns false.
-  virtual Standard_EXPORT Standard_Boolean SupportsMerge () const Standard_OVERRIDE;
+  virtual Standard_EXPORT Standard_Boolean SupportsMerge() const Standard_OVERRIDE;
 
   //! Returns false.
-  virtual Standard_EXPORT Standard_Boolean Merge (const Handle(Message_Alert)& theTarget) Standard_OVERRIDE;
+  virtual Standard_EXPORT Standard_Boolean Merge(const Handle(Message_Alert)& theTarget)
+    Standard_OVERRIDE;
 
   // OCCT RTTI
   DEFINE_STANDARD_RTTIEXT(TopoDS_AlertWithShape, Message_Alert)
@@ -46,12 +47,15 @@ private:
 };
 
 //! Helper macro allowing to define alert with shape argument in one line of code
-#define DEFINE_ALERT_WITH_SHAPE(Alert) \
-  class Alert : public TopoDS_AlertWithShape \
-  { \
-  public:\
-    Alert (const TopoDS_Shape& theShape) : TopoDS_AlertWithShape(theShape) {} \
-    DEFINE_STANDARD_RTTI_INLINE(Alert, TopoDS_AlertWithShape) \
+#define DEFINE_ALERT_WITH_SHAPE(Alert)                                                             \
+  class Alert : public TopoDS_AlertWithShape                                                       \
+  {                                                                                                \
+  public:                                                                                          \
+    Alert(const TopoDS_Shape& theShape)                                                            \
+        : TopoDS_AlertWithShape(theShape)                                                          \
+    {                                                                                              \
+    }                                                                                              \
+    DEFINE_STANDARD_RTTI_INLINE(Alert, TopoDS_AlertWithShape)                                      \
   };
 
 #endif // _TopoDS_AlertWithShape_HeaderFile

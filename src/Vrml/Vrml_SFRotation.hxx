@@ -23,62 +23,43 @@
 
 #include <Standard_Real.hxx>
 
-
 //! defines SFRotation type of VRML field types.
 //! The  4  values  represent  an  axis  of  rotation  followed  by  amount  of
 //! right-handed  rotation  about  the  that  axis, in  radians.
-class Vrml_SFRotation 
+class Vrml_SFRotation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_SFRotation();
-  
-  Standard_EXPORT Vrml_SFRotation(const Standard_Real aRotationX, const Standard_Real aRotationY, const Standard_Real aRotationZ, const Standard_Real anAngle);
-  
-  Standard_EXPORT void SetRotationX (const Standard_Real aRotationX);
-  
+
+  Standard_EXPORT Vrml_SFRotation(const Standard_Real aRotationX,
+                                  const Standard_Real aRotationY,
+                                  const Standard_Real aRotationZ,
+                                  const Standard_Real anAngle);
+
+  Standard_EXPORT void SetRotationX(const Standard_Real aRotationX);
+
   Standard_EXPORT Standard_Real RotationX() const;
-  
-  Standard_EXPORT void SetRotationY (const Standard_Real aRotationY);
-  
+
+  Standard_EXPORT void SetRotationY(const Standard_Real aRotationY);
+
   Standard_EXPORT Standard_Real RotationY() const;
-  
-  Standard_EXPORT void SetRotationZ (const Standard_Real aRotationZ);
-  
+
+  Standard_EXPORT void SetRotationZ(const Standard_Real aRotationZ);
+
   Standard_EXPORT Standard_Real RotationZ() const;
-  
-  Standard_EXPORT void SetAngle (const Standard_Real anAngle);
-  
+
+  Standard_EXPORT void SetAngle(const Standard_Real anAngle);
+
   Standard_EXPORT Standard_Real Angle() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myRotationX;
   Standard_Real myRotationY;
   Standard_Real myRotationZ;
   Standard_Real myAngle;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_SFRotation_HeaderFile

@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Handle(BRep_PointRepresentation)> BRep_ListOfPointRepresentation;
-typedef NCollection_List<Handle(BRep_PointRepresentation)>::Iterator BRep_ListIteratorOfListOfPointRepresentation;
-
+typedef NCollection_List<Handle(BRep_PointRepresentation)>::Iterator
+  BRep_ListIteratorOfListOfPointRepresentation;
 
 #endif

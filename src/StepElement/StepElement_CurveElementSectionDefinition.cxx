@@ -18,23 +18,22 @@
 #include <StepElement_CurveElementSectionDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition, Standard_Transient)
 
 //=======================================================================
-//function : StepElement_CurveElementSectionDefinition
-//purpose  : 
+// function : StepElement_CurveElementSectionDefinition
+// purpose  :
 //=======================================================================
-StepElement_CurveElementSectionDefinition::StepElement_CurveElementSectionDefinition ()
-{
-}
+StepElement_CurveElementSectionDefinition::StepElement_CurveElementSectionDefinition() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementSectionDefinition::Init (const Handle(TCollection_HAsciiString) &aDescription,
-                                                      const Standard_Real aSectionAngle)
+void StepElement_CurveElementSectionDefinition::Init(
+  const Handle(TCollection_HAsciiString)& aDescription,
+  const Standard_Real                     aSectionAngle)
 {
 
   theDescription = aDescription;
@@ -43,41 +42,42 @@ void StepElement_CurveElementSectionDefinition::Init (const Handle(TCollection_H
 }
 
 //=======================================================================
-//function : Description
-//purpose  : 
+// function : Description
+// purpose  :
 //=======================================================================
 
-Handle(TCollection_HAsciiString) StepElement_CurveElementSectionDefinition::Description () const
+Handle(TCollection_HAsciiString) StepElement_CurveElementSectionDefinition::Description() const
 {
   return theDescription;
 }
 
 //=======================================================================
-//function : SetDescription
-//purpose  : 
+// function : SetDescription
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementSectionDefinition::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepElement_CurveElementSectionDefinition::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=======================================================================
-//function : SectionAngle
-//purpose  : 
+// function : SectionAngle
+// purpose  :
 //=======================================================================
 
-Standard_Real StepElement_CurveElementSectionDefinition::SectionAngle () const
+Standard_Real StepElement_CurveElementSectionDefinition::SectionAngle() const
 {
   return theSectionAngle;
 }
 
 //=======================================================================
-//function : SetSectionAngle
-//purpose  : 
+// function : SetSectionAngle
+// purpose  :
 //=======================================================================
 
-void StepElement_CurveElementSectionDefinition::SetSectionAngle (const Standard_Real aSectionAngle)
+void StepElement_CurveElementSectionDefinition::SetSectionAngle(const Standard_Real aSectionAngle)
 {
   theSectionAngle = aSectionAngle;
 }

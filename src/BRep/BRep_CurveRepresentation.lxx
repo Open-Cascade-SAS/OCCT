@@ -15,22 +15,21 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Location
-//purpose  : 
+// function : Location
+// purpose  :
 //=======================================================================
 
-inline const TopLoc_Location&  BRep_CurveRepresentation::Location()const 
+inline const TopLoc_Location& BRep_CurveRepresentation::Location() const
 {
   return myLocation;
 }
 
 //=======================================================================
-//function : Location
-//purpose  : 
+// function : Location
+// purpose  :
 //=======================================================================
 
-inline void BRep_CurveRepresentation::Location (const TopLoc_Location& L)
+inline void BRep_CurveRepresentation::Location(const TopLoc_Location& L)
 {
   myLocation = L;
 }
-

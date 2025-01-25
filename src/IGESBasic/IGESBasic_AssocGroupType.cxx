@@ -20,33 +20,31 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_AssocGroupType,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_AssocGroupType, IGESData_IGESEntity)
 
-IGESBasic_AssocGroupType::IGESBasic_AssocGroupType ()    {  }
+IGESBasic_AssocGroupType::IGESBasic_AssocGroupType() {}
 
-
-    void  IGESBasic_AssocGroupType::Init
-  (const Standard_Integer nbDataFields,
-   const Standard_Integer aType, const Handle(TCollection_HAsciiString)& aName)
+void IGESBasic_AssocGroupType::Init(const Standard_Integer                  nbDataFields,
+                                    const Standard_Integer                  aType,
+                                    const Handle(TCollection_HAsciiString)& aName)
 {
   theNbData = nbDataFields;
   theType   = aType;
   theName   = aName;
-  InitTypeAndForm(406,23);
+  InitTypeAndForm(406, 23);
 }
 
-
-    Standard_Integer  IGESBasic_AssocGroupType::NbData () const
+Standard_Integer IGESBasic_AssocGroupType::NbData() const
 {
   return theNbData;
 }
 
-    Standard_Integer  IGESBasic_AssocGroupType::AssocType () const
+Standard_Integer IGESBasic_AssocGroupType::AssocType() const
 {
   return theType;
 }
 
-    Handle(TCollection_HAsciiString)  IGESBasic_AssocGroupType::Name () const
+Handle(TCollection_HAsciiString) IGESBasic_AssocGroupType::Name() const
 {
   return theName;
 }

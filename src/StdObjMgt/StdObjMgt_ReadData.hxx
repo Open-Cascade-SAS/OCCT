@@ -21,7 +21,6 @@
 class StdObjMgt_Persistent;
 class Standard_GUID;
 
-
 //! Auxiliary data used to read persistent objects from a file.
 class StdObjMgt_ReadData
 {
@@ -32,80 +31,77 @@ public:
   class ObjectSentry
   {
   public:
-    explicit ObjectSentry (StdObjMgt_ReadData& theData) : myReadData (&theData)
-    { myReadData->myDriver->BeginReadObjectData(); }
+    explicit ObjectSentry(StdObjMgt_ReadData& theData)
+        : myReadData(&theData)
+    {
+      myReadData->myDriver->BeginReadObjectData();
+    }
 
-    ~ObjectSentry ()
-    { myReadData->myDriver->EndReadObjectData(); }
+    ~ObjectSentry() { myReadData->myDriver->EndReadObjectData(); }
 
   private:
     StdObjMgt_ReadData* myReadData;
 
-    ObjectSentry (const ObjectSentry&);
-    ObjectSentry& operator = (const ObjectSentry&);
+    ObjectSentry(const ObjectSentry&);
+    ObjectSentry& operator=(const ObjectSentry&);
   };
 
-  Standard_EXPORT StdObjMgt_ReadData
-    (const Handle(Storage_BaseDriver)& theDriver, const Standard_Integer theNumberOfObjects);
+  Standard_EXPORT StdObjMgt_ReadData(const Handle(Storage_BaseDriver)& theDriver,
+                                     const Standard_Integer            theNumberOfObjects);
 
   template <class Instantiator>
-  void CreatePersistentObject
-    (const Standard_Integer theRef, Instantiator theInstantiator)
-      { myPersistentObjects (theRef) = theInstantiator(); }
+  void CreatePersistentObject(const Standard_Integer theRef, Instantiator theInstantiator)
+  {
+    myPersistentObjects(theRef) = theInstantiator();
+  }
 
-  Standard_EXPORT void ReadPersistentObject
-    (const Standard_Integer theRef);
+  Standard_EXPORT void ReadPersistentObject(const Standard_Integer theRef);
 
-  Handle(StdObjMgt_Persistent) PersistentObject
-    (const Standard_Integer theRef) const
-      { return myPersistentObjects (theRef); }
+  Handle(StdObjMgt_Persistent) PersistentObject(const Standard_Integer theRef) const
+  {
+    return myPersistentObjects(theRef);
+  }
 
   Standard_EXPORT Handle(StdObjMgt_Persistent) ReadReference();
 
   template <class Persistent>
-  StdObjMgt_ReadData& operator >> (Handle(Persistent)& theTarget)
+  StdObjMgt_ReadData& operator>>(Handle(Persistent)& theTarget)
   {
-    theTarget = Handle(Persistent)::DownCast (ReadReference());
+    theTarget = Handle(Persistent)::DownCast(ReadReference());
     return *this;
   }
 
-  StdObjMgt_ReadData& operator >> (Handle(StdObjMgt_Persistent)& theTarget)
+  StdObjMgt_ReadData& operator>>(Handle(StdObjMgt_Persistent)& theTarget)
   {
     theTarget = ReadReference();
     return *this;
   }
 
   template <class Type>
-  StdObjMgt_ReadData& ReadValue (Type& theValue)
+  StdObjMgt_ReadData& ReadValue(Type& theValue)
   {
     *myDriver >> theValue;
     return *this;
   }
 
-  StdObjMgt_ReadData& operator >> (Standard_Character& theValue)
-    { return ReadValue (theValue); }
-  
-  StdObjMgt_ReadData& operator >> (Standard_ExtCharacter& theValue)
-    { return ReadValue (theValue); }
-  
-  StdObjMgt_ReadData& operator >> (Standard_Integer& theValue)
-    { return ReadValue (theValue); }
-  
-  StdObjMgt_ReadData& operator >> (Standard_Boolean& theValue)
-    { return ReadValue (theValue); }
-  
-  StdObjMgt_ReadData& operator >> (Standard_Real& theValue)
-    { return ReadValue (theValue); }
-  
-  StdObjMgt_ReadData& operator >> (Standard_ShortReal& theValue)
-    { return ReadValue (theValue); }
+  StdObjMgt_ReadData& operator>>(Standard_Character& theValue) { return ReadValue(theValue); }
+
+  StdObjMgt_ReadData& operator>>(Standard_ExtCharacter& theValue) { return ReadValue(theValue); }
+
+  StdObjMgt_ReadData& operator>>(Standard_Integer& theValue) { return ReadValue(theValue); }
+
+  StdObjMgt_ReadData& operator>>(Standard_Boolean& theValue) { return ReadValue(theValue); }
+
+  StdObjMgt_ReadData& operator>>(Standard_Real& theValue) { return ReadValue(theValue); }
+
+  StdObjMgt_ReadData& operator>>(Standard_ShortReal& theValue) { return ReadValue(theValue); }
 
 private:
-  Handle(Storage_BaseDriver) myDriver;
+  Handle(Storage_BaseDriver)                       myDriver;
   NCollection_Array1<Handle(StdObjMgt_Persistent)> myPersistentObjects;
 };
 
-Standard_EXPORT StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, Standard_GUID& theGUID);
+Standard_EXPORT StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData,
+                                               Standard_GUID&      theGUID);
 
 #endif // _StdObjMgt_ReadData_HeaderFile

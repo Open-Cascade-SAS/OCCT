@@ -27,52 +27,34 @@ class TCollection_HAsciiString;
 class StepShape_ClosedShell;
 class StepShape_OrientedClosedShell;
 
-
 class StepShape_BrepWithVoids;
 DEFINE_STANDARD_HANDLE(StepShape_BrepWithVoids, StepShape_ManifoldSolidBrep)
-
 
 class StepShape_BrepWithVoids : public StepShape_ManifoldSolidBrep
 {
 
 public:
-
-  
   //! Returns a BrepWithVoids
   Standard_EXPORT StepShape_BrepWithVoids();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
-  
-  Standard_EXPORT void SetVoids (const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&               aName,
+                            const Handle(StepShape_ClosedShell)&                  aOuter,
+                            const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
+
+  Standard_EXPORT void SetVoids(const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
+
   Standard_EXPORT Handle(StepShape_HArray1OfOrientedClosedShell) Voids() const;
-  
-  Standard_EXPORT Handle(StepShape_OrientedClosedShell) VoidsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Handle(StepShape_OrientedClosedShell) VoidsValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbVoids() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_BrepWithVoids,StepShape_ManifoldSolidBrep)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BrepWithVoids, StepShape_ManifoldSolidBrep)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfOrientedClosedShell) voids;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_BrepWithVoids_HeaderFile

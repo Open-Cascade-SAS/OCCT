@@ -24,53 +24,34 @@
 class StepRepr_RepresentationItem;
 class StepRepr_Representation;
 
-
 class StepRepr_RepresentationMap;
 DEFINE_STANDARD_HANDLE(StepRepr_RepresentationMap, Standard_Transient)
-
 
 class StepRepr_RepresentationMap : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a RepresentationMap
   Standard_EXPORT StepRepr_RepresentationMap();
-  
-  Standard_EXPORT void Init (const Handle(StepRepr_RepresentationItem)& aMappingOrigin, const Handle(StepRepr_Representation)& aMappedRepresentation);
-  
-  Standard_EXPORT void SetMappingOrigin (const Handle(StepRepr_RepresentationItem)& aMappingOrigin);
-  
+
+  Standard_EXPORT void Init(const Handle(StepRepr_RepresentationItem)& aMappingOrigin,
+                            const Handle(StepRepr_Representation)&     aMappedRepresentation);
+
+  Standard_EXPORT void SetMappingOrigin(const Handle(StepRepr_RepresentationItem)& aMappingOrigin);
+
   Standard_EXPORT Handle(StepRepr_RepresentationItem) MappingOrigin() const;
-  
-  Standard_EXPORT void SetMappedRepresentation (const Handle(StepRepr_Representation)& aMappedRepresentation);
-  
+
+  Standard_EXPORT void SetMappedRepresentation(
+    const Handle(StepRepr_Representation)& aMappedRepresentation);
+
   Standard_EXPORT Handle(StepRepr_Representation) MappedRepresentation() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationMap,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationMap, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepRepr_RepresentationItem) mappingOrigin;
-  Handle(StepRepr_Representation) mappedRepresentation;
-
-
+  Handle(StepRepr_Representation)     mappedRepresentation;
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_RepresentationMap_HeaderFile

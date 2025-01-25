@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepVisual_HArray1OfDirectionCountSelect, StepVisual_Array1OfDirectionCountSelect)
 
-
 #endif

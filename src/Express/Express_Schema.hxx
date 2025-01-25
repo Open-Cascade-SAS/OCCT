@@ -31,16 +31,15 @@ class Express_Schema : public Standard_Transient
 {
 
 public:
+  //! Creates a schema with given name and given set of items
+  //! and calls Prepare()
+  Standard_EXPORT Express_Schema(const Standard_CString                 theName,
+                                 const Handle(Express_HSequenceOfItem)& theItems);
 
   //! Creates a schema with given name and given set of items
   //! and calls Prepare()
-  Standard_EXPORT Express_Schema (const Standard_CString theName,
-                                  const Handle(Express_HSequenceOfItem)& theItems);
-
-  //! Creates a schema with given name and given set of items
-  //! and calls Prepare()
-  Standard_EXPORT Express_Schema (const Handle(TCollection_HAsciiString)& theName,
-                                  const Handle(Express_HSequenceOfItem)& theItems);
+  Standard_EXPORT Express_Schema(const Handle(TCollection_HAsciiString)& theName,
+                                 const Handle(Express_HSequenceOfItem)&  theItems);
 
   //! Returns schema name
   Standard_EXPORT const Handle(TCollection_HAsciiString)& Name() const;
@@ -52,24 +51,23 @@ public:
   Standard_EXPORT Standard_Integer NbItems() const;
 
   //! Returns item by index
-  Standard_EXPORT Handle(Express_Item) Item (const Standard_Integer theNum) const;
+  Standard_EXPORT Handle(Express_Item) Item(const Standard_Integer theNum) const;
 
   //! Returns item by name
-  Standard_EXPORT Handle(Express_Item) Item (const Standard_CString theName,
-                                             const Standard_Boolean theSilent = Standard_False) const;
+  Standard_EXPORT Handle(Express_Item) Item(
+    const Standard_CString theName,
+    const Standard_Boolean theSilent = Standard_False) const;
 
   //! Returns item by name
-  Standard_EXPORT Handle(Express_Item) Item (const TCollection_AsciiString& theName) const;
+  Standard_EXPORT Handle(Express_Item) Item(const TCollection_AsciiString& theName) const;
 
   //! Returns item by name
-  Standard_EXPORT Handle(Express_Item) Item (const Handle(TCollection_HAsciiString)& theName) const;
+  Standard_EXPORT Handle(Express_Item) Item(const Handle(TCollection_HAsciiString)& theName) const;
 
   DEFINE_STANDARD_RTTIEXT(Express_Schema, Standard_Transient)
 
 protected:
-
 private:
-
   //! Prepares data for further work. Converts all item names
   //! from EXPRESS style (aaa_bb) to CASCADE style (AaaBb).
   //! Then, makes a dictionary of item names and sets handles
@@ -79,14 +77,12 @@ private:
   //! Prepares type for work by setting its handle to item in the
   //! schema according to dictionary (for types which refer items
   //! by name)
-  Standard_EXPORT void PrepareType (const Handle(Express_Type)& theType) const;
+  Standard_EXPORT void PrepareType(const Handle(Express_Type)& theType) const;
 
 private:
-
   Handle(TCollection_HAsciiString) myName;
-  Handle(Express_HSequenceOfItem) myItems;
+  Handle(Express_HSequenceOfItem)  myItems;
   Express_DataMapOfAsciiStringItem myDict;
-
 };
 
 #endif // _Express_Schema_HeaderFile

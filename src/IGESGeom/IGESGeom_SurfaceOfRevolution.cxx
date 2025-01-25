@@ -20,39 +20,38 @@
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution, IGESData_IGESEntity)
 
-IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution ()    {  }
+IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution() {}
 
-
-    void IGESGeom_SurfaceOfRevolution::Init
-  (const Handle(IGESGeom_Line)& anAxis,
-   const Handle(IGESData_IGESEntity)& aGeneratrix,
-   const Standard_Real aStartAngle, const Standard_Real anEndAngle)
+void IGESGeom_SurfaceOfRevolution::Init(const Handle(IGESGeom_Line)&       anAxis,
+                                        const Handle(IGESData_IGESEntity)& aGeneratrix,
+                                        const Standard_Real                aStartAngle,
+                                        const Standard_Real                anEndAngle)
 {
   theLine       = anAxis;
   theGeneratrix = aGeneratrix;
   theStartAngle = aStartAngle;
   theEndAngle   = anEndAngle;
-  InitTypeAndForm(120,0);
+  InitTypeAndForm(120, 0);
 }
 
-    Handle(IGESGeom_Line) IGESGeom_SurfaceOfRevolution::AxisOfRevolution () const
+Handle(IGESGeom_Line) IGESGeom_SurfaceOfRevolution::AxisOfRevolution() const
 {
   return theLine;
 }
 
-    Handle(IGESData_IGESEntity) IGESGeom_SurfaceOfRevolution::Generatrix () const
+Handle(IGESData_IGESEntity) IGESGeom_SurfaceOfRevolution::Generatrix() const
 {
   return theGeneratrix;
 }
 
-    Standard_Real IGESGeom_SurfaceOfRevolution::StartAngle () const
+Standard_Real IGESGeom_SurfaceOfRevolution::StartAngle() const
 {
   return theStartAngle;
 }
 
-    Standard_Real IGESGeom_SurfaceOfRevolution::EndAngle () const
+Standard_Real IGESGeom_SurfaceOfRevolution::EndAngle() const
 {
   return theEndAngle;
 }

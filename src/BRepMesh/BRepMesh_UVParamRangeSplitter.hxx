@@ -23,19 +23,16 @@
 class BRepMesh_UVParamRangeSplitter : public BRepMesh_DefaultRangeSplitter
 {
 public:
-
   //! Constructor.
   BRepMesh_UVParamRangeSplitter()
-    : myAllocator(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
-      myUParams(1, myAllocator),
-      myVParams(1, myAllocator)
+      : myAllocator(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
+        myUParams(1, myAllocator),
+        myVParams(1, myAllocator)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_UVParamRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_UVParamRangeSplitter() {}
 
   //! Resets this splitter.
   virtual void Reset(const IMeshData::IFaceHandle& theDFace,
@@ -49,28 +46,16 @@ public:
 
 public:
   //! Returns U parameters.
-  const IMeshData::IMapOfReal& GetParametersU() const
-  {
-    return myUParams;
-  }
+  const IMeshData::IMapOfReal& GetParametersU() const { return myUParams; }
 
   //! Returns U parameters.
-  IMeshData::IMapOfReal& GetParametersU()
-  {
-    return myUParams;
-  }
+  IMeshData::IMapOfReal& GetParametersU() { return myUParams; }
 
   //! Returns V parameters.
-  const IMeshData::IMapOfReal& GetParametersV() const
-  {
-    return myVParams;
-  }
+  const IMeshData::IMapOfReal& GetParametersV() const { return myVParams; }
 
   //! Returns V parameters.
-  IMeshData::IMapOfReal& GetParametersV()
-  {
-    return myVParams;
-  }
+  IMeshData::IMapOfReal& GetParametersV() { return myVParams; }
 
 private:
   Handle(NCollection_IncAllocator) myAllocator;

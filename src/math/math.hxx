@@ -23,25 +23,22 @@
 
 #include <math_Vector.hxx>
 
-
-class math 
+class math
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT static Standard_Integer GaussPointsMax();
-  
-  Standard_EXPORT static void GaussPoints (const Standard_Integer Index, math_Vector& Points);
-  
-  Standard_EXPORT static void GaussWeights (const Standard_Integer Index, math_Vector& Weights);
-  
+
+  Standard_EXPORT static void GaussPoints(const Standard_Integer Index, math_Vector& Points);
+
+  Standard_EXPORT static void GaussWeights(const Standard_Integer Index, math_Vector& Weights);
+
   //! Returns the maximal number of points for that the values
   //! are stored in the table. If the number is greater then
   //! KronrodPointsMax, the points will be computed.
   Standard_EXPORT static Standard_Integer KronrodPointsMax();
-  
+
   //! Returns a vector of Gauss points and a vector of their weights.
   //! The difference with the
   //! method GaussPoints is the following:
@@ -50,8 +47,10 @@ public:
   //! computed.
   //! Returns Standard_True if Index is positive, Points' and Weights'
   //! length is equal to Index, Points and Weights are successfully computed.
-  Standard_EXPORT static Standard_Boolean OrderedGaussPointsAndWeights (const Standard_Integer Index, math_Vector& Points, math_Vector& Weights);
-  
+  Standard_EXPORT static Standard_Boolean OrderedGaussPointsAndWeights(const Standard_Integer Index,
+                                                                       math_Vector& Points,
+                                                                       math_Vector& Weights);
+
   //! Returns a vector of Kronrod points and a vector of their
   //! weights for Gauss-Kronrod computation method.
   //! Index should be odd and greater then or equal to 3,
@@ -65,8 +64,9 @@ public:
   //! if Index is odd, it is equal to the size of Points and Weights
   //! and the computation of Points and Weights is performed successfully.
   //! Otherwise this method returns Standard_False.
-  Standard_EXPORT static Standard_Boolean KronrodPointsAndWeights (const Standard_Integer Index, math_Vector& Points, math_Vector& Weights);
-
+  Standard_EXPORT static Standard_Boolean KronrodPointsAndWeights(const Standard_Integer Index,
+                                                                  math_Vector&           Points,
+                                                                  math_Vector&           Weights);
 };
 
 #endif // _math_HeaderFile

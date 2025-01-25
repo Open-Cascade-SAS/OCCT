@@ -19,5 +19,4 @@
 
 typedef NCollection_Array2<Standard_Boolean> TColStd_Array2OfBoolean;
 
-
 #endif

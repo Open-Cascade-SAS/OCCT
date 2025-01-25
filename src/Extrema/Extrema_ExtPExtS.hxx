@@ -33,75 +33,75 @@ class Extrema_ExtPExtS : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Extrema_ExtPExtS();
-  
+
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
-  
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                       P,
+                                   const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S,
+                                   const Standard_Real                                 Umin,
+                                   const Standard_Real                                 Usup,
+                                   const Standard_Real                                 Vmin,
+                                   const Standard_Real                                 Vsup,
+                                   const Standard_Real                                 TolU,
+                                   const Standard_Real                                 TolV);
+
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S, const Standard_Real TolU, const Standard_Real TolV);
-  
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                       P,
+                                   const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S,
+                                   const Standard_Real                                 TolU,
+                                   const Standard_Real                                 TolV);
+
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
-  
-  Standard_EXPORT void Perform (const gp_Pnt& P);
-  
+  Standard_EXPORT void Initialize(const Handle(GeomAdaptor_SurfaceOfLinearExtrusion)& S,
+                                  const Standard_Real                                 Uinf,
+                                  const Standard_Real                                 Usup,
+                                  const Standard_Real                                 Vinf,
+                                  const Standard_Real                                 Vsup,
+                                  const Standard_Real                                 TolU,
+                                  const Standard_Real                                 TolV);
+
+  Standard_EXPORT void Perform(const gp_Pnt& P);
+
   //! Returns True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the number of extremum distances.
   Standard_EXPORT Standard_Integer NbExt() const;
-  
+
   //! Returns the value of the Nth resulting square distance.
-  Standard_EXPORT Standard_Real SquareDistance (const Standard_Integer N) const;
-  
+  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+
   //! Returns the point of the Nth resulting distance.
-  Standard_EXPORT const Extrema_POnSurf& Point (const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPExtS,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPExtS, Standard_Transient)
 
 protected:
-
-
-
-
 private:
+  Standard_EXPORT void MakePreciser(Standard_Real&         U,
+                                    const gp_Pnt&          P,
+                                    const Standard_Boolean isMin,
+                                    const gp_Ax2&          OrtogSection) const;
 
-  
-  Standard_EXPORT void MakePreciser (Standard_Real& U, const gp_Pnt& P, const Standard_Boolean isMin, const gp_Ax2& OrtogSection) const;
-
-  Standard_Real myuinf;
-  Standard_Real myusup;
-  Standard_Real mytolu;
-  Standard_Real myvinf;
-  Standard_Real myvsup;
-  Standard_Real mytolv;
-  Extrema_FuncPSNorm myF;
-  Handle(Adaptor3d_Curve) myC;
+  Standard_Real                                myuinf;
+  Standard_Real                                myusup;
+  Standard_Real                                mytolu;
+  Standard_Real                                myvinf;
+  Standard_Real                                myvsup;
+  Standard_Real                                mytolv;
+  Extrema_FuncPSNorm                           myF;
+  Handle(Adaptor3d_Curve)                      myC;
   Handle(GeomAdaptor_SurfaceOfLinearExtrusion) myS;
-  gp_Vec myDirection;
-  gp_Ax2 myPosition;
-  Extrema_GenExtPS myExtPS;
-  Standard_Boolean myIsAnalyticallyComputable;
-  Standard_Boolean myDone;
-  Standard_Integer myNbExt;
-  Standard_Real mySqDist[4];
-  Extrema_POnSurf myPoint[4];
-
-
+  gp_Vec                                       myDirection;
+  gp_Ax2                                       myPosition;
+  Extrema_GenExtPS                             myExtPS;
+  Standard_Boolean                             myIsAnalyticallyComputable;
+  Standard_Boolean                             myDone;
+  Standard_Integer                             myNbExt;
+  Standard_Real                                mySqDist[4];
+  Extrema_POnSurf                              myPoint[4];
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtPExtS_HeaderFile

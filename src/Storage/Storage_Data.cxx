@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Persistent.hxx>
 #include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
@@ -24,25 +23,27 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_Data,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_Data, Standard_Transient)
 
 Storage_Data::Storage_Data()
 {
-  myRootData = new Storage_RootData;
-  myTypeData = new Storage_TypeData;
-  myInternal = new Storage_InternalData;
+  myRootData   = new Storage_RootData;
+  myTypeData   = new Storage_TypeData;
+  myInternal   = new Storage_InternalData;
   myHeaderData = new Storage_HeaderData;
 }
 
 void Storage_Data::AddRoot(const Handle(Standard_Persistent)& anObject) const
 {
-  Handle(Storage_Root) aRoot = new Storage_Root(TCollection_AsciiString(myRootData->NumberOfRoots()+1),anObject);
+  Handle(Storage_Root) aRoot =
+    new Storage_Root(TCollection_AsciiString(myRootData->NumberOfRoots() + 1), anObject);
   myRootData->AddRoot(aRoot);
 }
 
-void Storage_Data::AddRoot(const TCollection_AsciiString& aName, const Handle(Standard_Persistent)& anObject) const
+void Storage_Data::AddRoot(const TCollection_AsciiString&     aName,
+                           const Handle(Standard_Persistent)& anObject) const
 {
-  Handle(Storage_Root) aRoot = new Storage_Root(aName,anObject);
+  Handle(Storage_Root) aRoot = new Storage_Root(aName, anObject);
   myRootData->AddRoot(aRoot);
 }
 
@@ -106,7 +107,7 @@ Handle(Storage_HeaderData) Storage_Data::HeaderData() const
   return myHeaderData;
 }
 
-void Storage_Data::Clear() const 
+void Storage_Data::Clear() const
 {
   myInternal->Clear();
   myTypeData->Clear();
@@ -129,7 +130,7 @@ TCollection_AsciiString Storage_Data::SchemaName() const
   return myHeaderData->SchemaName();
 }
 
-void Storage_Data::SetApplicationVersion(const TCollection_AsciiString& aVersion) 
+void Storage_Data::SetApplicationVersion(const TCollection_AsciiString& aVersion)
 {
   myHeaderData->SetApplicationVersion(aVersion);
 }
@@ -139,7 +140,7 @@ TCollection_AsciiString Storage_Data::ApplicationVersion() const
   return myHeaderData->ApplicationVersion();
 }
 
-void Storage_Data::SetApplicationName(const TCollection_ExtendedString& aName) 
+void Storage_Data::SetApplicationName(const TCollection_ExtendedString& aName)
 {
   myHeaderData->SetApplicationName(aName);
 }
@@ -149,7 +150,7 @@ TCollection_ExtendedString Storage_Data::ApplicationName() const
   return myHeaderData->ApplicationName();
 }
 
-void Storage_Data::AddToUserInfo(const TCollection_AsciiString& theUserInfo) 
+void Storage_Data::AddToUserInfo(const TCollection_AsciiString& theUserInfo)
 {
   myHeaderData->AddToUserInfo(theUserInfo);
 }
@@ -159,7 +160,7 @@ const TColStd_SequenceOfAsciiString& Storage_Data::UserInfo() const
   return myHeaderData->UserInfo();
 }
 
-void Storage_Data::AddToComments(const TCollection_ExtendedString& theUserInfo) 
+void Storage_Data::AddToComments(const TCollection_ExtendedString& theUserInfo)
 {
   myHeaderData->AddToComments(theUserInfo);
 }
@@ -179,7 +180,7 @@ TCollection_AsciiString Storage_Data::StorageVersion() const
   return myHeaderData->StorageVersion();
 }
 
-Storage_Error  Storage_Data::ErrorStatus() const
+Storage_Error Storage_Data::ErrorStatus() const
 {
   return myErrorStatus;
 }
@@ -198,7 +199,7 @@ void Storage_Data::ClearErrorStatus()
   myTypeData->ClearErrorStatus();
 }
 
-void Storage_Data::SetDataType(const TCollection_ExtendedString& aName) 
+void Storage_Data::SetDataType(const TCollection_ExtendedString& aName)
 {
   myHeaderData->SetDataType(aName);
 }

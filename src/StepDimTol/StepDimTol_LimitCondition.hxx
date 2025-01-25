@@ -16,12 +16,11 @@
 #ifndef _StepDimTol_LimitCondition_HeaderFile
 #define _StepDimTol_LimitCondition_HeaderFile
 
-
 enum StepDimTol_LimitCondition
 {
-StepDimTol_MaximumMaterialCondition,
-StepDimTol_LeastMaterialCondition,
-StepDimTol_RegardlessOfFeatureSize
+  StepDimTol_MaximumMaterialCondition,
+  StepDimTol_LeastMaterialCondition,
+  StepDimTol_RegardlessOfFeatureSize
 };
 
 #endif // _StepDimTol_LimitCondition_HeaderFile

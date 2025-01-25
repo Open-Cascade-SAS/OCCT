@@ -18,23 +18,21 @@
 #include <StepFEA_NodeSet.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeSet,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeSet, StepGeom_GeometricRepresentationItem)
 
 //=======================================================================
-//function : StepFEA_NodeSet
-//purpose  : 
+// function : StepFEA_NodeSet
+// purpose  :
 //=======================================================================
-StepFEA_NodeSet::StepFEA_NodeSet ()
-{
-}
+StepFEA_NodeSet::StepFEA_NodeSet() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepFEA_NodeSet::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                            const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodes)
+void StepFEA_NodeSet::Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                           const Handle(StepFEA_HArray1OfNodeRepresentation)& aNodes)
 {
   StepGeom_GeometricRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -42,21 +40,21 @@ void StepFEA_NodeSet::Init (const Handle(TCollection_HAsciiString) &aRepresentat
 }
 
 //=======================================================================
-//function : Nodes
-//purpose  : 
+// function : Nodes
+// purpose  :
 //=======================================================================
 
-Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_NodeSet::Nodes () const
+Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_NodeSet::Nodes() const
 {
   return theNodes;
 }
 
 //=======================================================================
-//function : SetNodes
-//purpose  : 
+// function : SetNodes
+// purpose  :
 //=======================================================================
 
-void StepFEA_NodeSet::SetNodes (const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodes)
+void StepFEA_NodeSet::SetNodes(const Handle(StepFEA_HArray1OfNodeRepresentation)& aNodes)
 {
   theNodes = aNodes;
 }

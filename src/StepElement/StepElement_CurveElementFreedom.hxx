@@ -27,64 +27,46 @@ class Standard_Transient;
 class StepData_SelectMember;
 class TCollection_HAsciiString;
 
-
 //! Representation of STEP SELECT type CurveElementFreedom
-class StepElement_CurveElementFreedom  : public StepData_SelectType
+class StepElement_CurveElementFreedom : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepElement_CurveElementFreedom();
-  
+
   //! Recognizes a kind of CurveElementFreedom select type
   //! return 0
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> EnumeratedCurveElementFreedom
   //! 2 -> ApplicationDefinedDegreeOfFreedom
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem (const Handle(StepData_SelectMember)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
+    Standard_OVERRIDE;
+
   //! Returns a new select member the type CurveElementFreedomMember
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
-  
+
   //! Set Value for EnumeratedCurveElementFreedom
-  Standard_EXPORT void SetEnumeratedCurveElementFreedom (const StepElement_EnumeratedCurveElementFreedom aVal);
-  
+  Standard_EXPORT void SetEnumeratedCurveElementFreedom(
+    const StepElement_EnumeratedCurveElementFreedom aVal);
+
   //! Returns Value as EnumeratedCurveElementFreedom (or Null if another type)
   Standard_EXPORT StepElement_EnumeratedCurveElementFreedom EnumeratedCurveElementFreedom() const;
-  
+
   //! Set Value for ApplicationDefinedDegreeOfFreedom
-  Standard_EXPORT void SetApplicationDefinedDegreeOfFreedom (const Handle(TCollection_HAsciiString)& aVal);
-  
+  Standard_EXPORT void SetApplicationDefinedDegreeOfFreedom(
+    const Handle(TCollection_HAsciiString)& aVal);
+
   //! Returns Value as ApplicationDefinedDegreeOfFreedom (or Null if another type)
   Standard_EXPORT Handle(TCollection_HAsciiString) ApplicationDefinedDegreeOfFreedom() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_CurveElementFreedom_HeaderFile

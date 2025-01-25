@@ -22,7 +22,8 @@
 Standard_DEPRECATED("Deprecated alias to PrsMgr_PresentationManager")
 typedef PrsMgr_PresentationManager PrsMgr_PresentationManager3d;
 #include <Standard_WarningsDisable.hxx>
-Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly instead.")
+Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly "
+                    "instead.")
 typedef Handle_PrsMgr_PresentationManager Handle_PrsMgr_PresentationManager3d;
 #include <Standard_WarningsRestore.hxx>
 

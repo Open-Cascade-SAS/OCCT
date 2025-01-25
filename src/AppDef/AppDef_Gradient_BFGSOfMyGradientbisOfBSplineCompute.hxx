@@ -31,42 +31,26 @@ class AppDef_ResConstraintOfMyGradientbisOfBSplineCompute;
 class AppDef_ParFunctionOfMyGradientbisOfBSplineCompute;
 class math_MultipleVarFunctionWithGradient;
 
-
-
-class AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute  : public math_BFGS
+class AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute : public math_BFGS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint, const Standard_Real Tolerance3d, const Standard_Real Tolerance2d, const Standard_Real Eps, const Standard_Integer NbIterations = 200);
-  
-  Standard_EXPORT virtual Standard_Boolean IsSolutionReached (math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
+  Standard_EXPORT AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations = 200);
 
-
-
+  Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
+    math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myTol3d;
   Standard_Real myTol2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute_HeaderFile

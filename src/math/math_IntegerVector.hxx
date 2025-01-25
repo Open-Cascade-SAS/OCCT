@@ -49,4 +49,3 @@
 using math_IntegerVector = math_VectorBase<int>;
 
 #endif
-

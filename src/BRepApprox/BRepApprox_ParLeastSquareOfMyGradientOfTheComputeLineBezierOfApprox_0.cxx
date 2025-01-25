@@ -25,13 +25,12 @@
 #include <AppParCurves_MultiCurve.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define MultiLine BRepApprox_TheMultiLineOfApprox
 #define MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
 #define ToolLine BRepApprox_TheMultiLineToolOfApprox
 #define ToolLine_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #define AppParCurves_LeastSquare BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox
-#define AppParCurves_LeastSquare_hxx <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
+#define AppParCurves_LeastSquare_hxx                                                               \
+  <BRepApprox_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #include "../AppParCurves/AppParCurves_LeastSquare.gxx"
-

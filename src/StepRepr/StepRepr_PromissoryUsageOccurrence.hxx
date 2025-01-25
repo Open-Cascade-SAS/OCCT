@@ -21,40 +21,19 @@
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
 
-
 class StepRepr_PromissoryUsageOccurrence;
 DEFINE_STANDARD_HANDLE(StepRepr_PromissoryUsageOccurrence, StepRepr_AssemblyComponentUsage)
-
 
 class StepRepr_PromissoryUsageOccurrence : public StepRepr_AssemblyComponentUsage
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_PromissoryUsageOccurrence();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_PromissoryUsageOccurrence,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PromissoryUsageOccurrence, StepRepr_AssemblyComponentUsage)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_PromissoryUsageOccurrence_HeaderFile

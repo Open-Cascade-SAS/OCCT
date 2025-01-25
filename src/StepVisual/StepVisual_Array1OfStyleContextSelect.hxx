@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepVisual_StyleContextSelect> StepVisual_Array1OfStyleContextSelect;
 
-
 #endif

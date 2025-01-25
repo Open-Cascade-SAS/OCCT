@@ -15,18 +15,18 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : MoreWires
-//purpose  : 
+// function : MoreWires
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  BRepClass_FaceExplorer::MoreWires()const 
+inline Standard_Boolean BRepClass_FaceExplorer::MoreWires() const
 {
   return myWExplorer.More();
 }
 
 //=======================================================================
-//function : NextWire
-//purpose  : 
+// function : NextWire
+// purpose  :
 //=======================================================================
 
 inline void BRepClass_FaceExplorer::NextWire()
@@ -35,23 +35,21 @@ inline void BRepClass_FaceExplorer::NextWire()
 }
 
 //=======================================================================
-//function : MoreEdges
-//purpose  : 
+// function : MoreEdges
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  BRepClass_FaceExplorer::MoreEdges()const 
+inline Standard_Boolean BRepClass_FaceExplorer::MoreEdges() const
 {
   return myEExplorer.More();
 }
 
 //=======================================================================
-//function : NextEdge
-//purpose  : 
+// function : NextEdge
+// purpose  :
 //=======================================================================
 
 inline void BRepClass_FaceExplorer::NextEdge()
 {
   myEExplorer.Next();
 }
-
-

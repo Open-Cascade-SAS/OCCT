@@ -26,7 +26,6 @@ class Expr_NamedFunction;
 class Expr_NamedExpression;
 class TCollection_AsciiString;
 
-
 class ExprIntrp_Generator;
 DEFINE_STANDARD_HANDLE(ExprIntrp_Generator, Standard_Transient)
 
@@ -36,51 +35,32 @@ class ExprIntrp_Generator : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Use(const Handle(Expr_NamedFunction)& func);
 
-  
-  Standard_EXPORT void Use (const Handle(Expr_NamedFunction)& func);
-  
-  Standard_EXPORT void Use (const Handle(Expr_NamedExpression)& named);
-  
+  Standard_EXPORT void Use(const Handle(Expr_NamedExpression)& named);
+
   Standard_EXPORT const ExprIntrp_SequenceOfNamedExpression& GetNamed() const;
-  
+
   Standard_EXPORT const ExprIntrp_SequenceOfNamedFunction& GetFunctions() const;
-  
+
   //! Returns NamedExpression with name <name> already
   //! interpreted if it exists. Returns a null handle if
   //! not.
-  Standard_EXPORT Handle(Expr_NamedExpression) GetNamed (const TCollection_AsciiString& name) const;
-  
+  Standard_EXPORT Handle(Expr_NamedExpression) GetNamed(const TCollection_AsciiString& name) const;
+
   //! Returns NamedFunction with name <name> already
   //! interpreted if it exists. Returns a null handle if
   //! not.
-  Standard_EXPORT Handle(Expr_NamedFunction) GetFunction (const TCollection_AsciiString& name) const;
+  Standard_EXPORT Handle(Expr_NamedFunction) GetFunction(const TCollection_AsciiString& name) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator, Standard_Transient)
 
 protected:
-
-  
   Standard_EXPORT ExprIntrp_Generator();
 
-
-
 private:
-
-
-  ExprIntrp_SequenceOfNamedFunction myFunctions;
+  ExprIntrp_SequenceOfNamedFunction   myFunctions;
   ExprIntrp_SequenceOfNamedExpression myNamed;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ExprIntrp_Generator_HeaderFile

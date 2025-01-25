@@ -35,64 +35,54 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a BasicDimension. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDimen_ToolBasicDimension 
+class IGESDimen_ToolBasicDimension
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolBasicDimension, ready to work
   Standard_EXPORT IGESDimen_ToolBasicDimension();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDimen_BasicDimension)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_BasicDimension)& ent,
+                                     const Handle(IGESData_IGESReaderData)&  IR,
+                                     IGESData_ParamReader&                   PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDimen_BasicDimension)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_BasicDimension)& ent,
+                                      IGESData_IGESWriter&                    IW) const;
+
   //! Lists the Entities shared by a BasicDimension <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDimen_BasicDimension)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDimen_BasicDimension)& ent,
+                                 Interface_EntityIterator&               iter) const;
+
   //! Sets automatic unambiguous Correction on a BasicDimension
   //! (NbPropertyValues forced to 8)
-  Standard_EXPORT Standard_Boolean OwnCorrect (const Handle(IGESDimen_BasicDimension)& ent) const;
-  
+  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESDimen_BasicDimension)& ent) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDimen_BasicDimension)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDimen_BasicDimension)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDimen_BasicDimension)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_BasicDimension)& ent,
+                                const Interface_ShareTool&              shares,
+                                Handle(Interface_Check)&                ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDimen_BasicDimension)& entfrom, const Handle(IGESDimen_BasicDimension)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_BasicDimension)& entfrom,
+                               const Handle(IGESDimen_BasicDimension)& entto,
+                               Interface_CopyTool&                     TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_BasicDimension)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDimen_BasicDimension)& ent,
+                               const IGESData_IGESDumper&              dumper,
+                               Standard_OStream&                       S,
+                               const Standard_Integer                  own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_ToolBasicDimension_HeaderFile

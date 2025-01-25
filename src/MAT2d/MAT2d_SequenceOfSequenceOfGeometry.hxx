@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<TColGeom2d_SequenceOfGeometry> MAT2d_SequenceOfSequenceOfGeometry;
 
-
 #endif

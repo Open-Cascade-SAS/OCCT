@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_IGESName.hxx>
 #include <Interface_InterfaceModel.hxx>
@@ -20,23 +19,24 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_IGESName,IFSelect_Signature)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_IGESName, IFSelect_Signature)
 
-static char falsetype [] = "?";
-static char voidlabel [] = "";
+static char falsetype[] = "?";
+static char voidlabel[] = "";
 
-
-
-    IGESSelect_IGESName::IGESSelect_IGESName ()
-    : IFSelect_Signature ("IGES Name (Short Label)")      {  }
-
-    Standard_CString  IGESSelect_IGESName::Value
-  (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& /*model*/) const
+IGESSelect_IGESName::IGESSelect_IGESName()
+    : IFSelect_Signature("IGES Name (Short Label)")
 {
-  DeclareAndCast(IGESData_IGESEntity,igesent,ent);
-  if (igesent.IsNull()) return &falsetype[0];
+}
+
+Standard_CString IGESSelect_IGESName::Value(const Handle(Standard_Transient)& ent,
+                                            const Handle(Interface_InterfaceModel)& /*model*/) const
+{
+  DeclareAndCast(IGESData_IGESEntity, igesent, ent);
+  if (igesent.IsNull())
+    return &falsetype[0];
   Handle(TCollection_HAsciiString) label = igesent->ShortLabel();
-  if (label.IsNull()) return &voidlabel[0];
+  if (label.IsNull())
+    return &voidlabel[0];
   return label->ToCString();
 }

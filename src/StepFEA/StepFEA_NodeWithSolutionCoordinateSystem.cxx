@@ -18,12 +18,10 @@
 #include <Standard_Type.hxx>
 #include <StepFEA_NodeWithSolutionCoordinateSystem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeWithSolutionCoordinateSystem,StepFEA_Node)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeWithSolutionCoordinateSystem, StepFEA_Node)
 
 //=======================================================================
-//function : StepFEA_NodeWithSolutionCoordinateSystem
-//purpose  : 
+// function : StepFEA_NodeWithSolutionCoordinateSystem
+// purpose  :
 //=======================================================================
-StepFEA_NodeWithSolutionCoordinateSystem::StepFEA_NodeWithSolutionCoordinateSystem ()
-{
-}
+StepFEA_NodeWithSolutionCoordinateSystem::StepFEA_NodeWithSolutionCoordinateSystem() {}

@@ -29,7 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
 
-
 //! An algorithm to convert a grid of adjacent
 //! non-rational Bezier surfaces (with continuity CM) into a
 //! BSpline surface (with continuity CM).
@@ -53,13 +52,11 @@
 //! UIndex [1, NbUPatches]  Udirection
 //!
 //! Warning! Patches must have compatible parametrization
-class GeomConvert_CompBezierSurfacesToBSplineSurface 
+class GeomConvert_CompBezierSurfacesToBSplineSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Computes all the data needed to build a "C0"
   //! continuous BSpline surface equivalent to the grid of
   //! adjacent non-rational Bezier surfaces Beziers.
@@ -114,14 +111,18 @@ public:
   //! Exceptions
   //! Standard_NotImplemented if one of the Bezier
   //! surfaces of the Beziers grid is rational.
-  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(const TColGeom_Array2OfBezierSurface& Beziers);
-  
+  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
+    const TColGeom_Array2OfBezierSurface& Beziers);
+
   //! Build an Ci uniform (Rational) BSpline surface
   //! The highest Continuity Ci is imposed, like the
   //! maximal deformation is lower than <Tolerance>.
   //! Warning:  The Continuity C0 is imposed without any check.
-  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(const TColGeom_Array2OfBezierSurface& Beziers, const Standard_Real Tolerance, const Standard_Boolean RemoveKnots = Standard_True);
-  
+  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
+    const TColGeom_Array2OfBezierSurface& Beziers,
+    const Standard_Real                   Tolerance,
+    const Standard_Boolean                RemoveKnots = Standard_True);
+
   //! Computes all the data needed to construct a BSpline
   //! surface equivalent to the adjacent non-rational
   //! Bezier surfaces Beziers grid.
@@ -208,55 +209,60 @@ public:
   //! degree in the v parametric direction (in the Beziers grid), minus 1 .
   //! Standard_NotImplemented if one of the Bezier
   //! surfaces in the Beziers grid is rational.
-  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(const TColGeom_Array2OfBezierSurface& Beziers, const TColStd_Array1OfReal& UKnots, const TColStd_Array1OfReal& VKnots, const GeomAbs_Shape UContinuity = GeomAbs_C0, const GeomAbs_Shape VContinuity = GeomAbs_C0, const Standard_Real Tolerance = 1.0e-4);
-  
+  Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
+    const TColGeom_Array2OfBezierSurface& Beziers,
+    const TColStd_Array1OfReal&           UKnots,
+    const TColStd_Array1OfReal&           VKnots,
+    const GeomAbs_Shape                   UContinuity = GeomAbs_C0,
+    const GeomAbs_Shape                   VContinuity = GeomAbs_C0,
+    const Standard_Real                   Tolerance   = 1.0e-4);
+
   //! Returns the number of knots in the U direction
   //! of the BSpline surface whose data is computed in this framework.
-    Standard_Integer NbUKnots() const;
-  
+  Standard_Integer NbUKnots() const;
+
   //! Returns number of poles in the U direction
   //! of the BSpline surface whose data is computed in this framework.
-    Standard_Integer NbUPoles() const;
-  
+  Standard_Integer NbUPoles() const;
+
   //! Returns the number of knots in the V direction
   //! of the BSpline surface whose data is computed in this framework.
-    Standard_Integer NbVKnots() const;
-  
+  Standard_Integer NbVKnots() const;
+
   //! Returns the number of poles in the V direction
   //! of the BSpline surface whose data is computed in this framework.
-    Standard_Integer NbVPoles() const;
-  
+  Standard_Integer NbVPoles() const;
+
   //! Returns the table of poles of the BSpline surface
   //! whose data is computed in this framework.
-    const Handle(TColgp_HArray2OfPnt)& Poles() const;
-  
+  const Handle(TColgp_HArray2OfPnt)& Poles() const;
+
   //! Returns the knots table for the u parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-    const Handle(TColStd_HArray1OfReal)& UKnots() const;
-  
+  const Handle(TColStd_HArray1OfReal)& UKnots() const;
+
   //! Returns the degree for the u  parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-    Standard_Integer UDegree() const;
-  
+  Standard_Integer UDegree() const;
+
   //! Returns the knots table for the v parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-    const Handle(TColStd_HArray1OfReal)& VKnots() const;
-  
+  const Handle(TColStd_HArray1OfReal)& VKnots() const;
+
   //! Returns the degree for the v  parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-    Standard_Integer VDegree() const;
-  
+  Standard_Integer VDegree() const;
 
   //! Returns the multiplicities table for the u
   //! parametric direction of the knots of the BSpline
   //! surface whose data is computed in this framework.
-    const Handle(TColStd_HArray1OfInteger)& UMultiplicities() const;
-  
+  const Handle(TColStd_HArray1OfInteger)& UMultiplicities() const;
+
   //! -- Returns the multiplicities table for the v
   //! parametric direction of the knots of the BSpline
   //! surface whose data is computed in this framework.
-    const Handle(TColStd_HArray1OfInteger)& VMultiplicities() const;
-  
+  const Handle(TColStd_HArray1OfInteger)& VMultiplicities() const;
+
   //! Returns true if the conversion was successful.
   //! Unless an exception was raised at the time of
   //! construction, the conversion of the Bezier surface
@@ -270,40 +276,22 @@ public:
   //! does not satisfy all the initial constraints.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-  
   //! It used internally by the constructors.
-  Standard_EXPORT void Perform (const TColGeom_Array2OfBezierSurface& Beziers);
+  Standard_EXPORT void Perform(const TColGeom_Array2OfBezierSurface& Beziers);
 
-
-  Standard_Integer myUDegree;
-  Standard_Integer myVDegree;
+  Standard_Integer                 myUDegree;
+  Standard_Integer                 myVDegree;
   Handle(TColStd_HArray1OfInteger) myVMults;
   Handle(TColStd_HArray1OfInteger) myUMults;
-  Handle(TColStd_HArray1OfReal) myUKnots;
-  Handle(TColStd_HArray1OfReal) myVKnots;
-  Handle(TColgp_HArray2OfPnt) myPoles;
-  Standard_Boolean isrational;
-  Standard_Boolean myDone;
-
-
+  Handle(TColStd_HArray1OfReal)    myUKnots;
+  Handle(TColStd_HArray1OfReal)    myVKnots;
+  Handle(TColgp_HArray2OfPnt)      myPoles;
+  Standard_Boolean                 isrational;
+  Standard_Boolean                 myDone;
 };
 
-
 #include <GeomConvert_CompBezierSurfacesToBSplineSurface.lxx>
-
-
-
-
 
 #endif // _GeomConvert_CompBezierSurfacesToBSplineSurface_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(IFSelect_Dispatch)> IFSelect_TSeqOfDispatch;
 
-
 #endif

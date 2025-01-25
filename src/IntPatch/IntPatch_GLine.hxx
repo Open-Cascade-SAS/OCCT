@@ -34,7 +34,6 @@ class gp_Parab;
 class gp_Hypr;
 class IntPatch_Point;
 
-
 class IntPatch_GLine;
 DEFINE_STANDARD_HANDLE(IntPatch_GLine, IntPatch_Line)
 
@@ -44,156 +43,168 @@ class IntPatch_GLine : public IntPatch_Line
 {
 
 public:
-
-  
   //! Creates a Line as intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_GLine(const gp_Lin& L, const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Lin&           L,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_TypeTrans Trans1,
+                                 const IntSurf_TypeTrans Trans2);
+
   //! Creates a Line as intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_GLine(const gp_Lin& L, const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Lin&           L,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_Situation Situ1,
+                                 const IntSurf_Situation Situ2);
+
   //! Creates a Line as intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Lin& L, const Standard_Boolean Tang);
-  
+
   //! Creates a circle as intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_GLine(const gp_Circ& C, const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Circ&          C,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_TypeTrans Trans1,
+                                 const IntSurf_TypeTrans Trans2);
+
   //! Creates a circle as intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_GLine(const gp_Circ& C, const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Circ&          C,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_Situation Situ1,
+                                 const IntSurf_Situation Situ2);
+
   //! Creates a circle as intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Circ& C, const Standard_Boolean Tang);
-  
+
   //! Creates an ellipse as intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_GLine(const gp_Elips& E, const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Elips&         E,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_TypeTrans Trans1,
+                                 const IntSurf_TypeTrans Trans2);
+
   //! Creates an ellispe as intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_GLine(const gp_Elips& E, const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Elips&         E,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_Situation Situ1,
+                                 const IntSurf_Situation Situ2);
+
   //! Creates an ellipse as intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Elips& E, const Standard_Boolean Tang);
-  
+
   //! Creates a parabola as intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_GLine(const gp_Parab& P, const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Parab&         P,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_TypeTrans Trans1,
+                                 const IntSurf_TypeTrans Trans2);
+
   //! Creates a parabola as intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_GLine(const gp_Parab& P, const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Parab&         P,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_Situation Situ1,
+                                 const IntSurf_Situation Situ2);
+
   //! Creates a parabola as intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Parab& P, const Standard_Boolean Tang);
-  
+
   //! Creates an hyperbola as intersection line
   //! when the transitions are In or Out.
-  Standard_EXPORT IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Hypr&          H,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_TypeTrans Trans1,
+                                 const IntSurf_TypeTrans Trans2);
+
   //! Creates an hyperbola as intersection line
   //! when the transitions are Touch.
-  Standard_EXPORT IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_GLine(const gp_Hypr&          H,
+                                 const Standard_Boolean  Tang,
+                                 const IntSurf_Situation Situ1,
+                                 const IntSurf_Situation Situ2);
+
   //! Creates an hyperbola as  intersection line
   //! when the transitions are Undecided.
   Standard_EXPORT IntPatch_GLine(const gp_Hypr& H, const Standard_Boolean Tang);
-  
+
   //! To add a vertex in the list.
-  Standard_EXPORT void AddVertex (const IntPatch_Point& Pnt);
-  
+  Standard_EXPORT void AddVertex(const IntPatch_Point& Pnt);
+
   //! To replace the element of range Index in the list
   //! of points.
-  Standard_EXPORT void Replace (const Standard_Integer Index, const IntPatch_Point& Pnt);
-  
-    void SetFirstPoint (const Standard_Integer IndFirst);
-  
-    void SetLastPoint (const Standard_Integer IndLast);
-  
+  Standard_EXPORT void Replace(const Standard_Integer Index, const IntPatch_Point& Pnt);
+
+  void SetFirstPoint(const Standard_Integer IndFirst);
+
+  void SetLastPoint(const Standard_Integer IndLast);
+
   //! Returns the Lin from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Line.
-    gp_Lin Line() const;
-  
+  gp_Lin Line() const;
+
   //! Returns the Circ from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Circle.
-    gp_Circ Circle() const;
-  
+  gp_Circ Circle() const;
+
   //! Returns the Elips from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Ellipse.
-    gp_Elips Ellipse() const;
-  
+  gp_Elips Ellipse() const;
+
   //! Returns the Parab from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Parabola.
-    gp_Parab Parabola() const;
-  
+  gp_Parab Parabola() const;
+
   //! Returns the Hypr from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Hyperbola.
-    gp_Hypr Hyperbola() const;
-  
+  gp_Hypr Hyperbola() const;
+
   //! Returns True if the line has a known First point.
   //! This point is given by the method FirstPoint().
-    Standard_Boolean HasFirstPoint() const;
-  
+  Standard_Boolean HasFirstPoint() const;
+
   //! Returns True if the line has a known Last point.
   //! This point is given by the method LastPoint().
-    Standard_Boolean HasLastPoint() const;
-  
+  Standard_Boolean HasLastPoint() const;
+
   //! Returns the IntPoint corresponding to the FirstPoint.
   //! An exception is raised when HasFirstPoint returns False.
-    const IntPatch_Point& FirstPoint() const;
-  
+  const IntPatch_Point& FirstPoint() const;
+
   //! Returns the IntPoint corresponding to the LastPoint.
   //! An exception is raised when HasLastPoint returns False.
-    const IntPatch_Point& LastPoint() const;
-  
-    Standard_Integer NbVertex() const;
-  
+  const IntPatch_Point& LastPoint() const;
+
+  Standard_Integer NbVertex() const;
+
   //! Returns the vertex of range Index on the line.
-    const IntPatch_Point& Vertex (const Standard_Integer Index) const;
-  
+  const IntPatch_Point& Vertex(const Standard_Integer Index) const;
+
   //! Set the parameters of all the vertex on the line.
   //! if a vertex is already in the line,
   //! its parameter is modified
   //! else a new point in the line is inserted.
-  Standard_EXPORT void ComputeVertexParameters (const Standard_Real Tol);
+  Standard_EXPORT void ComputeVertexParameters(const Standard_Real Tol);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IntPatch_GLine,IntPatch_Line)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_GLine, IntPatch_Line)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_Ax2 pos;
-  Standard_Real par1;
-  Standard_Real par2;
-  Standard_Boolean fipt;
-  Standard_Boolean lapt;
-  Standard_Integer indf;
-  Standard_Integer indl;
+  gp_Ax2                   pos;
+  Standard_Real            par1;
+  Standard_Real            par2;
+  Standard_Boolean         fipt;
+  Standard_Boolean         lapt;
+  Standard_Integer         indf;
+  Standard_Integer         indl;
   IntPatch_SequenceOfPoint svtx;
-
-
 };
 
-
 #include <IntPatch_GLine.lxx>
-
-
-
-
 
 #endif // _IntPatch_GLine_HeaderFile

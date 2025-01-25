@@ -22,51 +22,34 @@
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-
 class StepFEA_FeaShellShearStiffness;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaShellShearStiffness, StepFEA_FeaMaterialPropertyRepresentationItem)
+DEFINE_STANDARD_HANDLE(StepFEA_FeaShellShearStiffness,
+                       StepFEA_FeaMaterialPropertyRepresentationItem)
 
 //! Representation of STEP entity FeaShellShearStiffness
 class StepFEA_FeaShellShearStiffness : public StepFEA_FeaMaterialPropertyRepresentationItem
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_FeaShellShearStiffness();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const StepFEA_SymmetricTensor22d& aFeaConstants);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                            const StepFEA_SymmetricTensor22d&       aFeaConstants);
+
   //! Returns field FeaConstants
   Standard_EXPORT StepFEA_SymmetricTensor22d FeaConstants() const;
-  
+
   //! Set field FeaConstants
-  Standard_EXPORT void SetFeaConstants (const StepFEA_SymmetricTensor22d& FeaConstants);
+  Standard_EXPORT void SetFeaConstants(const StepFEA_SymmetricTensor22d& FeaConstants);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaShellShearStiffness,StepFEA_FeaMaterialPropertyRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaShellShearStiffness,
+                          StepFEA_FeaMaterialPropertyRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   StepFEA_SymmetricTensor22d theFeaConstants;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_FeaShellShearStiffness_HeaderFile

@@ -21,8 +21,8 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Integer,TDF_Label> TFunction_DoubleMapOfIntegerLabel;
-typedef NCollection_DoubleMap<Standard_Integer,TDF_Label>::Iterator TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
-
+typedef NCollection_DoubleMap<Standard_Integer, TDF_Label> TFunction_DoubleMapOfIntegerLabel;
+typedef NCollection_DoubleMap<Standard_Integer, TDF_Label>::Iterator
+  TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
 
 #endif

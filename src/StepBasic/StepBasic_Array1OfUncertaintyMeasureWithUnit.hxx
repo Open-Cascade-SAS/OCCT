@@ -20,7 +20,7 @@
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepBasic_UncertaintyMeasureWithUnit)> StepBasic_Array1OfUncertaintyMeasureWithUnit;
-
+typedef NCollection_Array1<Handle(StepBasic_UncertaintyMeasureWithUnit)>
+  StepBasic_Array1OfUncertaintyMeasureWithUnit;
 
 #endif

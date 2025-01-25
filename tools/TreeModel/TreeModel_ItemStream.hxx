@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_ItemStream_H
 #define TreeModel_ItemStream_H
@@ -35,10 +35,13 @@ typedef QExplicitlySharedDataPointer<TreeModel_ItemStream> TreeModel_ItemStreamP
 class TreeModel_ItemStream : public TreeModel_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static TreeModel_ItemStreamPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return TreeModel_ItemStreamPtr (new TreeModel_ItemStream (theParent, theRow, theColumn)); }
+  static TreeModel_ItemStreamPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                            const int             theRow,
+                                            const int             theColumn)
+  {
+    return TreeModel_ItemStreamPtr(new TreeModel_ItemStream(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~TreeModel_ItemStream() {}
@@ -53,43 +56,50 @@ public:
 
   //! Returns number of displayed presentations
   //! \return rows count
-  virtual int initRowCount() const Standard_OVERRIDE { initItem(); return 0; }
+  virtual int initRowCount() const Standard_OVERRIDE
+  {
+    initItem();
+    return 0;
+  }
 
   //! Returns item information for the given role. Fills internal container if it was not filled yet
   //! \param theItemRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Stores values of the item properties into the item object
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \param theValue the cell value
-  Standard_EXPORT virtual void StoreItemProperties (const int theRow, const int theColumn, const QVariant& theValue) Standard_OVERRIDE;
+  Standard_EXPORT virtual void StoreItemProperties(const int       theRow,
+                                                   const int       theColumn,
+                                                   const QVariant& theValue) Standard_OVERRIDE;
 
 protected:
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void initStream(Standard_OStream& theOStream) const Standard_OVERRIDE;
 
   //! Initializes the current item. It creates a backup of the specific item information
   //! Does nothing as context has been already set into item
   Standard_EXPORT virtual void initItem() const Standard_OVERRIDE;
 
 protected:
-
   //! Creates a child item in the given position.
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  Standard_EXPORT virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createChild(int theRow,
+                                                            int theColumn) Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! \param theParent a parent item
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
-  Standard_EXPORT TreeModel_ItemStream(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
+  Standard_EXPORT TreeModel_ItemStream(TreeModel_ItemBasePtr theParent,
+                                       const int             theRow,
+                                       const int             theColumn);
 };
 
 #endif

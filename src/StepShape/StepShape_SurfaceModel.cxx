@@ -11,24 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_SurfaceModel.hxx>
 
-StepShape_SurfaceModel::StepShape_SurfaceModel () {  }
+StepShape_SurfaceModel::StepShape_SurfaceModel() {}
 
 Standard_Integer StepShape_SurfaceModel::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-	if (ent.IsNull()) return 0;
-	if (ent->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel))) return 1;
-//	if (ent->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel))) return 2;
-	return 0;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel)))
+    return 1;
+  //	if (ent->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel))) return 2;
+  return 0;
 }
 
-Handle(StepShape_ShellBasedSurfaceModel) StepShape_SurfaceModel::ShellBasedSurfaceModel () const
+Handle(StepShape_ShellBasedSurfaceModel) StepShape_SurfaceModel::ShellBasedSurfaceModel() const
 {
-	return GetCasted(StepShape_ShellBasedSurfaceModel,Value());
+  return GetCasted(StepShape_ShellBasedSurfaceModel, Value());
 }

@@ -18,66 +18,56 @@
 #include <Standard.hxx>
 #include <Standard_TypeDef.hxx>
 
-//! Auxiliary class optimizing creation of array buffer 
+//! Auxiliary class optimizing creation of array buffer
 //! (using stack allocation for small arrays).
-template<class theItem, Standard_Integer MAX_ARRAY_SIZE = 1024> class NCollection_LocalArray
+template <class theItem, Standard_Integer MAX_ARRAY_SIZE = 1024>
+class NCollection_LocalArray
 {
 public:
-
-  explicit NCollection_LocalArray (const size_t theSize)
-  : myPtr (myBuffer)
+  explicit NCollection_LocalArray(const size_t theSize)
+      : myPtr(myBuffer)
   {
     Allocate(theSize);
   }
 
-  NCollection_LocalArray ()
-  : myPtr (myBuffer), mySize(0) {}
-
-  ~NCollection_LocalArray()
+  NCollection_LocalArray()
+      : myPtr(myBuffer),
+        mySize(0)
   {
-    Deallocate();
   }
 
-  void Allocate (const size_t theSize)
+  ~NCollection_LocalArray() { Deallocate(); }
+
+  void Allocate(const size_t theSize)
   {
     Deallocate();
     if (theSize > MAX_ARRAY_SIZE)
-      myPtr = (theItem*)Standard::Allocate (theSize * sizeof(theItem));
+      myPtr = (theItem*)Standard::Allocate(theSize * sizeof(theItem));
     else
       myPtr = myBuffer;
 
     mySize = theSize;
   }
 
-  size_t Size() const
-  {
-    return mySize;
-  }
+  size_t Size() const { return mySize; }
 
-  operator theItem*() const
-  {
-    return myPtr;
-  }
+  operator theItem*() const { return myPtr; }
 
 private:
-
-  NCollection_LocalArray (const NCollection_LocalArray& );
-  NCollection_LocalArray& operator= (const NCollection_LocalArray& );
+  NCollection_LocalArray(const NCollection_LocalArray&);
+  NCollection_LocalArray& operator=(const NCollection_LocalArray&);
 
 protected:
-
   void Deallocate()
   {
     if (myPtr != myBuffer)
-      Standard::Free (myPtr);
+      Standard::Free(myPtr);
   }
 
 protected:
-
   theItem  myBuffer[MAX_ARRAY_SIZE];
   theItem* myPtr;
-  size_t mySize;
-
+  size_t   mySize;
 };
 
 #endif // _NCollection_LocalArray_HeaderFile

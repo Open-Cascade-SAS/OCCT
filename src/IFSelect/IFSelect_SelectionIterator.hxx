@@ -27,33 +27,32 @@
 class IFSelect_Selection;
 
 //! Defines an Iterator on a list of Selections
-class IFSelect_SelectionIterator 
+class IFSelect_SelectionIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty iterator, ready to be filled
   Standard_EXPORT IFSelect_SelectionIterator();
-  
+
   //! Creates an iterator from a Selection : it lists the Selections
   //! from which <sel> depends (given by its method FillIterator)
   Standard_EXPORT IFSelect_SelectionIterator(const Handle(IFSelect_Selection)& sel);
-  
+
   //! Adds to an iterator the content of another one
   //! (each selection is present only once in the result)
-  Standard_EXPORT void AddFromIter (IFSelect_SelectionIterator& iter);
-  
+  Standard_EXPORT void AddFromIter(IFSelect_SelectionIterator& iter);
+
   //! Adds a Selection to an iterator (if not yet noted)
-  Standard_EXPORT void AddItem (const Handle(IFSelect_Selection)& sel);
-  
+  Standard_EXPORT void AddItem(const Handle(IFSelect_Selection)& sel);
+
   //! Adds a list of Selections to an iterator (this list comes
   //! from the description of a Selection or a Dispatch, etc...)
-  Standard_EXPORT void AddList (const IFSelect_TSeqOfSelection& list);
-  
+  Standard_EXPORT void AddList(const IFSelect_TSeqOfSelection& list);
+
   //! Returns True if there are more Selections to get
   Standard_EXPORT Standard_Boolean More() const;
-  
+
   //! Sets iterator to the next item
   Standard_EXPORT void Next();
 
@@ -62,10 +61,8 @@ public:
   Standard_EXPORT const Handle(IFSelect_Selection)& Value() const;
 
 private:
-
-  Standard_Integer thecurr;
+  Standard_Integer                 thecurr;
   Handle(IFSelect_HSeqOfSelection) thelist;
-
 };
 
 #endif // _IFSelect_SelectionIterator_HeaderFile

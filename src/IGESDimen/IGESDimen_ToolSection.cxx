@@ -35,21 +35,20 @@
 #include <Standard_DomainError.hxx>
 #include <TColgp_HArray1OfXY.hxx>
 
-IGESDimen_ToolSection::IGESDimen_ToolSection ()    {  }
+IGESDimen_ToolSection::IGESDimen_ToolSection() {}
 
+void IGESDimen_ToolSection::ReadOwnParams(const Handle(IGESDimen_Section)& ent,
+                                          const Handle(IGESData_IGESReaderData)& /* IR */,
+                                          IGESData_ParamReader& PR) const
+{
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
 
-void  IGESDimen_ToolSection::ReadOwnParams
-  (const Handle(IGESDimen_Section)& ent,
-   const Handle(IGESData_IGESReaderData)& /* IR */, IGESData_ParamReader& PR) const
-{ 
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-
-  Standard_Integer datatype;
-  Standard_Real zDisplacement; 
-  Standard_Integer nbval;
+  Standard_Integer           datatype;
+  Standard_Real              zDisplacement;
+  Standard_Integer           nbval;
   Handle(TColgp_HArray1OfXY) dataPoints;
 
-// clang-format off
+  // clang-format off
   PR.ReadInteger(PR.Current(), "Interpretation Flag", datatype); //szv#4:S4163:12Mar99 `st=` not needed
 
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of data points", nbval);
@@ -58,82 +57,85 @@ void  IGESDimen_ToolSection::ReadOwnParams
   else  PR.AddFail("Number of data points: Not Positive");
 
   PR.ReadReal(PR.Current(), "Common Z Displacement", zDisplacement); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
-  if (! dataPoints.IsNull())
+  if (!dataPoints.IsNull())
     for (Standard_Integer i = 1; i <= nbval; i++)
-      {
-	gp_XY tempXY;
-	PR.ReadXY(PR.CurrentList(1, 2), "Data Points", tempXY); //szv#4:S4163:12Mar99 `st=` not needed
-	dataPoints->SetValue(i, tempXY);
-      }
+    {
+      gp_XY tempXY;
+      PR.ReadXY(PR.CurrentList(1, 2), "Data Points", tempXY); // szv#4:S4163:12Mar99 `st=` not
+                                                              // needed
+      dataPoints->SetValue(i, tempXY);
+    }
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(datatype, zDisplacement, dataPoints);
 }
 
-void  IGESDimen_ToolSection::WriteOwnParams
-  (const Handle(IGESDimen_Section)& ent, IGESData_IGESWriter& IW) const 
-{ 
+void IGESDimen_ToolSection::WriteOwnParams(const Handle(IGESDimen_Section)& ent,
+                                           IGESData_IGESWriter&             IW) const
+{
   Standard_Integer upper = ent->NbPoints();
   IW.Send(ent->Datatype());
   IW.Send(upper);
   IW.Send(ent->ZDisplacement());
   for (Standard_Integer i = 1; i <= upper; i++)
-    {
-      IW.Send((ent->Point(i)).X());
-      IW.Send((ent->Point(i)).Y());
-    }
+  {
+    IW.Send((ent->Point(i)).X());
+    IW.Send((ent->Point(i)).Y());
+  }
 }
 
-void  IGESDimen_ToolSection::OwnShared
-  (const Handle(IGESDimen_Section)& /* ent */, Interface_EntityIterator& /* iter */) const
+void IGESDimen_ToolSection::OwnShared(const Handle(IGESDimen_Section)& /* ent */,
+                                      Interface_EntityIterator& /* iter */) const
 {
 }
 
-void  IGESDimen_ToolSection::OwnCopy
-  (const Handle(IGESDimen_Section)& another,
-   const Handle(IGESDimen_Section)& ent, Interface_CopyTool& /* TC */) const
+void IGESDimen_ToolSection::OwnCopy(const Handle(IGESDimen_Section)& another,
+                                    const Handle(IGESDimen_Section)& ent,
+                                    Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer datatype = another->Datatype();
-  Standard_Integer nbval = another->NbPoints();
-  Standard_Real zDisplacement = another->ZDisplacement();
+  Standard_Integer datatype      = another->Datatype();
+  Standard_Integer nbval         = another->NbPoints();
+  Standard_Real    zDisplacement = another->ZDisplacement();
 
   Handle(TColgp_HArray1OfXY) dataPoints = new TColgp_HArray1OfXY(1, nbval);
 
   for (Standard_Integer i = 1; i <= nbval; i++)
-    {
-      gp_Pnt tempPnt = (another->Point(i));
-      gp_XY tempPnt2d(tempPnt.X(), tempPnt.Y());
-      dataPoints->SetValue(i, tempPnt2d);
-    }
+  {
+    gp_Pnt tempPnt = (another->Point(i));
+    gp_XY  tempPnt2d(tempPnt.X(), tempPnt.Y());
+    dataPoints->SetValue(i, tempPnt2d);
+  }
   ent->Init(datatype, zDisplacement, dataPoints);
-  ent->SetFormNumber (another->FormNumber());
+  ent->SetFormNumber(another->FormNumber());
 }
 
-Standard_Boolean  IGESDimen_ToolSection::OwnCorrect
-  (const Handle(IGESDimen_Section)& ent) const
+Standard_Boolean IGESDimen_ToolSection::OwnCorrect(const Handle(IGESDimen_Section)& ent) const
 {
   Standard_Boolean res = (ent->RankLineFont() != 1);
-  if (res) {
+  if (res)
+  {
     Handle(IGESData_LineFontEntity) nulfont;
-    ent->InitLineFont(nulfont,1);
+    ent->InitLineFont(nulfont, 1);
   }
-  if (ent->Datatype() == 1) return res;
-//  Forcer DataType = 1 -> reconstruire
+  if (ent->Datatype() == 1)
+    return res;
+  //  Forcer DataType = 1 -> reconstruire
   Standard_Integer nb = ent->NbPoints();
-  if (nb == 0) return Standard_False;  // rien pu faire (est-ce possible ?)
-  Handle(TColgp_HArray1OfXY) pts = new TColgp_HArray1OfXY(1,nb);
-  for (Standard_Integer i = 1; i <= nb; i ++)
-    pts->SetValue(i,gp_XY (ent->Point(i).X(),ent->Point(i).Y()) );
-  ent->Init (1,ent->ZDisplacement(),pts);
+  if (nb == 0)
+    return Standard_False; // rien pu faire (est-ce possible ?)
+  Handle(TColgp_HArray1OfXY) pts = new TColgp_HArray1OfXY(1, nb);
+  for (Standard_Integer i = 1; i <= nb; i++)
+    pts->SetValue(i, gp_XY(ent->Point(i).X(), ent->Point(i).Y()));
+  ent->Init(1, ent->ZDisplacement(), pts);
   return Standard_True;
 }
 
-IGESData_DirChecker  IGESDimen_ToolSection::DirChecker
-  (const Handle(IGESDimen_Section)& /* ent */) const 
-{ 
-  IGESData_DirChecker DC (106, 31, 38);
+IGESData_DirChecker IGESDimen_ToolSection::DirChecker(
+  const Handle(IGESDimen_Section)& /* ent */) const
+{
+  IGESData_DirChecker DC(106, 31, 38);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefValue);
   DC.LineWeight(IGESData_DefValue);
@@ -143,28 +145,34 @@ IGESData_DirChecker  IGESDimen_ToolSection::DirChecker
   return DC;
 }
 
-void  IGESDimen_ToolSection::OwnCheck
-  (const Handle(IGESDimen_Section)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const 
+void IGESDimen_ToolSection::OwnCheck(const Handle(IGESDimen_Section)& ent,
+                                     const Interface_ShareTool&,
+                                     Handle(Interface_Check)& ach) const
 {
   if (ent->RankLineFont() != 1)
     ach->AddFail("Line Font Pattern != 1");
   if (ent->Datatype() != 1)
     ach->AddFail("Interpretation Flag != 1");
-  if (ent->NbPoints()%2 != 0)
+  if (ent->NbPoints() % 2 != 0)
     ach->AddFail("Number of data points is not even");
 }
 
-void  IGESDimen_ToolSection::OwnDump
-  (const Handle(IGESDimen_Section)& ent, const IGESData_IGESDumper& /* dumper */,
-   Standard_OStream& S, const Standard_Integer level) const 
-{ 
+void IGESDimen_ToolSection::OwnDump(const Handle(IGESDimen_Section)& ent,
+                                    const IGESData_IGESDumper& /* dumper */,
+                                    Standard_OStream&      S,
+                                    const Standard_Integer level) const
+{
   S << "IGESDimen_Section\n"
-    << "Data Type   : "           << ent->Datatype() << "  "
-    << "Number of Data Points : " << ent->NbPoints()  << "  "
+    << "Data Type   : " << ent->Datatype() << "  "
+    << "Number of Data Points : " << ent->NbPoints() << "  "
     << "Common Z displacement : " << ent->ZDisplacement() << "\n"
-    << "Data Points : "; 
-  IGESData_DumpListXYLZ(S,level,1, ent->NbPoints(),ent->Point,
-			ent->Location(), ent->ZDisplacement());
+    << "Data Points : ";
+  IGESData_DumpListXYLZ(S,
+                        level,
+                        1,
+                        ent->NbPoints(),
+                        ent->Point,
+                        ent->Location(),
+                        ent->ZDisplacement());
   S << std::endl;
 }

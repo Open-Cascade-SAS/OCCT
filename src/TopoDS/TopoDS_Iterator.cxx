@@ -19,10 +19,10 @@
 #include <TopoDS_Iterator.hxx>
 
 //=======================================================================
-//function : Initialize
-//purpose  : 
+// function : Initialize
+// purpose  :
 //=======================================================================
-void TopoDS_Iterator::Initialize(const TopoDS_Shape& S,
+void TopoDS_Iterator::Initialize(const TopoDS_Shape&    S,
                                  const Standard_Boolean cumOri,
                                  const Standard_Boolean cumLoc)
 {
@@ -40,25 +40,27 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S,
   else
     myShapes.Initialize(S.TShape()->myShapes);
 
-  if (More()) {
+  if (More())
+  {
     myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation,myShape.Orientation()));
+    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
     if (!myLocation.IsIdentity())
       myShape.Move(myLocation, Standard_False);
   }
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 void TopoDS_Iterator::Next()
 {
   myShapes.Next();
-  if (More()) {
+  if (More())
+  {
     myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation,myShape.Orientation()));
+    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
     if (!myLocation.IsIdentity())
       myShape.Move(myLocation, Standard_False);
   }

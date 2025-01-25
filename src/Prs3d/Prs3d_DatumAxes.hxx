@@ -17,18 +17,14 @@
 //! Enumeration defining axes used in datum aspect, see Prs3d_Datum.
 enum Prs3d_DatumAxes
 {
-  Prs3d_DatumAxes_XAxis   = 0x01,                  //!< X axis of the datum
-  Prs3d_DatumAxes_YAxis   = 0x02,                  //!< Y axis of the datum
-  Prs3d_DatumAxes_ZAxis   = 0x04,                  //!< Z axis of the datum
-  Prs3d_DatumAxes_XYAxes  = Prs3d_DatumAxes_XAxis
-                          | Prs3d_DatumAxes_YAxis, //!< XOY 2D axes
-  Prs3d_DatumAxes_YZAxes  = Prs3d_DatumAxes_YAxis
-                          | Prs3d_DatumAxes_ZAxis, //!< YOZ 2D axes
-  Prs3d_DatumAxes_XZAxes  = Prs3d_DatumAxes_XAxis
-                          | Prs3d_DatumAxes_ZAxis, //!< XOZ 2D axes
-  Prs3d_DatumAxes_XYZAxes = Prs3d_DatumAxes_XAxis
-                          | Prs3d_DatumAxes_YAxis
-                          | Prs3d_DatumAxes_ZAxis, //!< XYZ 3D axes
+  Prs3d_DatumAxes_XAxis  = 0x01,                                          //!< X axis of the datum
+  Prs3d_DatumAxes_YAxis  = 0x02,                                          //!< Y axis of the datum
+  Prs3d_DatumAxes_ZAxis  = 0x04,                                          //!< Z axis of the datum
+  Prs3d_DatumAxes_XYAxes = Prs3d_DatumAxes_XAxis | Prs3d_DatumAxes_YAxis, //!< XOY 2D axes
+  Prs3d_DatumAxes_YZAxes = Prs3d_DatumAxes_YAxis | Prs3d_DatumAxes_ZAxis, //!< YOZ 2D axes
+  Prs3d_DatumAxes_XZAxes = Prs3d_DatumAxes_XAxis | Prs3d_DatumAxes_ZAxis, //!< XOZ 2D axes
+  Prs3d_DatumAxes_XYZAxes =
+    Prs3d_DatumAxes_XAxis | Prs3d_DatumAxes_YAxis | Prs3d_DatumAxes_ZAxis, //!< XYZ 3D axes
 
   // old aliases
   Prs3d_DA_XAxis   = Prs3d_DatumAxes_XAxis,

@@ -19,31 +19,30 @@
 #include <StepData_FileProtocol.hxx>
 #include <StepData_Protocol.hxx>
 
-StaticHandle(StepData_Protocol,proto);
-//svv #2: StaticHandle(StepData_DefaultGeneral,stmod);
+StaticHandle(StepData_Protocol, proto);
+// svv #2: StaticHandle(StepData_DefaultGeneral,stmod);
 
-StaticHandleA(StepData_Protocol,theheader);
+StaticHandleA(StepData_Protocol, theheader);
 
+void StepData::Init() {}
 
-    void StepData::Init ()
+Handle(StepData_Protocol) StepData::Protocol()
 {
-}
-
-    Handle(StepData_Protocol) StepData::Protocol ()
-{
-  InitHandleVoid(StepData_Protocol,proto);// svv #2
-//  UseHandle(StepData_Protocol,proto);
+  InitHandleVoid(StepData_Protocol, proto); // svv #2
+                                            //  UseHandle(StepData_Protocol,proto);
   return proto;
 }
 
-
-    void  StepData::AddHeaderProtocol (const Handle(StepData_Protocol)& header)
+void StepData::AddHeaderProtocol(const Handle(StepData_Protocol)& header)
 {
-  InitHandle(StepData_Protocol,theheader);
-  if (theheader.IsNull()) theheader = header;
-  else {
-    DeclareAndCast(StepData_FileProtocol,headmult,theheader);
-    if (headmult.IsNull()) {
+  InitHandle(StepData_Protocol, theheader);
+  if (theheader.IsNull())
+    theheader = header;
+  else
+  {
+    DeclareAndCast(StepData_FileProtocol, headmult, theheader);
+    if (headmult.IsNull())
+    {
       headmult = new StepData_FileProtocol;
       headmult->Add(theheader);
     }
@@ -52,8 +51,8 @@ StaticHandleA(StepData_Protocol,theheader);
   }
 }
 
-    Handle(StepData_Protocol) StepData::HeaderProtocol ()
+Handle(StepData_Protocol) StepData::HeaderProtocol()
 {
-  UseHandle(StepData_Protocol,theheader);
+  UseHandle(StepData_Protocol, theheader);
   return theheader;
 }

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -27,36 +26,25 @@
 // ***************************
 #define Dimension_gen 3
 
-#define Array1OfPoints  TColgp_Array1OfPnt
-#define Point           gp_Pnt
-#define Vector          gp_Vec
+#define Array1OfPoints TColgp_Array1OfPnt
+#define Point gp_Pnt
+#define Vector gp_Vec
 
-#define PointToCoords(carr,pnt,op) \
-(carr)[0] = (pnt).X() op,  \
-        (carr)[1] = (pnt).Y() op,  \
-        (carr)[2] = (pnt).Z() op
+#define PointToCoords(carr, pnt, op)                                                               \
+  (carr)[0] = (pnt).X() op, (carr)[1] = (pnt).Y() op, (carr)[2] = (pnt).Z() op
 
-#define CoordsToPoint(pnt,carr,op) \
-        (pnt).SetX ((carr)[0] op), \
-        (pnt).SetY ((carr)[1] op), \
-        (pnt).SetZ ((carr)[2] op)
+#define CoordsToPoint(pnt, carr, op)                                                               \
+  (pnt).SetX((carr)[0] op), (pnt).SetY((carr)[1] op), (pnt).SetZ((carr)[2] op)
 
-#define NullifyPoint(pnt) \
-        (pnt).SetCoord (0.,0.,0.)
+#define NullifyPoint(pnt) (pnt).SetCoord(0., 0., 0.)
 
-#define NullifyCoords(carr) \
-        (carr)[0] = (carr)[1] = (carr)[2] = 0.
+#define NullifyCoords(carr) (carr)[0] = (carr)[1] = (carr)[2] = 0.
 
-#define ModifyCoords(carr,op) \
-        (carr)[0] op,          \
-        (carr)[1] op,          \
-        (carr)[2] op
+#define ModifyCoords(carr, op) (carr)[0] op, (carr)[1] op, (carr)[2] op
 
-#define CopyCoords(carr,carr2) \
-        (carr)[0] = (carr2)[0], \
-        (carr)[1] = (carr2)[1], \
-        (carr)[2] = (carr2)[2]
+#define CopyCoords(carr, carr2)                                                                    \
+  (carr)[0] = (carr2)[0], (carr)[1] = (carr2)[1], (carr)[2] = (carr2)[2]
 
 #define BSplCLib_DataContainer BSplCLib_DataContainer_3d
-  
+
 #include "../BSplCLib/BSplCLib_CurveComputation.gxx"

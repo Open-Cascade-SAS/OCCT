@@ -21,41 +21,23 @@
 
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 
-
 class StepShape_ShapeDefinitionRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_ShapeDefinitionRepresentation, StepRepr_PropertyDefinitionRepresentation)
+DEFINE_STANDARD_HANDLE(StepShape_ShapeDefinitionRepresentation,
+                       StepRepr_PropertyDefinitionRepresentation)
 
 //! Representation of STEP entity ShapeDefinitionRepresentation
 class StepShape_ShapeDefinitionRepresentation : public StepRepr_PropertyDefinitionRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_ShapeDefinitionRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDefinitionRepresentation,StepRepr_PropertyDefinitionRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDefinitionRepresentation,
+                          StepRepr_PropertyDefinitionRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ShapeDefinitionRepresentation_HeaderFile

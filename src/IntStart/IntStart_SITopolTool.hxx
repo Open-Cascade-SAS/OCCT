@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 class gp_Pnt2d;
 
-
 class IntStart_SITopolTool;
 DEFINE_STANDARD_HANDLE(IntStart_SITopolTool, Standard_Transient)
 
@@ -36,31 +35,12 @@ class IntStart_SITopolTool : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P, const Standard_Real Tol) = 0;
 
-  
-  Standard_EXPORT virtual TopAbs_State Classify (const gp_Pnt2d& P, const Standard_Real Tol) = 0;
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntStart_SITopolTool_HeaderFile

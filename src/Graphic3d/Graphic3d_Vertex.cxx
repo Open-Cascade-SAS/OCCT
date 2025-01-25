@@ -22,17 +22,16 @@
 
 Standard_ShortReal Graphic3d_Vertex::Distance(const Graphic3d_Vertex& AOther) const
 {
-  return std::sqrt( (X() - AOther.X()) * (X() - AOther.X())
-		     + (Y() - AOther.Y()) * (Y() - AOther.Y())
-		     + (Z() - AOther.Z()) * (Z() - AOther.Z()) );
+  return std::sqrt((X() - AOther.X()) * (X() - AOther.X()) + (Y() - AOther.Y()) * (Y() - AOther.Y())
+                   + (Z() - AOther.Z()) * (Z() - AOther.Z()));
 }
 
 // =======================================================================
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Graphic3d_Vertex::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_Vertex::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  gp_XYZ aCoord (xyz[0], xyz[1], xyz[2]);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aCoord)
+  gp_XYZ aCoord(xyz[0], xyz[1], xyz[2]);
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aCoord)
 }

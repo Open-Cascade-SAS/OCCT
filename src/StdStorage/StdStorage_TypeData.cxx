@@ -20,9 +20,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StdStorage_TypeData, Standard_Transient)
 
-StdStorage_TypeData::StdStorage_TypeData() 
-: myTypeId(0),
-  myErrorStatus(Storage_VSOk)
+StdStorage_TypeData::StdStorage_TypeData()
+    : myTypeId(0),
+      myErrorStatus(Storage_VSOk)
 {
   StdDrivers::BindTypes(myMapOfPInst);
 }
@@ -30,10 +30,9 @@ StdStorage_TypeData::StdStorage_TypeData()
 Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSRead
-   && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -55,16 +54,16 @@ Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& the
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver->ReadTypeInformations (aTypeNum, aTypeName);
+      theDriver->ReadTypeInformations(aTypeNum, aTypeName);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
-      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadTypeInformations";
       return Standard_False;
     }
 
-    myPt.Add (aTypeName, aTypeNum);
+    myPt.Add(aTypeName, aTypeNum);
   }
 
   myErrorStatus = theDriver->EndReadTypeSection();
@@ -80,10 +79,9 @@ Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& the
 Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSWrite
-    && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSWrite && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -107,7 +105,7 @@ Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& th
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
-      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "WriteTypeInformations";
       return Standard_False;
     }
@@ -138,14 +136,16 @@ Handle(TColStd_HSequenceOfAsciiString) StdStorage_TypeData::Types() const
   Handle(TColStd_HSequenceOfAsciiString) r = new TColStd_HSequenceOfAsciiString;
   Standard_Integer                       i;
 
-  for (i = 1; i <= myPt.Extent(); i++) {
+  for (i = 1; i <= myPt.Extent(); i++)
+  {
     r->Append(myPt.FindKey(i));
   }
 
   return r;
 }
 
-void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName, const Standard_Integer aTypeNum)
+void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName,
+                                  const Standard_Integer         aTypeNum)
 {
   myPt.Add(aTypeName, aTypeNum);
   myTypeId = Max(aTypeNum, myTypeId);
@@ -157,7 +157,8 @@ Standard_Integer StdStorage_TypeData::AddType(const Handle(StdObjMgt_Persistent)
   if (IsType(aTypeName))
     return Type(aTypeName);
 
-  if (!myMapOfPInst.IsBound(aTypeName)) {
+  if (!myMapOfPInst.IsBound(aTypeName))
+  {
     Standard_SStream aSS;
     aSS << "StdStorage_TypeData::Type " << aTypeName << " isn't registered";
     throw Standard_NoSuchObject(aSS.str().c_str());
@@ -175,7 +176,8 @@ TCollection_AsciiString StdStorage_TypeData::Type(const Standard_Integer aTypeNu
 
   if (aTypeNum <= myPt.Extent() && aTypeNum > 0)
     r = myPt.FindKey(aTypeNum);
-  else {
+  else
+  {
     Standard_SStream aSS;
     aSS << "StdStorage_TypeData::Type " << aTypeNum << " not in range";
     throw Standard_NoSuchObject(aSS.str().c_str());
@@ -190,7 +192,8 @@ Standard_Integer StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeN
 
   if (myPt.Contains(aTypeName))
     r = myPt.FindFromKey(aTypeName);
-  else {
+  else
+  {
     Standard_SStream aSS;
     aSS << "StdStorage_TypeData::Type " << aTypeName << " not found";
     throw Standard_NoSuchObject(aSS.str().c_str());
@@ -199,10 +202,10 @@ Standard_Integer StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeN
   return r;
 }
 
-StdObjMgt_Persistent::Instantiator 
-StdStorage_TypeData::Instantiator(const Standard_Integer aTypeNum) const
+StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(
+  const Standard_Integer aTypeNum) const
 {
-  TCollection_AsciiString aTypeName = Type(aTypeNum);
+  TCollection_AsciiString            aTypeName      = Type(aTypeNum);
   StdObjMgt_Persistent::Instantiator anInstantiator = 0;
   if (!myMapOfPInst.Find(aTypeName, anInstantiator))
     return 0;

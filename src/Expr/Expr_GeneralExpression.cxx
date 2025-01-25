@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_NotEvaluable.hxx>
@@ -22,32 +21,36 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralExpression,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralExpression, Standard_Transient)
 
 Standard_Boolean Expr_GeneralExpression::IsShareable() const
- {
-   return Standard_False;
- }
+{
+  return Standard_False;
+}
 
- Handle(Expr_GeneralExpression) Expr_GeneralExpression::NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const
- {
-   if (N <= 0) {
-     throw Standard_OutOfRange();
-   }
-   Handle(Expr_GeneralExpression) first = Derivative(X);
-   if (N > 1) {
-     return first->NDerivative(X,N-1);
-   }
-   return first;
- }
+Handle(Expr_GeneralExpression) Expr_GeneralExpression::NDerivative(
+  const Handle(Expr_NamedUnknown)& X,
+  const Standard_Integer           N) const
+{
+  if (N <= 0)
+  {
+    throw Standard_OutOfRange();
+  }
+  Handle(Expr_GeneralExpression) first = Derivative(X);
+  if (N > 1)
+  {
+    return first->NDerivative(X, N - 1);
+  }
+  return first;
+}
 
-
- Standard_Real Expr_GeneralExpression::EvaluateNumeric() const
- {
-   if (ContainsUnknowns()) {
-     throw Expr_NotEvaluable();
-   }
-   Expr_Array1OfNamedUnknown tabvr(1,1);
-   TColStd_Array1OfReal tabvl(1,1);
-   return Evaluate(tabvr,tabvl);
- }
+Standard_Real Expr_GeneralExpression::EvaluateNumeric() const
+{
+  if (ContainsUnknowns())
+  {
+    throw Expr_NotEvaluable();
+  }
+  Expr_Array1OfNamedUnknown tabvr(1, 1);
+  TColStd_Array1OfReal      tabvl(1, 1);
+  return Evaluate(tabvr, tabvl);
+}

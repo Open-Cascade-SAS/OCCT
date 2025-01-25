@@ -24,46 +24,23 @@
 class TopoDS_Shell;
 class TopoDS_Solid;
 
-
-
 //! This class builds solids from a set of shells SSh and a solid F.
-class TopOpeBRepBuild_ShellToSolid 
+class TopOpeBRepBuild_ShellToSolid
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepBuild_ShellToSolid();
-  
+
   Standard_EXPORT void Init();
-  
-  Standard_EXPORT void AddShell (const TopoDS_Shell& Sh);
-  
-  Standard_EXPORT void MakeSolids (const TopoDS_Solid& So, TopTools_ListOfShape& LSo);
 
+  Standard_EXPORT void AddShell(const TopoDS_Shell& Sh);
 
-
+  Standard_EXPORT void MakeSolids(const TopoDS_Solid& So, TopTools_ListOfShape& LSo);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_ListOfShape myLSh;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_ShellToSolid_HeaderFile

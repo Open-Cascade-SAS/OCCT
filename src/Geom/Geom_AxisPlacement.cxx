@@ -14,34 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_AxisPlacement.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_AxisPlacement,Geom_Geometry)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_AxisPlacement, Geom_Geometry)
 
 typedef gp_Ax1 Ax1;
 typedef gp_Dir Dir;
 typedef gp_Pnt Pnt;
 typedef gp_Vec Vec;
 
-
-
-const gp_Ax1& Geom_AxisPlacement::Axis () const { return axis; }
-
-Dir Geom_AxisPlacement::Direction () const { return axis.Direction(); }
-
-Pnt Geom_AxisPlacement::Location () const  { return axis.Location(); }
-
-void Geom_AxisPlacement::SetAxis (const Ax1& A1) { axis = A1; }
-
-void Geom_AxisPlacement::SetLocation (const Pnt& P) {axis.SetLocation (P);}
-
-Standard_Real Geom_AxisPlacement::Angle (const Handle(Geom_AxisPlacement)& Other) const {
- return axis.Angle (Other->Axis());
+const gp_Ax1& Geom_AxisPlacement::Axis() const
+{
+  return axis;
 }
 
+Dir Geom_AxisPlacement::Direction() const
+{
+  return axis.Direction();
+}
 
+Pnt Geom_AxisPlacement::Location() const
+{
+  return axis.Location();
+}
+
+void Geom_AxisPlacement::SetAxis(const Ax1& A1)
+{
+  axis = A1;
+}
+
+void Geom_AxisPlacement::SetLocation(const Pnt& P)
+{
+  axis.SetLocation(P);
+}
+
+Standard_Real Geom_AxisPlacement::Angle(const Handle(Geom_AxisPlacement)& Other) const
+{
+  return axis.Angle(Other->Axis());
+}

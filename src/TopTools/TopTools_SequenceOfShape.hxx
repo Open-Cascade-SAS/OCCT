@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<TopoDS_Shape> TopTools_SequenceOfShape;
 
-
 #endif

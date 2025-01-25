@@ -24,68 +24,52 @@
 class StepGeom_Axis2Placement3d;
 class TCollection_HAsciiString;
 
-
 class StepShape_RightAngularWedge;
 DEFINE_STANDARD_HANDLE(StepShape_RightAngularWedge, StepGeom_GeometricRepresentationItem)
-
 
 class StepShape_RightAngularWedge : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a RightAngularWedge
   Standard_EXPORT StepShape_RightAngularWedge();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aX, const Standard_Real aY, const Standard_Real aZ, const Standard_Real aLtx);
-  
-  Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis2Placement3d)& aPosition);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
+                            const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                            const Standard_Real                      aX,
+                            const Standard_Real                      aY,
+                            const Standard_Real                      aZ,
+                            const Standard_Real                      aLtx);
+
+  Standard_EXPORT void SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition);
+
   Standard_EXPORT Handle(StepGeom_Axis2Placement3d) Position() const;
-  
-  Standard_EXPORT void SetX (const Standard_Real aX);
-  
+
+  Standard_EXPORT void SetX(const Standard_Real aX);
+
   Standard_EXPORT Standard_Real X() const;
-  
-  Standard_EXPORT void SetY (const Standard_Real aY);
-  
+
+  Standard_EXPORT void SetY(const Standard_Real aY);
+
   Standard_EXPORT Standard_Real Y() const;
-  
-  Standard_EXPORT void SetZ (const Standard_Real aZ);
-  
+
+  Standard_EXPORT void SetZ(const Standard_Real aZ);
+
   Standard_EXPORT Standard_Real Z() const;
-  
-  Standard_EXPORT void SetLtx (const Standard_Real aLtx);
-  
+
+  Standard_EXPORT void SetLtx(const Standard_Real aLtx);
+
   Standard_EXPORT Standard_Real Ltx() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_RightAngularWedge,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_RightAngularWedge, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Axis2Placement3d) position;
-  Standard_Real x;
-  Standard_Real y;
-  Standard_Real z;
-  Standard_Real ltx;
-
-
+  Standard_Real                     x;
+  Standard_Real                     y;
+  Standard_Real                     z;
+  Standard_Real                     ltx;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_RightAngularWedge_HeaderFile

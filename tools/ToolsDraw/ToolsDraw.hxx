@@ -11,8 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
-
+// commercial license or contractual agreement.
 
 #ifndef ToolsDraw_H
 #define ToolsDraw_H
@@ -27,16 +26,15 @@ class TInspector_Communicator;
 class ToolsDraw
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Loads all Draw commands of  tools. Used for plugin.
   //! \param theDI Draw interpreter
-  Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 
   //! Adds all tools command in the Draw_Interpretor
   //! \param theCommands
-  Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void Commands(Draw_Interpretor& theCommands);
 
   //! Returns default communicator used in DRAW commands
   Standard_EXPORT static TInspector_Communicator* Communicator();
@@ -44,4 +42,4 @@ public:
 private:
 };
 
-#endif //ToolsDraw_H
+#endif // ToolsDraw_H

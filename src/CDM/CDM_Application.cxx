@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
@@ -25,42 +24,41 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(CDM_Application, Standard_Transient)
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
 CDM_Application::CDM_Application()
 {
   myMessenger = new Message_Messenger;
 }
+
 //=======================================================================
-//function : SetDocumentVersion
-//purpose  : 
+// function : SetDocumentVersion
+// purpose  :
 //=======================================================================
-void CDM_Application::SetDocumentVersion
-                        (const Handle(CDM_Document)& aDocument,
-                         const Handle(CDM_MetaData)& aMetaData) const
+void CDM_Application::SetDocumentVersion(const Handle(CDM_Document)& aDocument,
+                                         const Handle(CDM_MetaData)& aMetaData) const
 {
   aDocument->SetModifications(aMetaData->DocumentVersion(this));
 }
 
 //=======================================================================
-//function : SetReferenceCounter
-//purpose  : 
+// function : SetReferenceCounter
+// purpose  :
 //=======================================================================
 
-void CDM_Application::SetReferenceCounter
-                        (const Handle(CDM_Document)& aDocument,
-                         const Standard_Integer aReferenceCounter)
+void CDM_Application::SetReferenceCounter(const Handle(CDM_Document)& aDocument,
+                                          const Standard_Integer      aReferenceCounter)
 {
   aDocument->SetReferenceCounter(aReferenceCounter);
 }
 
 //=======================================================================
-//function : MessageDriver
-//purpose  : 
+// function : MessageDriver
+// purpose  :
 //=======================================================================
 
 Handle(Message_Messenger) CDM_Application::MessageDriver()
@@ -69,8 +67,8 @@ Handle(Message_Messenger) CDM_Application::MessageDriver()
 }
 
 //=======================================================================
-//function : Write
-//purpose  : 
+// function : Write
+// purpose  :
 //=======================================================================
 
 void CDM_Application::Write(const Standard_ExtString aString)
@@ -79,11 +77,11 @@ void CDM_Application::Write(const Standard_ExtString aString)
 }
 
 //=======================================================================
-//function : BeginOfUpdate
-//purpose  : 
+// function : BeginOfUpdate
+// purpose  :
 //=======================================================================
 
-void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& /*aDocument*/)
+void CDM_Application::BeginOfUpdate(const Handle(CDM_Document)& /*aDocument*/)
 {
   TCollection_ExtendedString updating("Updating: ");
   updating += "Document";
@@ -91,28 +89,27 @@ void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& /*aDocument*/)
 }
 
 //=======================================================================
-//function : EndOfUpdate
-//purpose  : 
+// function : EndOfUpdate
+// purpose  :
 //=======================================================================
 
-void CDM_Application::EndOfUpdate
-                        (const Handle(CDM_Document)&       /*aDocument*/,
-                         const Standard_Boolean            theStatus,
-                         const TCollection_ExtendedString& /*ErrorString*/)
+void CDM_Application::EndOfUpdate(const Handle(CDM_Document)& /*aDocument*/,
+                                  const Standard_Boolean theStatus,
+                                  const TCollection_ExtendedString& /*ErrorString*/)
 {
   TCollection_ExtendedString message;
   if (theStatus)
-    message="Updated: ";
+    message = "Updated: ";
   else
-    message="Error during updating: ";
-      
-  message+="Document";
+    message = "Error during updating: ";
+
+  message += "Document";
   Write(message.ToExtString());
 }
 
 //=======================================================================
-//function : Name
-//purpose  : returns the application name
+// function : Name
+// purpose  : returns the application name
 //=======================================================================
 
 TCollection_ExtendedString CDM_Application::Name() const
@@ -122,8 +119,8 @@ TCollection_ExtendedString CDM_Application::Name() const
 }
 
 //=======================================================================
-//function : Version
-//purpose  : returns the application version
+// function : Version
+// purpose  : returns the application version
 //=======================================================================
 
 TCollection_AsciiString CDM_Application::Version() const
@@ -133,8 +130,8 @@ TCollection_AsciiString CDM_Application::Version() const
 }
 
 //=======================================================================
-//function : MetaDataLookUpTable
-//purpose  : returns the MetaData LookUpTable
+// function : MetaDataLookUpTable
+// purpose  : returns the MetaData LookUpTable
 //=======================================================================
 CDM_MetaDataLookUpTable& CDM_Application::MetaDataLookUpTable()
 {
@@ -142,10 +139,10 @@ CDM_MetaDataLookUpTable& CDM_Application::MetaDataLookUpTable()
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void CDM_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+void CDM_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

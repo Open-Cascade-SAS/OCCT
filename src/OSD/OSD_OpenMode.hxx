@@ -18,9 +18,9 @@
 //! Specifies the file open mode.
 enum OSD_OpenMode
 {
-OSD_ReadOnly,
-OSD_WriteOnly,
-OSD_ReadWrite
+  OSD_ReadOnly,
+  OSD_WriteOnly,
+  OSD_ReadWrite
 };
 
 #endif // _OSD_OpenMode_HeaderFile

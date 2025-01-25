@@ -39,14 +39,13 @@ enum Graphic3d_ClipState
 //! The plane equation is specified in "world" coordinate system.
 class Graphic3d_ClipPlane : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ClipPlane,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ClipPlane, Standard_Transient)
 public:
-
-  //! Type defining XYZW (ABCD) plane equation - left for compatibility with old code using Graphic3d_ClipPlane::Equation type.
+  //! Type defining XYZW (ABCD) plane equation - left for compatibility with old code using
+  //! Graphic3d_ClipPlane::Equation type.
   typedef Graphic3d_Vec4d Equation;
 
 public:
-
   //! Default constructor.
   //! Initializes clip plane container with the following properties:
   //! - Equation (0.0, 0.0, 1.0, 0)
@@ -65,22 +64,22 @@ public:
   //! Construct clip plane for the passed equation.
   //! By default the plane is on, capping is turned off.
   //! @param[in] theEquation  the plane equation.
-  Standard_EXPORT Graphic3d_ClipPlane (const Graphic3d_Vec4d& theEquation);
+  Standard_EXPORT Graphic3d_ClipPlane(const Graphic3d_Vec4d& theEquation);
 
   //! Construct clip plane from the passed geometrical definition.
   //! By default the plane is on, capping is turned off.
   //! @param[in] thePlane  the plane.
-  Standard_EXPORT Graphic3d_ClipPlane (const gp_Pln& thePlane);
+  Standard_EXPORT Graphic3d_ClipPlane(const gp_Pln& thePlane);
 
   //! Set plane equation by its geometrical definition.
   //! The equation is specified in "world" coordinate system.
   //! @param[in] thePlane  the plane.
-  Standard_EXPORT void SetEquation (const gp_Pln& thePlane);
+  Standard_EXPORT void SetEquation(const gp_Pln& thePlane);
 
   //! Set 4-component equation vector for clipping plane.
   //! The equation is specified in "world" coordinate system.
   //! @param[in] theEquation  the XYZW (or "ABCD") equation vector.
-  Standard_EXPORT void SetEquation (const Graphic3d_Vec4d& theEquation);
+  Standard_EXPORT void SetEquation(const Graphic3d_Vec4d& theEquation);
 
   //! Get 4-component equation vector for clipping plane.
   //! @return clipping plane equation vector.
@@ -92,10 +91,7 @@ public:
 
   //! Check that the clipping plane is turned on.
   //! @return boolean flag indicating whether the plane is in on or off state.
-  Standard_Boolean IsOn() const
-  {
-    return myIsOn;
-  }
+  Standard_Boolean IsOn() const { return myIsOn; }
 
   //! Change state of the clipping plane.
   //! @param[in] theIsOn  the flag specifying whether the graphic driver
@@ -111,10 +107,7 @@ public:
 
   //! Check state of capping surface rendering.
   //! @return true (turned on) or false depending on the state.
-  Standard_Boolean IsCapping() const
-  {
-    return myIsCapping;
-  }
+  Standard_Boolean IsCapping() const { return myIsCapping; }
 
   //! Get geometrical definition.
   //! @return geometrical definition of clipping plane
@@ -127,11 +120,11 @@ public:
   Standard_EXPORT virtual Handle(Graphic3d_ClipPlane) Clone() const;
 
 public:
-
   //! Return TRUE if this item defines a conjunction (logical AND) between a set of Planes.
   //! Graphic3d_ClipPlane item defines either a Clipping halfspace (single Clipping Plane)
-  //! or a Clipping volume defined by a logical AND (conjunction) operation between a set of Planes defined as a Chain
-  //! (so that the volume cuts a space only in case if check fails for ALL Planes in the Chain).
+  //! or a Clipping volume defined by a logical AND (conjunction) operation between a set of Planes
+  //! defined as a Chain (so that the volume cuts a space only in case if check fails for ALL Planes
+  //! in the Chain).
   //!
   //! Note that Graphic3d_ClipPlane item cannot:
   //! - Define a Chain with logical OR (disjunction) operation;
@@ -140,7 +133,8 @@ public:
   //! - Disable Chain items; only entire Chain can be disabled (by disabled a head of Chain).
   //!
   //! The head of a Chain defines all visual properties of the Chain,
-  //! so that Graphic3d_ClipPlane of next items in a Chain merely defines only geometrical definition of the plane.
+  //! so that Graphic3d_ClipPlane of next items in a Chain merely defines only geometrical
+  //! definition of the plane.
   Standard_Boolean IsChain() const { return !myNextInChain.IsNull(); }
 
   //! Return the previous plane in a Chain of Planes defining logical AND operation,
@@ -161,42 +155,52 @@ public:
   //! Set the next plane in a Chain of Planes.
   //! This operation also updates relationship between chains (Previous/Next items),
   //! so that the previously set Next plane is cut off.
-  Standard_EXPORT void SetChainNextPlane (const Handle(Graphic3d_ClipPlane)& thePlane);
+  Standard_EXPORT void SetChainNextPlane(const Handle(Graphic3d_ClipPlane)& thePlane);
 
 public: // @name user-defined graphical attributes
-
   //! Return color for rendering capping surface.
-  Quantity_Color CappingColor() const { return myAspect->FrontMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT ? myAspect->FrontMaterial().Color() : myAspect->InteriorColor(); }
+  Quantity_Color CappingColor() const
+  {
+    return myAspect->FrontMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT
+             ? myAspect->FrontMaterial().Color()
+             : myAspect->InteriorColor();
+  }
 
   //! Set color for rendering capping surface.
-  Standard_EXPORT void SetCappingColor (const Quantity_Color& theColor);
+  Standard_EXPORT void SetCappingColor(const Quantity_Color& theColor);
 
   //! Set material for rendering capping surface.
   //! @param[in] theMat  the material.
-  Standard_EXPORT void SetCappingMaterial (const Graphic3d_MaterialAspect& theMat);
+  Standard_EXPORT void SetCappingMaterial(const Graphic3d_MaterialAspect& theMat);
 
   //! @return capping material.
   const Graphic3d_MaterialAspect& CappingMaterial() const { return myAspect->FrontMaterial(); }
 
   //! Set texture to be applied on capping surface.
   //! @param[in] theTexture  the texture.
-  Standard_EXPORT void SetCappingTexture (const Handle(Graphic3d_TextureMap)& theTexture);
+  Standard_EXPORT void SetCappingTexture(const Handle(Graphic3d_TextureMap)& theTexture);
 
   //! @return capping texture map.
-  Handle(Graphic3d_TextureMap) CappingTexture() const { return !myAspect->TextureSet().IsNull() && !myAspect->TextureSet()->IsEmpty()
-                                                              ? myAspect->TextureSet()->First()
-                                                              : Handle(Graphic3d_TextureMap)(); }
+  Handle(Graphic3d_TextureMap) CappingTexture() const
+  {
+    return !myAspect->TextureSet().IsNull() && !myAspect->TextureSet()->IsEmpty()
+             ? myAspect->TextureSet()->First()
+             : Handle(Graphic3d_TextureMap)();
+  }
 
   //! Set hatch style (stipple) and turn hatching on.
   //! @param[in] theStyle  the hatch style.
-  Standard_EXPORT void SetCappingHatch (const Aspect_HatchStyle theStyle);
+  Standard_EXPORT void SetCappingHatch(const Aspect_HatchStyle theStyle);
 
   //! @return hatching style.
-  Aspect_HatchStyle CappingHatch() const { return (Aspect_HatchStyle)myAspect->HatchStyle()->HatchType(); }
+  Aspect_HatchStyle CappingHatch() const
+  {
+    return (Aspect_HatchStyle)myAspect->HatchStyle()->HatchType();
+  }
 
   //! Set custom hatch style (stipple) and turn hatching on.
   //! @param[in] theStyle  the hatch pattern.
-  Standard_EXPORT void SetCappingCustomHatch (const Handle(Graphic3d_HatchStyle)& theStyle);
+  Standard_EXPORT void SetCappingCustomHatch(const Handle(Graphic3d_HatchStyle)& theStyle);
 
   //! @return hatching style.
   const Handle(Graphic3d_HatchStyle)& CappingCustomHatch() const { return myAspect->HatchStyle(); }
@@ -217,53 +221,61 @@ public: // @name user-defined graphical attributes
   //! The resources are stored in graphical driver for each of individual groups
   //! of shared context under the clip plane identifier.
   //! @return clip plane resource identifier string.
-  const TCollection_AsciiString& GetId() const
-  {
-    return myId;
-  }
+  const TCollection_AsciiString& GetId() const { return myId; }
 
 public:
-
   //! Return capping aspect.
   //! @return capping surface rendering aspect.
   const Handle(Graphic3d_AspectFillArea3d)& CappingAspect() const { return myAspect; }
 
   //! Assign capping aspect.
-  Standard_EXPORT void SetCappingAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect);
+  Standard_EXPORT void SetCappingAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect);
 
   //! Flag indicating whether material for capping plane should be taken from object.
   //! Default value: FALSE (use dedicated capping plane material).
-  bool ToUseObjectMaterial() const { return (myFlags & Graphic3d_CappingFlags_ObjectMaterial) != 0; }
+  bool ToUseObjectMaterial() const
+  {
+    return (myFlags & Graphic3d_CappingFlags_ObjectMaterial) != 0;
+  }
 
   //! Set flag for controlling the source of capping plane material.
-  void SetUseObjectMaterial (bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectMaterial); }
+  void SetUseObjectMaterial(bool theToUse)
+  {
+    setCappingFlag(theToUse, Graphic3d_CappingFlags_ObjectMaterial);
+  }
 
   //! Flag indicating whether texture for capping plane should be taken from object.
   //! Default value: FALSE.
   bool ToUseObjectTexture() const { return (myFlags & Graphic3d_CappingFlags_ObjectTexture) != 0; }
 
   //! Set flag for controlling the source of capping plane texture.
-  void SetUseObjectTexture (bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectTexture); }
+  void SetUseObjectTexture(bool theToUse)
+  {
+    setCappingFlag(theToUse, Graphic3d_CappingFlags_ObjectTexture);
+  }
 
   //! Flag indicating whether shader program for capping plane should be taken from object.
   //! Default value: FALSE.
   bool ToUseObjectShader() const { return (myFlags & Graphic3d_CappingFlags_ObjectShader) != 0; }
 
   //! Set flag for controlling the source of capping plane shader program.
-  void SetUseObjectShader(bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectShader); }
+  void SetUseObjectShader(bool theToUse)
+  {
+    setCappingFlag(theToUse, Graphic3d_CappingFlags_ObjectShader);
+  }
 
   //! Return true if some fill area aspect properties should be taken from object.
   bool ToUseObjectProperties() const { return myFlags != Graphic3d_CappingFlags_None; }
 
 public:
-
   //! Check if the given point is outside / inside / on section.
-  Graphic3d_ClipState ProbePoint (const Graphic3d_Vec4d& thePoint) const
+  Graphic3d_ClipState ProbePoint(const Graphic3d_Vec4d& thePoint) const
   {
     Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+         aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
-      Graphic3d_ClipState aPlnState = aPlaneIter->ProbePointHalfspace (thePoint);
+      Graphic3d_ClipState aPlnState = aPlaneIter->ProbePointHalfspace(thePoint);
       if (aPlnState == Graphic3d_ClipState_In)
       {
         return Graphic3d_ClipState_In;
@@ -277,17 +289,19 @@ public:
   }
 
   //! Check if the given bounding box is fully outside / fully inside.
-  Graphic3d_ClipState ProbeBox (const Graphic3d_BndBox3d& theBox) const
+  Graphic3d_ClipState ProbeBox(const Graphic3d_BndBox3d& theBox) const
   {
     Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+         aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
-      if (aPlaneIter->IsBoxFullInHalfspace (theBox))
+      if (aPlaneIter->IsBoxFullInHalfspace(theBox))
       {
-        // within union operation, if box is entirely inside at least one half-space, others can be ignored
+        // within union operation, if box is entirely inside at least one half-space, others can be
+        // ignored
         return Graphic3d_ClipState_In;
       }
-      else if (!aPlaneIter->IsBoxFullOutHalfspace (theBox))
+      else if (!aPlaneIter->IsBoxFullOutHalfspace(theBox))
       {
         // if at least one full out test fail, clipping state is inconclusive (partially clipped)
         aState = Graphic3d_ClipState_On;
@@ -297,19 +311,21 @@ public:
   }
 
   //! Check if the given bounding box is In and touch the clipping planes
-  Standard_Boolean ProbeBoxTouch (const Graphic3d_BndBox3d& theBox) const
+  Standard_Boolean ProbeBoxTouch(const Graphic3d_BndBox3d& theBox) const
   {
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+         aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
-      if (aPlaneIter->IsBoxFullInHalfspace (theBox))
+      if (aPlaneIter->IsBoxFullInHalfspace(theBox))
       {
-        // within union operation, if box is entirely inside at least one half-space, others can be ignored
+        // within union operation, if box is entirely inside at least one half-space, others can be
+        // ignored
         return Standard_False;
       }
-      else if (!aPlaneIter->IsBoxFullOutHalfspace (theBox))
+      else if (!aPlaneIter->IsBoxFullOutHalfspace(theBox))
       {
         // the box is not fully out, and not fully in, check is it on (but not intersect)
-        if (ProbeBoxMaxPointHalfspace (theBox) != Graphic3d_ClipState_Out)
+        if (ProbeBoxMaxPointHalfspace(theBox) != Graphic3d_ClipState_Out)
         {
           return Standard_True;
         }
@@ -319,87 +335,85 @@ public:
   }
 
 public:
-
-  //! Check if the given point is outside of the half-space (e.g. should be discarded by clipping plane).
-  Graphic3d_ClipState ProbePointHalfspace (const Graphic3d_Vec4d& thePoint) const
+  //! Check if the given point is outside of the half-space (e.g. should be discarded by clipping
+  //! plane).
+  Graphic3d_ClipState ProbePointHalfspace(const Graphic3d_Vec4d& thePoint) const
   {
-    const Standard_Real aVal = myEquation.Dot (thePoint);
-    return aVal < 0.0
-         ? Graphic3d_ClipState_Out
-         : (aVal == 0.0
-          ? Graphic3d_ClipState_On
-          : Graphic3d_ClipState_In);
+    const Standard_Real aVal = myEquation.Dot(thePoint);
+    return aVal < 0.0 ? Graphic3d_ClipState_Out
+                      : (aVal == 0.0 ? Graphic3d_ClipState_On : Graphic3d_ClipState_In);
   }
 
   //! Check if the given bounding box is fully outside / fully inside the half-space.
-  Graphic3d_ClipState ProbeBoxHalfspace (const Graphic3d_BndBox3d& theBox) const
+  Graphic3d_ClipState ProbeBoxHalfspace(const Graphic3d_BndBox3d& theBox) const
   {
-    if (IsBoxFullOutHalfspace (theBox))
+    if (IsBoxFullOutHalfspace(theBox))
     {
       return Graphic3d_ClipState_Out;
     }
-    return IsBoxFullInHalfspace (theBox)
-         ? Graphic3d_ClipState_In
-         : Graphic3d_ClipState_On;
+    return IsBoxFullInHalfspace(theBox) ? Graphic3d_ClipState_In : Graphic3d_ClipState_On;
   }
 
-  //! Check if the given point is outside of the half-space (e.g. should be discarded by clipping plane).
-  bool IsPointOutHalfspace (const Graphic3d_Vec4d& thePoint) const { return ProbePointHalfspace (thePoint) == Graphic3d_ClipState_Out; }
-
-  //! Check if the given bounding box is fully outside of the half-space (e.g. should be discarded by clipping plane).
-  bool IsBoxFullOutHalfspace (const Graphic3d_BndBox3d& theBox) const
+  //! Check if the given point is outside of the half-space (e.g. should be discarded by clipping
+  //! plane).
+  bool IsPointOutHalfspace(const Graphic3d_Vec4d& thePoint) const
   {
-    const Graphic3d_Vec4d aMaxPnt (myEquation.x() > 0.0 ? theBox.CornerMax().x() : theBox.CornerMin().x(),
-                                   myEquation.y() > 0.0 ? theBox.CornerMax().y() : theBox.CornerMin().y(),
-                                   myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
-                                   1.0);
-    return IsPointOutHalfspace (aMaxPnt);
+    return ProbePointHalfspace(thePoint) == Graphic3d_ClipState_Out;
   }
 
-  //! Check if the given bounding box is fully outside of the half-space (e.g. should be discarded by clipping plane).
-  Graphic3d_ClipState ProbeBoxMaxPointHalfspace (const Graphic3d_BndBox3d& theBox) const
+  //! Check if the given bounding box is fully outside of the half-space (e.g. should be discarded
+  //! by clipping plane).
+  bool IsBoxFullOutHalfspace(const Graphic3d_BndBox3d& theBox) const
   {
-    const Graphic3d_Vec4d aMaxPnt (myEquation.x() > 0.0 ? theBox.CornerMax().x() : theBox.CornerMin().x(),
-                                   myEquation.y() > 0.0 ? theBox.CornerMax().y() : theBox.CornerMin().y(),
-                                   myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
-                                   1.0);
-    return ProbePointHalfspace (aMaxPnt);
+    const Graphic3d_Vec4d aMaxPnt(
+      myEquation.x() > 0.0 ? theBox.CornerMax().x() : theBox.CornerMin().x(),
+      myEquation.y() > 0.0 ? theBox.CornerMax().y() : theBox.CornerMin().y(),
+      myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
+      1.0);
+    return IsPointOutHalfspace(aMaxPnt);
   }
 
-  //! Check if the given bounding box is fully inside (or touches from inside) the half-space (e.g. NOT discarded by clipping plane).
-  bool IsBoxFullInHalfspace (const Graphic3d_BndBox3d& theBox) const
+  //! Check if the given bounding box is fully outside of the half-space (e.g. should be discarded
+  //! by clipping plane).
+  Graphic3d_ClipState ProbeBoxMaxPointHalfspace(const Graphic3d_BndBox3d& theBox) const
   {
-    const Graphic3d_Vec4d aMinPnt (myEquation.x() > 0.0 ? theBox.CornerMin().x() : theBox.CornerMax().x(),
-                                   myEquation.y() > 0.0 ? theBox.CornerMin().y() : theBox.CornerMax().y(),
-                                   myEquation.z() > 0.0 ? theBox.CornerMin().z() : theBox.CornerMax().z(),
-                                   1.0);
-    return !IsPointOutHalfspace (aMinPnt);
+    const Graphic3d_Vec4d aMaxPnt(
+      myEquation.x() > 0.0 ? theBox.CornerMax().x() : theBox.CornerMin().x(),
+      myEquation.y() > 0.0 ? theBox.CornerMax().y() : theBox.CornerMin().y(),
+      myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
+      1.0);
+    return ProbePointHalfspace(aMaxPnt);
+  }
+
+  //! Check if the given bounding box is fully inside (or touches from inside) the half-space (e.g.
+  //! NOT discarded by clipping plane).
+  bool IsBoxFullInHalfspace(const Graphic3d_BndBox3d& theBox) const
+  {
+    const Graphic3d_Vec4d aMinPnt(
+      myEquation.x() > 0.0 ? theBox.CornerMin().x() : theBox.CornerMax().x(),
+      myEquation.y() > 0.0 ? theBox.CornerMin().y() : theBox.CornerMax().y(),
+      myEquation.z() > 0.0 ? theBox.CornerMin().z() : theBox.CornerMax().z(),
+      1.0);
+    return !IsPointOutHalfspace(aMinPnt);
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
 public: // @name modification counters
-
   //! @return modification counter for equation.
-  unsigned int MCountEquation() const
-  {
-    return myEquationMod;
-  }
+  unsigned int MCountEquation() const { return myEquationMod; }
 
   //! @return modification counter for aspect.
-  unsigned int MCountAspect() const
-  {
-    return myAspectMod;
-  }
+  unsigned int MCountAspect() const { return myAspectMod; }
 
 private:
-
   //! Generate unique object id for OpenGL graphic resource manager.
   void makeId();
 
   //! Set capping flag.
-  Standard_EXPORT void setCappingFlag (bool theToUse, int theFlag);
+  Standard_EXPORT void setCappingFlag(bool theToUse, int theFlag);
 
   //! Update chain length in backward direction.
   void updateChainLen();
@@ -408,14 +422,13 @@ private:
   void updateInversedPlane()
   {
     gp_Pln aPlane = myPlane;
-    aPlane.SetAxis (aPlane.Axis().Reversed());
-    aPlane.Coefficients (myEquationRev[0], myEquationRev[1], myEquationRev[2], myEquationRev[3]);
+    aPlane.SetAxis(aPlane.Axis().Reversed());
+    aPlane.Coefficients(myEquationRev[0], myEquationRev[1], myEquationRev[2], myEquationRev[3]);
   }
 
 private:
-
-  Handle(Graphic3d_AspectFillArea3d) myAspect;    //!< fill area aspect
-// clang-format off
+  Handle(Graphic3d_AspectFillArea3d) myAspect; //!< fill area aspect
+                                               // clang-format off
   Handle(Graphic3d_ClipPlane)   myNextInChain;    //!< next     plane in a chain of planes defining logical AND operation
   Graphic3d_ClipPlane*          myPrevInChain;    //!< previous plane in a chain of planes defining logical AND operation
   TCollection_AsciiString myId;                   //!< resource id
@@ -423,15 +436,14 @@ private:
   Graphic3d_Vec4d         myEquation;             //!< plane equation vector
   Graphic3d_Vec4d         myEquationRev;          //!< reversed plane equation
   Standard_Integer        myChainLenFwd;          //!< chain length in forward direction (including this item)
-// clang-format on
-  unsigned int            myFlags;                //!< capping flags
-  unsigned int            myEquationMod;          //!< modification counter for equation
-  unsigned int            myAspectMod;            //!< modification counter of aspect
-  Standard_Boolean        myIsOn;                 //!< state of the clipping plane
-  Standard_Boolean        myIsCapping;            //!< state of graphic driver capping
-
+                                               // clang-format on
+  unsigned int     myFlags;                    //!< capping flags
+  unsigned int     myEquationMod;              //!< modification counter for equation
+  unsigned int     myAspectMod;                //!< modification counter of aspect
+  Standard_Boolean myIsOn;                     //!< state of the clipping plane
+  Standard_Boolean myIsCapping;                //!< state of graphic driver capping
 };
 
-DEFINE_STANDARD_HANDLE (Graphic3d_ClipPlane, Standard_Transient)
+DEFINE_STANDARD_HANDLE(Graphic3d_ClipPlane, Standard_Transient)
 
 #endif

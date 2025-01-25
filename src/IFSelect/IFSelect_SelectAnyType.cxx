@@ -11,15 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_SelectAnyType.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectAnyType,IFSelect_SelectExtract)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectAnyType, IFSelect_SelectExtract)
 
-Standard_Boolean  IFSelect_SelectAnyType::Sort
-  (const Standard_Integer , const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& ) const 
-      {  return ent->IsKind(TypeForMatch());  }
+Standard_Boolean IFSelect_SelectAnyType::Sort(const Standard_Integer,
+                                              const Handle(Standard_Transient)& ent,
+                                              const Handle(Interface_InterfaceModel)&) const
+{
+  return ent->IsKind(TypeForMatch());
+}

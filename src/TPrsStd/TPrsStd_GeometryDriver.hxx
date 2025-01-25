@@ -24,48 +24,29 @@
 class TDF_Label;
 class AIS_InteractiveObject;
 
-
 class TPrsStd_GeometryDriver;
 DEFINE_STANDARD_HANDLE(TPrsStd_GeometryDriver, TPrsStd_Driver)
-
 
 //! This method is an implementation of TPrsStd_Driver for geometries.
 class TPrsStd_GeometryDriver : public TPrsStd_Driver
 {
 
 public:
-
-  
   //! Constructs an empty geometry driver.
   Standard_EXPORT TPrsStd_GeometryDriver();
-  
+
   //! Build the AISObject (if null) or update it.
   //! No compute is done.
   //! Returns <True> if information was found
   //! and AISObject updated.
-  Standard_EXPORT virtual Standard_Boolean Update (const TDF_Label& aLabel, Handle(AIS_InteractiveObject)& anAISObject) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               aLabel,
+                                                  Handle(AIS_InteractiveObject)& anAISObject)
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TPrsStd_GeometryDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_GeometryDriver, TPrsStd_Driver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TPrsStd_GeometryDriver_HeaderFile

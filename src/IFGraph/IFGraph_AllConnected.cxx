@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFGraph_AllConnected.hxx>
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
@@ -21,32 +20,38 @@
 // Autrement dit le contenu du "Composant Connexe" du graphe d'ensemble
 // qui contient cette entite
 // Le calcul est effectue par GetFromEntity (Evaluate n'a rien a faire)
-IFGraph_AllConnected::IFGraph_AllConnected (const Interface_Graph& agraph)
-      :  thegraph (agraph)    {  }
-
-
-    IFGraph_AllConnected::IFGraph_AllConnected
-  (const Interface_Graph& agraph, const Handle(Standard_Transient)& ent)
-      :  thegraph (agraph)
-      {  GetFromEntity(ent);  }
-
-    void  IFGraph_AllConnected::GetFromEntity
-  (const Handle(Standard_Transient)& ent)
+IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph& agraph)
+    : thegraph(agraph)
 {
-  if (!thegraph.IsPresent(thegraph.EntityNumber(ent))) return;
-  thegraph.GetFromEntity(ent,Standard_False);
+}
 
-  for (Interface_EntityIterator shareds = thegraph.Shareds(ent);
-       shareds.More(); shareds.Next())
+IFGraph_AllConnected::IFGraph_AllConnected(const Interface_Graph&            agraph,
+                                           const Handle(Standard_Transient)& ent)
+    : thegraph(agraph)
+{
+  GetFromEntity(ent);
+}
+
+void IFGraph_AllConnected::GetFromEntity(const Handle(Standard_Transient)& ent)
+{
+  if (!thegraph.IsPresent(thegraph.EntityNumber(ent)))
+    return;
+  thegraph.GetFromEntity(ent, Standard_False);
+
+  for (Interface_EntityIterator shareds = thegraph.Shareds(ent); shareds.More(); shareds.Next())
     GetFromEntity(shareds.Value());
 
-  for (Interface_EntityIterator sharings = thegraph.Sharings(ent);
-       sharings.More(); sharings.Next())
+  for (Interface_EntityIterator sharings = thegraph.Sharings(ent); sharings.More(); sharings.Next())
     GetFromEntity(sharings.Value());
 }
 
-    void  IFGraph_AllConnected::ResetData ()
-      {  Reset();  thegraph.Reset();  }
+void IFGraph_AllConnected::ResetData()
+{
+  Reset();
+  thegraph.Reset();
+}
 
-    void  IFGraph_AllConnected::Evaluate()
-      {  GetFromGraph(thegraph);  }    // GetFromEntity a tout fait
+void IFGraph_AllConnected::Evaluate()
+{
+  GetFromGraph(thegraph);
+} // GetFromEntity a tout fait

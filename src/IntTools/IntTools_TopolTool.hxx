@@ -22,7 +22,6 @@
 class gp_Pnt2d;
 class gp_Pnt;
 
-
 class IntTools_TopolTool;
 DEFINE_STANDARD_HANDLE(IntTools_TopolTool, Adaptor3d_TopolTool)
 
@@ -32,83 +31,61 @@ class IntTools_TopolTool : public Adaptor3d_TopolTool
 {
 
 public:
-
-  
-
   //! Empty constructor
   Standard_EXPORT IntTools_TopolTool();
-  
 
   //! Initializes me by surface
   Standard_EXPORT IntTools_TopolTool(const Handle(Adaptor3d_Surface)& theSurface);
-  
 
   //! Redefined empty initializer
   //!
   //! Warning:
   //! Raises the exception NotImplemented
   Standard_EXPORT virtual void Initialize() Standard_OVERRIDE;
-  
 
   //! Initializes me by surface
-  Standard_EXPORT virtual void Initialize (const Handle(Adaptor3d_Surface)& theSurface) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Initialize(const Handle(Adaptor3d_Surface)& theSurface)
+    Standard_OVERRIDE;
+
   Standard_EXPORT virtual void ComputeSamplePoints() Standard_OVERRIDE;
-  
 
   //! Computes the sample-points for the intersections algorithms
   Standard_EXPORT virtual Standard_Integer NbSamplesU() Standard_OVERRIDE;
-  
 
   //! Computes the sample-points for the intersections algorithms
   Standard_EXPORT virtual Standard_Integer NbSamplesV() Standard_OVERRIDE;
-  
 
   //! Computes the sample-points for the intersections algorithms
   Standard_EXPORT virtual Standard_Integer NbSamples() Standard_OVERRIDE;
-  
 
   //! Returns a 2d point from surface myS
   //! and a corresponded 3d point
   //! for given index.
   //! The index should be from 1 to NbSamples()
-  Standard_EXPORT virtual void SamplePoint (const Standard_Integer Index, gp_Pnt2d& P2d, gp_Pnt& P3d) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SamplePoint(const Standard_Integer Index,
+                                           gp_Pnt2d&              P2d,
+                                           gp_Pnt&                P3d) Standard_OVERRIDE;
+
   //! compute the sample-points for the intersections algorithms
   //! by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
   //! is the same as in method ComputeSamplePoints(), but only fill arrays of U
   //! and V sample parameters;
   //! theDefl is a required deflection
   //! theNUmin, theNVmin are minimal nb points for U and V.
-  Standard_EXPORT virtual void SamplePnts (const Standard_Real theDefl, const Standard_Integer theNUmin, const Standard_Integer theNVmin) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SamplePnts(const Standard_Real    theDefl,
+                                          const Standard_Integer theNUmin,
+                                          const Standard_Integer theNVmin) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool,Adaptor3d_TopolTool)
+  DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer myNbSmplU;
   Standard_Integer myNbSmplV;
-  Standard_Real myU0;
-  Standard_Real myV0;
-  Standard_Real myDU;
-  Standard_Real myDV;
-
-
+  Standard_Real    myU0;
+  Standard_Real    myV0;
+  Standard_Real    myDU;
+  Standard_Real    myDV;
 };
-
-
-
-
-
-
 
 #endif // _IntTools_TopolTool_HeaderFile

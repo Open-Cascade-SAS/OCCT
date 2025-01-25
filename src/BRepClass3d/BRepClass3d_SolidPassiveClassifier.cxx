@@ -22,14 +22,17 @@
 #include <gp_Lin.hxx>
 
 BRepClass3d_SolidPassiveClassifier::BRepClass3d_SolidPassiveClassifier()
-: isSet(Standard_False),
-  myParam(0.0),
-  myTolerance(0.0),
-  myState(TopAbs_UNKNOWN),
-  hasIntersect(Standard_False)
-{}
+    : isSet(Standard_False),
+      myParam(0.0),
+      myTolerance(0.0),
+      myState(TopAbs_UNKNOWN),
+      hasIntersect(Standard_False)
+{
+}
 
-void BRepClass3d_SolidPassiveClassifier::Reset(const gp_Lin& L, const Standard_Real, const Standard_Real Tol)
+void BRepClass3d_SolidPassiveClassifier::Reset(const gp_Lin& L,
+                                               const Standard_Real,
+                                               const Standard_Real Tol)
 {
   myLin       = L;
   myParam     = RealLast();
@@ -63,7 +66,8 @@ void BRepClass3d_SolidPassiveClassifier::Compare(const TopoDS_Face& Face, const 
         {
           //-- #########################################
 #ifdef OCCT_DEBUG
-          std::cout << " myParam = " << myParam << " ds BRepClass3d_SolidPassiveClassifier.gxx  " << std::endl;
+          std::cout << " myParam = " << myParam << " ds BRepClass3d_SolidPassiveClassifier.gxx  "
+                    << std::endl;
 #endif
           //-- #########################################
           myState = TopAbs_ON;
@@ -84,7 +88,8 @@ void BRepClass3d_SolidPassiveClassifier::Compare(const TopoDS_Face& Face, const 
 #ifdef OCCT_DEBUG
           else
           {
-            std::cout << " -------- Probleme ds BRepClass3d_SolidPassiveClassifier.gxx " << std::endl;
+            std::cout << " -------- Probleme ds BRepClass3d_SolidPassiveClassifier.gxx "
+                      << std::endl;
           }
 #endif
         }

@@ -11,45 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ToroidalSurface,StepGeom_ElementarySurface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ToroidalSurface, StepGeom_ElementarySurface)
 
-StepGeom_ToroidalSurface::StepGeom_ToroidalSurface ()  {}
+StepGeom_ToroidalSurface::StepGeom_ToroidalSurface() {}
 
-void StepGeom_ToroidalSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition,
-	const Standard_Real aMajorRadius,
-	const Standard_Real aMinorRadius)
+void StepGeom_ToroidalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
+                                    const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                                    const Standard_Real                      aMajorRadius,
+                                    const Standard_Real                      aMinorRadius)
 {
-	// --- classe own fields ---
-	majorRadius = aMajorRadius;
-	minorRadius = aMinorRadius;
-	// --- classe inherited fields ---
-	StepGeom_ElementarySurface::Init(aName, aPosition);
+  // --- classe own fields ---
+  majorRadius = aMajorRadius;
+  minorRadius = aMinorRadius;
+  // --- classe inherited fields ---
+  StepGeom_ElementarySurface::Init(aName, aPosition);
 }
-
 
 void StepGeom_ToroidalSurface::SetMajorRadius(const Standard_Real aMajorRadius)
 {
-	majorRadius = aMajorRadius;
+  majorRadius = aMajorRadius;
 }
 
 Standard_Real StepGeom_ToroidalSurface::MajorRadius() const
 {
-	return majorRadius;
+  return majorRadius;
 }
 
 void StepGeom_ToroidalSurface::SetMinorRadius(const Standard_Real aMinorRadius)
 {
-	minorRadius = aMinorRadius;
+  minorRadius = aMinorRadius;
 }
 
 Standard_Real StepGeom_ToroidalSurface::MinorRadius() const
 {
-	return minorRadius;
+  return minorRadius;
 }

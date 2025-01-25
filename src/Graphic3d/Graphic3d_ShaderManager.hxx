@@ -27,31 +27,35 @@ class Graphic3d_ShaderProgram;
 //! GLSL syntax extensions.
 enum Graphic3d_GlslExtension
 {
-  Graphic3d_GlslExtension_GL_OES_standard_derivatives, //!< OpenGL ES 2.0 extension GL_OES_standard_derivatives
-  Graphic3d_GlslExtension_GL_EXT_shader_texture_lod,   //!< OpenGL ES 2.0 extension GL_EXT_shader_texture_lod
-  Graphic3d_GlslExtension_GL_EXT_frag_depth,           //!< OpenGL ES 2.0 extension GL_EXT_frag_depth
-  Graphic3d_GlslExtension_GL_EXT_gpu_shader4,          //!< OpenGL 2.0 extension GL_EXT_gpu_shader4
+  Graphic3d_GlslExtension_GL_OES_standard_derivatives, //!< OpenGL ES 2.0 extension
+                                                       //!< GL_OES_standard_derivatives
+  Graphic3d_GlslExtension_GL_EXT_shader_texture_lod,   //!< OpenGL ES 2.0 extension
+                                                       //!< GL_EXT_shader_texture_lod
+  Graphic3d_GlslExtension_GL_EXT_frag_depth,  //!< OpenGL ES 2.0 extension GL_EXT_frag_depth
+  Graphic3d_GlslExtension_GL_EXT_gpu_shader4, //!< OpenGL 2.0 extension GL_EXT_gpu_shader4
 };
-enum { Graphic3d_GlslExtension_NB = Graphic3d_GlslExtension_GL_EXT_gpu_shader4 + 1 };
+
+enum
+{
+  Graphic3d_GlslExtension_NB = Graphic3d_GlslExtension_GL_EXT_gpu_shader4 + 1
+};
 
 //! This class is responsible for generation of shader programs.
 class Graphic3d_ShaderManager : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderManager, Standard_Transient)
 public:
-
   //! Creates new empty shader manager.
-  Standard_EXPORT Graphic3d_ShaderManager (Aspect_GraphicsLibrary theGapi);
+  Standard_EXPORT Graphic3d_ShaderManager(Aspect_GraphicsLibrary theGapi);
 
   //! Releases resources of shader manager.
   Standard_EXPORT virtual ~Graphic3d_ShaderManager();
 
   //! @return true if detected GL version is greater or equal to requested one.
-  bool IsGapiGreaterEqual (Standard_Integer theVerMajor,
-                           Standard_Integer theVerMinor) const
+  bool IsGapiGreaterEqual(Standard_Integer theVerMajor, Standard_Integer theVerMinor) const
   {
-    return (myGapiVersion[0] >  theVerMajor)
-        || (myGapiVersion[0] == theVerMajor && myGapiVersion[1] >= theVerMinor);
+    return (myGapiVersion[0] > theVerMajor)
+           || (myGapiVersion[0] == theVerMajor && myGapiVersion[1] >= theVerMinor);
   }
 
   //! Return GAPI version major number.
@@ -61,10 +65,9 @@ public:
   Standard_Integer GapiVersionMinor() const { return myGapiVersion[1]; }
 
   //! Return GAPI version major number.
-  void SetGapiVersion (Standard_Integer theVerMajor,
-                       Standard_Integer theVerMinor)
+  void SetGapiVersion(Standard_Integer theVerMajor, Standard_Integer theVerMinor)
   {
-    myGapiVersion.SetValues (theVerMajor, theVerMinor);
+    myGapiVersion.SetValues(theVerMajor, theVerMinor);
   }
 
   //! Return TRUE if RED channel should be used instead of ALPHA for single-channel textures
@@ -72,7 +75,7 @@ public:
   bool UseRedAlpha() const { return myUseRedAlpha; }
 
   //! Set if RED channel should be used instead of ALPHA for single-channel textures.
-  void SetUseRedAlpha (bool theUseRedAlpha) { myUseRedAlpha = theUseRedAlpha; }
+  void SetUseRedAlpha(bool theUseRedAlpha) { myUseRedAlpha = theUseRedAlpha; }
 
   //! Return flag indicating flat shading usage; TRUE by default.
   bool HasFlatShading() const { return myHasFlatShading; }
@@ -81,10 +84,9 @@ public:
   bool ToReverseDFdxSign() const { return myToReverseDFdxSign; }
 
   //! Set flag indicating flat shading usage.
-  void SetFlatShading (bool theToUse,
-                       bool theToReverseSign)
+  void SetFlatShading(bool theToUse, bool theToReverseSign)
   {
-    myHasFlatShading = theToUse;
+    myHasFlatShading    = theToUse;
     myToReverseDFdxSign = theToReverseSign;
   }
 
@@ -92,22 +94,23 @@ public:
   bool ToEmulateDepthClamp() const { return myToEmulateDepthClamp; }
 
   //! Set if depth clamping should be emulated by GLSL program.
-  void SetEmulateDepthClamp (bool theToEmulate) { myToEmulateDepthClamp = theToEmulate; }
+  void SetEmulateDepthClamp(bool theToEmulate) { myToEmulateDepthClamp = theToEmulate; }
 
   //! Return TRUE if specified extension is available.
-  bool HasGlslExtension (Graphic3d_GlslExtension theExt) const { return myGlslExtensions[theExt]; }
+  bool HasGlslExtension(Graphic3d_GlslExtension theExt) const { return myGlslExtensions[theExt]; }
 
   //! Set if specified extension is available or not.
-  void EnableGlslExtension (Graphic3d_GlslExtension theExt,
-                            bool theToEnable = true) { myGlslExtensions[theExt] = theToEnable; }
+  void EnableGlslExtension(Graphic3d_GlslExtension theExt, bool theToEnable = true)
+  {
+    myGlslExtensions[theExt] = theToEnable;
+  }
 
 protected:
-
   //! Generate map key for light sources configuration.
   //! @param[in] theLights  list of light sources
   //! @param[in] theHasShadowMap  flag indicating shadow maps usage
-  Standard_EXPORT TCollection_AsciiString genLightKey (const Handle(Graphic3d_LightSet)& theLights,
-                                                       const bool theHasShadowMap) const;
+  Standard_EXPORT TCollection_AsciiString genLightKey(const Handle(Graphic3d_LightSet)& theLights,
+                                                      const bool theHasShadowMap) const;
 
   //! Prepare standard GLSL program for textured font.
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramFont() const;
@@ -115,26 +118,30 @@ protected:
   //! Prepare standard GLSL program without lighting.
   //! @param[in] theBits       program bits
   //! @param[in] theIsOutline  draw silhouette
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramUnlit (Standard_Integer theBits,
-                                                                      Standard_Boolean theIsOutline = false) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramUnlit(
+    Standard_Integer theBits,
+    Standard_Boolean theIsOutline = false) const;
 
   //! Prepare standard GLSL program with per-vertex lighting.
   //! @param[in] theLights  list of light sources
   //! @param[in] theBits    program bits
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramGouraud (const Handle(Graphic3d_LightSet)& theLights,
-                                                                        Standard_Integer theBits) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramGouraud(
+    const Handle(Graphic3d_LightSet)& theLights,
+    Standard_Integer                  theBits) const;
 
   //! Prepare standard GLSL program with per-pixel lighting.
   //! @param[in] theLights  list of light sources
   //! @param[in] theBits    program bits
-  //! @param[in] theIsFlatNormal  when TRUE, the Vertex normals will be ignored and Face normal will be computed instead
+  //! @param[in] theIsFlatNormal  when TRUE, the Vertex normals will be ignored and Face normal will
+  //! be computed instead
   //! @param[in] theIsPBR   when TRUE, the PBR pipeline will be activated
   //! @param[in] theNbShadowMaps  number of shadow maps
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramPhong (const Handle(Graphic3d_LightSet)& theLights,
-                                                                      const Standard_Integer theBits,
-                                                                      const Standard_Boolean theIsFlatNormal,
-                                                                      const Standard_Boolean theIsPBR,
-                                                                      const Standard_Integer theNbShadowMaps) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramPhong(
+    const Handle(Graphic3d_LightSet)& theLights,
+    const Standard_Integer            theBits,
+    const Standard_Boolean            theIsFlatNormal,
+    const Standard_Boolean            theIsPBR,
+    const Standard_Integer            theNbShadowMaps) const;
 
   //! Prepare standard GLSL program for bounding box.
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramBoundBox() const;
@@ -149,26 +156,31 @@ protected:
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getColoredQuadProgram() const;
 
   //! Prepare GLSL source for IBL generation used in PBR pipeline.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getPBREnvBakingProgram (Standard_Integer theIndex) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getPBREnvBakingProgram(
+    Standard_Integer theIndex) const;
 
   //! Prepare standard GLSL program for FBO blit operation.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramFboBlit (Standard_Integer theNbSamples,
-                                                                        Standard_Boolean theIsFallback_sRGB) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramFboBlit(
+    Standard_Integer theNbSamples,
+    Standard_Boolean theIsFallback_sRGB) const;
 
   //! Prepare standard GLSL program for stereoscopic image.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramStereo (Graphic3d_StereoMode theStereoMode) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramStereo(
+    Graphic3d_StereoMode theStereoMode) const;
 
   //! Prepare standard GLSL programs for OIT compositing operation.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitCompositing (Standard_Boolean theMsaa) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitCompositing(
+    Standard_Boolean theMsaa) const;
 
   //! Prepare standard GLSL programs for OIT Depth Peeling blend operation.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitDepthPeelingBlend (Standard_Boolean theMsaa) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitDepthPeelingBlend(
+    Standard_Boolean theMsaa) const;
 
   //! Prepare standard GLSL programs for OIT Depth Peeling flush operation.
-  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitDepthPeelingFlush (Standard_Boolean theMsaa) const;
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramOitDepthPeelingFlush(
+    Standard_Boolean theMsaa) const;
 
 protected:
-
   //! Return TRUE if bitwise operations can be used in GLSL program.
   Standard_EXPORT bool hasGlslBitwiseOps() const;
 
@@ -178,54 +190,56 @@ protected:
   //! @param[in] theBits  program bits
   //! @param[in] theUsesDerivates  program uses standard derivatives functions or not
   //! @return filtered program bits with unsupported features disabled
-  Standard_EXPORT Standard_Integer defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
-                                                       const TCollection_AsciiString& theName,
-                                                       Standard_Integer theBits,
-                                                       bool theUsesDerivates = false) const;
+  Standard_EXPORT Standard_Integer
+    defaultGlslVersion(const Handle(Graphic3d_ShaderProgram)& theProgram,
+                       const TCollection_AsciiString&         theName,
+                       Standard_Integer                       theBits,
+                       bool                                   theUsesDerivates = false) const;
 
   //! Prepare GLSL version header for OIT composition programs.
   //! @param[in][out] theProgram   program to set version header
   //! @param[in] theName  program id suffix
   //! @param[in] theMsaa  multisampling flag
-  Standard_EXPORT void defaultOitGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
-                                              const TCollection_AsciiString& theName,
-                                              bool theMsaa) const;
+  Standard_EXPORT void defaultOitGlslVersion(const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                             const TCollection_AsciiString&         theName,
+                                             bool                                   theMsaa) const;
 
   //! Prepare standard GLSL program for accessing point sprite alpha.
-  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc (Standard_Integer theBits) const;
+  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc(Standard_Integer theBits) const;
 
   //! Prepare standard GLSL program for computing point sprite shading.
-  Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString& theBaseColorSrc,
-                                                                 Standard_Integer theBits) const;
+  Standard_EXPORT TCollection_AsciiString
+    pointSpriteShadingSrc(const TCollection_AsciiString& theBaseColorSrc,
+                          Standard_Integer               theBits) const;
 
   //! Define computeLighting GLSL function depending on current lights configuration
   //! @param[out] theNbLights      number of defined light sources
   //! @param[in] theLights         light sources list
-  //! @param[in] theHasVertColor   flag to use getVertColor() instead of Ambient and Diffuse components of active material
+  //! @param[in] theHasVertColor   flag to use getVertColor() instead of Ambient and Diffuse
+  //! components of active material
   //! @param[in] theIsPBR          flag to activate PBR pipeline
   //! @param[in] theHasTexColor    flag to include color texturing
   //! @param[in] theNbShadowMaps   flag to include shadow map
-  Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
-                                                              const Handle(Graphic3d_LightSet)& theLights,
-                                                              Standard_Boolean  theHasVertColor,
-                                                              Standard_Boolean  theIsPBR,
-                                                              Standard_Boolean  theHasTexColor,
-                                                              Standard_Integer  theNbShadowMaps) const;
+  Standard_EXPORT TCollection_AsciiString
+    stdComputeLighting(Standard_Integer&                 theNbLights,
+                       const Handle(Graphic3d_LightSet)& theLights,
+                       Standard_Boolean                  theHasVertColor,
+                       Standard_Boolean                  theIsPBR,
+                       Standard_Boolean                  theHasTexColor,
+                       Standard_Integer                  theNbShadowMaps) const;
 
 protected:
-
-  Aspect_GraphicsLibrary myGapi;          //!< GAPI name
-  Graphic3d_Vec2i  myGapiVersion;         //!< GAPI version major/minor number pair
-  Standard_Boolean myGlslExtensions[Graphic3d_GlslExtension_NB];
-  Standard_Boolean myHasFlatShading;      //!< flag indicating flat shading usage
-  Standard_Boolean myToReverseDFdxSign;   //!< flag to reverse flat shading normal (workaround)
-  Standard_Boolean mySetPointSize;        //!< always set gl_PointSize variable
-// clang-format off
+  Aspect_GraphicsLibrary myGapi;        //!< GAPI name
+  Graphic3d_Vec2i        myGapiVersion; //!< GAPI version major/minor number pair
+  Standard_Boolean       myGlslExtensions[Graphic3d_GlslExtension_NB];
+  Standard_Boolean       myHasFlatShading;    //!< flag indicating flat shading usage
+  Standard_Boolean       myToReverseDFdxSign; //!< flag to reverse flat shading normal (workaround)
+  Standard_Boolean       mySetPointSize;      //!< always set gl_PointSize variable
+                                              // clang-format off
   Standard_Boolean myUseRedAlpha;         //!< use RED channel instead of ALPHA (e.g. GAPI supports only GL_RED textures and not GL_ALPHA)
-// clang-format on
-  Standard_Boolean myToEmulateDepthClamp; //!< emulate depth clamping in GLSL program
-  Standard_Boolean mySRgbState;           //!< track sRGB state
-
+                                              // clang-format on
+  Standard_Boolean myToEmulateDepthClamp;     //!< emulate depth clamping in GLSL program
+  Standard_Boolean mySRgbState;               //!< track sRGB state
 };
 
 #endif // _Graphic3d_ShaderManager_HeaderFile

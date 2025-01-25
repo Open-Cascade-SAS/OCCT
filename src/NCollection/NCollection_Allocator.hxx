@@ -36,13 +36,13 @@ template <typename ItemType>
 class NCollection_Allocator
 {
 public:
-  typedef ItemType value_type;
-  typedef value_type* pointer;
+  typedef ItemType          value_type;
+  typedef value_type*       pointer;
   typedef const value_type* const_pointer;
-  typedef value_type& reference;
+  typedef value_type&       reference;
   typedef const value_type& const_reference;
-  typedef size_t size_type;
-  typedef ptrdiff_t difference_type;
+  typedef size_t            size_type;
+  typedef ptrdiff_t         difference_type;
 
   template <typename OtherType>
   struct rebind
@@ -53,12 +53,10 @@ public:
   //! Constructor.
   //! Creates an object using the default Open CASCADE allocation mechanism, i.e., which uses
   //! Standard::Allocate() and Standard::Free() underneath.
-  NCollection_Allocator() noexcept
-  {}
+  NCollection_Allocator() noexcept {}
 
   //! Constructor.
-  NCollection_Allocator(const Handle(NCollection_BaseAllocator)&) noexcept
-  {}
+  NCollection_Allocator(const Handle(NCollection_BaseAllocator)&) noexcept {}
 
   //! Assignment operator
   template <typename OtherType>
@@ -66,24 +64,20 @@ public:
   {
     return *this;
   }
+
   //! Constructor.
   //! Creates an object using the default Open CASCADE allocation mechanism, i.e., which uses
   //! Standard::Allocate() and Standard::Free() underneath.
   template <typename OtherType>
   NCollection_Allocator(const NCollection_Allocator<OtherType>&) noexcept
-  {}
-
-  //! Returns an object address.
-  pointer address(reference theItem) const
   {
-    return &theItem;
   }
 
   //! Returns an object address.
-  const_pointer address(const_reference theItem) const
-  {
-    return &theItem;
-  }
+  pointer address(reference theItem) const { return &theItem; }
+
+  //! Returns an object address.
+  const_pointer address(const_reference theItem) const { return &theItem; }
 
   //! Allocates memory for theSize objects.
   pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
@@ -105,7 +99,7 @@ public:
 
   //! Constructs an object.
   //! Uses placement new operator and copy constructor to construct an object.
-  template<class _Objty, class... _Types>
+  template <class _Objty, class... _Types>
   void construct(_Objty* _Ptr, _Types&&... _Args)
   {
     ::new ((void*)_Ptr) _Objty(std::forward<_Types>(_Args)...);
@@ -115,34 +109,28 @@ public:
   //! Uses the object destructor.
   void destroy(pointer thePnt)
   {
-    (void)thePnt; thePnt->~value_type();
+    (void)thePnt;
+    thePnt->~value_type();
   }
 
-  bool operator==(const NCollection_Allocator&) const
-  {
-    return true;
-  }
+  bool operator==(const NCollection_Allocator&) const { return true; }
 
-  template<class U>
+  template <class U>
   bool operator==(const NCollection_Allocator<U>&) const noexcept
   {
     return true;
   }
 
-  bool operator!=(const NCollection_Allocator&) const noexcept
-  {
-    return false;
-  }
+  bool operator!=(const NCollection_Allocator&) const noexcept { return false; }
 
-  template<class U>
+  template <class U>
   bool operator!=(const NCollection_Allocator<U>&) const noexcept
   {
     return false;
   }
-
 };
 
-template<class U, class V>
+template <class U, class V>
 bool operator==(const NCollection_Allocator<U>&, const NCollection_Allocator<V>&)
 {
   return true;

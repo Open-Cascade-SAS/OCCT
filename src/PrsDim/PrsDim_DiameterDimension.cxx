@@ -28,68 +28,67 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_DiameterDimension, PrsDim_Dimension)
 
 namespace
 {
-  static const Standard_ExtCharacter THE_DIAMETER_SYMBOL (0x00D8);
+static const Standard_ExtCharacter THE_DIAMETER_SYMBOL(0x00D8);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-PrsDim_DiameterDimension::PrsDim_DiameterDimension (const gp_Circ& theCircle)
-: PrsDim_Dimension (PrsDim_KOD_DIAMETER)
+PrsDim_DiameterDimension::PrsDim_DiameterDimension(const gp_Circ& theCircle)
+    : PrsDim_Dimension(PrsDim_KOD_DIAMETER)
 {
-  SetMeasuredGeometry (theCircle);
-  SetSpecialSymbol (THE_DIAMETER_SYMBOL);
-  SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_Before);
-  SetFlyout (0.0);
+  SetMeasuredGeometry(theCircle);
+  SetSpecialSymbol(THE_DIAMETER_SYMBOL);
+  SetDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_Before);
+  SetFlyout(0.0);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-PrsDim_DiameterDimension::PrsDim_DiameterDimension (const gp_Circ& theCircle,
-                                                    const gp_Pln& thePlane)
-: PrsDim_Dimension (PrsDim_KOD_DIAMETER)
+PrsDim_DiameterDimension::PrsDim_DiameterDimension(const gp_Circ& theCircle, const gp_Pln& thePlane)
+    : PrsDim_Dimension(PrsDim_KOD_DIAMETER)
 {
-  SetCustomPlane (thePlane);
-  SetMeasuredGeometry (theCircle);
-  SetSpecialSymbol (THE_DIAMETER_SYMBOL);
-  SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_Before);
-  SetFlyout (0.0);
+  SetCustomPlane(thePlane);
+  SetMeasuredGeometry(theCircle);
+  SetSpecialSymbol(THE_DIAMETER_SYMBOL);
+  SetDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_Before);
+  SetFlyout(0.0);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-PrsDim_DiameterDimension::PrsDim_DiameterDimension (const TopoDS_Shape& theShape)
-: PrsDim_Dimension (PrsDim_KOD_DIAMETER)
+PrsDim_DiameterDimension::PrsDim_DiameterDimension(const TopoDS_Shape& theShape)
+    : PrsDim_Dimension(PrsDim_KOD_DIAMETER)
 {
-  SetMeasuredGeometry (theShape);
-  SetSpecialSymbol (THE_DIAMETER_SYMBOL);
-  SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_Before);
-  SetFlyout (0.0);
+  SetMeasuredGeometry(theShape);
+  SetSpecialSymbol(THE_DIAMETER_SYMBOL);
+  SetDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_Before);
+  SetFlyout(0.0);
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-PrsDim_DiameterDimension::PrsDim_DiameterDimension (const TopoDS_Shape& theShape,
-                                                    const gp_Pln& thePlane)
-: PrsDim_Dimension (PrsDim_KOD_DIAMETER)
+PrsDim_DiameterDimension::PrsDim_DiameterDimension(const TopoDS_Shape& theShape,
+                                                   const gp_Pln&       thePlane)
+    : PrsDim_Dimension(PrsDim_KOD_DIAMETER)
 {
-  SetCustomPlane (thePlane);
-  SetMeasuredGeometry (theShape);
-  SetSpecialSymbol (THE_DIAMETER_SYMBOL);
-  SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_Before);
-  SetFlyout (0.0);
+  SetCustomPlane(thePlane);
+  SetMeasuredGeometry(theShape);
+  SetSpecialSymbol(THE_DIAMETER_SYMBOL);
+  SetDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_Before);
+  SetFlyout(0.0);
 }
 
 //=======================================================================
-//function : AnchorPoint
-//purpose  : 
+// function : AnchorPoint
+// purpose  :
 //=======================================================================
 gp_Pnt PrsDim_DiameterDimension::AnchorPoint()
 {
@@ -102,16 +101,16 @@ gp_Pnt PrsDim_DiameterDimension::AnchorPoint()
 }
 
 //=======================================================================
-//function : SetMeasuredGeometry
-//purpose  : 
+// function : SetMeasuredGeometry
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
+void PrsDim_DiameterDimension::SetMeasuredGeometry(const gp_Circ& theCircle)
 {
   myCircle          = theCircle;
   myGeometryType    = GeometryType_Edge;
-  myShape           = BRepLib_MakeEdge (theCircle);
+  myShape           = BRepLib_MakeEdge(theCircle);
   myAnchorPoint     = gp::Origin();
-  myIsGeometryValid = IsValidCircle (myCircle);
+  myIsGeometryValid = IsValidCircle(myCircle);
 
   if (myIsGeometryValid && myIsPlaneCustom)
   {
@@ -120,27 +119,26 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
   else if (!myIsPlaneCustom)
   {
     ComputePlane();
-    myAnchorPoint = ElCLib::Value (0.0, myCircle);
+    myAnchorPoint = ElCLib::Value(0.0, myCircle);
   }
 
   SetToUpdate();
 }
 
 //=======================================================================
-//function : SetMeasuredGeometry
-//purpose  : 
+// function : SetMeasuredGeometry
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape)
+void PrsDim_DiameterDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape)
 {
-  gp_Pnt aDummyPnt (gp::Origin());
+  gp_Pnt           aDummyPnt(gp::Origin());
   Standard_Boolean isClosed = Standard_False;
 
   myGeometryType    = GeometryType_UndefShapes;
   myShape           = theShape;
   myAnchorPoint     = gp::Origin();
-  myIsGeometryValid = InitCircularDimension (theShape, myCircle, aDummyPnt, isClosed)
-                      && IsValidCircle (myCircle)
-                      && isClosed;
+  myIsGeometryValid = InitCircularDimension(theShape, myCircle, aDummyPnt, isClosed)
+                      && IsValidCircle(myCircle) && isClosed;
 
   if (myIsGeometryValid && myIsPlaneCustom)
   {
@@ -149,20 +147,20 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape
   else if (!myIsPlaneCustom)
   {
     ComputePlane();
-    myAnchorPoint = ElCLib::Value (0.0, myCircle);
+    myAnchorPoint = ElCLib::Value(0.0, myCircle);
   }
 
   SetToUpdate();
 }
 
 //=======================================================================
-//function : CheckPlane
-//purpose  : 
+// function : CheckPlane
+// purpose  :
 //=======================================================================
-Standard_Boolean PrsDim_DiameterDimension::CheckPlane (const gp_Pln& thePlane) const
+Standard_Boolean PrsDim_DiameterDimension::CheckPlane(const gp_Pln& thePlane) const
 {
   // Check if the circle center point belongs to plane.
-  if (!thePlane.Contains (myCircle.Location(), Precision::Confusion()))
+  if (!thePlane.Contains(myCircle.Location(), Precision::Confusion()))
   {
     return Standard_False;
   }
@@ -171,8 +169,8 @@ Standard_Boolean PrsDim_DiameterDimension::CheckPlane (const gp_Pln& thePlane) c
 }
 
 //=======================================================================
-//function : ComputePlane
-//purpose  : 
+// function : ComputePlane
+// purpose  :
 //=======================================================================
 void PrsDim_DiameterDimension::ComputePlane()
 {
@@ -181,19 +179,19 @@ void PrsDim_DiameterDimension::ComputePlane()
     return;
   }
 
-  myPlane = gp_Pln (gp_Ax3 (myCircle.Position()));
+  myPlane = gp_Pln(gp_Ax3(myCircle.Position()));
 }
 
 //=======================================================================
-//function : ComputeAnchorPoint
-//purpose  : 
+// function : ComputeAnchorPoint
+// purpose  :
 //=======================================================================
 void PrsDim_DiameterDimension::ComputeAnchorPoint()
 {
   // Anchor point is an intersection of dimension plane and circle.
-  Handle(Geom_Circle) aCircle = new Geom_Circle (myCircle);
-  Handle(Geom_Plane) aPlane = new Geom_Plane (myPlane);
-  GeomAPI_IntCS anIntersector (aCircle, aPlane);
+  Handle(Geom_Circle) aCircle = new Geom_Circle(myCircle);
+  Handle(Geom_Plane)  aPlane  = new Geom_Plane(myPlane);
+  GeomAPI_IntCS       anIntersector(aCircle, aPlane);
   if (!anIntersector.IsDone())
   {
     myIsGeometryValid = Standard_False;
@@ -203,28 +201,26 @@ void PrsDim_DiameterDimension::ComputeAnchorPoint()
   // The circle lays on the plane.
   if (anIntersector.NbPoints() != 2)
   {
-    myAnchorPoint = ElCLib::Value (0.0, myCircle);
+    myAnchorPoint     = ElCLib::Value(0.0, myCircle);
     myIsGeometryValid = Standard_True;
     return;
   }
 
-  gp_Pnt aFirstPoint = anIntersector.Point (1);
-  gp_Pnt aSecondPoint = anIntersector.Point (2);
+  gp_Pnt aFirstPoint  = anIntersector.Point(1);
+  gp_Pnt aSecondPoint = anIntersector.Point(2);
 
   // Choose one of two intersection points that stands with
   // positive direction of flyout.
   // An anchor point is supposed to be the left attachment point.
-  gp_Dir aFirstDir = gce_MakeDir (aFirstPoint, myCircle.Location());
-  gp_Dir aDir = myPlane.Axis().Direction() ^ aFirstDir;
-  myAnchorPoint = (gp_Vec (aDir) * gp_Vec(myCircle.Position().Direction()) > 0.0)
-                  ? aFirstPoint
-                  : aSecondPoint;
-
+  gp_Dir aFirstDir = gce_MakeDir(aFirstPoint, myCircle.Location());
+  gp_Dir aDir      = myPlane.Axis().Direction() ^ aFirstDir;
+  myAnchorPoint =
+    (gp_Vec(aDir) * gp_Vec(myCircle.Position().Direction()) > 0.0) ? aFirstPoint : aSecondPoint;
 }
 
 //=======================================================================
-//function : GetModelUnits
-//purpose  :
+// function : GetModelUnits
+// purpose  :
 //=======================================================================
 const TCollection_AsciiString& PrsDim_DiameterDimension::GetModelUnits() const
 {
@@ -232,8 +228,8 @@ const TCollection_AsciiString& PrsDim_DiameterDimension::GetModelUnits() const
 }
 
 //=======================================================================
-//function : GetDisplayUnits
-//purpose  :
+// function : GetDisplayUnits
+// purpose  :
 //=======================================================================
 const TCollection_AsciiString& PrsDim_DiameterDimension::GetDisplayUnits() const
 {
@@ -241,26 +237,26 @@ const TCollection_AsciiString& PrsDim_DiameterDimension::GetDisplayUnits() const
 }
 
 //=======================================================================
-//function : SetModelUnits
-//purpose  :
+// function : SetModelUnits
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::SetModelUnits (const TCollection_AsciiString& theUnits)
+void PrsDim_DiameterDimension::SetModelUnits(const TCollection_AsciiString& theUnits)
 {
-  myDrawer->SetDimLengthModelUnits (theUnits);
+  myDrawer->SetDimLengthModelUnits(theUnits);
 }
 
 //=======================================================================
-//function : SetDisplayUnits
-//purpose  :
+// function : SetDisplayUnits
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::SetDisplayUnits (const TCollection_AsciiString& theUnits)
+void PrsDim_DiameterDimension::SetDisplayUnits(const TCollection_AsciiString& theUnits)
 {
-  myDrawer->SetDimLengthDisplayUnits (theUnits);
+  myDrawer->SetDimLengthDisplayUnits(theUnits);
 }
 
 //=======================================================================
-//function : ComputeValue
-//purpose  : 
+// function : ComputeValue
+// purpose  :
 //=======================================================================
 Standard_Real PrsDim_DiameterDimension::ComputeValue() const
 {
@@ -273,87 +269,88 @@ Standard_Real PrsDim_DiameterDimension::ComputeValue() const
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : 
+// function : Compute
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
-                                        const Handle(Prs3d_Presentation)& thePresentation,
-                                        const Standard_Integer theMode)
+void PrsDim_DiameterDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
+                                       const Handle(Prs3d_Presentation)& thePresentation,
+                                       const Standard_Integer            theMode)
 {
-  mySelectionGeom.Clear (theMode);
+  mySelectionGeom.Clear(theMode);
 
   if (!IsValid())
   {
     return;
   }
 
-  gp_Pnt aFirstPnt (gp::Origin());
-  gp_Pnt aSecondPnt (gp::Origin());
-  ComputeSidePoints (myCircle, aFirstPnt, aSecondPnt);
+  gp_Pnt aFirstPnt(gp::Origin());
+  gp_Pnt aSecondPnt(gp::Origin());
+  ComputeSidePoints(myCircle, aFirstPnt, aSecondPnt);
 
-  DrawLinearDimension (thePresentation, theMode, aFirstPnt, aSecondPnt);
+  DrawLinearDimension(thePresentation, theMode, aFirstPnt, aSecondPnt);
 }
 
 //=======================================================================
-//function : ComputeFlyoutSelection
-//purpose  : 
+// function : ComputeFlyoutSelection
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::ComputeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                       const Handle(SelectMgr_EntityOwner)& theEntityOwner)
+void PrsDim_DiameterDimension::ComputeFlyoutSelection(
+  const Handle(SelectMgr_Selection)&   theSelection,
+  const Handle(SelectMgr_EntityOwner)& theEntityOwner)
 {
   if (!IsValid())
   {
     return;
   }
 
-  gp_Pnt aFirstPnt (gp::Origin());
-  gp_Pnt aSecondPnt (gp::Origin());
-  ComputeSidePoints (myCircle, aFirstPnt, aSecondPnt);
+  gp_Pnt aFirstPnt(gp::Origin());
+  gp_Pnt aSecondPnt(gp::Origin());
+  ComputeSidePoints(myCircle, aFirstPnt, aSecondPnt);
 
-  ComputeLinearFlyouts (theSelection, theEntityOwner, aFirstPnt, aSecondPnt);
+  ComputeLinearFlyouts(theSelection, theEntityOwner, aFirstPnt, aSecondPnt);
 }
 
 //=======================================================================
-//function : ComputeSidePoints
-//purpose  : 
+// function : ComputeSidePoints
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::ComputeSidePoints (const gp_Circ& theCircle,
-                                                  gp_Pnt& theFirstPnt,
-                                                  gp_Pnt& theSecondPnt)
+void PrsDim_DiameterDimension::ComputeSidePoints(const gp_Circ& theCircle,
+                                                 gp_Pnt&        theFirstPnt,
+                                                 gp_Pnt&        theSecondPnt)
 {
   theFirstPnt = AnchorPoint();
 
-  gp_Vec aRadiusVector (theCircle.Location(), theFirstPnt);
-  theSecondPnt = theCircle.Location().Translated (-aRadiusVector);
+  gp_Vec aRadiusVector(theCircle.Location(), theFirstPnt);
+  theSecondPnt = theCircle.Location().Translated(-aRadiusVector);
 }
 
 //=======================================================================
-//function : IsValidCircle
-//purpose  : 
+// function : IsValidCircle
+// purpose  :
 //=======================================================================
-Standard_Boolean PrsDim_DiameterDimension::IsValidCircle (const gp_Circ& theCircle) const
+Standard_Boolean PrsDim_DiameterDimension::IsValidCircle(const gp_Circ& theCircle) const
 {
   return (theCircle.Radius() * 2.0) > Precision::Confusion();
 }
 
 //=======================================================================
-//function : IsValidAnchor
-//purpose  : 
+// function : IsValidAnchor
+// purpose  :
 //=======================================================================
-Standard_Boolean PrsDim_DiameterDimension::IsValidAnchor (const gp_Circ& theCircle,
-                                                          const gp_Pnt& theAnchor) const
+Standard_Boolean PrsDim_DiameterDimension::IsValidAnchor(const gp_Circ& theCircle,
+                                                         const gp_Pnt&  theAnchor) const
 {
-  gp_Pln aCirclePlane (theCircle.Location(), theCircle.Axis().Direction());
-  Standard_Real anAnchorDist = theAnchor.Distance (theCircle.Location());
+  gp_Pln        aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
+  Standard_Real anAnchorDist = theAnchor.Distance(theCircle.Location());
   Standard_Real aRadius      = myCircle.Radius();
 
-  return Abs (anAnchorDist - aRadius) > Precision::Confusion()
-      && aCirclePlane.Contains (theAnchor, Precision::Confusion());
+  return Abs(anAnchorDist - aRadius) > Precision::Confusion()
+         && aCirclePlane.Contains(theAnchor, Precision::Confusion());
 }
 
 //=======================================================================
-//function : GetTextPosition
-//purpose  : 
+// function : GetTextPosition
+// purpose  :
 //=======================================================================
 gp_Pnt PrsDim_DiameterDimension::GetTextPosition() const
 {
@@ -361,16 +358,16 @@ gp_Pnt PrsDim_DiameterDimension::GetTextPosition() const
   {
     return myFixedTextPosition;
   }
-  
+
   // Counts text position according to the dimension parameters
-  return GetTextPositionForLinear (myAnchorPoint, myCircle.Location());
+  return GetTextPositionForLinear(myAnchorPoint, myCircle.Location());
 }
 
 //=======================================================================
-//function : GetTextPosition
-//purpose  : 
+// function : GetTextPosition
+// purpose  :
 //=======================================================================
-void PrsDim_DiameterDimension::SetTextPosition (const gp_Pnt& theTextPos)
+void PrsDim_DiameterDimension::SetTextPosition(const gp_Pnt& theTextPos)
 {
   if (!IsValid())
   {
@@ -378,7 +375,7 @@ void PrsDim_DiameterDimension::SetTextPosition (const gp_Pnt& theTextPos)
   }
 
   myIsTextPositionFixed = Standard_True;
-  myFixedTextPosition = theTextPos;
+  myFixedTextPosition   = theTextPos;
 
   SetToUpdate();
 }

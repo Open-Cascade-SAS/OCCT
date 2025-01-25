@@ -37,13 +37,13 @@ Handle(Express_Schema)& Express::Schema()
 // purpose  : Write header of HXX or CXX file
 //=======================================================================
 
-void Express::WriteFileStamp (Standard_OStream& theOS)
+void Express::WriteFileStamp(Standard_OStream& theOS)
 {
   static const char* EC_VERSION = "2.0";
 
-  OSD_Process aProcess;
-  Quantity_Date aCurTime = aProcess.SystemDate();
-  OSD_Environment anEnv ("EXPTOCAS_TIME");
+  OSD_Process             aProcess;
+  Quantity_Date           aCurTime = aProcess.SystemDate();
+  OSD_Environment         anEnv("EXPTOCAS_TIME");
   TCollection_AsciiString aTimeString = anEnv.Value();
   if (aTimeString.IsEmpty())
   {
@@ -54,10 +54,17 @@ void Express::WriteFileStamp (Standard_OStream& theOS)
     aTimeString += aCurTime.Day();
   }
 
-  theOS << "// Created on : " << aTimeString << "\n"
-           "// Created by: " << aProcess.UserName() << "\n"
-           "// Generator: ExpToCasExe (EXPRESS -> CASCADE/XSTEP Translator) V" << EC_VERSION << "\n"
-           "// Copyright (c) Open CASCADE " << aCurTime.Year() << "\n"
+  theOS << "// Created on : " << aTimeString
+        << "\n"
+           "// Created by: "
+        << aProcess.UserName()
+        << "\n"
+           "// Generator: ExpToCasExe (EXPRESS -> CASCADE/XSTEP Translator) V"
+        << EC_VERSION
+        << "\n"
+           "// Copyright (c) Open CASCADE "
+        << aCurTime.Year()
+        << "\n"
            "//\n"
            "// This file is part of Open CASCADE Technology software library.\n"
            "//\n"
@@ -77,11 +84,13 @@ void Express::WriteFileStamp (Standard_OStream& theOS)
 // purpose  :
 //=======================================================================
 
-void Express::WriteMethodStamp (Standard_OStream& theOS, const TCollection_AsciiString& theName)
+void Express::WriteMethodStamp(Standard_OStream& theOS, const TCollection_AsciiString& theName)
 {
   theOS << "\n"
            "//=======================================================================\n"
-           "// function : " << theName << "\n"
+           "// function : "
+        << theName
+        << "\n"
            "// purpose  :\n"
            "//=======================================================================\n"
            "\n";
@@ -92,14 +101,14 @@ void Express::WriteMethodStamp (Standard_OStream& theOS, const TCollection_Ascii
 // purpose  :
 //=======================================================================
 
-TCollection_AsciiString Express::ToStepName (const TCollection_AsciiString& theName)
+TCollection_AsciiString Express::ToStepName(const TCollection_AsciiString& theName)
 {
   TCollection_AsciiString aStepName(theName);
   for (Standard_Integer i = 2; i <= aStepName.Length(); i++)
   {
-    if (isupper (aStepName.Value (i)))
+    if (isupper(aStepName.Value(i)))
     {
-      aStepName.Insert (i++, '_');
+      aStepName.Insert(i++, '_');
     }
   }
   aStepName.LowerCase();
@@ -112,18 +121,17 @@ TCollection_AsciiString Express::ToStepName (const TCollection_AsciiString& theN
 // purpose  :
 //=======================================================================
 
-TCollection_AsciiString Express::EnumPrefix (const TCollection_AsciiString& theName)
+TCollection_AsciiString Express::EnumPrefix(const TCollection_AsciiString& theName)
 {
   TCollection_AsciiString aStepName;
   for (Standard_Integer i = 1; i <= theName.Length(); i++)
   {
-    if (isupper (theName.Value (i)))
+    if (isupper(theName.Value(i)))
     {
-      aStepName += theName.Value (i);
+      aStepName += theName.Value(i);
     }
   }
   aStepName.LowerCase();
 
   return aStepName;
 }
-

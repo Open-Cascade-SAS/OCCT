@@ -20,5 +20,4 @@
 
 typedef NCollection_Vector<BOPDS_Point> BOPDS_VectorOfPoint;
 
-
 #endif

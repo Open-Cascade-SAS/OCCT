@@ -17,23 +17,24 @@
 #include <HLRAlgo_EdgeStatus.hxx>
 
 //=======================================================================
-//function : MoreHidden
-//purpose  : 
+// function : MoreHidden
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean HLRAlgo_EdgeIterator::MoreHidden () const
-{ return iHid <= myNbHid + 1; }
+inline Standard_Boolean HLRAlgo_EdgeIterator::MoreHidden() const
+{
+  return iHid <= myNbHid + 1;
+}
 
 //=======================================================================
-//function : Hidden
-//purpose  : 
+// function : Hidden
+// purpose  :
 //=======================================================================
 
-inline void 
-HLRAlgo_EdgeIterator::Hidden (Standard_Real& Start,
-			      Standard_ShortReal& TolStart,
-			      Standard_Real& End  ,
-			      Standard_ShortReal& TolEnd) const
+inline void HLRAlgo_EdgeIterator::Hidden(Standard_Real&      Start,
+                                         Standard_ShortReal& TolStart,
+                                         Standard_Real&      End,
+                                         Standard_ShortReal& TolEnd) const
 {
   Start    = myHidStart;
   TolStart = myHidTolStart;
@@ -42,12 +43,11 @@ HLRAlgo_EdgeIterator::Hidden (Standard_Real& Start,
 }
 
 //=======================================================================
-//function : InitVisible
-//purpose  : 
+// function : InitVisible
+// purpose  :
 //=======================================================================
 
-inline void 
-HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
+inline void HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 {
   EVis    = &status;
   iVis    = 1;
@@ -55,32 +55,34 @@ HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 }
 
 //=======================================================================
-//function : MoreVisible
-//purpose  : 
+// function : MoreVisible
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible () const
-{ return iVis <= myNbVis; }
+inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible() const
+{
+  return iVis <= myNbVis;
+}
 
 //=======================================================================
-//function : NextVisible
-//purpose  : 
+// function : NextVisible
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_EdgeIterator::NextVisible ()
-{ iVis++; }
+inline void HLRAlgo_EdgeIterator::NextVisible()
+{
+  iVis++;
+}
 
 //=======================================================================
-//function : Visible
-//purpose  : 
+// function : Visible
+// purpose  :
 //=======================================================================
 
-inline void 
-HLRAlgo_EdgeIterator::Visible (Standard_Real& Start,
-			       Standard_ShortReal& TolStart,
-			       Standard_Real& End  ,
-			       Standard_ShortReal& TolEnd)
-{ 
-  ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart
-    (iVis,Start,TolStart,End,TolEnd);
+inline void HLRAlgo_EdgeIterator::Visible(Standard_Real&      Start,
+                                          Standard_ShortReal& TolStart,
+                                          Standard_Real&      End,
+                                          Standard_ShortReal& TolEnd)
+{
+  ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart(iVis, Start, TolStart, End, TolEnd);
 }

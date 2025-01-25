@@ -30,67 +30,58 @@ class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Curve;
 class TopoDS_Shape;
 
-
 class TopOpeBRepDS_GapTool;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_GapTool, Standard_Transient)
-
 
 class TopOpeBRepDS_GapTool : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT TopOpeBRepDS_GapTool();
-  
+
   Standard_EXPORT TopOpeBRepDS_GapTool(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
-  Standard_EXPORT void Init (const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
-  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& Interferences (const Standard_Integer IndexPoint) const;
-  
-  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& SameInterferences (const Handle(TopOpeBRepDS_Interference)& I) const;
-  
-  Standard_EXPORT TopOpeBRepDS_ListOfInterference& ChangeSameInterferences (const Handle(TopOpeBRepDS_Interference)& I);
-  
-  Standard_EXPORT Standard_Boolean Curve (const Handle(TopOpeBRepDS_Interference)& I, TopOpeBRepDS_Curve& C) const;
-  
-  Standard_EXPORT Standard_Boolean EdgeSupport (const Handle(TopOpeBRepDS_Interference)& I, TopoDS_Shape& E) const;
-  
+
+  Standard_EXPORT void Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+
+  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& Interferences(
+    const Standard_Integer IndexPoint) const;
+
+  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& SameInterferences(
+    const Handle(TopOpeBRepDS_Interference)& I) const;
+
+  Standard_EXPORT TopOpeBRepDS_ListOfInterference& ChangeSameInterferences(
+    const Handle(TopOpeBRepDS_Interference)& I);
+
+  Standard_EXPORT Standard_Boolean Curve(const Handle(TopOpeBRepDS_Interference)& I,
+                                         TopOpeBRepDS_Curve&                      C) const;
+
+  Standard_EXPORT Standard_Boolean EdgeSupport(const Handle(TopOpeBRepDS_Interference)& I,
+                                               TopoDS_Shape&                            E) const;
+
   //! Return les faces qui  ont genere la section origine
   //! de I
-  Standard_EXPORT Standard_Boolean FacesSupport (const Handle(TopOpeBRepDS_Interference)& I, TopoDS_Shape& F1, TopoDS_Shape& F2) const;
-  
-  Standard_EXPORT Standard_Boolean ParameterOnEdge (const Handle(TopOpeBRepDS_Interference)& I, const TopoDS_Shape& E, Standard_Real& U) const;
-  
-  Standard_EXPORT void SetPoint (const Handle(TopOpeBRepDS_Interference)& I, const Standard_Integer IndexPoint);
-  
-  Standard_EXPORT void SetParameterOnEdge (const Handle(TopOpeBRepDS_Interference)& I, const TopoDS_Shape& E, const Standard_Real U);
+  Standard_EXPORT Standard_Boolean FacesSupport(const Handle(TopOpeBRepDS_Interference)& I,
+                                                TopoDS_Shape&                            F1,
+                                                TopoDS_Shape&                            F2) const;
 
+  Standard_EXPORT Standard_Boolean ParameterOnEdge(const Handle(TopOpeBRepDS_Interference)& I,
+                                                   const TopoDS_Shape&                      E,
+                                                   Standard_Real& U) const;
 
+  Standard_EXPORT void SetPoint(const Handle(TopOpeBRepDS_Interference)& I,
+                                const Standard_Integer                   IndexPoint);
 
+  Standard_EXPORT void SetParameterOnEdge(const Handle(TopOpeBRepDS_Interference)& I,
+                                          const TopoDS_Shape&                      E,
+                                          const Standard_Real                      U);
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TopOpeBRepDS_HDataStructure) myHDS;
+  Handle(TopOpeBRepDS_HDataStructure)             myHDS;
   TopOpeBRepDS_DataMapOfIntegerListOfInterference myGToI;
-  TopOpeBRepDS_DataMapOfInterferenceShape myInterToShape;
-
-
+  TopOpeBRepDS_DataMapOfInterferenceShape         myInterToShape;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_GapTool_HeaderFile

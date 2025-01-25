@@ -24,7 +24,6 @@ class TCollection_HAsciiString;
 class StepRepr_RepresentationItem;
 class StepRepr_Representation;
 
-
 class StepElement_AnalysisItemWithinRepresentation;
 DEFINE_STANDARD_HANDLE(StepElement_AnalysisItemWithinRepresentation, Standard_Transient)
 
@@ -33,63 +32,47 @@ class StepElement_AnalysisItemWithinRepresentation : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_AnalysisItemWithinRepresentation();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepRepr_RepresentationItem)& aItem, const Handle(StepRepr_Representation)& aRep);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
+                            const Handle(TCollection_HAsciiString)&    aDescription,
+                            const Handle(StepRepr_RepresentationItem)& aItem,
+                            const Handle(StepRepr_Representation)&     aRep);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns field Item
   Standard_EXPORT Handle(StepRepr_RepresentationItem) Item() const;
-  
+
   //! Set field Item
-  Standard_EXPORT void SetItem (const Handle(StepRepr_RepresentationItem)& Item);
-  
+  Standard_EXPORT void SetItem(const Handle(StepRepr_RepresentationItem)& Item);
+
   //! Returns field Rep
   Standard_EXPORT Handle(StepRepr_Representation) Rep() const;
-  
+
   //! Set field Rep
-  Standard_EXPORT void SetRep (const Handle(StepRepr_Representation)& Rep);
+  Standard_EXPORT void SetRep(const Handle(StepRepr_Representation)& Rep);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
+  Handle(TCollection_HAsciiString)    theName;
+  Handle(TCollection_HAsciiString)    theDescription;
   Handle(StepRepr_RepresentationItem) theItem;
-  Handle(StepRepr_Representation) theRep;
-
-
+  Handle(StepRepr_Representation)     theRep;
 };
-
-
-
-
-
-
 
 #endif // _StepElement_AnalysisItemWithinRepresentation_HeaderFile

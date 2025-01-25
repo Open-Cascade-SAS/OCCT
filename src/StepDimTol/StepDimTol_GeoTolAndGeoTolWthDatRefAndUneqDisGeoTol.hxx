@@ -27,46 +27,49 @@ class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepRepr_ShapeAspect;
 
-
 class StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol, StepDimTol_GeoTolAndGeoTolWthDatRef)
+DEFINE_STANDARD_HANDLE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,
+                       StepDimTol_GeoTolAndGeoTolWthDatRef)
 
-class StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol : public StepDimTol_GeoTolAndGeoTolWthDatRef
+class StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol
+    : public StepDimTol_GeoTolAndGeoTolWthDatRef
 {
 
 public:
-
-  
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, 
-                             const Handle(TCollection_HAsciiString)& theDescription, 
-                             const Handle(StepBasic_MeasureWithUnit)& theMagnitude, 
-                             const Handle(StepRepr_ShapeAspect)& theTolerancedShapeAspect, 
-                             const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR, 
-                             const StepDimTol_GeometricToleranceType theType,
-                             const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& theUDGT);
 
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, 
-                             const Handle(TCollection_HAsciiString)& aDescription, 
-                             const Handle(StepBasic_MeasureWithUnit)& aMagnitude, 
-                             const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect, 
-                             const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR, 
-                             const StepDimTol_GeometricToleranceType theType,
-                             const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& theUDGT);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  theName,
+                            const Handle(TCollection_HAsciiString)&  theDescription,
+                            const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
+                            const Handle(StepRepr_ShapeAspect)&      theTolerancedShapeAspect,
+                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
+                            const StepDimTol_GeometricToleranceType                        theType,
+                            const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)&  theUDGT);
 
-  inline void SetUnequallyDisposedGeometricTolerance (const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& theUDGT){
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
+                            const Handle(TCollection_HAsciiString)&    aDescription,
+                            const Handle(StepBasic_MeasureWithUnit)&   aMagnitude,
+                            const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
+                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
+                            const StepDimTol_GeometricToleranceType                        theType,
+                            const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)&  theUDGT);
+
+  inline void SetUnequallyDisposedGeometricTolerance(
+    const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& theUDGT)
+  {
     myUnequallyDisposedGeometricTolerance = theUDGT;
   }
-  
-  inline Handle(StepDimTol_UnequallyDisposedGeometricTolerance) GetUnequallyDisposedGeometricTolerance() const {
+
+  inline Handle(StepDimTol_UnequallyDisposedGeometricTolerance)
+    GetUnequallyDisposedGeometricTolerance() const
+  {
     return myUnequallyDisposedGeometricTolerance;
   }
-  
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,StepDimTol_GeoTolAndGeoTolWthDatRef)
+
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,
+                          StepDimTol_GeoTolAndGeoTolWthDatRef)
 
 private:
-
   Handle(StepDimTol_UnequallyDisposedGeometricTolerance) myUnequallyDisposedGeometricTolerance;
 };
 #endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol_HeaderFile

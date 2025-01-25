@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-
 class TransferBRep_TransferResultInfo;
 DEFINE_STANDARD_HANDLE(TransferBRep_TransferResultInfo, Standard_Transient)
 
@@ -41,43 +40,32 @@ class TransferBRep_TransferResultInfo : public Standard_Transient
 {
 
 public:
-
-  
   //! Creates object with all fields nullified.
   Standard_EXPORT TransferBRep_TransferResultInfo();
-  
+
   //! Resets all the fields.
   Standard_EXPORT void Clear();
-  
-    Standard_Integer& Result();
-  
-    Standard_Integer& ResultWarning();
-  
-    Standard_Integer& ResultFail();
-  
-    Standard_Integer& ResultWarningFail();
-  
-    Standard_Integer& NoResult();
-  
-    Standard_Integer& NoResultWarning();
-  
-    Standard_Integer& NoResultFail();
-  
-    Standard_Integer& NoResultWarningFail();
 
+  Standard_Integer& Result();
 
+  Standard_Integer& ResultWarning();
 
+  Standard_Integer& ResultFail();
 
-  DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,Standard_Transient)
+  Standard_Integer& ResultWarningFail();
+
+  Standard_Integer& NoResult();
+
+  Standard_Integer& NoResultWarning();
+
+  Standard_Integer& NoResultFail();
+
+  Standard_Integer& NoResultWarningFail();
+
+  DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer myR;
   Standard_Integer myRW;
   Standard_Integer myRF;
@@ -86,15 +74,8 @@ private:
   Standard_Integer myNRW;
   Standard_Integer myNRF;
   Standard_Integer myNRWF;
-
-
 };
 
-
 #include <TransferBRep_TransferResultInfo.lxx>
-
-
-
-
 
 #endif // _TransferBRep_TransferResultInfo_HeaderFile

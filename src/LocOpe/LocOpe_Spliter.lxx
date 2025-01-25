@@ -17,42 +17,40 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : LocOpe_Spliter
-//purpose  : 
+// function : LocOpe_Spliter
+// purpose  :
 //=======================================================================
 
 inline LocOpe_Spliter::LocOpe_Spliter()
-: myDone(Standard_False)
+    : myDone(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : LocOpe_Spliter
-//purpose  : 
+// function : LocOpe_Spliter
+// purpose  :
 //=======================================================================
 
-inline LocOpe_Spliter::LocOpe_Spliter(const TopoDS_Shape& S):
-   myShape(S), myDone(Standard_False)
+inline LocOpe_Spliter::LocOpe_Spliter(const TopoDS_Shape& S)
+    : myShape(S),
+      myDone(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 inline void LocOpe_Spliter::Init(const TopoDS_Shape& S)
 {
   myShape = S;
-  myDone = Standard_False;
+  myDone  = Standard_False;
 }
 
-
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_Spliter::IsDone() const
@@ -61,8 +59,8 @@ inline Standard_Boolean LocOpe_Spliter::IsDone() const
 }
 
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& LocOpe_Spliter::Shape() const
@@ -70,16 +68,16 @@ inline const TopoDS_Shape& LocOpe_Spliter::Shape() const
   return myShape;
 }
 
-
 //=======================================================================
-//function : ResultingShape
-//purpose  : 
+// function : ResultingShape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& LocOpe_Spliter::ResultingShape() const
 {
-  if (!myDone) {throw StdFail_NotDone();}
+  if (!myDone)
+  {
+    throw StdFail_NotDone();
+  }
   return myRes;
 }
-
-

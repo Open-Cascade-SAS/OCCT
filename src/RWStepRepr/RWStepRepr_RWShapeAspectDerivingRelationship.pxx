@@ -27,48 +27,31 @@ class StepRepr_ShapeAspectDerivingRelationship;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for ShapeAspectDerivingRelationship
-class RWStepRepr_RWShapeAspectDerivingRelationship 
+class RWStepRepr_RWShapeAspectDerivingRelationship
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepRepr_RWShapeAspectDerivingRelationship();
-  
+
   //! Reads ShapeAspectDerivingRelationship
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                  data,
+                                const Standard_Integer                                  num,
+                                Handle(Interface_Check)&                                ach,
+                                const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent) const;
+
   //! Writes ShapeAspectDerivingRelationship
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                    SW,
+                                 const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepRepr_ShapeAspectDerivingRelationship)& ent,
+                             Interface_EntityIterator&                               iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepRepr_RWShapeAspectDerivingRelationship_HeaderFile

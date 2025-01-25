@@ -16,45 +16,74 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntAna_IntConicQuad::IsDone() const {
-  return(done);
+inline Standard_Boolean IntAna_IntConicQuad::IsDone() const
+{
+  return (done);
 }
 
-
-inline Standard_Boolean IntAna_IntConicQuad::IsInQuadric() const {
-  if (!done) {throw StdFail_NotDone();}
-  return(inquadric);
+inline Standard_Boolean IntAna_IntConicQuad::IsInQuadric() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return (inquadric);
 }
 
-
-inline Standard_Boolean IntAna_IntConicQuad::IsParallel() const {
-  if(!done) {throw StdFail_NotDone();}
-  return(parallel);
+inline Standard_Boolean IntAna_IntConicQuad::IsParallel() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return (parallel);
 }
 
-
-inline Standard_Integer IntAna_IntConicQuad::NbPoints() const {
-  if(!done) {throw StdFail_NotDone();}
-  if (parallel || inquadric) {throw Standard_DomainError();}
-  return(nbpts);
+inline Standard_Integer IntAna_IntConicQuad::NbPoints() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (parallel || inquadric)
+  {
+    throw Standard_DomainError();
+  }
+  return (nbpts);
 }
 
+inline const gp_Pnt& IntAna_IntConicQuad::Point(const Standard_Integer i) const
+{
 
-inline const gp_Pnt& IntAna_IntConicQuad::Point
-  (const Standard_Integer i) const {
-
-  if(!done) {throw StdFail_NotDone();}
-  if (parallel || inquadric) {throw Standard_DomainError();}
-  if((i>nbpts)||(i<=0)) {throw Standard_OutOfRange();}
-  return(pnts[i-1]);
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (parallel || inquadric)
+  {
+    throw Standard_DomainError();
+  }
+  if ((i > nbpts) || (i <= 0))
+  {
+    throw Standard_OutOfRange();
+  }
+  return (pnts[i - 1]);
 }
 
+inline Standard_Real IntAna_IntConicQuad::ParamOnConic(const Standard_Integer i) const
+{
 
-inline Standard_Real IntAna_IntConicQuad::ParamOnConic
-  (const Standard_Integer i) const {  
-
-  if(!done) {throw StdFail_NotDone();}
-  if (parallel || inquadric) {throw Standard_DomainError();}
-  if((i>nbpts)||(i<=0)) {throw Standard_OutOfRange();}
-  return(paramonc[i-1]);
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (parallel || inquadric)
+  {
+    throw Standard_DomainError();
+  }
+  if ((i > nbpts) || (i <= 0))
+  {
+    throw Standard_OutOfRange();
+  }
+  return (paramonc[i - 1]);
 }

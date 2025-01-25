@@ -20,46 +20,54 @@
 #include <Standard_Integer.hxx>
 #include <Aspect_Grid.hxx>
 
-
 class Aspect_CircularGrid : public Aspect_Grid
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_CircularGrid, Aspect_Grid)
 public:
-
   //! creates a new grid. By default this grid is not
   //! active.
-  Standard_EXPORT Aspect_CircularGrid(const Standard_Real aRadiusStep, const Standard_Integer aDivisionNumber, const Standard_Real XOrigin = 0, const Standard_Real anYOrigin = 0, const Standard_Real aRotationAngle = 0);
-  
+  Standard_EXPORT Aspect_CircularGrid(const Standard_Real    aRadiusStep,
+                                      const Standard_Integer aDivisionNumber,
+                                      const Standard_Real    XOrigin        = 0,
+                                      const Standard_Real    anYOrigin      = 0,
+                                      const Standard_Real    aRotationAngle = 0);
+
   //! defines the x step of the grid.
-  Standard_EXPORT void SetRadiusStep (const Standard_Real aStep);
-  
+  Standard_EXPORT void SetRadiusStep(const Standard_Real aStep);
+
   //! defines the step of the grid.
-  Standard_EXPORT void SetDivisionNumber (const Standard_Integer aNumber);
-  
-  Standard_EXPORT void SetGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real RadiusStep, const Standard_Integer DivisionNumber, const Standard_Real RotationAngle);
-  
+  Standard_EXPORT void SetDivisionNumber(const Standard_Integer aNumber);
+
+  Standard_EXPORT void SetGridValues(const Standard_Real    XOrigin,
+                                     const Standard_Real    YOrigin,
+                                     const Standard_Real    RadiusStep,
+                                     const Standard_Integer DivisionNumber,
+                                     const Standard_Real    RotationAngle);
+
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT virtual void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute(const Standard_Real X,
+                                       const Standard_Real Y,
+                                       Standard_Real&      gridX,
+                                       Standard_Real&      gridY) const Standard_OVERRIDE;
+
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Real RadiusStep() const;
-  
+
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Integer DivisionNumber() const;
-  
+
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
-  
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
-  Standard_Real myRadiusStep;
+  Standard_Real    myRadiusStep;
   Standard_Integer myDivisionNumber;
-  Standard_Real myAlpha;
-  Standard_Real myA1;
-  Standard_Real myB1;
-
+  Standard_Real    myAlpha;
+  Standard_Real    myA1;
+  Standard_Real    myB1;
 };
 
 DEFINE_STANDARD_HANDLE(Aspect_CircularGrid, Aspect_Grid)

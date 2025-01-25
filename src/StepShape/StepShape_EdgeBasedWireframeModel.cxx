@@ -18,23 +18,22 @@
 #include <StepShape_EdgeBasedWireframeModel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel, StepGeom_GeometricRepresentationItem)
 
 //=======================================================================
-//function : StepShape_EdgeBasedWireframeModel
-//purpose  : 
+// function : StepShape_EdgeBasedWireframeModel
+// purpose  :
 //=======================================================================
-StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel ()
-{
-}
+StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepShape_EdgeBasedWireframeModel::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                              const Handle(StepShape_HArray1OfConnectedEdgeSet) &aEbwmBoundary)
+void StepShape_EdgeBasedWireframeModel::Init(
+  const Handle(TCollection_HAsciiString)&            aRepresentationItem_Name,
+  const Handle(StepShape_HArray1OfConnectedEdgeSet)& aEbwmBoundary)
 {
   StepGeom_GeometricRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -42,21 +41,22 @@ void StepShape_EdgeBasedWireframeModel::Init (const Handle(TCollection_HAsciiStr
 }
 
 //=======================================================================
-//function : EbwmBoundary
-//purpose  : 
+// function : EbwmBoundary
+// purpose  :
 //=======================================================================
 
-Handle(StepShape_HArray1OfConnectedEdgeSet) StepShape_EdgeBasedWireframeModel::EbwmBoundary () const
+Handle(StepShape_HArray1OfConnectedEdgeSet) StepShape_EdgeBasedWireframeModel::EbwmBoundary() const
 {
   return theEbwmBoundary;
 }
 
 //=======================================================================
-//function : SetEbwmBoundary
-//purpose  : 
+// function : SetEbwmBoundary
+// purpose  :
 //=======================================================================
 
-void StepShape_EdgeBasedWireframeModel::SetEbwmBoundary (const Handle(StepShape_HArray1OfConnectedEdgeSet) &aEbwmBoundary)
+void StepShape_EdgeBasedWireframeModel::SetEbwmBoundary(
+  const Handle(StepShape_HArray1OfConnectedEdgeSet)& aEbwmBoundary)
 {
   theEbwmBoundary = aEbwmBoundary;
 }

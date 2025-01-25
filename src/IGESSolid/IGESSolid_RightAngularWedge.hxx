@@ -25,7 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-
 class IGESSolid_RightAngularWedge;
 DEFINE_STANDARD_HANDLE(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
@@ -36,10 +35,8 @@ class IGESSolid_RightAngularWedge : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_RightAngularWedge();
-  
+
   //! This method is used to set the fields of the class
   //! RightAngularWedge
   //! - aSize    : the lengths along the local axes
@@ -50,78 +47,65 @@ public:
   //! default (1,0,0)
   //! - anZAxis  : the unit vector defining local Z-axis
   //! default (0,0,1)
-  Standard_EXPORT void Init (const gp_XYZ& aSize, const Standard_Real lowX, const gp_XYZ& aCorner, const gp_XYZ& anXAxis, const gp_XYZ& anZAxis);
-  
+  Standard_EXPORT void Init(const gp_XYZ&       aSize,
+                            const Standard_Real lowX,
+                            const gp_XYZ&       aCorner,
+                            const gp_XYZ&       anXAxis,
+                            const gp_XYZ&       anZAxis);
+
   //! returns the size
   Standard_EXPORT gp_XYZ Size() const;
-  
+
   //! returns the length along the local X-axis
   Standard_EXPORT Standard_Real XBigLength() const;
-  
+
   //! returns the smaller length along the local X-direction at Y=LY
   Standard_EXPORT Standard_Real XSmallLength() const;
-  
+
   //! returns the length along the local Y-axis
   Standard_EXPORT Standard_Real YLength() const;
-  
+
   //! returns the length along the local Z-axis
   Standard_EXPORT Standard_Real ZLength() const;
-  
+
   //! returns the corner point coordinates
   Standard_EXPORT gp_Pnt Corner() const;
-  
+
   //! returns the corner point coordinates after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Pnt TransformedCorner() const;
-  
+
   //! returns the direction defining the local X-axis
   Standard_EXPORT gp_Dir XAxis() const;
-  
+
   //! returns the direction defining the local X-axis
   //! after applying the TransformationMatrix
   Standard_EXPORT gp_Dir TransformedXAxis() const;
-  
+
   //! returns the direction defining the local Y-axis
   //! it is got by taking the cross product of ZAxis and XAxis
   Standard_EXPORT gp_Dir YAxis() const;
-  
+
   //! returns the direction defining the local Y-axis
   //! after applying the TransformationMatrix
   Standard_EXPORT gp_Dir TransformedYAxis() const;
-  
+
   //! returns the direction defining the local Z-axis
   Standard_EXPORT gp_Dir ZAxis() const;
-  
+
   //! returns the direction defining the local Z-axis
   //! after applying the TransformationMatrix
   Standard_EXPORT gp_Dir TransformedZAxis() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_XYZ theSize;
+  gp_XYZ        theSize;
   Standard_Real theXSmallLength;
-  gp_XYZ theCorner;
-  gp_XYZ theXAxis;
-  gp_XYZ theZAxis;
-
-
+  gp_XYZ        theCorner;
+  gp_XYZ        theXAxis;
+  gp_XYZ        theZAxis;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_RightAngularWedge_HeaderFile

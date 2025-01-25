@@ -27,7 +27,6 @@
 class TopoDS_Wire;
 class TopoDS_Shape;
 
-
 //! Describes functions to build pipes.
 //! A pipe is built a basis shape (called the profile) along
 //! a wire (called the spine) by sweeping.
@@ -39,13 +38,11 @@ class TopoDS_Shape;
 //! Warning
 //! The MakePipe class implements pipe constructions
 //! with G1 continuous spines only.
-class BRepOffsetAPI_MakePipe  : public BRepPrimAPI_MakeSweep
+class BRepOffsetAPI_MakePipe : public BRepPrimAPI_MakeSweep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a pipe by sweeping the shape Profile along
   //! the wire Spine.The angle made by the spine with the profile is
   //! maintained along the length of the pipe.
@@ -58,52 +55,38 @@ public:
   //! Standard_DomainError if the profile is a solid or a
   //! composite solid.
   Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile);
-  
+
   //! the same as previous but with setting of
   //! mode of sweep and the flag that indicates attempt
   //! to approximate a C1-continuous surface if a swept
   //! surface proved to be C0.
-  Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile, const GeomFill_Trihedron aMode, const Standard_Boolean ForceApproxC1 = Standard_False);
-  
+  Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
+                                         const TopoDS_Shape&      Profile,
+                                         const GeomFill_Trihedron aMode,
+                                         const Standard_Boolean   ForceApproxC1 = Standard_False);
+
   Standard_EXPORT const BRepFill_Pipe& Pipe() const;
-  
+
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+
   //! Returns the  TopoDS  Shape of the bottom of the prism.
   Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
-  
+
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
+    Standard_OVERRIDE;
+
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
-  
+
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   BRepFill_Pipe myPipe;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffsetAPI_MakePipe_HeaderFile

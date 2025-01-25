@@ -26,40 +26,40 @@ class Adaptor2d_Curve2d;
 //! Adpator_CurveOnSurface  relatively  to    the
 //! discontinuities of the surface. Used to
 //! find the roots of the functions
-class Adaptor3d_InterFunc  : public math_FunctionWithDerivative
+class Adaptor3d_InterFunc : public math_FunctionWithDerivative
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! build the function  U(t)=FixVal   if Fix =1 or
   //! V(t)=FixVal if Fix=2
-  Standard_EXPORT Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C, const Standard_Real FixVal, const Standard_Integer Fix);
-  
+  Standard_EXPORT Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
+                                      const Standard_Real              FixVal,
+                                      const Standard_Integer           Fix);
+
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F);
-  
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivative (const Standard_Real X, Standard_Real& D);
-  
+  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values (const Standard_Real X, Standard_Real& F, Standard_Real& D);
+  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
+                                          Standard_Real&      F,
+                                          Standard_Real&      D);
 
 private:
-
   Handle(Adaptor2d_Curve2d) myCurve2d;
-  Standard_Real myFixVal;
-  Standard_Integer myFix;
-
+  Standard_Real             myFixVal;
+  Standard_Integer          myFix;
 };
 
 #endif // _Adaptor3d_InterFunc_HeaderFile

@@ -23,15 +23,14 @@
 
 class StepRepr_CompositeGroupShapeAspect;
 DEFINE_STANDARD_HANDLE(StepRepr_CompositeGroupShapeAspect, StepRepr_CompositeShapeAspect)
+
 //! Added for Dimensional Tolerances
 class StepRepr_CompositeGroupShapeAspect : public StepRepr_CompositeShapeAspect
 {
 
 public:
-  
   Standard_EXPORT StepRepr_CompositeGroupShapeAspect();
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeGroupShapeAspect,StepRepr_CompositeShapeAspect)
-
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeGroupShapeAspect, StepRepr_CompositeShapeAspect)
 };
 #endif // _StepRepr_CompositeGroupShapeAspect_HeaderFile

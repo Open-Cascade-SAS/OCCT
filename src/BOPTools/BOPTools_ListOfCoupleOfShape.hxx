@@ -15,10 +15,10 @@
 #ifndef BOPTools_ListOfCoupleOfShape_HeaderFile
 #define BOPTools_ListOfCoupleOfShape_HeaderFile
 
-#include <NCollection_List.hxx>  
+#include <NCollection_List.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
 
-typedef NCollection_List<BOPTools_CoupleOfShape> BOPTools_ListOfCoupleOfShape; 
-typedef BOPTools_ListOfCoupleOfShape::Iterator BOPTools_ListIteratorOfListOfCoupleOfShape;  
+typedef NCollection_List<BOPTools_CoupleOfShape> BOPTools_ListOfCoupleOfShape;
+typedef BOPTools_ListOfCoupleOfShape::Iterator   BOPTools_ListIteratorOfListOfCoupleOfShape;
 
 #endif

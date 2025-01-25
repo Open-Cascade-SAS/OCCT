@@ -21,17 +21,29 @@
 //*************************************************
 
 static Standard_Boolean Blend_traceDRAWSECT = Standard_False;
-void Blend_SettraceDRAWSECT(const Standard_Boolean b) 
-{ Blend_traceDRAWSECT = b; }
-Standard_Boolean Blend_GettraceDRAWSECT() 
-{ return Blend_traceDRAWSECT; }
+
+void Blend_SettraceDRAWSECT(const Standard_Boolean b)
+{
+  Blend_traceDRAWSECT = b;
+}
+
+Standard_Boolean Blend_GettraceDRAWSECT()
+{
+  return Blend_traceDRAWSECT;
+}
 
 //*************************************************
 // Contexte sans test de deflexion
 //*************************************************
 
 static Standard_Boolean Blend_contextNOTESTDEFL = Standard_False;
-void Blend_SetcontextNOTESTDEFL(const Standard_Boolean b) 
-{ Blend_contextNOTESTDEFL = b; }
-Standard_Boolean Blend_GetcontextNOTESTDEFL() 
-{ return Blend_contextNOTESTDEFL; }
+
+void Blend_SetcontextNOTESTDEFL(const Standard_Boolean b)
+{
+  Blend_contextNOTESTDEFL = b;
+}
+
+Standard_Boolean Blend_GetcontextNOTESTDEFL()
+{
+  return Blend_contextNOTESTDEFL;
+}

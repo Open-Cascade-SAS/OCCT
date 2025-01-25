@@ -10,7 +10,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef _BOPAlgo_BOP_HeaderFile
 #define _BOPAlgo_BOP_HeaderFile
@@ -60,45 +60,44 @@ class BOPAlgo_PaveFiller;
 //! - *BOPAlgo_AlertSolidBuilderFailed* - in case the BuilderSolid algorithm failed to
 //!                          produce the Fused solid.
 //!
-class BOPAlgo_BOP  : public BOPAlgo_ToolsProvider
+class BOPAlgo_BOP : public BOPAlgo_ToolsProvider
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT BOPAlgo_BOP();
   Standard_EXPORT virtual ~BOPAlgo_BOP();
-  
+
   Standard_EXPORT BOPAlgo_BOP(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
+
   //! Clears internal fields and arguments
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetOperation (const BOPAlgo_Operation theOperation);
-  
+
+  Standard_EXPORT void SetOperation(const BOPAlgo_Operation theOperation);
+
   Standard_EXPORT BOPAlgo_Operation Operation() const;
-  
-  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Perform(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
-  
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
-  
+
   //! Performs calculations using prepared Filler
   //! object <thePF>
-  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF,
-                                                 const Message_ProgressRange& theRange) Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
+                                                const Message_ProgressRange& theRange)
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void BuildResult (const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
+
   Standard_EXPORT void BuildShape(const Message_ProgressRange& theRange);
-  
+
   Standard_EXPORT void BuildRC(const Message_ProgressRange& theRange);
-  
+
   Standard_EXPORT void BuildSolid(const Message_ProgressRange& theRange);
-  
+
   //! Treatment of the cases with empty shapes.<br>
   //! It returns TRUE if there is nothing to do, i.e.
   //! all shapes in one of the groups are empty shapes.
@@ -111,7 +110,6 @@ protected:
   Standard_EXPORT virtual Standard_Boolean CheckArgsForOpenSolid();
 
 protected:
-
   //! Extend list of operations to be supported by the Progress Indicator
   enum BOPAlgo_PIOperation
   {
@@ -120,10 +118,10 @@ protected:
   };
 
   //! Fill PI steps
-  Standard_EXPORT virtual void fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void fillPIConstants(const Standard_Real theWhole,
+                                               BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 protected:
-
   BOPAlgo_Operation myOperation;
   Standard_Integer  myDims[2];
   TopoDS_Shape      myRC;

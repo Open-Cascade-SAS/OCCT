@@ -22,10 +22,10 @@
 class DsgPrs_DatumPrs : public Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  //! Draw XYZ axes at specified location with attributes defined by the attribute manager theDrawer:
+  //! Draw XYZ axes at specified location with attributes defined by the attribute manager
+  //! theDrawer:
   //! - Prs3d_DatumAspect defines arrow, line and length trihedron axis parameters,
   //! - Prs3d_TextAspect defines displayed text.
   //! The thihedron origin and axis directions are defined by theDatum coordinate system.
@@ -34,8 +34,8 @@ public:
   //! @param[out] thePresentation  the modified presentation
   //! @param[in] theDatum  the source of trihedron position
   //! @param[in] theDrawer  the provider of display attributes
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& thePresentation, const gp_Ax2& theDatum,
-                                   const Handle(Prs3d_Drawer)& theDrawer);
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+                                  const gp_Ax2&                     theDatum,
+                                  const Handle(Prs3d_Drawer)&       theDrawer);
 };
 #endif

@@ -17,22 +17,52 @@
 #ifndef _TopOpeBRepTool_KRO_HeaderFile
 #define _TopOpeBRepTool_KRO_HeaderFile
 #ifdef OCCT_DEBUG
-#include <OSD_Chronometer.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Standard_OStream.hxx>
+  #include <OSD_Chronometer.hxx>
+  #include <TCollection_AsciiString.hxx>
+  #include <Standard_OStream.hxx>
 
 // POP pour NT
-class TOPKRO:
-public OSD_Chronometer{
+class TOPKRO : public OSD_Chronometer
+{
 public:
   TOPKRO(const TCollection_AsciiString& n)
-    :myname(n),mystart(0),mystop(0){myname.RightJustify(30,' ');}
-  virtual void Start(){mystart=1;OSD_Chronometer::Start();}
-  virtual void Stop(){OSD_Chronometer::Stop();mystop=1;}
-  void Print(Standard_OStream& OS){Standard_Real s;Show(s);OS<<myname<<" : ";
-				   if(!mystart)OS<<"(inactif)";else{OS<<s<<" secondes";if(!mystop)OS<<" (run)";}}
+      : myname(n),
+        mystart(0),
+        mystop(0)
+  {
+    myname.RightJustify(30, ' ');
+  }
+
+  virtual void Start()
+  {
+    mystart = 1;
+    OSD_Chronometer::Start();
+  }
+
+  virtual void Stop()
+  {
+    OSD_Chronometer::Stop();
+    mystop = 1;
+  }
+
+  void Print(Standard_OStream& OS)
+  {
+    Standard_Real s;
+    Show(s);
+    OS << myname << " : ";
+    if (!mystart)
+      OS << "(inactif)";
+    else
+    {
+      OS << s << " secondes";
+      if (!mystop)
+        OS << " (run)";
+    }
+  }
+
 private:
-  TCollection_AsciiString myname;Standard_Integer mystart,mystop;
+  TCollection_AsciiString myname;
+  Standard_Integer        mystart, mystop;
 };
 #endif
 #endif

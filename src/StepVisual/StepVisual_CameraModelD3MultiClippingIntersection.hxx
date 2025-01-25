@@ -23,20 +23,23 @@
 class StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect;
 class TCollection_HAsciiString;
 
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingIntersection, StepGeom_GeometricRepresentationItem)
+DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingIntersection,
+                       StepGeom_GeometricRepresentationItem)
 
-class StepVisual_CameraModelD3MultiClippingIntersection : public StepGeom_GeometricRepresentationItem
+class StepVisual_CameraModelD3MultiClippingIntersection
+    : public StepGeom_GeometricRepresentationItem
 {
 public:
-
-  
   //! Returns a StepVisual_CameraModelD3MultiClippingIntersection
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingIntersection();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
-                             const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping);
-  
-  void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
+
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)& theName,
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)&
+      theShapeClipping);
+
+  void SetShapeClipping(
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
@@ -45,10 +48,10 @@ public:
   {
     return myShapeClipping;
   }
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingIntersection, StepGeom_GeometricRepresentationItem)
-  
-private:
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingIntersection,
+                          StepGeom_GeometricRepresentationItem)
 
-Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
+private:
+  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingIntersection_HeaderFile

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GCE2d_MakeMirror.hxx>
 #include <Geom2d_Transformation.hxx>
 #include <gp_Ax2d.hxx>
@@ -25,7 +24,8 @@
 //=========================================================================
 //   Creation d une symetrie de Geom2d par rapport a un point.              +
 //=========================================================================
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d&  Point ) {
+GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point)
+{
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(Point);
 }
@@ -34,7 +34,8 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d&  Point ) {
 //   Creation d une symetrie de Geom2d par rapport a une droite.            +
 //=========================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d&  Axis ) {
+GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d& Axis)
+{
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(Axis);
 }
@@ -43,9 +44,10 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d&  Axis ) {
 //   Creation d une symetrie de Geom2d par rapport a une droite.            +
 //=========================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d&  Line ) {
+GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d& Line)
+{
   TheMirror = new Geom2d_Transformation();
-  TheMirror->SetMirror(gp_Ax2d(Line.Location(),Line.Direction()));
+  TheMirror->SetMirror(gp_Ax2d(Line.Location(), Line.Direction()));
 }
 
 //=========================================================================
@@ -53,13 +55,13 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d&  Line ) {
 //   par un point et une direction.                                       +
 //=========================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d&  Point ,
-				   const gp_Dir2d&  Direc ) {
+GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc)
+{
   TheMirror = new Geom2d_Transformation();
-  TheMirror->SetMirror(gp_Ax2d(Point,Direc));
+  TheMirror->SetMirror(gp_Ax2d(Point, Direc));
 }
 
 const Handle(Geom2d_Transformation)& GCE2d_MakeMirror::Value() const
-{ 
+{
   return TheMirror;
 }

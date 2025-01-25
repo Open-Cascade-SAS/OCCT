@@ -15,31 +15,32 @@
 #include <IntSurf_Quadric.hxx>
 #include <gp_Vec.hxx>
 
-inline Standard_Real IntSurf_QuadricTool::Value (const IntSurf_Quadric& Quad,
-						 const Standard_Real X,
-						 const Standard_Real Y,
-						 const Standard_Real Z) {
+inline Standard_Real IntSurf_QuadricTool::Value(const IntSurf_Quadric& Quad,
+                                                const Standard_Real    X,
+                                                const Standard_Real    Y,
+                                                const Standard_Real    Z)
+{
 
-  return Quad.Distance(gp_Pnt(X,Y,Z));
+  return Quad.Distance(gp_Pnt(X, Y, Z));
 }
 
-inline void IntSurf_QuadricTool::Gradient (const IntSurf_Quadric& Quad,
-					   const Standard_Real X,
-					   const Standard_Real Y,
-					   const Standard_Real Z,
-					   gp_Vec& V) {
+inline void IntSurf_QuadricTool::Gradient(const IntSurf_Quadric& Quad,
+                                          const Standard_Real    X,
+                                          const Standard_Real    Y,
+                                          const Standard_Real    Z,
+                                          gp_Vec&                V)
+{
 
-  V = Quad.Gradient(gp_Pnt(X,Y,Z));
+  V = Quad.Gradient(gp_Pnt(X, Y, Z));
 }
 
-inline void IntSurf_QuadricTool::ValueAndGradient (const IntSurf_Quadric& Quad,
-						   const Standard_Real X,
-						   const Standard_Real Y,
-						   const Standard_Real Z,
-						   Standard_Real& Val,
-						   gp_Vec& V) {
+inline void IntSurf_QuadricTool::ValueAndGradient(const IntSurf_Quadric& Quad,
+                                                  const Standard_Real    X,
+                                                  const Standard_Real    Y,
+                                                  const Standard_Real    Z,
+                                                  Standard_Real&         Val,
+                                                  gp_Vec&                V)
+{
 
-  Quad.ValAndGrad(gp_Pnt(X,Y,Z),Val,V);
+  Quad.ValAndGrad(gp_Pnt(X, Y, Z), Val, V);
 }
-
-

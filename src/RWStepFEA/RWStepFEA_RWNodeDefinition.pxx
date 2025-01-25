@@ -27,48 +27,31 @@ class StepFEA_NodeDefinition;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for NodeDefinition
-class RWStepFEA_RWNodeDefinition 
+class RWStepFEA_RWNodeDefinition
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepFEA_RWNodeDefinition();
-  
+
   //! Reads NodeDefinition
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepFEA_NodeDefinition)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepFEA_NodeDefinition)&  ent) const;
+
   //! Writes NodeDefinition
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepFEA_NodeDefinition)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                  SW,
+                                 const Handle(StepFEA_NodeDefinition)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepFEA_NodeDefinition)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepFEA_NodeDefinition)& ent,
+                             Interface_EntityIterator&             iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepFEA_RWNodeDefinition_HeaderFile

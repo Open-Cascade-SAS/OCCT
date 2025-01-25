@@ -36,11 +36,11 @@ Standard_Integer BVH_BuildQueue::Size()
 // function : Enqueue
 // purpose  : Enqueues new work-item onto BVH build queue
 // =======================================================================
-void BVH_BuildQueue::Enqueue (const Standard_Integer& theWorkItem)
+void BVH_BuildQueue::Enqueue(const Standard_Integer& theWorkItem)
 {
   myMutex.Lock();
   {
-    myQueue.Append (theWorkItem);
+    myQueue.Append(theWorkItem);
   }
   myMutex.Unlock();
 }
@@ -49,17 +49,17 @@ void BVH_BuildQueue::Enqueue (const Standard_Integer& theWorkItem)
 // function : Fetch
 // purpose  : Fetches first work-item from BVH build queue
 // =======================================================================
-Standard_Integer BVH_BuildQueue::Fetch (Standard_Boolean& wasBusy)
+Standard_Integer BVH_BuildQueue::Fetch(Standard_Boolean& wasBusy)
 {
   Standard_Integer aQuery = -1;
   {
-    Standard_Mutex::Sentry aSentry (myMutex);
+    Standard_Mutex::Sentry aSentry(myMutex);
 
     if (!myQueue.IsEmpty())
     {
       aQuery = myQueue.First();
 
-      myQueue.Remove (1); // remove item from queue
+      myQueue.Remove(1); // remove item from queue
     }
 
     if (aQuery != -1)

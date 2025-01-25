@@ -37,28 +37,32 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolAngularDimension::IGESDimen_ToolAngularDimension ()    {  }
+IGESDimen_ToolAngularDimension::IGESDimen_ToolAngularDimension() {}
 
+void IGESDimen_ToolAngularDimension::ReadOwnParams(const Handle(IGESDimen_AngularDimension)& ent,
+                                                   const Handle(IGESData_IGESReaderData)&    IR,
+                                                   IGESData_ParamReader& PR) const
+{
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-void  IGESDimen_ToolAngularDimension::ReadOwnParams
-  (const Handle(IGESDimen_AngularDimension)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
-{ 
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  Handle(IGESDimen_GeneralNote) note;
+  Handle(IGESDimen_WitnessLine) firstWitness;
+  Handle(IGESDimen_WitnessLine) secondWitness;
+  gp_XY                         vertex;
+  Standard_Real                 radius;
+  Handle(IGESDimen_LeaderArrow) firstLeader;
+  Handle(IGESDimen_LeaderArrow) secondLeader;
 
-  Handle(IGESDimen_GeneralNote) note; 
-  Handle(IGESDimen_WitnessLine) firstWitness; 
-  Handle(IGESDimen_WitnessLine) secondWitness; 
-  gp_XY vertex ; 
-  Standard_Real radius ;
-  Handle(IGESDimen_LeaderArrow) firstLeader; 
-  Handle(IGESDimen_LeaderArrow) secondLeader; 
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "General Note Entity",
+                STANDARD_TYPE(IGESDimen_GeneralNote),
+                note); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity(IR, PR.Current(), "General Note Entity",
-		STANDARD_TYPE(IGESDimen_GeneralNote), note); //szv#4:S4163:12Mar99 `st=` not needed
-
-  PR.ReadEntity (IR, PR.Current(), "First Witness Entity",
-// clang-format off
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "First Witness Entity",
+                // clang-format off
 		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Witness Entity",
@@ -67,22 +71,26 @@ void  IGESDimen_ToolAngularDimension::ReadOwnParams
   PR.ReadXY(PR.CurrentList(1, 2), "Vertex Point Co-ords", vertex); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadReal(PR.Current(), "Radius of Leader arcs", radius); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
-  PR.ReadEntity(IR, PR.Current(), "First Leader Entity",
-		STANDARD_TYPE(IGESDimen_LeaderArrow), firstLeader); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "First Leader Entity",
+                STANDARD_TYPE(IGESDimen_LeaderArrow),
+                firstLeader); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity(IR, PR.Current(),"Second Leader Entity",
-		STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "Second Leader Entity",
+                STANDARD_TYPE(IGESDimen_LeaderArrow),
+                secondLeader); // szv#4:S4163:12Mar99 `st=` not needed
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (note, firstWitness, secondWitness, vertex, radius,
-     firstLeader, secondLeader);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(note, firstWitness, secondWitness, vertex, radius, firstLeader, secondLeader);
 }
 
-void  IGESDimen_ToolAngularDimension::WriteOwnParams
-  (const Handle(IGESDimen_AngularDimension)& ent, IGESData_IGESWriter& IW) const
+void IGESDimen_ToolAngularDimension::WriteOwnParams(const Handle(IGESDimen_AngularDimension)& ent,
+                                                    IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstWitnessLine());
@@ -94,8 +102,8 @@ void  IGESDimen_ToolAngularDimension::WriteOwnParams
   IW.Send(ent->SecondLeader());
 }
 
-void  IGESDimen_ToolAngularDimension::OwnShared
-  (const Handle(IGESDimen_AngularDimension)& ent, Interface_EntityIterator& iter) const
+void IGESDimen_ToolAngularDimension::OwnShared(const Handle(IGESDimen_AngularDimension)& ent,
+                                               Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstWitnessLine());
@@ -104,31 +112,27 @@ void  IGESDimen_ToolAngularDimension::OwnShared
   iter.GetOneItem(ent->SecondLeader());
 }
 
-void  IGESDimen_ToolAngularDimension::OwnCopy
-  (const Handle(IGESDimen_AngularDimension)& another,
-   const Handle(IGESDimen_AngularDimension)& ent, Interface_CopyTool& TC) const
+void IGESDimen_ToolAngularDimension::OwnCopy(const Handle(IGESDimen_AngularDimension)& another,
+                                             const Handle(IGESDimen_AngularDimension)& ent,
+                                             Interface_CopyTool&                       TC) const
 {
-  DeclareAndCast(IGESDimen_GeneralNote, note, 
-                 TC.Transferred(another->Note()));
-  DeclareAndCast(IGESDimen_WitnessLine, firstWitness, 
-		 TC.Transferred(another->FirstWitnessLine()));
-  DeclareAndCast(IGESDimen_WitnessLine, secondWitness, 
-		 TC.Transferred(another->SecondWitnessLine()));
-  gp_XY vertex = (another->Vertex()).XY();
+  DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
+  DeclareAndCast(IGESDimen_WitnessLine, firstWitness, TC.Transferred(another->FirstWitnessLine()));
+  DeclareAndCast(IGESDimen_WitnessLine,
+                 secondWitness,
+                 TC.Transferred(another->SecondWitnessLine()));
+  gp_XY         vertex = (another->Vertex()).XY();
   Standard_Real radius = another->Radius();
-  DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, 
-		 TC.Transferred(another->FirstLeader()));
-  DeclareAndCast(IGESDimen_LeaderArrow, secondLeader, 
-		 TC.Transferred(another->SecondLeader()));
+  DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, TC.Transferred(another->FirstLeader()));
+  DeclareAndCast(IGESDimen_LeaderArrow, secondLeader, TC.Transferred(another->SecondLeader()));
 
-  ent->Init(note, firstWitness, secondWitness, vertex, radius,
-	    firstLeader, secondLeader);
+  ent->Init(note, firstWitness, secondWitness, vertex, radius, firstLeader, secondLeader);
 }
 
-IGESData_DirChecker  IGESDimen_ToolAngularDimension::DirChecker
-  (const Handle(IGESDimen_AngularDimension)& /* ent */ ) const 
-{ 
-  IGESData_DirChecker DC (202, 0);
+IGESData_DirChecker IGESDimen_ToolAngularDimension::DirChecker(
+  const Handle(IGESDimen_AngularDimension)& /* ent */) const
+{
+  IGESData_DirChecker DC(202, 0);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefAny);
   DC.LineWeight(IGESData_DefValue);
@@ -137,35 +141,37 @@ IGESData_DirChecker  IGESDimen_ToolAngularDimension::DirChecker
   return DC;
 }
 
-void  IGESDimen_ToolAngularDimension::OwnCheck
-  (const Handle(IGESDimen_AngularDimension)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const 
-{  }
+void IGESDimen_ToolAngularDimension::OwnCheck(const Handle(IGESDimen_AngularDimension)& /* ent */,
+                                              const Interface_ShareTool&,
+                                              Handle(Interface_Check)& /* ach */) const
+{
+}
 
-void  IGESDimen_ToolAngularDimension::OwnDump
-  (const Handle(IGESDimen_AngularDimension)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const 
-{ 
-  Standard_Integer sublevel  = (level > 4) ? 1 : 0;
+void IGESDimen_ToolAngularDimension::OwnDump(const Handle(IGESDimen_AngularDimension)& ent,
+                                             const IGESData_IGESDumper&                dumper,
+                                             Standard_OStream&                         S,
+                                             const Standard_Integer                    level) const
+{
+  Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_AngularDimension\n"
     << "General Note Entity   : ";
-  dumper.Dump(ent->Note(),S, sublevel);
+  dumper.Dump(ent->Note(), S, sublevel);
   S << "\n"
     << "First  Witness Entity : ";
-  dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
+  dumper.Dump(ent->FirstWitnessLine(), S, sublevel);
   S << "\n"
     << "Second Witness Entity : ";
-  dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
+  dumper.Dump(ent->SecondWitnessLine(), S, sublevel);
   S << "\n"
     << "Vertex Point Co-ords  : ";
-  IGESData_DumpXYL(S,level, ent->Vertex(), ent->Location());  S << "\n";
+  IGESData_DumpXYL(S, level, ent->Vertex(), ent->Location());
+  S << "\n";
   S << "Radius of Leader arcs : " << ent->Radius() << "\n"
     << "First  Leader Entity  : ";
-  dumper.Dump(ent->FirstLeader(),S, sublevel);
+  dumper.Dump(ent->FirstLeader(), S, sublevel);
   S << "\n"
     << "Second Leader Entity  : ";
-  dumper.Dump(ent->SecondLeader(),S, sublevel);
+  dumper.Dump(ent->SecondLeader(), S, sublevel);
   S << std::endl;
 }
-

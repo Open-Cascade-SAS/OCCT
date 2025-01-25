@@ -20,8 +20,7 @@
 #include <CDM_Document.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Handle(CDM_Document)> CDM_MapOfDocument;
+typedef NCollection_Map<Handle(CDM_Document)>           CDM_MapOfDocument;
 typedef NCollection_Map<Handle(CDM_Document)>::Iterator CDM_MapIteratorOfMapOfDocument;
-
 
 #endif

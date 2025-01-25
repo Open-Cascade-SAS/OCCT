@@ -24,68 +24,53 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-
-
-class BOPTools_Set 
+class BOPTools_Set
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BOPTools_Set();
-Standard_EXPORT virtual ~BOPTools_Set();
-  
+  Standard_EXPORT virtual ~BOPTools_Set();
+
   Standard_EXPORT BOPTools_Set(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Copy constructor.
-  Standard_EXPORT BOPTools_Set (const BOPTools_Set& theOther);
+  Standard_EXPORT BOPTools_Set(const BOPTools_Set& theOther);
 
-  Standard_EXPORT BOPTools_Set& Assign (const BOPTools_Set& Other);
-BOPTools_Set& operator = (const BOPTools_Set& Other)
-{
-  return Assign(Other);
-}
-  
+  Standard_EXPORT BOPTools_Set& Assign(const BOPTools_Set& Other);
+
+  BOPTools_Set& operator=(const BOPTools_Set& Other) { return Assign(Other); }
+
   Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
-  Standard_EXPORT void Add (const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType);
-  
-  Standard_EXPORT Standard_Integer NbShapes() const;
-  
-  Standard_EXPORT Standard_Boolean IsEqual (const BOPTools_Set& aOther) const;
 
-  bool operator==(const BOPTools_Set& theOther) const
-  {
-    return IsEqual(theOther);
-  }
+  Standard_EXPORT void Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType);
+
+  Standard_EXPORT Standard_Integer NbShapes() const;
+
+  Standard_EXPORT Standard_Boolean IsEqual(const BOPTools_Set& aOther) const;
+
+  bool operator==(const BOPTools_Set& theOther) const { return IsEqual(theOther); }
 
   size_t GetSum() const { return mySum; }
 
 protected:
-
-  
   Standard_EXPORT void Clear();
 
-
   Handle(NCollection_BaseAllocator) myAllocator;
-  TopTools_ListOfShape myShapes;
-  TopoDS_Shape myShape;
-  Standard_Integer myNbShapes;
-  size_t mySum;
-  Standard_Integer myUpper;
+  TopTools_ListOfShape              myShapes;
+  TopoDS_Shape                      myShape;
+  Standard_Integer                  myNbShapes;
+  size_t                            mySum;
+  Standard_Integer                  myUpper;
 };
 
 namespace std
 {
-  template <>
-  struct hash<BOPTools_Set>
-  {
-    size_t operator()(const BOPTools_Set& theSet) const noexcept
-    {
-      return theSet.GetSum();
-    }
-  };
-}
+template <>
+struct hash<BOPTools_Set>
+{
+  size_t operator()(const BOPTools_Set& theSet) const noexcept { return theSet.GetSum(); }
+};
+} // namespace std
 
 #endif // _BOPTools_Set_HeaderFile

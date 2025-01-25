@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -21,20 +21,17 @@
 #include <Standard_Type.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedShapeRepresentation, StepShape_ShapeRepresentation)
 
 //! Representation of STEP entity TessellatedShapeRepresentation
 class StepVisual_TessellatedShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_TessellatedShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentation, StepShape_ShapeRepresentation)
-
 };
 
 #endif // _StepVisual_TessellatedShapeRepresentation_HeaderFile_

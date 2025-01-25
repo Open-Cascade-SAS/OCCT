@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepElement_ElementDescriptor;
 DEFINE_STANDARD_HANDLE(StepElement_ElementDescriptor, Standard_Transient)
 
@@ -32,49 +31,31 @@ class StepElement_ElementDescriptor : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_ElementDescriptor();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepElement_ElementOrder aTopologyOrder, const Handle(TCollection_HAsciiString)& aDescription);
-  
+  Standard_EXPORT void Init(const StepElement_ElementOrder          aTopologyOrder,
+                            const Handle(TCollection_HAsciiString)& aDescription);
+
   //! Returns field TopologyOrder
   Standard_EXPORT StepElement_ElementOrder TopologyOrder() const;
-  
+
   //! Set field TopologyOrder
-  Standard_EXPORT void SetTopologyOrder (const StepElement_ElementOrder TopologyOrder);
-  
+  Standard_EXPORT void SetTopologyOrder(const StepElement_ElementOrder TopologyOrder);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  StepElement_ElementOrder theTopologyOrder;
+  StepElement_ElementOrder         theTopologyOrder;
   Handle(TCollection_HAsciiString) theDescription;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_ElementDescriptor_HeaderFile

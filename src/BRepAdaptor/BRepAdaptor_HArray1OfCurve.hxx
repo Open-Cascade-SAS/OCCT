@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(BRepAdaptor_HArray1OfCurve, BRepAdaptor_Array1OfCurve)
 
-
 #endif

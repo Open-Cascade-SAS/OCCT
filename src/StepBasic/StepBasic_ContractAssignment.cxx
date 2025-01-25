@@ -20,43 +20,42 @@
 #include <StepBasic_Contract.hxx>
 #include <StepBasic_ContractAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractAssignment, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_ContractAssignment
-//purpose  : 
+// function : StepBasic_ContractAssignment
+// purpose  :
 //=======================================================================
-StepBasic_ContractAssignment::StepBasic_ContractAssignment ()
-{
-}
+StepBasic_ContractAssignment::StepBasic_ContractAssignment() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_ContractAssignment::Init (const Handle(StepBasic_Contract) &aAssignedContract)
+void StepBasic_ContractAssignment::Init(const Handle(StepBasic_Contract)& aAssignedContract)
 {
 
   theAssignedContract = aAssignedContract;
 }
 
 //=======================================================================
-//function : AssignedContract
-//purpose  : 
+// function : AssignedContract
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_Contract) StepBasic_ContractAssignment::AssignedContract () const
+Handle(StepBasic_Contract) StepBasic_ContractAssignment::AssignedContract() const
 {
   return theAssignedContract;
 }
 
 //=======================================================================
-//function : SetAssignedContract
-//purpose  : 
+// function : SetAssignedContract
+// purpose  :
 //=======================================================================
 
-void StepBasic_ContractAssignment::SetAssignedContract (const Handle(StepBasic_Contract) &aAssignedContract)
+void StepBasic_ContractAssignment::SetAssignedContract(
+  const Handle(StepBasic_Contract)& aAssignedContract)
 {
   theAssignedContract = aAssignedContract;
 }

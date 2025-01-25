@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,25 +19,23 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PlanarPairValue, StepKinematics_PairValue)
 
 //=======================================================================
-//function : StepKinematics_PlanarPairValue
-//purpose  :
+// function : StepKinematics_PlanarPairValue
+// purpose  :
 //=======================================================================
-StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue ()
-{
-}
+StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue() {}
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarPairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                           const Standard_Real theActualRotation,
-                                           const Standard_Real theActualTranslationX,
-                                           const Standard_Real theActualTranslationY)
+void StepKinematics_PlanarPairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Standard_Real                         theActualRotation,
+  const Standard_Real                         theActualTranslationX,
+  const Standard_Real                         theActualTranslationY)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualRotation = theActualRotation;
 
@@ -47,55 +45,57 @@ void StepKinematics_PlanarPairValue::Init (const Handle(TCollection_HAsciiString
 }
 
 //=======================================================================
-//function : ActualRotation
-//purpose  :
+// function : ActualRotation
+// purpose  :
 //=======================================================================
-Standard_Real StepKinematics_PlanarPairValue::ActualRotation () const
+Standard_Real StepKinematics_PlanarPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=======================================================================
-//function : SetActualRotation
-//purpose  :
+// function : SetActualRotation
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarPairValue::SetActualRotation (const Standard_Real theActualRotation)
+void StepKinematics_PlanarPairValue::SetActualRotation(const Standard_Real theActualRotation)
 {
   myActualRotation = theActualRotation;
 }
 
 //=======================================================================
-//function : ActualTranslationX
-//purpose  :
+// function : ActualTranslationX
+// purpose  :
 //=======================================================================
-Standard_Real StepKinematics_PlanarPairValue::ActualTranslationX () const
+Standard_Real StepKinematics_PlanarPairValue::ActualTranslationX() const
 {
   return myActualTranslationX;
 }
 
 //=======================================================================
-//function : SetActualTranslationX
-//purpose  :
+// function : SetActualTranslationX
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarPairValue::SetActualTranslationX (const Standard_Real theActualTranslationX)
+void StepKinematics_PlanarPairValue::SetActualTranslationX(
+  const Standard_Real theActualTranslationX)
 {
   myActualTranslationX = theActualTranslationX;
 }
 
 //=======================================================================
-//function : ActualTranslationY
-//purpose  :
+// function : ActualTranslationY
+// purpose  :
 //=======================================================================
-Standard_Real StepKinematics_PlanarPairValue::ActualTranslationY () const
+Standard_Real StepKinematics_PlanarPairValue::ActualTranslationY() const
 {
   return myActualTranslationY;
 }
 
 //=======================================================================
-//function : SetActualTranslationY
-//purpose  :
+// function : SetActualTranslationY
+// purpose  :
 //=======================================================================
-void StepKinematics_PlanarPairValue::SetActualTranslationY (const Standard_Real theActualTranslationY)
+void StepKinematics_PlanarPairValue::SetActualTranslationY(
+  const Standard_Real theActualTranslationY)
 {
   myActualTranslationY = theActualTranslationY;
 }

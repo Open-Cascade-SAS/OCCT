@@ -29,78 +29,60 @@
 class TopoDS_Face;
 class TopoDS_Edge;
 
-
-
-class TopOpeBRepTool_REGUS 
+class TopOpeBRepTool_REGUS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepTool_REGUS();
-  
-  Standard_EXPORT void Init (const TopoDS_Shape& S);
-  
+
+  Standard_EXPORT void Init(const TopoDS_Shape& S);
+
   Standard_EXPORT const TopoDS_Shape& S() const;
-  
+
   Standard_EXPORT Standard_Boolean MapS();
-  
-  Standard_EXPORT static Standard_Boolean WireToFace (const TopoDS_Face& Fanc, const TopTools_ListOfShape& nWs, TopTools_ListOfShape& nFs);
-  
-  Standard_EXPORT static Standard_Boolean SplitF (const TopoDS_Face& Fanc, TopTools_ListOfShape& FSplits);
-  
+
+  Standard_EXPORT static Standard_Boolean WireToFace(const TopoDS_Face&          Fanc,
+                                                     const TopTools_ListOfShape& nWs,
+                                                     TopTools_ListOfShape&       nFs);
+
+  Standard_EXPORT static Standard_Boolean SplitF(const TopoDS_Face&    Fanc,
+                                                 TopTools_ListOfShape& FSplits);
+
   Standard_EXPORT Standard_Boolean SplitFaces();
-  
+
   Standard_EXPORT Standard_Boolean REGU();
-  
-  Standard_EXPORT void SetFsplits (TopTools_DataMapOfShapeListOfShape& Fsplits);
-  
-  Standard_EXPORT void GetFsplits (TopTools_DataMapOfShapeListOfShape& Fsplits) const;
-  
-  Standard_EXPORT void SetOshNsh (TopTools_DataMapOfShapeListOfShape& OshNsh);
-  
-  Standard_EXPORT void GetOshNsh (TopTools_DataMapOfShapeListOfShape& OshNsh) const;
-  
+
+  Standard_EXPORT void SetFsplits(TopTools_DataMapOfShapeListOfShape& Fsplits);
+
+  Standard_EXPORT void GetFsplits(TopTools_DataMapOfShapeListOfShape& Fsplits) const;
+
+  Standard_EXPORT void SetOshNsh(TopTools_DataMapOfShapeListOfShape& OshNsh);
+
+  Standard_EXPORT void GetOshNsh(TopTools_DataMapOfShapeListOfShape& OshNsh) const;
+
   Standard_EXPORT Standard_Boolean InitBlock();
-  
+
   Standard_EXPORT Standard_Boolean NextinBlock();
-  
-  Standard_EXPORT Standard_Boolean NearestF (const TopoDS_Edge& e, const TopTools_ListOfShape& lof, TopoDS_Face& ffound) const;
 
-
-
+  Standard_EXPORT Standard_Boolean NearestF(const TopoDS_Edge&          e,
+                                            const TopTools_ListOfShape& lof,
+                                            TopoDS_Face&                ffound) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean hasnewsplits;
+  Standard_Boolean                   hasnewsplits;
   TopTools_DataMapOfShapeListOfShape myFsplits;
   TopTools_DataMapOfShapeListOfShape myOshNsh;
-  TopoDS_Shape myS;
+  TopoDS_Shape                       myS;
   TopTools_DataMapOfShapeListOfShape mymapeFsstatic;
   TopTools_DataMapOfShapeListOfShape mymapeFs;
-  TopTools_IndexedMapOfShape mymapemult;
-  Standard_Integer mynF;
-  Standard_Integer myoldnF;
-  TopoDS_Shape myf;
-  TopTools_MapOfShape myedstoconnect;
-  TopTools_ListOfShape mylFinBlock;
-
-
+  TopTools_IndexedMapOfShape         mymapemult;
+  Standard_Integer                   mynF;
+  Standard_Integer                   myoldnF;
+  TopoDS_Shape                       myf;
+  TopTools_MapOfShape                myedstoconnect;
+  TopTools_ListOfShape               mylFinBlock;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_REGUS_HeaderFile

@@ -29,33 +29,32 @@ class StepDimTol_GeneralDatumReference;
 class StepShape_DimensionalLocation;
 class StepShape_DimensionalSize;
 
-class StepDimTol_ToleranceZoneTarget  : public StepData_SelectType
+class StepDimTol_ToleranceZoneTarget : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a ToleranceZoneTarget select type
   Standard_EXPORT StepDimTol_ToleranceZoneTarget();
-  
+
   //! Recognizes a ToleranceZoneTarget Kind Entity that is :
   //! 1 -> DimensionalLocation
   //! 2 -> DimensionalSize
   //! 3 -> GeometricTolerance
   //! 4 -> GeneralDatumReference
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a DimensionalLocation (Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalLocation) DimensionalLocation()  const;
-  
+  Standard_EXPORT Handle(StepShape_DimensionalLocation) DimensionalLocation() const;
+
   //! returns Value as a DimensionalSize (Null if another type)
-  Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize()  const;
-  
+  Standard_EXPORT Handle(StepShape_DimensionalSize) DimensionalSize() const;
+
   //! returns Value as a GeometricTolerance (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance()  const;
-  
+  Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance() const;
+
   //! returns Value as a GeneralDatumReference (Null if another type)
-  Standard_EXPORT Handle(StepDimTol_GeneralDatumReference) GeneralDatumReference()  const; 
+  Standard_EXPORT Handle(StepDimTol_GeneralDatumReference) GeneralDatumReference() const;
 };
 #endif // _StepDimTol_ToleranceZoneTarget_HeaderFile

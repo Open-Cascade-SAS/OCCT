@@ -23,7 +23,7 @@
 class Standard_Mutex;
 class TopoDS_Shape;
 
-//! Class TopTools_MutexForShapeProvider 
+//! Class TopTools_MutexForShapeProvider
 //!   This class is used to create and store mutexes associated with shapes.
 class TopTools_MutexForShapeProvider
 {
@@ -35,7 +35,8 @@ public:
   Standard_EXPORT ~TopTools_MutexForShapeProvider();
 
   //! Creates and associates mutexes with each sub-shape of type theType in theShape.
-  Standard_EXPORT void CreateMutexesForSubShapes(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType);
+  Standard_EXPORT void CreateMutexesForSubShapes(const TopoDS_Shape&    theShape,
+                                                 const TopAbs_ShapeEnum theType);
 
   //! Creates and associates mutex with theShape
   Standard_EXPORT void CreateMutexForShape(const TopoDS_Shape& theShape);
@@ -49,13 +50,11 @@ public:
 
 private:
   //! This method should not be called (prohibited).
-  TopTools_MutexForShapeProvider (const TopTools_MutexForShapeProvider &);
+  TopTools_MutexForShapeProvider(const TopTools_MutexForShapeProvider&);
   //! This method should not be called (prohibited).
-  TopTools_MutexForShapeProvider & operator = (const TopTools_MutexForShapeProvider &);
+  TopTools_MutexForShapeProvider& operator=(const TopTools_MutexForShapeProvider&);
 
-
-  NCollection_DataMap<Handle(TopoDS_TShape), Standard_Mutex *> myMap;
-
+  NCollection_DataMap<Handle(TopoDS_TShape), Standard_Mutex*> myMap;
 };
 
 #endif

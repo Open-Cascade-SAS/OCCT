@@ -11,41 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_PlanarBox.hxx>
 #include <StepVisual_PresentationSize.hxx>
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSize,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSize, Standard_Transient)
 
-StepVisual_PresentationSize::StepVisual_PresentationSize ()  {}
+StepVisual_PresentationSize::StepVisual_PresentationSize() {}
 
-void StepVisual_PresentationSize::Init(
-	const StepVisual_PresentationSizeAssignmentSelect& aUnit,
-	const Handle(StepVisual_PlanarBox)& aSize)
+void StepVisual_PresentationSize::Init(const StepVisual_PresentationSizeAssignmentSelect& aUnit,
+                                       const Handle(StepVisual_PlanarBox)&                aSize)
 {
-	// --- classe own fields ---
-	unit = aUnit;
-	size = aSize;
+  // --- classe own fields ---
+  unit = aUnit;
+  size = aSize;
 }
-
 
 void StepVisual_PresentationSize::SetUnit(const StepVisual_PresentationSizeAssignmentSelect& aUnit)
 {
-	unit = aUnit;
+  unit = aUnit;
 }
 
 StepVisual_PresentationSizeAssignmentSelect StepVisual_PresentationSize::Unit() const
 {
-	return unit;
+  return unit;
 }
 
 void StepVisual_PresentationSize::SetSize(const Handle(StepVisual_PlanarBox)& aSize)
 {
-	size = aSize;
+  size = aSize;
 }
 
 Handle(StepVisual_PlanarBox) StepVisual_PresentationSize::Size() const
 {
-	return size;
+  return size;
 }

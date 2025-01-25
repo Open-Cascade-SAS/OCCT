@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<LocOpe_PntFace> LocOpe_SequenceOfPntFace;
 
-
 #endif

@@ -33,21 +33,20 @@ DEFINE_STANDARD_HANDLE(BinMXCAFDoc_AssemblyItemRefDriver, BinMDF_ADriver)
 class BinMXCAFDoc_AssemblyItemRefDriver : public BinMDF_ADriver
 {
 public:
-
   Standard_EXPORT BinMXCAFDoc_AssemblyItemRefDriver(const Handle(Message_Messenger)& theMsgDriver);
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Boolean Paste (const BinObjMgt_Persistent&  theSource, 
-                                          const Handle(TDF_Attribute)& theTarget, 
-                                          BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& theSource, 
-                              BinObjMgt_Persistent&        theTarget, 
-                              BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    Paste(const BinObjMgt_Persistent&  theSource,
+          const Handle(TDF_Attribute)& theTarget,
+          BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
+                             BinObjMgt_Persistent&        theTarget,
+                             BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_AssemblyItemRefDriver, BinMDF_ADriver)
-
 };
 
 #endif // _BinMXCAFDoc_AssemblyItemRefDriver_HeaderFile

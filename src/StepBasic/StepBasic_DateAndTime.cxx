@@ -11,42 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_LocalTime.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTime,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTime, Standard_Transient)
 
-StepBasic_DateAndTime::StepBasic_DateAndTime ()  {}
+StepBasic_DateAndTime::StepBasic_DateAndTime() {}
 
-void StepBasic_DateAndTime::Init(
-	const Handle(StepBasic_Date)& aDateComponent,
-	const Handle(StepBasic_LocalTime)& aTimeComponent)
+void StepBasic_DateAndTime::Init(const Handle(StepBasic_Date)&      aDateComponent,
+                                 const Handle(StepBasic_LocalTime)& aTimeComponent)
 {
-	// --- classe own fields ---
-	dateComponent = aDateComponent;
-	timeComponent = aTimeComponent;
+  // --- classe own fields ---
+  dateComponent = aDateComponent;
+  timeComponent = aTimeComponent;
 }
-
 
 void StepBasic_DateAndTime::SetDateComponent(const Handle(StepBasic_Date)& aDateComponent)
 {
-	dateComponent = aDateComponent;
+  dateComponent = aDateComponent;
 }
 
 Handle(StepBasic_Date) StepBasic_DateAndTime::DateComponent() const
 {
-	return dateComponent;
+  return dateComponent;
 }
 
 void StepBasic_DateAndTime::SetTimeComponent(const Handle(StepBasic_LocalTime)& aTimeComponent)
 {
-	timeComponent = aTimeComponent;
+  timeComponent = aTimeComponent;
 }
 
 Handle(StepBasic_LocalTime) StepBasic_DateAndTime::TimeComponent() const
 {
-	return timeComponent;
+  return timeComponent;
 }

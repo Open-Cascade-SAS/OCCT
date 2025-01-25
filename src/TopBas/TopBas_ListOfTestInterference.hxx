@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<TopBas_TestInterference> TopBas_ListOfTestInterference;
-typedef NCollection_List<TopBas_TestInterference>::Iterator TopBas_ListIteratorOfListOfTestInterference;
-
+typedef NCollection_List<TopBas_TestInterference>::Iterator
+  TopBas_ListIteratorOfListOfTestInterference;
 
 #endif

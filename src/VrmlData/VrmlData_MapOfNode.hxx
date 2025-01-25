@@ -23,6 +23,6 @@
  * Container of Map type, holding handles to VrmlData_Node objects
  */
 
-typedef NCollection_Map<Handle(VrmlData_Node)> VrmlData_MapOfNode; 
+typedef NCollection_Map<Handle(VrmlData_Node)> VrmlData_MapOfNode;
 
 #endif

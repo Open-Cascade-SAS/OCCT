@@ -24,41 +24,19 @@
 #include <Standard_Boolean.hxx>
 class TCollection_AsciiString;
 
-
-
-class Resource_LexicalCompare 
+class Resource_LexicalCompare
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Resource_LexicalCompare();
-  
+
   //! Returns True if <Left> is lower than <Right>.
-  Standard_EXPORT Standard_Boolean IsLower (const TCollection_AsciiString& Left, const TCollection_AsciiString& Right) const;
-
-
-
+  Standard_EXPORT Standard_Boolean IsLower(const TCollection_AsciiString& Left,
+                                           const TCollection_AsciiString& Right) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Resource_LexicalCompare_HeaderFile

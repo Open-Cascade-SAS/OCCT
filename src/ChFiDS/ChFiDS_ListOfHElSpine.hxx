@@ -20,8 +20,7 @@
 #include <ChFiDS_ElSpine.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(ChFiDS_ElSpine)> ChFiDS_ListOfHElSpine;
+typedef NCollection_List<Handle(ChFiDS_ElSpine)>           ChFiDS_ListOfHElSpine;
 typedef NCollection_List<Handle(ChFiDS_ElSpine)>::Iterator ChFiDS_ListIteratorOfListOfHElSpine;
-
 
 #endif

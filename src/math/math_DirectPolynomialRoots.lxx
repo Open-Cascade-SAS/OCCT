@@ -15,21 +15,21 @@
 #include <Standard_RangeError.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
 
+inline Standard_Boolean math_DirectPolynomialRoots::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_Boolean math_DirectPolynomialRoots::IsDone() const 
-{return Done;}
+inline Standard_Boolean math_DirectPolynomialRoots::InfiniteRoots() const
+{
+  return InfiniteStatus;
+}
 
-
-inline Standard_Boolean math_DirectPolynomialRoots::InfiniteRoots() const 
-{return InfiniteStatus; }
-
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_DirectPolynomialRoots& D)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_DirectPolynomialRoots& D)
 {
   D.Dump(o);
   return o;
 }
-
 
 inline Standard_Integer math_DirectPolynomialRoots::NbSolutions() const
 {
@@ -37,14 +37,9 @@ inline Standard_Integer math_DirectPolynomialRoots::NbSolutions() const
   return NbSol;
 }
 
-
-inline  Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer Nieme) const
+inline Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer Nieme) const
 {
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
-  Standard_RangeError_Raise_if((Nieme < 0) ||
-				     (Nieme > NbSol), " ");
+  Standard_RangeError_Raise_if((Nieme < 0) || (Nieme > NbSol), " ");
   return TheRoots[Nieme - 1];
 }
-
-
-

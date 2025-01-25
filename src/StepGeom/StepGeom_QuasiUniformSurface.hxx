@@ -22,41 +22,20 @@
 
 #include <StepGeom_BSplineSurface.hxx>
 
-
 class StepGeom_QuasiUniformSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_QuasiUniformSurface, StepGeom_BSplineSurface)
-
 
 class StepGeom_QuasiUniformSurface : public StepGeom_BSplineSurface
 {
 
 public:
-
-  
   //! Returns a QuasiUniformSurface
   Standard_EXPORT StepGeom_QuasiUniformSurface();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformSurface,StepGeom_BSplineSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformSurface, StepGeom_BSplineSurface)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_QuasiUniformSurface_HeaderFile

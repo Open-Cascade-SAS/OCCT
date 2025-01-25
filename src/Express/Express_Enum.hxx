@@ -24,9 +24,9 @@ class Express_Enum : public Express_Item
 {
 
 public:
-
   //! Create ENUM item and initialize it
-  Standard_EXPORT Express_Enum (const Standard_CString theName, const Handle(TColStd_HSequenceOfHAsciiString)& theNames);
+  Standard_EXPORT Express_Enum(const Standard_CString                         theName,
+                               const Handle(TColStd_HSequenceOfHAsciiString)& theNames);
 
   //! Returns names of enumeration variants
   Standard_EXPORT const Handle(TColStd_HSequenceOfHAsciiString)& Names() const;
@@ -40,11 +40,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Enum, Express_Item)
 
 protected:
-
 private:
-
   Handle(TColStd_HSequenceOfHAsciiString) myNames;
-
 };
 
 #endif // _Express_Enum_HeaderFile

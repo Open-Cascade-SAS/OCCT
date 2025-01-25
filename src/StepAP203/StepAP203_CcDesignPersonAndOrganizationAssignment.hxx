@@ -24,51 +24,38 @@
 class StepBasic_PersonAndOrganization;
 class StepBasic_PersonAndOrganizationRole;
 
-
 class StepAP203_CcDesignPersonAndOrganizationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignPersonAndOrganizationAssignment, StepBasic_PersonAndOrganizationAssignment)
+DEFINE_STANDARD_HANDLE(StepAP203_CcDesignPersonAndOrganizationAssignment,
+                       StepBasic_PersonAndOrganizationAssignment)
 
 //! Representation of STEP entity CcDesignPersonAndOrganizationAssignment
-class StepAP203_CcDesignPersonAndOrganizationAssignment : public StepBasic_PersonAndOrganizationAssignment
+class StepAP203_CcDesignPersonAndOrganizationAssignment
+    : public StepBasic_PersonAndOrganizationAssignment
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_CcDesignPersonAndOrganizationAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_PersonAndOrganization)& aPersonAndOrganizationAssignment_AssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aPersonAndOrganizationAssignment_Role, const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems);
-  
+  Standard_EXPORT void Init(
+    const Handle(StepBasic_PersonAndOrganization)&
+      aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
+    const Handle(StepBasic_PersonAndOrganizationRole)&       aPersonAndOrganizationAssignment_Role,
+    const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems);
+
   //! Returns field Items
   Standard_EXPORT Handle(StepAP203_HArray1OfPersonOrganizationItem) Items() const;
-  
+
   //! Set field Items
-  Standard_EXPORT void SetItems (const Handle(StepAP203_HArray1OfPersonOrganizationItem)& Items);
+  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfPersonOrganizationItem)& Items);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,
+                          StepBasic_PersonAndOrganizationAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP203_HArray1OfPersonOrganizationItem) theItems;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_CcDesignPersonAndOrganizationAssignment_HeaderFile

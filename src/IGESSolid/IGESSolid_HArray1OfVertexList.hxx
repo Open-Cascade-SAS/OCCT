@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESSolid_HArray1OfVertexList, IGESSolid_Array1OfVertexList)
 
-
 #endif

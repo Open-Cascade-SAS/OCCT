@@ -11,26 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
 #include <StepBasic_SolidAngleUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndSolidAngleUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndSolidAngleUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndSolidAngleUnit::StepBasic_SiUnitAndSolidAngleUnit ()
-{
-}
+StepBasic_SiUnitAndSolidAngleUnit::StepBasic_SiUnitAndSolidAngleUnit() {}
 
-void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean hasAprefix,
-					     const StepBasic_SiPrefix aPrefix,
-					     const StepBasic_SiUnitName aName)
+void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean     hasAprefix,
+                                             const StepBasic_SiPrefix   aPrefix,
+                                             const StepBasic_SiUnitName aName)
 {
   // --- class inherited fields ---
   // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
-    
+
   // --- ANDOR component fields ---
   solidAngleUnit = new StepBasic_SolidAngleUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
@@ -38,8 +35,8 @@ void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean hasAprefix,
   solidAngleUnit->Init(aDimensions);
 }
 
-
-void StepBasic_SiUnitAndSolidAngleUnit::SetSolidAngleUnit(const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit)
+void StepBasic_SiUnitAndSolidAngleUnit::SetSolidAngleUnit(
+  const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit)
 {
   solidAngleUnit = aSolidAngleUnit;
 }
@@ -48,4 +45,3 @@ Handle(StepBasic_SolidAngleUnit) StepBasic_SiUnitAndSolidAngleUnit::SolidAngleUn
 {
   return solidAngleUnit;
 }
-

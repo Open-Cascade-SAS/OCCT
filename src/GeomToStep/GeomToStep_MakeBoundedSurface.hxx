@@ -26,46 +26,25 @@
 class StepGeom_BoundedSurface;
 class Geom_BoundedSurface;
 
-
 //! This class implements the mapping between classes
 //! BoundedSurface from Geom and the class BoundedSurface from
 //! StepGeom which describes a BoundedSurface from prostep.
 //! As BoundedSurface is an abstract BoundedSurface this class
 //! is an access to the sub-class required.
-class GeomToStep_MakeBoundedSurface  : public GeomToStep_Root
+class GeomToStep_MakeBoundedSurface : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomToStep_MakeBoundedSurface(const Handle(Geom_BoundedSurface)& C,
-                                                const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+  Standard_EXPORT GeomToStep_MakeBoundedSurface(
+    const Handle(Geom_BoundedSurface)& C,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const Handle(StepGeom_BoundedSurface)& Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepGeom_BoundedSurface) theBoundedSurface;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeBoundedSurface_HeaderFile

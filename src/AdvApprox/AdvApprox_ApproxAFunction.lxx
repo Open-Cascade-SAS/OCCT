@@ -17,78 +17,105 @@
 #include <Standard_ConstructionError.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
+
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean AdvApprox_ApproxAFunction::HasResult() const 
-{ return myHasResult ; } 
+inline Standard_Boolean AdvApprox_ApproxAFunction::HasResult() const
+{
+  return myHasResult;
+}
+
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean AdvApprox_ApproxAFunction::IsDone() const 
-{ return myDone ; } 
+inline Standard_Boolean AdvApprox_ApproxAFunction::IsDone() const
+{
+  return myDone;
+}
+
 //=======================================================================
-//function : Poles1d
-//purpose  : 
+// function : Poles1d
+// purpose  :
 //=======================================================================
-inline Handle(TColStd_HArray2OfReal) AdvApprox_ApproxAFunction::Poles1d() 
-  const 
-{ return my1DPoles ; } 
+inline Handle(TColStd_HArray2OfReal) AdvApprox_ApproxAFunction::Poles1d() const
+{
+  return my1DPoles;
+}
+
 //=======================================================================
-//function : Poles2d
-//purpose  : 
+// function : Poles2d
+// purpose  :
 //=======================================================================
-inline Handle(TColgp_HArray2OfPnt2d) AdvApprox_ApproxAFunction::Poles2d()
-  const 
-{ return my2DPoles ; } 
+inline Handle(TColgp_HArray2OfPnt2d) AdvApprox_ApproxAFunction::Poles2d() const
+{
+  return my2DPoles;
+}
+
 //=======================================================================
-//function : Poles
-//purpose  : 
+// function : Poles
+// purpose  :
 //=======================================================================
-inline Handle(TColgp_HArray2OfPnt) AdvApprox_ApproxAFunction::Poles()
-  const 
-{ return  my3DPoles ; } 
+inline Handle(TColgp_HArray2OfPnt) AdvApprox_ApproxAFunction::Poles() const
+{
+  return my3DPoles;
+}
+
 //=======================================================================
-//function : Degree
-//purpose  : 
+// function : Degree
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer AdvApprox_ApproxAFunction::Degree() const
-{ return myDegree ; }
+{
+  return myDegree;
+}
+
 //=======================================================================
-//function : NbKnots
-//purpose  : 
+// function : NbKnots
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer AdvApprox_ApproxAFunction::NbKnots() const
-{ return myKnots->Length()  ; }
-//=======================================================================
-//function : Knots
-//purpose  : 
-//=======================================================================
-
-inline Handle(TColStd_HArray1OfReal) AdvApprox_ApproxAFunction::Knots() const 
-               
-{ return myKnots ; } 
-//=======================================================================
-//function : Multiplicities
-//purpose  : 
-//=======================================================================
-
-inline Handle(TColStd_HArray1OfInteger) 
-AdvApprox_ApproxAFunction::Multiplicities() const 
-
-{ return myMults ;} 
+{
+  return myKnots->Length();
+}
 
 //=======================================================================
-//function : NumSubSpaces
-//purpose  : 
+// function : Knots
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer AdvApprox_ApproxAFunction::NumSubSpaces(const Standard_Integer Dimension)  const 
-{ if (Dimension < 1 || Dimension > 3) throw Standard_ConstructionError()  ;
-  return myNumSubSpaces[Dimension-1] ; }
+inline Handle(TColStd_HArray1OfReal) AdvApprox_ApproxAFunction::Knots() const
+
+{
+  return myKnots;
+}
+
+//=======================================================================
+// function : Multiplicities
+// purpose  :
+//=======================================================================
+
+inline Handle(TColStd_HArray1OfInteger) AdvApprox_ApproxAFunction::Multiplicities() const
+
+{
+  return myMults;
+}
+
+//=======================================================================
+// function : NumSubSpaces
+// purpose  :
+//=======================================================================
+
+inline Standard_Integer AdvApprox_ApproxAFunction::NumSubSpaces(
+  const Standard_Integer Dimension) const
+{
+  if (Dimension < 1 || Dimension > 3)
+    throw Standard_ConstructionError();
+  return myNumSubSpaces[Dimension - 1];
+}

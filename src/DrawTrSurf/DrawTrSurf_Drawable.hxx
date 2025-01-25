@@ -35,44 +35,47 @@ class DrawTrSurf_Drawable : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Drawable, Draw_Drawable3D)
 public:
+  //! Draw a polygon of the curve on the Display
+  Standard_EXPORT void DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& D) const;
 
   //! Draw a polygon of the curve on the Display
-  Standard_EXPORT void DrawCurve2dOn (Adaptor2d_Curve2d& C, Draw_Display& D) const;
-  
-  //! Draw a polygon of the curve on the Display
-  Standard_EXPORT void DrawCurveOn (Adaptor3d_Curve& C, Draw_Display& D) const;
-  
+  Standard_EXPORT void DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& D) const;
+
   //! Load C  with the specified iso  and Draw a polygon
   //! of the curve on the Display
-  Standard_EXPORT void DrawIsoCurveOn (Adaptor3d_IsoCurve& C, const GeomAbs_IsoType T, const Standard_Real P, const Standard_Real F, const Standard_Real L, Draw_Display& D) const;
-  
+  Standard_EXPORT void DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
+                                      const GeomAbs_IsoType T,
+                                      const Standard_Real   P,
+                                      const Standard_Real   F,
+                                      const Standard_Real   L,
+                                      Draw_Display&         D) const;
+
   //! this is defined only to tell C++ not to complain
   //! about inheriting a pure virtual method.
-  Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE = 0;
 
-  void SetDiscretisation (const Standard_Integer theDiscret) { myDiscret = theDiscret; }
+  void SetDiscretisation(const Standard_Integer theDiscret) { myDiscret = theDiscret; }
 
   Standard_Integer GetDiscretisation() const { return myDiscret; }
 
-  void SetDeflection (const Standard_Real theDeflection) { myDeflection = theDeflection; }
+  void SetDeflection(const Standard_Real theDeflection) { myDeflection = theDeflection; }
 
   Standard_Real GetDeflection() const { return myDeflection; }
 
-  void SetDrawMode (const Standard_Integer theDrawMode) { myDrawMode = theDrawMode; }
+  void SetDrawMode(const Standard_Integer theDrawMode) { myDrawMode = theDrawMode; }
 
   Standard_Integer GetDrawMode() const { return myDrawMode; }
 
 protected:
-
   //! set the number of points on a curve at creation.
-  Standard_EXPORT DrawTrSurf_Drawable(const Standard_Integer discret, const Standard_Real deflection = 0.01, const Standard_Integer DrawMode = 0);
+  Standard_EXPORT DrawTrSurf_Drawable(const Standard_Integer discret,
+                                      const Standard_Real    deflection = 0.01,
+                                      const Standard_Integer DrawMode   = 0);
 
 private:
-
   Standard_Integer myDrawMode;
   Standard_Integer myDiscret;
-  Standard_Real myDeflection;
-
+  Standard_Real    myDeflection;
 };
 
 #endif // _DrawTrSurf_Drawable_HeaderFile

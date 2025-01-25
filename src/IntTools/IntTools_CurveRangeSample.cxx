@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntTools_CurveRangeSample.hxx>
 #include <IntTools_Range.hxx>
 
@@ -28,21 +27,23 @@ IntTools_CurveRangeSample::IntTools_CurveRangeSample(const Standard_Integer theI
 }
 
 IntTools_Range IntTools_CurveRangeSample::GetRange(const Standard_Real    theFirst,
-						   const Standard_Real    theLast,
-						   const Standard_Integer theNbSample) const
+                                                   const Standard_Real    theLast,
+                                                   const Standard_Integer theNbSample) const
 {
-  Standard_Real diffC = theLast - theFirst;
+  Standard_Real  diffC = theLast - theFirst;
   IntTools_Range aResult;
 
-  if(GetDepth() <= 0) {
+  if (GetDepth() <= 0)
+  {
     aResult.SetFirst(theFirst);
     aResult.SetLast(theLast);
   }
-  else {
-    Standard_Real tmp = pow(Standard_Real(theNbSample), Standard_Real(GetDepth()));
+  else
+  {
+    Standard_Real tmp        = pow(Standard_Real(theNbSample), Standard_Real(GetDepth()));
     Standard_Real localdiffC = diffC / Standard_Real(tmp);
-    Standard_Real aFirstC = theFirst + Standard_Real(myIndex) * localdiffC;
-    Standard_Real aLastC = aFirstC + localdiffC;
+    Standard_Real aFirstC    = theFirst + Standard_Real(myIndex) * localdiffC;
+    Standard_Real aLastC     = aFirstC + localdiffC;
     aResult.SetFirst(aFirstC);
     aResult.SetLast(aLastC);
   }

@@ -17,12 +17,11 @@
 #ifndef _BRepFill_TransitionStyle_HeaderFile
 #define _BRepFill_TransitionStyle_HeaderFile
 
-
 enum BRepFill_TransitionStyle
 {
-BRepFill_Modified,
-BRepFill_Right,
-BRepFill_Round
+  BRepFill_Modified,
+  BRepFill_Right,
+  BRepFill_Round
 };
 
 #endif // _BRepFill_TransitionStyle_HeaderFile

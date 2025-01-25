@@ -17,7 +17,6 @@
 #ifndef _ChFi3d_FilletShape_HeaderFile
 #define _ChFi3d_FilletShape_HeaderFile
 
-
 //! Lists the types of fillet shapes. These include the following:
 //! -   ChFi3d_Rational (default value), which is the
 //! standard NURBS representation of circles,
@@ -29,9 +28,9 @@
 //! facilitates the implementation of the construction algorithm.
 enum ChFi3d_FilletShape
 {
-ChFi3d_Rational,
-ChFi3d_QuasiAngular,
-ChFi3d_Polynomial
+  ChFi3d_Rational,
+  ChFi3d_QuasiAngular,
+  ChFi3d_Polynomial
 };
 
 #endif // _ChFi3d_FilletShape_HeaderFile

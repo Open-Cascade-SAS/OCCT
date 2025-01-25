@@ -22,46 +22,46 @@
 #include <IGESBasic_SubfigureDef.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingularSubfigure,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingularSubfigure, IGESData_IGESEntity)
 
-IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure ()    {  }
+IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure() {}
 
-
-    void  IGESBasic_SingularSubfigure::Init
-  (const Handle(IGESBasic_SubfigureDef)& aSubfigureDef,
-   const gp_XYZ& aTranslation, const Standard_Boolean hasScale,
-   const Standard_Real aScale)
+void IGESBasic_SingularSubfigure::Init(const Handle(IGESBasic_SubfigureDef)& aSubfigureDef,
+                                       const gp_XYZ&                         aTranslation,
+                                       const Standard_Boolean                hasScale,
+                                       const Standard_Real                   aScale)
 {
   theSubfigureDef = aSubfigureDef;
   theTranslation  = aTranslation;
   hasScaleFactor  = hasScale;
   theScaleFactor  = aScale;
-  InitTypeAndForm(408,0);
+  InitTypeAndForm(408, 0);
 }
 
-    Handle(IGESBasic_SubfigureDef) IGESBasic_SingularSubfigure::Subfigure () const
+Handle(IGESBasic_SubfigureDef) IGESBasic_SingularSubfigure::Subfigure() const
 {
   return theSubfigureDef;
 }
 
-    gp_XYZ  IGESBasic_SingularSubfigure::Translation () const
+gp_XYZ IGESBasic_SingularSubfigure::Translation() const
 {
   return theTranslation;
 }
 
-    Standard_Boolean  IGESBasic_SingularSubfigure::HasScaleFactor () const
+Standard_Boolean IGESBasic_SingularSubfigure::HasScaleFactor() const
 {
   return hasScaleFactor;
 }
 
-    Standard_Real  IGESBasic_SingularSubfigure::ScaleFactor () const
+Standard_Real IGESBasic_SingularSubfigure::ScaleFactor() const
 {
   return theScaleFactor;
 }
 
-    gp_XYZ  IGESBasic_SingularSubfigure::TransformedTranslation () const
+gp_XYZ IGESBasic_SingularSubfigure::TransformedTranslation() const
 {
   gp_XYZ tmp = theTranslation;
-  if (HasTransf()) Location().Transforms(tmp);
+  if (HasTransf())
+    Location().Transforms(tmp);
   return tmp;
 }

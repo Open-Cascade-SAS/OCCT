@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
@@ -33,55 +32,55 @@
 // Create a GeometricCurveSet of StepShape from a Shape of TopoDS
 //=============================================================================
 TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
-                                    const TopoDS_Shape& aShape,
-                                    const Handle(Transfer_FinderProcess)& FP,
-                                    const StepData_Factors& theLocalFactors)
+  const TopoDS_Shape&                   aShape,
+  const Handle(Transfer_FinderProcess)& FP,
+  const StepData_Factors&               theLocalFactors)
 {
   done = Standard_False;
-  Handle(TColStd_HSequenceOfTransient)  itemList;
-  MoniTool_DataMapOfShapeTransient      aMap;
+  Handle(TColStd_HSequenceOfTransient) itemList;
+  MoniTool_DataMapOfShapeTransient     aMap;
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
-  TopoDSToStep_Tool                aTool (aMap, Standard_False, aStepModel->InternalParameters.WriteSurfaceCurMode);
-  TopoDSToStep_WireframeBuilder    wirefB (aShape, aTool, theLocalFactors);
-  TopoDSToStep::AddResult ( FP, aTool );
+  TopoDSToStep_Tool aTool(aMap, Standard_False, aStepModel->InternalParameters.WriteSurfaceCurMode);
+  TopoDSToStep_WireframeBuilder wirefB(aShape, aTool, theLocalFactors);
+  TopoDSToStep::AddResult(FP, aTool);
 
-  Handle(StepShape_GeometricCurveSet) aGCSet =
-    new StepShape_GeometricCurveSet;
-  Handle(TCollection_HAsciiString) empty = new TCollection_HAsciiString("");
-  if (wirefB.IsDone()) {
-    itemList = wirefB.Value();
+  Handle(StepShape_GeometricCurveSet) aGCSet = new StepShape_GeometricCurveSet;
+  Handle(TCollection_HAsciiString)    empty  = new TCollection_HAsciiString("");
+  if (wirefB.IsDone())
+  {
+    itemList                = wirefB.Value();
     Standard_Integer nbItem = itemList->Length();
-    if (nbItem > 0) {
+    if (nbItem > 0)
+    {
       Handle(StepShape_HArray1OfGeometricSetSelect) aGSS =
-	new StepShape_HArray1OfGeometricSetSelect(1,nbItem);
+        new StepShape_HArray1OfGeometricSetSelect(1, nbItem);
 
-      for (Standard_Integer i=1; i<=nbItem; i++) {
-	StepShape_GeometricSetSelect select;
-	select.SetValue(itemList->Value(i));
-	aGSS->SetValue(i,select);
+      for (Standard_Integer i = 1; i <= nbItem; i++)
+      {
+        StepShape_GeometricSetSelect select;
+        select.SetValue(itemList->Value(i));
+        aGSS->SetValue(i, select);
       }
       aGCSet->SetName(empty);
       aGCSet->SetElements(aGSS);
       theGeometricCurveSet = aGCSet;
-      done = Standard_True;
+      done                 = Standard_True;
     }
   }
 }
 
-const Handle(StepShape_GeometricCurveSet)& TopoDSToStep_MakeGeometricCurveSet::Value() const 
+const Handle(StepShape_GeometricCurveSet)& TopoDSToStep_MakeGeometricCurveSet::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeGeometricCurveSet::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeGeometricCurveSet::Value() - no result");
   return theGeometricCurveSet;
 }
 
-//const Handle(StepShape_GeometricCurveSet)& TopoDSToStep_MakeGeometricCurveSet::Operator() const 
+// const Handle(StepShape_GeometricCurveSet)& TopoDSToStep_MakeGeometricCurveSet::Operator() const
 //{
-//  return Value();
-//}
+//   return Value();
+// }
 
-//TopoDSToStep_MakeGeometricCurveSet::operator Handle(StepShape_GeometricCurveSet) () const 
+// TopoDSToStep_MakeGeometricCurveSet::operator Handle(StepShape_GeometricCurveSet) () const
 //{
-//  return Value();
-//}
-
-
+//   return Value();
+// }

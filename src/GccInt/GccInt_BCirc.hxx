@@ -23,7 +23,6 @@
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
 
-
 class GccInt_BCirc;
 DEFINE_STANDARD_HANDLE(GccInt_BCirc, GccInt_Bisec)
 
@@ -33,39 +32,20 @@ class GccInt_BCirc : public GccInt_Bisec
 {
 
 public:
-
-  
   //! Constructs a bisecting curve whose geometry is the 2D circle Circ.
   Standard_EXPORT GccInt_BCirc(const gp_Circ2d& Circ);
-  
+
   //! Returns a 2D circle which is the geometry of this bisecting curve.
   Standard_EXPORT virtual gp_Circ2d Circle() const Standard_OVERRIDE;
-  
+
   //! Returns GccInt_Cir, which is the type of any GccInt_BCirc bisecting curve.
   Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GccInt_BCirc,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BCirc, GccInt_Bisec)
 
 protected:
-
-
-
-
 private:
-
-
   gp_Circ2d cir;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccInt_BCirc_HeaderFile

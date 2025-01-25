@@ -20,11 +20,11 @@
 // function : Factory
 // purpose  :
 // ======================================================================
-void OpenGlTest::Factory (Draw_Interpretor& theDI)
+void OpenGlTest::Factory(Draw_Interpretor& theDI)
 {
   static const Handle(OpenGl_GraphicDriverFactory) aFactory = new OpenGl_GraphicDriverFactory();
-  Graphic3d_GraphicDriverFactory::RegisterFactory (aFactory);
-  OpenGlTest::Commands (theDI);
+  Graphic3d_GraphicDriverFactory::RegisterFactory(aFactory);
+  OpenGlTest::Commands(theDI);
 #ifdef DEB
   theDI << "Draw Plugin : OpenGL commands are loaded.\n";
 #endif

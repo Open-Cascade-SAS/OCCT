@@ -11,80 +11,85 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots,StepGeom_BSplineCurve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots, StepGeom_BSplineCurve)
 
-StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots ()  {}
+StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots() {}
 
 void StepGeom_BSplineCurveWithKnots::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Integer aDegree,
-	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-	const StepGeom_BSplineCurveForm aCurveForm,
-	const StepData_Logical aClosedCurve,
-	const StepData_Logical aSelfIntersect,
-	const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities,
-	const Handle(TColStd_HArray1OfReal)& aKnots,
-	const StepGeom_KnotType aKnotSpec)
+  const Handle(TCollection_HAsciiString)&         aName,
+  const Standard_Integer                          aDegree,
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const StepGeom_BSplineCurveForm                 aCurveForm,
+  const StepData_Logical                          aClosedCurve,
+  const StepData_Logical                          aSelfIntersect,
+  const Handle(TColStd_HArray1OfInteger)&         aKnotMultiplicities,
+  const Handle(TColStd_HArray1OfReal)&            aKnots,
+  const StepGeom_KnotType                         aKnotSpec)
 {
-	// --- classe own fields ---
-	knotMultiplicities = aKnotMultiplicities;
-	knots = aKnots;
-	knotSpec = aKnotSpec;
-	// --- classe inherited fields ---
-	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
+  // --- classe own fields ---
+  knotMultiplicities = aKnotMultiplicities;
+  knots              = aKnots;
+  knotSpec           = aKnotSpec;
+  // --- classe inherited fields ---
+  StepGeom_BSplineCurve::Init(aName,
+                              aDegree,
+                              aControlPointsList,
+                              aCurveForm,
+                              aClosedCurve,
+                              aSelfIntersect);
 }
 
-
-void StepGeom_BSplineCurveWithKnots::SetKnotMultiplicities(const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities)
+void StepGeom_BSplineCurveWithKnots::SetKnotMultiplicities(
+  const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities)
 {
-	knotMultiplicities = aKnotMultiplicities;
+  knotMultiplicities = aKnotMultiplicities;
 }
 
 Handle(TColStd_HArray1OfInteger) StepGeom_BSplineCurveWithKnots::KnotMultiplicities() const
 {
-	return knotMultiplicities;
+  return knotMultiplicities;
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(const Standard_Integer num) const
+Standard_Integer StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(
+  const Standard_Integer num) const
 {
-	return knotMultiplicities->Value(num);
+  return knotMultiplicities->Value(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnotMultiplicities () const
+Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnotMultiplicities() const
 {
-	return knotMultiplicities->Length();
+  return knotMultiplicities->Length();
 }
 
 void StepGeom_BSplineCurveWithKnots::SetKnots(const Handle(TColStd_HArray1OfReal)& aKnots)
 {
-	knots = aKnots;
+  knots = aKnots;
 }
 
 Handle(TColStd_HArray1OfReal) StepGeom_BSplineCurveWithKnots::Knots() const
 {
-	return knots;
+  return knots;
 }
 
 Standard_Real StepGeom_BSplineCurveWithKnots::KnotsValue(const Standard_Integer num) const
 {
-	return knots->Value(num);
+  return knots->Value(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnots () const
+Standard_Integer StepGeom_BSplineCurveWithKnots::NbKnots() const
 {
-	return knots->Length();
+  return knots->Length();
 }
 
 void StepGeom_BSplineCurveWithKnots::SetKnotSpec(const StepGeom_KnotType aKnotSpec)
 {
-	knotSpec = aKnotSpec;
+  knotSpec = aKnotSpec;
 }
 
 StepGeom_KnotType StepGeom_BSplineCurveWithKnots::KnotSpec() const
 {
-	return knotSpec;
+  return knotSpec;
 }

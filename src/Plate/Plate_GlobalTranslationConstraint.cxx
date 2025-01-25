@@ -14,25 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Plate_GlobalTranslationConstraint.hxx>
 #include <Plate_LinearXYZConstraint.hxx>
 
-Plate_GlobalTranslationConstraint::Plate_GlobalTranslationConstraint(const TColgp_SequenceOfXY& SOfXY)
-:myLXYZC(SOfXY.Length()-1,SOfXY.Length() )
+Plate_GlobalTranslationConstraint::Plate_GlobalTranslationConstraint(
+  const TColgp_SequenceOfXY& SOfXY)
+    : myLXYZC(SOfXY.Length() - 1, SOfXY.Length())
 {
-  Standard_Integer i ;
-  for( i=1;i<=SOfXY.Length();i++)
+  Standard_Integer i;
+  for (i = 1; i <= SOfXY.Length(); i++)
+  {
+    myLXYZC.SetPPC(i, Plate_PinpointConstraint(SOfXY(i), gp_XYZ(0., 0., 0.), 0, 0));
+  }
+  for (i = 1; i <= SOfXY.Length() - 1; i++)
+  {
+    myLXYZC.SetCoeff(i, 1, -1.);
+    for (Standard_Integer j = 2; j <= SOfXY.Length(); j++)
     {
-      myLXYZC.SetPPC(i,Plate_PinpointConstraint (SOfXY(i),gp_XYZ(0.,0.,0.),0,0));
+      if (j == (i + 1))
+        myLXYZC.SetCoeff(i, j, 1.);
+      else
+        myLXYZC.SetCoeff(i, j, 0.);
     }
-  for(i=1;i<=SOfXY.Length()-1;i++)
-	{
-	  myLXYZC.SetCoeff(i,1,-1.);
-	  for(Standard_Integer j=2;j<=SOfXY.Length();j++)
-	    {
-	      if(j==(i+1)) myLXYZC.SetCoeff(i,j,1.);
-	      else  myLXYZC.SetCoeff(i,j,0.);
-	    }  
-	}
+  }
 }

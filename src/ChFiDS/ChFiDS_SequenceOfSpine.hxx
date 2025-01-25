@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(ChFiDS_Spine)> ChFiDS_SequenceOfSpine;
 
-
 #endif

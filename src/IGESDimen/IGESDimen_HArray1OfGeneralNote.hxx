@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESDimen_HArray1OfGeneralNote, IGESDimen_Array1OfGeneralNote)
 
-
 #endif

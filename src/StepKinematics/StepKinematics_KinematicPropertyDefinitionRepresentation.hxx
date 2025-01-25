@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -23,17 +23,18 @@
 #include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_Representation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicPropertyDefinitionRepresentation, StepRepr_PropertyDefinitionRepresentation)
+DEFINE_STANDARD_HANDLE(StepKinematics_KinematicPropertyDefinitionRepresentation,
+                       StepRepr_PropertyDefinitionRepresentation)
 
 //! Representation of STEP entity KinematicPropertyDefinitionRepresentation
-class StepKinematics_KinematicPropertyDefinitionRepresentation : public StepRepr_PropertyDefinitionRepresentation
+class StepKinematics_KinematicPropertyDefinitionRepresentation
+    : public StepRepr_PropertyDefinitionRepresentation
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_KinematicPropertyDefinitionRepresentation();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyDefinitionRepresentation, StepRepr_PropertyDefinitionRepresentation)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyDefinitionRepresentation,
+                          StepRepr_PropertyDefinitionRepresentation)
 };
 #endif // _StepKinematics_KinematicPropertyDefinitionRepresentation_HeaderFile_

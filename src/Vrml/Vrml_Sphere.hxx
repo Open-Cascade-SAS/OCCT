@@ -24,47 +24,25 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Sphere node of VRML specifying geometry shapes.
 //! This  node  represents  a  sphere.
 //! By  default ,  the  sphere  is  centred  at  (0,0,0) and  has  a  radius  of  1.
-class Vrml_Sphere 
+class Vrml_Sphere
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Sphere(const Standard_Real aRadius = 1);
-  
-  Standard_EXPORT void SetRadius (const Standard_Real aRadius);
-  
+
+  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+
   Standard_EXPORT Standard_Real Radius() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myRadius;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Sphere_HeaderFile

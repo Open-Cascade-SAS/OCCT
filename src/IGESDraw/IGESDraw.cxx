@@ -27,20 +27,20 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESDraw_Protocol) protocol;
 
-
-    void  IGESDraw::Init ()
+void IGESDraw::Init()
 {
   IGESDimen::Init();
-  if (protocol.IsNull()) {
+  if (protocol.IsNull())
+  {
     protocol = new IGESDraw_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESDraw_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESDraw_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESDraw_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESDraw_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESDraw_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESDraw_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESDraw_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESDraw_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESDraw_Protocol)  IGESDraw::Protocol ()
+Handle(IGESDraw_Protocol) IGESDraw::Protocol()
 {
   return protocol;
 }

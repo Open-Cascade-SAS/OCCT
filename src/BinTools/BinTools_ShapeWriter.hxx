@@ -31,50 +31,57 @@ class Poly_Triangulation;
 class BinTools_ShapeWriter : public BinTools_ShapeSetBase
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Builds an empty ShapeSet.
   //! Parameter <theWithTriangles> is added for XML Persistence
   Standard_EXPORT BinTools_ShapeWriter();
-  
+
   Standard_EXPORT virtual ~BinTools_ShapeWriter();
 
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-  
-  //! Writes the shape to stream using previously stored shapes and objects to refer them.
-  Standard_EXPORT virtual void Write (const TopoDS_Shape& theShape, Standard_OStream& theStream) Standard_OVERRIDE;
 
-  //! Writes location to the stream (all the needed sub-information or reference if it is already used).
-  Standard_EXPORT virtual void WriteLocation (BinTools_OStream& theStream, const TopLoc_Location& theLocation);
+  //! Writes the shape to stream using previously stored shapes and objects to refer them.
+  Standard_EXPORT virtual void Write(const TopoDS_Shape& theShape,
+                                     Standard_OStream&   theStream) Standard_OVERRIDE;
+
+  //! Writes location to the stream (all the needed sub-information or reference if it is already
+  //! used).
+  Standard_EXPORT virtual void WriteLocation(BinTools_OStream&      theStream,
+                                             const TopLoc_Location& theLocation);
 
 private:
-  //! Writes shape to the stream (all the needed sub-information or reference if it is already used).
-  virtual void WriteShape (BinTools_OStream& theStream, const TopoDS_Shape& theShape);
-  //! Writes curve to the stream (all the needed sub-information or reference if it is already used).
-  void WriteCurve (BinTools_OStream& theStream, const Handle(Geom_Curve)& theCurve);
-  //! Writes curve2d to the stream (all the needed sub-information or reference if it is already used).
-  void WriteCurve (BinTools_OStream& theStream, const Handle(Geom2d_Curve)& theCurve);
+  //! Writes shape to the stream (all the needed sub-information or reference if it is already
+  //! used).
+  virtual void WriteShape(BinTools_OStream& theStream, const TopoDS_Shape& theShape);
+  //! Writes curve to the stream (all the needed sub-information or reference if it is already
+  //! used).
+  void WriteCurve(BinTools_OStream& theStream, const Handle(Geom_Curve)& theCurve);
+  //! Writes curve2d to the stream (all the needed sub-information or reference if it is already
+  //! used).
+  void WriteCurve(BinTools_OStream& theStream, const Handle(Geom2d_Curve)& theCurve);
   //! Writes surface to the stream.
-  void WriteSurface (BinTools_OStream& theStream, const Handle(Geom_Surface)& theSurface);
+  void WriteSurface(BinTools_OStream& theStream, const Handle(Geom_Surface)& theSurface);
   //! Writes ploygon3d to the stream.
-  void WritePolygon (BinTools_OStream& theStream, const Handle(Poly_Polygon3D)& thePolygon);
+  void WritePolygon(BinTools_OStream& theStream, const Handle(Poly_Polygon3D)& thePolygon);
   //! Writes polygon on triangulation to the stream.
-  void WritePolygon (BinTools_OStream& theStream, const Handle(Poly_PolygonOnTriangulation)& thePolygon);
+  void WritePolygon(BinTools_OStream&                          theStream,
+                    const Handle(Poly_PolygonOnTriangulation)& thePolygon);
   //! Writes triangulation to the stream.
-  void WriteTriangulation (BinTools_OStream& theStream, const Handle(Poly_Triangulation)& theTriangulation,
-    const Standard_Boolean theNeedToWriteNormals);
+  void WriteTriangulation(BinTools_OStream&                 theStream,
+                          const Handle(Poly_Triangulation)& theTriangulation,
+                          const Standard_Boolean            theNeedToWriteNormals);
 
   /// position of the shape previously stored
   NCollection_DataMap<TopoDS_Shape, uint64_t, TopTools_ShapeMapHasher> myShapePos;
-  NCollection_DataMap<TopLoc_Location, uint64_t> myLocationPos;
-  NCollection_DataMap<Handle(Geom_Curve), uint64_t> myCurvePos;
-  NCollection_DataMap<Handle(Geom2d_Curve), uint64_t> myCurve2dPos;
-  NCollection_DataMap<Handle(Geom_Surface), uint64_t> mySurfacePos;
-  NCollection_DataMap<Handle(Poly_Polygon3D), uint64_t> myPolygon3dPos;
-  NCollection_DataMap<Handle(Poly_PolygonOnTriangulation), uint64_t> myPolygonPos;
-  NCollection_DataMap<Handle(Poly_Triangulation), uint64_t> myTriangulationPos;
+  NCollection_DataMap<TopLoc_Location, uint64_t>                       myLocationPos;
+  NCollection_DataMap<Handle(Geom_Curve), uint64_t>                    myCurvePos;
+  NCollection_DataMap<Handle(Geom2d_Curve), uint64_t>                  myCurve2dPos;
+  NCollection_DataMap<Handle(Geom_Surface), uint64_t>                  mySurfacePos;
+  NCollection_DataMap<Handle(Poly_Polygon3D), uint64_t>                myPolygon3dPos;
+  NCollection_DataMap<Handle(Poly_PolygonOnTriangulation), uint64_t>   myPolygonPos;
+  NCollection_DataMap<Handle(Poly_Triangulation), uint64_t>            myTriangulationPos;
 };
 
 #endif // _BinTools_ShapeWriter_HeaderFile

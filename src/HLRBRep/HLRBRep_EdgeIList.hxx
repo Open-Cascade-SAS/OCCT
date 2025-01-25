@@ -25,42 +25,22 @@
 class HLRAlgo_Interference;
 class HLRBRep_EdgeInterferenceTool;
 
-
-
-class HLRBRep_EdgeIList 
+class HLRBRep_EdgeIList
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Add the interference <I> to the list <IL>.
-  Standard_EXPORT static void AddInterference (HLRAlgo_InterferenceList& IL, const HLRAlgo_Interference& I, const HLRBRep_EdgeInterferenceTool& T);
-  
+  Standard_EXPORT static void AddInterference(HLRAlgo_InterferenceList&           IL,
+                                              const HLRAlgo_Interference&         I,
+                                              const HLRBRep_EdgeInterferenceTool& T);
+
   //! Process complex transitions on the list IL.
-  Standard_EXPORT static void ProcessComplex (HLRAlgo_InterferenceList& IL, const HLRBRep_EdgeInterferenceTool& T);
-
-
-
+  Standard_EXPORT static void ProcessComplex(HLRAlgo_InterferenceList&           IL,
+                                             const HLRBRep_EdgeInterferenceTool& T);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_EdgeIList_HeaderFile

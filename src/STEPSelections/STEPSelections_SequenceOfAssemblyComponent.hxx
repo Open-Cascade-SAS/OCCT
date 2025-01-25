@@ -20,7 +20,7 @@
 #include <STEPSelections_AssemblyComponent.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(STEPSelections_AssemblyComponent)> STEPSelections_SequenceOfAssemblyComponent;
-
+typedef NCollection_Sequence<Handle(STEPSelections_AssemblyComponent)>
+  STEPSelections_SequenceOfAssemblyComponent;
 
 #endif

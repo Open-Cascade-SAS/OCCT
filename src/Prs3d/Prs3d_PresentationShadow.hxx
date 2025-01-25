@@ -23,10 +23,9 @@ class Prs3d_PresentationShadow : public Graphic3d_Structure
 {
   DEFINE_STANDARD_RTTIEXT(Prs3d_PresentationShadow, Graphic3d_Structure)
 public:
-
   //! Constructs a shadow of existing presentation object.
-  Standard_EXPORT Prs3d_PresentationShadow (const Handle(Graphic3d_StructureManager)& theViewer,
-                                            const Handle(Graphic3d_Structure)&        thePrs);
+  Standard_EXPORT Prs3d_PresentationShadow(const Handle(Graphic3d_StructureManager)& theViewer,
+                                           const Handle(Graphic3d_Structure)&        thePrs);
 
   //! Returns the id of the parent presentation
   inline Standard_Integer ParentId() const { return myParentStructId; }
@@ -38,13 +37,12 @@ public:
   Standard_EXPORT virtual void CalculateBoundBox() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
   Handle(Graphic3d_ViewAffinity) myParentAffinity;
   Standard_Integer               myParentStructId;
-
 };
 
 DEFINE_STANDARD_HANDLE(Prs3d_PresentationShadow, Graphic3d_Structure)

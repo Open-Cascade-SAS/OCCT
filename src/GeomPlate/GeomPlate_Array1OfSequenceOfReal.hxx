@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TColStd_SequenceOfReal> GeomPlate_Array1OfSequenceOfReal;
 
-
 #endif

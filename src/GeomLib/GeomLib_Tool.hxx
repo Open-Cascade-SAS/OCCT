@@ -44,27 +44,36 @@ class gp_Vec2d;
 class GeomLib_Tool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-    //! Extracts the parameter of a 3D point lying on a 3D curve
-    //! or at a distance less than the MaxDist value.
-    Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom_Curve)& Curve, const gp_Pnt& Point, const Standard_Real MaxDist, Standard_Real& U);
+  //! Extracts the parameter of a 3D point lying on a 3D curve
+  //! or at a distance less than the MaxDist value.
+  Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom_Curve)& Curve,
+                                                    const gp_Pnt&             Point,
+                                                    const Standard_Real       MaxDist,
+                                                    Standard_Real&            U);
 
   //! Extracts the parameter of a 3D point lying on a surface
   //! or at a distance less than the MaxDist value.
-  Standard_EXPORT static Standard_Boolean Parameters(const Handle(Geom_Surface)& Surface, const gp_Pnt& Point, const Standard_Real MaxDist, Standard_Real& U, Standard_Real& V);
+  Standard_EXPORT static Standard_Boolean Parameters(const Handle(Geom_Surface)& Surface,
+                                                     const gp_Pnt&               Point,
+                                                     const Standard_Real         MaxDist,
+                                                     Standard_Real&              U,
+                                                     Standard_Real&              V);
 
   //! Extracts the parameter of a 2D point lying on a 2D curve
   //! or at a distance less than the MaxDist value.
-  Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom2d_Curve)& Curve, const gp_Pnt2d& Point, const Standard_Real MaxDist, Standard_Real& U);
+  Standard_EXPORT static Standard_Boolean Parameter(const Handle(Geom2d_Curve)& Curve,
+                                                    const gp_Pnt2d&             Point,
+                                                    const Standard_Real         MaxDist,
+                                                    Standard_Real&              U);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
-  //! between theCurve and the linear segment joining its points with 
+  //! between theCurve and the linear segment joining its points with
   //! the parameters theFPar and theLPar is obtained.
   //! Returns the (positive) value of deviation. Returns negative value if
   //! the deviation cannot be computed.
-  //! The returned parameter (in case of successful) will always be in 
+  //! The returned parameter (in case of successful) will always be in
   //! the range [theFPar, theLPar].
   //! Iterative method is used for computation. So, theStartParameter is
   //! needed to be set. Recommend value of theStartParameter can be found with
@@ -76,28 +85,27 @@ public:
   //!                         perpendicular theLine);
   //! @param theLine - the linear segment joining the point of theCurve having parameters
   //!                  theFPar and theLPar.
-  Standard_EXPORT static
-    Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                  const Standard_Real theFPar,
-                                  const Standard_Real theLPar,
-                                  const Standard_Real theStartParameter,
-                                  const Standard_Integer theNbIters = 100,
-                                  Standard_Real* const thePrmOnCurve = NULL,
-                                  gp_Pnt2d* const thePtOnCurve = NULL,
-                                  gp_Vec2d* const theVecCurvLine = NULL,
-                                  gp_Lin2d* const theLine = NULL);
+  Standard_EXPORT static Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
+                                                        const Standard_Real        theFPar,
+                                                        const Standard_Real        theLPar,
+                                                        const Standard_Real    theStartParameter,
+                                                        const Standard_Integer theNbIters    = 100,
+                                                        Standard_Real* const   thePrmOnCurve = NULL,
+                                                        gp_Pnt2d* const        thePtOnCurve  = NULL,
+                                                        gp_Vec2d* const theVecCurvLine       = NULL,
+                                                        gp_Lin2d* const theLine = NULL);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
-  //! between theCurve and the linear segment joining its points with 
+  //! between theCurve and the linear segment joining its points with
   //! the parameters theFPar and theLPar is obtained.
   //! Returns the (positive) value of deviation. Returns negative value if
   //! the deviation cannot be computed.
-  //! The returned parameter (in case of successful) will always be in 
+  //! The returned parameter (in case of successful) will always be in
   //! the range [theFPar, theLPar].
   //! theNbSubIntervals defines discretization of the given interval [theFPar, theLPar]
   //! to provide better search condition. This value should be chosen taking into
   //! account complexity of the curve in considered interval. E.g. if there are many
-  //! oscillations of the curve in the interval then theNbSubIntervals mus be 
+  //! oscillations of the curve in the interval then theNbSubIntervals mus be
   //! great number. However, the greater value of theNbSubIntervals the slower the
   //! algorithm will compute.
   //! theNbIters sets number of iterations.
@@ -105,14 +113,12 @@ public:
   //! This algorithm cannot compute deviation precisely (so, there is no point in
   //! setting big value of theNbIters). But it can give some start point for
   //! the overloaded method.
-  Standard_EXPORT static
-    Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                   const Standard_Real theFPar,
-                                   const Standard_Real theLPar,
-                                   const Standard_Integer theNbSubIntervals,
-                                   const Standard_Integer theNbIters = 10,
-                                   Standard_Real * const thePrmOnCurve = NULL);
-
+  Standard_EXPORT static Standard_Real ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
+                                                        const Standard_Real        theFPar,
+                                                        const Standard_Real        theLPar,
+                                                        const Standard_Integer theNbSubIntervals,
+                                                        const Standard_Integer theNbIters  = 10,
+                                                        Standard_Real* const thePrmOnCurve = NULL);
 };
 
 #endif // _GeomLib_Tool_HeaderFile

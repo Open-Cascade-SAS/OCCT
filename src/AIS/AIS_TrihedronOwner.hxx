@@ -24,34 +24,34 @@ class AIS_TrihedronOwner : public SelectMgr_EntityOwner
 {
   DEFINE_STANDARD_RTTIEXT(AIS_TrihedronOwner, SelectMgr_EntityOwner)
 public:
-
   //! Creates an owner of AIS_Trihedron object.
-  Standard_EXPORT AIS_TrihedronOwner (const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                      const Prs3d_DatumParts theDatumPart,
-                                      const Standard_Integer thePriority);
+  Standard_EXPORT AIS_TrihedronOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
+                                     const Prs3d_DatumParts                    theDatumPart,
+                                     const Standard_Integer                    thePriority);
 
   //! Returns the datum part identifier.
   Prs3d_DatumParts DatumPart() const { return myDatumPart; }
 
   //! Highlights selectable object's presentation.
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
-                                                 const Handle(Prs3d_Drawer)& theStyle,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
+                                                const Handle(Prs3d_Drawer)&               theStyle,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Returns true if the presentation manager thePM
   //! highlights selections corresponding to the selection mode aMode.
-  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& thePM,
-                                                const Standard_Integer theMode) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
+                const Standard_Integer                    theMode) const Standard_OVERRIDE;
 
   //! Removes highlighting from the owner of a detected
   //! selectable object in the presentation manager thePM.
-  Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& thePM,
-                                          const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
+                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
   Prs3d_DatumParts myDatumPart; //!< part of datum selected
 };
 
-DEFINE_STANDARD_HANDLE (AIS_TrihedronOwner, SelectMgr_EntityOwner)
+DEFINE_STANDARD_HANDLE(AIS_TrihedronOwner, SelectMgr_EntityOwner)
 
 #endif // _AIS_TrihedronOwner_HeaderFile

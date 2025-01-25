@@ -13,36 +13,35 @@
 
 #include <StdLPersistent_HArray1.hxx>
 
-
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdLPersistent_HArray1::base::Read (StdObjMgt_ReadData& theReadData)
+void StdLPersistent_HArray1::base::Read(StdObjMgt_ReadData& theReadData)
 {
   Standard_Integer aLowerBound, anUpperBound;
   theReadData >> aLowerBound >> anUpperBound;
-  createArray (aLowerBound, anUpperBound);
+  createArray(aLowerBound, anUpperBound);
 
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
   Standard_Integer aSize;
   theReadData >> aSize;
 
   for (Standard_Integer i = aLowerBound; i <= anUpperBound; i++)
-    readValue (theReadData, i);
+    readValue(theReadData, i);
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdLPersistent_HArray1::base::Write (StdObjMgt_WriteData& theWriteData) const
+void StdLPersistent_HArray1::base::Write(StdObjMgt_WriteData& theWriteData) const
 {
   Standard_Integer aLowerBound = lowerBound(), anUpperBound = upperBound();
   theWriteData << aLowerBound << anUpperBound;
 
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   Standard_Integer aSize = anUpperBound - aLowerBound + 1;
   theWriteData << aSize;

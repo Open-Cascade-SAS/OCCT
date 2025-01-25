@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(TColgp_HSequenceOfPnt)> ProjLib_SequenceOfHSequenceOfPnt;
 
-
 #endif

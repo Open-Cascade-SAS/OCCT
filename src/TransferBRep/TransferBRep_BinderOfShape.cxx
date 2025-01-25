@@ -11,40 +11,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TransferBRep_BinderOfShape.hxx>
 #include <TransferBRep_ShapeInfo.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_BinderOfShape,Transfer_Binder)
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_BinderOfShape, Transfer_Binder)
 
-TransferBRep_BinderOfShape::TransferBRep_BinderOfShape (){ }
+TransferBRep_BinderOfShape::TransferBRep_BinderOfShape() {}
 
-TransferBRep_BinderOfShape::TransferBRep_BinderOfShape (const TopoDS_Shape& res)
-: theres (res)
-{ SetResultPresent();  }
-
+TransferBRep_BinderOfShape::TransferBRep_BinderOfShape(const TopoDS_Shape& res)
+    : theres(res)
+{
+  SetResultPresent();
+}
 
 //    Standard_Boolean  TransferBRep_BinderOfShape::IsMultiple() const
 //      {  return Standard_False;  }
 
-
-Handle(Standard_Type)  TransferBRep_BinderOfShape::ResultType () const
+Handle(Standard_Type) TransferBRep_BinderOfShape::ResultType() const
 // clang-format off
 {  return  TransferBRep_ShapeInfo::Type (theres);  }  // correspond a "STANDARD_TYPE(TopoDS_Shape)"
 
 Standard_CString  TransferBRep_BinderOfShape::ResultTypeName () const
 {  return  TransferBRep_ShapeInfo::TypeName (theres);  }  // correspond a "STANDARD_TYPE(TopoDS_Shape)"
+
 // clang-format on
 
-
-void  TransferBRep_BinderOfShape::SetResult (const TopoDS_Shape& res)
+void TransferBRep_BinderOfShape::SetResult(const TopoDS_Shape& res)
 {
   SetResultPresent();
   theres = res;
 }
 
-const TopoDS_Shape&  TransferBRep_BinderOfShape::Result () const
-{  return theres;  }
+const TopoDS_Shape& TransferBRep_BinderOfShape::Result() const
+{
+  return theres;
+}
 
-TopoDS_Shape&  TransferBRep_BinderOfShape::CResult ()
-{  SetResultPresent(); return theres;  }
+TopoDS_Shape& TransferBRep_BinderOfShape::CResult()
+{
+  SetResultPresent();
+  return theres;
+}

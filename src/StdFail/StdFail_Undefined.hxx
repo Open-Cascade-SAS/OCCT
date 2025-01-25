@@ -26,8 +26,9 @@ class StdFail_Undefined;
 DEFINE_STANDARD_HANDLE(StdFail_Undefined, Standard_Failure)
 
 #if !defined No_Exception && !defined No_StdFail_Undefined
-  #define StdFail_Undefined_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw StdFail_Undefined(MESSAGE);
+  #define StdFail_Undefined_Raise_if(CONDITION, MESSAGE)                                           \
+    if (CONDITION)                                                                                 \
+      throw StdFail_Undefined(MESSAGE);
 #else
   #define StdFail_Undefined_Raise_if(CONDITION, MESSAGE)
 #endif

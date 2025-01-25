@@ -20,7 +20,7 @@
 #include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepVisual_RenderingPropertiesSelect> StepVisual_Array1OfRenderingPropertiesSelect;
-
+typedef NCollection_Array1<StepVisual_RenderingPropertiesSelect>
+  StepVisual_Array1OfRenderingPropertiesSelect;
 
 #endif

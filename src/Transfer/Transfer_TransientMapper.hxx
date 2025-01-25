@@ -25,60 +25,40 @@ class Standard_Transient;
 class Transfer_DataInfo;
 class Transfer_Finder;
 
-
 class Transfer_TransientMapper;
 DEFINE_STANDARD_HANDLE(Transfer_TransientMapper, Transfer_Finder)
-
 
 class Transfer_TransientMapper : public Transfer_Finder
 {
 
 public:
-
-  
   //! Creates a Mapper with a Value. This Value can then not be
   //! changed. It is used by the Hasher to compute the HashCode,
   //! which will then be stored for an immediate reading.
   Standard_EXPORT Transfer_TransientMapper(const Handle(Standard_Transient)& akey);
-  
+
   //! Returns the contained value
   Standard_EXPORT const Handle(Standard_Transient)& Value() const;
-  
+
   //! Specific testof equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
-  Standard_EXPORT Standard_Boolean Equates (const Handle(Transfer_Finder)& other) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Equates(const Handle(Transfer_Finder)& other) const Standard_OVERRIDE;
+
   //! Returns the Type of the Value. By default, returns the
   //! DynamicType of <me>, but can be redefined
   Standard_EXPORT virtual Handle(Standard_Type) ValueType() const Standard_OVERRIDE;
-  
+
   //! Returns the name of the Type of the Value. Default is name
   //! of ValueType, unless it is for a non-handled object
   Standard_EXPORT virtual Standard_CString ValueTypeName() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTI_INLINE(Transfer_TransientMapper,Transfer_Finder)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_TransientMapper, Transfer_Finder)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Standard_Transient) theval;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_TransientMapper_HeaderFile

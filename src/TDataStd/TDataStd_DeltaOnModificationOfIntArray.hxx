@@ -23,7 +23,6 @@
 #include <TDF_DeltaOnModification.hxx>
 class TDataStd_IntegerArray;
 
-
 class TDataStd_DeltaOnModificationOfIntArray;
 DEFINE_STANDARD_HANDLE(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnModification)
 
@@ -33,39 +32,20 @@ class TDataStd_DeltaOnModificationOfIntArray : public TDF_DeltaOnModification
 {
 
 public:
-
-  
   //! Initializes a TDF_DeltaOnModification.
   Standard_EXPORT TDataStd_DeltaOnModificationOfIntArray(const Handle(TDataStd_IntegerArray)& Arr);
-  
+
   //! Applies the delta to the attribute.
   Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnModification)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfInteger) myIndxes;
   Handle(TColStd_HArray1OfInteger) myValues;
-  Standard_Integer myUp1;
-  Standard_Integer myUp2;
-
-
+  Standard_Integer                 myUp1;
+  Standard_Integer                 myUp2;
 };
-
-
-
-
-
-
 
 #endif // _TDataStd_DeltaOnModificationOfIntArray_HeaderFile

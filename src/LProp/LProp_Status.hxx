@@ -17,13 +17,12 @@
 #ifndef _LProp_Status_HeaderFile
 #define _LProp_Status_HeaderFile
 
-
 enum LProp_Status
 {
-LProp_Undecided,
-LProp_Undefined,
-LProp_Defined,
-LProp_Computed
+  LProp_Undecided,
+  LProp_Undefined,
+  LProp_Defined,
+  LProp_Computed
 };
 
 #endif // _LProp_Status_HeaderFile

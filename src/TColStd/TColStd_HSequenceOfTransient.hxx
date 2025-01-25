@@ -21,5 +21,4 @@
 
 DEFINE_HSEQUENCE(TColStd_HSequenceOfTransient, TColStd_SequenceOfTransient)
 
-
 #endif

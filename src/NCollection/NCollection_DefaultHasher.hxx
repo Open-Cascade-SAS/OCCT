@@ -25,9 +25,9 @@
  *              default in NCollection maps.
  *              To compute the  hash code of the key  is used the
  *              global function HashCode.
- *              To compare two keys is used  the  global function 
+ *              To compare two keys is used  the  global function
  *              IsEqual.
-*/
+ */
 template <class TheKeyType>
 struct NCollection_DefaultHasher
 {
@@ -35,7 +35,8 @@ struct NCollection_DefaultHasher
   {
     return HashCode<TheKeyType>(theKey);
   }
-  bool operator() (const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+
+  bool operator()(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
   {
     return IsEqual<TheKeyType>(theK1, theK2);
   }
@@ -43,51 +44,53 @@ struct NCollection_DefaultHasher
 private:
   // For non-enums
   template <class T = TheKeyType>
-  typename std::enable_if<!std::is_enum<T>::value, size_t>::type
-    HashCode(const TheKeyType& theKey) const noexcept
+  typename std::enable_if<!std::is_enum<T>::value, size_t>::type HashCode(
+    const TheKeyType& theKey) const noexcept
   {
     return std::hash<TheKeyType>{}(theKey);
   }
 
   // For non-enums
   template <class T = TheKeyType>
-  typename std::enable_if<!std::is_enum<T>::value, bool>::type
-    IsEqual(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+  typename std::enable_if<!std::is_enum<T>::value, bool>::type IsEqual(
+    const TheKeyType& theK1,
+    const TheKeyType& theK2) const noexcept
   {
     return std::equal_to<TheKeyType>{}(theK1, theK2);
   }
 
   // For enums
   template <class T = TheKeyType>
-  typename std::enable_if<std::is_enum<T>::value, size_t>::type
-    HashCode(const TheKeyType& theKey) const noexcept
+  typename std::enable_if<std::is_enum<T>::value, size_t>::type HashCode(
+    const TheKeyType& theKey) const noexcept
   {
     return static_cast<size_t>(theKey);
   }
 
   // For enums
   template <class T = TheKeyType>
-  typename std::enable_if<std::is_enum<T>::value, bool>::type
-    IsEqual(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+  typename std::enable_if<std::is_enum<T>::value, bool>::type IsEqual(
+    const TheKeyType& theK1,
+    const TheKeyType& theK2) const noexcept
   {
     return theK1 == theK2;
   }
 };
 
-#define DEFINE_DEFAULT_HASHER_PURE(TheKeyType)              \
-template <> struct NCollection_DefaultHasher<TheKeyType>    \
-{                                                           \
-  size_t operator()(const TheKeyType theKey) const noexcept \
-  {                                                         \
-    return static_cast<size_t>(theKey);                     \
-  }                                                         \
-                                                            \
-  bool operator() (const TheKeyType theK1,                  \
-                   const TheKeyType theK2) const noexcept   \
-  {                                                         \
-    return theK1 == theK2;                                  \
-  }                                                         \
-};
+#define DEFINE_DEFAULT_HASHER_PURE(TheKeyType)                                                     \
+  template <>                                                                                      \
+  struct NCollection_DefaultHasher<TheKeyType>                                                     \
+  {                                                                                                \
+    size_t operator()(const TheKeyType theKey) const noexcept                                      \
+    {                                                                                              \
+      return static_cast<size_t>(theKey);                                                          \
+    }                                                                                              \
+                                                                                                   \
+    bool operator()(const TheKeyType theK1, const TheKeyType theK2) const noexcept                 \
+    {                                                                                              \
+      return theK1 == theK2;                                                                       \
+    }                                                                                              \
+  };
 
 /// Explicit specialization for bool.
 DEFINE_DEFAULT_HASHER_PURE(bool)
@@ -143,7 +146,7 @@ struct NCollection_DefaultHasher<TheKeyType*>
     return static_cast<size_t>(reinterpret_cast<std::uintptr_t>(theKey));
   }
 
-  bool operator() (const TheKeyType* theK1, const TheKeyType* theK2) const noexcept
+  bool operator()(const TheKeyType* theK1, const TheKeyType* theK2) const noexcept
   {
     return theK1 == theK2;
   }

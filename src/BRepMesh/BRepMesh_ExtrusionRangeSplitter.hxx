@@ -22,19 +22,13 @@
 class BRepMesh_ExtrusionRangeSplitter : public BRepMesh_NURBSRangeSplitter
 {
 public:
-
   //! Constructor.
-  BRepMesh_ExtrusionRangeSplitter()
-  {
-  }
+  BRepMesh_ExtrusionRangeSplitter() {}
 
   //! Destructor.
-  virtual ~BRepMesh_ExtrusionRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_ExtrusionRangeSplitter() {}
 
 protected:
-
   //! Returns number of intervals computed using available geometrical parameters.
   Standard_EXPORT virtual Standard_Integer getUndefinedIntervalNb(
     const Handle(Adaptor3d_Surface)& theSurface,

@@ -40,7 +40,7 @@ OpenGl_Element::~OpenGl_Element()
 // function : UpdateMemStats
 // purpose  :
 // =======================================================================
-void OpenGl_Element::UpdateMemStats (Graphic3d_FrameStatsDataTmp& theStats) const
+void OpenGl_Element::UpdateMemStats(Graphic3d_FrameStatsDataTmp& theStats) const
 {
   theStats[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += EstimatedDataSize();
 }
@@ -49,8 +49,7 @@ void OpenGl_Element::UpdateMemStats (Graphic3d_FrameStatsDataTmp& theStats) cons
 // function : UpdateDrawStats
 // purpose  :
 // =======================================================================
-void OpenGl_Element::UpdateDrawStats (Graphic3d_FrameStatsDataTmp& ,
-                                      bool ) const
+void OpenGl_Element::UpdateDrawStats(Graphic3d_FrameStatsDataTmp&, bool) const
 {
   //
 }
@@ -59,8 +58,8 @@ void OpenGl_Element::UpdateDrawStats (Graphic3d_FrameStatsDataTmp& ,
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void OpenGl_Element::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void OpenGl_Element::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Element)
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+  OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Element)
+  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, this)
 }

@@ -23,46 +23,44 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
-IGESBasic_SubfigureDef::IGESBasic_SubfigureDef ()    {  }
+IGESBasic_SubfigureDef::IGESBasic_SubfigureDef() {}
 
-
-    void  IGESBasic_SubfigureDef::Init
-  (const Standard_Integer aDepth,
-   const Handle(TCollection_HAsciiString)& aName,
-   const Handle(IGESData_HArray1OfIGESEntity)& allAssocEntities)
+void IGESBasic_SubfigureDef::Init(const Standard_Integer                      aDepth,
+                                  const Handle(TCollection_HAsciiString)&     aName,
+                                  const Handle(IGESData_HArray1OfIGESEntity)& allAssocEntities)
 {
   if (!allAssocEntities.IsNull() && allAssocEntities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_SubfigureDef : Init");
   theDepth         = aDepth;
   theName          = aName;
   theAssocEntities = allAssocEntities;
-  InitTypeAndForm(308,0);
+  InitTypeAndForm(308, 0);
 }
 
-    Standard_Integer  IGESBasic_SubfigureDef::Depth () const
+Standard_Integer IGESBasic_SubfigureDef::Depth() const
 {
   return theDepth;
 }
 
-    Handle(TCollection_HAsciiString)  IGESBasic_SubfigureDef::Name () const
+Handle(TCollection_HAsciiString) IGESBasic_SubfigureDef::Name() const
 {
   return theName;
 }
 
-    Standard_Integer  IGESBasic_SubfigureDef::NbEntities () const
+Standard_Integer IGESBasic_SubfigureDef::NbEntities() const
 {
   return (theAssocEntities.IsNull() ? 0 : theAssocEntities->Length());
 }
 
-    Handle(IGESData_IGESEntity)  IGESBasic_SubfigureDef::AssociatedEntity
-  (const Standard_Integer Index) const
+Handle(IGESData_IGESEntity) IGESBasic_SubfigureDef::AssociatedEntity(
+  const Standard_Integer Index) const
 {
   return theAssocEntities->Value(Index);
 }
 
-Handle(Standard_Transient) IGESBasic_SubfigureDef::Value (const Standard_Integer Index) const
+Handle(Standard_Transient) IGESBasic_SubfigureDef::Value(const Standard_Integer Index) const
 {
-  return Handle(Standard_Transient) (theAssocEntities->Value(Index));
+  return Handle(Standard_Transient)(theAssocEntities->Value(Index));
 }

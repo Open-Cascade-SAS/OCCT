@@ -22,14 +22,13 @@
 
 // To print other type of items define PrintItem for it
 
-Standard_EXPORT void PrintItem(const gp_Pnt&       thePnt);
+Standard_EXPORT void PrintItem(const gp_Pnt& thePnt);
 Standard_EXPORT void PrintItem(const Standard_Real theDbl);
 
 // So do for the pseudo-random generation
 
-Standard_EXPORT void Random (Standard_Real& theValue);
-Standard_EXPORT void Random (Standard_Integer& theValue,
-                             const Standard_Integer theMax=RAND_MAX);
-Standard_EXPORT void Random (gp_Pnt& thePnt);
+Standard_EXPORT void Random(Standard_Real& theValue);
+Standard_EXPORT void Random(Standard_Integer& theValue, const Standard_Integer theMax = RAND_MAX);
+Standard_EXPORT void Random(gp_Pnt& thePnt);
 
 #endif

@@ -21,7 +21,6 @@
 #include <HLRBRep_LineTool.hxx>
 #include <math_Matrix.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define ThePSurface Standard_Address
 #define ThePSurface_hxx <Standard_Address.hxx>
@@ -34,4 +33,3 @@
 #define IntImp_ZerCSParFunc HLRBRep_TheCSFunctionOfInterCSurf
 #define IntImp_ZerCSParFunc_hxx <HLRBRep_TheCSFunctionOfInterCSurf.hxx>
 #include "../IntImp/IntImp_ZerCSParFunc.gxx"
-

@@ -26,8 +26,9 @@ class Standard_Overflow;
 DEFINE_STANDARD_HANDLE(Standard_Overflow, Standard_NumericError)
 
 #if !defined No_Exception && !defined No_Standard_Overflow
-  #define Standard_Overflow_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_Overflow(MESSAGE);
+  #define Standard_Overflow_Raise_if(CONDITION, MESSAGE)                                           \
+    if (CONDITION)                                                                                 \
+      throw Standard_Overflow(MESSAGE);
 #else
   #define Standard_Overflow_Raise_if(CONDITION, MESSAGE)
 #endif

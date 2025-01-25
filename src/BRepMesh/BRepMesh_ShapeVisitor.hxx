@@ -34,31 +34,26 @@ class TopoDS_Wire;
 class BRepMesh_ShapeVisitor : public IMeshTools_ShapeVisitor
 {
 public:
-
   //! Constructor.
-  Standard_EXPORT BRepMesh_ShapeVisitor (const Handle (IMeshData_Model)& theModel);
+  Standard_EXPORT BRepMesh_ShapeVisitor(const Handle(IMeshData_Model)& theModel);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_ShapeVisitor ();
+  Standard_EXPORT virtual ~BRepMesh_ShapeVisitor();
 
   //! Handles TopoDS_Face object.
-  Standard_EXPORT virtual void Visit (const TopoDS_Face& theFace) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Visit(const TopoDS_Face& theFace) Standard_OVERRIDE;
 
   //! Handles TopoDS_Edge object.
-  Standard_EXPORT virtual void Visit (const TopoDS_Edge& theEdge) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Visit(const TopoDS_Edge& theEdge) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
 
 private:
-
   //! Adds wire to face discrete model.
-  Standard_Boolean addWire (
-    const TopoDS_Wire&            theWire,
-    const IMeshData::IFaceHandle& theDFace);
+  Standard_Boolean addWire(const TopoDS_Wire& theWire, const IMeshData::IFaceHandle& theDFace);
 
 private:
-
-  Handle (IMeshData_Model)      myModel;
+  Handle(IMeshData_Model)       myModel;
   IMeshData::DMapOfShapeInteger myDEdgeMap;
 };
 

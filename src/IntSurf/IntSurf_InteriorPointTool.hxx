@@ -25,56 +25,35 @@
 #include <gp_Dir2d.hxx>
 class IntSurf_InteriorPoint;
 
-
 //! This class provides a tool on the "interior point"
 //! that can be used to instantiates the Walking
 //! algorithms (see package IntWalk).
-class IntSurf_InteriorPointTool 
+class IntSurf_InteriorPointTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns the 3d coordinates of the starting point.
-    static gp_Pnt Value3d (const IntSurf_InteriorPoint& PStart);
-  
+  static gp_Pnt Value3d(const IntSurf_InteriorPoint& PStart);
+
   //! Returns the <U,V> parameters which are associated
   //! with <P>
   //! it's the parameters which start the marching algorithm
-    static void Value2d (const IntSurf_InteriorPoint& PStart, Standard_Real& U, Standard_Real& V);
-  
+  static void Value2d(const IntSurf_InteriorPoint& PStart, Standard_Real& U, Standard_Real& V);
+
   //! returns the tangent at the intersection in 3d space
   //! associated to <P>
-    static gp_Vec Direction3d (const IntSurf_InteriorPoint& PStart);
-  
+  static gp_Vec Direction3d(const IntSurf_InteriorPoint& PStart);
+
   //! returns the tangent at the intersection in the
   //! parametric space of the parametrized surface.This tangent
   //! is associated to the value2d
-    static gp_Dir2d Direction2d (const IntSurf_InteriorPoint& PStart);
-
-
-
+  static gp_Dir2d Direction2d(const IntSurf_InteriorPoint& PStart);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
 
-
 #include <IntSurf_InteriorPointTool.lxx>
-
-
-
-
 
 #endif // _IntSurf_InteriorPointTool_HeaderFile

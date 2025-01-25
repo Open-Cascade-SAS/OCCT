@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ToolBar.hxx>
 
@@ -25,26 +25,28 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-VInspector_ToolBar::VInspector_ToolBar (QWidget* theParent)
-: QObject (theParent)
+VInspector_ToolBar::VInspector_ToolBar(QWidget* theParent)
+    : QObject(theParent)
 {
-  myActionsMap[VInspector_ToolActionType_UpdateId] = new QPushButton (theParent);
-  myActionsMap[VInspector_ToolActionType_UpdateId]->setIcon (QIcon (":/icons/treeview_update.png"));
-  myActionsMap[VInspector_ToolActionType_UpdateId]->setText (tr ("Update Tree Model"));
-  myActionsMap[VInspector_ToolActionType_UpdateId]->setToolTip (tr ("Update Tree Model"));
+  myActionsMap[VInspector_ToolActionType_UpdateId] = new QPushButton(theParent);
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setIcon(QIcon(":/icons/treeview_update.png"));
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setText(tr("Update Tree Model"));
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setToolTip(tr("Update Tree Model"));
 
-  myActionsMap[VInspector_ToolActionType_UpdateId]->setText ("Update");
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setText("Update");
 
-  myMainWindow = new QWidget (theParent);
+  myMainWindow = new QWidget(theParent);
 
-  QHBoxLayout* aLay = new QHBoxLayout (myMainWindow);
+  QHBoxLayout* aLay = new QHBoxLayout(myMainWindow);
   aLay->setMargin(0);
-  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt = myActionsMap.begin();
-       anActionsIt != myActionsMap.end(); anActionsIt++)
+  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt =
+         myActionsMap.begin();
+       anActionsIt != myActionsMap.end();
+       anActionsIt++)
   {
     QPushButton* aBtn = anActionsIt.value();
-    connect (aBtn, SIGNAL (clicked()), this, SLOT (onActionClicked()));
-    aLay->addWidget (aBtn);
+    connect(aBtn, SIGNAL(clicked()), this, SLOT(onActionClicked()));
+    aLay->addWidget(aBtn);
   }
   aLay->addStretch(1);
 }
@@ -53,9 +55,9 @@ VInspector_ToolBar::VInspector_ToolBar (QWidget* theParent)
 // function : GetToolButton
 // purpose :
 // =======================================================================
-QPushButton* VInspector_ToolBar::GetToolButton (const VInspector_ToolActionType& theActionId ) const
+QPushButton* VInspector_ToolBar::GetToolButton(const VInspector_ToolActionType& theActionId) const
 {
-  return myActionsMap.contains (theActionId) ? myActionsMap[theActionId] : 0;
+  return myActionsMap.contains(theActionId) ? myActionsMap[theActionId] : 0;
 }
 
 // =======================================================================
@@ -64,11 +66,13 @@ QPushButton* VInspector_ToolBar::GetToolButton (const VInspector_ToolActionType&
 // =======================================================================
 void VInspector_ToolBar::onActionClicked()
 {
-  int anId = -1;
+  int          anId       = -1;
   QPushButton* aSenderBtn = (QPushButton*)sender();
 
-  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt = myActionsMap.begin();
-       anActionsIt != myActionsMap.end(); anActionsIt++)
+  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt =
+         myActionsMap.begin();
+       anActionsIt != myActionsMap.end();
+       anActionsIt++)
   {
     if (anActionsIt.value() != aSenderBtn)
       continue;
@@ -77,5 +81,5 @@ void VInspector_ToolBar::onActionClicked()
   }
 
   if (anId != -1)
-    emit actionClicked (anId);
+    emit actionClicked(anId);
 }

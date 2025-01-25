@@ -29,7 +29,6 @@ class ShapeExtend_WireData;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 
-
 //! This package is intended to analyze geometrical objects
 //! and topological shapes. Analysis domain includes both
 //! exploring geometrical and topological properties of
@@ -44,39 +43,42 @@ class TopoDS_Vertex;
 //! checking small faces,
 //! analyzing shape tolerances,
 //! analyzing of free bounds of the shape.
-class ShapeAnalysis 
+class ShapeAnalysis
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns positively oriented wire in the face.
   //! If there is no such wire - returns the last wire of the face.
-  Standard_EXPORT static TopoDS_Wire OuterWire (const TopoDS_Face& theFace);
-  
+  Standard_EXPORT static TopoDS_Wire OuterWire(const TopoDS_Face& theFace);
+
   //! Returns a total area of 2d wire
-  Standard_EXPORT static Standard_Real TotCross2D (const Handle(ShapeExtend_WireData)& sewd, const TopoDS_Face& aFace);
-  
+  Standard_EXPORT static Standard_Real TotCross2D(const Handle(ShapeExtend_WireData)& sewd,
+                                                  const TopoDS_Face&                  aFace);
+
   //! Returns a total area of 3d wire
-  Standard_EXPORT static Standard_Real ContourArea (const TopoDS_Wire& theWire);
-  
+  Standard_EXPORT static Standard_Real ContourArea(const TopoDS_Wire& theWire);
+
   //! Returns True if <F> has outer bound.
-  Standard_EXPORT static Standard_Boolean IsOuterBound (const TopoDS_Face& face);
-  
+  Standard_EXPORT static Standard_Boolean IsOuterBound(const TopoDS_Face& face);
+
   //! Returns a shift required to move point
   //! <Val> to the range [ToVal-Period/2,ToVal+Period/2].
   //! This shift will be the divisible by Period.
   //! Intended for adjusting parameters on periodic surfaces.
-  Standard_EXPORT static Standard_Real AdjustByPeriod (const Standard_Real Val, const Standard_Real ToVal, const Standard_Real Period);
-  
+  Standard_EXPORT static Standard_Real AdjustByPeriod(const Standard_Real Val,
+                                                      const Standard_Real ToVal,
+                                                      const Standard_Real Period);
+
   //! Returns a shift required to move point
   //! <Val> to the range [ValMin,ValMax].
   //! This shift will be the divisible by Period
   //! with Period = ValMax - ValMin.
   //! Intended for adjusting parameters on periodic surfaces.
-  Standard_EXPORT static Standard_Real AdjustToPeriod (const Standard_Real Val, const Standard_Real ValMin, const Standard_Real ValMax);
-  
+  Standard_EXPORT static Standard_Real AdjustToPeriod(const Standard_Real Val,
+                                                      const Standard_Real ValMin,
+                                                      const Standard_Real ValMax);
+
   //! Finds the start and end vertices of the shape
   //! Shape can be of the following type:
   //! vertex: V1 and V2 are the same and equal to <shape>,
@@ -86,11 +88,16 @@ public:
   //! of the last edge (also see ShapeAnalysis_Edge).
   //! If wire contains no edges V1 and V2 are nullified
   //! If none of the above V1 and V2 are nullified
-  Standard_EXPORT static void FindBounds (const TopoDS_Shape& shape, TopoDS_Vertex& V1, TopoDS_Vertex& V2);
-  
-  //! Computes exact UV bounds of all wires on the face
-  Standard_EXPORT static void GetFaceUVBounds (const TopoDS_Face& F, Standard_Real& Umin, Standard_Real& Umax, Standard_Real& Vmin, Standard_Real& Vmax);
+  Standard_EXPORT static void FindBounds(const TopoDS_Shape& shape,
+                                         TopoDS_Vertex&      V1,
+                                         TopoDS_Vertex&      V2);
 
+  //! Computes exact UV bounds of all wires on the face
+  Standard_EXPORT static void GetFaceUVBounds(const TopoDS_Face& F,
+                                              Standard_Real&     Umin,
+                                              Standard_Real&     Umax,
+                                              Standard_Real&     Vmin,
+                                              Standard_Real&     Vmax);
 };
 
 #endif // _ShapeAnalysis_HeaderFile

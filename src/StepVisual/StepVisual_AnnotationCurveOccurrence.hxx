@@ -26,10 +26,9 @@ DEFINE_STANDARD_HANDLE(StepVisual_AnnotationCurveOccurrence, StepVisual_Annotati
 class StepVisual_AnnotationCurveOccurrence : public StepVisual_AnnotationOccurrence
 {
 public:
-
   //! Returns a AnnotationCurveOccurrence
   Standard_EXPORT StepVisual_AnnotationCurveOccurrence();
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence,StepVisual_AnnotationOccurrence)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence, StepVisual_AnnotationOccurrence)
 };
 #endif // _StepVisual_AnnotationCurveOccurrence_HeaderFile

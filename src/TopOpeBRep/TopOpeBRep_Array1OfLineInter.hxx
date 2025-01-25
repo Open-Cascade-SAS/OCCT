@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TopOpeBRep_LineInter> TopOpeBRep_Array1OfLineInter;
 
-
 #endif

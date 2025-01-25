@@ -26,13 +26,9 @@ struct Image_ColorRGB
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
 public: // access methods
-
   //! Alias to 1st component (red intensity).
   Standard_Byte r() const { return v[0]; }
 
@@ -52,9 +48,7 @@ public: // access methods
   Standard_Byte& b() { return v[2]; }
 
 public:
-
   Standard_Byte v[3];
-
 };
 
 //! POD structure for packed RGB color value (4 bytes with extra byte for alignment)
@@ -65,10 +59,7 @@ struct Image_ColorRGB32
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
   //! Alias to 1st component (red intensity).
   Standard_Byte r() const { return v[0]; }
@@ -95,9 +86,7 @@ struct Image_ColorRGB32
   Standard_Byte& a_() { return v[3]; }
 
 public:
-
   Standard_Byte v[4];
-
 };
 
 //! POD structure for packed RGBA color value (4 bytes)
@@ -108,10 +97,7 @@ struct Image_ColorRGBA
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 4;
-  }
+  static Standard_Integer Length() { return 4; }
 
   //! Alias to 1st component (red intensity).
   Standard_Byte r() const { return v[0]; }
@@ -138,9 +124,7 @@ struct Image_ColorRGBA
   Standard_Byte& a() { return v[3]; }
 
 public:
-
   Standard_Byte v[4];
-
 };
 
 //! POD structure for packed BGR color value (3 bytes)
@@ -151,10 +135,7 @@ struct Image_ColorBGR
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
   //! Alias to 3rd component (red intensity).
   Standard_Byte r() const { return v[2]; }
@@ -175,9 +156,7 @@ struct Image_ColorBGR
   Standard_Byte& b() { return v[0]; }
 
 public:
-
   Standard_Byte v[3];
-
 };
 
 //! POD structure for packed BGR color value (4 bytes with extra byte for alignment)
@@ -188,10 +167,7 @@ struct Image_ColorBGR32
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
   //! Alias to 3rd component (red intensity).
   Standard_Byte r() const { return v[2]; }
@@ -218,9 +194,7 @@ struct Image_ColorBGR32
   Standard_Byte& a_() { return v[3]; }
 
 public:
-
   Standard_Byte v[4];
-
 };
 
 //! POD structure for packed BGRA color value (4 bytes)
@@ -231,10 +205,7 @@ struct Image_ColorBGRA
   typedef Standard_Byte ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 4;
-  }
+  static Standard_Integer Length() { return 4; }
 
   //! Alias to 3rd component (red intensity).
   Standard_Byte r() const { return v[2]; }
@@ -261,9 +232,7 @@ struct Image_ColorBGRA
   Standard_Byte& a() { return v[3]; }
 
 public:
-
   Standard_Byte v[4];
-
 };
 
 //! POD structure for packed float RG color value (2 floats)
@@ -299,10 +268,7 @@ struct Image_ColorRGBF
   typedef Standard_ShortReal ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
   //! Alias to 1st component (red intensity).
   Standard_ShortReal r() const { return v[0]; }
@@ -323,9 +289,7 @@ struct Image_ColorRGBF
   Standard_ShortReal& b() { return v[2]; }
 
 public:
-
   Standard_ShortReal v[3];
-
 };
 
 //! POD structure for packed BGR float color value (3 floats)
@@ -336,10 +300,7 @@ struct Image_ColorBGRF
   typedef Standard_ShortReal ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 3;
-  }
+  static Standard_Integer Length() { return 3; }
 
   //! Alias to 3rd component (red intensity).
   Standard_ShortReal r() const { return v[2]; }
@@ -360,9 +321,7 @@ struct Image_ColorBGRF
   Standard_ShortReal& b() { return v[0]; }
 
 public:
-
   Standard_ShortReal v[3];
-
 };
 
 //! POD structure for packed RGBA color value (4 floats)
@@ -373,10 +332,7 @@ struct Image_ColorRGBAF
   typedef Standard_ShortReal ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 4;
-  }
+  static Standard_Integer Length() { return 4; }
 
   //! Alias to 1st component (red intensity).
   Standard_ShortReal r() const { return v[0]; }
@@ -403,9 +359,7 @@ struct Image_ColorRGBAF
   Standard_ShortReal& a() { return v[3]; }
 
 public:
-
   Standard_ShortReal v[4];
-
 };
 
 //! POD structure for packed float BGRA color value (4 floats)
@@ -416,10 +370,7 @@ struct Image_ColorBGRAF
   typedef Standard_ShortReal ComponentType_t;
 
   //! Returns the number of components.
-  static Standard_Integer Length()
-  {
-    return 4;
-  }
+  static Standard_Integer Length() { return 4; }
 
   //! Alias to 3rd component (red intensity).
   Standard_ShortReal r() const { return v[2]; }
@@ -446,9 +397,7 @@ struct Image_ColorBGRAF
   Standard_ShortReal& a() { return v[3]; }
 
 public:
-
   Standard_ShortReal v[4];
-
 };
 
 #endif // _Image_Color_H__

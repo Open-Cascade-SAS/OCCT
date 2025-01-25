@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(GeomFill_HArray1OfSectionLaw, GeomFill_Array1OfSectionLaw)
 
-
 #endif

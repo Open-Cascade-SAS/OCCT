@@ -24,47 +24,26 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! This class implements the common services for
 //! all classes of TopoDSToStep which report error.
-class TopoDSToStep_Root 
+class TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns (modifiable) the tolerance to be used for writing
   //! If not set, starts at 0.0001
   Standard_EXPORT Standard_Real& Tolerance();
-  
+
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
 protected:
-
-  
   Standard_EXPORT TopoDSToStep_Root();
 
-
-  Standard_Real toler;
+  Standard_Real    toler;
   Standard_Boolean done;
 
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_Root_HeaderFile

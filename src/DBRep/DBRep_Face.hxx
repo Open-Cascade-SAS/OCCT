@@ -28,7 +28,6 @@
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
 
-
 class DBRep_Face;
 DEFINE_STANDARD_HANDLE(DBRep_Face, Standard_Transient)
 
@@ -37,51 +36,41 @@ class DBRep_Face : public Standard_Transient
 {
 
 public:
-
-  
   //! N is the number of iso intervals.
   Standard_EXPORT DBRep_Face(const TopoDS_Face& F, const Standard_Integer N, const Draw_Color& C);
-  
-    const TopoDS_Face& Face() const;
-  
-    void Face (const TopoDS_Face& F);
-  
-    Standard_Integer NbIsos() const;
-  
-    void Iso (const Standard_Integer I, const GeomAbs_IsoType T, const Standard_Real Par, const Standard_Real T1, const Standard_Real T2);
-  
-    void GetIso (const Standard_Integer I, GeomAbs_IsoType& T, Standard_Real& Par, Standard_Real& T1, Standard_Real& T2) const;
-  
-    const Draw_Color& Color() const;
-  
-    void Color (const Draw_Color& C);
 
+  const TopoDS_Face& Face() const;
 
+  void Face(const TopoDS_Face& F);
 
+  Standard_Integer NbIsos() const;
 
-  DEFINE_STANDARD_RTTIEXT(DBRep_Face,Standard_Transient)
+  void Iso(const Standard_Integer I,
+           const GeomAbs_IsoType  T,
+           const Standard_Real    Par,
+           const Standard_Real    T1,
+           const Standard_Real    T2);
+
+  void GetIso(const Standard_Integer I,
+              GeomAbs_IsoType&       T,
+              Standard_Real&         Par,
+              Standard_Real&         T1,
+              Standard_Real&         T2) const;
+
+  const Draw_Color& Color() const;
+
+  void Color(const Draw_Color& C);
+
+  DEFINE_STANDARD_RTTIEXT(DBRep_Face, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  TopoDS_Face myFace;
-  Draw_Color myColor;
+  TopoDS_Face             myFace;
+  Draw_Color              myColor;
   TColStd_Array1OfInteger myTypes;
-  TColStd_Array1OfReal myParams;
-
-
+  TColStd_Array1OfReal    myParams;
 };
 
-
 #include <DBRep_Face.lxx>
-
-
-
-
 
 #endif // _DBRep_Face_HeaderFile

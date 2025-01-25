@@ -25,44 +25,24 @@
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_Shape.hxx>
 
-
-
-class BRepFill_EdgeFaceAndOrder 
+class BRepFill_EdgeFaceAndOrder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_EdgeFaceAndOrder();
-  
-  Standard_EXPORT BRepFill_EdgeFaceAndOrder(const TopoDS_Edge& anEdge, const TopoDS_Face& aFace, const GeomAbs_Shape anOrder);
 
+  Standard_EXPORT BRepFill_EdgeFaceAndOrder(const TopoDS_Edge&  anEdge,
+                                            const TopoDS_Face&  aFace,
+                                            const GeomAbs_Shape anOrder);
 
-friend class BRepFill_Filling;
-
+  friend class BRepFill_Filling;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Edge myEdge;
-  TopoDS_Face myFace;
+  TopoDS_Edge   myEdge;
+  TopoDS_Face   myFace;
   GeomAbs_Shape myOrder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_EdgeFaceAndOrder_HeaderFile

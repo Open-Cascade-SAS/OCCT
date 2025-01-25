@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Number
-//purpose  : 
+// function : Number
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer MAT_TList::Number() const
@@ -25,8 +25,8 @@ inline Standard_Integer MAT_TList::Number() const
 }
 
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer MAT_TList::Index() const
@@ -35,8 +35,8 @@ inline Standard_Integer MAT_TList::Index() const
 }
 
 //=======================================================================
-//function : IsEmpty
-//purpose  : 
+// function : IsEmpty
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean MAT_TList::IsEmpty() const

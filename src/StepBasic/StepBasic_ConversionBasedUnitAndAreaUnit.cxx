@@ -14,18 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_AreaUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndAreaUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndAreaUnit,StepBasic_ConversionBasedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndAreaUnit, StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndAreaUnit::StepBasic_ConversionBasedUnitAndAreaUnit()
-{
-}
+StepBasic_ConversionBasedUnitAndAreaUnit::StepBasic_ConversionBasedUnitAndAreaUnit() {}
 
-void StepBasic_ConversionBasedUnitAndAreaUnit::SetAreaUnit(const Handle(StepBasic_AreaUnit)& anAreaUnit)
+void StepBasic_ConversionBasedUnitAndAreaUnit::SetAreaUnit(
+  const Handle(StepBasic_AreaUnit)& anAreaUnit)
 {
   areaUnit = anAreaUnit;
 }

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspectorAPI_PreferencesDataMap_H
 #define TInspectorAPI_PreferencesDataMap_H
@@ -19,7 +19,9 @@
 #include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> TInspectorAPI_PreferencesDataMap;
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator TInspectorAPI_IteratorOfPreferencesDataMap;
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
+  TInspectorAPI_PreferencesDataMap;
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
+  TInspectorAPI_IteratorOfPreferencesDataMap;
 
 #endif

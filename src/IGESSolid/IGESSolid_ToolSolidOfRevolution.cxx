@@ -35,85 +35,93 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution ()    {  }
+IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution() {}
 
-
-void  IGESSolid_ToolSolidOfRevolution::ReadOwnParams
-  (const Handle(IGESSolid_SolidOfRevolution)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                                    const Handle(IGESData_IGESReaderData)&     IR,
+                                                    IGESData_ParamReader& PR) const
 {
   Handle(IGESData_IGESEntity) tempEntity;
-  gp_XYZ tempAxisPoint;
-  gp_XYZ tempAxis;
-  Standard_Real tempFraction;
-  Standard_Real tempreal;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  gp_XYZ                      tempAxisPoint;
+  gp_XYZ                      tempAxis;
+  Standard_Real               tempFraction;
+  Standard_Real               tempreal;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-// clang-format off
+  // clang-format off
   PR.ReadEntity(IR, PR.Current(), "Curve Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
     PR.ReadReal(PR.Current(), "Fraction of rotation", tempFraction); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
   else
     tempFraction = 1.0;
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal))
-	tempAxisPoint.SetX(tempreal);
-    }
-  else  tempAxisPoint.SetX(0.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in if
+    if (PR.ReadReal(PR.Current(), "Axis Point (X)", tempreal))
+      tempAxisPoint.SetX(tempreal);
+  }
+  else
+    tempAxisPoint.SetX(0.0);
 
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal))
-	tempAxisPoint.SetY(tempreal);
-    }
-  else  tempAxisPoint.SetY(0.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in if
+    if (PR.ReadReal(PR.Current(), "Axis Point (Y)", tempreal))
+      tempAxisPoint.SetY(tempreal);
+  }
+  else
+    tempAxisPoint.SetY(0.0);
 
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal))
-	tempAxisPoint.SetZ(tempreal);
-    }
-  else  tempAxisPoint.SetZ(0.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in if
+    if (PR.ReadReal(PR.Current(), "Axis Point (Z)", tempreal))
+      tempAxisPoint.SetZ(tempreal);
+  }
+  else
+    tempAxisPoint.SetZ(0.0);
 
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
-	tempAxis.SetX(tempreal);
-    }
-  else  tempAxis.SetX(0.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal); //szv#4:S4163:12Mar99 moved
+    // in if
+    if (PR.ReadReal(PR.Current(), "Axis direction (I)", tempreal))
+      tempAxis.SetX(tempreal);
+  }
+  else
+    tempAxis.SetX(0.0);
 
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
-	tempAxis.SetY(tempreal);
-    }
-  else  tempAxis.SetY(0.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal); //szv#4:S4163:12Mar99 moved
+    // in if
+    if (PR.ReadReal(PR.Current(), "Axis direction (J)", tempreal))
+      tempAxis.SetY(tempreal);
+  }
+  else
+    tempAxis.SetY(0.0);
 
   if (PR.DefinedElseSkip())
-    {
-      //st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved in if
-      if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
-	tempAxis.SetZ(tempreal);
-    }
-  else  tempAxis.SetZ(1.0);
+  {
+    // st = PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal); //szv#4:S4163:12Mar99 moved
+    // in if
+    if (PR.ReadReal(PR.Current(), "Axis direction (K)", tempreal))
+      tempAxis.SetZ(tempreal);
+  }
+  else
+    tempAxis.SetZ(1.0);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init (tempEntity, tempFraction, tempAxisPoint, tempAxis);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
   Standard_Real eps = 1.E-05;
-  if (!tempAxis.IsEqual(ent->Axis().XYZ(),eps))
+  if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolSolidOfRevolution::WriteOwnParams
-  (const Handle(IGESSolid_SolidOfRevolution)& ent, IGESData_IGESWriter& IW) const
+void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Curve());
   IW.Send(ent->Fraction());
@@ -125,58 +133,58 @@ void IGESSolid_ToolSolidOfRevolution::WriteOwnParams
   IW.Send(ent->Axis().Z());
 }
 
-void  IGESSolid_ToolSolidOfRevolution::OwnShared
-  (const Handle(IGESSolid_SolidOfRevolution)& ent, Interface_EntityIterator& iter) const
+void IGESSolid_ToolSolidOfRevolution::OwnShared(const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                                Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Curve());
 }
 
-void  IGESSolid_ToolSolidOfRevolution::OwnCopy
-  (const Handle(IGESSolid_SolidOfRevolution)& another,
-   const Handle(IGESSolid_SolidOfRevolution)& ent, Interface_CopyTool& TC) const
+void IGESSolid_ToolSolidOfRevolution::OwnCopy(const Handle(IGESSolid_SolidOfRevolution)& another,
+                                              const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                              Interface_CopyTool&                        TC) const
 {
-  DeclareAndCast(IGESData_IGESEntity, tempEntity,
-		 TC.Transferred(another->Curve()));
-  Standard_Real tempFraction = another->Fraction();
-  gp_XYZ tempAxisPoint = another->AxisPoint().XYZ();
-  gp_XYZ tempAxis= another->Axis().XYZ();
+  DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Curve()));
+  Standard_Real tempFraction  = another->Fraction();
+  gp_XYZ        tempAxisPoint = another->AxisPoint().XYZ();
+  gp_XYZ        tempAxis      = another->Axis().XYZ();
   ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
 }
 
-IGESData_DirChecker  IGESSolid_ToolSolidOfRevolution::DirChecker
-  (const Handle(IGESSolid_SolidOfRevolution)& /* ent */ ) const
+IGESData_DirChecker IGESSolid_ToolSolidOfRevolution::DirChecker(
+  const Handle(IGESSolid_SolidOfRevolution)& /* ent */) const
 {
   IGESData_DirChecker DC(162, 0, 1);
 
-  DC.Structure  (IGESData_DefVoid);
-  DC.LineFont   (IGESData_DefAny);
-  DC.Color      (IGESData_DefAny);
+  DC.Structure(IGESData_DefVoid);
+  DC.LineFont(IGESData_DefAny);
+  DC.Color(IGESData_DefAny);
 
-  DC.UseFlagRequired (0);
-  DC.HierarchyStatusIgnored ();
+  DC.UseFlagRequired(0);
+  DC.HierarchyStatusIgnored();
   return DC;
 }
 
-void  IGESSolid_ToolSolidOfRevolution::OwnCheck
-  (const Handle(IGESSolid_SolidOfRevolution)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const
+void IGESSolid_ToolSolidOfRevolution::OwnCheck(const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                               const Interface_ShareTool&,
+                                               Handle(Interface_Check)& ach) const
 {
   if (ent->Fraction() <= 0 || ent->Fraction() > 1.0)
     ach->AddFail("Fraction of rotation : Incorrect value");
 }
 
-void  IGESSolid_ToolSolidOfRevolution::OwnDump
-  (const Handle(IGESSolid_SolidOfRevolution)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESSolid_ToolSolidOfRevolution::OwnDump(const Handle(IGESSolid_SolidOfRevolution)& ent,
+                                              const IGESData_IGESDumper&                 dumper,
+                                              Standard_OStream&                          S,
+                                              const Standard_Integer level) const
 {
   S << "IGESSolid_SolidOfRevolution\n"
     << "Curve entity   :";
-  dumper.Dump(ent->Curve(),S, (level <= 4) ? 0 : 1);
+  dumper.Dump(ent->Curve(), S, (level <= 4) ? 0 : 1);
   S << "\n"
     << "Fraction of rotation : " << ent->Fraction() << "\n"
     << "Axis Point     : ";
-  IGESData_DumpXYZL(S,level, ent->AxisPoint(), ent->Location());
+  IGESData_DumpXYZL(S, level, ent->AxisPoint(), ent->Location());
   S << "\nAxis direction : ";
-  IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
+  IGESData_DumpXYZL(S, level, ent->Axis(), ent->VectorLocation());
   S << std::endl;
 }

@@ -21,31 +21,32 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 
 //=======================================================================
-//function : StepAP203_ContractedItem
-//purpose  : 
+// function : StepAP203_ContractedItem
+// purpose  :
 //=======================================================================
-StepAP203_ContractedItem::StepAP203_ContractedItem ()
-{
-}
+StepAP203_ContractedItem::StepAP203_ContractedItem() {}
 
 //=======================================================================
-//function : CaseNum
-//purpose  : 
+// function : CaseNum
+// purpose  :
 //=======================================================================
 
-Standard_Integer StepAP203_ContractedItem::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepAP203_ContractedItem::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation))) return 1;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+    return 1;
   return 0;
 }
 
 //=======================================================================
-//function : ProductDefinitionFormation
-//purpose  : 
+// function : ProductDefinitionFormation
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP203_ContractedItem::ProductDefinitionFormation () const
+Handle(StepBasic_ProductDefinitionFormation) StepAP203_ContractedItem::ProductDefinitionFormation()
+  const
 {
   return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
 }

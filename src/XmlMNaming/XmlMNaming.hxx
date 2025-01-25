@@ -24,17 +24,14 @@
 class XmlMDF_ADriverTable;
 class Message_Messenger;
 
-
-
-class XmlMNaming 
+class XmlMNaming
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& aMessageDriver);
-
+  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                                         const Handle(Message_Messenger)&   aMessageDriver);
 };
 
 #endif // _XmlMNaming_HeaderFile

@@ -28,70 +28,48 @@
 #include <TColGeom_SequenceOfCurve.hxx>
 class Geom_Curve;
 
-
 //! Defines a prism (using Prism from BRepSweep)
 //! with modifications provided for the Prism feature.
-class LocOpe_Prism 
+class LocOpe_Prism
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT LocOpe_Prism();
-  
+
   Standard_EXPORT LocOpe_Prism(const TopoDS_Shape& Base, const gp_Vec& V);
-  
+
   Standard_EXPORT LocOpe_Prism(const TopoDS_Shape& Base, const gp_Vec& V, const gp_Vec& Vectra);
-  
-  Standard_EXPORT void Perform (const TopoDS_Shape& Base, const gp_Vec& V);
-  
-  Standard_EXPORT void Perform (const TopoDS_Shape& Base, const gp_Vec& V, const gp_Vec& Vtra);
-  
+
+  Standard_EXPORT void Perform(const TopoDS_Shape& Base, const gp_Vec& V);
+
+  Standard_EXPORT void Perform(const TopoDS_Shape& Base, const gp_Vec& V, const gp_Vec& Vtra);
+
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
-  
+
   Standard_EXPORT const TopoDS_Shape& LastShape() const;
-  
+
   Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
-  Standard_EXPORT const TopTools_ListOfShape& Shapes (const TopoDS_Shape& S) const;
-  
-  Standard_EXPORT void Curves (TColGeom_SequenceOfCurve& SCurves) const;
-  
+
+  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+
+  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& SCurves) const;
+
   Standard_EXPORT Handle(Geom_Curve) BarycCurve() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-  
   Standard_EXPORT void IntPerf();
 
-
-  TopoDS_Shape myBase;
-  gp_Vec myVec;
-  gp_Vec myTra;
-  Standard_Boolean myIsTrans;
-  Standard_Boolean myDone;
-  TopoDS_Shape myRes;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
+  TopoDS_Shape                       myBase;
+  gp_Vec                             myVec;
+  gp_Vec                             myTra;
+  Standard_Boolean                   myIsTrans;
+  Standard_Boolean                   myDone;
+  TopoDS_Shape                       myRes;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
   TopTools_DataMapOfShapeListOfShape myMap;
-
-
 };
-
-
-
-
-
-
 
 #endif // _LocOpe_Prism_HeaderFile

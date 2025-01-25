@@ -25,7 +25,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 
-
 class StdSelect_EdgeFilter;
 DEFINE_STANDARD_HANDLE(StdSelect_EdgeFilter, SelectMgr_Filter)
 
@@ -38,43 +37,26 @@ class StdSelect_EdgeFilter : public SelectMgr_Filter
 {
 
 public:
-
-  
   //! Constructs an edge filter object defined by the type of edge Edge.
   Standard_EXPORT StdSelect_EdgeFilter(const StdSelect_TypeOfEdge Edge);
-  
+
   //! Sets the type of edge aNewType. aNewType is to be highlighted in selection.
-  Standard_EXPORT void SetType (const StdSelect_TypeOfEdge aNewType);
-  
+  Standard_EXPORT void SetType(const StdSelect_TypeOfEdge aNewType);
+
   //! Returns the type of edge to be highlighted in selection.
   Standard_EXPORT StdSelect_TypeOfEdge Type() const;
-  
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean ActsOn (const TopAbs_ShapeEnum aStandardMode) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(StdSelect_EdgeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_EdgeFilter, SelectMgr_Filter)
 
 protected:
-
-
-
-
 private:
-
-
   StdSelect_TypeOfEdge mytype;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StdSelect_EdgeFilter_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ViewControl_Tools_H
 #define ViewControl_Tools_H
@@ -48,42 +48,45 @@ public:
   //! \param theParent a parent object
   //! \param theContext listener of the action toggle
   //! \return a new action
-  Standard_EXPORT static QAction* CreateAction (const QString& theText, const char* theSlot,
-                                                QObject* theParent, QObject* theContext);
+  Standard_EXPORT static QAction* CreateAction(const QString& theText,
+                                               const char*    theSlot,
+                                               QObject*       theParent,
+                                               QObject*       theContext);
 
   //! Change palette of the widget to have white foreground
   //! \param theControl a widget to be modified
-  Standard_EXPORT static void SetWhiteBackground (QWidget* theControl);
+  Standard_EXPORT static void SetWhiteBackground(QWidget* theControl);
 
   //! Fills tree view by default sections parameters obtained in view's table model
   //! \param theTableView table view instance
   //! \param theOrientation header orientation
-  Standard_EXPORT static void SetDefaultHeaderSections (QTableView* theTableView, const Qt::Orientation theOrientation);
+  Standard_EXPORT static void SetDefaultHeaderSections(QTableView*           theTableView,
+                                                       const Qt::Orientation theOrientation);
 
   //! Create table of values on the current selection
   //! It is created if the selection contains only one item and it has a property item
-  Standard_EXPORT static ViewControl_TableModelValues* CreateTableModelValues (QItemSelectionModel* theSelectionModel);
+  Standard_EXPORT static ViewControl_TableModelValues* CreateTableModelValues(
+    QItemSelectionModel* theSelectionModel);
 
   //! Convert real value to string value
   //! \param theValue a short real value
   //! \return the string value
-  Standard_EXPORT static QVariant ToVariant (const Standard_ShortReal theValue);
+  Standard_EXPORT static QVariant ToVariant(const Standard_ShortReal theValue);
 
   //! Convert real value to string value
   //! \param theValue a real value
   //! \return the string value
-  Standard_EXPORT static QVariant ToVariant (const Standard_Real theValue);
+  Standard_EXPORT static QVariant ToVariant(const Standard_Real theValue);
 
   //! Convert real value to real value
   //! \param theValue a string value
   //! \return the real value
-  Standard_EXPORT static Standard_ShortReal ToShortRealValue (const QVariant& theValue);
+  Standard_EXPORT static Standard_ShortReal ToShortRealValue(const QVariant& theValue);
 
   //! Convert real value to string value
   //! \param theValue a string value
   //! \return the real value
-  Standard_EXPORT static Standard_Real ToRealValue (const QVariant& theValue);
-
+  Standard_EXPORT static Standard_Real ToRealValue(const QVariant& theValue);
 };
 
 #endif

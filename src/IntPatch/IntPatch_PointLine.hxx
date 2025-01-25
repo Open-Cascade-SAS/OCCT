@@ -36,13 +36,11 @@ DEFINE_STANDARD_HANDLE(IntPatch_PointLine, IntPatch_Line)
 class IntPatch_PointLine : public IntPatch_Line
 {
 public:
-
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  Standard_EXPORT virtual
-            void AddVertex (const IntPatch_Point& Pnt,
-                            const Standard_Boolean theIsPrepend = Standard_False) = 0;
+  Standard_EXPORT virtual void AddVertex(const IntPatch_Point&  Pnt,
+                                         const Standard_Boolean theIsPrepend = Standard_False) = 0;
 
   //! Returns the number of intersection points.
   Standard_EXPORT virtual Standard_Integer NbPnts() const = 0;
@@ -51,19 +49,19 @@ public:
   Standard_EXPORT virtual Standard_Integer NbVertex() const = 0;
 
   //! Returns the intersection point of range Index.
-  Standard_EXPORT virtual const IntSurf_PntOn2S& Point (const Standard_Integer Index) const = 0;
+  Standard_EXPORT virtual const IntSurf_PntOn2S& Point(const Standard_Integer Index) const = 0;
 
   //! Returns the vertex of range Index on the line.
-  Standard_EXPORT virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const = 0;
+  Standard_EXPORT virtual const IntPatch_Point& Vertex(const Standard_Integer Index) const = 0;
 
   //! Returns the vertex of range Index on the line.
-  virtual IntPatch_Point& ChangeVertex (const Standard_Integer Index) = 0;
+  virtual IntPatch_Point& ChangeVertex(const Standard_Integer Index) = 0;
 
   //! Removes vertices from the line
   Standard_EXPORT virtual void ClearVertexes() = 0;
 
   //! Removes single vertex from the line
-  Standard_EXPORT virtual void RemoveVertex (const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual void RemoveVertex(const Standard_Integer theIndex) = 0;
 
   //! Returns set of intersection points
   Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const = 0;
@@ -82,41 +80,31 @@ public:
   //! Returns the radius of curvature of
   //! the intersection line in given point.
   //! Returns negative value if computation is not possible.
-  Standard_EXPORT static Standard_Real
-            CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_Surface)& theS1,
-                                        const Handle(Adaptor3d_Surface)& theS2,
-                                        const IntSurf_PntOn2S& theUVPoint);
+  Standard_EXPORT static Standard_Real CurvatureRadiusOfIntersLine(
+    const Handle(Adaptor3d_Surface)& theS1,
+    const Handle(Adaptor3d_Surface)& theS2,
+    const IntSurf_PntOn2S&           theUVPoint);
 
-  DEFINE_STANDARD_RTTIEXT(IntPatch_PointLine,IntPatch_Line)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_PointLine, IntPatch_Line)
 
 protected:
-
-  
   //! To initialize the fields, when the transitions
   //! are In or Out.
-  Standard_EXPORT IntPatch_PointLine(const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_PointLine(const Standard_Boolean  Tang,
+                                     const IntSurf_TypeTrans Trans1,
+                                     const IntSurf_TypeTrans Trans2);
+
   //! To initialize the fields, when the transitions
   //! are Touch.
-  Standard_EXPORT IntPatch_PointLine(const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_PointLine(const Standard_Boolean  Tang,
+                                     const IntSurf_Situation Situ1,
+                                     const IntSurf_Situation Situ2);
+
   //! To initialize the fields, when the transitions
   //! are Undecided.
   Standard_EXPORT IntPatch_PointLine(const Standard_Boolean Tang);
 
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntPatch_PointLine_HeaderFile

@@ -15,17 +15,17 @@
 // commercial license or contractual agreement.
 
 Handle(StepGeom_Axis1Placement) Axe = new StepGeom_Axis1Placement;
-  Handle(StepGeom_CartesianPoint) P;
-  Handle(StepGeom_Direction) D;
+Handle(StepGeom_CartesianPoint) P;
+Handle(StepGeom_Direction)      D;
 
-  GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
-  GeomToStep_MakeDirection      MkDir(A.Direction());
+GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
+GeomToStep_MakeDirection      MkDir(A.Direction());
 
-  P = MkPoint.Value();
-  D = MkDir.Value();
-  Axe->SetLocation(P);
-  Axe->SetAxis(D);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Axe->SetName(name);
-  theAxis1Placement = Axe;
-  done = Standard_True;
+P = MkPoint.Value();
+D = MkDir.Value();
+Axe->SetLocation(P);
+Axe->SetAxis(D);
+Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+Axe->SetName(name);
+theAxis1Placement = Axe;
+done              = Standard_True;

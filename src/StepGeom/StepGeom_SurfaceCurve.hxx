@@ -26,62 +26,48 @@
 class TCollection_HAsciiString;
 class StepGeom_PcurveOrSurface;
 
-
 class StepGeom_SurfaceCurve;
 DEFINE_STANDARD_HANDLE(StepGeom_SurfaceCurve, StepGeom_Curve)
-
 
 class StepGeom_SurfaceCurve : public StepGeom_Curve
 {
 
 public:
-
-  
   //! Returns a SurfaceCurve
   Standard_EXPORT StepGeom_SurfaceCurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aCurve3d, const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry, const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
-  
-  Standard_EXPORT void SetCurve3d (const Handle(StepGeom_Curve)& aCurve3d);
-  
+
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&            aName,
+    const Handle(StepGeom_Curve)&                      aCurve3d,
+    const Handle(StepGeom_HArray1OfPcurveOrSurface)&   aAssociatedGeometry,
+    const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
+
+  Standard_EXPORT void SetCurve3d(const Handle(StepGeom_Curve)& aCurve3d);
+
   Standard_EXPORT Handle(StepGeom_Curve) Curve3d() const;
-  
-  Standard_EXPORT void SetAssociatedGeometry (const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry);
-  
+
+  Standard_EXPORT void SetAssociatedGeometry(
+    const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry);
+
   Standard_EXPORT Handle(StepGeom_HArray1OfPcurveOrSurface) AssociatedGeometry() const;
-  
-  Standard_EXPORT StepGeom_PcurveOrSurface AssociatedGeometryValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepGeom_PcurveOrSurface
+    AssociatedGeometryValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbAssociatedGeometry() const;
-  
-  Standard_EXPORT void SetMasterRepresentation (const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
-  
+
+  Standard_EXPORT void SetMasterRepresentation(
+    const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
+
   Standard_EXPORT StepGeom_PreferredSurfaceCurveRepresentation MasterRepresentation() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceCurve,StepGeom_Curve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceCurve, StepGeom_Curve)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepGeom_Curve) curve3d;
-  Handle(StepGeom_HArray1OfPcurveOrSurface) associatedGeometry;
+  Handle(StepGeom_Curve)                       curve3d;
+  Handle(StepGeom_HArray1OfPcurveOrSurface)    associatedGeometry;
   StepGeom_PreferredSurfaceCurveRepresentation masterRepresentation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_SurfaceCurve_HeaderFile

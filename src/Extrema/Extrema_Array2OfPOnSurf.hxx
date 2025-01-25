@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<Extrema_POnSurf> Extrema_Array2OfPOnSurf;
 
-
 #endif

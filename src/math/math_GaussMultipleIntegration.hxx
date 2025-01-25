@@ -25,57 +25,37 @@
 #include <Standard_OStream.hxx>
 class math_MultipleVarFunction;
 
-
-
 //! This class implements the integration of a function of multiple
 //! variables between the parameter bounds Lower[a..b] and Upper[a..b].
 //! Warning: Each element of Order must be inferior or equal to 61.
-class math_GaussMultipleIntegration 
+class math_GaussMultipleIntegration
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The Gauss-Legendre integration with Order = points of
   //! integration for each unknown, is done on the function F
   //! between the bounds Lower and Upper.
-  Standard_EXPORT math_GaussMultipleIntegration(math_MultipleVarFunction& F, const math_Vector& Lower, const math_Vector& Upper, const math_IntegerVector& Order);
-  
+  Standard_EXPORT math_GaussMultipleIntegration(math_MultipleVarFunction& F,
+                                                const math_Vector&        Lower,
+                                                const math_Vector&        Upper,
+                                                const math_IntegerVector& Order);
+
   //! returns True if all has been correctly done.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! returns the value of the integral.
-    Standard_Real Value() const;
-  
+  Standard_Real Value() const;
+
   //! Prints information on the current state of the object.
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real Val;
+  Standard_Real    Val;
   Standard_Boolean Done;
-
-
 };
 
-
 #include <math_GaussMultipleIntegration.lxx>
-
-
-
-
 
 #endif // _math_GaussMultipleIntegration_HeaderFile

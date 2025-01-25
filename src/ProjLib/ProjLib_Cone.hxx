@@ -28,61 +28,39 @@ class gp_Elips;
 class gp_Parab;
 class gp_Hypr;
 
-
 //! Projects elementary curves on a cone.
-class ProjLib_Cone  : public ProjLib_Projector
+class ProjLib_Cone : public ProjLib_Projector
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Undefined projection.
   Standard_EXPORT ProjLib_Cone();
-  
+
   //! Projection on the cone <Co>.
   Standard_EXPORT ProjLib_Cone(const gp_Cone& Co);
-  
+
   //! Projection of the line <L> on the cone <Co>.
   Standard_EXPORT ProjLib_Cone(const gp_Cone& Co, const gp_Lin& L);
-  
+
   //! Projection of the circle <C> on the cone <Co>.
   Standard_EXPORT ProjLib_Cone(const gp_Cone& Co, const gp_Circ& C);
-  
-  Standard_EXPORT void Init (const gp_Cone& Co);
-  
-  Standard_EXPORT virtual void Project (const gp_Lin& L) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Circ& C) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Elips& E) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Parab& P) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Hypr& H) Standard_OVERRIDE;
 
+  Standard_EXPORT void Init(const gp_Cone& Co);
 
+  Standard_EXPORT virtual void Project(const gp_Lin& L) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void Project(const gp_Circ& C) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Elips& E) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Parab& P) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Hypr& H) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Cone myCone;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ProjLib_Cone_HeaderFile

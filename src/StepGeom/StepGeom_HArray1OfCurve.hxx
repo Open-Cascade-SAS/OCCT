@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(StepGeom_HArray1OfCurve, StepGeom_Array1OfCurve)
 
-
 #endif

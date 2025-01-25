@@ -25,7 +25,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <Geom2dLProp_Curve2dTool.hxx>
- 
 
 #define Curve Handle(Geom2d_Curve)
 #define Curve_hxx <Geom2d_Curve.hxx>
@@ -40,4 +39,3 @@
 #define LProp_CLProps Geom2dLProp_CLProps2d
 #define LProp_CLProps_hxx <Geom2dLProp_CLProps2d.hxx>
 #include "../LProp/LProp_CLProps.gxx"
-

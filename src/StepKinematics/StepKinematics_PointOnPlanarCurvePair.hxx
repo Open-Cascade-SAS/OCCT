@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -30,37 +30,37 @@ DEFINE_STANDARD_HANDLE(StepKinematics_PointOnPlanarCurvePair, StepKinematics_Hig
 //! Representation of STEP entity PointOnPlanarCurvePair
 class StepKinematics_PointOnPlanarCurvePair : public StepKinematics_HighOrderKinematicPair
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PointOnPlanarCurvePair();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                           const Handle(StepGeom_Curve)& thePairCurve,
-                           const Standard_Boolean theOrientation);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+    const Handle(StepGeom_Curve)&                thePairCurve,
+    const Standard_Boolean                       theOrientation);
 
   //! Returns field PairCurve
   Standard_EXPORT Handle(StepGeom_Curve) PairCurve() const;
   //! Sets field PairCurve
-  Standard_EXPORT void SetPairCurve (const Handle(StepGeom_Curve)& thePairCurve);
+  Standard_EXPORT void SetPairCurve(const Handle(StepGeom_Curve)& thePairCurve);
 
   //! Returns field Orientation
   Standard_EXPORT Standard_Boolean Orientation() const;
   //! Sets field Orientation
-  Standard_EXPORT void SetOrientation (const Standard_Boolean theOrientation);
+  Standard_EXPORT void SetOrientation(const Standard_Boolean theOrientation);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePair, StepKinematics_HighOrderKinematicPair)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePair,
+                          StepKinematics_HighOrderKinematicPair)
 
 private:
   Handle(StepGeom_Curve) myPairCurve;
-  Standard_Boolean myOrientation;
-
+  Standard_Boolean       myOrientation;
 };
 #endif // _StepKinematics_PointOnPlanarCurvePair_HeaderFile_

@@ -20,8 +20,7 @@
 #include <HLRBRep_BiPnt2D.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<HLRBRep_BiPnt2D> HLRBRep_ListOfBPnt2D;
+typedef NCollection_List<HLRBRep_BiPnt2D>           HLRBRep_ListOfBPnt2D;
 typedef NCollection_List<HLRBRep_BiPnt2D>::Iterator HLRBRep_ListIteratorOfListOfBPnt2D;
-
 
 #endif

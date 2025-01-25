@@ -23,48 +23,27 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-
 class StepBasic_Date;
 DEFINE_STANDARD_HANDLE(StepBasic_Date, Standard_Transient)
-
 
 class StepBasic_Date : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a Date
   Standard_EXPORT StepBasic_Date();
-  
-  Standard_EXPORT void Init (const Standard_Integer aYearComponent);
-  
-  Standard_EXPORT void SetYearComponent (const Standard_Integer aYearComponent);
-  
+
+  Standard_EXPORT void Init(const Standard_Integer aYearComponent);
+
+  Standard_EXPORT void SetYearComponent(const Standard_Integer aYearComponent);
+
   Standard_EXPORT Standard_Integer YearComponent() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Date,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Date, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer yearComponent;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Date_HeaderFile

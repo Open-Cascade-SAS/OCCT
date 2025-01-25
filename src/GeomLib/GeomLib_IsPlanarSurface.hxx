@@ -24,46 +24,25 @@
 #include <gp_Pln.hxx>
 class Geom_Surface;
 
-
 //! Find if a surface is a planar  surface.
-class GeomLib_IsPlanarSurface 
+class GeomLib_IsPlanarSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S, const Standard_Real Tol = 1.0e-7);
-  
+  Standard_EXPORT GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
+                                          const Standard_Real         Tol = 1.0e-7);
+
   //! Return if the Surface is a plan
   Standard_EXPORT Standard_Boolean IsPlanar() const;
-  
+
   //! Return the plan definition
   Standard_EXPORT const gp_Pln& Plan() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Pln myPlan;
+  gp_Pln           myPlan;
   Standard_Boolean IsPlan;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomLib_IsPlanarSurface_HeaderFile

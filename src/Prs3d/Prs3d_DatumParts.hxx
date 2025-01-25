@@ -42,6 +42,10 @@ enum Prs3d_DatumParts
   Prs3d_DP_XOZAxis = Prs3d_DatumParts_XOZAxis,
   Prs3d_DP_None    = Prs3d_DatumParts_None
 };
-enum { Prs3d_DatumParts_NB = Prs3d_DatumParts_None + 1 };
+
+enum
+{
+  Prs3d_DatumParts_NB = Prs3d_DatumParts_None + 1
+};
 
 #endif // _Prs3d_DatumParts_HeaderFile

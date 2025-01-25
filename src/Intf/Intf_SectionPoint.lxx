@@ -15,24 +15,27 @@
 // commercial license or contractual agreement.
 
 inline Standard_Real Intf_SectionPoint::ParamOnFirst() const
-{return (IndexO2-1)+ParamObje;}
+{
+  return (IndexO2 - 1) + ParamObje;
+}
 
 inline Standard_Real Intf_SectionPoint::ParamOnSecond() const
-{return (IndexT2-1)+ParamTool;}
+{
+  return (IndexT2 - 1) + ParamTool;
+}
 
 inline Intf_PIType Intf_SectionPoint::TypeOnFirst() const
-{return DimenObje;}
+{
+  return DimenObje;
+}
 
 inline Intf_PIType Intf_SectionPoint::TypeOnSecond() const
-{return DimenTool;}
-
-inline Standard_Boolean Intf_SectionPoint::IsEqual
-  (const Intf_SectionPoint& Other) const
 {
-  return (DimenObje==Other.DimenObje &&
-	  IndexO1==Other.IndexO1 &&
-	  IndexO2==Other.IndexO2 &&
-	  DimenTool==Other.DimenTool &&
-	  IndexT1==Other.IndexT1 &&
-	  IndexT2==Other.IndexT2);
+  return DimenTool;
+}
+
+inline Standard_Boolean Intf_SectionPoint::IsEqual(const Intf_SectionPoint& Other) const
+{
+  return (DimenObje == Other.DimenObje && IndexO1 == Other.IndexO1 && IndexO2 == Other.IndexO2
+          && DimenTool == Other.DimenTool && IndexT1 == Other.IndexT1 && IndexT2 == Other.IndexT2);
 }

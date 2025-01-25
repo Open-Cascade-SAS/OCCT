@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_ItemBase_H
 #define DFBrowser_ItemBase_H
@@ -31,10 +31,9 @@ typedef QExplicitlySharedDataPointer<DFBrowser_ItemBase> DFBrowser_ItemBasePtr;
 class DFBrowser_ItemBase : public TreeModel_ItemBase
 {
 public:
-
   //! Sets the module to have an access to attribute information
   //! \param theModule a current loaded application module
-  void SetModule (DFBrowser_Module* theModule) { myModule = theModule; }
+  void SetModule(DFBrowser_Module* theModule) { myModule = theModule; }
 
   //! Resets the cached item values
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
@@ -52,15 +51,15 @@ public:
   //! it will not return extended text in initValue().
   //! \param theValue a new value
   //! \return the previous value
-  Standard_EXPORT bool SetUseAdditionalInfo (const bool theValue);
+  Standard_EXPORT bool SetUseAdditionalInfo(const bool theValue);
 
   //! Returns the data stored under the given role for the current item
   //! \param theIndex the item model index
   //! \param theRole the item model role
-  Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex, int theRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant data(const QModelIndex& theIndex,
+                                        int                theRole) const Standard_OVERRIDE;
 
 protected:
-
   //! Sets the item label
   //! \param theLabel an object where the child items structure is found
   void setLabel(TDF_Label theLabel) { myLabel = theLabel; }
@@ -73,30 +72,27 @@ protected:
   //! \return rows count
   virtual int initRowCount() const Standard_OVERRIDE;
 
-  //! Returns label information like text, icon or background(if it contains TDataStd_Name attribute)
-  //! \param theItemRole a value role
-  //! \return the value
-  virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  //! Returns label information like text, icon or background(if it contains TDataStd_Name
+  //! attribute) \param theItemRole a value role \return the value
+  virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Creates a child item in the given position.
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
   //! Initializes the current item. It creates a backup of the specific item information
   virtual void initItem() const Standard_OVERRIDE {}
 
 protected:
-
   //! Constructor
   //! \param theParent a parent item
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
-  DFBrowser_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
+  DFBrowser_ItemBase(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
 
 private:
-
   TDF_Label myLabel; //!< a label of the document, which contains child labels and attributes
   DFBrowser_Module* myModule; //!< the current module
   bool myIsUseAdditionalInfo; //!< if true, additional item info is shown in square brackets

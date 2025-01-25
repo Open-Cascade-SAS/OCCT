@@ -12,39 +12,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAlgoAPI_Algo.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
-// function: 
-// purpose: 
+// function:
+// purpose:
 //=======================================================================
 BRepAlgoAPI_Algo::BRepAlgoAPI_Algo()
-:
-  BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
-{}
+    : BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
+{
+}
+
 //=======================================================================
-// function: 
-// purpose: 
+// function:
+// purpose:
 //=======================================================================
-BRepAlgoAPI_Algo::BRepAlgoAPI_Algo
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Options(theAllocator)
-{}
+BRepAlgoAPI_Algo::BRepAlgoAPI_Algo(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Options(theAllocator)
+{
+}
 
 //=======================================================================
 // function: ~
-// purpose: 
+// purpose:
 //=======================================================================
-BRepAlgoAPI_Algo::~BRepAlgoAPI_Algo()
-{
-}
+BRepAlgoAPI_Algo::~BRepAlgoAPI_Algo() {}
+
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 const TopoDS_Shape& BRepAlgoAPI_Algo::Shape()
 {

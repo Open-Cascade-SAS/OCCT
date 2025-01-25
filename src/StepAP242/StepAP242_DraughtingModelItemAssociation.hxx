@@ -21,16 +21,17 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 
 class StepAP242_DraughtingModelItemAssociation;
-DEFINE_STANDARD_HANDLE(StepAP242_DraughtingModelItemAssociation, StepAP242_ItemIdentifiedRepresentationUsage)
+DEFINE_STANDARD_HANDLE(StepAP242_DraughtingModelItemAssociation,
+                       StepAP242_ItemIdentifiedRepresentationUsage)
+
 //! Added for Dimensional Tolerances
 class StepAP242_DraughtingModelItemAssociation : public StepAP242_ItemIdentifiedRepresentationUsage
 {
 
 public:
-  
   Standard_EXPORT StepAP242_DraughtingModelItemAssociation();
 
-  DEFINE_STANDARD_RTTIEXT(StepAP242_DraughtingModelItemAssociation, StepAP242_ItemIdentifiedRepresentationUsage)
-
+  DEFINE_STANDARD_RTTIEXT(StepAP242_DraughtingModelItemAssociation,
+                          StepAP242_ItemIdentifiedRepresentationUsage)
 };
 #endif // _StepAP242_DraughtingModelItemAssociation_HeaderFile

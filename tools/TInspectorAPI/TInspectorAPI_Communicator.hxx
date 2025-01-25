@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspectorAPI_Communicator_H
 #define TInspectorAPI_Communicator_H
@@ -25,37 +25,40 @@
 //! It will be placed in layout of the given parent. After the plugin is created, it is possible to
 //! set container of parameters into plugin to provide the plugin's initialization by some external
 //! objects(e.g. Interactive Context or OCAF Application). If the parameters are changed, it may be
-//! applied in UpdateContent function. The communicator can change parameters in the following cases:
+//! applied in UpdateContent function. The communicator can change parameters in the following
+//! cases:
 //! - the plugin removes own processed parameters (e.g. file names, that was opened by the plugin)
 //! - the plugin sends some parameters to another plugin(by name) (e.g. shape to be analyzed)
-//!   (at the same time we should be careful here to do not change essential parameters of other plugins)
+//!   (at the same time we should be careful here to do not change essential parameters of other
+//!   plugins)
 class TInspectorAPI_Communicator
 {
 public:
-
   //! Loads the plugin library
   //! \param thePluginName the name of the library
   //! \return an instance of the communicator or NULL
-  static Standard_EXPORT TInspectorAPI_Communicator* LoadPluginLibrary (const TCollection_AsciiString& thePluginName);
+  static Standard_EXPORT TInspectorAPI_Communicator* LoadPluginLibrary(
+    const TCollection_AsciiString& thePluginName);
 
-  //! Sets parameters container, it should be used when the plugin is initialized or in update content
-  //! \param theParameters a parameters container
-  Standard_EXPORT virtual void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) = 0;
+  //! Sets parameters container, it should be used when the plugin is initialized or in update
+  //! content \param theParameters a parameters container
+  Standard_EXPORT virtual void SetParameters(
+    const Handle(TInspectorAPI_PluginParameters)& theParameters) = 0;
 
   //! Provides the container with a parent where this container should be inserted.
   //! If Qt implementation, it should be QWidget with QLayout set inside
   //! \param theParent a parent class
-  Standard_EXPORT virtual void SetParent (void* theParent) = 0;
+  Standard_EXPORT virtual void SetParent(void* theParent) = 0;
 
   //! Provides container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
-  virtual void FillActionsMenu (void* theMenu) { (void)theMenu; }
+  virtual void FillActionsMenu(void* theMenu) { (void)theMenu; }
 
   //! Returns plugin preferences, empty implementation by default
-  virtual void GetPreferences (TInspectorAPI_PreferencesDataMap&) {}
+  virtual void GetPreferences(TInspectorAPI_PreferencesDataMap&) {}
 
   //! Applies plugin preferences, empty implementation by default
-  virtual void SetPreferences (const TInspectorAPI_PreferencesDataMap&) {}
+  virtual void SetPreferences(const TInspectorAPI_PreferencesDataMap&) {}
 
   //! Calls update of the plugin's content
   Standard_EXPORT virtual void UpdateContent() = 0;

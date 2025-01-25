@@ -20,8 +20,7 @@
 #include <DBRep_HideData.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<DBRep_HideData> DBRep_ListOfHideData;
+typedef NCollection_List<DBRep_HideData>           DBRep_ListOfHideData;
 typedef NCollection_List<DBRep_HideData>::Iterator DBRep_ListIteratorOfListOfHideData;
-
 
 #endif

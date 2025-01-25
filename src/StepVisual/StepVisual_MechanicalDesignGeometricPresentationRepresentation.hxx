@@ -22,41 +22,23 @@
 
 #include <StepVisual_PresentationRepresentation.hxx>
 
-
 class StepVisual_MechanicalDesignGeometricPresentationRepresentation;
-DEFINE_STANDARD_HANDLE(StepVisual_MechanicalDesignGeometricPresentationRepresentation, StepVisual_PresentationRepresentation)
+DEFINE_STANDARD_HANDLE(StepVisual_MechanicalDesignGeometricPresentationRepresentation,
+                       StepVisual_PresentationRepresentation)
 
-
-class StepVisual_MechanicalDesignGeometricPresentationRepresentation : public StepVisual_PresentationRepresentation
+class StepVisual_MechanicalDesignGeometricPresentationRepresentation
+    : public StepVisual_PresentationRepresentation
 {
 
 public:
-
-  
   //! Returns a MechanicalDesignGeometricPresentationRepresentation
   Standard_EXPORT StepVisual_MechanicalDesignGeometricPresentationRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationRepresentation,StepVisual_PresentationRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationRepresentation,
+                          StepVisual_PresentationRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_MechanicalDesignGeometricPresentationRepresentation_HeaderFile

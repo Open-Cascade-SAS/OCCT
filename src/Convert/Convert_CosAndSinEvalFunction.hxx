@@ -21,11 +21,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-typedef void   Convert_CosAndSinEvalFunction(Standard_Real,
-					     const Standard_Integer,
-					     const TColgp_Array1OfPnt2d&,
-					     const TColStd_Array1OfReal&, 
-					     const TColStd_Array1OfInteger*,
-					     Standard_Real Result[2]) ; 
+typedef void Convert_CosAndSinEvalFunction(Standard_Real,
+                                           const Standard_Integer,
+                                           const TColgp_Array1OfPnt2d&,
+                                           const TColStd_Array1OfReal&,
+                                           const TColStd_Array1OfInteger*,
+                                           Standard_Real Result[2]);
 
 #endif

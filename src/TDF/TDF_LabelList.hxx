@@ -19,8 +19,7 @@
 #include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<TDF_Label> TDF_LabelList;
+typedef NCollection_List<TDF_Label>           TDF_LabelList;
 typedef NCollection_List<TDF_Label>::Iterator TDF_ListIteratorOfLabelList;
-
 
 #endif

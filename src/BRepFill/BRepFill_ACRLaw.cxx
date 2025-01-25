@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Approx_CurvlinFunc.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepFill.hxx>
@@ -32,63 +31,65 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepFill_ACRLaw,BRepFill_LocationLaw)
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_ACRLaw, BRepFill_LocationLaw)
 
-BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire& Path,
-				 const Handle(GeomFill_LocationGuide)& theLaw)
+BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
+                                 const Handle(GeomFill_LocationGuide)& theLaw)
 {
   Init(Path);
 
-// calculate the nb of edge of the path
+  // calculate the nb of edge of the path
   BRepTools_WireExplorer wexp;
-  Standard_Integer NbEdge = 0; 
-  for (wexp.Init(myPath); wexp.More(); wexp.Next()) NbEdge++;
+  Standard_Integer       NbEdge = 0;
+  for (wexp.Init(myPath); wexp.More(); wexp.Next())
+    NbEdge++;
 
-// tab to memorize ACR for each edge
-  OrigParam = new (TColStd_HArray1OfReal)(0,NbEdge);
-  TColStd_Array1OfReal Orig (0,NbEdge);
+  // tab to memorize ACR for each edge
+  OrigParam = new (TColStd_HArray1OfReal)(0, NbEdge);
+  TColStd_Array1OfReal Orig(0, NbEdge);
   BRepFill::ComputeACR(Path, Orig);
 
-  Standard_Integer ipath;
+  Standard_Integer   ipath;
   TopAbs_Orientation Or;
-// Class BRep_Tool without fields and without Constructor :
-//  BRep_Tool B;
-  TopoDS_Edge E;
-  Handle(Geom_Curve) C;
+  // Class BRep_Tool without fields and without Constructor :
+  //  BRep_Tool B;
+  TopoDS_Edge               E;
+  Handle(Geom_Curve)        C;
   Handle(GeomAdaptor_Curve) AC;
-  Standard_Real First, Last;
+  Standard_Real             First, Last;
 
-// return ACR of edges of the trajectory
-  OrigParam->SetValue(0,0); 
-  for (ipath=1;ipath<=NbEdge;ipath++)
+  // return ACR of edges of the trajectory
+  OrigParam->SetValue(0, 0);
+  for (ipath = 1; ipath <= NbEdge; ipath++)
     OrigParam->SetValue(ipath, Orig(ipath));
 
-// process each edge of the trajectory
-  for (ipath=0, wexp.Init(myPath); 
-       wexp.More(); wexp.Next()) {
+  // process each edge of the trajectory
+  for (ipath = 0, wexp.Init(myPath); wexp.More(); wexp.Next())
+  {
     E = wexp.Current();
-//    if (!B.Degenerated(E)) {
-    if (!BRep_Tool::Degenerated(E)) {
+    //    if (!B.Degenerated(E)) {
+    if (!BRep_Tool::Degenerated(E))
+    {
       ipath++;
       myEdges->SetValue(ipath, E);
-      C = BRep_Tool::Curve(E,First,Last);
+      C  = BRep_Tool::Curve(E, First, Last);
       Or = E.Orientation();
-      if (Or == TopAbs_REVERSED) {
-	Handle(Geom_TrimmedCurve) CBis = 
-	  new (Geom_TrimmedCurve) (C, First, Last);
-	CBis->Reverse(); // To avoid damaging the topology
-	C = CBis;
-        First =  C->FirstParameter();
-	Last  =  C->LastParameter();
+      if (Or == TopAbs_REVERSED)
+      {
+        Handle(Geom_TrimmedCurve) CBis = new (Geom_TrimmedCurve)(C, First, Last);
+        CBis->Reverse(); // To avoid damaging the topology
+        C     = CBis;
+        First = C->FirstParameter();
+        Last  = C->LastParameter();
       }
-      AC = new  (GeomAdaptor_Curve) (C, First, Last);
+      AC = new (GeomAdaptor_Curve)(C, First, Last);
 
       // Set the parameters for the case multi-edges
-      Standard_Real t1 = OrigParam->Value(ipath-1);
-      Standard_Real t2 = OrigParam->Value(ipath);
+      Standard_Real                  t1 = OrigParam->Value(ipath - 1);
+      Standard_Real                  t2 = OrigParam->Value(ipath);
       Handle(GeomFill_LocationGuide) Loc;
       Loc = theLaw;
-      Loc->SetOrigine(t1,t2);
+      Loc->SetOrigine(t1, t2);
 
       myLaws->SetValue(ipath, Loc->Copy());
       myLaws->ChangeValue(ipath)->SetCurve(AC);

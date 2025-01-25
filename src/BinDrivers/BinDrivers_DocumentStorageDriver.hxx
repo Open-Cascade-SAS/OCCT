@@ -24,7 +24,6 @@ class BinMDF_ADriverTable;
 class Message_Messenger;
 class BinLDrivers_DocumentSection;
 
-
 class BinDrivers_DocumentStorageDriver;
 DEFINE_STANDARD_HANDLE(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 
@@ -33,20 +32,18 @@ class BinDrivers_DocumentStorageDriver : public BinLDrivers_DocumentStorageDrive
 {
 
 public:
-
-  
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentStorageDriver();
-  
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers
-    (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers(
+    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+
   //! implements the procedure of writing a shape section to file
-  Standard_EXPORT virtual void WriteShapeSection
-    (BinLDrivers_DocumentSection& theDocSection, 
-     Standard_OStream& theOS, 
-     const TDocStd_FormatVersion theDocVer,
-     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual void WriteShapeSection(
+    BinLDrivers_DocumentSection& theDocSection,
+    Standard_OStream&            theOS,
+    const TDocStd_FormatVersion  theDocVer,
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Return true if shape should be stored with triangles.
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;
@@ -54,11 +51,11 @@ public:
   Standard_EXPORT Standard_Boolean IsWithNormals() const;
 
   //! Set if triangulation should be stored or not.
-  Standard_EXPORT void SetWithTriangles (const Handle(Message_Messenger)& theMessageDriver,
-                                         const Standard_Boolean theWithTriangulation);
+  Standard_EXPORT void SetWithTriangles(const Handle(Message_Messenger)& theMessageDriver,
+                                        const Standard_Boolean           theWithTriangulation);
   //! Set if triangulation should be stored with normals or not.
   Standard_EXPORT void SetWithNormals(const Handle(Message_Messenger)& theMessageDriver,
-                                         const Standard_Boolean theWithTriangulation);
+                                      const Standard_Boolean           theWithTriangulation);
 
   //! Enables writing in the quick part access mode.
   Standard_EXPORT void EnableQuickPartWriting(const Handle(Message_Messenger)& theMessageDriver,
@@ -67,8 +64,7 @@ public:
   //! Clears the NamedShape driver
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
-
+  DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 };
 
 #endif // _BinDrivers_DocumentStorageDriver_HeaderFile

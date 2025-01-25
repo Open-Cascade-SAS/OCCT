@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_ItemShape.hxx>
 
@@ -36,7 +36,7 @@
 // function : Shape
 // purpose :
 // =======================================================================
-TopoDS_Shape ShapeView_ItemShape::Shape (const int theRowId) const
+TopoDS_Shape ShapeView_ItemShape::Shape(const int theRowId) const
 {
   if (myChildShapes.IsEmpty())
   {
@@ -48,10 +48,10 @@ TopoDS_Shape ShapeView_ItemShape::Shape (const int theRowId) const
     }
     else
     {
-      TopoDS_Iterator aSubShapeIt (myShape);
+      TopoDS_Iterator aSubShapeIt(myShape);
       for (int aCurrentIndex = 0; aSubShapeIt.More(); aSubShapeIt.Next(), aCurrentIndex++)
       {
-        aThis->myChildShapes.Add (aSubShapeIt.Value());
+        aThis->myChildShapes.Add(aSubShapeIt.Value());
       }
     }
   }
@@ -67,7 +67,7 @@ TopoDS_Shape ShapeView_ItemShape::Shape (const int theRowId) const
 // =======================================================================
 QVariant ShapeView_ItemShape::initValue(const int theRole) const
 {
-  QVariant aParentValue = TreeModel_ItemBase::initValue (theRole);
+  QVariant aParentValue = TreeModel_ItemBase::initValue(theRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -80,8 +80,10 @@ QVariant ShapeView_ItemShape::initValue(const int theRole) const
 
   switch (Column())
   {
-    case 0: return TopAbs::ShapeTypeToString (aShape.ShapeType());
-    default: break;
+    case 0:
+      return TopAbs::ShapeTypeToString(aShape.ShapeType());
+    default:
+      break;
   }
   return QVariant();
 }
@@ -115,22 +117,22 @@ int ShapeView_ItemShape::initRowCount() const
 // function : initStream
 // purpose :
 // =======================================================================
-void ShapeView_ItemShape::initStream (Standard_OStream& theOStream) const
+void ShapeView_ItemShape::initStream(Standard_OStream& theOStream) const
 {
   TopoDS_Shape aShape = getShape();
   if (aShape.IsNull())
     return;
 
-  aShape.DumpJson (theOStream);
+  aShape.DumpJson(theOStream);
 }
 
 // =======================================================================
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr ShapeView_ItemShape::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr ShapeView_ItemShape::createChild(int theRow, int theColumn)
 {
-  return ShapeView_ItemShape::CreateItem (currentItem(), theRow, theColumn);
+  return ShapeView_ItemShape::CreateItem(currentItem(), theRow, theColumn);
 }
 
 // =======================================================================
@@ -139,9 +141,9 @@ TreeModel_ItemBasePtr ShapeView_ItemShape::createChild (int theRow, int theColum
 // =======================================================================
 void ShapeView_ItemShape::Init()
 {
-  ShapeView_ItemRootPtr aRootItem = itemDynamicCast<ShapeView_ItemRoot> (Parent());
-  ShapeView_ItemShapePtr aShapeItem = itemDynamicCast<ShapeView_ItemShape> (Parent());
-  myShape = aRootItem ? aRootItem->Shape (Row()) : aShapeItem->Shape (Row());
+  ShapeView_ItemRootPtr  aRootItem  = itemDynamicCast<ShapeView_ItemRoot>(Parent());
+  ShapeView_ItemShapePtr aShapeItem = itemDynamicCast<ShapeView_ItemShape>(Parent());
+  myShape = aRootItem ? aRootItem->Shape(Row()) : aShapeItem->Shape(Row());
 
   TreeModel_ItemBase::Init();
 }

@@ -16,23 +16,27 @@
 
 #include <Standard_DomainError.hxx>
 
-
-inline const gp_Pnt2d& IntAna2d_IntPoint::Value () const {
+inline const gp_Pnt2d& IntAna2d_IntPoint::Value() const
+{
   return myp;
 }
 
-inline Standard_Real IntAna2d_IntPoint::ParamOnFirst () const {
+inline Standard_Real IntAna2d_IntPoint::ParamOnFirst() const
+{
   return myu1;
 }
 
-inline Standard_Real IntAna2d_IntPoint::ParamOnSecond () const {
+inline Standard_Real IntAna2d_IntPoint::ParamOnSecond() const
+{
 
-  if (myimplicit) {
+  if (myimplicit)
+  {
     throw Standard_DomainError();
   }
   return myu2;
 }
 
-inline Standard_Boolean IntAna2d_IntPoint::SecondIsImplicit() const {
-  return(myimplicit);
+inline Standard_Boolean IntAna2d_IntPoint::SecondIsImplicit() const
+{
+  return (myimplicit);
 }

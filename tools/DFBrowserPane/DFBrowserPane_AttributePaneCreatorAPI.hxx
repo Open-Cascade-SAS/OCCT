@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_AttributePaneCreatorAPI_H
 #define DFBrowserPane_AttributePaneCreatorAPI_H
@@ -26,7 +26,6 @@ class DFBrowserPane_AttributePaneAPI;
 class DFBrowserPane_AttributePaneCreatorAPI
 {
 public:
-
   //! Constructor
   DFBrowserPane_AttributePaneCreatorAPI() {}
 
@@ -36,7 +35,8 @@ public:
   //! Creates attribute pane for attribute types
   //! \param theAttributeName a standard type of attribute
   //! \return an attribute pane if it can be created for this type
-  virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane (Standard_CString theAttributeName) = 0;
+  virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane(
+    Standard_CString theAttributeName) = 0;
 };
 
-#endif 
+#endif

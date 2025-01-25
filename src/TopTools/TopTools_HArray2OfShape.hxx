@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY2(TopTools_HArray2OfShape, TopTools_Array2OfShape)
 
-
 #endif

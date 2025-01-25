@@ -22,41 +22,20 @@
 
 #include <StepGeom_Surface.hxx>
 
-
 class StepGeom_BoundedSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_BoundedSurface, StepGeom_Surface)
-
 
 class StepGeom_BoundedSurface : public StepGeom_Surface
 {
 
 public:
-
-  
   //! Returns a BoundedSurface
   Standard_EXPORT StepGeom_BoundedSurface();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_BoundedSurface,StepGeom_Surface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BoundedSurface, StepGeom_Surface)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_BoundedSurface_HeaderFile

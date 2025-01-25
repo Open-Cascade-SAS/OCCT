@@ -17,13 +17,12 @@
 #ifndef _StepGeom_TransitionCode_HeaderFile
 #define _StepGeom_TransitionCode_HeaderFile
 
-
 enum StepGeom_TransitionCode
 {
-StepGeom_tcDiscontinuous,
-StepGeom_tcContinuous,
-StepGeom_tcContSameGradient,
-StepGeom_tcContSameGradientSameCurvature
+  StepGeom_tcDiscontinuous,
+  StepGeom_tcContinuous,
+  StepGeom_tcContSameGradient,
+  StepGeom_tcContSameGradientSameCurvature
 };
 
 #endif // _StepGeom_TransitionCode_HeaderFile

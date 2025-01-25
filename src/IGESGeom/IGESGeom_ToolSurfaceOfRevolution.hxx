@@ -35,60 +35,51 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a SurfaceOfRevolution. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESGeom_ToolSurfaceOfRevolution 
+class IGESGeom_ToolSurfaceOfRevolution
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolSurfaceOfRevolution, ready to work
   Standard_EXPORT IGESGeom_ToolSurfaceOfRevolution();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESGeom_SurfaceOfRevolution)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESGeom_SurfaceOfRevolution)& ent,
+                                     const Handle(IGESData_IGESReaderData)&      IR,
+                                     IGESData_ParamReader&                       PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESGeom_SurfaceOfRevolution)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESGeom_SurfaceOfRevolution)& ent,
+                                      IGESData_IGESWriter&                        IW) const;
+
   //! Lists the Entities shared by a SurfaceOfRevolution <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESGeom_SurfaceOfRevolution)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESGeom_SurfaceOfRevolution)& ent,
+                                 Interface_EntityIterator&                   iter) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESGeom_SurfaceOfRevolution)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const Handle(IGESGeom_SurfaceOfRevolution)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESGeom_SurfaceOfRevolution)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESGeom_SurfaceOfRevolution)& ent,
+                                const Interface_ShareTool&                  shares,
+                                Handle(Interface_Check)&                    ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESGeom_SurfaceOfRevolution)& entfrom, const Handle(IGESGeom_SurfaceOfRevolution)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESGeom_SurfaceOfRevolution)& entfrom,
+                               const Handle(IGESGeom_SurfaceOfRevolution)& entto,
+                               Interface_CopyTool&                         TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESGeom_SurfaceOfRevolution)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESGeom_SurfaceOfRevolution)& ent,
+                               const IGESData_IGESDumper&                  dumper,
+                               Standard_OStream&                           S,
+                               const Standard_Integer                      own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_ToolSurfaceOfRevolution_HeaderFile

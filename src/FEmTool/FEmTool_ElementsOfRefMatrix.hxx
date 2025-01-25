@@ -26,7 +26,6 @@
 #include <math_Vector.hxx>
 class PLib_Base;
 
-
 //! this  class  describes  the  functions  needed  for
 //! calculating  matrix  elements  of  RefMatrix  for  linear
 //! criteriums  (Tension,  Flexsion  and  Jerk) by  Gauss  integration.
@@ -34,22 +33,21 @@ class PLib_Base;
 //! Pi(u)''*Pj(u)''  or  Pi(u)'''*Pj(u)'''  for  each  i  and  j,
 //! where  Pi(u)  is  i-th  basis  function  of  expansion  and
 //! (')  means  derivative.
-class FEmTool_ElementsOfRefMatrix  : public math_FunctionSet
+class FEmTool_ElementsOfRefMatrix : public math_FunctionSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const Handle(PLib_Base)& TheBase, const Standard_Integer DerOrder);
-  
+  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const Handle(PLib_Base)& TheBase,
+                                              const Standard_Integer   DerOrder);
+
   //! returns the number of variables of the function.
   //! It  is  supposed  that  NbVariables  =  1.
   Standard_EXPORT Standard_Integer NbVariables() const;
-  
+
   //! returns the number of equations of the function.
   Standard_EXPORT Standard_Integer NbEquations() const;
-  
+
   //! computes the values <F> of the functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
@@ -57,32 +55,13 @@ public:
   //! F  contains  results  only  for  i<=j  in  following  order:
   //! P0*P0,  P0*P1,  P0*P2...  P1*P1,  P1*P2,...  (upper  triangle of
   //! matrix  {PiPj})
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, math_Vector& F);
-
-
-
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(PLib_Base) myBase;
-  Standard_Integer myDerOrder;
-  Standard_Integer myNbEquations;
-
-
+  Standard_Integer  myDerOrder;
+  Standard_Integer  myNbEquations;
 };
-
-
-
-
-
-
 
 #endif // _FEmTool_ElementsOfRefMatrix_HeaderFile

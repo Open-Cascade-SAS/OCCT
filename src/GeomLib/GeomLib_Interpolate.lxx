@@ -15,16 +15,21 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean   GeomLib_Interpolate::IsDone() const 
-{ return  myIsDone ; }
+inline Standard_Boolean GeomLib_Interpolate::IsDone() const
+{
+  return myIsDone;
+}
+
 //=======================================================================
-//function : Error
-//purpose  : 
+// function : Error
+// purpose  :
 //=======================================================================
 
-inline GeomLib_InterpolationErrors GeomLib_Interpolate::Error() const 
-{ return myError ; } 
+inline GeomLib_InterpolationErrors GeomLib_Interpolate::Error() const
+{
+  return myError;
+}

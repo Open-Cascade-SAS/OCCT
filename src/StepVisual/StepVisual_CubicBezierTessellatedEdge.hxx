@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:11 2022 
+// Created on : Thu Mar 24 18:30:11 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -21,20 +21,17 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedEdge.hxx>
 
-
 DEFINE_STANDARD_HANDLE(StepVisual_CubicBezierTessellatedEdge, StepVisual_TessellatedEdge)
 
 //! Representation of STEP entity CubicBezierTessellatedEdge
 class StepVisual_CubicBezierTessellatedEdge : public StepVisual_TessellatedEdge
 {
 
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_CubicBezierTessellatedEdge();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CubicBezierTessellatedEdge, StepVisual_TessellatedEdge)
-
 };
 
 #endif // _StepVisual_CubicBezierTessellatedEdge_HeaderFile_

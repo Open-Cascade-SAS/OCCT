@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_Module.hxx>
 
@@ -40,41 +40,41 @@
 // purpose :
 // =======================================================================
 DFBrowser_Module::DFBrowser_Module()
-: myOCAFViewModel (0)
+    : myOCAFViewModel(0)
 {
-  RegisterPaneCreator (new DFBrowserPane_AttributePaneCreator());
+  RegisterPaneCreator(new DFBrowserPane_AttributePaneCreator());
 }
 
 // =======================================================================
 // function : CreateViewModel
 // purpose :
 // =======================================================================
-void DFBrowser_Module::CreateViewModel (void* theParent)
+void DFBrowser_Module::CreateViewModel(void* theParent)
 {
-  myOCAFViewModel = new DFBrowser_TreeModel ((QWidget*)theParent);
+  myOCAFViewModel = new DFBrowser_TreeModel((QWidget*)theParent);
   myOCAFViewModel->InitColumns();
-  myOCAFViewModel->SetModule (this);
+  myOCAFViewModel->SetModule(this);
 }
 
 // =======================================================================
 // function : SetApplication
 // purpose :
 // =======================================================================
-void DFBrowser_Module::SetApplication (const Handle(TDocStd_Application)& theApplication)
+void DFBrowser_Module::SetApplication(const Handle(TDocStd_Application)& theApplication)
 {
-  myOCAFViewModel->Init (theApplication);
+  myOCAFViewModel->Init(theApplication);
 
   myPaneCreators.clear();
-  RegisterPaneCreator (new DFBrowserPane_AttributePaneCreator());
+  RegisterPaneCreator(new DFBrowserPane_AttributePaneCreator());
 }
 
 // =======================================================================
 // function : SetExternalContext
 // purpose :
 // =======================================================================
-void DFBrowser_Module::SetExternalContext (const Handle(Standard_Transient)& theContext)
+void DFBrowser_Module::SetExternalContext(const Handle(Standard_Transient)& theContext)
 {
-  myExternalContext = Handle(AIS_InteractiveContext)::DownCast (theContext);
+  myExternalContext = Handle(AIS_InteractiveContext)::DownCast(theContext);
 }
 
 // =======================================================================
@@ -92,7 +92,7 @@ Handle(TDocStd_Application) DFBrowser_Module::GetTDocStdApplication() const
 // =======================================================================
 void DFBrowser_Module::UpdateTreeModel()
 {
-  QAbstractItemModel* aModel = GetOCAFViewModel();
+  QAbstractItemModel*  aModel          = GetOCAFViewModel();
   QItemSelectionModel* aSelectionModel = GetOCAFViewSelectionModel();
   if (!aModel || !aSelectionModel)
     return;
@@ -111,26 +111,26 @@ void DFBrowser_Module::UpdateTreeModel()
 // =======================================================================
 void DFBrowser_Module::SetInitialTreeViewSelection()
 {
-  QAbstractItemModel* aModel = GetOCAFViewModel();
+  QAbstractItemModel*  aModel          = GetOCAFViewModel();
   QItemSelectionModel* aSelectionModel = GetOCAFViewSelectionModel();
   if (!aModel || !aSelectionModel)
     return;
 
   // select a parent(application) item
-  aSelectionModel->select (aModel->index (0, 0), QItemSelectionModel::ClearAndSelect);
+  aSelectionModel->select(aModel->index(0, 0), QItemSelectionModel::ClearAndSelect);
 }
 
 // =======================================================================
 // function : FindAttribute
 // purpose :
 // =======================================================================
-Handle(TDF_Attribute) DFBrowser_Module::FindAttribute (const QModelIndex& theIndex)
+Handle(TDF_Attribute) DFBrowser_Module::FindAttribute(const QModelIndex& theIndex)
 {
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(theIndex);
   if (!anItemBase)
     return Handle(TDF_Attribute)();
 
-  DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+  DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item>(anItemBase);
   return (anItem && anItem->HasAttribute()) ? anItem->GetAttribute() : Handle(TDF_Attribute)();
 }
 
@@ -138,25 +138,27 @@ Handle(TDF_Attribute) DFBrowser_Module::FindAttribute (const QModelIndex& theInd
 // function : GetAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (Handle(TDF_Attribute) theAttribute)
+DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane(
+  Handle(TDF_Attribute) theAttribute)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   if (theAttribute.IsNull())
     return aPane;
-  return GetAttributePane (theAttribute->DynamicType()->Name());
+  return GetAttributePane(theAttribute->DynamicType()->Name());
 }
 
 // =======================================================================
 // function : GetAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (Standard_CString theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane(
+  Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
 
-  if (!myAttributeTypes.contains (theAttributeName))
+  if (!myAttributeTypes.contains(theAttributeName))
   {
-    aPane = CreateAttributePane (theAttributeName);
+    aPane = CreateAttributePane(theAttributeName);
     if (aPane)
       myAttributeTypes[theAttributeName] = aPane;
   }
@@ -170,21 +172,23 @@ DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (Standard_CSt
 // function : GetAttributeInfo
 // purpose :
 // =======================================================================
-QVariant DFBrowser_Module::GetAttributeInfo (Handle(TDF_Attribute) theAttribute, DFBrowser_Module* theModule,
-                                             int theRole, int theColumnId)
+QVariant DFBrowser_Module::GetAttributeInfo(Handle(TDF_Attribute) theAttribute,
+                                            DFBrowser_Module*     theModule,
+                                            int                   theRole,
+                                            int                   theColumnId)
 {
   DFBrowserPane_AttributePane* anAttributePane = 0;
   if (!theAttribute.IsNull())
   {
-    DFBrowserPane_AttributePaneAPI* anAPIPane = theModule->GetAttributePane (theAttribute);
+    DFBrowserPane_AttributePaneAPI* anAPIPane = theModule->GetAttributePane(theAttribute);
     if (anAPIPane)
-      anAttributePane = dynamic_cast<DFBrowserPane_AttributePane*> (anAPIPane);
+      anAttributePane = dynamic_cast<DFBrowserPane_AttributePane*>(anAPIPane);
   }
 
   TCollection_AsciiString anInfo;
   if (theRole == DFBrowser_ItemRole_AdditionalInfo)
   {
-    anInfo = XCAFDoc::AttributeInfo (theAttribute);
+    anInfo = XCAFDoc::AttributeInfo(theAttribute);
   }
   QVariant aValue;
   if (!anInfo.IsEmpty())
@@ -192,11 +196,15 @@ QVariant DFBrowser_Module::GetAttributeInfo (Handle(TDF_Attribute) theAttribute,
     aValue = anInfo.ToCString();
   }
   else if (anAttributePane)
-    aValue = anAttributePane->GetAttributeInfo (theAttribute,
-               theRole == DFBrowser_ItemRole_AdditionalInfo ? DFBrowserPane_ItemRole_ShortInfo : theRole,
-               theColumnId);
+    aValue = anAttributePane->GetAttributeInfo(
+      theAttribute,
+      theRole == DFBrowser_ItemRole_AdditionalInfo ? DFBrowserPane_ItemRole_ShortInfo : theRole,
+      theColumnId);
   else
-    aValue = DFBrowserPane_AttributePane::GetAttributeInfoByType (theAttribute->DynamicType()->Name(), theRole, theColumnId);
+    aValue =
+      DFBrowserPane_AttributePane::GetAttributeInfoByType(theAttribute->DynamicType()->Name(),
+                                                          theRole,
+                                                          theColumnId);
   return aValue;
 }
 
@@ -204,37 +212,43 @@ QVariant DFBrowser_Module::GetAttributeInfo (Handle(TDF_Attribute) theAttribute,
 // function : GetAttributeInfo
 // purpose :
 // =======================================================================
-QVariant DFBrowser_Module::GetAttributeInfo (Standard_CString theAttributeName, DFBrowser_Module* theModule,
-                                             int theRole, int theColumnId)
+QVariant DFBrowser_Module::GetAttributeInfo(Standard_CString  theAttributeName,
+                                            DFBrowser_Module* theModule,
+                                            int               theRole,
+                                            int               theColumnId)
 {
-  DFBrowserPane_AttributePane* anAttributePane = 0;
-  DFBrowserPane_AttributePaneAPI* anAPIPane = theModule->GetAttributePane (theAttributeName);
+  DFBrowserPane_AttributePane*    anAttributePane = 0;
+  DFBrowserPane_AttributePaneAPI* anAPIPane       = theModule->GetAttributePane(theAttributeName);
   if (anAPIPane)
-    anAttributePane = dynamic_cast<DFBrowserPane_AttributePane*> (anAPIPane);
+    anAttributePane = dynamic_cast<DFBrowserPane_AttributePane*>(anAPIPane);
 
   QVariant aValue;
   if (anAttributePane)
   {
     Handle(TDF_Attribute) anAttribute;
-    aValue = anAttributePane->GetAttributeInfo (anAttribute,
-               theRole == DFBrowser_ItemRole_AdditionalInfo ? DFBrowserPane_ItemRole_ShortInfo : theRole, theColumnId);
+    aValue = anAttributePane->GetAttributeInfo(
+      anAttribute,
+      theRole == DFBrowser_ItemRole_AdditionalInfo ? DFBrowserPane_ItemRole_ShortInfo : theRole,
+      theColumnId);
   }
   else
-    aValue = DFBrowserPane_AttributePane::GetAttributeInfoByType (theAttributeName, theRole, theColumnId);
+    aValue =
+      DFBrowserPane_AttributePane::GetAttributeInfoByType(theAttributeName, theRole, theColumnId);
   return aValue;
-
 }
 
 // =======================================================================
 // function : CreateAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowser_Module::CreateAttributePane (Standard_CString theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowser_Module::CreateAttributePane(
+  Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   // iteration should be performed from the tail of the list, as latest added creator has
   // larger priority
-  for (int aPaneCreatorId = myPaneCreators.size()-1; aPaneCreatorId >= 0 && !aPane; aPaneCreatorId--)
-    aPane = myPaneCreators[aPaneCreatorId]->CreateAttributePane (theAttributeName);
+  for (int aPaneCreatorId = myPaneCreators.size() - 1; aPaneCreatorId >= 0 && !aPane;
+       aPaneCreatorId--)
+    aPane = myPaneCreators[aPaneCreatorId]->CreateAttributePane(theAttributeName);
   return aPane;
 }

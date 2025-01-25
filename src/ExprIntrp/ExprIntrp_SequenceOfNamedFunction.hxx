@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Expr_NamedFunction)> ExprIntrp_SequenceOfNamedFunction;
 
-
 #endif

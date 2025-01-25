@@ -25,8 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Alias, Express_Item)
 // purpose  :
 //=======================================================================
 
-Express_Alias::Express_Alias (const Standard_CString theName, const Handle(Express_Type)& theType)
-: Express_Item (theName), myType (theType)
+Express_Alias::Express_Alias(const Standard_CString theName, const Handle(Express_Type)& theType)
+    : Express_Item(theName),
+      myType(theType)
 {
 }
 
@@ -57,7 +58,8 @@ const TCollection_AsciiString Express_Alias::CPPName() const
 
 Standard_Boolean Express_Alias::GenerateClass() const
 {
-  Message::SendInfo() << "ALIAS " << Name() << " = " << Type()->CPPName() << " used; no generation is needed";
+  Message::SendInfo() << "ALIAS " << Name() << " = " << Type()->CPPName()
+                      << " used; no generation is needed";
   return Standard_False;
 }
 
@@ -66,6 +68,4 @@ Standard_Boolean Express_Alias::GenerateClass() const
 // purpose  :
 //=======================================================================
 
-void Express_Alias::PropagateUse() const
-{
-}
+void Express_Alias::PropagateUse() const {}

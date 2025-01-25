@@ -32,15 +32,11 @@ class Law_Linear;
 class Law_BSpline;
 class Adaptor3d_Curve;
 
-
 //! Multiple services concerning 1d functions.
-class Law 
+class Law
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! This algorithm searches the knot values corresponding to the
   //! splitting of a given B-spline law into  several arcs with
@@ -48,12 +44,15 @@ public:
   //! construction time.
   //! Builds a 1d bspline that   is near from Lin with  null
   //! derivatives at the extremities.
-  Standard_EXPORT static Handle(Law_BSpFunc) MixBnd (const Handle(Law_Linear)& Lin);
-  
+  Standard_EXPORT static Handle(Law_BSpFunc) MixBnd(const Handle(Law_Linear)& Lin);
+
   //! Builds  the poles of the 1d  bspline that is near from
   //! Lin with null derivatives at the extremities.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixBnd (const Standard_Integer Degree, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Handle(Law_Linear)& Lin);
-  
+  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixBnd(const Standard_Integer         Degree,
+                                                              const TColStd_Array1OfReal&    Knots,
+                                                              const TColStd_Array1OfInteger& Mults,
+                                                              const Handle(Law_Linear)&      Lin);
+
   //! Builds the poles of the 1d bspline that is null on the
   //! right    side   of   Knots(Index)  (on  the    left if
   //! NulOnTheRight  is  false)    and   that is     like  a
@@ -63,13 +62,25 @@ public:
   //! parameter (-1 at last  parameter  if  NulOnTheRight is
   //! false).
   //! Warning: Mults(Index) must greater or equal to degree-1.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixTgt (const Standard_Integer Degree, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Boolean NulOnTheRight, const Standard_Integer Index);
-  
+  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixTgt(const Standard_Integer         Degree,
+                                                              const TColStd_Array1OfReal&    Knots,
+                                                              const TColStd_Array1OfInteger& Mults,
+                                                              const Standard_Boolean NulOnTheRight,
+                                                              const Standard_Integer Index);
+
   //! Computes a 1 d curve to  reparametrize a curve. Its an
   //! interpolation of NbPoints  points calculated  at quasi
   //! constant abscissa.
-  Standard_EXPORT static Handle(Law_BSpline) Reparametrize (const Adaptor3d_Curve& Curve, const Standard_Real First, const Standard_Real Last, const Standard_Boolean HasDF, const Standard_Boolean HasDL, const Standard_Real DFirst, const Standard_Real DLast, const Standard_Boolean Rev, const Standard_Integer NbPoints);
-  
+  Standard_EXPORT static Handle(Law_BSpline) Reparametrize(const Adaptor3d_Curve& Curve,
+                                                           const Standard_Real    First,
+                                                           const Standard_Real    Last,
+                                                           const Standard_Boolean HasDF,
+                                                           const Standard_Boolean HasDL,
+                                                           const Standard_Real    DFirst,
+                                                           const Standard_Real    DLast,
+                                                           const Standard_Boolean Rev,
+                                                           const Standard_Integer NbPoints);
+
   //! Computes a 1  d curve to  scale  a field of  tangency.
   //! Value is 1. for t = (First+Last)/2 .
   //! If HasFirst value for t = First is VFirst (null derivative).
@@ -78,14 +89,23 @@ public:
   //! 1.                   _
   //! _/ \_
   //! __/     \__
-  //! /           
-  //! VFirst    ____/             
+  //! /
+  //! VFirst    ____/
   //! VLast                        \____
   //! First                    Last
-  Standard_EXPORT static Handle(Law_BSpline) Scale (const Standard_Real First, const Standard_Real Last, const Standard_Boolean HasF, const Standard_Boolean HasL, const Standard_Real VFirst, const Standard_Real VLast);
-  
-  Standard_EXPORT static Handle(Law_BSpline) ScaleCub (const Standard_Real First, const Standard_Real Last, const Standard_Boolean HasF, const Standard_Boolean HasL, const Standard_Real VFirst, const Standard_Real VLast);
+  Standard_EXPORT static Handle(Law_BSpline) Scale(const Standard_Real    First,
+                                                   const Standard_Real    Last,
+                                                   const Standard_Boolean HasF,
+                                                   const Standard_Boolean HasL,
+                                                   const Standard_Real    VFirst,
+                                                   const Standard_Real    VLast);
 
+  Standard_EXPORT static Handle(Law_BSpline) ScaleCub(const Standard_Real    First,
+                                                      const Standard_Real    Last,
+                                                      const Standard_Boolean HasF,
+                                                      const Standard_Boolean HasL,
+                                                      const Standard_Real    VFirst,
+                                                      const Standard_Real    VLast);
 };
 
 #endif // _Law_HeaderFile

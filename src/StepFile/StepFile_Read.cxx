@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef OCCT_DEBUG
-#define CHRONOMESURE
+  #define CHRONOMESURE
 #endif
 
 void StepFile_Interrupt(Standard_CString theErrorMessage, const Standard_Boolean theIsFail)
@@ -55,21 +55,21 @@ void StepFile_Interrupt(Standard_CString theErrorMessage, const Standard_Boolean
   sout << "**** ERR StepFile : " << theErrorMessage << "    ****" << std::endl;
 }
 
-static Standard_Integer StepFile_Read (const char* theName,
-                                       std::istream* theIStream,
-                                       const Handle(StepData_StepModel)& theStepModel,
-                                       const Handle(StepData_Protocol)& theProtocol,
-                                       const Handle(StepData_FileRecognizer)& theRecogHeader,
-                                       const Handle(StepData_FileRecognizer)& theRecogData)
+static Standard_Integer StepFile_Read(const char*                            theName,
+                                      std::istream*                          theIStream,
+                                      const Handle(StepData_StepModel)&      theStepModel,
+                                      const Handle(StepData_Protocol)&       theProtocol,
+                                      const Handle(StepData_FileRecognizer)& theRecogHeader,
+                                      const Handle(StepData_FileRecognizer)& theRecogData)
 {
   // if stream is not provided, open file stream here
-  std::istream* aStreamPtr = theIStream;
+  std::istream*                 aStreamPtr = theIStream;
   std::shared_ptr<std::istream> aFileStream;
   if (aStreamPtr == nullptr)
   {
     const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    aFileStream = aFileSystem->OpenIStream (theName, std::ios::in | std::ios::binary);
-    aStreamPtr = aFileStream.get();
+    aFileStream = aFileSystem->OpenIStream(theName, std::ios::in | std::ios::binary);
+    aStreamPtr  = aFileStream.get();
   }
   if (aStreamPtr == nullptr || aStreamPtr->fail())
   {
@@ -86,19 +86,22 @@ static Standard_Integer StepFile_Read (const char* theName,
   sout << "      ...    Step File Reading : '" << theName << "'";
 
   StepFile_ReadData aFileDataModel;
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
-    int aLetat = 0;
+    int           aLetat = 0;
     step::scanner aScanner(&aFileDataModel, aStreamPtr);
     aScanner.yyrestart(aStreamPtr);
     step::parser aParser(&aScanner);
     aLetat = aParser.parse();
-    if (aLetat != 0) {
+    if (aLetat != 0)
+    {
       StepFile_Interrupt(aFileDataModel.GetLastError(), Standard_True);
       return 1;
     }
   }
-  catch (Standard_Failure const& anException) {
+  catch (Standard_Failure const& anException)
+  {
     Message::SendFail() << " ...  Exception Raised while reading Step File : '" << theName << "':\n"
                         << anException << "    ...";
     return 1;
@@ -111,20 +114,26 @@ static Standard_Integer StepFile_Read (const char* theName,
   sout << "      ...    STEP File   Read    ...\n";
 
   Standard_Integer nbhead, nbrec, nbpar;
-  aFileDataModel.GetFileNbR (&nbhead,&nbrec,&nbpar);  // renvoi par lex/yacc
+  aFileDataModel.GetFileNbR(&nbhead, &nbrec, &nbpar); // renvoi par lex/yacc
   Handle(StepData_StepReaderData) undirec =
-// clang-format off
+    // clang-format off
     new StepData_StepReaderData(nbhead,nbrec,nbpar, theStepModel->SourceCodePage());  // creation tableau de records
-// clang-format on
-  for ( Standard_Integer nr = 1; nr <= nbrec; nr ++) {
-    int nbarg; char* ident; char* typrec = 0;
+  // clang-format on
+  for (Standard_Integer nr = 1; nr <= nbrec; nr++)
+  {
+    int   nbarg;
+    char* ident;
+    char* typrec = 0;
     aFileDataModel.GetRecordDescription(&ident, &typrec, &nbarg);
-    undirec->SetRecord (nr, ident, typrec, nbarg);
+    undirec->SetRecord(nr, ident, typrec, nbarg);
 
-    if (nbarg>0) {
-      Interface_ParamType typa; char* val;
-      while(aFileDataModel.GetArgDescription (&typa, &val) == 1) {
-        undirec->AddStepParam (nr, val, typa);
+    if (nbarg > 0)
+    {
+      Interface_ParamType typa;
+      char*               val;
+      while (aFileDataModel.GetArgDescription(&typa, &val) == 1)
+      {
+        undirec->AddStepParam(nr, val, typa);
       }
     }
     undirec->InitParams(nr);
@@ -135,26 +144,27 @@ static Standard_Integer StepFile_Read (const char* theName,
   Standard_Integer anFailsCount = undirec->GlobalCheck()->NbFails();
   if (anFailsCount > 0)
   {
-    Message::SendInfo() << "**** ERR StepFile : Incorrect Syntax : Fails Count : "
-      << anFailsCount << " ****";
+    Message::SendInfo() << "**** ERR StepFile : Incorrect Syntax : Fails Count : " << anFailsCount
+                        << " ****";
   }
 
   aFileDataModel.ClearRecorder(1);
 
   sout << "      ... Step File loaded  ...\n";
-  sout << "   " << undirec->NbRecords() << " records (entities,sub-lists,scopes), " << nbpar << " parameters";
+  sout << "   " << undirec->NbRecords() << " records (entities,sub-lists,scopes), " << nbpar
+       << " parameters";
 
 #ifdef CHRONOMESURE
   c.Show(sout);
 #endif
 
-//   Analyse : par StepReaderTool
+  //   Analyse : par StepReaderTool
 
-  StepData_StepReaderTool readtool (undirec, theProtocol);
-  readtool.SetErrorHandle (Standard_True);
+  StepData_StepReaderTool readtool(undirec, theProtocol);
+  readtool.SetErrorHandle(Standard_True);
 
-  readtool.PrepareHeader(theRecogHeader);  // Header. reco nul -> pour Protocol
-  readtool.Prepare(theRecogData);          // Data.   reco nul -> pour Protocol
+  readtool.PrepareHeader(theRecogHeader); // Header. reco nul -> pour Protocol
+  readtool.Prepare(theRecogData);         // Data.   reco nul -> pour Protocol
 
   sout << "      ... Parameters prepared ...\n";
 
@@ -163,13 +173,14 @@ static Standard_Integer StepFile_Read (const char* theName,
 #endif
 
   readtool.LoadModel(theStepModel);
-  if (theStepModel->Protocol().IsNull()) theStepModel->SetProtocol (theProtocol);
+  if (theStepModel->Protocol().IsNull())
+    theStepModel->SetProtocol(theProtocol);
   aFileDataModel.ClearRecorder(2);
   anFailsCount = undirec->GlobalCheck()->NbFails() - anFailsCount;
   if (anFailsCount > 0)
   {
     Message::SendInfo() << "*** ERR StepReaderData : Unresolved Reference : Fails Count : "
-      << anFailsCount << " ***";
+                        << anFailsCount << " ***";
   }
 
   readtool.Clear();
@@ -186,10 +197,10 @@ static Standard_Integer StepFile_Read (const char* theName,
   return 0;
 }
 
-Standard_Integer StepFile_Read(const char* theName,
-                               std::istream* theIStream,
+Standard_Integer StepFile_Read(const char*                       theName,
+                               std::istream*                     theIStream,
                                const Handle(StepData_StepModel)& theStepModel,
-                               const Handle(StepData_Protocol)& theProtocol)
+                               const Handle(StepData_Protocol)&  theProtocol)
 {
   Handle(StepData_FileRecognizer) aNulRecog;
   return StepFile_Read(theName, theIStream, theStepModel, theProtocol, aNulRecog, aNulRecog);

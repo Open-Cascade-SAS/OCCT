@@ -25,62 +25,45 @@
 #include <StepBasic_NamedUnit.hxx>
 class StepBasic_DimensionalExponents;
 
-
 class StepBasic_SiUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnit, StepBasic_NamedUnit)
-
 
 class StepBasic_SiUnit : public StepBasic_NamedUnit
 {
 
 public:
-
-  
   //! Returns a SiUnit
   Standard_EXPORT StepBasic_SiUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetPrefix (const StepBasic_SiPrefix aPrefix);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
+
+  Standard_EXPORT void SetPrefix(const StepBasic_SiPrefix aPrefix);
+
   Standard_EXPORT void UnSetPrefix();
-  
+
   Standard_EXPORT StepBasic_SiPrefix Prefix() const;
-  
+
   Standard_EXPORT Standard_Boolean HasPrefix() const;
-  
-  Standard_EXPORT void SetName (const StepBasic_SiUnitName aName);
-  
+
+  Standard_EXPORT void SetName(const StepBasic_SiUnitName aName);
+
   Standard_EXPORT StepBasic_SiUnitName Name() const;
-  
-  Standard_EXPORT virtual void SetDimensions (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(StepBasic_DimensionalExponents) Dimensions() const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void SetDimensions(
+    const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Handle(StepBasic_DimensionalExponents) Dimensions() const
+    Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
 protected:
-
-
-
-
 private:
-
-
-  StepBasic_SiPrefix prefix;
+  StepBasic_SiPrefix   prefix;
   StepBasic_SiUnitName name;
-  Standard_Boolean hasPrefix;
-
-
+  Standard_Boolean     hasPrefix;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnit_HeaderFile

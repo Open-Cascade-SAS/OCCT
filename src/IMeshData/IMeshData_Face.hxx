@@ -32,60 +32,48 @@ class TopoDS_Wire;
 class IMeshData_Face : public IMeshData_TessellatedShape, public IMeshData_StatusOwner
 {
 public:
-
   //! Destructor.
-  virtual ~IMeshData_Face()
-  {
-  }
+  virtual ~IMeshData_Face() {}
 
   //! Returns number of wires.
-  Standard_EXPORT virtual Standard_Integer WiresNb () const = 0;
+  Standard_EXPORT virtual Standard_Integer WiresNb() const = 0;
 
   //! Adds wire to discrete model of face.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire (
+  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(
     const TopoDS_Wire&     theWire,
     const Standard_Integer theEdgeNb = 0) = 0;
 
   //! Returns discrete edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire (
+  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(
     const Standard_Integer theIndex) const = 0;
 
   //! Returns face's surface.
-  const Handle(BRepAdaptor_Surface)& GetSurface() const
-  {
-    return mySurface;
-  }
+  const Handle(BRepAdaptor_Surface)& GetSurface() const { return mySurface; }
 
   //! Returns TopoDS_Face attached to model.
-  const TopoDS_Face& GetFace () const
-  {
-    return TopoDS::Face (GetShape ());
-  }
+  const TopoDS_Face& GetFace() const { return TopoDS::Face(GetShape()); }
 
   //! Returns whether the face discrete model is valid.
-  Standard_Boolean IsValid () const
+  Standard_Boolean IsValid() const
   {
-    return (IsEqual(IMeshData_NoError) ||
-            IsEqual(IMeshData_ReMesh)  ||
-            IsEqual(IMeshData_UnorientedWire));
+    return (IsEqual(IMeshData_NoError) || IsEqual(IMeshData_ReMesh)
+            || IsEqual(IMeshData_UnorientedWire));
   }
 
   DEFINE_STANDARD_RTTIEXT(IMeshData_Face, IMeshData_TessellatedShape)
 
 protected:
-
   //! Constructor.
   //! Initializes empty model.
-  IMeshData_Face (const TopoDS_Face& theFace)
-    : IMeshData_TessellatedShape(theFace)
+  IMeshData_Face(const TopoDS_Face& theFace)
+      : IMeshData_TessellatedShape(theFace)
   {
     BRepAdaptor_Surface aSurfAdaptor(GetFace(), Standard_False);
     mySurface = new BRepAdaptor_Surface(aSurfAdaptor);
   }
 
 private:
-
-  mutable Handle(BRepAdaptor_Surface)  mySurface;
+  mutable Handle(BRepAdaptor_Surface) mySurface;
 };
 
 #endif

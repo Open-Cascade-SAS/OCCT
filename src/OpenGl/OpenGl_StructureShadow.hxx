@@ -23,27 +23,22 @@ class OpenGl_StructureShadow : public OpenGl_Structure
 {
 
 public:
-
   //! Create empty structure
-  Standard_EXPORT OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
-                                          const Handle(OpenGl_Structure)&           theStructure);
+  Standard_EXPORT OpenGl_StructureShadow(const Handle(Graphic3d_StructureManager)& theManager,
+                                         const Handle(OpenGl_Structure)&           theStructure);
 
 public:
+  //! Raise exception on API misuse.
+  Standard_EXPORT virtual void Connect(Graphic3d_CStructure&) Standard_OVERRIDE;
 
   //! Raise exception on API misuse.
-  Standard_EXPORT virtual void Connect (Graphic3d_CStructure& ) Standard_OVERRIDE;
-
-  //! Raise exception on API misuse.
-  Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& ) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Disconnect(Graphic3d_CStructure&) Standard_OVERRIDE;
 
 private:
-
   Handle(OpenGl_Structure) myParent;
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_StructureShadow,OpenGl_Structure) // Type definition
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure) // Type definition
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_StructureShadow, OpenGl_Structure)

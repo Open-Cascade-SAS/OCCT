@@ -27,20 +27,20 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESDefs_Protocol) protocol;
 
-
-    void  IGESDefs::Init ()
+void IGESDefs::Init()
 {
   IGESGraph::Init();
-  if (protocol.IsNull()) {
+  if (protocol.IsNull())
+  {
     protocol = new IGESDefs_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESDefs_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESDefs_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESDefs_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESDefs_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESDefs_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESDefs_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESDefs_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESDefs_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESDefs_Protocol)  IGESDefs::Protocol ()
+Handle(IGESDefs_Protocol) IGESDefs::Protocol()
 {
   return protocol;
 }

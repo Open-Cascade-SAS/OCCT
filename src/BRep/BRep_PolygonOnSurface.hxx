@@ -25,7 +25,6 @@ class Poly_Polygon2D;
 class Geom_Surface;
 class TopLoc_Location;
 
-
 class BRep_PolygonOnSurface;
 DEFINE_STANDARD_HANDLE(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 
@@ -35,53 +34,39 @@ class BRep_PolygonOnSurface : public BRep_CurveRepresentation
 {
 
 public:
+  Standard_EXPORT BRep_PolygonOnSurface(const Handle(Poly_Polygon2D)& P,
+                                        const Handle(Geom_Surface)&   S,
+                                        const TopLoc_Location&        L);
 
-  
-  Standard_EXPORT BRep_PolygonOnSurface(const Handle(Poly_Polygon2D)& P, const Handle(Geom_Surface)& S, const TopLoc_Location& L);
-  
   //! A   2D polygon  representation  in the  parametric
   //! space of a surface.
   Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface() const Standard_OVERRIDE;
-  
+
   //! A   2D polygon  representation  in the  parametric
   //! space of a surface.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface (const Handle(Geom_Surface)& S, const TopLoc_Location& L) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean IsPolygonOnSurface(const Handle(Geom_Surface)& S,
+                                                              const TopLoc_Location&      L) const
+    Standard_OVERRIDE;
+
   Standard_EXPORT virtual const Handle(Geom_Surface)& Surface() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual const Handle(Poly_Polygon2D)& Polygon() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Polygon (const Handle(Poly_Polygon2D)& P) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void Polygon(const Handle(Poly_Polygon2D)& P) Standard_OVERRIDE;
+
   //! Return a copy of this representation.
   Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Poly_Polygon2D) myPolygon2D;
-  Handle(Geom_Surface) mySurface;
-
-
+  Handle(Geom_Surface)   mySurface;
 };
-
-
-
-
-
-
 
 #endif // _BRep_PolygonOnSurface_HeaderFile

@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepVisual_HArray1OfStyleContextSelect, StepVisual_Array1OfStyleContextSelect)
 
-
 #endif

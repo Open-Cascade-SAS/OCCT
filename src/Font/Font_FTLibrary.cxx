@@ -20,17 +20,17 @@
   #include FT_FREETYPE_H
 #endif
 
-IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary, Standard_Transient)
 
 // =======================================================================
 // function : Font_FTLibrary
 // purpose  :
 // =======================================================================
 Font_FTLibrary::Font_FTLibrary()
-: myFTLib (NULL)
+    : myFTLib(NULL)
 {
 #ifdef HAVE_FREETYPE
-  if (FT_Init_FreeType (&myFTLib) != 0)
+  if (FT_Init_FreeType(&myFTLib) != 0)
   {
     myFTLib = NULL;
   }
@@ -45,8 +45,8 @@ Font_FTLibrary::~Font_FTLibrary()
 {
   if (IsValid())
   {
-  #ifdef HAVE_FREETYPE
-    FT_Done_FreeType (myFTLib);
-  #endif
+#ifdef HAVE_FREETYPE
+    FT_Done_FreeType(myFTLib);
+#endif
   }
 }

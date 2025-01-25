@@ -21,18 +21,18 @@
 #include <XSControl_WorkSession.hxx>
 
 //=======================================================================
-//function : WS
-//purpose  : 
+// function : WS
+// purpose  :
 //=======================================================================
 
-inline const Handle(XSControl_WorkSession) &STEPConstruct_Tool::WS() const
+inline const Handle(XSControl_WorkSession)& STEPConstruct_Tool::WS() const
 {
   return myWS;
 }
 
 //=======================================================================
-//function : Model
-//purpose  : 
+// function : Model
+// purpose  :
 //=======================================================================
 
 inline Handle(Interface_InterfaceModel) STEPConstruct_Tool::Model() const
@@ -41,32 +41,32 @@ inline Handle(Interface_InterfaceModel) STEPConstruct_Tool::Model() const
 }
 
 //=======================================================================
-//function : Graph
-//purpose  : 
+// function : Graph
+// purpose  :
 //=======================================================================
 
-inline const Interface_Graph &STEPConstruct_Tool::Graph (const Standard_Boolean recompute) const
+inline const Interface_Graph& STEPConstruct_Tool::Graph(const Standard_Boolean recompute) const
 {
   // Note: myWS->Graph() recomputes graph each time!
   return recompute ? myWS->Graph() : myHGraph->Graph();
 }
 
 //=======================================================================
-//function : TransientProcess
-//purpose  : 
+// function : TransientProcess
+// purpose  :
 //=======================================================================
 
-inline const Handle(Transfer_TransientProcess) &STEPConstruct_Tool::TransientProcess() const
+inline const Handle(Transfer_TransientProcess)& STEPConstruct_Tool::TransientProcess() const
 {
   return myTransientProcess;
 }
 
 //=======================================================================
-//function : FinderProcess
-//purpose  : 
+// function : FinderProcess
+// purpose  :
 //=======================================================================
 
-inline const Handle(Transfer_FinderProcess) &STEPConstruct_Tool::FinderProcess() const
+inline const Handle(Transfer_FinderProcess)& STEPConstruct_Tool::FinderProcess() const
 {
   return myFinderProcess;
 }

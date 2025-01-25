@@ -20,6 +20,8 @@
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
 
-typedef NCollection_DataMap<Handle(XCAFDimTolObjects_GeomToleranceObject),Handle(XCAFDimTolObjects_DatumObject)> XCAFDimTolObjects_DataMapOfToleranceDatum;
+typedef NCollection_DataMap<Handle(XCAFDimTolObjects_GeomToleranceObject),
+                            Handle(XCAFDimTolObjects_DatumObject)>
+  XCAFDimTolObjects_DataMapOfToleranceDatum;
 
 #endif

@@ -17,111 +17,107 @@
 #include <ShapeAnalysis_HSequenceOfFreeBounds.hxx>
 
 //=======================================================================
-//function : Shape
-//purpose  : Returns shape
+// function : Shape
+// purpose  : Returns shape
 //=======================================================================
 
-inline  TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
+inline TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
 {
   return myShape;
 }
 
- 
 //=======================================================================
-//function : IsLoaded
-//purpose  : Returns True if shape is loaded 
+// function : IsLoaded
+// purpose  : Returns True if shape is loaded
 //=======================================================================
 
-inline  Standard_Boolean ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
+inline Standard_Boolean ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
 {
   return !(myShape.IsNull());
 }
 
- 
 //=======================================================================
-//function : Tolerance
-//purpose  : Returns tolerance
+// function : Tolerance
+// purpose  : Returns tolerance
 //=======================================================================
 
-inline  Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
+inline Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
 {
   return myTolerance;
 }
 
- 
 //=======================================================================
-//function : NbFreeBounds
-//purpose  : Returns number of free bounds
+// function : NbFreeBounds
+// purpose  : Returns number of free bounds
 //=======================================================================
 
-inline  Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
+inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
 {
   return (myClosedFreeBounds->Length() + myOpenFreeBounds->Length());
 }
 
-
 //=======================================================================
-//function : NbClosedFreeBounds
-//purpose  : Returns number of closed free bounds
+// function : NbClosedFreeBounds
+// purpose  : Returns number of closed free bounds
 //=======================================================================
 
-inline  Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds() const
+inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds() const
 {
   return myClosedFreeBounds->Length();
 }
 
-
 //=======================================================================
-//function : NbOpenFreeBounds
-//purpose  : Returns number of open free bounds
+// function : NbOpenFreeBounds
+// purpose  : Returns number of open free bounds
 //=======================================================================
 
-inline  Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
+inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
 {
   return myOpenFreeBounds->Length();
 }
 
-
 //=======================================================================
-//function : ClosedFreeBounds
-//purpose  : Returns all closed free bounds
+// function : ClosedFreeBounds
+// purpose  : Returns all closed free bounds
 //=======================================================================
 
-inline  Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::ClosedFreeBounds() const
+inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::
+  ClosedFreeBounds() const
 {
   return myClosedFreeBounds;
 }
 
 //=======================================================================
-//function : OpenFreeBounds
-//purpose  : Returns all open free bounds
+// function : OpenFreeBounds
+// purpose  : Returns all open free bounds
 //=======================================================================
 
-inline  Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::OpenFreeBounds() const
+inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::
+  OpenFreeBounds() const
 {
   return myOpenFreeBounds;
 }
 
 //=======================================================================
-//function : ClosedFreeBound
-//purpose  : Returns properties of closed free bound specified by its rank
+// function : ClosedFreeBound
+// purpose  : Returns properties of closed free bound specified by its rank
 //           number
 //=======================================================================
 
-inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::ClosedFreeBound(const Standard_Integer index) const
+inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::ClosedFreeBound(
+  const Standard_Integer index) const
 {
   return myClosedFreeBounds->Value(index);
 }
 
 //=======================================================================
-//function : OpenFreeBound
-//purpose  : Returns properties of open free bound specified by its rank
+// function : OpenFreeBound
+// purpose  : Returns properties of open free bound specified by its rank
 //           number
 //=======================================================================
 
-inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::OpenFreeBound(const Standard_Integer index) const
+inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::OpenFreeBound(
+  const Standard_Integer index) const
 {
   return myOpenFreeBounds->Value(index);
 }
-
-

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(MAT_BasicElt)> MAT_SequenceOfBasicElt;
 
-
 #endif

@@ -27,48 +27,31 @@ class StepAP214_AppliedGroupAssignment;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for AppliedGroupAssignment
-class RWStepAP214_RWAppliedGroupAssignment 
+class RWStepAP214_RWAppliedGroupAssignment
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepAP214_RWAppliedGroupAssignment();
-  
+
   //! Reads AppliedGroupAssignment
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&          data,
+                                const Standard_Integer                          num,
+                                Handle(Interface_Check)&                        ach,
+                                const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
+
   //! Writes AppliedGroupAssignment
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                            SW,
+                                 const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepAP214_AppliedGroupAssignment)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepAP214_AppliedGroupAssignment)& ent,
+                             Interface_EntityIterator&                       iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepAP214_RWAppliedGroupAssignment_HeaderFile

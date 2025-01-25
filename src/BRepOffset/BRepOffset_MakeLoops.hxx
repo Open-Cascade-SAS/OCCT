@@ -29,57 +29,34 @@ class BRepAlgo_AsDes;
 class BRepAlgo_Image;
 class BRepOffset_Analyse;
 
-
-
-class BRepOffset_MakeLoops 
+class BRepOffset_MakeLoops
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepOffset_MakeLoops();
-  
-  Standard_EXPORT void Build (const TopTools_ListOfShape& LF,
-                              const Handle(BRepAlgo_AsDes)& AsDes,
-                              BRepAlgo_Image& Image,
-                              BRepAlgo_Image& theImageVV,
-                              const Message_ProgressRange& theRange);
-  
-  Standard_EXPORT void BuildOnContext (const TopTools_ListOfShape& LContext,
-                                       const BRepOffset_Analyse& Analyse,
-                                       const Handle(BRepAlgo_AsDes)& AsDes,
-                                       BRepAlgo_Image& Image,
-                                       const Standard_Boolean InSide,
-                                       const Message_ProgressRange& theRange);
-  
-  Standard_EXPORT void BuildFaces (const TopTools_ListOfShape& LF,
-                                   const Handle(BRepAlgo_AsDes)& AsDes,
-                                   BRepAlgo_Image& Image,
-                                   const Message_ProgressRange& theRange);
 
+  Standard_EXPORT void Build(const TopTools_ListOfShape&   LF,
+                             const Handle(BRepAlgo_AsDes)& AsDes,
+                             BRepAlgo_Image&               Image,
+                             BRepAlgo_Image&               theImageVV,
+                             const Message_ProgressRange&  theRange);
 
+  Standard_EXPORT void BuildOnContext(const TopTools_ListOfShape&   LContext,
+                                      const BRepOffset_Analyse&     Analyse,
+                                      const Handle(BRepAlgo_AsDes)& AsDes,
+                                      BRepAlgo_Image&               Image,
+                                      const Standard_Boolean        InSide,
+                                      const Message_ProgressRange&  theRange);
 
+  Standard_EXPORT void BuildFaces(const TopTools_ListOfShape&   LF,
+                                  const Handle(BRepAlgo_AsDes)& AsDes,
+                                  BRepAlgo_Image&               Image,
+                                  const Message_ProgressRange&  theRange);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_DataMapOfShapeShape myVerVerMap;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffset_MakeLoops_HeaderFile

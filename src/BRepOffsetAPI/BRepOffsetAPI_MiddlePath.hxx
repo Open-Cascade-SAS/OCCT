@@ -25,52 +25,33 @@
 #include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 
-
 //! Describes functions to build a middle path of a
 //! pipe-like shape
-class BRepOffsetAPI_MiddlePath  : public BRepBuilderAPI_MakeShape
+class BRepOffsetAPI_MiddlePath : public BRepBuilderAPI_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! General constructor.
   //! StartShape and EndShape may be
   //! a wire or a face
-  Standard_EXPORT BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape, const TopoDS_Shape& StartShape, const TopoDS_Shape& EndShape);
-  
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
+                                           const TopoDS_Shape& StartShape,
+                                           const TopoDS_Shape& EndShape);
 
-
-
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Shape myInitialShape;
-  TopoDS_Wire myStartWire;
-  TopoDS_Wire myEndWire;
-  Standard_Boolean myClosedSection;
-  Standard_Boolean myClosedRing;
-  TopTools_MapOfShape myStartWireEdges;
-  TopTools_MapOfShape myEndWireEdges;
+  TopoDS_Shape                            myInitialShape;
+  TopoDS_Wire                             myStartWire;
+  TopoDS_Wire                             myEndWire;
+  Standard_Boolean                        myClosedSection;
+  Standard_Boolean                        myClosedRing;
+  TopTools_MapOfShape                     myStartWireEdges;
+  TopTools_MapOfShape                     myEndWireEdges;
   BRepOffsetAPI_SequenceOfSequenceOfShape myPaths;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffsetAPI_MiddlePath_HeaderFile

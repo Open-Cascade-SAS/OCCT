@@ -35,60 +35,50 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a UnitsData. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDefs_ToolUnitsData 
+class IGESDefs_ToolUnitsData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolUnitsData, ready to work
   Standard_EXPORT IGESDefs_ToolUnitsData();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDefs_UnitsData)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDefs_UnitsData)&      ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDefs_UnitsData)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDefs_UnitsData)& ent,
+                                      IGESData_IGESWriter&              IW) const;
+
   //! Lists the Entities shared by a UnitsData <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDefs_UnitsData)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDefs_UnitsData)& ent,
+                                 Interface_EntityIterator&         iter) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDefs_UnitsData)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDefs_UnitsData)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDefs_UnitsData)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDefs_UnitsData)& ent,
+                                const Interface_ShareTool&        shares,
+                                Handle(Interface_Check)&          ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDefs_UnitsData)& entfrom, const Handle(IGESDefs_UnitsData)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDefs_UnitsData)& entfrom,
+                               const Handle(IGESDefs_UnitsData)& entto,
+                               Interface_CopyTool&               TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDefs_UnitsData)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDefs_UnitsData)& ent,
+                               const IGESData_IGESDumper&        dumper,
+                               Standard_OStream&                 S,
+                               const Standard_Integer            own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDefs_ToolUnitsData_HeaderFile

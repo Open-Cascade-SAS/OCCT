@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESGeom_CurveOnSurface)> IGESGeom_Array1OfCurveOnSurface;
 
-
 #endif

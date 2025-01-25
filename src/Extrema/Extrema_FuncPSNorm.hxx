@@ -31,8 +31,6 @@ class Adaptor3d_Surface;
 class math_Matrix;
 class Extrema_POnSurf;
 
-
-
 //! Functional for search of extremum of the distance between point P and
 //! surface S, starting from approximate solution (u0, v0).
 //!
@@ -53,58 +51,58 @@ class Extrema_POnSurf;
 //! Dvf2(u,v) = Sv^2    + (S-P) * Svv
 //!
 //! Here * denotes scalar product, and ^2 is square power.
-class Extrema_FuncPSNorm  : public math_FunctionSetWithDerivatives
+class Extrema_FuncPSNorm : public math_FunctionSetWithDerivatives
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Extrema_FuncPSNorm();
-  
+
   Standard_EXPORT Extrema_FuncPSNorm(const gp_Pnt& P, const Adaptor3d_Surface& S);
-  
+
   //! sets the field mysurf of the function.
-  Standard_EXPORT void Initialize (const Adaptor3d_Surface& S);
-  
+  Standard_EXPORT void Initialize(const Adaptor3d_Surface& S);
+
   //! sets the field mysurf of the function.
-  Standard_EXPORT void SetPoint (const gp_Pnt& P);
-  
+  Standard_EXPORT void SetPoint(const gp_Pnt& P);
+
   Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
-  
+
   //! Calculate Fi(U,V).
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
+
   //! Calculate Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& UV, math_Matrix& DF) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
+                                               math_Matrix&       DF) Standard_OVERRIDE;
+
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& UV, math_Vector& F, math_Matrix& DF) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
+                                          math_Vector&       F,
+                                          math_Matrix&       DF) Standard_OVERRIDE;
+
   //! Save the found extremum.
   Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
-  
+
   //! Return the number of found extrema.
   Standard_EXPORT Standard_Integer NbExt() const;
-  
+
   //! Return the value of the Nth distance.
-  Standard_EXPORT Standard_Real SquareDistance (const Standard_Integer N) const;
-  
+  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+
   //! Returns the Nth extremum.
-  Standard_EXPORT const Extrema_POnSurf& Point (const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
 
 private:
-
-  gp_Pnt myP;
-  const Adaptor3d_Surface* myS;
-  Standard_Real myU;
-  Standard_Real myV;
-  gp_Pnt myPs;
-  TColStd_SequenceOfReal mySqDist;
+  gp_Pnt                    myP;
+  const Adaptor3d_Surface*  myS;
+  Standard_Real             myU;
+  Standard_Real             myV;
+  gp_Pnt                    myPs;
+  TColStd_SequenceOfReal    mySqDist;
   Extrema_SequenceOfPOnSurf myPoint;
-  Standard_Boolean myPinit;
-  Standard_Boolean mySinit;
+  Standard_Boolean          myPinit;
+  Standard_Boolean          mySinit;
 };
 #endif // _Extrema_FunctPSNorm_HeaderFile

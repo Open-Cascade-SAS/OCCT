@@ -15,279 +15,337 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Selected
-//purpose  : 
+// function : Selected
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Selected() const
-{ return (myFlags & (Standard_Integer)FMaskSelected) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskSelected) != 0;
+}
 
 //=======================================================================
-//function : Selected
-//purpose  : 
+// function : Selected
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Selected(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskSelected;
-  else   myFlags &= ~((Standard_Integer)FMaskSelected);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskSelected;
+  else
+    myFlags &= ~((Standard_Integer)FMaskSelected);
 }
 
 //=======================================================================
-//function : Back
-//purpose  : 
+// function : Back
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Back() const
-{ return (myFlags & (Standard_Integer)FMaskBack) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskBack) != 0;
+}
 
 //=======================================================================
-//function : Back
-//purpose  : 
+// function : Back
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Back(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskBack;
-  else   myFlags &= ~((Standard_Integer)FMaskBack);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskBack;
+  else
+    myFlags &= ~((Standard_Integer)FMaskBack);
 }
 
 //=======================================================================
-//function : Side
-//purpose  : 
+// function : Side
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Side() const
-{ return (myFlags & (Standard_Integer)FMaskSide) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskSide) != 0;
+}
 
 //=======================================================================
-//function : Side
-//purpose  : 
+// function : Side
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Side(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskSide;
-  else   myFlags &= ~((Standard_Integer)FMaskSide);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskSide;
+  else
+    myFlags &= ~((Standard_Integer)FMaskSide);
 }
 
 //=======================================================================
-//function : Closed
-//purpose  : 
+// function : Closed
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Closed() const
-{ return (myFlags & (Standard_Integer)FMaskClosed) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskClosed) != 0;
+}
 
 //=======================================================================
-//function : Closed
-//purpose  : 
+// function : Closed
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Closed(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskClosed;
-  else   myFlags &= ~((Standard_Integer)FMaskClosed);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskClosed;
+  else
+    myFlags &= ~((Standard_Integer)FMaskClosed);
 }
 
 //=======================================================================
-//function : Hiding
-//purpose  : 
+// function : Hiding
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Hiding() const
-{ return (myFlags & (Standard_Integer)FMaskHiding) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskHiding) != 0;
+}
 
 //=======================================================================
-//function : Hiding
-//purpose  : 
+// function : Hiding
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Hiding(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskHiding;
-  else   myFlags &= ~((Standard_Integer)FMaskHiding);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskHiding;
+  else
+    myFlags &= ~((Standard_Integer)FMaskHiding);
 }
 
 //=======================================================================
-//function : Simple
-//purpose  : 
+// function : Simple
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Simple() const
-{ return (myFlags & (Standard_Integer)FMaskSimple) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskSimple) != 0;
+}
 
 //=======================================================================
-//function : Simple
-//purpose  : 
+// function : Simple
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Simple(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskSimple;
-  else   myFlags &= ~((Standard_Integer)FMaskSimple);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskSimple;
+  else
+    myFlags &= ~((Standard_Integer)FMaskSimple);
 }
 
 //=======================================================================
-//function : Cut
-//purpose  : 
+// function : Cut
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Cut() const
-{ return (myFlags & (Standard_Integer)FMaskCut) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskCut) != 0;
+}
 
 //=======================================================================
-//function : Cut
-//purpose  : 
+// function : Cut
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Cut(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskCut;
-  else   myFlags &= ~((Standard_Integer)FMaskCut);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskCut;
+  else
+    myFlags &= ~((Standard_Integer)FMaskCut);
 }
 
 //=======================================================================
-//function : WithOutL
-//purpose  : 
+// function : WithOutL
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::WithOutL() const
-{ return (myFlags & (Standard_Integer)FMaskWithOutL) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskWithOutL) != 0;
+}
 
 //=======================================================================
-//function : WithOutL
-//purpose  : 
+// function : WithOutL
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::WithOutL(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskWithOutL;
-  else   myFlags &= ~((Standard_Integer)FMaskWithOutL);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskWithOutL;
+  else
+    myFlags &= ~((Standard_Integer)FMaskWithOutL);
 }
 
 //=======================================================================
-//function : Plane
-//purpose  : 
+// function : Plane
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Plane() const
-{ return (myFlags & (Standard_Integer)FMaskPlane) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskPlane) != 0;
+}
 
 //=======================================================================
-//function : Plane
-//purpose  : 
+// function : Plane
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Plane(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskPlane;
-  else   myFlags &= ~((Standard_Integer)FMaskPlane);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskPlane;
+  else
+    myFlags &= ~((Standard_Integer)FMaskPlane);
 }
 
 //=======================================================================
-//function : Cylinder
-//purpose  : 
+// function : Cylinder
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Cylinder() const
-{ return (myFlags & (Standard_Integer)FMaskCylinder) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskCylinder) != 0;
+}
 
 //=======================================================================
-//function : Cylinder
-//purpose  : 
+// function : Cylinder
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Cylinder(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskCylinder;
-  else   myFlags &= ~((Standard_Integer)FMaskCylinder);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskCylinder;
+  else
+    myFlags &= ~((Standard_Integer)FMaskCylinder);
 }
 
 //=======================================================================
-//function : Cone
-//purpose  : 
+// function : Cone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Cone() const
-{ return (myFlags & (Standard_Integer)FMaskCone) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskCone) != 0;
+}
 
 //=======================================================================
-//function : Cone
-//purpose  : 
+// function : Cone
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Cone(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskCone;
-  else   myFlags &= ~((Standard_Integer)FMaskCone);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskCone;
+  else
+    myFlags &= ~((Standard_Integer)FMaskCone);
 }
 
 //=======================================================================
-//function : Sphere
-//purpose  : 
+// function : Sphere
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Sphere() const
-{ return (myFlags & (Standard_Integer)FMaskSphere) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskSphere) != 0;
+}
 
 //=======================================================================
-//function : Sphere
-//purpose  : 
+// function : Sphere
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Sphere(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskSphere;
-  else   myFlags &= ~((Standard_Integer)FMaskSphere);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskSphere;
+  else
+    myFlags &= ~((Standard_Integer)FMaskSphere);
 }
 
 //=======================================================================
-//function : Torus
-//purpose  : 
+// function : Torus
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_FaceData::Torus() const
-{ return (myFlags & (Standard_Integer)FMaskTorus) != 0; }
+{
+  return (myFlags & (Standard_Integer)FMaskTorus) != 0;
+}
 
 //=======================================================================
-//function : Torus
-//purpose  : 
+// function : Torus
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Torus(const Standard_Boolean B)
 {
-  if (B) myFlags |=   (Standard_Integer)FMaskTorus;
-  else   myFlags &= ~((Standard_Integer)FMaskTorus);
+  if (B)
+    myFlags |= (Standard_Integer)FMaskTorus;
+  else
+    myFlags &= ~((Standard_Integer)FMaskTorus);
 }
 
 //=======================================================================
-//function : Size
-//purpose  : 
+// function : Size
+// purpose  :
 //=======================================================================
 
 inline Standard_Real HLRBRep_FaceData::Size() const
-{ return mySize; }
+{
+  return mySize;
+}
 
 //=======================================================================
-//function : Size
-//purpose  : 
+// function : Size
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Size(const Standard_Real S)
-{ mySize = S; }
+{
+  mySize = S;
+}
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
 inline TopAbs_Orientation HLRBRep_FaceData::Orientation() const
-{ return ((TopAbs_Orientation)(myFlags & (Standard_Integer)EMaskOrient)); }
+{
+  return ((TopAbs_Orientation)(myFlags & (Standard_Integer)EMaskOrient));
+}
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_FaceData::Orientation(const TopAbs_Orientation O)
@@ -297,25 +355,31 @@ inline void HLRBRep_FaceData::Orientation(const TopAbs_Orientation O)
 }
 
 //=======================================================================
-//function : Wires
-//purpose  : 
+// function : Wires
+// purpose  :
 //=======================================================================
 
 inline Handle(HLRAlgo_WiresBlock)& HLRBRep_FaceData::Wires()
-{ return myWires; }
+{
+  return myWires;
+}
 
 //=======================================================================
-//function : Geometry
-//purpose  : 
+// function : Geometry
+// purpose  :
 //=======================================================================
 
 inline HLRBRep_Surface& HLRBRep_FaceData::Geometry()
-{ return myGeometry; }
+{
+  return myGeometry;
+}
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_ShortReal HLRBRep_FaceData::Tolerance () const
-{ return myTolerance; }
+inline Standard_ShortReal HLRBRep_FaceData::Tolerance() const
+{
+  return myTolerance;
+}

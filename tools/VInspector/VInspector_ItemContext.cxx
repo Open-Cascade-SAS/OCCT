@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemContext.hxx>
 
@@ -37,15 +37,16 @@ int VInspector_ItemContext::initRowCount() const
 
   int aNbProperties = 1; // item to visualize Viewer information of context
 
-  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast (Object());
+  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast(Object());
   if (aContext.IsNull())
     return 0;
 
   AIS_ListOfInteractive aListOfIO;
-  aContext->DisplayedObjects (aListOfIO);
+  aContext->DisplayedObjects(aListOfIO);
   aContext->ErasedObjects(aListOfIO);
   int aNbPresentations = 0;
-  for (AIS_ListIteratorOfListOfInteractive aListOfIOIt (aListOfIO); aListOfIOIt.More(); aListOfIOIt.Next())
+  for (AIS_ListIteratorOfListOfInteractive aListOfIOIt(aListOfIO); aListOfIOIt.More();
+       aListOfIOIt.Next())
   {
     if (aListOfIOIt.Value()->Parent())
       continue; // child presentation
@@ -59,29 +60,31 @@ int VInspector_ItemContext::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemContext::initValue (const int theItemRole) const
+QVariant VInspector_ItemContext::initValue(const int theItemRole) const
 {
-  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = VInspector_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
-  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
+  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole
+      && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
-  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast (Object());
+  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast(Object());
   if (aContext.IsNull())
     return Column() == 0 ? "Empty context" : "";
 
   switch (Column())
   {
-    case 0: return aContext->DynamicType()->Name();
-    case 4:
-    {
+    case 0:
+      return aContext->DynamicType()->Name();
+    case 4: {
       Handle(AIS_InteractiveObject) anEmptyIO;
-      int aSelectedCount = VInspector_Tools::SelectedOwners (aContext, anEmptyIO, false);
-      return aSelectedCount > 0 ? QString::number (aSelectedCount) : "";
+      int aSelectedCount = VInspector_Tools::SelectedOwners(aContext, anEmptyIO, false);
+      return aSelectedCount > 0 ? QString::number(aSelectedCount) : "";
     }
-    case 6: return aContext->DeviationCoefficient();
+    case 6:
+      return aContext->DeviationCoefficient();
     default:
       break;
   }
@@ -125,24 +128,23 @@ void VInspector_ItemContext::initItem() const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr VInspector_ItemContext::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr VInspector_ItemContext::createChild(int theRow, int theColumn)
 {
   if (theRow == 0)
-    return VInspector_ItemContextProperties::CreateItem (currentItem(), theRow, theColumn);
+    return VInspector_ItemContextProperties::CreateItem(currentItem(), theRow, theColumn);
   else
-    return VInspector_ItemPresentableObject::CreateItem (currentItem(), theRow, theColumn);
+    return VInspector_ItemPresentableObject::CreateItem(currentItem(), theRow, theColumn);
 }
 
 // =======================================================================
 // function : initStream
 // purpose :
 // =======================================================================
-void VInspector_ItemContext::initStream (Standard_OStream& theOStream) const
+void VInspector_ItemContext::initStream(Standard_OStream& theOStream) const
 {
   Handle(AIS_InteractiveContext) aContext = GetContext();
   if (aContext.IsNull())
     return;
 
-  aContext->DumpJson (theOStream);
+  aContext->DumpJson(theOStream);
 }
-

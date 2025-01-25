@@ -11,14 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Transient.hxx>
 #include <Transfer_DataInfo.hxx>
 
-Handle(Standard_Type)  Transfer_DataInfo::Type
-  (const Handle(Standard_Transient)& ent)
-      {  return ent->DynamicType();  }
+Handle(Standard_Type) Transfer_DataInfo::Type(const Handle(Standard_Transient)& ent)
+{
+  return ent->DynamicType();
+}
 
-    Standard_CString  Transfer_DataInfo::TypeName
-  (const Handle(Standard_Transient)& ent)
-      {  return ent->DynamicType()->Name();  }
+Standard_CString Transfer_DataInfo::TypeName(const Handle(Standard_Transient)& ent)
+{
+  return ent->DynamicType()->Name();
+}

@@ -25,7 +25,6 @@
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 
-
 class IGESDimen_GeneralLabel;
 DEFINE_STANDARD_HANDLE(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
@@ -36,49 +35,31 @@ class IGESDimen_GeneralLabel : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_GeneralLabel();
-  
+
   //! This method is used to set the fields of the class
   //! GeneralLabel
   //! - aNote       : General Note Entity
   //! - someLeaders : Associated Leader Entities
-  Standard_EXPORT void Init (const Handle(IGESDimen_GeneralNote)& aNote, const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders);
-  
+  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)&          aNote,
+                            const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders);
+
   //! returns General Note Entity
   Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
-  
+
   //! returns Number of Leaders
   Standard_EXPORT Standard_Integer NbLeaders() const;
-  
+
   //! returns Leader Entity
   //! raises exception if Index <= 0 or Index > NbLeaders()
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) Leader (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESDimen_LeaderArrow) Leader(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralLabel,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESDimen_GeneralNote) theNote;
+  Handle(IGESDimen_GeneralNote)          theNote;
   Handle(IGESDimen_HArray1OfLeaderArrow) theLeaders;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_GeneralLabel_HeaderFile

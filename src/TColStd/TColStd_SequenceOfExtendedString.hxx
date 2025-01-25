@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<TCollection_ExtendedString> TColStd_SequenceOfExtendedString;
 
-
 #endif

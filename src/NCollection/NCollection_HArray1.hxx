@@ -21,7 +21,6 @@
 
 //      Declaration of Array1 class managed by Handle
 
-#define NCOLLECTION_HARRAY1(HClassName,Type)                                   \
-DEFINE_HARRAY1(HClassName,NCollection_Array1<Type >)
+#define NCOLLECTION_HARRAY1(HClassName, Type) DEFINE_HARRAY1(HClassName, NCollection_Array1<Type>)
 
 #endif

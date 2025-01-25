@@ -25,11 +25,11 @@
 //! - Fail: fatal error
 enum Message_Gravity
 {
-Message_Trace,
-Message_Info,
-Message_Warning,
-Message_Alarm,
-Message_Fail
+  Message_Trace,
+  Message_Info,
+  Message_Warning,
+  Message_Alarm,
+  Message_Fail
 };
 
 #endif // _Message_Gravity_HeaderFile

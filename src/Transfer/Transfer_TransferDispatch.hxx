@@ -28,7 +28,6 @@ class Interface_Protocol;
 class Transfer_TransientProcess;
 class Standard_Transient;
 
-
 //! A TransferDispatch is aimed to dispatch Entities between two
 //! Interface Models, by default by copying them, as CopyTool, but
 //! with more capabilities of adapting : Copy is redefined to
@@ -42,54 +41,38 @@ class Standard_Transient;
 //! For these reasons, TransferDispatch is basically a CopyTool,
 //! but uses a more sophiscated control, which is TransferProcess,
 //! and its method Copy is redefined
-class Transfer_TransferDispatch  : public Interface_CopyTool
+class Transfer_TransferDispatch : public Interface_CopyTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a TransferDispatch from a Model. Works with a General
   //! Service Library, given as an Argument
   //! A TransferDispatch is created as a CopyTool in which the
   //! Control is set to TransientProcess
-  Standard_EXPORT Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel, const Interface_GeneralLib& lib);
-  
+  Standard_EXPORT Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel,
+                                            const Interface_GeneralLib&             lib);
+
   //! Same as above, but Library is defined through a Protocol
-  Standard_EXPORT Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel, const Handle(Interface_Protocol)& protocol);
-  
+  Standard_EXPORT Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel,
+                                            const Handle(Interface_Protocol)&       protocol);
+
   //! Same as above, but works with the Active Protocol
   Standard_EXPORT Transfer_TransferDispatch(const Handle(Interface_InterfaceModel)& amodel);
-  
+
   //! Returns the content of Control Object, as a TransientProcess
   Standard_EXPORT Handle(Transfer_TransientProcess) TransientProcess() const;
-  
+
   //! Copies an Entity by calling the method Transferring from the
   //! TransferProcess. If this called produces a Null Binder, then
   //! the standard, inherited Copy is called
-  Standard_EXPORT virtual Standard_Boolean Copy (const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto, const Standard_Boolean mapped, const Standard_Boolean errstat) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Copy(const Handle(Standard_Transient)& entfrom,
+                                                Handle(Standard_Transient)&       entto,
+                                                const Standard_Boolean            mapped,
+                                                const Standard_Boolean errstat) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_TransferDispatch_HeaderFile

@@ -20,30 +20,30 @@
 #include <StepRepr_PropertyDefinition.hxx>
 
 //=======================================================================
-//function : RWStepBasic_RWGeneralPropertyRelationship
-//purpose  : 
+// function : RWStepBasic_RWGeneralPropertyRelationship
+// purpose  :
 //=======================================================================
-RWStepBasic_RWGeneralPropertyRelationship::RWStepBasic_RWGeneralPropertyRelationship()
-{
-}
+RWStepBasic_RWGeneralPropertyRelationship::RWStepBasic_RWGeneralPropertyRelationship() {}
 
 //=======================================================================
-//function : ReadStep
-//purpose  : 
+// function : ReadStep
+// purpose  :
 //=======================================================================
-void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                                         const Standard_Integer theNum,
-                                                         Handle(Interface_Check)& theAch,
-                                                         const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
+void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
+  const Handle(StepData_StepReaderData)&               theData,
+  const Standard_Integer                               theNum,
+  Handle(Interface_Check)&                             theAch,
+  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
 {
   // Check number of parameters
-  if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association")) return;
+  if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association"))
+    return;
 
   Handle(TCollection_HAsciiString) aName;
   theData->ReadString(theNum, 1, "name", theAch, aName);
 
   Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean hasDescription = Standard_True;
+  Standard_Boolean                 hasDescription = Standard_True;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum, 2, "description", theAch, aDescription);
@@ -54,10 +54,20 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(const Handle(StepData_S
   }
 
   Handle(StepBasic_GeneralProperty) aRelatingGeneralProperty;
-  theData->ReadEntity(theNum, 3, "relating_property", theAch, STANDARD_TYPE(StepBasic_GeneralProperty), aRelatingGeneralProperty);
+  theData->ReadEntity(theNum,
+                      3,
+                      "relating_property",
+                      theAch,
+                      STANDARD_TYPE(StepBasic_GeneralProperty),
+                      aRelatingGeneralProperty);
 
   Handle(StepBasic_GeneralProperty) aRelatedGeneralProperty;
-  theData->ReadEntity(theNum, 4, "related_property", theAch, STANDARD_TYPE(StepBasic_GeneralProperty), aRelatedGeneralProperty);
+  theData->ReadEntity(theNum,
+                      4,
+                      "related_property",
+                      theAch,
+                      STANDARD_TYPE(StepBasic_GeneralProperty),
+                      aRelatedGeneralProperty);
 
   // Initialize entity
   theEnt->Init(aName,
@@ -68,11 +78,12 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(const Handle(StepData_S
 }
 
 //=======================================================================
-//function : WriteStep
-//purpose  : 
+// function : WriteStep
+// purpose  :
 //=======================================================================
-void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(StepData_StepWriter& theSW,
-                                                          const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
+void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(
+  StepData_StepWriter&                                 theSW,
+  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
 {
   theSW.Send(theEnt->Name());
 
@@ -91,11 +102,12 @@ void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(StepData_StepWriter& t
 }
 
 //=======================================================================
-//function : Share
-//purpose  : 
+// function : Share
+// purpose  :
 //=======================================================================
-void RWStepBasic_RWGeneralPropertyRelationship::Share(const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
-                                                      Interface_EntityIterator& theIter) const
+void RWStepBasic_RWGeneralPropertyRelationship::Share(
+  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
+  Interface_EntityIterator&                            theIter) const
 {
   theIter.AddItem(theEnt->RelatingGeneralProperty());
 

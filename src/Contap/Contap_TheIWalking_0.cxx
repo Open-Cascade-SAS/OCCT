@@ -55,4 +55,3 @@
 #define IntWalk_IWalking Contap_TheIWalking
 #define IntWalk_IWalking_hxx <Contap_TheIWalking.hxx>
 #include "../IntWalk/IntWalk_IWalking.gxx"
-

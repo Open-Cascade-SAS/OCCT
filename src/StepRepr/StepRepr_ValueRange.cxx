@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepRepr_ValueRange.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ValueRange,StepRepr_CompoundRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ValueRange, StepRepr_CompoundRepresentationItem)
 
-StepRepr_ValueRange::StepRepr_ValueRange  ()    {  }
+StepRepr_ValueRange::StepRepr_ValueRange() {}

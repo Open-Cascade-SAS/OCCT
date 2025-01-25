@@ -17,56 +17,56 @@
 #include <StepData_EnumTool.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_NullStyleMember,StepData_SelectInt)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_NullStyleMember, StepData_SelectInt)
 
-static StepData_EnumTool tool
-  (".NULL.");
-
-//=======================================================================
-//function : StepVisual_NullStyleMember
-//purpose  : 
-//=======================================================================
-
-StepVisual_NullStyleMember::StepVisual_NullStyleMember ()   {  }
+static StepData_EnumTool tool(".NULL.");
 
 //=======================================================================
-//function : EnumText
-//purpose  : 
+// function : StepVisual_NullStyleMember
+// purpose  :
 //=======================================================================
 
-Standard_CString  StepVisual_NullStyleMember::EnumText () const
+StepVisual_NullStyleMember::StepVisual_NullStyleMember() {}
+
+//=======================================================================
+// function : EnumText
+// purpose  :
+//=======================================================================
+
+Standard_CString StepVisual_NullStyleMember::EnumText() const
 {
   return tool.Text(Int()).ToCString();
 }
 
 //=======================================================================
-//function : SetEnumText
-//purpose  : 
+// function : SetEnumText
+// purpose  :
 //=======================================================================
 
-void  StepVisual_NullStyleMember::SetEnumText (const Standard_Integer /*theValue*/, 
-                                                                  const Standard_CString theText)
+void StepVisual_NullStyleMember::SetEnumText(const Standard_Integer /*theValue*/,
+                                             const Standard_CString theText)
 {
-  Standard_Integer aVal = tool.Value (theText);
-  if (aVal >= 0) SetInt (aVal);
+  Standard_Integer aVal = tool.Value(theText);
+  if (aVal >= 0)
+    SetInt(aVal);
 }
 
 //=======================================================================
-//function : SetValue
-//purpose  : 
+// function : SetValue
+// purpose  :
 //=======================================================================
 
-void  StepVisual_NullStyleMember::SetValue (const StepVisual_NullStyle theValue)
+void StepVisual_NullStyleMember::SetValue(const StepVisual_NullStyle theValue)
 {
-  SetInt ( Standard_Integer (theValue) );  
+  SetInt(Standard_Integer(theValue));
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-StepVisual_NullStyle StepVisual_NullStyleMember::Value () const
+StepVisual_NullStyle StepVisual_NullStyleMember::Value() const
 {
-  return StepVisual_NullStyle (Int());  
+  return StepVisual_NullStyle(Int());
 }

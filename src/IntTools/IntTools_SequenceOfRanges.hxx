@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<IntTools_Range> IntTools_SequenceOfRanges;
 
-
 #endif

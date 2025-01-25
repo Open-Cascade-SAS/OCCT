@@ -24,9 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_Logical, Express_PredefinedType)
 // purpose  :
 //=======================================================================
 
-Express_Logical::Express_Logical()
-{
-}
+Express_Logical::Express_Logical() {}
 
 //=======================================================================
 // function : CPPName
@@ -67,4 +65,3 @@ Standard_Boolean Express_Logical::IsHandle() const
 {
   return Standard_False;
 }
-

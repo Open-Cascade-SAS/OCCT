@@ -12,19 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepBlend_Line.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_Line,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_Line, Standard_Transient)
 
-BRepBlend_Line::BRepBlend_Line ():
-  tras1(IntSurf_Undecided),tras2(IntSurf_Undecided),
-  hass1(Standard_False),hass2(Standard_False)
-{}
+BRepBlend_Line::BRepBlend_Line()
+    : tras1(IntSurf_Undecided),
+      tras2(IntSurf_Undecided),
+      hass1(Standard_False),
+      hass2(Standard_False)
+{
+}
 
-
-void BRepBlend_Line::Clear ()
+void BRepBlend_Line::Clear()
 {
   seqpt.Clear();
   hass1 = Standard_False;
@@ -33,8 +34,7 @@ void BRepBlend_Line::Clear ()
   tras2 = IntSurf_Undecided;
 }
 
-void BRepBlend_Line::Set(const IntSurf_TypeTrans TranS1,
-			    const IntSurf_TypeTrans TranS2)
+void BRepBlend_Line::Set(const IntSurf_TypeTrans TranS1, const IntSurf_TypeTrans TranS2)
 {
   hass1 = Standard_True;
   hass2 = Standard_True;
@@ -48,4 +48,3 @@ void BRepBlend_Line::Set(const IntSurf_TypeTrans Trans)
   hass2 = Standard_False;
   tras1 = Trans;
 }
-

@@ -29,7 +29,6 @@ class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
 class IGESDraw_ConnectPoint;
 
-
 class IGESDraw_NetworkSubfigure;
 DEFINE_STANDARD_HANDLE(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
@@ -42,10 +41,8 @@ class IGESDraw_NetworkSubfigure : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDraw_NetworkSubfigure();
-  
+
   //! This method is used to set the fields of the class
   //! NetworkSubfigure
   //! - aDefinition      : Network Subfigure Definition Entity
@@ -57,75 +54,64 @@ public:
   //! - aTemplate        : Primary reference designator Text
   //! display Template Entity
   //! - allConnectPoints : Associated Connect Point Entities
-  Standard_EXPORT void Init (const Handle(IGESDraw_NetworkSubfigureDef)& aDefinition, const gp_XYZ& aTranslation, const gp_XYZ& aScaleFactor, const Standard_Integer aTypeFlag, const Handle(TCollection_HAsciiString)& aDesignator, const Handle(IGESGraph_TextDisplayTemplate)& aTemplate, const Handle(IGESDraw_HArray1OfConnectPoint)& allConnectPoints);
-  
+  Standard_EXPORT void Init(const Handle(IGESDraw_NetworkSubfigureDef)&   aDefinition,
+                            const gp_XYZ&                                 aTranslation,
+                            const gp_XYZ&                                 aScaleFactor,
+                            const Standard_Integer                        aTypeFlag,
+                            const Handle(TCollection_HAsciiString)&       aDesignator,
+                            const Handle(IGESGraph_TextDisplayTemplate)&  aTemplate,
+                            const Handle(IGESDraw_HArray1OfConnectPoint)& allConnectPoints);
+
   //! returns Network Subfigure Definition Entity specified by this entity
   Standard_EXPORT Handle(IGESDraw_NetworkSubfigureDef) SubfigureDefinition() const;
-  
+
   //! returns Translation Data relative to either model space or to
   //! the definition space of a referring entity
   Standard_EXPORT gp_XYZ Translation() const;
-  
+
   //! returns the Transformed Translation Data relative to either model
   //! space or to the definition space of a referring entity
   Standard_EXPORT gp_XYZ TransformedTranslation() const;
-  
+
   //! returns Scale factor in definition space(x, y, z axes)
   Standard_EXPORT gp_XYZ ScaleFactors() const;
-  
+
   //! returns Type Flag which implements the distinction between Logical
   //! design and Physical design data,and is required if both are present.
   //! Type Flag = 0 : Not specified (default)
   //! = 1 : Logical
   //! = 2 : Physical
   Standard_EXPORT Standard_Integer TypeFlag() const;
-  
+
   //! returns the primary reference designator
   Standard_EXPORT Handle(TCollection_HAsciiString) ReferenceDesignator() const;
-  
+
   //! returns True if Text Display Template Entity is specified,
   //! else False
   Standard_EXPORT Standard_Boolean HasDesignatorTemplate() const;
-  
+
   //! returns primary reference designator Text Display Template Entity,
   //! or null. If null, no Text Display Template Entity specified
   Standard_EXPORT Handle(IGESGraph_TextDisplayTemplate) DesignatorTemplate() const;
-  
+
   //! returns the number of associated Connect Point Entities
   Standard_EXPORT Standard_Integer NbConnectPoints() const;
-  
+
   //! returns the Index'th  associated Connect point Entity
   //! raises exception if Index <= 0 or Index > NbConnectPoints()
-  Standard_EXPORT Handle(IGESDraw_ConnectPoint) ConnectPoint (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESDraw_ConnectPoint) ConnectPoint(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESDraw_NetworkSubfigureDef) theSubfigureDefinition;
-  gp_XYZ theTranslation;
-  gp_XYZ theScaleFactor;
-  Standard_Integer theTypeFlag;
-  Handle(TCollection_HAsciiString) theDesignator;
-  Handle(IGESGraph_TextDisplayTemplate) theDesignatorTemplate;
+  Handle(IGESDraw_NetworkSubfigureDef)   theSubfigureDefinition;
+  gp_XYZ                                 theTranslation;
+  gp_XYZ                                 theScaleFactor;
+  Standard_Integer                       theTypeFlag;
+  Handle(TCollection_HAsciiString)       theDesignator;
+  Handle(IGESGraph_TextDisplayTemplate)  theDesignatorTemplate;
   Handle(IGESDraw_HArray1OfConnectPoint) theConnectPoints;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_NetworkSubfigure_HeaderFile

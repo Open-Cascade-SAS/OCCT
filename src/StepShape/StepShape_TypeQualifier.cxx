@@ -11,21 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_TypeQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_TypeQualifier,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_TypeQualifier, Standard_Transient)
 
-StepShape_TypeQualifier::StepShape_TypeQualifier  ()    {  }
+StepShape_TypeQualifier::StepShape_TypeQualifier() {}
 
-void  StepShape_TypeQualifier::Init
-  (const Handle(TCollection_HAsciiString)& name)
-{  theName = name;  }
+void StepShape_TypeQualifier::Init(const Handle(TCollection_HAsciiString)& name)
+{
+  theName = name;
+}
 
-Handle(TCollection_HAsciiString)  StepShape_TypeQualifier::Name () const
-{  return theName; }
+Handle(TCollection_HAsciiString) StepShape_TypeQualifier::Name() const
+{
+  return theName;
+}
 
-void  StepShape_TypeQualifier::SetName
-  (const Handle(TCollection_HAsciiString)& name)
-{  theName = name;  }
+void StepShape_TypeQualifier::SetName(const Handle(TCollection_HAsciiString)& name)
+{
+  theName = name;
+}

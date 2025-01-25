@@ -20,44 +20,39 @@
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry, IGESData_IGESEntity)
 
-IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry ()    {  }
+IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry() {}
 
-
-    void  IGESDimen_DimensionedGeometry::Init
-  (const Standard_Integer nbDims, 
-   const Handle(IGESData_IGESEntity)& aDimension, 
-   const Handle(IGESData_HArray1OfIGESEntity)& entities)
+void IGESDimen_DimensionedGeometry::Init(const Standard_Integer                      nbDims,
+                                         const Handle(IGESData_IGESEntity)&          aDimension,
+                                         const Handle(IGESData_HArray1OfIGESEntity)& entities)
 {
   if (entities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_DimensionedGeometry : Init");
   theNbDimensions     = nbDims;
   theDimension        = aDimension;
   theGeometryEntities = entities;
-  InitTypeAndForm(402,13);
+  InitTypeAndForm(402, 13);
 }
 
-
-    Standard_Integer  IGESDimen_DimensionedGeometry::NbDimensions () const 
+Standard_Integer IGESDimen_DimensionedGeometry::NbDimensions() const
 {
   return theNbDimensions;
 }
 
-    Standard_Integer  IGESDimen_DimensionedGeometry::NbGeometryEntities () const 
+Standard_Integer IGESDimen_DimensionedGeometry::NbGeometryEntities() const
 {
   return theGeometryEntities->Length();
 }
 
-    Handle(IGESData_IGESEntity)  IGESDimen_DimensionedGeometry::DimensionEntity
-  () const
+Handle(IGESData_IGESEntity) IGESDimen_DimensionedGeometry::DimensionEntity() const
 {
   return theDimension;
 }
 
-    Handle(IGESData_IGESEntity)  IGESDimen_DimensionedGeometry::GeometryEntity
-  (const Standard_Integer num) const 
+Handle(IGESData_IGESEntity) IGESDimen_DimensionedGeometry::GeometryEntity(
+  const Standard_Integer num) const
 {
   return theGeometryEntities->Value(num);
 }
-

@@ -11,45 +11,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_BrepWithVoids,StepShape_ManifoldSolidBrep)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_BrepWithVoids, StepShape_ManifoldSolidBrep)
 
-StepShape_BrepWithVoids::StepShape_BrepWithVoids ()  {}
+StepShape_BrepWithVoids::StepShape_BrepWithVoids() {}
 
-void StepShape_BrepWithVoids::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_ClosedShell)& aOuter,
-	const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids)
+void StepShape_BrepWithVoids::Init(const Handle(TCollection_HAsciiString)&               aName,
+                                   const Handle(StepShape_ClosedShell)&                  aOuter,
+                                   const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids)
 {
-	// --- classe own fields ---
-	voids = aVoids;
-	// --- classe inherited fields ---
-	StepShape_ManifoldSolidBrep::Init(aName, aOuter);
+  // --- classe own fields ---
+  voids = aVoids;
+  // --- classe inherited fields ---
+  StepShape_ManifoldSolidBrep::Init(aName, aOuter);
 }
-
 
 void StepShape_BrepWithVoids::SetVoids(const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids)
 {
-	voids = aVoids;
+  voids = aVoids;
 }
 
 Handle(StepShape_HArray1OfOrientedClosedShell) StepShape_BrepWithVoids::Voids() const
 {
-	return voids;
+  return voids;
 }
 
-Handle(StepShape_OrientedClosedShell) StepShape_BrepWithVoids::VoidsValue(const Standard_Integer num) const
+Handle(StepShape_OrientedClosedShell) StepShape_BrepWithVoids::VoidsValue(
+  const Standard_Integer num) const
 {
-	return voids->Value(num);
+  return voids->Value(num);
 }
 
-Standard_Integer StepShape_BrepWithVoids::NbVoids () const
+Standard_Integer StepShape_BrepWithVoids::NbVoids() const
 {
-	if (voids.IsNull()) return 0;
-	return voids->Length();
+  if (voids.IsNull())
+    return 0;
+  return voids->Length();
 }

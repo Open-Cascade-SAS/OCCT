@@ -20,8 +20,7 @@
 #include <TopLoc_Location.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<TopLoc_Location> TopLoc_MapOfLocation;
+typedef NCollection_Map<TopLoc_Location>           TopLoc_MapOfLocation;
 typedef NCollection_Map<TopLoc_Location>::Iterator TopLoc_MapIteratorOfMapOfLocation;
-
 
 #endif

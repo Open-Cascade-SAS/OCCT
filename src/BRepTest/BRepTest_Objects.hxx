@@ -22,7 +22,6 @@
 class BRepTest_Objects
 {
 public:
-
   //! Sets the given history into the session.
   Standard_EXPORT static void SetHistory(const Handle(BRepTools_History)& theHistory);
 
@@ -31,16 +30,14 @@ public:
 
   //! Sets the history of the given algorithm into the session.
   template <class TheAlgo>
-  static void SetHistory(const TopTools_ListOfShape& theArguments,
-                         TheAlgo& theAlgo)
+  static void SetHistory(const TopTools_ListOfShape& theArguments, TheAlgo& theAlgo)
   {
     SetHistory(new BRepTools_History(theArguments, theAlgo));
   }
 
   //! Adds the history of the given algorithm into the session.
   template <class TheAlgo>
-  static void AddHistory(const TopTools_ListOfShape& theArguments,
-                         TheAlgo& theAlgo)
+  static void AddHistory(const TopTools_ListOfShape& theArguments, TheAlgo& theAlgo)
   {
     AddHistory(new BRepTools_History(theArguments, theAlgo));
   }
@@ -53,7 +50,6 @@ public:
 
   //! Returns the flag controlling the history collection
   Standard_EXPORT static Standard_Boolean IsHistoryNeeded();
-
 };
 
 #endif

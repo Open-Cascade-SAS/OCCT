@@ -14,79 +14,86 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr_InvalidOperand.hxx>
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_UnaryExpression.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_UnaryExpression,Expr_GeneralExpression)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_UnaryExpression, Expr_GeneralExpression)
 
-void Expr_UnaryExpression::SetOperand (const Handle(Expr_GeneralExpression)& exp)
+void Expr_UnaryExpression::SetOperand(const Handle(Expr_GeneralExpression)& exp)
 {
   Handle(Expr_UnaryExpression) me = this;
-  if (exp == me) {
+  if (exp == me)
+  {
     throw Expr_InvalidOperand();
   }
-  if (exp->Contains(me)) {
+  if (exp->Contains(me))
+  {
     throw Expr_InvalidOperand();
   }
   myOperand = exp;
 }
 
-void Expr_UnaryExpression::CreateOperand (const Handle(Expr_GeneralExpression)& exp)
+void Expr_UnaryExpression::CreateOperand(const Handle(Expr_GeneralExpression)& exp)
 {
   myOperand = exp;
 }
 
-Standard_Integer Expr_UnaryExpression::NbSubExpressions () const
+Standard_Integer Expr_UnaryExpression::NbSubExpressions() const
 {
   return 1;
 }
 
-const Handle(Expr_GeneralExpression)& Expr_UnaryExpression::SubExpression (const Standard_Integer I) const
+const Handle(Expr_GeneralExpression)& Expr_UnaryExpression::SubExpression(
+  const Standard_Integer I) const
 {
-  if (I != 1) {
+  if (I != 1)
+  {
     throw Standard_OutOfRange();
   }
   return myOperand;
 }
 
-Standard_Boolean Expr_UnaryExpression::ContainsUnknowns () const
+Standard_Boolean Expr_UnaryExpression::ContainsUnknowns() const
 {
-  if (!myOperand->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
+  if (!myOperand->IsKind(STANDARD_TYPE(Expr_NamedUnknown)))
+  {
     return myOperand->ContainsUnknowns();
   }
   return Standard_True;
 }
 
-Standard_Boolean Expr_UnaryExpression::Contains (const Handle(Expr_GeneralExpression)& exp) const
+Standard_Boolean Expr_UnaryExpression::Contains(const Handle(Expr_GeneralExpression)& exp) const
 {
-  if (myOperand != exp) {
+  if (myOperand != exp)
+  {
     return myOperand->Contains(exp);
   }
   return Standard_True;
 }
 
-void Expr_UnaryExpression::Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with)
+void Expr_UnaryExpression::Replace(const Handle(Expr_NamedUnknown)&      var,
+                                   const Handle(Expr_GeneralExpression)& with)
 {
-  if (myOperand == var) {
+  if (myOperand == var)
+  {
     SetOperand(with);
   }
-  else {
-    if (myOperand->Contains(var)) {
-      myOperand->Replace(var,with);
+  else
+  {
+    if (myOperand->Contains(var))
+    {
+      myOperand->Replace(var, with);
     }
   }
 }
 
-
 Handle(Expr_GeneralExpression) Expr_UnaryExpression::Simplified() const
 {
-  Handle(Expr_UnaryExpression) cop = Handle(Expr_UnaryExpression)::DownCast(Copy());
-  Handle(Expr_GeneralExpression) op = cop->Operand();
+  Handle(Expr_UnaryExpression)   cop = Handle(Expr_UnaryExpression)::DownCast(Copy());
+  Handle(Expr_GeneralExpression) op  = cop->Operand();
   cop->SetOperand(op->Simplified());
   return cop->ShallowSimplified();
 }
-

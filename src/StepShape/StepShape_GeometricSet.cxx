@@ -11,44 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_GeometricSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
 
-StepShape_GeometricSet::StepShape_GeometricSet ()  {}
+StepShape_GeometricSet::StepShape_GeometricSet() {}
 
-void StepShape_GeometricSet::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
+void StepShape_GeometricSet::Init(const Handle(TCollection_HAsciiString)&              aName,
+                                  const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
 {
-	// --- classe own fields ---
-	elements = aElements;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  elements = aElements;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
 
-
-void StepShape_GeometricSet::SetElements(const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
+void StepShape_GeometricSet::SetElements(
+  const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
 {
-	elements = aElements;
+  elements = aElements;
 }
 
 Handle(StepShape_HArray1OfGeometricSetSelect) StepShape_GeometricSet::Elements() const
 {
-	return elements;
+  return elements;
 }
 
 StepShape_GeometricSetSelect StepShape_GeometricSet::ElementsValue(const Standard_Integer num) const
 {
-	return elements->Value(num);
+  return elements->Value(num);
 }
 
-Standard_Integer StepShape_GeometricSet::NbElements () const
+Standard_Integer StepShape_GeometricSet::NbElements() const
 {
-	if (elements.IsNull())
-		return 0;
-	return elements->Length();
+  if (elements.IsNull())
+    return 0;
+  return elements->Length();
 }

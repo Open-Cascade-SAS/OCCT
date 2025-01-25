@@ -23,7 +23,6 @@
 #include <gp_Trsf.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a MatrixTransform node of VRML specifying matrix and transform
 //! properties.
 //! This  node  defines  3D  transformation  with  a  4  by  4  matrix.
@@ -36,45 +35,24 @@
 //! separated  by  whitespace.  For  example ,  matrix  expressing  a  translation
 //! of  7.3  units  along  the  X  axis  is  written  as:
 //! 1  0  0  0   0  1  0  0   0  0  1  0   7.3 0  0  1
-class Vrml_MatrixTransform 
+class Vrml_MatrixTransform
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_MatrixTransform();
-  
+
   Standard_EXPORT Vrml_MatrixTransform(const gp_Trsf& aMatrix);
-  
-  Standard_EXPORT void SetMatrix (const gp_Trsf& aMatrix);
-  
+
+  Standard_EXPORT void SetMatrix(const gp_Trsf& aMatrix);
+
   Standard_EXPORT gp_Trsf Matrix() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Trsf myMatrix;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_MatrixTransform_HeaderFile

@@ -24,7 +24,6 @@
 #include <IntPatch_HInterTool.hxx>
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntSurf_InteriorPoint.hxx>
- 
 
 #define ThePSurface Handle(Adaptor3d_Surface)
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
@@ -40,4 +39,3 @@
 #define IntStart_SearchInside IntPatch_TheSearchInside
 #define IntStart_SearchInside_hxx <IntPatch_TheSearchInside.hxx>
 #include "../IntStart/IntStart_SearchInside.gxx"
-

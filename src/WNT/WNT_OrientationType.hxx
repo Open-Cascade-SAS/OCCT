@@ -20,8 +20,8 @@
 //! Portrait/landscape orientation.
 enum WNT_OrientationType
 {
-WNT_OT_PORTRAIT,
-WNT_OT_LANDSCAPE
+  WNT_OT_PORTRAIT,
+  WNT_OT_LANDSCAPE
 };
 
 #endif // _WNT_OrientationType_HeaderFile

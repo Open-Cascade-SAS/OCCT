@@ -29,31 +29,45 @@ class IntRes2d_Transition;
 class IntRes2d_Domain;
 class gp_Pnt2d;
 
-
 //! Gives a generic algorithm to intersect Implicit Curves
 //! and Bounded Parametric Curves.
 //!
 //! Level: Internal
 //!
 //! All the methods of all the classes are Internal.
-class IntImpParGen 
+class IntImpParGen
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Template class for an implicit  curve.
   //! Math function, instantiated inside the Intersector.
   //! Tool used by the package IntCurve and IntImpParGen
-  Standard_EXPORT static void DetermineTransition (const IntRes2d_Position Pos1, gp_Vec2d& Tan1, const gp_Vec2d& Norm1, IntRes2d_Transition& Trans1, const IntRes2d_Position Pos2, gp_Vec2d& Tan2, const gp_Vec2d& Norm2, IntRes2d_Transition& Trans2, const Standard_Real Tol);
-  
-  Standard_EXPORT static Standard_Boolean DetermineTransition (const IntRes2d_Position Pos1, gp_Vec2d& Tan1, IntRes2d_Transition& Trans1, const IntRes2d_Position Pos2, gp_Vec2d& Tan2, IntRes2d_Transition& Trans2, const Standard_Real Tol);
-  
-  Standard_EXPORT static void DeterminePosition (IntRes2d_Position& Pos1, const IntRes2d_Domain& Dom1, const gp_Pnt2d& P1, const Standard_Real Tol);
-  
-  Standard_EXPORT static Standard_Real NormalizeOnDomain (Standard_Real& Par1, const IntRes2d_Domain& Dom1);
+  Standard_EXPORT static void DetermineTransition(const IntRes2d_Position Pos1,
+                                                  gp_Vec2d&               Tan1,
+                                                  const gp_Vec2d&         Norm1,
+                                                  IntRes2d_Transition&    Trans1,
+                                                  const IntRes2d_Position Pos2,
+                                                  gp_Vec2d&               Tan2,
+                                                  const gp_Vec2d&         Norm2,
+                                                  IntRes2d_Transition&    Trans2,
+                                                  const Standard_Real     Tol);
 
+  Standard_EXPORT static Standard_Boolean DetermineTransition(const IntRes2d_Position Pos1,
+                                                              gp_Vec2d&               Tan1,
+                                                              IntRes2d_Transition&    Trans1,
+                                                              const IntRes2d_Position Pos2,
+                                                              gp_Vec2d&               Tan2,
+                                                              IntRes2d_Transition&    Trans2,
+                                                              const Standard_Real     Tol);
+
+  Standard_EXPORT static void DeterminePosition(IntRes2d_Position&     Pos1,
+                                                const IntRes2d_Domain& Dom1,
+                                                const gp_Pnt2d&        P1,
+                                                const Standard_Real    Tol);
+
+  Standard_EXPORT static Standard_Real NormalizeOnDomain(Standard_Real&         Par1,
+                                                         const IntRes2d_Domain& Dom1);
 };
 
 #endif // _IntImpParGen_HeaderFile

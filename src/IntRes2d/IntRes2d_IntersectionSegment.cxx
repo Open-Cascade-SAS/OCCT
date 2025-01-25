@@ -14,16 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntRes2d_IntersectionSegment.hxx>
 
-IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment ()
-: oppos(Standard_False),
-  first(Standard_False),
-  last(Standard_False)
+IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment()
+    : oppos(Standard_False),
+      first(Standard_False),
+      last(Standard_False)
 {
 }
-
-
-
-

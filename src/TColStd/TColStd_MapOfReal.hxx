@@ -17,8 +17,7 @@
 
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Standard_Real> TColStd_MapOfReal;
+typedef NCollection_Map<Standard_Real>           TColStd_MapOfReal;
 typedef NCollection_Map<Standard_Real>::Iterator TColStd_MapIteratorOfMapOfReal;
-
 
 #endif

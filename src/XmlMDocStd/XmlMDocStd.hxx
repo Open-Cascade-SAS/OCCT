@@ -23,18 +23,15 @@
 class XmlMDF_ADriverTable;
 class Message_Messenger;
 
-
 //! Driver for TDocStd_XLink
-class XmlMDocStd 
+class XmlMDocStd
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
-
+  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                                         const Handle(Message_Messenger)&   theMessageDriver);
 };
 
 #endif // _XmlMDocStd_HeaderFile

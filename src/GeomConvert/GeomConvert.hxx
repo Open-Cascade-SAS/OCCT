@@ -1,5 +1,5 @@
 // Created on: 1991-10-03
-// Created by: JeanClaude VAUTHIER 
+// Created by: JeanClaude VAUTHIER
 // Copyright (c) 1991-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
@@ -34,7 +34,6 @@ class Geom_BSplineSurface;
 class Geom_Curve;
 class Geom_Surface;
 
-
 //! The GeomConvert package provides some global functions as follows
 //! -   converting classical Geom curves into BSpline curves,
 //! -   segmenting BSpline curves, particularly at knots
@@ -60,13 +59,11 @@ class Geom_Surface;
 //! 1987
 //! . A survey of curve and surface methods in CAGD (Wolfgang BOHM)
 //! CAGD 1 1984
-class GeomConvert 
+class GeomConvert
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Convert a curve from Geom by an approximation method
   //!
   //! This method computes the arc of B-spline curve between the two
@@ -83,11 +80,11 @@ public:
   //! Raised if FromK1 = ToK2
   //! Raised if FromK1 or ToK2 are out of the bounds
   //! [FirstUKnotIndex, LastUKnotIndex]
-  Standard_EXPORT static Handle(Geom_BSplineCurve) SplitBSplineCurve (const Handle(Geom_BSplineCurve)& C,
-                                                                      const Standard_Integer FromK1,
-                                                                      const Standard_Integer ToK2,
-                                                                      const Standard_Boolean SameOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineCurve) SplitBSplineCurve(
+    const Handle(Geom_BSplineCurve)& C,
+    const Standard_Integer           FromK1,
+    const Standard_Integer           ToK2,
+    const Standard_Boolean           SameOrientation = Standard_True);
 
   //! This function computes the segment of B-spline curve between the
   //! parametric values FromU1, ToU2.
@@ -104,12 +101,12 @@ public:
   //! curve (The tolerance criterion is ParametricTolerance).
   //! Raised if Abs (FromU1 - ToU2) <= ParametricTolerance
   //! Raised if ParametricTolerance < Resolution from gp.
-  Standard_EXPORT static Handle(Geom_BSplineCurve) SplitBSplineCurve (const Handle(Geom_BSplineCurve)& C,
-                                                                      const Standard_Real FromU1,
-                                                                      const Standard_Real ToU2,
-                                                                      const Standard_Real ParametricTolerance,
-                                                                      const Standard_Boolean SameOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineCurve) SplitBSplineCurve(
+    const Handle(Geom_BSplineCurve)& C,
+    const Standard_Real              FromU1,
+    const Standard_Real              ToU2,
+    const Standard_Real              ParametricTolerance,
+    const Standard_Boolean           SameOrientation = Standard_True);
 
   //! Computes the B-spline surface patche between the knots values
   //! FromUK1, ToUK2, FromVK1, ToVK2.
@@ -125,14 +122,14 @@ public:
   //! [FirstUKnotIndex, LastUKnotIndex]
   //! FromVK1 or ToVK2 are out of the bounds
   //! [FirstVKnotIndex, LastVKnotIndex]
-  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface (const Handle(Geom_BSplineSurface)& S,
-                                                                          const Standard_Integer FromUK1,
-                                                                          const Standard_Integer ToUK2,
-                                                                          const Standard_Integer FromVK1,
-                                                                          const Standard_Integer ToVK2,
-                                                                          const Standard_Boolean SameUOrientation = Standard_True,
-                                                                          const Standard_Boolean SameVOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface(
+    const Handle(Geom_BSplineSurface)& S,
+    const Standard_Integer             FromUK1,
+    const Standard_Integer             ToUK2,
+    const Standard_Integer             FromVK1,
+    const Standard_Integer             ToVK2,
+    const Standard_Boolean             SameUOrientation = Standard_True,
+    const Standard_Boolean             SameVOrientation = Standard_True);
 
   //! This method splits a B-spline surface patche between the
   //! knots values FromK1, ToK2 in one direction.
@@ -146,12 +143,12 @@ public:
   //! FromK1 or ToK2 are out of the bounds
   //! [FirstUKnotIndex, LastUKnotIndex] in the
   //! considered parametric direction.
-  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface (const Handle(Geom_BSplineSurface)& S,
-                                                                          const Standard_Integer FromK1,
-                                                                          const Standard_Integer ToK2,
-                                                                          const Standard_Boolean USplit,
-                                                                          const Standard_Boolean SameOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface(
+    const Handle(Geom_BSplineSurface)& S,
+    const Standard_Integer             FromK1,
+    const Standard_Integer             ToK2,
+    const Standard_Boolean             USplit,
+    const Standard_Boolean             SameOrientation = Standard_True);
 
   //! This method computes the B-spline surface patche between the
   //! parametric values FromU1, ToU2, FromV1, ToV2.
@@ -171,15 +168,15 @@ public:
   //! Raised if Abs (FromU1 - ToU2) <= ParametricTolerance or
   //! Abs (FromV1 - ToV2) <= ParametricTolerance.
   //! Raised if ParametricTolerance < Resolution.
-  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface (const Handle(Geom_BSplineSurface)& S,
-                                                                          const Standard_Real FromU1,
-                                                                          const Standard_Real ToU2,
-                                                                          const Standard_Real FromV1,
-                                                                          const Standard_Real ToV2,
-                                                                          const Standard_Real ParametricTolerance,
-                                                                          const Standard_Boolean SameUOrientation = Standard_True,
-                                                                          const Standard_Boolean SameVOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface(
+    const Handle(Geom_BSplineSurface)& S,
+    const Standard_Real                FromU1,
+    const Standard_Real                ToU2,
+    const Standard_Real                FromV1,
+    const Standard_Real                ToV2,
+    const Standard_Real                ParametricTolerance,
+    const Standard_Boolean             SameUOrientation = Standard_True,
+    const Standard_Boolean             SameVOrientation = Standard_True);
 
   //! This method splits the B-spline surface S in one direction
   //! between the parametric values FromParam1, ToParam2.
@@ -198,13 +195,14 @@ public:
   //! Raises if FromParam1 or ToParam2 are out of the parametric bounds
   //! of the surface in the considered direction.
   //! Raises if Abs (FromParam1 - ToParam2) <= ParametricTolerance.
-  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface (const Handle(Geom_BSplineSurface)& S,
-                                                                          const Standard_Real FromParam1,
-                                                                          const Standard_Real ToParam2,
-                                                                          const Standard_Boolean USplit,
-                                                                          const Standard_Real ParametricTolerance,
-                                                                          const Standard_Boolean SameOrientation = Standard_True);
-  
+  Standard_EXPORT static Handle(Geom_BSplineSurface) SplitBSplineSurface(
+    const Handle(Geom_BSplineSurface)& S,
+    const Standard_Real                FromParam1,
+    const Standard_Real                ToParam2,
+    const Standard_Boolean             USplit,
+    const Standard_Real                ParametricTolerance,
+    const Standard_Boolean             SameOrientation = Standard_True);
+
   //! This function converts a non infinite curve from
   //! Geom into a  B-spline curve.  C must be   an ellipse or  a
   //! circle  or a trimmed conic  or a trimmed  line or a Bezier
@@ -270,9 +268,9 @@ public:
   //! respectively the first and the last parameters of the
   //! trimmed curve (this method of parameterization
   //! cannot be used to convert a quasi-complete circle or ellipse).
-  Standard_EXPORT static Handle(Geom_BSplineCurve) CurveToBSplineCurve (const Handle(Geom_Curve)& C,
-                                                                        const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-  
+  Standard_EXPORT static Handle(Geom_BSplineCurve) CurveToBSplineCurve(
+    const Handle(Geom_Curve)&          C,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! This algorithm converts a non infinite surface from Geom
   //! into a B-spline surface.
@@ -282,8 +280,9 @@ public:
   //! surface with a corresponding basis curve which can be turned into
   //! a B-spline curve   (see the method CurveToBSplineCurve).
   //! Raises DomainError if the type of the surface is not previously defined.
-  Standard_EXPORT static Handle(Geom_BSplineSurface) SurfaceToBSplineSurface (const Handle(Geom_Surface)& S);
-  
+  Standard_EXPORT static Handle(Geom_BSplineSurface) SurfaceToBSplineSurface(
+    const Handle(Geom_Surface)& S);
+
   //! This Method concatenates G1 the ArrayOfCurves as far
   //! as it  is possible.
   //! ArrayOfCurves[0..N-1]
@@ -296,12 +295,12 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatG1 (TColGeom_Array1OfBSplineCurve& ArrayOfCurves,
-                                        const TColStd_Array1OfReal& ArrayOfToler,
-                                        Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
-                                        Standard_Boolean& ClosedFlag,
-                                        const Standard_Real ClosedTolerance);
-  
+  Standard_EXPORT static void ConcatG1(TColGeom_Array1OfBSplineCurve&          ArrayOfCurves,
+                                       const TColStd_Array1OfReal&             ArrayOfToler,
+                                       Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                       Standard_Boolean&                       ClosedFlag,
+                                       const Standard_Real                     ClosedTolerance);
+
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
   //! ArrayOfCurves[0..N-1]
@@ -314,13 +313,13 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatC1 (TColGeom_Array1OfBSplineCurve& ArrayOfCurves,
-                                        const TColStd_Array1OfReal& ArrayOfToler,
-                                        Handle(TColStd_HArray1OfInteger)& ArrayOfIndices,
-                                        Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
-                                        Standard_Boolean& ClosedFlag,
-                                        const Standard_Real ClosedTolerance);
-  
+  Standard_EXPORT static void ConcatC1(TColGeom_Array1OfBSplineCurve&          ArrayOfCurves,
+                                       const TColStd_Array1OfReal&             ArrayOfToler,
+                                       Handle(TColStd_HArray1OfInteger)&       ArrayOfIndices,
+                                       Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                       Standard_Boolean&                       ClosedFlag,
+                                       const Standard_Real                     ClosedTolerance);
+
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
   //! ArrayOfCurves[0..N-1]
@@ -333,14 +332,14 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatC1 (TColGeom_Array1OfBSplineCurve& ArrayOfCurves,
-                                        const TColStd_Array1OfReal& ArrayOfToler,
-                                        Handle(TColStd_HArray1OfInteger)& ArrayOfIndices,
-                                        Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
-                                        Standard_Boolean& ClosedFlag,
-                                        const Standard_Real ClosedTolerance,
-                                        const Standard_Real AngularTolerance);
-  
+  Standard_EXPORT static void ConcatC1(TColGeom_Array1OfBSplineCurve&          ArrayOfCurves,
+                                       const TColStd_Array1OfReal&             ArrayOfToler,
+                                       Handle(TColStd_HArray1OfInteger)&       ArrayOfIndices,
+                                       Handle(TColGeom_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                       Standard_Boolean&                       ClosedFlag,
+                                       const Standard_Real                     ClosedTolerance,
+                                       const Standard_Real                     AngularTolerance);
+
   //! This  Method reduces as far as   it is possible the
   //! multiplicities of  the  knots of  the BSpline BS.(keeping  the
   //! geometry).  It returns a new BSpline which  could still be C0.
@@ -348,17 +347,19 @@ public:
   //! The  Angular toleranceis in radians  and measures  the angle of
   //! the tangents  on  the left and on  the right  to decide if  the
   //! curve is G1 or not at a given point
-  Standard_EXPORT static void C0BSplineToC1BSplineCurve (Handle(Geom_BSplineCurve)& BS,
-                                                         const Standard_Real tolerance,
-                                                         const Standard_Real AngularTolerance = 1.0e-7);
-  
+  Standard_EXPORT static void C0BSplineToC1BSplineCurve(
+    Handle(Geom_BSplineCurve)& BS,
+    const Standard_Real        tolerance,
+    const Standard_Real        AngularTolerance = 1.0e-7);
+
   //! This Method   reduces as far  as  it is possible  the
   //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
   //! It returns an array of BSpline C1. tolerance is a geometrical tolerance.
-  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom_BSplineCurve)& BS,
-                                                                Handle(TColGeom_HArray1OfBSplineCurve)& tabBS,
-                                                                const Standard_Real tolerance);
-  
+  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
+    const Handle(Geom_BSplineCurve)&        BS,
+    Handle(TColGeom_HArray1OfBSplineCurve)& tabBS,
+    const Standard_Real                     tolerance);
+
   //! This   Method reduces as far   as it is  possible the
   //! multiplicities of  the  knots of  the  BSpline BS.(keeping the
   //! geometry).  It returns an array of BSpline C1.  tolerance is a
@@ -366,11 +367,11 @@ public:
   //! The  Angular tolerance is in  radians and measures the angle of
   //! the tangents on the left and on the right to decide if the curve
   //! is C1 or not at a given point
-  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom_BSplineCurve)& BS,
-                                                                Handle(TColGeom_HArray1OfBSplineCurve)& tabBS,
-                                                                const Standard_Real AngularTolerance,
-                                                                const Standard_Real tolerance);
-
+  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
+    const Handle(Geom_BSplineCurve)&        BS,
+    Handle(TColGeom_HArray1OfBSplineCurve)& tabBS,
+    const Standard_Real                     AngularTolerance,
+    const Standard_Real                     tolerance);
 };
 
 #endif // _GeomConvert_HeaderFile

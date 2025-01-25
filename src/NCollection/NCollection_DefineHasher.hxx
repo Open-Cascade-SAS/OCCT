@@ -14,19 +14,18 @@
 #ifndef NCollection_DefineHasher_HeaderFile
 #define NCollection_DefineHasher_HeaderFile
 
-#define DEFINE_HASHER(HasherName, TheKeyType, HashFunctor, EqualFunctor)  \
-struct HasherName : protected HashFunctor, EqualFunctor                   \
-{                                                                         \
-  size_t operator()(const TheKeyType& theKey) const noexcept              \
-  {                                                                       \
-    return HashFunctor::operator()(theKey);                               \
-  }                                                                       \
-                                                                          \
-  bool operator() (const TheKeyType& theK1,                               \
-                   const TheKeyType& theK2) const noexcept                \
-  {                                                                       \
-    return EqualFunctor::operator()(theK1, theK2);                        \
-  }                                                                       \
-};
+#define DEFINE_HASHER(HasherName, TheKeyType, HashFunctor, EqualFunctor)                           \
+  struct HasherName : protected HashFunctor, EqualFunctor                                          \
+  {                                                                                                \
+    size_t operator()(const TheKeyType& theKey) const noexcept                                     \
+    {                                                                                              \
+      return HashFunctor::operator()(theKey);                                                      \
+    }                                                                                              \
+                                                                                                   \
+    bool operator()(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept               \
+    {                                                                                              \
+      return EqualFunctor::operator()(theK1, theK2);                                               \
+    }                                                                                              \
+  };
 
 #endif

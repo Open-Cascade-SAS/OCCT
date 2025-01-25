@@ -20,41 +20,23 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-
 class StepDimTol_CircularRunoutTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_CircularRunoutTolerance, StepDimTol_GeometricToleranceWithDatumReference)
+DEFINE_STANDARD_HANDLE(StepDimTol_CircularRunoutTolerance,
+                       StepDimTol_GeometricToleranceWithDatumReference)
 
 //! Representation of STEP entity CircularRunoutTolerance
 class StepDimTol_CircularRunoutTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_CircularRunoutTolerance();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_CircularRunoutTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_CircularRunoutTolerance,
+                          StepDimTol_GeometricToleranceWithDatumReference)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepDimTol_CircularRunoutTolerance_HeaderFile

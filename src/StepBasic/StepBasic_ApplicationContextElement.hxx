@@ -24,53 +24,34 @@
 class TCollection_HAsciiString;
 class StepBasic_ApplicationContext;
 
-
 class StepBasic_ApplicationContextElement;
 DEFINE_STANDARD_HANDLE(StepBasic_ApplicationContextElement, Standard_Transient)
-
 
 class StepBasic_ApplicationContextElement : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a ApplicationContextElement
   Standard_EXPORT StepBasic_ApplicationContextElement();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
+                            const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetFrameOfReference (const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
-  
+
+  Standard_EXPORT void SetFrameOfReference(
+    const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
+
   Standard_EXPORT Handle(StepBasic_ApplicationContext) FrameOfReference() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) name;
+  Handle(TCollection_HAsciiString)     name;
   Handle(StepBasic_ApplicationContext) frameOfReference;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ApplicationContextElement_HeaderFile

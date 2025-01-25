@@ -21,7 +21,6 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,Bnd_Box> TopOpeBRepTool_IndexedDataMapOfShapeBox;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> TopOpeBRepTool_IndexedDataMapOfShapeBox;
 
 #endif

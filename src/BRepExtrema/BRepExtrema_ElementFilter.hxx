@@ -38,8 +38,8 @@ struct BRepExtrema_ElementFilter
 
   //! Checks if two mesh elements should be tested for overlapping/intersection
   //! (used for detection correct/incorrect cases of shared edges and vertices).
-  virtual FilterResult PreCheckElements (const Standard_Integer /*theIndex1*/,
-                                         const Standard_Integer /*theIndex2*/)
+  virtual FilterResult PreCheckElements(const Standard_Integer /*theIndex1*/,
+                                        const Standard_Integer /*theIndex2*/)
   {
     return DoCheck;
   }

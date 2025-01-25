@@ -24,48 +24,31 @@
 #include <gp_Pnt.hxx>
 class gp_Pnt;
 
-
-
-class Extrema_POnCurv 
+class Extrema_POnCurv
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creation of an indefinite point on curve.
   Standard_EXPORT Extrema_POnCurv();
-  
+
   //! Creation of a point on curve with a parameter
   //! value on the curve and a Pnt from gp.
   Standard_EXPORT Extrema_POnCurv(const Standard_Real U, const gp_Pnt& P);
-  
+
   //! sets the point and parameter values.
-  Standard_EXPORT void SetValues (const Standard_Real U, const gp_Pnt& P);
-  
+  Standard_EXPORT void SetValues(const Standard_Real U, const gp_Pnt& P);
+
   //! Returns the point.
-    const gp_Pnt& Value() const;
-  
+  const gp_Pnt& Value() const;
+
   //! Returns the parameter on the curve.
-    Standard_Real Parameter() const;
-
-
-
+  Standard_Real Parameter() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myU;
-  gp_Pnt myP;
-
-
+  gp_Pnt        myP;
 };
 
 #define Pnt gp_Pnt
@@ -79,8 +62,5 @@ private:
 #undef Pnt_hxx
 #undef Extrema_Point
 #undef Extrema_Point_hxx
-
-
-
 
 #endif // _Extrema_POnCurv_HeaderFile

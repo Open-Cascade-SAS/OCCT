@@ -19,7 +19,7 @@
 #include <V3d_View.hxx>
 
 class V3d_Plane;
-DEFINE_STANDARD_HANDLE (V3d_Plane, Standard_Transient)
+DEFINE_STANDARD_HANDLE(V3d_Plane, Standard_Transient)
 
 //! Obsolete clip plane presentation class.
 //! Ported on new core of Graphic3d_ClipPlane approach.
@@ -42,31 +42,30 @@ DEFINE_STANDARD_HANDLE (V3d_Plane, Standard_Transient)
 class V3d_Plane : public Standard_Transient
 {
 public:
-
   //! Creates a clipping plane from plane coefficients.
-  Standard_EXPORT V3d_Plane (const Standard_Real theA = 0.0,
-                             const Standard_Real theB = 0.0,
-                             const Standard_Real theC = 1.0,
-                             const Standard_Real theD = 0.0);
+  Standard_EXPORT V3d_Plane(const Standard_Real theA = 0.0,
+                            const Standard_Real theB = 0.0,
+                            const Standard_Real theC = 1.0,
+                            const Standard_Real theD = 0.0);
 
   //! Change plane equation.
-  Standard_EXPORT void SetPlane (const Standard_Real theA,
-                                 const Standard_Real theB,
-                                 const Standard_Real theC,
-                                 const Standard_Real theD);
+  Standard_EXPORT void SetPlane(const Standard_Real theA,
+                                const Standard_Real theB,
+                                const Standard_Real theC,
+                                const Standard_Real theD);
 
   //! Display the plane representation in the chosen view.
-  Standard_EXPORT virtual void Display (const Handle(V3d_View)& theView,
-                                        const Quantity_Color& theColor = Quantity_NOC_GRAY);
+  Standard_EXPORT virtual void Display(const Handle(V3d_View)& theView,
+                                       const Quantity_Color&   theColor = Quantity_NOC_GRAY);
 
   //! Erase the plane representation.
   Standard_EXPORT void Erase();
 
   //! Returns the parameters of the plane.
-  Standard_EXPORT void Plane (Standard_Real& theA,
-                              Standard_Real& theB,
-                              Standard_Real& theC,
-                              Standard_Real& theD) const;
+  Standard_EXPORT void Plane(Standard_Real& theA,
+                             Standard_Real& theB,
+                             Standard_Real& theC,
+                             Standard_Real& theD) const;
 
   //! Returns TRUE when the plane representation is displayed.
   Standard_EXPORT Standard_Boolean IsDisplayed() const;
@@ -74,27 +73,20 @@ public:
   //! Use this method to pass clipping plane implementation for
   //! standard clipping workflow.
   //! @return clipping plane implementation handle.
-  const Handle(Graphic3d_ClipPlane)& ClipPlane() const
-  {
-    return myPlane;
-  }
+  const Handle(Graphic3d_ClipPlane)& ClipPlane() const { return myPlane; }
 
 private:
-
   //! Updates the plane representation.
   Standard_EXPORT void Update();
 
 protected:
-
   Handle(Graphic3d_Structure) myGraphicStructure;
 
 private:
-
   Handle(Graphic3d_ClipPlane) myPlane; //!< clip plane implementation.
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(V3d_Plane,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)
 };
 
 #endif

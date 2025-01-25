@@ -15,8 +15,8 @@
 #include <GeomAdaptor_Surface.hxx>
 
 //=======================================================================
-//function : Surface
-//purpose  : 
+// function : Surface
+// purpose  :
 //=======================================================================
 
 inline const Handle(Geom_Surface)& ShapeAnalysis_Surface::Surface() const
@@ -24,10 +24,9 @@ inline const Handle(Geom_Surface)& ShapeAnalysis_Surface::Surface() const
   return mySurf;
 }
 
- 
 //=======================================================================
-//function : TrueAdaptor3d
-//purpose  : 
+// function : TrueAdaptor3d
+// purpose  :
 //=======================================================================
 
 inline const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::TrueAdaptor3d() const
@@ -35,10 +34,9 @@ inline const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::TrueAdaptor3d()
   return myAdSur;
 }
 
- 
 //=======================================================================
-//function : Gap
-//purpose  : 
+// function : Gap
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Surface::Gap() const
@@ -46,39 +44,35 @@ inline Standard_Real ShapeAnalysis_Surface::Gap() const
   return myGap;
 }
 
- 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt ShapeAnalysis_Surface::Value (const Standard_Real u,
-					    const Standard_Real v) 
+inline gp_Pnt ShapeAnalysis_Surface::Value(const Standard_Real u, const Standard_Real v)
 {
-  return myAdSur->Value ( u, v );
+  return myAdSur->Value(u, v);
 }
 
- 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt ShapeAnalysis_Surface::Value(const gp_Pnt2d& p2d) 
+inline gp_Pnt ShapeAnalysis_Surface::Value(const gp_Pnt2d& p2d)
 {
-  return myAdSur->Value ( p2d.X(), p2d.Y() );
+  return myAdSur->Value(p2d.X(), p2d.Y());
 }
 
- 
 //=======================================================================
-//function : Bounds
-//purpose  : 
+// function : Bounds
+// purpose  :
 //=======================================================================
 
-inline void ShapeAnalysis_Surface::Bounds (Standard_Real& ufirst, 
-					   Standard_Real& ulast,
-					   Standard_Real& vfirst,
-					   Standard_Real& vlast) const
+inline void ShapeAnalysis_Surface::Bounds(Standard_Real& ufirst,
+                                          Standard_Real& ulast,
+                                          Standard_Real& vfirst,
+                                          Standard_Real& vlast) const
 {
   ufirst = myUF;
   ulast  = myUL;
@@ -87,8 +81,8 @@ inline void ShapeAnalysis_Surface::Bounds (Standard_Real& ufirst,
 }
 
 //=======================================================================
-//function : UCloseVal
-//purpose  : 
+// function : UCloseVal
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Surface::UCloseVal() const
@@ -97,8 +91,8 @@ inline Standard_Real ShapeAnalysis_Surface::UCloseVal() const
 }
 
 //=======================================================================
-//function : VCloseVal
-//purpose  : 
+// function : VCloseVal
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeAnalysis_Surface::VCloseVal() const

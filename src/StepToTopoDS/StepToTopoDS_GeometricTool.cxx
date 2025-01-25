@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//pdn 11.01.99 #144 bm1_pe_t4 protection of exceptions in draw
-//    abv 13.04.99 S4136: eliminate BRepAPI::Precision()
+// pdn 11.01.99 #144 bm1_pe_t4 protection of exceptions in draw
+//     abv 13.04.99 S4136: eliminate BRepAPI::Precision()
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -44,19 +44,22 @@
 // ----------------------------------------------------------------------------
 // Method  : HasPCurve
 // Purpose : returns true if the surface curve has at least one pcurve lying
-//on the surface
+// on the surface
 // ----------------------------------------------------------------------------
-Standard_Integer StepToTopoDS_GeometricTool::PCurve
-  (const Handle(StepGeom_SurfaceCurve)& SurfCurve,
-   const Handle(StepGeom_Surface)&      BasisSurf,
-   Handle(StepGeom_Pcurve)& thePCurve,  const Standard_Integer last)
+Standard_Integer StepToTopoDS_GeometricTool::PCurve(const Handle(StepGeom_SurfaceCurve)& SurfCurve,
+                                                    const Handle(StepGeom_Surface)&      BasisSurf,
+                                                    Handle(StepGeom_Pcurve)&             thePCurve,
+                                                    const Standard_Integer               last)
 {
   Standard_Integer NbAssGeom = SurfCurve->NbAssociatedGeometry();
   thePCurve.Nullify();
-  for (Standard_Integer i= last+1; i<=NbAssGeom; i++) {
+  for (Standard_Integer i = last + 1; i <= NbAssGeom; i++)
+  {
     thePCurve = SurfCurve->AssociatedGeometryValue(i).Pcurve();
-    if (!thePCurve.IsNull()) {
-      if (thePCurve->BasisSurface() == BasisSurf) return i;
+    if (!thePCurve.IsNull())
+    {
+      if (thePCurve->BasisSurface() == BasisSurf)
+        return i;
     }
   }
   thePCurve.Nullify();
@@ -69,39 +72,41 @@ Standard_Integer StepToTopoDS_GeometricTool::PCurve
 //           Then the surface_curve is a seam curve
 // ----------------------------------------------------------------------------
 
-Standard_Boolean  StepToTopoDS_GeometricTool::IsSeamCurve
-(const Handle(StepGeom_SurfaceCurve)& SurfCurve,
- const Handle(StepGeom_Surface)&      Surf,
- const Handle(StepShape_Edge)&         StepEdge,
- const Handle(StepShape_EdgeLoop)&     EdgeLoop)
+Standard_Boolean StepToTopoDS_GeometricTool::IsSeamCurve(
+  const Handle(StepGeom_SurfaceCurve)& SurfCurve,
+  const Handle(StepGeom_Surface)&      Surf,
+  const Handle(StepShape_Edge)&        StepEdge,
+  const Handle(StepShape_EdgeLoop)&    EdgeLoop)
 {
   if (SurfCurve->IsKind(STANDARD_TYPE(StepGeom_SeamCurve)))
     return Standard_True;
-  
-  if (SurfCurve->NbAssociatedGeometry() != 2) return Standard_False;
 
-  Handle(StepGeom_Pcurve) StepPCurve1 =
-    SurfCurve->AssociatedGeometryValue(1).Pcurve();
-  Handle(StepGeom_Pcurve) StepPCurve2 = 
-    SurfCurve->AssociatedGeometryValue(2).Pcurve();
+  if (SurfCurve->NbAssociatedGeometry() != 2)
+    return Standard_False;
+
+  Handle(StepGeom_Pcurve) StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
+  Handle(StepGeom_Pcurve) StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
 
   // Do the two pcurves lye on the same surface ?
 
-  if ((!StepPCurve1.IsNull() && !StepPCurve2.IsNull()) && 
-      (StepPCurve1->BasisSurface() == Surf) &&
-      (StepPCurve2->BasisSurface()== Surf)) {
+  if ((!StepPCurve1.IsNull() && !StepPCurve2.IsNull()) && (StepPCurve1->BasisSurface() == Surf)
+      && (StepPCurve2->BasisSurface() == Surf))
+  {
 
     Standard_Integer NbEdge = EdgeLoop->NbEdgeList();
-    Standard_Integer nbOE = 0;
+    Standard_Integer nbOE   = 0;
 
     Handle(StepShape_OrientedEdge) OrEdge;
 
-    for (Standard_Integer i = 1; i <= NbEdge; i ++ ) {
+    for (Standard_Integer i = 1; i <= NbEdge; i++)
+    {
       OrEdge = EdgeLoop->EdgeListValue(i);
-      if (StepEdge == OrEdge->EdgeElement()) nbOE ++;
+      if (StepEdge == OrEdge->EdgeElement())
+        nbOE++;
     }
     // two oriented edges of the same wire share the same edge
-    if (nbOE == 2) return Standard_True;
+    if (nbOE == 2)
+      return Standard_True;
   }
   return Standard_False;
 }
@@ -114,63 +119,65 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsSeamCurve
 //           range of gp_Resolution is not identified as closed
 // ----------------------------------------------------------------------------
 
-Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
-(const Handle(StepGeom_SurfaceCurve)& SurfCurve,
- const Handle(StepGeom_Surface)&      Surf,
- const Handle(StepShape_Edge)&         StepEdge,
- const Handle(StepShape_EdgeLoop)&     EdgeLoop)
+Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
+  const Handle(StepGeom_SurfaceCurve)& SurfCurve,
+  const Handle(StepGeom_Surface)&      Surf,
+  const Handle(StepShape_Edge)&        StepEdge,
+  const Handle(StepShape_EdgeLoop)&    EdgeLoop)
 {
-  if (SurfCurve->NbAssociatedGeometry() != 2) return Standard_False;
+  if (SurfCurve->NbAssociatedGeometry() != 2)
+    return Standard_False;
 
-  Handle(StepGeom_Pcurve) StepPCurve1 = 
-    SurfCurve->AssociatedGeometryValue(1).Pcurve();
-  Handle(StepGeom_Pcurve) StepPCurve2 = 
-    SurfCurve->AssociatedGeometryValue(2).Pcurve();
-  
+  Handle(StepGeom_Pcurve) StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
+  Handle(StepGeom_Pcurve) StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
+
   // Do the two pcurves lye on the same surface ?
-  
-  if ((!StepPCurve1.IsNull() && !StepPCurve2.IsNull()) && 
-      (StepPCurve1->BasisSurface() == Surf) &&
-      (StepPCurve2->BasisSurface() == Surf)) {
-    
+
+  if ((!StepPCurve1.IsNull() && !StepPCurve2.IsNull()) && (StepPCurve1->BasisSurface() == Surf)
+      && (StepPCurve2->BasisSurface() == Surf))
+  {
+
     Standard_Integer NbEdge = EdgeLoop->NbEdgeList();
-    Standard_Integer nbOE = 0;
+    Standard_Integer nbOE   = 0;
 
     Handle(StepShape_OrientedEdge) OrEdge;
 
-    for (Standard_Integer i = 1; i <= NbEdge; i ++ ) {
+    for (Standard_Integer i = 1; i <= NbEdge; i++)
+    {
       OrEdge = EdgeLoop->EdgeListValue(i);
-      if (StepEdge == OrEdge->EdgeElement()) nbOE ++;
+      if (StepEdge == OrEdge->EdgeElement())
+        nbOE++;
     }
     // the two oriented edges are not in the same wire
-    if (nbOE == 1) {
+    if (nbOE == 1)
+    {
       // check if the two pcurves are not identical ?
-      Handle(StepGeom_Line) line1 = Handle(StepGeom_Line)::DownCast
-        (StepPCurve1->ReferenceToCurve()->ItemsValue(1));
-      Handle(StepGeom_Line) line2 = Handle(StepGeom_Line)::DownCast
-        (StepPCurve2->ReferenceToCurve()->ItemsValue(1));
-      if (!line1.IsNull() && !line2.IsNull()) {
+      Handle(StepGeom_Line) line1 =
+        Handle(StepGeom_Line)::DownCast(StepPCurve1->ReferenceToCurve()->ItemsValue(1));
+      Handle(StepGeom_Line) line2 =
+        Handle(StepGeom_Line)::DownCast(StepPCurve2->ReferenceToCurve()->ItemsValue(1));
+      if (!line1.IsNull() && !line2.IsNull())
+      {
         // Same Origin in X OR Y && Same Vector ??
         // WITHIN A given tolerance !!!
-        Standard_Real DeltaX = Abs(line1->Pnt()->CoordinatesValue(1) -
-          line2->Pnt()->CoordinatesValue(1));
-        Standard_Real DeltaY = Abs(line1->Pnt()->CoordinatesValue(2) -
-          line2->Pnt()->CoordinatesValue(2));
+        Standard_Real DeltaX =
+          Abs(line1->Pnt()->CoordinatesValue(1) - line2->Pnt()->CoordinatesValue(1));
+        Standard_Real DeltaY =
+          Abs(line1->Pnt()->CoordinatesValue(2) - line2->Pnt()->CoordinatesValue(2));
 
-        Standard_Real DeltaDirX =
-          Abs(line1->Dir()->Orientation()->DirectionRatiosValue(1) -
-          line2->Dir()->Orientation()->DirectionRatiosValue(1));
-        Standard_Real DeltaDirY =
-          Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2) -
-          line2->Dir()->Orientation()->DirectionRatiosValue(2));
+        Standard_Real DeltaDirX = Abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
+                                      - line2->Dir()->Orientation()->DirectionRatiosValue(1));
+        Standard_Real DeltaDirY = Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
+                                      - line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
-// clang-format off
+        // clang-format off
         Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
-// clang-format on
+        // clang-format on
 
         if ((DeltaX < preci2d) || (DeltaY < preci2d))
           return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
-        else return Standard_False;
+        else
+          return Standard_False;
 
         // Warning : la manipulation de tolerances dans ce contexte est un
         //           peu trop dangeureux.
@@ -185,7 +192,8 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
         //           en deux faces d un support periodique.
         //  Ce travail reste evidement A FAIRE !!! ...
       }
-      else return Standard_False;
+      else
+        return Standard_False;
     }
     return Standard_False;
   }
@@ -198,11 +206,10 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
 //           This situation occurs when an edge crosses the parametric origin.
 // ----------------------------------------------------------------------------
 
-Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
-  const Handle(Geom_Curve)& theCurve,
-  Standard_Real& w1,
-  Standard_Real& w2,
-  const Standard_Real preci)
+Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Curve)& theCurve,
+                                                           Standard_Real&            w1,
+                                                           Standard_Real&            w2,
+                                                           const Standard_Real       preci)
 {
   // w1 et/ou w2 peuvent etre en dehors des bornes naturelles de la courbe.
   // On donnera alors la valeur en bout a w1 et/ou w2
@@ -226,13 +233,15 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
 #endif
       w1 = cl;
     }
-    if (w2 < cf) {
+    if (w2 < cf)
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Update Edge Last Parameter to Curve First Parameter" << std::endl;
 #endif
       w2 = cf;
     }
-    else if (w2 > cl) {
+    else if (w2 > cl)
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Update Edge Last Parameter to Curve Last Parameter" << std::endl;
 #endif
@@ -240,13 +249,14 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
     }
   }
 
-  if (w1 < w2) return Standard_True;
+  if (w1 < w2)
+    return Standard_True;
 
   if (theCurve->IsPeriodic())
   {
-// clang-format off
+    // clang-format off
     ElCLib::AdjustPeriodic(cf, cl, Precision::PConfusion(), w1, w2); //:a7 abv 11 Feb 98: preci -> PConfusion()
-// clang-format on
+    // clang-format on
   }
   else if (theCurve->IsClosed())
   {
@@ -269,7 +279,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
     // on inverse quand meme les parametres !!!!!!
     else
     {
-      //:S4136 abv 20 Apr 99: r0701_ug.stp #6230: add check in 3d
+      //: S4136 abv 20 Apr 99: r0701_ug.stp #6230: add check in 3d
       if (theCurve->Value(w1).Distance(theCurve->Value(cf)) < preci)
       {
         w1 = cf;
@@ -286,27 +296,27 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       else if (w1 > w2)
       {
 #ifdef OCCT_DEBUG
-        std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
+        std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
+                  << std::endl;
 #endif
         Standard_Real tmp = w1;
-        w1 = w2;
-        w2 = tmp;
+        w1                = w2;
+        w2                = tmp;
       }
     }
   }
   // The curve is closed within the 3D tolerance
   else if (theCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) aBSpline =
-      Handle(Geom_BSplineCurve)::DownCast(theCurve);
+    Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
     if (aBSpline->StartPoint().Distance(aBSpline->EndPoint()) <= preci)
     {
-      //:S4136	<= BRepAPI::Precision()) {
-            // l'un des points projecte se trouve sur l'origine du parametrage
-            // de la courbe 3D. L algo a donne cl +- preci au lieu de cf ou vice-versa
-            // DANGER precision 3d applique a une espace 1d
+      //: S4136	<= BRepAPI::Precision()) {
+      // l'un des points projecte se trouve sur l'origine du parametrage
+      // de la courbe 3D. L algo a donne cl +- preci au lieu de cf ou vice-versa
+      // DANGER precision 3d applique a une espace 1d
 
-            // w2 = cf au lieu de w2 = cl
+      // w2 = cf au lieu de w2 = cl
       if (Abs(w2 - cf) < Precision::PConfusion())
       {
         w2 = cl;
@@ -322,14 +332,15 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       else
       {
 #ifdef OCCT_DEBUG
-        std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
+        std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
+                  << std::endl;
 #endif
         Standard_Real tmp = w1;
-        w1 = w2;
-        w2 = tmp;
+        w1                = w2;
+        w2                = tmp;
       }
     }
-    //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
+    // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     else if (w1 > w2)
     {
 #ifdef OCCT_DEBUG
@@ -339,9 +350,9 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       w2 = theCurve->ReversedParameter(w2);
       theCurve->Reverse();
     }
-    //:j9 abv 11 Dec 98: PRO7747 #4875, after :j8:    else 
+    //: j9 abv 11 Dec 98: PRO7747 #4875, after :j8:    else
     if (w1 == w2)
-    {  //gka 10.07.1998 file PRO7656 entity 33334
+    { // gka 10.07.1998 file PRO7656 entity 33334
       w1 = cf;
       w2 = cl;
       return Standard_False;
@@ -355,7 +366,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
     std::cout << "  - Param 1    : " << w1 << std::endl;
     std::cout << "  - Param 2    : " << w2 << std::endl;
 #endif
-    //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
+    // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     if (w1 > w2)
     {
 #ifdef OCCT_DEBUG
@@ -365,7 +376,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       w2 = theCurve->ReversedParameter(w2);
       theCurve->Reverse();
     }
-    //pdn 11.01.99 #144 bm1_pe_t4 protection of exceptions in draw
+    // pdn 11.01.99 #144 bm1_pe_t4 protection of exceptions in draw
     if (w1 == w2)
     {
       w1 -= Precision::PConfusion();

@@ -14,43 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_Curve.hxx>
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <TopOpeBRepTool_define.hxx>
 
 //=======================================================================
-//function : TopOpeBRepTool_C2DF
-//purpose  : 
+// function : TopOpeBRepTool_C2DF
+// purpose  :
 //=======================================================================
 TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF() {}
 
 //=======================================================================
-//function : TopOpeBRepTool_C2DF
-//purpose  : 
+// function : TopOpeBRepTool_C2DF
+// purpose  :
 //=======================================================================
 
-TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF
-(const Handle(Geom2d_Curve)& PC,const Standard_Real f2d,const Standard_Real l2d,const Standard_Real tol,const TopoDS_Face& F)
+TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const Handle(Geom2d_Curve)& PC,
+                                         const Standard_Real         f2d,
+                                         const Standard_Real         l2d,
+                                         const Standard_Real         tol,
+                                         const TopoDS_Face&          F)
 {
-  myPC = PC;myf2d = f2d;myl2d = l2d;mytol = tol;
+  myPC   = PC;
+  myf2d  = f2d;
+  myl2d  = l2d;
+  mytol  = tol;
   myFace = F;
 }
 
 //=======================================================================
-//function : SetPC
-//purpose  : 
+// function : SetPC
+// purpose  :
 //=======================================================================
 
-void TopOpeBRepTool_C2DF::SetPC
-(const Handle(Geom2d_Curve)& PC,const Standard_Real f2d,const Standard_Real l2d,const Standard_Real tol)
+void TopOpeBRepTool_C2DF::SetPC(const Handle(Geom2d_Curve)& PC,
+                                const Standard_Real         f2d,
+                                const Standard_Real         l2d,
+                                const Standard_Real         tol)
 {
-  myPC = PC;myf2d = f2d;myl2d = l2d;mytol = tol;
+  myPC  = PC;
+  myf2d = f2d;
+  myl2d = l2d;
+  mytol = tol;
 }
 
 //=======================================================================
-//function : SetFace
-//purpose  : 
+// function : SetFace
+// purpose  :
 //=======================================================================
 
 void TopOpeBRepTool_C2DF::SetFace(const TopoDS_Face& F)
@@ -59,19 +69,23 @@ void TopOpeBRepTool_C2DF::SetFace(const TopoDS_Face& F)
 }
 
 //=======================================================================
-//function : PC
-//purpose  : 
+// function : PC
+// purpose  :
 //=======================================================================
 
-const Handle(Geom2d_Curve)& TopOpeBRepTool_C2DF::PC(Standard_Real& f2d,Standard_Real& l2d,Standard_Real& tol) const
+const Handle(Geom2d_Curve)& TopOpeBRepTool_C2DF::PC(Standard_Real& f2d,
+                                                    Standard_Real& l2d,
+                                                    Standard_Real& tol) const
 {
-  f2d = myf2d;l2d = myl2d;tol = mytol;
+  f2d = myf2d;
+  l2d = myl2d;
+  tol = mytol;
   return myPC;
 }
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
 const TopoDS_Face& TopOpeBRepTool_C2DF::Face() const
@@ -80,8 +94,8 @@ const TopoDS_Face& TopOpeBRepTool_C2DF::Face() const
 }
 
 //=======================================================================
-//function : IsPC
-//purpose  : 
+// function : IsPC
+// purpose  :
 //=======================================================================
 
 Standard_Boolean TopOpeBRepTool_C2DF::IsPC(const Handle(Geom2d_Curve)& PC) const
@@ -91,8 +105,8 @@ Standard_Boolean TopOpeBRepTool_C2DF::IsPC(const Handle(Geom2d_Curve)& PC) const
 }
 
 //=======================================================================
-//function : IsFace
-//purpose  : 
+// function : IsFace
+// purpose  :
 //=======================================================================
 
 Standard_Boolean TopOpeBRepTool_C2DF::IsFace(const TopoDS_Face& F) const
@@ -100,4 +114,3 @@ Standard_Boolean TopOpeBRepTool_C2DF::IsFace(const TopoDS_Face& F) const
   Standard_Boolean b = (F.IsEqual(myFace));
   return b;
 }
-

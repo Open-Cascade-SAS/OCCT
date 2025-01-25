@@ -15,13 +15,13 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeatForm
-//purpose  : 
+// function : BRepFeatForm
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_RibSlot::BRepFeat_RibSlot ()
-: myFuse(Standard_False),
-  mySliding(Standard_False),
-  myStatusError(BRepFeat_OK)
+inline BRepFeat_RibSlot::BRepFeat_RibSlot()
+    : myFuse(Standard_False),
+      mySliding(Standard_False),
+      myStatusError(BRepFeat_OK)
 {
 }

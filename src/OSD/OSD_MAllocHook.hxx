@@ -42,9 +42,7 @@ public:
      * @param theRequestNum
      *   the allocation order number of the memory block
      */
-    virtual void AllocEvent
-                   (size_t      theSize,
-                    long        theRequestNum) = 0;
+    virtual void AllocEvent(size_t theSize, long theRequestNum) = 0;
 
     //! Freeing event handler
     /**
@@ -56,10 +54,7 @@ public:
      * @param theRequestNum
      *   the allocation order number of the memory block
      */
-    virtual void FreeEvent
-                   (void*       theData,
-                    size_t      theSize,
-                    long        theRequestNum) = 0;
+    virtual void FreeEvent(void* theData, size_t theSize, long theRequestNum) = 0;
   };
 
   /**
@@ -67,7 +62,7 @@ public:
    * to the log file. It contains the method to generate the report
    * from the log file.
    */
-  class LogFileHandler: public Callback
+  class LogFileHandler : public Callback
   {
   public:
     //! Constructor
@@ -90,10 +85,10 @@ public:
      * If theIncludeAlive is true then
      * include into the report the alive allocation numbers.
      */
-    Standard_EXPORT static Standard_Boolean MakeReport
-                   (const char* theLogFile,
-                    const char* theOutFile,
-                    const Standard_Boolean theIncludeAlive = Standard_False);
+    Standard_EXPORT static Standard_Boolean MakeReport(
+      const char*            theLogFile,
+      const char*            theOutFile,
+      const Standard_Boolean theIncludeAlive = Standard_False);
 
     Standard_EXPORT virtual void AllocEvent(size_t, long);
     Standard_EXPORT virtual void FreeEvent(void*, size_t, long);
@@ -108,7 +103,7 @@ public:
    * Implementation of the handler that collects numbers of
    * allocations/deallocations for each block size directly in the memory.
    */
-  class CollectBySize: public Callback
+  class CollectBySize : public Callback
   {
   public:
     //! Constructor
@@ -132,30 +127,35 @@ public:
       int nbAlloc;
       int nbFree;
       int nbLeftPeak;
-      Numbers() : nbAlloc(0), nbFree(0), nbLeftPeak(0) {}
+
+      Numbers()
+          : nbAlloc(0),
+            nbFree(0),
+            nbLeftPeak(0)
+      {
+      }
     };
-    
+
     static const size_t myMaxAllocSize; //!< maximum tracked size
 
-    Standard_Mutex myMutex;             //!< used for thread-safe access
-    Numbers*       myArray;             //!< indexed from 0 to myMaxAllocSize-1
-    ptrdiff_t      myTotalLeftSize;     //!< currently remained allocated size
-    size_t         myTotalPeakSize;     //!< maximum cumulative allocated size
-// clang-format off
+    Standard_Mutex myMutex;         //!< used for thread-safe access
+    Numbers*       myArray;         //!< indexed from 0 to myMaxAllocSize-1
+    ptrdiff_t      myTotalLeftSize; //!< currently remained allocated size
+    size_t         myTotalPeakSize; //!< maximum cumulative allocated size
+                                    // clang-format off
     size_t         myBreakSize;         //!< user defined allocation size to debug (see place_for_breakpoint())
-// clang-format on
-    size_t         myBreakPeak;         //!< user defined peak size limit to debug
+                                    // clang-format on
+    size_t myBreakPeak;             //!< user defined peak size limit to debug
   };
 
   //! Set handler of allocation/deallocation events
   /**
    * You can pass here any implementation. For easy start, you can try
-   * with the predefined handler LogFileHandler, which static instance 
+   * with the predefined handler LogFileHandler, which static instance
    * is returned by GetLogFileHandler().
    * To clear the handler, pass NULL here.
    */
-  Standard_EXPORT static void SetCallback
-                   (Callback* theCB);
+  Standard_EXPORT static void SetCallback(Callback* theCB);
 
   //! Get current handler of allocation/deallocation events
   Standard_EXPORT static Callback* GetCallback();

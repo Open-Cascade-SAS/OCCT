@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(TColGeom2d_HArray1OfBezierCurve, TColGeom2d_Array1OfBezierCurve)
 
-
 #endif

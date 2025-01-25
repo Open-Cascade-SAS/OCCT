@@ -28,56 +28,40 @@
 #include <gp_Dir.hxx>
 class TopOpeBRepDS_Interference;
 
-
 //! a tool computing edge / face complex transition,
 //! Interferences of edge reference are given by
 //! I = (T on face, G = point or vertex, S = edge)
-class TopOpeBRepDS_Edge3dInterferenceTool 
+class TopOpeBRepDS_Edge3dInterferenceTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_Edge3dInterferenceTool();
-  
-  Standard_EXPORT void InitPointVertex (const Standard_Integer IsVertex, const TopoDS_Shape& VonOO);
-  
-  Standard_EXPORT void Init (const TopoDS_Shape& Eref, const TopoDS_Shape& E, const TopoDS_Shape& F, const Handle(TopOpeBRepDS_Interference)& I);
-  
-  Standard_EXPORT void Add (const TopoDS_Shape& Eref, const TopoDS_Shape& E, const TopoDS_Shape& F, const Handle(TopOpeBRepDS_Interference)& I);
-  
-  Standard_EXPORT void Transition (const Handle(TopOpeBRepDS_Interference)& I) const;
 
+  Standard_EXPORT void InitPointVertex(const Standard_Integer IsVertex, const TopoDS_Shape& VonOO);
 
+  Standard_EXPORT void Init(const TopoDS_Shape&                      Eref,
+                            const TopoDS_Shape&                      E,
+                            const TopoDS_Shape&                      F,
+                            const Handle(TopOpeBRepDS_Interference)& I);
 
+  Standard_EXPORT void Add(const TopoDS_Shape&                      Eref,
+                           const TopoDS_Shape&                      E,
+                           const TopoDS_Shape&                      F,
+                           const Handle(TopOpeBRepDS_Interference)& I);
+
+  Standard_EXPORT void Transition(const Handle(TopOpeBRepDS_Interference)& I) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Integer myFaceOriented;
+  Standard_Integer           myFaceOriented;
   TopTrans_SurfaceTransition myTool;
-  Standard_Real myTole;
-  Standard_Boolean myrefdef;
-  Standard_Integer myIsVertex;
-  TopoDS_Shape myVonOO;
-  gp_Pnt myP3d;
-  gp_Dir myTgtref;
-
-
+  Standard_Real              myTole;
+  Standard_Boolean           myrefdef;
+  Standard_Integer           myIsVertex;
+  TopoDS_Shape               myVonOO;
+  gp_Pnt                     myP3d;
+  gp_Dir                     myTgtref;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_Edge3dInterferenceTool_HeaderFile

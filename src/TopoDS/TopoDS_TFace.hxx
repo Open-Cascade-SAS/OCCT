@@ -32,7 +32,10 @@ class TopoDS_TFace : public TopoDS_TShape
 {
 public:
   //! Creates an empty TFace.
-  TopoDS_TFace() : TopoDS_TShape() {}
+  TopoDS_TFace()
+      : TopoDS_TShape()
+  {
+  }
 
   //! returns FACE.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gce_MakeScale2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
@@ -22,18 +21,17 @@
 //=========================================================================
 //   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
 //=========================================================================
-gce_MakeScale2d::
-  gce_MakeScale2d(const gp_Pnt2d&     Point ,
-		  const Standard_Real Scale ) {
-  TheScale2d.SetScale(Point,Scale);
+gce_MakeScale2d::gce_MakeScale2d(const gp_Pnt2d& Point, const Standard_Real Scale)
+{
+  TheScale2d.SetScale(Point, Scale);
 }
 
 const gp_Trsf2d& gce_MakeScale2d::Value() const
-{ 
-  return TheScale2d; 
+{
+  return TheScale2d;
 }
 
-const gp_Trsf2d& gce_MakeScale2d::Operator() const 
+const gp_Trsf2d& gce_MakeScale2d::Operator() const
 {
   return TheScale2d;
 }

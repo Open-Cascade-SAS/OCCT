@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntSurf_InteriorPoint> IntSurf_SequenceOfInteriorPoint;
 
-
 #endif

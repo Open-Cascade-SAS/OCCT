@@ -27,30 +27,28 @@ class PrsDim_EqualRadiusRelation : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EqualRadiusRelation, PrsDim_Relation)
 public:
-
   //! Creates equal relation of two arc's radiuses.
   //! If one of edges is not in the given plane,
   //! the presentation method projects it onto the plane.
-  Standard_EXPORT PrsDim_EqualRadiusRelation(const TopoDS_Edge& aFirstEdge, const TopoDS_Edge& aSecondEdge, const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT PrsDim_EqualRadiusRelation(const TopoDS_Edge&        aFirstEdge,
+                                             const TopoDS_Edge&        aSecondEdge,
+                                             const Handle(Geom_Plane)& aPlane);
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
-
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeRadiusPosition();
 
 private:
-
   gp_Pnt myFirstCenter;
   gp_Pnt mySecondCenter;
   gp_Pnt myFirstPoint;
   gp_Pnt mySecondPoint;
-
 };
 
 #endif // _PrsDim_EqualRadiusRelation_HeaderFile

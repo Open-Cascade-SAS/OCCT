@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ShapeView_ItemShape_H
 #define ShapeView_ItemShape_H
@@ -35,17 +35,21 @@ typedef QExplicitlySharedDataPointer<ShapeView_ItemShape> ShapeView_ItemShapePtr
 
 //! \class ShapeView_ItemShape
 //! This item is connected to TopoDS_Shape.
-//! Parent is either ShapeView_ItemRoot or ShapeView_ItemShape, children are ShapeView_ItemShape or no children
+//! Parent is either ShapeView_ItemRoot or ShapeView_ItemShape, children are ShapeView_ItemShape or
+//! no children
 class ShapeView_ItemShape : public TreeModel_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
-  static ShapeView_ItemShapePtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return ShapeView_ItemShapePtr (new ShapeView_ItemShape (theParent, theRow, theColumn)); }
+  static ShapeView_ItemShapePtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                           const int             theRow,
+                                           const int             theColumn)
+  {
+    return ShapeView_ItemShapePtr(new ShapeView_ItemShape(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~ShapeView_ItemShape() {}
@@ -55,15 +59,19 @@ public:
 
   //! Sets explore type
   //! \param theType type of item explode. If TopAbs_SHAPE, no explode, only iteration by shape
-  void SetExplodeType (const TopAbs_ShapeEnum theType) { myExplodeType  = theType; }
+  void SetExplodeType(const TopAbs_ShapeEnum theType) { myExplodeType = theType; }
 
   //! Returns the current shape
-  const TopoDS_Shape& GetItemShape() const { initItem(); return myShape; }
+  const TopoDS_Shape& GetItemShape() const
+  {
+    initItem();
+    return myShape;
+  }
 
   //! Returns child(extracted) shape for the current shape by the index
   //! \param theRowId an index of child shape
   //! \returns shape instance or NULL
-  Standard_EXPORT TopoDS_Shape Shape (const int theRowId) const;
+  Standard_EXPORT TopoDS_Shape Shape(const int theRowId) const;
 
   //! Returns name of BREP file for the shape if exists
   //! \return string value
@@ -71,7 +79,7 @@ public:
 
   //! Sets name of BREP file for the shape if exists
   //! \return string value
-  void SetFileName (const QString& theFileName) { myFileName = theFileName; }
+  void SetFileName(const QString& theFileName) { myFileName = theFileName; }
 
   //! Inits the item, fills internal containers
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
@@ -89,10 +97,9 @@ public:
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void initStream(Standard_OStream& theOStream) const Standard_OVERRIDE;
 
 protected:
-
   //! Initializes the current item. It is empty because Reset() is also empty.
   virtual void initItem() const Standard_OVERRIDE;
 
@@ -100,7 +107,7 @@ protected:
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
   //! Returns number of child shapes. Init item if it is not initialized
   //! \return integer value
@@ -111,16 +118,18 @@ protected:
   TopoDS_Shape getShape() const;
 
 private:
-
   //! Constructor
-  ShapeView_ItemShape (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    : TreeModel_ItemBase (theParent, theRow, theColumn), myExplodeType (TopAbs_SHAPE) {}
+  ShapeView_ItemShape(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
+      : TreeModel_ItemBase(theParent, theRow, theColumn),
+        myExplodeType(TopAbs_SHAPE)
+  {
+  }
 
 private:
   TopAbs_ShapeEnum myExplodeType; //!< type of explore own shape and get children
 
-  TopoDS_Shape myShape; //!< current shape
-  QString myFileName; //!< BREP file name
+  TopoDS_Shape myShape;    //!< current shape
+  QString      myFileName; //!< BREP file name
 
   TopTools_IndexedMapOfShape myChildShapes; //!< cached container of child shapes
 };

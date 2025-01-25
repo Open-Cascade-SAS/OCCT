@@ -15,26 +15,24 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeat_MakePipe
-//purpose  : 
+// function : BRepFeat_MakePipe
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakePipe::BRepFeat_MakePipe () {}
-
+inline BRepFeat_MakePipe::BRepFeat_MakePipe() {}
 
 //=======================================================================
-//function : BRepFeat_MakePipe
-//purpose  : 
+// function : BRepFeat_MakePipe
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakePipe::BRepFeat_MakePipe (const TopoDS_Shape& Sbase,
-					     const TopoDS_Shape& Pbase,
-					     const TopoDS_Face& Skface,
-					     const TopoDS_Wire& Spine,
-					     const Standard_Integer Fuse,
-					     const Standard_Boolean Modify)
-					       
+inline BRepFeat_MakePipe::BRepFeat_MakePipe(const TopoDS_Shape&    Sbase,
+                                            const TopoDS_Shape&    Pbase,
+                                            const TopoDS_Face&     Skface,
+                                            const TopoDS_Wire&     Spine,
+                                            const Standard_Integer Fuse,
+                                            const Standard_Boolean Modify)
+
 {
-  Init(Sbase,Pbase,Skface,Spine,Fuse,Modify);
+  Init(Sbase, Pbase, Skface, Spine, Fuse, Modify);
 }
-

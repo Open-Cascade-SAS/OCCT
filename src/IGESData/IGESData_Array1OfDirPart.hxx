@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<IGESData_DirPart> IGESData_Array1OfDirPart;
 
-
 #endif

@@ -25,19 +25,16 @@
 #include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! This class implements the Crout algorithm used to solve a
 //! system A*X = B where A is a symmetric matrix. It can be used to
 //! invert a symmetric matrix.
 //! This algorithm is similar to Gauss but is faster than Gauss.
 //! Only the inferior triangle of A and the diagonal can be given.
-class math_Crout 
+class math_Crout
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Given an input matrix A, this algorithm inverts A by the
   //! Crout algorithm. The user can give only the inferior
   //! triangle for the implementation.
@@ -48,63 +45,45 @@ public:
   //! considered as singular.
   //! Exception NotSquare is raised if A is not a square matrix.
   Standard_EXPORT math_Crout(const math_Matrix& A, const Standard_Real MinPivot = 1.0e-20);
-  
+
   //! Returns True if all has been correctly done.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Given an input vector <B>, this routine returns the
   //! solution of the set of linear equations A . X = B.
   //! Exception NotDone is raised if the decomposition was not
   //! done successfully.
   //! Exception DimensionError is raised if the range of B is
   //! not equal to the rowrange of A.
-  Standard_EXPORT void Solve (const math_Vector& B, math_Vector& X) const;
-  
+  Standard_EXPORT void Solve(const math_Vector& B, math_Vector& X) const;
+
   //! returns the inverse matrix of A. Only the inferior
   //! triangle is returned.
   //! Exception NotDone is raised if NotDone.
-    const math_Matrix& Inverse() const;
-  
+  const math_Matrix& Inverse() const;
+
   //! returns in Inv the inverse matrix of A. Only the inferior
   //! triangle is returned.
   //! Exception NotDone is raised if NotDone.
-    void Invert (math_Matrix& Inv) const;
-  
+  void Invert(math_Matrix& Inv) const;
+
   //! Returns the value of the determinant of the previously LU
   //! decomposed matrix A. Zero is returned if the matrix A is considered as singular.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-    Standard_Real Determinant() const;
-  
+  Standard_Real Determinant() const;
+
   //! Prints on the stream o information on the current state
   //! of the object.
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  math_Matrix InvA;
+  math_Matrix      InvA;
   Standard_Boolean Done;
-  Standard_Real Det;
-
-
+  Standard_Real    Det;
 };
 
-
 #include <math_Crout.lxx>
-
-
-
-
 
 #endif // _math_Crout_HeaderFile

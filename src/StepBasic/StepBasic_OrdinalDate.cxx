@@ -11,31 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_OrdinalDate.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrdinalDate,StepBasic_Date)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrdinalDate, StepBasic_Date)
 
-StepBasic_OrdinalDate::StepBasic_OrdinalDate ()  {}
+StepBasic_OrdinalDate::StepBasic_OrdinalDate() {}
 
-void StepBasic_OrdinalDate::Init(
-	const Standard_Integer aYearComponent,
-	const Standard_Integer aDayComponent)
+void StepBasic_OrdinalDate::Init(const Standard_Integer aYearComponent,
+                                 const Standard_Integer aDayComponent)
 {
-	// --- classe own fields ---
-	dayComponent = aDayComponent;
-	// --- classe inherited fields ---
-	StepBasic_Date::Init(aYearComponent);
+  // --- classe own fields ---
+  dayComponent = aDayComponent;
+  // --- classe inherited fields ---
+  StepBasic_Date::Init(aYearComponent);
 }
-
 
 void StepBasic_OrdinalDate::SetDayComponent(const Standard_Integer aDayComponent)
 {
-	dayComponent = aDayComponent;
+  dayComponent = aDayComponent;
 }
 
 Standard_Integer StepBasic_OrdinalDate::DayComponent() const
 {
-	return dayComponent;
+  return dayComponent;
 }

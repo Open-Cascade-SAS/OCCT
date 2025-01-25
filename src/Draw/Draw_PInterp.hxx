@@ -19,6 +19,6 @@
 
 struct Tcl_Interp;
 
-typedef Tcl_Interp *Draw_PInterp;
+typedef Tcl_Interp* Draw_PInterp;
 
 #endif

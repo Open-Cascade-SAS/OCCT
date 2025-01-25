@@ -18,23 +18,22 @@
 #include <StepShape_ConnectedEdgeSet.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedEdgeSet,StepShape_TopologicalRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedEdgeSet, StepShape_TopologicalRepresentationItem)
 
 //=======================================================================
-//function : StepShape_ConnectedEdgeSet
-//purpose  : 
+// function : StepShape_ConnectedEdgeSet
+// purpose  :
 //=======================================================================
-StepShape_ConnectedEdgeSet::StepShape_ConnectedEdgeSet ()
-{
-}
+StepShape_ConnectedEdgeSet::StepShape_ConnectedEdgeSet() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepShape_ConnectedEdgeSet::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                       const Handle(StepShape_HArray1OfEdge) &aCesEdges)
+void StepShape_ConnectedEdgeSet::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const Handle(StepShape_HArray1OfEdge)&  aCesEdges)
 {
   StepShape_TopologicalRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -42,21 +41,21 @@ void StepShape_ConnectedEdgeSet::Init (const Handle(TCollection_HAsciiString) &a
 }
 
 //=======================================================================
-//function : CesEdges
-//purpose  : 
+// function : CesEdges
+// purpose  :
 //=======================================================================
 
-Handle(StepShape_HArray1OfEdge) StepShape_ConnectedEdgeSet::CesEdges () const
+Handle(StepShape_HArray1OfEdge) StepShape_ConnectedEdgeSet::CesEdges() const
 {
   return theCesEdges;
 }
 
 //=======================================================================
-//function : SetCesEdges
-//purpose  : 
+// function : SetCesEdges
+// purpose  :
 //=======================================================================
 
-void StepShape_ConnectedEdgeSet::SetCesEdges (const Handle(StepShape_HArray1OfEdge) &aCesEdges)
+void StepShape_ConnectedEdgeSet::SetCesEdges(const Handle(StepShape_HArray1OfEdge)& aCesEdges)
 {
   theCesEdges = aCesEdges;
 }

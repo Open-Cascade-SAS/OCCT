@@ -39,20 +39,20 @@ public:
 public:
   RWStepShape_RWEdgeCurve() = default;
 
-  Standard_HIDDEN void ReadStep (const Handle (StepData_StepReaderData)& theStepData,
-                                 const Standard_Integer                  theRecordID,
-                                 Handle (Interface_Check)&               theMessageTool,
-                                 const Handle (StepShape_EdgeCurve)&     theEdgeCurve) const;
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& theStepData,
+                                const Standard_Integer                 theRecordID,
+                                Handle(Interface_Check)&               theMessageTool,
+                                const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const;
 
-  Standard_HIDDEN void WriteStep (StepData_StepWriter&                theStepWriter,
-                                  const Handle (StepShape_EdgeCurve)& theEdgeCurve) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&               theStepWriter,
+                                 const Handle(StepShape_EdgeCurve)& theEdgeCurve) const;
 
-  Standard_HIDDEN void Share (const Handle (StepShape_EdgeCurve)& theEdgeCurve,
-                              Interface_EntityIterator&           theSharedEntitiesIt) const;
+  Standard_HIDDEN void Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
+                             Interface_EntityIterator&          theSharedEntitiesIt) const;
 
-  Standard_HIDDEN void Check (const Handle (StepShape_EdgeCurve)& theEdgeCurve,
-                              const Interface_ShareTool&          theShareTool,
-                              Handle (Interface_Check)&           theMessageTool) const;
+  Standard_HIDDEN void Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
+                             const Interface_ShareTool&         theShareTool,
+                             Handle(Interface_Check)&           theMessageTool) const;
 };
 
 #endif // _RWStepShape_RWEdgeCurve_HeaderFile

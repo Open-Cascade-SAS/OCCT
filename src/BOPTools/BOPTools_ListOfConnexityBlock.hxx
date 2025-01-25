@@ -15,11 +15,10 @@
 #ifndef BOPTools_ListOfConnexityBlock_HeaderFile
 #define BOPTools_ListOfConnexityBlock_HeaderFile
 
-#include <NCollection_List.hxx>   
+#include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 
-typedef NCollection_List<BOPTools_ConnexityBlock> BOPTools_ListOfConnexityBlock; 
-typedef BOPTools_ListOfConnexityBlock::Iterator BOPTools_ListIteratorOfListOfConnexityBlock;  
-
+typedef NCollection_List<BOPTools_ConnexityBlock> BOPTools_ListOfConnexityBlock;
+typedef BOPTools_ListOfConnexityBlock::Iterator   BOPTools_ListIteratorOfListOfConnexityBlock;
 
 #endif

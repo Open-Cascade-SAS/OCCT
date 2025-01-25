@@ -15,18 +15,18 @@
 
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation, Standard_Transient)
 
 //=======================================================================
-//function : StepDimTol_RunoutZoneOrientation
-//purpose  : 
+// function : StepDimTol_RunoutZoneOrientation
+// purpose  :
 //=======================================================================
 
-StepDimTol_RunoutZoneOrientation::StepDimTol_RunoutZoneOrientation ()  {}
+StepDimTol_RunoutZoneOrientation::StepDimTol_RunoutZoneOrientation() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 void StepDimTol_RunoutZoneOrientation::Init(

@@ -41,24 +41,23 @@ class ShapeFix_Shell : public ShapeFix_Root
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT ShapeFix_Shell();
-  
+
   //! Initializes by shell.
   Standard_EXPORT ShapeFix_Shell(const TopoDS_Shell& shape);
-  
+
   //! Initializes by shell.
-  Standard_EXPORT void Init (const TopoDS_Shell& shell);
-  
+  Standard_EXPORT void Init(const TopoDS_Shell& shell);
+
   //! Iterates on subshapes and performs fixes
   //! (for each face calls ShapeFix_Face::Perform and
   //! then calls FixFaceOrientation). The passed progress
   //! indicator allows user to consult the current progress
   //! stage and abort algorithm if needed.
-  Standard_EXPORT Standard_Boolean Perform (const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT Standard_Boolean
+    Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Fixes orientation of faces in shell.
   //! Changes orientation of face in the shell, if it is oriented opposite
   //! to neighbouring faces. If it is not possible to orient all faces in the
@@ -73,80 +72,69 @@ public:
   //! If this mode is equal to Standard_True one non-manifold will be created from shell
   //! contains multishared edges. Else if this mode is equal to Standard_False only
   //! manifold shells will be created. By default - Standard_False.
-  Standard_EXPORT Standard_Boolean FixFaceOrientation (
-      const TopoDS_Shell& shell,
-      const Standard_Boolean isAccountMultiConex = Standard_True,
-      const Standard_Boolean NonManifold = Standard_False);
-  
+  Standard_EXPORT Standard_Boolean
+    FixFaceOrientation(const TopoDS_Shell&    shell,
+                       const Standard_Boolean isAccountMultiConex = Standard_True,
+                       const Standard_Boolean NonManifold         = Standard_False);
+
   //! Returns fixed shell (or subset of oriented faces).
   Standard_EXPORT TopoDS_Shell Shell();
-  
+
   //! In case of multiconnexity returns compound of fixed shells
   //! else returns one shell..
   Standard_EXPORT TopoDS_Shape Shape();
-  
+
   //! Returns Number of obtainrd shells;
   Standard_EXPORT Standard_Integer NbShells() const;
-  
+
   //! Returns not oriented subset of faces.
   Standard_EXPORT TopoDS_Compound ErrorFaces() const;
-  
+
   //! Returns the status of the last Fix.
-  Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;
-  
+  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status status) const;
+
   //! Returns tool for fixing faces.
-    Handle(ShapeFix_Face) FixFaceTool();
-  
+  Handle(ShapeFix_Face) FixFaceTool();
+
   //! Sets message registrator
-  Standard_EXPORT virtual void SetMsgRegistrator (const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetMsgRegistrator(
+    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
+
   //! Sets basic precision value (also to FixWireTool)
-  Standard_EXPORT virtual void SetPrecision (const Standard_Real preci) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci) Standard_OVERRIDE;
+
   //! Sets minimal allowed tolerance (also to FixWireTool)
-  Standard_EXPORT virtual void SetMinTolerance (const Standard_Real mintol) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol) Standard_OVERRIDE;
+
   //! Sets maximal allowed tolerance (also to FixWireTool)
-  Standard_EXPORT virtual void SetMaxTolerance (const Standard_Real maxtol) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol) Standard_OVERRIDE;
+
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Face, by default True.
-    Standard_Integer& FixFaceMode();
-  
+  Standard_Integer& FixFaceMode();
+
   //! Returns (modifiable) the mode for applying
   //! FixFaceOrientation, by default True.
-    Standard_Integer& FixOrientationMode();
+  Standard_Integer& FixOrientationMode();
 
   //! Sets NonManifold flag
   Standard_EXPORT virtual void SetNonManifoldFlag(const Standard_Boolean isNonManifold);
 
-
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_Shell,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 
 protected:
-
-
-  TopoDS_Shell myShell;
-  TopoDS_Compound myErrFaces;
-  Standard_Integer myStatus;
+  TopoDS_Shell          myShell;
+  TopoDS_Compound       myErrFaces;
+  Standard_Integer      myStatus;
   Handle(ShapeFix_Face) myFixFace;
-  Standard_Integer myFixFaceMode;
-  Standard_Integer myFixOrientationMode;
-  Standard_Integer myNbShells;
-  Standard_Boolean myNonManifold;
+  Standard_Integer      myFixFaceMode;
+  Standard_Integer      myFixOrientationMode;
+  Standard_Integer      myNbShells;
+  Standard_Boolean      myNonManifold;
 
 private:
-
-
-
-
 };
 
-
 #include <ShapeFix_Shell.lxx>
-
-
-
-
 
 #endif // _ShapeFix_Shell_HeaderFile

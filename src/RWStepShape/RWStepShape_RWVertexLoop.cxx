@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepShape_RWVertexLoop.pxx"
 #include <StepData_StepReaderData.hxx>
@@ -19,57 +18,52 @@
 #include <StepShape_Vertex.hxx>
 #include <StepShape_VertexLoop.hxx>
 
-RWStepShape_RWVertexLoop::RWStepShape_RWVertexLoop () {}
+RWStepShape_RWVertexLoop::RWStepShape_RWVertexLoop() {}
 
-void RWStepShape_RWVertexLoop::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepShape_VertexLoop)& ent) const
+void RWStepShape_RWVertexLoop::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                        const Standard_Integer                 num,
+                                        Handle(Interface_Check)&               ach,
+                                        const Handle(StepShape_VertexLoop)&    ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "vertex_loop"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"vertex_loop")) return;
+  // --- inherited field : name ---
 
-	// --- inherited field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- own field : loopVertex ---
 
-	// --- own field : loopVertex ---
+  Handle(StepShape_Vertex) aLoopVertex;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadEntity(num, 2, "loop_vertex", ach, STANDARD_TYPE(StepShape_Vertex), aLoopVertex);
 
-	Handle(StepShape_Vertex) aLoopVertex;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"loop_vertex", ach, STANDARD_TYPE(StepShape_Vertex), aLoopVertex);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aName, aLoopVertex);
+  ent->Init(aName, aLoopVertex);
 }
 
-
-void RWStepShape_RWVertexLoop::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepShape_VertexLoop)& ent) const
+void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                SW,
+                                         const Handle(StepShape_VertexLoop)& ent) const
 {
 
-	// --- inherited field name ---
+  // --- inherited field name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- own field : loopVertex ---
+  // --- own field : loopVertex ---
 
-	SW.Send(ent->LoopVertex());
+  SW.Send(ent->LoopVertex());
 }
 
-
-void RWStepShape_RWVertexLoop::Share(const Handle(StepShape_VertexLoop)& ent, Interface_EntityIterator& iter) const
+void RWStepShape_RWVertexLoop::Share(const Handle(StepShape_VertexLoop)& ent,
+                                     Interface_EntityIterator&           iter) const
 {
 
-	iter.GetOneItem(ent->LoopVertex());
+  iter.GetOneItem(ent->LoopVertex());
 }
-

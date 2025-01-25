@@ -52,145 +52,153 @@ public:
   //! If not specified otherwise, the counter value is computed for a single rendered frame.
   enum PerfCounters
   {
-    PerfCounters_NONE        = 0x000, //!< no stats
-    PerfCounters_FrameRate   = 0x001, //!< Frame Rate,        frames per second (number of frames within elapsed time)
-    PerfCounters_CPU         = 0x002, //!< CPU utilization as frames per second (number of frames within CPU utilization time (rendering thread))
-    PerfCounters_Layers      = 0x004, //!< count layers (groups of structures)
-    PerfCounters_Structures  = 0x008, //!< count low-level Structures (normal unhighlighted Presentable Object is usually represented by 1 Structure)
+    PerfCounters_NONE = 0x000, //!< no stats
+    PerfCounters_FrameRate =
+      0x001, //!< Frame Rate,        frames per second (number of frames within elapsed time)
+    PerfCounters_CPU = 0x002, //!< CPU utilization as frames per second (number of frames within CPU
+                              //!< utilization time (rendering thread))
+    PerfCounters_Layers     = 0x004, //!< count layers (groups of structures)
+    PerfCounters_Structures = 0x008, //!< count low-level Structures (normal unhighlighted
+                                     //!< Presentable Object is usually represented by 1 Structure)
     //
-    PerfCounters_Groups      = 0x010, //!< count primitive Groups (1 Structure holds 1 or more primitive Group)
-    PerfCounters_GroupArrays = 0x020, //!< count Arrays within Primitive Groups (optimal primitive Group holds 1 Array)
+    PerfCounters_Groups =
+      0x010, //!< count primitive Groups (1 Structure holds 1 or more primitive Group)
+    PerfCounters_GroupArrays =
+      0x020, //!< count Arrays within Primitive Groups (optimal primitive Group holds 1 Array)
     //
-    PerfCounters_Triangles   = 0x040, //!< count Triangles
-    PerfCounters_Points      = 0x080, //!< count Points
-    PerfCounters_Lines       = 0x100, //!< count Line segments
+    PerfCounters_Triangles = 0x040, //!< count Triangles
+    PerfCounters_Points    = 0x080, //!< count Points
+    PerfCounters_Lines     = 0x100, //!< count Line segments
     //
-    PerfCounters_EstimMem    = 0x200, //!< estimated GPU memory usage
+    PerfCounters_EstimMem = 0x200, //!< estimated GPU memory usage
     //
-    PerfCounters_FrameTime   = 0x400, //!< frame CPU utilization time (rendering thread); @sa Graphic3d_FrameStatsTimer
-    PerfCounters_FrameTimeMax= 0x800, //!< maximum frame times
+    PerfCounters_FrameTime =
+      0x400, //!< frame CPU utilization time (rendering thread); @sa Graphic3d_FrameStatsTimer
+    PerfCounters_FrameTimeMax = 0x800, //!< maximum frame times
     //
-    PerfCounters_SkipImmediate = 0x1000, //!< do not include immediate viewer updates (e.g. lazy updates without redrawing entire view content)
+    PerfCounters_SkipImmediate = 0x1000, //!< do not include immediate viewer updates (e.g. lazy
+                                         //!< updates without redrawing entire view content)
     //! show basic statistics
-    PerfCounters_Basic = PerfCounters_FrameRate | PerfCounters_CPU | PerfCounters_Layers | PerfCounters_Structures,
+    PerfCounters_Basic =
+      PerfCounters_FrameRate | PerfCounters_CPU | PerfCounters_Layers | PerfCounters_Structures,
     //! extended (verbose) statistics
-    PerfCounters_Extended = PerfCounters_Basic
-                          | PerfCounters_Groups | PerfCounters_GroupArrays
-                          | PerfCounters_Triangles | PerfCounters_Points | PerfCounters_Lines
-                          | PerfCounters_EstimMem,
+    PerfCounters_Extended = PerfCounters_Basic | PerfCounters_Groups | PerfCounters_GroupArrays
+                            | PerfCounters_Triangles | PerfCounters_Points | PerfCounters_Lines
+                            | PerfCounters_EstimMem,
     //! all counters
-    PerfCounters_All = PerfCounters_Extended
-                     | PerfCounters_FrameTime
-                     | PerfCounters_FrameTimeMax,
+    PerfCounters_All = PerfCounters_Extended | PerfCounters_FrameTime | PerfCounters_FrameTimeMax,
   };
 
   //! State of frustum culling optimization.
   enum FrustumCulling
   {
     FrustumCulling_Off,     //!< culling is disabled
-    FrustumCulling_On,      //!< culling is active, and the list of culled entities is automatically updated before redraw
+    FrustumCulling_On,      //!< culling is active, and the list of culled entities is automatically
+                            //!< updated before redraw
     FrustumCulling_NoUpdate //!< culling is active, but the list of culled entities is not updated
   };
 
 public:
-
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
-  : Method                      (Graphic3d_RM_RASTERIZATION),
-    ShadingModel                (Graphic3d_TypeOfShadingModel_Phong),
-    TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
-    Resolution                  (THE_DEFAULT_RESOLUTION),
-    FontHinting                 (Font_Hinting_Off),
-    LineFeather                 (1.0f),
-    // PBR parameters
-    PbrEnvPow2Size              (9),
-    PbrEnvSpecMapNbLevels       (6),
-    PbrEnvBakingDiffNbSamples   (1024),
-    PbrEnvBakingSpecNbSamples   (256),
-    PbrEnvBakingProbability     (0.99f),
-    //
-    OitDepthFactor              (0.0f),
-    NbOitDepthPeelingLayers     (4),
-    NbMsaaSamples               (0),
-    RenderResolutionScale       (1.0f),
-    ShadowMapResolution         (1024),
-    ShadowMapBias               (0.005f),
-    ToEnableDepthPrepass        (Standard_False),
-    ToEnableAlphaToCoverage     (Standard_True),
-    // ray tracing parameters
-    IsGlobalIlluminationEnabled (Standard_False),
-    SamplesPerPixel(0),
-    RaytracingDepth             (THE_DEFAULT_DEPTH),
-    IsShadowEnabled             (Standard_True),
-    IsReflectionEnabled         (Standard_False),
-    IsAntialiasingEnabled       (Standard_False),
-    IsTransparentShadowEnabled  (Standard_False),
-    UseEnvironmentMapBackground (Standard_False),
-    ToIgnoreNormalMapInRayTracing (Standard_False),
-    CoherentPathTracingMode     (Standard_False),
-    AdaptiveScreenSampling      (Standard_False),
-    AdaptiveScreenSamplingAtomic(Standard_False),
-    ShowSamplingTiles           (Standard_False),
-    TwoSidedBsdfModels          (Standard_False),
-    RadianceClampingValue       (30.0),
-    RebuildRayTracingShaders    (Standard_False),
-    RayTracingTileSize          (32),
-    NbRayTracingTiles           (16 * 16),
-    CameraApertureRadius        (0.0f),
-    CameraFocalPlaneDist        (1.0f),
-    FrustumCullingState         (FrustumCulling_On),
-    ToneMappingMethod           (Graphic3d_ToneMappingMethod_Disabled),
-    Exposure                    (0.f),
-    WhitePoint                  (1.f),
-    // stereoscopic parameters
-    StereoMode (Graphic3d_StereoMode_QuadBuffer),
-    HmdFov2d (30.0f),
-    AnaglyphFilter (Anaglyph_RedCyan_Optimized),
-    ToReverseStereo (Standard_False),
-    ToSmoothInterlacing (Standard_True),
-    ToMirrorComposer (Standard_True),
-    //
-    StatsPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER,  Graphic3d_Vec2i (20, 20))),
-    ChartPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_RIGHT_UPPER, Graphic3d_Vec2i (20, 20))),
-    ChartSize (-1, -1),
-    StatsTextAspect (new Graphic3d_AspectText3d()),
-    StatsUpdateInterval (1.0),
-    StatsTextHeight (16),
-    StatsNbFrames (1),
-    StatsMaxChartTime (0.1f),
-    CollectedStats (PerfCounters_Basic),
-    ToShowStats (Standard_False)
+      : Method(Graphic3d_RM_RASTERIZATION),
+        ShadingModel(Graphic3d_TypeOfShadingModel_Phong),
+        TransparencyMethod(Graphic3d_RTM_BLEND_UNORDERED),
+        Resolution(THE_DEFAULT_RESOLUTION),
+        FontHinting(Font_Hinting_Off),
+        LineFeather(1.0f),
+        // PBR parameters
+        PbrEnvPow2Size(9),
+        PbrEnvSpecMapNbLevels(6),
+        PbrEnvBakingDiffNbSamples(1024),
+        PbrEnvBakingSpecNbSamples(256),
+        PbrEnvBakingProbability(0.99f),
+        //
+        OitDepthFactor(0.0f),
+        NbOitDepthPeelingLayers(4),
+        NbMsaaSamples(0),
+        RenderResolutionScale(1.0f),
+        ShadowMapResolution(1024),
+        ShadowMapBias(0.005f),
+        ToEnableDepthPrepass(Standard_False),
+        ToEnableAlphaToCoverage(Standard_True),
+        // ray tracing parameters
+        IsGlobalIlluminationEnabled(Standard_False),
+        SamplesPerPixel(0),
+        RaytracingDepth(THE_DEFAULT_DEPTH),
+        IsShadowEnabled(Standard_True),
+        IsReflectionEnabled(Standard_False),
+        IsAntialiasingEnabled(Standard_False),
+        IsTransparentShadowEnabled(Standard_False),
+        UseEnvironmentMapBackground(Standard_False),
+        ToIgnoreNormalMapInRayTracing(Standard_False),
+        CoherentPathTracingMode(Standard_False),
+        AdaptiveScreenSampling(Standard_False),
+        AdaptiveScreenSamplingAtomic(Standard_False),
+        ShowSamplingTiles(Standard_False),
+        TwoSidedBsdfModels(Standard_False),
+        RadianceClampingValue(30.0),
+        RebuildRayTracingShaders(Standard_False),
+        RayTracingTileSize(32),
+        NbRayTracingTiles(16 * 16),
+        CameraApertureRadius(0.0f),
+        CameraFocalPlaneDist(1.0f),
+        FrustumCullingState(FrustumCulling_On),
+        ToneMappingMethod(Graphic3d_ToneMappingMethod_Disabled),
+        Exposure(0.f),
+        WhitePoint(1.f),
+        // stereoscopic parameters
+        StereoMode(Graphic3d_StereoMode_QuadBuffer),
+        HmdFov2d(30.0f),
+        AnaglyphFilter(Anaglyph_RedCyan_Optimized),
+        ToReverseStereo(Standard_False),
+        ToSmoothInterlacing(Standard_True),
+        ToMirrorComposer(Standard_True),
+        //
+        StatsPosition(new Graphic3d_TransformPers(Graphic3d_TMF_2d,
+                                                  Aspect_TOTP_LEFT_UPPER,
+                                                  Graphic3d_Vec2i(20, 20))),
+        ChartPosition(new Graphic3d_TransformPers(Graphic3d_TMF_2d,
+                                                  Aspect_TOTP_RIGHT_UPPER,
+                                                  Graphic3d_Vec2i(20, 20))),
+        ChartSize(-1, -1),
+        StatsTextAspect(new Graphic3d_AspectText3d()),
+        StatsUpdateInterval(1.0),
+        StatsTextHeight(16),
+        StatsNbFrames(1),
+        StatsMaxChartTime(0.1f),
+        CollectedStats(PerfCounters_Basic),
+        ToShowStats(Standard_False)
   {
-    const Graphic3d_Vec4 aZero (0.0f, 0.0f, 0.0f, 0.0f);
-    AnaglyphLeft .SetRow (0, Graphic3d_Vec4 (1.0f,  0.0f,  0.0f, 0.0f));
-    AnaglyphLeft .SetRow (1, aZero);
-    AnaglyphLeft .SetRow (2, aZero);
-    AnaglyphLeft .SetRow (3, aZero);
-    AnaglyphRight.SetRow (0, aZero);
-    AnaglyphRight.SetRow (1, Graphic3d_Vec4 (0.0f,  1.0f,  0.0f, 0.0f));
-    AnaglyphRight.SetRow (2, Graphic3d_Vec4 (0.0f,  0.0f,  1.0f, 0.0f));
-    AnaglyphRight.SetRow (3, aZero);
+    const Graphic3d_Vec4 aZero(0.0f, 0.0f, 0.0f, 0.0f);
+    AnaglyphLeft.SetRow(0, Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
+    AnaglyphLeft.SetRow(1, aZero);
+    AnaglyphLeft.SetRow(2, aZero);
+    AnaglyphLeft.SetRow(3, aZero);
+    AnaglyphRight.SetRow(0, aZero);
+    AnaglyphRight.SetRow(1, Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
+    AnaglyphRight.SetRow(2, Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+    AnaglyphRight.SetRow(3, aZero);
 
-    StatsTextAspect->SetColor (Quantity_NOC_WHITE);
-    StatsTextAspect->SetColorSubTitle (Quantity_NOC_BLACK);
-    StatsTextAspect->SetFont (Font_NOF_ASCII_MONO);
-    StatsTextAspect->SetDisplayType (Aspect_TODT_SHADOW);
-    StatsTextAspect->SetTextZoomable (Standard_False);
-    StatsTextAspect->SetTextFontAspect (Font_FA_Regular);
+    StatsTextAspect->SetColor(Quantity_NOC_WHITE);
+    StatsTextAspect->SetColorSubTitle(Quantity_NOC_BLACK);
+    StatsTextAspect->SetFont(Font_NOF_ASCII_MONO);
+    StatsTextAspect->SetDisplayType(Aspect_TODT_SHADOW);
+    StatsTextAspect->SetTextZoomable(Standard_False);
+    StatsTextAspect->SetTextFontAspect(Font_FA_Regular);
   }
 
   //! Returns resolution ratio.
   Standard_ShortReal ResolutionRatio() const
   {
-    return Resolution / static_cast<Standard_ShortReal> (THE_DEFAULT_RESOLUTION);
+    return Resolution / static_cast<Standard_ShortReal>(THE_DEFAULT_RESOLUTION);
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 public: //! @name general parameters
-
-// clang-format off
+  // clang-format off
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
   Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TypeOfShadingModel_Phong by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
@@ -285,8 +293,7 @@ public: //! @name on-screen display parameters
   Standard_Boolean                  ToShowStats;                 //!< display performance statistics, FALSE by default;
                                                                  //!  note that counters specified within CollectedStats will be updated nevertheless
                                                                  //!  of visibility of widget managed by ToShowStats flag (e.g. stats can be retrieved by application for displaying using other methods)
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _Graphic3d_RenderingParams_HeaderFile

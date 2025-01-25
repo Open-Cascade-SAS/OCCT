@@ -26,42 +26,41 @@ class Aspect_VKeySet : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_VKeySet, Standard_Transient)
 public:
-
   //! Main constructor.
   Standard_EXPORT Aspect_VKeySet();
 
   //! Return active modifiers.
   Aspect_VKeyFlags Modifiers() const
   {
-    Standard_Mutex::Sentry aLock (myLock);
+    Standard_Mutex::Sentry aLock(myLock);
     return myModifiers;
   }
 
   //! Return timestamp of press event.
-  double DownTime (Aspect_VKey theKey) const
+  double DownTime(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock (myLock);
+    Standard_Mutex::Sentry aLock(myLock);
     return myKeys[theKey].TimeDown;
   }
 
   //! Return timestamp of release event.
-  double TimeUp (Aspect_VKey theKey) const
+  double TimeUp(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock (myLock);
+    Standard_Mutex::Sentry aLock(myLock);
     return myKeys[theKey].TimeUp;
   }
 
   //! Return TRUE if key is in Free state.
-  bool IsFreeKey (Aspect_VKey theKey) const
+  bool IsFreeKey(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock (myLock);
+    Standard_Mutex::Sentry aLock(myLock);
     return myKeys[theKey].KStatus == KeyStatus_Free;
   }
 
   //! Return TRUE if key is in Pressed state.
-  bool IsKeyDown (Aspect_VKey theKey) const
+  bool IsKeyDown(Aspect_VKey theKey) const
   {
-    Standard_Mutex::Sentry aLock (myLock);
+    Standard_Mutex::Sentry aLock(myLock);
     return myKeys[theKey].KStatus == KeyStatus_Pressed;
   }
 
@@ -71,40 +70,34 @@ public:
   Standard_Mutex& Mutex() { return myLock; }
 
 public:
-
   //! Reset the key state into unpressed state.
   Standard_EXPORT void Reset();
 
   //! Press key.
   //! @param theKey key pressed
   //! @param theTime event timestamp
-  Standard_EXPORT void KeyDown (Aspect_VKey theKey,
-                                double theTime,
-                                double thePressure = 1.0);
+  Standard_EXPORT void KeyDown(Aspect_VKey theKey, double theTime, double thePressure = 1.0);
 
   //! Release key.
   //! @param theKey key pressed
   //! @param theTime event timestamp
-  Standard_EXPORT void KeyUp (Aspect_VKey theKey,
-                              double theTime);
+  Standard_EXPORT void KeyUp(Aspect_VKey theKey, double theTime);
 
   //! Simulate key up/down events from axis value.
-  Standard_EXPORT void KeyFromAxis (Aspect_VKey theNegative,
-                                    Aspect_VKey thePositive,
-                                    double theTime,
-                                    double thePressure);
+  Standard_EXPORT void KeyFromAxis(Aspect_VKey theNegative,
+                                   Aspect_VKey thePositive,
+                                   double      theTime,
+                                   double      thePressure);
 
   //! Return duration of the button in pressed state.
   //! @param theKey      key to check
   //! @param theTime     current time (for computing duration from key down time)
   //! @param theDuration key press duration
   //! @return TRUE if key was in pressed state
-  bool HoldDuration (Aspect_VKey theKey,
-                     double theTime,
-                     double& theDuration)
+  bool HoldDuration(Aspect_VKey theKey, double theTime, double& theDuration)
   {
     double aPressure = -1.0;
-    return HoldDuration (theKey, theTime, theDuration, aPressure);
+    return HoldDuration(theKey, theTime, theDuration, aPressure);
   }
 
   //! Return duration of the button in pressed state.
@@ -113,13 +106,12 @@ public:
   //! @param theDuration key press duration
   //! @param thePressure key pressure
   //! @return TRUE if key was in pressed state
-  Standard_EXPORT bool HoldDuration (Aspect_VKey theKey,
-                                     double theTime,
-                                     double& theDuration,
-                                     double& thePressure);
+  Standard_EXPORT bool HoldDuration(Aspect_VKey theKey,
+                                    double      theTime,
+                                    double&     theDuration,
+                                    double&     thePressure);
 
 private:
-
   //! Key state.
   enum KeyStatus
   {
@@ -131,10 +123,17 @@ private:
   //! Structure defining key state.
   struct KeyState
   {
-    KeyState() : TimeDown (0.0), TimeUp (0.0), Pressure (1.0), KStatus (KeyStatus_Free) {}
+    KeyState()
+        : TimeDown(0.0),
+          TimeUp(0.0),
+          Pressure(1.0),
+          KStatus(KeyStatus_Free)
+    {
+    }
+
     void Reset()
     {
-      KStatus = KeyStatus_Free;
+      KStatus  = KeyStatus_Free;
       TimeDown = 0.0;
       TimeUp   = 0.0;
       Pressure = 1.0;
@@ -147,11 +146,9 @@ private:
   };
 
 private:
-
   NCollection_Array1<KeyState> myKeys;      //!< keys state
   mutable Standard_Mutex       myLock;      //!< mutex for thread-safe updates
   Aspect_VKeyFlags             myModifiers; //!< active modifiers
-
 };
 
 #endif // _Aspect_VKeySet_HeaderFile

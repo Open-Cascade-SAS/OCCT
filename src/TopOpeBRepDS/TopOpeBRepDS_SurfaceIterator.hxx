@@ -26,45 +26,22 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
-
-
-class TopOpeBRepDS_SurfaceIterator  : public TopOpeBRepDS_InterferenceIterator
+class TopOpeBRepDS_SurfaceIterator : public TopOpeBRepDS_InterferenceIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an  iterator on the  Surfaces on solid
   //! described by the interferences in <L>.
   Standard_EXPORT TopOpeBRepDS_SurfaceIterator(const TopOpeBRepDS_ListOfInterference& L);
-  
+
   //! Index of the surface in the data structure.
   Standard_EXPORT Standard_Integer Current() const;
-  
-  Standard_EXPORT TopAbs_Orientation Orientation (const TopAbs_State S) const;
 
-
-
+  Standard_EXPORT TopAbs_Orientation Orientation(const TopAbs_State S) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_SurfaceIterator_HeaderFile

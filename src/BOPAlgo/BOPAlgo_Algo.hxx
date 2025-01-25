@@ -32,15 +32,14 @@ class BOPAlgo_PISteps;
 class BOPAlgo_Algo : public BOPAlgo_Options
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! The main method to implement the operation
   //! Providing the range allows to enable Progress indicator User break functionalities.
-  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
+  Standard_EXPORT virtual void Perform(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
 protected:
-
   //! Default constructor
   Standard_EXPORT BOPAlgo_Algo();
   Standard_EXPORT virtual ~BOPAlgo_Algo();
@@ -54,7 +53,6 @@ protected:
   Standard_EXPORT virtual void CheckResult();
 
 protected: //! @name Analyzing operations to fill progress indicator
-
   //! Analyze progress steps of the whole operation.
   //! @param theWhole - sum of progress of all operations.
   //! @oaram theSteps - steps of the operations supported by PI
@@ -63,13 +61,15 @@ protected: //! @name Analyzing operations to fill progress indicator
   //! * fillPIConstants - method filling values for constant operations.
   //! * fillPISteps - method filling steps for the rest of operations.
   Standard_EXPORT void analyzeProgress(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps& theSteps) const;
+                                       BOPAlgo_PISteps&    theSteps) const;
 
-  //! Fills the values for constant operations - the operations having constant relative running time.
-  //! @param theWhole - sum of all operations supported by PI, i.e. the value to normalize the steps to, if necessary.
+  //! Fills the values for constant operations - the operations having constant relative running
+  //! time.
+  //! @param theWhole - sum of all operations supported by PI, i.e. the value to normalize the steps
+  //! to, if necessary.
   //! @param theSteps - steps of the operations supported by PI
   Standard_EXPORT virtual void fillPIConstants(const Standard_Real theWhole,
-                                               BOPAlgo_PISteps& theSteps) const;
+                                               BOPAlgo_PISteps&    theSteps) const;
 
   //! Fills the values for the operations dependent on the inputs.
   //! Filled values may not be normalized to represent percentage of total running time.
@@ -95,10 +95,7 @@ public:
 
 public:
   //! Sets the range for a single run
-  void SetProgressRange(const Message_ProgressRange& theRange)
-  {
-    myProgressRange = theRange;
-  }
+  void SetProgressRange(const Message_ProgressRange& theRange) { myProgressRange = theRange; }
 
 private:
   //! Disable the range enabled method
@@ -115,13 +112,14 @@ class BOPAlgo_PISteps
 public:
   //! Constructor
   BOPAlgo_PISteps(const Standard_Integer theNbOp)
-    : mySteps(0, theNbOp - 1)
+      : mySteps(0, theNbOp - 1)
   {
     mySteps.Init(0);
   }
 
   //! Returns the steps
   const TColStd_Array1OfReal& Steps() const { return mySteps; }
+
   //! Returns modifiable steps
   TColStd_Array1OfReal& ChangeSteps() { return mySteps; }
 

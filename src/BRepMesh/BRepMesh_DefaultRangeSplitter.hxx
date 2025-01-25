@@ -20,26 +20,23 @@
 
 struct IMeshTools_Parameters;
 
-//! Default tool to define range of discrete face model and 
+//! Default tool to define range of discrete face model and
 //! obtain grid points distributed within this range.
 class BRepMesh_DefaultRangeSplitter
 {
 public:
-
   //! Constructor.
   BRepMesh_DefaultRangeSplitter()
-    : myIsValid (Standard_True)
+      : myIsValid(Standard_True)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DefaultRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_DefaultRangeSplitter() {}
 
   //! Resets this splitter. Must be called before first use.
   Standard_EXPORT virtual void Reset(const IMeshData::IFaceHandle& theDFace,
-                                     const IMeshTools_Parameters& theParameters);
+                                     const IMeshTools_Parameters&  theParameters);
 
   //! Registers border point.
   Standard_EXPORT virtual void AddPoint(const gp_Pnt2d& thePoint);
@@ -50,7 +47,7 @@ public:
   //! Returns True if computed range is valid.
   Standard_EXPORT virtual Standard_Boolean IsValid();
 
-  //! Scales the given point from real parametric space 
+  //! Scales the given point from real parametric space
   //! to face basis and otherwise.
   //! @param thePoint point to be scaled.
   //! @param isToFaceBasis if TRUE converts point to face basis,
@@ -64,7 +61,7 @@ public:
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
     const IMeshTools_Parameters& theParameters) const;
 
-  //! Returns point in 3d space corresponded to the given 
+  //! Returns point in 3d space corresponded to the given
   //! point defined in parameteric space of surface.
   gp_Pnt Point(const gp_Pnt2d& thePoint2d) const
   {
@@ -72,51 +69,33 @@ public:
   }
 
 protected:
-
   //! Computes parametric tolerance taking length along U and V into account.
-  Standard_EXPORT virtual void computeTolerance (const Standard_Real theLenU, const Standard_Real theLenV);
+  Standard_EXPORT virtual void computeTolerance(const Standard_Real theLenU,
+                                                const Standard_Real theLenV);
 
   //! Computes parametric delta taking length along U and V and value of tolerance into account.
-  Standard_EXPORT virtual void computeDelta (const Standard_Real theLengthU, const Standard_Real theLengthV);
+  Standard_EXPORT virtual void computeDelta(const Standard_Real theLengthU,
+                                            const Standard_Real theLengthV);
 
 public:
   //! Returns face model.
-  const IMeshData::IFaceHandle& GetDFace() const
-  {
-    return myDFace;
-  }
+  const IMeshData::IFaceHandle& GetDFace() const { return myDFace; }
 
   //! Returns surface.
-  const Handle(BRepAdaptor_Surface)& GetSurface() const
-  {
-    return myDFace->GetSurface();
-  }
+  const Handle(BRepAdaptor_Surface)& GetSurface() const { return myDFace->GetSurface(); }
 
   //! Returns U range.
-  const std::pair<Standard_Real, Standard_Real>& GetRangeU() const
-  {
-    return myRangeU;
-  }
+  const std::pair<Standard_Real, Standard_Real>& GetRangeU() const { return myRangeU; }
 
   //! Returns V range.
-  const std::pair<Standard_Real, Standard_Real>& GetRangeV() const
-  {
-    return myRangeV;
-  }
+  const std::pair<Standard_Real, Standard_Real>& GetRangeV() const { return myRangeV; }
 
   //! Returns delta.
-  const std::pair<Standard_Real, Standard_Real>& GetDelta () const
-  {
-    return myDelta;
-  }
+  const std::pair<Standard_Real, Standard_Real>& GetDelta() const { return myDelta; }
 
-  const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const
-  {
-    return myTolerance;
-  }
+  const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const { return myTolerance; }
 
 private:
-
   //! Computes length along U direction.
   Standard_Real computeLengthU();
 
@@ -124,11 +103,11 @@ private:
   Standard_Real computeLengthV();
 
   //! Updates discrete range of surface according to its geometric range.
-  void updateRange(const Standard_Real     theGeomFirst,
-                   const Standard_Real     theGeomLast,
-                   const Standard_Boolean  isPeriodic,
-                   Standard_Real&          theDiscreteFirst,
-                   Standard_Real&          theDiscreteLast);
+  void updateRange(const Standard_Real    theGeomFirst,
+                   const Standard_Real    theGeomLast,
+                   const Standard_Boolean isPeriodic,
+                   Standard_Real&         theDiscreteFirst,
+                   Standard_Real&         theDiscreteLast);
 
 protected:
   IMeshData::IFaceHandle                  myDFace;

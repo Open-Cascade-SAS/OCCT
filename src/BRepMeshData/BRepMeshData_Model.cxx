@@ -23,78 +23,76 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
 
 //=======================================================================
 // Function: Constructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMeshData_Model::BRepMeshData_Model (const TopoDS_Shape& theShape)
-  : IMeshData_Model (theShape),
-    myMaxSize (0.),
-    myAllocator (new NCollection_IncAllocator (IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
-    myDFaces (256, myAllocator),
-    myDEdges (256, myAllocator)
+BRepMeshData_Model::BRepMeshData_Model(const TopoDS_Shape& theShape)
+    : IMeshData_Model(theShape),
+      myMaxSize(0.),
+      myAllocator(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
+      myDFaces(256, myAllocator),
+      myDEdges(256, myAllocator)
 {
   myAllocator->SetThreadSafe(true);
 }
 
 //=======================================================================
 // Function: Destructor
-// Purpose : 
+// Purpose :
 //=======================================================================
-BRepMeshData_Model::~BRepMeshData_Model ()
-{
-}
+BRepMeshData_Model::~BRepMeshData_Model() {}
 
 //=======================================================================
 // Function: FacesNb
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Integer BRepMeshData_Model::FacesNb () const
+Standard_Integer BRepMeshData_Model::FacesNb() const
 {
-  return myDFaces.Size ();
+  return myDFaces.Size();
 }
 
 //=======================================================================
 // Function: AddFace
-// Purpose : 
+// Purpose :
 //=======================================================================
-const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace (const TopoDS_Face& theFace)
+const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace(const TopoDS_Face& theFace)
 {
-  IMeshData::IFaceHandle aFace (new (myAllocator) BRepMeshData_Face (theFace, myAllocator));
-  return myDFaces.Append (aFace);
+  IMeshData::IFaceHandle aFace(new (myAllocator) BRepMeshData_Face(theFace, myAllocator));
+  return myDFaces.Append(aFace);
 }
 
 //=======================================================================
 // Function: GetFace
-// Purpose : 
+// Purpose :
 //=======================================================================
-const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace (const Standard_Integer theIndex) const
+const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace(const Standard_Integer theIndex) const
 {
-  return myDFaces (theIndex);
+  return myDFaces(theIndex);
 }
 
 //=======================================================================
 // Function: EdgesNb
-// Purpose : 
+// Purpose :
 //=======================================================================
-Standard_Integer BRepMeshData_Model::EdgesNb () const
+Standard_Integer BRepMeshData_Model::EdgesNb() const
 {
-  return myDEdges.Size ();
+  return myDEdges.Size();
 }
 
 //=======================================================================
 // Function: AddEdge
-// Purpose : 
+// Purpose :
 //=======================================================================
-const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge (const TopoDS_Edge& theEdge)
+const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge(const TopoDS_Edge& theEdge)
 {
-  IMeshData::IEdgeHandle aEdge (new (myAllocator) BRepMeshData_Edge (theEdge, myAllocator));
-  return myDEdges.Append (aEdge);
+  IMeshData::IEdgeHandle aEdge(new (myAllocator) BRepMeshData_Edge(theEdge, myAllocator));
+  return myDEdges.Append(aEdge);
 }
 
 //=======================================================================
 // Function: GetEdge
-// Purpose : 
+// Purpose :
 //=======================================================================
-const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge (const Standard_Integer theIndex) const
+const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge(const Standard_Integer theIndex) const
 {
-  return myDEdges (theIndex);
+  return myDEdges(theIndex);
 }

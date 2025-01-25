@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_ItemDocument.hxx>
 
@@ -62,15 +62,14 @@ const Handle(TDocStd_Document)& DFBrowser_ItemDocument::getDocument() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant DFBrowser_ItemDocument::initValue (const int theItemRole) const
+QVariant DFBrowser_ItemDocument::initValue(const int theItemRole) const
 {
-  if (theItemRole == Qt::DisplayRole ||
-      theItemRole == Qt::EditRole ||
-      theItemRole == DFBrowserPane_ItemRole_DisplayExtended ||
-      theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
-    return DFBrowser_Tools::GetLabelInfo (GetLabel());
+  if (theItemRole == Qt::DisplayRole || theItemRole == Qt::EditRole
+      || theItemRole == DFBrowserPane_ItemRole_DisplayExtended
+      || theItemRole == DFBrowserPane_ItemRole_ToolTipExtended)
+    return DFBrowser_Tools::GetLabelInfo(GetLabel());
   if (theItemRole == Qt::DecorationRole)
-    return DFBrowser_Tools::GetLabelIcon (GetLabel());
+    return DFBrowser_Tools::GetLabelIcon(GetLabel());
 
   return QVariant();
 }
@@ -79,11 +78,11 @@ QVariant DFBrowser_ItemDocument::initValue (const int theItemRole) const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr DFBrowser_ItemDocument::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr DFBrowser_ItemDocument::createChild(int theRow, int theColumn)
 {
-  TreeModel_ItemBasePtr anItem = DFBrowser_Item::CreateItem (currentItem(), theRow, theColumn);
-  DFBrowser_ItemBasePtr aBaseItem = itemDynamicCast<DFBrowser_ItemBase> (anItem);
-  aBaseItem->SetModule (GetModule());
+  TreeModel_ItemBasePtr anItem    = DFBrowser_Item::CreateItem(currentItem(), theRow, theColumn);
+  DFBrowser_ItemBasePtr aBaseItem = itemDynamicCast<DFBrowser_ItemBase>(anItem);
+  aBaseItem->SetModule(GetModule());
 
   return anItem;
 }
@@ -94,7 +93,7 @@ TreeModel_ItemBasePtr DFBrowser_ItemDocument::createChild (int theRow, int theCo
 // =======================================================================
 void DFBrowser_ItemDocument::Init()
 {
-  DFBrowser_ItemApplicationPtr aParentItem = itemDynamicCast<DFBrowser_ItemApplication> (Parent());
+  DFBrowser_ItemApplicationPtr aParentItem = itemDynamicCast<DFBrowser_ItemApplication>(Parent());
   if (!aParentItem)
     return;
 
@@ -106,7 +105,9 @@ void DFBrowser_ItemDocument::Init()
   int aRowId = Row();
 
   int aDocumentId = -1;
-  for (Standard_Integer aDocId = 1, aNbDoc = anApplication->NbDocuments(); aDocId <= aNbDoc && aDocumentId < 0; aDocId++)
+  for (Standard_Integer aDocId = 1, aNbDoc = anApplication->NbDocuments();
+       aDocId <= aNbDoc && aDocumentId < 0;
+       aDocId++)
   {
     if (aDocId - 1 == aRowId)
       aDocumentId = aDocId;
@@ -114,11 +115,11 @@ void DFBrowser_ItemDocument::Init()
   if (aDocumentId > 0)
   {
     Handle(TDocStd_Document) aDocument;
-    anApplication->GetDocument (aDocumentId, aDocument);
-    setDocument (aDocument);
+    anApplication->GetDocument(aDocumentId, aDocument);
+    setDocument(aDocument);
   }
   else
-    setDocument (Handle(TDocStd_Document)());
+    setDocument(Handle(TDocStd_Document)());
 
   TreeModel_ItemBase::Init();
 }
@@ -130,7 +131,7 @@ void DFBrowser_ItemDocument::Init()
 void DFBrowser_ItemDocument::Reset()
 {
   Handle(TDocStd_Document) aDocument;
-  setDocument (aDocument);
+  setDocument(aDocument);
 
   DFBrowser_ItemBase::Reset();
 }

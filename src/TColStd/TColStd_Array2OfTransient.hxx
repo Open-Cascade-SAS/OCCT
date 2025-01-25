@@ -20,5 +20,4 @@
 
 typedef NCollection_Array2<Handle(Standard_Transient)> TColStd_Array2OfTransient;
 
-
 #endif

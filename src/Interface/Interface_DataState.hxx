@@ -20,13 +20,13 @@
 //! validity state of anentity's content (see InterfaceModel)
 enum Interface_DataState
 {
-Interface_StateOK,
-Interface_LoadWarning,
-Interface_LoadFail,
-Interface_DataWarning,
-Interface_DataFail,
-Interface_StateUnloaded,
-Interface_StateUnknown
+  Interface_StateOK,
+  Interface_LoadWarning,
+  Interface_LoadFail,
+  Interface_DataWarning,
+  Interface_DataFail,
+  Interface_StateUnloaded,
+  Interface_StateUnknown
 };
 
 #endif // _Interface_DataState_HeaderFile

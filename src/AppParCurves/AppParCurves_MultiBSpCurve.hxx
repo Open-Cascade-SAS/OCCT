@@ -34,7 +34,6 @@ class gp_Pnt2d;
 class gp_Vec;
 class gp_Vec2d;
 
-
 //! This class describes a MultiBSpCurve approximating a Multiline.
 //! Just as a Multiline is a set of a given number of lines, a MultiBSpCurve is a set
 //! of a specified number of bsplines defined by:
@@ -58,113 +57,114 @@ class gp_Vec2d;
 //! MultiBSpCurves are created by the SplineValue method in the ComputeLine
 //! class, and by the Value method in TheVariational class. MultiBSpCurve
 //! provides the information required to create the BSpline defined by the approximation.
-class AppParCurves_MultiBSpCurve  : public AppParCurves_MultiCurve
+class AppParCurves_MultiBSpCurve : public AppParCurves_MultiCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! returns an indefinite MultiBSpCurve.
   Standard_EXPORT AppParCurves_MultiBSpCurve();
-  
+
   //! creates a MultiBSpCurve, describing BSpline curves all
   //! containing the same number of MultiPoint.
   //! An exception is raised if Degree < 0.
   Standard_EXPORT AppParCurves_MultiBSpCurve(const Standard_Integer NbPol);
-  
+
   //! creates a MultiBSpCurve, describing BSpline curves all
   //! containing the same number of MultiPoint.
   //! Each MultiPoint must have NbCurves Poles.
-  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_Array1OfMultiPoint& tabMU, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults);
-  
+  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_Array1OfMultiPoint& tabMU,
+                                             const TColStd_Array1OfReal&            Knots,
+                                             const TColStd_Array1OfInteger&         Mults);
+
   //! creates a MultiBSpCurve, describing BSpline
   //! curves, taking control points from <SC>.
-  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve& SC, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults);
-  
+  Standard_EXPORT AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve& SC,
+                                             const TColStd_Array1OfReal&    Knots,
+                                             const TColStd_Array1OfInteger& Mults);
+
   //! Knots of the multiBSpCurve are assigned to <theknots>.
-  Standard_EXPORT void SetKnots (const TColStd_Array1OfReal& theKnots);
-  
+  Standard_EXPORT void SetKnots(const TColStd_Array1OfReal& theKnots);
+
   //! Multiplicities of the multiBSpCurve are assigned
   //! to <theMults>.
-  Standard_EXPORT void SetMultiplicities (const TColStd_Array1OfInteger& theMults);
-  
+  Standard_EXPORT void SetMultiplicities(const TColStd_Array1OfInteger& theMults);
+
   //! Returns an array of Reals containing
   //! the multiplicities of curves resulting from the approximation.
   Standard_EXPORT const TColStd_Array1OfReal& Knots() const;
-  
+
   //! Returns an array of Reals containing the
   //! multiplicities of curves resulting from the approximation.
   Standard_EXPORT const TColStd_Array1OfInteger& Multiplicities() const;
-  
+
   //! returns the degree of the curve(s).
   Standard_EXPORT virtual Standard_Integer Degree() const Standard_OVERRIDE;
-  
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void Value (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt& Pt) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
+                                     const Standard_Real    U,
+                                     gp_Pnt&                Pt) const Standard_OVERRIDE;
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void Value (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt2d& Pt) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
+                                     const Standard_Real    U,
+                                     gp_Pnt2d&              Pt) const Standard_OVERRIDE;
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D1 (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt& Pt, gp_Vec& V1) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
+                                  const Standard_Real    U,
+                                  gp_Pnt&                Pt,
+                                  gp_Vec&                V1) const Standard_OVERRIDE;
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D1 (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt2d& Pt, gp_Vec2d& V1) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
+                                  const Standard_Real    U,
+                                  gp_Pnt2d&              Pt,
+                                  gp_Vec2d&              V1) const Standard_OVERRIDE;
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D2 (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt& Pt, gp_Vec& V1, gp_Vec& V2) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void D2(const Standard_Integer CuIndex,
+                                  const Standard_Real    U,
+                                  gp_Pnt&                Pt,
+                                  gp_Vec&                V1,
+                                  gp_Vec&                V2) const Standard_OVERRIDE;
+
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D2 (const Standard_Integer CuIndex, const Standard_Real U, gp_Pnt2d& Pt, gp_Vec2d& V1, gp_Vec2d& V2) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void D2(const Standard_Integer CuIndex,
+                                  const Standard_Real    U,
+                                  gp_Pnt2d&              Pt,
+                                  gp_Vec2d&              V1,
+                                  gp_Vec2d&              V2) const Standard_OVERRIDE;
+
   //! Prints on the stream o information on the current
   //! state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump (Standard_OStream& o) const Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual void Dump(Standard_OStream& o) const Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(TColStd_HArray1OfReal) myknots;
+  Handle(TColStd_HArray1OfReal)    myknots;
   Handle(TColStd_HArray1OfInteger) mymults;
-  Standard_Integer myDegree;
-
-
+  Standard_Integer                 myDegree;
 };
-
-
-
-
-
-
 
 #endif // _AppParCurves_MultiBSpCurve_HeaderFile

@@ -20,6 +20,7 @@
 #include <VrmlData_Appearance.hxx>
 #include <TopoDS_TShape.hxx>
 
-typedef NCollection_DataMap<Handle(TopoDS_TShape), Handle(VrmlData_Appearance)> VrmlData_DataMapOfShapeAppearance;
+typedef NCollection_DataMap<Handle(TopoDS_TShape), Handle(VrmlData_Appearance)>
+  VrmlData_DataMapOfShapeAppearance;
 
 #endif

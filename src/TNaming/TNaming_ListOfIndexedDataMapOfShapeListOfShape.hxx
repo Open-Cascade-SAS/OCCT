@@ -20,8 +20,9 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape> TNaming_ListOfIndexedDataMapOfShapeListOfShape;
-typedef NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape>::Iterator TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape;
-
+typedef NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape>
+  TNaming_ListOfIndexedDataMapOfShapeListOfShape;
+typedef NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape>::Iterator
+  TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape;
 
 #endif

@@ -23,14 +23,11 @@
 class IMeshData_ParametersList : public Standard_Transient
 {
 public:
-
   //! Destructor.
-  virtual ~IMeshData_ParametersList()
-  {
-  }
+  virtual ~IMeshData_ParametersList() {}
 
   //! Returns parameter with the given index.
-  Standard_EXPORT virtual Standard_Real& GetParameter (const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual Standard_Real& GetParameter(const Standard_Integer theIndex) = 0;
 
   //! Returns number of parameters.
   Standard_EXPORT virtual Standard_Integer ParametersNb() const = 0;
@@ -41,14 +38,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IMeshData_ParametersList, Standard_Transient)
 
 protected:
-
   //! Constructor.
-  IMeshData_ParametersList()
-  {
-  }
+  IMeshData_ParametersList() {}
 
   //! Removes parameter with the given index.
-  Standard_EXPORT virtual void removeParameter (const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual void removeParameter(const Standard_Integer theIndex) = 0;
 };
 
 #endif

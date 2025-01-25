@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWEffectivity.pxx"
 #include <StepBasic_Effectivity.hxx>
@@ -19,45 +18,40 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity () {}
+RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity() {}
 
-void RWStepBasic_RWEffectivity::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_Effectivity)& ent) const
+void RWStepBasic_RWEffectivity::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                         const Standard_Integer                 num,
+                                         Handle(Interface_Check)&               ach,
+                                         const Handle(StepBasic_Effectivity)&   ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 1, ach, "effectivity"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"effectivity")) return;
+  // --- own field : id ---
 
-	// --- own field : id ---
+  Handle(TCollection_HAsciiString) aId;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "id", ach, aId);
 
-	Handle(TCollection_HAsciiString) aId;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"id",ach,aId);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aId);
+  ent->Init(aId);
 }
 
-
-void RWStepBasic_RWEffectivity::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_Effectivity)& ent) const
+void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                 SW,
+                                          const Handle(StepBasic_Effectivity)& ent) const
 {
 
-	// --- own field : id ---
+  // --- own field : id ---
 
-	SW.Send(ent->Id());
+  SW.Send(ent->Id());
 }
 
-
-void RWStepBasic_RWEffectivity::Share(const Handle(StepBasic_Effectivity)&, Interface_EntityIterator&) const
+void RWStepBasic_RWEffectivity::Share(const Handle(StepBasic_Effectivity)&,
+                                      Interface_EntityIterator&) const
 {
 }
-

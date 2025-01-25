@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Vec> TColgp_SequenceOfVec;
 
-
 #endif

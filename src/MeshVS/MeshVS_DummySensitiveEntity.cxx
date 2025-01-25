@@ -21,9 +21,11 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity
 // Function : Constructor MeshVS_DummySensitiveEntity
 // Purpose  :
 //================================================================
-MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId)
-: Select3D_SensitiveEntity (theOwnerId)
-{}
+MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity(
+  const Handle(SelectMgr_EntityOwner)& theOwnerId)
+    : Select3D_SensitiveEntity(theOwnerId)
+{
+}
 
 //================================================================
 // Function : NbSubElements
@@ -38,8 +40,9 @@ Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements() const
 // Function : Matches
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches (SelectBasics_SelectingVolumeManager& /*theMgr*/,
-                                                       SelectBasics_PickResult& /*thePickResult*/)
+Standard_Boolean MeshVS_DummySensitiveEntity::Matches(
+  SelectBasics_SelectingVolumeManager& /*theMgr*/,
+  SelectBasics_PickResult& /*thePickResult*/)
 {
   return Standard_False;
 }
@@ -57,19 +60,17 @@ Select3D_BndBox3d MeshVS_DummySensitiveEntity::BoundingBox()
 // Function : ElementsNb
 // Purpose  :
 //================================================================
-void MeshVS_DummySensitiveEntity::BVH()
-{}
+void MeshVS_DummySensitiveEntity::BVH() {}
 
 //================================================================
 // Function : Clear
 // Purpose  :
 //================================================================
-void MeshVS_DummySensitiveEntity::Clear()
-{}
+void MeshVS_DummySensitiveEntity::Clear() {}
 
 //=======================================================================
-//function : HasInitLocation
-//purpose  :
+// function : HasInitLocation
+// purpose  :
 //=======================================================================
 Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
 {
@@ -77,8 +78,8 @@ Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
 }
 
 //=======================================================================
-//function : InvInitLocation
-//purpose  :
+// function : InvInitLocation
+// purpose  :
 //=======================================================================
 gp_GTrsf MeshVS_DummySensitiveEntity::InvInitLocation() const
 {

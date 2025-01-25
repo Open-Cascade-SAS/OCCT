@@ -17,12 +17,11 @@
 #ifndef _StepShape_AngleRelator_HeaderFile
 #define _StepShape_AngleRelator_HeaderFile
 
-
 enum StepShape_AngleRelator
 {
-StepShape_Equal,
-StepShape_Large,
-StepShape_Small
+  StepShape_Equal,
+  StepShape_Large,
+  StepShape_Small
 };
 
 #endif // _StepShape_AngleRelator_HeaderFile

@@ -11,65 +11,62 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_PointStyle.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle, Standard_Transient)
 
-StepVisual_PointStyle::StepVisual_PointStyle ()  {}
+StepVisual_PointStyle::StepVisual_PointStyle() {}
 
-void StepVisual_PointStyle::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const StepVisual_MarkerSelect& aMarker,
-	const StepBasic_SizeSelect& aMarkerSize,
-	const Handle(StepVisual_Colour)& aMarkerColour)
+void StepVisual_PointStyle::Init(const Handle(TCollection_HAsciiString)& aName,
+                                 const StepVisual_MarkerSelect&          aMarker,
+                                 const StepBasic_SizeSelect&             aMarkerSize,
+                                 const Handle(StepVisual_Colour)&        aMarkerColour)
 {
-	// --- classe own fields ---
-	name = aName;
-	marker = aMarker;
-	markerSize = aMarkerSize;
-	markerColour = aMarkerColour;
+  // --- classe own fields ---
+  name         = aName;
+  marker       = aMarker;
+  markerSize   = aMarkerSize;
+  markerColour = aMarkerColour;
 }
-
 
 void StepVisual_PointStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
-	name = aName;
+  name = aName;
 }
 
 Handle(TCollection_HAsciiString) StepVisual_PointStyle::Name() const
 {
-	return name;
+  return name;
 }
 
 void StepVisual_PointStyle::SetMarker(const StepVisual_MarkerSelect& aMarker)
 {
-	marker = aMarker;
+  marker = aMarker;
 }
 
 StepVisual_MarkerSelect StepVisual_PointStyle::Marker() const
 {
-	return marker;
+  return marker;
 }
 
 void StepVisual_PointStyle::SetMarkerSize(const StepBasic_SizeSelect& aMarkerSize)
 {
-	markerSize = aMarkerSize;
+  markerSize = aMarkerSize;
 }
 
 StepBasic_SizeSelect StepVisual_PointStyle::MarkerSize() const
 {
-	return markerSize;
+  return markerSize;
 }
 
 void StepVisual_PointStyle::SetMarkerColour(const Handle(StepVisual_Colour)& aMarkerColour)
 {
-	markerColour = aMarkerColour;
+  markerColour = aMarkerColour;
 }
 
 Handle(StepVisual_Colour) StepVisual_PointStyle::MarkerColour() const
 {
-	return markerColour;
+  return markerColour;
 }

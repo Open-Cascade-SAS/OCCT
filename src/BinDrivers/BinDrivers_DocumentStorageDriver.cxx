@@ -25,30 +25,28 @@
 #include <Standard_Type.hxx>
 #include <TNaming_NamedShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 
 //=======================================================================
-//function : BinDrivers_DocumentStorageDriver
-//purpose  : Constructor
+// function : BinDrivers_DocumentStorageDriver
+// purpose  : Constructor
 //=======================================================================
-BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver()
+BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver() {}
+
+//=======================================================================
+// function : AttributeDrivers
+// purpose  :
+//=======================================================================
+
+Handle(BinMDF_ADriverTable) BinDrivers_DocumentStorageDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMessageDriver)
 {
+  return BinDrivers::AttributeDrivers(theMessageDriver);
 }
 
 //=======================================================================
-//function : AttributeDrivers
-//purpose  :
-//=======================================================================
-
-Handle(BinMDF_ADriverTable) BinDrivers_DocumentStorageDriver::AttributeDrivers
-       (const Handle(Message_Messenger)& theMessageDriver)
-{
-  return BinDrivers::AttributeDrivers (theMessageDriver);
-}
-
-//=======================================================================
-//function : IsWithTriangles
-//purpose  :
+// function : IsWithTriangles
+// purpose  :
 //=======================================================================
 Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithTriangles() const
 {
@@ -58,22 +56,23 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithTriangles() const
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-  return !aShapesDriver.IsNull()
-       && aShapesDriver->IsWithTriangles();
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  return !aShapesDriver.IsNull() && aShapesDriver->IsWithTriangles();
 }
 
 //=======================================================================
-//function : SetWithTriangles
-//purpose  :
+// function : SetWithTriangles
+// purpose  :
 //=======================================================================
-void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Messenger)& theMessageDriver,
-                                                         const Standard_Boolean theWithTriangulation)
+void BinDrivers_DocumentStorageDriver::SetWithTriangles(
+  const Handle(Message_Messenger)& theMessageDriver,
+  const Standard_Boolean           theWithTriangulation)
 {
   if (myDrivers.IsNull())
   {
-    myDrivers = AttributeDrivers (theMessageDriver);
+    myDrivers = AttributeDrivers(theMessageDriver);
   }
   if (myDrivers.IsNull())
   {
@@ -81,22 +80,24 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Me
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
   if (aShapesDriver.IsNull())
   {
-    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
   }
 
-  aShapesDriver->SetWithTriangles (theWithTriangulation);
+  aShapesDriver->SetWithTriangles(theWithTriangulation);
 }
 
-void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting (const Handle(Message_Messenger)& theMessageDriver,
-                                                               const Standard_Boolean theValue)
+void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting(
+  const Handle(Message_Messenger)& theMessageDriver,
+  const Standard_Boolean           theValue)
 {
   if (myDrivers.IsNull())
   {
-    myDrivers = AttributeDrivers (theMessageDriver);
+    myDrivers = AttributeDrivers(theMessageDriver);
   }
   if (myDrivers.IsNull())
   {
@@ -104,36 +105,37 @@ void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting (const Handle(Mess
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
   if (aShapesDriver.IsNull())
   {
-    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
   }
 
-  aShapesDriver->EnableQuickPart (theValue);
+  aShapesDriver->EnableQuickPart(theValue);
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
 void BinDrivers_DocumentStorageDriver::Clear()
 {
   // Clear NamedShape driver
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
     Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+      Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
     aNamedShapeDriver->Clear();
   }
   BinLDrivers_DocumentStorageDriver::Clear();
 }
 
 //=======================================================================
-//function : IsWithNormals
-//purpose  :
+// function : IsWithNormals
+// purpose  :
 //=======================================================================
 Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
 {
@@ -143,22 +145,23 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-  return !aShapesDriver.IsNull()
-    && aShapesDriver->IsWithNormals();
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  return !aShapesDriver.IsNull() && aShapesDriver->IsWithNormals();
 }
 
 //=======================================================================
-//function : SetWithNormals
-//purpose  :
+// function : SetWithNormals
+// purpose  :
 //=======================================================================
-void BinDrivers_DocumentStorageDriver::SetWithNormals (const Handle(Message_Messenger)& theMessageDriver,
-  const Standard_Boolean theWithNormals)
+void BinDrivers_DocumentStorageDriver::SetWithNormals(
+  const Handle(Message_Messenger)& theMessageDriver,
+  const Standard_Boolean           theWithNormals)
 {
   if (myDrivers.IsNull())
   {
-    myDrivers = AttributeDrivers (theMessageDriver);
+    myDrivers = AttributeDrivers(theMessageDriver);
   }
   if (myDrivers.IsNull())
   {
@@ -166,43 +169,45 @@ void BinDrivers_DocumentStorageDriver::SetWithNormals (const Handle(Message_Mess
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
   if (aShapesDriver.IsNull())
   {
-    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
   }
 
-  aShapesDriver->SetWithNormals (theWithNormals);
+  aShapesDriver->SetWithNormals(theWithNormals);
 }
 
 //=======================================================================
-//function : WriteShapeSection
-//purpose  : Implements WriteShapeSection
+// function : WriteShapeSection
+// purpose  : Implements WriteShapeSection
 //=======================================================================
-void BinDrivers_DocumentStorageDriver::WriteShapeSection
-                               (BinLDrivers_DocumentSection&   theSection,
-                                Standard_OStream&              theOS,
-                                const TDocStd_FormatVersion    theDocVer,
-                                const Message_ProgressRange&   theRange)
+void BinDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSection& theSection,
+                                                         Standard_OStream&            theOS,
+                                                         const TDocStd_FormatVersion  theDocVer,
+                                                         const Message_ProgressRange& theRange)
 {
-  const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
-  
+  const Standard_Size aShapesSectionOffset = (Standard_Size)theOS.tellp();
+
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    try { 
+    try
+    {
       OCC_CATCH_SIGNALS
       Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-        Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-      aNamedShapeDriver->WriteShapeSection (theOS, theDocVer, theRange);
+        Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+      aNamedShapeDriver->WriteShapeSection(theOS, theDocVer, theRange);
     }
-    catch (Standard_Failure const& anException) {
-      TCollection_ExtendedString anErrorStr ("BinDrivers_DocumentStorageDriver, Shape Section :");
-      myMsgDriver->Send (anErrorStr  + anException.GetMessageString(), Message_Fail);
+    catch (Standard_Failure const& anException)
+    {
+      TCollection_ExtendedString anErrorStr("BinDrivers_DocumentStorageDriver, Shape Section :");
+      myMsgDriver->Send(anErrorStr + anException.GetMessageString(), Message_Fail);
     }
   }
-   
+
   // Write the section info in the TOC.
-  theSection.Write (theOS, aShapesSectionOffset, theDocVer);
+  theSection.Write(theOS, aShapesSectionOffset, theDocVer);
 }

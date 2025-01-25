@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageModel_ItemRoot.hxx>
 #include <inspector/MessageModel_ItemReport.hxx>
@@ -20,16 +20,17 @@
 // function : SetReport
 // purpose :
 // =======================================================================
-void MessageModel_ItemRoot::SetReport (const int theRowId, const Handle(Message_Report)& theReport,
-                                       const TCollection_AsciiString& theReportDescription)
+void MessageModel_ItemRoot::SetReport(const int                      theRowId,
+                                      const Handle(Message_Report)&  theReport,
+                                      const TCollection_AsciiString& theReportDescription)
 {
-  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt (myReports);
+  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt(myReports);
   for (int aRowId = 0; aReportsIt.More(); aReportsIt.Next(), aRowId++)
   {
     if (aRowId == theRowId)
       break;
   }
-  aReportsIt.ChangeValue().myReport = theReport;
+  aReportsIt.ChangeValue().myReport      = theReport;
   aReportsIt.ChangeValue().myDescription = theReportDescription;
 }
 
@@ -37,10 +38,11 @@ void MessageModel_ItemRoot::SetReport (const int theRowId, const Handle(Message_
 // function : GetReport
 // purpose :
 // =======================================================================
-const Handle(Message_Report)& MessageModel_ItemRoot::GetReport (const int theRowId,
+const Handle(Message_Report)& MessageModel_ItemRoot::GetReport(
+  const int                theRowId,
   TCollection_AsciiString& theReportDescription)
 {
-  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt (myReports);
+  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt(myReports);
   for (int aRowId = 0; aReportsIt.More(); aReportsIt.Next(), aRowId++)
   {
     if (aRowId == theRowId)
@@ -54,9 +56,9 @@ const Handle(Message_Report)& MessageModel_ItemRoot::GetReport (const int theRow
 // function : HasReport
 // purpose :
 // =======================================================================
-Standard_Boolean MessageModel_ItemRoot::HasReport (const Handle(Message_Report)& theReport)
+Standard_Boolean MessageModel_ItemRoot::HasReport(const Handle(Message_Report)& theReport)
 {
-  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt (myReports);
+  NCollection_List<MessageModel_ReportInformation>::Iterator aReportsIt(myReports);
   for (int aRowId = 0; aReportsIt.More(); aReportsIt.Next(), aRowId++)
   {
     if (aReportsIt.Value().myReport == theReport)
@@ -69,9 +71,9 @@ Standard_Boolean MessageModel_ItemRoot::HasReport (const Handle(Message_Report)&
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant MessageModel_ItemRoot::initValue (const int theRole) const
+QVariant MessageModel_ItemRoot::initValue(const int theRole) const
 {
-  QVariant aParentValue = MessageModel_ItemBase::initValue (theRole);
+  QVariant aParentValue = MessageModel_ItemBase::initValue(theRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -88,8 +90,7 @@ QVariant MessageModel_ItemRoot::initValue (const int theRole) const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr MessageModel_ItemRoot::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr MessageModel_ItemRoot::createChild(int theRow, int theColumn)
 {
-  return MessageModel_ItemReport::CreateItem (currentItem(), theRow, theColumn);
+  return MessageModel_ItemReport::CreateItem(currentItem(), theRow, theColumn);
 }
-

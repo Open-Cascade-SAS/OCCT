@@ -22,28 +22,27 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 BinMXCAFDoc_NoteDriver::BinMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                Standard_CString                 theName)
-  : BinMDF_ADriver(theMsgDriver, theName)
+    : BinMDF_ADriver(theMsgDriver, theName)
 {
-
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                const Handle(TDF_Attribute)& theTarget,
-                                               BinObjMgt_RRelocationTable&  /*theRelocTable*/) const
+                                               BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theTarget);
   if (aNote.IsNull())
     return Standard_False;
-  
+
   TCollection_ExtendedString aUserName, aTimeStamp;
   if (!(theSource >> aUserName >> aTimeStamp))
     return Standard_False;
@@ -54,12 +53,12 @@ Standard_Boolean BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&  theS
 }
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 void BinMXCAFDoc_NoteDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                         BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&  /*theRelocTable*/) const
+                                   BinObjMgt_Persistent&        theTarget,
+                                   BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theSource);
   if (!aNote.IsNull())

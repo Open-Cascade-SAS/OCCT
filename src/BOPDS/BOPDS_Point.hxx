@@ -24,88 +24,58 @@
 class gp_Pnt;
 class gp_Pnt2d;
 
-
-
 //! The class BOPDS_Point is to store
 //! the information about intersection point
-class BOPDS_Point 
+class BOPDS_Point
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-
   //! Empty constructor
-    BOPDS_Point();
-virtual ~BOPDS_Point();
-  
+  BOPDS_Point();
+  virtual ~BOPDS_Point();
 
   //! Modifier
   //! Sets 3D point <thePnt>
-    void SetPnt (const gp_Pnt& thePnt);
-  
+  void SetPnt(const gp_Pnt& thePnt);
 
   //! Selector
   //! Returns 3D point
-    const gp_Pnt& Pnt() const;
-  
+  const gp_Pnt& Pnt() const;
 
   //! Modifier
   //! Sets 2D point on the first face <thePnt>
-    void SetPnt2D1 (const gp_Pnt2d& thePnt);
-  
+  void SetPnt2D1(const gp_Pnt2d& thePnt);
 
   //! Selector
   //! Returns 2D point on the first face <thePnt>
-    const gp_Pnt2d& Pnt2D1() const;
-  
+  const gp_Pnt2d& Pnt2D1() const;
 
   //! Modifier
   //! Sets 2D point on the second face <thePnt>
-    void SetPnt2D2 (const gp_Pnt2d& thePnt);
-  
+  void SetPnt2D2(const gp_Pnt2d& thePnt);
 
   //! Selector
   //! Returns 2D point on the second face <thePnt>
-    const gp_Pnt2d& Pnt2D2() const;
-  
+  const gp_Pnt2d& Pnt2D2() const;
 
   //! Modifier
   //! Sets the index of the vertex <theIndex>
-    void SetIndex (const Standard_Integer theIndex);
-  
+  void SetIndex(const Standard_Integer theIndex);
 
   //! Selector
   //! Returns index of the vertex
-    Standard_Integer Index() const;
-
-
-
+  Standard_Integer Index() const;
 
 protected:
-
-
-
-  gp_Pnt myPnt;
-  gp_Pnt2d myPnt2D1;
-  gp_Pnt2d myPnt2D2;
+  gp_Pnt           myPnt;
+  gp_Pnt2d         myPnt2D1;
+  gp_Pnt2d         myPnt2D2;
   Standard_Integer myIndex;
 
-
 private:
-
-
-
-
-
 };
 
-
 #include <BOPDS_Point.lxx>
-
-
-
-
 
 #endif // _BOPDS_Point_HeaderFile

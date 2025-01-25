@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepRepr_ConfigurationItem;
 
-
 class StepRepr_ConfigurationDesign;
 DEFINE_STANDARD_HANDLE(StepRepr_ConfigurationDesign, Standard_Transient)
 
@@ -32,49 +31,31 @@ class StepRepr_ConfigurationDesign : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_ConfigurationDesign();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepRepr_ConfigurationItem)& aConfiguration, const StepRepr_ConfigurationDesignItem& aDesign);
-  
+  Standard_EXPORT void Init(const Handle(StepRepr_ConfigurationItem)& aConfiguration,
+                            const StepRepr_ConfigurationDesignItem&   aDesign);
+
   //! Returns field Configuration
   Standard_EXPORT Handle(StepRepr_ConfigurationItem) Configuration() const;
-  
+
   //! Set field Configuration
-  Standard_EXPORT void SetConfiguration (const Handle(StepRepr_ConfigurationItem)& Configuration);
-  
+  Standard_EXPORT void SetConfiguration(const Handle(StepRepr_ConfigurationItem)& Configuration);
+
   //! Returns field Design
   Standard_EXPORT StepRepr_ConfigurationDesignItem Design() const;
-  
+
   //! Set field Design
-  Standard_EXPORT void SetDesign (const StepRepr_ConfigurationDesignItem& Design);
+  Standard_EXPORT void SetDesign(const StepRepr_ConfigurationDesignItem& Design);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepRepr_ConfigurationItem) theConfiguration;
-  StepRepr_ConfigurationDesignItem theDesign;
-
-
+  StepRepr_ConfigurationDesignItem   theDesign;
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_ConfigurationDesign_HeaderFile

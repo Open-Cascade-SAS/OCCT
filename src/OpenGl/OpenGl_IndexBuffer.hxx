@@ -21,7 +21,6 @@
 class OpenGl_IndexBuffer : public OpenGl_Buffer
 {
 public:
-
   //! Empty constructor.
   Standard_EXPORT OpenGl_IndexBuffer();
 
@@ -29,12 +28,11 @@ public:
   Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 public:
-
   DEFINE_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_Buffer)
-
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_IndexBuffer, OpenGl_Buffer)

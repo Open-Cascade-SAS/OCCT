@@ -24,55 +24,33 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 class TopoDS_Shape;
 
-
 //! only  for  Shape  Copy  test - to move in DNaming
-class TNaming_Translator 
+class TNaming_Translator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TNaming_Translator();
-  
-  Standard_EXPORT void Add (const TopoDS_Shape& aShape);
-  
+
+  Standard_EXPORT void Add(const TopoDS_Shape& aShape);
+
   Standard_EXPORT void Perform();
-  
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns copied  shape
-  Standard_EXPORT const TopoDS_Shape Copied (const TopoDS_Shape& aShape) const;
-  
+  Standard_EXPORT const TopoDS_Shape Copied(const TopoDS_Shape& aShape) const;
+
   //! returns  DataMap  of  results;  (shape <-> copied  shape)
   Standard_EXPORT const TopTools_DataMapOfShapeShape& Copied() const;
-  
-  Standard_EXPORT void DumpMap (const Standard_Boolean isWrite = Standard_False) const;
 
-
-
+  Standard_EXPORT void DumpMap(const Standard_Boolean isWrite = Standard_False) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myIsDone;
+  Standard_Boolean                           myIsDone;
   TColStd_IndexedDataMapOfTransientTransient myMap;
-  TopTools_DataMapOfShapeShape myDataMapOfResults;
-
-
+  TopTools_DataMapOfShapeShape               myDataMapOfResults;
 };
-
-
-
-
-
-
 
 #endif // _TNaming_Translator_HeaderFile

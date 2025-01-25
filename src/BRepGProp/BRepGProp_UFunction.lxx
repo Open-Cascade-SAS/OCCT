@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetValueType
-//purpose  : Setting the type of the value to be returned.
+// function : SetValueType
+// purpose  : Setting the type of the value to be returned.
 //=======================================================================
 
 inline void BRepGProp_UFunction::SetValueType(const GProp_ValueType theType)
@@ -24,8 +24,8 @@ inline void BRepGProp_UFunction::SetValueType(const GProp_ValueType theType)
 }
 
 //=======================================================================
-//function : SetVParam
-//purpose  : Setting the V parameter that is constant during the 
+// function : SetVParam
+// purpose  : Setting the V parameter that is constant during the
 //           integral computation.
 //=======================================================================
 

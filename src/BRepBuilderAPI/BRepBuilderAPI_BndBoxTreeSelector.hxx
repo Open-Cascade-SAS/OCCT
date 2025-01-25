@@ -20,12 +20,12 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_UBTree.hxx>
 
-typedef NCollection_UBTree <Standard_Integer, Bnd_Box> BRepBuilderAPI_BndBoxTree;
+typedef NCollection_UBTree<Standard_Integer, Bnd_Box> BRepBuilderAPI_BndBoxTree;
 
 //=======================================================================
-//! Class BRepBuilderAPI_BndBoxTreeSelector 
+//! Class BRepBuilderAPI_BndBoxTreeSelector
 //!   derived from UBTree::Selector
-//!   This class is used to select overlapping boxes, stored in 
+//!   This class is used to select overlapping boxes, stored in
 //!   NCollection::UBTree; contains methods to maintain the selection
 //!   condition and to retrieve selected objects after search.
 //=======================================================================
@@ -34,48 +34,39 @@ class BRepBuilderAPI_BndBoxTreeSelector : public BRepBuilderAPI_BndBoxTree::Sele
 {
 public:
   //! Constructor; calls the base class constructor
-  BRepBuilderAPI_BndBoxTreeSelector() : BRepBuilderAPI_BndBoxTree::Selector() {}
+  BRepBuilderAPI_BndBoxTreeSelector()
+      : BRepBuilderAPI_BndBoxTree::Selector()
+  {
+  }
 
   //! Implementation of rejection method
   //! @return
-  //!   True if the bounding box does not intersect with the current 
-  Standard_Boolean Reject (const Bnd_Box& theBox) const
-  {
-    return (myBox.IsOut (theBox));
-  }
+  //!   True if the bounding box does not intersect with the current
+  Standard_Boolean Reject(const Bnd_Box& theBox) const { return (myBox.IsOut(theBox)); }
 
   //! Implementation of acceptance method
   //!   This method is called when the bounding box intersect with the current.
   //!   It stores the object - the index of box in the list of accepted objects.
   //! @return
   //!   True, because the object is accepted
-  Standard_Boolean Accept (const Standard_Integer& theObj)
+  Standard_Boolean Accept(const Standard_Integer& theObj)
   {
-    myResInd.Append (theObj);
+    myResInd.Append(theObj);
     return Standard_True;
   }
 
   //! Clear the list of intersecting boxes
-  void ClearResList()
-  {
-    myResInd.Clear();
-  }
+  void ClearResList() { myResInd.Clear(); }
 
   //! Set current box to search for overlapping with him
-  void SetCurrent (const Bnd_Box& theBox) 
-  { 
-    myBox = theBox;
-  }
+  void SetCurrent(const Bnd_Box& theBox) { myBox = theBox; }
 
   //! Get list of indexes of boxes intersecting with the current box
-  const TColStd_ListOfInteger& ResInd()
-  {
-    return myResInd;
-  }
+  const TColStd_ListOfInteger& ResInd() { return myResInd; }
 
 private:
   TColStd_ListOfInteger myResInd;
-  Bnd_Box myBox;
+  Bnd_Box               myBox;
 };
 
 #endif

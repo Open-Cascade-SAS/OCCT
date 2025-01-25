@@ -17,10 +17,10 @@
 // function : As
 // purpose  : Returns variable value casted to specified type
 // =======================================================================
-template <class T> inline
-T& Graphic3d_ValueInterface::As()
+template <class T>
+inline T& Graphic3d_ValueInterface::As()
 {
-  Graphic3d_UniformValue<T>* aPtr = dynamic_cast<Graphic3d_UniformValue<T>*> (this);
+  Graphic3d_UniformValue<T>* aPtr = dynamic_cast<Graphic3d_UniformValue<T>*>(this);
   return aPtr->Value;
 }
 
@@ -28,10 +28,10 @@ T& Graphic3d_ValueInterface::As()
 // function : As
 // purpose  : Returns variable value casted to specified type
 // =======================================================================
-template <class T> inline
-const T& Graphic3d_ValueInterface::As() const
+template <class T>
+inline const T& Graphic3d_ValueInterface::As() const
 {
-  const Graphic3d_UniformValue<T>* aPtr = dynamic_cast<const Graphic3d_UniformValue<T>*> (this);
+  const Graphic3d_UniformValue<T>* aPtr = dynamic_cast<const Graphic3d_UniformValue<T>*>(this);
   return aPtr->Value;
 }
 
@@ -39,8 +39,8 @@ const T& Graphic3d_ValueInterface::As() const
 // function : TypeID
 // purpose  : Returns unique identifier of value type
 // =======================================================================
-template <class T> inline
-Standard_Size Graphic3d_UniformValue<T>::TypeID() const
+template <class T>
+inline Standard_Size Graphic3d_UniformValue<T>::TypeID() const
 {
   return Graphic3d_UniformValueTypeID<T>::ID;
 }
@@ -49,11 +49,12 @@ Standard_Size Graphic3d_UniformValue<T>::TypeID() const
 // function : Create
 // purpose  : Creates initialized shader variable
 // =======================================================================
-template<class T> inline
-Graphic3d_ShaderVariable* Graphic3d_ShaderVariable::Create (const TCollection_AsciiString& theName,
-                                                            const T&                       theValue)
+template <class T>
+inline Graphic3d_ShaderVariable* Graphic3d_ShaderVariable::Create(
+  const TCollection_AsciiString& theName,
+  const T&                       theValue)
 {
-  Graphic3d_ShaderVariable* theVariable = new Graphic3d_ShaderVariable (theName);
-  theVariable->myValue = new Graphic3d_UniformValue<T> (theValue);
+  Graphic3d_ShaderVariable* theVariable = new Graphic3d_ShaderVariable(theName);
+  theVariable->myValue                  = new Graphic3d_UniformValue<T>(theValue);
   return theVariable;
 }

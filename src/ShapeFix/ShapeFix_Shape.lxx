@@ -20,8 +20,8 @@
 #include <ShapeFix_Wire.hxx>
 
 //=======================================================================
-//function : FixSolidTool
-//purpose  : 
+// function : FixSolidTool
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeFix_Solid) ShapeFix_Shape::FixSolidTool() const
@@ -30,105 +30,111 @@ inline Handle(ShapeFix_Solid) ShapeFix_Shape::FixSolidTool() const
 }
 
 //=======================================================================
-//function : FixShellTool
-//purpose  : 
+// function : FixShellTool
+// purpose  :
 //=======================================================================
 
-inline Handle(ShapeFix_Shell) ShapeFix_Shape::FixShellTool() const 
+inline Handle(ShapeFix_Shell) ShapeFix_Shape::FixShellTool() const
 {
   return myFixSolid->FixShellTool();
 }
+
 //=======================================================================
-//function : FixFaceTool
-//purpose  : 
+// function : FixFaceTool
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeFix_Face) ShapeFix_Shape::FixFaceTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool();
 }
+
 //=======================================================================
-//function : FixWireTool
-//purpose  : 
+// function : FixWireTool
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeFix_Wire) ShapeFix_Shape::FixWireTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool();
 }
+
 //=======================================================================
-//function : FixEdgeTool
-//purpose  : 
+// function : FixEdgeTool
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeFix_Edge) ShapeFix_Shape::FixEdgeTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool()->FixEdgeTool();
 }
+
 //=======================================================================
-//function : FixSolidMode
-//purpose  : 
+// function : FixSolidMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixSolidMode() 
+inline Standard_Integer& ShapeFix_Shape::FixSolidMode()
 {
   return myFixSolidMode;
 }
 
 //=======================================================================
-//function : FixFreeShellMode
-//purpose  : 
+// function : FixFreeShellMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeShellMode() 
+inline Standard_Integer& ShapeFix_Shape::FixFreeShellMode()
 {
   return myFixShellMode;
 }
+
 //=======================================================================
-//function : FixFreeFaceMode
-//purpose  : 
+// function : FixFreeFaceMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeFaceMode() 
+inline Standard_Integer& ShapeFix_Shape::FixFreeFaceMode()
 {
   return myFixFaceMode;
 }
 
 //=======================================================================
-//function : FixFreeWireMode
-//purpose  : 
+// function : FixFreeWireMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixFreeWireMode() 
+inline Standard_Integer& ShapeFix_Shape::FixFreeWireMode()
 {
   return myFixWireMode;
 }
 
 //=======================================================================
-//function : FixSameParameterMode
-//purpose  : 
+// function : FixSameParameterMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixSameParameterMode() 
+inline Standard_Integer& ShapeFix_Shape::FixSameParameterMode()
 {
   return myFixSameParameterMode;
 }
+
 //=======================================================================
-//function : FixVertexPositionMode
-//purpose  : 
+// function : FixVertexPositionMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixVertexPositionMode() 
+inline Standard_Integer& ShapeFix_Shape::FixVertexPositionMode()
 {
   return myFixVertexPositionMode;
 }
 
 //=======================================================================
-//function : FixVertexTolMode
-//purpose  : 
+// function : FixVertexTolMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer& ShapeFix_Shape::FixVertexTolMode() 
+inline Standard_Integer& ShapeFix_Shape::FixVertexTolMode()
 {
   return myFixVertexTolMode;
 }

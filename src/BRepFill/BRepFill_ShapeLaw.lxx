@@ -18,11 +18,10 @@
 #include <TopTools_HArray1OfShape.hxx>
 
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
-inline const TopoDS_Edge& 
- BRepFill_ShapeLaw::Edge(const Standard_Integer Index) const
+inline const TopoDS_Edge& BRepFill_ShapeLaw::Edge(const Standard_Integer Index) const
 {
   return TopoDS::Edge(myEdges->Value(Index));
 }

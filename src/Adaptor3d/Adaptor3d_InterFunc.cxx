@@ -21,38 +21,51 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
 
-Adaptor3d_InterFunc::Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C, const Standard_Real FixVal, const Standard_Integer Fix) : myCurve2d(C),myFixVal(FixVal),myFix(Fix)
+Adaptor3d_InterFunc::Adaptor3d_InterFunc(const Handle(Adaptor2d_Curve2d)& C,
+                                         const Standard_Real              FixVal,
+                                         const Standard_Integer           Fix)
+    : myCurve2d(C),
+      myFixVal(FixVal),
+      myFix(Fix)
 {
-  if(Fix != 1 && Fix != 2 ) throw Standard_ConstructionError();
-
+  if (Fix != 1 && Fix != 2)
+    throw Standard_ConstructionError();
 }
 
-Standard_Boolean Adaptor3d_InterFunc::Value(const Standard_Real X , Standard_Real& F)
+Standard_Boolean Adaptor3d_InterFunc::Value(const Standard_Real X, Standard_Real& F)
 {
-   gp_Pnt2d C;
-   myCurve2d->D0(X,C);
-   if(myFix == 1) 
-      F=C.X()-myFixVal;
-   else
-      F=C.Y()-myFixVal;
- 
-   return Standard_True;
+  gp_Pnt2d C;
+  myCurve2d->D0(X, C);
+  if (myFix == 1)
+    F = C.X() - myFixVal;
+  else
+    F = C.Y() - myFixVal;
+
+  return Standard_True;
 }
-Standard_Boolean Adaptor3d_InterFunc::Derivative(const Standard_Real X , Standard_Real& D)
+
+Standard_Boolean Adaptor3d_InterFunc::Derivative(const Standard_Real X, Standard_Real& D)
 {
-   Standard_Real F;
-   return Values(X,F,D);
+  Standard_Real F;
+  return Values(X, F, D);
 }
-Standard_Boolean Adaptor3d_InterFunc::Values(const Standard_Real X , Standard_Real& F,Standard_Real& D)
+
+Standard_Boolean Adaptor3d_InterFunc::Values(const Standard_Real X,
+                                             Standard_Real&      F,
+                                             Standard_Real&      D)
 {
-    gp_Pnt2d C;
-    gp_Vec2d DC;
-    myCurve2d->D1(X,C,DC);
-    if(myFix == 1) { 
-      F=C.X()-myFixVal;
-      D=DC.X();}
-    else {
-      F=C.Y()-myFixVal;
-      D=DC.Y();}  
-    return Standard_True;
+  gp_Pnt2d C;
+  gp_Vec2d DC;
+  myCurve2d->D1(X, C, DC);
+  if (myFix == 1)
+  {
+    F = C.X() - myFixVal;
+    D = DC.X();
+  }
+  else
+  {
+    F = C.Y() - myFixVal;
+    D = DC.Y();
+  }
+  return Standard_True;
 }

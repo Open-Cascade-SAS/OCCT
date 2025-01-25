@@ -23,7 +23,6 @@
 
 #include <Standard_OStream.hxx>
 
-
 //! defines a Switch node of VRML specifying group properties.
 //! This  group  node  traverses  one,  none,  or  all  of  its  children.
 //! One  can  use  this  node  to  switch  on  and  off  the  effects  of  some
@@ -33,43 +32,22 @@
 //! A  value  of  -1  (the  default)  means  do  not  traverse  any  children.
 //! A  value  of  -3  traverses  all  children,  making  the  switch  behave  exactly
 //! like  a  regular  Group.
-class Vrml_Switch 
+class Vrml_Switch
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Switch(const Standard_Integer aWhichChild = -1);
-  
-  Standard_EXPORT void SetWhichChild (const Standard_Integer aWhichChild);
-  
+
+  Standard_EXPORT void SetWhichChild(const Standard_Integer aWhichChild);
+
   Standard_EXPORT Standard_Integer WhichChild() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Integer myWhichChild;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Switch_HeaderFile

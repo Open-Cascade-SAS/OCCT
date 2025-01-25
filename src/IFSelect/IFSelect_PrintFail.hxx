@@ -25,8 +25,8 @@
 //! failures and warnings. used to pilot PrintCheckList
 enum IFSelect_PrintFail
 {
-IFSelect_FailOnly,
-IFSelect_FailAndWarn
+  IFSelect_FailOnly,
+  IFSelect_FailAndWarn
 };
 
 #endif // _IFSelect_PrintFail_HeaderFile

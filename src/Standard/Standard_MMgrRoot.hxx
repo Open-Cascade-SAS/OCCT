@@ -18,47 +18,46 @@
 
 #include <Standard_TypeDef.hxx>
 
-/** 
-* Root class for Open CASCADE mmemory managers.
-* Defines only abstract interface functions.
-*/
+/**
+ * Root class for Open CASCADE mmemory managers.
+ * Defines only abstract interface functions.
+ */
 
 class Standard_MMgrRoot
 {
- public:
-
+public:
   //! Virtual destructor; required for correct inheritance
   Standard_EXPORT virtual ~Standard_MMgrRoot();
-  
+
   //! Allocate specified number of bytes.
-  //! The actually allocated space should be rounded up to 
-  //! double word size (4 bytes), as this is expected by implementation 
+  //! The actually allocated space should be rounded up to
+  //! double word size (4 bytes), as this is expected by implementation
   //! of some classes in OCC (e.g. TCollection_AsciiString)
-  Standard_EXPORT virtual Standard_Address Allocate (const Standard_Size theSize)=0;
-  
+  Standard_EXPORT virtual Standard_Address Allocate(const Standard_Size theSize) = 0;
+
   //! Reallocate previously allocated memory to contain at least theSize bytes.
   //! In case of success, new pointer is returned.
-  Standard_EXPORT virtual Standard_Address Reallocate (Standard_Address thePtr, 
-                                                       const Standard_Size theSize)=0;
-  
+  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address    thePtr,
+                                                      const Standard_Size theSize) = 0;
+
   //! Frees previously allocated memory at specified address.
-  Standard_EXPORT virtual void Free(Standard_Address thePtr)=0;
-  
-  //! Purge internally cached unused memory blocks (if any) 
+  Standard_EXPORT virtual void Free(Standard_Address thePtr) = 0;
+
+  //! Purge internally cached unused memory blocks (if any)
   //! by releasing them to the operating system.
-  //! Must return non-zero if some memory has been actually released, 
+  //! Must return non-zero if some memory has been actually released,
   //! or zero otherwise.
-  //! 
-  //! If option isDestroyed is True, this means that memory 
-  //! manager is not expected to be used any more; note however 
-  //! that in general case it is still possible to have calls to that 
+  //!
+  //! If option isDestroyed is True, this means that memory
+  //! manager is not expected to be used any more; note however
+  //! that in general case it is still possible to have calls to that
   //! instance of memory manager after this (e.g. to free memory
-  //! of static objects in OCC). Thus this option should 
+  //! of static objects in OCC). Thus this option should
   //! command the memory manager to release any cached memory
   //! to the system and not cache any more, but still remain operable...
   //!
   //! Default implementation does nothing and returns 0.
-  Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed=Standard_False);
+  Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed = Standard_False);
 };
 
 #endif

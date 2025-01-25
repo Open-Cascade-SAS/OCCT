@@ -25,58 +25,40 @@
 class StepBasic_Approval;
 class StepBasic_ApprovalRole;
 
-
 class StepBasic_ApprovalPersonOrganization;
 DEFINE_STANDARD_HANDLE(StepBasic_ApprovalPersonOrganization, Standard_Transient)
-
 
 class StepBasic_ApprovalPersonOrganization : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a ApprovalPersonOrganization
   Standard_EXPORT StepBasic_ApprovalPersonOrganization();
-  
-  Standard_EXPORT void Init (const StepBasic_PersonOrganizationSelect& aPersonOrganization, const Handle(StepBasic_Approval)& aAuthorizedApproval, const Handle(StepBasic_ApprovalRole)& aRole);
-  
-  Standard_EXPORT void SetPersonOrganization (const StepBasic_PersonOrganizationSelect& aPersonOrganization);
-  
+
+  Standard_EXPORT void Init(const StepBasic_PersonOrganizationSelect& aPersonOrganization,
+                            const Handle(StepBasic_Approval)&         aAuthorizedApproval,
+                            const Handle(StepBasic_ApprovalRole)&     aRole);
+
+  Standard_EXPORT void SetPersonOrganization(
+    const StepBasic_PersonOrganizationSelect& aPersonOrganization);
+
   Standard_EXPORT StepBasic_PersonOrganizationSelect PersonOrganization() const;
-  
-  Standard_EXPORT void SetAuthorizedApproval (const Handle(StepBasic_Approval)& aAuthorizedApproval);
-  
+
+  Standard_EXPORT void SetAuthorizedApproval(const Handle(StepBasic_Approval)& aAuthorizedApproval);
+
   Standard_EXPORT Handle(StepBasic_Approval) AuthorizedApproval() const;
-  
-  Standard_EXPORT void SetRole (const Handle(StepBasic_ApprovalRole)& aRole);
-  
+
+  Standard_EXPORT void SetRole(const Handle(StepBasic_ApprovalRole)& aRole);
+
   Standard_EXPORT Handle(StepBasic_ApprovalRole) Role() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   StepBasic_PersonOrganizationSelect personOrganization;
-  Handle(StepBasic_Approval) authorizedApproval;
-  Handle(StepBasic_ApprovalRole) role;
-
-
+  Handle(StepBasic_Approval)         authorizedApproval;
+  Handle(StepBasic_ApprovalRole)     role;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ApprovalPersonOrganization_HeaderFile

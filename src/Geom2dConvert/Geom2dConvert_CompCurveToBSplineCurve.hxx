@@ -25,62 +25,47 @@
 class Geom2d_BSplineCurve;
 class Geom2d_BoundedCurve;
 
-
 //! This algorithm converts and concat several curve in an BSplineCurve
-class Geom2dConvert_CompCurveToBSplineCurve 
+class Geom2dConvert_CompCurveToBSplineCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initialize the algorithme
   //! - Parameterisation is used to convert
-  Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-  
+  Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
+
   //! Initialize the algorithme with one curve
   //! - Parameterisation is used to convert
-  Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(const Handle(Geom2d_BoundedCurve)& BasisCurve, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-  
+  Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
+    const Handle(Geom2d_BoundedCurve)& BasisCurve,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
+
   //! Append a curve in the BSpline
   //! Return False if the curve is not G0 with the BSplineCurve.
   //! Tolerance is used to check continuity and decrease
   //! Multiplicity at the common Knot
   //! After is useful if BasisCurve is a closed curve .
-  Standard_EXPORT Standard_Boolean Add (const Handle(Geom2d_BoundedCurve)& NewCurve, const Standard_Real Tolerance, const Standard_Boolean After = Standard_False);
-  
+  Standard_EXPORT Standard_Boolean Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
+                                       const Standard_Real                Tolerance,
+                                       const Standard_Boolean             After = Standard_False);
+
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSplineCurve() const;
-  
+
   //! Clear result curve
   Standard_EXPORT void Clear();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-  
   //! Concat two BSplineCurves.
-  Standard_EXPORT void Add (Handle(Geom2d_BSplineCurve)& FirstCurve, Handle(Geom2d_BSplineCurve)& SecondCurve, const Standard_Boolean After);
+  Standard_EXPORT void Add(Handle(Geom2d_BSplineCurve)& FirstCurve,
+                           Handle(Geom2d_BSplineCurve)& SecondCurve,
+                           const Standard_Boolean       After);
 
-
-  Handle(Geom2d_BSplineCurve) myCurve;
-  Standard_Real myTol;
+  Handle(Geom2d_BSplineCurve)  myCurve;
+  Standard_Real                myTol;
   Convert_ParameterisationType myType;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dConvert_CompCurveToBSplineCurve_HeaderFile

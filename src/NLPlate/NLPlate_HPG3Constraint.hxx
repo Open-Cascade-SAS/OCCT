@@ -26,7 +26,6 @@ class gp_XY;
 class Plate_D1;
 class Plate_D2;
 
-
 class NLPlate_HPG3Constraint;
 DEFINE_STANDARD_HANDLE(NLPlate_HPG3Constraint, NLPlate_HPG2Constraint)
 
@@ -36,36 +35,20 @@ class NLPlate_HPG3Constraint : public NLPlate_HPG2Constraint
 {
 
 public:
+  Standard_EXPORT NLPlate_HPG3Constraint(const gp_XY&    UV,
+                                         const Plate_D1& D1T,
+                                         const Plate_D2& D2T,
+                                         const Plate_D3& D3T);
 
-  
-  Standard_EXPORT NLPlate_HPG3Constraint(const gp_XY& UV, const Plate_D1& D1T, const Plate_D2& D2T, const Plate_D3& D3T);
-  
   Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual const Plate_D3& G3Target() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG3Constraint,NLPlate_HPG2Constraint)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG3Constraint, NLPlate_HPG2Constraint)
 
 protected:
-
-
-
-
 private:
-
-
   Plate_D3 myG3Target;
-
-
 };
-
-
-
-
-
-
 
 #endif // _NLPlate_HPG3Constraint_HeaderFile

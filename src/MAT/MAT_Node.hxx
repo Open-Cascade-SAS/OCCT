@@ -27,7 +27,6 @@
 #include <MAT_SequenceOfBasicElt.hxx>
 class MAT_Arc;
 
-
 class MAT_Node;
 DEFINE_STANDARD_HANDLE(MAT_Node, Standard_Transient)
 
@@ -36,66 +35,49 @@ class MAT_Node : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT MAT_Node(const Standard_Integer GeomIndex,
+                           const Handle(MAT_Arc)& LinkedArc,
+                           const Standard_Real    Distance);
 
-  
-  Standard_EXPORT MAT_Node(const Standard_Integer GeomIndex, const Handle(MAT_Arc)& LinkedArc, const Standard_Real Distance);
-  
   //! Returns the index associated of the geometric
   //! representation of <me>.
   Standard_EXPORT Standard_Integer GeomIndex() const;
-  
+
   //! Returns the index associated of the node
   Standard_EXPORT Standard_Integer Index() const;
-  
+
   //! Returns in <S> the Arcs linked to <me>.
-  Standard_EXPORT void LinkedArcs (MAT_SequenceOfArc& S) const;
-  
+  Standard_EXPORT void LinkedArcs(MAT_SequenceOfArc& S) const;
+
   //! Returns  in <S> the BasicElts equidistant
   //! to <me>.
-  Standard_EXPORT void NearElts (MAT_SequenceOfBasicElt& S) const;
-  
+  Standard_EXPORT void NearElts(MAT_SequenceOfBasicElt& S) const;
+
   Standard_EXPORT Standard_Real Distance() const;
-  
+
   //! Returns True if <me> is a pending Node.
   //! (ie : the number of Arc Linked = 1)
   Standard_EXPORT Standard_Boolean PendingNode() const;
-  
+
   //! Returns True if <me> belongs to the figure.
   Standard_EXPORT Standard_Boolean OnBasicElt() const;
-  
+
   //! Returns True if the distance of <me> is Infinite
   Standard_EXPORT Standard_Boolean Infinite() const;
-  
+
   //! Set the index associated of the node
-  Standard_EXPORT void SetIndex (const Standard_Integer anIndex);
-  
-  Standard_EXPORT void SetLinkedArc (const Handle(MAT_Arc)& anArc);
+  Standard_EXPORT void SetIndex(const Standard_Integer anIndex);
 
+  Standard_EXPORT void SetLinkedArc(const Handle(MAT_Arc)& anArc);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(MAT_Node,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(MAT_Node, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer nodeIndex;
   Standard_Integer geomIndex;
   Standard_Address aLinkedArc;
-  Standard_Real distance;
-
-
+  Standard_Real    distance;
 };
-
-
-
-
-
-
 
 #endif // _MAT_Node_HeaderFile

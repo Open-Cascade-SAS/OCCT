@@ -22,41 +22,20 @@
 
 #include <StepRepr_MappedItem.hxx>
 
-
 class StepVisual_AnnotationText;
 DEFINE_STANDARD_HANDLE(StepVisual_AnnotationText, StepRepr_MappedItem)
-
 
 class StepVisual_AnnotationText : public StepRepr_MappedItem
 {
 
 public:
-
-  
   //! Returns a AnnotationText
   Standard_EXPORT StepVisual_AnnotationText();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationText,StepRepr_MappedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationText, StepRepr_MappedItem)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_AnnotationText_HeaderFile

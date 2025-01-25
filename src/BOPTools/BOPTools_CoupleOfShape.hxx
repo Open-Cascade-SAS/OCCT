@@ -18,37 +18,32 @@
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
-//class : 
-//purpose  : 
+// class :
+// purpose  :
 //=======================================================================
-class BOPTools_CoupleOfShape {
- public:
-  BOPTools_CoupleOfShape() {
-  };
+class BOPTools_CoupleOfShape
+{
+public:
+  BOPTools_CoupleOfShape() {};
   //
-  ~BOPTools_CoupleOfShape() {
-  };
+  ~BOPTools_CoupleOfShape() {};
+
   //
-  void SetShape1(const TopoDS_Shape& theShape) {
-    myShape1=theShape;
-  }
+  void SetShape1(const TopoDS_Shape& theShape) { myShape1 = theShape; }
+
   //
-  const TopoDS_Shape& Shape1()const{
-    return myShape1;
-  }
+  const TopoDS_Shape& Shape1() const { return myShape1; }
+
   //
-  void SetShape2(const TopoDS_Shape& theShape) {
-    myShape2=theShape;
-  }
+  void SetShape2(const TopoDS_Shape& theShape) { myShape2 = theShape; }
+
   //
-  const TopoDS_Shape& Shape2()const{
-    return myShape2;
-  }
+  const TopoDS_Shape& Shape2() const { return myShape2; }
+
   //
- protected:
+protected:
   TopoDS_Shape myShape1;
   TopoDS_Shape myShape2;
 };
-
 
 #endif

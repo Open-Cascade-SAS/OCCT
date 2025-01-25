@@ -24,8 +24,6 @@
 #include <Standard_ShortReal.hxx>
 #include <Intrv_Position.hxx>
 
-
-
 //! **-----------****             Other
 //! ***---*                                   IsBefore
 //! ***----------*                            IsJustBefore
@@ -40,65 +38,65 @@
 //! ***-----------------*   IsOverlappingAtEnd
 //! ***--------*   IsJustAfter
 //! ***---*   IsAfter
-class Intrv_Interval 
+class Intrv_Interval
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Intrv_Interval();
-  
+
   Standard_EXPORT Intrv_Interval(const Standard_Real Start, const Standard_Real End);
-  
-  Standard_EXPORT Intrv_Interval(const Standard_Real Start, const Standard_ShortReal TolStart, const Standard_Real End, const Standard_ShortReal TolEnd);
-  
-    Standard_Real Start() const;
-  
-    Standard_Real End() const;
-  
-    Standard_ShortReal TolStart() const;
-  
-    Standard_ShortReal TolEnd() const;
-  
-    void Bounds (Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd) const;
-  
-    void SetStart (const Standard_Real Start, const Standard_ShortReal TolStart);
-  
+
+  Standard_EXPORT Intrv_Interval(const Standard_Real      Start,
+                                 const Standard_ShortReal TolStart,
+                                 const Standard_Real      End,
+                                 const Standard_ShortReal TolEnd);
+
+  Standard_Real Start() const;
+
+  Standard_Real End() const;
+
+  Standard_ShortReal TolStart() const;
+
+  Standard_ShortReal TolEnd() const;
+
+  void Bounds(Standard_Real&      Start,
+              Standard_ShortReal& TolStart,
+              Standard_Real&      End,
+              Standard_ShortReal& TolEnd) const;
+
+  void SetStart(const Standard_Real Start, const Standard_ShortReal TolStart);
 
   //! ****+****-------------------->      Old one
   //! ****+****------------------------>      New one to fuse
   //! <<<     <<<
   //! ****+****------------------------>      result
-    void FuseAtStart (const Standard_Real Start, const Standard_ShortReal TolStart);
-  
+  void FuseAtStart(const Standard_Real Start, const Standard_ShortReal TolStart);
 
   //! ****+****----------->      Old one
   //! <----------**+**                        Tool for cutting
   //! >>>     >>>
   //! ****+****----------->      result
-    void CutAtStart (const Standard_Real Start, const Standard_ShortReal TolStart);
-  
-    void SetEnd (const Standard_Real End, const Standard_ShortReal TolEnd);
-  
+  void CutAtStart(const Standard_Real Start, const Standard_ShortReal TolStart);
+
+  void SetEnd(const Standard_Real End, const Standard_ShortReal TolEnd);
 
   //! <---------------------****+****      Old one
   //! <-----------------**+**              New one to fuse
   //! >>>     >>>
   //! <---------------------****+****      result
-    void FuseAtEnd (const Standard_Real End, const Standard_ShortReal TolEnd);
-  
+  void FuseAtEnd(const Standard_Real End, const Standard_ShortReal TolEnd);
 
   //! <-----****+****                      Old one
   //! **+**------>             Tool for cutting
   //! <<<     <<<
   //! <-----****+****                      result
-    void CutAtEnd (const Standard_Real End, const Standard_ShortReal TolEnd);
-  
+  void CutAtEnd(const Standard_Real End, const Standard_ShortReal TolEnd);
+
   //! True if myStart+myTolStart > myEnd-myTolEnd
   //! or if myEnd+myTolEnd > myStart-myTolStart
-    Standard_Boolean IsProbablyEmpty() const;
-  
+  Standard_Boolean IsProbablyEmpty() const;
+
   //! True if me is Before Other
   //! **-----------****             Other
   //! ***-----*                                   Before
@@ -114,99 +112,81 @@ public:
   //! ***-----------------*   OverlappingAtEnd
   //! ***--------*   JustAfter
   //! ***---*   After
-  Standard_EXPORT Intrv_Position Position (const Intrv_Interval& Other) const;
-  
+  Standard_EXPORT Intrv_Position Position(const Intrv_Interval& Other) const;
+
   //! True if me is Before Other
   //! ***----------------**                              me
   //! **-----------****          Other
-    Standard_Boolean IsBefore (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsBefore(const Intrv_Interval& Other) const;
+
   //! True if me is After Other
   //! **-----------****          me
   //! ***----------------**                              Other
-    Standard_Boolean IsAfter (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsAfter(const Intrv_Interval& Other) const;
+
   //! True if me is Inside Other
   //! **-----------****                          me
   //! ***--------------------------**                    Other
-    Standard_Boolean IsInside (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsInside(const Intrv_Interval& Other) const;
+
   //! True if me is Enclosing Other
   //! ***----------------------------****                  me
   //! ***------------------**                        Other
-    Standard_Boolean IsEnclosing (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsEnclosing(const Intrv_Interval& Other) const;
+
   //! True if me is just Enclosing Other at start
   //! ***---------------------------****            me
   //! ***------------------**                        Other
-    Standard_Boolean IsJustEnclosingAtStart (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustEnclosingAtStart(const Intrv_Interval& Other) const;
+
   //! True if me is just Enclosing Other at End
   //! ***----------------------------****                  me
   //! ***-----------------****                   Other
-    Standard_Boolean IsJustEnclosingAtEnd (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustEnclosingAtEnd(const Intrv_Interval& Other) const;
+
   //! True if me is just before Other
   //! ***--------****                                      me
   //! ***-----------**                        Other
-    Standard_Boolean IsJustBefore (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustBefore(const Intrv_Interval& Other) const;
+
   //! True if me is just after Other
   //! ****-------****                         me
   //! ***-----------**                                     Other
-    Standard_Boolean IsJustAfter (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustAfter(const Intrv_Interval& Other) const;
+
   //! True if me is overlapping Other at start
   //! ***---------------***                                me
   //! ***-----------**                        Other
-    Standard_Boolean IsOverlappingAtStart (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsOverlappingAtStart(const Intrv_Interval& Other) const;
+
   //! True if me is overlapping Other at end
   //! ***-----------**                        me
   //! ***---------------***                                Other
-    Standard_Boolean IsOverlappingAtEnd (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsOverlappingAtEnd(const Intrv_Interval& Other) const;
+
   //! True if me is just overlapping Other at start
   //! ***-----------***                                    me
   //! ***------------------------**                        Other
-    Standard_Boolean IsJustOverlappingAtStart (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustOverlappingAtStart(const Intrv_Interval& Other) const;
+
   //! True if me is just overlapping Other at end
   //! ***-----------*                         me
   //! ***------------------------**                        Other
-    Standard_Boolean IsJustOverlappingAtEnd (const Intrv_Interval& Other) const;
-  
+  Standard_Boolean IsJustOverlappingAtEnd(const Intrv_Interval& Other) const;
+
   //! True if me and Other have the same bounds
   //! *----------------***                                me
   //! ***-----------------**                               Other
-    Standard_Boolean IsSimilar (const Intrv_Interval& Other) const;
-
-
-
+  Standard_Boolean IsSimilar(const Intrv_Interval& Other) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real myStart;
-  Standard_Real myEnd;
+  Standard_Real      myStart;
+  Standard_Real      myEnd;
   Standard_ShortReal myTolStart;
   Standard_ShortReal myTolEnd;
-
-
 };
 
-
 #include <Intrv_Interval.lxx>
-
-
-
-
 
 #endif // _Intrv_Interval_HeaderFile

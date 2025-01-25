@@ -22,6 +22,10 @@ enum Aspect_XRTrackedDeviceRole
   Aspect_XRTrackedDeviceRole_RightHand, //!< right hand
   Aspect_XRTrackedDeviceRole_Other,     //!< other devices
 };
-enum { Aspect_XRTrackedDeviceRole_NB = Aspect_XRTrackedDeviceRole_Other + 1 };
+
+enum
+{
+  Aspect_XRTrackedDeviceRole_NB = Aspect_XRTrackedDeviceRole_Other + 1
+};
 
 #endif // _Aspect_XRTrackedDeviceRole_HeaderFile

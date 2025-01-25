@@ -23,54 +23,33 @@
 #include <ShapeUpgrade_ShapeDivide.hxx>
 class TopoDS_Shape;
 
-
 //! Splits all surfaces of revolution, cylindrical, toroidal,
 //! conical, spherical surfaces in the given shape so that
 //! each resulting segment covers not more than defined number
 //! of degrees (to segments less than 90).
-class ShapeUpgrade_ShapeDivideAngle  : public ShapeUpgrade_ShapeDivide
+class ShapeUpgrade_ShapeDivideAngle : public ShapeUpgrade_ShapeDivide
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle);
-  
+
   //! Initialize by a Shape.
-  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle, const TopoDS_Shape& S);
-  
+  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle,
+                                                const TopoDS_Shape& S);
+
   //! Resets tool for splitting face with given angle
-  Standard_EXPORT void InitTool (const Standard_Real MaxAngle);
-  
+  Standard_EXPORT void InitTool(const Standard_Real MaxAngle);
+
   //! Set maximal angle (calls InitTool)
-  Standard_EXPORT void SetMaxAngle (const Standard_Real MaxAngle);
-  
+  Standard_EXPORT void SetMaxAngle(const Standard_Real MaxAngle);
+
   //! Returns maximal angle
   Standard_EXPORT Standard_Real MaxAngle() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeUpgrade_ShapeDivideAngle_HeaderFile

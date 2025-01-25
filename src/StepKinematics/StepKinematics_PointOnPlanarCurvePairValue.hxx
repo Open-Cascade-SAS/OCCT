@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -30,32 +30,32 @@ DEFINE_STANDARD_HANDLE(StepKinematics_PointOnPlanarCurvePairValue, StepKinematic
 //! Representation of STEP entity PointOnPlanarCurvePairValue
 class StepKinematics_PointOnPlanarCurvePairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PointOnPlanarCurvePairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve,
-                           const StepKinematics_SpatialRotation& theInputOrientation);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve,
+                            const StepKinematics_SpatialRotation&       theInputOrientation);
 
   //! Returns field ActualPointOnCurve
   Standard_EXPORT Handle(StepGeom_PointOnCurve) ActualPointOnCurve() const;
   //! Sets field ActualPointOnCurve
-  Standard_EXPORT void SetActualPointOnCurve (const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve);
+  Standard_EXPORT void SetActualPointOnCurve(
+    const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve);
 
   //! Returns field InputOrientation
   Standard_EXPORT StepKinematics_SpatialRotation InputOrientation() const;
   //! Sets field InputOrientation
-  Standard_EXPORT void SetInputOrientation (const StepKinematics_SpatialRotation& theInputOrientation);
+  Standard_EXPORT void SetInputOrientation(
+    const StepKinematics_SpatialRotation& theInputOrientation);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
 
 private:
-  Handle(StepGeom_PointOnCurve) myActualPointOnCurve;
+  Handle(StepGeom_PointOnCurve)  myActualPointOnCurve;
   StepKinematics_SpatialRotation myInputOrientation;
-
 };
 #endif // _StepKinematics_PointOnPlanarCurvePairValue_HeaderFile_

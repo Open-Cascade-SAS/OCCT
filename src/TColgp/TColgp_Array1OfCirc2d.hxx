@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<gp_Circ2d> TColgp_Array1OfCirc2d;
 
-
 #endif

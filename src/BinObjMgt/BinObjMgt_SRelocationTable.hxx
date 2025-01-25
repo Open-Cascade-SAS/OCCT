@@ -20,5 +20,4 @@
 
 typedef TColStd_IndexedMapOfTransient BinObjMgt_SRelocationTable;
 
-
 #endif // _BinObjMgt_SRelocationTable_HeaderFile

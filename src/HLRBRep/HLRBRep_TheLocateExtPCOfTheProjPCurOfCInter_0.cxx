@@ -25,7 +25,6 @@
 #include <gp_Vec2d.hxx>
 #include <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
- 
 
 #define Curve Standard_Address
 #define Curve_hxx <Standard_Address.hxx>
@@ -46,4 +45,3 @@
 #define Extrema_GenLocateExtPC HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter
 #define Extrema_GenLocateExtPC_hxx <HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include "../Extrema/Extrema_GenLocateExtPC.gxx"
-

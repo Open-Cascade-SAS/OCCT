@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <TopoDS_Edge.hxx>
@@ -23,38 +22,34 @@
 IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Curve2d, Geom2dAdaptor_Curve)
 
 //=======================================================================
-//function : BRepAdaptor_Curve2d
-//purpose  : 
+// function : BRepAdaptor_Curve2d
+// purpose  :
 //=======================================================================
-BRepAdaptor_Curve2d::BRepAdaptor_Curve2d() 
+BRepAdaptor_Curve2d::BRepAdaptor_Curve2d() {}
+
+//=======================================================================
+// function : BRepAdaptor_Curve2d
+// purpose  :
+//=======================================================================
+
+BRepAdaptor_Curve2d::BRepAdaptor_Curve2d(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-}
-
-
-//=======================================================================
-//function : BRepAdaptor_Curve2d
-//purpose  : 
-//=======================================================================
-
-BRepAdaptor_Curve2d::BRepAdaptor_Curve2d(const TopoDS_Edge& E, 
-					 const TopoDS_Face& F) 
-{
-  Initialize(E,F);
+  Initialize(E, F);
 }
 
 //=======================================================================
-//function : ShallowCopy
-//purpose  : 
+// function : ShallowCopy
+// purpose  :
 //=======================================================================
 
 Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
 {
   Handle(BRepAdaptor_Curve2d) aCopy = new BRepAdaptor_Curve2d();
 
-  aCopy->myCurve = myCurve;
-  aCopy->myTypeCurve = myTypeCurve;
-  aCopy->myFirst = myFirst;
-  aCopy->myLast = myLast;
+  aCopy->myCurve        = myCurve;
+  aCopy->myTypeCurve    = myTypeCurve;
+  aCopy->myFirst        = myFirst;
+  aCopy->myLast         = myLast;
   aCopy->myBSplineCurve = myBSplineCurve;
   if (!myNestedEvaluator.IsNull())
   {
@@ -65,23 +60,22 @@ Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
 }
 
 //=======================================================================
-//function : Initialize
-//purpose  : 
+// function : Initialize
+// purpose  :
 //=======================================================================
 
-void  BRepAdaptor_Curve2d::Initialize(const TopoDS_Edge& E, 
-				      const TopoDS_Face& F)
+void BRepAdaptor_Curve2d::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   myEdge = E;
   myFace = F;
-  Standard_Real pf,pl;
-  const Handle(Geom2d_Curve) PC = BRep_Tool::CurveOnSurface(E,F,pf,pl);
-  Geom2dAdaptor_Curve::Load(PC,pf,pl);
+  Standard_Real              pf, pl;
+  const Handle(Geom2d_Curve) PC = BRep_Tool::CurveOnSurface(E, F, pf, pl);
+  Geom2dAdaptor_Curve::Load(PC, pf, pl);
 }
 
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
 const TopoDS_Edge& BRepAdaptor_Curve2d::Edge() const
@@ -90,13 +84,11 @@ const TopoDS_Edge& BRepAdaptor_Curve2d::Edge() const
 }
 
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
 
 const TopoDS_Face& BRepAdaptor_Curve2d::Face() const
 {
   return myFace;
 }
-
-

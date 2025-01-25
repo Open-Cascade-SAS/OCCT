@@ -24,18 +24,17 @@ class NCollection_Buffer : public Standard_Transient
 {
 
 public:
-
   //! Default constructor.
   //! When theData is NULL but theSize is not 0 than buffer of specified size will be allocated.
   //! @param theAlloc memory allocator
   //! @param theSize  buffer size
   //! @param theData  buffer data allocated by theAlloc
-  NCollection_Buffer (const Handle(NCollection_BaseAllocator)& theAlloc,
-                      const Standard_Size                      theSize = 0,
-                      Standard_Byte*                           theData = NULL)
-  : myData (NULL),
-    mySize (0),
-    myAllocator (theAlloc)
+  NCollection_Buffer(const Handle(NCollection_BaseAllocator)& theAlloc,
+                     const Standard_Size                      theSize = 0,
+                     Standard_Byte*                           theData = NULL)
+      : myData(NULL),
+        mySize(0),
+        myAllocator(theAlloc)
   {
     if (theData != NULL)
     {
@@ -44,48 +43,30 @@ public:
     }
     else
     {
-      Allocate (theSize);
+      Allocate(theSize);
     }
   }
 
   //! Destructor.
-  ~NCollection_Buffer()
-  {
-    Free();
-  }
+  ~NCollection_Buffer() { Free(); }
 
   //! @return buffer data
-  const Standard_Byte* Data() const
-  {
-    return myData;
-  }
+  const Standard_Byte* Data() const { return myData; }
 
   //! @return buffer data
-  Standard_Byte* ChangeData()
-  {
-    return myData;
-  }
+  Standard_Byte* ChangeData() { return myData; }
 
   //! @return true if buffer is not allocated
-  bool IsEmpty() const
-  {
-    return myData == NULL;
-  }
+  bool IsEmpty() const { return myData == NULL; }
 
   //! Return buffer length in bytes.
-  Standard_Size Size() const
-  {
-    return mySize;
-  }
+  Standard_Size Size() const { return mySize; }
 
   //! @return buffer allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const
-  {
-    return myAllocator;
-  }
+  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
 
   //! Assign new buffer allocator with de-allocation of buffer.
-  void SetAllocator (const Handle(NCollection_BaseAllocator)& theAlloc)
+  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   {
     Free();
     myAllocator = theAlloc;
@@ -93,14 +74,13 @@ public:
 
   //! Allocate the buffer.
   //! @param theSize buffer length in bytes
-  bool Allocate (const Standard_Size theSize)
+  bool Allocate(const Standard_Size theSize)
   {
     Free();
     mySize = theSize;
-    if (theSize != 0
-    || !myAllocator.IsNull())
+    if (theSize != 0 || !myAllocator.IsNull())
     {
-      myData = (Standard_Byte* )myAllocator->Allocate (theSize);
+      myData = (Standard_Byte*)myAllocator->Allocate(theSize);
     }
 
     if (myData == NULL)
@@ -116,31 +96,28 @@ public:
   {
     if (!myAllocator.IsNull())
     {
-      myAllocator->Free (myData);
+      myAllocator->Free(myData);
     }
     myData = NULL;
     mySize = 0;
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
   {
     (void)theDepth;
-    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myData)
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySize)
-    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myAllocator.get())
+    OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myData)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySize)
+    OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myAllocator.get())
   }
 
 protected:
-
   Standard_Byte*                    myData;      //!< data pointer
   Standard_Size                     mySize;      //!< buffer length in bytes
   Handle(NCollection_BaseAllocator) myAllocator; //!< buffer allocator
 
 public:
-
-  DEFINE_STANDARD_RTTI_INLINE(NCollection_Buffer,Standard_Transient) // Type definition
-
+  DEFINE_STANDARD_RTTI_INLINE(NCollection_Buffer, Standard_Transient) // Type definition
 };
 
 DEFINE_STANDARD_HANDLE(NCollection_Buffer, Standard_Transient)

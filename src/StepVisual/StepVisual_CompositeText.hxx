@@ -25,52 +25,33 @@
 class TCollection_HAsciiString;
 class StepVisual_TextOrCharacter;
 
-
 class StepVisual_CompositeText;
 DEFINE_STANDARD_HANDLE(StepVisual_CompositeText, StepGeom_GeometricRepresentationItem)
-
 
 class StepVisual_CompositeText : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a CompositeText
   Standard_EXPORT StepVisual_CompositeText();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
-  
-  Standard_EXPORT void SetCollectedText (const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
+                            const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
+
+  Standard_EXPORT void SetCollectedText(
+    const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
+
   Standard_EXPORT Handle(StepVisual_HArray1OfTextOrCharacter) CollectedText() const;
-  
-  Standard_EXPORT StepVisual_TextOrCharacter CollectedTextValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepVisual_TextOrCharacter CollectedTextValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbCollectedText() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CompositeText,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CompositeText, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_HArray1OfTextOrCharacter) collectedText;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_CompositeText_HeaderFile

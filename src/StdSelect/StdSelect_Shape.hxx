@@ -20,30 +20,28 @@
 #include <TopoDS_Shape.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 
-
 //! Presentable shape only for purpose of display for BRepOwner...
 class StdSelect_Shape : public PrsMgr_PresentableObject
 {
   DEFINE_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 public:
+  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape&         theShape,
+                                  const Handle(Prs3d_Drawer)& theDrawer = Handle(Prs3d_Drawer)());
 
-  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer = Handle(Prs3d_Drawer)());
-
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   const TopoDS_Shape& Shape() const { return mysh; }
 
-  void Shape (const TopoDS_Shape& theShape) { mysh = theShape; }
+  void Shape(const TopoDS_Shape& theShape) { mysh = theShape; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
   TopoDS_Shape mysh;
-
 };
 
 DEFINE_STANDARD_HANDLE(StdSelect_Shape, PrsMgr_PresentableObject)

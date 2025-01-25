@@ -26,7 +26,6 @@
 class Geom2d_Curve;
 class TopOpeBRepDS_Transition;
 
-
 class TopOpeBRepDS_SurfaceCurveInterference;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_SurfaceCurveInterference, TopOpeBRepDS_Interference)
 
@@ -35,39 +34,26 @@ class TopOpeBRepDS_SurfaceCurveInterference : public TopOpeBRepDS_Interference
 {
 
 public:
-
-  
   Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference();
-  
-  Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(const TopOpeBRepDS_Transition& Transition, const TopOpeBRepDS_Kind SupportType, const Standard_Integer Support, const TopOpeBRepDS_Kind GeometryType, const Standard_Integer Geometry, const Handle(Geom2d_Curve)& PC);
-  
+
+  Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(const TopOpeBRepDS_Transition& Transition,
+                                                        const TopOpeBRepDS_Kind        SupportType,
+                                                        const Standard_Integer         Support,
+                                                        const TopOpeBRepDS_Kind        GeometryType,
+                                                        const Standard_Integer         Geometry,
+                                                        const Handle(Geom2d_Curve)&    PC);
+
   Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(const Handle(TopOpeBRepDS_Interference)& I);
-  
+
   Standard_EXPORT const Handle(Geom2d_Curve)& PCurve() const;
-  
-  Standard_EXPORT void PCurve (const Handle(Geom2d_Curve)& PC);
-  
 
+  Standard_EXPORT void PCurve(const Handle(Geom2d_Curve)& PC);
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference,TopOpeBRepDS_Interference)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference, TopOpeBRepDS_Interference)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Geom2d_Curve) myPCurve;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_SurfaceCurveInterference_HeaderFile

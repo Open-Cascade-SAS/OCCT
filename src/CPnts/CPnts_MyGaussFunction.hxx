@@ -25,48 +25,27 @@
 #include <math_Function.hxx>
 #include <Standard_Real.hxx>
 
-
 //! for implementation, compute values for Gauss
-class CPnts_MyGaussFunction  : public math_Function
+class CPnts_MyGaussFunction : public math_Function
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    CPnts_MyGaussFunction();
-  
+  CPnts_MyGaussFunction();
+
   //! F  is a pointer on a  function  D is a client data
   //!
   //! Each value is computed with F(D)
-  Standard_EXPORT void Init (const CPnts_RealFunction& F, const Standard_Address D);
-  
-  Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT void Init(const CPnts_RealFunction& F, const Standard_Address D);
 
-
-
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   CPnts_RealFunction myFunction;
-  Standard_Address myData;
-
-
+  Standard_Address   myData;
 };
 
-
 #include <CPnts_MyGaussFunction.lxx>
-
-
-
-
 
 #endif // _CPnts_MyGaussFunction_HeaderFile

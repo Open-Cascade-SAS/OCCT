@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ElCLib.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanCuCu.hxx>
@@ -23,51 +22,46 @@
 #include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
 
-void Geom2dGcc_FunctionTanCuCu::
-InitDerivative(const math_Vector& X,
-               gp_Pnt2d&    Point1,
-               gp_Pnt2d&    Point2,
-               gp_Vec2d&    Tan1  ,
-               gp_Vec2d&    Tan2  ,
-               gp_Vec2d&    D21   ,
-               gp_Vec2d&    D22   )
+void Geom2dGcc_FunctionTanCuCu::InitDerivative(const math_Vector& X,
+                                               gp_Pnt2d&          Point1,
+                                               gp_Pnt2d&          Point2,
+                                               gp_Vec2d&          Tan1,
+                                               gp_Vec2d&          Tan2,
+                                               gp_Vec2d&          D21,
+                                               gp_Vec2d&          D22)
 {
   switch (TheType)
   {
-  case Geom2dGcc_CuCu:
-    {
-      Geom2dGcc_CurveTool::D2(TheCurve1,X(1),Point1,Tan1,D21);
-      Geom2dGcc_CurveTool::D2(TheCurve2,X(2),Point2,Tan2,D22);
+    case Geom2dGcc_CuCu: {
+      Geom2dGcc_CurveTool::D2(TheCurve1, X(1), Point1, Tan1, D21);
+      Geom2dGcc_CurveTool::D2(TheCurve2, X(2), Point2, Tan2, D22);
     }
     break;
-  case Geom2dGcc_CiCu:
-    {
-      ElCLib::D2(X(1),TheCirc1,Point1,Tan1,D21);
-      Geom2dGcc_CurveTool::D2(TheCurve2,X(2),Point2,Tan2,D22);
+    case Geom2dGcc_CiCu: {
+      ElCLib::D2(X(1), TheCirc1, Point1, Tan1, D21);
+      Geom2dGcc_CurveTool::D2(TheCurve2, X(2), Point2, Tan2, D22);
     }
     break;
-  default:
-    {
+    default: {
     }
   }
 }
 
-Geom2dGcc_FunctionTanCuCu::
-Geom2dGcc_FunctionTanCuCu(const Geom2dAdaptor_Curve& C1  ,
-                          const Geom2dAdaptor_Curve& C2  ) {
-                            TheCurve1 = C1;
-                            TheCurve2 = C2;
-                            TheType = Geom2dGcc_CuCu;
+Geom2dGcc_FunctionTanCuCu::Geom2dGcc_FunctionTanCuCu(const Geom2dAdaptor_Curve& C1,
+                                                     const Geom2dAdaptor_Curve& C2)
+{
+  TheCurve1 = C1;
+  TheCurve2 = C2;
+  TheType   = Geom2dGcc_CuCu;
 }
 
-Geom2dGcc_FunctionTanCuCu::
-Geom2dGcc_FunctionTanCuCu(const gp_Circ2d& C1  ,
-                          const Geom2dAdaptor_Curve&  C2  ) {
-                            TheCirc1 = C1;
-                            TheCurve2 = C2;
-                            TheType = Geom2dGcc_CiCu;
+Geom2dGcc_FunctionTanCuCu::Geom2dGcc_FunctionTanCuCu(const gp_Circ2d&           C1,
+                                                     const Geom2dAdaptor_Curve& C2)
+{
+  TheCirc1  = C1;
+  TheCurve2 = C2;
+  TheType   = Geom2dGcc_CiCu;
 }
-
 
 //=========================================================================
 //  soit P1 le point sur la courbe TheCurve1 d abscisse u1.               +
@@ -121,100 +115,102 @@ Geom2dGcc_FunctionTanCuCu(const gp_Circ2d& C1  ,
 //                                                                        +
 //=========================================================================
 
-Standard_Integer Geom2dGcc_FunctionTanCuCu::
-NbVariables() const { return 2; }
-
-Standard_Integer Geom2dGcc_FunctionTanCuCu::
-NbEquations() const { return 2; }
-
-Standard_Boolean Geom2dGcc_FunctionTanCuCu::
-Value (const math_Vector& X    ,
-       math_Vector& Fval ) {
-         gp_Pnt2d Point1;
-         gp_Pnt2d Point2;
-         gp_Vec2d Vect11;
-         gp_Vec2d Vect21;
-         gp_Vec2d Vect12;
-         gp_Vec2d Vect22;
-         InitDerivative(X,Point1,Point2,Vect11,Vect21,Vect12,Vect22);
-         Standard_Real NormeD11 = Vect11.Magnitude();
-         Standard_Real NormeD21 = Vect21.Magnitude();
-         gp_Vec2d TheDirection(Point1,Point2);
-         Standard_Real squaredir = TheDirection.Dot(TheDirection);
-         Fval(1) = TheDirection.Crossed(Vect11)/(NormeD11*squaredir);
-         Fval(2) = Vect11.Crossed(Vect21)/(NormeD11*NormeD21);
-         return Standard_True;
+Standard_Integer Geom2dGcc_FunctionTanCuCu::NbVariables() const
+{
+  return 2;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuCu::
-Derivatives (const math_Vector& X     ,
-             math_Matrix& Deriv ) {
-               gp_Pnt2d Point1;
-               gp_Pnt2d Point2;
-               gp_Vec2d Vect11;
-               gp_Vec2d Vect21;
-               gp_Vec2d Vect12;
-               gp_Vec2d Vect22;
-               InitDerivative(X,Point1,Point2,Vect11,Vect21,Vect12,Vect22);
-               Standard_Real NormeD11 = Vect11.Magnitude();
-               Standard_Real NormeD21 = Vect21.Magnitude();
-#ifdef OCCT_DEBUG
-               gp_Vec2d V2V1(Vect11.XY(),Vect21.XY());
-#else
-               Vect11.XY();
-               Vect21.XY();
-#endif
-               gp_Vec2d TheDirection(Point1,Point2);
-               Standard_Real squaredir = TheDirection.Dot(TheDirection);
-               Deriv(1,1) = TheDirection.Crossed(Vect12)/(NormeD11*squaredir)+
-                 (TheDirection.Crossed(Vect11)*NormeD11*NormeD11*Vect11.Dot(TheDirection))/
-                 (NormeD11*NormeD11*NormeD11*squaredir*squaredir*squaredir);
-               Deriv(1,2) = Vect21.Crossed(Vect11)/(NormeD11*squaredir)-
-                 (TheDirection.Crossed(Vect11)*NormeD11*NormeD11*Vect21.Dot(TheDirection))/
-                 (NormeD11*NormeD11*NormeD11*squaredir*squaredir*squaredir);
-               Deriv(2,1)=(Vect12.Crossed(Vect21))/(NormeD11*NormeD21)-
-                 (Vect11.Crossed(Vect21))*(Vect12.Dot(Vect11))*NormeD21*NormeD21/
-                 (NormeD11*NormeD11*NormeD11*NormeD21*NormeD21*NormeD21);
-               Deriv(2,2)=(Vect11.Crossed(Vect22))/(NormeD11*NormeD21)-
-                 (Vect11.Crossed(Vect21))*(Vect22.Dot(Vect21))*NormeD11*NormeD11/
-                 (NormeD11*NormeD11*NormeD11*NormeD21*NormeD21*NormeD21);
-               return Standard_True;
+Standard_Integer Geom2dGcc_FunctionTanCuCu::NbEquations() const
+{
+  return 2;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuCu::
-Values (const math_Vector& X     ,
-        math_Vector& Fval  ,
-        math_Matrix& Deriv ) {
-          gp_Pnt2d Point1;
-          gp_Pnt2d Point2;
-          gp_Vec2d Vect11;
-          gp_Vec2d Vect21;
-          gp_Vec2d Vect12;
-          gp_Vec2d Vect22;
-          InitDerivative(X,Point1,Point2,Vect11,Vect21,Vect12,Vect22);
-          Standard_Real NormeD11 = Vect11.Magnitude();
-          Standard_Real NormeD21 = Vect21.Magnitude();
+Standard_Boolean Geom2dGcc_FunctionTanCuCu::Value(const math_Vector& X, math_Vector& Fval)
+{
+  gp_Pnt2d Point1;
+  gp_Pnt2d Point2;
+  gp_Vec2d Vect11;
+  gp_Vec2d Vect21;
+  gp_Vec2d Vect12;
+  gp_Vec2d Vect22;
+  InitDerivative(X, Point1, Point2, Vect11, Vect21, Vect12, Vect22);
+  Standard_Real NormeD11 = Vect11.Magnitude();
+  Standard_Real NormeD21 = Vect21.Magnitude();
+  gp_Vec2d      TheDirection(Point1, Point2);
+  Standard_Real squaredir = TheDirection.Dot(TheDirection);
+  Fval(1)                 = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
+  Fval(2)                 = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
+  return Standard_True;
+}
+
+Standard_Boolean Geom2dGcc_FunctionTanCuCu::Derivatives(const math_Vector& X, math_Matrix& Deriv)
+{
+  gp_Pnt2d Point1;
+  gp_Pnt2d Point2;
+  gp_Vec2d Vect11;
+  gp_Vec2d Vect21;
+  gp_Vec2d Vect12;
+  gp_Vec2d Vect22;
+  InitDerivative(X, Point1, Point2, Vect11, Vect21, Vect12, Vect22);
+  Standard_Real NormeD11 = Vect11.Magnitude();
+  Standard_Real NormeD21 = Vect21.Magnitude();
 #ifdef OCCT_DEBUG
-          gp_Vec2d V2V1(Vect11.XY(),Vect21.XY());
+  gp_Vec2d V2V1(Vect11.XY(), Vect21.XY());
 #else
-          Vect11.XY();
-          Vect21.XY();
+  Vect11.XY();
+  Vect21.XY();
 #endif
-          gp_Vec2d TheDirection(Point1,Point2);
-          Standard_Real squaredir = TheDirection.Dot(TheDirection);
-          Fval(1) = TheDirection.Crossed(Vect11)/(NormeD11*squaredir);
-          Fval(2) = Vect11.Crossed(Vect21)/(NormeD11*NormeD21);
-          Deriv(1,1) = TheDirection.Crossed(Vect12)/(NormeD11*squaredir)+
-            (TheDirection.Crossed(Vect11)*NormeD11*NormeD11*Vect11.Dot(TheDirection))/
-            (NormeD11*NormeD11*NormeD11*squaredir*squaredir*squaredir);
-          Deriv(1,2) = Vect21.Crossed(Vect11)/(NormeD11*squaredir)-
-            (TheDirection.Crossed(Vect11)*NormeD11*NormeD11*Vect21.Dot(TheDirection))/
-            (NormeD11*NormeD11*NormeD11*squaredir*squaredir*squaredir);
-          Deriv(2,1)=(Vect12.Crossed(Vect21))/(NormeD11*NormeD21)-
-            (Vect11.Crossed(Vect21))*(Vect12.Dot(Vect11))*NormeD21*NormeD21/
-            (NormeD11*NormeD11*NormeD11*NormeD21*NormeD21*NormeD21);
-          Deriv(2,2)=(Vect11.Crossed(Vect22))/(NormeD11*NormeD21)-
-            (Vect11.Crossed(Vect21))*(Vect22.Dot(Vect21))*NormeD11*NormeD11/
-            (NormeD11*NormeD11*NormeD11*NormeD21*NormeD21*NormeD21);
-          return Standard_True;
+  gp_Vec2d      TheDirection(Point1, Point2);
+  Standard_Real squaredir = TheDirection.Dot(TheDirection);
+  Deriv(1, 1)             = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
+                + (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect11.Dot(TheDirection))
+                    / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
+  Deriv(1, 2) = Vect21.Crossed(Vect11) / (NormeD11 * squaredir)
+                - (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect21.Dot(TheDirection))
+                    / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
+  Deriv(2, 1) = (Vect12.Crossed(Vect21)) / (NormeD11 * NormeD21)
+                - (Vect11.Crossed(Vect21)) * (Vect12.Dot(Vect11)) * NormeD21 * NormeD21
+                    / (NormeD11 * NormeD11 * NormeD11 * NormeD21 * NormeD21 * NormeD21);
+  Deriv(2, 2) = (Vect11.Crossed(Vect22)) / (NormeD11 * NormeD21)
+                - (Vect11.Crossed(Vect21)) * (Vect22.Dot(Vect21)) * NormeD11 * NormeD11
+                    / (NormeD11 * NormeD11 * NormeD11 * NormeD21 * NormeD21 * NormeD21);
+  return Standard_True;
+}
+
+Standard_Boolean Geom2dGcc_FunctionTanCuCu::Values(const math_Vector& X,
+                                                   math_Vector&       Fval,
+                                                   math_Matrix&       Deriv)
+{
+  gp_Pnt2d Point1;
+  gp_Pnt2d Point2;
+  gp_Vec2d Vect11;
+  gp_Vec2d Vect21;
+  gp_Vec2d Vect12;
+  gp_Vec2d Vect22;
+  InitDerivative(X, Point1, Point2, Vect11, Vect21, Vect12, Vect22);
+  Standard_Real NormeD11 = Vect11.Magnitude();
+  Standard_Real NormeD21 = Vect21.Magnitude();
+#ifdef OCCT_DEBUG
+  gp_Vec2d V2V1(Vect11.XY(), Vect21.XY());
+#else
+  Vect11.XY();
+  Vect21.XY();
+#endif
+  gp_Vec2d      TheDirection(Point1, Point2);
+  Standard_Real squaredir = TheDirection.Dot(TheDirection);
+  Fval(1)                 = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
+  Fval(2)                 = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
+  Deriv(1, 1)             = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
+                + (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect11.Dot(TheDirection))
+                    / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
+  Deriv(1, 2) = Vect21.Crossed(Vect11) / (NormeD11 * squaredir)
+                - (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect21.Dot(TheDirection))
+                    / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
+  Deriv(2, 1) = (Vect12.Crossed(Vect21)) / (NormeD11 * NormeD21)
+                - (Vect11.Crossed(Vect21)) * (Vect12.Dot(Vect11)) * NormeD21 * NormeD21
+                    / (NormeD11 * NormeD11 * NormeD11 * NormeD21 * NormeD21 * NormeD21);
+  Deriv(2, 2) = (Vect11.Crossed(Vect22)) / (NormeD11 * NormeD21)
+                - (Vect11.Crossed(Vect21)) * (Vect22.Dot(Vect21)) * NormeD11 * NormeD11
+                    / (NormeD11 * NormeD11 * NormeD11 * NormeD21 * NormeD21 * NormeD21);
+  return Standard_True;
 }

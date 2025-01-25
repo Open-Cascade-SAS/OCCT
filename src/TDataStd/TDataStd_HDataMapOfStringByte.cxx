@@ -17,11 +17,11 @@
 
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte, Standard_Transient)
 
 //=======================================================================
-//function : TDataStd_HDataMapOfStringByte
-//purpose  : Constructor of empty map
+// function : TDataStd_HDataMapOfStringByte
+// purpose  : Constructor of empty map
 //=======================================================================
 TDataStd_HDataMapOfStringByte::TDataStd_HDataMapOfStringByte(const Standard_Integer NbBuckets)
 {
@@ -29,10 +29,11 @@ TDataStd_HDataMapOfStringByte::TDataStd_HDataMapOfStringByte(const Standard_Inte
 }
 
 //=======================================================================
-//function : TDataStd_HDataMapOfStringByte
-//purpose  : Constructor from already existing map; performs copying
+// function : TDataStd_HDataMapOfStringByte
+// purpose  : Constructor from already existing map; performs copying
 //=======================================================================
-TDataStd_HDataMapOfStringByte::TDataStd_HDataMapOfStringByte (const TDataStd_DataMapOfStringByte &theOther)
-{ 
-  myMap.Assign ( theOther ); 
+TDataStd_HDataMapOfStringByte::TDataStd_HDataMapOfStringByte(
+  const TDataStd_DataMapOfStringByte& theOther)
+{
+  myMap.Assign(theOther);
 }

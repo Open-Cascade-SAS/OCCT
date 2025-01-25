@@ -21,27 +21,42 @@
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 
-inline Standard_Boolean Contap_ContAna::IsDone () const
+inline Standard_Boolean Contap_ContAna::IsDone() const
 {
   return done;
 }
 
-inline Standard_Integer Contap_ContAna::NbContours () const
+inline Standard_Integer Contap_ContAna::NbContours() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return nbSol;
 }
 
-inline GeomAbs_CurveType Contap_ContAna::TypeContour () const
+inline GeomAbs_CurveType Contap_ContAna::TypeContour() const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (nbSol == 0) {throw Standard_DomainError();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (nbSol == 0)
+  {
+    throw Standard_DomainError();
+  }
   return typL;
 }
 
-inline gp_Circ Contap_ContAna::Circle () const
+inline gp_Circ Contap_ContAna::Circle() const
 {
-  if (!done) {throw StdFail_NotDone();}
-  if (typL != GeomAbs_Circle || nbSol == 0) {throw Standard_DomainError();}
-  return gp_Circ(gp_Ax2(pt1,dir1,dir2),prm);
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (typL != GeomAbs_Circle || nbSol == 0)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Circ(gp_Ax2(pt1, dir1, dir2), prm);
 }

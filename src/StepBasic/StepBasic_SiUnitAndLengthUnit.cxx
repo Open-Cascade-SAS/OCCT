@@ -11,21 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_LengthUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit ()
-{
-}
+StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit() {}
 
-void StepBasic_SiUnitAndLengthUnit::Init(const Standard_Boolean hasAprefix,
-					 const StepBasic_SiPrefix aPrefix,
-					 const StepBasic_SiUnitName aName)
+void StepBasic_SiUnitAndLengthUnit::Init(const Standard_Boolean     hasAprefix,
+                                         const StepBasic_SiPrefix   aPrefix,
+                                         const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
   // --- ANDOR component fields ---
@@ -38,7 +35,6 @@ void StepBasic_SiUnitAndLengthUnit::Init(const Standard_Boolean hasAprefix,
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 
-
 void StepBasic_SiUnitAndLengthUnit::SetLengthUnit(const Handle(StepBasic_LengthUnit)& aLengthUnit)
 {
   lengthUnit = aLengthUnit;
@@ -48,5 +44,3 @@ Handle(StepBasic_LengthUnit) StepBasic_SiUnitAndLengthUnit::LengthUnit() const
 {
   return lengthUnit;
 }
-
-

@@ -23,18 +23,13 @@
 
 class HeaderSection_Protocol;
 
-
-
-class HeaderSection 
+class HeaderSection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! creates a Protocol
   Standard_EXPORT static Handle(HeaderSection_Protocol) Protocol();
-
 };
 
 #endif // _HeaderSection_HeaderFile

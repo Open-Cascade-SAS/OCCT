@@ -11,47 +11,63 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentRelationship, Standard_Transient)
 
-StepBasic_DocumentRelationship::StepBasic_DocumentRelationship  ()    {  }
+StepBasic_DocumentRelationship::StepBasic_DocumentRelationship() {}
 
-void  StepBasic_DocumentRelationship::Init
-  (const Handle(TCollection_HAsciiString)& aName,
-   const Handle(TCollection_HAsciiString)& aDescription,
-   const Handle(StepBasic_Document)& aRelating,
-   const Handle(StepBasic_Document)& aRelated)
+void StepBasic_DocumentRelationship::Init(const Handle(TCollection_HAsciiString)& aName,
+                                          const Handle(TCollection_HAsciiString)& aDescription,
+                                          const Handle(StepBasic_Document)&       aRelating,
+                                          const Handle(StepBasic_Document)&       aRelated)
 {
-  theName = aName;
+  theName        = aName;
   theDescription = aDescription;
-  theRelating = aRelating;
-  theRelated  = aRelated;
+  theRelating    = aRelating;
+  theRelated     = aRelated;
 }
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentRelationship::Name () const
-{  return theName;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentRelationship::Name() const
+{
+  return theName;
+}
 
-void  StepBasic_DocumentRelationship::SetName (const Handle(TCollection_HAsciiString)& aName)
-{  theName = aName;  }
+void StepBasic_DocumentRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+{
+  theName = aName;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentRelationship::Description () const
-{  return theDescription;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentRelationship::Description() const
+{
+  return theDescription;
+}
 
-void  StepBasic_DocumentRelationship::SetDescription (const Handle(TCollection_HAsciiString)& aDescription)
-{  theDescription = aDescription;  }
+void StepBasic_DocumentRelationship::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
+{
+  theDescription = aDescription;
+}
 
-Handle(StepBasic_Document)  StepBasic_DocumentRelationship::RelatingDocument () const
-{  return theRelating;  }
+Handle(StepBasic_Document) StepBasic_DocumentRelationship::RelatingDocument() const
+{
+  return theRelating;
+}
 
-void  StepBasic_DocumentRelationship::SetRelatingDocument (const Handle(StepBasic_Document)& aRelating)
-{  theRelating = aRelating;  }
+void StepBasic_DocumentRelationship::SetRelatingDocument(
+  const Handle(StepBasic_Document)& aRelating)
+{
+  theRelating = aRelating;
+}
 
-Handle(StepBasic_Document)  StepBasic_DocumentRelationship::RelatedDocument () const
-{  return theRelated;  }
+Handle(StepBasic_Document) StepBasic_DocumentRelationship::RelatedDocument() const
+{
+  return theRelated;
+}
 
-void  StepBasic_DocumentRelationship::SetRelatedDocument (const Handle(StepBasic_Document)& aRelated)
-{  theRelated = aRelated;  }
+void StepBasic_DocumentRelationship::SetRelatedDocument(const Handle(StepBasic_Document)& aRelated)
+{
+  theRelated = aRelated;
+}

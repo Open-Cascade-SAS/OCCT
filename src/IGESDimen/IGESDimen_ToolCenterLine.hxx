@@ -35,64 +35,54 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a CenterLine. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDimen_ToolCenterLine 
+class IGESDimen_ToolCenterLine
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolCenterLine, ready to work
   Standard_EXPORT IGESDimen_ToolCenterLine();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDimen_CenterLine)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_CenterLine)&    ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDimen_CenterLine)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_CenterLine)& ent,
+                                      IGESData_IGESWriter&                IW) const;
+
   //! Lists the Entities shared by a CenterLine <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDimen_CenterLine)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDimen_CenterLine)& ent,
+                                 Interface_EntityIterator&           iter) const;
+
   //! Sets automatic unambiguous Correction on a CenterLine
   //! (LineFont forced to Rank = 1, DataType forced to 1)
-  Standard_EXPORT Standard_Boolean OwnCorrect (const Handle(IGESDimen_CenterLine)& ent) const;
-  
+  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESDimen_CenterLine)& ent) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDimen_CenterLine)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDimen_CenterLine)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDimen_CenterLine)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_CenterLine)& ent,
+                                const Interface_ShareTool&          shares,
+                                Handle(Interface_Check)&            ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDimen_CenterLine)& entfrom, const Handle(IGESDimen_CenterLine)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_CenterLine)& entfrom,
+                               const Handle(IGESDimen_CenterLine)& entto,
+                               Interface_CopyTool&                 TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_CenterLine)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDimen_CenterLine)& ent,
+                               const IGESData_IGESDumper&          dumper,
+                               Standard_OStream&                   S,
+                               const Standard_Integer              own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_ToolCenterLine_HeaderFile

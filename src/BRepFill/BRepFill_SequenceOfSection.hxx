@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<BRepFill_Section> BRepFill_SequenceOfSection;
 
-
 #endif

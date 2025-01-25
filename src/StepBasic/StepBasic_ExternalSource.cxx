@@ -18,43 +18,41 @@
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_SourceItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_ExternalSource
-//purpose  : 
+// function : StepBasic_ExternalSource
+// purpose  :
 //=======================================================================
-StepBasic_ExternalSource::StepBasic_ExternalSource ()
-{
-}
+StepBasic_ExternalSource::StepBasic_ExternalSource() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_ExternalSource::Init (const StepBasic_SourceItem &aSourceId)
+void StepBasic_ExternalSource::Init(const StepBasic_SourceItem& aSourceId)
 {
 
   theSourceId = aSourceId;
 }
 
 //=======================================================================
-//function : SourceId
-//purpose  : 
+// function : SourceId
+// purpose  :
 //=======================================================================
 
-StepBasic_SourceItem StepBasic_ExternalSource::SourceId () const
+StepBasic_SourceItem StepBasic_ExternalSource::SourceId() const
 {
   return theSourceId;
 }
 
 //=======================================================================
-//function : SetSourceId
-//purpose  : 
+// function : SetSourceId
+// purpose  :
 //=======================================================================
 
-void StepBasic_ExternalSource::SetSourceId (const StepBasic_SourceItem &aSourceId)
+void StepBasic_ExternalSource::SetSourceId(const StepBasic_SourceItem& aSourceId)
 {
   theSourceId = aSourceId;
 }

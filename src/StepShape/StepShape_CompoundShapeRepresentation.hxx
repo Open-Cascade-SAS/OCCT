@@ -21,7 +21,6 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_CompoundShapeRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_CompoundShapeRepresentation, StepShape_ShapeRepresentation)
 
@@ -30,32 +29,13 @@ class StepShape_CompoundShapeRepresentation : public StepShape_ShapeRepresentati
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_CompoundShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_CompoundShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_CompoundShapeRepresentation, StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_CompoundShapeRepresentation_HeaderFile

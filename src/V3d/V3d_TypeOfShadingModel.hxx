@@ -19,7 +19,8 @@
 
 #include <Graphic3d_TypeOfShadingModel.hxx>
 
-Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfShadingModel should be used instead")
+Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfShadingModel should be used "
+                    "instead")
 typedef Graphic3d_TypeOfShadingModel V3d_TypeOfShadingModel;
 
 #endif // _V3d_TypeOfShadingModel_HeaderFile

@@ -32,21 +32,31 @@ class VrmlConverter_Drawer;
 //! class (Prs3d).    This kind  of the presentation
 //! is     converted       into   IndexedFaceSet   and
 //! IndexedLineSet ( VRML ).
-class VrmlConverter_WFDeflectionRestrictedFace 
+class VrmlConverter_WFDeflectionRestrictedFace
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
-  
-  Standard_EXPORT static void AddUIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
-  
-  Standard_EXPORT static void AddVIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
-  
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
+                                  const Handle(BRepAdaptor_Surface)&  aFace,
+                                  const Handle(VrmlConverter_Drawer)& aDrawer);
 
+  Standard_EXPORT static void AddUIso(Standard_OStream&                   anOStream,
+                                      const Handle(BRepAdaptor_Surface)&  aFace,
+                                      const Handle(VrmlConverter_Drawer)& aDrawer);
+
+  Standard_EXPORT static void AddVIso(Standard_OStream&                   anOStream,
+                                      const Handle(BRepAdaptor_Surface)&  aFace,
+                                      const Handle(VrmlConverter_Drawer)& aDrawer);
+
+  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
+                                  const Handle(BRepAdaptor_Surface)&  aFace,
+                                  const Standard_Boolean              DrawUIso,
+                                  const Standard_Boolean              DrawVIso,
+                                  const Standard_Real                 Deflection,
+                                  const Standard_Integer              NBUiso,
+                                  const Standard_Integer              NBViso,
+                                  const Handle(VrmlConverter_Drawer)& aDrawer);
 };
 
 #endif // _VrmlConverter_WFDeflectionRestrictedFace_HeaderFile

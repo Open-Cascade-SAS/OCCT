@@ -17,14 +17,13 @@
 #ifndef _TopoDSToStep_MakeFaceError_HeaderFile
 #define _TopoDSToStep_MakeFaceError_HeaderFile
 
-
 enum TopoDSToStep_MakeFaceError
 {
-TopoDSToStep_FaceDone,
-TopoDSToStep_InfiniteFace,
-TopoDSToStep_NonManifoldFace,
-TopoDSToStep_NoWireMapped,
-TopoDSToStep_FaceOther
+  TopoDSToStep_FaceDone,
+  TopoDSToStep_InfiniteFace,
+  TopoDSToStep_NonManifoldFace,
+  TopoDSToStep_NoWireMapped,
+  TopoDSToStep_FaceOther
 };
 
 #endif // _TopoDSToStep_MakeFaceError_HeaderFile

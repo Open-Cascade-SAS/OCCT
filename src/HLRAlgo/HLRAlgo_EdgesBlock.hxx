@@ -26,7 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <TopAbs_Orientation.hxx>
 
-
 class HLRAlgo_EdgesBlock;
 DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, Standard_Transient)
 
@@ -88,67 +87,80 @@ public:
 
   Standard_Integer NbEdges() const { return myEdges.Upper(); }
 
-  void Edge (const Standard_Integer I, const Standard_Integer EI) { myEdges(I) = EI; }
+  void Edge(const Standard_Integer I, const Standard_Integer EI) { myEdges(I) = EI; }
 
-  Standard_Integer Edge (const Standard_Integer I) const { return myEdges(I); }
+  Standard_Integer Edge(const Standard_Integer I) const { return myEdges(I); }
 
-  void Orientation (const Standard_Integer I, const TopAbs_Orientation Or)
+  void Orientation(const Standard_Integer I, const TopAbs_Orientation Or)
   {
     myFlags(I) &= ~EMaskOrient;
     myFlags(I) |= ((Standard_Integer)Or & (Standard_Integer)EMaskOrient);
   }
 
-  TopAbs_Orientation Orientation (const Standard_Integer I) const
+  TopAbs_Orientation Orientation(const Standard_Integer I) const
   {
     return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
   }
 
-  Standard_Boolean OutLine (const Standard_Integer I) const { return (myFlags(I) & EMaskOutLine) != 0; }
-
-  void OutLine (const Standard_Integer I, const Standard_Boolean B)
+  Standard_Boolean OutLine(const Standard_Integer I) const
   {
-    if (B) myFlags(I) |=  EMaskOutLine;
-    else   myFlags(I) &= ~EMaskOutLine;
+    return (myFlags(I) & EMaskOutLine) != 0;
   }
 
-  Standard_Boolean Internal (const Standard_Integer I) const { return (myFlags(I) & EMaskInternal) != 0; }
-
-  void Internal (const Standard_Integer I, const Standard_Boolean B)
+  void OutLine(const Standard_Integer I, const Standard_Boolean B)
   {
-    if (B) myFlags(I) |=  EMaskInternal;
-    else   myFlags(I) &= ~EMaskInternal;
+    if (B)
+      myFlags(I) |= EMaskOutLine;
+    else
+      myFlags(I) &= ~EMaskOutLine;
   }
 
-  Standard_Boolean Double (const Standard_Integer I) const { return (myFlags(I) & EMaskDouble) != 0; }
-
-  void Double (const Standard_Integer I, const Standard_Boolean B)
+  Standard_Boolean Internal(const Standard_Integer I) const
   {
-    if (B) myFlags(I) |=  EMaskDouble;
-    else   myFlags(I) &= ~EMaskDouble;
+    return (myFlags(I) & EMaskInternal) != 0;
   }
 
-  Standard_Boolean IsoLine (const Standard_Integer I) const { return (myFlags(I) & EMaskIsoLine) != 0; }
-
-  void IsoLine (const Standard_Integer I, const Standard_Boolean B)
+  void Internal(const Standard_Integer I, const Standard_Boolean B)
   {
-    if (B) myFlags(I) |=  EMaskIsoLine;
-    else   myFlags(I) &= ~EMaskIsoLine;
+    if (B)
+      myFlags(I) |= EMaskInternal;
+    else
+      myFlags(I) &= ~EMaskInternal;
   }
 
-  void UpdateMinMax(const MinMaxIndices& TotMinMax)
+  Standard_Boolean Double(const Standard_Integer I) const
   {
-    myMinMax = TotMinMax;
+    return (myFlags(I) & EMaskDouble) != 0;
   }
 
-  MinMaxIndices& MinMax()
+  void Double(const Standard_Integer I, const Standard_Boolean B)
   {
-    return myMinMax;
+    if (B)
+      myFlags(I) |= EMaskDouble;
+    else
+      myFlags(I) &= ~EMaskDouble;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,Standard_Transient)
+  Standard_Boolean IsoLine(const Standard_Integer I) const
+  {
+    return (myFlags(I) & EMaskIsoLine) != 0;
+  }
+
+  void IsoLine(const Standard_Integer I, const Standard_Boolean B)
+  {
+    if (B)
+      myFlags(I) |= EMaskIsoLine;
+    else
+      myFlags(I) &= ~EMaskIsoLine;
+  }
+
+  void UpdateMinMax(const MinMaxIndices& TotMinMax) { myMinMax = TotMinMax; }
+
+  MinMaxIndices& MinMax() { return myMinMax; }
+
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock, Standard_Transient)
 
 protected:
-
   enum EMskFlags
   {
     EMaskOrient   = 15,
@@ -159,10 +171,9 @@ protected:
   };
 
 private:
-
   TColStd_Array1OfInteger myEdges;
   TColStd_Array1OfInteger myFlags;
-  MinMaxIndices myMinMax;
+  MinMaxIndices           myMinMax;
 };
 
 #endif // _HLRAlgo_EdgesBlock_HeaderFile

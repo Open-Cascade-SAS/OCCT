@@ -11,65 +11,68 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition, Standard_Transient)
 
-StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition ()  {}
+StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition() {}
 
 void StepBasic_ApplicationProtocolDefinition::Init(
-	const Handle(TCollection_HAsciiString)& aStatus,
-	const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName,
-	const Standard_Integer aApplicationProtocolYear,
-	const Handle(StepBasic_ApplicationContext)& aApplication)
+  const Handle(TCollection_HAsciiString)&     aStatus,
+  const Handle(TCollection_HAsciiString)&     aApplicationInterpretedModelSchemaName,
+  const Standard_Integer                      aApplicationProtocolYear,
+  const Handle(StepBasic_ApplicationContext)& aApplication)
 {
-	// --- classe own fields ---
-	status = aStatus;
-	applicationInterpretedModelSchemaName = aApplicationInterpretedModelSchemaName;
-	applicationProtocolYear = aApplicationProtocolYear;
-	application = aApplication;
+  // --- classe own fields ---
+  status                                = aStatus;
+  applicationInterpretedModelSchemaName = aApplicationInterpretedModelSchemaName;
+  applicationProtocolYear               = aApplicationProtocolYear;
+  application                           = aApplication;
 }
 
-
-void StepBasic_ApplicationProtocolDefinition::SetStatus(const Handle(TCollection_HAsciiString)& aStatus)
+void StepBasic_ApplicationProtocolDefinition::SetStatus(
+  const Handle(TCollection_HAsciiString)& aStatus)
 {
-	status = aStatus;
+  status = aStatus;
 }
 
 Handle(TCollection_HAsciiString) StepBasic_ApplicationProtocolDefinition::Status() const
 {
-	return status;
+  return status;
 }
 
-void StepBasic_ApplicationProtocolDefinition::SetApplicationInterpretedModelSchemaName(const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName)
+void StepBasic_ApplicationProtocolDefinition::SetApplicationInterpretedModelSchemaName(
+  const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName)
 {
-	applicationInterpretedModelSchemaName = aApplicationInterpretedModelSchemaName;
+  applicationInterpretedModelSchemaName = aApplicationInterpretedModelSchemaName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApplicationProtocolDefinition::ApplicationInterpretedModelSchemaName() const
+Handle(TCollection_HAsciiString) StepBasic_ApplicationProtocolDefinition::
+  ApplicationInterpretedModelSchemaName() const
 {
-	return applicationInterpretedModelSchemaName;
+  return applicationInterpretedModelSchemaName;
 }
 
-void StepBasic_ApplicationProtocolDefinition::SetApplicationProtocolYear(const Standard_Integer aApplicationProtocolYear)
+void StepBasic_ApplicationProtocolDefinition::SetApplicationProtocolYear(
+  const Standard_Integer aApplicationProtocolYear)
 {
-	applicationProtocolYear = aApplicationProtocolYear;
+  applicationProtocolYear = aApplicationProtocolYear;
 }
 
 Standard_Integer StepBasic_ApplicationProtocolDefinition::ApplicationProtocolYear() const
 {
-	return applicationProtocolYear;
+  return applicationProtocolYear;
 }
 
-void StepBasic_ApplicationProtocolDefinition::SetApplication(const Handle(StepBasic_ApplicationContext)& aApplication)
+void StepBasic_ApplicationProtocolDefinition::SetApplication(
+  const Handle(StepBasic_ApplicationContext)& aApplication)
 {
-	application = aApplication;
+  application = aApplication;
 }
 
 Handle(StepBasic_ApplicationContext) StepBasic_ApplicationProtocolDefinition::Application() const
 {
-	return application;
+  return application;
 }

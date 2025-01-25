@@ -26,65 +26,56 @@
 class gp_Pnt;
 class gp_Vec;
 
-
-
-class LProp3d_CurveTool 
+class LProp3d_CurveTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Computes the point <P> of parameter <U> on the HCurve <C>.
-  Standard_EXPORT static void Value (const Handle(Adaptor3d_Curve)& C, const Standard_Real U, gp_Pnt& P);
-  
+  Standard_EXPORT static void Value(const Handle(Adaptor3d_Curve)& C,
+                                    const Standard_Real            U,
+                                    gp_Pnt&                        P);
+
   //! Computes the point <P> and first derivative <V1> of
   //! parameter <U> on the HCurve <C>.
-  Standard_EXPORT static void D1 (const Handle(Adaptor3d_Curve)& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V1);
-  
+  Standard_EXPORT static void D1(const Handle(Adaptor3d_Curve)& C,
+                                 const Standard_Real            U,
+                                 gp_Pnt&                        P,
+                                 gp_Vec&                        V1);
+
   //! Computes the point <P>, the first derivative <V1> and second
   //! derivative <V2> of parameter <U> on the HCurve <C>.
-  Standard_EXPORT static void D2 (const Handle(Adaptor3d_Curve)& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
+  Standard_EXPORT static void D2(const Handle(Adaptor3d_Curve)& C,
+                                 const Standard_Real            U,
+                                 gp_Pnt&                        P,
+                                 gp_Vec&                        V1,
+                                 gp_Vec&                        V2);
+
   //! Computes the point <P>, the first derivative <V1>, the
   //! second derivative <V2> and third derivative <V3> of
   //! parameter <U> on the HCurve <C>.
-  Standard_EXPORT static void D3 (const Handle(Adaptor3d_Curve)& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
+  Standard_EXPORT static void D3(const Handle(Adaptor3d_Curve)& C,
+                                 const Standard_Real            U,
+                                 gp_Pnt&                        P,
+                                 gp_Vec&                        V1,
+                                 gp_Vec&                        V2,
+                                 gp_Vec&                        V3);
+
   //! returns the order of continuity of the HCurve <C>.
   //! returns 1 : first derivative only is computable
   //! returns 2 : first and second derivative only are computable.
   //! returns 3 : first, second and third are computable.
-  Standard_EXPORT static Standard_Integer Continuity (const Handle(Adaptor3d_Curve)& C);
-  
+  Standard_EXPORT static Standard_Integer Continuity(const Handle(Adaptor3d_Curve)& C);
+
   //! returns the first parameter bound of the HCurve.
-  Standard_EXPORT static Standard_Real FirstParameter (const Handle(Adaptor3d_Curve)& C);
-  
+  Standard_EXPORT static Standard_Real FirstParameter(const Handle(Adaptor3d_Curve)& C);
+
   //! returns the last parameter bound of the HCurve.
   //! FirstParameter must be less than LastParamenter.
-  Standard_EXPORT static Standard_Real LastParameter (const Handle(Adaptor3d_Curve)& C);
-
-
-
+  Standard_EXPORT static Standard_Real LastParameter(const Handle(Adaptor3d_Curve)& C);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _LProp3d_CurveTool_HeaderFile

@@ -21,9 +21,9 @@
 //! or V isoparametric
 enum GeomAbs_IsoType
 {
-GeomAbs_IsoU,
-GeomAbs_IsoV,
-GeomAbs_NoneIso
+  GeomAbs_IsoU,
+  GeomAbs_IsoV,
+  GeomAbs_NoneIso
 };
 
 #endif // _GeomAbs_IsoType_HeaderFile

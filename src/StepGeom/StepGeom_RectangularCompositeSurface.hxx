@@ -26,54 +26,35 @@
 class TCollection_HAsciiString;
 class StepGeom_SurfacePatch;
 
-
 class StepGeom_RectangularCompositeSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_RectangularCompositeSurface, StepGeom_BoundedSurface)
-
 
 class StepGeom_RectangularCompositeSurface : public StepGeom_BoundedSurface
 {
 
 public:
-
-  
   //! Returns a RectangularCompositeSurface
   Standard_EXPORT StepGeom_RectangularCompositeSurface();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
-  
-  Standard_EXPORT void SetSegments (const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
+
+  Standard_EXPORT void SetSegments(const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
+
   Standard_EXPORT Handle(StepGeom_HArray2OfSurfacePatch) Segments() const;
-  
-  Standard_EXPORT Handle(StepGeom_SurfacePatch) SegmentsValue (const Standard_Integer num1, const Standard_Integer num2) const;
-  
+
+  Standard_EXPORT Handle(StepGeom_SurfacePatch) SegmentsValue(const Standard_Integer num1,
+                                                              const Standard_Integer num2) const;
+
   Standard_EXPORT Standard_Integer NbSegmentsI() const;
-  
+
   Standard_EXPORT Standard_Integer NbSegmentsJ() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface,StepGeom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface, StepGeom_BoundedSurface)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_HArray2OfSurfacePatch) segments;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_RectangularCompositeSurface_HeaderFile

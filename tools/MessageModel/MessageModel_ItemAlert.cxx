@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageModel_ItemAlert.hxx>
 
@@ -41,13 +41,13 @@
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant MessageModel_ItemAlert::initValue (const int theRole) const
+QVariant MessageModel_ItemAlert::initValue(const int theRole) const
 {
-  QVariant aParentValue = MessageModel_ItemBase::initValue (theRole);
+  QVariant aParentValue = MessageModel_ItemBase::initValue(theRole);
   if (aParentValue.isValid())
     return aParentValue;
 
-  MessageModel_ItemReportPtr aReportItem = MessageModel_ItemReport::FindReportItem (Parent());
+  MessageModel_ItemReportPtr aReportItem = MessageModel_ItemReport::FindReportItem(Parent());
   if (!aReportItem)
     return QVariant();
 
@@ -63,7 +63,7 @@ QVariant MessageModel_ItemAlert::initValue (const int theRole) const
     return QVariant();
   }
 
-  Handle(Message_Alert) anAlert = getAlert();
+  Handle(Message_Alert)         anAlert         = getAlert();
   Handle(Message_AlertExtended) anExtendedAlert = Handle(Message_AlertExtended)::DownCast(anAlert);
 
   // if the alert is composite, process the real alert
@@ -76,10 +76,10 @@ QVariant MessageModel_ItemAlert::initValue (const int theRole) const
     if (anAttribute.IsNull())
       return QVariant();
 
-    if (anAttribute->IsKind (STANDARD_TYPE (TopoDS_AlertAttribute)))
-      return QIcon (":/icons/item_shape.png");
-    else if (!Handle(Message_AttributeStream)::DownCast (anAttribute).IsNull())
-      return QIcon (":/icons/item_streamValues.png");
+    if (anAttribute->IsKind(STANDARD_TYPE(TopoDS_AlertAttribute)))
+      return QIcon(":/icons/item_shape.png");
+    else if (!Handle(Message_AttributeStream)::DownCast(anAttribute).IsNull())
+      return QIcon(":/icons/item_streamValues.png");
     else
       return QVariant();
   }
@@ -104,32 +104,36 @@ QVariant MessageModel_ItemAlert::initValue (const int theRole) const
   }
 
   Message_MetricType aMetricType;
-  int aPosition;
-  if (MessageModel_TreeModel::IsMetricColumn (Column(), aMetricType, aPosition))
+  int                aPosition;
+  if (MessageModel_TreeModel::IsMetricColumn(Column(), aMetricType, aPosition))
   {
     if (anExtendedAlert.IsNull())
       return QVariant();
 
-    Handle(Message_AttributeMeter) anAttribute = Handle(Message_AttributeMeter)::DownCast (anExtendedAlert->Attribute());
-    if (anAttribute.IsNull() || !anAttribute->HasMetric (aMetricType))
+    Handle(Message_AttributeMeter) anAttribute =
+      Handle(Message_AttributeMeter)::DownCast(anExtendedAlert->Attribute());
+    if (anAttribute.IsNull() || !anAttribute->HasMetric(aMetricType))
       return QVariant();
 
-    if (!anAttribute->IsMetricValid (aMetricType))
-      return QVariant ("in process");
+    if (!anAttribute->IsMetricValid(aMetricType))
+      return QVariant("in process");
 
-    if (aMetricType == Message_MetricType_ProcessCPUUserTime ||
-        aMetricType == Message_MetricType_ProcessCPUSystemTime ||
-        aMetricType == Message_MetricType_WallClock)
+    if (aMetricType == Message_MetricType_ProcessCPUUserTime
+        || aMetricType == Message_MetricType_ProcessCPUSystemTime
+        || aMetricType == Message_MetricType_WallClock)
     {
-      Standard_Real aCumulativeMetric = anAttribute->StopValue (aMetricType) - anAttribute->StartValue (aMetricType);
-      if (fabs (aCumulativeMetric) < Precision::Confusion())
+      Standard_Real aCumulativeMetric =
+        anAttribute->StopValue(aMetricType) - anAttribute->StartValue(aMetricType);
+      if (fabs(aCumulativeMetric) < Precision::Confusion())
         return QVariant();
 
-      if (aPosition == 0) return aCumulativeMetric;
+      if (aPosition == 0)
+        return aCumulativeMetric;
       else if (aPosition == 1)
       {
-        Standard_Real aReportCumulativeMetric = MessageModel_ItemReport::CumulativeMetric (aReport, aMetricType);
-        if (fabs (aReportCumulativeMetric) > Precision::Confusion())
+        Standard_Real aReportCumulativeMetric =
+          MessageModel_ItemReport::CumulativeMetric(aReport, aMetricType);
+        if (fabs(aReportCumulativeMetric) > Precision::Confusion())
           return 100. * aCumulativeMetric / aReportCumulativeMetric;
         else
           return QVariant();
@@ -137,16 +141,17 @@ QVariant MessageModel_ItemAlert::initValue (const int theRole) const
     }
     else
     {
-      if (aPosition == 0) return anAttribute->StopValue (aMetricType);
+      if (aPosition == 0)
+        return anAttribute->StopValue(aMetricType);
       else if (aPosition == 1)
       {
-        Standard_Real aCumulativeMetric = anAttribute->StopValue (aMetricType) - anAttribute->StartValue (aMetricType);
-        if (fabs (aCumulativeMetric) < Precision::Confusion())
+        Standard_Real aCumulativeMetric =
+          anAttribute->StopValue(aMetricType) - anAttribute->StartValue(aMetricType);
+        if (fabs(aCumulativeMetric) < Precision::Confusion())
           return QVariant();
         else
           return aCumulativeMetric;
       }
-
     }
   }
   return QVariant();
@@ -173,12 +178,12 @@ int MessageModel_ItemAlert::initRowCount() const
   MessageModel_ItemAlert* aCurrentItem = (MessageModel_ItemAlert*)this;
   for (int aGravityId = Message_Trace; aGravityId <= Message_Fail; aGravityId++)
   {
-    const Message_ListOfAlert& anAlerts  = aCompositeAlert->Alerts ((Message_Gravity)aGravityId);
+    const Message_ListOfAlert& anAlerts = aCompositeAlert->Alerts((Message_Gravity)aGravityId);
     {
       for (Message_ListOfAlert::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
       {
         Message_ListOfAlert aCurAlerts;
-        aCurAlerts.Append (anIt.Value());
+        aCurAlerts.Append(anIt.Value());
         aCurrentItem->myChildAlerts.Bind(myChildAlerts.Size(), aCurAlerts);
       }
     }
@@ -190,9 +195,10 @@ int MessageModel_ItemAlert::initRowCount() const
 // function : initStream
 // purpose :
 // =======================================================================
-void MessageModel_ItemAlert::initStream (Standard_OStream& theOStream) const
+void MessageModel_ItemAlert::initStream(Standard_OStream& theOStream) const
 {
-  Handle(Message_AlertExtended) anExtendedAlert = Handle(Message_AlertExtended)::DownCast (getAlert());
+  Handle(Message_AlertExtended) anExtendedAlert =
+    Handle(Message_AlertExtended)::DownCast(getAlert());
   if (anExtendedAlert.IsNull() || anExtendedAlert->Attribute().IsNull())
     return;
 
@@ -203,7 +209,8 @@ void MessageModel_ItemAlert::initStream (Standard_OStream& theOStream) const
   if (Handle(Message_AttributeStream)::DownCast(anAttribute).IsNull())
     return;
 
-  Handle(Message_AttributeStream) anAttributeStream = Handle(Message_AttributeStream)::DownCast (anExtendedAlert->Attribute());
+  Handle(Message_AttributeStream) anAttributeStream =
+    Handle(Message_AttributeStream)::DownCast(anExtendedAlert->Attribute());
   theOStream << anAttributeStream->Stream().str();
 }
 
@@ -211,10 +218,12 @@ void MessageModel_ItemAlert::initStream (Standard_OStream& theOStream) const
 // function : SetStream
 // purpose :
 // =======================================================================
-bool MessageModel_ItemAlert::SetStream (const Standard_SStream& theSStream, Standard_Integer& theStartPos,
-                                        Standard_Integer& theLastPos) const
+bool MessageModel_ItemAlert::SetStream(const Standard_SStream& theSStream,
+                                       Standard_Integer&       theStartPos,
+                                       Standard_Integer&       theLastPos) const
 {
-  Handle(Message_AlertExtended) anExtendedAlert = Handle(Message_AlertExtended)::DownCast (getAlert());
+  Handle(Message_AlertExtended) anExtendedAlert =
+    Handle(Message_AlertExtended)::DownCast(getAlert());
   if (anExtendedAlert.IsNull() || anExtendedAlert->Attribute().IsNull())
     return false;
 
@@ -225,18 +234,19 @@ bool MessageModel_ItemAlert::SetStream (const Standard_SStream& theSStream, Stan
   if (Handle(Message_AttributeStream)::DownCast(anAttribute).IsNull())
     return false;
 
-  Handle(Message_AttributeStream) anAttributeStream = Handle(Message_AttributeStream)::DownCast (anExtendedAlert->Attribute());
-  TCollection_AsciiString aStreamValue = Standard_Dump::Text (anAttributeStream->Stream());
+  Handle(Message_AttributeStream) anAttributeStream =
+    Handle(Message_AttributeStream)::DownCast(anExtendedAlert->Attribute());
+  TCollection_AsciiString aStreamValue = Standard_Dump::Text(anAttributeStream->Stream());
 
-  TCollection_AsciiString aNewValue = Standard_Dump::Text (theSStream);
+  TCollection_AsciiString aNewValue = Standard_Dump::Text(theSStream);
 
   Standard_SStream aStream;
-  aStream << aStreamValue.SubString (1, theStartPos - 1);
+  aStream << aStreamValue.SubString(1, theStartPos - 1);
   aStream << aNewValue;
   if (theLastPos + 1 <= aStreamValue.Length())
-    aStream << aStreamValue.SubString (theLastPos + 1, aStreamValue.Length());
+    aStream << aStreamValue.SubString(theLastPos + 1, aStreamValue.Length());
 
-  anAttributeStream->SetStream (aStream);
+  anAttributeStream->SetStream(aStream);
 
   return true;
 }
@@ -245,9 +255,9 @@ bool MessageModel_ItemAlert::SetStream (const Standard_SStream& theSStream, Stan
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr MessageModel_ItemAlert::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr MessageModel_ItemAlert::createChild(int theRow, int theColumn)
 {
-  return MessageModel_ItemAlert::CreateItem (currentItem(), theRow, theColumn);
+  return MessageModel_ItemAlert::CreateItem(currentItem(), theRow, theColumn);
 }
 
 // =======================================================================
@@ -256,24 +266,24 @@ TreeModel_ItemBasePtr MessageModel_ItemAlert::createChild (int theRow, int theCo
 // =======================================================================
 void MessageModel_ItemAlert::Init()
 {
-  MessageModel_ItemReportPtr aReportItem = itemDynamicCast<MessageModel_ItemReport> (Parent());
-  MessageModel_ItemAlertPtr anAlertItem;
-  Handle(Message_Alert) anAlert;
+  MessageModel_ItemReportPtr aReportItem = itemDynamicCast<MessageModel_ItemReport>(Parent());
+  MessageModel_ItemAlertPtr  anAlertItem;
+  Handle(Message_Alert)      anAlert;
   if (aReportItem)
   {
     Message_ListOfAlert anAlerts;
-    if (aReportItem->GetChildAlerts (Row(), anAlerts))
+    if (aReportItem->GetChildAlerts(Row(), anAlerts))
     {
       myAlert = anAlerts.First();
     }
   }
   else
   {
-    anAlertItem = itemDynamicCast<MessageModel_ItemAlert> (Parent());
+    anAlertItem = itemDynamicCast<MessageModel_ItemAlert>(Parent());
     if (anAlertItem)
     {
       Message_ListOfAlert anAlerts;
-      if (anAlertItem->GetChildAlerts (Row(), anAlerts))
+      if (anAlertItem->GetChildAlerts(Row(), anAlerts))
       {
         myAlert = anAlerts.First();
       }
@@ -286,8 +296,9 @@ void MessageModel_ItemAlert::Init()
     Handle(Message_Attribute) anAttribute = anExtendedAlert->Attribute();
     if (!anAttribute.IsNull())
     {
-      if (anAttribute->IsKind (STANDARD_TYPE (TopoDS_AlertAttribute)))
-        myPresentation = new Convert_TransientShape (Handle(TopoDS_AlertAttribute)::DownCast (anAttribute)->GetShape());
+      if (anAttribute->IsKind(STANDARD_TYPE(TopoDS_AlertAttribute)))
+        myPresentation = new Convert_TransientShape(
+          Handle(TopoDS_AlertAttribute)::DownCast(anAttribute)->GetShape());
     }
   }
   MessageModel_ItemBase::Init();

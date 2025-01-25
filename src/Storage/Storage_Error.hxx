@@ -40,20 +40,20 @@
 //! has occurred while reading 16 bit character
 enum Storage_Error
 {
-Storage_VSOk,
-Storage_VSOpenError,
-Storage_VSModeError,
-Storage_VSCloseError,
-Storage_VSAlreadyOpen,
-Storage_VSNotOpen,
-Storage_VSSectionNotFound,
-Storage_VSWriteError,
-Storage_VSFormatError,
-Storage_VSUnknownType,
-Storage_VSTypeMismatch,
-Storage_VSInternalError,
-Storage_VSExtCharParityError,
-Storage_VSWrongFileDriver
+  Storage_VSOk,
+  Storage_VSOpenError,
+  Storage_VSModeError,
+  Storage_VSCloseError,
+  Storage_VSAlreadyOpen,
+  Storage_VSNotOpen,
+  Storage_VSSectionNotFound,
+  Storage_VSWriteError,
+  Storage_VSFormatError,
+  Storage_VSUnknownType,
+  Storage_VSTypeMismatch,
+  Storage_VSInternalError,
+  Storage_VSExtCharParityError,
+  Storage_VSWrongFileDriver
 };
 
 #endif // _Storage_Error_HeaderFile

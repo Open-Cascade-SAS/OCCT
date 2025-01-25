@@ -15,64 +15,55 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeat_Gluer
-//purpose  : 
+// function : BRepFeat_Gluer
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_Gluer::BRepFeat_Gluer ()
-{}
-
+inline BRepFeat_Gluer::BRepFeat_Gluer() {}
 
 //=======================================================================
-//function : BRepFeat_Gluer
-//purpose  : 
+// function : BRepFeat_Gluer
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_Gluer::BRepFeat_Gluer (const TopoDS_Shape& Snew,
-				       const TopoDS_Shape& Sbase) :
-   myGluer(Sbase,Snew) // Attention a l`inversion
-{}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-inline void BRepFeat_Gluer::Init(const TopoDS_Shape& Snew,
-				 const TopoDS_Shape& Sbase)
+inline BRepFeat_Gluer::BRepFeat_Gluer(const TopoDS_Shape& Snew, const TopoDS_Shape& Sbase)
+    : myGluer(Sbase, Snew) // Attention a l`inversion
 {
-   myGluer.Init(Sbase,Snew);
 }
 
-
 //=======================================================================
-//function : Bind
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_Gluer::Bind(const TopoDS_Face& Fnew,
-				 const TopoDS_Face& Fbase)
+inline void BRepFeat_Gluer::Init(const TopoDS_Shape& Snew, const TopoDS_Shape& Sbase)
 {
-  myGluer.Bind(Fnew,Fbase);
+  myGluer.Init(Sbase, Snew);
 }
 
-
 //=======================================================================
-//function : Bind
-//purpose  : 
+// function : Bind
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_Gluer::Bind(const TopoDS_Edge& Enew,
-				 const TopoDS_Edge& Ebase)
+inline void BRepFeat_Gluer::Bind(const TopoDS_Face& Fnew, const TopoDS_Face& Fbase)
 {
-  myGluer.Bind(Enew,Ebase);
+  myGluer.Bind(Fnew, Fbase);
 }
 
+//=======================================================================
+// function : Bind
+// purpose  :
+//=======================================================================
+
+inline void BRepFeat_Gluer::Bind(const TopoDS_Edge& Enew, const TopoDS_Edge& Ebase)
+{
+  myGluer.Bind(Enew, Ebase);
+}
 
 //=======================================================================
-//function : OpeType
-//purpose  : 
+// function : OpeType
+// purpose  :
 //=======================================================================
 
 inline LocOpe_Operation BRepFeat_Gluer::OpeType() const
@@ -80,10 +71,9 @@ inline LocOpe_Operation BRepFeat_Gluer::OpeType() const
   return myGluer.OpeType();
 }
 
-
 //=======================================================================
-//function : BasisShape
-//purpose  : 
+// function : BasisShape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& BRepFeat_Gluer::BasisShape() const
@@ -91,15 +81,12 @@ inline const TopoDS_Shape& BRepFeat_Gluer::BasisShape() const
   return myGluer.BasisShape();
 }
 
-
 //=======================================================================
-//function : GluedShape
-//purpose  : 
+// function : GluedShape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& BRepFeat_Gluer::GluedShape() const
 {
   return myGluer.GluedShape();
 }
-
-

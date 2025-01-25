@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_TransformSeparator.hxx>
 
 Vrml_TransformSeparator::Vrml_TransformSeparator()
@@ -19,17 +18,17 @@ Vrml_TransformSeparator::Vrml_TransformSeparator()
   myFlagPrint = 0;
 }
 
-Standard_OStream& Vrml_TransformSeparator::Print(Standard_OStream& anOStream) 
+Standard_OStream& Vrml_TransformSeparator::Print(Standard_OStream& anOStream)
 {
-  if ( myFlagPrint == 0 )
-    {
-      anOStream  << "TransformSeparator {\n";
-      myFlagPrint = 1;
-    } 
-  else 
-    {
-      anOStream  << "}\n";
-      myFlagPrint = 0;
-    }
+  if (myFlagPrint == 0)
+  {
+    anOStream << "TransformSeparator {\n";
+    myFlagPrint = 1;
+  }
+  else
+  {
+    anOStream << "}\n";
+    myFlagPrint = 0;
+  }
   return anOStream;
 }

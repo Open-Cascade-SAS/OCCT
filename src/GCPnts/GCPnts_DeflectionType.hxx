@@ -17,13 +17,12 @@
 #ifndef _GCPnts_DeflectionType_HeaderFile
 #define _GCPnts_DeflectionType_HeaderFile
 
-
 enum GCPnts_DeflectionType
 {
-GCPnts_Linear,
-GCPnts_Circular,
-GCPnts_Curved,
-GCPnts_DefComposite
+  GCPnts_Linear,
+  GCPnts_Circular,
+  GCPnts_Curved,
+  GCPnts_DefComposite
 };
 
 #endif // _GCPnts_DeflectionType_HeaderFile

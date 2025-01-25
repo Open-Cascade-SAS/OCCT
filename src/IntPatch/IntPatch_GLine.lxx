@@ -24,89 +24,97 @@
 
 #include <Precision.hxx>
 
-
-inline void IntPatch_GLine::SetFirstPoint (const Standard_Integer IndFirst)
+inline void IntPatch_GLine::SetFirstPoint(const Standard_Integer IndFirst)
 {
   fipt = Standard_True;
   indf = IndFirst;
 }
 
-
-inline void IntPatch_GLine::SetLastPoint (const Standard_Integer IndLast)
+inline void IntPatch_GLine::SetLastPoint(const Standard_Integer IndLast)
 {
   lapt = Standard_True;
   indl = IndLast;
 }
 
-
-inline gp_Lin IntPatch_GLine::Line () const
+inline gp_Lin IntPatch_GLine::Line() const
 {
-  if (typ != IntPatch_Lin) {throw Standard_DomainError();}
+  if (typ != IntPatch_Lin)
+  {
+    throw Standard_DomainError();
+  }
   return gp_Lin(pos.Axis());
 }
 
-
-inline gp_Circ IntPatch_GLine::Circle () const
+inline gp_Circ IntPatch_GLine::Circle() const
 {
-  if (typ != IntPatch_Circle) {throw Standard_DomainError();}
-  return gp_Circ(pos,par1);
+  if (typ != IntPatch_Circle)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Circ(pos, par1);
 }
 
-
-inline gp_Elips IntPatch_GLine::Ellipse () const
+inline gp_Elips IntPatch_GLine::Ellipse() const
 {
-  if (typ != IntPatch_Ellipse) {throw Standard_DomainError();}
-  return gp_Elips(pos,par1,par2);
+  if (typ != IntPatch_Ellipse)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Elips(pos, par1, par2);
 }
 
-
-inline gp_Parab IntPatch_GLine::Parabola () const
+inline gp_Parab IntPatch_GLine::Parabola() const
 {
-  if (typ != IntPatch_Parabola) {throw Standard_DomainError();}
-  return gp_Parab(pos,par1);
+  if (typ != IntPatch_Parabola)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Parab(pos, par1);
 }
 
-
-inline gp_Hypr IntPatch_GLine::Hyperbola () const
+inline gp_Hypr IntPatch_GLine::Hyperbola() const
 {
-  if (typ != IntPatch_Hyperbola) {throw Standard_DomainError();}
-  return gp_Hypr(pos,par1,par2);
+  if (typ != IntPatch_Hyperbola)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Hypr(pos, par1, par2);
 }
 
-
-inline Standard_Boolean IntPatch_GLine::HasFirstPoint () const
+inline Standard_Boolean IntPatch_GLine::HasFirstPoint() const
 {
   return fipt;
 }
 
-
-inline Standard_Boolean IntPatch_GLine::HasLastPoint () const
+inline Standard_Boolean IntPatch_GLine::HasLastPoint() const
 {
   return lapt;
 }
 
-
-inline const IntPatch_Point& IntPatch_GLine::FirstPoint () const
+inline const IntPatch_Point& IntPatch_GLine::FirstPoint() const
 {
-  if (!fipt) {throw Standard_DomainError();}
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indf);
 }
 
-
-inline const IntPatch_Point& IntPatch_GLine::LastPoint () const
+inline const IntPatch_Point& IntPatch_GLine::LastPoint() const
 {
-  if (!lapt) {throw Standard_DomainError();}
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indl);
 }
 
-
-inline Standard_Integer IntPatch_GLine::NbVertex () const
+inline Standard_Integer IntPatch_GLine::NbVertex() const
 {
   return svtx.Length();
 }
 
-
-inline const IntPatch_Point& IntPatch_GLine::Vertex (const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_GLine::Vertex(const Standard_Integer Index) const
 {
   return svtx(Index);
 }

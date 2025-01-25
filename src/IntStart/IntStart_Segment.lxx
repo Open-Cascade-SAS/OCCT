@@ -14,43 +14,48 @@
 
 #include <Standard_DomainError.hxx>
 
-
-inline void IntStart_Segment::SetValue (const TheArc& A) {
+inline void IntStart_Segment::SetValue(const TheArc& A)
+{
 
   hasfp = Standard_False;
   haslp = Standard_False;
-  arc = A;
+  arc   = A;
 }
 
-
-inline const TheArc& IntStart_Segment::Curve () const {
+inline const TheArc& IntStart_Segment::Curve() const
+{
 
   return arc;
 }
 
-
-inline Standard_Boolean IntStart_Segment::HasFirstPoint () const {
+inline Standard_Boolean IntStart_Segment::HasFirstPoint() const
+{
 
   return hasfp;
 }
 
+inline const ThePathPoint& IntStart_Segment::FirstPoint() const
+{
 
-inline const ThePathPoint& IntStart_Segment::FirstPoint () const {
-
-  if (!hasfp) { throw Standard_DomainError(); }
+  if (!hasfp)
+  {
+    throw Standard_DomainError();
+  }
   return thefp;
 }
 
-
-inline Standard_Boolean IntStart_Segment::HasLastPoint () const {
+inline Standard_Boolean IntStart_Segment::HasLastPoint() const
+{
 
   return haslp;
 }
 
+inline const ThePathPoint& IntStart_Segment::LastPoint() const
+{
 
-inline const ThePathPoint& IntStart_Segment::LastPoint () const {
-
-  if (!haslp) { throw Standard_DomainError(); }
+  if (!haslp)
+  {
+    throw Standard_DomainError();
+  }
   return thelp;
 }
-

@@ -30,40 +30,34 @@ class gp_Dir;
 class Geom_TrimmedCurve;
 
 //! A framework for displaying radii of fillets.
-class DsgPrs_FilletRadiusPresentation 
+class DsgPrs_FilletRadiusPresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds a display of the radius of a fillet to the
   //! presentation aPresentation. The display ttributes
   //! defined by the attribute manager aDrawer. the value
   //! specifies the length of the radius.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Real thevalue, const TCollection_ExtendedString& aText, const gp_Pnt& aPosition, const gp_Dir& aNormalDir, const gp_Pnt& aBasePnt, const gp_Pnt& aFirstPoint, const gp_Pnt& aSecondPoint, const gp_Pnt& aCenter, const DsgPrs_ArrowSide ArrowPrs, const Standard_Boolean drawRevers, gp_Pnt& DrawPosition, gp_Pnt& EndOfArrow, Handle(Geom_TrimmedCurve)& TrimCurve, Standard_Boolean& HasCircle);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const Standard_Real               thevalue,
+                                  const TCollection_ExtendedString& aText,
+                                  const gp_Pnt&                     aPosition,
+                                  const gp_Dir&                     aNormalDir,
+                                  const gp_Pnt&                     aBasePnt,
+                                  const gp_Pnt&                     aFirstPoint,
+                                  const gp_Pnt&                     aSecondPoint,
+                                  const gp_Pnt&                     aCenter,
+                                  const DsgPrs_ArrowSide            ArrowPrs,
+                                  const Standard_Boolean            drawRevers,
+                                  gp_Pnt&                           DrawPosition,
+                                  gp_Pnt&                           EndOfArrow,
+                                  Handle(Geom_TrimmedCurve)&        TrimCurve,
+                                  Standard_Boolean&                 HasCircle);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DsgPrs_FilletRadiusPresentation_HeaderFile

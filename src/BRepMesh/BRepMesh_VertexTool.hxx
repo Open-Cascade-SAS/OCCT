@@ -20,18 +20,15 @@
 #include <gp_XY.hxx>
 #include <IMeshData_Types.hxx>
 
-
-//! Describes data structure intended to keep mesh nodes 
-//! defined in UV space and implements functionality 
+//! Describes data structure intended to keep mesh nodes
+//! defined in UV space and implements functionality
 //! providing their uniqueness regarding their position.
 class BRepMesh_VertexTool : public Standard_Transient
 {
 public:
-
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.
-  Standard_EXPORT BRepMesh_VertexTool(
-    const Handle(NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMesh_VertexTool(const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Sets new size of cell for cellfilter equal in both directions.
   void SetCellSize(const Standard_Real theSize)
@@ -43,42 +40,39 @@ public:
   //! Sets new size of cell for cellfilter.
   //! @param theSizeX size for X dimension.
   //! @param theSizeY size for Y dimension.
-  void SetCellSize(const Standard_Real theSizeX,
-                   const Standard_Real theSizeY)
+  void SetCellSize(const Standard_Real theSizeX, const Standard_Real theSizeY)
   {
-    Standard_Real aCellSizeC[2] = { theSizeX, theSizeY };
+    Standard_Real                     aCellSizeC[2] = {theSizeX, theSizeY};
     NCollection_Array1<Standard_Real> aCellSize(aCellSizeC[0], 1, 2);
     myCellFilter.Reset(aCellSize, myAllocator);
     mySelector.Clear();
   }
 
-  //! Sets the tolerance to be used for identification of 
+  //! Sets the tolerance to be used for identification of
   //! coincident vertices equal for both dimensions.
   void SetTolerance(const Standard_Real theTolerance)
   {
-    mySelector.SetTolerance( theTolerance );
+    mySelector.SetTolerance(theTolerance);
     myTolerance[0] = theTolerance;
     myTolerance[1] = theTolerance;
   }
 
-  //! Sets the tolerance to be used for identification of 
+  //! Sets the tolerance to be used for identification of
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  void SetTolerance(const Standard_Real theToleranceX,
-                    const Standard_Real theToleranceY)
+  void SetTolerance(const Standard_Real theToleranceX, const Standard_Real theToleranceY)
   {
-    mySelector.SetTolerance( theToleranceX, theToleranceY );
+    mySelector.SetTolerance(theToleranceX, theToleranceY);
     myTolerance[0] = theToleranceX;
     myTolerance[1] = theToleranceY;
   }
 
-  //! Gets the tolerance to be used for identification of 
+  //! Gets the tolerance to be used for identification of
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  void GetTolerance(Standard_Real& theToleranceX,
-                    Standard_Real& theToleranceY)
+  void GetTolerance(Standard_Real& theToleranceX, Standard_Real& theToleranceY)
   {
     theToleranceX = myTolerance[0];
     theToleranceY = myTolerance[1];
@@ -86,27 +80,20 @@ public:
 
   //! Adds vertex with empty data to the tool.
   //! @param theVertex node to be added to the mesh.
-  //! @param isForceAdd adds the given node to structure without 
+  //! @param isForceAdd adds the given node to structure without
   //! checking on coincidence with other nodes.
   //! @return index of the node in the structure.
-  Standard_EXPORT Standard_Integer Add(
-    const BRepMesh_Vertex& theVertex,
-    const Standard_Boolean isForceAdd);
+  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex,
+                                       const Standard_Boolean isForceAdd);
 
   //! Deletes vertex with the given index from the tool.
   Standard_EXPORT void DeleteVertex(const Standard_Integer theIndex);
 
   //! Returns set of mesh vertices.
-  const Handle(IMeshData::VectorOfVertex)& Vertices() const
-  {
-    return mySelector.Vertices();
-  }
+  const Handle(IMeshData::VectorOfVertex)& Vertices() const { return mySelector.Vertices(); }
 
   //! Returns set of mesh vertices.
-  Handle(IMeshData::VectorOfVertex)& ChangeVertices()
-  {
-    return mySelector.ChangeVertices();
-  }
+  Handle(IMeshData::VectorOfVertex)& ChangeVertices() { return mySelector.ChangeVertices(); }
 
   //! Returns vertex by the given index.
   const BRepMesh_Vertex& FindKey(const Standard_Integer theIndex)
@@ -118,21 +105,15 @@ public:
   Standard_Integer FindIndex(const BRepMesh_Vertex& theVertex)
   {
     mySelector.SetPoint(theVertex.Coord());
-    myCellFilter.Inspect (theVertex.Coord(), mySelector);
+    myCellFilter.Inspect(theVertex.Coord(), mySelector);
     return mySelector.GetCoincidentPoint();
   }
 
   //! Returns a number of vertices.
-  Standard_Integer Extent() const
-  {
-    return mySelector.NbVertices();
-  }
+  Standard_Integer Extent() const { return mySelector.NbVertices(); }
 
   //! Returns True when the map contains no keys. <br>
-  Standard_Boolean IsEmpty() const
-  {
-    return (Extent() == 0);
-  }
+  Standard_Boolean IsEmpty() const { return (Extent() == 0); }
 
   //! Substitutes vertex with the given by the given vertex with attributes.
   //! @param theIndex index of vertex to be substituted.
@@ -141,10 +122,7 @@ public:
                                   const BRepMesh_Vertex& theVertex);
 
   //! Remove last node from the structure.
-  void RemoveLast()
-  {
-    DeleteVertex(Extent());
-  }
+  void RemoveLast() { DeleteVertex(Extent()); }
 
   //! Returns the list with indexes of vertices that have movability attribute
   //! equal to BRepMesh_Deleted and can be replaced with another node.
@@ -159,14 +137,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMesh_VertexTool, Standard_Transient)
 
 private:
-  
   //! Expands the given point according to specified tolerance.
   //! @param thePoint point to be expanded.
   //! @param[out] theMinPoint bottom left corner of area defined by expanded point.
   //! @param[out] theMaxPoint top right corner of area defined by expanded point.
-  void expandPoint(const gp_XY& thePoint,
-                   gp_XY&       theMinPoint,
-                   gp_XY&       theMaxPoint)
+  void expandPoint(const gp_XY& thePoint, gp_XY& theMinPoint, gp_XY& theMaxPoint)
   {
     theMinPoint.SetX(thePoint.X() - myTolerance[0]);
     theMinPoint.SetY(thePoint.Y() - myTolerance[1]);
@@ -175,7 +150,6 @@ private:
   }
 
 private:
-
   Handle(NCollection_IncAllocator) myAllocator;
   IMeshData::VertexCellFilter      myCellFilter;
   BRepMesh_VertexInspector         mySelector;

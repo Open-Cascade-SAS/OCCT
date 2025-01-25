@@ -22,5 +22,4 @@
 
 DEFINE_HSEQUENCE(STEPSelections_HSequenceOfAssemblyLink, STEPSelections_SequenceOfAssemblyLink)
 
-
 #endif

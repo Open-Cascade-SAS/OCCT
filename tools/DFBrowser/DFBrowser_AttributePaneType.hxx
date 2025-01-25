@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_AttributePaneType_H
 #define DFBrowser_AttributePaneType_H
@@ -19,7 +19,8 @@
 //! Type of view shown in attribute pane stack
 enum DFBrowser_AttributePaneType
 {
-  DFBrowser_AttributePaneType_ItemView, //!< attribute pane stack shows either TreeLevelView or attribute pane
+  DFBrowser_AttributePaneType_ItemView,  //!< attribute pane stack shows either TreeLevelView or
+                                         //!< attribute pane
   DFBrowser_AttributePaneType_SearchView //!< attribute pane stack shows search view
 };
 

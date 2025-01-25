@@ -25,57 +25,38 @@
 #include <Standard_OStream.hxx>
 class math_FunctionSet;
 
-
 //! -- This class implements the integration of a set of N
 //! functions of M  variables variables between the
 //! parameter bounds Lower[a..b] and Upper[a..b].
 //! Warning: - The case M>1 is not implemented.
-class math_GaussSetIntegration 
+class math_GaussSetIntegration
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The Gauss-Legendre integration with Order = points of
   //! integration for each unknown, is done on the function F
   //! between the bounds Lower and Upper.
-  Standard_EXPORT math_GaussSetIntegration(math_FunctionSet& F, const math_Vector& Lower, const math_Vector& Upper, const math_IntegerVector& Order);
-  
+  Standard_EXPORT math_GaussSetIntegration(math_FunctionSet&         F,
+                                           const math_Vector&        Lower,
+                                           const math_Vector&        Upper,
+                                           const math_IntegerVector& Order);
+
   //! returns True if all has been correctly done.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! returns the value of the integral.
-    const math_Vector& Value() const;
-  
+  const math_Vector& Value() const;
+
   //! Prints information on the current state of the object.
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  math_Vector Val;
+  math_Vector      Val;
   Standard_Boolean Done;
-
-
 };
 
-
 #include <math_GaussSetIntegration.lxx>
-
-
-
-
 
 #endif // _math_GaussSetIntegration_HeaderFile

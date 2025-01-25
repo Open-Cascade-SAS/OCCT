@@ -25,52 +25,41 @@ class Geom2dAdaptor_Curve;
 class gp_Pnt2d;
 class gp_Vec2d;
 
-
-
-class Geom2dGcc_CurveTool 
+class Geom2dGcc_CurveTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static Standard_Real FirstParameter (const Geom2dAdaptor_Curve& C);
-  
-  Standard_EXPORT static Standard_Real LastParameter (const Geom2dAdaptor_Curve& C);
-  
-  Standard_EXPORT static Standard_Real EpsX (const Geom2dAdaptor_Curve& C, const Standard_Real Tol);
-  
-  Standard_EXPORT static Standard_Integer NbSamples (const Geom2dAdaptor_Curve& C);
-  
-  Standard_EXPORT static gp_Pnt2d Value (const Geom2dAdaptor_Curve& C, const Standard_Real X);
-  
-  Standard_EXPORT static void D1 (const Geom2dAdaptor_Curve& C, const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T);
-  
-  Standard_EXPORT static void D2 (const Geom2dAdaptor_Curve& C, const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N);
-  
-  Standard_EXPORT static void D3 (const Geom2dAdaptor_Curve& C, const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N, gp_Vec2d& dN);
+  Standard_EXPORT static Standard_Real FirstParameter(const Geom2dAdaptor_Curve& C);
 
+  Standard_EXPORT static Standard_Real LastParameter(const Geom2dAdaptor_Curve& C);
 
+  Standard_EXPORT static Standard_Real EpsX(const Geom2dAdaptor_Curve& C, const Standard_Real Tol);
 
+  Standard_EXPORT static Standard_Integer NbSamples(const Geom2dAdaptor_Curve& C);
+
+  Standard_EXPORT static gp_Pnt2d Value(const Geom2dAdaptor_Curve& C, const Standard_Real X);
+
+  Standard_EXPORT static void D1(const Geom2dAdaptor_Curve& C,
+                                 const Standard_Real        U,
+                                 gp_Pnt2d&                  P,
+                                 gp_Vec2d&                  T);
+
+  Standard_EXPORT static void D2(const Geom2dAdaptor_Curve& C,
+                                 const Standard_Real        U,
+                                 gp_Pnt2d&                  P,
+                                 gp_Vec2d&                  T,
+                                 gp_Vec2d&                  N);
+
+  Standard_EXPORT static void D3(const Geom2dAdaptor_Curve& C,
+                                 const Standard_Real        U,
+                                 gp_Pnt2d&                  P,
+                                 gp_Vec2d&                  T,
+                                 gp_Vec2d&                  N,
+                                 gp_Vec2d&                  dN);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dGcc_CurveTool_HeaderFile

@@ -14,48 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_Curve.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <gp_Dir.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_SweptSurface,Geom_Surface)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_SweptSurface, Geom_Surface)
 
 //=======================================================================
-//function : Continuity
-//purpose  : 
+// function : Continuity
+// purpose  :
 //=======================================================================
-GeomAbs_Shape Geom_SweptSurface::Continuity () const { return smooth; }
+GeomAbs_Shape Geom_SweptSurface::Continuity() const
+{
+  return smooth;
+}
 
 //=======================================================================
-//function : Direction
-//purpose  : 
+// function : Direction
+// purpose  :
 //=======================================================================
 
-const gp_Dir& Geom_SweptSurface::Direction () const  { return direction; }
+const gp_Dir& Geom_SweptSurface::Direction() const
+{
+  return direction;
+}
 
 //=======================================================================
-//function : BasisCurve
-//purpose  : 
+// function : BasisCurve
+// purpose  :
 //=======================================================================
 
-Handle(Geom_Curve) Geom_SweptSurface::BasisCurve () const 
-{ 
+Handle(Geom_Curve) Geom_SweptSurface::BasisCurve() const
+{
   return basisCurve;
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void Geom_SweptSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_SweptSurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Surface)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Surface)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, basisCurve.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &direction)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, smooth)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, basisCurve.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &direction)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, smooth)
 }

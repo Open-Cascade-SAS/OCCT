@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -29,25 +29,24 @@ DEFINE_STANDARD_HANDLE(StepKinematics_RollingCurvePairValue, StepKinematics_Pair
 //! Representation of STEP entity RollingCurvePairValue
 class StepKinematics_RollingCurvePairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_RollingCurvePairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve1);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve1);
 
   //! Returns field ActualPointOnCurve1
   Standard_EXPORT Handle(StepGeom_PointOnCurve) ActualPointOnCurve1() const;
   //! Sets field ActualPointOnCurve1
-  Standard_EXPORT void SetActualPointOnCurve1 (const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve1);
+  Standard_EXPORT void SetActualPointOnCurve1(
+    const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve1);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_RollingCurvePairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_RollingCurvePairValue, StepKinematics_PairValue)
 
 private:
   Handle(StepGeom_PointOnCurve) myActualPointOnCurve1;
-
 };
 #endif // _StepKinematics_RollingCurvePairValue_HeaderFile_

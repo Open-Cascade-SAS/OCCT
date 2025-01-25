@@ -13,16 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <StdPrs_ToolVertex.hxx>
 #include <TopoDS_Vertex.hxx>
 
-void StdPrs_ToolVertex::Coord (const TopoDS_Vertex& aVertex,
-			       Standard_Real& X,
-			       Standard_Real& Y,
-			       Standard_Real& Z) {
+void StdPrs_ToolVertex::Coord(const TopoDS_Vertex& aVertex,
+                              Standard_Real&       X,
+                              Standard_Real&       Y,
+                              Standard_Real&       Z)
+{
   gp_Pnt P = BRep_Tool::Pnt(aVertex);
-  X = P.X(); Y = P.Y(); Z = P.Z();
+  X        = P.X();
+  Y        = P.Y();
+  Z        = P.Z();
 }

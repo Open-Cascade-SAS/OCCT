@@ -15,102 +15,121 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : VisibleColor
-//purpose  : 
+// function : VisibleColor
+// purpose  :
 //=======================================================================
 
 inline void HLRTest_ShapeData::VisibleColor(const Draw_Color& CVis)
-{ myVColor = CVis; }
+{
+  myVColor = CVis;
+}
 
 //=======================================================================
-//function : VisibleOutLineColor
-//purpose  : 
+// function : VisibleOutLineColor
+// purpose  :
 //=======================================================================
 
-inline void HLRTest_ShapeData::VisibleOutLineColor
-  (const Draw_Color& COVis)
-{ myVOColor = COVis; }
+inline void HLRTest_ShapeData::VisibleOutLineColor(const Draw_Color& COVis)
+{
+  myVOColor = COVis;
+}
 
 //=======================================================================
-//function : VisibleIsoColor
-//purpose  : 
+// function : VisibleIsoColor
+// purpose  :
 //=======================================================================
 
-inline void HLRTest_ShapeData::VisibleIsoColor
-  (const Draw_Color& CIVis)
-{ myVIColor = CIVis; }
+inline void HLRTest_ShapeData::VisibleIsoColor(const Draw_Color& CIVis)
+{
+  myVIColor = CIVis;
+}
 
 //=======================================================================
-//function : HiddenColor
-//purpose  : 
+// function : HiddenColor
+// purpose  :
 //=======================================================================
 
 inline void HLRTest_ShapeData::HiddenColor(const Draw_Color& CHid)
-{ myHColor = CHid; }
+{
+  myHColor = CHid;
+}
 
 //=======================================================================
-//function : HiddenOutLineColor
-//purpose  : 
+// function : HiddenOutLineColor
+// purpose  :
 //=======================================================================
 
-inline void HLRTest_ShapeData::HiddenOutLineColor
-  (const Draw_Color& COHid)
-{ myHOColor = COHid; }
+inline void HLRTest_ShapeData::HiddenOutLineColor(const Draw_Color& COHid)
+{
+  myHOColor = COHid;
+}
 
 //=======================================================================
-//function : HiddenIsoColor
-//purpose  : 
+// function : HiddenIsoColor
+// purpose  :
 //=======================================================================
 
-inline void HLRTest_ShapeData::HiddenIsoColor
-  (const Draw_Color& CIHid)
-{ myHIColor = CIHid; }
+inline void HLRTest_ShapeData::HiddenIsoColor(const Draw_Color& CIHid)
+{
+  myHIColor = CIHid;
+}
 
 //=======================================================================
-//function : VisibleColor
-//purpose  : 
+// function : VisibleColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::VisibleColor() const
-{ return myVColor; }
+{
+  return myVColor;
+}
 
 //=======================================================================
-//function : VisibleOutLineColor
-//purpose  : 
+// function : VisibleOutLineColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::VisibleOutLineColor() const
-{ return myVOColor; }
+{
+  return myVOColor;
+}
 
 //=======================================================================
-//function : VisibleIsoColor
-//purpose  : 
+// function : VisibleIsoColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::VisibleIsoColor() const
-{ return myVIColor; }
+{
+  return myVIColor;
+}
 
 //=======================================================================
-//function : HiddenColor
-//purpose  : 
+// function : HiddenColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::HiddenColor() const
-{ return myHColor; }
+{
+  return myHColor;
+}
 
 //=======================================================================
-//function : HiddenOutLineColor
-//purpose  : 
+// function : HiddenOutLineColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::HiddenOutLineColor() const
-{ return myHOColor; }
+{
+  return myHOColor;
+}
 
 //=======================================================================
-//function : HiddenIsoColor
-//purpose  : 
+// function : HiddenIsoColor
+// purpose  :
 //=======================================================================
 
 inline Draw_Color HLRTest_ShapeData::HiddenIsoColor() const
-{ return myHIColor; }
-
+{
+  return myHIColor;
+}

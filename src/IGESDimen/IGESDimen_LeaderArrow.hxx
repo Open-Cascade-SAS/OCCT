@@ -27,7 +27,6 @@
 class gp_Pnt2d;
 class gp_Pnt;
 
-
 class IGESDimen_LeaderArrow;
 DEFINE_STANDARD_HANDLE(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
@@ -40,10 +39,8 @@ class IGESDimen_LeaderArrow : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_LeaderArrow();
-  
+
   //! This method is used to set the fields of the class
   //! LeaderArrow
   //! - height      : ArrowHead height
@@ -51,64 +48,51 @@ public:
   //! - depth       : Z Depth
   //! - position    : ArrowHead coordinates
   //! - segments    : Segment tail coordinate pairs
-  Standard_EXPORT void Init (const Standard_Real height, const Standard_Real width, const Standard_Real depth, const gp_XY& position, const Handle(TColgp_HArray1OfXY)& segments);
-  
+  Standard_EXPORT void Init(const Standard_Real               height,
+                            const Standard_Real               width,
+                            const Standard_Real               depth,
+                            const gp_XY&                      position,
+                            const Handle(TColgp_HArray1OfXY)& segments);
+
   //! Changes FormNumber (indicates the Shape of the Arrow)
   //! Error if not in range [0-12]
-  Standard_EXPORT void SetFormNumber (const Standard_Integer form);
-  
+  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+
   //! returns number of segments
   Standard_EXPORT Standard_Integer NbSegments() const;
-  
+
   //! returns ArrowHead height
   Standard_EXPORT Standard_Real ArrowHeadHeight() const;
-  
+
   //! returns ArrowHead width
   Standard_EXPORT Standard_Real ArrowHeadWidth() const;
-  
+
   //! returns Z depth
   Standard_EXPORT Standard_Real ZDepth() const;
-  
+
   //! returns ArrowHead coordinates
   Standard_EXPORT gp_Pnt2d ArrowHead() const;
-  
+
   //! returns ArrowHead coordinates after Transformation
   Standard_EXPORT gp_Pnt TransformedArrowHead() const;
-  
+
   //! returns segment tail coordinates.
   //! raises exception if Index <= 0 or Index > NbSegments
-  Standard_EXPORT gp_Pnt2d SegmentTail (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Pnt2d SegmentTail(const Standard_Integer Index) const;
+
   //! returns segment tail coordinates after Transformation.
   //! raises exception if Index <= 0 or Index > NbSegments
-  Standard_EXPORT gp_Pnt TransformedSegmentTail (const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt TransformedSegmentTail(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_LeaderArrow,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Real theArrowHeadHeight;
-  Standard_Real theArrowHeadWidth;
-  Standard_Real theZDepth;
-  gp_XY theArrowHead;
+  Standard_Real              theArrowHeadHeight;
+  Standard_Real              theArrowHeadWidth;
+  Standard_Real              theZDepth;
+  gp_XY                      theArrowHead;
   Handle(TColgp_HArray1OfXY) theSegmentTails;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_LeaderArrow_HeaderFile

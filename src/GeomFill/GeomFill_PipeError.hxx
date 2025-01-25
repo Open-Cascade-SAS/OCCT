@@ -17,13 +17,12 @@
 #ifndef _GeomFill_PipeError_HeaderFile
 #define _GeomFill_PipeError_HeaderFile
 
-
 enum GeomFill_PipeError
 {
-GeomFill_PipeOk,
-GeomFill_PipeNotOk,
-GeomFill_PlaneNotIntersectGuide,
-GeomFill_ImpossibleContact
+  GeomFill_PipeOk,
+  GeomFill_PipeNotOk,
+  GeomFill_PlaneNotIntersectGuide,
+  GeomFill_ImpossibleContact
 };
 
 #endif // _GeomFill_PipeError_HeaderFile

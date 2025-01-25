@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class Vrml_Material;
 
-
 class VrmlConverter_LineAspect;
 DEFINE_STANDARD_HANDLE(VrmlConverter_LineAspect, Standard_Transient)
 
@@ -33,49 +32,31 @@ class VrmlConverter_LineAspect : public Standard_Transient
 {
 
 public:
-
-  
   //! create a default LineAspect.
   //! Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color)
   Standard_EXPORT VrmlConverter_LineAspect();
-  
-  Standard_EXPORT VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial, const Standard_Boolean OnOff);
-  
-  Standard_EXPORT void SetMaterial (const Handle(Vrml_Material)& aMaterial);
-  
+
+  Standard_EXPORT VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial,
+                                           const Standard_Boolean       OnOff);
+
+  Standard_EXPORT void SetMaterial(const Handle(Vrml_Material)& aMaterial);
+
   Standard_EXPORT Handle(Vrml_Material) Material() const;
-  
+
   //! defines the necessary of writing  own  Material from Vrml into  output  OStream.
   //! By default False  -  the material is not writing into OStream,
   //! True  -  the material is writing.
-  Standard_EXPORT void SetHasMaterial (const Standard_Boolean OnOff);
-  
+  Standard_EXPORT void SetHasMaterial(const Standard_Boolean OnOff);
+
   //! returns True if the  materials is  writing into OStream.
   Standard_EXPORT Standard_Boolean HasMaterial() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_LineAspect,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_LineAspect, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Vrml_Material) myMaterial;
-  Standard_Boolean myHasMaterial;
-
-
+  Standard_Boolean      myHasMaterial;
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_LineAspect_HeaderFile

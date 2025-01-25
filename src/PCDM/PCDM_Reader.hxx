@@ -34,51 +34,36 @@ class PCDM_ReaderFilter;
 class PCDM_Reader;
 DEFINE_STANDARD_HANDLE(PCDM_Reader, Standard_Transient)
 
-
 class PCDM_Reader : public Standard_Transient
 {
 
 public:
-
   //! retrieves the content of the file into a new Document.
-  Standard_EXPORT virtual void Read (const TCollection_ExtendedString& aFileName, 
-                                     const Handle(CDM_Document)& aNewDocument, 
-                                     const Handle(CDM_Application)& anApplication, 
-                                     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) = 0;
+  Standard_EXPORT virtual void Read(
+    const TCollection_ExtendedString& aFileName,
+    const Handle(CDM_Document)&       aNewDocument,
+    const Handle(CDM_Application)&    anApplication,
+    const Handle(PCDM_ReaderFilter)&  theFilter   = Handle(PCDM_ReaderFilter)(),
+    const Message_ProgressRange&      theProgress = Message_ProgressRange()) = 0;
 
-  Standard_EXPORT virtual void Read (Standard_IStream&               theIStream,
-                                     const Handle(Storage_Data)&    theStorageData,
-                                     const Handle(CDM_Document)&    theDoc,
-                                     const Handle(CDM_Application)& theApplication,
-                                     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) = 0;
-  
-    PCDM_ReaderStatus GetStatus() const;
+  Standard_EXPORT virtual void Read(
+    Standard_IStream&                theIStream,
+    const Handle(Storage_Data)&      theStorageData,
+    const Handle(CDM_Document)&      theDoc,
+    const Handle(CDM_Application)&   theApplication,
+    const Handle(PCDM_ReaderFilter)& theFilter   = Handle(PCDM_ReaderFilter)(),
+    const Message_ProgressRange&     theProgress = Message_ProgressRange()) = 0;
 
+  PCDM_ReaderStatus GetStatus() const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(PCDM_Reader,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PCDM_Reader, Standard_Transient)
 
 protected:
-
-
   PCDM_ReaderStatus myReaderStatus;
 
-
 private:
-
-
-
-
 };
 
-
 #include <PCDM_Reader.lxx>
-
-
-
-
 
 #endif // _PCDM_Reader_HeaderFile

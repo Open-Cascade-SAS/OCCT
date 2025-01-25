@@ -27,35 +27,35 @@
 
 class StepVisual_NullStyleMember;
 DEFINE_STANDARD_HANDLE(StepVisual_NullStyleMember, StepData_SelectInt)
+
 //! Defines NullStyle as unique member of PresentationStyleSelect
 //! Works with an EnumTool
 class StepVisual_NullStyleMember : public StepData_SelectInt
 {
 
 public:
-  
   Standard_EXPORT StepVisual_NullStyleMember();
-  
-  virtual Standard_Boolean HasName() const Standard_OVERRIDE
-    {  return Standard_True;  }
 
-  virtual Standard_CString Name() const Standard_OVERRIDE
-    {  return "NULL_STYLE";  }
+  virtual Standard_Boolean HasName() const Standard_OVERRIDE { return Standard_True; }
+
+  virtual Standard_CString Name() const Standard_OVERRIDE { return "NULL_STYLE"; }
 
   virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
-    {  return Standard_True;  }
+  {
+    return Standard_True;
+  }
 
-  Standard_Integer Kind() const Standard_OVERRIDE
-    {return 4;}
-  
-  Standard_EXPORT virtual   Standard_CString EnumText()  const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual   void SetEnumText (const Standard_Integer theValue, const Standard_CString theText)  Standard_OVERRIDE;
-  
-  Standard_EXPORT   void SetValue (const StepVisual_NullStyle theValue) ;
-  
-  Standard_EXPORT   StepVisual_NullStyle Value()  const;
+  Standard_Integer Kind() const Standard_OVERRIDE { return 4; }
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_NullStyleMember,StepData_SelectInt)
+  Standard_EXPORT virtual Standard_CString EnumText() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetEnumText(const Standard_Integer theValue,
+                                           const Standard_CString theText) Standard_OVERRIDE;
+
+  Standard_EXPORT void SetValue(const StepVisual_NullStyle theValue);
+
+  Standard_EXPORT StepVisual_NullStyle Value() const;
+
+  DEFINE_STANDARD_RTTIEXT(StepVisual_NullStyleMember, StepData_SelectInt)
 };
 #endif // _StepVisual_NullStyleMember_HeaderFile

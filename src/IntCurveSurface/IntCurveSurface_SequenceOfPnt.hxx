@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntCurveSurface_IntersectionPoint> IntCurveSurface_SequenceOfPnt;
 
-
 #endif

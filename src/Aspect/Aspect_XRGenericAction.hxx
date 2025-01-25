@@ -17,16 +17,17 @@
 //! Generic XR action.
 enum Aspect_XRGenericAction
 {
-  Aspect_XRGenericAction_IsHeadsetOn,             //!< headset is on/off head
-  Aspect_XRGenericAction_InputAppMenu,            //!< application menu button pressed/released
-  Aspect_XRGenericAction_InputSysMenu,            //!< system menu button pressed/released
-  Aspect_XRGenericAction_InputTriggerPull,        //!< trigger squeezing [0..1], 1 to click
-  Aspect_XRGenericAction_InputTriggerClick,       //!< trigger clicked/released
-  Aspect_XRGenericAction_InputGripClick,          //!< grip state on/off
-  Aspect_XRGenericAction_InputTrackPadPosition,   //!< trackpad 2D position [-1,+1] with X and Y axes
-  Aspect_XRGenericAction_InputTrackPadTouch,      //!< trackpad touched/untouched
-  Aspect_XRGenericAction_InputTrackPadClick,      //!< trackpad clicked/released
-  Aspect_XRGenericAction_InputThumbstickPosition, //!< thumbstick 2D position [-1,+1] with X and Y axes
+  Aspect_XRGenericAction_IsHeadsetOn,           //!< headset is on/off head
+  Aspect_XRGenericAction_InputAppMenu,          //!< application menu button pressed/released
+  Aspect_XRGenericAction_InputSysMenu,          //!< system menu button pressed/released
+  Aspect_XRGenericAction_InputTriggerPull,      //!< trigger squeezing [0..1], 1 to click
+  Aspect_XRGenericAction_InputTriggerClick,     //!< trigger clicked/released
+  Aspect_XRGenericAction_InputGripClick,        //!< grip state on/off
+  Aspect_XRGenericAction_InputTrackPadPosition, //!< trackpad 2D position [-1,+1] with X and Y axes
+  Aspect_XRGenericAction_InputTrackPadTouch,    //!< trackpad touched/untouched
+  Aspect_XRGenericAction_InputTrackPadClick,    //!< trackpad clicked/released
+  Aspect_XRGenericAction_InputThumbstickPosition, //!< thumbstick 2D position [-1,+1] with X and Y
+                                                  //!< axes
   Aspect_XRGenericAction_InputThumbstickTouch,    //!< thumbstick touched/untouched
   Aspect_XRGenericAction_InputThumbstickClick,    //!< thumbstick clicked/released
   Aspect_XRGenericAction_InputPoseBase,           //!< base position of hand
@@ -35,6 +36,10 @@ enum Aspect_XRGenericAction
   Aspect_XRGenericAction_InputPoseFingerTip,      //!< position of main fingertip
   Aspect_XRGenericAction_OutputHaptic             //!< haptic output (vibration)
 };
-enum { Aspect_XRGenericAction_NB = Aspect_XRGenericAction_OutputHaptic + 1 };
+
+enum
+{
+  Aspect_XRGenericAction_NB = Aspect_XRGenericAction_OutputHaptic + 1
+};
 
 #endif // _Aspect_XRGenericAction_HeaderFile

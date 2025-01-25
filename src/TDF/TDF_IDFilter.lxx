@@ -16,29 +16,36 @@
 //      	---------------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Jun 10 1997	Creation
 
 #include <TDF_Attribute.hxx>
 
 inline Standard_Boolean TDF_IDFilter::IgnoreAll() const
-{ return myIgnore; }
+{
+  return myIgnore;
+}
 
-inline Standard_Boolean TDF_IDFilter::IsKept
-(const Standard_GUID& anID) const
-{ return (myIgnore == myIDMap.Contains(anID)); }
+inline Standard_Boolean TDF_IDFilter::IsKept(const Standard_GUID& anID) const
+{
+  return (myIgnore == myIDMap.Contains(anID));
+}
+
 // Ce qui est plus compacte et rapide que:
-//Standard_Boolean IsBound = myIDMap.Contains(anID);
+// Standard_Boolean IsBound = myIDMap.Contains(anID);
 // return myIgnore ? IsBound : !IsBound;
 
-inline Standard_Boolean TDF_IDFilter::IsKept
-(const Handle(TDF_Attribute)& anAtt) const
-{ return IsKept(anAtt->ID()); }
+inline Standard_Boolean TDF_IDFilter::IsKept(const Handle(TDF_Attribute)& anAtt) const
+{
+  return IsKept(anAtt->ID());
+}
 
-inline Standard_Boolean TDF_IDFilter::IsIgnored
-(const Standard_GUID& anID) const
-{ return (myIgnore != myIDMap.Contains(anID)); }
+inline Standard_Boolean TDF_IDFilter::IsIgnored(const Standard_GUID& anID) const
+{
+  return (myIgnore != myIDMap.Contains(anID));
+}
 
-inline Standard_Boolean TDF_IDFilter::IsIgnored
-(const Handle(TDF_Attribute)& anAtt) const
-{ return IsIgnored(anAtt->ID()); }
+inline Standard_Boolean TDF_IDFilter::IsIgnored(const Handle(TDF_Attribute)& anAtt) const
+{
+  return IsIgnored(anAtt->ID());
+}

@@ -27,51 +27,28 @@ class Standard_Transient;
 class StepGeom_Vector;
 class StepGeom_Direction;
 
-
-
-class StepGeom_VectorOrDirection  : public StepData_SelectType
+class StepGeom_VectorOrDirection : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a VectorOrDirection SelectType
   Standard_EXPORT StepGeom_VectorOrDirection();
-  
+
   //! Recognizes a VectorOrDirection Kind Entity that is :
   //! 1 -> Vector
   //! 2 -> Direction
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Vector (Null if another type)
   Standard_EXPORT Handle(StepGeom_Vector) Vector() const;
-  
+
   //! returns Value as a Direction (Null if another type)
   Standard_EXPORT Handle(StepGeom_Direction) Direction() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_VectorOrDirection_HeaderFile

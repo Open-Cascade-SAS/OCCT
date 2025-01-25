@@ -23,9 +23,9 @@ enum Graphic3d_TypeOfShadingModel
   //! Use Shading Model, specified as default for entire Viewer.
   Graphic3d_TypeOfShadingModel_DEFAULT = -1,
 
-  //! Unlit Shading (or shadeless), lighting is ignored and facet is fully filled by its material color.
-  //! This model is useful for artificial/auxiliary objects, not intended to be lit,
-  //! or for objects with pre-calculated lighting information (e.g. captured by camera).
+  //! Unlit Shading (or shadeless), lighting is ignored and facet is fully filled by its material
+  //! color. This model is useful for artificial/auxiliary objects, not intended to be lit, or for
+  //! objects with pre-calculated lighting information (e.g. captured by camera).
   Graphic3d_TypeOfShadingModel_Unlit = 0,
 
   //! Flat Shading for Phong material model, calculated using triangle normal.
@@ -34,14 +34,15 @@ enum Graphic3d_TypeOfShadingModel
   Graphic3d_TypeOfShadingModel_PhongFacet,
 
   //! Gouraud shading uses the same material definition as Phong reflection model,
-  //! but emulates an obsolete per-vertex calculations with result color interpolated across fragments,
-  //! as implemented by T&L hardware blocks on old graphics hardware.
-  //! This shading model requires normals to be defined within vertex attributes.
+  //! but emulates an obsolete per-vertex calculations with result color interpolated across
+  //! fragments, as implemented by T&L hardware blocks on old graphics hardware. This shading model
+  //! requires normals to be defined within vertex attributes.
   Graphic3d_TypeOfShadingModel_Gouraud,
 
-  //! Phong reflection model, an empirical model defined by Diffuse/Ambient/Specular/Shininess components.
-  //! Lighting is calculated per-fragment basing on nodal normal (normal is interpolated across fragments of triangle).
-  //! This shading model requires normals to be defined within vertex attributes.
+  //! Phong reflection model, an empirical model defined by Diffuse/Ambient/Specular/Shininess
+  //! components. Lighting is calculated per-fragment basing on nodal normal (normal is interpolated
+  //! across fragments of triangle). This shading model requires normals to be defined within vertex
+  //! attributes.
   Graphic3d_TypeOfShadingModel_Phong,
 
   //! Metallic-roughness physically based (PBR) illumination system.
@@ -60,15 +61,16 @@ enum Graphic3d_TypeOfShadingModel
   Graphic3d_TOSM_PBR_FACET = Graphic3d_TypeOfShadingModel_PbrFacet,
   //
   Graphic3d_TOSM_NONE = Graphic3d_TOSM_UNLIT,
-  V3d_COLOR   = Graphic3d_TOSM_NONE,
-  V3d_FLAT    = Graphic3d_TOSM_FACET,
-  V3d_GOURAUD = Graphic3d_TOSM_VERTEX,
-  V3d_PHONG   = Graphic3d_TOSM_FRAGMENT
+  V3d_COLOR           = Graphic3d_TOSM_NONE,
+  V3d_FLAT            = Graphic3d_TOSM_FACET,
+  V3d_GOURAUD         = Graphic3d_TOSM_VERTEX,
+  V3d_PHONG           = Graphic3d_TOSM_FRAGMENT
 };
 
 enum
 {
-  //! Auxiliary value defining the overall number of values in enumeration Graphic3d_TypeOfShadingModel
+  //! Auxiliary value defining the overall number of values in enumeration
+  //! Graphic3d_TypeOfShadingModel
   Graphic3d_TypeOfShadingModel_NB = Graphic3d_TypeOfShadingModel_PbrFacet + 1
 };
 

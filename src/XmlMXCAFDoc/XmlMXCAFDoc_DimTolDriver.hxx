@@ -26,7 +26,6 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-
 class XmlMXCAFDoc_DimTolDriver;
 DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_DimTolDriver, XmlMDF_ADriver)
 
@@ -35,37 +34,23 @@ class XmlMXCAFDoc_DimTolDriver : public XmlMDF_ADriver
 {
 
 public:
-
-  
   Standard_EXPORT XmlMXCAFDoc_DimTolDriver(const Handle(Message_Messenger)& theMessageDriver);
-  
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean Paste (const XmlObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, XmlObjMgt_RRelocationTable& RelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Source, XmlObjMgt_Persistent& Target, XmlObjMgt_SRelocationTable& RelocTable) const Standard_OVERRIDE;
 
+  Standard_EXPORT Standard_Boolean
+    Paste(const XmlObjMgt_Persistent&  Source,
+          const Handle(TDF_Attribute)& Target,
+          XmlObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
+                             XmlObjMgt_Persistent&        Target,
+                             XmlObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_DimTolDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_DimTolDriver, XmlMDF_ADriver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XmlMXCAFDoc_DimTolDriver_HeaderFile

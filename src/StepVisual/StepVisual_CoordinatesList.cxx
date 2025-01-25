@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CoordinatesList, StepVisual_TessellatedItem)
 
-StepVisual_CoordinatesList::StepVisual_CoordinatesList ()  {}
+StepVisual_CoordinatesList::StepVisual_CoordinatesList() {}
 
-void StepVisual_CoordinatesList::Init(const Handle(TCollection_HAsciiString)& theName,const Handle(TColgp_HArray1OfXYZ)& thePoints)
+void StepVisual_CoordinatesList::Init(const Handle(TCollection_HAsciiString)& theName,
+                                      const Handle(TColgp_HArray1OfXYZ)&      thePoints)
 {
   StepRepr_RepresentationItem::Init(theName);
   myPoints = thePoints;

@@ -23,43 +23,25 @@
 #include <StepBasic_SiUnit.hxx>
 class StepBasic_AreaUnit;
 
-
 class StepBasic_SiUnitAndAreaUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndAreaUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndAreaUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndAreaUnit
   Standard_EXPORT StepBasic_SiUnitAndAreaUnit();
-  
-  Standard_EXPORT void SetAreaUnit (const Handle(StepBasic_AreaUnit)& anAreaUnit);
-  
+
+  Standard_EXPORT void SetAreaUnit(const Handle(StepBasic_AreaUnit)& anAreaUnit);
+
   Standard_EXPORT Handle(StepBasic_AreaUnit) AreaUnit() const;
-  
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndAreaUnit,StepBasic_SiUnit)
+
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndAreaUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_AreaUnit) areaUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndAreaUnit_HeaderFile

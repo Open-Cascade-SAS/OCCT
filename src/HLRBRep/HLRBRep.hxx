@@ -25,25 +25,27 @@
 class TopoDS_Edge;
 class HLRBRep_Curve;
 
-
 //! Hidden Lines Removal
 //! algorithms on the BRep DataStructure.
 //!
 //! The class PolyAlgo  is used to remove Hidden lines
 //! on Shapes with Triangulations.
-class HLRBRep 
+class HLRBRep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static TopoDS_Edge MakeEdge (const HLRBRep_Curve& ec, const Standard_Real U1, const Standard_Real U2);
-  
-  Standard_EXPORT static TopoDS_Edge MakeEdge3d (const HLRBRep_Curve& ec, const Standard_Real U1, const Standard_Real U2);
-  
-  Standard_EXPORT static void PolyHLRAngleAndDeflection (const Standard_Real InAngl, Standard_Real& OutAngl, Standard_Real& OutDefl);
+  Standard_EXPORT static TopoDS_Edge MakeEdge(const HLRBRep_Curve& ec,
+                                              const Standard_Real  U1,
+                                              const Standard_Real  U2);
 
+  Standard_EXPORT static TopoDS_Edge MakeEdge3d(const HLRBRep_Curve& ec,
+                                                const Standard_Real  U1,
+                                                const Standard_Real  U2);
+
+  Standard_EXPORT static void PolyHLRAngleAndDeflection(const Standard_Real InAngl,
+                                                        Standard_Real&      OutAngl,
+                                                        Standard_Real&      OutDefl);
 };
 
 #endif // _HLRBRep_HeaderFile

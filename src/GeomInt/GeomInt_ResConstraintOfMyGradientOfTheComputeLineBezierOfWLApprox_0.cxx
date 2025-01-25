@@ -21,13 +21,13 @@
 #include <GeomInt_TheMultiLineToolOfWLApprox.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define MultiLine GeomInt_TheMultiLineOfWLApprox
 #define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
 #define ToolLine GeomInt_TheMultiLineToolOfWLApprox
 #define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
-#define AppParCurves_ResolConstraint GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ResolConstraint_hxx <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_ResolConstraint                                                               \
+  GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
+#define AppParCurves_ResolConstraint_hxx                                                           \
+  <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
-

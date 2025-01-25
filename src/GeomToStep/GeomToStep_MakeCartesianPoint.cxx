@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
@@ -29,102 +28,100 @@
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point3d de gp
 //=============================================================================
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P,
-                                                              const Standard_Real aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt&       P,
+                                                             const Standard_Real aFactor)
 {
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
-//  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,3);
+  //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,3);
   Standard_Real X, Y, Z;
-  
+
   P.Coord(X, Y, Z);
-//  Acoord->SetValue(1,X);
-//  Acoord->SetValue(2,Y);
-//  Acoord->SetValue(3,Z);
-//  Pstep->SetCoordinates(Acoord);
+  //  Acoord->SetValue(1,X);
+  //  Acoord->SetValue(2,Y);
+  //  Acoord->SetValue(3,Z);
+  //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-//  Pstep->SetName(name);
-  Pstep->Init3D (name,X/aFactor,Y/aFactor,Z/aFactor);
+  //  Pstep->SetName(name);
+  Pstep->Init3D(name, X / aFactor, Y / aFactor, Z / aFactor);
   theCartesianPoint = Pstep;
-  done = Standard_True;
+  done              = Standard_True;
 }
+
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point 2d de gp
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt2d& P,
-                                                              const Standard_Real aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const gp_Pnt2d&     P,
+                                                             const Standard_Real aFactor)
 {
   (void)aFactor;
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
-//  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,2);
+  //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,2);
   Standard_Real X, Y;
-  
+
   P.Coord(X, Y);
-//  Acoord->SetValue(1,X);
-//  Acoord->SetValue(2,Y);
-//  Pstep->SetCoordinates(Acoord);
+  //  Acoord->SetValue(1,X);
+  //  Acoord->SetValue(2,Y);
+  //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-//  Pstep->SetName(name);
-  Pstep->Init2D (name,X,Y);
+  //  Pstep->SetName(name);
+  Pstep->Init2D(name, X, Y);
   theCartesianPoint = Pstep;
-  done = Standard_True;
+  done              = Standard_True;
 }
 
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point 3d de Geom
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::
-  GeomToStep_MakeCartesianPoint( const Handle(Geom_CartesianPoint)& P,
-                                 const Standard_Real aFactor)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const Handle(Geom_CartesianPoint)& P,
+                                                             const Standard_Real aFactor)
 
 {
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
-//  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,3);
+  //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,3);
   Standard_Real X, Y, Z;
-  
+
   P->Coord(X, Y, Z);
-//  Acoord->SetValue(1,X);
-//  Acoord->SetValue(2,Y);
-//  Acoord->SetValue(3,Z);
-//  Pstep->SetCoordinates(Acoord);
+  //  Acoord->SetValue(1,X);
+  //  Acoord->SetValue(2,Y);
+  //  Acoord->SetValue(3,Z);
+  //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-//  Pstep->SetName(name);
-  Pstep->Init3D (name,X/aFactor,Y/aFactor,Z/aFactor);
+  //  Pstep->SetName(name);
+  Pstep->Init3D(name, X / aFactor, Y / aFactor, Z / aFactor);
   theCartesianPoint = Pstep;
-  done = Standard_True;
+  done              = Standard_True;
 }
 
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point 2d de Geom2d
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::
-  GeomToStep_MakeCartesianPoint( const Handle(Geom2d_CartesianPoint)& P)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint(const Handle(Geom2d_CartesianPoint)& P)
 
 {
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
-//  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,2);
+  //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,2);
   Standard_Real X, Y;
-  
+
   P->Coord(X, Y);
-//  Acoord->SetValue(1,X);
-//  Acoord->SetValue(2,Y);
-//  Pstep->SetCoordinates(Acoord);
+  //  Acoord->SetValue(1,X);
+  //  Acoord->SetValue(2,Y);
+  //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-//  Pstep->SetName(name);
-  Pstep->Init2D (name,X,Y);
+  //  Pstep->SetName(name);
+  Pstep->Init2D(name, X, Y);
   theCartesianPoint = Pstep;
-  done = Standard_True;
+  done              = Standard_True;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_CartesianPoint) &
-      GeomToStep_MakeCartesianPoint::Value() const
+const Handle(StepGeom_CartesianPoint)& GeomToStep_MakeCartesianPoint::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeCartesianPoint::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeCartesianPoint::Value() - no result");
   return theCartesianPoint;
 }

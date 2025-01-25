@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr.hxx>
 #include <Expr_Exponential.hxx>
 #include <Expr_GeneralExpression.hxx>
@@ -25,60 +24,66 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_Exponential,Expr_UnaryExpression)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Exponential, Expr_UnaryExpression)
 
 Expr_Exponential::Expr_Exponential(const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);
 }
 
-Handle(Expr_GeneralExpression) Expr_Exponential::ShallowSimplified () const
+Handle(Expr_GeneralExpression) Expr_Exponential::ShallowSimplified() const
 {
   Handle(Expr_GeneralExpression) myexp = Operand();
-  if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue))) {
+  if (myexp->IsKind(STANDARD_TYPE(Expr_NumericValue)))
+  {
     Handle(Expr_NumericValue) myNVexp = Handle(Expr_NumericValue)::DownCast(myexp);
     return new Expr_NumericValue(Exp(myNVexp->GetValue()));
   }
-  if (myexp->IsKind(STANDARD_TYPE(Expr_LogOfe))) {
+  if (myexp->IsKind(STANDARD_TYPE(Expr_LogOfe)))
+  {
     return myexp->SubExpression(1);
   }
   Handle(Expr_Exponential) me = this;
   return me;
 }
 
-Handle(Expr_GeneralExpression) Expr_Exponential::Copy () const
+Handle(Expr_GeneralExpression) Expr_Exponential::Copy() const
 {
   return new Expr_Exponential(Expr::CopyShare(Operand()));
 }
 
-Standard_Boolean Expr_Exponential::IsIdentical (const Handle(Expr_GeneralExpression)& Other) const
+Standard_Boolean Expr_Exponential::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
 {
-  if (Other->IsKind(STANDARD_TYPE(Expr_Exponential))) {
+  if (Other->IsKind(STANDARD_TYPE(Expr_Exponential)))
+  {
     Handle(Expr_GeneralExpression) myexp = Operand();
     return myexp->IsIdentical(Other->SubExpression(1));
   }
   return Standard_False;
 }
 
-Standard_Boolean Expr_Exponential::IsLinear () const
+Standard_Boolean Expr_Exponential::IsLinear() const
 {
   return !ContainsUnknowns();
 }
 
-Handle(Expr_GeneralExpression) Expr_Exponential::Derivative (const Handle(Expr_NamedUnknown)& X) const
+Handle(Expr_GeneralExpression) Expr_Exponential::Derivative(
+  const Handle(Expr_NamedUnknown)& X) const
 {
-  if (!Contains(X)) {
+  if (!Contains(X))
+  {
     return new Expr_NumericValue(0.0);
   }
   Handle(Expr_GeneralExpression) myexp = Operand();
   Handle(Expr_GeneralExpression) myder = myexp->Derivative(X);
-  Handle(Expr_Product) resu = Expr::CopyShare(this) * myder;
+  Handle(Expr_Product)           resu  = Expr::CopyShare(this) * myder;
   return resu->ShallowSimplified();
 }
 
-Standard_Real Expr_Exponential::Evaluate(const Expr_Array1OfNamedUnknown& vars, const TColStd_Array1OfReal& vals) const
+Standard_Real Expr_Exponential::Evaluate(const Expr_Array1OfNamedUnknown& vars,
+                                         const TColStd_Array1OfReal&      vals) const
 {
-  return ::Exp(Operand()->Evaluate(vars,vals));
+  return ::Exp(Operand()->Evaluate(vars, vals));
 }
 
 TCollection_AsciiString Expr_Exponential::String() const

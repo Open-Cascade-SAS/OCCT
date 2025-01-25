@@ -18,25 +18,24 @@
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition,StepDimTol_ToleranceZoneDefinition)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)
 
 //=======================================================================
-//function : StepDimTol_RunoutZoneDefinition
-//purpose  : 
+// function : StepDimTol_RunoutZoneDefinition
+// purpose  :
 //=======================================================================
 
-StepDimTol_RunoutZoneDefinition::StepDimTol_RunoutZoneDefinition ()
-{
-}
+StepDimTol_RunoutZoneDefinition::StepDimTol_RunoutZoneDefinition() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepDimTol_RunoutZoneDefinition:: Init (const Handle(StepDimTol_ToleranceZone)& theZone,
-                                             const Handle(StepRepr_HArray1OfShapeAspect)& theBoundaries,
-                                             const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation)
+void StepDimTol_RunoutZoneDefinition::Init(
+  const Handle(StepDimTol_ToleranceZone)&         theZone,
+  const Handle(StepRepr_HArray1OfShapeAspect)&    theBoundaries,
+  const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation)
 {
   StepDimTol_ToleranceZoneDefinition::Init(theZone, theBoundaries);
   myOrientation = theOrientation;

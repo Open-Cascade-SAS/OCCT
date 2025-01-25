@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_NumericValue.hxx>
@@ -23,7 +22,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(Expr_NumericValue,Expr_GeneralExpression)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_NumericValue, Expr_GeneralExpression)
 
 Expr_NumericValue::Expr_NumericValue(const Standard_Real val)
 {
@@ -60,51 +59,55 @@ Handle(Expr_GeneralExpression) Expr_NumericValue::Copy() const
   return new Expr_NumericValue(myValue);
 }
 
-Standard_Boolean Expr_NumericValue::ContainsUnknowns () const
+Standard_Boolean Expr_NumericValue::ContainsUnknowns() const
 {
   return Standard_False;
 }
 
-Standard_Boolean Expr_NumericValue::Contains (const Handle(Expr_GeneralExpression)& ) const
+Standard_Boolean Expr_NumericValue::Contains(const Handle(Expr_GeneralExpression)&) const
 {
   return Standard_False;
 }
 
-Standard_Boolean Expr_NumericValue::IsIdentical (const Handle(Expr_GeneralExpression)& Other) const
+Standard_Boolean Expr_NumericValue::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
 {
-  if (!Other->IsKind(STANDARD_TYPE(Expr_NumericValue))) {
+  if (!Other->IsKind(STANDARD_TYPE(Expr_NumericValue)))
+  {
     return Standard_False;
   }
   Handle(Expr_NumericValue) NVOther = Handle(Expr_NumericValue)::DownCast(Other);
   return (myValue == NVOther->GetValue());
 }
 
-Standard_Boolean Expr_NumericValue::IsLinear () const
+Standard_Boolean Expr_NumericValue::IsLinear() const
 {
   return Standard_True;
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::Derivative (const Handle(Expr_NamedUnknown)& ) const
+Handle(Expr_GeneralExpression) Expr_NumericValue::Derivative(const Handle(Expr_NamedUnknown)&) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::NDerivative (const Handle(Expr_NamedUnknown)& , const Standard_Integer) const
+Handle(Expr_GeneralExpression) Expr_NumericValue::NDerivative(const Handle(Expr_NamedUnknown)&,
+                                                              const Standard_Integer) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-void Expr_NumericValue::Replace (const Handle(Expr_NamedUnknown)& , const Handle(Expr_GeneralExpression)& )
+void Expr_NumericValue::Replace(const Handle(Expr_NamedUnknown)&,
+                                const Handle(Expr_GeneralExpression)&)
 {
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::ShallowSimplified () const
+Handle(Expr_GeneralExpression) Expr_NumericValue::ShallowSimplified() const
 {
   Handle(Expr_NumericValue) me = this;
   return me;
 }
 
-Standard_Real Expr_NumericValue::Evaluate(const Expr_Array1OfNamedUnknown&, const TColStd_Array1OfReal&) const
+Standard_Real Expr_NumericValue::Evaluate(const Expr_Array1OfNamedUnknown&,
+                                          const TColStd_Array1OfReal&) const
 {
   return myValue;
 }
@@ -112,6 +115,6 @@ Standard_Real Expr_NumericValue::Evaluate(const Expr_Array1OfNamedUnknown&, cons
 TCollection_AsciiString Expr_NumericValue::String() const
 {
   char val[100];
-  Sprintf(val,"%g",myValue);
+  Sprintf(val, "%g", myValue);
   return TCollection_AsciiString(val);
 }

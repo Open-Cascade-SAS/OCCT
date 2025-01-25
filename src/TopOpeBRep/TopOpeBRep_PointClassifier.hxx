@@ -25,49 +25,30 @@ class BRepTopAdaptor_TopolTool;
 class TopoDS_Face;
 class gp_Pnt2d;
 
-class TopOpeBRep_PointClassifier 
+class TopOpeBRep_PointClassifier
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRep_PointClassifier();
-  
+
   Standard_EXPORT void Init();
-  
-  Standard_EXPORT void Load (const TopoDS_Face& F);
-  
+
+  Standard_EXPORT void Load(const TopoDS_Face& F);
+
   //! compute position of point <P> regarding with the face <F>.
-  Standard_EXPORT TopAbs_State Classify (const TopoDS_Face& F, const gp_Pnt2d& P, const Standard_Real Tol);
-  
+  Standard_EXPORT TopAbs_State Classify(const TopoDS_Face&  F,
+                                        const gp_Pnt2d&     P,
+                                        const Standard_Real Tol);
+
   Standard_EXPORT TopAbs_State State() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(BRepTopAdaptor_TopolTool) myTopolTool;
-  Handle(BRepAdaptor_Surface) myHSurface;
-  TopOpeBRep_DataMapOfTopolTool myTopolToolMap;
-  TopAbs_State myState;
-
-
+  Handle(BRepAdaptor_Surface)      myHSurface;
+  TopOpeBRep_DataMapOfTopolTool    myTopolToolMap;
+  TopAbs_State                     myState;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRep_PointClassifier_HeaderFile

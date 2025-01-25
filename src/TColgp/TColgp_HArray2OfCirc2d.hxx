@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY2(TColgp_HArray2OfCirc2d, TColgp_Array2OfCirc2d)
 
-
 #endif

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -22,17 +22,17 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_LowOrderKinematicPairWithMotionCoupling, StepKinematics_KinematicPair)
+DEFINE_STANDARD_HANDLE(StepKinematics_LowOrderKinematicPairWithMotionCoupling,
+                       StepKinematics_KinematicPair)
 
 //! Representation of STEP entity LowOrderKinematicPairWithMotionCoupling
 class StepKinematics_LowOrderKinematicPairWithMotionCoupling : public StepKinematics_KinematicPair
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_LowOrderKinematicPairWithMotionCoupling();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPairWithMotionCoupling, StepKinematics_KinematicPair)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPairWithMotionCoupling,
+                          StepKinematics_KinematicPair)
 };
 #endif // _StepKinematics_LowOrderKinematicPairWithMotionCoupling_HeaderFile_

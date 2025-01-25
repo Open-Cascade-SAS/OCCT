@@ -32,68 +32,62 @@
 class TNaming_NamedShape;
 class TDF_RelocationTable;
 
-
 //! store the arguments of Naming.
-class TNaming_Name 
+class TNaming_Name
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TNaming_Name();
-  
-  Standard_EXPORT void Type (const TNaming_NameType aType);
-  
-  Standard_EXPORT void ShapeType (const TopAbs_ShapeEnum aType);
-  
-  Standard_EXPORT void Shape (const TopoDS_Shape& theShape);
-  
-  Standard_EXPORT void Append (const Handle(TNaming_NamedShape)& arg);
-  
-  Standard_EXPORT void StopNamedShape (const Handle(TNaming_NamedShape)& arg);
-  
-  Standard_EXPORT void Index (const Standard_Integer I);
-  
-  Standard_EXPORT void ContextLabel (const TDF_Label& theLab);
-  
-  Standard_EXPORT void Orientation (const TopAbs_Orientation theOrientation);
-  
+
+  Standard_EXPORT void Type(const TNaming_NameType aType);
+
+  Standard_EXPORT void ShapeType(const TopAbs_ShapeEnum aType);
+
+  Standard_EXPORT void Shape(const TopoDS_Shape& theShape);
+
+  Standard_EXPORT void Append(const Handle(TNaming_NamedShape)& arg);
+
+  Standard_EXPORT void StopNamedShape(const Handle(TNaming_NamedShape)& arg);
+
+  Standard_EXPORT void Index(const Standard_Integer I);
+
+  Standard_EXPORT void ContextLabel(const TDF_Label& theLab);
+
+  Standard_EXPORT void Orientation(const TopAbs_Orientation theOrientation);
+
   Standard_EXPORT TNaming_NameType Type() const;
-  
+
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const;
-  
+
   Standard_EXPORT TopoDS_Shape Shape() const;
-  
+
   Standard_EXPORT const TNaming_ListOfNamedShape& Arguments() const;
-  
+
   Standard_EXPORT Handle(TNaming_NamedShape) StopNamedShape() const;
-  
+
   Standard_EXPORT Standard_Integer Index() const;
-  
+
   Standard_EXPORT const TDF_Label& ContextLabel() const;
-  
-  TopAbs_Orientation Orientation() const
-  { 
-    return myOrientation;
-  }
-  
-  Standard_EXPORT Standard_Boolean Solve (const TDF_Label& aLab, const TDF_LabelMap& Valid) const;
-  
-  Standard_EXPORT void Paste (TNaming_Name& into, const Handle(TDF_RelocationTable)& RT) const;
-  
+
+  TopAbs_Orientation Orientation() const { return myOrientation; }
+
+  Standard_EXPORT Standard_Boolean Solve(const TDF_Label& aLab, const TDF_LabelMap& Valid) const;
+
+  Standard_EXPORT void Paste(TNaming_Name& into, const Handle(TDF_RelocationTable)& RT) const;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-  TNaming_NameType myType;
-  TopAbs_ShapeEnum myShapeType;
-  TNaming_ListOfNamedShape myArgs;
+  TNaming_NameType           myType;
+  TopAbs_ShapeEnum           myShapeType;
+  TNaming_ListOfNamedShape   myArgs;
   Handle(TNaming_NamedShape) myStop;
-  Standard_Integer myIndex;
-  TopoDS_Shape myShape;
-  TDF_Label myContextLabel;
-  TopAbs_Orientation myOrientation;
+  Standard_Integer           myIndex;
+  TopoDS_Shape               myShape;
+  TDF_Label                  myContextLabel;
+  TopAbs_Orientation         myOrientation;
 };
 
 #endif // _TNaming_Name_HeaderFile

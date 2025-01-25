@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TreeModel_ItemStream.hxx>
 
@@ -23,8 +23,10 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-TreeModel_ItemStream::TreeModel_ItemStream (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
- : TreeModel_ItemBase (theParent, theRow, theColumn)
+TreeModel_ItemStream::TreeModel_ItemStream(TreeModel_ItemBasePtr theParent,
+                                           const int             theRow,
+                                           const int             theColumn)
+    : TreeModel_ItemBase(theParent, theRow, theColumn)
 {
 }
 
@@ -42,13 +44,13 @@ void TreeModel_ItemStream::Init()
     if (!myProperties)
     {
       myProperties = new TreeModel_ItemProperties();
-      myProperties->SetItem (currentItem());
+      myProperties->SetItem(currentItem());
     }
     myProperties->Init();
     aStreamChildrenCount = myProperties->Children().Extent();
   }
   m_iStreamChildren = aStreamChildrenCount;
-  initStream (myStream);
+  initStream(myStream);
 }
 
 // =======================================================================
@@ -57,7 +59,7 @@ void TreeModel_ItemStream::Init()
 // =======================================================================
 void TreeModel_ItemStream::Reset()
 {
-  myStream.str ("");
+  myStream.str("");
   TreeModel_ItemBase::Reset();
 }
 
@@ -65,9 +67,9 @@ void TreeModel_ItemStream::Reset()
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant TreeModel_ItemStream::initValue (const int theItemRole) const
+QVariant TreeModel_ItemStream::initValue(const int theItemRole) const
 {
-  QVariant aParentValue = TreeModel_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = TreeModel_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -75,14 +77,16 @@ QVariant TreeModel_ItemStream::initValue (const int theItemRole) const
     return QVariant();
 
   if (theItemRole == Qt::ForegroundRole)
-    return QColor (Qt::darkBlue);
+    return QColor(Qt::darkBlue);
 
-  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
+  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole
+      && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   switch (Column())
   {
-    case 0: return Properties() ? Properties()->Key().ToCString() : "";
+    case 0:
+      return Properties() ? Properties()->Key().ToCString() : "";
   }
   return QVariant();
 }
@@ -91,16 +95,16 @@ QVariant TreeModel_ItemStream::initValue (const int theItemRole) const
 // function : StoreItemProperties
 // purpose :
 // =======================================================================
-void TreeModel_ItemStream::StoreItemProperties (const int, const int, const QVariant& theValue)
+void TreeModel_ItemStream::StoreItemProperties(const int, const int, const QVariant& theValue)
 {
-  Parent()->StoreItemProperties (-1, -1, theValue);
+  Parent()->StoreItemProperties(-1, -1, theValue);
 }
 
 // =======================================================================
 // function : initStream
 // purpose :
 // =======================================================================
-void TreeModel_ItemStream::initStream (Standard_OStream& theOStream) const
+void TreeModel_ItemStream::initStream(Standard_OStream& theOStream) const
 {
   if (!Properties())
     return;
@@ -123,7 +127,7 @@ void TreeModel_ItemStream::initItem() const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr TreeModel_ItemStream::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr TreeModel_ItemStream::createChild(int theRow, int theColumn)
 {
-  return TreeModel_ItemStream::CreateItem (currentItem(), theRow, theColumn);
+  return TreeModel_ItemStream::CreateItem(currentItem(), theRow, theColumn);
 }

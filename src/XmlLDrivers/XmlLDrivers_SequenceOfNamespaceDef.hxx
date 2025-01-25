@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<XmlLDrivers_NamespaceDef> XmlLDrivers_SequenceOfNamespaceDef;
 
-
 #endif

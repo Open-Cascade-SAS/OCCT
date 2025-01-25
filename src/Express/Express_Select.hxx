@@ -30,10 +30,9 @@ class Express_Select : public Express_Item
 {
 
 public:
-
   //! Create SELECT item and initialize it
-  Standard_EXPORT Express_Select (const Standard_CString theName,
-                                  const Handle(TColStd_HSequenceOfHAsciiString)& theNames);
+  Standard_EXPORT Express_Select(const Standard_CString                         theName,
+                                 const Handle(TColStd_HSequenceOfHAsciiString)& theNames);
 
   //! Returns names of types included in this SELECT
   Standard_EXPORT const Handle(TColStd_HSequenceOfHAsciiString)& Names() const;
@@ -50,14 +49,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Select, Express_Item)
 
 protected:
-
 private:
-
-  Standard_EXPORT Standard_Boolean generateSelectMember (const Handle(TColStd_HSequenceOfInteger)& theSeqMember) const;
+  Standard_EXPORT Standard_Boolean
+    generateSelectMember(const Handle(TColStd_HSequenceOfInteger)& theSeqMember) const;
 
   Handle(TColStd_HSequenceOfHAsciiString) myNames;
-  Handle(Express_HSequenceOfItem) myItems;
-
+  Handle(Express_HSequenceOfItem)         myItems;
 };
 
 #endif // _Express_Select_HeaderFile

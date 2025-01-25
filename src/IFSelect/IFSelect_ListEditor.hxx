@@ -54,29 +54,29 @@ class IFSelect_ListEditor : public Standard_Transient
 {
 
 public:
-
   //! Creates a ListEditor with absolutely no constraint
   Standard_EXPORT IFSelect_ListEditor();
-  
+
   //! Creates a ListEditor, for which items of the list to edit are
   //! defined by <def>, and <max> describes max length :
   //! 0 (D) means no limit
   //! value > 0 means : no more the <max> items are allowed
-  Standard_EXPORT IFSelect_ListEditor(const Handle(Interface_TypedValue)& def, const Standard_Integer max = 0);
-  
+  Standard_EXPORT IFSelect_ListEditor(const Handle(Interface_TypedValue)& def,
+                                      const Standard_Integer              max = 0);
+
   //! Loads a Model. It is used to check items of type Entity(Ident)
-  Standard_EXPORT void LoadModel (const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT void LoadModel(const Handle(Interface_InterfaceModel)& model);
 
   //! Loads the original values for the list.
   //! Remark : If its length is more then MaxLength, editions remain allowed, except Add
-  Standard_EXPORT void LoadValues (const Handle(TColStd_HSequenceOfHAsciiString)& vals);
+  Standard_EXPORT void LoadValues(const Handle(TColStd_HSequenceOfHAsciiString)& vals);
 
   //! Declares this ListEditor to have been touched (whatever action)
   Standard_EXPORT void SetTouched();
-  
+
   //! Clears all editions already recorded
   Standard_EXPORT void ClearEdit();
-  
+
   //! Loads a new list to replace the older one, in once !
   //! By default (can be redefined) checks the length of the list
   //! and the value of each item according to the def
@@ -85,68 +85,72 @@ public:
   //! If no def has been given at creation time, no check is done
   //! Returns True when done, False if checks have failed ... a
   //! specialisation may also lock it by returning always False ...
-  Standard_EXPORT virtual Standard_Boolean LoadEdited (const Handle(TColStd_HSequenceOfHAsciiString)& list);
-  
+  Standard_EXPORT virtual Standard_Boolean LoadEdited(
+    const Handle(TColStd_HSequenceOfHAsciiString)& list);
+
   //! Sets a new value for the item <num> (in edited list)
   //! <val> may be a Null Handle, then the value will be cleared but
   //! not removed
   //! Returns True when done. False if <num> is out of range or if
   //! <val> does not satisfy the definition
-  Standard_EXPORT virtual Standard_Boolean SetValue (const Standard_Integer num, const Handle(TCollection_HAsciiString)& val);
-  
+  Standard_EXPORT virtual Standard_Boolean SetValue(const Standard_Integer                  num,
+                                                    const Handle(TCollection_HAsciiString)& val);
+
   //! Adds a new item. By default appends (at the end of the list)
   //! Can insert before a given rank <num>, if positive
   //! Returns True when done. False if MaxLength may be overpassed
   //! or if <val> does not satisfy the definition
-  Standard_EXPORT virtual Standard_Boolean AddValue (const Handle(TCollection_HAsciiString)& val, const Standard_Integer atnum = 0);
-  
+  Standard_EXPORT virtual Standard_Boolean AddValue(const Handle(TCollection_HAsciiString)& val,
+                                                    const Standard_Integer atnum = 0);
+
   //! Removes items from the list
   //! By default removes one item. Else, count given by <howmany>
   //! Remove from rank <num> included. By default, from the end
   //! Returns True when done, False (and does not work) if case of
   //! out of range of if <howmany> is greater than current length
-  Standard_EXPORT virtual Standard_Boolean Remove (const Standard_Integer num = 0, const Standard_Integer howmany = 1);
-  
+  Standard_EXPORT virtual Standard_Boolean Remove(const Standard_Integer num     = 0,
+                                                  const Standard_Integer howmany = 1);
+
   //! Returns the value from which the edition started
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) OriginalValues() const;
-  
+
   //! Returns the result of the edition
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) EditedValues() const;
-  
+
   //! Returns count of values, edited (D) or original
-  Standard_EXPORT Standard_Integer NbValues (const Standard_Boolean edited = Standard_True) const;
-  
+  Standard_EXPORT Standard_Integer NbValues(const Standard_Boolean edited = Standard_True) const;
+
   //! Returns a value given its rank. Edited (D) or Original
   //! A Null String means the value is cleared but not removed
-  Standard_EXPORT Handle(TCollection_HAsciiString) Value (const Standard_Integer num, const Standard_Boolean edited = Standard_True) const;
-  
+  Standard_EXPORT Handle(TCollection_HAsciiString) Value(
+    const Standard_Integer num,
+    const Standard_Boolean edited = Standard_True) const;
+
   //! Tells if a value (in edited list) has been changed, i.e.
   //! either modified-value, or added
-  Standard_EXPORT Standard_Boolean IsChanged (const Standard_Integer num) const;
-  
+  Standard_EXPORT Standard_Boolean IsChanged(const Standard_Integer num) const;
+
   //! Tells if a value (in edited list) has been modified-value
   //! (not added)
-  Standard_EXPORT Standard_Boolean IsModified (const Standard_Integer num) const;
-  
+  Standard_EXPORT Standard_Boolean IsModified(const Standard_Integer num) const;
+
   //! Tells if a value (in edited list) has been added (new one)
-  Standard_EXPORT Standard_Boolean IsAdded (const Standard_Integer num) const;
-  
+  Standard_EXPORT Standard_Boolean IsAdded(const Standard_Integer num) const;
+
   //! Tells if at least one edition (SetValue-AddValue-Remove) has
   //! been recorded
   Standard_EXPORT Standard_Boolean IsTouched() const;
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor, Standard_Transient)
 
 private:
-
-  Standard_Integer themax;
-  Handle(Interface_TypedValue) thedef;
-  Standard_Integer thetouc;
+  Standard_Integer                        themax;
+  Handle(Interface_TypedValue)            thedef;
+  Standard_Integer                        thetouc;
   Handle(TColStd_HSequenceOfHAsciiString) theorig;
   Handle(TColStd_HSequenceOfHAsciiString) theedit;
-  Handle(TColStd_HSequenceOfInteger) thestat;
-  Handle(Interface_InterfaceModel) themodl;
-
+  Handle(TColStd_HSequenceOfInteger)      thestat;
+  Handle(Interface_InterfaceModel)        themodl;
 };
 
 #endif // _IFSelect_ListEditor_HeaderFile

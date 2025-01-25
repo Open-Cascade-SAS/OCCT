@@ -24,18 +24,20 @@
 #include <Units_Token.hxx>
 #include <Units_UnitsDictionary.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsLexicon,Units_Lexicon)
+IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
 
 //=======================================================================
-//function : Units_UnitsLexicon
-//purpose  : 
+// function : Units_UnitsLexicon
+// purpose  :
 //=======================================================================
-Units_UnitsLexicon::Units_UnitsLexicon() : Units_Lexicon()
-{}
+Units_UnitsLexicon::Units_UnitsLexicon()
+    : Units_Lexicon()
+{
+}
 
 //=======================================================================
-//function : Creates
-//purpose  : 
+// function : Creates
+// purpose  :
 //=======================================================================
 
 void Units_UnitsLexicon::Creates(const Standard_Boolean amode)
@@ -44,6 +46,6 @@ void Units_UnitsLexicon::Creates(const Standard_Boolean amode)
 
   Units_Lexicon::Creates();
 
-  if(amode)unitsdictionary = Units::DictionaryOfUnits(amode);
-
+  if (amode)
+    unitsdictionary = Units::DictionaryOfUnits(amode);
 }

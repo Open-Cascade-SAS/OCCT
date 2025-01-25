@@ -15,11 +15,11 @@
 #ifndef BOPTools_MapOfSet_HeaderFile
 #define BOPTools_MapOfSet_HeaderFile
 
-#include <BOPTools_Set.hxx>  
+#include <BOPTools_Set.hxx>
 
-#include <NCollection_Map.hxx>   
+#include <NCollection_Map.hxx>
 
-typedef NCollection_Map<BOPTools_Set> BOPTools_MapOfSet; 
-typedef BOPTools_MapOfSet::Iterator BOPTools_MapIteratorOfMapOfSet;
+typedef NCollection_Map<BOPTools_Set> BOPTools_MapOfSet;
+typedef BOPTools_MapOfSet::Iterator   BOPTools_MapIteratorOfMapOfSet;
 
 #endif

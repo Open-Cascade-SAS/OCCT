@@ -22,7 +22,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_BooleanArray,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_BooleanArray, TDF_Attribute)
 
 static Standard_Integer DegreeOf2(const Standard_Integer degree)
 {
@@ -51,30 +51,30 @@ static Standard_Integer DegreeOf2(const Standard_Integer degree)
 }
 
 //=======================================================================
-//function : GetID
-//purpose  : 
+// function : GetID
+// purpose  :
 //=======================================================================
-const Standard_GUID& TDataStd_BooleanArray::GetID() 
-{ 
-  static Standard_GUID TDataStd_BooleanArrayID ("C7E98E54-B5EA-4aa9-AC99-9164EBD07F10");
-  return TDataStd_BooleanArrayID; 
+const Standard_GUID& TDataStd_BooleanArray::GetID()
+{
+  static Standard_GUID TDataStd_BooleanArrayID("C7E98E54-B5EA-4aa9-AC99-9164EBD07F10");
+  return TDataStd_BooleanArrayID;
 }
 
 //=======================================================================
-//function : SetAttr
-//purpose  : Implements Set functionality
+// function : SetAttr
+// purpose  : Implements Set functionality
 //=======================================================================
 static Handle(TDataStd_BooleanArray) SetAttr(const TDF_Label&       label,
                                              const Standard_Integer lower,
                                              const Standard_Integer upper,
-                                             const Standard_GUID&   theGuid) 
+                                             const Standard_GUID&   theGuid)
 {
   Handle(TDataStd_BooleanArray) A;
-  if (!label.FindAttribute (theGuid, A)) 
+  if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_BooleanArray;
     A->SetID(theGuid);
-    A->Init (lower, upper); 
+    A->Init(lower, upper);
     label.AddAttribute(A);
   }
   else if (lower != A->Lower() || upper != A->Upper())
@@ -85,41 +85,41 @@ static Handle(TDataStd_BooleanArray) SetAttr(const TDF_Label&       label,
 }
 
 //=======================================================================
-//function : TDataStd_BooleanArray
-//purpose  : Empty Constructor
+// function : TDataStd_BooleanArray
+// purpose  : Empty Constructor
 //=======================================================================
-TDataStd_BooleanArray::TDataStd_BooleanArray() : myID(GetID())
-{}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-void TDataStd_BooleanArray::Init(const Standard_Integer lower,
-                                 const Standard_Integer upper)
+TDataStd_BooleanArray::TDataStd_BooleanArray()
+    : myID(GetID())
 {
-  Standard_RangeError_Raise_if(upper < lower,"TDataStd_BooleanArray::Init");
-  Backup();
-  myLower = lower;
-  myUpper = upper;
-  myValues = new TColStd_HArray1OfByte(0, Length() >> 3, 0/*initialize to FALSE*/);
 }
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : Init
+// purpose  :
+//=======================================================================
+void TDataStd_BooleanArray::Init(const Standard_Integer lower, const Standard_Integer upper)
+{
+  Standard_RangeError_Raise_if(upper < lower, "TDataStd_BooleanArray::Init");
+  Backup();
+  myLower  = lower;
+  myUpper  = upper;
+  myValues = new TColStd_HArray1OfByte(0, Length() >> 3, 0 /*initialize to FALSE*/);
+}
+
+//=======================================================================
+// function : Set
+// purpose  :
 //=======================================================================
 Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
                                                          const Standard_Integer lower,
-                                                         const Standard_Integer upper) 
+                                                         const Standard_Integer upper)
 {
   return SetAttr(label, lower, upper, GetID());
 }
 
-
 //=======================================================================
-//function : Set
-//purpose  : Set user defined attribute with specific ID
+// function : Set
+// purpose  : Set user defined attribute with specific ID
 //=======================================================================
 Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
                                                          const Standard_GUID&   theGuid,
@@ -130,17 +130,16 @@ Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       
 }
 
 //=======================================================================
-//function : SetValue
-//purpose  : 
+// function : SetValue
+// purpose  :
 //=======================================================================
-void TDataStd_BooleanArray::SetValue (const Standard_Integer index,
-                                      const Standard_Boolean value) 
+void TDataStd_BooleanArray::SetValue(const Standard_Integer index, const Standard_Boolean value)
 {
 
-  if (myValues.IsNull()) 
-    return; 
+  if (myValues.IsNull())
+    return;
   Standard_Integer byte_index = (index - myLower) >> 3;
-  Standard_Integer degree = index - (byte_index << 3) - myLower;
+  Standard_Integer degree     = index - (byte_index << 3) - myLower;
   Standard_Integer byte_value = DegreeOf2(degree);
 
   if ((value != 0) == ((myValues->Value(byte_index) & byte_value) > 0))
@@ -159,10 +158,10 @@ void TDataStd_BooleanArray::SetValue (const Standard_Integer index,
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
-Standard_Boolean TDataStd_BooleanArray::Value (const Standard_Integer index) const 
+Standard_Boolean TDataStd_BooleanArray::Value(const Standard_Integer index) const
 {
   if (myValues.IsNull())
     return Standard_False;
@@ -170,109 +169,111 @@ Standard_Boolean TDataStd_BooleanArray::Value (const Standard_Integer index) con
     return Standard_False;
 
   Standard_Integer byte_index = (index - myLower) >> 3;
-  Standard_Integer degree = index - (byte_index << 3) - myLower;
+  Standard_Integer degree     = index - (byte_index << 3) - myLower;
   Standard_Integer byte_value = DegreeOf2(degree);
 
   return (myValues->Value(byte_index) & byte_value) > 0;
 }
 
 //=======================================================================
-//function : Lower
-//purpose  : 
+// function : Lower
+// purpose  :
 //=======================================================================
-Standard_Integer TDataStd_BooleanArray::Lower (void) const 
-{ 
+Standard_Integer TDataStd_BooleanArray::Lower(void) const
+{
   return myLower;
 }
 
 //=======================================================================
-//function : Upper
-//purpose  : 
+// function : Upper
+// purpose  :
 //=======================================================================
-Standard_Integer TDataStd_BooleanArray::Upper (void) const 
-{ 
+Standard_Integer TDataStd_BooleanArray::Upper(void) const
+{
   return myUpper;
 }
 
 //=======================================================================
-//function : Length
-//purpose  : 
+// function : Length
+// purpose  :
 //=======================================================================
-Standard_Integer TDataStd_BooleanArray::Length (void) const 
+Standard_Integer TDataStd_BooleanArray::Length(void) const
 {
   return myUpper - myLower + 1;
 }
 
 //=======================================================================
-//function : InternalArray
-//purpose  : 
+// function : InternalArray
+// purpose  :
 //=======================================================================
-const Handle(TColStd_HArray1OfByte)& TDataStd_BooleanArray::InternalArray () const 
+const Handle(TColStd_HArray1OfByte)& TDataStd_BooleanArray::InternalArray() const
 {
   return myValues;
 }
 
 //=======================================================================
-//function : SetInternalArray
-//purpose  : 
+// function : SetInternalArray
+// purpose  :
 //=======================================================================
-void TDataStd_BooleanArray::SetInternalArray (const Handle(TColStd_HArray1OfByte)& values)
+void TDataStd_BooleanArray::SetInternalArray(const Handle(TColStd_HArray1OfByte)& values)
 {
   myValues = values;
 }
 
 //=======================================================================
-//function : ID
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
-const Standard_GUID& TDataStd_BooleanArray::ID () const 
-{ 
-  return myID; 
+const Standard_GUID& TDataStd_BooleanArray::ID() const
+{
+  return myID;
 }
 
 //=======================================================================
-//function : SetID
-//purpose  :
+// function : SetID
+// purpose  :
 //=======================================================================
 
-void TDataStd_BooleanArray::SetID( const Standard_GUID&  theGuid)
-{  
-  if(myID == theGuid) return;
+void TDataStd_BooleanArray::SetID(const Standard_GUID& theGuid)
+{
+  if (myID == theGuid)
+    return;
   Backup();
   myID = theGuid;
 }
 
 //=======================================================================
-//function : SetID
-//purpose  : sets default ID
+// function : SetID
+// purpose  : sets default ID
 //=======================================================================
 void TDataStd_BooleanArray::SetID()
 {
   Backup();
   myID = GetID();
 }
+
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
+// function : NewEmpty
+// purpose  :
 //=======================================================================
-Handle(TDF_Attribute) TDataStd_BooleanArray::NewEmpty () const
-{  
-  return new TDataStd_BooleanArray(); 
+Handle(TDF_Attribute) TDataStd_BooleanArray::NewEmpty() const
+{
+  return new TDataStd_BooleanArray();
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : 
+// function : Restore
+// purpose  :
 //=======================================================================
-void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With) 
+void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With)
 {
   Handle(TDataStd_BooleanArray) anArray = Handle(TDataStd_BooleanArray)::DownCast(With);
-  if (!anArray->myValues.IsNull()) 
+  if (!anArray->myValues.IsNull())
   {
-    myLower = anArray->Lower();
-    myUpper = anArray->Upper();
+    myLower                     = anArray->Lower();
+    myUpper                     = anArray->Upper();
     Standard_Integer byte_upper = Length() >> 3;
-    myValues = new TColStd_HArray1OfByte(0, byte_upper, 0/*initialize to FALSE*/);
+    myValues = new TColStd_HArray1OfByte(0, byte_upper, 0 /*initialize to FALSE*/);
     const TColStd_Array1OfByte& with_array = anArray->myValues->Array1();
     for (Standard_Integer i = 0; i <= byte_upper; i++)
     {
@@ -287,13 +288,13 @@ void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With)
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : 
+// function : Paste
+// purpose  :
 //=======================================================================
-void TDataStd_BooleanArray::Paste (const Handle(TDF_Attribute)& Into,
-				   const Handle(TDF_RelocationTable)& ) const
+void TDataStd_BooleanArray::Paste(const Handle(TDF_Attribute)& Into,
+                                  const Handle(TDF_RelocationTable)&) const
 {
-  if (!myValues.IsNull()) 
+  if (!myValues.IsNull())
   {
     Handle(TDataStd_BooleanArray) anArray = Handle(TDataStd_BooleanArray)::DownCast(Into);
     if (!anArray.IsNull())
@@ -309,40 +310,41 @@ void TDataStd_BooleanArray::Paste (const Handle(TDF_Attribute)& Into,
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
-Standard_OStream& TDataStd_BooleanArray::Dump (Standard_OStream& anOS) const
-{  
+Standard_OStream& TDataStd_BooleanArray::Dump(Standard_OStream& anOS) const
+{
   anOS << "\nBooleanArray: ";
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS <<std::endl;
+  anOS << std::endl;
   return anOS;
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
+// function : DumpJson
+// purpose  :
 //=======================================================================
-void TDataStd_BooleanArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_BooleanArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
   if (!myValues.IsNull())
   {
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValues->Lower())
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValues->Upper())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValues->Lower())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValues->Upper())
 
-    for (TColStd_Array1OfByte::Iterator aValueIt (myValues->Array1()); aValueIt.More(); aValueIt.Next())
+    for (TColStd_Array1OfByte::Iterator aValueIt(myValues->Array1()); aValueIt.More();
+         aValueIt.Next())
     {
       const Standard_Byte& aValue = aValueIt.Value();
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
     }
-  }  
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLower)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpper)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myLower)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myUpper)
 }

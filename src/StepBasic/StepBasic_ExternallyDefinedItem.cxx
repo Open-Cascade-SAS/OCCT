@@ -19,23 +19,21 @@
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_SourceItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternallyDefinedItem,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternallyDefinedItem, Standard_Transient)
 
 //=======================================================================
-//function : StepBasic_ExternallyDefinedItem
-//purpose  : 
+// function : StepBasic_ExternallyDefinedItem
+// purpose  :
 //=======================================================================
-StepBasic_ExternallyDefinedItem::StepBasic_ExternallyDefinedItem ()
-{
-}
+StepBasic_ExternallyDefinedItem::StepBasic_ExternallyDefinedItem() {}
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepBasic_ExternallyDefinedItem::Init (const StepBasic_SourceItem &aItemId,
-                                            const Handle(StepBasic_ExternalSource) &aSource)
+void StepBasic_ExternallyDefinedItem::Init(const StepBasic_SourceItem&             aItemId,
+                                           const Handle(StepBasic_ExternalSource)& aSource)
 {
 
   theItemId = aItemId;
@@ -44,41 +42,41 @@ void StepBasic_ExternallyDefinedItem::Init (const StepBasic_SourceItem &aItemId,
 }
 
 //=======================================================================
-//function : ItemId
-//purpose  : 
+// function : ItemId
+// purpose  :
 //=======================================================================
 
-StepBasic_SourceItem StepBasic_ExternallyDefinedItem::ItemId () const
+StepBasic_SourceItem StepBasic_ExternallyDefinedItem::ItemId() const
 {
   return theItemId;
 }
 
 //=======================================================================
-//function : SetItemId
-//purpose  : 
+// function : SetItemId
+// purpose  :
 //=======================================================================
 
-void StepBasic_ExternallyDefinedItem::SetItemId (const StepBasic_SourceItem &aItemId)
+void StepBasic_ExternallyDefinedItem::SetItemId(const StepBasic_SourceItem& aItemId)
 {
   theItemId = aItemId;
 }
 
 //=======================================================================
-//function : Source
-//purpose  : 
+// function : Source
+// purpose  :
 //=======================================================================
 
-Handle(StepBasic_ExternalSource) StepBasic_ExternallyDefinedItem::Source () const
+Handle(StepBasic_ExternalSource) StepBasic_ExternallyDefinedItem::Source() const
 {
   return theSource;
 }
 
 //=======================================================================
-//function : SetSource
-//purpose  : 
+// function : SetSource
+// purpose  :
 //=======================================================================
 
-void StepBasic_ExternallyDefinedItem::SetSource (const Handle(StepBasic_ExternalSource) &aSource)
+void StepBasic_ExternallyDefinedItem::SetSource(const Handle(StepBasic_ExternalSource)& aSource)
 {
   theSource = aSource;
 }

@@ -24,7 +24,6 @@ class Graphic3d_ArrayOfQuadrangles : public Graphic3d_ArrayOfPrimitives
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangles, Graphic3d_ArrayOfPrimitives)
 public:
-
   //! Creates an array of quadrangles (Graphic3d_TOPA_QUADRANGLES), a quadrangle can be filled as:
   //! 1) Creating a set of quadrangles defined with his vertexes, i.e:
   //! @code
@@ -43,26 +42,39 @@ public:
   //!   myArray->AddEdges (3, 4, 5, 6);
   //! @endcode
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
-  //! @param theMaxEdges   defines the maximum allowed edge   number in the array (for indexed array)
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array (for indexed
+  //! array)
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfQuadrangles (Standard_Integer theMaxVertexs,
-                                Standard_Integer theMaxEdges,
-                                Graphic3d_ArrayFlags theArrayFlags)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLES, theMaxVertexs, 0, theMaxEdges, theArrayFlags) {}
+  Graphic3d_ArrayOfQuadrangles(Standard_Integer     theMaxVertexs,
+                               Standard_Integer     theMaxEdges,
+                               Graphic3d_ArrayFlags theArrayFlags)
+      : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_QUADRANGLES,
+                                    theMaxVertexs,
+                                    0,
+                                    theMaxEdges,
+                                    theArrayFlags)
+  {
+  }
 
   //! Creates an array of quadrangles (Graphic3d_TOPA_QUADRANGLES).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
-  //! @param theMaxEdges   defines the maximum allowed edge   number in the array (for indexed array)
-  Graphic3d_ArrayOfQuadrangles (Standard_Integer theMaxVertexs,
-                                Standard_Integer theMaxEdges    = 0,
-                                Standard_Boolean theHasVNormals = Standard_False,
-                                Standard_Boolean theHasVColors  = Standard_False,
-                                Standard_Boolean theHasVTexels  = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLES, theMaxVertexs, 0, theMaxEdges,
-                                 (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
-                               | (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
-                               | (theHasVTexels  ? Graphic3d_ArrayFlags_VertexTexel  : Graphic3d_ArrayFlags_None)) {}
-
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array (for indexed
+  //! array)
+  Graphic3d_ArrayOfQuadrangles(Standard_Integer theMaxVertexs,
+                               Standard_Integer theMaxEdges    = 0,
+                               Standard_Boolean theHasVNormals = Standard_False,
+                               Standard_Boolean theHasVColors  = Standard_False,
+                               Standard_Boolean theHasVTexels  = Standard_False)
+      : Graphic3d_ArrayOfPrimitives(
+          Graphic3d_TOPA_QUADRANGLES,
+          theMaxVertexs,
+          0,
+          theMaxEdges,
+          (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
+            | (theHasVColors ? Graphic3d_ArrayFlags_VertexColor : Graphic3d_ArrayFlags_None)
+            | (theHasVTexels ? Graphic3d_ArrayFlags_VertexTexel : Graphic3d_ArrayFlags_None))
+  {
+  }
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfQuadrangles, Graphic3d_ArrayOfPrimitives)

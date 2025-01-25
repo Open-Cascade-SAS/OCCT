@@ -20,5 +20,4 @@
 
 typedef NCollection_Array1<TColStd_ListOfInteger> TColStd_Array1OfListOfInteger;
 
-
 #endif

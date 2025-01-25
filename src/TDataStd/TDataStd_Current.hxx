@@ -26,7 +26,6 @@
 class Standard_GUID;
 class TDF_RelocationTable;
 
-
 class TDataStd_Current;
 DEFINE_STANDARD_HANDLE(TDataStd_Current, TDF_Attribute)
 
@@ -36,65 +35,48 @@ class TDataStd_Current : public TDF_Attribute
 {
 
 public:
-
-  
   //! class methods
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
-  
+
   //! Set <L> as current of <L> Framework.
-  Standard_EXPORT static void Set (const TDF_Label& L);
-  
+  Standard_EXPORT static void Set(const TDF_Label& L);
+
   //! returns current of <acces> Framework. raise if (!Has)
-  Standard_EXPORT static TDF_Label Get (const TDF_Label& acces);
-  
+  Standard_EXPORT static TDF_Label Get(const TDF_Label& acces);
+
   //! returns True if a  current label is managed in <acces>
   //! Framework.
   //! class methods
   //! =============
-  Standard_EXPORT static Standard_Boolean Has (const TDF_Label& acces);
-  
+  Standard_EXPORT static Standard_Boolean Has(const TDF_Label& acces);
+
   Standard_EXPORT TDataStd_Current();
-  
-  Standard_EXPORT void SetLabel (const TDF_Label& current);
-  
+
+  Standard_EXPORT void SetLabel(const TDF_Label& current);
+
   Standard_EXPORT TDF_Label GetLabel() const;
-  
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_Current,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_Current, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
-
   TDF_Label myLabel;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataStd_Current_HeaderFile

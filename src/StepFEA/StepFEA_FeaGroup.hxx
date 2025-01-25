@@ -23,7 +23,6 @@
 class StepFEA_FeaModel;
 class TCollection_HAsciiString;
 
-
 class StepFEA_FeaGroup;
 DEFINE_STANDARD_HANDLE(StepFEA_FeaGroup, StepBasic_Group)
 
@@ -32,42 +31,25 @@ class StepFEA_FeaGroup : public StepBasic_Group
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_FeaGroup();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGroup_Name, const Handle(TCollection_HAsciiString)& aGroup_Description, const Handle(StepFEA_FeaModel)& aModelRef);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
+                            const Handle(TCollection_HAsciiString)& aGroup_Description,
+                            const Handle(StepFEA_FeaModel)&         aModelRef);
+
   //! Returns field ModelRef
   Standard_EXPORT Handle(StepFEA_FeaModel) ModelRef() const;
-  
+
   //! Set field ModelRef
-  Standard_EXPORT void SetModelRef (const Handle(StepFEA_FeaModel)& ModelRef);
+  Standard_EXPORT void SetModelRef(const Handle(StepFEA_FeaModel)& ModelRef);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaGroup,StepBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaGroup, StepBasic_Group)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepFEA_FeaModel) theModelRef;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_FeaGroup_HeaderFile

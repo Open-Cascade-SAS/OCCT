@@ -25,15 +25,6 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_CopyTool.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define Handle_Model Handle(StepData_StepModel)
 #define Model StepData_StepModel
 #define Model_hxx <StepData_StepModel.hxx>
@@ -44,4 +35,3 @@
 #define IFSelect_ModelModifier_hxx <StepSelect_ModelModifier.hxx>
 #define Handle_IFSelect_ModelModifier Handle(StepSelect_ModelModifier)
 #include "../IFSelect/IFSelect_ModelModifier.gxx"
-

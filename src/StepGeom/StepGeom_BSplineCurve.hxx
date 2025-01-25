@@ -28,72 +28,58 @@
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
 
-
 class StepGeom_BSplineCurve;
 DEFINE_STANDARD_HANDLE(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
-
 
 class StepGeom_BSplineCurve : public StepGeom_BoundedCurve
 {
 
 public:
-
-  
   //! Returns a BSplineCurve
   Standard_EXPORT StepGeom_BSplineCurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect);
-  
-  Standard_EXPORT void SetDegree (const Standard_Integer aDegree);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
+                            const Standard_Integer                          aDegree,
+                            const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+                            const StepGeom_BSplineCurveForm                 aCurveForm,
+                            const StepData_Logical                          aClosedCurve,
+                            const StepData_Logical                          aSelfIntersect);
+
+  Standard_EXPORT void SetDegree(const Standard_Integer aDegree);
+
   Standard_EXPORT Standard_Integer Degree() const;
-  
-  Standard_EXPORT void SetControlPointsList (const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList);
-  
+
+  Standard_EXPORT void SetControlPointsList(
+    const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList);
+
   Standard_EXPORT Handle(StepGeom_HArray1OfCartesianPoint) ControlPointsList() const;
-  
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) ControlPointsListValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Handle(StepGeom_CartesianPoint) ControlPointsListValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbControlPointsList() const;
-  
-  Standard_EXPORT void SetCurveForm (const StepGeom_BSplineCurveForm aCurveForm);
-  
+
+  Standard_EXPORT void SetCurveForm(const StepGeom_BSplineCurveForm aCurveForm);
+
   Standard_EXPORT StepGeom_BSplineCurveForm CurveForm() const;
-  
-  Standard_EXPORT void SetClosedCurve (const StepData_Logical aClosedCurve);
-  
+
+  Standard_EXPORT void SetClosedCurve(const StepData_Logical aClosedCurve);
+
   Standard_EXPORT StepData_Logical ClosedCurve() const;
-  
-  Standard_EXPORT void SetSelfIntersect (const StepData_Logical aSelfIntersect);
-  
+
+  Standard_EXPORT void SetSelfIntersect(const StepData_Logical aSelfIntersect);
+
   Standard_EXPORT StepData_Logical SelfIntersect() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurve,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer degree;
+  Standard_Integer                         degree;
   Handle(StepGeom_HArray1OfCartesianPoint) controlPointsList;
-  StepGeom_BSplineCurveForm curveForm;
-  StepData_Logical closedCurve;
-  StepData_Logical selfIntersect;
-
-
+  StepGeom_BSplineCurveForm                curveForm;
+  StepData_Logical                         closedCurve;
+  StepData_Logical                         selfIntersect;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_BSplineCurve_HeaderFile

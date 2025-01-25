@@ -25,7 +25,6 @@ class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
-
 class BinMDataXtd_GeometryDriver;
 DEFINE_STANDARD_HANDLE(BinMDataXtd_GeometryDriver, BinMDF_ADriver)
 
@@ -34,37 +33,23 @@ class BinMDataXtd_GeometryDriver : public BinMDF_ADriver
 {
 
 public:
-
-  
   Standard_EXPORT BinMDataXtd_GeometryDriver(const Handle(Message_Messenger)& theMessageDriver);
-  
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean Paste (const BinObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, BinObjMgt_RRelocationTable& RelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Source, BinObjMgt_Persistent& Target, BinObjMgt_SRelocationTable& RelocTable) const Standard_OVERRIDE;
 
+  Standard_EXPORT Standard_Boolean
+    Paste(const BinObjMgt_Persistent&  Source,
+          const Handle(TDF_Attribute)& Target,
+          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
+                             BinObjMgt_Persistent&        Target,
+                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_GeometryDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_GeometryDriver, BinMDF_ADriver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BinMDataXtd_GeometryDriver_HeaderFile

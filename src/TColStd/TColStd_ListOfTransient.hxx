@@ -19,7 +19,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Handle(Standard_Transient)> TColStd_ListOfTransient;
-typedef NCollection_List<Handle(Standard_Transient)>::Iterator TColStd_ListIteratorOfListOfTransient;
-
+typedef NCollection_List<Handle(Standard_Transient)>::Iterator
+  TColStd_ListIteratorOfListOfTransient;
 
 #endif

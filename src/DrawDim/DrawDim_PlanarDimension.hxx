@@ -22,7 +22,6 @@
 #include <TopoDS_Face.hxx>
 #include <DrawDim_Dimension.hxx>
 
-
 class DrawDim_PlanarDimension;
 DEFINE_STANDARD_HANDLE(DrawDim_PlanarDimension, DrawDim_Dimension)
 
@@ -31,34 +30,16 @@ class DrawDim_PlanarDimension : public DrawDim_Dimension
 {
 
 public:
+  Standard_EXPORT void SetPlane(const TopoDS_Face& plane);
 
-  
-  Standard_EXPORT void SetPlane (const TopoDS_Face& plane);
-  
   Standard_EXPORT TopoDS_Face GetPlane() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDimension,DrawDim_Dimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDimension, DrawDim_Dimension)
 
 protected:
-
-
   TopoDS_Face myPlane;
 
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DrawDim_PlanarDimension_HeaderFile

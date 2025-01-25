@@ -17,11 +17,10 @@
 #ifndef _Prs3d_TypeOfLinePicking_HeaderFile
 #define _Prs3d_TypeOfLinePicking_HeaderFile
 
-
 enum Prs3d_TypeOfLinePicking
 {
-Prs3d_TOLP_Point,
-Prs3d_TOLP_Segment
+  Prs3d_TOLP_Point,
+  Prs3d_TOLP_Segment
 };
 
 #endif // _Prs3d_TypeOfLinePicking_HeaderFile

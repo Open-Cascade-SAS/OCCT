@@ -16,10 +16,8 @@
 //      	------------------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct  6 1997	Creation
-
-
 
 #ifndef DDF_AttributeBrowser_HeaderFile
 #define DDF_AttributeBrowser_HeaderFile
@@ -27,41 +25,31 @@
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 
-class DDF_AttributeBrowser {
+class DDF_AttributeBrowser
+{
 
-  public :
+public:
+  Standard_EXPORT DDF_AttributeBrowser(
+    Standard_Boolean (*test)(const Handle(TDF_Attribute)&),
+    TCollection_AsciiString (*open)(const Handle(TDF_Attribute)&),
+    TCollection_AsciiString (*text)(const Handle(TDF_Attribute)&));
 
-    Standard_EXPORT DDF_AttributeBrowser 
-      (Standard_Boolean (*test)(const Handle(TDF_Attribute)&),
-       TCollection_AsciiString (*open) (const Handle(TDF_Attribute)&),
-       TCollection_AsciiString (*text) (const Handle(TDF_Attribute)&)
-       );
+  Standard_Boolean        Test(const Handle(TDF_Attribute)& anAtt) const;
+  TCollection_AsciiString Open(const Handle(TDF_Attribute)& anAtt) const;
+  TCollection_AsciiString Text(const Handle(TDF_Attribute)& anAtt) const;
 
+  inline DDF_AttributeBrowser* Next() { return myNext; }
 
-  Standard_Boolean Test
-    (const Handle(TDF_Attribute)&anAtt) const;
-  TCollection_AsciiString Open
-    (const Handle(TDF_Attribute)&anAtt) const;
-  TCollection_AsciiString Text
-    (const Handle(TDF_Attribute)&anAtt) const;
-  inline DDF_AttributeBrowser* Next() {return myNext;}
+  static DDF_AttributeBrowser* FindBrowser(const Handle(TDF_Attribute)& anAtt);
 
-  static DDF_AttributeBrowser* FindBrowser
-    (const Handle(TDF_Attribute)&anAtt);
+private:
+  Standard_Boolean (*myTest)(const Handle(TDF_Attribute)&);
 
-  private :
-    
-  Standard_Boolean (*myTest)
-     (const Handle(TDF_Attribute)&);
+  TCollection_AsciiString (*myOpen)(const Handle(TDF_Attribute)&);
 
-     TCollection_AsciiString (*myOpen)
-     (const Handle(TDF_Attribute)&);
+  TCollection_AsciiString (*myText)(const Handle(TDF_Attribute)&);
 
-     TCollection_AsciiString (*myText)
-     (const Handle(TDF_Attribute)&);
-
-     DDF_AttributeBrowser* myNext;
-    
+  DDF_AttributeBrowser* myNext;
 };
 
 #endif

@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Initialize
-//purpose  : 
+// function : Initialize
+// purpose  :
 //=======================================================================
 
 inline void TopOpeBRepBuild_BlockIterator::Initialize()
@@ -25,8 +25,8 @@ inline void TopOpeBRepBuild_BlockIterator::Initialize()
 }
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopOpeBRepBuild_BlockIterator::More() const
@@ -36,8 +36,8 @@ inline Standard_Boolean TopOpeBRepBuild_BlockIterator::More() const
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 inline void TopOpeBRepBuild_BlockIterator::Next()
@@ -46,8 +46,8 @@ inline void TopOpeBRepBuild_BlockIterator::Next()
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer TopOpeBRepBuild_BlockIterator::Value() const
@@ -55,18 +55,17 @@ inline Standard_Integer TopOpeBRepBuild_BlockIterator::Value() const
   return myValue;
 }
 
-
 //=======================================================================
-//function : Extent
-//purpose  : 
+// function : Extent
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer TopOpeBRepBuild_BlockIterator::Extent() const
 {
-  if (myLower != 0) {
+  if (myLower != 0)
+  {
     Standard_Integer n = myUpper - myLower + 1;
     return n;
   }
   return 0;
 }
-

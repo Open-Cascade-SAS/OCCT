@@ -25,176 +25,202 @@
 #include <HLRBRep_BCurveTool.hxx>
 
 //=======================================================================
-//function : Curve
-//purpose  : 
+// function : Curve
+// purpose  :
 //=======================================================================
 
 inline BRepAdaptor_Curve& HLRBRep_Curve::Curve()
-{ return myCurve; }
+{
+  return myCurve;
+}
 
 //=======================================================================
-//function : GetCurve
-//purpose  : 
+// function : GetCurve
+// purpose  :
 //=======================================================================
 
 inline const BRepAdaptor_Curve& HLRBRep_Curve::GetCurve() const
-{ return myCurve; }
+{
+  return myCurve;
+}
 
 //=======================================================================
-//function : Value3D
-//purpose  : 
+// function : Value3D
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt HLRBRep_Curve::Value3D(const Standard_Real U) const 
+inline gp_Pnt HLRBRep_Curve::Value3D(const Standard_Real U) const
 {
   gp_Pnt P;
-  D0(U,P);
+  D0(U, P);
   return P;
 }
 
 //=======================================================================
-//function : D0
-//purpose  : 
+// function : D0
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_Curve::D0(const Standard_Real U, gp_Pnt& P) const
-{ HLRBRep_BCurveTool::D0(myCurve,U,P); }
+{
+  HLRBRep_BCurveTool::D0(myCurve, U, P);
+}
 
 //=======================================================================
-//function : D1
-//purpose  : 
+// function : D1
+// purpose  :
 //=======================================================================
 
-inline void HLRBRep_Curve::D1(const Standard_Real U,
-			      gp_Pnt& P,
-			      gp_Vec& V) const
-{ HLRBRep_BCurveTool::D1(myCurve,U,P,V); }
+inline void HLRBRep_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+{
+  HLRBRep_BCurveTool::D1(myCurve, U, P, V);
+}
 
 //=======================================================================
-//function : FirstParameter
-//purpose  : 
+// function : FirstParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Curve::FirstParameter() const
-{ return Parameter2d(HLRBRep_BCurveTool::FirstParameter(myCurve)); }
+inline Standard_Real HLRBRep_Curve::FirstParameter() const
+{
+  return Parameter2d(HLRBRep_BCurveTool::FirstParameter(myCurve));
+}
 
 //=======================================================================
-//function : LastParameter
-//purpose  : 
+// function : LastParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Curve::LastParameter() const
-{ return Parameter2d(HLRBRep_BCurveTool::LastParameter(myCurve)); }
+inline Standard_Real HLRBRep_Curve::LastParameter() const
+{
+  return Parameter2d(HLRBRep_BCurveTool::LastParameter(myCurve));
+}
 
 //=======================================================================
-//function : Continuity
-//purpose  : 
+// function : Continuity
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_Shape  HLRBRep_Curve::Continuity() const
-{ return HLRBRep_BCurveTool::Continuity(myCurve); }
+inline GeomAbs_Shape HLRBRep_Curve::Continuity() const
+{
+  return HLRBRep_BCurveTool::Continuity(myCurve);
+}
 
 //=======================================================================
-//function : NbIntervals
-//purpose  : 
+// function : NbIntervals
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Curve::NbIntervals (const GeomAbs_Shape S) const
-{ return HLRBRep_BCurveTool::NbIntervals(myCurve,S); }
+inline Standard_Integer HLRBRep_Curve::NbIntervals(const GeomAbs_Shape S) const
+{
+  return HLRBRep_BCurveTool::NbIntervals(myCurve, S);
+}
 
 //=======================================================================
-//function : Intervals
-//purpose  : 
+// function : Intervals
+// purpose  :
 //=======================================================================
 
-inline void HLRBRep_Curve::Intervals(TColStd_Array1OfReal& Tab,
-                                     const GeomAbs_Shape Sh) const
-{ HLRBRep_BCurveTool::Intervals(myCurve,Tab,Sh); }
-
-
-//=======================================================================
-//function : IsClosed
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean  HLRBRep_Curve::IsClosed()const 
-{ return HLRBRep_BCurveTool::IsClosed(myCurve); }
+inline void HLRBRep_Curve::Intervals(TColStd_Array1OfReal& Tab, const GeomAbs_Shape Sh) const
+{
+  HLRBRep_BCurveTool::Intervals(myCurve, Tab, Sh);
+}
 
 //=======================================================================
-//function : IsPeriodic
-//purpose  : 
+// function : IsClosed
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  HLRBRep_Curve::IsPeriodic()const 
-{ return HLRBRep_BCurveTool::IsPeriodic(myCurve); }
+inline Standard_Boolean HLRBRep_Curve::IsClosed() const
+{
+  return HLRBRep_BCurveTool::IsClosed(myCurve);
+}
 
 //=======================================================================
-//function : Period
-//purpose  : 
+// function : IsPeriodic
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Curve::Period()const 
-{ return HLRBRep_BCurveTool::Period(myCurve); }
+inline Standard_Boolean HLRBRep_Curve::IsPeriodic() const
+{
+  return HLRBRep_BCurveTool::IsPeriodic(myCurve);
+}
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Period
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt2d HLRBRep_Curve::Value
-  (const Standard_Real U) const 
+inline Standard_Real HLRBRep_Curve::Period() const
+{
+  return HLRBRep_BCurveTool::Period(myCurve);
+}
+
+//=======================================================================
+// function : Value
+// purpose  :
+//=======================================================================
+
+inline gp_Pnt2d HLRBRep_Curve::Value(const Standard_Real U) const
 {
   gp_Pnt2d P;
-  D0(U,P);
+  D0(U, P);
   return P;
 }
 
 //=======================================================================
-//function : Resolution
-//purpose  : 
+// function : Resolution
+// purpose  :
 //=======================================================================
 
-inline Standard_Real HLRBRep_Curve::Resolution
-  (const Standard_Real R3d) const
-{ return HLRBRep_BCurveTool::Resolution(myCurve,R3d); }
+inline Standard_Real HLRBRep_Curve::Resolution(const Standard_Real R3d) const
+{
+  return HLRBRep_BCurveTool::Resolution(myCurve, R3d);
+}
 
 //=======================================================================
-//function : GetType
-//purpose  : 
+// function : GetType
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_CurveType HLRBRep_Curve::GetType() const 
-{ return myType; }
+inline GeomAbs_CurveType HLRBRep_Curve::GetType() const
+{
+  return myType;
+}
 
 //=======================================================================
-//function : Degree
-//purpose  : 
+// function : Degree
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Curve::Degree() const
-{ return HLRBRep_BCurveTool::Degree(myCurve); }
-
-
-//=======================================================================
-//function : NbPoles
-//purpose  : 
-//=======================================================================
-
-inline Standard_Integer  HLRBRep_Curve::NbPoles() const
-{ return HLRBRep_BCurveTool::NbPoles(myCurve); }
+inline Standard_Integer HLRBRep_Curve::Degree() const
+{
+  return HLRBRep_BCurveTool::Degree(myCurve);
+}
 
 //=======================================================================
-//function : NbKnots
-//purpose  : 
+// function : NbPoles
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Curve::NbKnots() const
-{ return HLRBRep_BCurveTool::NbKnots(myCurve); }
-
+inline Standard_Integer HLRBRep_Curve::NbPoles() const
+{
+  return HLRBRep_BCurveTool::NbPoles(myCurve);
+}
 
 //=======================================================================
-//function : IsRational
-//purpose  : 
+// function : NbKnots
+// purpose  :
+//=======================================================================
+
+inline Standard_Integer HLRBRep_Curve::NbKnots() const
+{
+  return HLRBRep_BCurveTool::NbKnots(myCurve);
+}
+
+//=======================================================================
+// function : IsRational
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRBRep_Curve::IsRational() const

@@ -17,13 +17,12 @@
 #ifndef _VrmlConverter_TypeOfLight_HeaderFile
 #define _VrmlConverter_TypeOfLight_HeaderFile
 
-
 enum VrmlConverter_TypeOfLight
 {
-VrmlConverter_NoLight,
-VrmlConverter_DirectionLight,
-VrmlConverter_PointLight,
-VrmlConverter_SpotLight
+  VrmlConverter_NoLight,
+  VrmlConverter_DirectionLight,
+  VrmlConverter_PointLight,
+  VrmlConverter_SpotLight
 };
 
 #endif // _VrmlConverter_TypeOfLight_HeaderFile

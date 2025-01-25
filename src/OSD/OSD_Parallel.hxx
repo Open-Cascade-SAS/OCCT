@@ -20,7 +20,7 @@
 
 //! @brief Simple tool for code parallelization.
 //!
-//! OSD_Parallel class provides simple interface for parallel processing of 
+//! OSD_Parallel class provides simple interface for parallel processing of
 //! tasks that can be formulated in terms of "for" or "foreach" loops.
 //!
 //! To use this tool it is necessary to:
@@ -32,7 +32,7 @@
 //!   a functor object.
 //!
 //! Iterators should satisfy requirements of STL forward iterator.
-//! Functor 
+//! Functor
 //!
 //! @code
 //! class Functor
@@ -58,7 +58,6 @@
 class OSD_Parallel
 {
 private:
-
   //! Interface class defining API for polymorphic wrappers over iterators.
   //! Intended to add polymorphic behaviour to For and ForEach functionality
   //! for arbitrary objects and eliminate dependency on template parameters.
@@ -68,35 +67,36 @@ private:
     virtual ~IteratorInterface() {}
 
     //! Returns true if iterators wrapped by this and theOther are equal
-    virtual bool IsEqual (const IteratorInterface& theOther) const = 0;
+    virtual bool IsEqual(const IteratorInterface& theOther) const = 0;
 
     //! Increments wrapped iterator
-    virtual void Increment () = 0;
+    virtual void Increment() = 0;
 
     //! Returns new instance of the wrapper containing copy
     //! of the wrapped iterator.
     virtual IteratorInterface* Clone() const = 0;
   };
 
-  //! Implementation of polymorphic iterator wrapper suitable for basic 
+  //! Implementation of polymorphic iterator wrapper suitable for basic
   //! types as well as for std iterators.
   //! Wraps instance of actual iterator type Type.
-  template<class Type>
+  template <class Type>
   class IteratorWrapper : public IteratorInterface
   {
   public:
     IteratorWrapper() {}
-    IteratorWrapper(const Type& theValue) : myValue(theValue) {}
 
-    virtual bool IsEqual (const IteratorInterface& theOther) const Standard_OVERRIDE
+    IteratorWrapper(const Type& theValue)
+        : myValue(theValue)
+    {
+    }
+
+    virtual bool IsEqual(const IteratorInterface& theOther) const Standard_OVERRIDE
     {
       return myValue == dynamic_cast<const IteratorWrapper<Type>&>(theOther).myValue;
     }
 
-    virtual void Increment () Standard_OVERRIDE
-    {
-      ++myValue;
-    }
+    virtual void Increment() Standard_OVERRIDE { ++myValue; }
 
     virtual IteratorInterface* Clone() const Standard_OVERRIDE
     {
@@ -113,49 +113,49 @@ protected:
   // Note: UniversalIterator and FunctorInterface are made protected to be
   // accessible from specialization using threads (non-TBB).
 
-  //! Fixed-type iterator, implementing STL forward iterator interface, used for 
+  //! Fixed-type iterator, implementing STL forward iterator interface, used for
   //! iteration over objects subject to parallel processing.
-  //! It stores pointer to instance of polymorphic iterator inheriting from 
+  //! It stores pointer to instance of polymorphic iterator inheriting from
   //! IteratorInterface, which contains actual type-specific iterator.
   class UniversalIterator
-    // Note that TBB requires that value_type of iterator be copyable, 
-    // thus we use its own type for that
+  // Note that TBB requires that value_type of iterator be copyable,
+  // thus we use its own type for that
   {
   public:
-
-    // Since C++20 inheritance from std::iterator is deprecated, so define predefined types manually:
+    // Since C++20 inheritance from std::iterator is deprecated, so define predefined types
+    // manually:
     using iterator_category = std::forward_iterator_tag;
-    using value_type = IteratorInterface*;
-    using difference_type = ptrdiff_t;
-    using pointer = value_type;
-    using reference = value_type;
+    using value_type        = IteratorInterface*;
+    using difference_type   = ptrdiff_t;
+    using pointer           = value_type;
+    using reference         = value_type;
 
     UniversalIterator() {}
 
     UniversalIterator(IteratorInterface* theOther)
-    : myPtr(theOther)
+        : myPtr(theOther)
     {
     }
 
     UniversalIterator(const UniversalIterator& theOther)
-    : myPtr (theOther.myPtr->Clone())
+        : myPtr(theOther.myPtr->Clone())
     {
     }
 
-    UniversalIterator& operator= (const UniversalIterator& theOther)
+    UniversalIterator& operator=(const UniversalIterator& theOther)
     {
-      myPtr.reset (theOther.myPtr->Clone());
+      myPtr.reset(theOther.myPtr->Clone());
       return *this;
     }
 
-    bool operator!= (const UniversalIterator& theOther) const
+    bool operator!=(const UniversalIterator& theOther) const
     {
-      return ! myPtr->IsEqual (*theOther.myPtr);
+      return !myPtr->IsEqual(*theOther.myPtr);
     }
 
-    bool operator== (const UniversalIterator& theOther) const
+    bool operator==(const UniversalIterator& theOther) const
     {
-      return myPtr->IsEqual (*theOther.myPtr);
+      return myPtr->IsEqual(*theOther.myPtr);
     }
 
     UniversalIterator& operator++()
@@ -171,8 +171,9 @@ protected:
       return aValue;
     }
 
-    reference operator* () const { return myPtr.get(); }
-    reference operator* () { return myPtr.get(); }
+    reference operator*() const { return myPtr.get(); }
+
+    reference operator*() { return myPtr.get(); }
 
   private:
     std::unique_ptr<IteratorInterface> myPtr;
@@ -186,7 +187,7 @@ protected:
   public:
     virtual ~FunctorInterface() {}
 
-    virtual void operator () (IteratorInterface* theIterator) const = 0;
+    virtual void operator()(IteratorInterface* theIterator) const = 0;
 
     // type cast to actual iterator
     template <typename Iterator>
@@ -197,71 +198,73 @@ protected:
   };
 
 private:
-
   //! Wrapper for functors manipulating on std iterators.
-  template<class Iterator, class Functor>
+  template <class Iterator, class Functor>
   class FunctorWrapperIter : public FunctorInterface
   {
   public:
-    FunctorWrapperIter (const Functor& theFunctor)
-      : myFunctor(theFunctor)
+    FunctorWrapperIter(const Functor& theFunctor)
+        : myFunctor(theFunctor)
     {
     }
 
-    virtual void operator() (IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
     {
       const Iterator& anIt = DownCast<Iterator>(theIterator);
       myFunctor(*anIt);
     }
 
   private:
-    FunctorWrapperIter (const FunctorWrapperIter&);
-    void operator = (const FunctorWrapperIter&);
+    FunctorWrapperIter(const FunctorWrapperIter&);
+    void           operator=(const FunctorWrapperIter&);
     const Functor& myFunctor;
   };
 
   //! Wrapper for functors manipulating on integer index.
-  template<class Functor>
+  template <class Functor>
   class FunctorWrapperInt : public FunctorInterface
   {
   public:
-    FunctorWrapperInt (const Functor& theFunctor)
-      : myFunctor(theFunctor)
+    FunctorWrapperInt(const Functor& theFunctor)
+        : myFunctor(theFunctor)
     {
     }
 
-    virtual void operator() (IteratorInterface* theIterator) const Standard_OVERRIDE
+    virtual void operator()(IteratorInterface* theIterator) const Standard_OVERRIDE
     {
       Standard_Integer anIndex = DownCast<Standard_Integer>(theIterator);
       myFunctor(anIndex);
     }
 
   private:
-    FunctorWrapperInt (const FunctorWrapperInt&);
-    void operator = (const FunctorWrapperInt&);
+    FunctorWrapperInt(const FunctorWrapperInt&);
+    void           operator=(const FunctorWrapperInt&);
     const Functor& myFunctor;
   };
 
   //! Wrapper redirecting functor taking element index to functor taking also thread index.
-  template<class Functor>
+  template <class Functor>
   class FunctorWrapperForThreadPool
   {
   public:
-    FunctorWrapperForThreadPool (const Functor& theFunctor) : myFunctor(theFunctor) {}
-
-    void operator() (int theThreadIndex, int theElemIndex) const
+    FunctorWrapperForThreadPool(const Functor& theFunctor)
+        : myFunctor(theFunctor)
     {
-      (void )theThreadIndex;
-      myFunctor (theElemIndex);
     }
+
+    void operator()(int theThreadIndex, int theElemIndex) const
+    {
+      (void)theThreadIndex;
+      myFunctor(theElemIndex);
+    }
+
   private:
-    FunctorWrapperForThreadPool (const FunctorWrapperForThreadPool&);
-    void operator= (const FunctorWrapperForThreadPool&);
+    FunctorWrapperForThreadPool(const FunctorWrapperForThreadPool&);
+    void           operator=(const FunctorWrapperForThreadPool&);
     const Functor& myFunctor;
   };
 
 private:
-
   //! Simple primitive for parallelization of "foreach" loops, e.g.:
   //! @code
   //!   for (std::iterator anIter = theBegin; anIter != theEnd; ++anIter) {}
@@ -270,29 +273,29 @@ private:
   //! forEach_impl function defined in opencascade::parallel namespace.
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
-  //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
+  //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}"
   //!                   performing task for the specified iterator position
   //! @param theNbItems number of items passed by iterator, -1 if unknown
-  Standard_EXPORT static void forEachOcct (UniversalIterator& theBegin,
-                                           UniversalIterator& theEnd,
-                                           const FunctorInterface& theFunctor,
-                                           Standard_Integer theNbItems);
+  Standard_EXPORT static void forEachOcct(UniversalIterator&      theBegin,
+                                          UniversalIterator&      theEnd,
+                                          const FunctorInterface& theFunctor,
+                                          Standard_Integer        theNbItems);
 
   //! Same as forEachOcct() but can be implemented using external threads library.
-  Standard_EXPORT static void forEachExternal (UniversalIterator& theBegin,
-                                               UniversalIterator& theEnd,
-                                               const FunctorInterface& theFunctor,
-                                               Standard_Integer theNbItems);
+  Standard_EXPORT static void forEachExternal(UniversalIterator&      theBegin,
+                                              UniversalIterator&      theEnd,
+                                              const FunctorInterface& theFunctor,
+                                              Standard_Integer        theNbItems);
 
 public: //! @name public methods
-
   //! Returns TRUE if OCCT threads should be used instead of auxiliary threads library;
-  //! default value is FALSE if alternative library has been enabled while OCCT building and TRUE otherwise.
+  //! default value is FALSE if alternative library has been enabled while OCCT building and TRUE
+  //! otherwise.
   Standard_EXPORT static Standard_Boolean ToUseOcctThreads();
 
   //! Sets if OCCT threads should be used instead of auxiliary threads library.
   //! Has no effect if OCCT has been built with no auxiliary threads library.
-  Standard_EXPORT static void SetUseOcctThreads (Standard_Boolean theToUseOcct);
+  Standard_EXPORT static void SetUseOcctThreads(Standard_Boolean theToUseOcct);
 
   //! Returns number of logical processors.
   Standard_EXPORT static Standard_Integer NbLogicalProcessors();
@@ -305,7 +308,7 @@ public: //! @name public methods
   //! @endcode
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
-  //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
+  //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}"
   //!                   performing task for specified iterator position
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   //! @param theNbItems number of items passed by iterator, -1 if unknown
@@ -314,7 +317,7 @@ public: //! @name public methods
                       InputIterator          theEnd,
                       const Functor&         theFunctor,
                       const Standard_Boolean isForceSingleThreadExecution = Standard_False,
-                      Standard_Integer theNbItems = -1)
+                      Standard_Integer       theNbItems                   = -1)
   {
     if (isForceSingleThreadExecution || theNbItems == 1)
     {
@@ -324,15 +327,15 @@ public: //! @name public methods
     else
     {
       UniversalIterator aBegin(new IteratorWrapper<InputIterator>(theBegin));
-      UniversalIterator aEnd  (new IteratorWrapper<InputIterator>(theEnd));
-      FunctorWrapperIter<InputIterator,Functor> aFunctor (theFunctor);
+      UniversalIterator aEnd(new IteratorWrapper<InputIterator>(theEnd));
+      FunctorWrapperIter<InputIterator, Functor> aFunctor(theFunctor);
       if (ToUseOcctThreads())
       {
-        forEachOcct (aBegin, aEnd, aFunctor, theNbItems);
+        forEachOcct(aBegin, aEnd, aFunctor, theNbItems);
       }
       else
       {
-        forEachExternal (aBegin, aEnd, aFunctor, theNbItems);
+        forEachExternal(aBegin, aEnd, aFunctor, theNbItems);
       }
     }
   }
@@ -345,7 +348,7 @@ public: //! @name public methods
   //! @endcode
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
-  //! @param theFunctor functor providing an interface "void operator(int theIndex){}" 
+  //! @param theFunctor functor providing an interface "void operator(int theIndex){}"
   //!                   performing task for specified index
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   template <typename Functor>
@@ -357,25 +360,24 @@ public: //! @name public methods
     const Standard_Integer aRange = theEnd - theBegin;
     if (isForceSingleThreadExecution || aRange == 1)
     {
-      for (Standard_Integer it (theBegin); it != theEnd; ++it)
+      for (Standard_Integer it(theBegin); it != theEnd; ++it)
         theFunctor(it);
     }
     else if (ToUseOcctThreads())
     {
-      const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-      OSD_ThreadPool::Launcher aPoolLauncher (*aThreadPool, aRange);
-      FunctorWrapperForThreadPool<Functor> aFunctor (theFunctor);
-      aPoolLauncher.Perform (theBegin, theEnd, aFunctor);
+      const Handle(OSD_ThreadPool)&        aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher             aPoolLauncher(*aThreadPool, aRange);
+      FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
+      aPoolLauncher.Perform(theBegin, theEnd, aFunctor);
     }
     else
     {
-      UniversalIterator aBegin(new IteratorWrapper<Standard_Integer>(theBegin));
-      UniversalIterator aEnd  (new IteratorWrapper<Standard_Integer>(theEnd));
-      FunctorWrapperInt<Functor> aFunctor (theFunctor);
-      forEachExternal (aBegin, aEnd, aFunctor, aRange);
+      UniversalIterator          aBegin(new IteratorWrapper<Standard_Integer>(theBegin));
+      UniversalIterator          aEnd(new IteratorWrapper<Standard_Integer>(theEnd));
+      FunctorWrapperInt<Functor> aFunctor(theFunctor);
+      forEachExternal(aBegin, aEnd, aFunctor, aRange);
     }
   }
-
 };
 
 #endif

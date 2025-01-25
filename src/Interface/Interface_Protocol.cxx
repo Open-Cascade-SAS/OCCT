@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
@@ -19,7 +18,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_Protocol,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_Protocol, Standard_Transient)
 
 //  Gestion du Protocol actif : tres simple, une variable statique
 static Handle(Interface_Protocol)& theactive()
@@ -28,21 +27,19 @@ static Handle(Interface_Protocol)& theactive()
   return theact;
 }
 
-
 //=======================================================================
-//function : Active
-//purpose  : 
+// function : Active
+// purpose  :
 //=======================================================================
 
-Handle(Interface_Protocol) Interface_Protocol::Active ()
+Handle(Interface_Protocol) Interface_Protocol::Active()
 {
   return theactive();
 }
 
-
 //=======================================================================
-//function : SetActive
-//purpose  : 
+// function : SetActive
+// purpose  :
 //=======================================================================
 
 void Interface_Protocol::SetActive(const Handle(Interface_Protocol)& aprotocol)
@@ -50,75 +47,66 @@ void Interface_Protocol::SetActive(const Handle(Interface_Protocol)& aprotocol)
   theactive() = aprotocol;
 }
 
-
 //=======================================================================
-//function : ClearActive
-//purpose  : 
+// function : ClearActive
+// purpose  :
 //=======================================================================
 
-void Interface_Protocol::ClearActive ()
+void Interface_Protocol::ClearActive()
 {
   theactive().Nullify();
 }
 
-
 //  ===   Typage (formules fournies par defaut)
 
-
 //=======================================================================
-//function : CaseNumber
-//purpose  : 
+// function : CaseNumber
+// purpose  :
 //=======================================================================
 
-Standard_Integer Interface_Protocol::CaseNumber
-  (const Handle(Standard_Transient)& obj) const
+Standard_Integer Interface_Protocol::CaseNumber(const Handle(Standard_Transient)& obj) const
 {
-  if (obj.IsNull()) return 0;
+  if (obj.IsNull())
+    return 0;
   return TypeNumber(Type(obj));
 }
 
-
 //=======================================================================
-//function : IsDynamicType
-//purpose  : 
+// function : IsDynamicType
+// purpose  :
 //=======================================================================
 
-Standard_Boolean Interface_Protocol::IsDynamicType
-  (const Handle(Standard_Transient)& /*obj*/) const
+Standard_Boolean Interface_Protocol::IsDynamicType(const Handle(Standard_Transient)& /*obj*/) const
 {
   return Standard_True;
 }
 
-
 //=======================================================================
-//function : NbTypes
-//purpose  : 
+// function : NbTypes
+// purpose  :
 //=======================================================================
 
-Standard_Integer Interface_Protocol::NbTypes
-  (const Handle(Standard_Transient)& /*obj*/) const
+Standard_Integer Interface_Protocol::NbTypes(const Handle(Standard_Transient)& /*obj*/) const
 {
   return 1;
 }
 
-
 //=======================================================================
-//function : Type
-//purpose  : 
+// function : Type
+// purpose  :
 //=======================================================================
 
-Handle(Standard_Type) Interface_Protocol::Type
-       (const Handle(Standard_Transient)& obj,
-        const Standard_Integer /*nt*/) const
+Handle(Standard_Type) Interface_Protocol::Type(const Handle(Standard_Transient)& obj,
+                                               const Standard_Integer /*nt*/) const
 {
-  if (obj.IsNull()) return STANDARD_TYPE(Standard_Transient);
+  if (obj.IsNull())
+    return STANDARD_TYPE(Standard_Transient);
   return obj->DynamicType();
 }
 
-
 //=======================================================================
-//function : GlobalCheck
-//purpose  : 
+// function : GlobalCheck
+// purpose  :
 //=======================================================================
 
 Standard_Boolean Interface_Protocol::GlobalCheck(const Interface_Graph& /*graph*/,

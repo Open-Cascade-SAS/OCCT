@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_Window_H
 #define View_Window_H
@@ -30,19 +30,20 @@ class View_Widget;
 class QToolBar;
 
 //! \class View_Window
-//! \brief It is a widget where in grid layout View widget and tool bars are placed. There are two tool bars.
-//! The first, view actions, tool bar is placed on Vertical, the window tool bar is placed Horizontally.
-//! The second tool bar contains actions of View_ToolBar.
+//! \brief It is a widget where in grid layout View widget and tool bars are placed. There are two
+//! tool bars. The first, view actions, tool bar is placed on Vertical, the window tool bar is
+//! placed Horizontally. The second tool bar contains actions of View_ToolBar.
 class View_Window : public QWidget
 {
   Q_OBJECT
 
 public:
-
   //! Constructor
-  Standard_EXPORT View_Window (QWidget* theParent,
-                               const Handle(AIS_InteractiveContext)& theContext = Handle(AIS_InteractiveContext)(),
-                               const bool isUseKeepView = true, const bool isFitAllActive = true);
+  Standard_EXPORT View_Window(
+    QWidget*                              theParent,
+    const Handle(AIS_InteractiveContext)& theContext     = Handle(AIS_InteractiveContext)(),
+    const bool                            isUseKeepView  = true,
+    const bool                            isFitAllActive = true);
 
   //! Destructor
   virtual ~View_Window() {}
@@ -62,16 +63,19 @@ public:
   //! Sets a new context for context type
   //! \param theType a type of context, will be selected in the tool bar combo box
   //! \param theContext an AIS context
-  Standard_EXPORT void SetContext (View_ContextType theType, const Handle(AIS_InteractiveContext)& theContext);
+  Standard_EXPORT void SetContext(View_ContextType                      theType,
+                                  const Handle(AIS_InteractiveContext)& theContext);
 
   //! Sets default size that is used in sizeHint when the widget is firstly show
-  Standard_EXPORT void SetPredefinedSize (int theDefaultWidth, int theDefaultHeight);
+  Standard_EXPORT void SetPredefinedSize(int theDefaultWidth, int theDefaultHeight);
 
   //! Sets initial camera position
   //! \param theVx direction on Ox
   //! \param theVy direction on Oy
   //! \param theVz direction on Oz
-  Standard_EXPORT void SetInitProj (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz);
+  Standard_EXPORT void SetInitProj(const Standard_Real theVx,
+                                   const Standard_Real theVy,
+                                   const Standard_Real theVz);
 
   //! Returns an active view
   Standard_EXPORT Handle(V3d_View) View() const;
@@ -82,8 +86,9 @@ public:
   //! \param theTreeView a view instance
   //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
-  Standard_EXPORT static void SaveState (View_Window* theView, QMap<QString, QString>& theItems,
-                                         const QString& thePrefix = QString());
+  Standard_EXPORT static void SaveState(View_Window*            theView,
+                                        QMap<QString, QString>& theItems,
+                                        const QString&          thePrefix = QString());
 
   //! Restores state of view window by a container
   //! \param theTreeView a view instance
@@ -91,8 +96,10 @@ public:
   //! \param theValue property value
   //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
-  Standard_EXPORT static bool RestoreState (View_Window* theView, const QString& theKey, const QString& theValue,
-                                            const QString& thePrefix = QString());
+  Standard_EXPORT static bool RestoreState(View_Window*   theView,
+                                           const QString& theKey,
+                                           const QString& theValue,
+                                           const QString& thePrefix = QString());
 
 signals:
   //! Signals about calling erasing all presentations in context
@@ -106,17 +113,17 @@ protected slots:
   //! - sets the current view enabled only if a current context type is View_ContextType_Own
   void onViewSelectorActivated();
 
-  //! Processing widget action checked state changed: for Fit All action, if checked, displayer do FitAll automatically
-  //! \param theActionId a clicked action
-  //! \param theState a result checked state
-  void onCheckedStateChanged (int theActionId, bool theState);
+  //! Processing widget action checked state changed: for Fit All action, if checked, displayer do
+  //! FitAll automatically \param theActionId a clicked action \param theState a result checked
+  //! state
+  void onCheckedStateChanged(int theActionId, bool theState);
 
   //! Processing window tool bar actions
-  void onToolBarActionClicked (const int theActionId);
+  void onToolBarActionClicked(const int theActionId);
 
   //! Shows context menu for view. It contains set view orientation actions.
   //! \param thePosition a clicked point
-  void onViewContextMenuRequested (const QPoint& thePosition);
+  void onViewContextMenuRequested(const QPoint& thePosition);
 
   //! Sets the view scene orientation by the text of selected action
   void onSetOrientation();
@@ -125,11 +132,10 @@ protected slots:
   void onDisplayModeChanged();
 
 private:
-
-  View_Displayer* myDisplayer; //!< displayer
-  View_Widget* myView; //!< view widget
-  QToolBar* myActionsToolBar; //!< actions tool bar
-  View_ToolBar* myViewToolBar; //!< window tool bar
+  View_Displayer* myDisplayer;      //!< displayer
+  View_Widget*    myView;           //!< view widget
+  QToolBar*       myActionsToolBar; //!< actions tool bar
+  View_ToolBar*   myViewToolBar;    //!< window tool bar
 };
 
 #endif

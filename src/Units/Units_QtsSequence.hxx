@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Units_Quantity)> Units_QtsSequence;
 
-
 #endif

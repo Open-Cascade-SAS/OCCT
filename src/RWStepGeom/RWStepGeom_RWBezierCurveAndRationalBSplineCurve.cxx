@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepGeom_RWBezierCurveAndRationalBSplineCurve.pxx"
@@ -31,213 +30,253 @@ static TCollection_AsciiString bscfCircularArc(".CIRCULAR_ARC.");
 static TCollection_AsciiString bscfUnspecified(".UNSPECIFIED.");
 static TCollection_AsciiString bscfHyperbolicArc(".HYPERBOLIC_ARC.");
 
-RWStepGeom_RWBezierCurveAndRationalBSplineCurve::RWStepGeom_RWBezierCurveAndRationalBSplineCurve () {}
-
-void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num0,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent) const
+RWStepGeom_RWBezierCurveAndRationalBSplineCurve::RWStepGeom_RWBezierCurveAndRationalBSplineCurve()
 {
-
-	Standard_Integer num = num0;
-
-
-	// --- Instance of plex component BezierCurve ---
-
-	if (!data->CheckNbParams(num,0,ach,"bezier_curve")) return;
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of plex component BoundedCurve ---
-
-	if (!data->CheckNbParams(num,0,ach,"bounded_curve")) return;
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of common supertype BSplineCurve ---
-
-	if (!data->CheckNbParams(num,5,ach,"b_spline_curve")) return;
-	// --- field : degree ---
-
-
-	Standard_Integer aDegree;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadInteger (num,1,"degree",ach,aDegree);
-	// --- field : controlPointsList ---
-
-
-	Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-	Handle(StepGeom_CartesianPoint) anent2;
-	Standard_Integer nsub2;
-	if (data->ReadSubList (num,2,"control_points_list",ach,nsub2)) {
-	  Standard_Integer nb2 = data->NbParams(nsub2);
-	  aControlPointsList = new StepGeom_HArray1OfCartesianPoint (1, nb2);
-	  for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	    if (data->ReadEntity (nsub2, i2,"cartesian_point", ach,
-				  STANDARD_TYPE(StepGeom_CartesianPoint), anent2))
-	      aControlPointsList->SetValue(i2, anent2);
-	  }
-	}
-
-	// --- field : curveForm ---
-
-
-	StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
-	if (data->ParamType(num,3) == Interface_ParamEnum) {
-	  Standard_CString text = data->ParamCValue(num,3);
-	  if      (bscfEllipticArc.IsEqual(text)) aCurveForm = StepGeom_bscfEllipticArc;
-	  else if (bscfPolylineForm.IsEqual(text)) aCurveForm = StepGeom_bscfPolylineForm;
-	  else if (bscfParabolicArc.IsEqual(text)) aCurveForm = StepGeom_bscfParabolicArc;
-	  else if (bscfCircularArc.IsEqual(text)) aCurveForm = StepGeom_bscfCircularArc;
-	  else if (bscfUnspecified.IsEqual(text)) aCurveForm = StepGeom_bscfUnspecified;
-	  else if (bscfHyperbolicArc.IsEqual(text)) aCurveForm = StepGeom_bscfHyperbolicArc;
-	  else ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
-	}
-	else ach->AddFail("Parameter #3 (curve_form) is not an enumeration");
-	// --- field : closedCurve ---
-
-
-	StepData_Logical aClosedCurve;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
-	data->ReadLogical (num,4,"closed_curve",ach,aClosedCurve);
-	// --- field : selfIntersect ---
-
-
-	StepData_Logical aSelfIntersect;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
-	data->ReadLogical (num,5,"self_intersect",ach,aSelfIntersect);
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of plex component Curve ---
-
-	if (!data->CheckNbParams(num,0,ach,"curve")) return;
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of plex component GeometricRepresentationItem ---
-
-	if (!data->CheckNbParams(num,0,ach,"geometric_representation_item")) return;
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of plex component RationalBSplineCurve ---
-
-	if (!data->CheckNbParams(num,1,ach,"rational_b_spline_curve")) return;
-
-	// --- field : weightsData ---
-
-	Handle(TColStd_HArray1OfReal) aWeightsData;
-	Standard_Real aWeightsDataItem;
-	Standard_Integer nsub6;
-	if (data->ReadSubList (num,1,"weights_data",ach,nsub6)) {
-	  Standard_Integer nb6 = data->NbParams(nsub6);
-	  aWeightsData = new TColStd_HArray1OfReal (1, nb6);
-	  for (Standard_Integer i6 = 1; i6 <= nb6; i6 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
-	    if (data->ReadReal (nsub6,i6,"weights_data",ach,aWeightsDataItem))
-	      aWeightsData->SetValue(i6,aWeightsDataItem);
-	  }
-	}
-
-	num = data->NextForComplex(num);
-
-	// --- Instance of plex component RepresentationItem ---
-
-	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
-
-	// --- field : name ---
-
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
-
-	//--- Initialisation of the red entity ---
-
-	ent->Init(aName,aDegree,aControlPointsList,aCurveForm,aClosedCurve,aSelfIntersect,aWeightsData);
 }
 
-
-void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent) const
+void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep(
+  const Handle(StepData_StepReaderData)&                     data,
+  const Standard_Integer                                     num0,
+  Handle(Interface_Check)&                                   ach,
+  const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent) const
 {
 
-	// --- Instance of plex component BezierCurve ---
+  Standard_Integer num = num0;
 
-	SW.StartEntity("BEZIER_CURVE");
+  // --- Instance of plex component BezierCurve ---
 
-	// --- Instance of plex component BoundedCurve ---
+  if (!data->CheckNbParams(num, 0, ach, "bezier_curve"))
+    return;
 
-	SW.StartEntity("BOUNDED_CURVE");
+  num = data->NextForComplex(num);
 
-	// --- Instance of common supertype BSplineCurve ---
+  // --- Instance of plex component BoundedCurve ---
 
-	SW.StartEntity("B_SPLINE_CURVE");
-	// --- field : degree ---
+  if (!data->CheckNbParams(num, 0, ach, "bounded_curve"))
+    return;
 
-	SW.Send(ent->Degree());
-	// --- field : controlPointsList ---
+  num = data->NextForComplex(num);
 
-	SW.OpenSub();
-	for (Standard_Integer i2 = 1;  i2 <= ent->NbControlPointsList();  i2 ++) {
-	  SW.Send(ent->ControlPointsListValue(i2));
-	}
-	SW.CloseSub();
-	// --- field : curveForm ---
+  // --- Instance of common supertype BSplineCurve ---
 
-	switch(ent->CurveForm()) {
-	  case StepGeom_bscfEllipticArc : SW.SendEnum (bscfEllipticArc); break;
-	  case StepGeom_bscfPolylineForm : SW.SendEnum (bscfPolylineForm); break;
-	  case StepGeom_bscfParabolicArc : SW.SendEnum (bscfParabolicArc); break;
-	  case StepGeom_bscfCircularArc : SW.SendEnum (bscfCircularArc); break;
-	  case StepGeom_bscfUnspecified : SW.SendEnum (bscfUnspecified); break;
-	  case StepGeom_bscfHyperbolicArc : SW.SendEnum (bscfHyperbolicArc); break;
-	}
-	// --- field : closedCurve ---
+  if (!data->CheckNbParams(num, 5, ach, "b_spline_curve"))
+    return;
+  // --- field : degree ---
 
-	SW.SendLogical(ent->ClosedCurve());
-	// --- field : selfIntersect ---
+  Standard_Integer aDegree;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadInteger(num, 1, "degree", ach, aDegree);
+  // --- field : controlPointsList ---
 
-	SW.SendLogical(ent->SelfIntersect());
+  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
+  Handle(StepGeom_CartesianPoint)          anent2;
+  Standard_Integer                         nsub2;
+  if (data->ReadSubList(num, 2, "control_points_list", ach, nsub2))
+  {
+    Standard_Integer nb2 = data->NbParams(nsub2);
+    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb2);
+    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      if (data->ReadEntity(nsub2,
+                           i2,
+                           "cartesian_point",
+                           ach,
+                           STANDARD_TYPE(StepGeom_CartesianPoint),
+                           anent2))
+        aControlPointsList->SetValue(i2, anent2);
+    }
+  }
 
-	// --- Instance of plex component Curve ---
+  // --- field : curveForm ---
 
-	SW.StartEntity("CURVE");
+  StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
+  if (data->ParamType(num, 3) == Interface_ParamEnum)
+  {
+    Standard_CString text = data->ParamCValue(num, 3);
+    if (bscfEllipticArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfEllipticArc;
+    else if (bscfPolylineForm.IsEqual(text))
+      aCurveForm = StepGeom_bscfPolylineForm;
+    else if (bscfParabolicArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfParabolicArc;
+    else if (bscfCircularArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfCircularArc;
+    else if (bscfUnspecified.IsEqual(text))
+      aCurveForm = StepGeom_bscfUnspecified;
+    else if (bscfHyperbolicArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfHyperbolicArc;
+    else
+      ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
+  }
+  else
+    ach->AddFail("Parameter #3 (curve_form) is not an enumeration");
+  // --- field : closedCurve ---
 
-	// --- Instance of plex component GeometricRepresentationItem ---
+  StepData_Logical aClosedCurve;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  data->ReadLogical(num, 4, "closed_curve", ach, aClosedCurve);
+  // --- field : selfIntersect ---
 
-	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
+  StepData_Logical aSelfIntersect;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  data->ReadLogical(num, 5, "self_intersect", ach, aSelfIntersect);
 
-	// --- Instance of plex component RationalBSplineCurve ---
+  num = data->NextForComplex(num);
 
-	SW.StartEntity("RATIONAL_B_SPLINE_CURVE");
-	// --- field : weightsData ---
+  // --- Instance of plex component Curve ---
 
-	SW.OpenSub();
-	for (Standard_Integer i6 = 1;  i6 <= ent->NbWeightsData();  i6 ++) {
-	  SW.Send(ent->WeightsDataValue(i6));
-	}
-	SW.CloseSub();
+  if (!data->CheckNbParams(num, 0, ach, "curve"))
+    return;
 
-	// --- Instance of plex component RepresentationItem ---
+  num = data->NextForComplex(num);
 
-	SW.StartEntity("REPRESENTATION_ITEM");
-	// --- field : name ---
+  // --- Instance of plex component GeometricRepresentationItem ---
 
-	SW.Send(ent->Name());
+  if (!data->CheckNbParams(num, 0, ach, "geometric_representation_item"))
+    return;
+
+  num = data->NextForComplex(num);
+
+  // --- Instance of plex component RationalBSplineCurve ---
+
+  if (!data->CheckNbParams(num, 1, ach, "rational_b_spline_curve"))
+    return;
+
+  // --- field : weightsData ---
+
+  Handle(TColStd_HArray1OfReal) aWeightsData;
+  Standard_Real                 aWeightsDataItem;
+  Standard_Integer              nsub6;
+  if (data->ReadSubList(num, 1, "weights_data", ach, nsub6))
+  {
+    Standard_Integer nb6 = data->NbParams(nsub6);
+    aWeightsData         = new TColStd_HArray1OfReal(1, nb6);
+    for (Standard_Integer i6 = 1; i6 <= nb6; i6++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+      if (data->ReadReal(nsub6, i6, "weights_data", ach, aWeightsDataItem))
+        aWeightsData->SetValue(i6, aWeightsDataItem);
+    }
+  }
+
+  num = data->NextForComplex(num);
+
+  // --- Instance of plex component RepresentationItem ---
+
+  if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+    return;
+
+  // --- field : name ---
+
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
+
+  //--- Initialisation of the red entity ---
+
+  ent->Init(aName,
+            aDegree,
+            aControlPointsList,
+            aCurveForm,
+            aClosedCurve,
+            aSelfIntersect,
+            aWeightsData);
 }
 
-
-void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::Share(const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent, Interface_EntityIterator& iter) const
+void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::WriteStep(
+  StepData_StepWriter&                                       SW,
+  const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent) const
 {
 
-	Standard_Integer nbElem1 = ent->NbControlPointsList();
-	for (Standard_Integer is1=1; is1<=nbElem1; is1 ++) {
-	  iter.GetOneItem(ent->ControlPointsListValue(is1));
-	}
+  // --- Instance of plex component BezierCurve ---
 
+  SW.StartEntity("BEZIER_CURVE");
+
+  // --- Instance of plex component BoundedCurve ---
+
+  SW.StartEntity("BOUNDED_CURVE");
+
+  // --- Instance of common supertype BSplineCurve ---
+
+  SW.StartEntity("B_SPLINE_CURVE");
+  // --- field : degree ---
+
+  SW.Send(ent->Degree());
+  // --- field : controlPointsList ---
+
+  SW.OpenSub();
+  for (Standard_Integer i2 = 1; i2 <= ent->NbControlPointsList(); i2++)
+  {
+    SW.Send(ent->ControlPointsListValue(i2));
+  }
+  SW.CloseSub();
+  // --- field : curveForm ---
+
+  switch (ent->CurveForm())
+  {
+    case StepGeom_bscfEllipticArc:
+      SW.SendEnum(bscfEllipticArc);
+      break;
+    case StepGeom_bscfPolylineForm:
+      SW.SendEnum(bscfPolylineForm);
+      break;
+    case StepGeom_bscfParabolicArc:
+      SW.SendEnum(bscfParabolicArc);
+      break;
+    case StepGeom_bscfCircularArc:
+      SW.SendEnum(bscfCircularArc);
+      break;
+    case StepGeom_bscfUnspecified:
+      SW.SendEnum(bscfUnspecified);
+      break;
+    case StepGeom_bscfHyperbolicArc:
+      SW.SendEnum(bscfHyperbolicArc);
+      break;
+  }
+  // --- field : closedCurve ---
+
+  SW.SendLogical(ent->ClosedCurve());
+  // --- field : selfIntersect ---
+
+  SW.SendLogical(ent->SelfIntersect());
+
+  // --- Instance of plex component Curve ---
+
+  SW.StartEntity("CURVE");
+
+  // --- Instance of plex component GeometricRepresentationItem ---
+
+  SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
+
+  // --- Instance of plex component RationalBSplineCurve ---
+
+  SW.StartEntity("RATIONAL_B_SPLINE_CURVE");
+  // --- field : weightsData ---
+
+  SW.OpenSub();
+  for (Standard_Integer i6 = 1; i6 <= ent->NbWeightsData(); i6++)
+  {
+    SW.Send(ent->WeightsDataValue(i6));
+  }
+  SW.CloseSub();
+
+  // --- Instance of plex component RepresentationItem ---
+
+  SW.StartEntity("REPRESENTATION_ITEM");
+  // --- field : name ---
+
+  SW.Send(ent->Name());
 }
 
+void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::Share(
+  const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent,
+  Interface_EntityIterator&                                  iter) const
+{
+
+  Standard_Integer nbElem1 = ent->NbControlPointsList();
+  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  {
+    iter.GetOneItem(ent->ControlPointsListValue(is1));
+  }
+}

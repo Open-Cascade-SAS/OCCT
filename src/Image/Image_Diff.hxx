@@ -53,13 +53,13 @@
 //!     1. http://pdiff.sourceforge.net/ypg01.pdf
 //!     2. http://pdiff.sourceforge.net/metric.html
 //!     3. http://www.cs.ucf.edu/~sumant/publications/sig99.pdf
-//!     4. http://www.worldscientific.com/worldscibooks/10.1142/2641#t=toc (there is a list of articles and books in PDF format)
+//!     4. http://www.worldscientific.com/worldscibooks/10.1142/2641#t=toc (there is a list of
+//!     articles and books in PDF format)
 
 class Image_Diff : public Standard_Transient
 {
 
 public:
-
   //! An empty constructor. Init() should be called for initialization.
   Standard_EXPORT Image_Diff();
 
@@ -68,20 +68,21 @@ public:
 
   //! Initialize algorithm by two images.
   //! @return false if images has different or unsupported pixel format.
-  Standard_EXPORT Standard_Boolean Init (const Handle(Image_PixMap)& theImageRef,
-                                         const Handle(Image_PixMap)& theImageNew,
-                                         const Standard_Boolean      theToBlackWhite = Standard_False);
+  Standard_EXPORT Standard_Boolean Init(const Handle(Image_PixMap)& theImageRef,
+                                        const Handle(Image_PixMap)& theImageNew,
+                                        const Standard_Boolean theToBlackWhite = Standard_False);
 
   //! Initialize algorithm by two images (will be loaded from files).
   //! @return false if images couldn't be opened or their format is unsupported.
-  Standard_EXPORT Standard_Boolean Init (const TCollection_AsciiString& theImgPathRef,
-                                         const TCollection_AsciiString& theImgPathNew,
-                                         const Standard_Boolean         theToBlackWhite = Standard_False);
+  Standard_EXPORT Standard_Boolean Init(const TCollection_AsciiString& theImgPathRef,
+                                        const TCollection_AsciiString& theImgPathNew,
+                                        const Standard_Boolean theToBlackWhite = Standard_False);
 
   //! Color tolerance for equality check. Should be within range 0..1:
   //! Corresponds to a difference between white and black colors (maximum difference).
-  //! By default, the tolerance is equal to 0 thus equality check will return false for any different colors.
-  void SetColorTolerance (const Standard_Real theTolerance) {  myColorTolerance = theTolerance; }
+  //! By default, the tolerance is equal to 0 thus equality check will return false for any
+  //! different colors.
+  void SetColorTolerance(const Standard_Real theTolerance) { myColorTolerance = theTolerance; }
 
   //! Color tolerance for equality check.
   Standard_Real ColorTolerance() const { return myColorTolerance; }
@@ -92,7 +93,7 @@ public:
   //! Therefore, they deflect light differently according to implementation of a video card driver.
   //! This flag allows to detect such a "border" area and skip it from comparison of images.
   //! Filter turned OFF by default.
-  void SetBorderFilterOn (const Standard_Boolean theToIgnore) { myIsBorderFilterOn = theToIgnore; }
+  void SetBorderFilterOn(const Standard_Boolean theToIgnore) { myIsBorderFilterOn = theToIgnore; }
 
   //! Returns a flag of taking into account (ignoring) a border effect in comparison of images.
   Standard_Boolean IsBorderFilterOn() const { return myIsBorderFilterOn; }
@@ -102,13 +103,12 @@ public:
   Standard_EXPORT Standard_Integer Compare();
 
   //! Saves a difference between two images as white pixels on black background.
-  Standard_EXPORT Standard_Boolean SaveDiffImage (Image_PixMap& theDiffImage) const;
+  Standard_EXPORT Standard_Boolean SaveDiffImage(Image_PixMap& theDiffImage) const;
 
   //! Saves a difference between two images as white pixels on black background.
-  Standard_EXPORT Standard_Boolean SaveDiffImage (const TCollection_AsciiString& theDiffPath) const;
+  Standard_EXPORT Standard_Boolean SaveDiffImage(const TCollection_AsciiString& theDiffPath) const;
 
 protected:
-
   //! Perform border filter algorithm.
   Standard_EXPORT Standard_Integer ignoreBorderEffect();
 
@@ -116,46 +116,40 @@ protected:
   Standard_EXPORT void releaseGroupsOfDiffPixels();
 
 protected:
-
   //! Map two pixel coordinates to 32-bit integer
-  static Standard_Integer PackXY (uint16_t theX, uint16_t theY)
+  static Standard_Integer PackXY(uint16_t theX, uint16_t theY)
   {
-    return Standard_Integer((unsigned int)theY | 
-                           ((unsigned int)theX << 16));
+    return Standard_Integer((unsigned int)theY | ((unsigned int)theX << 16));
   }
 
   //! Get pixel X coordinate from 32-bit packed integer
-  static uint16_t UnpackX (Standard_Integer theXY)
+  static uint16_t UnpackX(Standard_Integer theXY)
   {
     return (uint16_t)(((unsigned int)theXY & 0xffff0000) >> 16);
   }
 
   //! Get pixel Y coordinate from 32-bit packed integer
-  static uint16_t UnpackY (Standard_Integer theXY)
+  static uint16_t UnpackY(Standard_Integer theXY)
   {
     return (uint16_t)((unsigned int)theXY & 0xffff);
   }
 
 protected:
-
-  Handle(Image_PixMap)              myImageRef;           //!< reference image to compare (from)
-  Handle(Image_PixMap)              myImageNew;           //!< new       image to compare (to)
-// clang-format off
+  Handle(Image_PixMap) myImageRef;    //!< reference image to compare (from)
+  Handle(Image_PixMap) myImageNew;    //!< new       image to compare (to)
+                                      // clang-format off
   Standard_Real                     myColorTolerance;     //!< tolerance for equality check (0..1, 0 - any not equal, 1 - opposite colors)
 
   Standard_Boolean                  myIsBorderFilterOn;   //!< perform algorithm with border effect filter
-// clang-format on
+                                      // clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
-  NCollection_Vector<Standard_Integer> myDiffPixels;
-  TColStd_PackedMapOfInteger        myLinearGroups;
-  NCollection_List<Handle(TColStd_HPackedMapOfInteger)>
-                                    myGroupsOfDiffPixels;
+  NCollection_Vector<Standard_Integer>                  myDiffPixels;
+  TColStd_PackedMapOfInteger                            myLinearGroups;
+  NCollection_List<Handle(TColStd_HPackedMapOfInteger)> myGroupsOfDiffPixels;
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(Image_Diff,Standard_Transient) // Type definition
-
+  DEFINE_STANDARD_RTTIEXT(Image_Diff, Standard_Transient) // Type definition
 };
 
 DEFINE_STANDARD_HANDLE(Image_Diff, Standard_Transient)

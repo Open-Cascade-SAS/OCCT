@@ -28,7 +28,6 @@ class gp_Ax2;
 class gp_Cone;
 class gp_Pnt;
 
-
 //! This class implements the following algorithms used
 //! to create a ConicalSurface from Geom.
 //! * Create a ConicalSurface parallel to another and passing
@@ -57,13 +56,10 @@ class gp_Pnt;
 //! When you create a ConicalSurface the U and V directions of
 //! parametrization are such that at each point of the surface the
 //! normal is oriented towards the "outside region".
-class GC_MakeConicalSurface  : public GC_Root
+class GC_MakeConicalSurface : public GC_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! A2 defines the local coordinate system of the conical surface.
   //! Ang is the conical surface semi-angle ]0, PI/2[.
@@ -78,11 +74,13 @@ public:
   //! the "outside region" of the surface.
   //! Status is "NegativeRadius" if Radius < 0.0 or "BadAngle" if
   //! Ang < Resolution from gp or Ang >= PI/ - Resolution
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& A2, const Standard_Real Ang, const Standard_Real Radius);
-  
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2&       A2,
+                                        const Standard_Real Ang,
+                                        const Standard_Real Radius);
+
   //! Creates a ConicalSurface from a non persistent Cone from package gp.
   Standard_EXPORT GC_MakeConicalSurface(const gp_Cone& C);
-  
+
   //! Make a ConicalSurface from Geom <TheCone> passing through 3
   //! Pnt <P1>,<P2>,<P3>.
   //! Its axis is <P1P2> and the radius of its base is
@@ -92,21 +90,27 @@ public:
   //! An error iss raised if <P1>,<P2>,<P3>,<P4> are
   //! colinear or if <P3P4> is perpendicular to <P1P2> or
   //! <P3P4> is colinear to <P1P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4);
-  
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1,
+                                        const gp_Pnt& P2,
+                                        const gp_Pnt& P3,
+                                        const gp_Pnt& P4);
+
   //! Make a ConicalSurface with two points and two radius.
   //! The axis of the solution is the line passing through
   //! <P1> and <P2>.
   //! <R1> is the radius of the section passing through <P1>
   //! and <R2> the radius of the section passing through <P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1, const gp_Pnt& P2, const Standard_Real R1, const Standard_Real R2);
-  
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt&       P1,
+                                        const gp_Pnt&       P2,
+                                        const Standard_Real R1,
+                                        const Standard_Real R2);
+
   //! Returns the constructed cone.
   //! Exceptions
   //! StdFail_NotDone if no cone is constructed.
   Standard_EXPORT const Handle(Geom_ConicalSurface)& Value() const;
 
-  operator const Handle(Geom_ConicalSurface)& () const { return Value(); }
+  operator const Handle(Geom_ConicalSurface) & () const { return Value(); }
 
 private:
   Handle(Geom_ConicalSurface) TheCone;

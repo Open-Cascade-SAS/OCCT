@@ -28,19 +28,15 @@
 class gp_Vec;
 class gp_Dir;
 
-
 //! This package implements functions for basis geometric
 //! computation on curves and surfaces.
 //! The tolerance criterions used in this package are
 //! Resolution from package gp and RealEpsilon from class
 //! Real of package Standard.
-class CSLib 
+class CSLib
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The following functions computes the normal to a surface
   //! inherits FunctionWithDerivative from math
@@ -53,8 +49,11 @@ public:
   //! between D1U and D1V is computed and compared with SinTol.
   //! The normal is computed if theStatus == Done else the theStatus gives the
   //! reason why the computation has failed.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real SinTol, CSLib_DerivativeStatus& theStatus, gp_Dir& Normal);
-  
+  Standard_EXPORT static void Normal(const gp_Vec&           D1U,
+                                     const gp_Vec&           D1V,
+                                     const Standard_Real     SinTol,
+                                     CSLib_DerivativeStatus& theStatus,
+                                     gp_Dir&                 Normal);
 
   //! If there is a singularity on the surface  the previous method
   //! cannot compute the local normal.
@@ -83,33 +82,61 @@ public:
   //! order 2 (it means that we cannot omit Eps).
   //! . if DNu Is not Null and DNv Is not Null Done = False, there are
   //! an infinity of normals at the considered point on the surface.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const gp_Vec& D2U, const gp_Vec& D2V, const gp_Vec& D2UV, const Standard_Real SinTol, Standard_Boolean& Done, CSLib_NormalStatus& theStatus, gp_Dir& Normal);
-  
+  Standard_EXPORT static void Normal(const gp_Vec&       D1U,
+                                     const gp_Vec&       D1V,
+                                     const gp_Vec&       D2U,
+                                     const gp_Vec&       D2V,
+                                     const gp_Vec&       D2UV,
+                                     const Standard_Real SinTol,
+                                     Standard_Boolean&   Done,
+                                     CSLib_NormalStatus& theStatus,
+                                     gp_Dir&             Normal);
 
   //! Computes the normal direction of a surface as the cross product
   //! between D1U and D1V.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real MagTol, CSLib_NormalStatus& theStatus, gp_Dir& Normal);
-  
+  Standard_EXPORT static void Normal(const gp_Vec&       D1U,
+                                     const gp_Vec&       D1V,
+                                     const Standard_Real MagTol,
+                                     CSLib_NormalStatus& theStatus,
+                                     gp_Dir&             Normal);
+
   //! find the first  order k0  of deriviative of NUV
   //! where: foreach order < k0  all the derivatives of NUV  are
   //! null all the derivatives of NUV corresponding to the order
   //! k0 are collinear and have the same sens.
   //! In this case, normal at U,V is unique.
-  Standard_EXPORT static void Normal (const Standard_Integer MaxOrder, const TColgp_Array2OfVec& DerNUV, const Standard_Real MagTol, const Standard_Real U, const Standard_Real V, const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax, CSLib_NormalStatus& theStatus, gp_Dir& Normal, Standard_Integer& OrderU, Standard_Integer& OrderV);
-  
+  Standard_EXPORT static void Normal(const Standard_Integer    MaxOrder,
+                                     const TColgp_Array2OfVec& DerNUV,
+                                     const Standard_Real       MagTol,
+                                     const Standard_Real       U,
+                                     const Standard_Real       V,
+                                     const Standard_Real       Umin,
+                                     const Standard_Real       Umax,
+                                     const Standard_Real       Vmin,
+                                     const Standard_Real       Vmax,
+                                     CSLib_NormalStatus&       theStatus,
+                                     gp_Dir&                   Normal,
+                                     Standard_Integer&         OrderU,
+                                     Standard_Integer&         OrderV);
+
   //! -- Computes the derivative  of order Nu in the --
   //! direction U and Nv in the direction V of the not --
   //! normalized  normal vector at  the point  P(U,V) The
   //! array DerSurf contain the derivative (i,j) of the surface
   //! for i=0,Nu+1 ; j=0,Nv+1
-  Standard_EXPORT static gp_Vec DNNUV (const Standard_Integer Nu, const Standard_Integer Nv, const TColgp_Array2OfVec& DerSurf);
-  
+  Standard_EXPORT static gp_Vec DNNUV(const Standard_Integer    Nu,
+                                      const Standard_Integer    Nv,
+                                      const TColgp_Array2OfVec& DerSurf);
+
   //! Computes the derivatives of order Nu in the direction Nu
   //! and Nv in the direction Nv of the not normalized vector
   //! N(u,v) = dS1/du * dS2/dv (cases where we use an osculating surface)
   //! DerSurf1 are the derivatives of S1
-  Standard_EXPORT static gp_Vec DNNUV (const Standard_Integer Nu, const Standard_Integer Nv, const TColgp_Array2OfVec& DerSurf1, const TColgp_Array2OfVec& DerSurf2);
-  
+  Standard_EXPORT static gp_Vec DNNUV(const Standard_Integer    Nu,
+                                      const Standard_Integer    Nv,
+                                      const TColgp_Array2OfVec& DerSurf1,
+                                      const TColgp_Array2OfVec& DerSurf2);
+
   //! -- Computes the derivative  of order Nu in the --
   //! direction   U and  Nv in the  direction  V  of the
   //! normalized normal vector  at the point P(U,V) array
@@ -118,8 +145,11 @@ public:
   //! correspond to a derivative  of D1U ^ D1V  which can
   //! be used to compute the normalized normal vector.
   //! In the regular cases , Iduref=Idvref=0.
-  Standard_EXPORT static gp_Vec DNNormal (const Standard_Integer Nu, const Standard_Integer Nv, const TColgp_Array2OfVec& DerNUV, const Standard_Integer Iduref = 0, const Standard_Integer Idvref = 0);
-
+  Standard_EXPORT static gp_Vec DNNormal(const Standard_Integer    Nu,
+                                         const Standard_Integer    Nv,
+                                         const TColgp_Array2OfVec& DerNUV,
+                                         const Standard_Integer    Iduref = 0,
+                                         const Standard_Integer    Idvref = 0);
 };
 
 #endif // _CSLib_HeaderFile

@@ -21,7 +21,6 @@
 
 #include <StepFEA_NodeRepresentation.hxx>
 
-
 class StepFEA_Node;
 DEFINE_STANDARD_HANDLE(StepFEA_Node, StepFEA_NodeRepresentation)
 
@@ -30,32 +29,13 @@ class StepFEA_Node : public StepFEA_NodeRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_Node();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_Node,StepFEA_NodeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Node, StepFEA_NodeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_Node_HeaderFile

@@ -14,26 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <NLPlate_HPG1Constraint.hxx>
 #include <Plate_D1.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG1Constraint,NLPlate_HGPPConstraint)
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG1Constraint, NLPlate_HGPPConstraint)
 
-NLPlate_HPG1Constraint::NLPlate_HPG1Constraint(const gp_XY& UV,const Plate_D1& D1T)
-:myG1Target(D1T)
+NLPlate_HPG1Constraint::NLPlate_HPG1Constraint(const gp_XY& UV, const Plate_D1& D1T)
+    : myG1Target(D1T)
 {
   SetUV(UV);
   SetActiveOrder(1);
   IncrementalLoadingAllowed = Standard_False;
-  myOrientation = 0;
+  myOrientation             = 0;
 }
-void NLPlate_HPG1Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA) 
+
+void NLPlate_HPG1Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA)
 {
   IncrementalLoadingAllowed = ILA;
 }
-void NLPlate_HPG1Constraint::SetOrientation(const Standard_Integer Orient) 
+
+void NLPlate_HPG1Constraint::SetOrientation(const Standard_Integer Orient)
 {
   myOrientation = Orient;
 }
@@ -42,19 +43,25 @@ Standard_Boolean NLPlate_HPG1Constraint::IncrementalLoadAllowed() const
 {
   return IncrementalLoadingAllowed;
 }
+
 Standard_Integer NLPlate_HPG1Constraint::ActiveOrder() const
 {
-  if (myActiveOrder<1) return myActiveOrder;
-  else return 1;
+  if (myActiveOrder < 1)
+    return myActiveOrder;
+  else
+    return 1;
 }
+
 Standard_Boolean NLPlate_HPG1Constraint::IsG0() const
 {
   return Standard_False;
 }
-Standard_Integer NLPlate_HPG1Constraint::Orientation() 
+
+Standard_Integer NLPlate_HPG1Constraint::Orientation()
 {
   return myOrientation;
 }
+
 const Plate_D1& NLPlate_HPG1Constraint::G1Target() const
 {
   return myG1Target;

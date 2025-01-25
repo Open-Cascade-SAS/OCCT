@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef TopOpeBRep_ListIteratorOfListOfBipoint_HeaderFile
 #define TopOpeBRep_ListIteratorOfListOfBipoint_HeaderFile
 

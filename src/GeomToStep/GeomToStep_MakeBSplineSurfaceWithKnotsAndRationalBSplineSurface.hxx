@@ -26,46 +26,27 @@
 class StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface;
 class Geom_BSplineSurface;
 
-
 //! This class implements the mapping between class
 //! BSplineSurface from Geom and the class
 //! BSplineSurfaceWithKnotsAndRationalBSplineSurface from
 //! StepGeom which describes a
 //! rational_bspline_Surface_with_knots from Prostep
-class GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface  : public GeomToStep_Root
+class GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface(const Handle(Geom_BSplineSurface)& Bsplin,
-                                                                                  const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& Value() const;
+  Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface(
+    const Handle(Geom_BSplineSurface)& Bsplin,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-
-
+  Standard_EXPORT const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& Value()
+    const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) theBSplineSurfaceWithKnotsAndRationalBSplineSurface;
-
-
+  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)
+    theBSplineSurfaceWithKnotsAndRationalBSplineSurface;
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface_HeaderFile

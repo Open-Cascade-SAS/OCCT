@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFGraph_Compare.hxx>
 #include <IFSelect_SelectIntersection.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -19,26 +18,28 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectIntersection,IFSelect_SelectCombine)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectIntersection, IFSelect_SelectCombine)
 
-IFSelect_SelectIntersection::IFSelect_SelectIntersection ()    {  }
+IFSelect_SelectIntersection::IFSelect_SelectIntersection() {}
 
-
-    Interface_EntityIterator  IFSelect_SelectIntersection::RootResult
-  (const Interface_Graph& G) const 
+Interface_EntityIterator IFSelect_SelectIntersection::RootResult(const Interface_Graph& G) const
 {
-  IFGraph_Compare GC(G);
+  IFGraph_Compare  GC(G);
   Standard_Integer nb = NbInputs();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-    GC.GetFromIter(Input(i)->RootResult(G), (i==1));
-    if (i > 1 && i < nb) {
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
+    GC.GetFromIter(Input(i)->RootResult(G), (i == 1));
+    if (i > 1 && i < nb)
+    {
       Interface_EntityIterator comm = GC.Common();
       GC.ResetData();
-      GC.GetFromIter (comm,Standard_True);
+      GC.GetFromIter(comm, Standard_True);
     }
   }
   return GC.Common();
 }
 
-    TCollection_AsciiString  IFSelect_SelectIntersection::Label () const 
-      {  return TCollection_AsciiString("Intersection (AND)");  }
+TCollection_AsciiString IFSelect_SelectIntersection::Label() const
+{
+  return TCollection_AsciiString("Intersection (AND)");
+}

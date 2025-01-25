@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -19,39 +19,42 @@
 #include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
-//function : StepKinematics_SpatialRotation
-//purpose  :
+// function : StepKinematics_SpatialRotation
+// purpose  :
 //=======================================================================
-StepKinematics_SpatialRotation::StepKinematics_SpatialRotation ()
-{
-}
+StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() {}
 
 //=======================================================================
-//function : CaseNum
-//purpose  :
+// function : CaseNum
+// purpose  :
 //=======================================================================
-Standard_Integer StepKinematics_SpatialRotation::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepKinematics_SpatialRotation::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepKinematics_RotationAboutDirection))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepKinematics_RotationAboutDirection)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal)))
+    return 2;
   return 0;
 }
 
 //=======================================================================
-//function : RotationAboutDirection
-//purpose  :
+// function : RotationAboutDirection
+// purpose  :
 //=======================================================================
-Handle(StepKinematics_RotationAboutDirection) StepKinematics_SpatialRotation::RotationAboutDirection () const
+Handle(StepKinematics_RotationAboutDirection) StepKinematics_SpatialRotation::
+  RotationAboutDirection() const
 {
   return Handle(StepKinematics_RotationAboutDirection)::DownCast(Value());
 }
 
 //=======================================================================
-//function : YprRotation
-//purpose  :
+// function : YprRotation
+// purpose  :
 //=======================================================================
-Handle(TColStd_HArray1OfReal) StepKinematics_SpatialRotation::YprRotation () const
+Handle(TColStd_HArray1OfReal) StepKinematics_SpatialRotation::YprRotation() const
 {
   return Handle(TColStd_HArray1OfReal)::DownCast(Value());
 }

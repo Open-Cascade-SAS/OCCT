@@ -16,167 +16,182 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_FaceInfo::BOPDS_FaceInfo()
-:
-  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-  myIndex(-1),
-  myPaveBlocksIn(100, myAllocator),
-  myVerticesIn(100, myAllocator),
-  myPaveBlocksOn(100, myAllocator),
-  myVerticesOn(100, myAllocator),
-  myPaveBlocksSc(100, myAllocator),
-  myVerticesSc(100, myAllocator)
+inline BOPDS_FaceInfo::BOPDS_FaceInfo()
+    : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+      myIndex(-1),
+      myPaveBlocksIn(100, myAllocator),
+      myVerticesIn(100, myAllocator),
+      myPaveBlocksOn(100, myAllocator),
+      myVerticesOn(100, myAllocator),
+      myPaveBlocksSc(100, myAllocator),
+      myVerticesSc(100, myAllocator)
 {
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_FaceInfo::BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  myAllocator(theAllocator),
-  myIndex(-1),
-  myPaveBlocksIn(100, myAllocator),
-  myVerticesIn(100, myAllocator),
-  myPaveBlocksOn(100, myAllocator),
-  myVerticesOn(100, myAllocator),
-  myPaveBlocksSc(100, myAllocator),
-  myVerticesSc(100, myAllocator)
+inline BOPDS_FaceInfo::BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : myAllocator(theAllocator),
+      myIndex(-1),
+      myPaveBlocksIn(100, myAllocator),
+      myVerticesIn(100, myAllocator),
+      myPaveBlocksOn(100, myAllocator),
+      myVerticesOn(100, myAllocator),
+      myPaveBlocksSc(100, myAllocator),
+      myVerticesSc(100, myAllocator)
 {
 }
+
 //=======================================================================
-//function : ~
-//purpose  : 
+// function : ~
+// purpose  :
 //=======================================================================
-  inline BOPDS_FaceInfo::~BOPDS_FaceInfo()
+inline BOPDS_FaceInfo::~BOPDS_FaceInfo()
 {
   Clear();
 }
+
 //=======================================================================
-//function : Clear
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
-  inline void BOPDS_FaceInfo::Clear()
+inline void BOPDS_FaceInfo::Clear()
 {
   myPaveBlocksIn.Clear();
   myVerticesIn.Clear();
   myPaveBlocksOn.Clear();
   myVerticesOn.Clear();
 }
+
 //=======================================================================
-//function : SetIndex
-//purpose  : 
+// function : SetIndex
+// purpose  :
 //=======================================================================
-  inline void BOPDS_FaceInfo::SetIndex(const Standard_Integer theI)
+inline void BOPDS_FaceInfo::SetIndex(const Standard_Integer theI)
 {
-  myIndex=theI;
+  myIndex = theI;
 }
+
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
-  inline Standard_Integer BOPDS_FaceInfo::Index()const
+inline Standard_Integer BOPDS_FaceInfo::Index() const
 {
   return myIndex;
 }
+
 //=======================================================================
-//function : PaveBlockIn
-//purpose  : 
+// function : PaveBlockIn
+// purpose  :
 //=======================================================================
-  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksIn()const
+inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksIn() const
 {
   return myPaveBlocksIn;
 }
+
 //=======================================================================
-//function : ChangePaveBlocksIn
-//purpose  : 
+// function : ChangePaveBlocksIn
+// purpose  :
 //=======================================================================
-  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksIn()
+inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksIn()
 {
   return myPaveBlocksIn;
 }
+
 //=======================================================================
-//function : VerticesIn
-//purpose  : 
+// function : VerticesIn
+// purpose  :
 //=======================================================================
-  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesIn()const
+inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesIn() const
 {
   return myVerticesIn;
 }
+
 //=======================================================================
-//function : ChangeVerticesIn
-//purpose  : 
+// function : ChangeVerticesIn
+// purpose  :
 //=======================================================================
-  inline  TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
+inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
 {
   return myVerticesIn;
 }
+
 // On
 //=======================================================================
-//function : PaveBlocksOn
-//purpose  : 
+// function : PaveBlocksOn
+// purpose  :
 //=======================================================================
-  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksOn()const
+inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksOn() const
 {
   return myPaveBlocksOn;
 }
+
 //=======================================================================
-//function : ChangePaveBlocksOn
-//purpose  : 
+// function : ChangePaveBlocksOn
+// purpose  :
 //=======================================================================
-  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksOn()
+inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksOn()
 {
   return myPaveBlocksOn;
 }
+
 //=======================================================================
-//function : VerticesOn
-//purpose  : 
+// function : VerticesOn
+// purpose  :
 //=======================================================================
-  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesOn()const
+inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesOn() const
 {
   return myVerticesOn;
 }
+
 //=======================================================================
-//function : ChangeVerticesOn
-//purpose  : 
+// function : ChangeVerticesOn
+// purpose  :
 //=======================================================================
-  inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
+inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
 {
   return myVerticesOn;
 }
+
 // Sc
 //=======================================================================
-//function : PaveBlocksSc
-//purpose  : 
+// function : PaveBlocksSc
+// purpose  :
 //=======================================================================
-  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksSc()const
+inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksSc() const
 {
   return myPaveBlocksSc;
 }
+
 //=======================================================================
-//function : ChangePaveBlocksSc
-//purpose  : 
+// function : ChangePaveBlocksSc
+// purpose  :
 //=======================================================================
-  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksSc()
+inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksSc()
 {
   return myPaveBlocksSc;
 }
+
 //=======================================================================
-//function : VerticesSc
-//purpose  : 
+// function : VerticesSc
+// purpose  :
 //=======================================================================
-  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesSc()const
+inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesSc() const
 {
   return myVerticesSc;
 }
+
 //=======================================================================
-//function : ChangeVerticesSc
-//purpose  : 
+// function : ChangeVerticesSc
+// purpose  :
 //=======================================================================
-  inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
+inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
 {
   return myVerticesSc;
 }

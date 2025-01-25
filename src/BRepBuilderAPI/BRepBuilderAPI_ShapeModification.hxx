@@ -27,11 +27,11 @@
 //! constitute the list of operands.
 enum BRepBuilderAPI_ShapeModification
 {
-BRepBuilderAPI_Preserved,
-BRepBuilderAPI_Deleted,
-BRepBuilderAPI_Trimmed,
-BRepBuilderAPI_Merged,
-BRepBuilderAPI_BoundaryModified
+  BRepBuilderAPI_Preserved,
+  BRepBuilderAPI_Deleted,
+  BRepBuilderAPI_Trimmed,
+  BRepBuilderAPI_Merged,
+  BRepBuilderAPI_BoundaryModified
 };
 
 #endif // _BRepBuilderAPI_ShapeModification_HeaderFile

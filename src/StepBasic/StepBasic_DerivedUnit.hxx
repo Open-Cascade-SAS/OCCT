@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class StepBasic_DerivedUnitElement;
 
-
 class StepBasic_DerivedUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_DerivedUnit, Standard_Transient)
 
@@ -34,42 +33,24 @@ class StepBasic_DerivedUnit : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_DerivedUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements);
-  
-  Standard_EXPORT void SetElements (const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements);
+
+  Standard_EXPORT void SetElements(const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements);
+
   Standard_EXPORT Handle(StepBasic_HArray1OfDerivedUnitElement) Elements() const;
-  
+
   Standard_EXPORT Standard_Integer NbElements() const;
-  
-  Standard_EXPORT Handle(StepBasic_DerivedUnitElement) ElementsValue (const Standard_Integer num) const;
 
+  Standard_EXPORT Handle(StepBasic_DerivedUnitElement) ElementsValue(
+    const Standard_Integer num) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnit,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnit, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_HArray1OfDerivedUnitElement) theElements;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DerivedUnit_HeaderFile

@@ -35,74 +35,73 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw,BRepFill_LocationLaw)
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw, BRepFill_LocationLaw)
 
-BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
-					       const TopoDS_Shape& Surf)
+BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path, const TopoDS_Shape& Surf)
 {
   hasresult = Standard_True;
   Init(Path);
 
-  Standard_Boolean Trouve;
-  Standard_Integer  ipath;//  ,NbEdge;
-  TopAbs_Orientation Or;
+  Standard_Boolean       Trouve;
+  Standard_Integer       ipath; //  ,NbEdge;
+  TopAbs_Orientation     Or;
   BRepTools_WireExplorer wexp;
-  TopExp_Explorer exp;
-// Class BRep_Tool without fields and without Constructor :
-//  BRep_Tool B;
-  TopoDS_Edge E;
-  Handle(Geom2d_Curve) C;
-  Handle(Geom2dAdaptor_Curve) AC2d;
-  Handle(Adaptor3d_CurveOnSurface) AC;
-  Handle(BRepAdaptor_Surface) AS;
-  Standard_Real First = 0., Last = 0.;
-  Handle(GeomFill_Darboux) TLaw = new (GeomFill_Darboux)() ;
-  Handle(GeomFill_CurveAndTrihedron) Law = 
-    new (GeomFill_CurveAndTrihedron) (TLaw);
+  TopExp_Explorer        exp;
+  // Class BRep_Tool without fields and without Constructor :
+  //  BRep_Tool B;
+  TopoDS_Edge                        E;
+  Handle(Geom2d_Curve)               C;
+  Handle(Geom2dAdaptor_Curve)        AC2d;
+  Handle(Adaptor3d_CurveOnSurface)   AC;
+  Handle(BRepAdaptor_Surface)        AS;
+  Standard_Real                      First = 0., Last = 0.;
+  Handle(GeomFill_Darboux)           TLaw = new (GeomFill_Darboux)();
+  Handle(GeomFill_CurveAndTrihedron) Law  = new (GeomFill_CurveAndTrihedron)(TLaw);
 
-  for (ipath=0, wexp.Init(myPath); 
-       wexp.More(); wexp.Next()) {
+  for (ipath = 0, wexp.Init(myPath); wexp.More(); wexp.Next())
+  {
     E = wexp.Current();
-//    if (!B.Degenerated(E)) {
-    if (!BRep_Tool::Degenerated(E)) {
+    //    if (!B.Degenerated(E)) {
+    if (!BRep_Tool::Degenerated(E))
+    {
       ipath++;
       myEdges->SetValue(ipath, E);
-      for (Trouve=Standard_False, exp.Init(Surf, TopAbs_FACE);
-	   exp.More() && !Trouve; exp.Next()) {
-	const TopoDS_Face& F = TopoDS::Face(exp.Current());
-	C = BRep_Tool::CurveOnSurface(E, F, First, Last);
-	if (!C.IsNull()) {
-	  Trouve=Standard_True;
-	  AS =  new  (BRepAdaptor_Surface) (F);
-	}
+      for (Trouve = Standard_False, exp.Init(Surf, TopAbs_FACE); exp.More() && !Trouve; exp.Next())
+      {
+        const TopoDS_Face& F = TopoDS::Face(exp.Current());
+        C                    = BRep_Tool::CurveOnSurface(E, F, First, Last);
+        if (!C.IsNull())
+        {
+          Trouve = Standard_True;
+          AS     = new (BRepAdaptor_Surface)(F);
+        }
       }
-      if (!Trouve) { // Impossible to construct the law.
-	hasresult = Standard_False;
-	myLaws.Nullify();
-	return;
-      }
-      
-      Or = E.Orientation();
-      if (Or == TopAbs_REVERSED) {
-	Handle(Geom2d_TrimmedCurve) CBis = 
-	  new (Geom2d_TrimmedCurve) (C, First, Last);
-	CBis->Reverse(); // To avoid spoiling the topology
-	C = CBis;
-        First =  C->FirstParameter();
-	Last  =  C->LastParameter();
+      if (!Trouve)
+      { // Impossible to construct the law.
+        hasresult = Standard_False;
+        myLaws.Nullify();
+        return;
       }
 
-      AC2d = new  (Geom2dAdaptor_Curve) (C,First, Last);
-      AC   = new  (Adaptor3d_CurveOnSurface) 
-	(Adaptor3d_CurveOnSurface(AC2d, AS));
+      Or = E.Orientation();
+      if (Or == TopAbs_REVERSED)
+      {
+        Handle(Geom2d_TrimmedCurve) CBis = new (Geom2d_TrimmedCurve)(C, First, Last);
+        CBis->Reverse(); // To avoid spoiling the topology
+        C     = CBis;
+        First = C->FirstParameter();
+        Last  = C->LastParameter();
+      }
+
+      AC2d = new (Geom2dAdaptor_Curve)(C, First, Last);
+      AC   = new (Adaptor3d_CurveOnSurface)(Adaptor3d_CurveOnSurface(AC2d, AS));
       myLaws->SetValue(ipath, Law->Copy());
       myLaws->ChangeValue(ipath)->SetCurve(AC);
-    }  
+    }
   }
 }
 
- Standard_Boolean BRepFill_EdgeOnSurfLaw::HasResult() const
+Standard_Boolean BRepFill_EdgeOnSurfLaw::HasResult() const
 {
   return hasresult;
 }
-

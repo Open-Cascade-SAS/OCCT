@@ -26,8 +26,9 @@ class Storage_StreamExtCharParityError;
 DEFINE_STANDARD_HANDLE(Storage_StreamExtCharParityError, Storage_StreamReadError)
 
 #if !defined No_Exception && !defined No_Storage_StreamExtCharParityError
-  #define Storage_StreamExtCharParityError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Storage_StreamExtCharParityError(MESSAGE);
+  #define Storage_StreamExtCharParityError_Raise_if(CONDITION, MESSAGE)                            \
+    if (CONDITION)                                                                                 \
+      throw Storage_StreamExtCharParityError(MESSAGE);
 #else
   #define Storage_StreamExtCharParityError_Raise_if(CONDITION, MESSAGE)
 #endif

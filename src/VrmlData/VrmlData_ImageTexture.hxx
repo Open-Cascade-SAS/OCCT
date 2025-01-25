@@ -23,69 +23,60 @@
  */
 class VrmlData_ImageTexture : public VrmlData_Texture
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  inline VrmlData_ImageTexture ()
-  {}
+  inline VrmlData_ImageTexture() {}
 
   /**
    * Constructor
    */
-  Standard_EXPORT VrmlData_ImageTexture
-                            (const VrmlData_Scene&  theScene,
-                             const char             * theName,
-                             const char             * theURL = 0L,
-                             const Standard_Boolean theRepS = Standard_False,
-                             const Standard_Boolean theRepT = Standard_False);
+  Standard_EXPORT VrmlData_ImageTexture(const VrmlData_Scene&  theScene,
+                                        const char*            theName,
+                                        const char*            theURL  = 0L,
+                                        const Standard_Boolean theRepS = Standard_False,
+                                        const Standard_Boolean theRepT = Standard_False);
 
   /**
    * Query the associated URL.
    */
-  inline const NCollection_List<TCollection_AsciiString>&
-                        URL     () const
-  { return myURL; }
+  inline const NCollection_List<TCollection_AsciiString>& URL() const { return myURL; }
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node)
-                        Clone   (const Handle(VrmlData_Node)& theOther)const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
+    Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Read    (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Write   (const char * thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-
-
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
   NCollection_List<TCollection_AsciiString> myURL;
 
- public:
-// Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI_INLINE(VrmlData_ImageTexture,VrmlData_Texture)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_ImageTexture, VrmlData_Texture)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_ImageTexture, VrmlData_Texture)
-
+DEFINE_STANDARD_HANDLE(VrmlData_ImageTexture, VrmlData_Texture)
 
 #endif

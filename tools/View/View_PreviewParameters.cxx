@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/View_PreviewParameters.hxx>
 
@@ -24,34 +24,34 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-View_PreviewParameters::View_PreviewParameters (const Standard_Boolean theToTransparent)
+View_PreviewParameters::View_PreviewParameters(const Standard_Boolean theToTransparent)
 {
   myDrawer = new Prs3d_Drawer();
 
   Quantity_Color aColor(Quantity_NOC_TOMATO);
 
   // point parameters
-  myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_O_PLUS, aColor, 3.0));
+  myDrawer->SetPointAspect(new Prs3d_PointAspect(Aspect_TOM_O_PLUS, aColor, 3.0));
 
   // shading parameters
   Graphic3d_MaterialAspect aShadingMaterial;
-  aShadingMaterial.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
+  aShadingMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
 
-  myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
-  myDrawer->ShadingAspect()->SetColor (aColor);
-  myDrawer->ShadingAspect()->SetMaterial (aShadingMaterial);
+  myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
+  myDrawer->ShadingAspect()->SetColor(aColor);
+  myDrawer->ShadingAspect()->SetMaterial(aShadingMaterial);
 
-  myDrawer->SetLineAspect (new Prs3d_LineAspect (aColor, Aspect_TOL_SOLID, 1.));
+  myDrawer->SetLineAspect(new Prs3d_LineAspect(aColor, Aspect_TOL_SOLID, 1.));
 
   if (theToTransparent)
   {
     Standard_ShortReal aTransparency = 0.8f;
 
-    myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (aTransparency);
-    myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (aTransparency);
-    myDrawer->SetTransparency (aTransparency);
+    myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency(aTransparency);
+    myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial().SetTransparency(aTransparency);
+    myDrawer->SetTransparency(aTransparency);
   }
   // common parameters
-  myDrawer->SetZLayer (Graphic3d_ZLayerId_Topmost);
+  myDrawer->SetZLayer(Graphic3d_ZLayerId_Topmost);
 }

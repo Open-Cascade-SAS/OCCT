@@ -17,7 +17,7 @@
 #include <Graphic3d_MutableIndexBuffer.hxx>
 #include <NCollection_AlignedAllocator.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Buffer,      NCollection_Buffer)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Buffer, NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
 // =======================================================================
 const Handle(NCollection_BaseAllocator)& Graphic3d_Buffer::DefaultAllocator()
 {
-  static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator (16);
+  static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 
@@ -36,12 +36,12 @@ const Handle(NCollection_BaseAllocator)& Graphic3d_Buffer::DefaultAllocator()
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Graphic3d_Buffer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_Buffer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, NCollection_Buffer)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, NCollection_Buffer)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Stride)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbElements)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbAttributes)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Stride)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, NbElements)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, NbAttributes)
 }

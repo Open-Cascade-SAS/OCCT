@@ -22,10 +22,9 @@
 //! Controller and Transfer
 //!
 //! It works by adding functions by method Init
-class XSControl_Functions 
+class XSControl_Functions
 {
- public:
-
+public:
   //! Defines and loads all functions for XSControl (as ActFunc)
   Standard_EXPORT static void Init();
 };

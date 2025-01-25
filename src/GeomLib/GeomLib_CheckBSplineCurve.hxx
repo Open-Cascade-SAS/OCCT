@@ -23,65 +23,50 @@
 
 class Geom_BSplineCurve;
 
-
 //! Checks for the end  tangents : whether or not those
 //! are reversed regarding the third or n-3rd control
-class GeomLib_CheckBSplineCurve 
+class GeomLib_CheckBSplineCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomLib_CheckBSplineCurve(const Handle(Geom_BSplineCurve)& Curve,
-                                            const Standard_Real Tolerance,
-                                            const Standard_Real AngularTolerance);
-  
-    Standard_Boolean IsDone() const;
-  
-  Standard_EXPORT void NeedTangentFix (Standard_Boolean& FirstFlag, Standard_Boolean& SecondFlag) const;
-  
-  Standard_EXPORT void FixTangent (const Standard_Boolean FirstFlag, const Standard_Boolean LastFlag);
-  
+                                            const Standard_Real              Tolerance,
+                                            const Standard_Real              AngularTolerance);
+
+  Standard_Boolean IsDone() const;
+
+  Standard_EXPORT void NeedTangentFix(Standard_Boolean& FirstFlag,
+                                      Standard_Boolean& SecondFlag) const;
+
+  Standard_EXPORT void FixTangent(const Standard_Boolean FirstFlag,
+                                  const Standard_Boolean LastFlag);
+
   //! modifies the curve
   //! by fixing the first or the last tangencies
   //!
   //! if Index3D not in the Range [1,Nb3dSpaces]
   //! if the Approx is not Done
-  Standard_EXPORT Handle(Geom_BSplineCurve) FixedTangent (const Standard_Boolean FirstFlag, const Standard_Boolean LastFlag);
-
-
-
+  Standard_EXPORT Handle(Geom_BSplineCurve) FixedTangent(const Standard_Boolean FirstFlag,
+                                                         const Standard_Boolean LastFlag);
 
 protected:
-
-
-
-
-
 private:
-
   void FixTangentOnCurve(Handle(Geom_BSplineCurve)& theCurve,
-                         const Standard_Boolean FirstFlag,
-                         const Standard_Boolean LastFlag);
-
+                         const Standard_Boolean     FirstFlag,
+                         const Standard_Boolean     LastFlag);
 
   Handle(Geom_BSplineCurve) myCurve;
-  Standard_Boolean myDone;
-  Standard_Boolean myFixFirstTangent;
-  Standard_Boolean myFixLastTangent;
-  Standard_Real myAngularTolerance;
-  Standard_Real myTolerance;
+  Standard_Boolean          myDone;
+  Standard_Boolean          myFixFirstTangent;
+  Standard_Boolean          myFixLastTangent;
+  Standard_Real             myAngularTolerance;
+  Standard_Real             myTolerance;
 
   Standard_Integer myIndSecondPole;
   Standard_Integer myIndPrelastPole;
 };
 
-
 #include <GeomLib_CheckBSplineCurve.lxx>
-
-
-
-
 
 #endif // _GeomLib_CheckBSplineCurve_HeaderFile

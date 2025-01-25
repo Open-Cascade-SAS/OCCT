@@ -26,48 +26,30 @@ class TCollection_HAsciiString;
 class StepGeom_Surface;
 class StepRepr_DefinitionalRepresentation;
 
-
 class StepGeom_EvaluatedDegeneratePcurve;
 DEFINE_STANDARD_HANDLE(StepGeom_EvaluatedDegeneratePcurve, StepGeom_DegeneratePcurve)
-
 
 class StepGeom_EvaluatedDegeneratePcurve : public StepGeom_DegeneratePcurve
 {
 
 public:
-
-  
   //! Returns a EvaluatedDegeneratePcurve
   Standard_EXPORT StepGeom_EvaluatedDegeneratePcurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve, const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
-  
-  Standard_EXPORT void SetEquivalentPoint (const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
+                            const Handle(StepGeom_Surface)&                    aBasisSurface,
+                            const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve,
+                            const Handle(StepGeom_CartesianPoint)&             aEquivalentPoint);
+
+  Standard_EXPORT void SetEquivalentPoint(const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
+
   Standard_EXPORT Handle(StepGeom_CartesianPoint) EquivalentPoint() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_EvaluatedDegeneratePcurve,StepGeom_DegeneratePcurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_EvaluatedDegeneratePcurve, StepGeom_DegeneratePcurve)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_CartesianPoint) equivalentPoint;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_EvaluatedDegeneratePcurve_HeaderFile

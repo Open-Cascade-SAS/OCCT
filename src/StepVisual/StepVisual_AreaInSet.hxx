@@ -24,53 +24,33 @@
 class StepVisual_PresentationArea;
 class StepVisual_PresentationSet;
 
-
 class StepVisual_AreaInSet;
 DEFINE_STANDARD_HANDLE(StepVisual_AreaInSet, Standard_Transient)
-
 
 class StepVisual_AreaInSet : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a AreaInSet
   Standard_EXPORT StepVisual_AreaInSet();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_PresentationArea)& aArea, const Handle(StepVisual_PresentationSet)& aInSet);
-  
-  Standard_EXPORT void SetArea (const Handle(StepVisual_PresentationArea)& aArea);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_PresentationArea)& aArea,
+                            const Handle(StepVisual_PresentationSet)&  aInSet);
+
+  Standard_EXPORT void SetArea(const Handle(StepVisual_PresentationArea)& aArea);
+
   Standard_EXPORT Handle(StepVisual_PresentationArea) Area() const;
-  
-  Standard_EXPORT void SetInSet (const Handle(StepVisual_PresentationSet)& aInSet);
-  
+
+  Standard_EXPORT void SetInSet(const Handle(StepVisual_PresentationSet)& aInSet);
+
   Standard_EXPORT Handle(StepVisual_PresentationSet) InSet() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_AreaInSet,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AreaInSet, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_PresentationArea) area;
-  Handle(StepVisual_PresentationSet) inSet;
-
-
+  Handle(StepVisual_PresentationSet)  inSet;
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_AreaInSet_HeaderFile

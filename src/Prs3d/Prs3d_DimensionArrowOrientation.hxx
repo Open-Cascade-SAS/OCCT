@@ -24,9 +24,9 @@
 //! otherwise - externally
 enum Prs3d_DimensionArrowOrientation
 {
-Prs3d_DAO_Internal,
-Prs3d_DAO_External,
-Prs3d_DAO_Fit
+  Prs3d_DAO_Internal,
+  Prs3d_DAO_External,
+  Prs3d_DAO_Fit
 };
 
 #endif // _Prs3d_DimensionArrowOrientation_HeaderFile

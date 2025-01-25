@@ -16,12 +16,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_BooleanRepresentationItem, StepRepr_RepresentationItem)
 
-StepRepr_BooleanRepresentationItem::StepRepr_BooleanRepresentationItem()
-{
-}
+StepRepr_BooleanRepresentationItem::StepRepr_BooleanRepresentationItem() {}
 
 void StepRepr_BooleanRepresentationItem::Init(const Handle(TCollection_HAsciiString)& theName,
-                                              const Standard_Boolean theValue)
+                                              const Standard_Boolean                  theValue)
 {
   value = theValue;
   StepRepr_RepresentationItem::Init(theName);

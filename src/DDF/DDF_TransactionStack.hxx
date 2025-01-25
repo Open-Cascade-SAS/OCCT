@@ -19,8 +19,7 @@
 #include <DDF_Transaction.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(DDF_Transaction)> DDF_TransactionStack;
+typedef NCollection_List<Handle(DDF_Transaction)>           DDF_TransactionStack;
 typedef NCollection_List<Handle(DDF_Transaction)>::Iterator DDF_ListIteratorOfTransactionStack;
-
 
 #endif

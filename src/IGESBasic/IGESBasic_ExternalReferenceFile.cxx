@@ -21,27 +21,26 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile, IGESData_IGESEntity)
 
-IGESBasic_ExternalReferenceFile::IGESBasic_ExternalReferenceFile ()    {  }
+IGESBasic_ExternalReferenceFile::IGESBasic_ExternalReferenceFile() {}
 
-
-    void  IGESBasic_ExternalReferenceFile::Init
-  (const Handle(Interface_HArray1OfHAsciiString)& aNameArray)
+void IGESBasic_ExternalReferenceFile::Init(
+  const Handle(Interface_HArray1OfHAsciiString)& aNameArray)
 {
   if (aNameArray->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_ExternalReferenceFile : Init");
   theNames = aNameArray;
-  InitTypeAndForm(406,12);
+  InitTypeAndForm(406, 12);
 }
 
-    Standard_Integer  IGESBasic_ExternalReferenceFile::NbListEntries () const
+Standard_Integer IGESBasic_ExternalReferenceFile::NbListEntries() const
 {
   return theNames->Length();
 }
 
-    Handle(TCollection_HAsciiString)  IGESBasic_ExternalReferenceFile::Name
-  (const Standard_Integer Index) const
+Handle(TCollection_HAsciiString) IGESBasic_ExternalReferenceFile::Name(
+  const Standard_Integer Index) const
 {
   return theNames->Value(Index);
 }

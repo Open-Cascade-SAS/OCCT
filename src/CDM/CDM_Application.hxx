@@ -33,78 +33,69 @@ class PCDM_ReaderFilter;
 class CDM_Application;
 DEFINE_STANDARD_HANDLE(CDM_Application, Standard_Transient)
 
-
 class CDM_Application : public Standard_Transient
 {
 
 public:
-
-  
   //! The manager returned by  this virtual  method will be
   //! used to search for Format.Retrieval  resource items.
   Standard_EXPORT virtual Handle(Resource_Manager) Resources() = 0;
-  
+
   //! Returns default messenger;
   Standard_EXPORT virtual Handle(Message_Messenger) MessageDriver();
-  
+
   //! this method is called before the update of a document.
   //! By default, writes in MessageDriver().
-  Standard_EXPORT virtual void BeginOfUpdate (const Handle(CDM_Document)& aDocument);
-  
+  Standard_EXPORT virtual void BeginOfUpdate(const Handle(CDM_Document)& aDocument);
+
   //! this method is called after the update of a document.
   //! By default, writes in MessageDriver().
-  Standard_EXPORT virtual void EndOfUpdate (const Handle(CDM_Document)& aDocument, const Standard_Boolean theStatus, const TCollection_ExtendedString& ErrorString);
-  
+  Standard_EXPORT virtual void EndOfUpdate(const Handle(CDM_Document)&       aDocument,
+                                           const Standard_Boolean            theStatus,
+                                           const TCollection_ExtendedString& ErrorString);
+
   //! writes the string in the application MessagerDriver.
-  Standard_EXPORT void Write (const Standard_ExtString aString);
+  Standard_EXPORT void Write(const Standard_ExtString aString);
 
   //! Returns the application name.
   Standard_EXPORT virtual TCollection_ExtendedString Name() const;
 
   //! Returns the application version.
   Standard_EXPORT virtual TCollection_AsciiString Version() const;
-  
+
   //! Returns MetaData LookUpTable
-  Standard_EXPORT virtual  CDM_MetaDataLookUpTable& MetaDataLookUpTable();
+  Standard_EXPORT virtual CDM_MetaDataLookUpTable& MetaDataLookUpTable();
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-friend class CDM_Reference;
-friend class CDM_MetaData;
+  friend class CDM_Reference;
+  friend class CDM_MetaData;
 
-
-  DEFINE_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_Application, Standard_Transient)
 
 protected:
-
   Standard_EXPORT CDM_Application();
 
-  Standard_EXPORT void SetDocumentVersion (const Handle(CDM_Document)& aDocument, const Handle(CDM_MetaData)& aMetaData) const;
-  
-  Standard_EXPORT void SetReferenceCounter (const Handle(CDM_Document)& aDocument, const Standard_Integer aReferenceCounter);
+  Standard_EXPORT void SetDocumentVersion(const Handle(CDM_Document)& aDocument,
+                                          const Handle(CDM_MetaData)& aMetaData) const;
+
+  Standard_EXPORT void SetReferenceCounter(const Handle(CDM_Document)& aDocument,
+                                           const Standard_Integer      aReferenceCounter);
 
 private:
+  Standard_EXPORT virtual Handle(CDM_Document) Retrieve(
+    const Handle(CDM_MetaData)&      aMetaData,
+    const Standard_Boolean           UseStorageConfiguration,
+    const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
+    const Message_ProgressRange&     theRange  = Message_ProgressRange()) = 0;
 
-  
-  Standard_EXPORT virtual Handle(CDM_Document) Retrieve
-        (const Handle(CDM_MetaData)& aMetaData, 
-         const Standard_Boolean UseStorageConfiguration,
-         const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-         const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
-  
   //! returns -1 if the metadata has no modification counter.
-  Standard_EXPORT virtual Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& aMetaData) = 0;
+  Standard_EXPORT virtual Standard_Integer DocumentVersion(
+    const Handle(CDM_MetaData)& aMetaData) = 0;
 
   Handle(Message_Messenger) myMessenger;
-  CDM_MetaDataLookUpTable myMetaDataLookUpTable;
-
+  CDM_MetaDataLookUpTable   myMetaDataLookUpTable;
 };
-
-
-
-
-
-
 
 #endif // _CDM_Application_HeaderFile

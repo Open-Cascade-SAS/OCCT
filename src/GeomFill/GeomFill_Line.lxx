@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : NbPoints
-//purpose  : 
+// function : NbPoints
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer GeomFill_Line::NbPoints() const
@@ -24,14 +24,12 @@ inline Standard_Integer GeomFill_Line::NbPoints() const
   return myNbPoints;
 }
 
-
 //=======================================================================
-//function : Point
-//purpose  : 
+// function : Point
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer GeomFill_Line::Point(const Standard_Integer Index)
-     const
+inline Standard_Integer GeomFill_Line::Point(const Standard_Integer Index) const
 {
   return Index;
 }

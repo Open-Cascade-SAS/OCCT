@@ -22,26 +22,25 @@ class RWObj_ObjMaterialMap : public RWMesh_MaterialMap
 {
   DEFINE_STANDARD_RTTIEXT(RWObj_ObjMaterialMap, RWMesh_MaterialMap)
 public:
-
   //! Main constructor.
-  Standard_EXPORT RWObj_ObjMaterialMap (const TCollection_AsciiString& theFile);
+  Standard_EXPORT RWObj_ObjMaterialMap(const TCollection_AsciiString& theFile);
 
   //! Destructor, will emit error message if file was not closed.
   Standard_EXPORT virtual ~RWObj_ObjMaterialMap();
 
   //! Add material
-  Standard_EXPORT virtual TCollection_AsciiString AddMaterial (const XCAFPrs_Style& theStyle) Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle)
+    Standard_OVERRIDE;
 
   //! Virtual method actually defining the material (e.g. export to the file).
-  Standard_EXPORT virtual void DefineMaterial (const XCAFPrs_Style& theStyle,
-                                               const TCollection_AsciiString& theKey,
-                                               const TCollection_AsciiString& theName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
+                                              const TCollection_AsciiString& theKey,
+                                              const TCollection_AsciiString& theName)
+    Standard_OVERRIDE;
 
 private:
-
-  FILE* myFile;
+  FILE*                                                               myFile;
   NCollection_DataMap<Handle(Image_Texture), TCollection_AsciiString> myImageMap;
-
 };
 
 #endif // _RWObj_ObjMaterialMap_HeaderFiler

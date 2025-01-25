@@ -23,15 +23,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <TCollection_AsciiString.hxx>
 
- 
-
-
-
-
-
-
-
-
 #define TheKey TCollection_AsciiString
 #define TheKey_hxx <TCollection_AsciiString.hxx>
 #define Handle_TheResul Handle(Standard_Transient)
@@ -41,4 +32,3 @@
 #define Interface_Recognizer_hxx <StepData_FileRecognizer.hxx>
 #define Handle_Interface_Recognizer Handle(StepData_FileRecognizer)
 #include "../Interface/Interface_Recognizer.gxx"
-

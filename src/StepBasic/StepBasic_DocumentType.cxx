@@ -11,19 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_DocumentType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentType,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentType, Standard_Transient)
 
-StepBasic_DocumentType::StepBasic_DocumentType  ()    {  }
+StepBasic_DocumentType::StepBasic_DocumentType() {}
 
-void  StepBasic_DocumentType::Init (const Handle(TCollection_HAsciiString)& apdt)
-{  thepdt = apdt;  }
+void StepBasic_DocumentType::Init(const Handle(TCollection_HAsciiString)& apdt)
+{
+  thepdt = apdt;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentType::ProductDataType () const
-{  return thepdt;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentType::ProductDataType() const
+{
+  return thepdt;
+}
 
-void  StepBasic_DocumentType::SetProductDataType (const Handle(TCollection_HAsciiString)& apdt)
-{  thepdt = apdt;  }
+void StepBasic_DocumentType::SetProductDataType(const Handle(TCollection_HAsciiString)& apdt)
+{
+  thepdt = apdt;
+}

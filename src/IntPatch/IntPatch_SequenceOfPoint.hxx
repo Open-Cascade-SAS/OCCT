@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntPatch_Point> IntPatch_SequenceOfPoint;
 
-
 #endif

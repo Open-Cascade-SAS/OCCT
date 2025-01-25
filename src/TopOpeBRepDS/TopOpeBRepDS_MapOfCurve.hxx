@@ -21,8 +21,8 @@
 #include <TopOpeBRepDS_CurveData.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_CurveData> TopOpeBRepDS_MapOfCurve;
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_CurveData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfCurve;
-
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_CurveData> TopOpeBRepDS_MapOfCurve;
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_CurveData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfCurve;
 
 #endif

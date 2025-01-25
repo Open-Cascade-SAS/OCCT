@@ -17,12 +17,11 @@
 #ifndef _Vrml_FontStyleFamily_HeaderFile
 #define _Vrml_FontStyleFamily_HeaderFile
 
-
 enum Vrml_FontStyleFamily
 {
-Vrml_SERIF,
-Vrml_SANS,
-Vrml_TYPEWRITER
+  Vrml_SERIF,
+  Vrml_SANS,
+  Vrml_TYPEWRITER
 };
 
 #endif // _Vrml_FontStyleFamily_HeaderFile

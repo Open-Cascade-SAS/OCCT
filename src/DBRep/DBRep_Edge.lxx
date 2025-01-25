@@ -15,46 +15,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Edge&  DBRep_Edge::Edge()const 
+inline const TopoDS_Edge& DBRep_Edge::Edge() const
 {
   return myEdge;
 }
 
-
 //=======================================================================
-//function : Edge
-//purpose  : 
+// function : Edge
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Edge::Edge(const TopoDS_Edge& E)
+inline void DBRep_Edge::Edge(const TopoDS_Edge& E)
 {
   myEdge = E;
 }
 
-
 //=======================================================================
-//function : Color
-//purpose  : 
+// function : Color
+// purpose  :
 //=======================================================================
 
- inline const Draw_Color&  DBRep_Edge::Color()const 
+inline const Draw_Color& DBRep_Edge::Color() const
 {
   return myColor;
 }
 
-
 //=======================================================================
-//function : Color
-//purpose  : 
+// function : Color
+// purpose  :
 //=======================================================================
 
- inline void  DBRep_Edge::Color(const Draw_Color& C)
+inline void DBRep_Edge::Color(const Draw_Color& C)
 {
   myColor = C;
 }
-
-

@@ -26,8 +26,9 @@ class BRepExtrema_UnCompatibleShape;
 DEFINE_STANDARD_HANDLE(BRepExtrema_UnCompatibleShape, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_BRepExtrema_UnCompatibleShape
-  #define BRepExtrema_UnCompatibleShape_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw BRepExtrema_UnCompatibleShape(MESSAGE);
+  #define BRepExtrema_UnCompatibleShape_Raise_if(CONDITION, MESSAGE)                               \
+    if (CONDITION)                                                                                 \
+      throw BRepExtrema_UnCompatibleShape(MESSAGE);
 #else
   #define BRepExtrema_UnCompatibleShape_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -14,35 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Contap_HCurve2dTool.hxx>
 #include <Geom2d_BezierCurve.hxx>
 
 //============================================================
-Standard_Integer Contap_HCurve2dTool::NbSamples (const Handle(Adaptor2d_Curve2d)& C,
-                                                 const Standard_Real U0,
-                                                 const Standard_Real U1)
+Standard_Integer Contap_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2d)& C,
+                                                const Standard_Real              U0,
+                                                const Standard_Real              U1)
 {
   Standard_Real nbs = 10.0;
   switch (C->GetType())
   {
-  case GeomAbs_Line:
-    nbs = 2.;
-    break;
-  case GeomAbs_BezierCurve:
-    nbs = 3. + C->NbPoles();
-    break;
-  case GeomAbs_BSplineCurve:
-    nbs = C->NbKnots();
-    nbs*= C->Degree();
-    nbs*= C->LastParameter()- C->FirstParameter();
-    nbs/= U1-U0;
-    if(nbs < 2.0) nbs = 2.;
-    break;
-  default:
-    break;
+    case GeomAbs_Line:
+      nbs = 2.;
+      break;
+    case GeomAbs_BezierCurve:
+      nbs = 3. + C->NbPoles();
+      break;
+    case GeomAbs_BSplineCurve:
+      nbs = C->NbKnots();
+      nbs *= C->Degree();
+      nbs *= C->LastParameter() - C->FirstParameter();
+      nbs /= U1 - U0;
+      if (nbs < 2.0)
+        nbs = 2.;
+      break;
+    default:
+      break;
   }
-  if (nbs>50.)
+  if (nbs > 50.)
     nbs = 50.;
-  return((Standard_Integer)nbs);
+  return ((Standard_Integer)nbs);
 }

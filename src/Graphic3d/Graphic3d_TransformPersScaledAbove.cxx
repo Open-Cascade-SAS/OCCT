@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_Transfo
 // function : Graphic3d_TransformPersScaledAbove
 // purpose  :
 // =======================================================================
-Graphic3d_TransformPersScaledAbove::Graphic3d_TransformPersScaledAbove (const Standard_Real theScale,
-                                                                        const gp_Pnt& thePnt)
-: Graphic3d_TransformPers (Graphic3d_TMF_ZoomPers, thePnt),
-  myScale (theScale)
+Graphic3d_TransformPersScaledAbove::Graphic3d_TransformPersScaledAbove(const Standard_Real theScale,
+                                                                       const gp_Pnt&       thePnt)
+    : Graphic3d_TransformPers(Graphic3d_TMF_ZoomPers, thePnt),
+      myScale(theScale)
 {
 }
 
@@ -30,11 +30,12 @@ Graphic3d_TransformPersScaledAbove::Graphic3d_TransformPersScaledAbove (const St
 // function : persistentScale
 // purpose  :
 // =======================================================================
-Standard_Real Graphic3d_TransformPersScaledAbove::persistentScale (const Handle(Graphic3d_Camera)& theCamera,
-                                                                   const Standard_Integer theViewportWidth,
-                                                                   const Standard_Integer theViewportHeight) const
+Standard_Real Graphic3d_TransformPersScaledAbove::persistentScale(
+  const Handle(Graphic3d_Camera)& theCamera,
+  const Standard_Integer          theViewportWidth,
+  const Standard_Integer          theViewportHeight) const
 {
-  Standard_Real aScale = base_type::persistentScale (theCamera, theViewportWidth, theViewportHeight);
+  Standard_Real aScale = base_type::persistentScale(theCamera, theViewportWidth, theViewportHeight);
   if (aScale < myScale)
   {
     // do not apply zoom persistent, the model is zoomed

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_ContextModif.hxx>
 #include <IFSelect_ModifReorder.hxx>
 #include <Interface_CopyTool.hxx>
@@ -22,25 +21,30 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModifReorder,IFSelect_Modifier)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModifReorder, IFSelect_Modifier)
 
-IFSelect_ModifReorder::IFSelect_ModifReorder (const Standard_Boolean rootlast)
-    : IFSelect_Modifier (Standard_True)    {  thertl = rootlast;  }
-
-    void  IFSelect_ModifReorder::Perform (IFSelect_ContextModif& ctx, 
-                                          const Handle(Interface_InterfaceModel)& target,
-                                          const Handle(Interface_Protocol)& /*protocol*/, 
-                                          Interface_CopyTool& /*TC*/) const
+IFSelect_ModifReorder::IFSelect_ModifReorder(const Standard_Boolean rootlast)
+    : IFSelect_Modifier(Standard_True)
 {
-  Interface_ShareTool sht (ctx.OriginalGraph());
-  Interface_EntityIterator list = sht.All (ctx.OriginalModel(),thertl);
-  target->ClearEntities();
-  for (list.Start(); list.More(); list.Next())  target->AddEntity (list.Value());
+  thertl = rootlast;
 }
 
-TCollection_AsciiString  IFSelect_ModifReorder::Label () const
+void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                  ctx,
+                                    const Handle(Interface_InterfaceModel)& target,
+                                    const Handle(Interface_Protocol)& /*protocol*/,
+                                    Interface_CopyTool& /*TC*/) const
 {
-  Standard_CString astr = (Standard_CString ) ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
-  return TCollection_AsciiString( astr ) ;
-//    ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
+  Interface_ShareTool      sht(ctx.OriginalGraph());
+  Interface_EntityIterator list = sht.All(ctx.OriginalModel(), thertl);
+  target->ClearEntities();
+  for (list.Start(); list.More(); list.Next())
+    target->AddEntity(list.Value());
+}
+
+TCollection_AsciiString IFSelect_ModifReorder::Label() const
+{
+  Standard_CString astr =
+    (Standard_CString)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
+  return TCollection_AsciiString(astr);
+  //    ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
 }

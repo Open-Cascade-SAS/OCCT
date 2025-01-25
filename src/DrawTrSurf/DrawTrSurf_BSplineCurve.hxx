@@ -28,26 +28,37 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
 class DrawTrSurf_BSplineCurve : public DrawTrSurf_Curve
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
-  Draw_Drawable3D_FACTORY
-public:
+  Draw_Drawable3D_FACTORY public :
+
+      //! creates a drawable BSpline curve from a BSpline curve of package Geom.
+      Standard_EXPORT
+      DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C);
 
   //! creates a drawable BSpline curve from a BSpline curve of package Geom.
-  Standard_EXPORT DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve)& C);
+  Standard_EXPORT DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C,
+                                          const Draw_Color&                CurvColor,
+                                          const Draw_Color&                PolesColor,
+                                          const Draw_Color&                KnotsColor,
+                                          const Draw_MarkerShape           KnotsShape,
+                                          const Standard_Integer           KnotsSize,
+                                          const Standard_Boolean           ShowPoles,
+                                          const Standard_Boolean           ShowKnots,
+                                          const Standard_Integer           Discret,
+                                          const Standard_Real              Deflection,
+                                          const Standard_Integer           DrawMode);
 
-  //! creates a drawable BSpline curve from a BSpline curve of package Geom.
-  Standard_EXPORT DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve)& C,
-                                           const Draw_Color& CurvColor, const Draw_Color& PolesColor, const Draw_Color& KnotsColor, const Draw_MarkerShape KnotsShape,
-                                           const Standard_Integer KnotsSize, const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots,
-                                           const Standard_Integer Discret, const Standard_Real Deflection, const Standard_Integer DrawMode);
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display&          dis,
+                              const Standard_Boolean ShowPoles,
+                              const Standard_Boolean ShowKnots) const;
 
-  Standard_EXPORT void DrawOn (Draw_Display& dis,
-                               const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots) const;
-
-  Standard_EXPORT void DrawOn (Draw_Display& dis,
-                               const Standard_Real U1, const Standard_Real U2, const Standard_Integer Pindex,
-                               const Standard_Boolean ShowPoles = Standard_True, const Standard_Boolean ShowKnots = Standard_True) const;
+  Standard_EXPORT void DrawOn(Draw_Display&          dis,
+                              const Standard_Real    U1,
+                              const Standard_Real    U2,
+                              const Standard_Integer Pindex,
+                              const Standard_Boolean ShowPoles = Standard_True,
+                              const Standard_Boolean ShowKnots = Standard_True) const;
 
   void ShowPoles() { drawPoles = Standard_True; }
 
@@ -62,15 +73,23 @@ public:
   //! than <Prec> from <X,Y>. If no pole  is found  index is
   //! set to 0, else index is always  greater than the input
   //! value of index.
-  Standard_EXPORT void FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
+  Standard_EXPORT void FindPole(const Standard_Real X,
+                                const Standard_Real Y,
+                                const Draw_Display& D,
+                                const Standard_Real Prec,
+                                Standard_Integer&   Index) const;
 
-  Standard_EXPORT void FindKnot (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
+  Standard_EXPORT void FindKnot(const Standard_Real X,
+                                const Standard_Real Y,
+                                const Draw_Display& D,
+                                const Standard_Real Prec,
+                                Standard_Integer&   Index) const;
 
-  void SetPolesColor (const Draw_Color& theColor) { polesLook = theColor; }
+  void SetPolesColor(const Draw_Color& theColor) { polesLook = theColor; }
 
-  void SetKnotsColor (const Draw_Color& theColor) { knotsLook = theColor; }
+  void SetKnotsColor(const Draw_Color& theColor) { knotsLook = theColor; }
 
-  void SetKnotsShape (const Draw_MarkerShape theShape) { knotsForm = theShape; }
+  void SetKnotsShape(const Draw_MarkerShape theShape) { knotsForm = theShape; }
 
   Draw_MarkerShape KnotsShape() const { return knotsForm; }
 
@@ -82,14 +101,12 @@ public:
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
 private:
-
   Standard_Boolean drawPoles;
   Standard_Boolean drawKnots;
   Draw_MarkerShape knotsForm;
-  Draw_Color knotsLook;
+  Draw_Color       knotsLook;
   Standard_Integer knotsDim;
-  Draw_Color polesLook;
-
+  Draw_Color       polesLook;
 };
 
 #endif // _DrawTrSurf_BSplineCurve_HeaderFile

@@ -24,12 +24,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Express_ComplexType, Express_Type)
 // purpose  :
 //=======================================================================
 
-Express_ComplexType::Express_ComplexType (const Standard_Integer theImin,
-                                          const Standard_Integer theImax,
-                                          const Handle(Express_Type)& theType)
+Express_ComplexType::Express_ComplexType(const Standard_Integer      theImin,
+                                         const Standard_Integer      theImax,
+                                         const Handle(Express_Type)& theType)
 {
-  myMin = theImin;
-  myMax = theImax;
+  myMin  = theImin;
+  myMax  = theImax;
   myType = theType;
 }
 
@@ -52,25 +52,25 @@ const TCollection_AsciiString Express_ComplexType::CPPName() const
 {
   // check if array 2
   Handle(Express_Type) aType = myType;
-  if (aType->IsKind (STANDARD_TYPE(Express_ComplexType)))
+  if (aType->IsKind(STANDARD_TYPE(Express_ComplexType)))
   {
-    Handle(Express_ComplexType) aType2 = Handle(Express_ComplexType)::DownCast (aType);
-    aType = aType2->Type();
+    Handle(Express_ComplexType) aType2 = Handle(Express_ComplexType)::DownCast(aType);
+    aType                              = aType2->Type();
   }
 
   // parse name of array argument
-  TCollection_AsciiString aName = aType->CPPName();
-  Standard_Integer aSplitIdx = aName.Location (1, '_', 1, aName.Length());
+  TCollection_AsciiString aName     = aType->CPPName();
+  Standard_Integer        aSplitIdx = aName.Location(1, '_', 1, aName.Length());
   TCollection_AsciiString aClassName;
   if (aSplitIdx)
   {
-    aClassName = aName.Split (aSplitIdx);
+    aClassName = aName.Split(aSplitIdx);
   }
   else
   {
     aClassName = aName;
   }
-  Standard_Integer anIdx = aName.Location ("TCollection", 1, aName.Length());
+  Standard_Integer anIdx = aName.Location("TCollection", 1, aName.Length());
   if (anIdx)
   {
     aName = "Interface_";
@@ -108,7 +108,8 @@ Standard_Boolean Express_ComplexType::Use() const
 // purpose  :
 //=======================================================================
 
-void Express_ComplexType::Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack) const
+void Express_ComplexType::Use2(const TCollection_AsciiString& theRefName,
+                               const TCollection_AsciiString& theRefPack) const
 {
-  myType->Use2 (theRefName, theRefPack);
+  myType->Use2(theRefName, theRefPack);
 }

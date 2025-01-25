@@ -21,5 +21,4 @@
 
 DEFINE_HARRAY1(TShort_HArray1OfShortReal, TShort_Array1OfShortReal)
 
-
 #endif

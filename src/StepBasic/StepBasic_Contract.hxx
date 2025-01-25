@@ -24,7 +24,6 @@
 class TCollection_HAsciiString;
 class StepBasic_ContractType;
 
-
 class StepBasic_Contract;
 DEFINE_STANDARD_HANDLE(StepBasic_Contract, Standard_Transient)
 
@@ -33,56 +32,39 @@ class StepBasic_Contract : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_Contract();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPurpose, const Handle(StepBasic_ContractType)& aKind);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(TCollection_HAsciiString)& aPurpose,
+                            const Handle(StepBasic_ContractType)&   aKind);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field Purpose
   Standard_EXPORT Handle(TCollection_HAsciiString) Purpose() const;
-  
+
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose (const Handle(TCollection_HAsciiString)& Purpose);
-  
+  Standard_EXPORT void SetPurpose(const Handle(TCollection_HAsciiString)& Purpose);
+
   //! Returns field Kind
   Standard_EXPORT Handle(StepBasic_ContractType) Kind() const;
-  
+
   //! Set field Kind
-  Standard_EXPORT void SetKind (const Handle(StepBasic_ContractType)& Kind);
+  Standard_EXPORT void SetKind(const Handle(StepBasic_ContractType)& Kind);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Contract,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Contract, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theName;
   Handle(TCollection_HAsciiString) thePurpose;
-  Handle(StepBasic_ContractType) theKind;
-
-
+  Handle(StepBasic_ContractType)   theKind;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Contract_HeaderFile

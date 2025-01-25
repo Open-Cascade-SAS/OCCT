@@ -35,12 +35,12 @@
 //! is not of the required type.
 enum IGESData_DefType
 {
-IGESData_DefVoid,
-IGESData_DefValue,
-IGESData_DefReference,
-IGESData_DefAny,
-IGESData_ErrorVal,
-IGESData_ErrorRef
+  IGESData_DefVoid,
+  IGESData_DefValue,
+  IGESData_DefReference,
+  IGESData_DefAny,
+  IGESData_ErrorVal,
+  IGESData_ErrorRef
 };
 
 #endif // _IGESData_DefType_HeaderFile

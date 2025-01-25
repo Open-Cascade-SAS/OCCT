@@ -24,7 +24,6 @@ class StepGeom_Pcurve;
 class TCollection_HAsciiString;
 class StepShape_Edge;
 
-
 class StepShape_SeamEdge;
 DEFINE_STANDARD_HANDLE(StepShape_SeamEdge, StepShape_OrientedEdge)
 
@@ -33,42 +32,26 @@ class StepShape_SeamEdge : public StepShape_OrientedEdge
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_SeamEdge();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentationItem_Name, const Handle(StepShape_Edge)& aOrientedEdge_EdgeElement, const Standard_Boolean aOrientedEdge_Orientation, const Handle(StepGeom_Pcurve)& aPcurveReference);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+                            const Handle(StepShape_Edge)&           aOrientedEdge_EdgeElement,
+                            const Standard_Boolean                  aOrientedEdge_Orientation,
+                            const Handle(StepGeom_Pcurve)&          aPcurveReference);
+
   //! Returns field PcurveReference
   Standard_EXPORT Handle(StepGeom_Pcurve) PcurveReference() const;
-  
+
   //! Set field PcurveReference
-  Standard_EXPORT void SetPcurveReference (const Handle(StepGeom_Pcurve)& PcurveReference);
+  Standard_EXPORT void SetPcurveReference(const Handle(StepGeom_Pcurve)& PcurveReference);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_SeamEdge,StepShape_OrientedEdge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SeamEdge, StepShape_OrientedEdge)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Pcurve) thePcurveReference;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_SeamEdge_HeaderFile

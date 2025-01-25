@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdPersistent_TopoDS_HeaderFile
 #define _StdPersistent_TopoDS_HeaderFile
 
@@ -20,7 +19,6 @@
 #include <StdObjMgt_WriteData.hxx>
 
 #include <TopoDS_TShape.hxx>
-
 
 class StdPersistent_TopoDS : protected StdObjMgt_SharedObject
 {
@@ -32,15 +30,24 @@ protected:
     DEFINE_STANDARD_RTTI_INLINE(pTShape, Standard_Transient)
 
   public:
-    pTShape() : myFlags(0) {}
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myShapes >> myFlags; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myShapes << myFlags; }
+    pTShape()
+        : myFlags(0)
+    {
+    }
+
+    inline void Read(StdObjMgt_ReadData& theReadData) { theReadData >> myShapes >> myFlags; }
+
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myShapes << myFlags;
+    }
+
     inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
-      { theChildren.Append(myShapes); }
-    inline Standard_CString PName() const 
-      { return "PTopoDS_TShape"; }
+    {
+      theChildren.Append(myShapes);
+    }
+
+    inline Standard_CString PName() const { return "PTopoDS_TShape"; }
 
   protected:
     Handle(StdObjMgt_Persistent) myShapes;

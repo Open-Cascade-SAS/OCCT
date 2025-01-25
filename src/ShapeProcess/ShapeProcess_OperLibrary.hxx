@@ -26,7 +26,6 @@ class ShapeProcess_ShapeContext;
 class BRepTools_Modification;
 class ShapeExtend_MsgRegistrator;
 
-
 //! Provides a set of following operators
 //!
 //! DirectFaces
@@ -45,48 +44,28 @@ class ShapeExtend_MsgRegistrator;
 //! DropSmallEdges
 //! FixShape
 //! SplitClosedEdges
-class ShapeProcess_OperLibrary 
+class ShapeProcess_OperLibrary
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Registers all the operators
   Standard_EXPORT static void Init();
-  
+
   //! Applies BRepTools_Modification to a shape,
   //! taking into account sharing of components of compounds.
   //! if theMutableInput vat is set to true then input shape S
   //! can be modified during the modification process.
-  Standard_EXPORT static TopoDS_Shape ApplyModifier (const TopoDS_Shape& S, 
-                                                     const Handle(ShapeProcess_ShapeContext)& context, 
-                                                     const Handle(BRepTools_Modification)& M, 
-                                                     TopTools_DataMapOfShapeShape& map,
-                                                     const Handle(ShapeExtend_MsgRegistrator)& msg = 0,
-                                                     Standard_Boolean theMutableInput = Standard_False);
-
-
-
+  Standard_EXPORT static TopoDS_Shape ApplyModifier(
+    const TopoDS_Shape&                       S,
+    const Handle(ShapeProcess_ShapeContext)&  context,
+    const Handle(BRepTools_Modification)&     M,
+    TopTools_DataMapOfShapeShape&             map,
+    const Handle(ShapeExtend_MsgRegistrator)& msg             = 0,
+    Standard_Boolean                          theMutableInput = Standard_False);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeProcess_OperLibrary_HeaderFile

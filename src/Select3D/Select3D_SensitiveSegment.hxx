@@ -26,18 +26,17 @@ class Select3D_SensitiveSegment : public Select3D_SensitiveEntity
 {
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSegment, Select3D_SensitiveEntity)
 public:
-
   //! Constructs the sensitive segment object defined by
   //! the owner theOwnerId, the points theFirstPnt, theLastPnt
-  Standard_EXPORT Select3D_SensitiveSegment (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                             const gp_Pnt& theFirstPnt,
-                                             const gp_Pnt& theLastPnt);
+  Standard_EXPORT Select3D_SensitiveSegment(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                            const gp_Pnt&                        theFirstPnt,
+                                            const gp_Pnt&                        theLastPnt);
 
   //! changes the start Point of the Segment;
-  void SetStartPoint (const gp_Pnt& thePnt) { myStart = thePnt; }
+  void SetStartPoint(const gp_Pnt& thePnt) { myStart = thePnt; }
 
   //! changes the end point of the segment
-  void SetEndPoint (const gp_Pnt& thePnt) { myEnd = thePnt; }
+  void SetEndPoint(const gp_Pnt& thePnt) { myEnd = thePnt; }
 
   //! gives the 3D start Point of the Segment
   const gp_Pnt& StartPoint() const { return myStart; }
@@ -51,8 +50,9 @@ public:
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Checks whether the segment overlaps current selecting volume
-  Standard_EXPORT   virtual  Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                       SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns center of the segment. If location transformation
   //! is set, it will be applied
@@ -66,20 +66,19 @@ public:
   virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
 
 public:
-
   //! changes the start Point of the Segment;
-  void StartPoint (const gp_Pnt& thePnt) { myStart = thePnt; }
+  void StartPoint(const gp_Pnt& thePnt) { myStart = thePnt; }
 
   //! changes the end point of the segment
-  void EndPoint (const gp_Pnt& thePnt) { myEnd = thePnt; }
+  void EndPoint(const gp_Pnt& thePnt) { myEnd = thePnt; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
-  gp_Pnt myStart;      //!< Start point
-  gp_Pnt myEnd;        //!< End point
+  gp_Pnt myStart; //!< Start point
+  gp_Pnt myEnd;   //!< End point
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveSegment, Select3D_SensitiveEntity)

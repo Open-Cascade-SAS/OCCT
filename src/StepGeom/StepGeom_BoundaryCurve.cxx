@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_BoundaryCurve.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BoundaryCurve,StepGeom_CompositeCurveOnSurface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BoundaryCurve, StepGeom_CompositeCurveOnSurface)
 
-StepGeom_BoundaryCurve::StepGeom_BoundaryCurve ()  {}
-
+StepGeom_BoundaryCurve::StepGeom_BoundaryCurve() {}

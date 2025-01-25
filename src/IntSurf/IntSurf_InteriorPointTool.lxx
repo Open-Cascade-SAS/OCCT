@@ -17,30 +17,27 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir2d.hxx>
 
-inline gp_Pnt IntSurf_InteriorPointTool::Value3d
-  (const IntSurf_InteriorPoint& PStart)
+inline gp_Pnt IntSurf_InteriorPointTool::Value3d(const IntSurf_InteriorPoint& PStart)
 {
 
   return PStart.Value();
 }
 
-inline void IntSurf_InteriorPointTool::Value2d
-  (const IntSurf_InteriorPoint& PStart,
-   Standard_Real& U,
-   Standard_Real& V)
+inline void IntSurf_InteriorPointTool::Value2d(const IntSurf_InteriorPoint& PStart,
+                                               Standard_Real&               U,
+                                               Standard_Real&               V)
 {
-  PStart.Parameters(U,V);
+  PStart.Parameters(U, V);
 }
 
-inline gp_Vec IntSurf_InteriorPointTool::Direction3d
-  (const IntSurf_InteriorPoint& PStart) {
+inline gp_Vec IntSurf_InteriorPointTool::Direction3d(const IntSurf_InteriorPoint& PStart)
+{
 
   return PStart.Direction();
 }
 
-inline gp_Dir2d IntSurf_InteriorPointTool::Direction2d
-           (const IntSurf_InteriorPoint& PStart) {
+inline gp_Dir2d IntSurf_InteriorPointTool::Direction2d(const IntSurf_InteriorPoint& PStart)
+{
 
   return PStart.Direction2d();
 }
-

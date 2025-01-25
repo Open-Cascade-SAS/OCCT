@@ -23,15 +23,12 @@
 class TopoDS_Vertex;
 class gp_Pnt;
 
-
 //! Provides low-level functions used for constructing vertices
-class ShapeBuild_Vertex 
+class ShapeBuild_Vertex
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Combines new vertex from two others. This new one is the
   //! smallest vertex which comprises both of the source vertices.
   //! The function takes into account the positions and tolerances
@@ -40,33 +37,20 @@ public:
   //! tolerance that is required to comprise source vertices
   //! multiplied by tolFactor (in order to avoid errors because
   //! of discreteness of calculations).
-  Standard_EXPORT TopoDS_Vertex CombineVertex (const TopoDS_Vertex& V1, const TopoDS_Vertex& V2, const Standard_Real tolFactor = 1.0001) const;
-  
+  Standard_EXPORT TopoDS_Vertex CombineVertex(const TopoDS_Vertex& V1,
+                                              const TopoDS_Vertex& V2,
+                                              const Standard_Real  tolFactor = 1.0001) const;
+
   //! The same function as above, except that it accepts two points
   //! and two tolerances instead of vertices
-  Standard_EXPORT TopoDS_Vertex CombineVertex (const gp_Pnt& pnt1, const gp_Pnt& pnt2, const Standard_Real tol1, const Standard_Real tol2, const Standard_Real tolFactor = 1.0001) const;
-
-
-
+  Standard_EXPORT TopoDS_Vertex CombineVertex(const gp_Pnt&       pnt1,
+                                              const gp_Pnt&       pnt2,
+                                              const Standard_Real tol1,
+                                              const Standard_Real tol2,
+                                              const Standard_Real tolFactor = 1.0001) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeBuild_Vertex_HeaderFile

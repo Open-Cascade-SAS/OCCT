@@ -16,25 +16,25 @@
 
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRenderingWithProperties, StepVisual_SurfaceStyleRendering)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRenderingWithProperties,
+                           StepVisual_SurfaceStyleRendering)
 
 //=======================================================================
-//function : StepVisual_SurfaceStyleRenderingWithProperties
-//purpose  :
+// function : StepVisual_SurfaceStyleRenderingWithProperties
+// purpose  :
 //=======================================================================
 
-StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRenderingWithProperties ()
-{
-}
+StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRenderingWithProperties() {}
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
 
-void StepVisual_SurfaceStyleRenderingWithProperties::Init (const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
-                                                           const Handle(StepVisual_Colour)& theSurfaceStyleRendering_SurfaceColour,
-                                                           const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
+void StepVisual_SurfaceStyleRenderingWithProperties::Init(
+  const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
+  const Handle(StepVisual_Colour)&      theSurfaceStyleRendering_SurfaceColour,
+  const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
 {
   StepVisual_SurfaceStyleRendering::Init(theSurfaceStyleRendering_RenderingMethod,
                                          theSurfaceStyleRendering_SurfaceColour);
@@ -43,21 +43,23 @@ void StepVisual_SurfaceStyleRenderingWithProperties::Init (const StepVisual_Shad
 }
 
 //=======================================================================
-//function : Properties
-//purpose  :
+// function : Properties
+// purpose  :
 //=======================================================================
 
-Handle(StepVisual_HArray1OfRenderingPropertiesSelect) StepVisual_SurfaceStyleRenderingWithProperties::Properties () const
+Handle(StepVisual_HArray1OfRenderingPropertiesSelect)
+  StepVisual_SurfaceStyleRenderingWithProperties::Properties() const
 {
   return myProperties;
 }
 
 //=======================================================================
-//function : SetProperties
-//purpose  :
+// function : SetProperties
+// purpose  :
 //=======================================================================
 
-void StepVisual_SurfaceStyleRenderingWithProperties::SetProperties (const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
+void StepVisual_SurfaceStyleRenderingWithProperties::SetProperties(
+  const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
 {
   myProperties = theProperties;
 }

@@ -20,5 +20,4 @@
 
 DEFINE_HSEQUENCE(TColStd_HSequenceOfReal, TColStd_SequenceOfReal)
 
-
 #endif

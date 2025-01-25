@@ -17,11 +17,10 @@
 #ifndef _Vrml_FaceType_HeaderFile
 #define _Vrml_FaceType_HeaderFile
 
-
 enum Vrml_FaceType
 {
-Vrml_UNKNOWN_FACE_TYPE,
-Vrml_CONVEX
+  Vrml_UNKNOWN_FACE_TYPE,
+  Vrml_CONVEX
 };
 
 #endif // _Vrml_FaceType_HeaderFile

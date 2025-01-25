@@ -78,16 +78,14 @@
 //!
 //! For example searching edges  not in a vertex  does
 //! not make a difference.
-class TopExp_Explorer 
+class TopExp_Explorer
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty explorer, becomes useful after Init.
   Standard_EXPORT TopExp_Explorer();
-  
+
   //! Creates an Explorer on the Shape <S>.
   //!
   //! <ToFind> is the type of shapes to search.
@@ -97,16 +95,20 @@ public:
   //! exploration.   If   <ToAvoid>  is  equal  or  less
   //! complex than <ToFind> or if  <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
-  Standard_EXPORT TopExp_Explorer(const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
-  
+  Standard_EXPORT TopExp_Explorer(const TopoDS_Shape&    S,
+                                  const TopAbs_ShapeEnum ToFind,
+                                  const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
+
   //! Resets this explorer on the shape S. It is initialized to
   //! search the shape S, for shapes of type ToFind, that
   //! are not part of a shape ToAvoid.
   //! If the shape ToAvoid is equal to TopAbs_SHAPE, or
   //! if it is the same as, or less complex than, the shape
   //! ToFind it has no effect on the search.
-  Standard_EXPORT void Init (const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&    S,
+                            const TopAbs_ShapeEnum ToFind,
+                            const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
+
   //! Returns True if there are more shapes in the exploration.
   Standard_Boolean More() const { return hasMore; }
 
@@ -143,15 +145,13 @@ public:
   Standard_EXPORT ~TopExp_Explorer();
 
 private:
-
-  TopExp_Stack myStack;
-  TopoDS_Shape myShape;
+  TopExp_Stack     myStack;
+  TopoDS_Shape     myShape;
   Standard_Integer myTop;
   Standard_Integer mySizeOfStack;
   TopAbs_ShapeEnum toFind;
   TopAbs_ShapeEnum toAvoid;
   Standard_Boolean hasMore;
-
 };
 
 #endif // _TopExp_Explorer_HeaderFile

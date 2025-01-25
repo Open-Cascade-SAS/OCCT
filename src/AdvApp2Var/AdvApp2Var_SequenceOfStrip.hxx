@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<AdvApp2Var_Strip> AdvApp2Var_SequenceOfStrip;
 
-
 #endif

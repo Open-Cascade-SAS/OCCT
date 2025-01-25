@@ -27,27 +27,32 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Real.hxx>
 
-
 //! This class builds reflect lines on a shape
 //! according to the axes of view defined by user.
 //! Reflect lines are represented by edges in 3d.
-class HLRAppli_ReflectLines 
+class HLRAppli_ReflectLines
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructor
   Standard_EXPORT HLRAppli_ReflectLines(const TopoDS_Shape& aShape);
-  
+
   //! Sets the normal to the plane of visualisation,
   //! the coordinates of the view point and
   //! the coordinates of the vertical direction vector.
-  Standard_EXPORT void SetAxes (const Standard_Real Nx, const Standard_Real Ny, const Standard_Real Nz, const Standard_Real XAt, const Standard_Real YAt, const Standard_Real ZAt, const Standard_Real XUp, const Standard_Real YUp, const Standard_Real ZUp);
-  
+  Standard_EXPORT void SetAxes(const Standard_Real Nx,
+                               const Standard_Real Ny,
+                               const Standard_Real Nz,
+                               const Standard_Real XAt,
+                               const Standard_Real YAt,
+                               const Standard_Real ZAt,
+                               const Standard_Real XUp,
+                               const Standard_Real YUp,
+                               const Standard_Real ZUp);
+
   Standard_EXPORT void Perform();
-  
+
   //! returns resulting compound of reflect lines
   //! represented by edges in 3d
   Standard_EXPORT TopoDS_Shape GetResult() const;
@@ -59,30 +64,12 @@ public:
                                                     const Standard_Boolean            visible,
                                                     const Standard_Boolean            In3d) const;
 
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  HLRAlgo_Projector myProjector;
+  HLRAlgo_Projector    myProjector;
   Handle(HLRBRep_Algo) myHLRAlgo;
-  TopoDS_Shape myShape;
-  //TopoDS_Shape myCompound;
-
-
+  TopoDS_Shape         myShape;
+  // TopoDS_Shape myCompound;
 };
-
-
-
-
-
-
 
 #endif // _HLRAppli_ReflectLines_HeaderFile

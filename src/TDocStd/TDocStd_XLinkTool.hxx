@@ -26,7 +26,6 @@ class TDF_DataSet;
 class TDF_RelocationTable;
 class TDF_Label;
 
-
 //! This  tool class  is  used to copy  the content of
 //! source label   under  target label.   Only child
 //! labels and  attributes   of  source are   copied.
@@ -43,22 +42,20 @@ class TDF_Label;
 //! Warning2: If the document manages shapes, use after copy
 //! TNaming::ChangeShapes(target,M) to make copy of
 //! shapes.
-class TDocStd_XLinkTool 
+class TDocStd_XLinkTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TDocStd_XLinkTool();
-  
+
   //! Copies the content of the label <fromsource> to the label <intarget>.
   //! The link is registered with an XLink attribute by <intarget>
   //! label.  if  the    content  of <fromsource>   is  not
   //! self-contained,  and/or <intarget> has already an XLink
   //! attribute, an exception is raised.
-  Standard_EXPORT void CopyWithLink (const TDF_Label& intarget, const TDF_Label& fromsource);
-  
+  Standard_EXPORT void CopyWithLink(const TDF_Label& intarget, const TDF_Label& fromsource);
+
   //! Update the external reference set   at <L>.
   //! Example
   //! Handle(TDocStd_Document) aDoc;
@@ -71,8 +68,8 @@ public:
   //! xlinktool.UpdateLink(aRef->Label());
   //! Exceptions
   //! Standard_DomainError if <L> has no XLink attribute.
-  Standard_EXPORT void UpdateLink (const TDF_Label& L);
-  
+  Standard_EXPORT void UpdateLink(const TDF_Label& L);
+
   //! Copy    the   content     of    <fromsource>   under
   //! <intarget>. No link is registered. No check is done.
   //! Example
@@ -90,38 +87,20 @@ public:
   //! xlinktool.Copy(L,XL);
   //! TopTools_DataMapOfShapeShape M;
   //! TNaming::ChangeShapes(target,M);
-  Standard_EXPORT virtual void Copy (const TDF_Label& intarget, const TDF_Label& fromsource);
-  
+  Standard_EXPORT virtual void Copy(const TDF_Label& intarget, const TDF_Label& fromsource);
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   Standard_EXPORT Handle(TDF_DataSet) DataSet() const;
-  
+
   Standard_EXPORT Handle(TDF_RelocationTable) RelocationTable() const;
 
-
-
-
 protected:
-
-
-
   Standard_Boolean isDone;
 
-
 private:
-
-
-
-  Handle(TDF_DataSet) myDS;
+  Handle(TDF_DataSet)         myDS;
   Handle(TDF_RelocationTable) myRT;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDocStd_XLinkTool_HeaderFile

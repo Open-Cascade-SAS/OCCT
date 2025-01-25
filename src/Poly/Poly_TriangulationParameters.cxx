@@ -15,4 +15,4 @@
 
 #include <Poly_TriangulationParameters.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (Poly_TriangulationParameters, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Poly_TriangulationParameters, Standard_Transient)

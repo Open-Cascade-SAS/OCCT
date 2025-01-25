@@ -33,7 +33,7 @@ class ShapeProcess_Context;
 //! customization is implemented via user-editable resource
 //! file which defines sequence of operators to be executed
 //! and their parameters.
-class ShapeProcess 
+class ShapeProcess
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -42,7 +42,7 @@ public:
   //! C++11 enum class is not used to allow implicit conversion to undelying type.
   enum Operation : uint8_t
   {
-    First = 0, // First operation index.
+    First       = 0, // First operation index.
     DirectFaces = First,
     SameParameter,
     SetTolerance,
@@ -71,33 +71,36 @@ public:
   // flags.set(ShapeProcess::Operation::SameParameter);
   // ShapeProcess::Perform(context, flags);
   using OperationsFlags = std::bitset<Operation::Last + 1>;
-  
+
 public:
   //! Registers operator to make it visible for Performer
-  Standard_EXPORT static Standard_Boolean RegisterOperator (const Standard_CString name, const Handle(ShapeProcess_Operator)& op);
-  
+  Standard_EXPORT static Standard_Boolean RegisterOperator(const Standard_CString name,
+                                                           const Handle(ShapeProcess_Operator)& op);
+
   //! Finds operator by its name
-  Standard_EXPORT static Standard_Boolean FindOperator (const Standard_CString name, Handle(ShapeProcess_Operator)& op);
-  
+  Standard_EXPORT static Standard_Boolean FindOperator(const Standard_CString         name,
+                                                       Handle(ShapeProcess_Operator)& op);
+
   //! Performs a specified sequence of operators on Context
   //! Resource file and other data should be already loaded
   //! to Context (including description of sequence seq)
-  Standard_EXPORT static Standard_Boolean Perform 
-                   (const Handle(ShapeProcess_Context)& context,
-                    const Standard_CString seq,
-                    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT static Standard_Boolean Perform(
+    const Handle(ShapeProcess_Context)& context,
+    const Standard_CString              seq,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange());
 
   //! Performs a specified sequence of operators on @p theContext.
   //! @param theContext Context to perform operations on. Contains the shape to process
-  //!        and processing parameters. If processing parameters are not set, default values are used.
-  //!        Parameters should be in a scope of operation, for example,
-  //!        instead of "FromSTEP.FixShape.Tolerance3d"	we should use just "FixShape.Tolerance3d".
+  //!        and processing parameters. If processing parameters are not set, default values are
+  //!        used. Parameters should be in a scope of operation, for example, instead of
+  //!        "FromSTEP.FixShape.Tolerance3d"	we should use just "FixShape.Tolerance3d".
   //! @param theOperations Bitset of operations to perform.
   //! @param theProgress Progress indicator.
   //! @return true if at least one operation was performed, false otherwise.
-  Standard_EXPORT static Standard_Boolean Perform(const Handle(ShapeProcess_Context)& theContext,
-                                                  const OperationsFlags&              theOperations,
-                                                  const Message_ProgressRange&        theProgress = Message_ProgressRange());
+  Standard_EXPORT static Standard_Boolean Perform(
+    const Handle(ShapeProcess_Context)& theContext,
+    const OperationsFlags&              theOperations,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange());
 
   //! Converts operation name to operation flag.
   //! @param theName Operation name.
@@ -108,7 +111,8 @@ private:
   //! Returns operators to be performed according to the specified flags.
   //! @param theFlags Bitset of operations flags.
   //! @return List of operators to perform: pairs of operator name and operator handle.
-  static std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> getOperators(const OperationsFlags& theFlags);
+  static std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> getOperators(
+    const OperationsFlags& theFlags);
 
   //! Converts operation flag to its name.
   //! @param theOperation Operation flag.

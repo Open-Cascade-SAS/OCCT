@@ -20,8 +20,8 @@
 #include <Geom2dHatch_Element.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Geom2dHatch_Element> Geom2dHatch_MapOfElements;
-typedef NCollection_DataMap<Standard_Integer,Geom2dHatch_Element>::Iterator Geom2dHatch_DataMapIteratorOfMapOfElements;
-
+typedef NCollection_DataMap<Standard_Integer, Geom2dHatch_Element> Geom2dHatch_MapOfElements;
+typedef NCollection_DataMap<Standard_Integer, Geom2dHatch_Element>::Iterator
+  Geom2dHatch_DataMapIteratorOfMapOfElements;
 
 #endif

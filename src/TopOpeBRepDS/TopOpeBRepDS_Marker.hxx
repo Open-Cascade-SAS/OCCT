@@ -24,52 +24,33 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-
 class TopOpeBRepDS_Marker;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Marker, Standard_Transient)
-
 
 class TopOpeBRepDS_Marker : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT TopOpeBRepDS_Marker();
-  
+
   Standard_EXPORT void Reset();
-  
-  Standard_EXPORT void Set (const Standard_Integer i, const Standard_Boolean b);
-  
-  Standard_EXPORT void Set (const Standard_Boolean b, const Standard_Integer n, const Standard_Address a);
-  
-  Standard_EXPORT Standard_Boolean GetI (const Standard_Integer i) const;
-  
-  Standard_EXPORT void Allocate (const Standard_Integer n);
 
+  Standard_EXPORT void Set(const Standard_Integer i, const Standard_Boolean b);
 
+  Standard_EXPORT void Set(const Standard_Boolean b,
+                           const Standard_Integer n,
+                           const Standard_Address a);
 
+  Standard_EXPORT Standard_Boolean GetI(const Standard_Integer i) const;
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,Standard_Transient)
+  Standard_EXPORT void Allocate(const Standard_Integer n);
+
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfBoolean) myhe;
-  Standard_Integer myne;
-
-
+  Standard_Integer                 myne;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_Marker_HeaderFile

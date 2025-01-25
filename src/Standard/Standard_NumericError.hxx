@@ -26,8 +26,9 @@ class Standard_NumericError;
 DEFINE_STANDARD_HANDLE(Standard_NumericError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Standard_NumericError
-  #define Standard_NumericError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_NumericError(MESSAGE);
+  #define Standard_NumericError_Raise_if(CONDITION, MESSAGE)                                       \
+    if (CONDITION)                                                                                 \
+      throw Standard_NumericError(MESSAGE);
 #else
   #define Standard_NumericError_Raise_if(CONDITION, MESSAGE)
 #endif

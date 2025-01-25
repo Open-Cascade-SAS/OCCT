@@ -19,30 +19,28 @@
 #include <IGESGraph_Pick.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Pick,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Pick, IGESData_IGESEntity)
 
-IGESGraph_Pick::IGESGraph_Pick ()    {  }
+IGESGraph_Pick::IGESGraph_Pick() {}
 
-
-    void IGESGraph_Pick::Init
-  (const Standard_Integer nbProps, const Standard_Integer aPickStatus)
+void IGESGraph_Pick::Init(const Standard_Integer nbProps, const Standard_Integer aPickStatus)
 {
   theNbPropertyValues = nbProps;
   thePick             = aPickStatus;
-  InitTypeAndForm(406,21);
+  InitTypeAndForm(406, 21);
 }
 
-    Standard_Integer IGESGraph_Pick::NbPropertyValues () const
+Standard_Integer IGESGraph_Pick::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-    Standard_Integer IGESGraph_Pick::PickFlag () const
+Standard_Integer IGESGraph_Pick::PickFlag() const
 {
   return thePick;
 }
 
-    Standard_Boolean IGESGraph_Pick::IsPickable () const
+Standard_Boolean IGESGraph_Pick::IsPickable() const
 {
   return (thePick == 0);
 }

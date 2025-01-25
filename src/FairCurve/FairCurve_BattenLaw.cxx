@@ -11,16 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <FairCurve_BattenLaw.hxx>
 
-FairCurve_BattenLaw::FairCurve_BattenLaw(const Standard_Real Heigth, 
-					  const Standard_Real Slope, 
-					  const Standard_Real Sliding)
-                     : MiddleHeigth(Heigth), 
-		       GeometricSlope(Slope),
-                       LengthSliding(Sliding)
+FairCurve_BattenLaw::FairCurve_BattenLaw(const Standard_Real Heigth,
+                                         const Standard_Real Slope,
+                                         const Standard_Real Sliding)
+    : MiddleHeigth(Heigth),
+      GeometricSlope(Slope),
+      LengthSliding(Sliding)
 {
 }
-
-

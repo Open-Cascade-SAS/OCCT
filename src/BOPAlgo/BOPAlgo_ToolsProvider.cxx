@@ -12,38 +12,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_ToolsProvider.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
 BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider()
-:
-  BOPAlgo_Builder(),
-  myTools(myAllocator),
-  myMapTools(100, myAllocator)
+    : BOPAlgo_Builder(),
+      myTools(myAllocator),
+      myMapTools(100, myAllocator)
 {
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : 
+// function : Constructor
+// purpose  :
 //=======================================================================
-BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Builder(theAllocator),
-  myTools(myAllocator),
-  myMapTools(100, myAllocator)
+BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Builder(theAllocator),
+      myTools(myAllocator),
+      myMapTools(100, myAllocator)
 {
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
 void BOPAlgo_ToolsProvider::Clear()
 {
@@ -53,8 +49,8 @@ void BOPAlgo_ToolsProvider::Clear()
 }
 
 //=======================================================================
-//function : AddTool
-//purpose  : 
+// function : AddTool
+// purpose  :
 //=======================================================================
 void BOPAlgo_ToolsProvider::AddTool(const TopoDS_Shape& theShape)
 {
@@ -63,8 +59,8 @@ void BOPAlgo_ToolsProvider::AddTool(const TopoDS_Shape& theShape)
 }
 
 //=======================================================================
-//function : SetTools
-//purpose  : 
+// function : SetTools
+// purpose  :
 //=======================================================================
 void BOPAlgo_ToolsProvider::SetTools(const TopTools_ListOfShape& theShapes)
 {

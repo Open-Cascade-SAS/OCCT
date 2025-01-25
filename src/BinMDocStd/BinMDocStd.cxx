@@ -20,12 +20,11 @@
 #include <Message_Messenger.hxx>
 
 //=======================================================================
-//function : AddDrivers
-//purpose  : 
+// function : AddDrivers
+// purpose  :
 //=======================================================================
-void BinMDocStd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
-                              const Handle(Message_Messenger)&   theMsgDriver)
+void BinMDocStd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                            const Handle(Message_Messenger)&   theMsgDriver)
 {
-  theDriverTable->AddDriver (new BinMDocStd_XLinkDriver  (theMsgDriver) );
-  
+  theDriverTable->AddDriver(new BinMDocStd_XLinkDriver(theMsgDriver));
 }

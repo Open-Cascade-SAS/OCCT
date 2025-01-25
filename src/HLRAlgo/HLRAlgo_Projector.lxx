@@ -19,14 +19,11 @@
 #include <gp_Pnt.hxx>
 
 //=======================================================================
-//function : Directions
-//purpose  : 
+// function : Directions
+// purpose  :
 //=======================================================================
 
-inline void 
-HLRAlgo_Projector::Directions (gp_Vec2d& D1,
-			       gp_Vec2d& D2,
-			       gp_Vec2d& D3) const
+inline void HLRAlgo_Projector::Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const
 {
   D1 = myD1;
   D2 = myD2;
@@ -34,61 +31,71 @@ HLRAlgo_Projector::Directions (gp_Vec2d& D1,
 }
 
 //=======================================================================
-//function : Perspective
-//purpose  : 
+// function : Perspective
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean HLRAlgo_Projector::Perspective() const
-{ return myPersp; }
+{
+  return myPersp;
+}
+
 /*
 //=======================================================================
 //function : Transformation
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline const gp_Trsf & HLRAlgo_Projector::Transformation() const
 { return myTrsf; }
 */
 //=======================================================================
-//function : InvertedTransformation
-//purpose  : 
+// function : InvertedTransformation
+// purpose  :
 //=======================================================================
 
-inline const gp_Trsf & HLRAlgo_Projector::InvertedTransformation() const
-{ return myInvTrsf; }
+inline const gp_Trsf& HLRAlgo_Projector::InvertedTransformation() const
+{
+  return myInvTrsf;
+}
 
 //=======================================================================
-//function : FullTransformation
-//purpose  : 
+// function : FullTransformation
+// purpose  :
 //=======================================================================
 
-inline const gp_Trsf & HLRAlgo_Projector::FullTransformation() const
-{ return myScaledTrsf; }
+inline const gp_Trsf& HLRAlgo_Projector::FullTransformation() const
+{
+  return myScaledTrsf;
+}
 
 //=======================================================================
-//function : Focus
-//purpose  : 
+// function : Focus
+// purpose  :
 //=======================================================================
 
 inline Standard_Real HLRAlgo_Projector::Focus() const
 {
-  Standard_NoSuchObject_Raise_if
-    (!myPersp,"HLRAlgo_Projector::Not a Perspective");
+  Standard_NoSuchObject_Raise_if(!myPersp, "HLRAlgo_Projector::Not a Perspective");
   return myFocus;
 }
 
 //=======================================================================
-//function : Transform
-//purpose  : 
+// function : Transform
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Projector::Transform (gp_Vec& D) const
-{ D.Transform(myTrsf); }
+inline void HLRAlgo_Projector::Transform(gp_Vec& D) const
+{
+  D.Transform(myTrsf);
+}
 
 //=======================================================================
-//function : Transform
-//purpose  : 
+// function : Transform
+// purpose  :
 //=======================================================================
 
-inline void HLRAlgo_Projector::Transform (gp_Pnt& Pnt) const
-{ Pnt.Transform(myTrsf); }
+inline void HLRAlgo_Projector::Transform(gp_Pnt& Pnt) const
+{
+  Pnt.Transform(myTrsf);
+}

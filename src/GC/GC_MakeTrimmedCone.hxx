@@ -26,7 +26,6 @@
 
 class gp_Pnt;
 
-
 //! Implements construction algorithms for a trimmed
 //! cone limited by two planes orthogonal to its axis. The
 //! result is a Geom_RectangularTrimmedSurface surface.
@@ -35,13 +34,11 @@ class gp_Pnt;
 //! -   implementing the construction algorithm, and
 //! -   consulting the results. In particular, the Value
 //! function returns the constructed trimmed cone.
-class GC_MakeTrimmedCone  : public GC_Root
+class GC_MakeTrimmedCone : public GC_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Make a RectangularTrimmedSurface <TheCone> from Geom
   //! It is trimmed by P3 and P4.
   //! Its axis is <P1P2> and the radius of its base is
@@ -51,8 +48,11 @@ public:
   //! An error iss raised if <P1>,<P2>,<P3>,<P4> are
   //! colinear or if <P3P4> is perpendicular to <P1P2> or
   //! <P3P4> is colinear to <P1P2>.
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4);
-  
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1,
+                                     const gp_Pnt& P2,
+                                     const gp_Pnt& P3,
+                                     const gp_Pnt& P4);
+
   //! Make a RectangularTrimmedSurface from Geom <TheCone>
   //! from a cone and trimmed by two points P1 and P2 and
   //! the two radius <R1> and <R2> of the sections passing
@@ -69,13 +69,16 @@ public:
   //! -   the points P1, P2, P3 and P4 are collinear;
   //! -   gce_NegativeRadius if R1 or R2 is negative; or
   //! -   gce_NullAxis if points P1 and P2 are coincident (2nd syntax only).
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1, const gp_Pnt& P2, const Standard_Real R1, const Standard_Real R2);
-  
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt&       P1,
+                                     const gp_Pnt&       P2,
+                                     const Standard_Real R1,
+                                     const Standard_Real R2);
+
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.
   Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
 
-  operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }
+  operator const Handle(Geom_RectangularTrimmedSurface) & () const { return Value(); }
 
 private:
   Handle(Geom_RectangularTrimmedSurface) TheCone;

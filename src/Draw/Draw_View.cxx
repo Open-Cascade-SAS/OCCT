@@ -17,8 +17,8 @@
 #include <gp_Trsf.hxx>
 
 //=======================================================================
-//function : Draw_View
-//purpose  : Constructor
+// function : Draw_View
+// purpose  : Constructor
 //=======================================================================
 Draw_View::Draw_View(Standard_Integer theId,
                      Draw_Viewer*     theViewer,
@@ -27,65 +27,68 @@ Draw_View::Draw_View(Standard_Integer theId,
                      Standard_Integer theWidth,
                      Standard_Integer theHeight,
                      Aspect_Drawable  theWindow)
-: Draw_Window ("Win",
-               NCollection_Vec2<int> (theX, theY),
-               NCollection_Vec2<int> (theWidth, theHeight),
-               0, theWindow),
-  myId       (theId),
-  myViewer   (theViewer),
-  myIsPers   (Standard_False),
-  myIs2D     (Standard_False),
-  myFocalDistance(0.0),
-  myZoom     (0.0),
-  myDx       (0),
-  myDy       (0),
-  myFrameX0  (0),
-  myFrameY0  (0),
-  myFrameX1  (0),
-  myFrameY1  (0)
+    : Draw_Window("Win",
+                  NCollection_Vec2<int>(theX, theY),
+                  NCollection_Vec2<int>(theWidth, theHeight),
+                  0,
+                  theWindow),
+      myId(theId),
+      myViewer(theViewer),
+      myIsPers(Standard_False),
+      myIs2D(Standard_False),
+      myFocalDistance(0.0),
+      myZoom(0.0),
+      myDx(0),
+      myDy(0),
+      myFrameX0(0),
+      myFrameY0(0),
+      myFrameX1(0),
+      myFrameY1(0)
 {
-  memset (myType, 0, sizeof (myType));
+  memset(myType, 0, sizeof(myType));
 }
 
 //! Find window by it's XID - applicable only to X11.
-static Aspect_Drawable findWindow (const char* theWindow)
+static Aspect_Drawable findWindow(const char* theWindow)
 {
   Aspect_Drawable aWindow = 0;
 #ifdef HAVE_XLIB
-  sscanf (theWindow, "%lx", &aWindow);
+  sscanf(theWindow, "%lx", &aWindow);
 #else
-  (void )theWindow;
+  (void)theWindow;
 #endif
   return aWindow;
 }
 
 //=======================================================================
-//function : Draw_View
-//purpose  : Constructor
+// function : Draw_View
+// purpose  : Constructor
 //=======================================================================
-Draw_View::Draw_View(Standard_Integer theId,
-                     Draw_Viewer*     theViewer,
-                     const char*      theTitle)
-: Draw_Window  (theTitle, NCollection_Vec2<int>(0), NCollection_Vec2<int>(50), 0, findWindow (theTitle)),
-  myId         (theId),
-  myViewer     (theViewer),
-  myIsPers     (Standard_False),
-  myIs2D       (Standard_False),
-  myFocalDistance(0.0),
-  myZoom       (0.0),
-  myDx         (0),
-  myDy         (0),
-  myFrameX0    (0),
-  myFrameY0    (0),
-  myFrameX1    (0),
-  myFrameY1    (0)
+Draw_View::Draw_View(Standard_Integer theId, Draw_Viewer* theViewer, const char* theTitle)
+    : Draw_Window(theTitle,
+                  NCollection_Vec2<int>(0),
+                  NCollection_Vec2<int>(50),
+                  0,
+                  findWindow(theTitle)),
+      myId(theId),
+      myViewer(theViewer),
+      myIsPers(Standard_False),
+      myIs2D(Standard_False),
+      myFocalDistance(0.0),
+      myZoom(0.0),
+      myDx(0),
+      myDy(0),
+      myFrameX0(0),
+      myFrameY0(0),
+      myFrameX1(0),
+      myFrameY1(0)
 {
-  memset (myType, 0, sizeof (myType));
+  memset(myType, 0, sizeof(myType));
 }
 
 //=======================================================================
-//function : ~Draw_View
-//purpose  : Destructor
+// function : ~Draw_View
+// purpose  : Destructor
 //=======================================================================
 Draw_View::~Draw_View()
 {
@@ -93,8 +96,8 @@ Draw_View::~Draw_View()
 }
 
 //=======================================================================
-//function : Init
-//purpose  :
+// function : Init
+// purpose  :
 //=======================================================================
 Standard_Boolean Draw_View::Init(const char* theType)
 {
@@ -134,7 +137,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 0., 1.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -148,7 +151,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 0., 1.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -167,7 +170,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -176,7 +179,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -185,7 +188,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -194,7 +197,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -203,7 +206,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -212,7 +215,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 1., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -226,7 +229,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -240,7 +243,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -249,7 +252,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -263,7 +266,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -272,7 +275,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -281,7 +284,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(0., 1., 0.);
     const gp_Dir aD2(1., 0., 0.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), 0.5 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), 0.5 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), 0.5 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -290,7 +293,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 0., 1.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.25 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.25 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.25 * M_PI);
     myMatrix.Multiply(aRotation);
   }
@@ -299,7 +302,7 @@ Standard_Boolean Draw_View::Init(const char* theType)
     const gp_Dir aD1(1., 0., 0.);
     const gp_Dir aD2(0., 0., 1.);
 
-    myMatrix.SetRotation (gp_Ax1(Pvise, aD1), -0.25 * M_PI);
+    myMatrix.SetRotation(gp_Ax1(Pvise, aD1), -0.25 * M_PI);
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.25 * M_PI);
     myMatrix.Multiply(aRotation);
 
@@ -315,8 +318,8 @@ Standard_Boolean Draw_View::Init(const char* theType)
 }
 
 //=======================================================================
-//function : Transform
-//purpose  :
+// function : Transform
+// purpose  :
 //=======================================================================
 void Draw_View::Transform(const gp_Trsf& theTransformation)
 {
@@ -324,8 +327,8 @@ void Draw_View::Transform(const gp_Trsf& theTransformation)
 }
 
 //=======================================================================
-//function : ResetFrame
-//purpose  :
+// function : ResetFrame
+// purpose  :
 //=======================================================================
 void Draw_View::ResetFrame()
 {
@@ -336,13 +339,15 @@ void Draw_View::ResetFrame()
 }
 
 //=======================================================================
-//function : GetFrame
-//purpose  :
+// function : GetFrame
+// purpose  :
 //=======================================================================
-void Draw_View::GetFrame(Standard_Integer& theX0,Standard_Integer& theY0,
-                         Standard_Integer& theX1,Standard_Integer& theY1)
+void Draw_View::GetFrame(Standard_Integer& theX0,
+                         Standard_Integer& theY0,
+                         Standard_Integer& theX1,
+                         Standard_Integer& theY1)
 {
-  if ( myFrameX0 == myFrameX1 )
+  if (myFrameX0 == myFrameX1)
   {
     myViewer->GetFrame(myId, theX0, theY0, theX1, theY1);
     myFrameX0 = theX0;
@@ -360,8 +365,8 @@ void Draw_View::GetFrame(Standard_Integer& theX0,Standard_Integer& theY0,
 }
 
 //=======================================================================
-//function : WExpose
-//purpose  :
+// function : WExpose
+// purpose  :
 //=======================================================================
 void Draw_View::WExpose()
 {

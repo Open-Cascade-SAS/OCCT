@@ -25,22 +25,22 @@ class XCAFPrs_Texture : public Graphic3d_Texture2D
 {
   DEFINE_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2D)
 public:
-
   //! Constructor.
-  Standard_EXPORT XCAFPrs_Texture (const Handle(Image_Texture)& theImageSource,
-                                   const Graphic3d_TextureUnit theUnit);
+  Standard_EXPORT XCAFPrs_Texture(const Handle(Image_Texture)& theImageSource,
+                                  const Graphic3d_TextureUnit  theUnit);
 
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage(
+    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Image_PixMap) GetImage(
+    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Return image source.
   const Handle(Image_Texture)& GetImageSource() const { return myImageSource; }
 
 protected:
-
   Handle(Image_Texture) myImageSource;
 };
 

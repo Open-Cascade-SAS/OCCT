@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBRDirectionalLight.glsl
+// This file has been automatically generated from resource file
+// src/Shaders/PBRDirectionalLight.glsl
 
 static const char Shaders_PBRDirectionalLight_glsl[] =
   "//! Function computes contribution of directional light source\n"

@@ -29,73 +29,56 @@
 class gp_Dir;
 class gp_Pnt;
 
-
 //! The  Projection   class provides  conical  and
 //! cylindrical projections of  Edge  or  Wire  on
 //! a Shape from TopoDS. The result will be a Edge
 //! or  Wire  from  TopoDS.
-class BRepProj_Projection 
+class BRepProj_Projection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Makes a Cylindrical projection of Wire om Shape
-  Standard_EXPORT BRepProj_Projection(const TopoDS_Shape& Wire, const TopoDS_Shape& Shape, const gp_Dir& D);
-  
+  Standard_EXPORT BRepProj_Projection(const TopoDS_Shape& Wire,
+                                      const TopoDS_Shape& Shape,
+                                      const gp_Dir&       D);
+
   //! Makes a Conical projection of Wire om Shape
-  Standard_EXPORT BRepProj_Projection(const TopoDS_Shape& Wire, const TopoDS_Shape& Shape, const gp_Pnt& P);
-  
+  Standard_EXPORT BRepProj_Projection(const TopoDS_Shape& Wire,
+                                      const TopoDS_Shape& Shape,
+                                      const gp_Pnt&       P);
+
   //! returns False if the section failed
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Resets the iterator by resulting wires.
-    void Init();
-  
+  void Init();
+
   //! Returns True if there is a current result wire
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const;
+
   //! Move to the next result wire.
-    void Next();
-  
+  void Next();
+
   //! Returns the current result wire.
-    TopoDS_Wire Current() const;
-  
+  TopoDS_Wire Current() const;
+
   //! Returns the complete result as compound of wires.
-    TopoDS_Compound Shape() const;
-
-
-
+  TopoDS_Compound Shape() const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   //! Performs section of theShape by theTool
   //! and stores result in the fields.
-  Standard_EXPORT void BuildSection (const TopoDS_Shape& Shape, const TopoDS_Shape& Tool);
+  Standard_EXPORT void BuildSection(const TopoDS_Shape& Shape, const TopoDS_Shape& Tool);
 
-
-  Standard_Boolean myIsDone;
-  TopoDS_Shape myLsh;
-  TopoDS_Compound myShape;
+  Standard_Boolean                  myIsDone;
+  TopoDS_Shape                      myLsh;
+  TopoDS_Compound                   myShape;
   Handle(TopTools_HSequenceOfShape) mySection;
-  Standard_Integer myItr;
-
-
+  Standard_Integer                  myItr;
 };
 
-
 #include <BRepProj_Projection.lxx>
-
-
-
-
 
 #endif // _BRepProj_Projection_HeaderFile

@@ -21,8 +21,8 @@
 #include <TopOpeBRepDS_PointData.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_PointData> TopOpeBRepDS_MapOfPoint;
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_PointData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfPoint;
-
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_PointData> TopOpeBRepDS_MapOfPoint;
+typedef NCollection_DataMap<Standard_Integer, TopOpeBRepDS_PointData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfPoint;
 
 #endif

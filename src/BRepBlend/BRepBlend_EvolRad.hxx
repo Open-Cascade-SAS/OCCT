@@ -21,5 +21,4 @@
 
 typedef BlendFunc_EvolRad BRepBlend_EvolRad;
 
-
 #endif // _BRepBlend_EvolRad_HeaderFile

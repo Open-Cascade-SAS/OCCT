@@ -25,58 +25,40 @@
 class StepGeom_Surface;
 class TCollection_HAsciiString;
 
-
 class StepGeom_PointOnSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_PointOnSurface, StepGeom_Point)
-
 
 class StepGeom_PointOnSurface : public StepGeom_Point
 {
 
 public:
-
-  
   //! Returns a PointOnSurface
   Standard_EXPORT StepGeom_PointOnSurface();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Standard_Real aPointParameterU, const Standard_Real aPointParameterV);
-  
-  Standard_EXPORT void SetBasisSurface (const Handle(StepGeom_Surface)& aBasisSurface);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_Surface)&         aBasisSurface,
+                            const Standard_Real                     aPointParameterU,
+                            const Standard_Real                     aPointParameterV);
+
+  Standard_EXPORT void SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface);
+
   Standard_EXPORT Handle(StepGeom_Surface) BasisSurface() const;
-  
-  Standard_EXPORT void SetPointParameterU (const Standard_Real aPointParameterU);
-  
+
+  Standard_EXPORT void SetPointParameterU(const Standard_Real aPointParameterU);
+
   Standard_EXPORT Standard_Real PointParameterU() const;
-  
-  Standard_EXPORT void SetPointParameterV (const Standard_Real aPointParameterV);
-  
+
+  Standard_EXPORT void SetPointParameterV(const Standard_Real aPointParameterV);
+
   Standard_EXPORT Standard_Real PointParameterV() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_PointOnSurface,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_PointOnSurface, StepGeom_Point)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Surface) basisSurface;
-  Standard_Real pointParameterU;
-  Standard_Real pointParameterV;
-
-
+  Standard_Real            pointParameterU;
+  Standard_Real            pointParameterV;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_PointOnSurface_HeaderFile

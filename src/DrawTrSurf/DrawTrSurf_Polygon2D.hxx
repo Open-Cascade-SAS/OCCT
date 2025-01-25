@@ -29,36 +29,34 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Polygon2D, Draw_Drawable2D)
 class DrawTrSurf_Polygon2D : public Draw_Drawable2D
 {
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Polygon2D, Draw_Drawable2D)
-  Draw_Drawable3D_FACTORY
-public:
+  Draw_Drawable3D_FACTORY public :
 
-  Standard_EXPORT DrawTrSurf_Polygon2D (const Handle(Poly_Polygon2D)& P);
+      Standard_EXPORT
+      DrawTrSurf_Polygon2D(const Handle(Poly_Polygon2D)& P);
 
   Handle(Poly_Polygon2D) Polygon2D() const { return myPolygon2D; }
 
-  void ShowNodes (const Standard_Boolean theB) { myNodes = theB; }
+  void ShowNodes(const Standard_Boolean theB) { myNodes = theB; }
 
   Standard_Boolean ShowNodes() const { return myNodes; }
 
-  Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   //! For variable copy.
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump (Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save (Standard_OStream& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 
   //! For variable whatis command. Set as a result the type of the variable.
-  Standard_EXPORT virtual void Whatis (Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
 private:
-
   Handle(Poly_Polygon2D) myPolygon2D;
-  Standard_Boolean myNodes;
-
+  Standard_Boolean       myNodes;
 };
 
 #endif // _DrawTrSurf_Polygon2D_HeaderFile

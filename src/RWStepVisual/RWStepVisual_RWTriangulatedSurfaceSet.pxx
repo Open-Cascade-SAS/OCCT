@@ -33,16 +33,16 @@ public:
   //! default constructor
   Standard_HIDDEN RWStepVisual_RWTriangulatedSurfaceSet();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                const Standard_Integer theNum,
-                                Handle(Interface_Check)& theCheck,
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&           theData,
+                                const Standard_Integer                           theNum,
+                                Handle(Interface_Check)&                         theCheck,
                                 const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter& theSW,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                             theSW,
                                  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
   Standard_HIDDEN void Share(const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
-                             Interface_EntityIterator& theIter) const;
+                             Interface_EntityIterator&                        theIter) const;
 };
 
 #endif // _RWStepVisual_RWTriangulatedSurfaceSet_HeaderFile_

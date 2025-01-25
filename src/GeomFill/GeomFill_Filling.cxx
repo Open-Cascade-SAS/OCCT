@@ -14,23 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomFill_Filling.hxx>
 #include <gp_Pnt.hxx>
 
 //=======================================================================
-//function : GeomFill_Filling
-//purpose  : 
+// function : GeomFill_Filling
+// purpose  :
 //=======================================================================
 GeomFill_Filling::GeomFill_Filling()
-: IsRational(Standard_False)
+    : IsRational(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : NbUPoles
-//purpose  : 
+// function : NbUPoles
+// purpose  :
 //=======================================================================
 
 Standard_Integer GeomFill_Filling::NbUPoles() const
@@ -39,8 +37,8 @@ Standard_Integer GeomFill_Filling::NbUPoles() const
 }
 
 //=======================================================================
-//function : NbVPoles
-//purpose  : 
+// function : NbVPoles
+// purpose  :
 //=======================================================================
 
 Standard_Integer GeomFill_Filling::NbVPoles() const
@@ -49,34 +47,31 @@ Standard_Integer GeomFill_Filling::NbVPoles() const
 }
 
 //=======================================================================
-//function : Poles
-//purpose  : 
+// function : Poles
+// purpose  :
 //=======================================================================
 
-void  GeomFill_Filling::Poles(TColgp_Array2OfPnt& Poles)const 
+void GeomFill_Filling::Poles(TColgp_Array2OfPnt& Poles) const
 {
   Poles = myPoles->ChangeArray2();
 }
 
 //=======================================================================
-//function : isRational
-//purpose  : 
+// function : isRational
+// purpose  :
 //=======================================================================
 
-Standard_Boolean  GeomFill_Filling::isRational()const 
+Standard_Boolean GeomFill_Filling::isRational() const
 {
   return IsRational;
 }
 
-
 //=======================================================================
-//function : Weights
-//purpose  : 
+// function : Weights
+// purpose  :
 //=======================================================================
 
-void  GeomFill_Filling::Weights(TColStd_Array2OfReal& Weights)const 
+void GeomFill_Filling::Weights(TColStd_Array2OfReal& Weights) const
 {
   Weights = myWeights->ChangeArray2();
 }
-
-

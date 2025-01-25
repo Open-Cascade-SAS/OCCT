@@ -14,26 +14,25 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetWithTriangles
-//purpose  : 
+// function : SetWithTriangles
+// purpose  :
 //=======================================================================
 
-inline void BinMNaming_NamedShapeDriver::SetWithTriangles(const Standard_Boolean isWithTriangles) 
+inline void BinMNaming_NamedShapeDriver::SetWithTriangles(const Standard_Boolean isWithTriangles)
 {
   myWithTriangles = isWithTriangles;
   if (myShapeSet)
-    myShapeSet->SetWithTriangles (isWithTriangles);
+    myShapeSet->SetWithTriangles(isWithTriangles);
 }
 
 //=======================================================================
-//function : SetWithNormals
-//purpose  : 
+// function : SetWithNormals
+// purpose  :
 //=======================================================================
 
-inline void BinMNaming_NamedShapeDriver::SetWithNormals(const Standard_Boolean isWithNormals) 
+inline void BinMNaming_NamedShapeDriver::SetWithNormals(const Standard_Boolean isWithNormals)
 {
   myWithNormals = isWithNormals;
   if (myShapeSet)
-    myShapeSet->SetWithNormals (isWithNormals);
-
+    myShapeSet->SetWithNormals(isWithNormals);
 }

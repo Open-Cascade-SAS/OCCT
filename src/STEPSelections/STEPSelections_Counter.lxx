@@ -39,7 +39,6 @@ inline Standard_Integer STEPSelections_Counter::NbInstancesOfWires() const
   return myNbWires;
 }
 
-
 inline Standard_Integer STEPSelections_Counter::NbSourceFaces() const
 {
   return myMapOfFaces.Extent();

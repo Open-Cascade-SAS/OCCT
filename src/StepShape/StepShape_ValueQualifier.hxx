@@ -27,54 +27,32 @@ class StepShape_PrecisionQualifier;
 class StepShape_TypeQualifier;
 class StepShape_ValueFormatTypeQualifier;
 
-
 //! Added for Dimensional Tolerances
-class StepShape_ValueQualifier  : public StepData_SelectType
+class StepShape_ValueQualifier : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepShape_ValueQualifier();
-  
+
   //! Recognizes a kind of ValueQualifier Select Type :
   //! 1 -> PrecisionQualifier from StepShape
   //! 2 -> TypeQualifier from StepShape
   //! 3 -> UnceraintyQualifier .. not yet implemented
   //! 4 -> ValueFormatTypeQualifier
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as PrecisionQualifier
   Standard_EXPORT Handle(StepShape_PrecisionQualifier) PrecisionQualifier() const;
-  
+
   //! Returns Value as TypeQualifier
   Standard_EXPORT Handle(StepShape_TypeQualifier) TypeQualifier() const;
 
   //! Returns Value as ValueFormatTypeQualifier
   Standard_EXPORT Handle(StepShape_ValueFormatTypeQualifier) ValueFormatTypeQualifier() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ValueQualifier_HeaderFile

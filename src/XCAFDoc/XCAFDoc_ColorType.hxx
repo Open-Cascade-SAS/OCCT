@@ -28,9 +28,9 @@
 //! color of curves
 enum XCAFDoc_ColorType
 {
-XCAFDoc_ColorGen,
-XCAFDoc_ColorSurf,
-XCAFDoc_ColorCurv
+  XCAFDoc_ColorGen,
+  XCAFDoc_ColorSurf,
+  XCAFDoc_ColorCurv
 };
 
 #endif // _XCAFDoc_ColorType_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TDataStdTreeNodeModel.hxx>
 #include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
@@ -26,8 +26,8 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel (QObject* theParent)
-: TreeModel_ModelBase (theParent)
+DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel(QObject* theParent)
+    : TreeModel_ModelBase(theParent)
 {
 }
 
@@ -37,27 +37,28 @@ DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel (QObjec
 // =======================================================================
 void DFBrowserPane_TDataStdTreeNodeModel::InitColumns()
 {
-  setHeaderItem (0, TreeModel_HeaderSection ("Name"));
+  setHeaderItem(0, TreeModel_HeaderSection("Name"));
 }
 
 // =======================================================================
 // function : createRootItem
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr DFBrowserPane_TDataStdTreeNodeModel::createRootItem (const int theColumnId)
+TreeModel_ItemBasePtr DFBrowserPane_TDataStdTreeNodeModel::createRootItem(const int theColumnId)
 {
-  return DFBrowserPane_TDataStdTreeNodeItem::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
+  return DFBrowserPane_TDataStdTreeNodeItem::CreateItem(TreeModel_ItemBasePtr(), 0, theColumnId);
 }
 
 // =======================================================================
 // function : SetAttribute
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdTreeNodeModel::SetAttribute (const Handle(TDF_Attribute)& theAttribute)
+void DFBrowserPane_TDataStdTreeNodeModel::SetAttribute(const Handle(TDF_Attribute)& theAttribute)
 {
-  DFBrowserPane_TDataStdTreeNodeItemPtr aRootItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(RootItem (0));
+  DFBrowserPane_TDataStdTreeNodeItemPtr aRootItem =
+    itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(RootItem(0));
   Reset();
-  aRootItem->SetAttribute (theAttribute);
+  aRootItem->SetAttribute(theAttribute);
   EmitLayoutChanged();
 }
 
@@ -65,30 +66,33 @@ void DFBrowserPane_TDataStdTreeNodeModel::SetAttribute (const Handle(TDF_Attribu
 // function : FindIndex
 // purpose :
 // =======================================================================
-QModelIndex DFBrowserPane_TDataStdTreeNodeModel::FindIndex (const Handle(TDF_Attribute)& theAttribute,
-                                                            const QModelIndex theParentIndex)
+QModelIndex DFBrowserPane_TDataStdTreeNodeModel::FindIndex(
+  const Handle(TDF_Attribute)& theAttribute,
+  const QModelIndex            theParentIndex)
 {
   QModelIndex aParentIndex = theParentIndex;
-  
-  if (!aParentIndex.isValid())
-    aParentIndex = index (0, 0);
 
-  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>
-    (TreeModel_ModelBase::GetItemByIndex (aParentIndex));
+  if (!aParentIndex.isValid())
+    aParentIndex = index(0, 0);
+
+  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem =
+    itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(
+      TreeModel_ModelBase::GetItemByIndex(aParentIndex));
 
   if (aParentItem->GetAttribute() == theAttribute)
     return aParentIndex;
 
   for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
   {
-    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-    DFBrowserPane_TDataStdTreeNodeItemPtr anItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anItemBase);
+    QModelIndex                           anIndex    = index(aChildId, 0, aParentIndex);
+    TreeModel_ItemBasePtr                 anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+    DFBrowserPane_TDataStdTreeNodeItemPtr anItem =
+      itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anItemBase);
 
     if (anItem->GetAttribute() == theAttribute)
       return anIndex;
 
-    QModelIndex aSubIndex = FindIndex (theAttribute, anIndex);
+    QModelIndex aSubIndex = FindIndex(theAttribute, anIndex);
     if (aSubIndex.isValid())
       return aSubIndex;
   }

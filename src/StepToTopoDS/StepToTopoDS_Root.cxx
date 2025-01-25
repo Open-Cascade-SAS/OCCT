@@ -20,11 +20,11 @@
 #include <StepToTopoDS_Root.hxx>
 
 //=======================================================================
-//function : StepToTopoDS_Root
-//purpose  : 
+// function : StepToTopoDS_Root
+// purpose  :
 //=======================================================================
-StepToTopoDS_Root::StepToTopoDS_Root () : done(Standard_False) 
+StepToTopoDS_Root::StepToTopoDS_Root()
+    : done(Standard_False)
 {
   myPrecision = myMaxTol = Precision::Confusion();
 }
-

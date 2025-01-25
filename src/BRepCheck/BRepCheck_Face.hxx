@@ -26,71 +26,51 @@
 class TopoDS_Face;
 class TopoDS_Shape;
 
-
 class BRepCheck_Face;
 DEFINE_STANDARD_HANDLE(BRepCheck_Face, BRepCheck_Result)
-
 
 class BRepCheck_Face : public BRepCheck_Result
 {
 
 public:
-
-  
   Standard_EXPORT BRepCheck_Face(const TopoDS_Face& F);
-  
-  Standard_EXPORT void InContext (const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
+
   Standard_EXPORT void Minimum() Standard_OVERRIDE;
-  
+
   Standard_EXPORT void Blind() Standard_OVERRIDE;
-  
-  Standard_EXPORT BRepCheck_Status IntersectWires (const Standard_Boolean Update = Standard_False);
-  
-  Standard_EXPORT BRepCheck_Status ClassifyWires (const Standard_Boolean Update = Standard_False);
-  
-  Standard_EXPORT BRepCheck_Status OrientationOfWires (const Standard_Boolean Update = Standard_False);
-  
+
+  Standard_EXPORT BRepCheck_Status IntersectWires(const Standard_Boolean Update = Standard_False);
+
+  Standard_EXPORT BRepCheck_Status ClassifyWires(const Standard_Boolean Update = Standard_False);
+
+  Standard_EXPORT BRepCheck_Status
+    OrientationOfWires(const Standard_Boolean Update = Standard_False);
+
   Standard_EXPORT void SetUnorientable();
-  
+
   //! Sets status of Face;
-  Standard_EXPORT void SetStatus (const BRepCheck_Status theStatus);
-  
+  Standard_EXPORT void SetStatus(const BRepCheck_Status theStatus);
+
   Standard_EXPORT Standard_Boolean IsUnorientable() const;
-  
+
   Standard_EXPORT Standard_Boolean GeometricControls() const;
-  
-  Standard_EXPORT void GeometricControls (const Standard_Boolean B);
 
+  Standard_EXPORT void GeometricControls(const Standard_Boolean B);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepCheck_Face,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Face, BRepCheck_Result)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Boolean myIntdone;
-  BRepCheck_Status myIntres;
-  Standard_Boolean myImbdone;
-  BRepCheck_Status myImbres;
-  Standard_Boolean myOridone;
-  BRepCheck_Status myOrires;
+  Standard_Boolean                   myIntdone;
+  BRepCheck_Status                   myIntres;
+  Standard_Boolean                   myImbdone;
+  BRepCheck_Status                   myImbres;
+  Standard_Boolean                   myOridone;
+  BRepCheck_Status                   myOrires;
   TopTools_DataMapOfShapeListOfShape myMapImb;
-  Standard_Boolean myGctrl;
-
-
+  Standard_Boolean                   myGctrl;
 };
-
-
-
-
-
-
 
 #endif // _BRepCheck_Face_HeaderFile

@@ -24,50 +24,28 @@
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 
-
 //! A Section of fillet.
-class ChFiDS_CircSection 
+class ChFiDS_CircSection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT ChFiDS_CircSection();
-  
-  Standard_EXPORT void Set (const gp_Circ& C, const Standard_Real F, const Standard_Real L);
-  
-  Standard_EXPORT void Set (const gp_Lin& C, const Standard_Real F, const Standard_Real L);
-  
-  Standard_EXPORT void Get (gp_Circ& C, Standard_Real& F, Standard_Real& L) const;
-  
-  Standard_EXPORT void Get (gp_Lin& C, Standard_Real& F, Standard_Real& L) const;
 
+  Standard_EXPORT void Set(const gp_Circ& C, const Standard_Real F, const Standard_Real L);
 
+  Standard_EXPORT void Set(const gp_Lin& C, const Standard_Real F, const Standard_Real L);
 
+  Standard_EXPORT void Get(gp_Circ& C, Standard_Real& F, Standard_Real& L) const;
+
+  Standard_EXPORT void Get(gp_Lin& C, Standard_Real& F, Standard_Real& L) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Circ myCirc;
-  gp_Lin myLin;
+  gp_Circ       myCirc;
+  gp_Lin        myLin;
   Standard_Real myF;
   Standard_Real myL;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ChFiDS_CircSection_HeaderFile

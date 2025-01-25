@@ -19,5 +19,4 @@
 
 typedef NCollection_Sequence<Standard_Address> TColStd_SequenceOfAddress;
 
-
 #endif

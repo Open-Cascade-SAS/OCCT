@@ -24,42 +24,21 @@
 #include <Plate_LinearXYZConstraint.hxx>
 #include <TColgp_SequenceOfXY.hxx>
 
-
 //! force a set of UV points to translate without deformation
-class Plate_GlobalTranslationConstraint 
+class Plate_GlobalTranslationConstraint
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Plate_GlobalTranslationConstraint(const TColgp_SequenceOfXY& SOfXY);
-  
-    const Plate_LinearXYZConstraint& LXYZC() const;
 
-
-
+  const Plate_LinearXYZConstraint& LXYZC() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Plate_LinearXYZConstraint myLXYZC;
-
-
 };
 
-
 #include <Plate_GlobalTranslationConstraint.lxx>
-
-
-
-
 
 #endif // _Plate_GlobalTranslationConstraint_HeaderFile

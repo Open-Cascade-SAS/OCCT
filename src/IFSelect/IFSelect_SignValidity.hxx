@@ -23,7 +23,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class IFSelect_SignValidity;
 DEFINE_STANDARD_HANDLE(IFSelect_SignValidity, IFSelect_Signature)
 
@@ -35,42 +34,26 @@ class IFSelect_SignValidity : public IFSelect_Signature
 {
 
 public:
-
-  
   //! Returns a SignValidity
   Standard_EXPORT IFSelect_SignValidity();
-  
+
   //! Returns the Signature for a Transient object, as a validity
   //! deducted from data (reports) stored in the model.
   //! Class method, can be called by any one
-  Standard_EXPORT static Standard_CString CVal (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model);
-  
+  Standard_EXPORT static Standard_CString CVal(const Handle(Standard_Transient)&       ent,
+                                               const Handle(Interface_InterfaceModel)& model);
+
   //! Returns the Signature for a Transient object, as a validity
   //! deducted from data (reports) stored in the model
   //! Calls the class method CVal
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SignValidity,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignValidity, IFSelect_Signature)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SignValidity_HeaderFile

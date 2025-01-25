@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESSolid_Face)> IGESSolid_Array1OfFace;
 
-
 #endif

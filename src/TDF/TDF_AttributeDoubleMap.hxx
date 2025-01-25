@@ -20,8 +20,8 @@
 #include <TDF_Attribute.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute)> TDF_AttributeDoubleMap;
-typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute)>::Iterator TDF_DoubleMapIteratorOfAttributeDoubleMap;
-
+typedef NCollection_DoubleMap<Handle(TDF_Attribute), Handle(TDF_Attribute)> TDF_AttributeDoubleMap;
+typedef NCollection_DoubleMap<Handle(TDF_Attribute), Handle(TDF_Attribute)>::Iterator
+  TDF_DoubleMapIteratorOfAttributeDoubleMap;
 
 #endif

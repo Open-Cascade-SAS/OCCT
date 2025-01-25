@@ -21,28 +21,29 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData, IGESData_IGESEntity)
 
-IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData ()    {  }
+IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData() {}
 
-
-    void  IGESDimen_DimensionDisplayData::Init
-  (const Standard_Integer numProps,
-   const Standard_Integer aDimType, const Standard_Integer aLabelPos,
-   const Standard_Integer aCharSet,
-   const Handle(TCollection_HAsciiString)& aString,
-   const Standard_Integer aSymbol, const Standard_Real anAng,
-   const Standard_Integer anAlign, const Standard_Integer aLevel,
-   const Standard_Integer aPlace, const Standard_Integer anOrient,
-   const Standard_Real initVal,
-   const Handle(TColStd_HArray1OfInteger)& notes,
-   const Handle(TColStd_HArray1OfInteger)& startInd,
-   const Handle(TColStd_HArray1OfInteger)& endInd)
+void IGESDimen_DimensionDisplayData::Init(const Standard_Integer                  numProps,
+                                          const Standard_Integer                  aDimType,
+                                          const Standard_Integer                  aLabelPos,
+                                          const Standard_Integer                  aCharSet,
+                                          const Handle(TCollection_HAsciiString)& aString,
+                                          const Standard_Integer                  aSymbol,
+                                          const Standard_Real                     anAng,
+                                          const Standard_Integer                  anAlign,
+                                          const Standard_Integer                  aLevel,
+                                          const Standard_Integer                  aPlace,
+                                          const Standard_Integer                  anOrient,
+                                          const Standard_Real                     initVal,
+                                          const Handle(TColStd_HArray1OfInteger)& notes,
+                                          const Handle(TColStd_HArray1OfInteger)& startInd,
+                                          const Handle(TColStd_HArray1OfInteger)& endInd)
 {
   if (!notes.IsNull())
-    if (notes->Lower() != 1 ||
-	(startInd->Lower() != 1 || notes->Length() != startInd->Length()) || 
-	(endInd->Lower()   != 1 || notes->Length() != endInd->Length())   )
+    if (notes->Lower() != 1 || (startInd->Lower() != 1 || notes->Length() != startInd->Length())
+        || (endInd->Lower() != 1 || notes->Length() != endInd->Length()))
       throw Standard_DimensionMismatch("IGESDimen_DimensionDisplayData : Init");
 
   theNbPropertyValues     = numProps;
@@ -60,89 +61,85 @@ IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData ()    {  }
   theSupplementaryNotes   = notes;
   theStartIndex           = startInd;
   theEndIndex             = endInd;
-  InitTypeAndForm(406,30);
+  InitTypeAndForm(406, 30);
 }
 
-
-    Standard_Integer  IGESDimen_DimensionDisplayData::NbPropertyValues () const
+Standard_Integer IGESDimen_DimensionDisplayData::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::DimensionType () const
+Standard_Integer IGESDimen_DimensionDisplayData::DimensionType() const
 {
   return theDimensionType;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::LabelPosition () const
+Standard_Integer IGESDimen_DimensionDisplayData::LabelPosition() const
 {
   return theLabelPosition;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::CharacterSet () const
+Standard_Integer IGESDimen_DimensionDisplayData::CharacterSet() const
 {
   return theCharacterSet;
 }
 
-    Handle(TCollection_HAsciiString)  IGESDimen_DimensionDisplayData::LString () const
+Handle(TCollection_HAsciiString) IGESDimen_DimensionDisplayData::LString() const
 {
   return theLString;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::DecimalSymbol () const
+Standard_Integer IGESDimen_DimensionDisplayData::DecimalSymbol() const
 {
   return theDecimalSymbol;
 }
 
-    Standard_Real  IGESDimen_DimensionDisplayData::WitnessLineAngle () const
+Standard_Real IGESDimen_DimensionDisplayData::WitnessLineAngle() const
 {
   return theWitnessLineAngle;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::TextAlignment () const
+Standard_Integer IGESDimen_DimensionDisplayData::TextAlignment() const
 {
   return theTextAlignment;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::TextLevel () const
+Standard_Integer IGESDimen_DimensionDisplayData::TextLevel() const
 {
   return theTextLevel;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::TextPlacement () const
+Standard_Integer IGESDimen_DimensionDisplayData::TextPlacement() const
 {
   return theTextPlacement;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::ArrowHeadOrientation () const
+Standard_Integer IGESDimen_DimensionDisplayData::ArrowHeadOrientation() const
 {
   return theArrowHeadOrientation;
 }
 
-    Standard_Real  IGESDimen_DimensionDisplayData::InitialValue () const
+Standard_Real IGESDimen_DimensionDisplayData::InitialValue() const
 {
   return theInitialValue;
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::NbSupplementaryNotes () const
+Standard_Integer IGESDimen_DimensionDisplayData::NbSupplementaryNotes() const
 {
   return (theSupplementaryNotes.IsNull() ? 0 : theSupplementaryNotes->Length());
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::SupplementaryNote
-  (const Standard_Integer num) const
+Standard_Integer IGESDimen_DimensionDisplayData::SupplementaryNote(const Standard_Integer num) const
 {
   return theSupplementaryNotes->Value(num);
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::StartIndex
-  (const Standard_Integer num) const
+Standard_Integer IGESDimen_DimensionDisplayData::StartIndex(const Standard_Integer num) const
 {
   return theStartIndex->Value(num);
 }
 
-    Standard_Integer  IGESDimen_DimensionDisplayData::EndIndex
-  (const Standard_Integer num) const
+Standard_Integer IGESDimen_DimensionDisplayData::EndIndex(const Standard_Integer num) const
 {
   return theEndIndex->Value(num);
 }

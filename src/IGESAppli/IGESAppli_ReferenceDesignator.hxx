@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESAppli_ReferenceDesignator;
 DEFINE_STANDARD_HANDLE(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
@@ -36,46 +35,28 @@ class IGESAppli_ReferenceDesignator : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_ReferenceDesignator();
-  
+
   //! This method is used to set the fields of the class
   //! ReferenceDesignator
   //! - nbPropVal : Number of property values = 1
   //! - aText     : Reference designator text
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Handle(TCollection_HAsciiString)& aText);
-  
+  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
+                            const Handle(TCollection_HAsciiString)& aText);
+
   //! returns the number of property values
   //! is always 1
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the Reference designator text
   Standard_EXPORT Handle(TCollection_HAsciiString) RefDesignatorText() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbPropertyValues;
+  Standard_Integer                 theNbPropertyValues;
   Handle(TCollection_HAsciiString) theRefDesigText;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_ReferenceDesignator_HeaderFile

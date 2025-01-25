@@ -26,37 +26,29 @@ class gp_Pnt;
 class IMeshData_Curve : public IMeshData_ParametersList
 {
 public:
-
   //! Destructor.
-  virtual ~IMeshData_Curve()
-  {
-  }
+  virtual ~IMeshData_Curve() {}
 
   //! Inserts new discretization point at the given position.
-  Standard_EXPORT virtual void InsertPoint(
-    const Standard_Integer thePosition,
-    const gp_Pnt&          thePoint,
-    const Standard_Real    theParamOnPCurve) = 0;
+  Standard_EXPORT virtual void InsertPoint(const Standard_Integer thePosition,
+                                           const gp_Pnt&          thePoint,
+                                           const Standard_Real    theParamOnPCurve) = 0;
 
   //! Adds new discretization point to curve.
-  Standard_EXPORT virtual void AddPoint (
-    const gp_Pnt&       thePoint,
-    const Standard_Real theParamOnCurve) = 0;
+  Standard_EXPORT virtual void AddPoint(const gp_Pnt&       thePoint,
+                                        const Standard_Real theParamOnCurve) = 0;
 
   //! Returns discretization point with the given index.
-  Standard_EXPORT virtual gp_Pnt& GetPoint (const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual gp_Pnt& GetPoint(const Standard_Integer theIndex) = 0;
 
   //! Removes point with the given index.
-  Standard_EXPORT virtual void RemovePoint (const Standard_Integer theIndex) = 0;
+  Standard_EXPORT virtual void RemovePoint(const Standard_Integer theIndex) = 0;
 
   DEFINE_STANDARD_RTTIEXT(IMeshData_Curve, IMeshData_ParametersList)
 
 protected:
-
   //! Constructor.
-  IMeshData_Curve()
-  {
-  }
+  IMeshData_Curve() {}
 };
 
 #endif

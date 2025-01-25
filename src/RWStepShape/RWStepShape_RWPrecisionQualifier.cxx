@@ -11,38 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepShape_RWPrecisionQualifier.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_PrecisionQualifier.hxx>
 
-RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier () {}
+RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier() {}
 
-void RWStepShape_RWPrecisionQualifier::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepShape_PrecisionQualifier)& ent) const
+void RWStepShape_RWPrecisionQualifier::ReadStep(
+  const Handle(StepData_StepReaderData)&      data,
+  const Standard_Integer                      num,
+  Handle(Interface_Check)&                    ach,
+  const Handle(StepShape_PrecisionQualifier)& ent) const
 {
-	// --- Number of Parameter Control ---
+  // --- Number of Parameter Control ---
 
-	if (!data->CheckNbParams(num,1,ach,"precision_qualifier")) return;
+  if (!data->CheckNbParams(num, 1, ach, "precision_qualifier"))
+    return;
 
-	// --- own field : precision_value ---
+  // --- own field : precision_value ---
 
-	Standard_Integer PV;
-	data->ReadInteger (num,1,"precision_value",ach,PV);
+  Standard_Integer PV;
+  data->ReadInteger(num, 1, "precision_value", ach, PV);
 
-	//--- Initialisation of the read entity ---
+  //--- Initialisation of the read entity ---
 
-	ent->Init(PV);
+  ent->Init(PV);
 }
 
-
-void RWStepShape_RWPrecisionQualifier::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepShape_PrecisionQualifier)& ent) const
+void RWStepShape_RWPrecisionQualifier::WriteStep(
+  StepData_StepWriter&                        SW,
+  const Handle(StepShape_PrecisionQualifier)& ent) const
 {
-  SW.Send (ent->PrecisionValue());
+  SW.Send(ent->PrecisionValue());
 }

@@ -12,20 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <math_MultipleVarFunction.hxx>
 
 //=======================================================================
-//function : ~math_MultipleVarFunction
-//purpose  : Destructor
+// function : ~math_MultipleVarFunction
+// purpose  : Destructor
 //=======================================================================
-math_MultipleVarFunction::~math_MultipleVarFunction()
-{
-}
+math_MultipleVarFunction::~math_MultipleVarFunction() {}
 
 //=======================================================================
-//function : GetStateNumber
-//purpose  : 
+// function : GetStateNumber
+// purpose  :
 //=======================================================================
 Standard_Integer math_MultipleVarFunction::GetStateNumber()
 {

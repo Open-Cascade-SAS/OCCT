@@ -24,50 +24,31 @@
 class StepBasic_Organization;
 class StepBasic_OrganizationRole;
 
-
 class StepBasic_OrganizationAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_OrganizationAssignment, Standard_Transient)
-
 
 class StepBasic_OrganizationAssignment : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Init(const Handle(StepBasic_Organization)&     aAssignedOrganization,
+                            const Handle(StepBasic_OrganizationRole)& aRole);
 
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole);
-  
-  Standard_EXPORT void SetAssignedOrganization (const Handle(StepBasic_Organization)& aAssignedOrganization);
-  
+  Standard_EXPORT void SetAssignedOrganization(
+    const Handle(StepBasic_Organization)& aAssignedOrganization);
+
   Standard_EXPORT Handle(StepBasic_Organization) AssignedOrganization() const;
-  
-  Standard_EXPORT void SetRole (const Handle(StepBasic_OrganizationRole)& aRole);
-  
+
+  Standard_EXPORT void SetRole(const Handle(StepBasic_OrganizationRole)& aRole);
+
   Standard_EXPORT Handle(StepBasic_OrganizationRole) Role() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepBasic_Organization) assignedOrganization;
+  Handle(StepBasic_Organization)     assignedOrganization;
   Handle(StepBasic_OrganizationRole) role;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_OrganizationAssignment_HeaderFile

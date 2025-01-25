@@ -17,13 +17,12 @@
 #ifndef _Extrema_ElementType_HeaderFile
 #define _Extrema_ElementType_HeaderFile
 
-
 enum Extrema_ElementType
 {
-Extrema_Node,
-Extrema_UIsoEdge,
-Extrema_VIsoEdge,
-Extrema_Face
+  Extrema_Node,
+  Extrema_UIsoEdge,
+  Extrema_VIsoEdge,
+  Extrema_Face
 };
 
 #endif // _Extrema_ElementType_HeaderFile

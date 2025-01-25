@@ -28,15 +28,15 @@ Standard_Integer Express_Item::myIndex = -1;
 // purpose  :
 //=======================================================================
 
-Express_Item::Express_Item (const Standard_CString theName)
+Express_Item::Express_Item(const Standard_CString theName)
 {
-  myName = new TCollection_HAsciiString (theName);
-  myGenMode = GM_Undefined;
-  myShortName = new TCollection_HAsciiString;
-  myCategory = new TCollection_HAsciiString;
-  myhasCheck = Standard_False;
+  myName          = new TCollection_HAsciiString(theName);
+  myGenMode       = GM_Undefined;
+  myShortName     = new TCollection_HAsciiString;
+  myCategory      = new TCollection_HAsciiString;
+  myhasCheck      = Standard_False;
   myhasFillShared = Standard_False;
-  myLoopFlag = Standard_False;
+  myLoopFlag      = Standard_False;
 }
 
 //=======================================================================
@@ -44,15 +44,15 @@ Express_Item::Express_Item (const Standard_CString theName)
 // purpose  :
 //=======================================================================
 
-Express_Item::Express_Item (const Handle(TCollection_HAsciiString)& theName)
+Express_Item::Express_Item(const Handle(TCollection_HAsciiString)& theName)
 {
-  myName = theName;
-  myGenMode = GM_Undefined;
-  myShortName = new TCollection_HAsciiString;
-  myCategory = new TCollection_HAsciiString;
-  myhasCheck = Standard_False;
+  myName          = theName;
+  myGenMode       = GM_Undefined;
+  myShortName     = new TCollection_HAsciiString;
+  myCategory      = new TCollection_HAsciiString;
+  myhasCheck      = Standard_False;
   myhasFillShared = Standard_False;
-  myLoopFlag = Standard_False;
+  myLoopFlag      = Standard_False;
 }
 
 //=======================================================================
@@ -93,7 +93,7 @@ const TCollection_AsciiString Express_Item::CPPName() const
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetPackageName (const TCollection_AsciiString& thePack)
+void Express_Item::SetPackageName(const TCollection_AsciiString& thePack)
 {
   myPack = new TCollection_HAsciiString(thePack);
 }
@@ -107,7 +107,8 @@ const TCollection_AsciiString& Express_Item::GetPackageName() const
 {
   if (myPack.IsNull())
   {
-    Message::SendWarning() << "Warning: item " << Name() << " still has no package assigned, used " << GetUnknownPackageName();
+    Message::SendWarning() << "Warning: item " << Name() << " still has no package assigned, used "
+                           << GetUnknownPackageName();
     return GetUnknownPackageName();
   }
   return myPack->String();
@@ -150,7 +151,7 @@ Express_Item::GenMode Express_Item::GetGenMode() const
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetGenMode (const Express_Item::GenMode theGenMode)
+void Express_Item::SetGenMode(const Express_Item::GenMode theGenMode)
 {
   myGenMode = theGenMode;
 }
@@ -186,7 +187,7 @@ Standard_Boolean Express_Item::Generate()
     std::cout << "  ";
   }
   // sets the mode to generated before "GenerateClass" function to avoid looping
-  SetGenMode (GM_Generated);
+  SetGenMode(GM_Generated);
   Standard_Boolean aRes = GenerateClass();
   aShift--;
 
@@ -205,7 +206,7 @@ Standard_Boolean Express_Item::Use()
   {
     return Standard_False;
   }
-  SetGenMode (GM_GenByAlgo);
+  SetGenMode(GM_GenByAlgo);
 
   return Generate();
 }
@@ -215,7 +216,8 @@ Standard_Boolean Express_Item::Use()
 // purpose  :
 //=======================================================================
 
-void Express_Item::Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack)
+void Express_Item::Use2(const TCollection_AsciiString& theRefName,
+                        const TCollection_AsciiString& theRefPack)
 {
   if (myLoopFlag)
   {
@@ -228,8 +230,9 @@ void Express_Item::Use2 (const TCollection_AsciiString& theRefName, const TColle
   // issue a warning message if item does not have package assigned
   if (!IsPackageNameSet())
   {
-    Message::SendWarning() << "Warning: item " << Name() << " has no package assigned but used by " << theRefName << ", setting " << theRefPack;
-    SetPackageName (theRefPack);
+    Message::SendWarning() << "Warning: item " << Name() << " has no package assigned but used by "
+                           << theRefName << ", setting " << theRefPack;
+    SetPackageName(theRefPack);
   }
 
   PropagateUse();
@@ -240,7 +243,7 @@ void Express_Item::Use2 (const TCollection_AsciiString& theRefName, const TColle
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetCategory (const Handle(TCollection_HAsciiString)& theCateg)
+void Express_Item::SetCategory(const Handle(TCollection_HAsciiString)& theCateg)
 {
   myCategory = theCateg;
 }
@@ -260,7 +263,7 @@ const TCollection_AsciiString& Express_Item::Category() const
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetShortName (const Handle(TCollection_HAsciiString)& theShName)
+void Express_Item::SetShortName(const Handle(TCollection_HAsciiString)& theShName)
 {
   myShortName = theShName;
 }
@@ -274,12 +277,13 @@ Handle(TCollection_HAsciiString) Express_Item::ShortName() const
 {
   return myShortName;
 }
+
 //=======================================================================
 // function : SetCheckFlag
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetCheckFlag (const Standard_Boolean theCheckFlag)
+void Express_Item::SetCheckFlag(const Standard_Boolean theCheckFlag)
 {
   myhasCheck = theCheckFlag;
 }
@@ -299,7 +303,7 @@ Standard_Boolean Express_Item::CheckFlag() const
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetFillSharedFlag (const Standard_Boolean theFillSharedFlag)
+void Express_Item::SetFillSharedFlag(const Standard_Boolean theFillSharedFlag)
 {
   myhasFillShared = theFillSharedFlag;
 }
@@ -319,7 +323,7 @@ Standard_Boolean Express_Item::FillSharedFlag() const
 // purpose  :
 //=======================================================================
 
-void Express_Item::SetIndex (const Standard_Integer theIndex)
+void Express_Item::SetIndex(const Standard_Integer theIndex)
 {
   myIndex = theIndex;
 }

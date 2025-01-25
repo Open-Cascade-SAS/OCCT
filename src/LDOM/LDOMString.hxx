@@ -29,40 +29,58 @@ class LDOM_MemManager;
 
 class LDOMString : public LDOMBasicString
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOMString                    () : myPtrDoc (NULL) {}
-  //    Empty constructor
-
-  LDOMString                    (const LDOMString& anOther)
-    : LDOMBasicString (anOther), myPtrDoc (anOther.myPtrDoc) {}
-  //    Copy constructor
-
-  LDOMString                    (const Standard_Integer aValue)
-    : LDOMBasicString (aValue), myPtrDoc (NULL) {}
-  //    Integer => LDOMString
-
-//  Standard_EXPORT LDOMString (const Standard_Real aValue);
-
-  LDOMString                    (const char * aValue)
-    : LDOMBasicString (aValue), myPtrDoc (NULL) {}
-  //    Create LDOM_AsciiFree
-
-  const LDOM_MemManager&       getOwnerDocument  () const
-                        { return * myPtrDoc; }
-
-  LDOMString&                   operator =        (const LDOM_NullPtr * aNull)
-                        { LDOMBasicString::operator= (aNull); return *this; }
-
-  LDOMString&                   operator =        (const LDOMString& anOther)
+  LDOMString()
+      : myPtrDoc(NULL)
   {
-    myPtrDoc = anOther.myPtrDoc;
-    LDOMBasicString::operator= (anOther);
-    return * this;
   }
 
- private:
+  //    Empty constructor
+
+  LDOMString(const LDOMString& anOther)
+      : LDOMBasicString(anOther),
+        myPtrDoc(anOther.myPtrDoc)
+  {
+  }
+
+  //    Copy constructor
+
+  LDOMString(const Standard_Integer aValue)
+      : LDOMBasicString(aValue),
+        myPtrDoc(NULL)
+  {
+  }
+
+  //    Integer => LDOMString
+
+  //  Standard_EXPORT LDOMString (const Standard_Real aValue);
+
+  LDOMString(const char* aValue)
+      : LDOMBasicString(aValue),
+        myPtrDoc(NULL)
+  {
+  }
+
+  //    Create LDOM_AsciiFree
+
+  const LDOM_MemManager& getOwnerDocument() const { return *myPtrDoc; }
+
+  LDOMString& operator=(const LDOM_NullPtr* aNull)
+  {
+    LDOMBasicString::operator=(aNull);
+    return *this;
+  }
+
+  LDOMString& operator=(const LDOMString& anOther)
+  {
+    myPtrDoc = anOther.myPtrDoc;
+    LDOMBasicString::operator=(anOther);
+    return *this;
+  }
+
+private:
   friend class LDOM_Document;
   friend class LDOM_Node;
   friend class LDOM_Element;
@@ -70,22 +88,22 @@ class LDOMString : public LDOMBasicString
   friend class LDOM_BasicAttribute;
   friend class LDOM_BasicText;
 
-  static LDOMString CreateDirectString
-                                (const char             * aValue,
-                                 const LDOM_MemManager& aDoc);
+  static LDOMString CreateDirectString(const char* aValue, const LDOM_MemManager& aDoc);
 
-  LDOMString                    (const LDOMBasicString& anOther,
-                                 const LDOM_MemManager& aDoc)
-    : LDOMBasicString (anOther), myPtrDoc (&aDoc) {}
+  LDOMString(const LDOMBasicString& anOther, const LDOM_MemManager& aDoc)
+      : LDOMBasicString(anOther),
+        myPtrDoc(&aDoc)
+  {
+  }
+
   //    Plain copy from LDOMBasicString
 
-  LDOMString                    (const LDOMBasicString&         anOther,
-                                 const Handle(LDOM_MemManager)& aDoc);
+  LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemManager)& aDoc);
   //    Copy from another string with allocation in the document space
 
- private:
+private:
   // ---------- PRIVATE FIELDS -------------
-  const LDOM_MemManager * myPtrDoc;
+  const LDOM_MemManager* myPtrDoc;
 };
 
 #endif

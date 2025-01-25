@@ -25,7 +25,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 
-
 class Units_UnitsLexicon;
 DEFINE_STANDARD_HANDLE(Units_UnitsLexicon, Units_Lexicon)
 
@@ -37,37 +36,23 @@ class Units_UnitsLexicon : public Units_Lexicon
 {
 
 public:
-
   //! Returns an empty instance of UnitsLexicon
   Standard_EXPORT Units_UnitsLexicon();
-  
+
   //! Reads  the files  <afilename1>  and  <afilename2>   to
   //! create     a   sequence     of    tokens   stored   in
   //! <thesequenceoftokens>.
-  Standard_EXPORT void Creates (const Standard_Boolean amode = Standard_True);
+  Standard_EXPORT void Creates(const Standard_Boolean amode = Standard_True);
 
   //! Useful for debugging.
-    virtual void Dump() const Standard_OVERRIDE;
+  virtual void Dump() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon,Units_Lexicon)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
 
 protected:
-
-
-
 private:
-
-
 };
 
-
 #include <Units_UnitsLexicon.lxx>
-
-
-
-
 
 #endif // _Units_UnitsLexicon_HeaderFile

@@ -26,7 +26,6 @@ class TDF_Label;
 class Quantity_Color;
 class TDF_RelocationTable;
 
-
 class XCAFDoc_Color;
 DEFINE_STANDARD_HANDLE(XCAFDoc_Color, TDF_Attribute)
 
@@ -35,73 +34,65 @@ class XCAFDoc_Color : public TDF_Attribute
 {
 
 public:
-
-  
   Standard_EXPORT XCAFDoc_Color();
-  
-  Standard_EXPORT static const Standard_GUID& GetID();
-  
-  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_Color& C);
 
-  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_ColorRGBA& C);
-  
-  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_NameOfColor C);
-  
+  Standard_EXPORT static const Standard_GUID& GetID();
+
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set(const TDF_Label& label, const Quantity_Color& C);
+
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set(const TDF_Label&          label,
+                                                   const Quantity_ColorRGBA& C);
+
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set(const TDF_Label&           label,
+                                                   const Quantity_NameOfColor C);
+
   //! Find, or create, a Color attribute and set it's value
   //! the Color attribute is returned.
-  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Standard_Real R, const Standard_Real G, const Standard_Real B, const Standard_Real alpha = 1.0);
-  
-  Standard_EXPORT void Set (const Quantity_Color& C);
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set(const TDF_Label&    label,
+                                                   const Standard_Real R,
+                                                   const Standard_Real G,
+                                                   const Standard_Real B,
+                                                   const Standard_Real alpha = 1.0);
 
-  Standard_EXPORT void Set (const Quantity_ColorRGBA& C);
-  
-  Standard_EXPORT void Set (const Quantity_NameOfColor C);
-  
-  Standard_EXPORT void Set (const Standard_Real R, const Standard_Real G, const Standard_Real B, const Standard_Real alpha = 1.0);
-  
+  Standard_EXPORT void Set(const Quantity_Color& C);
+
+  Standard_EXPORT void Set(const Quantity_ColorRGBA& C);
+
+  Standard_EXPORT void Set(const Quantity_NameOfColor C);
+
+  Standard_EXPORT void Set(const Standard_Real R,
+                           const Standard_Real G,
+                           const Standard_Real B,
+                           const Standard_Real alpha = 1.0);
+
   Standard_EXPORT const Quantity_Color& GetColor() const;
 
   Standard_EXPORT const Quantity_ColorRGBA& GetColorRGBA() const;
-  
+
   Standard_EXPORT Quantity_NameOfColor GetNOC() const;
-  
-  Standard_EXPORT void GetRGB (Standard_Real& R, Standard_Real& G, Standard_Real& B) const;
+
+  Standard_EXPORT void GetRGB(Standard_Real& R, Standard_Real& G, Standard_Real& B) const;
 
   Standard_EXPORT Standard_ShortReal GetAlpha() const;
-  
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Color,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Color, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
-
   Quantity_ColorRGBA myColor;
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFDoc_Color_HeaderFile

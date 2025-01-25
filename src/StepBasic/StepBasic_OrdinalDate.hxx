@@ -23,48 +23,28 @@
 #include <Standard_Integer.hxx>
 #include <StepBasic_Date.hxx>
 
-
 class StepBasic_OrdinalDate;
 DEFINE_STANDARD_HANDLE(StepBasic_OrdinalDate, StepBasic_Date)
-
 
 class StepBasic_OrdinalDate : public StepBasic_Date
 {
 
 public:
-
-  
   //! Returns a OrdinalDate
   Standard_EXPORT StepBasic_OrdinalDate();
-  
-  Standard_EXPORT void Init (const Standard_Integer aYearComponent, const Standard_Integer aDayComponent);
-  
-  Standard_EXPORT void SetDayComponent (const Standard_Integer aDayComponent);
-  
+
+  Standard_EXPORT void Init(const Standard_Integer aYearComponent,
+                            const Standard_Integer aDayComponent);
+
+  Standard_EXPORT void SetDayComponent(const Standard_Integer aDayComponent);
+
   Standard_EXPORT Standard_Integer DayComponent() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_OrdinalDate,StepBasic_Date)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrdinalDate, StepBasic_Date)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer dayComponent;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_OrdinalDate_HeaderFile

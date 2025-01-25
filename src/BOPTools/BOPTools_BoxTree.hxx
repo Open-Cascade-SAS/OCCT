@@ -23,23 +23,25 @@
 //! Redefines BoxSet to use the Linear builder by default
 
 template <class NumType, int Dimension, class DataType>
-class BOPTools_BoxSet : public BVH_BoxSet <NumType, Dimension, DataType>
+class BOPTools_BoxSet : public BVH_BoxSet<NumType, Dimension, DataType>
 {
 public: //! @name Constructors
   //! Empty constructor for use the default BVH_Builder
-  BOPTools_BoxSet (const opencascade::handle <BVH_Builder <NumType, Dimension> >& theBuilder = NULL)
-    : BVH_BoxSet <NumType, Dimension, DataType> (theBuilder.IsNull() ? new BVH_LinearBuilder<NumType, Dimension>() : theBuilder)
-  {}
+  BOPTools_BoxSet(const opencascade::handle<BVH_Builder<NumType, Dimension>>& theBuilder = NULL)
+      : BVH_BoxSet<NumType, Dimension, DataType>(
+          theBuilder.IsNull() ? new BVH_LinearBuilder<NumType, Dimension>() : theBuilder)
+  {
+  }
 };
 
 //! 2D definitions
-typedef BOPTools_BoxSet <Standard_Real, 2, Standard_Integer> BOPTools_Box2dTree;
-typedef BOPTools_BoxSelector<2> BOPTools_Box2dTreeSelector;
-typedef BOPTools_PairSelector<2> BOPTools_Box2dPairSelector;
+typedef BOPTools_BoxSet<Standard_Real, 2, Standard_Integer> BOPTools_Box2dTree;
+typedef BOPTools_BoxSelector<2>                             BOPTools_Box2dTreeSelector;
+typedef BOPTools_PairSelector<2>                            BOPTools_Box2dPairSelector;
 
 //! 3D definitions
-typedef BOPTools_BoxSet <Standard_Real, 3, Standard_Integer> BOPTools_BoxTree;
-typedef BOPTools_BoxSelector<3> BOPTools_BoxTreeSelector;
-typedef BOPTools_PairSelector<3> BOPTools_BoxPairSelector;
+typedef BOPTools_BoxSet<Standard_Real, 3, Standard_Integer> BOPTools_BoxTree;
+typedef BOPTools_BoxSelector<3>                             BOPTools_BoxTreeSelector;
+typedef BOPTools_PairSelector<3>                            BOPTools_BoxPairSelector;
 
 #endif

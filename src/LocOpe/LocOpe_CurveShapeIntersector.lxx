@@ -17,74 +17,71 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : LocOpe_CurveShapeIntersector
-//purpose  : 
+// function : LocOpe_CurveShapeIntersector
+// purpose  :
 //=======================================================================
 
-inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector () :
-   myDone(Standard_False)
-{}
-
-
-//=======================================================================
-//function : LocOpe_CurveShapeIntersector
-//purpose  : 
-//=======================================================================
-
-inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector 
-   (const gp_Ax1& Axis,
-    const TopoDS_Shape& S)
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector()
+    : myDone(Standard_False)
 {
-  Init(Axis,S);
 }
 
-
 //=======================================================================
-//function : LocOpe_CurveShapeIntersector
-//purpose  : 
+// function : LocOpe_CurveShapeIntersector
+// purpose  :
 //=======================================================================
 
-inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector 
-   (const gp_Circ& C,
-    const TopoDS_Shape& S)
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Ax1&       Axis,
+                                                                  const TopoDS_Shape& S)
 {
-  Init(C,S);
+  Init(Axis, S);
 }
 
+//=======================================================================
+// function : LocOpe_CurveShapeIntersector
+// purpose  :
+//=======================================================================
+
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Circ&      C,
+                                                                  const TopoDS_Shape& S)
+{
+  Init(C, S);
+}
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean LocOpe_CurveShapeIntersector::IsDone () const
+inline Standard_Boolean LocOpe_CurveShapeIntersector::IsDone() const
 {
   return myDone;
 }
 
-
 //=======================================================================
-//function : NbPoints
-//purpose  : 
+// function : NbPoints
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer LocOpe_CurveShapeIntersector::NbPoints() const
 {
-  if (!myDone) {throw StdFail_NotDone();}
+  if (!myDone)
+  {
+    throw StdFail_NotDone();
+  }
   return myPoints.Length();
 }
 
 //=======================================================================
-//function : Point
-//purpose  : 
+// function : Point
+// purpose  :
 //=======================================================================
 
-inline const LocOpe_PntFace& LocOpe_CurveShapeIntersector::
-   Point(const Standard_Integer I) const
+inline const LocOpe_PntFace& LocOpe_CurveShapeIntersector::Point(const Standard_Integer I) const
 {
-  if (!myDone) {throw StdFail_NotDone();}
+  if (!myDone)
+  {
+    throw StdFail_NotDone();
+  }
   return myPoints(I);
 }
-    
-
-

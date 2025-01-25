@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool_HeaderFile
 #define BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool_HeaderFile
 

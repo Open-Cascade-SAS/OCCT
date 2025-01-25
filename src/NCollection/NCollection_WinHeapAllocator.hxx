@@ -34,38 +34,36 @@
 class NCollection_WinHeapAllocator : public NCollection_BaseAllocator
 {
 public:
-
   //! Main constructor
-  Standard_EXPORT NCollection_WinHeapAllocator (const size_t theInitSizeBytes = 0x80000);
+  Standard_EXPORT NCollection_WinHeapAllocator(const size_t theInitSizeBytes = 0x80000);
 
   //! Destructor
   Standard_EXPORT virtual ~NCollection_WinHeapAllocator();
 
   //! Allocate memory
-  Standard_EXPORT virtual void* Allocate (const Standard_Size theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void* Allocate(const Standard_Size theSize) Standard_OVERRIDE;
 
   //! Allocate memory
   void* AllocateOptimal(const Standard_Size theSize) Standard_OVERRIDE { return Allocate(theSize); }
 
   //! Release memory
-  Standard_EXPORT virtual void  Free (void* theAddress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Free(void* theAddress) Standard_OVERRIDE;
 
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(NCollection_WinHeapAllocator,NCollection_BaseAllocator)
+  DEFINE_STANDARD_RTTIEXT(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
 
 private:
   //! Copy constructor - prohibited
-  NCollection_WinHeapAllocator (const NCollection_WinHeapAllocator& );
+  NCollection_WinHeapAllocator(const NCollection_WinHeapAllocator&);
 
 private:
-#if(defined(_WIN32) || defined(__WIN32__))
+#if (defined(_WIN32) || defined(__WIN32__))
   void* myHeapH;
 #endif
   Standard_Boolean myToZeroMemory;
-
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (NCollection_WinHeapAllocator, NCollection_BaseAllocator)
+DEFINE_STANDARD_HANDLE(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
 
-#endif //NCollection_WinHeapAllocator_HeaderFile
+#endif // NCollection_WinHeapAllocator_HeaderFile
