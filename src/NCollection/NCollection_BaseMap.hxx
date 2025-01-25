@@ -200,6 +200,12 @@ public:
      NCollection_ListNode** data1,
      NCollection_ListNode** data2);
 
+  //! Reallocate the existed data containers.
+  //! Filling operation must to be done outside.
+  //! Reallocated memory will be cleared (all elements will be set to nullptr).
+  Standard_EXPORT Standard_Boolean Reallocate 
+    (const Standard_Integer  theNbBuckets);
+
   //! Resizable
   Standard_Boolean Resizable() const
   { return IsEmpty() || (mySize > myNbBuckets); }
@@ -242,6 +248,8 @@ public:
   Handle(NCollection_BaseAllocator) myAllocator;
   NCollection_ListNode ** myData1;
   NCollection_ListNode ** myData2;
+
+  void resetSize() { mySize = 0; }
 
  private: 
   // ---------- PRIVATE FIELDS ------------

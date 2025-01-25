@@ -72,12 +72,46 @@ void  NCollection_BaseMap::EndResize
 }
 
 //=======================================================================
+//function : Reallocate
+//purpose  :
+//=======================================================================
+Standard_Boolean NCollection_BaseMap::Reallocate(const Standard_Integer theNbBuckets)
+{
+  // get next size for the buckets array
+  Standard_Integer aNewBuckets = NCollection_Primes::NextPrimeForMap(theNbBuckets);
+  if (aNewBuckets <= myNbBuckets)
+  {
+    if (!myData1)
+    {
+      aNewBuckets = myNbBuckets;
+    }
+    else
+    {
+      return Standard_False;
+    }
+  }
+  myNbBuckets = aNewBuckets;
+  const size_t aSize = myNbBuckets + 1;
+  myData1 = (NCollection_ListNode**)Standard::Reallocate(myData1, aSize * sizeof(NCollection_ListNode*));
+  memset(myData1, 0, aSize * sizeof(NCollection_ListNode*));
+  if (isDouble)
+  {
+    myData2 = (NCollection_ListNode**)Standard::Reallocate(myData2, aSize * sizeof(NCollection_ListNode*));
+    memset(myData2, 0, aSize * sizeof(NCollection_ListNode*));
+  }
+  else
+  {
+    myData2 = nullptr;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
 //function : Destroy
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
-                                    Standard_Boolean doReleaseMemory)
+void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, Standard_Boolean doReleaseMemory)
 {
   if (!IsEmpty()) 
   {
