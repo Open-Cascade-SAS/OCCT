@@ -6,6 +6,9 @@
 name: Build OCCT with vcpkg
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - 'master'
