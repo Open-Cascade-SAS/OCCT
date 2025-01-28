@@ -119,6 +119,12 @@ static TopoDS_Wire WireFromList(TopTools_ListOfShape& Edges)
         break;
       }
     }
+    if (!itl.More())
+    {
+      Message::SendWarning() << "Warning: WireFromList: can't find the next edge. The wire is not "
+                                "complete, some edges are lost.";
+      break;
+    }
     BB.Add(aWire, anEdge);
     Edges.Remove(itl);
   }
