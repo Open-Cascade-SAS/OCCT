@@ -563,6 +563,13 @@ void BRepFill_Filling::Build()
                                                   myTolAng,
                                                   myTolCurv,
                                                   myAnisotropie));
+
+  if (myBoundary.IsEmpty())
+  {
+    myIsDone = Standard_False;
+    return;
+  }
+
   TopoDS_Edge      CurEdge;
   TopoDS_Face      CurFace;
   Standard_Integer i, j;
