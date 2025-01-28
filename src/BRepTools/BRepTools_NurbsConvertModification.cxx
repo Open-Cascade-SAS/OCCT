@@ -515,15 +515,16 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewPolygon(const TopoDS_Edg
     Standard_Real      aFirst, aLast;
     Handle(Geom_Curve) aCurve    = BRep_Tool::Curve(theEdge, aFirst, aLast);
     Handle(Geom_Curve) aNewCurve = newCurve(myMap, theEdge, aFirst, aLast);
-    if (!aCurve.IsNull() && !aNewCurve.IsNull()) // skip processing degenerated edges
+    if (aCurve.IsNull() || aNewCurve.IsNull()) // skip processing degenerated edges
     {
-      TColStd_Array1OfReal& aParams = thePoly->ChangeParameters();
-      for (Standard_Integer anInd = aParams.Lower(); anInd <= aParams.Upper(); ++anInd)
-      {
-        Standard_Real& aParam = aParams(anInd);
-        gp_Pnt         aPoint = aCurve->Value(aParam);
-        newParameter(aPoint, aNewCurve, aFirst, aLast, aTol, aParam);
-      }
+      return Standard_False;
+    }
+    TColStd_Array1OfReal& aParams = thePoly->ChangeParameters();
+    for (Standard_Integer anInd = aParams.Lower(); anInd <= aParams.Upper(); ++anInd)
+    {
+      Standard_Real& aParam = aParams(anInd);
+      gp_Pnt         aPoint = aCurve->Value(aParam);
+      newParameter(aPoint, aNewCurve, aFirst, aLast, aTol, aParam);
     }
   }
   return Standard_True;
