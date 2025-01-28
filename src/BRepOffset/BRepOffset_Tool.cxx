@@ -1899,9 +1899,9 @@ Standard_Boolean BRepOffset_Tool::TryProject(const TopoDS_Face&          F1,
     {
       BRepLib::BuildCurve3d(CurE, BRep_Tool::Tolerance(CurE));
       C = BRep_Tool::Curve(CurE, L, f, l);
-      if (C.IsNull())
+      if (C.IsNull()) // not 3d curve, can be degenerated, need to skip
       {
-        return Standard_False;
+        continue;
       }
     }
     C = new Geom_TrimmedCurve(C, f, l);
