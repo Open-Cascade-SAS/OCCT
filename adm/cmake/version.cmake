@@ -17,7 +17,7 @@
 #    version string with Git revision number in case of development version is not empty.
 #======================================================================
 
-set (OCC_VERSION_MAJOR 7)
-set (OCC_VERSION_MINOR 8)
-set (OCC_VERSION_MAINTENANCE 2)
-set (OCC_VERSION_DEVELOPMENT "dev")
+set (OCC_VERSION_MAJOR 7 )
+set (OCC_VERSION_MINOR 8 )
+set (OCC_VERSION_MAINTENANCE 2 )
+set (OCC_VERSION_DEVELOPMENT "dev" )
