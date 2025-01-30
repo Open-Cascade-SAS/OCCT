@@ -67,8 +67,9 @@ if ["%toCMake%"] == ["1"] (
 set "anOcctVerSuffix="
 set "anOcctVersion=0.0.0"
 set "aGitBranch="
-for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_DEVELOPMENT" "%aCasSrc%\src\Standard\Standard_Version.hxx"') do ( set "anOcctVerSuffix=%%i" )
-for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_COMPLETE" "%aCasSrc%\src\Standard\Standard_Version.hxx"') do ( set "anOcctVersion=%%i" )
+rem Get OCCT version
+call "%~dp0build_common.bat"
+set "aGitBranch="
 for /f %%i in ('git symbolic-ref --short HEAD') do ( set "aGitBranch=%%i" )
 
 for %%s in (%anNdkAbiList%) do (

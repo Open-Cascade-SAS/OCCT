@@ -48,7 +48,7 @@ Consult the file [dox/build/build_occt/building_occt.md](dox/build/build_occt/bu
 
 ## Version
 
-The current version of OCCT can be found in the file [`src/Standard/Standard_Version.hxx`](src/Standard/Standard_Version.hxx).
+The current version of OCCT can be found in the file [`adm/cmake/version.cmake`](adm/cmake/version.cmake).
 
 ## Development
 

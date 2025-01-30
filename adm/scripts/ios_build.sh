@@ -49,8 +49,7 @@ if [[ -f "${aScriptDir}/ios_custom.sh" ]]; then
   source "${aScriptDir}/ios_custom.sh"
 fi
 
-anOcctVerSuffix=`grep -e "#define OCC_VERSION_DEVELOPMENT" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
-anOcctVersion=`grep -e "#define OCC_VERSION_COMPLETE" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
+source "${aScriptDir}/build_common.sh"
 aGitBranch=`git symbolic-ref --short HEAD`
 
 YEAR=$(date +"%Y")

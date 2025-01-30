@@ -142,17 +142,20 @@ proc OCCDoc_GetRelPath {thePathFrom thePathTo} {
   return $thePathTo
 }
 
-# Returns OCCT version string from file Standard_Version.hxx (if available)
+# Returns OCCT version string from version.cmake (if available)
 proc OCCDoc_DetectCasVersion {} {
-  set occt_ver 6.7.0
+  set occt_ver "7.8.0"
   set occt_ver_add ""
-  set filename "[OCCDoc_GetSourceDir]/Standard/Standard_Version.hxx"
+  set filename "[OCCDoc_GetSourceDir]/../adm/cmake/version.cmake"
   if { [file exists $filename] } {
     set fh [open $filename "r"]
     set fh_loaded [read $fh]
     close $fh
-    regexp {[^/]\s*#\s*define\s+OCC_VERSION_COMPLETE\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver
-    regexp {[^/]\s*#\s*define\s+OCC_VERSION_DEVELOPMENT\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver_add
+    regexp {set\s+OCC_VERSION_MAJOR\s+([0-9]+)} $fh_loaded dummy major
+    regexp {set\s+OCC_VERSION_MINOR\s+([0-9]+)} $fh_loaded dummy minor 
+    regexp {set\s+OCC_VERSION_MAINTENANCE\s+([0-9]+)} $fh_loaded dummy maint
+    regexp {set\s+OCC_VERSION_DEVELOPMENT\s+\"([^\"]+)\"} $fh_loaded dummy occt_ver_add
+    set occt_ver "$major.$minor.$maint"
     if { "$occt_ver_add" != "" } { set occt_ver ${occt_ver}.$occt_ver_add }
   }
   return $occt_ver
