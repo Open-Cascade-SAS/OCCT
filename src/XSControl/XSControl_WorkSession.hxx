@@ -196,6 +196,7 @@ private:
   //! Clears binders
   Standard_EXPORT void ClearBinders();
 
+private:
   Handle(XSControl_Controller)     myController;
   Handle(XSControl_TransferReader) myTransferReader;
   Handle(XSControl_TransferWriter) myTransferWriter;
