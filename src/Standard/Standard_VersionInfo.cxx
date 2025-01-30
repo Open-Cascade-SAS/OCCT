@@ -28,7 +28,7 @@ const char* OCCT_DevelopmentVersion()
 
 //=================================================================================================
 
-const double OCCT_Version_Double()
+double OCCT_Version_Double()
 {
   return OCC_VERSION;
 }

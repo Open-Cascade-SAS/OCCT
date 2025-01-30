@@ -28,7 +28,7 @@ extern "C"
   Standard_EXPORT const char* OCCT_DevelopmentVersion();
 
   //! Returns version of Open CASCADE Technology as a double "major.minor"
-  Standard_EXPORT const double OCCT_Version_Double();
+  Standard_EXPORT double OCCT_Version_Double();
 
   //! Returns version of Open CASCADE Technology as a string "major.minor"
   Standard_EXPORT const char* OCCT_Version_String();
