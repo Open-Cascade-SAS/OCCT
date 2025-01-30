@@ -13,6 +13,8 @@
 
 #include <Standard_VersionInfo.hxx>
 
+#include <Standard_Version.hxx>
+
 //=================================================================================================
 
 const char* OCCT_DevelopmentVersion()
