@@ -66,6 +66,9 @@
 #include <TDataStd_Name.hxx>
 #include <AppCont_Function.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
+#include <STEPCAFControl_Writer.hxx>
+#include <STEPCAFControl_Controller.hxx>
+#include <ShapeAnalysis_ShapeContents.hxx>
 
 #include <limits>
 
@@ -4923,6 +4926,155 @@ static Standard_Integer OCC33048(Draw_Interpretor&, Standard_Integer, const char
   return 0;
 }
 
+//=================================================================================================
+
+static Standard_Integer OCC33657_1(Draw_Interpretor&, Standard_Integer, const char**)
+{
+  STEPCAFControl_Controller::Init();
+  // Checking constructors working in parallel.
+  OSD_Parallel::For(0, 1000, [](int) {
+    STEPCAFControl_Reader aReader;
+    aReader.SetColorMode(true);
+    STEPCAFControl_Writer aWriter;
+    aWriter.SetDimTolMode(true);
+  });
+
+  return 0;
+}
+
+//=================================================================================================
+
+static Standard_Integer OCC33657_2(Draw_Interpretor& theDI,
+                                   Standard_Integer  theArgC,
+                                   const char**      theArgV)
+{
+  if (theArgC < 2)
+  {
+    theDI << "Use: " << theArgV[0] << " file\n";
+    return 1;
+  }
+
+  STEPCAFControl_Controller::Init();
+  // Checking readers working in parallel.
+  OSD_Parallel::For(0, 100, [&](int) {
+    STEPControl_Reader aReader;
+    aReader.ReadFile(theArgV[1], DESTEP_Parameters{});
+    aReader.TransferRoots();
+  });
+
+  return 0;
+}
+
+//=================================================================================================
+
+static Standard_Integer OCC33657_3(Draw_Interpretor&, Standard_Integer, const char**)
+{
+  STEPCAFControl_Controller::Init();
+  const TopoDS_Shape aShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  // Checking writers working in parallel.
+  OSD_Parallel::For(0, 100, [&](int) {
+    STEPControl_Writer aWriter;
+    aWriter.Transfer(aShape, STEPControl_StepModelType::STEPControl_AsIs, DESTEP_Parameters{});
+    std::ostringstream aStream;
+    aWriter.WriteStream(aStream);
+  });
+
+  return 0;
+}
+
+//=================================================================================================
+
+static Standard_Integer OCC33657_4(Draw_Interpretor& theDI,
+                                   Standard_Integer  theArgC,
+                                   const char**      theArgV)
+{
+  if (theArgC < 2)
+  {
+    theDI << "Use: " << theArgV[0] << " file\n";
+    return 1;
+  }
+
+  STEPCAFControl_Controller::Init();
+
+  // Acquire shape to write/read.
+  STEPControl_Reader aReader;
+  aReader.ReadFile(theArgV[1], DESTEP_Parameters{});
+  aReader.TransferRoots();
+  TopoDS_Shape aSourceShape = aReader.OneShape();
+
+  // Analyzer to compare the shape with the the same shape after write-read sequence.
+  ShapeAnalysis_ShapeContents aSourceAnalyzer;
+  aSourceAnalyzer.Perform(aSourceShape);
+
+  // Flag is set to false if any error is detected.
+  // Reads and writes to the flag are performed exclusively in relaxed memory order
+  // in order to avoid inter-thread syncronization that can potentially omit some problems.
+  std::atomic_bool anErrorOccurred(false);
+
+  OSD_Parallel::For(0, 100, [&](int) {
+    if (anErrorOccurred.load(std::memory_order_relaxed))
+    {
+      return;
+    }
+
+    // Writing.
+    STEPControl_Writer aWriter;
+    aWriter.Transfer(aSourceShape,
+                     STEPControl_StepModelType::STEPControl_AsIs,
+                     DESTEP_Parameters{});
+    std::stringstream aStream;
+    aWriter.WriteStream(aStream);
+
+    // Reading.
+    STEPControl_Reader aReader;
+    aReader.ReadStream("", DESTEP_Parameters{}, aStream);
+    aReader.TransferRoots();
+    const TopoDS_Shape          aResultShape = aReader.OneShape();
+    ShapeAnalysis_ShapeContents aResultAnalyzer;
+    aResultAnalyzer.Perform(aResultShape);
+
+    // Making sure that shape is unchanged.
+    if (aSourceAnalyzer.NbSolids() != aResultAnalyzer.NbSolids())
+    {
+      theDI << "Error: Wrong number of solids in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbSolids() << "\nActual" << aResultAnalyzer.NbSolids() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+    if (aSourceAnalyzer.NbShells() != aResultAnalyzer.NbShells())
+    {
+      theDI << "Error: Wrong number of shells in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbShells() << "\nActual" << aResultAnalyzer.NbShells() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+    if (aSourceAnalyzer.NbFaces() != aResultAnalyzer.NbFaces())
+    {
+      theDI << "Error: Wrong number of faces in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbFaces() << "\nActual" << aResultAnalyzer.NbFaces() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+    if (aSourceAnalyzer.NbWires() != aResultAnalyzer.NbWires())
+    {
+      theDI << "Error: Wrong number of wires in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbWires() << "\nActual" << aResultAnalyzer.NbWires() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+    if (aSourceAnalyzer.NbEdges() != aResultAnalyzer.NbEdges())
+    {
+      theDI << "Error: Wrong number of edges in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbEdges() << "\nActual" << aResultAnalyzer.NbEdges() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+    if (aSourceAnalyzer.NbVertices() != aResultAnalyzer.NbVertices())
+    {
+      theDI << "Error: Wrong number of vertices in the result shape.\nExpected: "
+            << aSourceAnalyzer.NbVertices() << "\nActual" << aResultAnalyzer.NbVertices() << "\n";
+      anErrorOccurred.store(true, std::memory_order_relaxed);
+    }
+  });
+
+  return anErrorOccurred;
+}
+
 //=======================================================================
 // function : QACheckBends
 // purpose :
@@ -5281,6 +5433,31 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   "increasing tolerances is considered",
                   __FILE__,
                   OCC26441,
+                  group);
+
+  theCommands.Add(
+    "OCC33657_1",
+    "Check performance of STEPCAFControl_Reader/Writer constructors in multithreading environment.",
+    __FILE__,
+    OCC33657_1,
+    group);
+
+  theCommands.Add("OCC33657_2",
+                  "Check performance of STEPControl_Reader in multithreading environment.",
+                  __FILE__,
+                  OCC33657_2,
+                  group);
+
+  theCommands.Add("OCC33657_3",
+                  "Check performance of STEPControl_Writer in multithreading environment.",
+                  __FILE__,
+                  OCC33657_3,
+                  group);
+
+  theCommands.Add("OCC33657_4",
+                  "Check performance of STEPControl_Reader/Writer in multithreading environment.",
+                  __FILE__,
+                  OCC33657_4,
                   group);
 
   return;
