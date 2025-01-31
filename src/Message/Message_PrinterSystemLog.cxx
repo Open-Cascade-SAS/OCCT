@@ -63,16 +63,28 @@ static android_LogPriority getAndroidLogPriority(const Message_Gravity theGravit
   #include <emscripten/emscripten.h>
 
 //! Print message to console.debug().
-EM_JS(void, occJSConsoleDebug, (const char* theStr), { console.debug(UTF8ToString(theStr)); });
+EM_JS(void, occJSConsoleDebug, (const char* theStr), {
+  const aStr = Number(theStr); // bigintToI53Checked(theStr);
+  console.debug(UTF8ToString(aStr));
+});
 
 //! Print message to console.info().
-EM_JS(void, occJSConsoleInfo, (const char* theStr), { console.info(UTF8ToString(theStr)); });
+EM_JS(void, occJSConsoleInfo, (const char* theStr), {
+  const aStr = Number(theStr); // bigintToI53Checked(theStr);
+  console.info(UTF8ToString(aStr));
+});
 
 //! Print message to console.warn().
-EM_JS(void, occJSConsoleWarn, (const char* theStr), { console.warn(UTF8ToString(theStr)); });
+EM_JS(void, occJSConsoleWarn, (const char* theStr), {
+  const aStr = Number(theStr); // bigintToI53Checked(theStr);
+  console.warn(UTF8ToString(aStr));
+});
 
 //! Print message to console.error().
-EM_JS(void, occJSConsoleError, (const char* theStr), { console.error(UTF8ToString(theStr)); });
+EM_JS(void, occJSConsoleError, (const char* theStr), {
+  const aStr = Number(theStr); // bigintToI53Checked(theStr);
+  console.error(UTF8ToString(aStr));
+});
 #else
   #include <syslog.h>
 

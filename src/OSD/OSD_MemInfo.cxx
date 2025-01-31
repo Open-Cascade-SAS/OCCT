@@ -37,7 +37,7 @@
   #include <emscripten.h>
 
 //! Return WebAssembly heap size in bytes.
-EM_JS(size_t, OSD_MemInfo_getModuleHeapLength, (), { return Module.HEAP8.length; });
+EM_JS(double, OSD_MemInfo_getModuleHeapLength, (), { return Module.HEAP8.length; });
 #endif
 
 // =======================================================================
@@ -168,7 +168,7 @@ void OSD_MemInfo::Update()
   }
   if (IsActive(MemVirtual))
   {
-    myCounters[MemVirtual] = OSD_MemInfo_getModuleHeapLength();
+    myCounters[MemVirtual] = (size_t)OSD_MemInfo_getModuleHeapLength();
   }
   #elif (defined(__linux__) || defined(__linux))
   if (IsActive(MemHeapUsage))

@@ -3137,7 +3137,7 @@ bool OpenGl_Context::GetBufferSubData(unsigned int theTarget,
   }
 #ifdef __EMSCRIPTEN__
   EM_ASM_(
-    { Module.ctx.getBufferSubData($0, $1, HEAPU8.subarray($2, $2 + $3)); },
+    { Module.ctx.getBufferSubData($0, Number($1), HEAPU8.subarray(Number($2), Number($2 + $3))); },
     theTarget,
     theOffset,
     theData,

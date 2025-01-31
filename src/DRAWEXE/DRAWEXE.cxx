@@ -125,17 +125,18 @@ private:
 
 //! Print message to Module.printMessage callback.
 EM_JS(void, occJSPrintMessage, (const char* theStr, int theGravity), {
+  const aStr = Number(theStr); // bigintToI53Checked(theStr);
   if (Module.printMessage != undefined && Module.printMessage != null)
   {
-    Module.printMessage(UTF8ToString(theStr), theGravity);
+    Module.printMessage(UTF8ToString(aStr), theGravity);
   }
   else if (Module.print != undefined && Module.print != null)
   {
-    Module.print(UTF8ToString(theStr));
+    Module.print(UTF8ToString(aStr));
   }
   else
   {
-    // console.info (UTF8ToString(theStr));
+    // console.info (UTF8ToString(aStr));
   }
 });
 

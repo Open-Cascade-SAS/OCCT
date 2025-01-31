@@ -134,13 +134,19 @@ typedef Aspect_NeutralWindow ViewerTest_Window;
 #endif
 
 #if defined(__EMSCRIPTEN__)
+  #if defined(_LP64)
+EM_JS(char*, occJSNumberToPtr, (double thePtr), { return BigInt(thePtr); });
+  #else
+EM_JS(char*, occJSNumberToPtr, (double thePtr), { return thePtr; });
+  #endif
+
 //! Return DOM id of default WebGL canvas from Module.canvas.
 EM_JS(char*, occJSModuleCanvasId, (), {
   const aCanvasId = Module.canvas.id;
   const aNbBytes  = lengthBytesUTF8(aCanvasId) + 1;
   const aStrPtr   = Module._malloc(aNbBytes);
   stringToUTF8(aCanvasId, aStrPtr, aNbBytes);
-  return aStrPtr;
+  return occJSNumberToPtr(aStrPtr);
 });
 
 //! Return DOM id of default WebGL canvas from Module.canvas.
