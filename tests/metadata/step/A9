@@ -3,8 +3,11 @@ set filename nist_ftc_08_asme1_ap242-2.stp
 
 set ref_data {
 Property for [0:1:1:1]:
+ProductID : NIST PMI FTC 08 ASME1
+ProductDefinition :  
 Revision : C
 PartNumber : NIST PMI FTC 08 ASME1
 DescriptionRef : NIST PMI test model downloaded from http://go.usa.gov/mGVm
+ProductName : NIST PMI FTC 08 ASME1
 
 }

@@ -55,11 +55,6 @@ void DESTEP_Parameters::InitFromStatic()
   ReadIdeas              = Interface_Static::IVal("read.step.ideas") == 1;
   ReadAllShapes          = Interface_Static::IVal("read.step.all.shapes") == 1;
   ReadRootTransformation = Interface_Static::IVal("read.step.root.transformation") == 1;
-  ReadColor              = Interface_Static::IVal("read.color") == 1;
-  ReadName               = Interface_Static::IVal("read.name") == 1;
-  ReadLayer              = Interface_Static::IVal("read.layer") == 1;
-  ReadProps              = Interface_Static::IVal("read.props") == 1;
-  ReadMetadata           = Interface_Static::IVal("read.metadata") == 1;
 
   WritePrecisionMode =
     (DESTEP_Parameters::WriteMode_PrecisionMode)Interface_Static::IVal("write.precision.mode");

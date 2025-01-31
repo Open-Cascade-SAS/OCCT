@@ -181,6 +181,7 @@ public:
   bool ReadLayer = true; //<! LayerMode is used to indicate read Layers or not
   bool ReadProps = true; //<! PropsMode is used to indicate read Validation properties or not
   bool ReadMetadata = true; //! Parameter for metadata reading
+  bool ReadProductMetadata = false; //! Parameter for product metadata reading
   
   // Write
   WriteMode_PrecisionMode WritePrecisionMode = WriteMode_PrecisionMode_Average; //<! Specifies the mode of writing the resolution value into the STEP file

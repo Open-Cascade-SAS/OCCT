@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug29803.stp
-set ref_size 17032
+set ref_size 17176
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 OUT_MASS : 50.813477444850157
@@ -28,6 +28,7 @@ SS_FLANGE : NO
 MODELED_BY : LSD
 STANDARD_BODY_DIA : Y
 DEEP_HOLE_WEBSITE : 
+ProductID : Tool1
 ITEM_NUM : HOLDER
 LENGTH : STUB
 FINISH : BLACK OXIDE
@@ -36,6 +37,8 @@ SHANK_IM : M
 FLUTE : STRAIGHT
 SHANK : ER
 MATERIAL : STEEL
+ProductName : Tool1
+Description : NOT SPECIFIED
 SERIES : Y
 DEEP_HOLE_NOTES : 
 }

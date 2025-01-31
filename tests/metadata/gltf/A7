@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename sp7_04-do-242.stp
-set ref_size 224779
+set ref_size 224869
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 PRO_MP_ALT_COGX : - >
@@ -224,6 +224,7 @@ PRO_MP_VOLUME : - >
 PRO_MP_ALT_IXX DESIGNATED : NO
 MP_DENSITY ACCESS : Full
 PRO_MP_TRF_21 ACCESS : Locked
+ProductID : NIST_CTC_04_ASME1_RD_CR4050_RA
 PRO_MP_ALT_IYY : - >
 PRO_MP_TRF_41 DESCRIPTION : NULL
 PRO_MP_ALT_MASS DESCRIPTION : NULL

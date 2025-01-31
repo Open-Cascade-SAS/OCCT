@@ -1,9 +1,12 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename nist_ftc_08_asme1_ap242-2.stp
-set ref_size 118200
+set ref_size 118396
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
+ProductID : NIST PMI FTC 08 ASME1
+ProductDefinition :  
 Revision : C
 PartNumber : NIST PMI FTC 08 ASME1
 DescriptionRef : NIST PMI test model downloaded from http://go.usa.gov/mGVm
+ProductName : NIST PMI FTC 08 ASME1
 }

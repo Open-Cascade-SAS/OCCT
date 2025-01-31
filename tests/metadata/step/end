@@ -8,10 +8,12 @@ set todo_mask "puts \"TODO CR00000 ALL: "
 set end_line "\" \n"
 ##################################################################
 
+set conf "provider.STEP.OCC.read.productmetadata : 1"
+
 # Read original file
 if { [string length $filename] > 1} {
   set path_file [locate_data_file $filename]
-  if { [catch { ReadFile D $path_file } catch_result] } {
+  if { [catch { ReadFile D $path_file -conf $conf } catch_result] } {
     set err_msg "Error: file was not read - exception "
     puts $err_msg
     append todo_msg $todo_mask $err_msg $end_line
