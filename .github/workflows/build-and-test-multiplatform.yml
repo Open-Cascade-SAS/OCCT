@@ -596,8 +596,15 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd install/results/windows-x64-retest
+        $failedCount = 0
         if (Test-Path tests.log) {
-          $failedCount = (Select-String -Path tests.log -Pattern "Total cases:.*FAILED" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }) -as [int]
+          $content = Get-Content tests.log
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+            }
+          }
           if ($failedCount -gt 0) {
             Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
             echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
@@ -830,8 +837,15 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd install/results/windows-clang-x64-retest
+        $failedCount = 0
         if (Test-Path tests.log) {
-          $failedCount = (Select-String -Path tests.log -Pattern "Total cases:.*FAILED" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }) -as [int]
+          $content = Get-Content tests.log
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+            }
+          }
           if ($failedCount -gt 0) {
             Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
             echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
