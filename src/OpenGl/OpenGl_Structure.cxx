@@ -407,7 +407,10 @@ void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspa
     const OpenGl_Group* aGroup = aGroupIter.Value();
 
     const gp_Trsf& aTrsf = aGroup->Transformation();
-    applyTransformation(aCtx, aTrsf, Standard_True);
+    if (aTrsf.Form() != gp_Identity)
+    {
+      applyTransformation(aCtx, aTrsf, Standard_True);
+    }
 
     const Handle(Graphic3d_TransformPers)& aTrsfPers = aGroup->TransformPersistence();
     if (!aTrsfPers.IsNull())
@@ -425,7 +428,10 @@ void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspa
       aCtx->ApplyModelViewMatrix();
     }
 
-    applyTransformation(aCtx, aTrsf, Standard_False);
+    if (aTrsf.Form() != gp_Identity)
+    {
+      applyTransformation(aCtx, aTrsf, Standard_False);
+    }
   }
 }
 

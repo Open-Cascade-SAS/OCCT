@@ -646,6 +646,13 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation(const Standard_Integer  t
         mySectorGroup->SetTransformation(aTrsf);
       }
 
+      // Change value of an angle if it should have different sign.
+      if (anAngle * myPrevState < 0 && Abs(anAngle) < M_PI_2)
+      {
+        Standard_Real aSign = myPrevState > 0 ? -1.0 : 1.0;
+        anAngle             = aSign * (M_PI * 2 - anAngle);
+      }
+
       gp_Trsf aNewTrsf;
       aNewTrsf.SetRotation(aCurrAxis, anAngle);
       theTrsf *= aNewTrsf;
@@ -720,14 +727,14 @@ Standard_Boolean AIS_Manipulator::ProcessDragging(const Handle(AIS_InteractiveCo
       return Standard_True;
     }
     case AIS_DragAction_Stop: {
-      // at the end of transformation redisplay for updating sensitive areas
       StopTransform(true);
       if (mySkinMode == ManipulatorSkin_Flat)
       {
         mySectorGroup->Clear();
       }
-      if (aCtx->IsDisplayed(this))
+      else if (aCtx->IsDisplayed(this))
       {
+        // at the end of transformation redisplay for updating sensitive areas
         aCtx->Redisplay(this, true);
       }
       return Standard_True;
@@ -1504,7 +1511,7 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
           // define sensitivity by point
           Handle(Select3D_SensitivePoint) aPnt =
             new Select3D_SensitivePoint(anOwner, myAxes[anIt].ScalerCubePosition());
-          aPnt->SetSensitivityFactor(15);
+          aPnt->SetSensitivityFactor(aHighSensitivity);
           theSelection->Add(aPnt);
         }
         // enlarge sensitivity by triangulation

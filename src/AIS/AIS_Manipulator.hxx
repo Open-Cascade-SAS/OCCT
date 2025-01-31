@@ -688,10 +688,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     void SetIndent(const Standard_ShortReal theValue) { myIndent = theValue; }
 
-    Standard_ShortReal Size() const
-    {
-      return myLength + myBoxSize + myDiskThickness + myIndent * 2.0f;
-    }
+    Standard_ShortReal Size() const { return myInnerRadius + myDiskThickness + myIndent * 2; }
 
     Standard_ShortReal InnerRadius() const { return myInnerRadius + myIndent * 2.0f; }
 
