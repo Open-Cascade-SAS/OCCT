@@ -53,9 +53,8 @@ if not ["%aCmakeBin%"] == [""] ( set "PATH=%aCmakeBin%;%PATH%" )
 
 set "anOcctVerSuffix="
 set "anOcctVersion=0.0.0"
+call "%~dp0build_common.bat"
 set "aGitBranch="
-for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_DEVELOPMENT" "%aCasSrc%\src\Standard\Standard_Version.hxx"') do ( set "anOcctVerSuffix=%%i" )
-for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_COMPLETE" "%aCasSrc%\src\Standard\Standard_Version.hxx"') do ( set "anOcctVersion=%%i" )
 for /f %%i in ('git symbolic-ref --short HEAD') do ( set "aGitBranch=%%i" )
 
 set "aBuildType=Release"

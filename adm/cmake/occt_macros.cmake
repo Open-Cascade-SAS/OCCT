@@ -458,6 +458,18 @@ function (COLLECT_AND_INSTALL_OCCT_HEADER_FILES THE_ROOT_TARGET_OCCT_DIR THE_OCC
   install (FILES ${OCCT_HEADER_FILES_INSTALLATION} DESTINATION "${INSTALL_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}")
 endfunction()
 
+# Macro to configure and install Standard_Version.hxx file
+macro (CONFIGURE_AND_INSTALL_VERSION_HEADER)
+  if (DEFINED BUILD_OCCT_VERSION_EXT AND "${BUILD_OCCT_VERSION_EXT}" STREQUAL "${OCC_VERSION_STRING_EXT}" AND EXISTS "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx")
+    install(FILES "${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" DESTINATION  "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
+  else()
+    set(BUILD_OCCT_VERSION_EXT "${OCC_VERSION_STRING_EXT}" CACHE STRING "OCCT Version string. Used only for caching, can't impact on build. For modification of version, please check adm/cmake/version.cmake" FORCE)
+    mark_as_advanced(BUILD_OCCT_VERSION_EXT)
+    string(TIMESTAMP OCCT_VERSION_DATE "%Y-%m-%d" UTC)
+    OCCT_CONFIGURE_AND_INSTALL ("adm/templates/Standard_Version.hxx.in" "${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" "Standard_Version.hxx" "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
+  endif()
+endmacro()
+
 function(ADD_PRECOMPILED_HEADER INPUT_TARGET PRECOMPILED_HEADER THE_IS_PRIVATE)
   if (NOT BUILD_USE_PCH)
     return()
@@ -550,42 +562,69 @@ function (OCCT_MODULES_AND_TOOLKITS FILE_NAME TOOLKITS_NAME_SUFFIX MODULE_LIST)
   set (${MODULE_LIST} ${${MODULE_LIST}} PARENT_SCOPE)
 endfunction()
 
-# Returns OCC version string from file Standard_Version.hxx (if available)
+
+# Macro to extract git hash from the source directory
+# and store it in the variable GIT_HASH
+# in case if git is not found or error occurs, GIT_HASH is set to empty string
+macro(OCCT_GET_GIT_HASH)
+  set(GIT_HASH "")
+  
+  find_package(Git QUIET)
+  if(GIT_FOUND)
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE GIT_HASH
+      ERROR_VARIABLE GIT_ERROR 
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT GIT_ERROR)
+      # Check if working directory is clean
+      execute_process(
+        COMMAND ${GIT_EXECUTABLE} status --porcelain
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_STATUS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+      if(NOT "${GIT_STATUS}" STREQUAL "")
+        message(DEBUG "Git working directory is not clean. Git hash may be incorrect.")
+      endif()
+    else()
+      set(GIT_HASH "")
+    endif()
+  endif()
+endmacro()
+
+# Returns OCC version string
 function (OCC_VERSION OCC_VERSION_MAJOR OCC_VERSION_MINOR OCC_VERSION_MAINTENANCE OCC_VERSION_DEVELOPMENT OCC_VERSION_STRING_EXT)
 
-  set (OCC_VERSION_MAJOR         7)
-  set (OCC_VERSION_MINOR         0)
-  set (OCC_VERSION_MAINTENANCE   0)
-  set (OCC_VERSION_DEVELOPMENT   dev)
-  set (OCC_VERSION_COMPLETE      "7.0.0")
- 
-  set (STANDARD_VERSION_FILE "${CMAKE_SOURCE_DIR}/src/Standard/Standard_Version.hxx")
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/src/Standard/Standard_Version.hxx")
-    set (STANDARD_VERSION_FILE "${BUILD_PATCH}/src/Standard/Standard_Version.hxx")
-  endif()
+  include (version)
+  set (OCC_VERSION_COMPLETE "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+  set (OCC_VERSION_STRING_EXT "${OCC_VERSION_COMPLETE}")
 
-  if (EXISTS "${STANDARD_VERSION_FILE}")
-    foreach (SOUGHT_VERSION OCC_VERSION_MAJOR OCC_VERSION_MINOR OCC_VERSION_MAINTENANCE)
-      file (STRINGS "${STANDARD_VERSION_FILE}" ${SOUGHT_VERSION} REGEX "^#define ${SOUGHT_VERSION} .*")
-      string (REGEX REPLACE ".*${SOUGHT_VERSION} .*([^ ]+).*" "\\1" ${SOUGHT_VERSION} "${${SOUGHT_VERSION}}" )
-    endforeach()
-    
-    foreach (SOUGHT_VERSION OCC_VERSION_DEVELOPMENT OCC_VERSION_COMPLETE)
-      file (STRINGS "${STANDARD_VERSION_FILE}" ${SOUGHT_VERSION} REGEX "^#define ${SOUGHT_VERSION} .*")
-      string (REGEX REPLACE ".*${SOUGHT_VERSION} .*\"([^ ]+)\".*" "\\1" ${SOUGHT_VERSION} "${${SOUGHT_VERSION}}" )
-    endforeach()
-  endif()
- 
   set (OCC_VERSION_MAJOR "${OCC_VERSION_MAJOR}" PARENT_SCOPE)
   set (OCC_VERSION_MINOR "${OCC_VERSION_MINOR}" PARENT_SCOPE)
   set (OCC_VERSION_MAINTENANCE "${OCC_VERSION_MAINTENANCE}" PARENT_SCOPE)
-  set (OCC_VERSION_DEVELOPMENT "${OCC_VERSION_DEVELOPMENT}" PARENT_SCOPE)
-  
-  if (OCC_VERSION_DEVELOPMENT AND OCC_VERSION_COMPLETE)
-    set (OCC_VERSION_STRING_EXT "${OCC_VERSION_COMPLETE}.${OCC_VERSION_DEVELOPMENT}" PARENT_SCOPE)
-  else()
-    set (OCC_VERSION_STRING_EXT "${OCC_VERSION_COMPLETE}" PARENT_SCOPE)
+  set (OCCT_ON_DEVELOPMENT OFF)
+  if (NOT "${OCC_VERSION_DEVELOPMENT}" STREQUAL "" AND NOT "${OCC_VERSION_DEVELOPMENT}" STREQUAL "OCC_VERSION_DEVELOPMENT")
+    set (OCCT_ON_DEVELOPMENT ON)
   endif()
+  if (${OCCT_ON_DEVELOPMENT})
+    set (OCC_VERSION_DEVELOPMENT "${OCC_VERSION_DEVELOPMENT}" PARENT_SCOPE)
+  endif()
+  
+  set (SET_OCC_VERSION_DEVELOPMENT "")
+  if (${OCCT_ON_DEVELOPMENT})
+    OCCT_GET_GIT_HASH()
+    if (NOT "${GIT_HASH}" STREQUAL "")
+      set (OCC_VERSION_DEVELOPMENT "${OCC_VERSION_DEVELOPMENT}-${GIT_HASH}")
+      set (OCC_VERSION_DEVELOPMENT "${OCC_VERSION_DEVELOPMENT}" PARENT_SCOPE)
+    endif()
+    set (OCC_VERSION_STRING_EXT "${OCC_VERSION_COMPLETE}.${OCC_VERSION_DEVELOPMENT}")
+    set (OCC_VERSION_STRING_EXT "${OCC_VERSION_STRING_EXT}" PARENT_SCOPE)
+    set (SET_OCC_VERSION_DEVELOPMENT "#define OCC_VERSION_DEVELOPMENT \"${OCC_VERSION_DEVELOPMENT}\"")
+  endif()
+  set (OCC_VERSION_STRING_EXT "${OCC_VERSION_STRING_EXT}" PARENT_SCOPE)
 endfunction()
 
 macro (CHECK_PATH_FOR_CONSISTENCY THE_ROOT_PATH_NAME THE_BEING_CHECKED_PATH_NAME THE_VAR_TYPE THE_MESSAGE_OF_BEING_CHECKED_PATH)

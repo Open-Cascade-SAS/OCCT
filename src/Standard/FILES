@@ -93,6 +93,7 @@ Standard_TypeDef.hxx
 Standard_TypeMismatch.hxx
 Standard_Underflow.hxx
 Standard_UUID.hxx
-Standard_Version.hxx
+Standard_VersionInfo.cxx
+Standard_VersionInfo.hxx
 Standard_WarningsDisable.hxx
 Standard_WarningsRestore.hxx

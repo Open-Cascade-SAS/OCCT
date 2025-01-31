@@ -1,6 +1,5 @@
-// Created on: 2002-07-09
-// Created by: Andrey BETENEV
-// Copyright (c) 2002-2014 OPEN CASCADE SAS
+// Created on: @OCCT_VERSION_DATE@
+// Copyright (c) 2002-2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -37,21 +36,21 @@ major, minor, and patch number
 #define _Standard_Version_HeaderFile
 
 // Primary definitions
-#define OCC_VERSION_MAJOR 7
-#define OCC_VERSION_MINOR 8
-#define OCC_VERSION_MAINTENANCE 2
+#define OCC_VERSION_MAJOR @OCC_VERSION_MAJOR@
+#define OCC_VERSION_MINOR @OCC_VERSION_MINOR@
+#define OCC_VERSION_MAINTENANCE @OCC_VERSION_MAINTENANCE@
 
 //! This macro must be commented in official release, and set to non-empty
 //! string in other situations, to identify specifics of the version, e.g.:
 //! - "dev" for development version between releases
 //! - "beta..." or "rc..." for beta releases or release candidates
 //! - "project..." for version containing project-specific fixes
-#define OCC_VERSION_DEVELOPMENT "dev"
+@SET_OCC_VERSION_DEVELOPMENT@
 
 // Derived (manually): version as real and string (major.minor)
-#define OCC_VERSION 7.8
-#define OCC_VERSION_STRING "7.8"
-#define OCC_VERSION_COMPLETE "7.8.2"
+#define OCC_VERSION @OCC_VERSION_MAJOR@.@OCC_VERSION_MINOR@
+#define OCC_VERSION_STRING "@OCC_VERSION_MAJOR@.@OCC_VERSION_MINOR@"
+#define OCC_VERSION_COMPLETE "@OCC_VERSION_MAJOR@.@OCC_VERSION_MINOR@.@OCC_VERSION_MAINTENANCE@"
 
 //! Derived: extended version as string ("major.minor.maintenance.dev")
 #ifdef OCC_VERSION_DEVELOPMENT
