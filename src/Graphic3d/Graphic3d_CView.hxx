@@ -89,6 +89,12 @@ public:
   //! Sets camera used by the view.
   virtual void SetCamera(const Handle(Graphic3d_Camera)& theCamera) { myCamera = theCamera; }
 
+  //! Returns necessity to flip OY in projection matrix
+  virtual Standard_Boolean ToFlipOutput() const { return Standard_False; }
+
+  //! Sets state of flip OY necessity in projection matrix
+  virtual void SetToFlipOutput(const Standard_Boolean) {}
+
 public:
   //! Returns default Shading Model of the view; Graphic3d_TypeOfShadingModel_Phong by default.
   Graphic3d_TypeOfShadingModel ShadingModel() const { return myRenderParams.ShadingModel; }

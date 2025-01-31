@@ -11027,6 +11027,20 @@ static Standard_Integer VRenderParams(Draw_Interpretor& theDI,
         ++anArgIter;
       }
     }
+    else if (aFlag == "-flip")
+    {
+      if (toPrint)
+      {
+        theDI << (aView->View()->ToFlipOutput() ? "on " : "off ");
+        continue;
+      }
+      Standard_Boolean isToFlipOutput = Standard_False;
+      if (anArgIter + 1 < theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], isToFlipOutput))
+      {
+        aView->View()->SetToFlipOutput(isToFlipOutput);
+        ++anArgIter;
+      }
+    }
     else if (aFlag == "-rendscale" || aFlag == "-renderscale" || aFlag == "-renderresolutionscale")
     {
       if (toPrint)
@@ -14396,7 +14410,7 @@ vrenderparams [-raster] [-shadingModel {unlit|facet|gouraud|phong|pbr|pbr_facet}
               [-shadows {on|off}=on] [-shadowMapResolution value=1024] [-shadowMapBias value=0.005]
               [-depthPrePass {on|off}=off] [-alphaToCoverage {on|off}=on]
               [-frustumCulling {on|off|noupdate}=on] [-lineFeather width=1.0]
-              [-sync {default|views}] [-reset]
+              [-sync {default|views}] [-reset] [-flip {on|off}=off]
  -raster          Disables GPU ray-tracing.
  -shadingModel    Controls shading model.
  -msaa            Specifies number of samples for MSAA.
@@ -14418,6 +14432,7 @@ vrenderparams [-raster] [-shadingModel {unlit|facet|gouraud|phong|pbr|pbr_facet}
                    sets state to check structures culled previously.
   -sync            Sets active View parameters as Viewer defaults / to other Views.
   -reset           Resets active View parameters to Viewer defaults.
+  -flip            Flips View Vertically.
 
 Diagnostic output (on-screen overlay):
 vrenderparams [-perfCounters none|fps|cpu|layers|structures|groups|arrays|triangles|points
