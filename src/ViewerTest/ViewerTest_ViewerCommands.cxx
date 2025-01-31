@@ -12083,7 +12083,8 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   NCollection_Sequence<ManipAxisModeOnOff> aParts;
   gp_XYZ aLocation(RealLast(), RealLast(), RealLast()), aVDir, anXDir;
   //
-  bool                              toDetach = false;
+  bool                              toDetach    = false;
+  bool                              toAddObject = false;
   AIS_Manipulator::OptionsForAttach anAttachOptions;
   Handle(AIS_InteractiveObject)     anAttachObject;
   Handle(V3d_View)                  aViewAffinity;
@@ -12273,6 +12274,10 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
       aTrsf.SetRotation(gp_Ax1(gp_Pnt(aRotPnt), gp_Dir(aRotAxis)), aTmpReal);
     }
     //
+    else if (anArg == "-addobject")
+    {
+      toAddObject = true;
+    }
     else if (anArg == "-detach")
     {
       toDetach = true;
@@ -12430,7 +12435,16 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
 
   if (!anAttachObject.IsNull())
   {
-    aManipulator->Attach(anAttachObject, anAttachOptions);
+    if (toAddObject && aManipulator->IsAttached())
+    {
+      Handle(AIS_ManipulatorObjectSequence) anAttachObjects = aManipulator->Objects();
+      anAttachObjects->Append(anAttachObject);
+      aManipulator->Attach(anAttachObjects, anAttachOptions);
+    }
+    else
+    {
+      aManipulator->Attach(anAttachObject, anAttachOptions);
+    }
   }
   if (!aViewAffinity.IsNull())
   {
@@ -14490,6 +14504,7 @@ Options:
  '-enableModes    {0|1}'             enable modes when attaching
  '-view  {active | [name of view]}'  display manipulator only in defined view,
                                      by default it is displayed in all views of the current viewer
+ '-addObject                         allows attach manipulator to multiple objects (replace by default)
  '-detach'                           detach manipulator
  '-startTransform mouse_x mouse_y' - invoke start of transformation
  '-transform      mouse_x mouse_y' - invoke transformation
