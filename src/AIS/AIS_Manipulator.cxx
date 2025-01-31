@@ -1435,7 +1435,7 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
           // define sensitivity by line
           Handle(Select3D_SensitiveSegment) aLine =
             new Select3D_SensitiveSegment(anOwner, gp::Origin(), anAxis.TranslatorTipPosition());
-          aLine->SetSensitivityFactor(15);
+          aLine->SetSensitivityFactor(aHighSensitivity);
           theSelection->Add(aLine);
         }
 
@@ -1469,7 +1469,7 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
           const gp_Circ aGeomCircle(gp_Ax2(gp::Origin(), anAxis.ReferenceAxis().Direction()),
                                     anAxis.RotatorDiskRadius());
           Handle(Select3D_SensitiveCircle) aCircle = new ManipSensCircle(anOwner, aGeomCircle);
-          aCircle->SetSensitivityFactor(15);
+          aCircle->SetSensitivityFactor(aLowSensitivity);
           theSelection->Add(aCircle);
         }
         // enlarge sensitivity by triangulation
@@ -1527,18 +1527,21 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
         if (mySkinMode == ManipulatorSkin_Shaded)
         {
           // define sensitivity by two crossed lines
-          gp_Pnt aP1, aP2;
-          aP1          = myAxes[((anIt + 1) % 3)].TranslatorTipPosition();
-          aP2          = myAxes[((anIt + 2) % 3)].TranslatorTipPosition();
-          gp_XYZ aMidP = (aP1.XYZ() + aP2.XYZ()) / 2.0;
+          Standard_Real aSensitivityOffset =
+            ZoomPersistence() ? aHighSensitivity * (0.5 + M_SQRT2) : 0.0;
+          gp_Pnt aP1 = myAxes[((anIt + 1) % 3)].TranslatorTipPosition().Translated(
+            myAxes[((anIt + 2) % 3)].ReferenceAxis().Direction().XYZ() * aSensitivityOffset);
+          gp_Pnt aP2 = myAxes[((anIt + 2) % 3)].TranslatorTipPosition().Translated(
+            myAxes[((anIt + 1) % 3)].ReferenceAxis().Direction().XYZ() * aSensitivityOffset);
+          gp_XYZ aMidP  = (aP1.XYZ() + aP2.XYZ()) / 2.0;
+          gp_XYZ anOrig = aMidP.Normalized().Multiplied(aSensitivityOffset);
 
-          Handle(Select3D_SensitiveSegment) aLine1 =
-            new Select3D_SensitiveSegment(anOwner, aP1, aP2);
-          aLine1->SetSensitivityFactor(10);
+          Handle(Select3D_SensitiveSegment) aLine1 = new Select3D_SensitiveSegment(anOwner, aP1, aP2);
+          aLine1->SetSensitivityFactor(aLowSensitivity);
           theSelection->Add(aLine1);
           Handle(Select3D_SensitiveSegment) aLine2 =
-            new Select3D_SensitiveSegment(anOwner, gp::Origin(), aMidP);
-          aLine2->SetSensitivityFactor(10);
+            new Select3D_SensitiveSegment(anOwner, anOrig, aMidP);
+          aLine2->SetSensitivityFactor(aLowSensitivity);
           theSelection->Add(aLine2);
         }
 
@@ -1734,14 +1737,12 @@ void AIS_Manipulator::Sector::Init(const Standard_ShortReal theRadius,
     myArray         = new Graphic3d_ArrayOfTriangles(4, 6, Graphic3d_ArrayFlags_VertexNormal);
     myTriangulation = new Poly_Triangulation(4, 2, Standard_False);
 
-    Poly_Array1OfTriangle& aTriangles = myTriangulation->ChangeTriangles();
-    gp_Dir                 aNormal    = gp_Dir(0.0, 0.0, -1.0).Transformed(aTrsf);
-
     const Standard_Real anIndent = theRadius / 3.0;
     gp_Pnt              aV1      = gp_Pnt(anIndent, anIndent, 0.0).Transformed(aTrsf);
     gp_Pnt              aV2      = gp_Pnt(anIndent, anIndent * 2.0, 0.0).Transformed(aTrsf);
     gp_Pnt              aV3      = gp_Pnt(anIndent * 2.0, anIndent * 2.0, 0.0).Transformed(aTrsf);
     gp_Pnt              aV4      = gp_Pnt(anIndent * 2.0, anIndent, 0.0).Transformed(aTrsf);
+    gp_Dir              aNormal  = gp_Dir(0.0, 0.0, -1.0).Transformed(aTrsf);
 
     myArray->AddVertex(aV1, aNormal);
     myArray->AddVertex(aV2, aNormal);
@@ -1754,8 +1755,8 @@ void AIS_Manipulator::Sector::Init(const Standard_ShortReal theRadius,
     myTriangulation->SetNode(2, aV2);
     myTriangulation->SetNode(3, aV3);
     myTriangulation->SetNode(4, aV4);
-    aTriangles.SetValue(1, Poly_Triangle(3, 1, 2));
-    aTriangles.SetValue(2, Poly_Triangle(1, 3, 4));
+    myTriangulation->SetTriangle(1, Poly_Triangle(3, 1, 2));
+    myTriangulation->SetTriangle(2, Poly_Triangle(1, 3, 4));
   }
   else
   {
