@@ -237,9 +237,9 @@ AIS_Manipulator::AIS_Manipulator()
     : myPosition(gp::XOY()),
       myCurrentIndex(-1),
       myCurrentMode(AIS_MM_None),
+      mySkinMode(ManipulatorSkin_Shaded),
       myIsActivationOnDetection(Standard_False),
       myIsZoomPersistentMode(Standard_True),
-      mySkinMode(ManipulatorSkin_Shaded),
       myHasStartedTransformation(Standard_False),
       myStartPosition(gp::XOY()),
       myStartPick(0.0, 0.0, 0.0),
@@ -257,9 +257,9 @@ AIS_Manipulator::AIS_Manipulator(const gp_Ax2& thePosition)
     : myPosition(thePosition),
       myCurrentIndex(-1),
       myCurrentMode(AIS_MM_None),
+      mySkinMode(ManipulatorSkin_Shaded),
       myIsActivationOnDetection(Standard_False),
       myIsZoomPersistentMode(Standard_True),
-      mySkinMode(ManipulatorSkin_Shaded),
       myHasStartedTransformation(Standard_False),
       myStartPosition(gp::XOY()),
       myStartPick(0.0, 0.0, 0.0),
@@ -1536,7 +1536,8 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
           gp_XYZ aMidP  = (aP1.XYZ() + aP2.XYZ()) / 2.0;
           gp_XYZ anOrig = aMidP.Normalized().Multiplied(aSensitivityOffset);
 
-          Handle(Select3D_SensitiveSegment) aLine1 = new Select3D_SensitiveSegment(anOwner, aP1, aP2);
+          Handle(Select3D_SensitiveSegment) aLine1 =
+            new Select3D_SensitiveSegment(anOwner, aP1, aP2);
           aLine1->SetSensitivityFactor(aLowSensitivity);
           theSelection->Add(aLine1);
           Handle(Select3D_SensitiveSegment) aLine2 =
