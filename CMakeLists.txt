@@ -975,6 +975,9 @@ message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header fi
 # collect all the headers to <binary dir>/inc folder
 COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "src" "${INSTALL_DIR_INCLUDE}")
 
+# Create and install Standard_Version.hxx
+CONFIGURE_AND_INSTALL_VERSION_HEADER()
+
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 

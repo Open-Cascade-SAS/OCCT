@@ -458,6 +458,18 @@ function (COLLECT_AND_INSTALL_OCCT_HEADER_FILES THE_ROOT_TARGET_OCCT_DIR THE_OCC
   install (FILES ${OCCT_HEADER_FILES_INSTALLATION} DESTINATION "${INSTALL_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}")
 endfunction()
 
+# Macro to configure and install Standard_Version.hxx file
+macro (CONFIGURE_AND_INSTALL_VERSION_HEADER)
+  if (DEFINED BUILD_OCCT_VERSION_EXT AND "${BUILD_OCCT_VERSION_EXT}" STREQUAL "${OCC_VERSION_STRING_EXT}" AND EXISTS "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx")
+    install(FILES "${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" DESTINATION  "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
+  else()
+    set(BUILD_OCCT_VERSION_EXT "${OCC_VERSION_STRING_EXT}" CACHE STRING "OCCT Version string. Used only for caching, can't impact on build. For modification of version, please check adm/cmake/version.cmake" FORCE)
+    mark_as_advanced(BUILD_OCCT_VERSION_EXT)
+    string(TIMESTAMP OCCT_VERSION_DATE "%Y-%m-%d" UTC)
+    OCCT_CONFIGURE_AND_INSTALL ("adm/templates/Standard_Version.hxx.in" "${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" "Standard_Version.hxx" "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
+  endif()
+endmacro()
+
 function(ADD_PRECOMPILED_HEADER INPUT_TARGET PRECOMPILED_HEADER THE_IS_PRIVATE)
   if (NOT BUILD_USE_PCH)
     return()
@@ -613,14 +625,6 @@ function (OCC_VERSION OCC_VERSION_MAJOR OCC_VERSION_MINOR OCC_VERSION_MAINTENANC
     set (SET_OCC_VERSION_DEVELOPMENT "#define OCC_VERSION_DEVELOPMENT \"${OCC_VERSION_DEVELOPMENT}\"")
   endif()
   set (OCC_VERSION_STRING_EXT "${OCC_VERSION_STRING_EXT}" PARENT_SCOPE)
-  if (DEFINED BUILD_OCCT_VERSION_EXT AND "${BUILD_OCCT_VERSION_EXT}" STREQUAL "${OCC_VERSION_STRING_EXT}" AND EXISTS "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx")
-    install(FILES "${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" DESTINATION  "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
-  else()
-    set(BUILD_OCCT_VERSION_EXT "${OCC_VERSION_STRING_EXT}" CACHE STRING "OCCT Version string. Used only for caching, can't impact on build. For modification of version, please check adm/cmake/version.cmake" FORCE)
-    mark_as_advanced(BUILD_OCCT_VERSION_EXT)
-    string(TIMESTAMP OCCT_VERSION_DATE "%Y-%m-%d" UTC)
-    OCCT_CONFIGURE_AND_INSTALL ("adm/templates/Standard_Version.hxx.in" "${INSTALL_DIR_INCLUDE}/Standard_Version.hxx" "Standard_Version.hxx" "${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}")
-  endif()
 endfunction()
 
 macro (CHECK_PATH_FOR_CONSISTENCY THE_ROOT_PATH_NAME THE_BEING_CHECKED_PATH_NAME THE_VAR_TYPE THE_MESSAGE_OF_BEING_CHECKED_PATH)
