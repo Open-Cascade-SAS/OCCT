@@ -140,7 +140,6 @@ void AIS_Manipulator::init()
   aShadingMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
 
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
   myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
   myDrawer->ShadingAspect()->SetMaterial(aShadingMaterial);
@@ -1137,7 +1136,10 @@ void AIS_Manipulator::DeactivateCurrentMode()
     }
 
     Handle(Prs3d_ShadingAspect) anAspect = new Prs3d_ShadingAspect();
-    anAspect->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+    if (mySkinMode == ManipulatorSkin_Flat)
+    {
+      anAspect->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+    }
     anAspect->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
     anAspect->SetMaterial(myDrawer->ShadingAspect()->Material());
     if (myCurrentMode == AIS_MM_TranslationPlane)
@@ -1236,7 +1238,10 @@ void AIS_Manipulator::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMg
   thePrs->SetMutable(Standard_True);
   Handle(Graphic3d_Group)     aGroup;
   Handle(Prs3d_ShadingAspect) anAspect = new Prs3d_ShadingAspect();
-  anAspect->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  if (mySkinMode == ManipulatorSkin_Flat)
+  {
+    anAspect->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  }
   anAspect->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
   anAspect->SetMaterial(myDrawer->ShadingAspect()->Material());
   anAspect->SetTransparency(myDrawer->ShadingAspect()->Transparency());
