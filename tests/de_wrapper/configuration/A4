@@ -123,6 +123,7 @@ provider.STEP.OCC.read.name :	 1
 provider.STEP.OCC.read.layer :	 1
 provider.STEP.OCC.read.props :	 1
 provider.STEP.OCC.read.metadata :	 1
+provider.STEP.OCC.read.productmetadata :	 0
 provider.STEP.OCC.write.precision.mode :	 0
 provider.STEP.OCC.write.precision.val :	 0.0001
 provider.STEP.OCC.write.assembly :	 2
