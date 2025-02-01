@@ -5,6 +5,9 @@
 name: Build Documentation
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - 'master'
@@ -23,26 +26,26 @@ jobs:
         choco install -y graphviz
         choco install -y doxygen.install
 
-    - name: Build refman documentation
-      run: |
-        set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
-        cd adm
-        bash gendoc -refman
-      shell: cmd
+    # - name: Build refman documentation
+    #   run: |
+    #     set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
+    #     cd adm
+    #     bash gendoc -refman
+    #   shell: cmd
 
-    - name: Upload refman documentation
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: refman-doc
-        path: doc/refman
-        retention-days: 90
+    # - name: Upload refman documentation
+    #   uses: actions/upload-artifact@v4.4.3
+    #   with:
+    #     name: refman-doc
+    #     path: doc/refman
+    #     retention-days: 90
 
-    - name: Upload generation log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: doxygen.log
-        path: doc/html_doxygen_err.log
-        retention-days: 90
+    # - name: Upload generation log
+    #   uses: actions/upload-artifact@v4.4.3
+    #   with:
+    #     name: doxygen.log
+    #     path: doc/html_doxygen_err.log
+    #     retention-days: 90
 
     - name: Build documentation Overview
       run: |
