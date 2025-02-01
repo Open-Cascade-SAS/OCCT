@@ -1507,6 +1507,9 @@ jobs:
     - name: Check for test failures
       id: check_failures
       run: |
+        echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+        echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+        exit 1
         failed_count=0
         if [ -f "install/bin/results/linux-gcc-x64/tests.log" ]; then
           total_line=$(grep "Total cases:" install/bin/results/linux-gcc-x64/tests.log)
@@ -1536,6 +1539,9 @@ jobs:
         cd data
         wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
         tar -xf opencascade-dataset-7.8.0.tar.xz
+        echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+        echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+        exit 1
 
     - name: Download and extract install directory
       if: steps.check_failures.outputs.failed_count > 0
