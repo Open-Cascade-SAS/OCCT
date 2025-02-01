@@ -2280,6 +2280,13 @@ void AIS_ViewController::handleCameraActions(const Handle(AIS_InteractiveContext
     myGL.Orientation.ToFitAll = false;
   }
 
+  AIS_ListOfInteractive anObjects;
+  theCtx->DisplayedObjects(anObjects);
+  for (AIS_ListIteratorOfListOfInteractive anObjIter(anObjects); anObjIter.More(); anObjIter.Next())
+  {
+    anObjIter.Value()->RecomputeTransformation(theView->Camera());
+  }
+
   if (myGL.IsNewGesture)
   {
     if (myAnchorPointPrs1->HasInteractiveContext())

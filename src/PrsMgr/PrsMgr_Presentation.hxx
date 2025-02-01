@@ -100,6 +100,9 @@ protected:
                                           Handle(Graphic3d_Structure)&    theGivenStruct)
     Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+    Standard_OVERRIDE;
+
 protected:
   Handle(PrsMgr_PresentationManager) myPresentationManager;
   PrsMgr_PresentableObject*          myPresentableObject;

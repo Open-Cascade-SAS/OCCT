@@ -18,8 +18,8 @@ vzoom 0.5
 vmanipulator m -attach b
 
 #set mouse coordinates for actions
-set mouse_pick {205 155}
-set mouse_drag1 {205 55}
+set mouse_pick {206 155}
+set mouse_drag1 {206 55}
 set mouse_pick2 {250 10}
 set mouse_pick3 {250 200}
 

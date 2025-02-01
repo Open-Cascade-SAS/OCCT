@@ -406,6 +406,12 @@ void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspa
   {
     const OpenGl_Group* aGroup = aGroupIter.Value();
 
+    const gp_Trsf& aTrsf = aGroup->Transformation();
+    if (aTrsf.Form() != gp_Identity)
+    {
+      applyTransformation(aCtx, aTrsf, Standard_True);
+    }
+
     const Handle(Graphic3d_TransformPers)& aTrsfPers = aGroup->TransformPersistence();
     if (!aTrsfPers.IsNull())
     {
@@ -421,6 +427,35 @@ void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspa
       revertPersistence(aCtx, aTrsfPers, true, anOldCastShadows);
       aCtx->ApplyModelViewMatrix();
     }
+
+    if (aTrsf.Form() != gp_Identity)
+    {
+      applyTransformation(aCtx, aTrsf, Standard_False);
+    }
+  }
+}
+
+// =======================================================================
+// function : applyTransformation
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::applyTransformation(const Handle(OpenGl_Context)& theContext,
+                                           const gp_Trsf&                theTrsf,
+                                           const Standard_Boolean        toEnable) const
+{
+  if (toEnable)
+  {
+    OpenGl_Mat4 aTrsf;
+    theTrsf.GetMat4(aTrsf);
+    theContext->ModelWorldState.Push();
+    OpenGl_Mat4& aModelWorld = theContext->ModelWorldState.ChangeCurrent();
+    aModelWorld              = aModelWorld * aTrsf;
+    theContext->ApplyModelViewMatrix();
+  }
+  else
+  {
+    theContext->ModelWorldState.Pop();
+    theContext->ApplyModelViewMatrix();
   }
 }
 

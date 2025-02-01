@@ -1,0 +1,50 @@
+puts "==========================="
+puts "AIS_Manipulator - flat skin"
+puts "==========================="
+
+pload MODELING VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+
+# create manipulated and helper objects
+box b 0 0 0 20 20 20
+
+# display manipulated objects
+vdisplay b -dispmode 1
+vright
+vrotate -mouseStart 400 200 -mouseMove 300 300
+vzoom 3
+
+# attach manipulator
+vmanipulator m -attach b -zoomable 1 -flat 1
+
+# test translation transform
+set mouse_pick {180 215}
+set mouse_drag {065 350}
+
+vmoveto 0 0
+vmoveto {*}$mouse_pick
+vdump $anImage1
+
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+vdump $anImage2
+
+# test plane dragging transform
+set mouse_pick {115 280}
+set mouse_drag {320 040}
+
+vmoveto 0 0
+vmoveto {*}$mouse_pick
+vdump $anImage3
+
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0

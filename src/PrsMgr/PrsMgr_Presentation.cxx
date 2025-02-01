@@ -186,6 +186,13 @@ void PrsMgr_Presentation::computeHLR(const Handle(Graphic3d_Camera)& theProjecto
 
 //=================================================================================================
 
+void PrsMgr_Presentation::RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+{
+  myPresentableObject->RecomputeTransformation(theProjector);
+}
+
+//=================================================================================================
+
 PrsMgr_Presentation::~PrsMgr_Presentation()
 {
   Erase();
