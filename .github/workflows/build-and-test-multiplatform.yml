@@ -1675,6 +1675,16 @@ jobs:
           done
           wait
 
+      - name: Install BeautifulSoup
+        run: pip install beautifulsoup4
+
+      - name: Clean unused test images
+        run: |
+          # copy to the install/bin/results directory
+          cp ${{ github.workspace }}/.github/actions/scripts/cleanup_test_images.py install/bin/results
+          cd install/bin/results
+          python cleanup_test_images.py
+
       - name: Upload comparison results
         uses: actions/upload-artifact@v4.4.3
         with:
