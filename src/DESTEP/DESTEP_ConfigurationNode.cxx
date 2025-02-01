@@ -182,6 +182,8 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                             aScope);
   InternalParameters.WriteColor =
     theResource->BooleanVal("write.color", InternalParameters.WriteColor, aScope);
+  InternalParameters.WriteNonmanifold =
+    theResource->BooleanVal("write.nonmanifold", InternalParameters.WriteNonmanifold, aScope);
   InternalParameters.WriteName =
     theResource->BooleanVal("write.name", InternalParameters.WriteName, aScope);
   InternalParameters.WriteLayer =
@@ -524,6 +526,12 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!Setting up the write.colo parameter which is used to indicate write Colors or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.color :\t " + InternalParameters.WriteColor + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Non-manifold topology writing\n";
+  aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
+  aResult += aScope + "write.nonmanifold :\t " + InternalParameters.WriteNonmanifold + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
