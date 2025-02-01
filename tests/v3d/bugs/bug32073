@@ -1,0 +1,22 @@
+puts "========"
+puts "0032073: Visualization - implement interface to change myToFlipOutput of OpenGl_View"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+pcone c 10 0 10
+vinit View1
+vdisplay c -dispmode 1
+vcamera -ortho
+vfront
+vfit
+
+if { [vreadpixel 100 250 -rgb -name] != "DARKGOLDENROD" } { puts "Error: view is flipped" }
+
+vdump $imagedir/${casename}.png
+
+vrenderparams -flip on
+
+if { [vreadpixel 100 250 -rgb -name] != "DARKGOLDENROD" } { puts "Error: view is not flipped" }
+
+vdump $imagedir/${casename}_flipped.png
