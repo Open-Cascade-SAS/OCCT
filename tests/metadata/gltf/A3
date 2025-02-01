@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug28444_nist_ftc_06_asme1_ct5240_rd.stp
-set ref_size 85383
+set ref_size 85605
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 yCenterOfGravity : 0.0289950044
@@ -20,4 +20,6 @@ Ixx : 2.16819e-05
 Izy : -1.3068999999999999e-06
 Mass : 3.3238733752999998
 Iyx : 0
+ProductID : NIST PMI FTC 06 ASME1
+Description : NIST PMI test model downloaded from http://go.usa.gov/mGVm
 }

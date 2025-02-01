@@ -20,5 +20,7 @@ Ixx : 2.16819e-05
 Izy : -1.3068999999999999e-06
 Mass : 3.3238733752999998
 Iyx : 0
+ProductID : NIST PMI FTC 06 ASME1
+Description : NIST PMI test model downloaded from http://go.usa.gov/mGVm
 
 }

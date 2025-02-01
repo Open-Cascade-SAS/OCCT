@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug28389_CONFIDENTIAL_SHEET_METAL_F3D.stp
-set ref_size 86278
+set ref_size 86338
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 yCenterOfGravity : 0.1148447698
@@ -23,4 +23,5 @@ Iyx : 2.044e-07
 OriginX : 0
 OriginZ : 0
 JoggleFormula : 
+ProductID : SHEET METAL F3D
 }

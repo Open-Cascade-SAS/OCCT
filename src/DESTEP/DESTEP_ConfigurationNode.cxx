@@ -142,6 +142,8 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("read.props", InternalParameters.ReadProps, aScope);
   InternalParameters.ReadMetadata =
     theResource->BooleanVal("read.metadata", InternalParameters.ReadMetadata, aScope);
+  InternalParameters.ReadProductMetadata =
+    theResource->BooleanVal("read.productmetadata", InternalParameters.ReadProductMetadata, aScope);
 
   InternalParameters.WritePrecisionMode =
     (DESTEP_Parameters::WriteMode_PrecisionMode)theResource->IntegerVal(
@@ -433,6 +435,13 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
     "!Setting up the read.metadata parameter which is used to indicate read Metadata or not\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.metadata :\t " + InternalParameters.ReadMetadata + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up the read.productmetadata parameter which is used to indicate whether to "
+             "read Product Metadata or not\n";
+  aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
+  aResult += aScope + "read.productmetadata :\t " + InternalParameters.ReadProductMetadata + "\n";
   aResult += "!\n";
 
   aResult += "!\n";

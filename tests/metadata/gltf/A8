@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug32087_part.stp
-set ref_size 15789
+set ref_size 15921
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 SETUP_PART : 0
@@ -17,6 +17,7 @@ MODEL_3D_APPROVED_BY :
 MODEL_3D_CAD_SYSTEM : 
 PART_NAME : 
 MODEL_3D_CHECKED_BY : 
+ProductID : Block
 OWNER : 
 COPYRIGHT : 
 WORK_ORDER_NUMBER : 
@@ -28,6 +29,7 @@ TREATMENT :
 MODEL_3D_CREATED_BY : 
 UNIT_SYSTEM : 
 MODEL_3D_DATE_OF_ISSUE : 
+ProductDefinition :  
 WELD_TOLERANCES : 
 PROJECT : 
 LANGUAGE : 
@@ -61,6 +63,7 @@ REFERENCE_DESIGNATION+ :
 MODEL_3D_ID_NUMBER : 
 PART_NOTE : 
 WELD_PREPARATION : 
+Description : Block
 MODEL_3D_RELEASED_DATE : 
 MODEL_3D_REPLACES : 
 PAINT_SURFACE : 

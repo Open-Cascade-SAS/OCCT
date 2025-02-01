@@ -2,10 +2,12 @@
 # used as reference. In this mode all tests intentionally report failure. 
 set dump_file 0
 
+set conf "provider.STEP.OCC.read.productmetadata : 1"
+
 # Read original file
 if { [string length $filename] > 1} {
   set path_file [locate_data_file $filename]
-  if { [catch { ReadFile aDocExport $path_file } catch_result] } {
+  if { [catch { ReadFile aDocExport $path_file -conf $conf } catch_result] } {
     set err_msg "Error: file was not read - exception "
     puts $err_msg
   }

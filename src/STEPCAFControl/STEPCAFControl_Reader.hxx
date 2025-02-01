@@ -37,6 +37,7 @@ class XCAFDoc_ShapeTool;
 class StepRepr_RepresentationItem;
 class Transfer_TransientProcess;
 class StepBasic_NamedUnit;
+class StepBasic_Product;
 class StepShape_ConnectedFaceSet;
 class StepShape_ShapeDefinitionRepresentation;
 class StepRepr_NextAssemblyUsageOccurrence;
@@ -199,6 +200,11 @@ public:
 
   Standard_EXPORT Standard_Boolean GetMetaMode() const;
 
+  //! MetaMode for indicate whether to read Product Metadata or not.
+  Standard_EXPORT void SetProductMetaMode(const Standard_Boolean theProductMetaMode);
+
+  Standard_EXPORT Standard_Boolean GetProductMetaMode() const;
+
   //! Set SHUO mode for indicate write SHUO or not.
   Standard_EXPORT void SetSHUOMode(const Standard_Boolean shuomode);
 
@@ -315,6 +321,10 @@ protected:
     ReadMetadata(const Handle(XSControl_WorkSession)& theWS,
                  const Handle(TDocStd_Document)&      theDoc,
                  const StepData_Factors&              theLocalFactors = StepData_Factors()) const;
+
+  Standard_EXPORT Standard_Boolean
+    ReadProductMetadata(const Handle(XSControl_WorkSession)& theWS,
+                        const Handle(TDocStd_Document)&      theDoc) const;
 
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
@@ -435,6 +445,62 @@ private:
                                   const StepData_Factors&                    theLocalFactors,
                                   Handle(TDataStd_NamedData)&                theAttr) const;
 
+  //! Returns the label of the shape associated with the given product definition.
+  //! @param theTransferProcess The transfer process to use for finding the label.
+  //! @param theProductDefinition The product definition for which to find the label.
+  //! @return The label of the shape associated with the given product definition.
+  TDF_Label getShapeLabelFromProductDefinition(
+    const Handle(Transfer_TransientProcess)&   theTransferProcess,
+    const Handle(StepBasic_ProductDefinition)& theProductDefinition) const;
+
+  //! Returns the product associated with the given product definition.
+  //! @param theProductDefinition The product definition for which to get the product.
+  //! @return The product associated with the given product definition.
+  Handle(StepBasic_Product) getProductFromProductDefinition(
+    const Handle(StepBasic_ProductDefinition)& theProductDefinition) const;
+
+  //! Collects property definitions from the given general property and stores them in a vector.
+  //! @param theWorkSession The work session to use for collecting property definitions.
+  //! @param theGeneralProperty The general property from which to collect property definitions.
+  //! @return A vector of collected property definitions.
+  std::vector<Handle(StepRepr_PropertyDefinition)> collectPropertyDefinitions(
+    const Handle(XSControl_WorkSession)& theWorkSession,
+    const Handle(Standard_Transient)&    theGeneralProperty) const;
+
+  //! Collects shape labels from the given property definition.
+  //! @param theWorkSession The work session to use for collecting shape labels.
+  //! @param theTransferProcess The transfer process to use for collecting shape labels.
+  //! @param theSource The property definition from which to collect shape labels.
+  //! @return A vector of collected shape labels.
+  std::vector<TDF_Label> collectShapeLabels(
+    const Handle(XSControl_WorkSession)&       theWorkSession,
+    const Handle(Transfer_TransientProcess)&   theTransferProcess,
+    const Handle(StepRepr_PropertyDefinition)& theSource) const;
+
+  //! Collects a group of related property definitions from the given property definition.
+  //! @p theProperty itself will be added to the result as well.
+  //! @param theWorkSession The work session to use for collecting related property definitions.
+  //! @param theProperty The property definition from which to collect related property definitions.
+  //! @return A vector of collected related property definitions.
+  std::vector<Handle(StepRepr_PropertyDefinition)> collectRelatedPropertyDefinitions(
+    const Handle(XSControl_WorkSession)&       theWorkSession,
+    const Handle(StepRepr_PropertyDefinition)& theProperty) const;
+
+  //! Helper method to get NamedData attribute assigned to the given label.
+  //! @param theLabel The label to get NamedData attribute from.
+  //! @return Handle to the NamedData attribute. Guarantees that the attribute is never null.
+  Handle(TDataStd_NamedData) getNamedData(const TDF_Label& theLabel) const;
+
+  //! Collects binders from the given property definition and stores them in the binder list.
+  //! @param theWorkSession The work session to use for collecting binders.
+  //! @param theTransientProcess The transient process to use for collecting binders.
+  //! @param theSource The property definition from which to collect binders.
+  //! @param theBinders The list to store the collected binders.
+  void collectBinders(const Handle(XSControl_WorkSession)&       theWorkSession,
+                      const Handle(Transfer_TransientProcess)&   theTransientProcess,
+                      const Handle(StepRepr_PropertyDefinition)& theSource,
+                      NCollection_List<Handle(Transfer_Binder)>& theBinders) const;
+
 private:
   STEPControl_Reader                                                              myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
@@ -444,6 +510,7 @@ private:
   Standard_Boolean                                                                myLayerMode;
   Standard_Boolean                                                                myPropsMode;
   Standard_Boolean                                                                myMetaMode;
+  Standard_Boolean                                                                myProductMetaMode;
   Standard_Boolean                                                                mySHUOMode;
   Standard_Boolean                                                                myGDTMode;
   Standard_Boolean                                                                myMatMode;
