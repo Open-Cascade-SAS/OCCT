@@ -1675,13 +1675,25 @@ jobs:
           done
           wait
 
+      - name: Install BeautifulSoup
+        run: pip install beautifulsoup4
+
+      - name: Clean unused test images
+        run: |
+          # copy to the install/bin/results directory
+          cp ${{ github.workspace }}/.github/actions/scripts/cleanup_test_images.py install/bin/results
+          cd install/bin/results
+          python cleanup_test_images.py
+
       - name: Upload comparison results
         uses: actions/upload-artifact@v4.4.3
         with:
           name: test-compare-results
+          retention-days: 15
           overwrite: true
           path: |
-            install/bin/results/current/**/diff-*.html
-            install/bin/results/current/**/diff-*.log
-            install/bin/results/current/**/summary.html
-            install/bin/results/current/**/tests.log
+            install/bin/results/**/diff-*.html
+            install/bin/results/**/diff-*.log
+            install/bin/results/**/summary.html
+            install/bin/results/**/tests.log
+            install/bin/results/**/*.png
