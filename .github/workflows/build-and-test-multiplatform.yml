@@ -1679,9 +1679,11 @@ jobs:
         uses: actions/upload-artifact@v4.4.3
         with:
           name: test-compare-results
+          retention-days: 15
           overwrite: true
           path: |
-            install/bin/results/current/**/diff-*.html
-            install/bin/results/current/**/diff-*.log
-            install/bin/results/current/**/summary.html
-            install/bin/results/current/**/tests.log
+            install/bin/results/**/diff-*.html
+            install/bin/results/**/diff-*.log
+            install/bin/results/**/summary.html
+            install/bin/results/**/tests.log
+            install/bin/results/**/*.png
