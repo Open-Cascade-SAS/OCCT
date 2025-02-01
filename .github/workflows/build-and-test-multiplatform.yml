@@ -1611,7 +1611,7 @@ jobs:
   test-summary:
     name: 'Summarize Test Results'
     runs-on: ubuntu-24.04
-    if: ${{ !cancelled() }} && github.event_name == 'pull_request'
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
     needs: [retest-windows-x64, retest-windows-clang-x64, retest-macos-x64, retest-macos-gcc-x64, retest-linux-clang-x64, retest-linux-gcc-x64]
 
     steps:
