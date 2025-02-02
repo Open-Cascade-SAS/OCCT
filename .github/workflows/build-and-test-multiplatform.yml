@@ -18,6 +18,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  clang-format:
+    name: Check code formatting
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+      with:
+        fetch-depth: 0
+    
+    - name: Run clang-format check
+      uses: ./.github/actions/clang-format-check
+      with:
+        base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
+
+    - name: Fail if changes needed
+      if: steps.clang-format-check.outputs.has-changes == 'true'
+      shell: pwsh
+      run: |
+        echo "::error::Files need formatting. To fix: 1. Download format.patch 2. \"git apply format.patch\" 3. Commit and push"
+        exit 1
+
   prepare-and-build-windows-x64:
     name: Prepare and Build on Windows with MSVC (x64)
     runs-on: windows-2022
@@ -373,6 +395,36 @@ jobs:
         name: install-linux-gcc-x64
         path: install
         retention-days: 7
+
+  build-inspector-windows:
+    name: Build TInspector on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build TInspector
+      uses: ./.github/actions/build-tinspector
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-inspector-linux:
+    name: Build TInspector on Linux
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build TInspector
+      uses: ./.github/actions/build-tinspector
+      with:
+        platform: linux
+        install-artifact-name: install-linux-clang-x64
 
   test-windows-x64:
     name: Test on Windows (x64)

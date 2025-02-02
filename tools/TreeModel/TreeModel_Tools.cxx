@@ -59,8 +59,10 @@ QByteArray TreeModel_Tools::ToByteArray(const QString& theValue)
   if (!theValue.startsWith("@ByteArray[") || !theValue.endsWith(']'))
     return aStateArray;
 
-  QString     aValue = theValue.mid(11, theValue.size() - 12);
-  QStringList lst    = aValue.split(QRegExp("[\\s|,]"), QString::SkipEmptyParts);
+  QString aValue = theValue.mid(11, theValue.size() - 12);
+#include <Standard_WarningsDisable.hxx>
+  QStringList lst = aValue.split(QRegExp("[\\s|,]"), QString::SkipEmptyParts);
+#include <Standard_WarningsRestore.hxx>
   for (QStringList::ConstIterator aByteId = lst.begin(); aByteId != lst.end(); ++aByteId)
   {
     int     aBase   = 10;
@@ -177,7 +179,9 @@ int TreeModel_Tools::GetTextWidth(const QString& theText, QObject*)
   int          aTextMargin = 10;
   QFontMetrics aFontMetrics(QApplication::font());
   QRect        aBoundingRect = aFontMetrics.boundingRect(theText);
+#include <Standard_WarningsDisable.hxx>
   return qMax(aBoundingRect.width(), aFontMetrics.width(theText)) + aTextMargin * 2;
+#include <Standard_WarningsRestore.hxx>
 }
 
 // =======================================================================

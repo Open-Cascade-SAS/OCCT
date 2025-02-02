@@ -69,7 +69,7 @@ Standard_Boolean TInspector_Communicator::PluginsDir(TCollection_AsciiString& th
 #else
     ':';
 #endif
-  for (int i = 1; !aPathValue.IsEmpty(); i++)
+  while (!aPathValue.IsEmpty())
   {
     Standard_Integer aSepIndex = aPathValue.FirstLocationInSet(aPathSep, 1, aPathValue.Length());
     if (aSepIndex <= 1)
