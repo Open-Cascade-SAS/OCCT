@@ -402,6 +402,9 @@ jobs:
     runs-on: windows-2022
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
     - name: Build TInspector
       uses: ./.github/actions/build-tinspector
       with:
@@ -414,6 +417,9 @@ jobs:
     runs-on: ubuntu-24.04
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
     - name: Build TInspector
       uses: ./.github/actions/build-tinspector
       with:
