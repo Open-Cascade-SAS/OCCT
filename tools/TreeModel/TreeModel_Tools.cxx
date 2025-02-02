@@ -59,9 +59,9 @@ QByteArray TreeModel_Tools::ToByteArray(const QString& theValue)
   if (!theValue.startsWith("@ByteArray[") || !theValue.endsWith(']'))
     return aStateArray;
 
-  QString     aValue = theValue.mid(11, theValue.size() - 12);
+  QString aValue = theValue.mid(11, theValue.size() - 12);
 #include <Standard_WarningsDisable.hxx>
-  QStringList lst    = aValue.split(QRegExp("[\\s|,]"), QString::SkipEmptyParts);
+  QStringList lst = aValue.split(QRegExp("[\\s|,]"), QString::SkipEmptyParts);
 #include <Standard_WarningsRestore.hxx>
   for (QStringList::ConstIterator aByteId = lst.begin(); aByteId != lst.end(); ++aByteId)
   {
