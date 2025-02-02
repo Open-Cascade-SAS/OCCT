@@ -1,0 +1,76 @@
+name: 'Clang-Format Code Check'
+description: 'Check code formatting of changed files using clang-format'
+inputs:
+  base-ref:
+    description: 'Base reference to compare changes against'
+    required: true
+    default: 'master'
+  file-pattern:
+    description: 'Pattern to match files for formatting check'
+    required: false
+    default: '^(src|tools)/.*\.(cpp|hxx|cxx|lxx|h|pxx|hpp)$'
+  clang-format-version:
+    description: 'Required clang-format version'
+    required: false
+    default: '18.1.8'
+
+outputs:
+  has-changes:
+    description: 'Whether any files needed formatting'
+    value: ${{ steps.git-check.outputs.has_changes }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check clang-format version
+      shell: pwsh
+      run: |
+        $version = clang-format --version
+        Write-Output "Detected clang-format version: $version"
+        $version | Select-String "${{ inputs.clang-format-version }}" >$null
+        if ($LASTEXITCODE -ne 0) {
+          echo "::error::Wrong clang-format version. Expected ${{ inputs.clang-format-version }}"
+          Write-Output "Error: Version mismatch - expected ${{ inputs.clang-format-version }}"
+          exit 1
+        }
+
+    - name: Get changed files
+      id: changed-files
+      shell: pwsh
+      run: |
+        $changedFiles = git diff --name-only origin/${{ inputs.base-ref }} HEAD |
+          Where-Object { $_ -match '${{ inputs.file-pattern }}' }
+        $changedFiles | Set-Content "changed_files.txt"
+        if ($changedFiles.Count -gt 0) {
+          echo "has_files=true" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Check formatting
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $files = Get-Content "changed_files.txt"
+        $files | ForEach-Object -ThrottleLimit 8 -Parallel {
+          clang-format -i -style=file $_
+        }
+
+    - name: Check git status
+      id: git-check
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        git diff > format.patch
+        if ((Get-Item format.patch).length -gt 0) {
+          echo "has_changes=true" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Upload patch
+      if: steps.git-check.outputs.has_changes == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: format-patch
+        path: format.patch
+
+branding:
+  icon: 'check-square'
+  color: 'green'

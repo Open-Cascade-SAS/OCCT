@@ -1,0 +1,91 @@
+name: 'Build TInspector'
+description: 'Build TInspector using OCCT installation as a separate job'
+
+inputs:
+  platform:
+    description: 'Build platform (windows/linux)'
+    required: true
+  install-artifact-name:
+    description: 'OCCT installation artifact name'
+    required: true
+  3rdparty-url:
+    description: 'URL to download 3rdparty dependencies'
+    required: false
+    default: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download OCCT installation
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: occt-install
+
+    - name: Install Windows dependencies
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        Write-Output "Downloading 3rdparty dependencies..."
+        Invoke-WebRequest -Uri ${{ inputs.3rdparty-url }} -OutFile 3rdparty.zip
+        Expand-Archive -Path 3rdparty.zip -DestinationPath 3rdparty
+        Remove-Item 3rdparty.zip
+
+    - name: Install Linux dependencies
+      if: inputs.platform == 'linux'
+      shell: bash
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev qtbase5-dev qt5-qmake qtbase5-dev-tools qtdeclarative5-dev qttools5-dev qttools5-dev-tools
+
+    - name: Configure TInspector - Windows
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        cd tools
+        mkdir build
+        cd build
+        cmake -G "Visual Studio 17 2022" -A x64 `
+              -D CMAKE_BUILD_TYPE=Release `
+              -D BUILD_SHARED_LIBS=ON `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty `
+              -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install `
+              -D INSTALL_DIR=${{ github.workspace }}/tools/install `
+              ..
+
+    - name: Configure TInspector - Linux
+      if: inputs.platform == 'linux'
+      shell: bash
+      run: |
+        cd tools
+        mkdir build
+        cd build
+        cmake -G "Unix Makefiles" \
+              -D CMAKE_BUILD_TYPE=Release \
+              -D BUILD_SHARED_LIBS=ON \
+              -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
+              -D INSTALL_DIR=${{ github.workspace }}/tools/install \
+              ..
+
+    - name: Build TInspector - Windows
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+        cd tools/build
+        cmake --build . --config Release --target install
+
+    - name: Build TInspector - Linux
+      if: inputs.platform == 'linux'
+      shell: bash
+      run: |
+        cd tools/build
+        make install -j$(nproc)
+
+    - name: Upload TInspector installation
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: inspector-${{ inputs.platform }}-x64
+        path: tools/install
+        retention-days: 7
