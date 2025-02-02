@@ -29,10 +29,11 @@ runs:
       if: inputs.platform == 'windows'
       shell: pwsh
       run: |
-        Write-Output "Downloading 3rdparty dependencies..."
-        Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty.zip
-        Expand-Archive -Path 3rdparty.zip -DestinationPath 3rdparty
-        Remove-Item 3rdparty.zip
+          Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
 
     - name: Install Linux dependencies
       if: inputs.platform == 'linux'
@@ -49,7 +50,7 @@ runs:
         cmake -G "Visual Studio 17 2022" -A x64 `
               -D CMAKE_BUILD_TYPE=Release `
               -D BUILD_SHARED_LIBS=ON `
-              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty `
+              -D 3RDPARTY_DIR=${{ github.workspace }}//3rdparty-vc14-64 `
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install `
               -D INSTALL_DIR=${{ github.workspace }}/tools/install `
               ..
