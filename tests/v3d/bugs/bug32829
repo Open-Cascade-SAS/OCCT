@@ -1,0 +1,60 @@
+puts "============"
+puts "0032829: Visualization - dynamic highlight results are not cleared by AIS_InteractiveContext::Redisplay()"
+puts "============"
+puts ""
+
+pload MODELING OCAF XDE VISUALIZATION
+
+# Create a green cube and add it in the document
+XNewDoc aDoc
+set aCubeLab [XNewShape aDoc]
+set aCubeName "CubeEntityInstance"
+SetName   aDoc $aCubeLab $aCubeName
+XSetColor aDoc $aCubeLab GREEN
+box aCube 0.1 0.1 0.1
+XAddComponent aDoc $aCubeLab aCube
+
+# Create a purple cylinder with a location and add it in the document
+set aCylLab [XNewShape aDoc]
+set aCylName "CylinderEntityInstance"
+SetName   aDoc $aCylLab $aCylName
+XSetColor aDoc $aCylLab PURPLE
+pcylinder  aCyl 0.015 0.05
+ttranslate aCyl 0.3 0.1 0.13
+XAddComponent aDoc $aCylLab aCyl
+XUpdateAssemblies aDoc
+
+# Update/display the document then fit the view
+vinit View1
+vselprops localSelHighlight -dispMode -1
+XDisplay aDoc -dispMode 1 -docPrefix 0
+vfit
+
+# Parenting configuration : cube is the parent of cylinder
+vparent $aCubeName -ignoreVisu
+vchild  $aCubeName -add $aCylName
+
+# Check if the set location works (cube moving with cylinder)
+vlocation $aCylName  -setLocation 0. 0. -0.2
+vlocation $aCubeName -setLocation 0. 0.  0.1
+
+# Face selection mode
+vselmode -set FACE 1
+
+# Check if the face selection mode works with the cylinder
+vmoveto 370 270
+#vselect 370 270
+
+# Display the cylinder (if bug1 has been executed)
+vdisplay $aCylName
+
+# Select the top face of the cylinder
+vselect 370 270
+#vselect 370 271; # will be OK if not the same pixel
+
+# Move the cylinder but the selected face is not updated
+vlocation $aCylName -setLocation 0. 0. 0.
+
+if { [vreadpixel 370 270 -rgb -name] != "BLACK" } { puts "Error: highlight presentation was not cleared." }
+
+vdump ${imagedir}/${casename}.png
