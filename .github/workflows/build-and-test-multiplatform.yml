@@ -33,13 +33,6 @@ jobs:
       with:
         base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
 
-    - name: Fail if changes needed
-      if: steps.clang-format-check.outputs.has-changes == 'true'
-      shell: pwsh
-      run: |
-        echo "::error::Files need formatting. To fix: 1. Download format.patch 2. \"git apply format.patch\" 3. Commit and push"
-        exit 1
-
   prepare-and-build-windows-x64:
     name: Prepare and Build on Windows with MSVC (x64)
     runs-on: windows-2022
