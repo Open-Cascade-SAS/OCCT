@@ -37,7 +37,6 @@ runs:
     - name: Install Linux dependencies
       if: inputs.platform == 'linux'
       shell: bash
-    - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev qtbase5-dev qt5-qmake qtbase5-dev-tools qtdeclarative5-dev qttools5-dev qttools5-dev-tools
 
     - name: Configure TInspector - Windows
