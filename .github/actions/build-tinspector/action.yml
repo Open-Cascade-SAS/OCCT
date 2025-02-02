@@ -32,7 +32,6 @@ runs:
           Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
-      shell: pwsh
 
 
     - name: Install Linux dependencies
