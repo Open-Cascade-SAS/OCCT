@@ -8,7 +8,7 @@ inputs:
   install-artifact-name:
     description: 'OCCT installation artifact name'
     required: true
-  3rdparty-url:
+  thirdparty_url:
     description: 'URL to download 3rdparty dependencies'
     required: false
     default: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip'
@@ -16,6 +16,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
 
     - name: Download OCCT installation
       uses: actions/download-artifact@v4.1.7
@@ -28,7 +30,7 @@ runs:
       shell: pwsh
       run: |
         Write-Output "Downloading 3rdparty dependencies..."
-        Invoke-WebRequest -Uri ${{ inputs.3rdparty-url }} -OutFile 3rdparty.zip
+        Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty.zip
         Expand-Archive -Path 3rdparty.zip -DestinationPath 3rdparty
         Remove-Item 3rdparty.zip
 
