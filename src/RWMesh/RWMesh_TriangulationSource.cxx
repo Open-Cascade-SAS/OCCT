@@ -44,13 +44,7 @@ Standard_Boolean RWMesh_TriangulationSource::loadDeferredData(
   {
     return false;
   }
-  Handle(RWMesh_TriangulationSource) aDestTriangulation =
-    Handle(RWMesh_TriangulationSource)::DownCast(theDestTriangulation);
-  if (aDestTriangulation.IsNull())
-  {
-    return false;
-  }
-  if (myReader->Load(this, aDestTriangulation, theFileSystem))
+  if (myReader->Load(this, theDestTriangulation, theFileSystem))
   {
     return true;
   }

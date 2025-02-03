@@ -160,6 +160,11 @@ bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& th
                                             const Standard_Boolean            theToCopyData) const
 {
   Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  if (aMesh.IsNull())
+  {
+    Message::SendWarning("Only triangulation loading is supported.");
+    return false;
+  }
   if (theNbTris >= 1)
   {
     aMesh->ResizeEdges(theNbTris, theToCopyData);
@@ -175,6 +180,11 @@ Standard_Integer RWMesh_TriangulationReader::setEdge(const Handle(Poly_Triangula
                                                      const Standard_Integer theEdge) const
 {
   Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  if (aMesh.IsNull())
+  {
+    Message::SendWarning("Only triangulation loading is supported.");
+    return 0;
+  }
   if (theEdge < 1 || theEdge > theMesh->NbNodes())
   {
     return 0;
