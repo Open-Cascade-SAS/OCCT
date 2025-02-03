@@ -155,10 +155,8 @@ Standard_Real Prs3d_ShadingAspect::Transparency(const Aspect_TypeOfFacingModel t
   return 0.0;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_ShadingAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

@@ -160,10 +160,8 @@ OpenGl_ShaderManager::~OpenGl_ShaderManager()
   }
 }
 
-// =======================================================================
-// function : clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::clear()
 {
   myProgramList.Clear();
@@ -257,10 +255,8 @@ void OpenGl_ShaderManager::Unregister(TCollection_AsciiString&      theShareKey,
   }
 }
 
-// =======================================================================
-// function : switchLightPrograms
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::switchLightPrograms()
 {
   const Handle(Graphic3d_LightSet)& aLights = myLightSourceState.LightSources();
@@ -282,10 +278,8 @@ void OpenGl_ShaderManager::switchLightPrograms()
   }
 }
 
-// =======================================================================
-// function : UpdateSRgbState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::UpdateSRgbState()
 {
   if (mySRgbState == myContext->ToRenderSRGB())
@@ -315,19 +309,15 @@ void OpenGl_ShaderManager::UpdateLightSourceStateTo(
   switchLightPrograms();
 }
 
-// =======================================================================
-// function : UpdateLightSourceState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::UpdateLightSourceState()
 {
   myLightSourceState.Update();
 }
 
-// =======================================================================
-// function : SetShadingModel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::SetShadingModel(const Graphic3d_TypeOfShadingModel theModel)
 {
   if (theModel == Graphic3d_TypeOfShadingModel_DEFAULT)
@@ -370,10 +360,8 @@ void OpenGl_ShaderManager::UpdateWorldViewStateTo(const OpenGl_Mat4& theWorldVie
   myWorldViewState.Update();
 }
 
-// =======================================================================
-// function : pushLightSourceState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushLightSourceState(
   const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
@@ -617,10 +605,8 @@ void OpenGl_ShaderManager::pushLightSourceState(
   }
 }
 
-// =======================================================================
-// function : pushProjectionState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushProjectionState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   theProgram->UpdateState(OpenGl_PROJECTION_STATE, myProjectionState.Index());
@@ -656,10 +642,8 @@ void OpenGl_ShaderManager::pushProjectionState(const Handle(OpenGl_ShaderProgram
   }
 }
 
-// =======================================================================
-// function : pushModelWorldState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushModelWorldState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   theProgram->UpdateState(OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
@@ -698,10 +682,8 @@ void OpenGl_ShaderManager::pushModelWorldState(const Handle(OpenGl_ShaderProgram
   }
 }
 
-// =======================================================================
-// function : pushWorldViewState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushWorldViewState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   if (myWorldViewState.Index() == theProgram->ActiveState(OpenGl_WORLD_VIEW_STATE))
@@ -763,10 +745,8 @@ void OpenGl_ShaderManager::RevertClippingState()
   myClippingState.Revert();
 }
 
-// =======================================================================
-// function : pushClippingState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushClippingState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   theProgram->UpdateState(OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
@@ -957,10 +937,8 @@ void OpenGl_ShaderManager::pushClippingState(const Handle(OpenGl_ShaderProgram)&
                          &myClipChainArray.First());
 }
 
-// =======================================================================
-// function : pushMaterialState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushMaterialState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   const OpenGl_Material& aMat = myMaterialState.Material();
@@ -1031,10 +1009,8 @@ void OpenGl_ShaderManager::pushMaterialState(const Handle(OpenGl_ShaderProgram)&
   }
 }
 
-// =======================================================================
-// function : pushOitState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::pushOitState(const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   if (const OpenGl_ShaderUniformLocation& aLocOutput =
@@ -1049,10 +1025,8 @@ void OpenGl_ShaderManager::pushOitState(const Handle(OpenGl_ShaderProgram)& theP
   }
 }
 
-// =======================================================================
-// function : PushInteriorState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderManager::PushInteriorState(const Handle(OpenGl_ShaderProgram)& theProgram,
                                              const Handle(Graphic3d_Aspects)&    theAspect) const
 {
@@ -1138,10 +1112,8 @@ void OpenGl_ShaderManager::PushState(const Handle(OpenGl_ShaderProgram)& theProg
   }
 }
 
-// =======================================================================
-// function : BindFontProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindFontProgram(
   const Handle(OpenGl_ShaderProgram)& theCustomProgram)
 {
@@ -1164,10 +1136,8 @@ Standard_Boolean OpenGl_ShaderManager::BindFontProgram(
   return bindProgramWithState(myFontProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
-// =======================================================================
-// function : BindFboBlitProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindFboBlitProgram(Standard_Integer theNbSamples,
                                                           Standard_Boolean theIsFallback_sRGB)
 {
@@ -1200,10 +1170,8 @@ Standard_Boolean OpenGl_ShaderManager::BindFboBlitProgram(Standard_Integer theNb
   return true;
 }
 
-// =======================================================================
-// function : BindOitCompositingProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindOitCompositingProgram(Standard_Boolean theIsMSAAEnabled)
 {
   const Standard_Integer        aProgramIdx = theIsMSAAEnabled ? 1 : 0;
@@ -1227,10 +1195,8 @@ Standard_Boolean OpenGl_ShaderManager::BindOitCompositingProgram(Standard_Boolea
   return true;
 }
 
-// =======================================================================
-// function : BindOitDepthPeelingBlendProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindOitDepthPeelingBlendProgram(bool theIsMSAAEnabled)
 {
   const Standard_Integer        aProgramIdx = theIsMSAAEnabled ? 1 : 0;
@@ -1253,10 +1219,8 @@ Standard_Boolean OpenGl_ShaderManager::BindOitDepthPeelingBlendProgram(bool theI
   return true;
 }
 
-// =======================================================================
-// function : BindOitDepthPeelingFlushProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindOitDepthPeelingFlushProgram(bool theIsMSAAEnabled)
 {
   const Standard_Integer        aProgramIdx = theIsMSAAEnabled ? 1 : 0;
@@ -1280,10 +1244,8 @@ Standard_Boolean OpenGl_ShaderManager::BindOitDepthPeelingFlushProgram(bool theI
   return true;
 }
 
-// =======================================================================
-// function : prepareStdProgramUnlit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit(
   Handle(OpenGl_ShaderProgram)& theProgram,
   Standard_Integer              theBits,
@@ -1299,10 +1261,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit(
   return Standard_True;
 }
 
-// =======================================================================
-// function : prepareStdProgramGouraud
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud(
   Handle(OpenGl_ShaderProgram)& theProgram,
   const Standard_Integer        theBits)
@@ -1318,10 +1278,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud(
   return Standard_True;
 }
 
-// =======================================================================
-// function : prepareStdProgramPhong
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong(
   Handle(OpenGl_ShaderProgram)& theProgram,
   const Standard_Integer        theBits,
@@ -1345,10 +1303,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong(
   return Standard_True;
 }
 
-// =======================================================================
-// function : BindStereoProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindStereoProgram(Graphic3d_StereoMode theStereoMode)
 {
   if (theStereoMode < 0 || (int)theStereoMode >= Graphic3d_StereoMode_NB)
@@ -1377,10 +1333,8 @@ Standard_Boolean OpenGl_ShaderManager::BindStereoProgram(Graphic3d_StereoMode th
   return true;
 }
 
-// =======================================================================
-// function : prepareStdProgramBoundBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = Graphic3d_ShaderManager::getStdProgramBoundBox();
@@ -1426,10 +1380,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
   return Standard_True;
 }
 
-// =======================================================================
-// function : preparePBREnvBakingProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram(Standard_Integer theIndex)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = getPBREnvBakingProgram(theIndex);
@@ -1478,10 +1430,8 @@ Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram(Standard_Integ
   return Standard_True;
 }
 
-// =======================================================================
-// function : GetBgCubeMapProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram()
 {
   if (myBgCubeMapProgram.IsNull())
@@ -1491,10 +1441,8 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
   return myBgCubeMapProgram;
 }
 
-// =======================================================================
-// function : GetBgSkydomeProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgSkydomeProgram()
 {
   if (myBgSkydomeProgram.IsNull())
@@ -1504,10 +1452,8 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgSkydomeProgram
   return myBgSkydomeProgram;
 }
 
-// =======================================================================
-// function : GetColoredQuadProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetColoredQuadProgram()
 {
   if (myColoredQuadProgram.IsNull())
@@ -1517,10 +1463,8 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetColoredQuadProgr
   return myColoredQuadProgram;
 }
 
-// =======================================================================
-// function : bindProgramWithState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::bindProgramWithState(
   const Handle(OpenGl_ShaderProgram)& theProgram,
   Graphic3d_TypeOfShadingModel        theShadingModel)
@@ -1534,10 +1478,8 @@ Standard_Boolean OpenGl_ShaderManager::bindProgramWithState(
   return isBound;
 }
 
-// =======================================================================
-// function : BindMarkerProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderManager::BindMarkerProgram(
   const Handle(OpenGl_TextureSet)&    theTextures,
   Graphic3d_TypeOfShadingModel        theShadingModel,

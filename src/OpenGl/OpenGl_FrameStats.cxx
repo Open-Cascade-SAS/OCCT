@@ -30,28 +30,22 @@ static Standard_Size estimatedDataSize(const Handle(OpenGl_Resource)& theRes)
 }
 } // namespace
 
-// =======================================================================
-// function : OpenGl_FrameStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameStats::OpenGl_FrameStats()
 {
   //
 }
 
-// =======================================================================
-// function : ~OpenGl_FrameStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameStats::~OpenGl_FrameStats()
 {
   //
 }
 
-// =======================================================================
-// function : IsFrameUpdated
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_FrameStats::IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const
 {
   const Graphic3d_FrameStatsData& aFrame = LastDataFrame();
@@ -84,10 +78,8 @@ bool OpenGl_FrameStats::IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const
   return true;
 }
 
-// =======================================================================
-// function : updateStatistics
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
                                          bool                           theIsImmediateOnly)
 {
@@ -218,10 +210,8 @@ void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
   }
 }
 
-// =======================================================================
-// function : updateStructures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStats::updateStructures(
   Standard_Integer                                           theViewId,
   const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,

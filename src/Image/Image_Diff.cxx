@@ -62,10 +62,8 @@ static bool isBlackPixel(const Image_PixMap& theData, Standard_Size theY, Standa
 
 } // namespace
 
-// =======================================================================
-// function : Image_Diff
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_Diff::Image_Diff()
     : myColorTolerance(0.0),
       myIsBorderFilterOn(Standard_False)
@@ -73,19 +71,15 @@ Image_Diff::Image_Diff()
   //
 }
 
-// =======================================================================
-// function : ~Image_Diff
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_Diff::~Image_Diff()
 {
   releaseGroupsOfDiffPixels();
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Diff::Init(const Handle(Image_PixMap)& theImageRef,
                                   const Handle(Image_PixMap)& theImageNew,
                                   const Standard_Boolean      theToBlackWhite)
@@ -118,10 +112,8 @@ Standard_Boolean Image_Diff::Init(const Handle(Image_PixMap)& theImageRef,
   return Standard_True;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Diff::Init(const TCollection_AsciiString& theImgPathRef,
                                   const TCollection_AsciiString& theImgPathNew,
                                   const Standard_Boolean         theToBlackWhite)
@@ -136,10 +128,8 @@ Standard_Boolean Image_Diff::Init(const TCollection_AsciiString& theImgPathRef,
   return Init(anImgRef, anImgNew, theToBlackWhite);
 }
 
-// =======================================================================
-// function : Compare
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Image_Diff::Compare()
 {
   // Number of different pixels (by color)
@@ -249,10 +239,8 @@ Standard_Integer Image_Diff::Compare()
   return aNbDiffColors;
 }
 
-// =======================================================================
-// function : SaveDiffImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
 {
   if (myImageRef.IsNull() || myImageNew.IsNull())
@@ -380,10 +368,8 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
   return Standard_True;
 }
 
-// =======================================================================
-// function : SaveDiffImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Diff::SaveDiffImage(const TCollection_AsciiString& theDiffPath) const
 {
   if (myImageRef.IsNull() || myImageNew.IsNull() || theDiffPath.IsEmpty())
@@ -402,10 +388,8 @@ Standard_Boolean Image_Diff::SaveDiffImage(const TCollection_AsciiString& theDif
   return aDiff.Save(theDiffPath);
 }
 
-// =======================================================================
-// function : ignoreBorderEffect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Image_Diff::ignoreBorderEffect()
 {
   if (myImageRef.IsNull() || myImageNew.IsNull())
@@ -557,10 +541,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
   return aNbDiffColors;
 }
 
-// =======================================================================
-// function : releaseGroupsOfDiffPixels
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_Diff::releaseGroupsOfDiffPixels()
 {
   myGroupsOfDiffPixels.Clear();

@@ -1273,10 +1273,8 @@ void OpenGl_LayerList::renderTransparent(const Handle(OpenGl_Workspace)&   theWo
   aCtx->core11fwd->glDepthFunc(theGlobalSettings.DepthFunc);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_LayerList::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_LayerList)

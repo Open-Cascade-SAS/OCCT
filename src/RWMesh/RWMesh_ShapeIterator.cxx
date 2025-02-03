@@ -18,10 +18,8 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 
-// =======================================================================
-// function : RWMesh_ShapeIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
                                            const TopLoc_Location& theLocation,
                                            const TopAbs_ShapeEnum theShapeType,
@@ -48,10 +46,8 @@ RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
   }
 }
 
-// =======================================================================
-// function : RWMesh_ShapeIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TopoDS_Shape&    theShape,
                                            const TopAbs_ShapeEnum theShapeType,
                                            const XCAFPrs_Style&   theStyle)
@@ -67,10 +63,8 @@ RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TopoDS_Shape&    theShape,
   myIter.Init(theShape, myShapeType);
 }
 
-// =======================================================================
-// function : dispatchStyles
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_ShapeIterator::dispatchStyles(const TDF_Label&       theLabel,
                                           const TopLoc_Location& theLocation,
                                           const XCAFPrs_Style&   theStyle)
@@ -135,10 +129,8 @@ void RWMesh_ShapeIterator::dispatchStyles(const TDF_Label&       theLabel,
   }
 }
 
-// =======================================================================
-// function : initEdge
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_ShapeIterator::initShape()
 {
   myHasColor = false;

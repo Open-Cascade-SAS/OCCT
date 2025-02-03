@@ -28,10 +28,8 @@ static const char THE_LIGHT_KEY_LETTERS[Graphic3d_TypeOfLightSource_NB] = {
 };
 } // namespace
 
-// =======================================================================
-// function : Graphic3d_LightSet
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_LightSet::Graphic3d_LightSet()
     : myAmbient(0.0f, 0.0f, 0.0f, 0.0f),
       myNbEnabled(0),
@@ -43,10 +41,8 @@ Graphic3d_LightSet::Graphic3d_LightSet()
   memset(myLightTypesEnabled, 0, sizeof(myLightTypesEnabled));
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_LightSet::Add(const Handle(Graphic3d_CLight)& theLight)
 {
   if (theLight.IsNull())
@@ -67,10 +63,8 @@ Standard_Boolean Graphic3d_LightSet::Add(const Handle(Graphic3d_CLight)& theLigh
   return Standard_True;
 }
 
-// =======================================================================
-// function : Remove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_LightSet::Remove(const Handle(Graphic3d_CLight)& theLight)
 {
   const Standard_Integer anIndToRemove = myLights.FindIndex(theLight);
@@ -85,10 +79,8 @@ Standard_Boolean Graphic3d_LightSet::Remove(const Handle(Graphic3d_CLight)& theL
   return Standard_True;
 }
 
-// =======================================================================
-// function : UpdateRevision
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size Graphic3d_LightSet::UpdateRevision()
 {
   if (myCacheRevision == myRevision)

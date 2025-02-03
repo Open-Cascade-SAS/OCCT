@@ -56,10 +56,8 @@ Standard_Boolean RWPly_CafWriter::toSkipFaceMesh(const RWMesh_FaceIterator& theF
   return theFaceIter.IsEmptyMesh();
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWPly_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                               const TColStd_IndexedDataMapOfStringString& theFileInfo,
                               const Message_ProgressRange&                theProgress)
@@ -70,10 +68,8 @@ bool RWPly_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWPly_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                               const TDF_LabelSequence&                    theRootLabels,
                               const TColStd_MapOfAsciiString*             theLabelFilter,
@@ -187,10 +183,8 @@ bool RWPly_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
   return isDone && !aPSentry.IsAborted();
 }
 
-// =======================================================================
-// function : addFaceInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWPly_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
                                   Standard_Integer&          theNbNodes,
                                   Standard_Integer&          theNbElems)
@@ -199,10 +193,8 @@ void RWPly_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
   theNbElems += theFace.NbTriangles();
 }
 
-// =======================================================================
-// function : writeShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWPly_CafWriter::writeShape(RWPly_PlyWriterContext&    theWriter,
                                  Message_LazyProgressScope& thePSentry,
                                  const Standard_Integer     theWriteStep,
@@ -231,10 +223,8 @@ bool RWPly_CafWriter::writeShape(RWPly_PlyWriterContext&    theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writeNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
                                  Message_LazyProgressScope& thePSentry,
                                  const RWMesh_FaceIterator& theFace)
@@ -278,10 +268,8 @@ bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writeIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWPly_CafWriter::writeIndices(RWPly_PlyWriterContext&    theWriter,
                                    Message_LazyProgressScope& thePSentry,
                                    const RWMesh_FaceIterator& theFace)

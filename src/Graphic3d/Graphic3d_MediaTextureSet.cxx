@@ -35,10 +35,8 @@ extern "C"
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTextureSet, Graphic3d_TextureSet)
 
-// ================================================================
-// Function : Graphic3d_MediaTexture
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
     : Graphic3d_TextureSet(4),
       myMutex(new Standard_HMutex()),
@@ -111,10 +109,8 @@ Graphic3d_MediaTextureSet::Graphic3d_MediaTextureSet()
                                              aSrcFrag + F_SHADER_YUV2RGB_FULL));
 }
 
-// =======================================================================
-// function : SetCallback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MediaTextureSet::SetCallback(CallbackOnUpdate_t theCallbackFunction,
                                             void*              theCallbackUserPtr)
 {
@@ -122,10 +118,8 @@ void Graphic3d_MediaTextureSet::SetCallback(CallbackOnUpdate_t theCallbackFuncti
   myCallbackUserPtr  = theCallbackUserPtr;
 }
 
-// =======================================================================
-// function : Notify
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MediaTextureSet::Notify()
 {
   if (myCallbackFunction != NULL)
@@ -134,10 +128,8 @@ void Graphic3d_MediaTextureSet::Notify()
   }
 }
 
-// =======================================================================
-// function : OpenInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath,
                                           Standard_Boolean               theToWait)
 {
@@ -159,10 +151,8 @@ void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath
   myInput = thePath;
 }
 
-// =======================================================================
-// function : LockFrame
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
 {
   {
@@ -184,10 +174,8 @@ Handle(Media_Frame) Graphic3d_MediaTextureSet::LockFrame()
   return Handle(Media_Frame)();
 }
 
-// =======================================================================
-// function : ReleaseFrame
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame)
 {
   {
@@ -202,10 +190,8 @@ void Graphic3d_MediaTextureSet::ReleaseFrame(const Handle(Media_Frame)& theFrame
   }
 }
 
-// ================================================================
-// Function : SwapFrames
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_MediaTextureSet::SwapFrames()
 {
   if (myPlayerCtx.IsNull())

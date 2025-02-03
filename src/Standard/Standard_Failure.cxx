@@ -31,10 +31,8 @@ namespace
 static Standard_Integer Standard_Failure_DefaultStackTraceLength = 0;
 } // namespace
 
-// =======================================================================
-// function : StringRef::allocate_message
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message(
   const Standard_CString theString)
 {
@@ -53,10 +51,8 @@ Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message(
   return aStrPtr;
 }
 
-// =======================================================================
-// function : StringRef::copy_message
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::StringRef* Standard_Failure::StringRef::copy_message(
   Standard_Failure::StringRef* theString)
 {
@@ -69,10 +65,8 @@ Standard_Failure::StringRef* Standard_Failure::StringRef::copy_message(
   return theString;
 }
 
-// =======================================================================
-// function : StringRef::deallocate_message
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::StringRef::deallocate_message(Standard_Failure::StringRef* theString)
 {
   if (theString != NULL)
@@ -84,10 +78,8 @@ void Standard_Failure::StringRef::deallocate_message(Standard_Failure::StringRef
   }
 }
 
-// =======================================================================
-// function : Standard_Failure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::Standard_Failure()
     : myMessage(NULL),
       myStackTrace(NULL)
@@ -108,10 +100,8 @@ Standard_Failure::Standard_Failure()
   }
 }
 
-// =======================================================================
-// function : Standard_Failure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::Standard_Failure(const Standard_CString theDesc)
     : myMessage(NULL),
       myStackTrace(NULL)
@@ -131,10 +121,8 @@ Standard_Failure::Standard_Failure(const Standard_CString theDesc)
   }
 }
 
-// =======================================================================
-// function : Standard_Failure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::Standard_Failure(const Standard_CString theDesc,
                                    const Standard_CString theStackTrace)
     : myMessage(NULL),
@@ -144,10 +132,8 @@ Standard_Failure::Standard_Failure(const Standard_CString theDesc,
   myStackTrace = StringRef::allocate_message(theStackTrace);
 }
 
-// =======================================================================
-// function : Standard_Failure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::Standard_Failure(const Standard_Failure& theFailure)
     : Standard_Transient(theFailure),
       myMessage(NULL),
@@ -157,29 +143,23 @@ Standard_Failure::Standard_Failure(const Standard_Failure& theFailure)
   myStackTrace = StringRef::copy_message(theFailure.myStackTrace);
 }
 
-// =======================================================================
-// function : ~Standard_Failure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Failure::~Standard_Failure()
 {
   StringRef::deallocate_message(myMessage);
   StringRef::deallocate_message(myStackTrace);
 }
 
-// =======================================================================
-// function : GetMessageString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Standard_Failure::GetMessageString() const
 {
   return myMessage != NULL ? myMessage->GetMessage() : "";
 }
 
-// =======================================================================
-// function : SetMessageString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::SetMessageString(const Standard_CString theDesc)
 {
   if (theDesc == GetMessageString())
@@ -191,19 +171,15 @@ void Standard_Failure::SetMessageString(const Standard_CString theDesc)
   myMessage = StringRef::allocate_message(theDesc);
 }
 
-// =======================================================================
-// function : GetStackString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Standard_Failure::GetStackString() const
 {
   return myStackTrace != NULL ? myStackTrace->GetMessage() : "";
 }
 
-// =======================================================================
-// function : SetStackString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::SetStackString(const Standard_CString theStack)
 {
   if (theStack == GetStackString())
@@ -215,59 +191,47 @@ void Standard_Failure::SetStackString(const Standard_CString theStack)
   myStackTrace = StringRef::allocate_message(theStack);
 }
 
-// =======================================================================
-// function : Raise
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Raise(const Standard_CString theDesc)
 {
   Handle(Standard_Failure) aFailure = new Standard_Failure();
   aFailure->Reraise(theDesc);
 }
 
-// =======================================================================
-// function : Raise
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Raise(const Standard_SStream& theReason)
 {
   Handle(Standard_Failure) aFailure = new Standard_Failure();
   aFailure->Reraise(theReason);
 }
 
-// =======================================================================
-// function : Reraise
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Reraise(const Standard_CString theDesc)
 {
   SetMessageString(theDesc);
   Reraise();
 }
 
-// =======================================================================
-// function : Reraise
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Reraise(const Standard_SStream& theReason)
 {
   SetMessageString(theReason.str().c_str());
   Reraise();
 }
 
-// =======================================================================
-// function : Reraise
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Reraise()
 {
   Throw();
 }
 
-// =======================================================================
-// function : Jump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Jump()
 {
 #if defined(OCC_CONVERT_SIGNALS)
@@ -278,19 +242,15 @@ void Standard_Failure::Jump()
 #endif
 }
 
-// =======================================================================
-// function : Throw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Throw() const
 {
   throw *this;
 }
 
-// =======================================================================
-// function : Print
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::Print(Standard_OStream& theStream) const
 {
   if (myMessage != NULL)
@@ -307,38 +267,30 @@ void Standard_Failure::Print(Standard_OStream& theStream) const
   }
 }
 
-// =======================================================================
-// function : NewInstance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Standard_Failure) Standard_Failure::NewInstance(Standard_CString theString)
 {
   return new Standard_Failure(theString);
 }
 
-// =======================================================================
-// function : NewInstance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Standard_Failure) Standard_Failure::NewInstance(Standard_CString theMessage,
                                                        Standard_CString theStackTrace)
 {
   return new Standard_Failure(theMessage, theStackTrace);
 }
 
-// =======================================================================
-// function : GetNbStackTraces
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Standard_Failure::DefaultStackTraceLength()
 {
   return Standard_Failure_DefaultStackTraceLength;
 }
 
-// =======================================================================
-// function : SetNbStackTraces
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Failure::SetDefaultStackTraceLength(Standard_Integer theNbStackTraces)
 {
   Standard_Failure_DefaultStackTraceLength = theNbStackTraces;

@@ -15,10 +15,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_VKeySet, Standard_Transient)
 
-// ================================================================
-// Function : As1pect_VKeySet
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Aspect_VKeySet::Aspect_VKeySet()
     : myKeys(0, Aspect_VKey_MAX),
       myModifiers(Aspect_VKeyFlags_NONE)
@@ -26,10 +24,8 @@ Aspect_VKeySet::Aspect_VKeySet()
   //
 }
 
-// ================================================================
-// Function : Reset
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void Aspect_VKeySet::Reset()
 {
   Standard_Mutex::Sentry aLock(myLock);
@@ -40,10 +36,8 @@ void Aspect_VKeySet::Reset()
   }
 }
 
-// ================================================================
-// Function : KeyDown
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
   Standard_Mutex::Sentry aLock(myLock);
@@ -58,10 +52,8 @@ void Aspect_VKeySet::KeyDown(Aspect_VKey theKey, double theTime, double thePress
   myModifiers               = myModifiers | aModif;
 }
 
-// ================================================================
-// Function : KeyUp
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
 {
   Standard_Mutex::Sentry aLock(myLock);
@@ -78,10 +70,8 @@ void Aspect_VKeySet::KeyUp(Aspect_VKey theKey, double theTime)
   }
 }
 
-// ================================================================
-// Function : KeyFromAxis
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void Aspect_VKeySet::KeyFromAxis(Aspect_VKey theNegative,
                                  Aspect_VKey thePositive,
                                  double      theTime,
@@ -112,10 +102,8 @@ void Aspect_VKeySet::KeyFromAxis(Aspect_VKey theNegative,
   }
 }
 
-// ================================================================
-// Function : HoldDuration
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool Aspect_VKeySet::HoldDuration(Aspect_VKey theKey,
                                   double      theTime,
                                   double&     theDuration,

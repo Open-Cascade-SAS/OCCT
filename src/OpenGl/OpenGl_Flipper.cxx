@@ -21,10 +21,8 @@
 
 #include <gp_Ax2.hxx>
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
     : OpenGl_Element(),
       myReferenceOrigin((Standard_ShortReal)theReferenceSystem.Location().X(),
@@ -48,19 +46,15 @@ OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
   //
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Flipper::Release(OpenGl_Context*)
 {
   //
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Check if rendering is to be in immediate mode
@@ -142,10 +136,8 @@ void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   aContext->ApplyModelWorldMatrix();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Flipper::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Flipper)

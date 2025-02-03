@@ -156,10 +156,8 @@ void SelectMgr_BVHThreadPool::BVHThread::performThread()
   }
 }
 
-// =======================================================================
-// function : runThread
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Address SelectMgr_BVHThreadPool::BVHThread::runThread(Standard_Address theTask)
 {
   BVHThread* aThread = static_cast<BVHThread*>(theTask);

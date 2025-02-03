@@ -19,10 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_PresentationAttributes, Standard_Transient)
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PresentationAttributes::DumpJson(Standard_OStream& theOStream,
                                                 Standard_Integer  theDepth) const
 {

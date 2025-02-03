@@ -70,10 +70,8 @@ static TCollection_AsciiString formatFps(double theVal)
 #endif
 } // namespace
 
-// =======================================================================
-// function : FormatAVErrorDescription
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Media_FormatContext::FormatAVErrorDescription(int theErrCodeAV)
 {
 #ifdef HAVE_FFMPEG
@@ -105,10 +103,8 @@ TCollection_AsciiString Media_FormatContext::FormatAVErrorDescription(int theErr
 #endif
 }
 
-// =======================================================================
-// function : FormatUnitsToSeconds
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 double Media_FormatContext::FormatUnitsToSeconds(int64_t theTimeUnits)
 {
 #ifdef HAVE_FFMPEG
@@ -119,10 +115,8 @@ double Media_FormatContext::FormatUnitsToSeconds(int64_t theTimeUnits)
 #endif
 }
 
-// =======================================================================
-// function : UnitsToSeconds
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 double Media_FormatContext::UnitsToSeconds(const AVRational& theTimeBase, int64_t theTimeUnits)
 {
 #ifdef HAVE_FFMPEG
@@ -134,10 +128,8 @@ double Media_FormatContext::UnitsToSeconds(const AVRational& theTimeBase, int64_
 #endif
 }
 
-// =======================================================================
-// function : StreamUnitsToSeconds
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 double Media_FormatContext::StreamUnitsToSeconds(const AVStream& theStream, int64_t theTimeUnits)
 {
 #ifdef HAVE_FFMPEG
@@ -149,10 +141,8 @@ double Media_FormatContext::StreamUnitsToSeconds(const AVStream& theStream, int6
 #endif
 }
 
-// =======================================================================
-// function : SecondsToUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int64_t Media_FormatContext::SecondsToUnits(double theTimeSeconds)
 {
 #ifdef HAVE_FFMPEG
@@ -163,10 +153,8 @@ int64_t Media_FormatContext::SecondsToUnits(double theTimeSeconds)
 #endif
 }
 
-// =======================================================================
-// function : SecondsToUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int64_t Media_FormatContext::SecondsToUnits(const AVRational& theTimeBase, double theTimeSeconds)
 {
 #ifdef HAVE_FFMPEG
@@ -178,10 +166,8 @@ int64_t Media_FormatContext::SecondsToUnits(const AVRational& theTimeBase, doubl
 #endif
 }
 
-// =======================================================================
-// function : Media_FormatContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int64_t Media_FormatContext::StreamSecondsToUnits(const AVStream& theStream, double theTimeSeconds)
 {
 #ifdef HAVE_FFMPEG
@@ -193,10 +179,8 @@ int64_t Media_FormatContext::StreamSecondsToUnits(const AVStream& theStream, dou
 #endif
 }
 
-// =======================================================================
-// function : Media_FormatContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Media_FormatContext::Media_FormatContext()
     : myFormatCtx(NULL),
       myPtsStartBase(0.0),
@@ -205,19 +189,15 @@ Media_FormatContext::Media_FormatContext()
   //
 }
 
-// =======================================================================
-// function : ~Media_FormatContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Media_FormatContext::~Media_FormatContext()
 {
   Close();
 }
 
-// =======================================================================
-// function : NbSteams
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int Media_FormatContext::NbSteams() const
 {
 #ifdef HAVE_FFMPEG
@@ -227,10 +207,8 @@ unsigned int Media_FormatContext::NbSteams() const
 #endif
 }
 
-// =======================================================================
-// function : Stream
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const AVStream& Media_FormatContext::Stream(unsigned int theIndex) const
 {
 #ifdef HAVE_FFMPEG
@@ -241,10 +219,8 @@ const AVStream& Media_FormatContext::Stream(unsigned int theIndex) const
 #endif
 }
 
-// =======================================================================
-// function : OpenInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
 {
 #ifdef HAVE_FFMPEG
@@ -303,10 +279,8 @@ bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
 #endif
 }
 
-// =======================================================================
-// function : Close
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Media_FormatContext::Close()
 {
   if (myFormatCtx != NULL)
@@ -318,10 +292,8 @@ void Media_FormatContext::Close()
   }
 }
 
-// =======================================================================
-// function : FormatTime
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Media_FormatContext::FormatTime(double theSeconds)
 {
   double       aSecIn = theSeconds;
@@ -353,10 +325,8 @@ TCollection_AsciiString Media_FormatContext::FormatTime(double theSeconds)
   return TCollection_AsciiString(aMilliSeconds) + " ms";
 }
 
-// =======================================================================
-// function : FormatTimeProgress
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Media_FormatContext::FormatTimeProgress(double theProgress,
                                                                 double theDuration)
 {
@@ -393,10 +363,8 @@ TCollection_AsciiString Media_FormatContext::FormatTimeProgress(double theProgre
   return aBuffer;
 }
 
-// =======================================================================
-// function : StreamInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex,
                                                         AVCodecContext* theCodecCtx) const
 {
@@ -463,10 +431,8 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
 #endif
 }
 
-// =======================================================================
-// function : ReadPacket
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_FormatContext::ReadPacket(const Handle(Media_Packet)& thePacket)
 {
   if (thePacket.IsNull())
@@ -481,10 +447,8 @@ bool Media_FormatContext::ReadPacket(const Handle(Media_Packet)& thePacket)
 #endif
 }
 
-// =======================================================================
-// function : SeekStream
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_FormatContext::SeekStream(unsigned int theStreamId,
                                      double       theSeekPts,
                                      bool         theToSeekBack)
@@ -531,10 +495,8 @@ bool Media_FormatContext::SeekStream(unsigned int theStreamId,
 #endif
 }
 
-// =======================================================================
-// function : Seek
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_FormatContext::Seek(double theSeekPts, bool theToSeekBack)
 {
 #ifdef HAVE_FFMPEG

@@ -44,10 +44,8 @@ static const char* NameOfTexture2d_to_FileName[] = {"2d_MatraDatavision.rgb",
                                                     "2d_rain.rgb",
                                                     "2d_chess.rgba"};
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const TCollection_AsciiString& theFileName)
     : Graphic3d_TextureMap(theFileName, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_2D_UNKNOWN)
@@ -58,10 +56,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const TCollection_AsciiString& theFileN
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const TCollection_AsciiString& theFileName,
                                          const Graphic3d_TypeOfTexture  theType)
     : Graphic3d_TextureMap(theFileName, theType),
@@ -70,10 +66,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const TCollection_AsciiString& theFileN
   //
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theNOT)
     : Graphic3d_TextureMap(NameOfTexture2d_to_FileName[theNOT], Graphic3d_TypeOfTexture_2D),
       myName(theNOT)
@@ -87,10 +81,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theNOT)
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theNOT,
                                          const Graphic3d_TypeOfTexture   theType)
     : Graphic3d_TextureMap(NameOfTexture2d_to_FileName[theNOT], theType),
@@ -100,10 +92,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theNOT,
   myTexId = TCollection_AsciiString("Graphic3d_Texture2D_") + NameOfTexture2d_to_FileName[theNOT];
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap)
     : Graphic3d_TextureMap(thePixMap, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_2D_UNKNOWN)
@@ -114,10 +104,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap)
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)&   thePixMap,
                                          const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureMap(thePixMap, theType),
@@ -126,28 +114,22 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const Handle(Image_PixMap)&   thePixMap
   //
 }
 
-// =======================================================================
-// function : NumberOfTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_Texture2D::NumberOfTextures()
 {
   return sizeof(NameOfTexture2d_to_FileName) / sizeof(char*);
 }
 
-// =======================================================================
-// function : Name
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_NameOfTexture2D Graphic3d_Texture2D::Name() const
 {
   return myName;
 }
 
-// =======================================================================
-// function : TextureName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_Texture2D::TextureName(const Standard_Integer theRank)
 {
   if (theRank < 1 || theRank > NumberOfTextures())
@@ -160,10 +142,8 @@ TCollection_AsciiString Graphic3d_Texture2D::TextureName(const Standard_Integer 
   return aFileName.SubString(4, i - 1);
 }
 
-// =======================================================================
-// function : SetImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2D::SetImage(const Handle(Image_PixMap)& thePixMap)
 {
   myPixMap = thePixMap;

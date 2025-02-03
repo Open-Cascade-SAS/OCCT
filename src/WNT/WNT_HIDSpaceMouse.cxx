@@ -146,10 +146,8 @@ static SpaceVKey hidToSpaceKey(unsigned long theProductId, unsigned short theKey
 
 } // namespace
 
-// =======================================================================
-// function : WNT_HIDSpaceMouse
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long        theProductId,
                                      const Standard_Byte* theData,
                                      Standard_Size        theSize)
@@ -161,10 +159,8 @@ WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long        theProductId,
   //
 }
 
-// =======================================================================
-// function : IsKnownProduct
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool WNT_HIDSpaceMouse::IsKnownProduct(unsigned long theProductId)
 {
   switch (theProductId)
@@ -186,10 +182,8 @@ bool WNT_HIDSpaceMouse::IsKnownProduct(unsigned long theProductId)
   return false;
 }
 
-// =======================================================================
-// function : Translation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3d WNT_HIDSpaceMouse::Translation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
@@ -198,10 +192,8 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::Translation(bool& theIsIdle, bool theIsQuadri
            : Graphic3d_Vec3d();
 }
 
-// =======================================================================
-// function : Rotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
@@ -216,10 +208,8 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) 
   return Graphic3d_Vec3d();
 }
 
-// =======================================================================
-// function : fromRawVec3
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3(bool&                theIsIdle,
                                                const Standard_Byte* theData,
                                                bool                 theIsTrans,
@@ -284,10 +274,8 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3(bool&                theIsIdle,
   return aVec / (double(myValueRange) * double(myValueRange));
 }
 
-// =======================================================================
-// function : HidToSpaceKey
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKey WNT_HIDSpaceMouse::HidToSpaceKey(unsigned short theKeyBit) const
 {
   const SpaceVKey aKey = hidToSpaceKey(myProductId, theKeyBit);

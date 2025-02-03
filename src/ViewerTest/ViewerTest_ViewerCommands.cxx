@@ -2412,10 +2412,8 @@ static void VProcessEvents(ClientData theDispX, int)
   }
 }
 #elif !defined(__APPLE__)
-// =======================================================================
-// function : ViewerMainLoop
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int ViewerMainLoop(Standard_Integer, const char**)
 {
   // unused
@@ -5594,10 +5592,8 @@ static int VMemGpu(Draw_Interpretor& theDI, Standard_Integer theArgNb, const cha
   return 0;
 }
 
-// ==============================================================================
-// function : VReadPixel
-// purpose  :
-// ==============================================================================
+//=================================================================================================
+
 static int VReadPixel(Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
 {
   // get the active view

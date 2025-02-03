@@ -24,10 +24,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager, Standard_Transient)
 
-// =======================================================================
-// function : PrsMgr_PresentationManager
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 PrsMgr_PresentationManager::PrsMgr_PresentationManager(
   const Handle(Graphic3d_StructureManager)& theStructureManager)
     : myStructureManager(theStructureManager),
@@ -36,10 +34,8 @@ PrsMgr_PresentationManager::PrsMgr_PresentationManager(
   //
 }
 
-// =======================================================================
-// function : Display
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Display(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                          const Standard_Integer                  theMode)
 {
@@ -79,10 +75,8 @@ void PrsMgr_PresentationManager::Display(const Handle(PrsMgr_PresentableObject)&
   }
 }
 
-// =======================================================================
-// function : Erase
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Erase(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                        const Standard_Integer                  theMode)
 {
@@ -124,10 +118,8 @@ void PrsMgr_PresentationManager::Erase(const Handle(PrsMgr_PresentableObject)& t
   }
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                        const Standard_Integer                  theMode)
 {
@@ -147,10 +139,8 @@ void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& t
   }
 }
 
-// =======================================================================
-// function : SetVisibility
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::SetVisibility(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                                const Standard_Integer                  theMode,
                                                const Standard_Boolean                  theValue)
@@ -179,10 +169,8 @@ void PrsMgr_PresentationManager::SetVisibility(const Handle(PrsMgr_PresentableOb
   }
 }
 
-// =======================================================================
-// function : Unhighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Unhighlight(const Handle(PrsMgr_PresentableObject)& thePrsObj)
 {
   if (thePrsObj->ToPropagateVisualState())
@@ -206,10 +194,8 @@ void PrsMgr_PresentationManager::Unhighlight(const Handle(PrsMgr_PresentableObje
   }
 }
 
-// =======================================================================
-// function : SetDisplayPriority
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::SetDisplayPriority(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode,
@@ -231,10 +217,8 @@ void PrsMgr_PresentationManager::SetDisplayPriority(
   }
 }
 
-// =======================================================================
-// function : DisplayPriority
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_DisplayPriority PrsMgr_PresentationManager::DisplayPriority(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode) const
@@ -256,10 +240,8 @@ Graphic3d_DisplayPriority PrsMgr_PresentationManager::DisplayPriority(
   return !aPrs.IsNull() ? aPrs->DisplayPriority() : Graphic3d_DisplayPriority_INVALID;
 }
 
-// =======================================================================
-// function : IsDisplayed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean PrsMgr_PresentationManager::IsDisplayed(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode) const
@@ -280,10 +262,8 @@ Standard_Boolean PrsMgr_PresentationManager::IsDisplayed(
   return !aPrs.IsNull() && aPrs->IsDisplayed();
 }
 
-// =======================================================================
-// function : IsHighlighted
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean PrsMgr_PresentationManager::IsHighlighted(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode) const
@@ -304,10 +284,8 @@ Standard_Boolean PrsMgr_PresentationManager::IsHighlighted(
   return !aPrs.IsNull() && aPrs->IsHighlighted();
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Update(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                         const Standard_Integer                  theMode) const
 {
@@ -326,10 +304,8 @@ void PrsMgr_PresentationManager::Update(const Handle(PrsMgr_PresentableObject)& 
   }
 }
 
-// =======================================================================
-// function : BeginImmediateDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::BeginImmediateDraw()
 {
   if (++myImmediateModeOn > 1)
@@ -340,10 +316,8 @@ void PrsMgr_PresentationManager::BeginImmediateDraw()
   ClearImmediateDraw();
 }
 
-// =======================================================================
-// function : ClearImmediateDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::ClearImmediateDraw()
 {
   for (PrsMgr_ListOfPresentations::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
@@ -419,10 +393,8 @@ void PrsMgr_PresentationManager::displayImmediate(const Handle(V3d_Viewer)& theV
   }
 }
 
-// =======================================================================
-// function : EndImmediateDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::EndImmediateDraw(const Handle(V3d_Viewer)& theViewer)
 {
   if (--myImmediateModeOn > 0)
@@ -478,10 +450,8 @@ void PrsMgr_PresentationManager::AddToImmediateList(const Handle(Prs3d_Presentat
   myImmediateList.Append(thePrs);
 }
 
-// =======================================================================
-// function : HasPresentation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean PrsMgr_PresentationManager::HasPresentation(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode) const
@@ -502,10 +472,8 @@ Standard_Boolean PrsMgr_PresentationManager::HasPresentation(
   return Standard_False;
 }
 
-// =======================================================================
-// function : Presentation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode,
@@ -540,10 +508,8 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
   return aPrs;
 }
 
-// =======================================================================
-// function : RemovePresentation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean PrsMgr_PresentationManager::RemovePresentation(
   const Handle(PrsMgr_PresentableObject)& thePrsObj,
   const Standard_Integer                  theMode)
@@ -562,10 +528,8 @@ Standard_Boolean PrsMgr_PresentationManager::RemovePresentation(
   return Standard_False;
 }
 
-// =======================================================================
-// function : SetZLayer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::SetZLayer(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                            const Graphic3d_ZLayerId                theLayerId)
 {
@@ -586,20 +550,16 @@ void PrsMgr_PresentationManager::SetZLayer(const Handle(PrsMgr_PresentableObject
   thePrsObj->SetZLayer(theLayerId);
 }
 
-// =======================================================================
-// function : GetZLayer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ZLayerId PrsMgr_PresentationManager::GetZLayer(
   const Handle(PrsMgr_PresentableObject)& thePrsObj) const
 {
   return thePrsObj->ZLayer();
 }
 
-// =======================================================================
-// function : Connect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Connect(const Handle(PrsMgr_PresentableObject)& thePrsObject,
                                          const Handle(PrsMgr_PresentableObject)& theOtherObject,
                                          const Standard_Integer                  theMode,
@@ -610,10 +570,8 @@ void PrsMgr_PresentationManager::Connect(const Handle(PrsMgr_PresentableObject)&
   aPrs->Connect(aPrsOther.get(), Graphic3d_TOC_DESCENDANT);
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Transform(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                            const Handle(TopLoc_Datum3D)& theTransformation,
                                            const Standard_Integer        theMode)
@@ -621,10 +579,8 @@ void PrsMgr_PresentationManager::Transform(const Handle(PrsMgr_PresentableObject
   Presentation(thePrsObj, theMode)->SetTransformation(theTransformation);
 }
 
-// =======================================================================
-// function : Color
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::Color(const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                        const Handle(Prs3d_Drawer)&             theStyle,
                                        const Standard_Integer                  theMode,
@@ -694,10 +650,8 @@ static void updatePrsTransformation(const PrsMgr_ListOfPresentations& thePrsList
 }
 } // namespace
 
-// =======================================================================
-// function : UpdateHighlightTrsf
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentationManager::UpdateHighlightTrsf(
   const Handle(V3d_Viewer)&               theViewer,
   const Handle(PrsMgr_PresentableObject)& theObj,

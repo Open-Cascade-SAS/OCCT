@@ -17,19 +17,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(D3DHost_GraphicDriverFactory, OpenGl_GraphicDriverFactory)
 
-// =======================================================================
-// function : D3DHost_GraphicDriverFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_GraphicDriverFactory::D3DHost_GraphicDriverFactory()
 {
   myName = "TKD3DHost";
 }
 
-// =======================================================================
-// function : CreateDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_GraphicDriver) D3DHost_GraphicDriverFactory::CreateDriver(
   const Handle(Aspect_DisplayConnection)&)
 {

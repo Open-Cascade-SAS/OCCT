@@ -153,10 +153,8 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&
   return BRepTools::Triangulation(theShape, GetDeflection(theShape, theDrawer), true);
 }
 
-// =======================================================================
-// function : Tessellate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theShape,
                                                           const Handle(Prs3d_Drawer)& theDrawer)
 {
@@ -181,10 +179,8 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&   
   return wasRecomputed;
 }
 
-// =======================================================================
-// function : ClearOnOwnDeflectionChange
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(
   const TopoDS_Shape&         theShape,
   const Handle(Prs3d_Drawer)& theDrawer,

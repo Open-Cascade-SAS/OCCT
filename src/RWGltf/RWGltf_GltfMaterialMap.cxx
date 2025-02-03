@@ -24,10 +24,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfMaterialMap, RWMesh_MaterialMap)
 
-// =======================================================================
-// function : baseColorTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Image_Texture)& RWGltf_GltfMaterialMap::baseColorTexture(
   const Handle(XCAFDoc_VisMaterial)& theMat)
 {
@@ -47,10 +45,8 @@ const Handle(Image_Texture)& RWGltf_GltfMaterialMap::baseColorTexture(
   return THE_NULL_TEXTURE;
 }
 
-// =======================================================================
-// function : RWGltf_GltfMaterialMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap(const TCollection_AsciiString& theFile,
                                                const Standard_Integer         theDefSamplerId)
     : RWMesh_MaterialMap(theFile),
@@ -60,19 +56,15 @@ RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap(const TCollection_AsciiString& th
   myMatNameAsKey = false;
 }
 
-// =======================================================================
-// function : ~RWGltf_GltfMaterialMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfMaterialMap::~RWGltf_GltfMaterialMap()
 {
   //
 }
 
-// =======================================================================
-// function : AddImages
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::AddImages(RWGltf_GltfOStreamWriter* theWriter,
                                        const XCAFPrs_Style&      theStyle,
                                        Standard_Boolean&         theIsStarted)
@@ -89,10 +81,8 @@ void RWGltf_GltfMaterialMap::AddImages(RWGltf_GltfOStreamWriter* theWriter,
   addImage(theWriter, theStyle.Material()->PbrMaterial().OcclusionTexture, theIsStarted);
 }
 
-// =======================================================================
-// function : AddGlbImages
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::AddGlbImages(std::ostream& theBinFile, const XCAFPrs_Style& theStyle)
 {
   if (theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
@@ -107,10 +97,8 @@ void RWGltf_GltfMaterialMap::AddGlbImages(std::ostream& theBinFile, const XCAFPr
   addGlbImage(theBinFile, theStyle.Material()->PbrMaterial().OcclusionTexture);
 }
 
-// =======================================================================
-// function : addImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::addImage(RWGltf_GltfOStreamWriter*    theWriter,
                                       const Handle(Image_Texture)& theTexture,
                                       Standard_Boolean&            theIsStarted)
@@ -150,10 +138,8 @@ void RWGltf_GltfMaterialMap::addImage(RWGltf_GltfOStreamWriter*    theWriter,
 #endif
 }
 
-// =======================================================================
-// function : addGlbImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::addGlbImage(std::ostream&                theBinFile,
                                          const Handle(Image_Texture)& theTexture)
 {
@@ -189,10 +175,8 @@ void RWGltf_GltfMaterialMap::addGlbImage(std::ostream&                theBinFile
   myImageMap.Add(theTexture, aBuffImage);
 }
 
-// =======================================================================
-// function : FlushBufferViews
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::FlushGlbBufferViews(RWGltf_GltfOStreamWriter* theWriter,
                                                  const Standard_Integer    theBinDataBufferId,
                                                  Standard_Integer&         theBuffViewId)
@@ -226,10 +210,8 @@ void RWGltf_GltfMaterialMap::FlushGlbBufferViews(RWGltf_GltfOStreamWriter* theWr
 #endif
 }
 
-// =======================================================================
-// function : FlushGlbImages
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::FlushGlbImages(RWGltf_GltfOStreamWriter* theWriter)
 {
 #ifdef HAVE_RAPIDJSON
@@ -278,10 +260,8 @@ void RWGltf_GltfMaterialMap::FlushGlbImages(RWGltf_GltfOStreamWriter* theWriter)
 #endif
 }
 
-// =======================================================================
-// function : AddMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
                                          const XCAFPrs_Style&      theStyle,
                                          Standard_Boolean&         theIsStarted)
@@ -310,10 +290,8 @@ void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
 #endif
 }
 
-// =======================================================================
-// function : AddTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::AddTextures(RWGltf_GltfOStreamWriter* theWriter,
                                          const XCAFPrs_Style&      theStyle,
                                          Standard_Boolean&         theIsStarted)
@@ -330,10 +308,8 @@ void RWGltf_GltfMaterialMap::AddTextures(RWGltf_GltfOStreamWriter* theWriter,
   addTexture(theWriter, theStyle.Material()->PbrMaterial().OcclusionTexture, theIsStarted);
 }
 
-// =======================================================================
-// function : addTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::addTexture(RWGltf_GltfOStreamWriter*    theWriter,
                                         const Handle(Image_Texture)& theTexture,
                                         Standard_Boolean&            theIsStarted)
@@ -371,19 +347,15 @@ void RWGltf_GltfMaterialMap::addTexture(RWGltf_GltfOStreamWriter*    theWriter,
 #endif
 }
 
-// =======================================================================
-// function : AddMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString RWGltf_GltfMaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
   return RWMesh_MaterialMap::AddMaterial(theStyle);
 }
 
-// =======================================================================
-// function : DefineMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfMaterialMap::DefineMaterial(const XCAFPrs_Style& theStyle,
                                             const TCollection_AsciiString& /*theKey*/,
                                             const TCollection_AsciiString& theName)

@@ -43,10 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangles, Graphic3d_ArrayOfPrimit
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangleStrips, Graphic3d_ArrayOfPrimitives)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons, Graphic3d_ArrayOfPrimitives)
 
-// =======================================================================
-// function : CreateArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfPrimitives) Graphic3d_ArrayOfPrimitives::CreateArray(
   Graphic3d_TypeOfPrimitiveArray theType,
   Standard_Integer               theMaxVertexs,
@@ -92,10 +90,8 @@ Handle(Graphic3d_ArrayOfPrimitives) Graphic3d_ArrayOfPrimitives::CreateArray(
   return Handle(Graphic3d_ArrayOfPrimitives)();
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
                                        Standard_Integer               theMaxVertexs,
                                        Standard_Integer               theMaxBounds,
@@ -217,10 +213,8 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
   }
 }
 
-// =======================================================================
-// function : ~Graphic3d_ArrayOfPrimitives
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ArrayOfPrimitives::~Graphic3d_ArrayOfPrimitives()
 {
   myIndices.Nullify();
@@ -228,10 +222,8 @@ Graphic3d_ArrayOfPrimitives::~Graphic3d_ArrayOfPrimitives()
   myBounds.Nullify();
 }
 
-// =======================================================================
-// function : AddBound
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer theEdgeNumber)
 {
   Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds,
@@ -240,10 +232,8 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer th
   return ++myBounds->NbBounds;
 }
 
-// =======================================================================
-// function : AddBound
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer theEdgeNumber,
                                                        const Standard_Real    theR,
                                                        const Standard_Real    theG,
@@ -257,10 +247,8 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer th
   return myBounds->NbBounds;
 }
 
-// =======================================================================
-// function : AddEdge
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(const Standard_Integer theVertexIndex)
 {
   Standard_OutOfRange_Raise_if(myIndices.IsNull()
@@ -273,10 +261,8 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(const Standard_Integer the
   return ++myIndices->NbElements;
 }
 
-// =======================================================================
-// function : AddTriangleStripEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(Standard_Integer theVertexLower,
                                                         Standard_Integer theVertexUpper)
 {
@@ -300,10 +286,8 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(Standard_Integer theVert
   }
 }
 
-// =======================================================================
-// function : AddTriangleFanEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(Standard_Integer theVertexLower,
                                                       Standard_Integer theVertexUpper,
                                                       Standard_Boolean theToClose)
@@ -323,10 +307,8 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(Standard_Integer theVertex
   }
 }
 
-// =======================================================================
-// function : AddPolylineEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(Standard_Integer theVertexLower,
                                                    Standard_Integer theVertexUpper,
                                                    Standard_Boolean theToClose)
@@ -346,10 +328,8 @@ void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(Standard_Integer theVertexLow
   }
 }
 
-// =======================================================================
-// function : StringType
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const
 {
   switch (myType)
@@ -386,10 +366,8 @@ Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const
   return "UndefinedArray";
 }
 
-// =======================================================================
-// function : ItemNumber
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const
 {
   if (myAttribs.IsNull())
@@ -440,10 +418,8 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const
   return -1;
 }
 
-// =======================================================================
-// function : IsValid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
 {
   if (myAttribs.IsNull())

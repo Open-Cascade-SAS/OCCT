@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_V3dView, V3d_View)
 
-// =======================================================================
-// function : ViewerTest_V3dView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 ViewerTest_V3dView::ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
                                        const V3d_TypeOfView      theType,
                                        bool                      theIs2dMode)
@@ -30,10 +28,8 @@ ViewerTest_V3dView::ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
   //
 }
 
-// =======================================================================
-// function : ViewerTest_V3dView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 ViewerTest_V3dView::ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
                                        const Handle(V3d_View)&   theView)
     : V3d_View(theViewer, theView),
@@ -45,10 +41,8 @@ ViewerTest_V3dView::ViewerTest_V3dView(const Handle(V3d_Viewer)& theViewer,
   }
 }
 
-// =======================================================================
-// function : IsCurrentViewIn2DMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool ViewerTest_V3dView::IsCurrentViewIn2DMode()
 {
   if (Handle(ViewerTest_V3dView) aV3dView =
@@ -59,10 +53,8 @@ bool ViewerTest_V3dView::IsCurrentViewIn2DMode()
   return false;
 }
 
-// =======================================================================
-// function : SetCurrentView2DMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void ViewerTest_V3dView::SetCurrentView2DMode(bool theIs2d)
 {
   if (Handle(ViewerTest_V3dView) aV3dView =

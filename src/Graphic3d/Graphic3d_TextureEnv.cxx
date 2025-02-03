@@ -33,10 +33,8 @@ static const char* NameOfTextureEnv_to_FileName[] = {"env_clouds.rgb",
                                                      "env_lines.rgb",
                                                      "env_road.rgb"};
 
-// =======================================================================
-// function : Graphic3d_TextureEnv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureEnv::Graphic3d_TextureEnv(const TCollection_AsciiString& theFileName)
     : Graphic3d_TextureRoot(theFileName, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_ENV_UNKNOWN)
@@ -48,10 +46,8 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv(const TCollection_AsciiString& theFil
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_TextureEnv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Graphic3d_NameOfTextureEnv theNOT)
     : Graphic3d_TextureRoot(NameOfTextureEnv_to_FileName[theNOT], Graphic3d_TypeOfTexture_2D),
       myName(theNOT)
@@ -66,10 +62,8 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Graphic3d_NameOfTextureEnv theN
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_TextureEnv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Handle(Image_PixMap)& thePixMap)
     : Graphic3d_TextureRoot(thePixMap, Graphic3d_TypeOfTexture_2D),
       myName(Graphic3d_NOT_ENV_UNKNOWN)
@@ -81,28 +75,22 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv(const Handle(Image_PixMap)& thePixMap
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Name
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_NameOfTextureEnv Graphic3d_TextureEnv::Name() const
 {
   return myName;
 }
 
-// =======================================================================
-// function : NumberOfTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_TextureEnv::NumberOfTextures()
 {
   return sizeof(NameOfTextureEnv_to_FileName) / sizeof(char*);
 }
 
-// =======================================================================
-// function : TextureName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_TextureEnv::TextureName(const Standard_Integer theRank)
 {
   if (theRank < 1 || theRank > NumberOfTextures())

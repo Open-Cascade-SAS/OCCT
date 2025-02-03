@@ -431,10 +431,8 @@ public:
 };
 } // namespace
 
-// =======================================================================
-// function : CreateFiller
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(SelectMgr_SelectionImageFiller) SelectMgr_SelectionImageFiller::CreateFiller(
   Image_PixMap&                  thePixMap,
   SelectMgr_ViewerSelector*      theSelector,

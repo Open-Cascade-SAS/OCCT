@@ -17,10 +17,8 @@
 #include <NCollection_IndexedMap.hxx>
 #include <OSD_FileSystem.hxx>
 
-// =======================================================================
-// function : splitLines
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static void splitLines(const TCollection_AsciiString&                   theString,
                        NCollection_IndexedMap<TCollection_AsciiString>& theLines)
 {
@@ -58,10 +56,8 @@ static void splitLines(const TCollection_AsciiString&                   theStrin
   }
 }
 
-// ================================================================
-// Function : RWPly_PlyWriterContext
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWPly_PlyWriterContext::RWPly_PlyWriterContext()
     : myNbHeaderVerts(0),
       myNbHeaderElems(0),
@@ -78,19 +74,15 @@ RWPly_PlyWriterContext::RWPly_PlyWriterContext()
   //
 }
 
-// ================================================================
-// Function : ~RWPly_PlyWriterContext
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWPly_PlyWriterContext::~RWPly_PlyWriterContext()
 {
   Close();
 }
 
-// ================================================================
-// Function : Open
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::Open(const TCollection_AsciiString&       theName,
                                   const std::shared_ptr<std::ostream>& theStream)
 {
@@ -114,10 +106,8 @@ bool RWPly_PlyWriterContext::Open(const TCollection_AsciiString&       theName,
   return true;
 }
 
-// ================================================================
-// Function : Close
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::Close(bool theIsAborted)
 {
   if (myStream.get() == nullptr)
@@ -148,10 +138,8 @@ bool RWPly_PlyWriterContext::Close(bool theIsAborted)
   return aResult;
 }
 
-// ================================================================
-// Function : WriteHeader
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                      theNbNodes,
                                          const Standard_Integer                      theNbElems,
                                          const TColStd_IndexedDataMapOfStringString& theFileInfo)
@@ -233,10 +221,8 @@ bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                 
   return myStream->good();
 }
 
-// ================================================================
-// Function : WriteVertex
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
                                          const Graphic3d_Vec3&   theNorm,
                                          const Graphic3d_Vec2&   theUV,
@@ -277,10 +263,8 @@ bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
   return myStream->good();
 }
 
-// ================================================================
-// Function : WriteTriangle
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
 {
   if (myStream.get() == nullptr)
@@ -303,10 +287,8 @@ bool RWPly_PlyWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
   return myStream->good();
 }
 
-// ================================================================
-// Function : WriteQuad
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWPly_PlyWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
 {
   if (myStream.get() == nullptr)

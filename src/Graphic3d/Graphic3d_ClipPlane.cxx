@@ -39,10 +39,8 @@ static Handle(Graphic3d_AspectFillArea3d) defaultAspect()
 }
 } // namespace
 
-// =======================================================================
-// function : Graphic3d_ClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ClipPlane::Graphic3d_ClipPlane()
     : myAspect(defaultAspect()),
       myPrevInChain(NULL),
@@ -59,10 +57,8 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane()
   makeId();
 }
 
-// =======================================================================
-// function : Graphic3d_ClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_Vec4d& theEquation)
     : myAspect(defaultAspect()),
       myPrevInChain(NULL),
@@ -80,10 +76,8 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_Vec4d& theEquation)
   updateInversedPlane();
 }
 
-// =======================================================================
-// function : Graphic3d_ClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
     : Standard_Transient(theOther),
       myAspect(defaultAspect()),
@@ -102,10 +96,8 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
   *myAspect = *theOther.CappingAspect();
 }
 
-// =======================================================================
-// function : Graphic3d_ClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
     : myAspect(defaultAspect()),
       myPrevInChain(NULL),
@@ -122,10 +114,8 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
   makeId();
 }
 
-// =======================================================================
-// function : SetEquation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetEquation(const Graphic3d_Vec4d& theEquation)
 {
   myPlane    = gp_Pln(theEquation.x(), theEquation.y(), theEquation.z(), theEquation.w());
@@ -134,10 +124,8 @@ void Graphic3d_ClipPlane::SetEquation(const Graphic3d_Vec4d& theEquation)
   myEquationMod++;
 }
 
-// =======================================================================
-// function : SetPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetEquation(const gp_Pln& thePlane)
 {
   myPlane = thePlane;
@@ -146,10 +134,8 @@ void Graphic3d_ClipPlane::SetEquation(const gp_Pln& thePlane)
   myEquationMod++;
 }
 
-// =======================================================================
-// function : SetOn
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetOn(const Standard_Boolean theIsOn)
 {
   if (myPrevInChain != NULL)
@@ -160,28 +146,22 @@ void Graphic3d_ClipPlane::SetOn(const Standard_Boolean theIsOn)
   myIsOn = theIsOn;
 }
 
-// =======================================================================
-// function : SetCapping
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCapping(const Standard_Boolean theIsOn)
 {
   myIsCapping = theIsOn;
 }
 
-// =======================================================================
-// function : Clone
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ClipPlane) Graphic3d_ClipPlane::Clone() const
 {
   return new Graphic3d_ClipPlane(*this);
 }
 
-// =======================================================================
-// function : SetCappingColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingColor(const Quantity_Color& theColor)
 {
   myAspect->SetInteriorColor(theColor);
@@ -189,10 +169,8 @@ void Graphic3d_ClipPlane::SetCappingColor(const Quantity_Color& theColor)
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingMaterial(const Graphic3d_MaterialAspect& theMat)
 {
   myAspect->SetFrontMaterial(theMat);
@@ -203,10 +181,8 @@ void Graphic3d_ClipPlane::SetCappingMaterial(const Graphic3d_MaterialAspect& the
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingTexture(const Handle(Graphic3d_TextureMap)& theTexture)
 {
   if (!theTexture.IsNull())
@@ -231,60 +207,48 @@ void Graphic3d_ClipPlane::SetCappingTexture(const Handle(Graphic3d_TextureMap)& 
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingHatch
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingHatch(const Aspect_HatchStyle theStyle)
 {
   myAspect->SetHatchStyle(theStyle);
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingCustomHatch
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingCustomHatch(const Handle(Graphic3d_HatchStyle)& theStyle)
 {
   myAspect->SetHatchStyle(theStyle);
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingHatchOn
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingHatchOn()
 {
   myAspect->SetInteriorStyle(Aspect_IS_HATCH);
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingHatchOff
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingHatchOff()
 {
   myAspect->SetInteriorStyle(Aspect_IS_SOLID);
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : SetCappingAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetCappingAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect)
 {
   myAspect = theAspect;
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : setCappingFlag
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::setCappingFlag(bool theToUse, int theFlag)
 {
   if (theToUse)
@@ -298,20 +262,16 @@ void Graphic3d_ClipPlane::setCappingFlag(bool theToUse, int theFlag)
   ++myAspectMod;
 }
 
-// =======================================================================
-// function : makeId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::makeId()
 {
   myId = TCollection_AsciiString("Graphic3d_ClipPlane_") // DynamicType()->Name()
          + TCollection_AsciiString(Standard_Atomic_Increment(&THE_CLIP_PLANE_COUNTER));
 }
 
-// =======================================================================
-// function : updateChainLen
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::updateChainLen()
 {
   myChainLenFwd = !myNextInChain.IsNull() ? (myNextInChain->myChainLenFwd + 1) : 1;
@@ -321,10 +281,8 @@ void Graphic3d_ClipPlane::updateChainLen()
   }
 }
 
-// =======================================================================
-// function : SetChainNextPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::SetChainNextPlane(const Handle(Graphic3d_ClipPlane)& thePlane)
 {
   ++myEquationMod;
@@ -340,10 +298,8 @@ void Graphic3d_ClipPlane::SetChainNextPlane(const Handle(Graphic3d_ClipPlane)& t
   updateChainLen();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ClipPlane::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

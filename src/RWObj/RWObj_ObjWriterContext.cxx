@@ -17,10 +17,8 @@
 #include <NCollection_IndexedMap.hxx>
 #include <OSD_OpenFile.hxx>
 
-// =======================================================================
-// function : splitLines
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static void splitLines(const TCollection_AsciiString&                   theString,
                        NCollection_IndexedMap<TCollection_AsciiString>& theLines)
 {
@@ -58,10 +56,8 @@ static void splitLines(const TCollection_AsciiString&                   theStrin
   }
 }
 
-// ================================================================
-// Function : RWObj_ObjWriterContext
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWObj_ObjWriterContext::RWObj_ObjWriterContext(const TCollection_AsciiString& theName)
     : NbFaces(0),
       myFile(OSD_OpenFile(theName.ToCString(), "wb")),
@@ -79,10 +75,8 @@ RWObj_ObjWriterContext::RWObj_ObjWriterContext(const TCollection_AsciiString& th
   }
 }
 
-// ================================================================
-// Function : ~RWObj_ObjWriterContext
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWObj_ObjWriterContext::~RWObj_ObjWriterContext()
 {
   if (myFile != NULL)
@@ -92,10 +86,8 @@ RWObj_ObjWriterContext::~RWObj_ObjWriterContext()
   }
 }
 
-// ================================================================
-// Function : Close
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::Close()
 {
   bool isOk = ::fclose(myFile) == 0;
@@ -103,10 +95,8 @@ bool RWObj_ObjWriterContext::Close()
   return isOk;
 }
 
-// ================================================================
-// Function : WriteHeader
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteHeader(const Standard_Integer                      theNbNodes,
                                          const Standard_Integer                      theNbElems,
                                          const TCollection_AsciiString&              theMatLib,
@@ -147,10 +137,8 @@ bool RWObj_ObjWriterContext::WriteHeader(const Standard_Integer                 
   return isOk;
 }
 
-// ================================================================
-// Function : WriteActiveMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteActiveMaterial(const TCollection_AsciiString& theMaterial)
 {
   myActiveMaterial = theMaterial;
@@ -158,10 +146,8 @@ bool RWObj_ObjWriterContext::WriteActiveMaterial(const TCollection_AsciiString& 
                                 : Fprintf(myFile, "usemtl\n") != 0;
 }
 
-// ================================================================
-// Function : WriteTriangle
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
 {
   const Graphic3d_Vec3i aTriPos = theTri + myElemPosFirst.xyz();
@@ -216,10 +202,8 @@ bool RWObj_ObjWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
   }
 }
 
-// ================================================================
-// Function : WriteQuad
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
 {
   const Graphic3d_Vec4i aQPos = theQuad + myElemPosFirst;
@@ -281,47 +265,37 @@ bool RWObj_ObjWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
   }
 }
 
-// ================================================================
-// Function : WriteVertex
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteVertex(const Graphic3d_Vec3& theValue)
 {
   return Fprintf(myFile, "v %f %f %f\n", theValue.x(), theValue.y(), theValue.z()) != 0;
 }
 
-// ================================================================
-// Function : WriteNormal
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteNormal(const Graphic3d_Vec3& theValue)
 {
   return Fprintf(myFile, "vn %f %f %f\n", theValue.x(), theValue.y(), theValue.z()) != 0;
 }
 
-// ================================================================
-// Function : WriteTexCoord
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteTexCoord(const Graphic3d_Vec2& theValue)
 {
   return Fprintf(myFile, "vt %f %f\n", theValue.x(), theValue.y()) != 0;
 }
 
-// ================================================================
-// Function : WriteGroup
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 bool RWObj_ObjWriterContext::WriteGroup(const TCollection_AsciiString& theValue)
 {
   return !theValue.IsEmpty() ? Fprintf(myFile, "g %s\n", theValue.ToCString()) != 0
                              : Fprintf(myFile, "g\n") != 0;
 }
 
-// ================================================================
-// Function : FlushFace
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWObj_ObjWriterContext::FlushFace(Standard_Integer theNbNodes)
 {
   Graphic3d_Vec4i aShift(theNbNodes, theNbNodes, theNbNodes, theNbNodes);

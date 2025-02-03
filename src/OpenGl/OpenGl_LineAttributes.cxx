@@ -20,28 +20,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 
-// =======================================================================
-// function : OpenGl_LineAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_LineAttributes::OpenGl_LineAttributes()
 {
   //
 }
 
-// =======================================================================
-// function : ~OpenGl_LineAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_LineAttributes::~OpenGl_LineAttributes()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_LineAttributes::Release(OpenGl_Context* theGlCtx)
 {
   if (theGlCtx != NULL && theGlCtx->IsValid())
@@ -54,10 +48,8 @@ void OpenGl_LineAttributes::Release(OpenGl_Context* theGlCtx)
   myStyles.Clear();
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int OpenGl_LineAttributes::init(const OpenGl_Context*               theGlCtx,
                                          const Handle(Graphic3d_HatchStyle)& theStyle)
 {
@@ -68,10 +60,8 @@ unsigned int OpenGl_LineAttributes::init(const OpenGl_Context*               the
   return aListId;
 }
 
-// =======================================================================
-// function : SetTypeOfHatch
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_LineAttributes::SetTypeOfHatch(const OpenGl_Context*               theGlCtx,
                                            const Handle(Graphic3d_HatchStyle)& theStyle)
 {

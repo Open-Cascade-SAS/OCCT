@@ -15,10 +15,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AttribBuffer, Graphic3d_Buffer)
 
-// =======================================================================
-// function : Graphic3d_AttribBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
     : Graphic3d_Buffer(theAlloc),
       myIsInterleaved(Standard_True),
@@ -26,10 +24,8 @@ Graphic3d_AttribBuffer::Graphic3d_AttribBuffer(const Handle(NCollection_BaseAllo
 {
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_AttribBuffer::Init(const Standard_Integer     theNbElems,
                                   const Graphic3d_Attribute* theAttribs,
                                   const Standard_Integer     theNbAttribs)
@@ -47,10 +43,8 @@ bool Graphic3d_AttribBuffer::Init(const Standard_Integer     theNbElems,
   return true;
 }
 
-// =======================================================================
-// function : SetMutable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::SetMutable(Standard_Boolean theMutable)
 {
   if (mySize > (Standard_Size)IntegerLast() && theMutable)
@@ -61,10 +55,8 @@ void Graphic3d_AttribBuffer::SetMutable(Standard_Boolean theMutable)
   myIsMutable = theMutable;
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::SetInterleaved(Standard_Boolean theIsInterleaved)
 {
   if (NbMaxElements() != 0)
@@ -75,10 +67,8 @@ void Graphic3d_AttribBuffer::SetInterleaved(Standard_Boolean theIsInterleaved)
   myIsInterleaved = theIsInterleaved;
 }
 
-// =======================================================================
-// function : invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
 {
   if (mySize > (Standard_Size)IntegerLast())
@@ -90,10 +80,8 @@ void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
   myInvalidatedRange.Unite(theRange);
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::Invalidate()
 {
   if (mySize > (Standard_Size)IntegerLast())
@@ -105,10 +93,8 @@ void Graphic3d_AttribBuffer::Invalidate()
   invalidate(Graphic3d_BufferRange(0, (Standard_Integer)mySize));
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex)
 {
   Standard_OutOfRange_Raise_if(theAttributeIndex < 0 || theAttributeIndex >= NbAttributes,
@@ -136,10 +122,8 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex)
   }
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex,
                                         Standard_Integer theVertexLower,
                                         Standard_Integer theVertexUpper)
@@ -172,10 +156,8 @@ void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theAttributeIndex,
   }
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AttribBuffer::Invalidate(Standard_Integer theVertexLower,
                                         Standard_Integer theVertexUpper)
 {

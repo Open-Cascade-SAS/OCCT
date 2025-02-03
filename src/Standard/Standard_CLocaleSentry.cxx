@@ -56,19 +56,15 @@ static CLocalePtr theCLocale;
 
 } // namespace
 
-// =======================================================================
-// function : GetCLocale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CLocaleSentry::clocale_t Standard_CLocaleSentry::GetCLocale()
 {
   return theCLocale.myLocale;
 }
 
-// =======================================================================
-// function : Standard_CLocaleSentry
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CLocaleSentry::Standard_CLocaleSentry()
   #ifdef OCCT_CLOCALE_POSIX2008
     : myPrevLocale(uselocale(
@@ -97,10 +93,8 @@ Standard_CLocaleSentry::Standard_CLocaleSentry()
   #endif
 }
 
-// =======================================================================
-// function : ~Standard_CLocaleSentry
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CLocaleSentry::~Standard_CLocaleSentry()
 {
   #if defined(OCCT_CLOCALE_POSIX2008)

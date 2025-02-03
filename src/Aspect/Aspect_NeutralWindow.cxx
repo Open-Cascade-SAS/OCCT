@@ -15,10 +15,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_NeutralWindow, Aspect_Window)
 
-// =======================================================================
-// function : Aspect_NeutralWindow
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_NeutralWindow::Aspect_NeutralWindow()
     : myHandle(0),
       myParentHandle(0),
@@ -31,10 +29,8 @@ Aspect_NeutralWindow::Aspect_NeutralWindow()
 {
 }
 
-// =======================================================================
-// function : SetNativeHandles
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Aspect_NeutralWindow::SetNativeHandles(Aspect_Drawable theWindow,
                                                         Aspect_Drawable theParentWindow,
                                                         Aspect_FBConfig theFbConfig)
@@ -50,10 +46,8 @@ Standard_Boolean Aspect_NeutralWindow::SetNativeHandles(Aspect_Drawable theWindo
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1, Standard_Integer theY1)
 {
   if (myPosX == theX1 && myPosY == theY1)
@@ -66,10 +60,8 @@ Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1, Stand
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1,
                                                    Standard_Integer theY1,
                                                    Standard_Integer theX2,
@@ -89,10 +81,8 @@ Standard_Boolean Aspect_NeutralWindow::SetPosition(Standard_Integer theX1,
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Aspect_NeutralWindow::SetSize(const Standard_Integer theWidth,
                                                const Standard_Integer theHeight)
 {

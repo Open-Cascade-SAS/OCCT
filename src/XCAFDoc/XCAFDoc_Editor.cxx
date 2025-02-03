@@ -239,10 +239,8 @@ Standard_Boolean XCAFDoc_Editor::Extract(const TDF_Label&       theSrcLabel,
   return Extract(aSeq, theDstLabel, theIsNoVisMat);
 }
 
-// =======================================================================
-// function : CloneShapeLebel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TDF_Label XCAFDoc_Editor::CloneShapeLabel(const TDF_Label&                 theSrcLabel,
                                           const Handle(XCAFDoc_ShapeTool)& theSrcShapeTool,
                                           const Handle(XCAFDoc_ShapeTool)& theDstShapeTool,

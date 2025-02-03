@@ -281,10 +281,8 @@ static bool checkFont(NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
 #endif
 }
 
-// =======================================================================
-// function : GetInstance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_FontMgr) Font_FontMgr::GetInstance()
 {
   static Handle(Font_FontMgr) _mgr;
@@ -296,20 +294,16 @@ Handle(Font_FontMgr) Font_FontMgr::GetInstance()
   return _mgr;
 }
 
-// =======================================================================
-// function : ToUseUnicodeSubsetFallback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean& Font_FontMgr::ToUseUnicodeSubsetFallback()
 {
   static Standard_Boolean TheToUseUnicodeSubsetFallback = true;
   return TheToUseUnicodeSubsetFallback;
 }
 
-// =======================================================================
-// function : AddFontAlias
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FontMgr::AddFontAlias(const TCollection_AsciiString& theAliasName,
                                 const TCollection_AsciiString& theFontName)
 {
@@ -335,10 +329,8 @@ bool Font_FontMgr::AddFontAlias(const TCollection_AsciiString& theAliasName,
   return true;
 }
 
-// =======================================================================
-// function : RemoveFontAlias
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FontMgr::RemoveFontAlias(const TCollection_AsciiString& theAliasName,
                                    const TCollection_AsciiString& theFontName)
 {
@@ -381,10 +373,8 @@ bool Font_FontMgr::RemoveFontAlias(const TCollection_AsciiString& theAliasName,
   return false;
 }
 
-// =======================================================================
-// function : GetAllAliases
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::GetAllAliases(TColStd_SequenceOfHAsciiString& theAliases) const
 {
   for (NCollection_DataMap<TCollection_AsciiString, Handle(Font_FontAliasSequence)>::Iterator
@@ -396,10 +386,8 @@ void Font_FontMgr::GetAllAliases(TColStd_SequenceOfHAsciiString& theAliases) con
   }
 }
 
-// =======================================================================
-// function : GetFontAliases
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::GetFontAliases(TColStd_SequenceOfHAsciiString& theFontNames,
                                   const TCollection_AsciiString&  theAliasName) const
 {
@@ -417,10 +405,8 @@ void Font_FontMgr::GetFontAliases(TColStd_SequenceOfHAsciiString& theFontNames,
   }
 }
 
-// =======================================================================
-// function : addFontAlias
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::addFontAlias(const TCollection_AsciiString&        theAliasName,
                                 const Handle(Font_FontAliasSequence)& theAliases,
                                 Font_FontAspect                       theAspect)
@@ -447,10 +433,8 @@ void Font_FontMgr::addFontAlias(const TCollection_AsciiString&        theAliasNa
   myFontAliases.Bind(anAliasName, anAliases);
 }
 
-// =======================================================================
-// function : Font_FontMgr
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_FontMgr::Font_FontMgr()
     : myToTraceAliases(Standard_False)
 {
@@ -553,10 +537,8 @@ Font_FontMgr::Font_FontMgr()
   InitFontDataBase();
 }
 
-// =======================================================================
-// function : CheckFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Font_FontMgr::CheckFont(NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
                                          const TCollection_AsciiString& theFontPath) const
 {
@@ -564,10 +546,8 @@ Standard_Boolean Font_FontMgr::CheckFont(NCollection_Sequence<Handle(Font_System
   return checkFont(theFonts, aFtLibrary, theFontPath, 0);
 }
 
-// =======================================================================
-// function : CheckFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::CheckFont(Standard_CString theFontPath) const
 {
   Handle(Font_FTLibrary)                        aFtLibrary = new Font_FTLibrary();
@@ -575,10 +555,8 @@ Handle(Font_SystemFont) Font_FontMgr::CheckFont(Standard_CString theFontPath) co
   return checkFont(aFonts, aFtLibrary, theFontPath, 0) ? aFonts.First() : Handle(Font_SystemFont)();
 }
 
-// =======================================================================
-// function : RegisterFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Font_FontMgr::RegisterFont(const Handle(Font_SystemFont)& theFont,
                                             const Standard_Boolean         theToOverride)
 {
@@ -618,19 +596,15 @@ Standard_Boolean Font_FontMgr::RegisterFont(const Handle(Font_SystemFont)& theFo
   return Standard_True;
 }
 
-// =======================================================================
-// function : ClearFontDataBase()
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::ClearFontDataBase()
 {
   myFontMap.Clear();
 }
 
-// =======================================================================
-// function : InitFontDataBase
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::InitFontDataBase()
 {
   myFontMap.Clear();
@@ -941,10 +915,8 @@ void Font_FontMgr::InitFontDataBase()
 #endif
 }
 
-// =======================================================================
-// function : GetAvailableFontsNames
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FontMgr::GetAvailableFontsNames(TColStd_SequenceOfHAsciiString& theFontsNames) const
 {
   theFontsNames.Clear();
@@ -955,10 +927,8 @@ void Font_FontMgr::GetAvailableFontsNames(TColStd_SequenceOfHAsciiString& theFon
   }
 }
 
-// =======================================================================
-// function : GetFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::GetFont(const Handle(TCollection_HAsciiString)& theFontName,
                                               const Font_FontAspect                   theFontAspect,
                                               const Standard_Integer theFontSize) const
@@ -975,19 +945,15 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont(const Handle(TCollection_HAsciiStr
            : Handle(Font_SystemFont)();
 }
 
-// =======================================================================
-// function : GetFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::GetFont(const TCollection_AsciiString& theFontName) const
 {
   return myFontMap.Find(theFontName);
 }
 
-// =======================================================================
-// function : FindFallbackFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont(Font_UnicodeSubset theSubset,
                                                        Font_FontAspect    theFontAspect) const
 {
@@ -1032,10 +998,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont(Font_UnicodeSubset theSub
   return aFont;
 }
 
-// =======================================================================
-// function : FindFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::FindFont(const TCollection_AsciiString& theFontName,
                                                Font_StrictLevel               theStrictLevel,
                                                Font_FontAspect&               theFontAspect,
@@ -1145,10 +1109,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont(const TCollection_AsciiString& th
   return aFont;
 }
 
-// =======================================================================
-// function : Font_FontMap::Find
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_SystemFont) Font_FontMgr::Font_FontMap::Find(
   const TCollection_AsciiString& theFontName) const
 {
@@ -1169,10 +1131,8 @@ Handle(Font_SystemFont) Font_FontMgr::Font_FontMap::Find(
   return Handle(Font_SystemFont)();
 }
 
-// =======================================================================
-// function : EmbedFallbackFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(NCollection_Buffer) Font_FontMgr::EmbedFallbackFont()
 {
 #ifdef HAVE_FREETYPE

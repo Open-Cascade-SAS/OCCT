@@ -15,20 +15,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_SequenceOfHClipPlane, Standard_Transient)
 
-// =======================================================================
-// function : Graphic3d_SequenceOfHClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_SequenceOfHClipPlane::Graphic3d_SequenceOfHClipPlane()
     : myToOverrideGlobal(Standard_False)
 {
   //
 }
 
-// =======================================================================
-// function : Append
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_SequenceOfHClipPlane::Append(const Handle(Graphic3d_ClipPlane)& theItem)
 {
   for (NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator anItemIter(myItems);
@@ -44,10 +40,8 @@ bool Graphic3d_SequenceOfHClipPlane::Append(const Handle(Graphic3d_ClipPlane)& t
   return true;
 }
 
-// =======================================================================
-// function : Remove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_SequenceOfHClipPlane::Remove(const Handle(Graphic3d_ClipPlane)& theItem)
 {
   for (NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator anItemIter(myItems);
@@ -63,10 +57,8 @@ bool Graphic3d_SequenceOfHClipPlane::Remove(const Handle(Graphic3d_ClipPlane)& t
   return false;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_SequenceOfHClipPlane::DumpJson(Standard_OStream& theOStream,
                                               Standard_Integer  theDepth) const
 {

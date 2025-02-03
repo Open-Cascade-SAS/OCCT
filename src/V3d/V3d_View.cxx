@@ -285,19 +285,15 @@ void V3d_View::Remove()
   MyWindow.Nullify();
 }
 
-// =======================================================================
-// function : AddSubview
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::AddSubview(const Handle(V3d_View)& theView)
 {
   mySubviews.Append(theView);
 }
 
-// =======================================================================
-// function : RemoveSubview
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool V3d_View::RemoveSubview(const V3d_View* theView)
 {
   for (NCollection_Sequence<Handle(V3d_View)>::Iterator aViewIter(mySubviews); aViewIter.More();
@@ -312,10 +308,8 @@ bool V3d_View::RemoveSubview(const V3d_View* theView)
   return false;
 }
 
-// =============================================================================
-// function : PickSubview
-// purpose  :
-// =============================================================================
+//=================================================================================================
+
 Handle(V3d_View) V3d_View::PickSubview(const Graphic3d_Vec2i& thePnt) const
 {
   if (thePnt.x() < 0 || thePnt.x() >= MyWindow->Dimensions().x() || thePnt.y() < 0
@@ -420,10 +414,8 @@ Standard_Boolean V3d_View::IsInvalidated() const
   return !myView->IsDefined() || myView->IsInvalidated();
 }
 
-// ========================================================================
-// function : SetAutoZFitMode
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_View::SetAutoZFitMode(const Standard_Boolean theIsOn, const Standard_Real theScaleFactor)
 {
   Standard_ASSERT_RAISE(theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
@@ -2977,10 +2969,8 @@ Standard_Boolean V3d_View::SetImmediateUpdate(const Standard_Boolean theImmediat
   return aPreviousMode;
 }
 
-// =======================================================================
-// function : SetCamera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
 {
   myView->SetCamera(theCamera);
@@ -2988,19 +2978,15 @@ void V3d_View::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
   ImmediateUpdate();
 }
 
-// =======================================================================
-// function : GetCamera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Graphic3d_Camera)& V3d_View::Camera() const
 {
   return myView->Camera();
 }
 
-// =======================================================================
-// function : FitMinMax
-// purpose  : Internal
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean V3d_View::FitMinMax(const Handle(Graphic3d_Camera)& theCamera,
                                      const Bnd_Box&                  theBox,
                                      const Standard_Real             theMargin,
@@ -3019,10 +3005,8 @@ Standard_Boolean V3d_View::FitMinMax(const Handle(Graphic3d_Camera)& theCamera,
   return Standard_True;
 }
 
-// =======================================================================
-// function : Scale
-// purpose  : Internal
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::Scale(const Handle(Graphic3d_Camera)& theCamera,
                      const Standard_Real             theSizeXv,
                      const Standard_Real             theSizeYv) const
@@ -3039,10 +3023,8 @@ void V3d_View::Scale(const Handle(Graphic3d_Camera)& theCamera,
   Invalidate();
 }
 
-// =======================================================================
-// function : Translate
-// purpose  : Internal
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::Translate(const Handle(Graphic3d_Camera)& theCamera,
                          const Standard_Real             theDXv,
                          const Standard_Real             theDYv) const
@@ -3062,10 +3044,8 @@ void V3d_View::Translate(const Handle(Graphic3d_Camera)& theCamera,
   Invalidate();
 }
 
-// =======================================================================
-// function : DiagnosticInformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
                                      Graphic3d_DiagnosticInfo              theFlags) const
 {
@@ -3079,10 +3059,8 @@ void V3d_View::StatisticInformation(TColStd_IndexedDataMapOfStringString& theDic
   myView->StatisticInformation(theDict);
 }
 
-// =======================================================================
-// function : StatisticInformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString V3d_View::StatisticInformation() const
 {
   return myView->StatisticInformation();
@@ -3630,10 +3608,8 @@ void V3d_View::GraduatedTrihedronErase()
   myView->GraduatedTrihedronErase();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_View::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

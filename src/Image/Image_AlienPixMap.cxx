@@ -445,10 +445,8 @@ static WICPixelFormatGUID convertToWicFormat(Image_Format theFormat)
 #endif
 } // namespace
 
-// =======================================================================
-// function : Image_AlienPixMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_AlienPixMap::Image_AlienPixMap()
 #ifdef HAVE_WINCODEC
     : myPalette(NULL)
@@ -459,19 +457,15 @@ Image_AlienPixMap::Image_AlienPixMap()
   SetTopDown(false);
 }
 
-// =======================================================================
-// function : ~Image_AlienPixMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_AlienPixMap::~Image_AlienPixMap()
 {
   Clear();
 }
 
-// =======================================================================
-// function : InitWrapper
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::InitWrapper(Image_Format,
                                     Standard_Byte*,
                                     const Standard_Size,
@@ -482,10 +476,8 @@ bool Image_AlienPixMap::InitWrapper(Image_Format,
   return false;
 }
 
-// =======================================================================
-// function : InitTrash
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 #ifdef HAVE_FREEIMAGE
 bool Image_AlienPixMap::InitTrash(Image_Format        thePixelFormat,
                                   const Standard_Size theSizeX,
@@ -562,10 +554,8 @@ bool Image_AlienPixMap::InitTrash(Image_Format        thePixelFormat,
 }
 #endif
 
-// =======================================================================
-// function : InitCopy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::InitCopy(const Image_PixMap& theCopy)
 {
   if (&theCopy == this)
@@ -601,10 +591,8 @@ bool Image_AlienPixMap::InitCopy(const Image_PixMap& theCopy)
   return false;
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_AlienPixMap::Clear()
 {
   Image_PixMap::Clear();
@@ -629,10 +617,8 @@ void Image_AlienPixMap::Clear()
 #endif
 }
 
-// =======================================================================
-// function : IsTopDownDefault
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::IsTopDownDefault()
 {
 #ifdef HAVE_FREEIMAGE
@@ -644,10 +630,8 @@ bool Image_AlienPixMap::IsTopDownDefault()
 #endif
 }
 
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 #ifdef HAVE_FREEIMAGE
 bool Image_AlienPixMap::Load(const Standard_Byte*           theData,
                              const Standard_Size            theLength,
@@ -1031,10 +1015,8 @@ bool Image_AlienPixMap::Load(const Standard_Byte*,
 }
 #endif
 
-// =======================================================================
-// function : savePPM
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::savePPM(const TCollection_AsciiString& theFileName) const
 {
   if (IsEmpty())
@@ -1075,10 +1057,8 @@ bool Image_AlienPixMap::savePPM(const TCollection_AsciiString& theFileName) cons
   return true;
 }
 
-// =======================================================================
-// function : convertData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 #ifdef HAVE_WINCODEC
 static bool convertData(const Image_AlienPixMap&  theSrcPixMapData,
                         const WICPixelFormatGUID& theFormat,
@@ -1132,10 +1112,8 @@ static bool convertData(const Image_AlienPixMap&  theSrcPixMapData,
 }
 #endif
 
-// =======================================================================
-// function : Save
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::Save(Standard_Byte*                 theBuffer,
                              const Standard_Size            theLength,
                              const TCollection_AsciiString& theFileName)
@@ -1557,10 +1535,8 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
 #endif
 }
 
-// =======================================================================
-// function : AdjustGamma
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_AlienPixMap::AdjustGamma(const Standard_Real theGammaCorr)
 {
 #ifdef HAVE_FREEIMAGE
@@ -1572,10 +1548,8 @@ bool Image_AlienPixMap::AdjustGamma(const Standard_Real theGammaCorr)
 }
 
 #ifdef HAVE_FREEIMAGE
-// =======================================================================
-// function : GetImageToDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 FIBITMAP* Image_AlienPixMap::getImageToDump(const Standard_Integer theFormat)
 {
   FIBITMAP* anImageToDump = myLibImage;

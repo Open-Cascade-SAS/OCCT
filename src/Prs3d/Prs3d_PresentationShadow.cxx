@@ -36,10 +36,8 @@ void Prs3d_PresentationShadow::CalculateBoundBox()
   //
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_PresentationShadow::DumpJson(Standard_OStream& theOStream,
                                         Standard_Integer  theDepth) const
 {

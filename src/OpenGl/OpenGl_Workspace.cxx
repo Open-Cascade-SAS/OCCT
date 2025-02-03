@@ -25,10 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace, Standard_Transient)
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Material::Init(const OpenGl_Context&           theCtx,
                            const Graphic3d_MaterialAspect& theFront,
                            const Quantity_Color&           theFrontColor,
@@ -47,10 +45,8 @@ void OpenGl_Material::Init(const OpenGl_Context&           theCtx,
   }
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Material::init(const OpenGl_Context&           theCtx,
                            const Graphic3d_MaterialAspect& theMat,
                            const Quantity_Color&           theInteriorColor,
@@ -93,10 +89,8 @@ void OpenGl_Material::init(const OpenGl_Context&           theCtx,
   aCommon.Emission          = theCtx.Vec4FromQuantityColor(aCommon.Emission);
 }
 
-// =======================================================================
-// function : OpenGl_Workspace
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Workspace::OpenGl_Workspace(OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow)
     : myView(theView),
       myWindow(theWindow),
@@ -148,10 +142,8 @@ OpenGl_Workspace::OpenGl_Workspace(OpenGl_View* theView, const Handle(OpenGl_Win
   myFrontCulling.Aspect()->SetAlphaMode(Graphic3d_AlphaMode_Opaque);
 }
 
-// =======================================================================
-// function : Activate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Workspace::Activate()
 {
   if (myWindow.IsNull() || !myWindow->Activate())
@@ -222,10 +214,8 @@ void OpenGl_Workspace::ResetAppliedAspect()
   }
 }
 
-// =======================================================================
-// function : SetDefaultPolygonOffset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_PolygonOffset OpenGl_Workspace::SetDefaultPolygonOffset(
   const Graphic3d_PolygonOffset& theOffset)
 {
@@ -239,10 +229,8 @@ Graphic3d_PolygonOffset OpenGl_Workspace::SetDefaultPolygonOffset(
   return aPrev;
 }
 
-// =======================================================================
-// function : SetAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const OpenGl_Aspects* OpenGl_Workspace::SetAspects(const OpenGl_Aspects* theAspect)
 {
   const OpenGl_Aspects* aPrevAspects = myAspectsSet;
@@ -250,10 +238,8 @@ const OpenGl_Aspects* OpenGl_Workspace::SetAspects(const OpenGl_Aspects* theAspe
   return aPrevAspects;
 }
 
-// =======================================================================
-// function : ApplyAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects(bool theToBindTextures)
 {
   // bool toSuppressBackFaces = myView->BackfacingModel() ==
@@ -343,28 +329,22 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects(bool theToBindTextures)
   return myAspectsSet;
 }
 
-// =======================================================================
-// function : Width
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_Workspace::Width() const
 {
   return !myView->GlWindow().IsNull() ? myView->GlWindow()->Width() : 0;
 }
 
-// =======================================================================
-// function : Height
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_Workspace::Height() const
 {
   return !myView->GlWindow().IsNull() ? myView->GlWindow()->Height() : 0;
 }
 
-// =======================================================================
-// function : FBOCreate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate(const Standard_Integer theWidth,
                                                        const Standard_Integer theHeight)
 {
@@ -388,10 +368,8 @@ Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate(const Standard_Integer th
   return aFrameBuffer;
 }
 
-// =======================================================================
-// function : FBORelease
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Workspace::FBORelease(Handle(OpenGl_FrameBuffer)& theFbo)
 {
   // activate OpenGL context
@@ -404,10 +382,8 @@ void OpenGl_Workspace::FBORelease(Handle(OpenGl_FrameBuffer)& theFbo)
   theFbo.Nullify();
 }
 
-// =======================================================================
-// function : BufferDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Workspace::BufferDump(const Handle(OpenGl_FrameBuffer)& theFbo,
                                               Image_PixMap&                     theImage,
                                               const Graphic3d_BufferType&       theBufferType)
@@ -416,10 +392,8 @@ Standard_Boolean OpenGl_Workspace::BufferDump(const Handle(OpenGl_FrameBuffer)& 
          && OpenGl_FrameBuffer::BufferDump(GetGlContext(), theFbo, theImage, theBufferType);
 }
 
-// =======================================================================
-// function : ShouldRender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Workspace::ShouldRender(const OpenGl_Element* theElement, const OpenGl_Group* theGroup)
 {
   if ((myRenderFilter & OpenGl_RenderFilter_SkipTrsfPersistence) != 0)
@@ -477,10 +451,8 @@ bool OpenGl_Workspace::ShouldRender(const OpenGl_Element* theElement, const Open
   return true;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Workspace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

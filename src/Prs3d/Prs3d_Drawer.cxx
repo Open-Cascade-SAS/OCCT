@@ -40,10 +40,8 @@ static const Quantity_NameOfColor THE_DEF_COLOR_Vector         = Quantity_NOC_SK
 static const Quantity_NameOfColor THE_DEF_COLOR_Section        = Quantity_NOC_ORANGE;
 } // namespace
 
-// =======================================================================
-// function : Prs3d_Drawer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Prs3d_Drawer::Prs3d_Drawer()
     : myNbPoints(-1),
       myMaximalParameterValue(-1.0),
@@ -87,10 +85,8 @@ Prs3d_Drawer::Prs3d_Drawer()
   myDimensionDisplayUnits.SetAngleUnits("deg");
 }
 
-// =======================================================================
-// function : SetupOwnDefaults
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_Drawer::SetupOwnDefaults()
 {
   myNbPoints              = 30;
@@ -106,10 +102,7 @@ void Prs3d_Drawer::SetupOwnDefaults()
   SetDimensionAspect(new Prs3d_DimensionAspect());
 }
 
-// =======================================================================
-// function : SetTypeOfDeflection
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetTypeOfDeflection(const Aspect_TypeOfDeflection theTypeOfDeflection)
 {
@@ -145,20 +138,15 @@ Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR() const
   return Prs3d_TOH_PolyAlgo;
 }
 
-// =======================================================================
-// function : SetIsoOnTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_Drawer::SetIsoOnTriangulation(const Standard_Boolean theToEnable)
 {
   myHasOwnIsoOnTriangulation = Standard_True;
   myIsoOnTriangulation       = theToEnable;
 }
 
-// =======================================================================
-// function : SetIsoOnPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetIsoOnPlane(const Standard_Boolean theIsEnabled)
 {
@@ -182,10 +170,7 @@ void Prs3d_Drawer::SetDeviationAngle(const Standard_Real theAngle)
   myDeviationAngle         = theAngle;
 }
 
-// =======================================================================
-// function : SetAutoTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetAutoTriangulation(const Standard_Boolean theIsEnabled)
 {
@@ -193,10 +178,7 @@ void Prs3d_Drawer::SetAutoTriangulation(const Standard_Boolean theIsEnabled)
   myIsAutoTriangulated       = theIsEnabled;
 }
 
-// =======================================================================
-// function : FreeBoundaryAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FreeBoundaryAspect() const
 {
@@ -207,10 +189,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FreeBoundaryAspect() const
   return myFreeBoundaryAspect;
 }
 
-// =======================================================================
-// function : SetFreeBoundaryDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetFreeBoundaryDraw(const Standard_Boolean theIsEnabled)
 {
@@ -218,10 +197,7 @@ void Prs3d_Drawer::SetFreeBoundaryDraw(const Standard_Boolean theIsEnabled)
   myFreeBoundaryDraw       = theIsEnabled;
 }
 
-// =======================================================================
-// function : UnFreeBoundaryAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::UnFreeBoundaryAspect() const
 {
@@ -232,10 +208,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::UnFreeBoundaryAspect() const
   return myUnFreeBoundaryAspect;
 }
 
-// =======================================================================
-// function : SetUnFreeBoundaryDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetUnFreeBoundaryDraw(const Standard_Boolean theIsEnabled)
 {
@@ -243,10 +216,7 @@ void Prs3d_Drawer::SetUnFreeBoundaryDraw(const Standard_Boolean theIsEnabled)
   myUnFreeBoundaryDraw       = theIsEnabled;
 }
 
-// =======================================================================
-// function : FaceBoundaryAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FaceBoundaryAspect() const
 {
@@ -257,10 +227,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FaceBoundaryAspect() const
   return myFaceBoundaryAspect;
 }
 
-// =======================================================================
-// function : SetFaceBoundaryDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetFaceBoundaryDraw(const Standard_Boolean theIsEnabled)
 {
@@ -268,10 +235,7 @@ void Prs3d_Drawer::SetFaceBoundaryDraw(const Standard_Boolean theIsEnabled)
   myFaceBoundaryDraw       = theIsEnabled;
 }
 
-// =======================================================================
-// function : DimensionAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_DimensionAspect)& Prs3d_Drawer::DimensionAspect() const
 {
@@ -282,10 +246,7 @@ const Handle(Prs3d_DimensionAspect)& Prs3d_Drawer::DimensionAspect() const
   return myDimensionAspect;
 }
 
-// =======================================================================
-// function : SetDimLengthModelUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetDimLengthModelUnits(const TCollection_AsciiString& theUnits)
 {
@@ -293,10 +254,7 @@ void Prs3d_Drawer::SetDimLengthModelUnits(const TCollection_AsciiString& theUnit
   myDimensionModelUnits.SetLengthUnits(theUnits);
 }
 
-// =======================================================================
-// function : SetDimAngleModelUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetDimAngleModelUnits(const TCollection_AsciiString& theUnits)
 {
@@ -304,10 +262,7 @@ void Prs3d_Drawer::SetDimAngleModelUnits(const TCollection_AsciiString& theUnits
   myDimensionModelUnits.SetAngleUnits(theUnits);
 }
 
-// =======================================================================
-// function : SetDimLengthDisplayUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetDimLengthDisplayUnits(const TCollection_AsciiString& theUnits)
 {
@@ -315,10 +270,7 @@ void Prs3d_Drawer::SetDimLengthDisplayUnits(const TCollection_AsciiString& theUn
   myDimensionDisplayUnits.SetLengthUnits(theUnits);
 }
 
-// =======================================================================
-// function : SetDimAngleDisplayUnits
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetDimAngleDisplayUnits(const TCollection_AsciiString& theUnits)
 {
@@ -326,10 +278,7 @@ void Prs3d_Drawer::SetDimAngleDisplayUnits(const TCollection_AsciiString& theUni
   myDimensionDisplayUnits.SetAngleUnits(theUnits);
 }
 
-// =======================================================================
-// function : UIsoAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::UIsoAspect() const
 {
@@ -340,10 +289,7 @@ const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::UIsoAspect() const
   return myUIsoAspect;
 }
 
-// =======================================================================
-// function : VIsoAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::VIsoAspect() const
 {
@@ -354,10 +300,7 @@ const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::VIsoAspect() const
   return myVIsoAspect;
 }
 
-// =======================================================================
-// function : WireAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::WireAspect() const
 {
@@ -368,10 +311,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::WireAspect() const
   return myWireAspect;
 }
 
-// =======================================================================
-// function : SetWireDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetWireDraw(const Standard_Boolean theIsEnabled)
 {
@@ -379,10 +319,7 @@ void Prs3d_Drawer::SetWireDraw(const Standard_Boolean theIsEnabled)
   myWireDraw       = theIsEnabled;
 }
 
-// =======================================================================
-// function : PointAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_PointAspect)& Prs3d_Drawer::PointAspect() const
 {
@@ -393,10 +330,8 @@ const Handle(Prs3d_PointAspect)& Prs3d_Drawer::PointAspect() const
   return myPointAspect;
 }
 
-// =======================================================================
-// function : SetupOwnPointAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Prs3d_Drawer::SetupOwnPointAspect(const Handle(Prs3d_Drawer)& theDefaults)
 {
   if (!myPointAspect.IsNull())
@@ -415,10 +350,7 @@ Standard_Boolean Prs3d_Drawer::SetupOwnPointAspect(const Handle(Prs3d_Drawer)& t
   return Standard_True;
 }
 
-// =======================================================================
-// function : LineAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::LineAspect() const
 {
@@ -429,10 +361,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::LineAspect() const
   return myLineAspect;
 }
 
-// =======================================================================
-// function : TextAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_TextAspect)& Prs3d_Drawer::TextAspect() const
 {
@@ -443,10 +372,7 @@ const Handle(Prs3d_TextAspect)& Prs3d_Drawer::TextAspect() const
   return myTextAspect;
 }
 
-// =======================================================================
-// function : ShadingAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_ShadingAspect)& Prs3d_Drawer::ShadingAspect() const
 {
@@ -457,10 +383,8 @@ const Handle(Prs3d_ShadingAspect)& Prs3d_Drawer::ShadingAspect() const
   return myShadingAspect;
 }
 
-// =======================================================================
-// function : SetupOwnShadingAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Prs3d_Drawer::SetupOwnShadingAspect(const Handle(Prs3d_Drawer)& theDefaults)
 {
   if (!myShadingAspect.IsNull())
@@ -478,10 +402,7 @@ Standard_Boolean Prs3d_Drawer::SetupOwnShadingAspect(const Handle(Prs3d_Drawer)&
   return Standard_True;
 }
 
-// =======================================================================
-// function : PlaneAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_PlaneAspect)& Prs3d_Drawer::PlaneAspect() const
 {
@@ -492,10 +413,7 @@ const Handle(Prs3d_PlaneAspect)& Prs3d_Drawer::PlaneAspect() const
   return myPlaneAspect;
 }
 
-// =======================================================================
-// function : SeenLineAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SeenLineAspect() const
 {
@@ -506,10 +424,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SeenLineAspect() const
   return mySeenLineAspect;
 }
 
-// =======================================================================
-// function : ArrowAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_ArrowAspect)& Prs3d_Drawer::ArrowAspect() const
 {
@@ -520,10 +435,7 @@ const Handle(Prs3d_ArrowAspect)& Prs3d_Drawer::ArrowAspect() const
   return myArrowAspect;
 }
 
-// =======================================================================
-// function : SetLineArrowDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetLineArrowDraw(const Standard_Boolean theIsEnabled)
 {
@@ -531,10 +443,7 @@ void Prs3d_Drawer::SetLineArrowDraw(const Standard_Boolean theIsEnabled)
   myLineArrowDraw       = theIsEnabled;
 }
 
-// =======================================================================
-// function : HiddenLineAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::HiddenLineAspect() const
 {
@@ -545,10 +454,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::HiddenLineAspect() const
   return myHiddenLineAspect;
 }
 
-// =======================================================================
-// function : EnableDrawHiddenLineDraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::EnableDrawHiddenLine()
 {
@@ -556,10 +462,7 @@ void Prs3d_Drawer::EnableDrawHiddenLine()
   myDrawHiddenLine       = Standard_True;
 }
 
-// =======================================================================
-// function : DisableDrawHiddenLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::DisableDrawHiddenLine()
 {
@@ -567,10 +470,7 @@ void Prs3d_Drawer::DisableDrawHiddenLine()
   myDrawHiddenLine       = Standard_False;
 }
 
-// =======================================================================
-// function : VectorAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::VectorAspect() const
 {
@@ -581,10 +481,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::VectorAspect() const
   return myVectorAspect;
 }
 
-// =======================================================================
-// function : SetVertexDrawMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetVertexDrawMode(const Prs3d_VertexDrawMode theMode)
 {
@@ -593,10 +490,7 @@ void Prs3d_Drawer::SetVertexDrawMode(const Prs3d_VertexDrawMode theMode)
   myVertexDrawMode = theMode;
 }
 
-// =======================================================================
-// function : VertexDrawMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode() const
 {
@@ -611,10 +505,7 @@ Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode() const
   return Prs3d_VDM_Isolated;
 }
 
-// =======================================================================
-// function : DatumAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_DatumAspect)& Prs3d_Drawer::DatumAspect() const
 {
@@ -625,10 +516,7 @@ const Handle(Prs3d_DatumAspect)& Prs3d_Drawer::DatumAspect() const
   return myDatumAspect;
 }
 
-// =======================================================================
-// function : SectionAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SectionAspect() const
 {
@@ -639,10 +527,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SectionAspect() const
   return mySectionAspect;
 }
 
-// =======================================================================
-// function : SetSectionAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::ClearLocalAttributes()
 {
@@ -694,10 +579,8 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myTypeOfHLR      = Prs3d_TOH_NotSet;
 }
 
-// =======================================================================
-// function : SetupOwnFaceBoundaryAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Prs3d_Drawer::SetupOwnFaceBoundaryAspect(const Handle(Prs3d_Drawer)& theDefaults)
 {
   if (!myFaceBoundaryAspect.IsNull())
@@ -716,10 +599,8 @@ Standard_Boolean Prs3d_Drawer::SetupOwnFaceBoundaryAspect(const Handle(Prs3d_Dra
   return true;
 }
 
-// =======================================================================
-// function : SetOwnLineAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Prs3d_Drawer::SetOwnLineAspects(const Handle(Prs3d_Drawer)& theDefaults)
 {
   bool                        isUpdateNeeded = false;
@@ -806,10 +687,8 @@ Standard_Boolean Prs3d_Drawer::SetOwnLineAspects(const Handle(Prs3d_Drawer)& the
   return isUpdateNeeded;
 }
 
-// =======================================================================
-// function : SetOwnDatumAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Prs3d_Drawer::SetOwnDatumAspects(const Handle(Prs3d_Drawer)& theDefaults)
 {
   bool                        isUpdateNeeded = false;
@@ -865,10 +744,8 @@ inline void setAspectProgram(const Handle(Graphic3d_ShaderProgram)& theProgram, 
   }
 }
 
-// =======================================================================
-// function : SetShaderProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Prs3d_Drawer::SetShaderProgram(const Handle(Graphic3d_ShaderProgram)& theProgram,
                                     const Graphic3d_GroupAspect            theAspect,
                                     const bool                             theToOverrideDefaults)
@@ -944,10 +821,8 @@ bool Prs3d_Drawer::SetShaderProgram(const Handle(Graphic3d_ShaderProgram)& thePr
   return false;
 }
 
-// =======================================================================
-// function : SetShadingModel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Prs3d_Drawer::SetShadingModel(Graphic3d_TypeOfShadingModel theModel,
                                    bool                         theToOverrideDefaults)
 {
@@ -966,10 +841,8 @@ bool Prs3d_Drawer::SetShadingModel(Graphic3d_TypeOfShadingModel theModel,
   return isUpdateNeeded;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_Drawer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

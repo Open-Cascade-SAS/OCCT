@@ -23,10 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection, Standard_Transient)
 
-// =======================================================================
-// function : Aspect_DisplayConnection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
 #if defined(HAVE_XLIB)
@@ -40,10 +38,8 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 #endif
 }
 
-// =======================================================================
-// function : ~Aspect_DisplayConnection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
 #if defined(HAVE_XLIB)
@@ -58,10 +54,8 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 #endif
 }
 
-// =======================================================================
-// function : Aspect_DisplayConnection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_DisplayConnection::Aspect_DisplayConnection(const TCollection_AsciiString& theDisplayName)
     : myDisplay(NULL),
       myDefVisualInfo(NULL),
@@ -72,10 +66,8 @@ Aspect_DisplayConnection::Aspect_DisplayConnection(const TCollection_AsciiString
   Init(NULL);
 }
 
-// =======================================================================
-// function : Aspect_DisplayConnection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_DisplayConnection::Aspect_DisplayConnection(Aspect_XDisplay* theDisplay)
     : myDisplay(NULL),
       myDefVisualInfo(NULL),
@@ -85,10 +77,8 @@ Aspect_DisplayConnection::Aspect_DisplayConnection(Aspect_XDisplay* theDisplay)
   Init(theDisplay);
 }
 
-// =======================================================================
-// function : SetDefaultVisualInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_DisplayConnection::SetDefaultVisualInfo(Aspect_XVisualInfo* theVisual,
                                                     Aspect_FBConfig     theFBConfig)
 {
@@ -102,10 +92,8 @@ void Aspect_DisplayConnection::SetDefaultVisualInfo(Aspect_XVisualInfo* theVisua
   myDefFBConfig   = theFBConfig;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
 {
 #if defined(HAVE_XLIB)

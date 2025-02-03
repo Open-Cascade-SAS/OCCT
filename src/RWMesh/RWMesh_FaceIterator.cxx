@@ -20,10 +20,8 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 
-// =======================================================================
-// function : RWMesh_FaceIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
                                          const Standard_Boolean theToMapColors,
@@ -36,10 +34,8 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
   Next();
 }
 
-// =======================================================================
-// function : RWMesh_FaceIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
                                          const XCAFPrs_Style& theStyle)
     : RWMesh_ShapeIterator(theShape, TopAbs_FACE, theStyle),
@@ -50,10 +46,8 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
   Next();
 }
 
-// =======================================================================
-// function : normal
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Dir RWMesh_FaceIterator::normal(Standard_Integer theNode) const
 {
   gp_Dir aNormal(gp::DZ());
@@ -78,10 +72,8 @@ gp_Dir RWMesh_FaceIterator::normal(Standard_Integer theNode) const
   return aNormal;
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_FaceIterator::Next()
 {
   for (; myIter.More(); myIter.Next())
@@ -103,10 +95,8 @@ void RWMesh_FaceIterator::Next()
   resetFace();
 }
 
-// =======================================================================
-// function : initFace
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_FaceIterator::initFace()
 {
   myHasNormals = false;

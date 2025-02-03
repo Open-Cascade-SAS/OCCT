@@ -237,10 +237,8 @@ static void addTimeInfo(TColStd_IndexedDataMapOfStringString& theDict,
 }
 } // namespace
 
-// =======================================================================
-// function : Graphic3d_FrameStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStats::Graphic3d_FrameStats()
     : myFpsTimer(Standard_True),
       myFrameStartTime(0.0),
@@ -254,19 +252,15 @@ Graphic3d_FrameStats::Graphic3d_FrameStats()
   //
 }
 
-// =======================================================================
-// function : ~Graphic3d_FrameStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStats::~Graphic3d_FrameStats()
 {
   //
 }
 
-// =======================================================================
-// function : FormatStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
   Graphic3d_RenderingParams::PerfCounters theFlags) const
 {
@@ -558,10 +552,8 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats(
   return TCollection_AsciiString(aBuf.str().c_str());
 }
 
-// =======================================================================
-// function : FormatStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStats::FormatStats(TColStd_IndexedDataMapOfStringString&   theDict,
                                        Graphic3d_RenderingParams::PerfCounters theFlags) const
 {
@@ -676,10 +668,8 @@ void Graphic3d_FrameStats::FormatStats(TColStd_IndexedDataMapOfStringString&   t
   }
 }
 
-// =======================================================================
-// function : FrameStart
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStats::FrameStart(const Handle(Graphic3d_CView)& theView,
                                       bool                           theIsImmediateOnly)
 {
@@ -713,10 +703,8 @@ void Graphic3d_FrameStats::FrameStart(const Handle(Graphic3d_CView)& theView,
   }
 }
 
-// =======================================================================
-// function : FrameEnd
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStats::FrameEnd(const Handle(Graphic3d_CView)& theView, bool theIsImmediateOnly)
 {
   const Graphic3d_RenderingParams::PerfCounters aBits =

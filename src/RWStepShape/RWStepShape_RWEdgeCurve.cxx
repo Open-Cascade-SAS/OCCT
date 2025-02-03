@@ -109,10 +109,8 @@ Standard_Boolean AreEndsMatch(const Handle(StepShape_EdgeCurve)& theEdgeCurve)
 }
 } // namespace
 
-// ================================================================
-// Function : ReadStep
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& theStepData,
                                        const Standard_Integer                 theRecordID,
                                        Handle(Interface_Check)&               theMessageTool,
@@ -163,10 +161,8 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
   theEdgeCurve->Init(aName, anEdgeStart, anEdgeEnd, anEdgeGeometry, aSameSense);
 }
 
-// ================================================================
-// Function : WriteStep
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theStepWriter,
                                         const Handle(StepShape_EdgeCurve)& theEdgeCurve) const
 {
@@ -186,10 +182,8 @@ void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theSt
   theStepWriter.SendBoolean(theEdgeCurve->SameSense());
 }
 
-// ================================================================
-// Function : Share
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
                                     Interface_EntityIterator&          theSharedEntitiesIt) const
 {
@@ -200,10 +194,8 @@ void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCu
   theSharedEntitiesIt.GetOneItem(theEdgeCurve->EdgeGeometry());
 }
 
-// ================================================================
-// Function : Check
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWStepShape_RWEdgeCurve::Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
                                     const Interface_ShareTool&         theShareTool,
                                     Handle(Interface_Check)&           theMessageTool) const

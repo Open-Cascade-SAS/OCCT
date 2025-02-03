@@ -34,10 +34,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_LightSource, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_LightSourceOwner, SelectMgr_EntityOwner)
 
-// =======================================================================
-// function : AIS_LightSourceOwner
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_LightSourceOwner::AIS_LightSourceOwner(const Handle(AIS_LightSource)& theObject,
                                            Standard_Integer               thePriority)
     : SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)theObject, thePriority)
@@ -45,10 +43,8 @@ AIS_LightSourceOwner::AIS_LightSourceOwner(const Handle(AIS_LightSource)& theObj
   //
 }
 
-// =======================================================================
-// function : HandleMouseClick
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean AIS_LightSourceOwner::HandleMouseClick(const Graphic3d_Vec2i&,
                                                         Aspect_VKeyMouse theKey,
                                                         Aspect_VKeyFlags theFlags,
@@ -167,10 +163,8 @@ Standard_Boolean AIS_LightSourceOwner::IsForcedHilight() const
   return Standard_False;
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_LightSource::AIS_LightSource(const Handle(Graphic3d_CLight)& theLight)
     : myLightSource(theLight),
       myCodirMarkerType(Aspect_TOM_X),
@@ -295,10 +289,8 @@ Standard_Boolean AIS_LightSource::ProcessDragging(const Handle(AIS_InteractiveCo
   return Standard_False;
 }
 
-// =======================================================================
-// function : updateLightAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::updateLightAspects()
 {
   const Quantity_Color aBaseColor = myLightSource->Color();
@@ -333,10 +325,8 @@ void AIS_LightSource::updateLightAspects()
   SynchronizeAspects();
 }
 
-// =======================================================================
-// function : updateLightTransformPersistence
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::updateLightTransformPersistence()
 {
   Handle(Graphic3d_TransformPers) aTrsfPers = myTransformPersistence;
@@ -421,10 +411,8 @@ void AIS_LightSource::updateLightTransformPersistence()
   SetTransformPersistence(aTrsfPers);
 }
 
-// =======================================================================
-// function : updateLightLocalTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::updateLightLocalTransformation()
 {
   myLocalTransformation.Nullify();
@@ -470,10 +458,8 @@ void AIS_LightSource::updateLightLocalTransformation()
   UpdateTransformation();
 }
 
-// =======================================================================
-// function : setLocalTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::setLocalTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
 {
   const gp_Trsf aTrsf = !theTrsf.IsNull() ? theTrsf->Transformation() : gp_Trsf();
@@ -513,10 +499,8 @@ void AIS_LightSource::setLocalTransformation(const Handle(TopLoc_Datum3D)& theTr
   updateLightTransformPersistence();
 }
 
-// =======================================================================
-// function : Compute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::Compute(const Handle(PrsMgr_PresentationManager)&,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer            theMode)
@@ -559,10 +543,8 @@ void AIS_LightSource::Compute(const Handle(PrsMgr_PresentationManager)&,
   }
 }
 
-// =======================================================================
-// function : computeAmbient
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
                                      const Standard_Integer            theMode)
 {
@@ -635,10 +617,8 @@ void AIS_LightSource::computeAmbient(const Handle(Prs3d_Presentation)& thePrs,
   }
 }
 
-// =======================================================================
-// function : computeDirectional
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePrs,
                                          const Standard_Integer            theMode)
 {
@@ -763,10 +743,8 @@ void AIS_LightSource::computeDirectional(const Handle(Prs3d_Presentation)& thePr
   }
 }
 
-// =======================================================================
-// function : computePositional
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::computePositional(const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer            theMode)
 {
@@ -792,10 +770,8 @@ void AIS_LightSource::computePositional(const Handle(Prs3d_Presentation)& thePrs
   }
 }
 
-// =======================================================================
-// function : computeSpot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
                                   const Standard_Integer            theMode)
 {
@@ -851,10 +827,8 @@ void AIS_LightSource::computeSpot(const Handle(Prs3d_Presentation)& thePrs,
   }
 }
 
-// =======================================================================
-// function : ComputeSelection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_LightSource::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
                                        const Standard_Integer             theMode)
 {

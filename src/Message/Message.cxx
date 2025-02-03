@@ -100,10 +100,8 @@ Standard_Boolean Message::MetricFromString(const Standard_CString theString,
   return Standard_False;
 }
 
-// =======================================================================
-// function : ToOSDMetric
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Message::ToOSDMetric(const Message_MetricType theMetric,
                                       OSD_MemInfo::Counter&    theMemInfo)
 {
@@ -136,10 +134,8 @@ Standard_Boolean Message::ToOSDMetric(const Message_MetricType theMetric,
   return Standard_True;
 }
 
-// =======================================================================
-// function : ToMessageMetric
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
                                           Message_MetricType&        theMetric)
 {

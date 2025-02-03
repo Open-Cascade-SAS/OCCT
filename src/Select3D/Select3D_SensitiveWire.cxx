@@ -117,10 +117,8 @@ Standard_Boolean Select3D_SensitiveWire::overlapsElement(
   return aSeg->Matches(theMgr, thePickResult);
 }
 
-// =======================================================================
-// function : elementIsInside
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitiveWire::elementIsInside(
   SelectBasics_SelectingVolumeManager& theMgr,
   Standard_Integer                     theElemIdx,
@@ -216,10 +214,8 @@ gp_Pnt Select3D_SensitiveWire::CenterOfGeometry() const
   return myCenter;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveWire::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

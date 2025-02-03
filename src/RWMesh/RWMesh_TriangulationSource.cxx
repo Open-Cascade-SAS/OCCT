@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWMesh_TriangulationSource, Poly_Triangulation)
 
-// =======================================================================
-// function : RWMesh_TriangulationSource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_TriangulationSource::RWMesh_TriangulationSource()
     : myNbDefNodes(0),
       myNbDefTriangles(0),
@@ -28,19 +26,15 @@ RWMesh_TriangulationSource::RWMesh_TriangulationSource()
 {
 }
 
-// =======================================================================
-// function : ~RWMesh_TriangulationSource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_TriangulationSource::~RWMesh_TriangulationSource()
 {
   //
 }
 
-// =======================================================================
-// function : loadDeferredData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean RWMesh_TriangulationSource::loadDeferredData(
   const Handle(OSD_FileSystem)&     theFileSystem,
   const Handle(Poly_Triangulation)& theDestTriangulation) const
@@ -63,10 +57,8 @@ Standard_Boolean RWMesh_TriangulationSource::loadDeferredData(
   return false;
 }
 
-// =======================================================================
-// function : ResizeEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_TriangulationSource::ResizeEdges(Standard_Integer theNbEdges,
                                              Standard_Boolean theToCopyOld)
 {

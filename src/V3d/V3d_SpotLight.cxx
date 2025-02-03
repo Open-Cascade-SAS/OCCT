@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_SpotLight, V3d_PositionLight)
 
-// =======================================================================
-// function : V3d_SpotLight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 V3d_SpotLight::V3d_SpotLight(const gp_Pnt&               thePos,
                              const V3d_TypeOfOrientation theDirection,
                              const Quantity_Color&       theColor)
@@ -31,10 +29,8 @@ V3d_SpotLight::V3d_SpotLight(const gp_Pnt&               thePos,
   SetDirection(V3d::GetProjAxis(theDirection));
 }
 
-// =======================================================================
-// function : V3d_SpotLight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 V3d_SpotLight::V3d_SpotLight(const gp_Pnt&         thePos,
                              const gp_Dir&         theDirection,
                              const Quantity_Color& theColor)
@@ -45,10 +41,8 @@ V3d_SpotLight::V3d_SpotLight(const gp_Pnt&         thePos,
   SetDirection(theDirection);
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_SpotLight::SetDirection(V3d_TypeOfOrientation theDirection)
 {
   SetDirection(V3d::GetProjAxis(theDirection));

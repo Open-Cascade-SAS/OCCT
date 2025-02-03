@@ -29,19 +29,15 @@ OSD_SignalMode OSD::SignalMode()
   return OSD_WasSetSignal;
 }
 
-// =======================================================================
-// function : SignalStackTraceLength
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OSD::SignalStackTraceLength()
 {
   return OSD_SignalStackTraceLength;
 }
 
-// =======================================================================
-// function : SetSignalStackTraceLength
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD::SetSignalStackTraceLength(Standard_Integer theLength)
 {
   OSD_SignalStackTraceLength = theLength;

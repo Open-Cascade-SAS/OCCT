@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font, OpenGl_Resource)
 
-// =======================================================================
-// function : OpenGl_Font
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Font::OpenGl_Font(const Handle(Font_FTFont)& theFont, const TCollection_AsciiString& theKey)
     : myKey(theKey),
       myFont(theFont),
@@ -38,19 +36,15 @@ OpenGl_Font::OpenGl_Font(const Handle(Font_FTFont)& theFont, const TCollection_A
   memset(&myLastTilePx, 0, sizeof(myLastTilePx));
 }
 
-// =======================================================================
-// function : ~OpenGl_Font
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Font::~OpenGl_Font()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Font::Release(OpenGl_Context* theCtx)
 {
   if (myTextures.IsEmpty())
@@ -75,10 +69,8 @@ void OpenGl_Font::Release(OpenGl_Context* theCtx)
   myTextures.Clear();
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_Font::EstimatedDataSize() const
 {
   Standard_Size aSize = 0;
@@ -90,10 +82,8 @@ Standard_Size OpenGl_Font::EstimatedDataSize() const
   return aSize;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Font::Init(const Handle(OpenGl_Context)& theCtx)
 {
   Release(theCtx.operator->());
@@ -115,10 +105,8 @@ bool OpenGl_Font::Init(const Handle(OpenGl_Context)& theCtx)
   return true;
 }
 
-// =======================================================================
-// function : createTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Font::createTexture(const Handle(OpenGl_Context)& theCtx)
 {
   // Single font might define very wide range of symbols, with very few of them actually used in
@@ -166,10 +154,8 @@ bool OpenGl_Font::createTexture(const Handle(OpenGl_Context)& theCtx)
   return true;
 }
 
-// =======================================================================
-// function : renderGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Font::renderGlyph(const Handle(OpenGl_Context)& theCtx,
                               const Standard_Utf32Char      theChar)
 {
@@ -241,10 +227,8 @@ bool OpenGl_Font::renderGlyph(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : RenderGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Font::RenderGlyph(const Handle(OpenGl_Context)& theCtx,
                               const Standard_Utf32Char      theUChar,
                               Tile&                         theGlyph)

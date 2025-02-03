@@ -269,20 +269,16 @@ void Poly_Triangulation::SetNormals(const Handle(TShort_HArray1OfShortReal)& the
   }
 }
 
-// =======================================================================
-// function : SetDoublePrecision
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::SetDoublePrecision(bool theIsDouble)
 {
   myNodes.SetDoublePrecision(theIsDouble);
   myUVNodes.SetDoublePrecision(theIsDouble);
 }
 
-// =======================================================================
-// function : ResizeNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::ResizeNodes(Standard_Integer theNbNodes, Standard_Boolean theToCopyOld)
 {
   myNodes.Resize(theNbNodes, theToCopyOld);
@@ -296,20 +292,16 @@ void Poly_Triangulation::ResizeNodes(Standard_Integer theNbNodes, Standard_Boole
   }
 }
 
-// =======================================================================
-// function : ResizeTriangles
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::ResizeTriangles(Standard_Integer theNbTriangles,
                                          Standard_Boolean theToCopyOld)
 {
   myTriangles.Resize(1, theNbTriangles, theToCopyOld);
 }
 
-// =======================================================================
-// function : AddUVNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::AddUVNodes()
 {
   if (myUVNodes.IsEmpty() || myUVNodes.Size() != myNodes.Size())
@@ -318,10 +310,8 @@ void Poly_Triangulation::AddUVNodes()
   }
 }
 
-// =======================================================================
-// function : AddNormals
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::AddNormals()
 {
   if (myNormals.IsEmpty() || myNormals.Size() != myNodes.Size())
@@ -330,10 +320,7 @@ void Poly_Triangulation::AddNormals()
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
@@ -350,20 +337,16 @@ void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, Standard_Integer
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPurpose)
 }
 
-// =======================================================================
-// function : CachedMinMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Bnd_Box& Poly_Triangulation::CachedMinMax() const
 {
   static const Bnd_Box anEmptyBox;
   return (myCachedMinMax == NULL) ? anEmptyBox : *myCachedMinMax;
 }
 
-// =======================================================================
-// function : SetCachedMinMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
 {
   if (theBox.IsVoid())
@@ -378,10 +361,8 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
   *myCachedMinMax = theBox;
 }
 
-// =======================================================================
-// function : unsetCachedMinMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_Triangulation::unsetCachedMinMax()
 {
   if (myCachedMinMax != NULL)
@@ -391,10 +372,8 @@ void Poly_Triangulation::unsetCachedMinMax()
   }
 }
 
-// =======================================================================
-// function : MinMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Poly_Triangulation::MinMax(Bnd_Box&       theBox,
                                             const gp_Trsf& theTrsf,
                                             const bool     theIsAccurate) const
@@ -419,10 +398,8 @@ Standard_Boolean Poly_Triangulation::MinMax(Bnd_Box&       theBox,
   return Standard_True;
 }
 
-// =======================================================================
-// function : computeBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Bnd_Box Poly_Triangulation::computeBoundingBox(const gp_Trsf& theTrsf) const
 {
   Bnd_Box aBox;

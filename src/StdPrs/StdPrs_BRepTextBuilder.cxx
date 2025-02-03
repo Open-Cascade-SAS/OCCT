@@ -17,10 +17,8 @@
 
 #include <Font_TextFormatter.hxx>
 
-// =======================================================================
-// Function : Perform
-// Purpose  :
-// =======================================================================
+//=================================================================================================
+
 TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  theFont,
                                              const Handle(Font_TextFormatter)& theFormatter,
                                              const gp_Ax3&                     thePenLoc)
@@ -59,10 +57,8 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  t
   return aResult;
 }
 
-// =======================================================================
-// Function : Perform
-// Purpose  :
-// =======================================================================
+//=================================================================================================
+
 TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                        theFont,
                                              const NCollection_String&               theString,
                                              const gp_Ax3&                           thePenLoc,

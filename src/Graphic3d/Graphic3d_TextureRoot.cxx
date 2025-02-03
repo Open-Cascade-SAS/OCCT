@@ -34,10 +34,8 @@ namespace
 static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
 }
 
-// =======================================================================
-// function : TexturesFolder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 {
   static Standard_Boolean        IsDefined = Standard_False;
@@ -83,10 +81,8 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
   return VarName;
 }
 
-// =======================================================================
-// function : Graphic3d_TextureRoot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureRoot::Graphic3d_TextureRoot(const TCollection_AsciiString& theFileName,
                                              const Graphic3d_TypeOfTexture  theType)
     : myParams(new Graphic3d_TextureParams()),
@@ -100,10 +96,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot(const TCollection_AsciiString& theF
   generateId();
 }
 
-// =======================================================================
-// function : Graphic3d_TextureRoot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureRoot::Graphic3d_TextureRoot(const Handle(Image_PixMap)&   thePixMap,
                                              const Graphic3d_TypeOfTexture theType)
     : myParams(new Graphic3d_TextureParams()),
@@ -117,29 +111,23 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot(const Handle(Image_PixMap)&   thePi
   generateId();
 }
 
-// =======================================================================
-// function : ~Graphic3d_TextureRoot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TextureRoot::~Graphic3d_TextureRoot()
 {
   //
 }
 
-// =======================================================================
-// function : generateId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_TextureRoot::generateId()
 {
   myTexId = TCollection_AsciiString("Graphic3d_TextureRoot_")
             + TCollection_AsciiString(Standard_Atomic_Increment(&THE_TEXTURE_COUNTER));
 }
 
-// =======================================================================
-// function : GetCompressedImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -172,10 +160,8 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
   return Handle(Image_CompressedPixMap)();
 }
 
-// =======================================================================
-// function : GetImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -211,10 +197,8 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
   return Handle(Image_PixMap)();
 }
 
-// =======================================================================
-// function : convertToCompatible
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_TextureRoot::convertToCompatible(const Handle(Image_SupportedFormats)& theSupported,
                                                 const Handle(Image_PixMap)&           theImage)
 {
@@ -241,10 +225,8 @@ void Graphic3d_TextureRoot::convertToCompatible(const Handle(Image_SupportedForm
   }
 }
 
-// =======================================================================
-// function : IsDone
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_TextureRoot::IsDone() const
 {
   // Case 1: texture source is specified as pixmap

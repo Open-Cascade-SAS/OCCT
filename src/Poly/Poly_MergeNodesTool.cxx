@@ -59,10 +59,8 @@ private:
   Poly_MergeNodesTool::Vec3AndNormal myKey;
 };
 
-// =======================================================================
-// function : MergedNodesMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
     : NCollection_BaseMap(theNbBuckets, true, new NCollection_IncAllocator()),
       myTolerance(0.0f),
@@ -74,10 +72,8 @@ Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
   //
 }
 
-// =======================================================================
-// function : MergedNodesMap::SetMergeTolerance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
 {
   myTolerance = (float)theTolerance;
@@ -88,10 +84,8 @@ void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
   }
 }
 
-// =======================================================================
-// function : MergedNodesMap::hashCode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
   const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
   const int                                             theUpper)
@@ -105,10 +99,8 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
   return aHashCode % theUpper + 1;
 }
 
-// =======================================================================
-// function : MergedNodesMap::hashCode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Vec3<float>& thePos,
                                                             const NCollection_Vec3<float>& theNorm,
                                                             const int theUpper) const
@@ -131,10 +123,8 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Ve
   return vec3iHashCode(anIndex, theUpper);
 }
 
-// =======================================================================
-// function : MergedNodesMap::vec3AreEqual
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline bool Poly_MergeNodesTool::MergedNodesMap::vec3AreEqual(
   const NCollection_Vec3<float>& theKey1,
   const NCollection_Vec3<float>& theKey2) const
@@ -179,10 +169,8 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::vec3AreEqual(
   return true;
 }
 
-// =======================================================================
-// function : MergedNodesMap::isEqual
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline bool Poly_MergeNodesTool::MergedNodesMap::isEqual(const Vec3AndNormal&           theKey1,
                                                          const NCollection_Vec3<float>& thePos2,
                                                          const NCollection_Vec3<float>& theNorm2,
@@ -207,10 +195,8 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::isEqual(const Vec3AndNormal&   
   return false;
 }
 
-// =======================================================================
-// function : MergedNodesMap::Bind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                           theIndex,
                                                       bool&                          theIsOpposite,
                                                       const NCollection_Vec3<float>& thePos,
@@ -264,10 +250,8 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
   return true;
 }
 
-// =======================================================================
-// function : MergedNodesMap::ReSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
 {
   NCollection_ListNode** aNewData   = NULL;
@@ -293,10 +277,8 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
   }
 }
 
-// =======================================================================
-// function : Poly_MergeNodesTool
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Poly_MergeNodesTool::Poly_MergeNodesTool(const double theSmoothAngle,
                                          const double theMergeTolerance,
                                          const int    theNbFacets)
@@ -317,10 +299,8 @@ Poly_MergeNodesTool::Poly_MergeNodesTool(const double theSmoothAngle,
   SetMergeTolerance(theMergeTolerance);
 }
 
-// =======================================================================
-// function : AddElement
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_MergeNodesTool::AddElement(const gp_XYZ* theElemNodes, int theNbNodes)
 {
   if (theNbNodes != 3 && theNbNodes != 4)
@@ -338,10 +318,8 @@ void Poly_MergeNodesTool::AddElement(const gp_XYZ* theElemNodes, int theNbNodes)
   PushLastElement(theNbNodes);
 }
 
-// =======================================================================
-// function : PushLastElement
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_MergeNodesTool::PushLastElement(int theNbNodes)
 {
   if (theNbNodes != 3 && theNbNodes != 4)
@@ -429,10 +407,8 @@ void Poly_MergeNodesTool::PushLastElement(int theNbNodes)
   }
 }
 
-// =======================================================================
-// function : AddTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Poly_MergeNodesTool::AddTriangulation(const Handle(Poly_Triangulation)& theTris,
                                            const gp_Trsf&                    theTrsf,
                                            const Standard_Boolean            theToReverse)
@@ -466,10 +442,8 @@ void Poly_MergeNodesTool::AddTriangulation(const Handle(Poly_Triangulation)& the
   }
 }
 
-// =======================================================================
-// function : Result
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Poly_Triangulation) Poly_MergeNodesTool::Result()
 {
   if (myPolyData.IsNull())
@@ -483,10 +457,8 @@ Handle(Poly_Triangulation) Poly_MergeNodesTool::Result()
   return myPolyData;
 }
 
-// =======================================================================
-// function : MergeNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Poly_Triangulation) Poly_MergeNodesTool::MergeNodes(
   const Handle(Poly_Triangulation)& theTris,
   const gp_Trsf&                    theTrsf,

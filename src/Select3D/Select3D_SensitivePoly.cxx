@@ -455,10 +455,8 @@ gp_Pnt Select3D_SensitivePoly::CenterOfGeometry() const
   return myCOG;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePoly::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

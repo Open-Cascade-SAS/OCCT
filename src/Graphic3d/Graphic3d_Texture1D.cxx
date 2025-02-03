@@ -23,10 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1D, Graphic3d_TextureMap)
 
 static const char* NameOfTexture1d_to_FileName[] = {"1d_elevation.rgb"};
 
-// =======================================================================
-// function : Graphic3d_Texture1D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1D::Graphic3d_Texture1D(const TCollection_AsciiString& theFileName,
                                          const Graphic3d_TypeOfTexture  theType)
     : Graphic3d_TextureMap(theFileName, theType),
@@ -34,10 +32,8 @@ Graphic3d_Texture1D::Graphic3d_Texture1D(const TCollection_AsciiString& theFileN
 {
 }
 
-// =======================================================================
-// function : Graphic3d_Texture1D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1D::Graphic3d_Texture1D(const Graphic3d_NameOfTexture1D theNOT,
                                          const Graphic3d_TypeOfTexture   theType)
     : Graphic3d_TextureMap(NameOfTexture1d_to_FileName[theNOT], theType),
@@ -47,10 +43,8 @@ Graphic3d_Texture1D::Graphic3d_Texture1D(const Graphic3d_NameOfTexture1D theNOT,
   myTexId = TCollection_AsciiString("Graphic3d_Texture1D_") + NameOfTexture1d_to_FileName[theNOT];
 }
 
-// =======================================================================
-// function : Graphic3d_Texture1D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1D::Graphic3d_Texture1D(const Handle(Image_PixMap)&   thePixMap,
                                          const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureMap(thePixMap, theType),
@@ -58,28 +52,22 @@ Graphic3d_Texture1D::Graphic3d_Texture1D(const Handle(Image_PixMap)&   thePixMap
 {
 }
 
-// =======================================================================
-// function : Name
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_NameOfTexture1D Graphic3d_Texture1D::Name() const
 {
   return myName;
 }
 
-// =======================================================================
-// function : NumberOfTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_Texture1D::NumberOfTextures()
 {
   return sizeof(NameOfTexture1d_to_FileName) / sizeof(char*);
 }
 
-// =======================================================================
-// function : TextureName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_Texture1D::TextureName(const Standard_Integer theRank)
 {
   if (theRank < 1 || theRank > NumberOfTextures())

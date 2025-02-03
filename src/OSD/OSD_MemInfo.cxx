@@ -40,10 +40,8 @@
 EM_JS(double, OSD_MemInfo_getModuleHeapLength, (), { return Module.HEAP8.length; });
 #endif
 
-// =======================================================================
-// function : OSD_MemInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_MemInfo::OSD_MemInfo(const Standard_Boolean theImmediateUpdate)
 {
   SetActive(Standard_True);
@@ -57,10 +55,8 @@ OSD_MemInfo::OSD_MemInfo(const Standard_Boolean theImmediateUpdate)
   }
 }
 
-// =======================================================================
-// function : SetActive
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_MemInfo::SetActive(const Standard_Boolean theActive)
 {
   for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
@@ -69,10 +65,8 @@ void OSD_MemInfo::SetActive(const Standard_Boolean theActive)
   }
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_MemInfo::Clear()
 {
   for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
@@ -81,10 +75,8 @@ void OSD_MemInfo::Clear()
   }
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_MemInfo::Update()
 {
   Clear();
@@ -266,10 +258,8 @@ void OSD_MemInfo::Update()
 #endif
 }
 
-// =======================================================================
-// function : ToString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OSD_MemInfo::ToString() const
 {
   TCollection_AsciiString anInfo;
@@ -313,10 +303,8 @@ TCollection_AsciiString OSD_MemInfo::ToString() const
   return anInfo;
 }
 
-// =======================================================================
-// function : Value
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OSD_MemInfo::Value(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
@@ -326,10 +314,8 @@ Standard_Size OSD_MemInfo::Value(const OSD_MemInfo::Counter theCounter) const
   return myCounters[theCounter];
 }
 
-// =======================================================================
-// function : ValueMiB
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
@@ -340,10 +326,8 @@ Standard_Size OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
                                                        : (myCounters[theCounter] / (1024 * 1024));
 }
 
-// =======================================================================
-// function : ValuePreciseMiB
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real OSD_MemInfo::ValuePreciseMiB(const OSD_MemInfo::Counter theCounter) const
 {
   if (theCounter < 0 || theCounter >= MemCounter_NB || !IsActive(theCounter))
@@ -355,10 +339,8 @@ Standard_Real OSD_MemInfo::ValuePreciseMiB(const OSD_MemInfo::Counter theCounter
            : ((Standard_Real)myCounters[theCounter] / (1024.0 * 1024.0));
 }
 
-// =======================================================================
-// function : ShowInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OSD_MemInfo::PrintInfo()
 {
   OSD_MemInfo anInfo;

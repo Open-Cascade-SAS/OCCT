@@ -81,10 +81,8 @@ private:
   const Standard_Real             myShapeDeflection;
 };
 
-// =========================================================================
-// function : Add
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
                          const TopoDS_Shape&               theShape,
                          const Handle(Prs3d_Drawer)&       theDrawer,
@@ -232,10 +230,8 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
   }
 }
 
-// =========================================================================
-// function : AddAllEdges
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddAllEdges(
   const TopoDS_Shape&         theShape,
   const Handle(Prs3d_Drawer)& theDrawer)
@@ -247,10 +243,8 @@ Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddAllEdges(
   return Prs3d::PrimitivesFromPolylines(aPolylines);
 }
 
-// =========================================================================
-// function : addEdges
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 void StdPrs_WFShape::addEdges(const TopoDS_Shape&         theShape,
                               const Handle(Prs3d_Drawer)& theDrawer,
                               Standard_Real               theShapeDeflection,
@@ -311,10 +305,8 @@ void StdPrs_WFShape::addEdges(const TopoDS_Shape&         theShape,
   }
 }
 
-// =========================================================================
-// function : AddEdges
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
                               const Handle(Prs3d_Drawer)& theDrawer,
                               const Standard_Real         theShapeDeflection,
@@ -397,10 +389,8 @@ void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
   }
 }
 
-// =========================================================================
-// function : AddEdgesOnTriangulation
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddEdgesOnTriangulation(
   const TopoDS_Shape&    theShape,
   const Standard_Boolean theToExcludeGeometric)
@@ -422,10 +412,8 @@ Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddEdgesOnTriangulation(
   return aSurfArray;
 }
 
-// =========================================================================
-// function : AddEdgesOnTriangulation
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 void StdPrs_WFShape::AddEdgesOnTriangulation(TColgp_SequenceOfPnt&  theSegments,
                                              const TopoDS_Shape&    theShape,
                                              const Standard_Boolean theToExcludeGeometric)
@@ -449,10 +437,8 @@ void StdPrs_WFShape::AddEdgesOnTriangulation(TColgp_SequenceOfPnt&  theSegments,
   }
 }
 
-// =========================================================================
-// function : AddVertexes
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfPoints) StdPrs_WFShape::AddVertexes(const TopoDS_Shape&  theShape,
                                                             Prs3d_VertexDrawMode theVertexMode)
 {

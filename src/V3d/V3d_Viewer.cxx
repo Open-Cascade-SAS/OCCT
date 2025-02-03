@@ -33,10 +33,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_Viewer, Standard_Transient)
 
-// ========================================================================
-// function : V3d_Viewer
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 V3d_Viewer::V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver)
     : myDriver(theDriver),
       myStructureManager(new Graphic3d_StructureManager(theDriver)),
@@ -58,19 +56,15 @@ V3d_Viewer::V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver)
   //
 }
 
-// ========================================================================
-// function : CreateView
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 Handle(V3d_View) V3d_Viewer::CreateView()
 {
   return new V3d_View(this, myDefaultTypeOfView);
 }
 
-// ========================================================================
-// function : SetViewOn
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetViewOn()
 {
   for (V3d_ListOfView::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
@@ -80,10 +74,8 @@ void V3d_Viewer::SetViewOn()
   }
 }
 
-// ========================================================================
-// function : SetViewOff
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetViewOff()
 {
   for (V3d_ListOfView::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
@@ -93,10 +85,8 @@ void V3d_Viewer::SetViewOff()
   }
 }
 
-// ========================================================================
-// function : SetViewOn
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetViewOn(const Handle(V3d_View)& theView)
 {
   Handle(Graphic3d_CView) aViewImpl = theView->View();
@@ -124,10 +114,8 @@ void V3d_Viewer::SetViewOn(const Handle(V3d_View)& theView)
   }
 }
 
-// ========================================================================
-// function : SetViewOff
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetViewOff(const Handle(V3d_View)& theView)
 {
   Handle(Graphic3d_CView) aViewImpl = theView->View();
@@ -138,10 +126,8 @@ void V3d_Viewer::SetViewOff(const Handle(V3d_View)& theView)
   }
 }
 
-// ========================================================================
-// function : Redraw
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::Redraw() const
 {
   for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
@@ -162,10 +148,8 @@ void V3d_Viewer::Redraw() const
   }
 }
 
-// ========================================================================
-// function : RedrawImmediate
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::RedrawImmediate() const
 {
   for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
@@ -186,10 +170,8 @@ void V3d_Viewer::RedrawImmediate() const
   }
 }
 
-// ========================================================================
-// function : Invalidate
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::Invalidate() const
 {
   for (V3d_ListOfView::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
@@ -199,28 +181,22 @@ void V3d_Viewer::Invalidate() const
   }
 }
 
-// ========================================================================
-// function : Remove
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::Remove()
 {
   myStructureManager->Remove();
 }
 
-// ========================================================================
-// function : Erase
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::Erase() const
 {
   myStructureManager->Erase();
 }
 
-// ========================================================================
-// function : UnHighlight
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::UnHighlight() const
 {
   myStructureManager->UnHighlight();
@@ -233,19 +209,15 @@ void V3d_Viewer::SetDefaultViewSize(const Standard_Real theSize)
   myViewSize = theSize;
 }
 
-// ========================================================================
-// function : IfMoreViews
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 Standard_Boolean V3d_Viewer::IfMoreViews() const
 {
   return myDefinedViews.Size() < myStructureManager->MaxNumOfViews();
 }
 
-// ========================================================================
-// function : AddView
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::AddView(const Handle(V3d_View)& theView)
 {
   if (!myDefinedViews.Contains(theView))
@@ -254,10 +226,8 @@ void V3d_Viewer::AddView(const Handle(V3d_View)& theView)
   }
 }
 
-// ========================================================================
-// function : DelView
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void V3d_Viewer::DelView(const V3d_View* theView)
 {
   for (V3d_ListOfView::Iterator aViewIter(myActiveViews); aViewIter.More(); aViewIter.Next())
@@ -558,10 +528,8 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean theOnOff,
   myPlaneStructure->Display();
 }
 
-// =======================================================================
-// function : Grid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Aspect_Grid) V3d_Viewer::Grid(Aspect_GridType theGridType, bool theToCreate)
 {
   switch (theGridType)
@@ -588,20 +556,16 @@ Handle(Aspect_Grid) V3d_Viewer::Grid(Aspect_GridType theGridType, bool theToCrea
   return Handle(Aspect_Grid)();
 }
 
-// =======================================================================
-// function : GridDrawMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_GridDrawMode V3d_Viewer::GridDrawMode()
 {
   Handle(Aspect_Grid) aGrid = Grid(false);
   return !aGrid.IsNull() ? aGrid->DrawMode() : Aspect_GDM_Lines;
 }
 
-// =======================================================================
-// function : ActivateGrid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::ActivateGrid(const Aspect_GridType theType, const Aspect_GridDrawMode theMode)
 {
   if (Handle(Aspect_Grid) anOldGrid = Grid(false))
@@ -624,10 +588,8 @@ void V3d_Viewer::ActivateGrid(const Aspect_GridType theType, const Aspect_GridDr
   }
 }
 
-// =======================================================================
-// function : DeactivateGrid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::DeactivateGrid()
 {
   Handle(Aspect_Grid) aGrid = Grid(false);
@@ -651,20 +613,16 @@ void V3d_Viewer::DeactivateGrid()
   }
 }
 
-// =======================================================================
-// function : IsGridActive
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean V3d_Viewer::IsGridActive()
 {
   Handle(Aspect_Grid) aGrid = Grid(false);
   return !aGrid.IsNull() && aGrid->IsActive();
 }
 
-// =======================================================================
-// function : RectangularGridValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::RectangularGridValues(Standard_Real& theXOrigin,
                                        Standard_Real& theYOrigin,
                                        Standard_Real& theXStep,
@@ -679,10 +637,8 @@ void V3d_Viewer::RectangularGridValues(Standard_Real& theXOrigin,
   theRotationAngle = myRGrid->RotationAngle();
 }
 
-// =======================================================================
-// function : SetRectangularGridValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetRectangularGridValues(const Standard_Real theXOrigin,
                                           const Standard_Real theYOrigin,
                                           const Standard_Real theXStep,
@@ -698,10 +654,8 @@ void V3d_Viewer::SetRectangularGridValues(const Standard_Real theXOrigin,
   }
 }
 
-// =======================================================================
-// function : CircularGridValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::CircularGridValues(Standard_Real&    theXOrigin,
                                     Standard_Real&    theYOrigin,
                                     Standard_Real&    theRadiusStep,
@@ -716,10 +670,8 @@ void V3d_Viewer::CircularGridValues(Standard_Real&    theXOrigin,
   theRotationAngle  = myCGrid->RotationAngle();
 }
 
-// =======================================================================
-// function : SetCircularGridValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetCircularGridValues(const Standard_Real    theXOrigin,
                                        const Standard_Real    theYOrigin,
                                        const Standard_Real    theRadiusStep,
@@ -739,10 +691,8 @@ void V3d_Viewer::SetCircularGridValues(const Standard_Real    theXOrigin,
   }
 }
 
-// =======================================================================
-// function : RectangularGridGraphicValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::RectangularGridGraphicValues(Standard_Real& theXSize,
                                               Standard_Real& theYSize,
                                               Standard_Real& theOffSet)
@@ -751,10 +701,8 @@ void V3d_Viewer::RectangularGridGraphicValues(Standard_Real& theXSize,
   myRGrid->GraphicValues(theXSize, theYSize, theOffSet);
 }
 
-// =======================================================================
-// function : SetRectangularGridGraphicValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetRectangularGridGraphicValues(const Standard_Real theXSize,
                                                  const Standard_Real theYSize,
                                                  const Standard_Real theOffSet)
@@ -763,20 +711,16 @@ void V3d_Viewer::SetRectangularGridGraphicValues(const Standard_Real theXSize,
   myRGrid->SetGraphicValues(theXSize, theYSize, theOffSet);
 }
 
-// =======================================================================
-// function : CircularGridGraphicValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::CircularGridGraphicValues(Standard_Real& theRadius, Standard_Real& theOffSet)
 {
   Grid(Aspect_GT_Circular, true);
   myCGrid->GraphicValues(theRadius, theOffSet);
 }
 
-// =======================================================================
-// function : SetCircularGridGraphicValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetCircularGridGraphicValues(const Standard_Real theRadius,
                                               const Standard_Real theOffSet)
 {
@@ -784,10 +728,8 @@ void V3d_Viewer::SetCircularGridGraphicValues(const Standard_Real theRadius,
   myCGrid->SetGraphicValues(theRadius, theOffSet);
 }
 
-// =======================================================================
-// function : SetGridEcho
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetGridEcho(const Standard_Boolean theToShowGrid)
 {
   if (myGridEcho == theToShowGrid)
@@ -804,10 +746,8 @@ void V3d_Viewer::SetGridEcho(const Standard_Boolean theToShowGrid)
   myGridEchoStructure->Erase();
 }
 
-// =======================================================================
-// function : SetGridEcho
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::SetGridEcho(const Handle(Graphic3d_AspectMarker3d)& theMarker)
 {
   if (myGridEchoStructure.IsNull())
@@ -820,10 +760,8 @@ void V3d_Viewer::SetGridEcho(const Handle(Graphic3d_AspectMarker3d)& theMarker)
   myGridEchoGroup->SetPrimitivesAspect(theMarker);
 }
 
-// =======================================================================
-// function : ShowGridEcho
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::ShowGridEcho(const Handle(V3d_View)& theView, const Graphic3d_Vertex& theVertex)
 {
   if (!myGridEcho)
@@ -864,10 +802,8 @@ void V3d_Viewer::ShowGridEcho(const Handle(V3d_View)& theView, const Graphic3d_V
   myGridEchoStructure->Display();
 }
 
-// =======================================================================
-// function : HideGridEcho
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Viewer::HideGridEcho(const Handle(V3d_View)& theView)
 {
   if (myGridEchoStructure.IsNull())

@@ -99,10 +99,8 @@ Standard_Boolean rayInsideAngle(const BVH_Vec3d&       theDirec,
          && ccw(ZERO_VEC, theDirec, theEdge1, theX, theY) == aCCW;
 }
 
-// =======================================================================
-// function : getProjectionAxes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void getProjectionAxes(const BVH_Vec3d&  theNorm,
                        Standard_Integer& theAxisX,
                        Standard_Integer& theAxisY)

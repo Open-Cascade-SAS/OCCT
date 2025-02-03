@@ -16,10 +16,8 @@
 #include <Draw_PluginMacro.hxx>
 #include <D3DHost_GraphicDriverFactory.hxx>
 
-// ======================================================================
-// function : Factory
-// purpose  :
-// ======================================================================
+//=================================================================================================
+
 void D3DHostTest::Factory(Draw_Interpretor&)
 {
   static const Handle(D3DHost_GraphicDriverFactory) aFactory = new D3DHost_GraphicDriverFactory();

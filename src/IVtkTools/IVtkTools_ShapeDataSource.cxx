@@ -36,10 +36,8 @@
 
 vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 
-  //================================================================
-  // Function : Constructor
-  // Purpose  :
-  //================================================================
+  //=================================================================================================
+
   IVtkTools_ShapeDataSource::IVtkTools_ShapeDataSource()
     : myPolyData(new IVtkVTK_ShapeData()),
       myIsFastTransformMode(Standard_False),

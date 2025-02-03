@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_DirectionalLight, V3d_PositionLight)
 
-// =======================================================================
-// function : V3d_DirectionalLight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 V3d_DirectionalLight::V3d_DirectionalLight(const V3d_TypeOfOrientation theDirection,
                                            const Quantity_Color&       theColor,
                                            const Standard_Boolean      theIsHeadlight)
@@ -31,10 +29,8 @@ V3d_DirectionalLight::V3d_DirectionalLight(const V3d_TypeOfOrientation theDirect
   SetDirection(V3d::GetProjAxis(theDirection));
 }
 
-// =======================================================================
-// function : V3d_DirectionalLight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 V3d_DirectionalLight::V3d_DirectionalLight(const gp_Dir&          theDirection,
                                            const Quantity_Color&  theColor,
                                            const Standard_Boolean theIsHeadlight)
@@ -45,10 +41,8 @@ V3d_DirectionalLight::V3d_DirectionalLight(const gp_Dir&          theDirection,
   SetDirection(theDirection);
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_DirectionalLight::SetDirection(V3d_TypeOfOrientation theDirection)
 {
   SetDirection(V3d::GetProjAxis(theDirection));

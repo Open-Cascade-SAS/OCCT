@@ -76,10 +76,8 @@ static bool findRelativePath(const TCollection_AsciiString& theAbsolutePath,
 }
 } // namespace
 
-// =======================================================================
-// function : RWObj_MtlReader
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWObj_MtlReader::RWObj_MtlReader(
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>& theMaterials)
     : myFile(NULL),
@@ -89,10 +87,8 @@ RWObj_MtlReader::RWObj_MtlReader(
   //
 }
 
-// =======================================================================
-// function : ~RWObj_MtlReader
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWObj_MtlReader::~RWObj_MtlReader()
 {
   if (myFile != NULL)
@@ -101,10 +97,8 @@ RWObj_MtlReader::~RWObj_MtlReader()
   }
 }
 
-// =======================================================================
-// function : Read
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
                            const TCollection_AsciiString& theFile)
 {
@@ -298,10 +292,8 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
   return myMaterials->Extent() != aNbMatOld;
 }
 
-// =======================================================================
-// function : processTexturePath
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTexturePath,
                                          const TCollection_AsciiString& theFolder)
 {
@@ -327,10 +319,8 @@ void RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTextu
   }
 }
 
-// =======================================================================
-// function : validateScalar
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_MtlReader::validateScalar(const Standard_Real theValue)
 {
   if (theValue < 0.0 || theValue > 1.0)
@@ -342,10 +332,8 @@ bool RWObj_MtlReader::validateScalar(const Standard_Real theValue)
   return true;
 }
 
-// =======================================================================
-// function : validateColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_MtlReader::validateColor(const Graphic3d_Vec3& theVec)
 {
   if (theVec.r() < 0.0f || theVec.r() > 1.0f || theVec.g() < 0.0f || theVec.g() > 1.0f

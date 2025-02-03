@@ -243,10 +243,8 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const Standard_Integer th
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 
-// =======================================================================
-// function : Matches
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitiveTriangulation::Matches(
   SelectBasics_SelectingVolumeManager& theMgr,
   SelectBasics_PickResult&             thePickResult)
@@ -490,10 +488,8 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::BoundingBox()
   return applyTransformation();
 }
 
-// =======================================================================
-// function : computeBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveTriangulation::computeBoundingBox()
 {
   myBndBox.Clear();
@@ -553,10 +549,8 @@ gp_GTrsf Select3D_SensitiveTriangulation::InvInitLocation() const
   return myInvInitLocation;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveTriangulation::DumpJson(Standard_OStream& theOStream,
                                                Standard_Integer  theDepth) const
 {

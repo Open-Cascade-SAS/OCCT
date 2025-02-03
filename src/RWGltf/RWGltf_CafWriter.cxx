@@ -303,10 +303,8 @@ Standard_Boolean RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGl
   }
 }
 
-// =======================================================================
-// function : saveNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               theGltfFace,
                                  std::ostream&                                  theBinFile,
                                  const RWMesh_ShapeIterator&                    theShapeIter,
@@ -349,10 +347,8 @@ void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               
   }
 }
 
-// =======================================================================
-// function : saveNormals
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
                                    const RWMesh_FaceIterator&                     theFaceIter,
@@ -399,10 +395,8 @@ void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                             
   }
 }
 
-// =======================================================================
-// function : saveTextCoords
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                               theGltfFace,
                                       std::ostream&                                  theBinFile,
                                       const RWMesh_FaceIterator&                     theFaceIter,
@@ -464,10 +458,8 @@ void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                          
   }
 }
 
-// =======================================================================
-// function : saveTriangleIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFace,
                                            std::ostream&              theBinFile,
                                            const RWMesh_FaceIterator& theFaceIter,
@@ -503,10 +495,8 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
   }
 }
 
-// =======================================================================
-// function : saveEdgeIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
                                        std::ostream&              theBinFile,
                                        const RWMesh_EdgeIterator& theFaceIter)
@@ -528,10 +518,8 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
   }
 }
 
-// =======================================================================
-// function : saveVertexIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFace,
                                          std::ostream&                theBinFile,
                                          const RWMesh_VertexIterator& theFaceIter)
@@ -553,10 +541,8 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
   }
 }
 
-// =======================================================================
-// function : saveIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
                                    const RWMesh_ShapeIterator&                    theFaceIter,
@@ -604,10 +590,8 @@ void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                             
   }
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                                const TColStd_IndexedDataMapOfStringString& theFileInfo,
                                const Message_ProgressRange&                theProgress)
@@ -618,10 +602,8 @@ bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDo
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                                const TDF_LabelSequence&                    theRootLabels,
                                const TColStd_MapOfAsciiString*             theLabelFilter,
@@ -651,10 +633,8 @@ bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDo
   return writeJson(theDocument, theRootLabels, theLabelFilter, theFileInfo, aPSentry.Next());
 }
 
-// =======================================================================
-// function : dispatchShapes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::dispatchShapes(
   const XCAFPrs_DocumentNode&                                  theDocNode,
   const Message_ProgressScope&                                 thePSentryBin,
@@ -736,10 +716,8 @@ void RWGltf_CafWriter::dispatchShapes(
   }
 }
 
-// =======================================================================
-// function : saveShapes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean RWGltf_CafWriter::writeShapesToBin(
   RWGltf_GltfFace&                               theGltfFace,
   std::ostream&                                  theBinFile,
@@ -795,10 +773,8 @@ Standard_Boolean RWGltf_CafWriter::writeShapesToBin(
   return true;
 }
 
-// =======================================================================
-// function : writeBinData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
                                     const TDF_LabelSequence&        theRootLabels,
                                     const TColStd_MapOfAsciiString* theLabelFilter,
@@ -1415,10 +1391,8 @@ bool RWGltf_CafWriter::writeJson(const Handle(TDocStd_Document)&             the
 #endif
 }
 
-// =======================================================================
-// function : writeAccessors
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeAccessors(const RWGltf_GltfSceneNodeMap&)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1526,10 +1500,8 @@ void RWGltf_CafWriter::writeAccessors(const RWGltf_GltfSceneNodeMap&)
 #endif
 }
 
-// =======================================================================
-// function : writePositions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writePositions(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1578,10 +1550,8 @@ void RWGltf_CafWriter::writePositions(const RWGltf_GltfFace& theGltfFace)
 #endif
 }
 
-// =======================================================================
-// function : writeNormals
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeNormals(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1630,10 +1600,8 @@ void RWGltf_CafWriter::writeNormals(const RWGltf_GltfFace& theGltfFace)
 #endif
 }
 
-// =======================================================================
-// function : writeTextCoords
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeTextCoords(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1682,10 +1650,8 @@ void RWGltf_CafWriter::writeTextCoords(const RWGltf_GltfFace& theGltfFace)
 #endif
 }
 
-// =======================================================================
-// function : writeIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeIndices(const RWGltf_GltfFace& theGltfFace)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1718,10 +1684,8 @@ void RWGltf_CafWriter::writeIndices(const RWGltf_GltfFace& theGltfFace)
 #endif
 }
 
-// =======================================================================
-// function : writeAnimations
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeAnimations()
 {
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -1733,10 +1697,8 @@ void RWGltf_CafWriter::writeAnimations()
   // myWriter->EndArray();
 }
 
-// =======================================================================
-// function : writeAsset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeAsset(const TColStd_IndexedDataMapOfStringString& theFileInfo)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1775,10 +1737,8 @@ void RWGltf_CafWriter::writeAsset(const TColStd_IndexedDataMapOfStringString& th
 #endif
 }
 
-// =======================================================================
-// function : writeBufferViews
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeBufferViews(const Standard_Integer theBinDataBufferId)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1877,10 +1837,8 @@ void RWGltf_CafWriter::writeBufferViews(const Standard_Integer theBinDataBufferI
 #endif
 }
 
-// =======================================================================
-// function : writeBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeBuffers()
 {
 #ifdef HAVE_RAPIDJSON
@@ -1906,10 +1864,8 @@ void RWGltf_CafWriter::writeBuffers()
 #endif
 }
 
-// =======================================================================
-// function : writeExtensions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeExtensions()
 {
 #ifdef HAVE_RAPIDJSON
@@ -1937,10 +1893,8 @@ void RWGltf_CafWriter::writeExtensions()
 #endif
 }
 
-// =======================================================================
-// function : writeImages
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1979,10 +1933,8 @@ void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 #endif
 }
 
-// =======================================================================
-// function : writeMaterials
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
@@ -2011,10 +1963,8 @@ void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNod
 #endif
 }
 
-// =======================================================================
-// function : writePrimArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace,
                                       const TCollection_AsciiString& theName,
                                       const int                      theDracoBufInd,
@@ -2121,10 +2071,8 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
 #endif
 }
 
-// =======================================================================
-// function : writeShapes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeShapes(RWMesh_ShapeIterator&                         theShapeIter,
                                    Standard_Integer&                             theNbFacesInNode,
                                    Standard_Integer&                             theDracoBufInd,
@@ -2166,10 +2114,8 @@ void RWGltf_CafWriter::writeShapes(RWMesh_ShapeIterator&                        
   }
 }
 
-// =======================================================================
-// function : writeMeshes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
@@ -2277,10 +2223,8 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 #endif
 }
 
-// =======================================================================
-// function : writeNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDocument,
                                   const TDF_LabelSequence&                theRootLabels,
                                   const TColStd_MapOfAsciiString*         theLabelFilter,
@@ -2475,10 +2419,8 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
 #endif
 }
 
-// =======================================================================
-// function : writeExtrasAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData)
 {
 #ifdef HAVE_RAPIDJSON
@@ -2576,10 +2518,8 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
 #endif
 }
 
-// =======================================================================
-// function : writeSamplers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeSamplers()
 {
 #ifdef HAVE_RAPIDJSON
@@ -2606,10 +2546,8 @@ void RWGltf_CafWriter::writeSamplers()
 #endif
 }
 
-// =======================================================================
-// function : writeScene
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeScene(const Standard_Integer theDefSceneId)
 {
 #ifdef HAVE_RAPIDJSON
@@ -2623,10 +2561,8 @@ void RWGltf_CafWriter::writeScene(const Standard_Integer theDefSceneId)
 #endif
 }
 
-// =======================================================================
-// function : writeScenes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeScenes(
   const NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds)
 {
@@ -2655,10 +2591,8 @@ void RWGltf_CafWriter::writeScenes(
 #endif
 }
 
-// =======================================================================
-// function : writeSkins
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeSkins()
 {
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -2670,10 +2604,8 @@ void RWGltf_CafWriter::writeSkins()
   myWriter->EndArray();*/
 }
 
-// =======================================================================
-// function : writeTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_CafWriter::writeTextures(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON

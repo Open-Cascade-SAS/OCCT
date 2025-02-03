@@ -54,10 +54,8 @@ static int OSD_OpenFile_iosMode2FileFlags(::std::ios_base::openmode theMode)
   return aFlags;
 }
 
-// ==============================================
-// function : OSD_OpenFile
-// purpose : Opens file
-// ==============================================
+//=================================================================================================
+
 int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
                            ::std::ios_base::openmode         theMode)
 {
@@ -77,10 +75,8 @@ int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
   return aFileDesc;
 }
 
-// ==============================================
-// function : OSD_OpenFile
-// purpose : Opens file
-// ==============================================
+//=================================================================================================
+
 FILE* OSD_OpenFile(const char* theName, const char* theMode)
 {
   FILE* aFile = 0;
@@ -95,10 +91,8 @@ FILE* OSD_OpenFile(const char* theName, const char* theMode)
   return aFile;
 }
 
-// ==============================================
-// function : OSD_OpenFile
-// purpose : Opens file
-// ==============================================
+//=================================================================================================
+
 FILE* OSD_OpenFile(const TCollection_ExtendedString& theName, const char* theMode)
 {
   FILE* aFile = 0;
@@ -113,10 +107,8 @@ FILE* OSD_OpenFile(const TCollection_ExtendedString& theName, const char* theMod
   return aFile;
 }
 
-// ==============================================
-// function : OSD_FileStatCTime
-// purpose :
-// ==============================================
+//=================================================================================================
+
 Standard_Time OSD_FileStatCTime(const char* theName)
 {
   Standard_Time aTime = 0;

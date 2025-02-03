@@ -77,10 +77,8 @@ void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationMan
   }
 }
 
-// =======================================================================
-// function : Select
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelScheme,
                                                const Standard_Boolean    theIsDetected) const
 {
@@ -115,10 +113,8 @@ Standard_Boolean SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelS
   return Standard_False;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_EntityOwner::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

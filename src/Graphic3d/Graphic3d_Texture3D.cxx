@@ -19,30 +19,24 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture3D, Graphic3d_TextureMap)
 
-// =======================================================================
-// function : Graphic3d_Texture3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture3D::Graphic3d_Texture3D(const TCollection_AsciiString& theFileName)
     : Graphic3d_TextureMap(theFileName, Graphic3d_TypeOfTexture_3D)
 {
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
-// =======================================================================
-// function : Graphic3d_Texture3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture3D::Graphic3d_Texture3D(const Handle(Image_PixMap)& thePixMap)
     : Graphic3d_TextureMap(thePixMap, Graphic3d_TypeOfTexture_3D)
 {
   myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
-// =======================================================================
-// function : Graphic3d_Texture3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture3D::Graphic3d_Texture3D(
   const NCollection_Array1<TCollection_AsciiString>& theFiles)
     : Graphic3d_TextureMap("", Graphic3d_TypeOfTexture_3D)
@@ -52,19 +46,15 @@ Graphic3d_Texture3D::Graphic3d_Texture3D(
   myPaths.Assign(theFiles);
 }
 
-// =======================================================================
-// function : ~Graphic3d_Texture3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture3D::~Graphic3d_Texture3D()
 {
   //
 }
 
-// =======================================================================
-// function : SetImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture3D::SetImage(const Handle(Image_PixMap)& thePixMap)
 {
   myPixMap = thePixMap;
@@ -74,10 +64,8 @@ void Graphic3d_Texture3D::SetImage(const Handle(Image_PixMap)& thePixMap)
   myPaths.Move(anArr);
 }
 
-// =======================================================================
-// function : GetImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Graphic3d_Texture3D::GetImage(
   const Handle(Image_SupportedFormats)& theSupported)
 {

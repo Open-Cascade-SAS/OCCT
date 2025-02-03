@@ -69,10 +69,8 @@ static const RawMaterial THE_MATERIALS[] = {
   RawMaterial(Graphic3d_NameOfMaterial_UserDefined, "UserDefined")};
 } // namespace
 
-// =======================================================================
-// function : RawMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RawMaterial::RawMaterial(Graphic3d_NameOfMaterial theName, const char* theStringName)
     : StringName(theStringName),
       BSDF(Graphic3d_BSDF::CreateDiffuse(Graphic3d_Vec3(0.0f))),
@@ -471,30 +469,24 @@ RawMaterial::RawMaterial(Graphic3d_NameOfMaterial theName, const char* theString
   PBRMaterial.SetBSDF(BSDF);
 }
 
-// =======================================================================
-// function : Graphic3d_MaterialAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_MaterialAspect::Graphic3d_MaterialAspect()
     : myRequestedMaterialName(Graphic3d_NameOfMaterial_DEFAULT)
 {
   init(Graphic3d_NameOfMaterial_DEFAULT);
 }
 
-// =======================================================================
-// function : Graphic3d_MaterialAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_MaterialAspect::Graphic3d_MaterialAspect(const Graphic3d_NameOfMaterial theName)
     : myRequestedMaterialName(theName)
 {
   init(theName);
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::init(const Graphic3d_NameOfMaterial theName)
 {
   const RawMaterial& aMat          = THE_MATERIALS[theName];
@@ -513,10 +505,8 @@ void Graphic3d_MaterialAspect::init(const Graphic3d_NameOfMaterial theName)
   myRequestedMaterialName          = theName;
 }
 
-// =======================================================================
-// function : IncreaseShine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::IncreaseShine(const Standard_ShortReal theDelta)
 {
   const Standard_ShortReal anOldShine = myShininess;
@@ -527,10 +517,8 @@ void Graphic3d_MaterialAspect::IncreaseShine(const Standard_ShortReal theDelta)
   }
 }
 
-// =======================================================================
-// function : SetMaterialType
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetMaterialType(const Graphic3d_TypeOfMaterial theType)
 {
   myMaterialType = theType;
@@ -540,10 +528,8 @@ void Graphic3d_MaterialAspect::SetMaterialType(const Graphic3d_TypeOfMaterial th
   }
 }
 
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetColor(const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_ASPECT)
@@ -566,10 +552,8 @@ void Graphic3d_MaterialAspect::SetColor(const Quantity_Color& theColor)
   myColors[Graphic3d_TOR_DIFFUSE] = aDiffuse;
 }
 
-// =======================================================================
-// function : SetAmbientColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetAmbientColor(const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
@@ -581,10 +565,8 @@ void Graphic3d_MaterialAspect::SetAmbientColor(const Quantity_Color& theColor)
   myColors[Graphic3d_TOR_AMBIENT] = theColor;
 }
 
-// =======================================================================
-// function : SetDiffuseColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetDiffuseColor(const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
@@ -596,10 +578,8 @@ void Graphic3d_MaterialAspect::SetDiffuseColor(const Quantity_Color& theColor)
   myColors[Graphic3d_TOR_DIFFUSE] = theColor;
 }
 
-// =======================================================================
-// function : SetSpecularColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetSpecularColor(const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
@@ -611,10 +591,8 @@ void Graphic3d_MaterialAspect::SetSpecularColor(const Quantity_Color& theColor)
   myColors[Graphic3d_TOR_SPECULAR] = theColor;
 }
 
-// =======================================================================
-// function : SetEmissiveColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetEmissiveColor(const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
@@ -626,10 +604,8 @@ void Graphic3d_MaterialAspect::SetEmissiveColor(const Quantity_Color& theColor)
   myColors[Graphic3d_TOR_EMISSION] = theColor;
 }
 
-// =======================================================================
-// function : SetTransparency
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetTransparency(const Standard_ShortReal theValue)
 {
   if (theValue < 0.0f || theValue > 1.0f)
@@ -641,10 +617,8 @@ void Graphic3d_MaterialAspect::SetTransparency(const Standard_ShortReal theValue
   myPBRMaterial.SetAlpha(1.0f - theValue);
 }
 
-// =======================================================================
-// function : SetRefractionIndex
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetRefractionIndex(const Standard_ShortReal theValue)
 {
   if (theValue < 1.0f)
@@ -655,10 +629,8 @@ void Graphic3d_MaterialAspect::SetRefractionIndex(const Standard_ShortReal theVa
   myRefractionIndex = theValue;
 }
 
-// =======================================================================
-// function : SetShininess
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MaterialAspect::SetShininess(const Standard_ShortReal theValue)
 {
   if (theValue < 0.0f || theValue > 1.0f)
@@ -673,10 +645,8 @@ void Graphic3d_MaterialAspect::SetShininess(const Standard_ShortReal theValue)
   }
 }
 
-// =======================================================================
-// function : MaterialName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Graphic3d_MaterialAspect::MaterialName(const Standard_Integer theRank)
 {
   if (theRank < 1 || theRank > NumberOfMaterials())
@@ -687,10 +657,8 @@ Standard_CString Graphic3d_MaterialAspect::MaterialName(const Standard_Integer t
   return aMat.StringName;
 }
 
-// =======================================================================
-// function : MaterialFromName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_MaterialAspect::MaterialFromName(const Standard_CString    theName,
                                                             Graphic3d_NameOfMaterial& theMat)
 {
@@ -742,10 +710,8 @@ Standard_Boolean Graphic3d_MaterialAspect::MaterialFromName(const Standard_CStri
   return Standard_False;
 }
 
-// =======================================================================
-// function : MaterialType
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TypeOfMaterial Graphic3d_MaterialAspect::MaterialType(const Standard_Integer theRank)
 {
   if (theRank < 1 || theRank > NumberOfMaterials())

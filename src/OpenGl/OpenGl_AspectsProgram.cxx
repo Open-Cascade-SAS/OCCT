@@ -21,10 +21,8 @@ namespace
 static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
 {
   if (!myShaderProgram.IsNull() && theCtx != NULL)
@@ -35,10 +33,8 @@ void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
   myIsShaderReady = Standard_False;
 }
 
-// =======================================================================
-// function : UpdateRediness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsProgram::UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect)
 {
   const TCollection_AsciiString& aShaderKey =
@@ -49,10 +45,8 @@ void OpenGl_AspectsProgram::UpdateRediness(const Handle(Graphic3d_Aspects)& theA
   }
 }
 
-// =======================================================================
-// function : build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsProgram::build(const Handle(OpenGl_Context)&          theCtx,
                                   const Handle(Graphic3d_ShaderProgram)& theShader)
 {

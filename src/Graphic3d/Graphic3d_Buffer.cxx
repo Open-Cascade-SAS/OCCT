@@ -22,20 +22,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
 
-// =======================================================================
-// function : DefaultAllocator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(NCollection_BaseAllocator)& Graphic3d_Buffer::DefaultAllocator()
 {
   static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Buffer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

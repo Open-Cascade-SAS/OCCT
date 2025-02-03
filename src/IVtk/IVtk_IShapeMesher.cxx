@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher, IVtk_Interface)
 
-// ================================================================
-// Function : initialize
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void IVtk_IShapeMesher::initialize(const IVtk_IShape::Handle&     theShape,
                                    const IVtk_IShapeData::Handle& theData)
 {
@@ -28,10 +26,8 @@ void IVtk_IShapeMesher::initialize(const IVtk_IShape::Handle&     theShape,
   myShapeData = theData;
 }
 
-// ================================================================
-// Function : Build
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void IVtk_IShapeMesher::Build(const IVtk_IShape::Handle&     theShape,
                               const IVtk_IShapeData::Handle& theData)
 {

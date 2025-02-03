@@ -25,10 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Wasm_Window, Aspect_Window)
 
-// =======================================================================
-// function : Wasm_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Wasm_Window::Wasm_Window(const TCollection_AsciiString& theCanvasId, const bool theToScaleBacking)
     : myCanvasId(theCanvasId),
       mySize(0),
@@ -55,19 +53,15 @@ Wasm_Window::Wasm_Window(const TCollection_AsciiString& theCanvasId, const bool 
 #endif
 }
 
-// =======================================================================
-// function : ~Wasm_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Wasm_Window::~Wasm_Window()
 {
   //
 }
 
-// =======================================================================
-// function : DoResize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_TypeOfResize Wasm_Window::DoResize()
 {
   if (IsVirtual())
@@ -94,10 +88,8 @@ Aspect_TypeOfResize Wasm_Window::DoResize()
   return Aspect_TOR_UNKNOWN;
 }
 
-// =======================================================================
-// function : Ratio
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Wasm_Window::Ratio() const
 {
   Graphic3d_Vec2i aCanvasSize = mySize;
@@ -113,10 +105,8 @@ Standard_Real Wasm_Window::Ratio() const
            : 1.0;
 }
 
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Wasm_Window::Position(Standard_Integer& theX1,
                            Standard_Integer& theY1,
                            Standard_Integer& theX2,
@@ -136,10 +126,8 @@ void Wasm_Window::Position(Standard_Integer& theX1,
 #endif
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Wasm_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   if (IsVirtual())
@@ -154,10 +142,8 @@ void Wasm_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) 
 #endif
 }
 
-// =======================================================================
-// function : SetSizeLogical
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Wasm_Window::SetSizeLogical(const Graphic3d_Vec2d& theSize)
 {
   mySize = Graphic3d_Vec2i(theSize * myDevicePixelRatio);
@@ -172,10 +158,8 @@ void Wasm_Window::SetSizeLogical(const Graphic3d_Vec2d& theSize)
 #endif
 }
 
-// =======================================================================
-// function : SetSizeBacking
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Wasm_Window::SetSizeBacking(const Graphic3d_Vec2i& theSize)
 {
   mySize = theSize;
@@ -192,19 +176,15 @@ void Wasm_Window::SetSizeBacking(const Graphic3d_Vec2i& theSize)
 #endif
 }
 
-// =======================================================================
-// function : InvalidateContent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Wasm_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
 {
   //
 }
 
-// =======================================================================
-// function : ProcessMessage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
                                  int                         theEventType,
                                  const void*                 theEvent)
@@ -254,10 +234,8 @@ bool Wasm_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
 #endif
 }
 
-// =======================================================================
-// function : ProcessMouseEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessMouseEvent(Aspect_WindowInputListener& theListener,
                                     int                         theEventType,
                                     const EmscriptenMouseEvent* theEvent)
@@ -353,10 +331,8 @@ bool Wasm_Window::ProcessMouseEvent(Aspect_WindowInputListener& theListener,
 #endif
 }
 
-// =======================================================================
-// function : ProcessWheelEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessWheelEvent(Aspect_WindowInputListener& theListener,
                                     int                         theEventType,
                                     const EmscriptenWheelEvent* theEvent)
@@ -407,10 +383,8 @@ bool Wasm_Window::ProcessWheelEvent(Aspect_WindowInputListener& theListener,
 #endif
 }
 
-// =======================================================================
-// function : ProcessTouchEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessTouchEvent(Aspect_WindowInputListener& theListener,
                                     int                         theEventType,
                                     const EmscriptenTouchEvent* theEvent)
@@ -477,10 +451,8 @@ bool Wasm_Window::ProcessTouchEvent(Aspect_WindowInputListener& theListener,
   return hasUpdates || theListener.HasTouchPoints();
 }
 
-// =======================================================================
-// function : ProcessKeyEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessKeyEvent(Aspect_WindowInputListener&    theListener,
                                   int                            theEventType,
                                   const EmscriptenKeyboardEvent* theEvent)
@@ -525,10 +497,8 @@ bool Wasm_Window::ProcessKeyEvent(Aspect_WindowInputListener&    theListener,
   return false;
 }
 
-// =======================================================================
-// function : ProcessUiEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessUiEvent(Aspect_WindowInputListener& theListener,
                                  int                         theEventType,
                                  const EmscriptenUiEvent*)
@@ -545,10 +515,8 @@ bool Wasm_Window::ProcessUiEvent(Aspect_WindowInputListener& theListener,
   return true;
 }
 
-// =======================================================================
-// function : ProcessFocusEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Wasm_Window::ProcessFocusEvent(Aspect_WindowInputListener& theListener,
                                     int                         theEventType,
                                     const EmscriptenFocusEvent*)
@@ -569,10 +537,8 @@ bool Wasm_Window::ProcessFocusEvent(Aspect_WindowInputListener& theListener,
   return true;
 }
 
-// =======================================================================
-// function : MouseButtonsFromNative
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKeyMouse Wasm_Window::MouseButtonsFromNative(unsigned short theButtons)
 {
   Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
@@ -591,10 +557,8 @@ Aspect_VKeyMouse Wasm_Window::MouseButtonsFromNative(unsigned short theButtons)
   return aButtons;
 }
 
-// =======================================================================
-// function : VirtualKeyFromNative
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKey Wasm_Window::VirtualKeyFromNative(Standard_Integer theKey)
 {
 #if defined(__EMSCRIPTEN__)

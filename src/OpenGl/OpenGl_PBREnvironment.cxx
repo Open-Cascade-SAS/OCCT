@@ -124,10 +124,8 @@ private:
   Graphic3d_Vec4               myClearColor;
 };
 
-// =======================================================================
-// function : Create
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_PBREnvironment) OpenGl_PBREnvironment::Create(const Handle(OpenGl_Context)& theCtx,
                                                             unsigned int thePow2Size,
                                                             unsigned int theLevelsNumber,
@@ -155,10 +153,8 @@ Handle(OpenGl_PBREnvironment) OpenGl_PBREnvironment::Create(const Handle(OpenGl_
   return anEnvironment;
 }
 
-// =======================================================================
-// function : OpenGl_PBREnvironment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PBREnvironment::OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theCtx,
                                              unsigned int                   thePowOf2Size,
                                              unsigned int                   theSpecMapLevelsNumber,
@@ -182,10 +178,8 @@ OpenGl_PBREnvironment::OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theC
   }
 }
 
-// =======================================================================
-// function : Bind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::Bind(const Handle(OpenGl_Context)& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Bind(theCtx);
@@ -193,10 +187,8 @@ void OpenGl_PBREnvironment::Bind(const Handle(OpenGl_Context)& theCtx)
   myIsNeededToBeBound = Standard_False;
 }
 
-// =======================================================================
-// function : Unbind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::Unbind(const Handle(OpenGl_Context)& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Unbind(theCtx);
@@ -204,10 +196,8 @@ void OpenGl_PBREnvironment::Unbind(const Handle(OpenGl_Context)& theCtx)
   myIsNeededToBeBound = Standard_True;
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::Clear(const Handle(OpenGl_Context)& theCtx,
                                   const Graphic3d_Vec3&         theColor)
 {
@@ -215,10 +205,8 @@ void OpenGl_PBREnvironment::Clear(const Handle(OpenGl_Context)& theCtx,
   clear(theCtx, theColor);
 }
 
-// =======================================================================
-// function : Bake
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::Bake(const Handle(OpenGl_Context)& theCtx,
                                  const Handle(OpenGl_Texture)& theEnvMap,
                                  Standard_Boolean              theZIsInverted,
@@ -243,10 +231,8 @@ void OpenGl_PBREnvironment::Bake(const Handle(OpenGl_Context)& theCtx,
        theProbability);
 }
 
-// =======================================================================
-// function : SizesAreDifferent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::SizesAreDifferent(unsigned int thePow2Size,
                                               unsigned int theSpecMapLevelsNumber) const
 {
@@ -256,10 +242,8 @@ bool OpenGl_PBREnvironment::SizesAreDifferent(unsigned int thePow2Size,
   return myPow2Size != thePow2Size || mySpecMapLevelsNumber != theSpecMapLevelsNumber;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::Release(OpenGl_Context* theCtx)
 {
   if (myFBO != OpenGl_FrameBuffer::NO_FRAMEBUFFER)
@@ -276,19 +260,15 @@ void OpenGl_PBREnvironment::Release(OpenGl_Context* theCtx)
   myVBO.Release(theCtx);
 }
 
-// =======================================================================
-// function : ~OpenGl_PBREnvironment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PBREnvironment::~OpenGl_PBREnvironment()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : initTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Sampler()->Parameters()->SetTextureUnit(
@@ -340,10 +320,8 @@ bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
   return true;
 }
 
-// =======================================================================
-// function : initVAO
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::initVAO(const Handle(OpenGl_Context)& theCtx)
 {
   const float aVertexPos[] =
@@ -351,20 +329,16 @@ bool OpenGl_PBREnvironment::initVAO(const Handle(OpenGl_Context)& theCtx)
   return myVBO.Init(theCtx, 4, 4, aVertexPos);
 }
 
-// =======================================================================
-// function : initFBO
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::initFBO(const Handle(OpenGl_Context)& theCtx)
 {
   theCtx->arbFBO->glGenFramebuffers(1, &myFBO);
   return checkFBOComplentess(theCtx);
 }
 
-// =======================================================================
-// function : processDiffIBLMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theCtx,
                                               const BakingParams*           theDrawParams)
 {
@@ -486,10 +460,8 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
   return true;
 }
 
-// =======================================================================
-// function : processSpecIBLMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theCtx,
                                               const BakingParams*           theDrawParams)
 {
@@ -593,10 +565,8 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theC
   return true;
 }
 
-// =======================================================================
-// function : checkFBOCompletness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_PBREnvironment::checkFBOComplentess(const Handle(OpenGl_Context)& theCtx)
 {
   myCanRenderFloat = true;
@@ -652,10 +622,8 @@ bool OpenGl_PBREnvironment::checkFBOComplentess(const Handle(OpenGl_Context)& th
   return true;
 }
 
-// =======================================================================
-// function : bake
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::bake(const Handle(OpenGl_Context)& theCtx,
                                  const Handle(OpenGl_Texture)& theEnvMap,
                                  Standard_Boolean              theZIsInverted,
@@ -701,10 +669,8 @@ void OpenGl_PBREnvironment::bake(const Handle(OpenGl_Context)& theCtx,
   theEnvMap->Unbind(theCtx, theCtx->PBREnvLUTTexUnit());
 }
 
-// =======================================================================
-// function : clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PBREnvironment::clear(const Handle(OpenGl_Context)& theCtx,
                                   const Graphic3d_Vec3&         theColor)
 {

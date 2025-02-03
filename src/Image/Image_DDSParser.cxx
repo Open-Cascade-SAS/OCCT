@@ -64,10 +64,8 @@ struct Image_DDSParser::DDSFileHeader
   uint32_t       Reserved2;
 };
 
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Image_DDSParser::Load(
   const Handle(Image_SupportedFormats)& theSupported,
   const TCollection_AsciiString&        theFile,
@@ -135,10 +133,8 @@ Handle(Image_CompressedPixMap) Image_DDSParser::Load(
   return aDef;
 }
 
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Image_DDSParser::Load(
   const Handle(Image_SupportedFormats)& theSupported,
   const Handle(NCollection_Buffer)&     theBuffer,
@@ -187,10 +183,8 @@ Handle(Image_CompressedPixMap) Image_DDSParser::Load(
   return aDef;
 }
 
-// =======================================================================
-// function : parseHeader
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Image_DDSParser::parseHeader(const DDSFileHeader& theHeader)
 {
   if (theHeader.Size != 124 || theHeader.Width == 0 || theHeader.Height == 0

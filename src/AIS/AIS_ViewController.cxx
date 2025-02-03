@@ -27,10 +27,8 @@
 #include <V3d_Viewer.hxx>
 #include <WNT_HIDSpaceMouse.hxx>
 
-// =======================================================================
-// function : AIS_ViewController
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_ViewController::AIS_ViewController()
     : myLastEventsTime(0.0),
       myToAskNextFrame(false),
@@ -174,19 +172,15 @@ AIS_ViewController::AIS_ViewController()
   myXRSelectHaptic.Amplitude = 0.5f;
 }
 
-// =======================================================================
-// function : ~AIS_ViewController
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_ViewController::~AIS_ViewController()
 {
   //
 }
 
-// =======================================================================
-// function : ResetViewInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::ResetViewInput()
 {
   myKeys.Reset();
@@ -199,10 +193,8 @@ void AIS_ViewController::ResetViewInput()
   myMouseClickCounter = 0;
 }
 
-// =======================================================================
-// function : FlushViewEvents
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::FlushViewEvents(const Handle(AIS_InteractiveContext)& theCtx,
                                          const Handle(V3d_View)&               theView,
                                          Standard_Boolean                      theToHandle)
@@ -262,10 +254,8 @@ void AIS_ViewController::FlushViewEvents(const Handle(AIS_InteractiveContext)& t
   }
 }
 
-// =======================================================================
-// function : flushBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::flushBuffers(const Handle(AIS_InteractiveContext)&,
                                       const Handle(V3d_View)&)
 {
@@ -393,10 +383,8 @@ void AIS_ViewController::flushBuffers(const Handle(AIS_InteractiveContext)&,
   }
 }
 
-// =======================================================================
-// function : flushGestures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::flushGestures(const Handle(AIS_InteractiveContext)&,
                                        const Handle(V3d_View)& theView)
 {
@@ -543,10 +531,8 @@ void AIS_ViewController::flushGestures(const Handle(AIS_InteractiveContext)&,
   }
 }
 
-// =======================================================================
-// function : UpdateViewOrientation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::UpdateViewOrientation(V3d_TypeOfOrientation theOrientation,
                                                bool                  theToFitAll)
 {
@@ -555,10 +541,8 @@ void AIS_ViewController::UpdateViewOrientation(V3d_TypeOfOrientation theOrientat
   myUI.Orientation.ViewOrient      = theOrientation;
 }
 
-// =======================================================================
-// function : SelectInViewer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::SelectInViewer(const Graphic3d_Vec2i&    thePnt,
                                         const AIS_SelectionScheme theScheme)
 {
@@ -572,10 +556,8 @@ void AIS_ViewController::SelectInViewer(const Graphic3d_Vec2i&    thePnt,
   myUI.Selection.Points.Append(thePnt);
 }
 
-// =======================================================================
-// function : SelectInViewer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::SelectInViewer(const NCollection_Sequence<Graphic3d_Vec2i>& thePnts,
                                         const AIS_SelectionScheme                    theScheme)
 {
@@ -596,10 +578,8 @@ void AIS_ViewController::SelectInViewer(const NCollection_Sequence<Graphic3d_Vec
   }
 }
 
-// =======================================================================
-// function : UpdateRubberBand
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::UpdateRubberBand(const Graphic3d_Vec2i& thePntFrom,
                                           const Graphic3d_Vec2i& thePntTo)
 {
@@ -609,10 +589,8 @@ void AIS_ViewController::UpdateRubberBand(const Graphic3d_Vec2i& thePntFrom,
   myUI.Selection.Points.Append(thePntTo);
 }
 
-// =======================================================================
-// function : UpdatePolySelection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::UpdatePolySelection(const Graphic3d_Vec2i& thePnt, bool theToAppend)
 {
   if (myUI.Selection.Tool != AIS_ViewSelectionTool_Polygon)
@@ -635,10 +613,8 @@ void AIS_ViewController::UpdatePolySelection(const Graphic3d_Vec2i& thePnt, bool
   }
 }
 
-// =======================================================================
-// function : UpdateZoom
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateZoom(const Aspect_ScrollDelta& theDelta)
 {
   if (!myUI.ZoomActions.IsEmpty())
@@ -654,10 +630,8 @@ bool AIS_ViewController::UpdateZoom(const Aspect_ScrollDelta& theDelta)
   return true;
 }
 
-// =======================================================================
-// function : UpdateZRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateZRotation(double theAngle)
 {
   if (!ToAllowTouchZRotation())
@@ -674,10 +648,8 @@ bool AIS_ViewController::UpdateZRotation(double theAngle)
   return true;
 }
 
-// =======================================================================
-// function : UpdateMouseScroll
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
 {
   Aspect_ScrollDelta aDelta = theDelta;
@@ -685,10 +657,8 @@ bool AIS_ViewController::UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
   return UpdateZoom(aDelta);
 }
 
-// =======================================================================
-// function : UpdateMouseClick
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
                                           Aspect_VKeyMouse       theButton,
                                           Aspect_VKeyFlags       theModifiers,
@@ -710,10 +680,8 @@ bool AIS_ViewController::UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
   return false;
 }
 
-// =======================================================================
-// function : UpdateMouseButtons
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
                                             Aspect_VKeyMouse       theButtons,
                                             Aspect_VKeyFlags       theModifiers,
@@ -912,10 +880,8 @@ bool AIS_ViewController::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
   return toUpdateView;
 }
 
-// =======================================================================
-// function : UpdateMousePosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::UpdateMousePosition(const Graphic3d_Vec2i& thePoint,
                                              Aspect_VKeyMouse       theButtons,
                                              Aspect_VKeyFlags       theModifiers,
@@ -1135,10 +1101,8 @@ bool AIS_ViewController::UpdateMousePosition(const Graphic3d_Vec2i& thePoint,
   return toUpdateView;
 }
 
-// =======================================================================
-// function : AddTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::AddTouchPoint(Standard_Size          theId,
                                        const Graphic3d_Vec2d& thePnt,
                                        Standard_Boolean       theClearBefore)
@@ -1168,10 +1132,8 @@ void AIS_ViewController::AddTouchPoint(Standard_Size          theId,
   myUI.IsNewGesture = true;
 }
 
-// =======================================================================
-// function : RemoveTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::RemoveTouchPoint(Standard_Size theId, Standard_Boolean theClearSelectPnts)
 {
   if (!Aspect_WindowInputListener::RemoveTouchPoint(theId, theClearSelectPnts))
@@ -1233,10 +1195,8 @@ bool AIS_ViewController::RemoveTouchPoint(Standard_Size theId, Standard_Boolean 
   return true;
 }
 
-// =======================================================================
-// function : UpdateTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::UpdateTouchPoint(Standard_Size theId, const Graphic3d_Vec2d& thePnt)
 {
   Aspect_WindowInputListener::UpdateTouchPoint(theId, thePnt);
@@ -1248,10 +1208,8 @@ void AIS_ViewController::UpdateTouchPoint(Standard_Size theId, const Graphic3d_V
   }
 }
 
-// =======================================================================
-// function : Update3dMouse
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::Update3dMouse(const WNT_HIDSpaceMouse& theEvent)
 {
   bool toUpdate = false;
@@ -1261,10 +1219,8 @@ bool AIS_ViewController::Update3dMouse(const WNT_HIDSpaceMouse& theEvent)
   return toUpdate;
 }
 
-// =======================================================================
-// function : SetNavigationMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::SetNavigationMode(AIS_NavigationMode theMode)
 {
   myNavigationMode = theMode;
@@ -1276,28 +1232,22 @@ void AIS_ViewController::SetNavigationMode(AIS_NavigationMode theMode)
   myUI.ViewRotation.ToRotate  = false;
 }
 
-// =======================================================================
-// function : KeyDown
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
   Aspect_WindowInputListener::KeyDown(theKey, theTime, thePressure);
 }
 
-// =======================================================================
-// function : KeyUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::KeyUp(Aspect_VKey theKey, double theTime)
 {
   Aspect_WindowInputListener::KeyUp(theKey, theTime);
 }
 
-// =======================================================================
-// function : KeyFromAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::KeyFromAxis(Aspect_VKey theNegative,
                                      Aspect_VKey thePositive,
                                      double      theTime,
@@ -1306,10 +1256,8 @@ void AIS_ViewController::KeyFromAxis(Aspect_VKey theNegative,
   Aspect_WindowInputListener::KeyFromAxis(theNegative, thePositive, theTime, thePressure);
 }
 
-// =======================================================================
-// function : FetchNavigationKeys
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_WalkDelta AIS_ViewController::FetchNavigationKeys(Standard_Real theCrouchRatio,
                                                       Standard_Real theRunRatio)
 {
@@ -1456,10 +1404,8 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys(Standard_Real theCrouchRat
   return aWalk;
 }
 
-// =======================================================================
-// function : AbortViewAnimation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::AbortViewAnimation()
 {
   if (!myViewAnimation.IsNull() && !myViewAnimation->IsStopped())
@@ -1469,10 +1415,8 @@ void AIS_ViewController::AbortViewAnimation()
   }
 }
 
-// =======================================================================
-// function : handlePanning
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handlePanning(const Handle(V3d_View)& theView)
 {
   if (!myGL.Panning.ToPan || !myToAllowPanning)
@@ -1513,10 +1457,8 @@ void AIS_ViewController::handlePanning(const Handle(V3d_View)& theView)
   theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
-// =======================================================================
-// function : handleZRotate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleZRotate(const Handle(V3d_View)& theView)
 {
   if (!myGL.ZRotate.ToRotate || !myToAllowRotation)
@@ -1536,10 +1478,8 @@ void AIS_ViewController::handleZRotate(const Handle(V3d_View)& theView)
   theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
-// =======================================================================
-// function : handleZoom
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleZoom(const Handle(V3d_View)&   theView,
                                     const Aspect_ScrollDelta& theParams,
                                     const gp_Pnt*             thePnt)
@@ -1643,10 +1583,8 @@ void AIS_ViewController::handleZoom(const Handle(V3d_View)&   theView,
   theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
-// =======================================================================
-// function : handleZFocusScroll
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleZFocusScroll(const Handle(V3d_View)&   theView,
                                             const Aspect_ScrollDelta& theParams)
 {
@@ -1663,10 +1601,8 @@ void AIS_ViewController::handleZFocusScroll(const Handle(V3d_View)&   theView,
   }
 }
 
-// =======================================================================
-// function : handleOrbitRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleOrbitRotation(const Handle(V3d_View)& theView,
                                              const gp_Pnt&           thePnt,
                                              bool                    theToLockZUp)
@@ -1815,10 +1751,8 @@ void AIS_ViewController::handleOrbitRotation(const Handle(V3d_View)& theView,
   theView->View()->SynchronizeXRBaseToPosedCamera();
 }
 
-// =======================================================================
-// function : handleViewRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
                                             double                  theYawExtra,
                                             double                  thePitchExtra,
@@ -1891,10 +1825,8 @@ void AIS_ViewController::handleViewRotation(const Handle(V3d_View)& theView,
   theView->Invalidate();
 }
 
-// =======================================================================
-// function : PickPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::PickPoint(gp_Pnt&                               thePnt,
                                    const Handle(AIS_InteractiveContext)& theCtx,
                                    const Handle(V3d_View)&               theView,
@@ -1923,10 +1855,8 @@ bool AIS_ViewController::PickPoint(gp_Pnt&                               thePnt,
          && !Precision::IsInfinite(thePnt.Z());
 }
 
-// =======================================================================
-// function : PickAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_ViewController::PickAxis(gp_Pnt&                               theTopPnt,
                                   const Handle(AIS_InteractiveContext)& theCtx,
                                   const Handle(V3d_View)&               theView,
@@ -1947,10 +1877,8 @@ bool AIS_ViewController::PickAxis(gp_Pnt&                               theTopPn
          && !Precision::IsInfinite(theTopPnt.Z());
 }
 
-// =======================================================================
-// function : GravityPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt AIS_ViewController::GravityPoint(const Handle(AIS_InteractiveContext)& theCtx,
                                         const Handle(V3d_View)&               theView)
 {
@@ -1993,10 +1921,8 @@ gp_Pnt AIS_ViewController::GravityPoint(const Handle(AIS_InteractiveContext)& th
   return theCtx->GravityPoint(theView);
 }
 
-// =======================================================================
-// function : FitAllAuto
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::FitAllAuto(const Handle(AIS_InteractiveContext)& theCtx,
                                     const Handle(V3d_View)&               theView)
 {
@@ -2031,10 +1957,8 @@ void AIS_ViewController::FitAllAuto(const Handle(AIS_InteractiveContext)& theCtx
   }
 }
 
-// =======================================================================
-// function : handleViewOrientationKeys
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleViewOrientationKeys(const Handle(AIS_InteractiveContext)& theCtx,
                                                    const Handle(V3d_View)&               theView)
 {
@@ -2123,10 +2047,8 @@ void AIS_ViewController::handleViewOrientationKeys(const Handle(AIS_InteractiveC
   }
 }
 
-// =======================================================================
-// function : handleNavigationKeys
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 AIS_WalkDelta AIS_ViewController::handleNavigationKeys(const Handle(AIS_InteractiveContext)&,
                                                        const Handle(V3d_View)& theView)
 {
@@ -2256,10 +2178,8 @@ AIS_WalkDelta AIS_ViewController::handleNavigationKeys(const Handle(AIS_Interact
   return aWalk;
 }
 
-// =======================================================================
-// function : handleCameraActions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleCameraActions(const Handle(AIS_InteractiveContext)& theCtx,
                                              const Handle(V3d_View)&               theView,
                                              const AIS_WalkDelta&                  theWalk)
@@ -2472,10 +2392,8 @@ void AIS_ViewController::handleCameraActions(const Handle(AIS_InteractiveContext
   }
 }
 
-// =======================================================================
-// function : handleXRInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRInput(const Handle(AIS_InteractiveContext)& theCtx,
                                        const Handle(V3d_View)&               theView,
                                        const AIS_WalkDelta&)
@@ -2490,10 +2408,8 @@ void AIS_ViewController::handleXRInput(const Handle(AIS_InteractiveContext)& the
   handleXRPicking(theCtx, theView);
 }
 
-// =======================================================================
-// function : handleXRTurnPad
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRTurnPad(const Handle(AIS_InteractiveContext)&,
                                          const Handle(V3d_View)& theView)
 {
@@ -2533,10 +2449,8 @@ void AIS_ViewController::handleXRTurnPad(const Handle(AIS_InteractiveContext)&,
   }
 }
 
-// =======================================================================
-// function : handleXRTeleport
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRTeleport(const Handle(AIS_InteractiveContext)& theCtx,
                                           const Handle(V3d_View)&               theView)
 {
@@ -2670,10 +2584,8 @@ void AIS_ViewController::handleXRTeleport(const Handle(AIS_InteractiveContext)& 
   }
 }
 
-// =======================================================================
-// function : handleXRPicking
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRPicking(const Handle(AIS_InteractiveContext)& theCtx,
                                          const Handle(V3d_View)&               theView)
 {
@@ -2726,20 +2638,16 @@ void AIS_ViewController::handleXRPicking(const Handle(AIS_InteractiveContext)& t
   }
 }
 
-// =======================================================================
-// function : OnSelectionChanged
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::OnSelectionChanged(const Handle(AIS_InteractiveContext)&,
                                             const Handle(V3d_View)&)
 {
   //
 }
 
-// =======================================================================
-// function : OnSubviewChanged
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::OnSubviewChanged(const Handle(AIS_InteractiveContext)&,
                                           const Handle(V3d_View)&,
                                           const Handle(V3d_View)&)
@@ -2747,10 +2655,8 @@ void AIS_ViewController::OnSubviewChanged(const Handle(AIS_InteractiveContext)&,
   //
 }
 
-// =======================================================================
-// function : OnObjectDragged
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::OnObjectDragged(const Handle(AIS_InteractiveContext)& theCtx,
                                          const Handle(V3d_View)&               theView,
                                          AIS_DragAction                        theAction)
@@ -2857,10 +2763,8 @@ void AIS_ViewController::OnObjectDragged(const Handle(AIS_InteractiveContext)& t
   }
 }
 
-// =======================================================================
-// function : contextLazyMoveTo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::contextLazyMoveTo(const Handle(AIS_InteractiveContext)& theCtx,
                                            const Handle(V3d_View)&               theView,
                                            const Graphic3d_Vec2i&                thePnt)
@@ -2914,10 +2818,8 @@ void AIS_ViewController::contextLazyMoveTo(const Handle(AIS_InteractiveContext)&
   }
 }
 
-// =======================================================================
-// function : handleSelectionPick
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleSelectionPick(const Handle(AIS_InteractiveContext)& theCtx,
                                              const Handle(V3d_View)&               theView)
 {
@@ -2946,10 +2848,8 @@ void AIS_ViewController::handleSelectionPick(const Handle(AIS_InteractiveContext
   }
 }
 
-// =======================================================================
-// function : handleSelectionPoly
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleSelectionPoly(const Handle(AIS_InteractiveContext)& theCtx,
                                              const Handle(V3d_View)&               theView)
 {
@@ -3074,10 +2974,8 @@ void AIS_ViewController::handleSelectionPoly(const Handle(AIS_InteractiveContext
   }
 }
 
-// =======================================================================
-// function : handleDynamicHighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleDynamicHighlight(const Handle(AIS_InteractiveContext)& theCtx,
                                                 const Handle(V3d_View)&               theView)
 {
@@ -3142,10 +3040,8 @@ void AIS_ViewController::handleDynamicHighlight(const Handle(AIS_InteractiveCont
   }
 }
 
-// =======================================================================
-// function : handleMoveTo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleMoveTo(const Handle(AIS_InteractiveContext)& theCtx,
                                       const Handle(V3d_View)&               theView)
 {
@@ -3154,10 +3050,8 @@ void AIS_ViewController::handleMoveTo(const Handle(AIS_InteractiveContext)& theC
   handleSelectionPoly(theCtx, theView);
 }
 
-// =======================================================================
-// function : handleViewRedraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleViewRedraw(const Handle(AIS_InteractiveContext)&,
                                           const Handle(V3d_View)& theView)
 {
@@ -3265,10 +3159,8 @@ void AIS_ViewController::handleViewRedraw(const Handle(AIS_InteractiveContext)&,
   }
 }
 
-// =======================================================================
-// function : handleXRMoveTo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer AIS_ViewController::handleXRMoveTo(const Handle(AIS_InteractiveContext)& theCtx,
                                                     const Handle(V3d_View)&               theView,
                                                     const gp_Trsf&                        thePose,
@@ -3297,10 +3189,8 @@ Standard_Integer AIS_ViewController::handleXRMoveTo(const Handle(AIS_Interactive
   return aPickResult;
 }
 
-// =======================================================================
-// function : handleXRHighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRHighlight(const Handle(AIS_InteractiveContext)& theCtx,
                                            const Handle(V3d_View)&               theView)
 {
@@ -3347,10 +3237,8 @@ void AIS_ViewController::handleXRHighlight(const Handle(AIS_InteractiveContext)&
   }
 }
 
-// =======================================================================
-// function : handleXRPresentations
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::handleXRPresentations(const Handle(AIS_InteractiveContext)& theCtx,
                                                const Handle(V3d_View)&               theView)
 {
@@ -3509,10 +3397,8 @@ void AIS_ViewController::handleXRPresentations(const Handle(AIS_InteractiveConte
   }
 }
 
-// =======================================================================
-// function : HandleViewEvents
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_ViewController::HandleViewEvents(const Handle(AIS_InteractiveContext)& theCtx,
                                           const Handle(V3d_View)&               theView)
 {

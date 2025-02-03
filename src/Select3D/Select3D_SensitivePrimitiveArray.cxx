@@ -167,10 +167,8 @@ private:
   NCollection_Array1<Handle(Select3D_SensitivePrimitiveArray)>& myGroups;
 };
 
-// =======================================================================
-// function : Select3D_SensitivePrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
   const Handle(SelectMgr_EntityOwner)& theOwnerId)
     : Select3D_SensitiveSet(theOwnerId),
@@ -197,10 +195,8 @@ Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
   //
 }
 
-// =======================================================================
-// function : SetDetectElementMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::SetDetectElementMap(bool theToDetect)
 {
   if (!theToDetect)
@@ -219,10 +215,8 @@ void Select3D_SensitivePrimitiveArray::SetDetectElementMap(bool theToDetect)
   }
 }
 
-// =======================================================================
-// function : SetDetectNodeMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::SetDetectNodeMap(bool theToDetect)
 {
   if (!theToDetect)
@@ -241,10 +235,8 @@ void Select3D_SensitivePrimitiveArray::SetDetectNodeMap(bool theToDetect)
   }
 }
 
-// =======================================================================
-// function : InitTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   const Handle(Graphic3d_Buffer)&      theVerts,
   const Handle(Graphic3d_IndexBuffer)& theIndices,
@@ -408,10 +400,8 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   return true;
 }
 
-// =======================================================================
-// function : InitPoints
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)&      theVerts,
                                                   const Handle(Graphic3d_IndexBuffer)& theIndices,
                                                   const TopLoc_Location&               theInitLoc,
@@ -586,10 +576,8 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(const Handle(Graphic3d_Buffer)
   return true;
 }
 
-// =======================================================================
-// function : GetConnected
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitivePrimitiveArray::GetConnected()
 {
   Handle(Select3D_SensitivePrimitiveArray) aNewEntity =
@@ -637,10 +625,8 @@ void Select3D_SensitivePrimitiveArray::Set(const Handle(SelectMgr_EntityOwner)& 
   }
 }
 
-// =======================================================================
-// function : BVH
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::BVH()
 {
   if (!myContent.IsDirty())
@@ -671,19 +657,15 @@ void Select3D_SensitivePrimitiveArray::BVH()
   }
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Select3D_SensitivePrimitiveArray::Size() const
 {
   return myBvhIndices.NbElements;
 }
 
-// =======================================================================
-// function : Box
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const Standard_Integer theIdx) const
 {
   const Standard_Integer anElemIdx  = myBvhIndices.Index(theIdx);
@@ -756,10 +738,8 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::Box(const Standard_Integer t
   return aBox;
 }
 
-// =======================================================================
-// function : Center
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Select3D_SensitivePrimitiveArray::Center(const Standard_Integer theIdx,
                                                        const Standard_Integer theAxis) const
 {
@@ -775,10 +755,8 @@ Standard_Real Select3D_SensitivePrimitiveArray::Center(const Standard_Integer th
   return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
 }
 
-// =======================================================================
-// function : Swap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::Swap(const Standard_Integer theIdx1,
                                             const Standard_Integer theIdx2)
 {
@@ -798,10 +776,8 @@ void Select3D_SensitivePrimitiveArray::Swap(const Standard_Integer theIdx1,
   }
 }
 
-// =======================================================================
-// function : BoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Select3D_BndBox3d Select3D_SensitivePrimitiveArray::BoundingBox()
 {
   if (!myBndBox.IsValid())
@@ -811,10 +787,8 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::BoundingBox()
   return applyTransformation();
 }
 
-// =======================================================================
-// function : computeBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::computeBoundingBox()
 {
   myBndBox.Clear();
@@ -852,10 +826,8 @@ void Select3D_SensitivePrimitiveArray::computeBoundingBox()
   }
 }
 
-// =======================================================================
-// function : applyTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Select3D_BndBox3d Select3D_SensitivePrimitiveArray::applyTransformation()
 {
   if (!HasInitLocation())
@@ -881,10 +853,8 @@ Select3D_BndBox3d Select3D_SensitivePrimitiveArray::applyTransformation()
   return aBndBox;
 }
 
-// =======================================================================
-// function : Matches
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitivePrimitiveArray::Matches(
   SelectBasics_SelectingVolumeManager& theMgr,
   SelectBasics_PickResult&             thePickResult)
@@ -960,10 +930,8 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches(
   return Standard_True;
 }
 
-// =======================================================================
-// function : overlapsElement
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
   SelectBasics_PickResult&             thePickResult,
   SelectBasics_SelectingVolumeManager& theMgr,
@@ -1119,20 +1087,16 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement(
   return aResult;
 }
 
-// =======================================================================
-// function : distanceToCOG
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Select3D_SensitivePrimitiveArray::distanceToCOG(
   SelectBasics_SelectingVolumeManager& theMgr)
 {
   return theMgr.DistToGeometryCenter(myCDG3D);
 }
 
-// =======================================================================
-// function : elementIsInside
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
   SelectBasics_SelectingVolumeManager& theMgr,
   Standard_Integer                     theElemIdx,
@@ -1232,10 +1196,8 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside(
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitivePrimitiveArray::DumpJson(Standard_OStream& theOStream,
                                                 Standard_Integer  theDepth) const
 {

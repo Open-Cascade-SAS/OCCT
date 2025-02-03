@@ -24,10 +24,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWMesh_MaterialMap, Standard_Transient)
 
-// =======================================================================
-// function : RWMesh_MaterialMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_MaterialMap::RWMesh_MaterialMap(const TCollection_AsciiString& theFile)
     : myFileName(theFile),
       myKeyPrefix("mat_"),
@@ -44,19 +42,15 @@ RWMesh_MaterialMap::RWMesh_MaterialMap(const TCollection_AsciiString& theFile)
   }
 }
 
-// =======================================================================
-// function : ~RWMesh_MaterialMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_MaterialMap::~RWMesh_MaterialMap()
 {
   //
 }
 
-// =======================================================================
-// function : AddMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString RWMesh_MaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
   if (myStyles.IsBound1(theStyle))
@@ -123,10 +117,8 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial(const XCAFPrs_Style& the
   return aMatKey;
 }
 
-// =======================================================================
-// function : copyFileTo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
                                     const TCollection_AsciiString& theFileDst)
 {
@@ -161,10 +153,8 @@ bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
   }
 }
 
-// =======================================================================
-// function : CopyTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&       theResTexture,
                                      const Handle(Image_Texture)&   theTexture,
                                      const TCollection_AsciiString& theKey)
@@ -194,10 +184,8 @@ bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&       theResTextur
   return theTexture->WriteImage(aResTexFile);
 }
 
-// =======================================================================
-// function : CreateTextureFolder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_MaterialMap::CreateTextureFolder()
 {
   if (!myTexFolder.IsEmpty())

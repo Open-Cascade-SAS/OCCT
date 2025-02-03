@@ -32,10 +32,8 @@ OpenGl_DepthPeeling::OpenGl_DepthPeeling()
   myBlendBackFboOit          = new OpenGl_FrameBuffer(myResourceId + ":fbo_blend");
 }
 
-// =======================================================================
-// function : ~OpenGl_DepthPeeling
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_DepthPeeling::~OpenGl_DepthPeeling()
 {
   Release(NULL);

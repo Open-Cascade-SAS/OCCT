@@ -106,10 +106,8 @@ void XCAFDoc_VisMaterial::Paste(const Handle(TDF_Attribute)& theInto,
   anOther->myFaceCulling = myFaceCulling;
 }
 
-// =======================================================================
-// function : BaseColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_ColorRGBA XCAFDoc_VisMaterial::BaseColor() const
 {
   if (myPbrMat.IsDefined)

@@ -35,10 +35,8 @@ enum D3DHost_VendorId
 };
 } // namespace
 
-// =======================================================================
-// function : d3dFormatError
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString D3DHost_View::d3dFormatError(const long theErrCode)
 {
   switch (theErrCode)
@@ -60,10 +58,8 @@ TCollection_AsciiString D3DHost_View::d3dFormatError(const long theErrCode)
   }
 }
 
-// =======================================================================
-// function : D3DHost_View
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_View::D3DHost_View(const Handle(Graphic3d_StructureManager)& theMgr,
                            const Handle(D3DHost_GraphicDriver)&      theDriver,
                            const Handle(OpenGl_Caps)&                theCaps,
@@ -89,10 +85,8 @@ D3DHost_View::D3DHost_View(const Handle(Graphic3d_StructureManager)& theMgr,
   myD3dParams->PresentationInterval       = D3DPRESENT_INTERVAL_DEFAULT;
 }
 
-// =======================================================================
-// function : ~D3DHost_View
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_View::~D3DHost_View()
 {
   ReleaseGlResources(NULL);
@@ -108,10 +102,8 @@ D3DHost_View::~D3DHost_View()
   }
 }
 
-// =======================================================================
-// function : ReleaseGlResources
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
 {
   if (!myD3dWglFbo.IsNull())
@@ -122,19 +114,15 @@ void D3DHost_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
   OpenGl_View::ReleaseGlResources(theCtx);
 }
 
-// =======================================================================
-// function : D3dColorSurface
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 IDirect3DSurface9* D3DHost_View::D3dColorSurface() const
 {
   return myD3dWglFbo->D3dColorSurface();
 }
 
-// =======================================================================
-// function : SetWindow
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
                              const Handle(Aspect_Window)&   theWindow,
                              const Aspect_RenderingContext  theContext)
@@ -159,10 +147,8 @@ void D3DHost_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
   }
 }
 
-// =======================================================================
-// function : DiagnosticInformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
                                          Graphic3d_DiagnosticInfo              theFlags) const
 {
@@ -210,10 +196,8 @@ void D3DHost_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& t
                                                                  : "WGL_NV_DX_interop");
 }
 
-// =======================================================================
-// function : d3dInitLib
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool D3DHost_View::d3dInitLib()
 {
   if (myD3dLib == NULL)
@@ -242,10 +226,8 @@ bool D3DHost_View::d3dInitLib()
   return myD3dLib != NULL;
 }
 
-// =======================================================================
-// function : d3dInit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool D3DHost_View::d3dInit()
 {
   if (!d3dInitLib())
@@ -289,10 +271,8 @@ bool D3DHost_View::d3dInit()
   return myD3dDevice != NULL;
 }
 
-// =======================================================================
-// function : d3dReset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool D3DHost_View::d3dReset()
 {
   if (myD3dDevice == NULL)
@@ -310,10 +290,8 @@ bool D3DHost_View::d3dReset()
   return isOK == D3D_OK;
 }
 
-// =======================================================================
-// function : d3dCreateRenderTarget
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool D3DHost_View::d3dCreateRenderTarget()
 {
   bool toD3dFallback = false;
@@ -355,10 +333,8 @@ bool D3DHost_View::d3dCreateRenderTarget()
   return true;
 }
 
-// =======================================================================
-// function : d3dBeginRender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::d3dBeginRender()
 {
   if (myD3dDevice == NULL)
@@ -371,10 +347,8 @@ void D3DHost_View::d3dBeginRender()
   myD3dDevice->BeginScene();
 }
 
-// =======================================================================
-// function : d3dEndRender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::d3dEndRender()
 {
   if (myD3dDevice != NULL)
@@ -383,10 +357,8 @@ void D3DHost_View::d3dEndRender()
   }
 }
 
-// =======================================================================
-// function : d3dSwap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool D3DHost_View::d3dSwap()
 {
   if (myD3dDevice == NULL)
@@ -407,10 +379,8 @@ bool D3DHost_View::d3dSwap()
   return isOK == D3D_OK;
 }
 
-// =======================================================================
-// function : Redraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::Redraw()
 {
   if (!myWorkspace->Activate() || myD3dDevice == NULL)
@@ -470,10 +440,8 @@ void D3DHost_View::Redraw()
   d3dSwap();
 }
 
-// =======================================================================
-// function : RedrawImmediate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::RedrawImmediate()
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
@@ -520,10 +488,8 @@ void D3DHost_View::RedrawImmediate()
   d3dSwap();
 }
 
-// =======================================================================
-// function : Resize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_View::Resized()
 {
   const Standard_Integer aWidthOld  = myWindow->Width();

@@ -30,10 +30,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
 
-// =======================================================================
-// function : Font_FTFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_FTFont::Font_FTFont(const Handle(Font_FTLibrary)& theFTLib)
     : myFTLib(theFTLib),
       myFTFace(NULL),
@@ -54,19 +52,15 @@ Font_FTFont::Font_FTFont(const Handle(Font_FTLibrary)& theFTLib)
   }
 }
 
-// =======================================================================
-// function : Font_FTFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_FTFont::~Font_FTFont()
 {
   Release();
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FTFont::Release()
 {
   myGlyphImg.Clear();
@@ -83,10 +77,8 @@ void Font_FTFont::Release()
   myBuffer.Nullify();
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::Init(const Handle(NCollection_Buffer)& theData,
                        const TCollection_AsciiString&    theFileName,
                        const Font_FTFontParams&          theParams,
@@ -200,10 +192,8 @@ bool Font_FTFont::Init(const Handle(NCollection_Buffer)& theData,
 #endif
 }
 
-// =======================================================================
-// function : FindAndCreate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& theFontName,
                                                const Font_FontAspect          theFontAspect,
                                                const Font_FTFontParams&       theParams,
@@ -257,10 +247,8 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate(const TCollection_AsciiString& th
   return Handle(Font_FTFont)();
 }
 
-// =======================================================================
-// function : FindAndInit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
                               Font_FontAspect                theFontAspect,
                               const Font_FTFontParams&       theParams,
@@ -296,10 +284,8 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
   return false;
 }
 
-// =======================================================================
-// function : findAndInitFallback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
 {
   if (!myFallbackFaces[theSubset].IsNull())
@@ -331,10 +317,8 @@ bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
   return myFallbackFaces[theSubset]->IsValid();
 }
 
-// =======================================================================
-// function : HasSymbol
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::HasSymbol(Standard_Utf32Char theUChar) const
 {
 #ifdef HAVE_FREETYPE
@@ -345,10 +329,8 @@ bool Font_FTFont::HasSymbol(Standard_Utf32Char theUChar) const
 #endif
 }
 
-// =======================================================================
-// function : loadGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::loadGlyph(const Standard_Utf32Char theUChar)
 {
   if (myUChar == theUChar)
@@ -388,10 +370,8 @@ bool Font_FTFont::loadGlyph(const Standard_Utf32Char theUChar)
 #endif
 }
 
-// =======================================================================
-// function : RenderGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::RenderGlyph(const Standard_Utf32Char theUChar)
 {
   myGlyphImg.Clear();
@@ -466,10 +446,8 @@ bool Font_FTFont::RenderGlyph(const Standard_Utf32Char theUChar)
 #endif
 }
 
-// =======================================================================
-// function : GlyphMaxSizeX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
@@ -500,10 +478,8 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
 #endif
 }
 
-// =======================================================================
-// function : GlyphMaxSizeY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
@@ -534,10 +510,8 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
 #endif
 }
 
-// =======================================================================
-// function : Ascender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::Ascender() const
 {
 #ifdef HAVE_FREETYPE
@@ -548,10 +522,8 @@ float Font_FTFont::Ascender() const
 #endif
 }
 
-// =======================================================================
-// function : Descender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::Descender() const
 {
 #ifdef HAVE_FREETYPE
@@ -562,10 +534,8 @@ float Font_FTFont::Descender() const
 #endif
 }
 
-// =======================================================================
-// function : LineSpacing
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::LineSpacing() const
 {
 #ifdef HAVE_FREETYPE
@@ -576,30 +546,24 @@ float Font_FTFont::LineSpacing() const
 #endif
 }
 
-// =======================================================================
-// function : AdvanceX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::AdvanceX(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext)
 {
   loadGlyph(theUChar);
   return AdvanceX(theUCharNext);
 }
 
-// =======================================================================
-// function : AdvanceY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::AdvanceY(Standard_Utf32Char theUChar, Standard_Utf32Char theUCharNext)
 {
   loadGlyph(theUChar);
   return AdvanceY(theUCharNext);
 }
 
-// =======================================================================
-// function : getKerning
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Font_FTFont::getKerning(FT_Vector&         theKern,
                              Standard_Utf32Char theUCharCurr,
                              Standard_Utf32Char theUCharNext) const
@@ -628,10 +592,8 @@ bool Font_FTFont::getKerning(FT_Vector&         theKern,
   return false;
 }
 
-// =======================================================================
-// function : AdvanceX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::AdvanceX(Standard_Utf32Char theUCharNext) const
 {
   if (myUChar == 0)
@@ -652,10 +614,8 @@ float Font_FTFont::AdvanceX(Standard_Utf32Char theUCharNext) const
 #endif
 }
 
-// =======================================================================
-// function : AdvanceY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 float Font_FTFont::AdvanceY(Standard_Utf32Char theUCharNext) const
 {
   if (myUChar == 0)
@@ -673,10 +633,8 @@ float Font_FTFont::AdvanceY(Standard_Utf32Char theUCharNext) const
 #endif
 }
 
-// =======================================================================
-// function : GlyphsNumber
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
@@ -698,10 +656,8 @@ Standard_Integer Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
 #endif
 }
 
-// =======================================================================
-// function : GlyphRect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_FTFont::GlyphRect(Font_Rect& theRect) const
 {
 #ifdef HAVE_FREETYPE
@@ -715,10 +671,8 @@ void Font_FTFont::GlyphRect(Font_Rect& theRect) const
 #endif
 }
 
-// =======================================================================
-// function : BoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theString,
                                    const Graphic3d_HorizontalTextAlignment theAlignX,
                                    const Graphic3d_VerticalTextAlignment   theAlignY)
@@ -735,10 +689,8 @@ Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theSt
   return aBndBox;
 }
 
-// =======================================================================
-// function : renderGlyphOutline
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const FT_Outline* Font_FTFont::renderGlyphOutline(const Standard_Utf32Char theChar)
 {
 #ifdef HAVE_FREETYPE

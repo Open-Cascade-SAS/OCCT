@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectText3d, Graphic3d_Aspects)
 
-// =======================================================================
-// function : Graphic3d_AspectText3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectText3d::Graphic3d_AspectText3d()
 {
   SetAlphaMode(Graphic3d_AlphaMode_MaskBlend, 0.285f);
@@ -29,10 +27,8 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d()
   myEdgeColor.SetRGB(Quantity_NOC_WHITE);
 }
 
-// =======================================================================
-// function : Graphic3d_AspectText3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
                                                Standard_CString      theFont,
                                                Standard_Real,
@@ -52,10 +48,8 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_AspectText3d::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

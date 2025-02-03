@@ -24,10 +24,8 @@ OpenGl_StencilTest::OpenGl_StencilTest()
   //
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StencilTest::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
@@ -42,37 +40,29 @@ void OpenGl_StencilTest::Render(const Handle(OpenGl_Workspace)& theWorkspace) co
   }
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StencilTest::Release(OpenGl_Context*)
 {
   //
 }
 
-// =======================================================================
-// function : SetStencilTestState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StencilTest::SetOptions(const Standard_Boolean theIsEnabled)
 {
   myIsEnabled = theIsEnabled;
 }
 
-// =======================================================================
-// function : ~OpenGl_StencilTest
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_StencilTest::~OpenGl_StencilTest()
 {
   //
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StencilTest::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_StencilTest)

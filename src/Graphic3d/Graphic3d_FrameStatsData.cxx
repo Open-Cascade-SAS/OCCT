@@ -13,10 +13,8 @@
 
 #include <Graphic3d_FrameStatsData.hxx>
 
-// =======================================================================
-// function : Graphic3d_FrameStatsData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
     : myFps(-1.0),
       myFpsCpu(-1.0),
@@ -30,10 +28,8 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
   Reset();
 }
 
-// =======================================================================
-// function : Graphic3d_FrameStatsData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(const Graphic3d_FrameStatsData& theOther)
     : myCounters(theOther.myCounters),
       myTimers(theOther.myTimers),
@@ -46,10 +42,8 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(const Graphic3d_FrameStatsDat
 {
 }
 
-// =======================================================================
-// function : Graphic3d_FrameStatsData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(Graphic3d_FrameStatsData&& theOther) noexcept
     : myCounters(std::move(theOther.myCounters)),
       myTimers(std::move(theOther.myTimers)),
@@ -106,10 +100,8 @@ Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(
   return *this;
 }
 
-// =======================================================================
-// function : Reset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStatsData::Reset()
 {
   myFps             = -1.0;
@@ -122,10 +114,8 @@ void Graphic3d_FrameStatsData::Reset()
   myTimersMax.assign(myTimersMax.size(), 0.0);
 }
 
-// =======================================================================
-// function : FillMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
 {
   myFps             = Max(myFps, theOther.myFps);
@@ -146,20 +136,16 @@ void Graphic3d_FrameStatsData::FillMax(const Graphic3d_FrameStatsData& theOther)
   }
 }
 
-// =======================================================================
-// function : Graphic3d_FrameStatsDataTmp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsDataTmp::Graphic3d_FrameStatsDataTmp()
 {
   myOsdTimers.resize(Graphic3d_FrameStatsTimer_NB, OSD_Timer(true));
   myTimersPrev.resize(Graphic3d_FrameStatsTimer_NB, 0.0);
 }
 
-// =======================================================================
-// function : FlushTimers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStatsDataTmp::FlushTimers(Standard_Size theNbFrames, bool theIsFinal)
 {
   for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
@@ -180,10 +166,8 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(Standard_Size theNbFrames, bool th
   }
 }
 
-// =======================================================================
-// function : Reset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_FrameStatsDataTmp::Reset()
 {
   Graphic3d_FrameStatsData::Reset();

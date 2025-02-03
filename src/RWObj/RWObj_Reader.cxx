@@ -64,10 +64,8 @@ static bool isClockwisePolygon(const Handle(BRepMesh_DataStructureOfDelaun)& the
 }
 } // namespace
 
-// ================================================================
-// Function : Read
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWObj_Reader::RWObj_Reader()
     : myMemLimitBytes(Standard_Size(-1)),
       myMemEstim(0),
@@ -80,10 +78,8 @@ RWObj_Reader::RWObj_Reader()
   //
 }
 
-// ================================================================
-// Function : read
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Standard_Boolean RWObj_Reader::read(std::istream&                  theStream,
                                     const TCollection_AsciiString& theFile,
                                     const Message_ProgressRange&   theProgress,
@@ -284,10 +280,8 @@ Standard_Boolean RWObj_Reader::read(std::istream&                  theStream,
   return true;
 }
 
-// =======================================================================
-// function : pushIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::pushIndices(const char* thePos)
 {
   char* aNext = NULL;
@@ -613,10 +607,8 @@ Standard_Integer RWObj_Reader::triangulatePolygon(
   return triangulatePolygonFan(theIndices);
 }
 
-// =======================================================================
-// function : pushObject
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::pushObject(const char* theObjectName)
 {
   TCollection_AsciiString aNewObject;
@@ -631,10 +623,8 @@ void RWObj_Reader::pushObject(const char* theObjectName)
   myActiveSubMesh.Object = aNewObject;
 }
 
-// =======================================================================
-// function : pushGroup
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::pushGroup(const char* theGroupName)
 {
   TCollection_AsciiString aNewGroup;
@@ -649,10 +639,8 @@ void RWObj_Reader::pushGroup(const char* theGroupName)
   myActiveSubMesh.Group = aNewGroup;
 }
 
-// =======================================================================
-// function : pushSmoothGroup
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
 {
   TCollection_AsciiString aNewSmoothGroup;
@@ -676,10 +664,8 @@ void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
   myActiveSubMesh.SmoothGroup = aNewSmoothGroup;
 }
 
-// =======================================================================
-// function : pushMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::pushMaterial(const char* theMaterialName)
 {
   TCollection_AsciiString aNewMat;
@@ -706,10 +692,8 @@ void RWObj_Reader::pushMaterial(const char* theMaterialName)
   myActiveSubMesh.Material = aNewMat;
 }
 
-// =======================================================================
-// function : readMaterialLib
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_Reader::readMaterialLib(const char* theFileName)
 {
   TCollection_AsciiString aMatPath;
@@ -727,10 +711,8 @@ void RWObj_Reader::readMaterialLib(const char* theFileName)
   }
 }
 
-// =======================================================================
-// function : checkMemory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_Reader::checkMemory()
 {
   if (myMemEstim < myMemLimitBytes || myToAbort)

@@ -21,10 +21,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite, OpenGl_Texture)
 
-// =======================================================================
-// function : OpenGl_PointSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PointSprite::OpenGl_PointSprite(const TCollection_AsciiString& theResourceId)
     : OpenGl_Texture(theResourceId, Handle(Graphic3d_TextureParams)()),
       myBitmapList(0)
@@ -36,19 +34,15 @@ OpenGl_PointSprite::OpenGl_PointSprite(const TCollection_AsciiString& theResourc
                                       Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : ~OpenGl_PointSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PointSprite::~OpenGl_PointSprite()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
 {
   if (myBitmapList != 0)
@@ -67,10 +61,8 @@ void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
   OpenGl_Texture::Release(theGlCtx);
 }
 
-// =======================================================================
-// function : SetDisplayList
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PointSprite::SetDisplayList(const Handle(OpenGl_Context)& theCtx,
                                         const GLuint                  theBitmapList)
 {
@@ -78,10 +70,8 @@ void OpenGl_PointSprite::SetDisplayList(const Handle(OpenGl_Context)& theCtx,
   myBitmapList = theBitmapList;
 }
 
-// =======================================================================
-// function : DrawBitmap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PointSprite::DrawBitmap(const Handle(OpenGl_Context)& theCtx) const
 {
   if (myBitmapList != 0)

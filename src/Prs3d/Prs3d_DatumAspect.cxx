@@ -18,10 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DatumAspect, Prs3d_BasicAspect)
 
-// =======================================================================
-// function : Prs3d_DatumAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Prs3d_DatumAspect::Prs3d_DatumAspect()
     : myAxes(Prs3d_DatumAxes_XYZAxes),
       myToDrawLabels(Standard_True),
@@ -66,10 +64,8 @@ Prs3d_DatumAspect::Prs3d_DatumAspect()
   myTextAspects[Prs3d_DatumParts_ZAxis] = new Prs3d_TextAspect();
 }
 
-// =======================================================================
-// function : DrawDatumPart
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Prs3d_DatumAspect::DrawDatumPart(Prs3d_DatumParts thePart) const
 {
   switch (thePart)
@@ -100,10 +96,8 @@ bool Prs3d_DatumAspect::DrawDatumPart(Prs3d_DatumParts thePart) const
   return false;
 }
 
-// =======================================================================
-// function : AxisLength
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Prs3d_DatumAspect::AxisLength(Prs3d_DatumParts thePart) const
 {
   switch (thePart)
@@ -120,10 +114,8 @@ Standard_Real Prs3d_DatumAspect::AxisLength(Prs3d_DatumParts thePart) const
   return 0.0;
 }
 
-// =======================================================================
-// function : ArrowPartForAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Prs3d_DatumParts Prs3d_DatumAspect::ArrowPartForAxis(Prs3d_DatumParts thePart)
 {
   switch (thePart)
@@ -171,10 +163,8 @@ void Prs3d_DatumAspect::CopyAspectsFrom(const Handle(Prs3d_DatumAspect)& theOthe
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_DatumAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

@@ -740,10 +740,8 @@ static Standard_Integer setStyledcolor(Draw_Interpretor&, Standard_Integer argc,
   return 0;
 }
 
-// ================================================================
-// Function : XGetAllVisMaterials
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
                                             Standard_Integer  theNbArgs,
                                             const char**      theArgVec)
@@ -806,10 +804,8 @@ static Standard_Integer XGetAllVisMaterials(Draw_Interpretor& theDI,
   return 0;
 }
 
-// ================================================================
-// Function : XGetVisMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
                                         Standard_Integer  theNbArgs,
                                         const char**      theArgVec)
@@ -931,10 +927,8 @@ static Standard_Integer XGetVisMaterial(Draw_Interpretor& theDI,
   return 0;
 }
 
-// ================================================================
-// Function : XAddVisMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
                                         Standard_Integer theNbArgs,
                                         const char**     theArgVec)
@@ -1191,10 +1185,8 @@ static Standard_Integer XAddVisMaterial(Draw_Interpretor&,
   return 0;
 }
 
-// ================================================================
-// Function : XRemoveVisMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 static Standard_Integer XRemoveVisMaterial(Draw_Interpretor&,
                                            Standard_Integer theNbArgs,
                                            const char**     theArgVec)
@@ -1225,10 +1217,8 @@ static Standard_Integer XRemoveVisMaterial(Draw_Interpretor&,
   return 0;
 }
 
-// ================================================================
-// Function : XSetVisMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 static Standard_Integer XSetVisMaterial(Draw_Interpretor&,
                                         Standard_Integer theNbArgs,
                                         const char**     theArgVec)

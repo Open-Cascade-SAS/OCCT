@@ -17,10 +17,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_XRSession, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_XRAction, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_XRActionSet, Standard_Transient)
 
-// =======================================================================
-// function : Aspect_XRSession
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_XRSession::Aspect_XRSession()
     : myTrackOrigin(TrackingUniverseOrigin_Standing),
       myTrackedPoses(0, 0),
@@ -36,19 +34,15 @@ Aspect_XRSession::Aspect_XRSession()
   }
 }
 
-// =======================================================================
-// function : AbortHapticVibrationAction
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_XRSession::AbortHapticVibrationAction(const Handle(Aspect_XRAction)& theAction)
 {
   triggerHapticVibrationAction(theAction, Aspect_XRHapticActionData());
 }
 
-// =======================================================================
-// function : TriggerHapticVibrationAction
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_XRSession::TriggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
                                                     const Aspect_XRHapticActionData& theParams)
 {

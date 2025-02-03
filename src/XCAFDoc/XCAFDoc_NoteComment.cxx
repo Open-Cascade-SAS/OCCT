@@ -18,20 +18,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteComment, XCAFDoc_Note)
 
-// =======================================================================
-// function : GetID
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Standard_GUID& XCAFDoc_NoteComment::GetID()
 {
   static Standard_GUID s_ID("FDEA4C52-0F54-484c-B590-579E18F7B5D4");
   return s_ID;
 }
 
-// =======================================================================
-// function : Get
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_NoteComment) aThis;
@@ -39,10 +35,8 @@ Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
   return aThis;
 }
 
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
                                                      const TCollection_ExtendedString& theUserName,
                                                      const TCollection_ExtendedString& theTimeStamp,
@@ -59,16 +53,12 @@ Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Set(const TDF_Label&           
   return aNoteComment;
 }
 
-// =======================================================================
-// function : XCAFDoc_NoteComment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 XCAFDoc_NoteComment::XCAFDoc_NoteComment() {}
 
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_NoteComment::Set(const TCollection_ExtendedString& theComment)
 {
   Backup();
@@ -76,28 +66,22 @@ void XCAFDoc_NoteComment::Set(const TCollection_ExtendedString& theComment)
   myComment = theComment;
 }
 
-// =======================================================================
-// function : ID
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Standard_GUID& XCAFDoc_NoteComment::ID() const
 {
   return GetID();
 }
 
-// =======================================================================
-// function : NewEmpty
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XCAFDoc_NoteComment::NewEmpty() const
 {
   return new XCAFDoc_NoteComment();
 }
 
-// =======================================================================
-// function : Restore
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_NoteComment::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   XCAFDoc_Note::Restore(theAttr);
@@ -107,10 +91,8 @@ void XCAFDoc_NoteComment::Restore(const Handle(TDF_Attribute)& theAttr)
     myComment = aMine->myComment;
 }
 
-// =======================================================================
-// function : Paste
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_NoteComment::Paste(const Handle(TDF_Attribute)&       theAttrInto,
                                 const Handle(TDF_RelocationTable)& theRT) const
 {
@@ -121,10 +103,8 @@ void XCAFDoc_NoteComment::Paste(const Handle(TDF_Attribute)&       theAttrInto,
     aMine->Set(myComment);
 }
 
-// =======================================================================
-// function : Dump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_OStream& XCAFDoc_NoteComment::Dump(Standard_OStream& theOS) const
 {
   XCAFDoc_Note::Dump(theOS);

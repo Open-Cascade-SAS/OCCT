@@ -138,10 +138,8 @@ private:
   bool                    myIsRegistered;
 };
 
-// =======================================================================
-// function : WNT_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 WNT_Window::WNT_Window(const Standard_CString     theTitle,
                        const Handle(WNT_WClass)&  theClass,
                        const WNT_Dword&           theStyle,
@@ -212,10 +210,8 @@ WNT_Window::WNT_Window(const Standard_CString     theTitle,
   SetBackground(theBackColor);
 }
 
-// =======================================================================
-// function : WNT_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 WNT_Window::WNT_Window(const Aspect_Handle theHandle, const Quantity_NameOfColor theBackColor)
     : myHWindow(theHandle),
       myHParentWindow(GetParent((HWND)theHandle)),
@@ -237,10 +233,8 @@ WNT_Window::WNT_Window(const Aspect_Handle theHandle, const Quantity_NameOfColor
   myYBottom = aPlace.rcNormalPosition.bottom;
 }
 
-// =======================================================================
-// function : ~WNT_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 WNT_Window::~WNT_Window()
 {
   if (myHWindow == NULL || myIsForeign)
@@ -252,19 +246,15 @@ WNT_Window::~WNT_Window()
   myIsForeign = Standard_False;
 }
 
-// =======================================================================
-// function : SetCursor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::SetCursor(const Aspect_Handle theCursor) const
 {
   ::SetClassLongPtrW((HWND)myHWindow, GCLP_HCURSOR, (LONG_PTR)theCursor);
 }
 
-// =======================================================================
-// function : IsMapped
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean WNT_Window::IsMapped() const
 {
   if (IsVirtual())
@@ -278,10 +268,8 @@ Standard_Boolean WNT_Window::IsMapped() const
   return !(aPlace.showCmd == SW_HIDE || aPlace.showCmd == SW_MINIMIZE);
 }
 
-// =======================================================================
-// function : Map
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::Map() const
 {
   if (!IsVirtual())
@@ -290,10 +278,8 @@ void WNT_Window::Map() const
   }
 }
 
-// =======================================================================
-// function : Map
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::Map(const Standard_Integer theMapMode) const
 {
   if (IsVirtual())
@@ -305,19 +291,15 @@ void WNT_Window::Map(const Standard_Integer theMapMode) const
   ::UpdateWindow((HWND)myHWindow);
 }
 
-// =======================================================================
-// function : Unmap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::Unmap() const
 {
   Map(SW_HIDE);
 }
 
-// =======================================================================
-// function : DoResize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_TypeOfResize WNT_Window::DoResize()
 {
   if (IsVirtual())
@@ -379,10 +361,8 @@ Aspect_TypeOfResize WNT_Window::DoResize()
   return Aspect_TOR_UNKNOWN;
 }
 
-// =======================================================================
-// function : Ratio
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real WNT_Window::Ratio() const
 {
   if (IsVirtual())
@@ -395,10 +375,8 @@ Standard_Real WNT_Window::Ratio() const
   return Standard_Real(aRect.right - aRect.left) / Standard_Real(aRect.bottom - aRect.top);
 }
 
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::Position(Standard_Integer& theX1,
                           Standard_Integer& theY1,
                           Standard_Integer& theX2,
@@ -435,10 +413,8 @@ void WNT_Window::Position(Standard_Integer& theX1,
   theY2 = aPntRight.y;
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   if (IsVirtual())
@@ -454,10 +430,8 @@ void WNT_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) c
   theHeight = aRect.bottom;
 }
 
-// =======================================================================
-// function : SetPos
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::SetPos(const Standard_Integer theX,
                         const Standard_Integer theY,
                         const Standard_Integer theX1,
@@ -469,20 +443,16 @@ void WNT_Window::SetPos(const Standard_Integer theX,
   myYBottom = theY1;
 }
 
-// =======================================================================
-// function : SetTitle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::SetTitle(const TCollection_AsciiString& theTitle)
 {
   const TCollection_ExtendedString aTitleW(theTitle);
   SetWindowTextW((HWND)myHWindow, aTitleW.ToWideString());
 }
 
-// =======================================================================
-// function : InvalidateContent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void WNT_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
 {
   if (myHWindow != NULL)
@@ -491,10 +461,8 @@ void WNT_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)&)
   }
 }
 
-// =======================================================================
-// function : VirtualKeyFromNative
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKey WNT_Window::VirtualKeyFromNative(Standard_Integer theKey)
 {
   if (theKey >= Standard_Integer('0') && theKey <= Standard_Integer('9'))
@@ -663,10 +631,8 @@ Aspect_VKey WNT_Window::VirtualKeyFromNative(Standard_Integer theKey)
   return Aspect_VKey_UNKNOWN;
 }
 
-// =======================================================================
-// function : MouseKeyFlagsFromEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent(WPARAM theKeys)
 {
   Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
@@ -685,10 +651,8 @@ Aspect_VKeyFlags WNT_Window::MouseKeyFlagsFromEvent(WPARAM theKeys)
   return aFlags;
 }
 
-// =======================================================================
-// function : MouseKeyFlagsAsync
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKeyFlags WNT_Window::MouseKeyFlagsAsync()
 {
   Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
@@ -707,10 +671,8 @@ Aspect_VKeyFlags WNT_Window::MouseKeyFlagsAsync()
   return aFlags;
 }
 
-// =======================================================================
-// function : MouseButtonsFromEvent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKeyMouse WNT_Window::MouseButtonsFromEvent(WPARAM theKeys)
 {
   Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
@@ -729,10 +691,8 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsFromEvent(WPARAM theKeys)
   return aButtons;
 }
 
-// =======================================================================
-// function : MouseButtonsAsync
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
 {
   Aspect_VKeyMouse aButtons  = Aspect_VKeyMouse_NONE;
@@ -753,10 +713,8 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
   return aButtons;
 }
 
-// =======================================================================
-// function : RegisterRawInputDevices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int WNT_Window::RegisterRawInputDevices(unsigned int theRawDeviceMask)
 {
   if (IsVirtual() || myHWindow == NULL)
@@ -812,10 +770,8 @@ int WNT_Window::RegisterRawInputDevices(unsigned int theRawDeviceMask)
   return 0;
 }
 
-// =======================================================================
-// function : ProcessMessage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& theMsg)
 {
   if (myTouchInputHelper.IsNull())

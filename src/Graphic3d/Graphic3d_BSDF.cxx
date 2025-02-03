@@ -19,10 +19,8 @@
 
 #include <algorithm>
 
-// =======================================================================
-// function : Serialize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec4 Graphic3d_Fresnel::Serialize() const
 {
   Graphic3d_Vec4 aData = Graphic3d_Vec4(myFresnelData, 0.f);
@@ -35,19 +33,15 @@ Graphic3d_Vec4 Graphic3d_Fresnel::Serialize() const
   return aData;
 }
 
-// =======================================================================
-// function : fresnelNormal
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline float fresnelNormal(float theN, float theK)
 {
   return ((theN - 1.f) * (theN - 1.f) + theK * theK) / ((theN + 1.f) * (theN + 1.f) + theK * theK);
 }
 
-// =======================================================================
-// function : CreateConductor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor(const Graphic3d_Vec3& theRefractionIndex,
                                                      const Graphic3d_Vec3& theAbsorptionIndex)
 {
@@ -66,10 +60,8 @@ void Graphic3d_Fresnel::DumpJson(Standard_OStream& theOStream, Standard_Integer 
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFresnelType)
       OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myFresnelData)}
 
-// =======================================================================
-// function : Graphic3d_BSDF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF::Graphic3d_BSDF()
     : Ks(Graphic3d_Vec3(0.f), 1.f)
 {
@@ -88,10 +80,8 @@ bool Graphic3d_BSDF::operator==(const Graphic3d_BSDF& theOther) const
          && FresnelCoat == theOther.FresnelCoat && FresnelBase == theOther.FresnelBase;
 }
 
-// =======================================================================
-// function : Normalize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_BSDF::Normalize()
 {
   float aMax = 0.f;
@@ -112,10 +102,8 @@ void Graphic3d_BSDF::Normalize()
   }
 }
 
-// =======================================================================
-// function : CreateDiffuse
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse(const Graphic3d_Vec3& theWeight)
 {
   Graphic3d_BSDF aBSDF;
@@ -125,10 +113,8 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse(const Graphic3d_Vec3& theWeight)
   return aBSDF;
 }
 
-// =======================================================================
-// function : CreateMetallic
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic(const Graphic3d_Vec3&    theWeight,
                                               const Graphic3d_Fresnel& theFresnel,
                                               const float              theRoughness)
@@ -144,10 +130,8 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic(const Graphic3d_Vec3&    theWeight
   return aBSDF;
 }
 
-// =======================================================================
-// function : CreateTransparent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent(const Graphic3d_Vec3& theWeight,
                                                  const Graphic3d_Vec3& theAbsorptionColor,
                                                  const float           theAbsorptionCoeff)
@@ -170,10 +154,8 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent(const Graphic3d_Vec3& theWeight
   return aBSDF;
 }
 
-// =======================================================================
-// function : CreateGlass
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const Graphic3d_Vec3& theWeight,
                                            const Graphic3d_Vec3& theAbsorptionColor,
                                            const float           theAbsorptionCoeff,
@@ -195,10 +177,8 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const Graphic3d_Vec3& theWeight,
   return aBSDF;
 }
 
-// =======================================================================
-// function : CreateMetallicRoughness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness(const Graphic3d_PBRMaterial& thePbr)
 {
   const Graphic3d_Vec3     aDiff      = (Graphic3d_Vec3)thePbr.Color().GetRGB() * thePbr.Alpha();

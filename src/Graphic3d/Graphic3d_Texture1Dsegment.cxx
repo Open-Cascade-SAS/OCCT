@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1Dsegment, Graphic3d_Texture1D)
 
-// =======================================================================
-// function : Graphic3d_Texture1Dsegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const TCollection_AsciiString& theFileName)
     : Graphic3d_Texture1D(theFileName, Graphic3d_TypeOfTexture_1D),
       myX1(0.0f),
@@ -41,10 +39,8 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const TCollection_AsciiSt
                        Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_Texture1Dsegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Graphic3d_NameOfTexture1D theNOT)
     : Graphic3d_Texture1D(theNOT, Graphic3d_TypeOfTexture_1D),
       myX1(0.0f),
@@ -60,10 +56,8 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Graphic3d_NameOfTex
                        Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_Texture1Dsegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Image_PixMap)& thePixMap)
     : Graphic3d_Texture1D(thePixMap, Graphic3d_TypeOfTexture_1D),
       myX1(0.0f),
@@ -79,10 +73,8 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Image_PixMap
                        Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : SetSegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture1Dsegment::SetSegment(const Standard_ShortReal X1,
                                             const Standard_ShortReal Y1,
                                             const Standard_ShortReal Z1,
@@ -108,10 +100,8 @@ void Graphic3d_Texture1Dsegment::SetSegment(const Standard_ShortReal X1,
   myParams->SetGenMode(Graphic3d_TOTM_OBJECT, aPlaneX, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Segment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture1Dsegment::Segment(Standard_ShortReal& X1,
                                          Standard_ShortReal& Y1,
                                          Standard_ShortReal& Z1,

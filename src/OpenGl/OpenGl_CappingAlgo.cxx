@@ -208,10 +208,8 @@ static void renderCappingForStructure(StencilTestSentry&                        
 }
 } // namespace
 
-// =======================================================================
-// function : RenderCapping
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_CappingAlgo::RenderCapping(const Handle(OpenGl_Workspace)& theWorkspace,
                                        const OpenGl_Structure&         theStructure)
 {

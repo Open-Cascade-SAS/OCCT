@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
 
-// =======================================================================
-// function : OpenGl_Caps
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Caps::OpenGl_Caps()
     : sRGBDisable(Standard_False),
       compressedTexturesDisable(Standard_False),
@@ -90,10 +88,8 @@ OpenGl_Caps& OpenGl_Caps::operator=(const OpenGl_Caps& theCopy)
   return *this;
 }
 
-// =======================================================================
-// function : ~OpenGl_Caps
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Caps::~OpenGl_Caps()
 {
   //

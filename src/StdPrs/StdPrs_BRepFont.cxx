@@ -114,10 +114,8 @@ static TopAbs_State classifyWW(const TopoDS_Wire& theW1,
 #endif
 } // namespace
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 StdPrs_BRepFont::StdPrs_BRepFont()
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
@@ -129,10 +127,8 @@ StdPrs_BRepFont::StdPrs_BRepFont()
   init();
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_BRepFont::init()
 {
   mySurface                              = new Geom_Plane(gp_Pln(gp::XOY()));
@@ -141,10 +137,8 @@ void StdPrs_BRepFont::init()
   myCurvOnSurf.Load(aSurfAdaptor);
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
                                  const Standard_Real       theSize,
                                  const Standard_Integer    theFaceId)
@@ -165,10 +159,8 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
   myFTFont->Init(theFontPath.ToCString(), THE_FONT_PARAMS, theFaceId);
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
                                  const Font_FontAspect     theFontAspect,
                                  const Standard_Real       theSize,
@@ -190,20 +182,16 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
   myFTFont->FindAndInit(theFontName.ToCString(), theFontAspect, THE_FONT_PARAMS, theStrictLevel);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_BRepFont::Release()
 {
   myCache.Clear();
   myFTFont->Release();
 }
 
-// =======================================================================
-// function : FindAndCreate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(StdPrs_BRepFont) StdPrs_BRepFont::FindAndCreate(const TCollection_AsciiString& theFontName,
                                                        const Font_FontAspect          theFontAspect,
                                                        const Standard_Real            theSize,
@@ -217,10 +205,8 @@ Handle(StdPrs_BRepFont) StdPrs_BRepFont::FindAndCreate(const TCollection_AsciiSt
   return Handle(StdPrs_BRepFont)();
 }
 
-// =======================================================================
-// function : SetCompositeCurveMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_BRepFont::SetCompositeCurveMode(const Standard_Boolean theToConcatenate)
 {
   if (myIsCompositeCurve != theToConcatenate)
@@ -230,10 +216,8 @@ void StdPrs_BRepFont::SetCompositeCurveMode(const Standard_Boolean theToConcaten
   }
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
                            const Standard_Real       theSize,
                            const Standard_Integer    theFaceId)
@@ -248,10 +232,8 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
   return myFTFont->Init(theFontPath.ToCString(), THE_FONT_PARAMS, theFaceId);
 }
 
-// =======================================================================
-// function : FindAndInit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
                                   const Font_FontAspect          theFontAspect,
                                   const Standard_Real            theSize,
@@ -270,10 +252,8 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
                                theStrictLevel);
 }
 
-// =======================================================================
-// function : RenderGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const Standard_Utf32Char& theChar)
 {
   TopoDS_Shape           aShape;
@@ -282,10 +262,8 @@ TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const Standard_Utf32Char& theChar)
   return aShape;
 }
 
-// =======================================================================
-// function : to3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool StdPrs_BRepFont::to3d(const Handle(Geom2d_Curve)& theCurve2d,
                            const GeomAbs_Shape         theContinuity,
                            Handle(Geom_Curve)&         theCurve3d)
@@ -306,10 +284,8 @@ bool StdPrs_BRepFont::to3d(const Handle(Geom2d_Curve)& theCurve2d,
   return !theCurve3d.IsNull();
 }
 
-// =======================================================================
-// function : buildFaces
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
                                              TopoDS_Shape&                            theRes)
 {
@@ -441,10 +417,8 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
 #endif
 }
 
-// =======================================================================
-// function : renderGlyph
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
                                               TopoDS_Shape&            theShape)
 {

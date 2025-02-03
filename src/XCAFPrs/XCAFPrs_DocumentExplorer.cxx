@@ -82,10 +82,8 @@ static XCAFPrs_Style mergedStyle(const Handle(XCAFDoc_ColorTool)&       theColor
 }
 } // namespace
 
-// =======================================================================
-// function : DefineChildId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString XCAFPrs_DocumentExplorer::DefineChildId(
   const TDF_Label&               theLabel,
   const TCollection_AsciiString& theParentId)
@@ -95,10 +93,8 @@ TCollection_AsciiString XCAFPrs_DocumentExplorer::DefineChildId(
   return !theParentId.IsEmpty() ? theParentId + "/" + anEntryId + "." : anEntryId + ".";
 }
 
-// =======================================================================
-// function : FindLabelFromPathId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TDF_Label XCAFPrs_DocumentExplorer::FindLabelFromPathId(const Handle(TDocStd_Document)& theDocument,
                                                         const TCollection_AsciiString&  theId,
                                                         TopLoc_Location& theParentLocation,
@@ -132,10 +128,8 @@ TDF_Label XCAFPrs_DocumentExplorer::FindLabelFromPathId(const Handle(TDocStd_Doc
   return anInstanceLabel;
 }
 
-// =======================================================================
-// function : FindShapeFromPathId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TopoDS_Shape XCAFPrs_DocumentExplorer::FindShapeFromPathId(
   const Handle(TDocStd_Document)& theDocument,
   const TCollection_AsciiString&  theId)
@@ -164,10 +158,8 @@ TopoDS_Shape XCAFPrs_DocumentExplorer::FindShapeFromPathId(
   return aShape;
 }
 
-// =======================================================================
-// function : XCAFPrs_DocumentExplorer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer()
     : myTop(-1),
       myHasMore(Standard_False),
@@ -176,10 +168,8 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer()
   //
 }
 
-// =======================================================================
-// function : XCAFPrs_DocumentExplorer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const Handle(TDocStd_Document)&     theDocument,
                                                    const XCAFPrs_DocumentExplorerFlags theFlags,
                                                    const XCAFPrs_Style&                theDefStyle)
@@ -193,10 +183,8 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const Handle(TDocStd_Document
   Init(theDocument, aRootLabels, theFlags, theDefStyle);
 }
 
-// =======================================================================
-// function : XCAFPrs_DocumentExplorer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const Handle(TDocStd_Document)&     theDocument,
                                                    const TDF_LabelSequence&            theRoots,
                                                    const XCAFPrs_DocumentExplorerFlags theFlags,
@@ -208,10 +196,8 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const Handle(TDocStd_Document
   Init(theDocument, theRoots, theFlags, theDefStyle);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_DocumentExplorer::Init(const Handle(TDocStd_Document)&     theDocument,
                                     const TDF_Label&                    theRoot,
                                     const XCAFPrs_DocumentExplorerFlags theFlags,
@@ -222,10 +208,8 @@ void XCAFPrs_DocumentExplorer::Init(const Handle(TDocStd_Document)&     theDocum
   Init(theDocument, aSeq, theFlags, theDefStyle);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_DocumentExplorer::Init(const Handle(TDocStd_Document)&     theDocument,
                                     const TDF_LabelSequence&            theRoots,
                                     const XCAFPrs_DocumentExplorerFlags theFlags,
@@ -249,10 +233,8 @@ void XCAFPrs_DocumentExplorer::Init(const Handle(TDocStd_Document)&     theDocum
   initRoot();
 }
 
-// =======================================================================
-// function : initRoot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_DocumentExplorer::initRoot()
 {
   for (;;)
@@ -294,10 +276,8 @@ void XCAFPrs_DocumentExplorer::initRoot()
   }
 }
 
-// =======================================================================
-// function : initCurrent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_DocumentExplorer::initCurrent(Standard_Boolean theIsAssembly)
 {
   myCurrent = XCAFPrs_DocumentNode();
@@ -342,10 +322,8 @@ void XCAFPrs_DocumentExplorer::initCurrent(Standard_Boolean theIsAssembly)
   }
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_DocumentExplorer::Next()
 {
   if (!myHasMore)

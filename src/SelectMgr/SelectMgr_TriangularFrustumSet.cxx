@@ -29,28 +29,22 @@ namespace
 static const size_t MEMORY_BLOCK_SIZE = 512 * 7;
 }
 
-// =======================================================================
-// function : SelectMgr_TriangularFrustumSet
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_TriangularFrustumSet::SelectMgr_TriangularFrustumSet()
     : myToAllowOverlap(Standard_False)
 {
 }
 
-// =======================================================================
-// function : ~SelectMgr_TriangularFrustumSet
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_TriangularFrustumSet::~SelectMgr_TriangularFrustumSet()
 {
   //
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_TriangularFrustumSet::Init(const TColgp_Array1OfPnt2d& thePoints)
 {
   if (mySelPolyline.Points.IsNull())
@@ -227,10 +221,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::CopyWithBuilde
   return aRes;
 }
 
-// =======================================================================
-// function : OverlapsBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(
   const SelectMgr_Vec3&          theMinPnt,
   const SelectMgr_Vec3&          theMaxPnt,
@@ -252,10 +244,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(
   return Standard_False;
 }
 
-// =======================================================================
-// function : OverlapsBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(const SelectMgr_Vec3& theMinPnt,
                                                              const SelectMgr_Vec3& theMaxPnt,
                                                              Standard_Boolean*     theInside) const
@@ -305,10 +295,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(const SelectMgr_Vec
   return Standard_False;
 }
 
-// =======================================================================
-// function : OverlapsPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPoint(
   const gp_Pnt&                  thePnt,
   const SelectMgr_ViewClipRange& theClipRange,
@@ -329,10 +317,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPoint(
   return Standard_False;
 }
 
-// =======================================================================
-// function : OverlapsPolygon
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon(
   const TColgp_Array1OfPnt&      theArrayOfPts,
   Select3D_TypeOfSensitivity     theSensType,
@@ -371,10 +357,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon(
   return Standard_False;
 }
 
-// =======================================================================
-// function : OverlapsSegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
@@ -407,10 +391,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment(
   return Standard_False;
 }
 
-// =======================================================================
-// function : OverlapsTriangle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
@@ -790,10 +772,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(const Standard_R
   return Standard_False;
 }
 
-// =======================================================================
-// function : GetPlanes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_TriangularFrustumSet::GetPlanes(
   NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
 {
@@ -1010,10 +990,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(con
   return Standard_True;
 }
 
-// =======================================================================
-// function : DetectedPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt SelectMgr_TriangularFrustumSet::DetectedPoint(const Standard_Real theDepth) const
 {
   (void)theDepth;

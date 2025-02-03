@@ -15,10 +15,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_SupportedFormats, Standard_Transient)
 
-// =======================================================================
-// function : Image_SupportedFormats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_SupportedFormats::Image_SupportedFormats()
     : myFormats(Image_Format_UNKNOWN, Image_CompressedFormat_NB - 1),
       myHasCompressed(false)

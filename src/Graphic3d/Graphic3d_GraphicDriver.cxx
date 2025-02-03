@@ -20,10 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 
-// =======================================================================
-// function : Graphic3d_GraphicDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp)
     : myDisplayConnection(theDisp)
 {
@@ -114,28 +112,22 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConn
   }
 }
 
-// =======================================================================
-// function : GetDisplayConnection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Aspect_DisplayConnection)& Graphic3d_GraphicDriver::GetDisplayConnection() const
 {
   return myDisplayConnection;
 }
 
-// =======================================================================
-// function : NewIdentification
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_GraphicDriver::NewIdentification()
 {
   return myStructGenId.Next();
 }
 
-// =======================================================================
-// function : RemoveIdentification
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_GraphicDriver::RemoveIdentification(const Standard_Integer theId)
 {
   myStructGenId.Free(theId);
@@ -288,10 +280,8 @@ void Graphic3d_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        
   aLayerDef->SetLayerSettings(theSettings);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream,
                                        Standard_Integer  theDepth) const
 {

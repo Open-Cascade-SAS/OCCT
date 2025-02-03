@@ -3282,10 +3282,8 @@ void AIS_InteractiveContext::AddOrRemoveSelected(const Handle(SelectMgr_EntityOw
   }
 }
 
-// =======================================================================
-// function : SetSelectedState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean AIS_InteractiveContext::SetSelectedState(
   const Handle(SelectMgr_EntityOwner)& theEntity,
   const Standard_Boolean               theIsSelected)
@@ -3676,10 +3674,8 @@ void AIS_InteractiveContext::SetSelectionModeActive(
   (*aStat)->AddSelectionMode(theMode);
 }
 
-// ============================================================================
-// function : Activate
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void AIS_InteractiveContext::Activate(const Standard_Integer theMode,
                                       const Standard_Boolean theIsForce)
 {
@@ -3692,10 +3688,8 @@ void AIS_InteractiveContext::Activate(const Standard_Integer theMode,
   }
 }
 
-// ============================================================================
-// function : Deactivate
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void AIS_InteractiveContext::Deactivate(const Standard_Integer theMode)
 {
   AIS_ListOfInteractive aDisplayedObjects;
@@ -3706,10 +3700,8 @@ void AIS_InteractiveContext::Deactivate(const Standard_Integer theMode)
   }
 }
 
-// ============================================================================
-// function : Deactivate
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void AIS_InteractiveContext::Deactivate()
 {
   AIS_ListOfInteractive aDisplayedObjects;

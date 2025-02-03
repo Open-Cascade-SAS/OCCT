@@ -16,10 +16,8 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Tool.hxx>
 
-// ================================================================
-// Function : ReadNameAttribute
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 TCollection_AsciiString RWMesh::ReadNameAttribute(const TDF_Label& theLabel)
 {
   Handle(TDataStd_Name) aNodeName;
@@ -28,10 +26,8 @@ TCollection_AsciiString RWMesh::ReadNameAttribute(const TDF_Label& theLabel)
            : TCollection_AsciiString();
 }
 
-// ================================================================
-// Function : FormatName
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 TCollection_AsciiString RWMesh::FormatName(RWMesh_NameFormat theFormat,
                                            const TDF_Label&  theLabel,
                                            const TDF_Label&  theRefLabel)

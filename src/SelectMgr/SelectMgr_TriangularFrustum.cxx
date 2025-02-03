@@ -37,19 +37,15 @@ void computeFrustumNormals(const gp_Vec* theEdges, gp_Vec* theNormals)
 }
 } // namespace
 
-// =======================================================================
-// function : SelectMgr_TriangularFrustum
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_TriangularFrustum::SelectMgr_TriangularFrustum()
 {
   //
 }
 
-// =======================================================================
-// function : ~SelectMgr_TriangularFrustum
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
 {
   Clear();
@@ -416,10 +412,8 @@ void SelectMgr_TriangularFrustum::Clear()
   myBuilder.Nullify();
 }
 
-// =======================================================================
-// function : GetPlanes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_TriangularFrustum::GetPlanes(
   NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
 {

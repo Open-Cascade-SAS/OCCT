@@ -24,29 +24,23 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_GraphicDriver, OpenGl_GraphicDriver)
   #pragma comment(lib, "D3D9.lib")
 #endif
 
-// =======================================================================
-// function : D3DHost_GraphicDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_GraphicDriver::D3DHost_GraphicDriver()
     : OpenGl_GraphicDriver(Handle(Aspect_DisplayConnection)(), Standard_True)
 {
   //
 }
 
-// =======================================================================
-// function : ~D3DHost_GraphicDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
 {
   //
 }
 
-// =======================================================================
-// function : CreateView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_CView) D3DHost_GraphicDriver::CreateView(
   const Handle(Graphic3d_StructureManager)& theMgr)
 {

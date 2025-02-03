@@ -16,10 +16,8 @@
 #include <Image_SupportedFormats.hxx>
 #include <OpenGl_Context.hxx>
 
-// =======================================================================
-// function : FormatFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_TextureFormat::FormatFormat(GLint theInternalFormat)
 {
   switch (theInternalFormat)
@@ -154,10 +152,8 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatFormat(GLint theInternalForm
   return OpenGl_Context::FormatGlEnumHex(theInternalFormat);
 }
 
-// =======================================================================
-// function : FormatDataType
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_TextureFormat::FormatDataType(GLint theDataType)
 {
   switch (theDataType)
@@ -186,10 +182,8 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatDataType(GLint theDataType)
   return OpenGl_Context::FormatGlEnumHex(theDataType);
 }
 
-// =======================================================================
-// function : FindFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const Handle(OpenGl_Context)& theCtx,
                                                       Image_Format                  theFormat,
                                                       bool                          theIsColorMap)
@@ -522,10 +516,8 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const Handle(OpenGl_Contex
   return OpenGl_TextureFormat();
 }
 
-// =======================================================================
-// function : FindSizedFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const Handle(OpenGl_Context)& theCtx,
                                                            GLint theSizedFormat)
 {
@@ -713,10 +705,8 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const Handle(OpenGl_C
   return aFormat;
 }
 
-// =======================================================================
-// function : FindCompressedFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TextureFormat OpenGl_TextureFormat::FindCompressedFormat(
   const Handle(OpenGl_Context)& theCtx,
   Image_CompressedFormat        theFormat,

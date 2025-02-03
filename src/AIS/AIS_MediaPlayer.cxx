@@ -71,10 +71,8 @@ AIS_MediaPlayer::~AIS_MediaPlayer()
   myFramePair.Nullify();
 }
 
-// =======================================================================
-// function : OpenInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_MediaPlayer::OpenInput(const TCollection_AsciiString& thePath, Standard_Boolean theToWait)
 {
   if (myFramePair->PlayerContext().IsNull() && thePath.IsEmpty())
@@ -86,10 +84,8 @@ void AIS_MediaPlayer::OpenInput(const TCollection_AsciiString& thePath, Standard
   SynchronizeAspects();
 }
 
-// =======================================================================
-// function : PresentFrame
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_MediaPlayer::PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
                                    const Graphic3d_Vec2i& theMaxSize)
 {
@@ -128,10 +124,8 @@ bool AIS_MediaPlayer::PresentFrame(const Graphic3d_Vec2i& theLeftCorner,
   return toRedraw;
 }
 
-// =======================================================================
-// function : updateSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool AIS_MediaPlayer::updateSize(const Graphic3d_Vec2i& theLeftCorner,
                                  const Graphic3d_Vec2i& theMaxSize)
 {
@@ -185,10 +179,8 @@ bool AIS_MediaPlayer::updateSize(const Graphic3d_Vec2i& theLeftCorner,
   return true;
 }
 
-// =======================================================================
-// function : PlayPause
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_MediaPlayer::PlayPause()
 {
   if (myFramePair->PlayerContext().IsNull())
@@ -201,10 +193,8 @@ void AIS_MediaPlayer::PlayPause()
   myFramePair->PlayerContext()->PlayPause(isPaused, aProgress, aDuration);
 }
 
-// =======================================================================
-// function : Compute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_MediaPlayer::Compute(const Handle(PrsMgr_PresentationManager)&,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer            theMode)
@@ -227,10 +217,8 @@ void AIS_MediaPlayer::Compute(const Handle(PrsMgr_PresentationManager)&,
   }
 }
 
-// =======================================================================
-// function : ComputeSelection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_MediaPlayer::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
                                        const Standard_Integer             theMode)
 {

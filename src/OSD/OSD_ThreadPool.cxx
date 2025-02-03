@@ -21,28 +21,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OSD_ThreadPool, Standard_Transient)
 
-// =======================================================================
-// function : Lock
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OSD_ThreadPool::EnumeratedThread::Lock()
 {
   return Standard_Atomic_CompareAndSwap(&myUsageCounter, 0, 1);
 }
 
-// =======================================================================
-// function : Free
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::EnumeratedThread::Free()
 {
   Standard_Atomic_CompareAndSwap(&myUsageCounter, 1, 0);
 }
 
-// =======================================================================
-// function : WakeUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::EnumeratedThread::WakeUp(JobInterface* theJob, bool theToCatchFpe)
 {
   myJob        = theJob;
@@ -64,10 +58,8 @@ void OSD_ThreadPool::EnumeratedThread::WakeUp(JobInterface* theJob, bool theToCa
   }
 }
 
-// =======================================================================
-// function : WaitIdle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::EnumeratedThread::WaitIdle()
 {
   if (!myIsSelfThread)
@@ -77,20 +69,16 @@ void OSD_ThreadPool::EnumeratedThread::WaitIdle()
   }
 }
 
-// =======================================================================
-// function : DefaultPool
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(OSD_ThreadPool)& OSD_ThreadPool::DefaultPool(int theNbThreads)
 {
   static const Handle(OSD_ThreadPool) THE_GLOBAL_POOL = new OSD_ThreadPool(theNbThreads);
   return THE_GLOBAL_POOL;
 }
 
-// =======================================================================
-// function : OSD_ThreadPool
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_ThreadPool::OSD_ThreadPool(int theNbThreads)
     : myNbDefThreads(0),
       myShutDown(false)
@@ -99,10 +87,8 @@ OSD_ThreadPool::OSD_ThreadPool(int theNbThreads)
   myNbDefThreads = NbThreads();
 }
 
-// =======================================================================
-// function : IsInUse
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OSD_ThreadPool::IsInUse()
 {
   for (NCollection_Array1<EnumeratedThread>::Iterator aThreadIter(myThreads); aThreadIter.More();
@@ -118,10 +104,8 @@ bool OSD_ThreadPool::IsInUse()
   return false;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::Init(int theNbThreads)
 {
   const int aNbThreads =
@@ -177,19 +161,15 @@ void OSD_ThreadPool::Init(int theNbThreads)
   }
 }
 
-// =======================================================================
-// function : ~OSD_ThreadPool
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_ThreadPool::~OSD_ThreadPool()
 {
   release();
 }
 
-// =======================================================================
-// function : release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::release()
 {
   if (myThreads.IsEmpty())
@@ -206,20 +186,16 @@ void OSD_ThreadPool::release()
   }
 }
 
-// =======================================================================
-// function : perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::Launcher::perform(JobInterface& theJob)
 {
   run(theJob);
   wait();
 }
 
-// =======================================================================
-// function : run
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::Launcher::run(JobInterface& theJob)
 {
   bool toCatchFpe = OSD::ToCatchFloatingSignals();
@@ -231,10 +207,8 @@ void OSD_ThreadPool::Launcher::run(JobInterface& theJob)
   }
 }
 
-// =======================================================================
-// function : wait
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::Launcher::wait()
 {
   int aNbFailures = 0;
@@ -277,10 +251,8 @@ void OSD_ThreadPool::Launcher::wait()
   throw Standard_ProgramError(aFailures.ToCString(), NULL);
 }
 
-// =======================================================================
-// function : performJob
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::performJob(Handle(Standard_Failure)&     theFailure,
                                 OSD_ThreadPool::JobInterface* theJob,
                                 int                           theThreadIndex)
@@ -308,10 +280,8 @@ void OSD_ThreadPool::performJob(Handle(Standard_Failure)&     theFailure,
   }
 }
 
-// =======================================================================
-// function : performThread
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::EnumeratedThread::performThread()
 {
   OSD::SetThreadLocalSignal(OSD::SignalMode(), false);
@@ -335,10 +305,8 @@ void OSD_ThreadPool::EnumeratedThread::performThread()
   }
 }
 
-// =======================================================================
-// function : runThread
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Address OSD_ThreadPool::EnumeratedThread::runThread(Standard_Address theTask)
 {
   EnumeratedThread* aThread = static_cast<EnumeratedThread*>(theTask);
@@ -346,10 +314,8 @@ Standard_Address OSD_ThreadPool::EnumeratedThread::runThread(Standard_Address th
   return NULL;
 }
 
-// =======================================================================
-// function : Launcher
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, Standard_Integer theMaxThreads)
     : mySelfThread(true),
       myNbThreads(0)
@@ -384,10 +350,8 @@ OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, Standard_Integer the
   ++myNbThreads;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_ThreadPool::Launcher::Release()
 {
   for (NCollection_Array1<EnumeratedThread*>::Iterator aThreadIter(myThreads);

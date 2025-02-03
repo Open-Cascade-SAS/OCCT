@@ -93,10 +93,8 @@ static Graphic3d_Vec2i computeSmallestMipMapSize(const Graphic3d_Vec2i& theBaseS
 
 } // namespace
 
-// =======================================================================
-// function : OpenGl_Texture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Texture::OpenGl_Texture(const TCollection_AsciiString&         theResourceId,
                                const Handle(Graphic3d_TextureParams)& theParams)
     : OpenGl_NamedResource(theResourceId),
@@ -114,19 +112,15 @@ OpenGl_Texture::OpenGl_Texture(const TCollection_AsciiString&         theResourc
   //
 }
 
-// =======================================================================
-// function : ~OpenGl_Texture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Texture::~OpenGl_Texture()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Create
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Create(const Handle(OpenGl_Context)& theCtx)
 {
   if (myTextureId != NO_TEXTURE)
@@ -144,10 +138,8 @@ bool OpenGl_Texture::Create(const Handle(OpenGl_Context)& theCtx)
   return true;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Texture::Release(OpenGl_Context* theGlCtx)
 {
   mySampler->Release(theGlCtx);
@@ -169,10 +161,8 @@ void OpenGl_Texture::Release(OpenGl_Context* theGlCtx)
   mySize.SetValues(0, 0, 0);
 }
 
-// =======================================================================
-// function : applyDefaultSamplerParams
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Texture::applyDefaultSamplerParams(const Handle(OpenGl_Context)& theCtx)
 {
   OpenGl_Sampler::applySamplerParams(theCtx,
@@ -190,10 +180,8 @@ void OpenGl_Texture::applyDefaultSamplerParams(const Handle(OpenGl_Context)& the
   }
 }
 
-// =======================================================================
-// function : Bind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Texture::Bind(const Handle(OpenGl_Context)& theCtx,
                           const Graphic3d_TextureUnit   theTextureUnit) const
 {
@@ -205,10 +193,8 @@ void OpenGl_Texture::Bind(const Handle(OpenGl_Context)& theCtx,
   theCtx->core11fwd->glBindTexture(myTarget, myTextureId);
 }
 
-// =======================================================================
-// function : Unbind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Texture::Unbind(const Handle(OpenGl_Context)& theCtx,
                             const Graphic3d_TextureUnit   theTextureUnit) const
 {
@@ -227,10 +213,8 @@ bool OpenGl_Texture::InitSamplerObject(const Handle(OpenGl_Context)& theCtx)
   return myTextureId != NO_TEXTURE && mySampler->Init(theCtx, *this);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Init(const Handle(OpenGl_Context)& theCtx,
                           const OpenGl_TextureFormat&   theFormat,
                           const Graphic3d_Vec3i&        theSizeXYZ,
@@ -645,10 +629,8 @@ bool OpenGl_Texture::Init(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : GenerateMipmaps
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::GenerateMipmaps(const Handle(OpenGl_Context)& theCtx)
 {
   if (theCtx->arbFBO == nullptr || !IsValid())
@@ -730,10 +712,8 @@ bool OpenGl_Texture::GenerateMipmaps(const Handle(OpenGl_Context)& theCtx)
   return true;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Init(const Handle(OpenGl_Context)& theCtx,
                           const Image_PixMap&           theImage,
                           const Graphic3d_TypeOfTexture theType,
@@ -763,10 +743,8 @@ bool OpenGl_Texture::Init(const Handle(OpenGl_Context)& theCtx,
   return Init(theCtx, aFormat, Graphic3d_Vec3i(theImage.SizeXYZ()), theType, &theImage);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Init(const Handle(OpenGl_Context)&        theCtx,
                           const Handle(Graphic3d_TextureRoot)& theTextureMap)
 {
@@ -814,10 +792,8 @@ bool OpenGl_Texture::Init(const Handle(OpenGl_Context)&        theCtx,
   }
 }
 
-// =======================================================================
-// function : InitCompressed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::InitCompressed(const Handle(OpenGl_Context)& theCtx,
                                     const Image_CompressedPixMap& theImage,
                                     const Standard_Boolean        theIsColorMap)
@@ -947,10 +923,8 @@ bool OpenGl_Texture::InitCompressed(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : Init2DMultisample
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Init2DMultisample(const Handle(OpenGl_Context)& theCtx,
                                        const Standard_Integer        theNbSamples,
                                        const Standard_Integer        theTextFormat,
@@ -1035,10 +1009,8 @@ bool OpenGl_Texture::Init2DMultisample(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : InitRectangle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::InitRectangle(const Handle(OpenGl_Context)& theCtx,
                                    const Standard_Integer        theSizeX,
                                    const Standard_Integer        theSizeY,
@@ -1108,10 +1080,8 @@ bool OpenGl_Texture::InitRectangle(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : Init3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::Init3D(const Handle(OpenGl_Context)& theCtx,
                             const OpenGl_TextureFormat&   theFormat,
                             const Graphic3d_Vec3i&        theSizeXYZ,
@@ -1230,10 +1200,8 @@ bool OpenGl_Texture::Init3D(const Handle(OpenGl_Context)& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : InitCubeMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::InitCubeMap(const Handle(OpenGl_Context)&    theCtx,
                                  const Handle(Graphic3d_CubeMap)& theCubeMap,
                                  Standard_Size                    theSize,
@@ -1533,10 +1501,8 @@ bool OpenGl_Texture::InitCubeMap(const Handle(OpenGl_Context)&    theCtx,
   return true;
 }
 
-// =======================================================================
-// function : PixelSizeOfPixelFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_Texture::PixelSizeOfPixelFormat(Standard_Integer theInternalFormat)
 {
   switch (theInternalFormat)
@@ -1617,10 +1583,8 @@ Standard_Size OpenGl_Texture::PixelSizeOfPixelFormat(Standard_Integer theInterna
   return 1;
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_Texture::EstimatedDataSize() const
 {
   if (!IsValid())
@@ -1648,10 +1612,8 @@ Standard_Size OpenGl_Texture::EstimatedDataSize() const
   return aSize;
 }
 
-// =======================================================================
-// function : ImageDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Texture::ImageDump(Image_PixMap&                 theImage,
                                const Handle(OpenGl_Context)& theCtx,
                                Graphic3d_TextureUnit         theTexUnit,

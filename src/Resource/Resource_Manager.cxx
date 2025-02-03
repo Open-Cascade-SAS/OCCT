@@ -53,10 +53,8 @@ static Standard_Integer GetLine(OSD_File& aFile, TCollection_AsciiString& aLine)
 
 static Standard_Boolean Debug;
 
-// =======================================================================
-// function : Resource_Manager
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Resource_Manager::Resource_Manager(const TCollection_AsciiString& theName,
                                    const TCollection_AsciiString& theDefaultsDirectory,
                                    const TCollection_AsciiString& theUserDefaultsDirectory,
@@ -133,20 +131,16 @@ Resource_Manager::Resource_Manager(const Standard_CString aName, const Standard_
               << "UserDefaults\" not set." << std::endl;
 }
 
-// =======================================================================
-// function : Resource_Manager
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Resource_Manager::Resource_Manager()
     : myName(""),
       myVerbose(Standard_False)
 {
 }
 
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Resource_Manager::Load(const TCollection_AsciiString&            thePath,
                             Resource_DataMapOfAsciiStringAsciiString& aMap)
 {
