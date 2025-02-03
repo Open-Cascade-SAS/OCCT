@@ -1935,6 +1935,19 @@ void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 
 //=================================================================================================
 
+void RWGltf_CafWriter::writeMaterial(RWMesh_ShapeIterator& theShapeIter,
+                                     Standard_Boolean&     theIsStarted,
+                                     Standard_Integer&     theAddedMaterialsNb)
+{
+  for (; theShapeIter.More(); theShapeIter.Next())
+  {
+    myMaterialMap->AddMaterial(myWriter.get(), theShapeIter.Style(), theIsStarted);
+    theAddedMaterialsNb++;
+  }
+}
+
+//=================================================================================================
+
 void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1946,12 +1959,21 @@ void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNod
   for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter(theSceneNodeMap); aSceneNodeIter.More();
        aSceneNodeIter.Next())
   {
-    const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
-    for (RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-         aFaceIter.More();
-         aFaceIter.Next())
+    const XCAFPrs_DocumentNode& aDocNode           = aSceneNodeIter.Value();
+    Standard_Integer            anAddedMaterialsNb = 0;
     {
-      myMaterialMap->AddMaterial(myWriter.get(), aFaceIter.Style(), anIsStarted);
+      RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+      writeMaterial(aFaceIter, anIsStarted, anAddedMaterialsNb);
+    }
+    if (anAddedMaterialsNb == 0)
+    {
+      RWMesh_EdgeIterator anEdgeIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+      writeMaterial(anEdgeIter, anIsStarted, anAddedMaterialsNb);
+    }
+    if (anAddedMaterialsNb == 0)
+    {
+      RWMesh_VertexIterator VertexIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+      writeMaterial(VertexIter, anIsStarted, anAddedMaterialsNb);
     }
   }
   if (anIsStarted)
