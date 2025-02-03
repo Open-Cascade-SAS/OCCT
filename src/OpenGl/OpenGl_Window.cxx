@@ -162,10 +162,8 @@ static void addMsgToList(TCollection_ExtendedString&       theList,
 
 } // namespace
 
-// =======================================================================
-// function : OpenGl_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Window::OpenGl_Window()
     : myOwnGContext(false),
       mySwapInterval(0)
@@ -173,10 +171,8 @@ OpenGl_Window::OpenGl_Window()
   //
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Window::Init(const Handle(OpenGl_GraphicDriver)& theDriver,
                          const Handle(Aspect_Window)&        thePlatformWindow,
                          const Handle(Aspect_Window)&        theSizeWindow,
@@ -763,10 +759,8 @@ void OpenGl_Window::Init(const Handle(OpenGl_GraphicDriver)& theDriver,
   init();
 }
 
-// =======================================================================
-// function : ~OpenGl_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Window::~OpenGl_Window()
 {
   if (!myOwnGContext || myGlContext.IsNull())
@@ -824,10 +818,8 @@ OpenGl_Window::~OpenGl_Window()
 
 #endif // !__APPLE__
 
-// =======================================================================
-// function : Activate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Window::Activate()
 {
   return myGlContext->MakeCurrent();
@@ -854,10 +846,8 @@ void OpenGl_Window::Resize()
   init();
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Window::init()
 {
   if (!Activate())
@@ -918,10 +908,8 @@ void OpenGl_Window::init()
   }
 }
 
-// =======================================================================
-// function : SetSwapInterval
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Window::SetSwapInterval(Standard_Boolean theToForceNoSync)
 {
   const Standard_Integer aSwapInterval = theToForceNoSync ? 0 : myGlContext->caps->swapInterval;

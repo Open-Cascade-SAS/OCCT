@@ -198,10 +198,8 @@ PrsMgr_Presentation::~PrsMgr_Presentation()
   Erase();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_Presentation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

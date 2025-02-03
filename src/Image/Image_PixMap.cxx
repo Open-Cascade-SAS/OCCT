@@ -94,66 +94,52 @@ static const Image_FormatInfo Image_Table_ImageFormats[Image_CompressedFormat_NB
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMapData, NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 
-// =======================================================================
-// function : DefaultAllocator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(NCollection_BaseAllocator)& Image_PixMap::DefaultAllocator()
 {
   static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 
-// =======================================================================
-// function : ImageFormatToString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Image_PixMap::ImageFormatToString(Image_Format theFormat)
 {
   return Image_Table_ImageFormats[theFormat].Name;
 }
 
-// =======================================================================
-// function : ImageFormatToString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Image_PixMap::ImageFormatToString(Image_CompressedFormat theFormat)
 {
   return Image_Table_ImageFormats[theFormat].Name;
 }
 
-// =======================================================================
-// function : Image_PixMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_PixMap::Image_PixMap()
     : myImgFormat(Image_Format_Gray)
 {
   //
 }
 
-// =======================================================================
-// function : ~Image_PixMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Image_PixMap::~Image_PixMap()
 {
   Clear();
 }
 
-// =======================================================================
-// function : SizePixelBytes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size Image_PixMap::SizePixelBytes(const Image_Format thePixelFormat)
 {
   return Image_Table_ImageFormats[thePixelFormat].PixelSize;
 }
 
-// =======================================================================
-// function : SetFormat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_PixMap::SetFormat(Image_Format thePixelFormat)
 {
   if (myImgFormat == thePixelFormat)
@@ -170,10 +156,8 @@ void Image_PixMap::SetFormat(Image_Format thePixelFormat)
   myImgFormat = thePixelFormat;
 }
 
-// =======================================================================
-// function : InitWrapper3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitWrapper3D(Image_Format                           thePixelFormat,
                                  Standard_Byte*                         theDataPtr,
                                  const NCollection_Vec3<Standard_Size>& theSizeXYZ,
@@ -195,10 +179,8 @@ bool Image_PixMap::InitWrapper3D(Image_Format                           thePixel
   return true;
 }
 
-// =======================================================================
-// function : InitWrapper
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitWrapper(Image_Format        thePixelFormat,
                                Standard_Byte*      theDataPtr,
                                const Standard_Size theSizeX,
@@ -211,10 +193,8 @@ bool Image_PixMap::InitWrapper(Image_Format        thePixelFormat,
                        theSizeRowBytes);
 }
 
-// =======================================================================
-// function : InitTrash3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFormat,
                                const NCollection_Vec3<Standard_Size>& theSizeXYZ,
                                const Standard_Size                    theSizeRowBytes)
@@ -237,10 +217,8 @@ bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFo
   return !myData.IsEmpty();
 }
 
-// =======================================================================
-// function : InitTrash
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitTrash(Image_Format        thePixelFormat,
                              const Standard_Size theSizeX,
                              const Standard_Size theSizeY,
@@ -251,10 +229,8 @@ bool Image_PixMap::InitTrash(Image_Format        thePixelFormat,
                      theSizeRowBytes);
 }
 
-// =======================================================================
-// function : InitZero3D
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitZero3D(Image_Format                           thePixelFormat,
                               const NCollection_Vec3<Standard_Size>& theSizeXYZ,
                               const Standard_Size                    theSizeRowBytes,
@@ -278,10 +254,8 @@ bool Image_PixMap::InitZero3D(Image_Format                           thePixelFor
   return true;
 }
 
-// =======================================================================
-// function : InitCopy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::InitCopy(const Image_PixMap& theCopy)
 {
   if (&theCopy == this)
@@ -309,10 +283,8 @@ bool Image_PixMap::InitCopy(const Image_PixMap& theCopy)
   return true;
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_PixMap::Clear()
 {
   Handle(NCollection_BaseAllocator) anEmptyAlloc;
@@ -323,10 +295,8 @@ void Image_PixMap::Clear()
               nullptr);
 }
 
-// =======================================================================
-// function : ColorFromRawPixel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const Standard_Byte*   theRawValue,
                                                    const Image_Format     theFormat,
                                                    const Standard_Boolean theToLinearize)
@@ -490,10 +460,8 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const Standard_Byte*   theRaw
   return Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f); // transparent
 }
 
-// =======================================================================
-// function : ColorToRawPixel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
                                    const Image_Format        theFormat,
                                    const Quantity_ColorRGBA& theColor,
@@ -685,10 +653,8 @@ void Image_PixMap::ColorToRawPixel(Standard_Byte*            theRawValue,
   }
 }
 
-// =======================================================================
-// function : SwapRgbaBgra
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::SwapRgbaBgra(Image_PixMap& theImage)
 {
   switch (theImage.Format())
@@ -762,10 +728,8 @@ bool Image_PixMap::SwapRgbaBgra(Image_PixMap& theImage)
   }
 }
 
-// =======================================================================
-// function : ToBlackWhite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
 {
   switch (theImage.Format())
@@ -852,10 +816,8 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
   }
 }
 
-// =======================================================================
-// function : FlipY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Image_PixMap::FlipY(Image_PixMap& theImage)
 {
   if (theImage.IsEmpty() || theImage.SizeX() == 0 || theImage.SizeY() == 0)

@@ -18,10 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWObj_ObjMaterialMap, RWMesh_MaterialMap)
 
-// ================================================================
-// Function : RWObj_ObjMaterialMap
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFile)
     : RWMesh_MaterialMap(theFile),
       myFile(NULL)
@@ -29,10 +27,8 @@ RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFil
   //
 }
 
-// ================================================================
-// Function : ~RWObj_ObjMaterialMap
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWObj_ObjMaterialMap::~RWObj_ObjMaterialMap()
 {
   if (myFile != NULL)
@@ -49,10 +45,8 @@ RWObj_ObjMaterialMap::~RWObj_ObjMaterialMap()
   }
 }
 
-// ================================================================
-// Function : AddMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 TCollection_AsciiString RWObj_ObjMaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
   if (myFile == NULL && !myIsFailed)
@@ -72,10 +66,8 @@ TCollection_AsciiString RWObj_ObjMaterialMap::AddMaterial(const XCAFPrs_Style& t
   return RWMesh_MaterialMap::AddMaterial(theStyle);
 }
 
-// ================================================================
-// Function : DefineMaterial
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWObj_ObjMaterialMap::DefineMaterial(const XCAFPrs_Style&           theStyle,
                                           const TCollection_AsciiString& theKey,
                                           const TCollection_AsciiString& theName)

@@ -20,10 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 
-// =======================================================================
-// function : Font_SystemFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_SystemFont::Font_SystemFont(const TCollection_AsciiString& theFontName)
     : myFontKey(theFontName),
       myFontName(theFontName),
@@ -37,10 +35,8 @@ Font_SystemFont::Font_SystemFont(const TCollection_AsciiString& theFontName)
   myFontKey.LowerCase();
 }
 
-// =======================================================================
-// function : SetFontPath
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_SystemFont::SetFontPath(Font_FontAspect                theAspect,
                                   const TCollection_AsciiString& thePath,
                                   const Standard_Integer         theFaceId)
@@ -53,19 +49,15 @@ void Font_SystemFont::SetFontPath(Font_FontAspect                theAspect,
   myFaceIds[theAspect]   = theFaceId;
 }
 
-// =======================================================================
-// function : IsEqual
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Font_SystemFont::IsEqual(const Handle(Font_SystemFont)& theOtherFont) const
 {
   return theOtherFont.get() == this || myFontKey.IsEqual(theOtherFont->myFontKey);
 }
 
-// =======================================================================
-// function : ToString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Font_SystemFont::ToString() const
 {
   TCollection_AsciiString aDesc;

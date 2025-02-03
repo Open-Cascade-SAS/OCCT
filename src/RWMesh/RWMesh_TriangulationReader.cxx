@@ -61,10 +61,8 @@ static TCollection_AsciiString loadingStatistic(const TCollection_AsciiString& t
 }
 } // namespace
 
-// =======================================================================
-// function : PrintStatistic
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic(
   const TCollection_AsciiString& thePrefix) const
 {
@@ -80,10 +78,8 @@ void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic(
   }
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_TriangulationReader::RWMesh_TriangulationReader()
     : myLoadingStatistic(NULL),
       myIsDoublePrecision(false),
@@ -92,19 +88,15 @@ RWMesh_TriangulationReader::RWMesh_TriangulationReader()
 {
 }
 
-// =======================================================================
-// function : Destructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_TriangulationReader::~RWMesh_TriangulationReader()
 {
   delete myLoadingStatistic;
 }
 
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_TriangulationReader::Load(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
                                       const Handle(Poly_Triangulation)&         theDestMesh,
                                       const Handle(OSD_FileSystem)&             theFileSystem) const
@@ -128,10 +120,8 @@ bool RWMesh_TriangulationReader::Load(const Handle(RWMesh_TriangulationSource)& 
   return true;
 }
 
-// =======================================================================
-// function : finalizeLoading
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_TriangulationReader::finalizeLoading(
   const Handle(RWMesh_TriangulationSource)& theSourceMesh,
   const Handle(Poly_Triangulation)&         theDestMesh) const
@@ -163,10 +153,8 @@ bool RWMesh_TriangulationReader::finalizeLoading(
   return true;
 }
 
-// =======================================================================
-// function : setNbEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& theMesh,
                                             const Standard_Integer            theNbTris,
                                             const Standard_Boolean            theToCopyData) const
@@ -180,10 +168,8 @@ bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& th
   return false;
 }
 
-// =======================================================================
-// function : setEdge
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer RWMesh_TriangulationReader::setEdge(const Handle(Poly_Triangulation)& theMesh,
                                                      const Standard_Integer            theIndex,
                                                      const Standard_Integer theEdge) const

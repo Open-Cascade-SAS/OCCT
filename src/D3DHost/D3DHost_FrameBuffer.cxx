@@ -25,10 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(D3DHost_FrameBuffer, OpenGl_FrameBuffer)
 
-// =======================================================================
-// function : D3DHost_FrameBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_FrameBuffer::D3DHost_FrameBuffer()
     : myD3dSurf(NULL),
       myD3dSurfShare(NULL),
@@ -41,19 +39,15 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
   //
 }
 
-// =======================================================================
-// function : ~D3DHost_FrameBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 D3DHost_FrameBuffer::~D3DHost_FrameBuffer()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_FrameBuffer::Release(OpenGl_Context* theCtx)
 {
   if (myGlD3dDevice != NULL)
@@ -86,10 +80,8 @@ void D3DHost_FrameBuffer::Release(OpenGl_Context* theCtx)
   OpenGl_FrameBuffer::Release(theCtx);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean D3DHost_FrameBuffer::Init(const Handle(OpenGl_Context)& theCtx,
                                            IDirect3DDevice9*             theD3DDevice,
                                            const Standard_Boolean        theIsD3dEx,
@@ -103,10 +95,8 @@ Standard_Boolean D3DHost_FrameBuffer::Init(const Handle(OpenGl_Context)& theCtx,
   return InitD3dFallback(theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8);
 }
 
-// =======================================================================
-// function : InitD3dFallback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback(const Handle(OpenGl_Context)& theCtx,
                                                       IDirect3DDevice9*             theD3DDevice,
                                                       const Standard_Boolean        theIsD3dEx,
@@ -146,10 +136,8 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback(const Handle(OpenGl_Contex
   return isGlInit;
 }
 
-// =======================================================================
-// function : InitD3dInterop
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context)& theCtx,
                                                      IDirect3DDevice9*             theD3DDevice,
                                                      const Standard_Boolean        theIsD3dEx,
@@ -248,10 +236,8 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop(const Handle(OpenGl_Context
   return Standard_True;
 }
 
-// =======================================================================
-// function : registerD3dBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Context)& theCtx)
 {
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
@@ -302,10 +288,8 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer(const Handle(OpenGl_Cont
   return Standard_True;
 }
 
-// =======================================================================
-// function : BindBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_FrameBuffer::BindBuffer(const Handle(OpenGl_Context)& theCtx)
 {
   Standard_ProgramError_Raise_if(
@@ -376,10 +360,8 @@ void D3DHost_FrameBuffer::BindBuffer(const Handle(OpenGl_Context)& theCtx)
   }
 }
 
-// =======================================================================
-// function : LockSurface
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_FrameBuffer::LockSurface(const Handle(OpenGl_Context)& theCtx)
 {
   if (++myLockCount > 1)
@@ -402,10 +384,8 @@ void D3DHost_FrameBuffer::LockSurface(const Handle(OpenGl_Context)& theCtx)
   }
 }
 
-// =======================================================================
-// function : UnlockSurface
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void D3DHost_FrameBuffer::UnlockSurface(const Handle(OpenGl_Context)& theCtx)
 {
   if (--myLockCount != 0)

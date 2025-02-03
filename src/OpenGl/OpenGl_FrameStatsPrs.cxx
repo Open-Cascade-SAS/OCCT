@@ -41,10 +41,8 @@ static TCollection_AsciiString formatTimeMs(Standard_Real theSeconds)
 }
 } // namespace
 
-// =======================================================================
-// function : OpenGl_FrameStatsPrs
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameStatsPrs::OpenGl_FrameStatsPrs()
     : myStatsPrev(new OpenGl_FrameStats()),
       myCountersTrsfPers(new Graphic3d_TransformPers(Graphic3d_TMF_2d,
@@ -60,19 +58,15 @@ OpenGl_FrameStatsPrs::OpenGl_FrameStatsPrs()
   //
 }
 
-// =======================================================================
-// function : ~OpenGl_FrameStatsPrs
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameStatsPrs::~OpenGl_FrameStatsPrs()
 {
   //
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStatsPrs::Release(OpenGl_Context* theCtx)
 {
   myCountersText.Release(theCtx);
@@ -84,10 +78,8 @@ void OpenGl_FrameStatsPrs::Release(OpenGl_Context* theCtx)
   myChartLines->Release(theCtx);
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStatsPrs::Update(const Handle(OpenGl_Workspace)& theWorkspace)
 {
   const Handle(OpenGl_Context)&    aCtx        = theWorkspace->GetGlContext();
@@ -142,10 +134,8 @@ void OpenGl_FrameStatsPrs::Update(const Handle(OpenGl_Workspace)& theWorkspace)
   updateChart(theWorkspace);
 }
 
-// =======================================================================
-// function : updateChart
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorkspace)
 {
   const Handle(OpenGl_Context)&    aCtx        = theWorkspace->GetGlContext();
@@ -381,10 +371,8 @@ void OpenGl_FrameStatsPrs::updateChart(const Handle(OpenGl_Workspace)& theWorksp
   }
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aCtx            = theWorkspace->GetGlContext();
@@ -505,10 +493,8 @@ void OpenGl_FrameStatsPrs::Render(const Handle(OpenGl_Workspace)& theWorkspace) 
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameStatsPrs::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_FrameStatsPrs)

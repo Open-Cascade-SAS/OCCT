@@ -1147,10 +1147,8 @@ Standard_Boolean OpenGl_View::ShaderSource::LoadFromFiles(
   return Standard_True;
 }
 
-// =======================================================================
-// function : LoadFromStrings
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::ShaderSource::LoadFromStrings(
   const TCollection_AsciiString* theStrings,
   const TCollection_AsciiString& thePrefix)
@@ -3335,10 +3333,8 @@ Standard_Boolean OpenGl_View::runPathtrace(const Standard_Integer             th
   return true;
 }
 
-// =======================================================================
-// function : runPathtraceOut
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::runPathtraceOut(const Graphic3d_Camera::Projection theProjection,
                                               OpenGl_FrameBuffer*                theReadDrawFbo,
                                               const Handle(OpenGl_Context)&      theGlContext)

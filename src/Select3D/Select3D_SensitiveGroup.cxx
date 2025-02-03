@@ -326,10 +326,8 @@ Standard_Boolean Select3D_SensitiveGroup::overlapsElement(
   return Standard_False;
 }
 
-// =======================================================================
-// function : elementIsInside
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitiveGroup::elementIsInside(
   SelectBasics_SelectingVolumeManager& theMgr,
   Standard_Integer                     theElemIdx,
@@ -349,10 +347,8 @@ Standard_Real Select3D_SensitiveGroup::distanceToCOG(SelectBasics_SelectingVolum
   return theMgr.DistToGeometryCenter(CenterOfGeometry());
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveGroup::DumpJson(Standard_OStream& theOStream,
                                        Standard_Integer  theDepth) const
 {

@@ -23,10 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)
 
-// =======================================================================
-// function : V3d_Plane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 V3d_Plane::V3d_Plane(const Standard_Real theA,
                      const Standard_Real theB,
                      const Standard_Real theC,
@@ -36,10 +34,8 @@ V3d_Plane::V3d_Plane(const Standard_Real theA,
 {
 }
 
-// =======================================================================
-// function : V3d_Plane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Plane::SetPlane(const Standard_Real theA,
                          const Standard_Real theB,
                          const Standard_Real theC,
@@ -52,10 +48,8 @@ void V3d_Plane::SetPlane(const Standard_Real theA,
   }
 }
 
-// =======================================================================
-// function : Display
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Plane::Display(const Handle(V3d_View)& theView, const Quantity_Color& theColor)
 {
   Handle(V3d_Viewer) aViewer = theView->Viewer();
@@ -90,10 +84,8 @@ void V3d_Plane::Display(const Handle(V3d_View)& theView, const Quantity_Color& t
   Update();
 }
 
-// =======================================================================
-// function : Erase
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Plane::Erase()
 {
   if (!myGraphicStructure.IsNull())
@@ -102,10 +94,8 @@ void V3d_Plane::Erase()
   }
 }
 
-// =======================================================================
-// function : Plane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Plane::Plane(Standard_Real& theA,
                       Standard_Real& theB,
                       Standard_Real& theC,
@@ -118,10 +108,8 @@ void V3d_Plane::Plane(Standard_Real& theA,
   theD                                            = anEquation[3];
 }
 
-// =======================================================================
-// function : IsDisplayed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean V3d_Plane::IsDisplayed() const
 {
   if (myGraphicStructure.IsNull())
@@ -132,10 +120,8 @@ Standard_Boolean V3d_Plane::IsDisplayed() const
   return myGraphicStructure->IsDisplayed();
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Plane::Update()
 {
   if (myGraphicStructure.IsNull())

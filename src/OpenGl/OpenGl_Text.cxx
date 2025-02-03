@@ -68,10 +68,8 @@ private:
 
 } // anonymous namespace
 
-// =======================================================================
-// function : OpenGl_Text
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Text::OpenGl_Text()
     : myScaleHeight(1.0f),
       myIs2d(Standard_False)
@@ -79,10 +77,8 @@ OpenGl_Text::OpenGl_Text()
   myText = new Graphic3d_Text(10.);
 }
 
-// =======================================================================
-// function : OpenGl_Text
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Text::OpenGl_Text(const Handle(Graphic3d_Text)& theTextParams)
     : myText(theTextParams),
       myScaleHeight(1.0f),
@@ -90,19 +86,15 @@ OpenGl_Text::OpenGl_Text(const Handle(Graphic3d_Text)& theTextParams)
 {
 }
 
-// =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::SetPosition(const OpenGl_Vec3& thePoint)
 {
   myText->SetPosition(gp_Pnt(thePoint.x(), thePoint.y(), thePoint.z()));
 }
 
-// =======================================================================
-// function : SetFontSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::SetFontSize(const Handle(OpenGl_Context)& theCtx,
                               const Standard_Integer        theFontSize)
 {
@@ -113,10 +105,8 @@ void OpenGl_Text::SetFontSize(const Handle(OpenGl_Context)& theCtx,
   myText->SetHeight((Standard_ShortReal)theFontSize);
 }
 
-// =======================================================================
-// function : Reset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::Reset(const Handle(OpenGl_Context)& theCtx)
 {
   if (!myFont.IsNull() && myFont->FTFont()->PointSize() != myText->Height())
@@ -129,10 +119,8 @@ void OpenGl_Text::Reset(const Handle(OpenGl_Context)& theCtx)
   }
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::Init(const Handle(OpenGl_Context)& theCtx,
                        const Standard_Utf8Char*      theText,
                        const OpenGl_Vec3&            thePoint)
@@ -146,19 +134,15 @@ void OpenGl_Text::Init(const Handle(OpenGl_Context)& theCtx,
   myText->SetPosition(gp_Pnt(thePoint.x(), thePoint.y(), thePoint.z()));
 }
 
-// =======================================================================
-// function : ~OpenGl_Text
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Text::~OpenGl_Text()
 {
   //
 }
 
-// =======================================================================
-// function : releaseVbos
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::releaseVbos(OpenGl_Context* theCtx)
 {
   for (Standard_Integer anIter = 0; anIter < myVertsVbo.Length(); ++anIter)
@@ -185,10 +169,8 @@ void OpenGl_Text::releaseVbos(OpenGl_Context* theCtx)
   myBndVertsVbo.Nullify();
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::Release(OpenGl_Context* theCtx)
 {
   releaseVbos(theCtx);
@@ -203,10 +185,8 @@ void OpenGl_Text::Release(OpenGl_Context* theCtx)
   }
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_Text::EstimatedDataSize() const
 {
   Standard_Size aSize = 0;
@@ -228,10 +208,8 @@ Standard_Size OpenGl_Text::EstimatedDataSize() const
   return aSize;
 }
 
-// =======================================================================
-// function : UpdateDrawStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats, bool theIsDetailed) const
 {
   ++theStats[Graphic3d_FrameStatsCounter_NbElemsNotCulled];
@@ -249,10 +227,8 @@ void OpenGl_Text::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats, bool th
   }
 }
 
-// =======================================================================
-// function : StringSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
                              const NCollection_String&     theText,
                              const OpenGl_Aspects&         theTextAspect,
@@ -322,10 +298,8 @@ void OpenGl_Text::StringSize(const Handle(OpenGl_Context)& theCtx,
   aCtx->ReleaseResource(aFontKey, Standard_True);
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // clang-format off
@@ -370,10 +344,8 @@ void OpenGl_Text::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   }
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::Render(const Handle(OpenGl_Context)& theCtx,
                          const OpenGl_Aspects&         theTextAspect,
                          unsigned int                  theResolution,
@@ -393,10 +365,8 @@ void OpenGl_Text::Render(const Handle(OpenGl_Context)& theCtx,
   theCtx->SetPolygonHatchEnabled(aPrevHatchingMode);
 }
 
-// =======================================================================
-// function : setupMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
                               const OpenGl_Aspects&         theTextAspect,
                               const OpenGl_Vec3&            theDVec) const
@@ -529,10 +499,8 @@ void OpenGl_Text::setupMatrix(const Handle(OpenGl_Context)& theCtx,
   theCtx->ShaderManager()->PushState(theCtx->ActiveProgram());
 }
 
-// =======================================================================
-// function : drawText
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::drawText(const Handle(OpenGl_Context)& theCtx,
                            const OpenGl_Aspects&         theTextAspect) const
 {
@@ -560,10 +528,8 @@ void OpenGl_Text::drawText(const Handle(OpenGl_Context)& theCtx,
   theCtx->core11fwd->glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-// =======================================================================
-// function : FontKey
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
                                              Standard_Integer      theHeight,
                                              unsigned int          theResolution,
@@ -586,10 +552,8 @@ TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
   return aFont + aSuff;
 }
 
-// =======================================================================
-// function : FindFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
                                           const OpenGl_Aspects&          theAspect,
                                           Standard_Integer               theHeight,
@@ -649,10 +613,8 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont(const Handle(OpenGl_Context)&  theCtx,
   return aFont;
 }
 
-// =======================================================================
-// function : drawRect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
                            const OpenGl_Aspects&         theTextAspect,
                            const OpenGl_Vec4&            theColorSubs) const
@@ -698,10 +660,8 @@ void OpenGl_Text::drawRect(const Handle(OpenGl_Context)& theCtx,
   theCtx->BindProgram(aPrevProgram);
 }
 
-// =======================================================================
-// function : render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
                          const OpenGl_Aspects&         theTextAspect,
                          const OpenGl_Vec4&            theColorText,
@@ -951,10 +911,8 @@ void OpenGl_Text::render(const Handle(OpenGl_Context)& theCtx,
   theCtx->ApplyModelViewMatrix();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Text::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Text)

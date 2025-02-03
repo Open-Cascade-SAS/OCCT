@@ -171,10 +171,8 @@ static int TheDoubleBuffFBConfig[] = {GLX_X_RENDERABLE,
 
 } // namespace
 
-// =======================================================================
-// function : OpenGl_GraphicDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraphicDriver::OpenGl_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp,
                                            const Standard_Boolean                  theToInitialize)
     : Graphic3d_GraphicDriver(theDisp),
@@ -213,19 +211,15 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver(const Handle(Aspect_DisplayConnection
   }
 }
 
-// =======================================================================
-// function : ~OpenGl_GraphicDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraphicDriver::~OpenGl_GraphicDriver()
 {
   ReleaseContext();
 }
 
-// =======================================================================
-// function : ReleaseContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::ReleaseContext()
 {
   Handle(OpenGl_Context) aCtxShared;
@@ -314,10 +308,8 @@ void OpenGl_GraphicDriver::ReleaseContext()
   myIsOwnContext = Standard_False;
 }
 
-// =======================================================================
-// function : InitContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_GraphicDriver::InitContext()
 {
   ReleaseContext();
@@ -401,10 +393,8 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   return Standard_True;
 }
 
-// =======================================================================
-// function : InitEglContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_GraphicDriver::InitEglContext(Aspect_Display          theEglDisplay,
                                                       Aspect_RenderingContext theEglContext,
                                                       void*                   theEglConfig)
@@ -444,10 +434,8 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext(Aspect_Display          th
 #endif
 }
 
-// =======================================================================
-// function : chooseVisualInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::chooseVisualInfo()
 {
   if (myDisplayConnection.IsNull())
@@ -527,10 +515,8 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
 #endif
 }
 
-// =======================================================================
-// function : InquireLimit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_GraphicDriver::InquireLimit(const Graphic3d_TypeOfLimit theType) const
 {
   const Handle(OpenGl_Context)& aCtx = GetSharedContext();
@@ -587,46 +573,36 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit(const Graphic3d_TypeOfLimit 
   return 0;
 }
 
-// =======================================================================
-// function : DefaultTextHeight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 {
   return 16.;
 }
 
-// =======================================================================
-// function : EnableVBO
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::EnableVBO(const Standard_Boolean theToTurnOn)
 {
   myCaps->vboDisable = !theToTurnOn;
 }
 
-// =======================================================================
-// function : IsVerticalSync
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_GraphicDriver::IsVerticalSync() const
 {
   return myCaps->swapInterval == 1;
 }
 
-// =======================================================================
-// function : SetVerticalSync
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::SetVerticalSync(bool theToEnable)
 {
   myCaps->swapInterval = theToEnable ? 1 : 0;
 }
 
-// =======================================================================
-// function : GetSharedContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext(bool theBound) const
 {
   if (myMapOfView.IsEmpty())
@@ -653,10 +629,8 @@ const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext(bool theBou
   return TheNullGlCtx;
 }
 
-// =======================================================================
-// function : MemoryInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_GraphicDriver::MemoryInfo(Standard_Size&           theFreeBytes,
                                                   TCollection_AsciiString& theInfo) const
 {
@@ -671,19 +645,15 @@ Standard_Boolean OpenGl_GraphicDriver::MemoryInfo(Standard_Size&           theFr
   return !theInfo.IsEmpty();
 }
 
-// =======================================================================
-// function : SetBuffersNoSwap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::SetBuffersNoSwap(const Standard_Boolean theIsNoSwap)
 {
   myCaps->buffersNoSwap = theIsNoSwap;
 }
 
-// =======================================================================
-// function : TextSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::TextSize(const Handle(Graphic3d_CView)& theView,
                                     const Standard_CString         theText,
                                     const Standard_ShortReal       theHeight,
@@ -784,10 +754,8 @@ void OpenGl_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        the
   }
 }
 
-// =======================================================================
-// function : Structure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::CreateStructure(
   const Handle(Graphic3d_StructureManager)& theManager)
 {
@@ -796,10 +764,8 @@ Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::CreateStructure(
   return aStructure;
 }
 
-// =======================================================================
-// function : Structure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::RemoveStructure(Handle(Graphic3d_CStructure)& theCStructure)
 {
   OpenGl_Structure* aStructure = NULL;
@@ -813,10 +779,8 @@ void OpenGl_GraphicDriver::RemoveStructure(Handle(Graphic3d_CStructure)& theCStr
   theCStructure.Nullify();
 }
 
-// =======================================================================
-// function : CreateView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_CView) OpenGl_GraphicDriver::CreateView(
   const Handle(Graphic3d_StructureManager)& theMgr)
 {
@@ -831,10 +795,8 @@ Handle(Graphic3d_CView) OpenGl_GraphicDriver::CreateView(
   return aView;
 }
 
-// =======================================================================
-// function : RemoveView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraphicDriver::RemoveView(const Handle(Graphic3d_CView)& theView)
 {
   Handle(OpenGl_Context) aCtx  = GetSharedContext();
@@ -886,10 +848,8 @@ void OpenGl_GraphicDriver::RemoveView(const Handle(Graphic3d_CView)& theView)
   }
 }
 
-// =======================================================================
-// function : CreateRenderWindow
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_Window) OpenGl_GraphicDriver::CreateRenderWindow(
   const Handle(Aspect_Window)&  theNativeWindow,
   const Handle(Aspect_Window)&  theSizeWindow,

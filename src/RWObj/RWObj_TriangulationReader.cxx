@@ -101,10 +101,8 @@ Standard_Boolean RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      th
   return Standard_True;
 }
 
-// =======================================================================
-// function : addSubShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean RWObj_TriangulationReader::addSubShape(TopoDS_Shape&          theParent,
                                                         const TopoDS_Shape&    theSubShape,
                                                         const Standard_Boolean theToExpandCompound)

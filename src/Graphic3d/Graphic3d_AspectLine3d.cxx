@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 
-// =======================================================================
-// function : Graphic3d_AspectLine3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d()
 {
   myShadingModel = Graphic3d_TypeOfShadingModel_Unlit;
@@ -29,10 +27,8 @@ Graphic3d_AspectLine3d::Graphic3d_AspectLine3d()
   myLineWidth = 1.0f;
 }
 
-// =======================================================================
-// function : Graphic3d_AspectLine3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d(const Quantity_Color& theColor,
                                                Aspect_TypeOfLine     theType,
                                                Standard_Real         theWidth)

@@ -738,10 +738,8 @@ Handle(Select3D_SensitiveEntity) AIS_Trihedron::createSensitiveEntity(
   return Handle(Select3D_SensitiveEntity)();
 }
 
-// =======================================================================
-// function : updatePrimitives
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
                                      Prs3d_DatumMode                  theMode,
                                      const gp_Pnt&                    theOrigin,

@@ -51,10 +51,8 @@ inline void moveY(NCollection_Vector<Vec2f>& theCorners,
 
 } // namespace
 
-// =======================================================================
-// function : Font_TextFormatter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Font_TextFormatter::Font_TextFormatter()
     : myAlignX(Graphic3d_HTA_LEFT),
       myAlignY(Graphic3d_VTA_TOP),
@@ -80,10 +78,8 @@ Font_TextFormatter::Font_TextFormatter()
   //
 }
 
-// =======================================================================
-// function : SetupAlignment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_TextFormatter::SetupAlignment(const Graphic3d_HorizontalTextAlignment theAlignX,
                                         const Graphic3d_VerticalTextAlignment   theAlignY)
 {
@@ -91,10 +87,8 @@ void Font_TextFormatter::SetupAlignment(const Graphic3d_HorizontalTextAlignment 
   myAlignY = theAlignY;
 }
 
-// =======================================================================
-// function : Reset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_TextFormatter::Reset()
 {
   myIsFormatted = false;
@@ -108,10 +102,8 @@ void Font_TextFormatter::Reset()
   myMaxSymbolWidth  = 0.0f;
 }
 
-// =======================================================================
-// function : Append
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont& theFont)
 {
   if (theString.IsEmpty())
@@ -164,10 +156,8 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
   myLastSymbolWidth = myPen.x() - myCorners.Last().x();
 }
 
-// =======================================================================
-// function : newLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_TextFormatter::newLine(const Standard_Integer   theLastRect,
                                  const Standard_ShortReal theMaxLineWidth)
 {
@@ -208,10 +198,8 @@ void Font_TextFormatter::newLine(const Standard_Integer   theLastRect,
   myRectLineStart = theLastRect + 1;
 }
 
-// =======================================================================
-// function : Format
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Font_TextFormatter::Format()
 {
   if (myCorners.Length() == 0 || myIsFormatted)
@@ -326,10 +314,8 @@ void Font_TextFormatter::Format()
   }
 }
 
-// =======================================================================
-// function : GlyphBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Font_TextFormatter::GlyphBoundingBox(const Standard_Integer theIndex,
                                                       Font_Rect&             theBndBox) const
 {
@@ -375,10 +361,8 @@ Standard_Boolean Font_TextFormatter::GlyphBoundingBox(const Standard_Integer the
   return Standard_True;
 }
 
-// =======================================================================
-// function : IsLFSymbol
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Font_TextFormatter::IsLFSymbol(const Standard_Integer theIndex) const
 {
   Font_Rect aBndBox;
@@ -390,10 +374,8 @@ Standard_Boolean Font_TextFormatter::IsLFSymbol(const Standard_Integer theIndex)
   return Abs(aBndBox.Right - aBndBox.Left) < Precision::Confusion();
 }
 
-// =======================================================================
-// function : FirstPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Font_TextFormatter::FirstPosition() const
 {
   switch (myAlignX)
@@ -408,10 +390,8 @@ Standard_ShortReal Font_TextFormatter::FirstPosition() const
   }
 }
 
-// =======================================================================
-// function : LinePositionIndex
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Font_TextFormatter::LinePositionIndex(const Standard_Integer theIndex) const
 {
   Standard_Integer anIndex = 0;
@@ -428,10 +408,8 @@ Standard_Integer Font_TextFormatter::LinePositionIndex(const Standard_Integer th
   return anIndex;
 }
 
-// =======================================================================
-// function : LineIndex
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Font_TextFormatter::LineIndex(const Standard_Integer theIndex) const
 {
   if (myLineSpacing < 0.0f)
@@ -442,10 +420,8 @@ Standard_Integer Font_TextFormatter::LineIndex(const Standard_Integer theIndex) 
   return (Standard_Integer)Abs((BottomLeft(theIndex).y() + myAscender) / myLineSpacing);
 }
 
-// =======================================================================
-// function : LineWidth
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Font_TextFormatter::LineWidth(const Standard_Integer theIndex) const
 {
   if (theIndex < 0)

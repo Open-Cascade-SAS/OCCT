@@ -23,10 +23,8 @@
 #include <Poly_Triangulation.hxx>
 #include <Prs3d_LineAspect.hxx>
 
-// =========================================================================
-// function : AddFreeEdges
-// purpose  :
-// =========================================================================
+//=================================================================================================
+
 void Prs3d::AddFreeEdges(TColgp_SequenceOfPnt&             theSegments,
                          const Handle(Poly_Triangulation)& thePolyTri,
                          const gp_Trsf&                    theLocation)

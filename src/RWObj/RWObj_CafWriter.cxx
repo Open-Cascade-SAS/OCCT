@@ -79,10 +79,8 @@ Standard_Boolean RWObj_CafWriter::toSkipFaceMesh(const RWMesh_FaceIterator& theF
   return theFaceIter.IsEmptyMesh();
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                               const TColStd_IndexedDataMapOfStringString& theFileInfo,
                               const Message_ProgressRange&                theProgress)
@@ -93,10 +91,8 @@ bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
-// =======================================================================
-// function : Perform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
                               const TDF_LabelSequence&                    theRootLabels,
                               const TColStd_MapOfAsciiString*             theLabelFilter,
@@ -234,10 +230,8 @@ bool RWObj_CafWriter::Perform(const Handle(TDocStd_Document)&             theDoc
   return isDone && !aPSentry.IsAborted();
 }
 
-// =======================================================================
-// function : addFaceInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWObj_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
                                   Standard_Integer&          theNbNodes,
                                   Standard_Integer&          theNbElems,
@@ -263,10 +257,8 @@ void RWObj_CafWriter::addFaceInfo(const RWMesh_FaceIterator& theFace,
     || (!theFace.FaceStyle().BaseColorTexture().IsNull() && theFace.HasTexCoords());
 }
 
-// =======================================================================
-// function : writeShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::writeShape(RWObj_ObjWriterContext&        theWriter,
                                  RWObj_ObjMaterialMap&          theMatMgr,
                                  Message_LazyProgressScope&     thePSentry,
@@ -342,10 +334,8 @@ bool RWObj_CafWriter::writeShape(RWObj_ObjWriterContext&        theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writePositions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::writePositions(RWObj_ObjWriterContext&    theWriter,
                                      Message_LazyProgressScope& thePSentry,
                                      const RWMesh_FaceIterator& theFace)
@@ -365,10 +355,8 @@ bool RWObj_CafWriter::writePositions(RWObj_ObjWriterContext&    theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writeNormals
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::writeNormals(RWObj_ObjWriterContext&    theWriter,
                                    Message_LazyProgressScope& thePSentry,
                                    const RWMesh_FaceIterator& theFace)
@@ -389,10 +377,8 @@ bool RWObj_CafWriter::writeNormals(RWObj_ObjWriterContext&    theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writeTextCoords
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::writeTextCoords(RWObj_ObjWriterContext&    theWriter,
                                       Message_LazyProgressScope& thePSentry,
                                       const RWMesh_FaceIterator& theFace)
@@ -411,10 +397,8 @@ bool RWObj_CafWriter::writeTextCoords(RWObj_ObjWriterContext&    theWriter,
   return true;
 }
 
-// =======================================================================
-// function : writeIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWObj_CafWriter::writeIndices(RWObj_ObjWriterContext&    theWriter,
                                    Message_LazyProgressScope& thePSentry,
                                    const RWMesh_FaceIterator& theFace)

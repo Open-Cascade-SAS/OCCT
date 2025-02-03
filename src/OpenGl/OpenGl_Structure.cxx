@@ -25,10 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
 
-// =======================================================================
-// function : renderBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::renderBoundingBox(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   if (!myBndBox.IsValid())
@@ -103,10 +101,8 @@ void OpenGl_Structure::renderBoundingBox(const Handle(OpenGl_Workspace)& theWork
   aCtx->BindTextures(aPrevTexture, Handle(OpenGl_ShaderProgram)());
 }
 
-// =======================================================================
-// function : OpenGl_Structure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Structure::OpenGl_Structure(const Handle(Graphic3d_StructureManager)& theManager)
     : Graphic3d_CStructure(theManager),
       myInstancedStructure(NULL),
@@ -117,29 +113,23 @@ OpenGl_Structure::OpenGl_Structure(const Handle(Graphic3d_StructureManager)& the
   updateLayerTransformation();
 }
 
-// =======================================================================
-// function : ~OpenGl_Structure
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Structure::~OpenGl_Structure()
 {
   Release(Handle(OpenGl_Context)());
 }
 
-// =======================================================================
-// function : SetZLayer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::SetZLayer(const Graphic3d_ZLayerId theLayerIndex)
 {
   Graphic3d_CStructure::SetZLayer(theLayerIndex);
   updateLayerTransformation();
 }
 
-// =======================================================================
-// function : SetTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::SetTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
 {
   myTrsf       = theTrsf;
@@ -165,10 +155,8 @@ void OpenGl_Structure::SetTransformation(const Handle(TopLoc_Datum3D)& theTrsf)
   }
 }
 
-// =======================================================================
-// function : SetTransformPersistence
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::SetTransformPersistence(const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
   if ((myTrsfPers.IsNull() || theTrsfPers.IsNull()) && myTrsfPers != theTrsfPers)
@@ -179,10 +167,8 @@ void OpenGl_Structure::SetTransformPersistence(const Handle(Graphic3d_TransformP
   updateLayerTransformation();
 }
 
-// =======================================================================
-// function : updateLayerTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::updateLayerTransformation()
 {
   gp_Trsf aRenderTrsf;
@@ -199,30 +185,24 @@ void OpenGl_Structure::updateLayerTransformation()
   aRenderTrsf.GetMat4(myRenderTrsf);
 }
 
-// =======================================================================
-// function : GraphicHighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::GraphicHighlight(const Handle(Graphic3d_PresentationAttributes)& theStyle)
 {
   myHighlightStyle = theStyle;
   highlight        = 1;
 }
 
-// =======================================================================
-// function : GraphicUnhighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::GraphicUnhighlight()
 {
   highlight = 0;
   myHighlightStyle.Nullify();
 }
 
-// =======================================================================
-// function : OnVisibilityChanged
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::OnVisibilityChanged()
 {
   if (IsRaytracable())
@@ -231,10 +211,8 @@ void OpenGl_Structure::OnVisibilityChanged()
   }
 }
 
-// =======================================================================
-// function : IsRaytracable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Structure::IsRaytracable() const
 {
   if (!myGroups.IsEmpty() && myIsRaytracable && myTrsfPers.IsNull())
@@ -245,10 +223,8 @@ Standard_Boolean OpenGl_Structure::IsRaytracable() const
   return myInstancedStructure != NULL && myInstancedStructure->IsRaytracable();
 }
 
-// =======================================================================
-// function : UpdateRaytracableState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::UpdateStateIfRaytracable(const Standard_Boolean toCheck) const
 {
   myIsRaytracable = !toCheck;
@@ -270,10 +246,8 @@ void OpenGl_Structure::UpdateStateIfRaytracable(const Standard_Boolean toCheck) 
   }
 }
 
-// =======================================================================
-// function : Connect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Connect(Graphic3d_CStructure& theStructure)
 {
   OpenGl_Structure* aStruct = static_cast<OpenGl_Structure*>(&theStructure);
@@ -289,10 +263,8 @@ void OpenGl_Structure::Connect(Graphic3d_CStructure& theStructure)
   }
 }
 
-// =======================================================================
-// function : Disconnect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Disconnect(Graphic3d_CStructure& theStructure)
 {
   OpenGl_Structure* aStruct = static_cast<OpenGl_Structure*>(&theStructure);
@@ -308,10 +280,8 @@ void OpenGl_Structure::Disconnect(Graphic3d_CStructure& theStructure)
   }
 }
 
-// =======================================================================
-// function : NewGroup
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_Group) OpenGl_Structure::NewGroup(const Handle(Graphic3d_Structure)& theStruct)
 {
   Handle(OpenGl_Group) aGroup = new OpenGl_Group(theStruct);
@@ -319,10 +289,8 @@ Handle(Graphic3d_Group) OpenGl_Structure::NewGroup(const Handle(Graphic3d_Struct
   return aGroup;
 }
 
-// =======================================================================
-// function : RemoveGroup
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::RemoveGroup(const Handle(Graphic3d_Group)& theGroup)
 {
   if (theGroup.IsNull())
@@ -352,19 +320,15 @@ void OpenGl_Structure::RemoveGroup(const Handle(Graphic3d_Group)& theGroup)
   }
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Clear()
 {
   Clear(GlDriver()->GetSharedContext());
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Clear(const Handle(OpenGl_Context)& theGlCtx)
 {
   Standard_Boolean aRaytracableGroupDeleted(Standard_False);
@@ -388,10 +352,8 @@ void OpenGl_Structure::Clear(const Handle(OpenGl_Context)& theGlCtx)
   IsForHighlight = Standard_False;
 }
 
-// =======================================================================
-// function : renderGeometry
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspace,
                                       bool&                           theHasClosed) const
 {
@@ -435,10 +397,8 @@ void OpenGl_Structure::renderGeometry(const Handle(OpenGl_Workspace)& theWorkspa
   }
 }
 
-// =======================================================================
-// function : applyTransformation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::applyTransformation(const Handle(OpenGl_Context)& theContext,
                                            const gp_Trsf&                theTrsf,
                                            const Standard_Boolean        toEnable) const
@@ -459,10 +419,8 @@ void OpenGl_Structure::applyTransformation(const Handle(OpenGl_Context)& theCont
   }
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Process the structure only if visible
@@ -669,10 +627,8 @@ void OpenGl_Structure::Render(const Handle(OpenGl_Workspace)& theWorkspace) cons
   theWorkspace->SetHighlightStyle(Handle(Graphic3d_PresentationAttributes)());
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::Release(const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
@@ -680,10 +636,8 @@ void OpenGl_Structure::Release(const Handle(OpenGl_Context)& theGlCtx)
   myHighlightStyle.Nullify();
 }
 
-// =======================================================================
-// function : ReleaseGlResources
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::ReleaseGlResources(const Handle(OpenGl_Context)& theGlCtx)
 {
   for (OpenGl_Structure::GroupIterator aGroupIter(myGroups); aGroupIter.More(); aGroupIter.Next())
@@ -700,10 +654,8 @@ Handle(Graphic3d_CStructure) OpenGl_Structure::ShadowLink(
   return new OpenGl_StructureShadow(theManager, this);
 }
 
-// =======================================================================
-// function : applyPersistence
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::applyPersistence(const Handle(OpenGl_Context)&          theCtx,
                                         const Handle(Graphic3d_TransformPers)& theTrsfPers,
                                         const Standard_Boolean                 theIsLocal,
@@ -757,10 +709,8 @@ void OpenGl_Structure::applyPersistence(const Handle(OpenGl_Context)&          t
   }
 }
 
-// =======================================================================
-// function : revertPersistence
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Structure::revertPersistence(const Handle(OpenGl_Context)&          theCtx,
                                          const Handle(Graphic3d_TransformPers)& theTrsfPers,
                                          const Standard_Boolean                 theIsLocal,

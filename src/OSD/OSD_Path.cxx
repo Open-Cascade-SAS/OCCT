@@ -1476,10 +1476,8 @@ static void __fastcall _remove_dup(TCollection_AsciiString& str)
 
 #endif // Windows sources for OSD_Path
 
-// =======================================================================
-// function : Analyse_VMS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static Standard_Boolean Analyse_VMS(const TCollection_AsciiString& theName)
 {
   if (theName.Search("/") != -1 || theName.Search("@") != -1 || theName.Search("\\") != -1)
@@ -1490,10 +1488,8 @@ static Standard_Boolean Analyse_VMS(const TCollection_AsciiString& theName)
   return Standard_True;
 }
 
-// =======================================================================
-// function : Analyse_DOS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static Standard_Boolean Analyse_DOS(const TCollection_AsciiString& theName)
 {
   if (theName.Search("/") != -1 || theName.Search(":") != -1 || theName.Search("*") != -1
@@ -1506,19 +1502,15 @@ static Standard_Boolean Analyse_DOS(const TCollection_AsciiString& theName)
   return Standard_True;
 }
 
-// =======================================================================
-// function : Analyse_MACOS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static Standard_Boolean Analyse_MACOS(const TCollection_AsciiString& theName)
 {
   return theName.Search(":") == -1 ? theName.Length() <= 31 : Standard_True;
 }
 
-// =======================================================================
-// function : IsValid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_Path::IsValid(const TCollection_AsciiString& theDependentName,
                                    const OSD_SysType              theSysType)
 {
@@ -1695,10 +1687,8 @@ Standard_Boolean LocateExecFile(OSD_Path&)
   return Standard_False;
 }
 
-// =======================================================================
-// function : FolderAndFileFromPath
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_Path::FolderAndFileFromPath(const TCollection_AsciiString& theFilePath,
                                      TCollection_AsciiString&       theFolder,
                                      TCollection_AsciiString&       theFileName)
@@ -1731,10 +1721,8 @@ void OSD_Path::FolderAndFileFromPath(const TCollection_AsciiString& theFilePath,
   }
 }
 
-// =======================================================================
-// function : FileNameAndExtension
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_Path::FileNameAndExtension(const TCollection_AsciiString& theFilePath,
                                     TCollection_AsciiString&       theName,
                                     TCollection_AsciiString&       theExtension)

@@ -40,19 +40,15 @@ OpenGl_StructureShadow::OpenGl_StructureShadow(const Handle(Graphic3d_StructureM
   myInstancedStructure = myParent.operator->();
 }
 
-// =======================================================================
-// function : Connect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StructureShadow::Connect(Graphic3d_CStructure&)
 {
   throw Standard_ProgramError("Error! OpenGl_StructureShadow::Connect() should not be called!");
 }
 
-// =======================================================================
-// function : Disconnect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_StructureShadow::Disconnect(Graphic3d_CStructure&)
 {
   throw Standard_ProgramError("Error! OpenGl_StructureShadow::Disconnect() should not be called!");

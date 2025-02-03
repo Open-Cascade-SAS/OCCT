@@ -16,10 +16,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Aspects, Standard_Transient)
 
-// =======================================================================
-// function : Graphic3d_Aspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Aspects::Graphic3d_Aspects()
     : myInteriorColor(Quantity_NOC_CYAN1),
       myBackInteriorColor(Quantity_NOC_CYAN1),
@@ -49,10 +47,8 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   //
 }
 
-// =======================================================================
-// function : SetTextureMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Aspects::SetTextureMap(const Handle(Graphic3d_TextureMap)& theTexture)
 {
   if (theTexture.IsNull())

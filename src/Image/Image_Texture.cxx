@@ -23,10 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_Texture, Standard_Transient)
 
-// ================================================================
-// Function : Image_Texture
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName)
     : myImagePath(theFileName),
       myOffset(-1),
@@ -39,10 +37,8 @@ Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName)
   }
 }
 
-// ================================================================
-// Function : Image_Texture
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName,
                              int64_t                        theOffset,
                              int64_t                        theLength)
@@ -59,10 +55,8 @@ Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName,
   }
 }
 
-// ================================================================
-// Function : Image_Texture
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Image_Texture::Image_Texture(const Handle(NCollection_Buffer)& theBuffer,
                              const TCollection_AsciiString&    theId)
     : myBuffer(theBuffer),
@@ -75,10 +69,8 @@ Image_Texture::Image_Texture(const Handle(NCollection_Buffer)& theBuffer,
   }
 }
 
-// ================================================================
-// Function : ReadCompressedImage
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Image_Texture::ReadCompressedImage(
   const Handle(Image_SupportedFormats)& theSupported) const
 {
@@ -106,10 +98,8 @@ Handle(Image_CompressedPixMap) Image_Texture::ReadCompressedImage(
   return Image_DDSParser::Load(theSupported, myImagePath, 0);
 }
 
-// ================================================================
-// Function : ReadImage
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Image_Texture::ReadImage(const Handle(Image_SupportedFormats)&) const
 {
   Handle(Image_PixMap) anImage;
@@ -133,10 +123,8 @@ Handle(Image_PixMap) Image_Texture::ReadImage(const Handle(Image_SupportedFormat
   return anImage;
 }
 
-// ================================================================
-// Function : loadImageFile
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Image_Texture::loadImageFile(const TCollection_AsciiString& thePath) const
 {
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
@@ -147,10 +135,8 @@ Handle(Image_PixMap) Image_Texture::loadImageFile(const TCollection_AsciiString&
   return anImage;
 }
 
-// ================================================================
-// Function : loadImageBuffer
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Image_Texture::loadImageBuffer(const Handle(NCollection_Buffer)& theBuffer,
                                                     const TCollection_AsciiString&    theId) const
 {
@@ -172,10 +158,8 @@ Handle(Image_PixMap) Image_Texture::loadImageBuffer(const Handle(NCollection_Buf
   return anImage;
 }
 
-// ================================================================
-// Function : loadImageOffset
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Image_Texture::loadImageOffset(const TCollection_AsciiString& thePath,
                                                     int64_t                        theOffset,
                                                     int64_t                        theLength) const
@@ -212,10 +196,8 @@ Handle(Image_PixMap) Image_Texture::loadImageOffset(const TCollection_AsciiStrin
   return anImage;
 }
 
-// ================================================================
-// Function : MimeType
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 TCollection_AsciiString Image_Texture::MimeType() const
 {
   const TCollection_AsciiString aType = ProbeImageFileFormat();
@@ -238,10 +220,8 @@ TCollection_AsciiString Image_Texture::MimeType() const
   return TCollection_AsciiString();
 }
 
-// ================================================================
-// Function : ProbeImageFileFormat
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 {
   static const Standard_Size THE_PROBE_SIZE = 20;
@@ -320,10 +300,8 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
   return "";
 }
 
-// ================================================================
-// Function : WriteImage
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
@@ -350,10 +328,8 @@ Standard_Boolean Image_Texture::WriteImage(const TCollection_AsciiString& theFil
   return true;
 }
 
-// ================================================================
-// Function : WriteImage
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Standard_Boolean Image_Texture::WriteImage(std::ostream&                  theStream,
                                            const TCollection_AsciiString& theFile)
 {

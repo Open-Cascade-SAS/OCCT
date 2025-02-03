@@ -75,10 +75,8 @@ private:
   V3d_Trihedron* myTrihedron;
 };
 
-// ============================================================================
-// function : V3d_Trihedron
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 V3d_Trihedron::V3d_Trihedron()
     : myScale(1.0),
       myRatio(0.8),
@@ -126,19 +124,15 @@ V3d_Trihedron::V3d_Trihedron()
   mySphereShadingAspect->SetColor(Quantity_NOC_WHITE);
 }
 
-// ============================================================================
-// function : V3d_Trihedron
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 V3d_Trihedron::~V3d_Trihedron()
 {
   Erase();
 }
 
-// ============================================================================
-// function : SetLabelsColor
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetLabelsColor(const Quantity_Color& theColor)
 {
   myTextAspects[V3d_X]->SetColor(theColor);
@@ -146,10 +140,8 @@ void V3d_Trihedron::SetLabelsColor(const Quantity_Color& theColor)
   myTextAspects[V3d_Z]->SetColor(theColor);
 }
 
-// ============================================================================
-// function : SetLabels
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetLabels(const TCollection_AsciiString& theX,
                               const TCollection_AsciiString& theY,
                               const TCollection_AsciiString& theZ)
@@ -164,10 +156,8 @@ void V3d_Trihedron::SetLabels(const TCollection_AsciiString& theX,
   }
 }
 
-// ============================================================================
-// function : SetLabelsColor
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetLabelsColor(const Quantity_Color& theXColor,
                                    const Quantity_Color& theYColor,
                                    const Quantity_Color& theZColor)
@@ -177,10 +167,8 @@ void V3d_Trihedron::SetLabelsColor(const Quantity_Color& theXColor,
   myTextAspects[V3d_Z]->SetColor(theZColor);
 }
 
-// ============================================================================
-// function : SetArrowsColor
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetArrowsColor(const Quantity_Color& theXColor,
                                    const Quantity_Color& theYColor,
                                    const Quantity_Color& theZColor)
@@ -192,10 +180,8 @@ void V3d_Trihedron::SetArrowsColor(const Quantity_Color& theXColor,
   }
 }
 
-// ============================================================================
-// function : SetScale
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetScale(const Standard_Real theScale)
 {
   if (Abs(myScale - theScale) > Precision::Confusion())
@@ -205,10 +191,8 @@ void V3d_Trihedron::SetScale(const Standard_Real theScale)
   myScale = theScale;
 }
 
-// =======================================================================
-// function : SetSizeRatio
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
 {
   if (Abs(myRatio - theRatio) > Precision::Confusion())
@@ -218,10 +202,8 @@ void V3d_Trihedron::SetSizeRatio(const Standard_Real theRatio)
   myRatio = theRatio;
 }
 
-// =======================================================================
-// function : SetArrowDiameter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
 {
   if (Abs(myDiameter - theDiam) > Precision::Confusion())
@@ -231,10 +213,8 @@ void V3d_Trihedron::SetArrowDiameter(const Standard_Real theDiam)
   myDiameter = theDiam;
 }
 
-// =======================================================================
-// function : SetNbFacets
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetNbFacets(const Standard_Integer theNbFacets)
 {
   if (Abs(myNbFacettes - theNbFacets) > 0)
@@ -244,10 +224,8 @@ void V3d_Trihedron::SetNbFacets(const Standard_Integer theNbFacets)
   myNbFacettes = theNbFacets;
 }
 
-// ============================================================================
-// function : Display
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::Display(const V3d_View& theView)
 {
   if (myStructure.IsNull())
@@ -270,10 +248,8 @@ void V3d_Trihedron::Display(const V3d_View& theView)
   myStructure->Display();
 }
 
-// ============================================================================
-// function : Erase
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::Erase()
 {
   if (!myStructure.IsNull())
@@ -283,10 +259,8 @@ void V3d_Trihedron::Erase()
   }
 }
 
-// ============================================================================
-// function : SetPosition
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::SetPosition(const Aspect_TypeOfTriedronPosition thePosition)
 {
   Graphic3d_Vec2i anOffset(0, 0);
@@ -303,10 +277,8 @@ void V3d_Trihedron::SetPosition(const Aspect_TypeOfTriedronPosition thePosition)
   myTransformPers->SetOffset2d(anOffset);
 }
 
-// ============================================================================
-// function : compute
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 void V3d_Trihedron::compute()
 {
   myToCompute = Standard_False;

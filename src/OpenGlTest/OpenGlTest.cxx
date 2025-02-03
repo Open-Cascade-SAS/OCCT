@@ -16,10 +16,8 @@
 #include <Draw_PluginMacro.hxx>
 #include <OpenGl_GraphicDriverFactory.hxx>
 
-// ======================================================================
-// function : Factory
-// purpose  :
-// ======================================================================
+//=================================================================================================
+
 void OpenGlTest::Factory(Draw_Interpretor& theDI)
 {
   static const Handle(OpenGl_GraphicDriverFactory) aFactory = new OpenGl_GraphicDriverFactory();

@@ -18,48 +18,38 @@
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_ViewClipRange.hxx>
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_AxisIntersector::SelectMgr_AxisIntersector()
 {
   //
 }
 
-// =======================================================================
-// function : ~SelectMgr_AxisIntersector
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_AxisIntersector::~SelectMgr_AxisIntersector()
 {
   //
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_AxisIntersector::Init(const gp_Ax1& theAxis)
 {
   mySelectionType = SelectMgr_SelectionType_Point;
   myAxis          = theAxis;
 }
 
-// =======================================================================
-// function : Build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_AxisIntersector::Build() {}
 
 //=================================================================================================
 
 void SelectMgr_AxisIntersector::SetCamera(const Handle(Graphic3d_Camera)&) {}
 
-// =======================================================================
-// function : ScaleAndTransform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::ScaleAndTransform(
   const Standard_Integer                  theScaleFactor,
   const gp_GTrsf&                         theTrsf,
@@ -109,10 +99,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::CopyWithBuilder(
   return aRes;
 }
 
-// =======================================================================
-// function : hasIntersection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const SelectMgr_Vec3& theBoxMin,
                                                             const SelectMgr_Vec3& theBoxMax,
                                                             Standard_Real&        theTimeEnter,
@@ -133,10 +121,8 @@ Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const SelectMgr_Vec3
   return Standard_True;
 }
 
-// =======================================================================
-// function : hasIntersection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const gp_Pnt&  thePnt,
                                                             Standard_Real& theDepth) const
 {
@@ -153,10 +139,8 @@ Standard_Boolean SelectMgr_AxisIntersector::hasIntersection(const gp_Pnt&  thePn
   return Standard_True;
 }
 
-// =======================================================================
-// function : raySegmentDistance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance(
   const gp_Pnt&            theSegPnt1,
   const gp_Pnt&            theSegPnt2,
@@ -206,10 +190,8 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance(
   return true;
 }
 
-// =======================================================================
-// function : rayPlaneIntersection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            thePlane,
                                                      const gp_Pnt&            thePntOnPlane,
                                                      SelectBasics_PickResult& thePickResult) const
@@ -238,10 +220,8 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection(const gp_Vec&            th
   return true;
 }
 
-// =======================================================================
-// function : OverlapsBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(const SelectMgr_Vec3& theBoxMin,
                                                         const SelectMgr_Vec3& theBoxMax,
                                                         Standard_Boolean*     theInside) const
@@ -263,10 +243,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(const SelectMgr_Vec3& th
   return Standard_True;
 }
 
-// =======================================================================
-// function : OverlapsBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(
   const SelectMgr_Vec3&          theBoxMin,
   const SelectMgr_Vec3&          theBoxMax,
@@ -297,10 +275,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox(
   return Standard_True;
 }
 
-// =======================================================================
-// function : OverlapsPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(
   const gp_Pnt&                  thePnt,
   const SelectMgr_ViewClipRange& theClipRange,
@@ -322,10 +298,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(
   return !theClipRange.IsClipped(thePickResult.Depth());
 }
 
-// =======================================================================
-// function : OverlapsPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(const gp_Pnt& thePnt) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
@@ -336,10 +310,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint(const gp_Pnt& thePnt) 
   return hasIntersection(thePnt, aDepth);
 }
 
-// =======================================================================
-// function : OverlapsSegment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
@@ -358,10 +330,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment(
   return !theClipRange.IsClipped(thePickResult.Depth());
 }
 
-// =======================================================================
-// function : OverlapsPolygon
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
   const TColgp_Array1OfPnt&      theArrayOfPnts,
   Select3D_TypeOfSensitivity     theSensType,
@@ -418,10 +388,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon(
   return !theClipRange.IsClipped(thePickResult.Depth());
 }
 
-// =======================================================================
-// function : OverlapsTriangle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
@@ -785,10 +753,8 @@ const gp_Dir& SelectMgr_AxisIntersector::GetViewRayDirection() const
   return myAxis.Direction();
 }
 
-// =======================================================================
-// function : DistToGeometryCenter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real SelectMgr_AxisIntersector::DistToGeometryCenter(const gp_Pnt& theCOG) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
@@ -798,10 +764,8 @@ Standard_Real SelectMgr_AxisIntersector::DistToGeometryCenter(const gp_Pnt& theC
   return theCOG.Distance(myAxis.Location());
 }
 
-// =======================================================================
-// function : DetectedPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt SelectMgr_AxisIntersector::DetectedPoint(const Standard_Real theDepth) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,

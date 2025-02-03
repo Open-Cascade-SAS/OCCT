@@ -15,10 +15,8 @@
 
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
-// =======================================================================
-// function : AddClippingPlanes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipPlane& thePlanes,
                                                 const gp_Ax1&                         thePickRay)
 {
@@ -103,10 +101,8 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_ViewClipRange::DumpJson(Standard_OStream& theOStream,
                                        Standard_Integer  theDepth) const
 {

@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2Dplane, Graphic3d_Texture2D)
 
-// =======================================================================
-// function : Graphic3d_Texture2Dplane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const TCollection_AsciiString& theFileName)
     : Graphic3d_Texture2D(theFileName)
 {
@@ -34,10 +32,8 @@ Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const TCollection_AsciiString
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2Dplane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const Graphic3d_NameOfTexture2D theNOT)
     : Graphic3d_Texture2D(theNOT)
 {
@@ -46,10 +42,8 @@ Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const Graphic3d_NameOfTexture
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : Graphic3d_Texture2Dplane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const Handle(Image_PixMap)& thePixMap)
     : Graphic3d_Texture2D(thePixMap)
 {
@@ -58,10 +52,8 @@ Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane(const Handle(Image_PixMap)& t
                        Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
-// =======================================================================
-// function : SetPlaneS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetPlaneS(const Standard_ShortReal theA,
                                          const Standard_ShortReal theB,
                                          const Standard_ShortReal theC,
@@ -73,10 +65,8 @@ void Graphic3d_Texture2Dplane::SetPlaneS(const Standard_ShortReal theA,
   myPlaneName = Graphic3d_NOTP_UNKNOWN;
 }
 
-// =======================================================================
-// function : SetPlaneT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetPlaneT(const Standard_ShortReal theA,
                                          const Standard_ShortReal theB,
                                          const Standard_ShortReal theC,
@@ -88,10 +78,8 @@ void Graphic3d_Texture2Dplane::SetPlaneT(const Standard_ShortReal theA,
   myPlaneName = Graphic3d_NOTP_UNKNOWN;
 }
 
-// =======================================================================
-// function : SetPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetPlane(const Graphic3d_NameOfTexturePlane thePlane)
 {
   switch (thePlane)
@@ -121,10 +109,8 @@ void Graphic3d_Texture2Dplane::SetPlane(const Graphic3d_NameOfTexturePlane thePl
   myPlaneName = thePlane;
 }
 
-// =======================================================================
-// function : SetScaleS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetScaleS(const Standard_ShortReal theVal)
 {
   Graphic3d_Vec2 aScale = myParams->Scale();
@@ -132,10 +118,8 @@ void Graphic3d_Texture2Dplane::SetScaleS(const Standard_ShortReal theVal)
   myParams->SetScale(aScale);
 }
 
-// =======================================================================
-// function : SetScaleT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetScaleT(const Standard_ShortReal theVal)
 {
   Graphic3d_Vec2 aScale = myParams->Scale();
@@ -143,10 +127,8 @@ void Graphic3d_Texture2Dplane::SetScaleT(const Standard_ShortReal theVal)
   myParams->SetScale(aScale);
 }
 
-// =======================================================================
-// function : SetTranslateS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetTranslateS(const Standard_ShortReal theVal)
 {
   Graphic3d_Vec2 aVec = myParams->Translation();
@@ -154,10 +136,8 @@ void Graphic3d_Texture2Dplane::SetTranslateS(const Standard_ShortReal theVal)
   myParams->SetTranslation(aVec);
 }
 
-// =======================================================================
-// function : SetTranslateT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetTranslateT(const Standard_ShortReal theVal)
 {
   Graphic3d_Vec2 aVec = myParams->Translation();
@@ -165,19 +145,15 @@ void Graphic3d_Texture2Dplane::SetTranslateT(const Standard_ShortReal theVal)
   myParams->SetTranslation(aVec);
 }
 
-// =======================================================================
-// function : SetRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::SetRotation(const Standard_ShortReal theAngleDegrees)
 {
   myParams->SetRotation(theAngleDegrees);
 }
 
-// =======================================================================
-// function : PlaneS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::PlaneS(Standard_ShortReal& theA,
                                       Standard_ShortReal& theB,
                                       Standard_ShortReal& theC,
@@ -190,10 +166,8 @@ void Graphic3d_Texture2Dplane::PlaneS(Standard_ShortReal& theA,
   theD                          = aPlaneS.w();
 }
 
-// =======================================================================
-// function : PlaneT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::PlaneT(Standard_ShortReal& theA,
                                       Standard_ShortReal& theB,
                                       Standard_ShortReal& theC,
@@ -206,55 +180,43 @@ void Graphic3d_Texture2Dplane::PlaneT(Standard_ShortReal& theA,
   theD                          = aPlaneT.w();
 }
 
-// =======================================================================
-// function : TranslateS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::TranslateS(Standard_ShortReal& theVal) const
 {
   theVal = myParams->Translation().x();
 }
 
-// =======================================================================
-// function : TranslateT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::TranslateT(Standard_ShortReal& theVal) const
 {
   theVal = myParams->Translation().y();
 }
 
-// =======================================================================
-// function : Rotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::Rotation(Standard_ShortReal& theVal) const
 {
   theVal = myParams->Rotation();
 }
 
-// =======================================================================
-// function : Plane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_NameOfTexturePlane Graphic3d_Texture2Dplane::Plane() const
 {
   return myPlaneName;
 }
 
-// =======================================================================
-// function : ScaleS
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::ScaleS(Standard_ShortReal& theVal) const
 {
   theVal = myParams->Scale().x();
 }
 
-// =======================================================================
-// function : ScaleT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Texture2Dplane::ScaleT(Standard_ShortReal& theVal) const
 {
   theVal = myParams->Scale().y();

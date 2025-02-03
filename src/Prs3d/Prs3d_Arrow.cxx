@@ -102,10 +102,8 @@ Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments(const gp_Pnt&       
   return aSegments;
 }
 
-// ============================================================================
-// function : DrawShaded
-// purpose  :
-// ============================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded(const gp_Ax1&          theAxis,
                                                            const Standard_Real    theTubeRadius,
                                                            const Standard_Real    theAxisLength,

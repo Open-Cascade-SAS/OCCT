@@ -37,10 +37,8 @@ extern "C"
 
 IMPLEMENT_STANDARD_RTTIEXT(Media_CodecContext, Standard_Transient)
 
-// =======================================================================
-// function : Media_CodecContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Media_CodecContext::Media_CodecContext()
     : myCodecCtx(NULL),
       myCodec(NULL),
@@ -55,19 +53,15 @@ Media_CodecContext::Media_CodecContext()
 #endif
 }
 
-// =======================================================================
-// function : ~Media_CodecContext
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Media_CodecContext::~Media_CodecContext()
 {
   Close();
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_CodecContext::Init(const AVStream& theStream, double thePtsStartBase, int theNbThreads)
 {
 #ifdef HAVE_FFMPEG
@@ -77,10 +71,8 @@ bool Media_CodecContext::Init(const AVStream& theStream, double thePtsStartBase,
 #endif
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_CodecContext::Init(const AVStream& theStream,
                               double          thePtsStartBase,
                               int             theNbThreads,
@@ -163,10 +155,8 @@ bool Media_CodecContext::Init(const AVStream& theStream,
 #endif
 }
 
-// =======================================================================
-// function : Close
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Media_CodecContext::Close()
 {
   if (myCodecCtx != NULL)
@@ -177,10 +167,8 @@ void Media_CodecContext::Close()
   }
 }
 
-// =======================================================================
-// function : Flush
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Media_CodecContext::Flush()
 {
   if (myCodecCtx != NULL)
@@ -191,10 +179,8 @@ void Media_CodecContext::Flush()
   }
 }
 
-// =======================================================================
-// function : SizeX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int Media_CodecContext::SizeX() const
 {
 #ifdef HAVE_FFMPEG
@@ -204,10 +190,8 @@ int Media_CodecContext::SizeX() const
 #endif
 }
 
-// =======================================================================
-// function : SizeY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int Media_CodecContext::SizeY() const
 {
 #ifdef HAVE_FFMPEG
@@ -217,19 +201,15 @@ int Media_CodecContext::SizeY() const
 #endif
 }
 
-// =======================================================================
-// function : CanProcessPacket
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_CodecContext::CanProcessPacket(const Handle(Media_Packet)& thePacket) const
 {
   return !thePacket.IsNull() && myStreamIndex == thePacket->StreamIndex();
 }
 
-// =======================================================================
-// function : SendPacket
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_CodecContext::SendPacket(const Handle(Media_Packet)& thePacket)
 {
   if (!CanProcessPacket(thePacket))
@@ -249,10 +229,8 @@ bool Media_CodecContext::SendPacket(const Handle(Media_Packet)& thePacket)
 #endif
 }
 
-// =======================================================================
-// function : ReceiveFrame
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Media_CodecContext::ReceiveFrame(const Handle(Media_Frame)& theFrame)
 {
   if (theFrame.IsNull())

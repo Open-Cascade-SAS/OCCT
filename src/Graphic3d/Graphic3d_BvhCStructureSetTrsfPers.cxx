@@ -17,10 +17,8 @@
 
 #include <Graphic3d_CStructure.hxx>
 
-// =======================================================================
-// function : Graphic3d_BvhCStructureSetTrsfPers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
   const Handle(BVH_Builder3d)& theBuilder)
     : myIsDirty(Standard_False),
@@ -30,28 +28,22 @@ Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
   //
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_BvhCStructureSetTrsfPers::Size() const
 {
   return myStructs.Size();
 }
 
-// =======================================================================
-// function : Box
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_BndBox3d Graphic3d_BvhCStructureSetTrsfPers::Box(const Standard_Integer theIdx) const
 {
   return *myStructBoxes(theIdx + 1);
 }
 
-// =======================================================================
-// function : Center
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Graphic3d_BvhCStructureSetTrsfPers::Center(const Standard_Integer theIdx,
                                                          const Standard_Integer theAxis) const
 {
@@ -59,10 +51,8 @@ Standard_Real Graphic3d_BvhCStructureSetTrsfPers::Center(const Standard_Integer 
   return (aBndBox.CornerMin()[theAxis] + aBndBox.CornerMax()[theAxis]) * 0.5;
 }
 
-// =======================================================================
-// function : Swap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_BvhCStructureSetTrsfPers::Swap(const Standard_Integer theIdx1,
                                               const Standard_Integer theIdx2)
 {
@@ -73,10 +63,8 @@ void Graphic3d_BvhCStructureSetTrsfPers::Swap(const Standard_Integer theIdx1,
   myStructBoxes.Swap(aStructIdx1, aStructIdx2);
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Add(const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer aSize = myStructs.Size();
@@ -91,10 +79,8 @@ Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Add(const Graphic3d_CStruct
   return Standard_False;
 }
 
-// =======================================================================
-// function : Remove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Remove(const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer anIndex = myStructs.FindIndex(theStruct);
@@ -111,20 +97,16 @@ Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Remove(const Graphic3d_CStr
   return Standard_False;
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_BvhCStructureSetTrsfPers::Clear()
 {
   myStructs.Clear();
   MarkDirty();
 }
 
-// =======================================================================
-// function : GetStructureById
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById(
   Standard_Integer theId)
 {

@@ -89,28 +89,22 @@ static const Quantity_StandardColor THE_COLORS[] = {
 #include "Quantity_ColorTable.pxx"
 };
 
-// =======================================================================
-// function : Epsilon
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Quantity_Color::Epsilon()
 {
   return TheEpsilon;
 }
 
-// =======================================================================
-// function : SetEpsilon
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::SetEpsilon(const Standard_Real theEpsilon)
 {
   TheEpsilon = theEpsilon;
 }
 
-// =======================================================================
-// function : valuesOf
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 NCollection_Vec3<float> Quantity_Color::valuesOf(const Quantity_NameOfColor theName,
                                                  const Quantity_TypeOfColor theType)
 {
@@ -136,10 +130,8 @@ NCollection_Vec3<float> Quantity_Color::valuesOf(const Quantity_NameOfColor theN
   throw Standard_ProgramError("Internal error");
 }
 
-// =======================================================================
-// function : StringName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_CString Quantity_Color::StringName(const Quantity_NameOfColor theName)
 {
   if ((Standard_Integer)theName < 0 || (Standard_Integer)theName > Quantity_NOC_WHITE)
@@ -149,10 +141,8 @@ Standard_CString Quantity_Color::StringName(const Quantity_NameOfColor theName)
   return THE_COLORS[theName].StringName;
 }
 
-// =======================================================================
-// function : ColorFromName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Quantity_Color::ColorFromName(const Standard_CString theName,
                                                Quantity_NameOfColor&  theColor)
 {
@@ -244,10 +234,8 @@ bool Quantity_Color::ColorFromHex(const Standard_CString theHexColorString,
   return true;
 }
 
-// =======================================================================
-// function : Quantity_Color
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_Color::Quantity_Color(const Standard_Real        theC1,
                                const Standard_Real        theC2,
                                const Standard_Real        theC3,
@@ -256,20 +244,16 @@ Quantity_Color::Quantity_Color(const Standard_Real        theC1,
   SetValues(theC1, theC2, theC3, theType);
 }
 
-// =======================================================================
-// function : Quantity_Color
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_Color::Quantity_Color(const NCollection_Vec3<float>& theRgb)
     : myRgb(theRgb)
 {
   Quantity_ColorValidateRgbRange(theRgb.r(), theRgb.g(), theRgb.b());
 }
 
-// =======================================================================
-// function : ChangeContrast
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::ChangeContrast(const Standard_Real theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
@@ -280,10 +264,8 @@ void Quantity_Color::ChangeContrast(const Standard_Real theDelta)
   }
 }
 
-// =======================================================================
-// function : ChangeIntensity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::ChangeIntensity(const Standard_Real theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
@@ -294,10 +276,8 @@ void Quantity_Color::ChangeIntensity(const Standard_Real theDelta)
   }
 }
 
-// =======================================================================
-// function : SetValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::SetValues(const Standard_Real        theC1,
                                const Standard_Real        theC2,
                                const Standard_Real        theC3,
@@ -338,10 +318,8 @@ void Quantity_Color::SetValues(const Standard_Real        theC1,
   }
 }
 
-// =======================================================================
-// function : Delta
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::Delta(const Quantity_Color& theColor,
                            Standard_Real&        theDC,
                            Standard_Real&        theDI) const
@@ -424,10 +402,8 @@ Standard_Real Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   return aDeltaE2000;
 }
 
-// =======================================================================
-// function : Name
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_NameOfColor Quantity_Color::Name() const
 {
   // it is better finding closest sRGB color (closest to human eye) instead of linear RGB color,
@@ -453,10 +429,8 @@ Quantity_NameOfColor Quantity_Color::Name() const
   return aResName;
 }
 
-// =======================================================================
-// function : Values
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Quantity_Color::Values(Standard_Real&             theR1,
                             Standard_Real&             theR2,
                             Standard_Real&             theR3,

@@ -62,10 +62,8 @@ static bool hasDepthStencilAttach(const Handle(OpenGl_Context)& theCtx)
 }
 } // namespace
 
-// =======================================================================
-// function : OpenGl_FrameBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameBuffer::OpenGl_FrameBuffer(const TCollection_AsciiString& theResourceId)
     : OpenGl_NamedResource(theResourceId),
       myInitVPSizeX(0),
@@ -86,37 +84,29 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer(const TCollection_AsciiString& theResourc
   myColorTextures.Append(new OpenGl_Texture(theResourceId + ":color"));
 }
 
-// =======================================================================
-// function : ~OpenGl_FrameBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : GetSizeX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_FrameBuffer::GetSizeX() const
 {
   return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeX() : 0;
 }
 
-// =======================================================================
-// function : GetSizeY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_FrameBuffer::GetSizeY() const
 {
   return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeY() : 0;
 }
 
-// =======================================================================
-// function : InitWrapper
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::InitWrapper(
   const Handle(OpenGl_Context)&                       theGlContext,
   const NCollection_Sequence<Handle(OpenGl_Texture)>& theColorTextures,
@@ -196,10 +186,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper(
   return true;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlContext,
                                           const Graphic3d_Vec2i&        theSize,
                                           const Standard_Integer        theColorFormat,
@@ -214,10 +202,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlCon
   return Init(theGlContext, theSize, aColorFormats, theDepthFormat, theNbSamples);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlContext,
                                           const Graphic3d_Vec2i&        theSize,
                                           const OpenGl_ColorFormats&    theColorFormats,
@@ -357,10 +343,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlCon
   return Standard_True;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlContext,
                                           const Graphic3d_Vec2i&        theSize,
                                           const OpenGl_ColorFormats&    theColorFormats,
@@ -581,10 +565,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init(const Handle(OpenGl_Context)& theGlCon
   return Standard_True;
 }
 
-// =======================================================================
-// function : InitLazy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::InitLazy(const Handle(OpenGl_Context)& theGlContext,
                                               const Graphic3d_Vec2i&        theViewportSize,
                                               const Standard_Integer        theColorFormat,
@@ -596,10 +578,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy(const Handle(OpenGl_Context)& theG
   return InitLazy(theGlContext, theViewportSize, aColorFormats, theDepthFormat, theNbSamples);
 }
 
-// =======================================================================
-// function : InitLazy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::InitLazy(const Handle(OpenGl_Context)& theGlContext,
                                               const Graphic3d_Vec2i&        theViewportSize,
                                               const OpenGl_ColorFormats&    theColorFormats,
@@ -616,10 +596,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy(const Handle(OpenGl_Context)& theG
   return Init(theGlContext, theViewportSize, theColorFormats, theDepthFormat, theNbSamples);
 }
 
-// =======================================================================
-// function : InitWithRB
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::InitWithRB(const Handle(OpenGl_Context)& theGlCtx,
                                                 const Graphic3d_Vec2i&        theSize,
                                                 const Standard_Integer        theColorFormat,
@@ -639,10 +617,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB(const Handle(OpenGl_Context)& th
                           theColorRBufferFromWindow);
 }
 
-// =======================================================================
-// function : initRenderBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::initRenderBuffer(const Handle(OpenGl_Context)& theGlCtx,
                                                       const Graphic3d_Vec2i&        theSize,
                                                       const OpenGl_ColorFormats&    theColorFormats,
@@ -837,10 +813,8 @@ Standard_Boolean OpenGl_FrameBuffer::initRenderBuffer(const Handle(OpenGl_Contex
   return Standard_True;
 }
 
-// =======================================================================
-// function : InitWrapper
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::InitWrapper(const Handle(OpenGl_Context)& theGlCtx)
 {
   myNbSamples = 0;
@@ -941,10 +915,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper(const Handle(OpenGl_Context)& t
   return Standard_True;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::Release(OpenGl_Context* theGlCtx)
 {
   if (isValidFrameBuffer())
@@ -991,20 +963,16 @@ void OpenGl_FrameBuffer::Release(OpenGl_Context* theGlCtx)
   myVPSizeY = 0;
 }
 
-// =======================================================================
-// function : SetupViewport
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::SetupViewport(const Handle(OpenGl_Context)& theGlCtx)
 {
   const Standard_Integer aViewport[4] = {0, 0, myVPSizeX, myVPSizeY};
   theGlCtx->ResizeViewport(aViewport);
 }
 
-// =======================================================================
-// function : ChangeViewport
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::ChangeViewport(const Standard_Integer theVPSizeX,
                                         const Standard_Integer theVPSizeY)
 {
@@ -1012,39 +980,31 @@ void OpenGl_FrameBuffer::ChangeViewport(const Standard_Integer theVPSizeX,
   myVPSizeY = theVPSizeY;
 }
 
-// =======================================================================
-// function : BindBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::BindBuffer(const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myGlFBufferId);
   theGlCtx->SetFrameBufferSRGB(true);
 }
 
-// =======================================================================
-// function : BindDrawBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::BindDrawBuffer(const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, myGlFBufferId);
   theGlCtx->SetFrameBufferSRGB(true);
 }
 
-// =======================================================================
-// function : BindReadBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::BindReadBuffer(const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer(GL_READ_FRAMEBUFFER, myGlFBufferId);
 }
 
-// =======================================================================
-// function : UnbindBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_FrameBuffer::UnbindBuffer(const Handle(OpenGl_Context)& theGlCtx)
 {
   if (!theGlCtx->DefaultFrameBuffer().IsNull()
@@ -1059,10 +1019,8 @@ void OpenGl_FrameBuffer::UnbindBuffer(const Handle(OpenGl_Context)& theGlCtx)
   }
 }
 
-// =======================================================================
-// function : getAligned
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Size getAligned(const Standard_Size theNumber, const Standard_Size theAlignment)
 {
   return theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment;
@@ -1083,10 +1041,8 @@ inline void convertRowFromRgba(T*                     theRgbRow,
   }
 }
 
-// =======================================================================
-// function : BufferDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_FrameBuffer::BufferDump(const Handle(OpenGl_Context)&     theGlCtx,
                                                 const Handle(OpenGl_FrameBuffer)& theFbo,
                                                 Image_PixMap&                     theImage,
@@ -1376,10 +1332,8 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump(const Handle(OpenGl_Context)&   
   return !hasErrors;
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_FrameBuffer::EstimatedDataSize() const
 {
   if (!IsValid())

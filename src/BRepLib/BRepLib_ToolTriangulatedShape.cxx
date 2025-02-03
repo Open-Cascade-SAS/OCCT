@@ -22,10 +22,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
-// =======================================================================
-// function : ComputeNormals
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void BRepLib_ToolTriangulatedShape::ComputeNormals(const TopoDS_Face&                theFace,
                                                    const Handle(Poly_Triangulation)& theTris,
                                                    Poly_Connect&                     thePolyConnect)

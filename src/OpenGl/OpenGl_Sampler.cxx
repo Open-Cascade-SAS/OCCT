@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 
-// =======================================================================
-// function : OpenGl_Sampler
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Sampler::OpenGl_Sampler(const Handle(Graphic3d_TextureParams)& theParams)
     : myParams(theParams),
       mySamplerRevision(0),
@@ -38,19 +36,15 @@ OpenGl_Sampler::OpenGl_Sampler(const Handle(Graphic3d_TextureParams)& theParams)
   }
 }
 
-// =======================================================================
-// function : ~OpenGl_Sampler
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Sampler::~OpenGl_Sampler()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::Release(OpenGl_Context* theCtx)
 {
   myIsImmutable     = false;
@@ -73,10 +67,8 @@ void OpenGl_Sampler::Release(OpenGl_Context* theCtx)
   mySamplerID = NO_SAMPLER;
 }
 
-// =======================================================================
-// function : Create
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Sampler::Create(const Handle(OpenGl_Context)& theCtx)
 {
   if (isValidSampler())
@@ -92,10 +84,8 @@ Standard_Boolean OpenGl_Sampler::Create(const Handle(OpenGl_Context)& theCtx)
   return Standard_True;
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Sampler::Init(const Handle(OpenGl_Context)& theCtx,
                                       const OpenGl_Texture&         theTexture)
 {
@@ -151,10 +141,8 @@ void OpenGl_Sampler::Unbind(const Handle(OpenGl_Context)& theCtx,
   }
 }
 
-// =======================================================================
-// function : setParameter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::setParameter(const Handle(OpenGl_Context)& theCtx,
                                   OpenGl_Sampler*               theSampler,
                                   unsigned int                  theTarget,
@@ -171,10 +159,8 @@ void OpenGl_Sampler::setParameter(const Handle(OpenGl_Context)& theCtx,
   }
 }
 
-// =======================================================================
-// function : SetParameters
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::SetParameters(const Handle(Graphic3d_TextureParams)& theParams)
 {
   if (myParams != theParams)
@@ -184,10 +170,8 @@ void OpenGl_Sampler::SetParameters(const Handle(Graphic3d_TextureParams)& thePar
   }
 }
 
-// =======================================================================
-// function : applySamplerParams
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          theCtx,
                                         const Handle(Graphic3d_TextureParams)& theParams,
                                         OpenGl_Sampler*                        theSampler,
@@ -273,10 +257,8 @@ void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          t
   }
 }
 
-// =======================================================================
-// function : applyGlobalTextureParams
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::applyGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
                                               const OpenGl_Texture&                  theTexture,
                                               const Handle(Graphic3d_TextureParams)& theParams)
@@ -376,10 +358,8 @@ void OpenGl_Sampler::applyGlobalTextureParams(const Handle(OpenGl_Context)&     
   }
 }
 
-// =======================================================================
-// function : resetGlobalTextureParams
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Sampler::resetGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
                                               const OpenGl_Texture&                  theTexture,
                                               const Handle(Graphic3d_TextureParams)& theParams)

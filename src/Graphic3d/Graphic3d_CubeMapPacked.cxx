@@ -19,10 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapPacked, Graphic3d_CubeMap)
 
-// =======================================================================
-// function : Graphic3d_CubeMapPacked
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const TCollection_AsciiString&         theFilePath,
                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
     : Graphic3d_CubeMap(theFilePath),
@@ -31,10 +29,8 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const TCollection_AsciiString& 
 {
 }
 
-// =======================================================================
-// function : Graphic3d_CubeMapPacked
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const Handle(Image_PixMap)&            theImage,
                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
     : Graphic3d_CubeMap(Handle(Image_PixMap)()),
@@ -47,10 +43,8 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const Handle(Image_PixMap)&    
   }
 }
 
-// =======================================================================
-// function : CompressedValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -75,10 +69,8 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue(
   return Handle(Image_CompressedPixMap)();
 }
 
-// =======================================================================
-// function : Value
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -135,10 +127,8 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
   return Handle(Image_PixMap)();
 }
 
-// =======================================================================
-// function : checkOrder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
   const NCollection_Array1<unsigned int>& theOrder)
 {
@@ -177,10 +167,8 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
   return anOrderIsValid;
 }
 
-// =======================================================================
-// function : checkImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_CubeMapPacked::checkImage(const Handle(Image_PixMap)& theImage,
                                                      unsigned int&               theTileNumberX)
 {
@@ -211,10 +199,8 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkImage(const Handle(Image_PixMap)&
   return Standard_True;
 }
 
-// =======================================================================
-// function : tryLoadImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CubeMapPacked::tryLoadImage(const Handle(Image_SupportedFormats)& theSupported,
                                            const TCollection_AsciiString&        theFilePath)
 {

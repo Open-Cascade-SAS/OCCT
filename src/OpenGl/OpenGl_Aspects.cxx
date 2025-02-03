@@ -37,10 +37,8 @@ inline Graphic3d_MaterialAspect initDefaultMaterial()
 static const Graphic3d_MaterialAspect THE_DEFAULT_MATERIAL = initDefaultMaterial();
 } // namespace
 
-// =======================================================================
-// function : OpenGl_Aspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Aspects::OpenGl_Aspects()
     : myAspect(new Graphic3d_Aspects()),
       myShadingModel(Graphic3d_TypeOfShadingModel_Unlit)
@@ -54,20 +52,16 @@ OpenGl_Aspects::OpenGl_Aspects()
   myAspect->SetHatchStyle(Handle(Graphic3d_HatchStyle)());
 }
 
-// =======================================================================
-// function : OpenGl_Aspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Aspects::OpenGl_Aspects(const Handle(Graphic3d_Aspects)& theAspect)
     : myShadingModel(Graphic3d_TypeOfShadingModel_DEFAULT)
 {
   SetAspect(theAspect);
 }
 
-// =======================================================================
-// function : SetAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Aspects::SetAspect(const Handle(Graphic3d_Aspects)& theAspect)
 {
   myAspect = theAspect;
@@ -91,19 +85,15 @@ void OpenGl_Aspects::SetAspect(const Handle(Graphic3d_Aspects)& theAspect)
   }
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Aspects::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   theWorkspace->SetAspects(this);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Aspects::Release(OpenGl_Context* theContext)
 {
   myResTextureSet.Release(theContext);
@@ -111,10 +101,8 @@ void OpenGl_Aspects::Release(OpenGl_Context* theContext)
   myResProgram.Release(theContext);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Aspects::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Aspects)

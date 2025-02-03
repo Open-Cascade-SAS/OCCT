@@ -18,10 +18,8 @@
 
 #include <limits>
 
-// =======================================================================
-// function : RoughnessFromSpecular
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_Color& theSpecular,
                                                                 const Standard_Real   theShiness)
 {
@@ -37,10 +35,8 @@ Standard_ShortReal Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_C
   return (Standard_ShortReal)aRoughnessFactor;
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_PBRMaterial::Graphic3d_PBRMaterial()
     : myColor(0.f, 0.f, 0.f, 1.f),
       myMetallic(0.f),
@@ -50,19 +46,15 @@ Graphic3d_PBRMaterial::Graphic3d_PBRMaterial()
 {
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_PBRMaterial::Graphic3d_PBRMaterial(const Graphic3d_BSDF& theBSDF)
 {
   SetBSDF(theBSDF);
 }
 
-// =======================================================================
-// function : SetMetallic
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetMetallic(Standard_ShortReal theMetallic)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
@@ -70,19 +62,15 @@ void Graphic3d_PBRMaterial::SetMetallic(Standard_ShortReal theMetallic)
     "'metallic' parameter of PBR material must be in range [0, 1]") myMetallic = theMetallic;
 }
 
-// =======================================================================
-// function : Roughness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Graphic3d_PBRMaterial::Roughness(Standard_ShortReal theNormalizedRoughness)
 {
   return theNormalizedRoughness * (1.f - MinRoughness()) + MinRoughness();
 }
 
-// =======================================================================
-// function : SetRoughness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetRoughness(Standard_ShortReal theRoughness)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
@@ -90,10 +78,8 @@ void Graphic3d_PBRMaterial::SetRoughness(Standard_ShortReal theRoughness)
     "'roughness' parameter of PBR material must be in range [0, 1]") myRoughness = theRoughness;
 }
 
-// =======================================================================
-// function : SetIOR
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetIOR(Standard_ShortReal theIOR)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
@@ -101,29 +87,23 @@ void Graphic3d_PBRMaterial::SetIOR(Standard_ShortReal theIOR)
     "'IOR' parameter of PBR material must be in range [1, 3]") myIOR = theIOR;
 }
 
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetColor(const Quantity_ColorRGBA& theColor)
 {
   myColor.SetRGB(theColor.GetRGB());
   SetAlpha(theColor.Alpha());
 }
 
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetColor(const Quantity_Color& theColor)
 {
   myColor.SetRGB(theColor);
 }
 
-// =======================================================================
-// function : SetAlpha
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetAlpha(Standard_ShortReal theAlpha)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
@@ -131,10 +111,8 @@ void Graphic3d_PBRMaterial::SetAlpha(Standard_ShortReal theAlpha)
     "'alpha' parameter of PBR material must be in range [0, 1]") myColor.SetAlpha(theAlpha);
 }
 
-// =======================================================================
-// function : SetEmission
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetEmission(const Graphic3d_Vec3& theEmission)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
@@ -143,10 +121,8 @@ void Graphic3d_PBRMaterial::SetEmission(const Graphic3d_Vec3& theEmission)
     theEmission;
 }
 
-// =======================================================================
-// function : SetBSDF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
 {
   SetEmission(theBSDF.Le);
@@ -195,10 +171,8 @@ void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
   }
 }
 
-// =======================================================================
-// function : GenerateEnvLUT
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_PBRMaterial::GenerateEnvLUT(const Handle(Image_PixMap)& theLUT,
                                            unsigned int                theNbIntegralSamples)
 {
@@ -242,10 +216,8 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const Handle(Image_PixMap)& theLUT,
   }
 }
 
-// =======================================================================
-// function : SpecIBLMapSamplesFactor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(Standard_ShortReal theProbability,
                                                                   Standard_ShortReal theRoughness)
 {
@@ -253,10 +225,8 @@ Standard_ShortReal Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(Standard_Short
          / Standard_ShortReal(M_PI);
 }
 
-// =======================================================================
-// function : lutGenGeometryFactor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Graphic3d_PBRMaterial::lutGenGeometryFactor(Standard_ShortReal theCosL,
                                                                Standard_ShortReal theCosV,
                                                                Standard_ShortReal theRoughness)
@@ -270,10 +240,8 @@ Standard_ShortReal Graphic3d_PBRMaterial::lutGenGeometryFactor(Standard_ShortRea
   return aGeometryFactor;
 }
 
-// =======================================================================
-// function : lutGenHammersley
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec2 Graphic3d_PBRMaterial::lutGenHammersley(unsigned int theNumber,
                                                        unsigned int theCount)
 {
@@ -290,10 +258,8 @@ Graphic3d_Vec2 Graphic3d_PBRMaterial::lutGenHammersley(unsigned int theNumber,
   return Graphic3d_Vec2(theNumber / Standard_ShortReal(theCount), aPhi2);
 }
 
-// =======================================================================
-// function : lutGenImportanceSampleCosTheta
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
   Standard_ShortReal theHammersleyPointComponent,
   Standard_ShortReal theRoughness)
@@ -313,10 +279,8 @@ Standard_ShortReal Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
   }
 }
 
-// =======================================================================
-// function : lutGenImportanceSample
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenImportanceSample(
   const Graphic3d_Vec2& theHammerslayPoint,
   Standard_ShortReal    theRoughness)
@@ -330,19 +294,15 @@ Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenImportanceSample(
   return Graphic3d_Vec3(aSinTheta * cosf(aPhi), aSinTheta * sinf(aPhi), aCosTheta);
 }
 
-// =======================================================================
-// function : lutGenView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenView(Standard_ShortReal theCosV)
 {
   return Graphic3d_Vec3(0.f, sqrtf(1.f - theCosV * theCosV), theCosV);
 }
 
-// =======================================================================
-// function : lutGenReflect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenReflect(const Graphic3d_Vec3& theVector,
                                                     const Graphic3d_Vec3& theAxis)
 {

@@ -45,10 +45,8 @@ static const GLfloat THE_CAPPING_PLN_VERTS[12 * (4 + 4 + 4)] = {
   0.0f,  0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,  1.0f,  0.0f, 0.0f};
 } // namespace
 
-// =======================================================================
-// function : OpenGl_CappingPlaneResource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
   const Handle(Graphic3d_ClipPlane)& thePlane)
     : myPrimitives(NULL),
@@ -69,19 +67,15 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
   }
 }
 
-// =======================================================================
-// function : OpenGl_CappingPlaneResource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_CappingPlaneResource::Update(const Handle(OpenGl_Context)&    theCtx,
                                          const Handle(Graphic3d_Aspects)& theObjAspect)
 {
@@ -89,10 +83,8 @@ void OpenGl_CappingPlaneResource::Update(const Handle(OpenGl_Context)&    theCtx
   updateAspect(theObjAspect);
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_CappingPlaneResource::Release(OpenGl_Context* theContext)
 {
   OpenGl_Element::Destroy(theContext, myAspect);
@@ -101,10 +93,8 @@ void OpenGl_CappingPlaneResource::Release(OpenGl_Context* theContext)
   myAspectMod   = (unsigned int)-1;
 }
 
-// =======================================================================
-// function : updateAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_CappingPlaneResource::updateAspect(const Handle(Graphic3d_Aspects)& theObjAspect)
 {
   if (myAspect == NULL)
@@ -158,10 +148,8 @@ void OpenGl_CappingPlaneResource::updateAspect(const Handle(Graphic3d_Aspects)& 
   myAspect->SetAspect(myFillAreaAspect);
 }
 
-// =======================================================================
-// function : updateTransform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_CappingPlaneResource::updateTransform(const Handle(OpenGl_Context)& theCtx)
 {
   if (myEquationMod == myPlaneRoot->MCountEquation()

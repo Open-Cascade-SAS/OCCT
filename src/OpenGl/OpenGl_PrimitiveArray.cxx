@@ -169,10 +169,8 @@ private:
   Standard_Integer    Stride;
 };
 
-// =======================================================================
-// function : clearMemoryGL
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::clearMemoryGL(const Handle(OpenGl_Context)& theGlCtx) const
 {
   if (!myVboIndices.IsNull())
@@ -187,10 +185,8 @@ void OpenGl_PrimitiveArray::clearMemoryGL(const Handle(OpenGl_Context)& theGlCtx
   }
 }
 
-// =======================================================================
-// function : initNormalVbo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Context)& theCtx) const
 {
   switch (myAttribs->NbAttributes)
@@ -315,10 +311,8 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo(const Handle(OpenGl_Contex
   return Standard_True;
 }
 
-// =======================================================================
-// function : buildVBO
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& theCtx,
                                                  const Standard_Boolean        theToKeepData) const
 {
@@ -410,10 +404,8 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO(const Handle(OpenGl_Context)& t
   return Standard_True;
 }
 
-// =======================================================================
-// function : updateVBO
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::updateVBO(const Handle(OpenGl_Context)& theCtx) const
 {
   if (!myAttribs.IsNull())
@@ -451,10 +443,8 @@ void OpenGl_PrimitiveArray::updateVBO(const Handle(OpenGl_Context)& theCtx) cons
   }
 }
 
-// =======================================================================
-// function : drawArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspace,
                                       const Graphic3d_Vec4*           theFaceColors,
                                       const Standard_Boolean          theHasVertColor) const
@@ -541,10 +531,8 @@ void OpenGl_PrimitiveArray::drawArray(const Handle(OpenGl_Workspace)& theWorkspa
   myVboAttribs->UnbindAllAttributes(aGlContext);
 }
 
-// =======================================================================
-// function : drawEdges
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
@@ -645,10 +633,8 @@ void OpenGl_PrimitiveArray::drawEdges(const Handle(OpenGl_Workspace)& theWorkspa
   aGlContext->SetPolygonMode(aPolyModeOld);
 }
 
-// =======================================================================
-// function : drawMarkers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::drawMarkers(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const OpenGl_Aspects*         anAspectMarker = theWorkspace->Aspects();
@@ -714,10 +700,8 @@ void OpenGl_PrimitiveArray::drawMarkers(const Handle(OpenGl_Workspace)& theWorks
   }
 }
 
-// =======================================================================
-// function : OpenGl_PrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriver)
 
     : myDrawMode(DRAW_MODE_NONE),
@@ -730,10 +714,8 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriv
   }
 }
 
-// =======================================================================
-// function : OpenGl_PrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*          theDriver,
                                              const Graphic3d_TypeOfPrimitiveArray theType,
                                              const Handle(Graphic3d_IndexBuffer)& theIndices,
@@ -766,19 +748,15 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*        
   setDrawMode(theType);
 }
 
-// =======================================================================
-// function : ~OpenGl_PrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
 {
   //
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::Release(OpenGl_Context* theContext)
 {
   myIsVboInit = Standard_False;
@@ -800,10 +778,8 @@ void OpenGl_PrimitiveArray::Release(OpenGl_Context* theContext)
   }
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_PrimitiveArray::EstimatedDataSize() const
 {
   Standard_Size aSize = 0;
@@ -818,10 +794,8 @@ Standard_Size OpenGl_PrimitiveArray::EstimatedDataSize() const
   return aSize;
 }
 
-// =======================================================================
-// function : UpdateDrawStats
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
                                             bool                         theIsDetailed) const
 {
@@ -898,10 +872,8 @@ void OpenGl_PrimitiveArray::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStat
   }
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   if (myDrawMode == DRAW_MODE_NONE)
@@ -1133,10 +1105,8 @@ void OpenGl_PrimitiveArray::Render(const Handle(OpenGl_Workspace)& theWorkspace)
   }
 }
 
-// =======================================================================
-// function : setDrawMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::setDrawMode(const Graphic3d_TypeOfPrimitiveArray theType)
 {
   if (myAttribs.IsNull())
@@ -1209,10 +1179,8 @@ void OpenGl_PrimitiveArray::setDrawMode(const Graphic3d_TypeOfPrimitiveArray the
   }
 }
 
-// =======================================================================
-// function : processIndices
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_PrimitiveArray::processIndices(
   const Handle(OpenGl_Context)& theContext) const
 {
@@ -1246,10 +1214,8 @@ Standard_Boolean OpenGl_PrimitiveArray::processIndices(
   return Standard_True;
 }
 
-// =======================================================================
-// function : InitBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::InitBuffers(const Handle(OpenGl_Context)&        theContext,
                                         const Graphic3d_TypeOfPrimitiveArray theType,
                                         const Handle(Graphic3d_IndexBuffer)& theIndices,
@@ -1270,10 +1236,8 @@ void OpenGl_PrimitiveArray::InitBuffers(const Handle(OpenGl_Context)&        the
   setDrawMode(theType);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_PrimitiveArray::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_PrimitiveArray)

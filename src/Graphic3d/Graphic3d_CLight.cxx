@@ -24,10 +24,8 @@ namespace
 static volatile Standard_Integer THE_LIGHT_COUNTER = 0;
 }
 
-// =======================================================================
-// function : makeId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::makeId()
 {
   TCollection_AsciiString aTypeSuffix;
@@ -51,10 +49,8 @@ void Graphic3d_CLight::makeId()
          + TCollection_AsciiString(Standard_Atomic_Increment(&THE_LIGHT_COUNTER));
 }
 
-// =======================================================================
-// function : Graphic3d_CLight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CLight::Graphic3d_CLight(Graphic3d_TypeOfLightSource theType)
     : myPosition(0.0, 0.0, 0.0),
       myColor(1.0f, 1.0f, 1.0f, 1.0f),
@@ -94,10 +90,8 @@ Graphic3d_CLight::Graphic3d_CLight(Graphic3d_TypeOfLightSource theType)
   makeId();
 }
 
-// =======================================================================
-// function : CopyFrom
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::CopyFrom(const Handle(Graphic3d_CLight)& theLight)
 {
   myName      = theLight->myName;
@@ -127,30 +121,24 @@ void Graphic3d_CLight::CopyFrom(const Handle(Graphic3d_CLight)& theLight)
   }
 }
 
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetColor(const Quantity_Color& theColor)
 {
   updateRevisionIf(myColor.GetRGB().IsDifferent(theColor));
   myColor.SetRGB(theColor);
 }
 
-// =======================================================================
-// function : SetEnabled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetEnabled(Standard_Boolean theIsOn)
 {
   updateRevisionIf(myIsEnabled != theIsOn);
   myIsEnabled = theIsOn;
 }
 
-// =======================================================================
-// function : SetCastShadows
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetCastShadows(Standard_Boolean theToCast)
 {
   if (myType != Graphic3d_TypeOfLightSource_Directional
@@ -163,10 +151,8 @@ void Graphic3d_CLight::SetCastShadows(Standard_Boolean theToCast)
   myToCastShadows = theToCast;
 }
 
-// =======================================================================
-// function : SetHeadlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetHeadlight(Standard_Boolean theValue)
 {
   if (myType == Graphic3d_TypeOfLightSource_Ambient)
@@ -178,10 +164,8 @@ void Graphic3d_CLight::SetHeadlight(Standard_Boolean theValue)
   myIsHeadlight = theValue;
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetDirection(const gp_Dir& theDir)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot
@@ -197,10 +181,8 @@ void Graphic3d_CLight::SetDirection(const gp_Dir& theDir)
   myDirection.z() = static_cast<Standard_ShortReal>(theDir.Z());
 }
 
-// =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetPosition(const gp_Pnt& thePosition)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot
@@ -210,10 +192,8 @@ void Graphic3d_CLight::SetPosition(const gp_Pnt& thePosition)
   myPosition = thePosition;
 }
 
-// =======================================================================
-// function : SetDisplayPosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetDisplayPosition(const gp_Pnt& thePosition)
 {
   Standard_ProgramError_Raise_if(myType == Graphic3d_TypeOfLightSource_Ambient,
@@ -222,10 +202,8 @@ void Graphic3d_CLight::SetDisplayPosition(const gp_Pnt& thePosition)
   myPosition = thePosition;
 }
 
-// =======================================================================
-// function : SetIntensity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetIntensity(Standard_ShortReal theValue)
 {
   Standard_OutOfRange_Raise_if(theValue <= 0.0f,
@@ -234,10 +212,8 @@ void Graphic3d_CLight::SetIntensity(Standard_ShortReal theValue)
   myIntensity = theValue;
 }
 
-// =======================================================================
-// function : SetAngle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetAngle(Standard_ShortReal theAngle)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot,
@@ -248,10 +224,8 @@ void Graphic3d_CLight::SetAngle(Standard_ShortReal theAngle)
   changeAngle() = theAngle;
 }
 
-// =======================================================================
-// function : SetAttenuation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetAttenuation(Standard_ShortReal theConstAttenuation,
                                       Standard_ShortReal theLinearAttenuation)
 {
@@ -267,10 +241,8 @@ void Graphic3d_CLight::SetAttenuation(Standard_ShortReal theConstAttenuation,
   changeLinearAttenuation() = theLinearAttenuation;
 }
 
-// =======================================================================
-// function : SetConcentration
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetConcentration(Standard_ShortReal theConcentration)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot,
@@ -281,10 +253,8 @@ void Graphic3d_CLight::SetConcentration(Standard_ShortReal theConcentration)
   changeConcentration() = theConcentration;
 }
 
-// =======================================================================
-// function : SetSmoothRadius
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetSmoothRadius(Standard_ShortReal theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional
@@ -297,10 +267,8 @@ void Graphic3d_CLight::SetSmoothRadius(Standard_ShortReal theValue)
   mySmoothness = theValue;
 }
 
-// =======================================================================
-// function : SetSmoothAngle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetSmoothAngle(Standard_ShortReal theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Directional,
@@ -311,10 +279,8 @@ void Graphic3d_CLight::SetSmoothAngle(Standard_ShortReal theValue)
   mySmoothness = theValue;
 }
 
-// =======================================================================
-// function : SetRange
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CLight::SetRange(Standard_ShortReal theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional

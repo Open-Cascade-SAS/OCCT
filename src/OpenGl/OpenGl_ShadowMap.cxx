@@ -20,10 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShadowMap, OpenGl_NamedResource)
 
-// =======================================================================
-// function : OpenGl_ShadowMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_ShadowMap::OpenGl_ShadowMap()
     : OpenGl_NamedResource("shadow_map"),
       myShadowMapFbo(new OpenGl_FrameBuffer(myResourceId + ":fbo")),
@@ -33,55 +31,43 @@ OpenGl_ShadowMap::OpenGl_ShadowMap()
   //
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShadowMap::Release(OpenGl_Context* theCtx)
 {
   myShadowMapFbo->Release(theCtx);
 }
 
-// =======================================================================
-// function : ~OpenGl_ShadowMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_ShadowMap::~OpenGl_ShadowMap()
 {
   Release(NULL);
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_ShadowMap::EstimatedDataSize() const
 {
   return myShadowMapFbo->EstimatedDataSize();
 }
 
-// =======================================================================
-// function : IsValid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShadowMap::IsValid() const
 {
   return myShadowMapFbo->IsValid();
 }
 
-// =======================================================================
-// function : Texture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(OpenGl_Texture)& OpenGl_ShadowMap::Texture() const
 {
   return myShadowMapFbo->DepthStencilTexture();
 }
 
-// =======================================================================
-// function : UpdateCamera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ* theOrigin)
 {
   // clang-format off
@@ -184,10 +170,8 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
   return false;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShadowMapArray::Release(OpenGl_Context* theCtx)
 {
   for (Standard_Integer anIter = Lower(); anIter <= Upper(); ++anIter)
@@ -199,10 +183,8 @@ void OpenGl_ShadowMapArray::Release(OpenGl_Context* theCtx)
   }
 }
 
-// =======================================================================
-// function : EstimatedDataSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_ShadowMapArray::EstimatedDataSize() const
 {
   Standard_Size aSize = 0;

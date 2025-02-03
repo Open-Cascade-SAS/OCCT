@@ -69,10 +69,8 @@ gp_Ax3 cameraToAx3(const Graphic3d_Camera& theCamera)
 }
 } // namespace
 
-// =======================================================================
-// function : Graphic3d_Camera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Camera::Graphic3d_Camera()
     : myUp(0.0, 1.0, 0.0),
       myDirection(0.0, 0.0, 1.0),
@@ -102,10 +100,8 @@ Graphic3d_Camera::Graphic3d_Camera()
                                   this);
 }
 
-// =======================================================================
-// function : Graphic3d_Camera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Camera::Graphic3d_Camera(const Handle(Graphic3d_Camera)& theOther)
     : myUp(0.0, 1.0, 0.0),
       myDirection(0.0, 0.0, 1.0),
@@ -135,10 +131,8 @@ Graphic3d_Camera::Graphic3d_Camera(const Handle(Graphic3d_Camera)& theOther)
   Copy(theOther);
 }
 
-// =======================================================================
-// function : CopyMappingData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::CopyMappingData(const Handle(Graphic3d_Camera)& theOtherCamera)
 {
   SetZeroToOneDepth(theOtherCamera->IsZeroToOneDepth());
@@ -170,10 +164,8 @@ void Graphic3d_Camera::CopyMappingData(const Handle(Graphic3d_Camera)& theOtherC
   }
 }
 
-// =======================================================================
-// function : CopyOrientationData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::CopyOrientationData(const Handle(Graphic3d_Camera)& theOtherCamera)
 {
   if (!myEye.IsEqual(theOtherCamera->Eye(), 0.0) || !myUp.IsEqual(theOtherCamera->Up(), 0.0)
@@ -189,30 +181,24 @@ void Graphic3d_Camera::CopyOrientationData(const Handle(Graphic3d_Camera)& theOt
   SetAxialScale(theOtherCamera->AxialScale());
 }
 
-// =======================================================================
-// function : Copy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::Copy(const Handle(Graphic3d_Camera)& theOther)
 {
   CopyMappingData(theOther);
   CopyOrientationData(theOther);
 }
 
-// =======================================================================
-// function : SetIdentityOrientation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetIdentityOrientation()
 {
   SetEyeAndCenter(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, -1.0));
   SetUp(gp_Dir(0.0, 1.0, 0.0));
 }
 
-// =======================================================================
-// function : MoveEyeTo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::MoveEyeTo(const gp_Pnt& theEye)
 {
   if (myEye.IsEqual(theEye, 0.0))
@@ -224,10 +210,8 @@ void Graphic3d_Camera::MoveEyeTo(const gp_Pnt& theEye)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetEyeAndCenter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetEyeAndCenter(const gp_Pnt& theEye, const gp_Pnt& theCenter)
 {
   if (Eye().IsEqual(theEye, 0.0) && Center().IsEqual(theCenter, 0.0))
@@ -244,10 +228,8 @@ void Graphic3d_Camera::SetEyeAndCenter(const gp_Pnt& theEye, const gp_Pnt& theCe
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetEye
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetEye(const gp_Pnt& theEye)
 {
   if (Eye().IsEqual(theEye, 0.0))
@@ -265,10 +247,8 @@ void Graphic3d_Camera::SetEye(const gp_Pnt& theEye)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetCenter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetCenter(const gp_Pnt& theCenter)
 {
   const Standard_Real aDistance = myEye.Distance(theCenter);
@@ -285,10 +265,8 @@ void Graphic3d_Camera::SetCenter(const gp_Pnt& theCenter)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetUp(const gp_Dir& theUp)
 {
   if (Up().IsEqual(theUp, 0.0))
@@ -300,10 +278,8 @@ void Graphic3d_Camera::SetUp(const gp_Dir& theUp)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetAxialScale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetAxialScale(const gp_XYZ& theAxialScale)
 {
   Standard_OutOfRange_Raise_if(theAxialScale.X() <= 0.0 || theAxialScale.Y() <= 0.0
@@ -318,10 +294,8 @@ void Graphic3d_Camera::SetAxialScale(const gp_XYZ& theAxialScale)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetDistance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetDistance(const Standard_Real theDistance)
 {
   if (myDistance == theDistance)
@@ -335,10 +309,8 @@ void Graphic3d_Camera::SetDistance(const Standard_Real theDistance)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetDirectionFromEye
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetDirectionFromEye(const gp_Dir& theDir)
 {
   if (myDirection.IsEqual(theDir, 0.0))
@@ -350,10 +322,8 @@ void Graphic3d_Camera::SetDirectionFromEye(const gp_Dir& theDir)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetDirection(const gp_Dir& theDir)
 {
   if (myDirection.IsEqual(theDir, 0.0))
@@ -367,10 +337,8 @@ void Graphic3d_Camera::SetDirection(const gp_Dir& theDir)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : SetScale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetScale(const Standard_Real theScale)
 {
   if (Scale() == theScale)
@@ -397,10 +365,8 @@ void Graphic3d_Camera::SetScale(const Standard_Real theScale)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Graphic3d_Camera::Scale() const
 {
   switch (myProjType)
@@ -417,10 +383,8 @@ Standard_Real Graphic3d_Camera::Scale() const
   }
 }
 
-// =======================================================================
-// function : SetProjectionType
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetProjectionType(const Projection theProjectionType)
 {
   Projection anOldType = ProjectionType();
@@ -447,10 +411,8 @@ void Graphic3d_Camera::SetProjectionType(const Projection theProjectionType)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetFOVy
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetFOVy(const Standard_Real theFOVy)
 {
   if (FOVy() == theFOVy)
@@ -465,10 +427,8 @@ void Graphic3d_Camera::SetFOVy(const Standard_Real theFOVy)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetFOV2d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetFOV2d(const Standard_Real theFOV)
 {
   if (FOV2d() == theFOV)
@@ -480,10 +440,8 @@ void Graphic3d_Camera::SetFOV2d(const Standard_Real theFOV)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetZRange
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetZRange(const Standard_Real theZNear, const Standard_Real theZFar)
 {
   Standard_ASSERT_RAISE(theZFar > theZNear, "ZFar should be greater than ZNear");
@@ -504,10 +462,8 @@ void Graphic3d_Camera::SetZRange(const Standard_Real theZNear, const Standard_Re
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetAspect(const Standard_Real theAspect)
 {
   if (Aspect() == theAspect)
@@ -521,10 +477,8 @@ void Graphic3d_Camera::SetAspect(const Standard_Real theAspect)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetZFocus
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetZFocus(const FocusType theType, const Standard_Real theZFocus)
 {
   if (ZFocusType() == theType && ZFocus() == theZFocus)
@@ -538,10 +492,8 @@ void Graphic3d_Camera::SetZFocus(const FocusType theType, const Standard_Real th
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetIOD
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetIOD(const IODType theType, const Standard_Real theIOD)
 {
   if (GetIODType() == theType && IOD() == theIOD)
@@ -555,10 +507,8 @@ void Graphic3d_Camera::SetIOD(const IODType theType, const Standard_Real theIOD)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetTile
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetTile(const Graphic3d_CameraTile& theTile)
 {
   if (myTile == theTile)
@@ -570,19 +520,15 @@ void Graphic3d_Camera::SetTile(const Graphic3d_CameraTile& theTile)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : OrthogonalizeUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::OrthogonalizeUp()
 {
   SetUp(OrthogonalizedUp());
 }
 
-// =======================================================================
-// function : OrthogonalizedUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Dir Graphic3d_Camera::OrthogonalizedUp() const
 {
   gp_Dir aDir  = Direction();
@@ -592,10 +538,8 @@ gp_Dir Graphic3d_Camera::OrthogonalizedUp() const
   return aLeft.Crossed(aDir);
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::Transform(const gp_Trsf& theTrsf)
 {
   if (theTrsf.Form() == gp_Identity)
@@ -609,10 +553,8 @@ void Graphic3d_Camera::Transform(const gp_Trsf& theTrsf)
   InvalidateOrientation();
 }
 
-// =======================================================================
-// function : safePointCast
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static Graphic3d_Vec4d safePointCast(const gp_Pnt& thePnt)
 {
   Standard_Real aLim = 1e15f;
@@ -633,10 +575,8 @@ static Graphic3d_Vec4d safePointCast(const gp_Pnt& thePnt)
   return aPnt;
 }
 
-// =======================================================================
-// function : Project
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::Project(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aViewMx = OrientationMatrix();
@@ -653,10 +593,8 @@ gp_Pnt Graphic3d_Camera::Project(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : UnProject
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::UnProject(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aViewMx = OrientationMatrix();
@@ -682,10 +620,8 @@ gp_Pnt Graphic3d_Camera::UnProject(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : ConvertView2Proj
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::ConvertView2Proj(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aProjMx = ProjectionMatrix();
@@ -700,10 +636,8 @@ gp_Pnt Graphic3d_Camera::ConvertView2Proj(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : ConvertProj2View
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::ConvertProj2View(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aProjMx = ProjectionMatrix();
@@ -726,10 +660,8 @@ gp_Pnt Graphic3d_Camera::ConvertProj2View(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : ConvertWorld2View
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::ConvertWorld2View(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aViewMx = OrientationMatrix();
@@ -744,10 +676,8 @@ gp_Pnt Graphic3d_Camera::ConvertWorld2View(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : ConvertView2World
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Pnt Graphic3d_Camera::ConvertView2World(const gp_Pnt& thePnt) const
 {
   const Graphic3d_Mat4d& aViewMx = OrientationMatrix();
@@ -769,10 +699,8 @@ gp_Pnt Graphic3d_Camera::ConvertView2World(const gp_Pnt& thePnt) const
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
-// =======================================================================
-// function : ViewDimensions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_XYZ Graphic3d_Camera::ViewDimensions(const Standard_Real theZValue) const
 {
   // view plane dimensions
@@ -793,10 +721,8 @@ gp_XYZ Graphic3d_Camera::ViewDimensions(const Standard_Real theZValue) const
   return gp_XYZ(aSizeX, aSizeY, myZFar - myZNear);
 }
 
-// =======================================================================
-// function : Frustum
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::Frustum(gp_Pln& theLeft,
                                gp_Pln& theRight,
                                gp_Pln& theBottom,
@@ -851,82 +777,64 @@ void Graphic3d_Camera::Frustum(gp_Pln& theLeft,
   theTop    = gp_Pln(aPntTop, aDirTop);
 }
 
-// =======================================================================
-// function : OrientationMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4d& Graphic3d_Camera::OrientationMatrix() const
 {
   return UpdateOrientation(myMatricesD).Orientation;
 }
 
-// =======================================================================
-// function : OrientationMatrixF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4& Graphic3d_Camera::OrientationMatrixF() const
 {
   return UpdateOrientation(myMatricesF).Orientation;
 }
 
-// =======================================================================
-// function : ProjectionMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionMatrix() const
 {
   return UpdateProjection(myMatricesD).MProjection;
 }
 
-// =======================================================================
-// function : ProjectionMatrixF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionMatrixF() const
 {
   return UpdateProjection(myMatricesF).MProjection;
 }
 
-// =======================================================================
-// function : ProjectionStereoLeft
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoLeft() const
 {
   return UpdateProjection(myMatricesD).LProjection;
 }
 
-// =======================================================================
-// function : ProjectionStereoLeftF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionStereoLeftF() const
 {
   return UpdateProjection(myMatricesF).LProjection;
 }
 
-// =======================================================================
-// function : ProjectionStereoRight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoRight() const
 {
   return UpdateProjection(myMatricesD).RProjection;
 }
 
-// =======================================================================
-// function : ProjectionStereoRightF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionStereoRightF() const
 {
   return UpdateProjection(myMatricesF).RProjection;
 }
 
-// =======================================================================
-// function : ResetCustomProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::ResetCustomProjection()
 {
   if (myIsCustomFrustomLR || myIsCustomProjMatLR || myIsCustomProjMatM)
@@ -938,10 +846,8 @@ void Graphic3d_Camera::ResetCustomProjection()
   }
 }
 
-// =======================================================================
-// function : StereoProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::StereoProjection(Graphic3d_Mat4d& theProjL,
                                         Graphic3d_Mat4d& theHeadToEyeL,
                                         Graphic3d_Mat4d& theProjR,
@@ -950,10 +856,8 @@ void Graphic3d_Camera::StereoProjection(Graphic3d_Mat4d& theProjL,
   stereoProjection(theProjL, theHeadToEyeL, theProjR, theHeadToEyeR);
 }
 
-// =======================================================================
-// function : StereoProjectionF
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::StereoProjectionF(Graphic3d_Mat4& theProjL,
                                          Graphic3d_Mat4& theHeadToEyeL,
                                          Graphic3d_Mat4& theProjR,
@@ -962,10 +866,8 @@ void Graphic3d_Camera::StereoProjectionF(Graphic3d_Mat4& theProjL,
   stereoProjection(theProjL, theHeadToEyeL, theProjR, theHeadToEyeR);
 }
 
-// =======================================================================
-// function : stereoProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::stereoProjection(NCollection_Mat4<Elem_t>& theProjL,
                                         NCollection_Mat4<Elem_t>& theHeadToEyeL,
@@ -998,10 +900,8 @@ void Graphic3d_Camera::stereoProjection(NCollection_Mat4<Elem_t>& theProjL,
   }
 }
 
-// =======================================================================
-// function : SetCustomStereoFrustums
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetCustomStereoFrustums(const Aspect_FrustumLRBT<Standard_Real>& theFrustumL,
                                                const Aspect_FrustumLRBT<Standard_Real>& theFrustumR)
 {
@@ -1012,10 +912,8 @@ void Graphic3d_Camera::SetCustomStereoFrustums(const Aspect_FrustumLRBT<Standard
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetCustomStereoProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetCustomStereoProjection(const Graphic3d_Mat4d& theProjL,
                                                  const Graphic3d_Mat4d& theHeadToEyeL,
                                                  const Graphic3d_Mat4d& theProjR,
@@ -1030,10 +928,8 @@ void Graphic3d_Camera::SetCustomStereoProjection(const Graphic3d_Mat4d& theProjL
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : SetCustomMonoProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::SetCustomMonoProjection(const Graphic3d_Mat4d& theProj)
 {
   myCustomProjMatM   = theProj;
@@ -1041,10 +937,8 @@ void Graphic3d_Camera::SetCustomMonoProjection(const Graphic3d_Mat4d& theProj)
   InvalidateProjection();
 }
 
-// =======================================================================
-// function : computeProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::computeProjection(NCollection_Mat4<Elem_t>& theProjM,
                                          NCollection_Mat4<Elem_t>& theProjL,
@@ -1184,10 +1078,8 @@ void Graphic3d_Camera::computeProjection(NCollection_Mat4<Elem_t>& theProjM,
   }
 }
 
-// =======================================================================
-// function : UpdateOrientation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 Graphic3d_Camera::TransformMatrices<Elem_t>& Graphic3d_Camera::UpdateOrientation(
   TransformMatrices<Elem_t>& theMatrices) const
@@ -1220,10 +1112,8 @@ Graphic3d_Camera::TransformMatrices<Elem_t>& Graphic3d_Camera::UpdateOrientation
   return theMatrices; // for inline accessors
 }
 
-// =======================================================================
-// function : InvalidateProjection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::InvalidateProjection()
 {
   myMatricesD.ResetProjection();
@@ -1232,10 +1122,8 @@ void Graphic3d_Camera::InvalidateProjection()
     (Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER);
 }
 
-// =======================================================================
-// function : InvalidateOrientation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Camera::InvalidateOrientation()
 {
   myMatricesD.ResetOrientation();
@@ -1244,10 +1132,8 @@ void Graphic3d_Camera::InvalidateOrientation()
     (Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER);
 }
 
-// =======================================================================
-// function : orthoProj
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::orthoProj(NCollection_Mat4<Elem_t>&         theOutMx,
                                  const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -1287,10 +1173,8 @@ void Graphic3d_Camera::orthoProj(NCollection_Mat4<Elem_t>&         theOutMx,
   theOutMx.ChangeValue(3, 3) = Elem_t(1.0);
 }
 
-// =======================================================================
-// function : PerspectiveProj
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::perspectiveProj(NCollection_Mat4<Elem_t>&         theOutMx,
                                        const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -1336,10 +1220,8 @@ void Graphic3d_Camera::perspectiveProj(NCollection_Mat4<Elem_t>&         theOutM
   theOutMx.ChangeValue(3, 3) = Elem_t(0.0);
 }
 
-// =======================================================================
-// function : StereoEyeProj
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::stereoEyeProj(NCollection_Mat4<Elem_t>&         theOutMx,
                                      const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -1359,10 +1241,8 @@ void Graphic3d_Camera::stereoEyeProj(NCollection_Mat4<Elem_t>&         theOutMx,
   perspectiveProj(theOutMx, aLRBT, theNear, theFar);
 }
 
-// =======================================================================
-// function : LookOrientation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Elem_t>
 void Graphic3d_Camera::LookOrientation(const NCollection_Vec3<Elem_t>& theEye,
                                        const NCollection_Vec3<Elem_t>& theFwdDir,
@@ -1397,10 +1277,8 @@ void Graphic3d_Camera::LookOrientation(const NCollection_Vec3<Elem_t>& theEye,
   theOutMx.Multiply(anAxialScaleMx);
 }
 
-// =======================================================================
-// function : FitMinMax
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
                                  const Standard_Real theResolution,
                                  const bool          theToEnlargeIfLine)

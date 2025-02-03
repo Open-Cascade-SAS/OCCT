@@ -23,10 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriverFactory, Graphic3d_GraphicDriverFactory)
 
-// =======================================================================
-// function : OpenGl_GraphicDriverFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraphicDriverFactory::OpenGl_GraphicDriverFactory()
     : Graphic3d_GraphicDriverFactory(OpenGl_DRIVER_NAME),
       myDefaultCaps(new OpenGl_Caps())
@@ -34,10 +32,8 @@ OpenGl_GraphicDriverFactory::OpenGl_GraphicDriverFactory()
   //
 }
 
-// =======================================================================
-// function : CreateDriver
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_GraphicDriver) OpenGl_GraphicDriverFactory::CreateDriver(
   const Handle(Aspect_DisplayConnection)& theDisp)
 {

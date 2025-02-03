@@ -26,19 +26,15 @@ static Graphic3d_GraphicDriverFactoryList& getDriverFactories()
 }
 } // namespace
 
-// =======================================================================
-// function : DriverFactories
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_GraphicDriverFactoryList& Graphic3d_GraphicDriverFactory::DriverFactories()
 {
   return getDriverFactories();
 }
 
-// =======================================================================
-// function : RegisterFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_GraphicDriverFactory::RegisterFactory(
   const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
   bool                                          theIsPreferred)
@@ -63,10 +59,8 @@ void Graphic3d_GraphicDriverFactory::RegisterFactory(
   aFactories.Append(theFactory);
 }
 
-// =======================================================================
-// function : UnregisterFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_GraphicDriverFactory::UnregisterFactory(const TCollection_AsciiString& theName)
 {
   Graphic3d_GraphicDriverFactoryList& aFactories = getDriverFactories();
@@ -83,20 +77,16 @@ void Graphic3d_GraphicDriverFactory::UnregisterFactory(const TCollection_AsciiSt
   }
 }
 
-// =======================================================================
-// function : DefaultDriverFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_GraphicDriverFactory) Graphic3d_GraphicDriverFactory::DefaultDriverFactory()
 {
   const Graphic3d_GraphicDriverFactoryList& aMap = getDriverFactories();
   return !aMap.IsEmpty() ? aMap.First() : Handle(Graphic3d_GraphicDriverFactory)();
 }
 
-// =======================================================================
-// function : Graphic3d_GraphicDriverFactory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_GraphicDriverFactory::Graphic3d_GraphicDriverFactory(
   const TCollection_AsciiString& theName)
     : myName(theName)

@@ -540,10 +540,8 @@ const Handle(SelectMgr_EntityOwner)& SelectMgr_SelectableObject::GetAssemblyOwne
   return THE_NULL_ENTITYOWNER;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream,
                                           Standard_Integer  theDepth) const
 {

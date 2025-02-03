@@ -107,10 +107,8 @@ static void addInfo(TColStd_IndexedDataMapOfStringString& theDict,
 }
 } // namespace
 
-// =======================================================================
-// function : OpenGl_Context
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Context::OpenGl_Context(const Handle(OpenGl_Caps)& theCaps)
     : core11ffp(NULL),
       core11fwd(NULL),
@@ -295,10 +293,8 @@ OpenGl_Context::OpenGl_Context(const Handle(OpenGl_Caps)& theCaps)
   myShaderManager = new OpenGl_ShaderManager(this);
 }
 
-// =======================================================================
-// function : ~OpenGl_Context
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Context::~OpenGl_Context()
 {
   // release clean up queue
@@ -372,10 +368,8 @@ OpenGl_Context::~OpenGl_Context()
   }
 }
 
-// =======================================================================
-// function : forcedRelease
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::forcedRelease()
 {
   ReleaseDelayed();
@@ -398,10 +392,8 @@ void OpenGl_Context::forcedRelease()
   }
 }
 
-// =======================================================================
-// function : ResizeViewport
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ResizeViewport(const Standard_Integer* theRect)
 {
   core11fwd->glViewport(theRect[0], theRect[1], theRect[2], theRect[3]);
@@ -440,10 +432,8 @@ static Standard_Integer stereoToMonoBuffer(const Standard_Integer theBuffer)
   }
 }
 
-// =======================================================================
-// function : SetReadBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetReadBuffer(const Standard_Integer theReadBuffer)
 {
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES)
@@ -459,10 +449,8 @@ void OpenGl_Context::SetReadBuffer(const Standard_Integer theReadBuffer)
   core11fwd->glReadBuffer(myReadBuffer);
 }
 
-// =======================================================================
-// function : SetDrawBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetDrawBuffer(const Standard_Integer theDrawBuffer)
 {
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES)
@@ -482,10 +470,8 @@ void OpenGl_Context::SetDrawBuffer(const Standard_Integer theDrawBuffer)
   myDrawBuffers.SetValue(0, aDrawBuffer);
 }
 
-// =======================================================================
-// function : SetDrawBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetDrawBuffers(const Standard_Integer  theNb,
                                     const Standard_Integer* theDrawBuffers)
 {
@@ -520,10 +506,8 @@ void OpenGl_Context::SetDrawBuffers(const Standard_Integer  theNb,
   myFuncs->glDrawBuffers(theNb, (const GLenum*)theDrawBuffers);
 }
 
-// =======================================================================
-// function : SetFrameBufferSRGB
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetFrameBufferSRGB(bool theIsFbo, bool theIsFboSRgb)
 {
   if (!hasFboSRGB)
@@ -547,10 +531,8 @@ void OpenGl_Context::SetFrameBufferSRGB(bool theIsFbo, bool theIsFboSRgb)
   }
 }
 
-// =======================================================================
-// function : SetFaceCulling
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetFaceCulling(Graphic3d_TypeOfBackfacingModel theMode)
 {
   if (myFaceCulling == theMode)
@@ -579,10 +561,8 @@ void OpenGl_Context::SetFaceCulling(Graphic3d_TypeOfBackfacingModel theMode)
   myFaceCulling = theMode;
 }
 
-// =======================================================================
-// function : FetchState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::FetchState()
 {
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES)
@@ -623,10 +603,8 @@ void OpenGl_Context::FetchState()
   }
 }
 
-// =======================================================================
-// function : Share
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::Share(const Handle(OpenGl_Context)& theShareCtx)
 {
   if (!theShareCtx.IsNull())
@@ -640,10 +618,8 @@ void OpenGl_Context::Share(const Handle(OpenGl_Context)& theShareCtx)
 
 #if !defined(__APPLE__) || defined(HAVE_XLIB)
 
-// =======================================================================
-// function : IsCurrent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::IsCurrent() const
 {
   #if defined(HAVE_EGL)
@@ -675,10 +651,8 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
   #endif
 }
 
-// =======================================================================
-// function : MakeCurrent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::MakeCurrent()
 {
   #if defined(HAVE_EGL)
@@ -776,10 +750,8 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
   return Standard_True;
 }
 
-// =======================================================================
-// function : SwapBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SwapBuffers()
 {
   #if defined(HAVE_EGL)
@@ -805,10 +777,8 @@ void OpenGl_Context::SwapBuffers()
 
 #endif // __APPLE__
 
-// =======================================================================
-// function : SetSwapInterval
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::SetSwapInterval(const Standard_Integer theInterval)
 {
 #if defined(HAVE_EGL)
@@ -849,10 +819,8 @@ Standard_Boolean OpenGl_Context::SetSwapInterval(const Standard_Integer theInter
   return Standard_False;
 }
 
-// =======================================================================
-// function : findProc
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void* OpenGl_Context::findProc(const char* theFuncName)
 {
 #if defined(HAVE_EGL)
@@ -869,10 +837,8 @@ void* OpenGl_Context::findProc(const char* theFuncName)
 #endif
 }
 
-// =======================================================================
-// function : CheckExtension
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::CheckExtension(const char* theExtName) const
 {
   if (theExtName == NULL)
@@ -936,10 +902,8 @@ Standard_Boolean OpenGl_Context::CheckExtension(const char* theExtName) const
 #endif
 }
 
-// =======================================================================
-// function : CheckExtension
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::CheckExtension(const char* theExtString, const char* theExtName)
 {
   if (theExtString == NULL)
@@ -967,10 +931,8 @@ Standard_Boolean OpenGl_Context::CheckExtension(const char* theExtString, const 
 
 #if !defined(__APPLE__) || defined(HAVE_XLIB)
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::Init(const Standard_Boolean theIsCoreProfile)
 {
   if (myIsInitialized)
@@ -1004,10 +966,8 @@ Standard_Boolean OpenGl_Context::Init(const Standard_Boolean theIsCoreProfile)
 
 #endif // __APPLE__
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::Init(const Aspect_Drawable         theSurface,
                                       const Aspect_Display          theDisplay,
                                       const Aspect_RenderingContext theContext,
@@ -1028,10 +988,8 @@ Standard_Boolean OpenGl_Context::Init(const Aspect_Drawable         theSurface,
   return Standard_True;
 }
 
-// =======================================================================
-// function : FormatGlEnumHex
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Context::FormatGlEnumHex(int theGlEnum)
 {
   char aBuff[16];
@@ -1041,10 +999,8 @@ TCollection_AsciiString OpenGl_Context::FormatGlEnumHex(int theGlEnum)
   return aBuff;
 }
 
-// =======================================================================
-// function : FormatSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Context::FormatSize(Standard_Size theSize)
 {
   char aBuff[32];
@@ -1052,10 +1008,8 @@ TCollection_AsciiString OpenGl_Context::FormatSize(Standard_Size theSize)
   return aBuff;
 }
 
-// =======================================================================
-// function : FormatPointer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Context::FormatPointer(const void* thePtr)
 {
   char aBuff[32];
@@ -1063,10 +1017,8 @@ TCollection_AsciiString OpenGl_Context::FormatPointer(const void* thePtr)
   return aBuff;
 }
 
-// =======================================================================
-// function : FormatGlError
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Context::FormatGlError(int theGlError)
 {
   switch (theGlError)
@@ -1089,10 +1041,8 @@ TCollection_AsciiString OpenGl_Context::FormatGlError(int theGlError)
   return FormatGlEnumHex(theGlError);
 }
 
-// =======================================================================
-// function : ResetErrors
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Context::ResetErrors(const bool theToPrintErrors)
 {
   int        aPrevErr = 0;
@@ -1118,10 +1068,8 @@ bool OpenGl_Context::ResetErrors(const bool theToPrintErrors)
   return hasError;
 }
 
-// =======================================================================
-// function : ReadGlVersion
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ReadGlVersion(Standard_Integer& theGlVerMajor, Standard_Integer& theGlVerMinor)
 {
   OpenGl_GlFunctions::readGlVersion(theGlVerMajor, theGlVerMinor);
@@ -1163,10 +1111,8 @@ static void APIENTRY debugCallbackWrap(unsigned int theSource,
   aCtx->PushMessage(theSource, theType, theId, theSeverity, theMessage);
 }
 
-// =======================================================================
-// function : PushMessage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::PushMessage(const unsigned int                theSource,
                                  const unsigned int                theType,
                                  const unsigned int                theId,
@@ -1209,10 +1155,8 @@ void OpenGl_Context::PushMessage(const unsigned int                theSource,
   Messenger()->Send(aMsg, aGrav);
 }
 
-// =======================================================================
-// function : ExcludeMessage
-// purpose  :
-// ======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::ExcludeMessage(const unsigned int theSource,
                                                 const unsigned int theId)
 {
@@ -1220,10 +1164,8 @@ Standard_Boolean OpenGl_Context::ExcludeMessage(const unsigned int theSource,
          && myFilters[theSource - GL_DEBUG_SOURCE_API].Add(theId);
 }
 
-// =======================================================================
-// function : IncludeMessage
-// purpose  :
-// ======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::IncludeMessage(const unsigned int theSource,
                                                 const unsigned int theId)
 {
@@ -1231,10 +1173,8 @@ Standard_Boolean OpenGl_Context::IncludeMessage(const unsigned int theSource,
          && myFilters[theSource - GL_DEBUG_SOURCE_API].Remove(theId);
 }
 
-// =======================================================================
-// function : checkWrongVersion
-// purpose  :
-// ======================================================================
+//=================================================================================================
+
 void OpenGl_Context::checkWrongVersion(Standard_Integer theGlVerMajor,
                                        Standard_Integer theGlVerMinor,
                                        const char*      theLastFailedProc)
@@ -1292,10 +1232,8 @@ void OpenGl_Context::checkWrongVersion(Standard_Integer theGlVerMajor,
   }
 }
 
-// =======================================================================
-// function : init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::init(const Standard_Boolean theIsCoreProfile)
 {
   // read version
@@ -1718,10 +1656,8 @@ void OpenGl_Context::init(const Standard_Boolean theIsCoreProfile)
   }
 }
 
-// =======================================================================
-// function : MemoryInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OpenGl_Context::AvailableMemory() const
 {
   if (atiMem)
@@ -1746,10 +1682,8 @@ Standard_Size OpenGl_Context::AvailableMemory() const
   return 0;
 }
 
-// =======================================================================
-// function : MemoryInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OpenGl_Context::MemoryInfo() const
 {
   TColStd_IndexedDataMapOfStringString aDict;
@@ -1767,10 +1701,8 @@ TCollection_AsciiString OpenGl_Context::MemoryInfo() const
   return aText;
 }
 
-// =======================================================================
-// function : MemoryInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::MemoryInfo(TColStd_IndexedDataMapOfStringString& theDict) const
 {
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
@@ -1897,10 +1829,8 @@ void OpenGl_Context::MemoryInfo(TColStd_IndexedDataMapOfStringString& theDict) c
 #endif
 }
 
-// =======================================================================
-// function : WindowBufferBits
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::WindowBufferBits(Graphic3d_Vec4i& theColorBits,
                                       Graphic3d_Vec2i& theDepthStencilBits) const
 {
@@ -1953,10 +1883,8 @@ void OpenGl_Context::WindowBufferBits(Graphic3d_Vec4i& theColorBits,
   }
 }
 
-// =======================================================================
-// function : DiagnosticInfo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
                                            Graphic3d_DiagnosticInfo              theFlags) const
 {
@@ -2097,20 +2025,16 @@ void OpenGl_Context::DiagnosticInformation(TColStd_IndexedDataMapOfStringString&
   }
 }
 
-// =======================================================================
-// function : GetResource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(OpenGl_Resource)& OpenGl_Context::GetResource(
   const TCollection_AsciiString& theKey) const
 {
   return mySharedResources->IsBound(theKey) ? mySharedResources->Find(theKey) : NULL_GL_RESOURCE;
 }
 
-// =======================================================================
-// function : ShareResource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::ShareResource(const TCollection_AsciiString& theKey,
                                                const Handle(OpenGl_Resource)& theResource)
 {
@@ -2121,10 +2045,8 @@ Standard_Boolean OpenGl_Context::ShareResource(const TCollection_AsciiString& th
   return mySharedResources->Bind(theKey, theResource);
 }
 
-// =======================================================================
-// function : ReleaseResource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ReleaseResource(const TCollection_AsciiString& theKey,
                                      const Standard_Boolean         theToDelay)
 {
@@ -2149,10 +2071,8 @@ void OpenGl_Context::ReleaseResource(const TCollection_AsciiString& theKey,
   }
 }
 
-// =======================================================================
-// function : ReleaseDelayed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ReleaseDelayed()
 {
   // release queued elements
@@ -2202,10 +2122,8 @@ void OpenGl_Context::ReleaseDelayed()
   }
 }
 
-// =======================================================================
-// function : BindTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures(
   const Handle(OpenGl_TextureSet)&    theTextures,
   const Handle(OpenGl_ShaderProgram)& theProgram)
@@ -2338,10 +2256,8 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures(
   return anOldTextures;
 }
 
-// =======================================================================
-// function : BindProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::BindProgram(const Handle(OpenGl_ShaderProgram)& theProgram)
 {
   if (core20fwd == NULL)
@@ -2368,10 +2284,8 @@ Standard_Boolean OpenGl_Context::BindProgram(const Handle(OpenGl_ShaderProgram)&
   return Standard_True;
 }
 
-// =======================================================================
-// function : BindDefaultVao
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::BindDefaultVao()
 {
   if (myDefaultVao == 0 || core32 == NULL)
@@ -2382,10 +2296,8 @@ void OpenGl_Context::BindDefaultVao()
   core32->glBindVertexArray(myDefaultVao);
 }
 
-// =======================================================================
-// function : SetDefaultFrameBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer(
   const Handle(OpenGl_FrameBuffer)& theFbo)
 {
@@ -2394,28 +2306,22 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer(
   return aFbo;
 }
 
-// =======================================================================
-// function : IsRender
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::IsRender() const
 {
   return myRenderMode == GL_RENDER;
 }
 
-// =======================================================================
-// function : IsFeedback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::IsFeedback() const
 {
   return myRenderMode == GL_FEEDBACK;
 }
 
-// =======================================================================
-// function : SetShadingMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetShadingMaterial(
   const OpenGl_Aspects*                           theAspect,
   const Handle(Graphic3d_PresentationAttributes)& theHighlight)
@@ -2483,10 +2389,8 @@ void OpenGl_Context::SetShadingMaterial(
   myShaderManager->UpdateMaterialStateTo(myMaterial, anAlphaCutoff, toDistinguish, toMapTexture);
 }
 
-// =======================================================================
-// function : CheckIsTransparent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::CheckIsTransparent(
   const OpenGl_Aspects*                           theAspect,
   const Handle(Graphic3d_PresentationAttributes)& theHighlight,
@@ -2523,10 +2427,8 @@ Standard_Boolean OpenGl_Context::CheckIsTransparent(
   return anAspect->AlphaMode() == Graphic3d_AlphaMode_Blend;
 }
 
-// =======================================================================
-// function : SetColor4fv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetColor4fv(const OpenGl_Vec4& theColor)
 {
   if (!myActiveProgram.IsNull())
@@ -2543,20 +2445,16 @@ void OpenGl_Context::SetColor4fv(const OpenGl_Vec4& theColor)
   }
 }
 
-// =======================================================================
-// function : SetTypeOfLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetTypeOfLine(const Aspect_TypeOfLine  theType,
                                    const Standard_ShortReal theFactor)
 {
   SetLineStipple(theFactor, Graphic3d_Aspects::DefaultLinePatternForType(theType));
 }
 
-// =======================================================================
-// function : SetLineStipple
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetLineStipple(const Standard_ShortReal theFactor, const uint16_t thePattern)
 {
   if (!myActiveProgram.IsNull())
@@ -2599,10 +2497,8 @@ void OpenGl_Context::SetLineStipple(const Standard_ShortReal theFactor, const ui
   }
 }
 
-// =======================================================================
-// function : SetLineWidth
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetLineWidth(const Standard_ShortReal theWidth)
 {
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES || core11ffp != NULL)
@@ -2612,10 +2508,8 @@ void OpenGl_Context::SetLineWidth(const Standard_ShortReal theWidth)
   }
 }
 
-// =======================================================================
-// function : SetTextureMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetTextureMatrix(const Handle(Graphic3d_TextureParams)& theParams,
                                       const Standard_Boolean                 theIsTopDown)
 {
@@ -2678,10 +2572,8 @@ void OpenGl_Context::SetTextureMatrix(const Handle(Graphic3d_TextureParams)& the
   }
 }
 
-// =======================================================================
-// function : SetPointSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetPointSize(const Standard_ShortReal theSize)
 {
   if (!myActiveProgram.IsNull())
@@ -2704,10 +2596,8 @@ void OpenGl_Context::SetPointSize(const Standard_ShortReal theSize)
   }
 }
 
-// =======================================================================
-// function : SetPointSpriteOrigin
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetPointSpriteOrigin()
 {
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES || core15fwd == NULL)
@@ -2723,10 +2613,8 @@ void OpenGl_Context::SetPointSpriteOrigin()
   }
 }
 
-// =======================================================================
-// function : SetGlNormalizeEnabled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled(Standard_Boolean isEnabled)
 {
   if (isEnabled == myIsGlNormalizeEnabled)
@@ -2752,10 +2640,8 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled(Standard_Boolean isEnable
   return anOldGlNormalize;
 }
 
-// =======================================================================
-// function : SetShadeModel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetShadeModel(Graphic3d_TypeOfShadingModel theModel)
 {
   if (core11ffp != NULL)
@@ -2773,10 +2659,8 @@ void OpenGl_Context::SetShadeModel(Graphic3d_TypeOfShadingModel theModel)
   }
 }
 
-// =======================================================================
-// function : SetPolygonMode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_Context::SetPolygonMode(const Standard_Integer theMode)
 {
   if (myPolygonMode == theMode)
@@ -2793,10 +2677,8 @@ Standard_Integer OpenGl_Context::SetPolygonMode(const Standard_Integer theMode)
   return anOldPolygonMode;
 }
 
-// =======================================================================
-// function : SetPolygonHatchEnabled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Context::SetPolygonHatchEnabled(const bool theIsEnabled)
 {
   if (core11ffp == NULL)
@@ -2822,10 +2704,8 @@ bool OpenGl_Context::SetPolygonHatchEnabled(const bool theIsEnabled)
   return anOldIsEnabled;
 }
 
-// =======================================================================
-// function : SetPolygonHatchStyle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OpenGl_Context::SetPolygonHatchStyle(const Handle(Graphic3d_HatchStyle)& theStyle)
 {
   const Standard_Integer aNewStyle = !theStyle.IsNull() ? theStyle->HatchType() : Aspect_HS_SOLID;
@@ -2860,10 +2740,8 @@ Standard_Integer OpenGl_Context::SetPolygonHatchStyle(const Handle(Graphic3d_Hat
   return anOldType;
 }
 
-// =======================================================================
-// function : SetPolygonOffset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetPolygonOffset(const Graphic3d_PolygonOffset& theOffset)
 {
   const bool toFillOld = (myPolygonOffset.Mode & Aspect_POM_Fill) == Aspect_POM_Fill;
@@ -2918,10 +2796,8 @@ void OpenGl_Context::SetPolygonOffset(const Graphic3d_PolygonOffset& theOffset)
   myPolygonOffset = theOffset;
 }
 
-// =======================================================================
-// function : SetCamera
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
 {
   myCamera = theCamera;
@@ -2934,10 +2810,8 @@ void OpenGl_Context::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
   }
 }
 
-// =======================================================================
-// function : ApplyModelWorldMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ApplyModelWorldMatrix()
 {
   if (myShaderManager->ModelWorldState().ModelWorldMatrix() != ModelWorldState.Current())
@@ -2946,10 +2820,8 @@ void OpenGl_Context::ApplyModelWorldMatrix()
   }
 }
 
-// =======================================================================
-// function : ApplyWorldViewMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ApplyWorldViewMatrix()
 {
   if (myShaderManager->ModelWorldState().ModelWorldMatrix() != THE_IDENTITY_MATRIX)
@@ -2962,10 +2834,8 @@ void OpenGl_Context::ApplyWorldViewMatrix()
   }
 }
 
-// =======================================================================
-// function : ApplyModelViewMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ApplyModelViewMatrix()
 {
   if (myShaderManager->ModelWorldState().ModelWorldMatrix() != ModelWorldState.Current())
@@ -2978,10 +2848,8 @@ void OpenGl_Context::ApplyModelViewMatrix()
   }
 }
 
-// =======================================================================
-// function : ApplyProjectionMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::ApplyProjectionMatrix()
 {
   if (myShaderManager->ProjectionState().ProjectionMatrix() != ProjectionState.Current())
@@ -2990,19 +2858,15 @@ void OpenGl_Context::ApplyProjectionMatrix()
   }
 }
 
-// =======================================================================
-// function : EnableFeatures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::EnableFeatures() const
 {
   //
 }
 
-// =======================================================================
-// function : DisableFeatures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::DisableFeatures() const
 {
   // Disable stuff that's likely to slow down glDrawPixels.
@@ -3063,10 +2927,8 @@ void OpenGl_Context::DisableFeatures() const
   }
 }
 
-// =======================================================================
-// function : SetColorMaskRGBA
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SetColorMaskRGBA(const NCollection_Vec4<bool>& theVal)
 {
   core11fwd->glColorMask(theVal.r() ? GL_TRUE : GL_FALSE,
@@ -3076,10 +2938,8 @@ void OpenGl_Context::SetColorMaskRGBA(const NCollection_Vec4<bool>& theVal)
   myColorMask = theVal;
 }
 
-// =======================================================================
-// function : SetColorMask
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Context::SetColorMask(bool theToWriteColor)
 {
   const bool anOldValue = myColorMask.r();
@@ -3092,10 +2952,8 @@ bool OpenGl_Context::SetColorMask(bool theToWriteColor)
   return anOldValue;
 }
 
-// =======================================================================
-// function : SetSampleAlphaToCoverage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Context::SetSampleAlphaToCoverage(bool theToEnable)
 {
   bool toEnable = myAllowAlphaToCov && theToEnable;
@@ -3122,10 +2980,8 @@ bool OpenGl_Context::SetSampleAlphaToCoverage(bool theToEnable)
   return anOldValue;
 }
 
-// =======================================================================
-// function : GetBufferSubData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Context::GetBufferSubData(unsigned int theTarget,
                                       intptr_t     theOffset,
                                       intptr_t     theSize,
@@ -3157,10 +3013,8 @@ bool OpenGl_Context::GetBufferSubData(unsigned int theTarget,
 #endif
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
@@ -3222,10 +3076,8 @@ void OpenGl_Context::DumpJson(Standard_OStream& theOStream, Standard_Integer the
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &ProjectionState)
 }
 
-// =======================================================================
-// function : DumpJsonOpenGlState
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::DumpJsonOpenGlState(Standard_OStream& theOStream, Standard_Integer)
 {
   GLboolean isEnableBlend     = core11fwd->glIsEnabled(GL_BLEND);

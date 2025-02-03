@@ -54,10 +54,8 @@ Aspect_GradientFillMethod Aspect_GradientBackground::BgGradientFillMethod() cons
   return MyGradientMethod;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_GradientBackground::DumpJson(Standard_OStream& theOStream,
                                          Standard_Integer  theDepth) const
 {

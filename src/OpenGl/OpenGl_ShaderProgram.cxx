@@ -778,10 +778,8 @@ Standard_Boolean OpenGl_ShaderProgram::link(const Handle(OpenGl_Context)& theCtx
   return Standard_True;
 }
 
-// =======================================================================
-// function : Link
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::Link(const Handle(OpenGl_Context)& theCtx, bool theIsVerbose)
 {
   if (!theIsVerbose)
@@ -959,10 +957,8 @@ Standard_Boolean OpenGl_ShaderProgram::GetAttribute(const Handle(OpenGl_Context)
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetAttributeName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetAttributeName(const Handle(OpenGl_Context)& theCtx,
                                                         GLint                         theIndex,
                                                         const GLchar*                 theName)
@@ -971,10 +967,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttributeName(const Handle(OpenGl_Cont
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)& theCtx,
                                                     GLint                         theIndex,
                                                     GLfloat                       theValue)
@@ -988,10 +982,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)& theCtx,
                                                     GLint                         theIndex,
                                                     const OpenGl_Vec2&            theValue)
@@ -1005,10 +997,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)& theCtx,
                                                     GLint                         theIndex,
                                                     const OpenGl_Vec3&            theValue)
@@ -1022,10 +1012,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute(const Handle(OpenGl_Context)& theCtx,
                                                     GLint                         theIndex,
                                                     const OpenGl_Vec4&            theValue)
@@ -1056,10 +1044,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& 
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& theCtx,
                                                   GLint                         theLocation,
                                                   const OpenGl_Vec2u&           theValue)
@@ -1089,10 +1075,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& 
   return false;
 }
 
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& theCtx,
                                                   const GLchar*                 theName,
                                                   const GLsizei                 theCount,
@@ -1101,10 +1085,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& 
   return SetUniform(theCtx, GetUniformLocation(theCtx, theName), theCount, theValue);
 }
 
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& theCtx,
                                                   GLint                         theLocation,
                                                   const GLsizei                 theCount,
@@ -1253,10 +1235,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& 
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)&  theCtx,
                                                   GLint                          theLocation,
                                                   GLuint                         theCount,
@@ -1293,10 +1273,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& 
   return Standard_True;
 }
 
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::SetUniform(const Handle(OpenGl_Context)& theCtx,
                                                   GLint                         theLocation,
                                                   GLuint                        theCount,
@@ -1518,10 +1496,8 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
   myProgramID = NO_PROGRAM;
 }
 
-// =======================================================================
-// function : UpdateDebugDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderProgram::UpdateDebugDump(const Handle(OpenGl_Context)&  theCtx,
                                                        const TCollection_AsciiString& theFolder,
                                                        Standard_Boolean               theToBeautify,

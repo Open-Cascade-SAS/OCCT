@@ -145,10 +145,8 @@ ViewerTest_EventManager::~ViewerTest_EventManager()
   }
 }
 
-// =======================================================================
-// function : UpdateMouseClick
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool ViewerTest_EventManager::UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
                                                Aspect_VKeyMouse       theButton,
                                                Aspect_VKeyFlags       theModifiers,
@@ -334,10 +332,8 @@ void ViewerTest_EventManager::ProcessInput()
 #endif
 }
 
-// =======================================================================
-// function : navigationKeyModifierSwitch
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool ViewerTest_EventManager::navigationKeyModifierSwitch(unsigned int theModifOld,
                                                           unsigned int theModifNew,
                                                           double       theTimeStamp)
@@ -750,10 +746,8 @@ static EM_BOOL onWasmFocusCallback(int theEventType, const EmscriptenFocusEvent*
 }
 #endif
 
-// ==============================================================================
-// function : SetupWindowCallbacks
-// purpose  :
-// ==============================================================================
+//=================================================================================================
+
 void ViewerTest_EventManager::SetupWindowCallbacks(const Handle(Aspect_Window)& theWin)
 {
 #ifdef _WIN32

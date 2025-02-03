@@ -450,10 +450,8 @@ static Handle(Graphic3d_ArrayOfSegments) fillFaceBoundaries(const TopoDS_Shape& 
 
 } // anonymous namespace
 
-// =======================================================================
-// function : ExploreSolids
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape&    theShape,
                                        const BRep_Builder&    theBuilder,
                                        TopoDS_Compound&       theClosed,
@@ -506,10 +504,8 @@ void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape&    theShape,
   }
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ShadedShape::Add(const Handle(Prs3d_Presentation)& thePrs,
                              const TopoDS_Shape&               theShape,
                              const Handle(Prs3d_Drawer)&       theDrawer,
@@ -528,10 +524,8 @@ void StdPrs_ShadedShape::Add(const Handle(Prs3d_Presentation)& thePrs,
                           theGroup);
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ShadedShape::Add(const Handle(Prs3d_Presentation)& thePrs,
                              const TopoDS_Shape&               theShape,
                              const Handle(Prs3d_Drawer)&       theDrawer,
@@ -627,10 +621,8 @@ void StdPrs_ShadedShape::Add(const Handle(Prs3d_Presentation)& thePrs,
   }
 }
 
-// =======================================================================
-// function : FillTriangles
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfTriangles) StdPrs_ShadedShape::FillTriangles(
   const TopoDS_Shape&    theShape,
   const Standard_Boolean theHasTexels,
@@ -641,10 +633,8 @@ Handle(Graphic3d_ArrayOfTriangles) StdPrs_ShadedShape::FillTriangles(
   return fillTriangles(theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
 }
 
-// =======================================================================
-// function : FillFaceBoundaries
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfSegments) StdPrs_ShadedShape::FillFaceBoundaries(
   const TopoDS_Shape& theShape,
   GeomAbs_Shape       theUpperContinuity)
@@ -652,10 +642,8 @@ Handle(Graphic3d_ArrayOfSegments) StdPrs_ShadedShape::FillFaceBoundaries(
   return fillFaceBoundaries(theShape, theUpperContinuity);
 }
 
-// =======================================================================
-// function : AddWireframeForFreeElements
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ShadedShape::AddWireframeForFreeElements(const Handle(Prs3d_Presentation)& thePrs,
                                                      const TopoDS_Shape&               theShape,
                                                      const Handle(Prs3d_Drawer)&       theDrawer)
@@ -663,10 +651,8 @@ void StdPrs_ShadedShape::AddWireframeForFreeElements(const Handle(Prs3d_Presenta
   wireframeFromShape(thePrs, theShape, theDrawer);
 }
 
-// =======================================================================
-// function : AddWireframeForFacesWithoutTriangles
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdPrs_ShadedShape::AddWireframeForFacesWithoutTriangles(
   const Handle(Prs3d_Presentation)& thePrs,
   const TopoDS_Shape&               theShape,

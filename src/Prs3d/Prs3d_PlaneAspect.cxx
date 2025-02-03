@@ -18,10 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PlaneAspect, Prs3d_BasicAspect)
 
-// =======================================================================
-// function : Prs3d_PlaneAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Prs3d_PlaneAspect::Prs3d_PlaneAspect()
     : myEdgesAspect(new Prs3d_LineAspect(Quantity_NOC_GREEN, Aspect_TOL_SOLID, 1.0)),
       myIsoAspect(new Prs3d_LineAspect(Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5)),
@@ -40,10 +38,8 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
   //
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_PlaneAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

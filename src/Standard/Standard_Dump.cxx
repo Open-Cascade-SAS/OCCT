@@ -15,10 +15,8 @@
 
 #include <stdarg.h>
 
-// =======================================================================
-// function : AddValuesSeparator
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void Standard_Dump::AddValuesSeparator(Standard_OStream& theOStream)
 {
   Standard_SStream aStream;
@@ -207,10 +205,8 @@ Standard_Boolean Standard_Dump::InitValue(const TCollection_AsciiString& theStre
   return Standard_True;
 }
 
-// =======================================================================
-// function : GetPointerInfo
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Standard_Dump::GetPointerInfo(const Handle(Standard_Transient)& thePointer,
                                                       const bool                        isShortInfo)
 {
@@ -220,10 +216,8 @@ TCollection_AsciiString Standard_Dump::GetPointerInfo(const Handle(Standard_Tran
   return GetPointerInfo(thePointer.get(), isShortInfo);
 }
 
-// =======================================================================
-// function : GetPointerInfo
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Standard_Dump::GetPointerInfo(const void* thePointer,
                                                       const bool  isShortInfo)
 {

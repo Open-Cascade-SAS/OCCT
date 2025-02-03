@@ -19,10 +19,8 @@
 
 #include <Standard_Dump.hxx>
 
-// =======================================================================
-// function : Aspect_GenId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_GenId::Aspect_GenId()
     : myFreeCount(INT_MAX / 2 + 1),
       myLength(INT_MAX / 2 + 1),
@@ -32,10 +30,8 @@ Aspect_GenId::Aspect_GenId()
   //
 }
 
-// =======================================================================
-// function : Aspect_GenId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_GenId::Aspect_GenId(const Standard_Integer theLow, const Standard_Integer theUpper)
     : myFreeCount(theUpper - theLow + 1),
       myLength(theUpper - theLow + 1),
@@ -48,20 +44,16 @@ Aspect_GenId::Aspect_GenId(const Standard_Integer theLow, const Standard_Integer
   }
 }
 
-// =======================================================================
-// function : Free
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_GenId::Free()
 {
   myFreeCount = myLength;
   myFreeIds.Clear();
 }
 
-// =======================================================================
-// function : Free
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_GenId::Free(const Standard_Integer theId)
 {
   if (theId >= myLowerBound && theId <= myUpperBound)
@@ -78,10 +70,8 @@ void Aspect_GenId::Free(const Standard_Integer theId)
   }
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Aspect_GenId::Next()
 {
   Standard_Integer aNewId = 0;
@@ -92,10 +82,8 @@ Standard_Integer Aspect_GenId::Next()
   return aNewId;
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Aspect_GenId::Next(Standard_Integer& theId)
 {
   if (!myFreeIds.IsEmpty())
@@ -114,10 +102,8 @@ Standard_Boolean Aspect_GenId::Next(Standard_Integer& theId)
   return Standard_True;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_GenId::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFreeCount)

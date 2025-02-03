@@ -32,19 +32,15 @@ inline OpenGl_Vec2& floor(OpenGl_Vec2& theVec)
 }
 } // namespace
 
-// =======================================================================
-// function : OpenGl_TextBuilder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TextBuilder::OpenGl_TextBuilder()
 {
   //
 }
 
-// =======================================================================
-// function : createGlyphs
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_TextBuilder::createGlyphs(
   const Handle(Font_TextFormatter)&                                        theFormatter,
   const Handle(OpenGl_Context)&                                            theCtx,
@@ -112,10 +108,8 @@ void OpenGl_TextBuilder::createGlyphs(
   }
 }
 
-// =======================================================================
-// function : CreateTextures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_TextBuilder::Perform(
   const Handle(Font_TextFormatter)&                theFormatter,
   const Handle(OpenGl_Context)&                    theCtx,

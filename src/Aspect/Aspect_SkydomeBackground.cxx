@@ -17,10 +17,8 @@
 
 #include <Standard_RangeError.hxx>
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_SkydomeBackground::Aspect_SkydomeBackground()
     : mySunDirection(0.0f, 1.0f, 0.0f),
       myCloudiness(0.2f),
@@ -31,10 +29,8 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground()
   //
 }
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
                                                    Standard_ShortReal theCloudiness,
                                                    Standard_ShortReal theTime,
@@ -57,19 +53,15 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir&      theSunDire
     "Aspect_SkydomeBackground::Aspect_SkydomeBackground() theSize must be > 0");
 }
 
-// =======================================================================
-// function : ~Aspect_SkydomeBackground
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_SkydomeBackground::~Aspect_SkydomeBackground()
 {
   //
 }
 
-// =======================================================================
-// function : SetCloudiness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_SkydomeBackground::SetCloudiness(Standard_ShortReal theCloudiness)
 {
   Standard_RangeError_Raise_if(
@@ -78,10 +70,8 @@ void Aspect_SkydomeBackground::SetCloudiness(Standard_ShortReal theCloudiness)
   myCloudiness = theCloudiness;
 }
 
-// =======================================================================
-// function : SetFogginess
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_SkydomeBackground::SetFogginess(Standard_ShortReal theFogginess)
 {
   Standard_RangeError_Raise_if(theFogginess < 0,
@@ -89,10 +79,8 @@ void Aspect_SkydomeBackground::SetFogginess(Standard_ShortReal theFogginess)
   myFogginess = theFogginess;
 }
 
-// =======================================================================
-// function : SetSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_SkydomeBackground::SetSize(Standard_Integer theSize)
 {
   Standard_RangeError_Raise_if(theSize <= 0,
@@ -100,10 +88,8 @@ void Aspect_SkydomeBackground::SetSize(Standard_Integer theSize)
   mySize = theSize;
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_SkydomeBackground::DumpJson(Standard_OStream& theOStream,
                                         Standard_Integer  theDepth) const
 {

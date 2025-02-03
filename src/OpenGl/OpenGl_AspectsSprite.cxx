@@ -26,10 +26,8 @@ namespace
 static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsSprite::Release(OpenGl_Context* theCtx)
 {
   myIsSpriteReady = Standard_False;
@@ -64,10 +62,8 @@ void OpenGl_AspectsSprite::Release(OpenGl_Context* theCtx)
   mySpriteA.Nullify();
 }
 
-// =======================================================================
-// function : HasPointSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_AspectsSprite::HasPointSprite(const Handle(OpenGl_Context)&    theCtx,
                                           const Handle(Graphic3d_Aspects)& theAspects)
 {
@@ -75,10 +71,8 @@ bool OpenGl_AspectsSprite::HasPointSprite(const Handle(OpenGl_Context)&    theCt
   return !aSprite.IsNull() && !aSprite->IsDisplayList();
 }
 
-// =======================================================================
-// function : IsDisplayListSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_AspectsSprite::IsDisplayListSprite(const Handle(OpenGl_Context)&    theCtx,
                                                const Handle(Graphic3d_Aspects)& theAspects)
 {
@@ -91,10 +85,8 @@ bool OpenGl_AspectsSprite::IsDisplayListSprite(const Handle(OpenGl_Context)&    
   return !aSprite.IsNull() && aSprite->IsDisplayList();
 }
 
-// =======================================================================
-// function : UpdateRediness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsSprite::UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect)
 {
   // update sprite resource bindings
@@ -117,10 +109,8 @@ void OpenGl_AspectsSprite::UpdateRediness(const Handle(Graphic3d_Aspects)& theAs
   }
 }
 
-// =======================================================================
-// function : Sprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(OpenGl_PointSprite)& OpenGl_AspectsSprite::Sprite(
   const Handle(OpenGl_Context)&    theCtx,
   const Handle(Graphic3d_Aspects)& theAspects,
@@ -139,10 +129,8 @@ const Handle(OpenGl_PointSprite)& OpenGl_AspectsSprite::Sprite(
   return theIsAlphaSprite && !mySpriteA.IsNull() && mySpriteA->IsValid() ? mySpriteA : mySprite;
 }
 
-// =======================================================================
-// function : build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
                                  const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                                  Aspect_TypeOfMarker                  theType,
@@ -354,10 +342,8 @@ void OpenGl_AspectsSprite::build(const Handle(OpenGl_Context)&        theCtx,
   }
 }
 
-// =======================================================================
-// function : spriteKeys
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsSprite::spriteKeys(const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                                       Aspect_TypeOfMarker                  theType,
                                       Standard_ShortReal                   theScale,

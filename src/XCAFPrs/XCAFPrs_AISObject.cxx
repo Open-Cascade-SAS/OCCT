@@ -300,10 +300,8 @@ void XCAFPrs_AISObject::DefaultStyle(XCAFPrs_Style& theStyle) const
   theStyle.SetColorCurv(Quantity_NOC_WHITE);
 }
 
-// =======================================================================
-// function : SetMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFPrs_AISObject::SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
 {
   XCAFPrs_Style aDefStyle;

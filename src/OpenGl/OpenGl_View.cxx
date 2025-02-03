@@ -102,10 +102,8 @@ static bool chooseOitColorConfiguration(const Handle(OpenGl_Context)& theGlConte
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View, Graphic3d_CView)
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_View::OpenGl_View(const Handle(Graphic3d_StructureManager)& theMgr,
                          const Handle(OpenGl_GraphicDriver)&       theDriver,
                          const Handle(OpenGl_Caps)&                theCaps,
@@ -188,10 +186,8 @@ OpenGl_View::OpenGl_View(const Handle(Graphic3d_StructureManager)& theMgr,
   myXrSceneFbo->ColorTexture()->Sampler()->Parameters()->SetFilter(Graphic3d_TOTF_BILINEAR);
 }
 
-// =======================================================================
-// function : Destructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_View::~OpenGl_View()
 {
   ReleaseGlResources(NULL); // ensure ReleaseGlResources() was called within valid context
@@ -205,10 +201,8 @@ OpenGl_View::~OpenGl_View()
   OpenGl_Element::Destroy(NULL, myColoredQuadParams);
 }
 
-// =======================================================================
-// function : releaseSrgbResources
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::releaseSrgbResources(const Handle(OpenGl_Context)& theCtx)
 {
   myRenderParams.RebuildRayTracingShaders = true;
@@ -266,10 +260,8 @@ void OpenGl_View::releaseSrgbResources(const Handle(OpenGl_Context)& theCtx)
   // and re-create dynamically only frame buffers.
 }
 
-// =======================================================================
-// function : ReleaseGlResources
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
 {
   myGraduatedTrihedron.Release(theCtx.get());
@@ -286,10 +278,8 @@ void OpenGl_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
   ReleaseXR();
 }
 
-// =======================================================================
-// function : Remove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::Remove()
 {
   if (IsRemoved())
@@ -303,10 +293,8 @@ void OpenGl_View::Remove()
   Graphic3d_CView::Remove();
 }
 
-// =======================================================================
-// function : SetLocalOrigin
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetLocalOrigin(const gp_XYZ& theOrigin)
 {
   myLocalOrigin                      = theOrigin;
@@ -317,10 +305,8 @@ void OpenGl_View::SetLocalOrigin(const gp_XYZ& theOrigin)
   }
 }
 
-// =======================================================================
-// function : SetTextureEnv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& theTextureEnv)
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
@@ -340,10 +326,8 @@ void OpenGl_View::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& theTextureEn
   initTextureEnv(aCtx);
 }
 
-// =======================================================================
-// function : initTextureEnv
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::initTextureEnv(const Handle(OpenGl_Context)& theContext)
 {
   if (myTextureEnvData.IsNull() || theContext.IsNull() || !theContext->MakeCurrent())
@@ -359,10 +343,8 @@ void OpenGl_View::initTextureEnv(const Handle(OpenGl_Context)& theContext)
   myTextureEnv->ChangeTextureSetBits() = Graphic3d_TextureSetBits_BaseColor;
 }
 
-// =======================================================================
-// function : SetImmediateModeDrawToFront
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront(
   const Standard_Boolean theDrawToFrontBuffer)
 {
@@ -371,19 +353,15 @@ Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront(
   return aPrevMode;
 }
 
-// =======================================================================
-// function : Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Aspect_Window) OpenGl_View::Window() const
 {
   return myWindow->SizeWindow();
 }
 
-// =======================================================================
-// function : SetWindow
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
                             const Handle(Aspect_Window)&   theWindow,
                             const Aspect_RenderingContext  theContext)
@@ -454,10 +432,8 @@ void OpenGl_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
   initTextureEnv(aCtx);
 }
 
-// =======================================================================
-// function : Resized
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::Resized()
 {
   base_type::Resized();
@@ -467,10 +443,8 @@ void OpenGl_View::Resized()
   }
 }
 
-// =======================================================================
-// function : SetMinMaxValuesCallback
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
 {
   OpenGl_View* aView = dynamic_cast<OpenGl_View*>(theView);
@@ -493,10 +467,8 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
   }
 }
 
-// =======================================================================
-// function : GraduatedTrihedronDisplay
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::GraduatedTrihedronDisplay(const Graphic3d_GraduatedTrihedron& theTrihedronData)
 {
   myGTrihedronData = theTrihedronData;
@@ -505,30 +477,24 @@ void OpenGl_View::GraduatedTrihedronDisplay(const Graphic3d_GraduatedTrihedron& 
   myToShowGradTrihedron = true;
 }
 
-// =======================================================================
-// function : GraduatedTrihedronErase
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::GraduatedTrihedronErase()
 {
   myGraduatedTrihedron.Release(myWorkspace->GetGlContext().operator->());
   myToShowGradTrihedron = false;
 }
 
-// =======================================================================
-// function : GraduatedTrihedronMinMaxValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::GraduatedTrihedronMinMaxValues(const Graphic3d_Vec3 theMin,
                                                  const Graphic3d_Vec3 theMax)
 {
   myGraduatedTrihedron.SetMinMax(theMin, theMax);
 }
 
-// =======================================================================
-// function : BufferDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::BufferDump(Image_PixMap&               theImage,
                                          const Graphic3d_BufferType& theBufferType)
 {
@@ -666,10 +632,8 @@ Standard_Boolean OpenGl_View::ShadowMapDump(Image_PixMap&                  theIm
   return Standard_False;
 }
 
-// =======================================================================
-// function : GradientBackground
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_GradientBackground OpenGl_View::GradientBackground() const
 {
   Quantity_Color aColor1, aColor2;
@@ -686,10 +650,8 @@ Aspect_GradientBackground OpenGl_View::GradientBackground() const
                                    myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientFillMethod());
 }
 
-// =======================================================================
-// function : SetGradientBackground
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetGradientBackground(const Aspect_GradientBackground& theBackground)
 {
   Quantity_Color aColor1, aColor2;
@@ -712,10 +674,8 @@ void OpenGl_View::SetGradientBackground(const Aspect_GradientBackground& theBack
   myBackgroundType = Graphic3d_TOB_GRADIENT;
 }
 
-// =======================================================================
-// function : SetBackgroundImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theTextureMap,
                                      Standard_Boolean                    theToUpdatePBREnv)
 {
@@ -793,10 +753,8 @@ void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theText
     "OpenGl_View::SetBackgroundImage() - invalid texture map set for background");
 }
 
-// =======================================================================
-// function : SetImageBasedLighting
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetImageBasedLighting(Standard_Boolean theToEnableIBL)
 {
   if (!theToEnableIBL || myBackgroundType != Graphic3d_TOB_CUBEMAP)
@@ -820,28 +778,22 @@ void OpenGl_View::SetImageBasedLighting(Standard_Boolean theToEnableIBL)
   myCubeMapIBL = myCubeMapBackground;
 }
 
-// =======================================================================
-// function : BackgroundImageStyle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_FillMethod OpenGl_View::BackgroundImageStyle() const
 {
   return myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod();
 }
 
-// =======================================================================
-// function : SetBackgroundImageStyle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::SetBackgroundImageStyle(const Aspect_FillMethod theFillStyle)
 {
   myBackgrounds[Graphic3d_TOB_TEXTURE]->SetTextureFillMethod(theFillStyle);
 }
 
-// =======================================================================
-// function : SpecIBLMapLevels
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int OpenGl_View::SpecIBLMapLevels() const
 {
   return myPBREnvironment.IsNull() ? 0 : myPBREnvironment->SpecMapLevelsNumber();
@@ -2058,10 +2010,8 @@ void OpenGl_View::Redraw()
   myWasRedrawnGL = Standard_True;
 }
 
-// =======================================================================
-// function : RedrawImmediate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::RedrawImmediate()
 {
   if (!myWorkspace->Activate())
@@ -2217,10 +2167,8 @@ void OpenGl_View::RedrawImmediate()
   myWasRedrawnGL = Standard_True;
 }
 
-// =======================================================================
-// function : redraw
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
                          OpenGl_FrameBuffer*                theReadDrawFbo,
                          OpenGl_FrameBuffer*                theOitAccumFbo)
@@ -2263,10 +2211,8 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
   render(theProjection, theReadDrawFbo, theOitAccumFbo, Standard_False);
 }
 
-// =======================================================================
-// function : redrawImmediate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjection,
                                   OpenGl_FrameBuffer*                theReadFbo,
                                   OpenGl_FrameBuffer*                theDrawFbo,
@@ -2332,10 +2278,8 @@ bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjecti
   return !toCopyBackToFront;
 }
 
-// =======================================================================
-// function : blitSubviews
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameBuffer* theDrawFbo)
 {
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
@@ -2676,10 +2620,8 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   }
 }
 
-// =======================================================================
-// function : InvalidateBVHData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
 {
   myZLayers.InvalidateBVHData(theLayerId);
@@ -2831,10 +2773,8 @@ void OpenGl_View::renderFrameStats()
   }
 }
 
-// =======================================================================
-// function : Invalidate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::Invalidate()
 {
   myBackBufferRestored = Standard_False;
@@ -2869,10 +2809,8 @@ void OpenGl_View::renderScene(Graphic3d_Camera::Projection theProjection,
   }
 }
 
-// =======================================================================
-// function : bindDefaultFbo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
@@ -2903,10 +2841,8 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
   }
 }
 
-// =======================================================================
-// function : initBlitQuad
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
 {
   OpenGl_VertexBuffer* aVerts = NULL;
@@ -2937,10 +2873,8 @@ OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
   return aVerts;
 }
 
-// =======================================================================
-// function : blitBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
                               OpenGl_FrameBuffer*    theDrawFbo,
                               const Standard_Boolean theToFlip)
@@ -3145,10 +3079,8 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
   return true;
 }
 
-// =======================================================================
-// function : drawStereoPair
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
 {
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
@@ -3353,10 +3285,8 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   aPair[0]->ColorTexture()->Unbind(aCtx, Graphic3d_TextureUnit_0);
 }
 
-// =======================================================================
-// function : copyBackToFront
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_View::copyBackToFront()
 {
   myIsImmediateDrawn                 = Standard_False;
@@ -3421,10 +3351,8 @@ bool OpenGl_View::copyBackToFront()
   return true;
 }
 
-// =======================================================================
-// function : checkOitCompatibility
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::checkOitCompatibility(const Handle(OpenGl_Context)& theGlContext,
                                                     const Standard_Boolean        theMSAA)
 {
@@ -3466,10 +3394,8 @@ Standard_Boolean OpenGl_View::checkOitCompatibility(const Handle(OpenGl_Context)
   return Standard_False;
 }
 
-// =======================================================================
-// function : updateSkydomeBg
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
 {
   if (!myToUpdateSkydome)
@@ -3565,19 +3491,15 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, aPrevFBO);
 }
 
-// =======================================================================
-// function : checkPBRAvailability
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_View::checkPBRAvailability() const
 {
   return myWorkspace->GetGlContext()->HasPBR() && !myPBREnvironment.IsNull();
 }
 
-// =======================================================================
-// function : updatePBREnvironment
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_View::updatePBREnvironment(const Handle(OpenGl_Context)& theCtx)
 {
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP && myToUpdateSkydome)

@@ -19,10 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ViewAffinity, Standard_Transient)
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ViewAffinity::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

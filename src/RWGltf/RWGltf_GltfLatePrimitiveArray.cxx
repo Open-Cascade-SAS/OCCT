@@ -21,10 +21,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, RWMesh_TriangulationSource)
 
-// =======================================================================
-// function : RWGltf_GltfLatePrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfLatePrimitiveArray::RWGltf_GltfLatePrimitiveArray(const TCollection_AsciiString& theId,
                                                              const TCollection_AsciiString& theName)
     : myId(theId),
@@ -33,19 +31,15 @@ RWGltf_GltfLatePrimitiveArray::RWGltf_GltfLatePrimitiveArray(const TCollection_A
 {
 }
 
-// =======================================================================
-// function : ~RWGltf_GltfLatePrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfLatePrimitiveArray::~RWGltf_GltfLatePrimitiveArray()
 {
   //
 }
 
-// =======================================================================
-// function : BaseColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Quantity_ColorRGBA RWGltf_GltfLatePrimitiveArray::BaseColor() const
 {
   if (!myMaterialPbr.IsNull())
@@ -60,10 +54,8 @@ Quantity_ColorRGBA RWGltf_GltfLatePrimitiveArray::BaseColor() const
   return Quantity_ColorRGBA();
 }
 
-// =======================================================================
-// function : AddPrimArrayData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfPrimArrayData& RWGltf_GltfLatePrimitiveArray::AddPrimArrayData(
   RWGltf_GltfArrayType theType)
 {

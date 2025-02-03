@@ -375,10 +375,8 @@ void PrsMgr_PresentableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
   }
 }
 
-// =======================================================================
-// function : AddClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::AddClipPlane(const Handle(Graphic3d_ClipPlane)& thePlane)
 {
   // add to collection and process changes
@@ -391,10 +389,8 @@ void PrsMgr_PresentableObject::AddClipPlane(const Handle(Graphic3d_ClipPlane)& t
   UpdateClipping();
 }
 
-// =======================================================================
-// function : RemoveClipPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::RemoveClipPlane(const Handle(Graphic3d_ClipPlane)& thePlane)
 {
   if (myClipPlanes.IsNull())
@@ -416,10 +412,8 @@ void PrsMgr_PresentableObject::RemoveClipPlane(const Handle(Graphic3d_ClipPlane)
   }
 }
 
-// =======================================================================
-// function : SetClipPlanes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::SetClipPlanes(
   const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
@@ -428,10 +422,8 @@ void PrsMgr_PresentableObject::SetClipPlanes(
   UpdateClipping();
 }
 
-// =======================================================================
-// function : UpdateClipping
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::UpdateClipping()
 {
   for (PrsMgr_Presentations::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
@@ -458,10 +450,8 @@ void PrsMgr_PresentableObject::SetInfiniteState(const Standard_Boolean theFlag)
   }
 }
 
-// =======================================================================
-// function : SetMutable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::SetMutable(const Standard_Boolean theIsMutable)
 {
   if (myIsMutable == theIsMutable)
@@ -477,10 +467,8 @@ void PrsMgr_PresentableObject::SetMutable(const Standard_Boolean theIsMutable)
   }
 }
 
-// =======================================================================
-// function : UnsetAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::UnsetAttributes()
 {
   Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
@@ -734,10 +722,8 @@ void PrsMgr_PresentableObject::PolygonOffsets(Standard_Integer&   theMode,
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void PrsMgr_PresentableObject::DumpJson(Standard_OStream& theOStream,
                                         Standard_Integer  theDepth) const
 {

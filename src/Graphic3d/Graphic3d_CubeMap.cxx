@@ -16,10 +16,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMap, Graphic3d_TextureMap)
 
-// =======================================================================
-// function : Graphic3d_CubeMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMap::Graphic3d_CubeMap(const TCollection_AsciiString& theFileName,
                                      Standard_Boolean               theToGenerateMipmaps)
     : Graphic3d_TextureMap(theFileName, Graphic3d_TypeOfTexture_CUBEMAP),
@@ -30,10 +28,8 @@ Graphic3d_CubeMap::Graphic3d_CubeMap(const TCollection_AsciiString& theFileName,
   myHasMipmaps = theToGenerateMipmaps;
 }
 
-// =======================================================================
-// function : Graphic3d_CubeMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMap::Graphic3d_CubeMap(const Handle(Image_PixMap)& thePixmap,
                                      Standard_Boolean            theToGenerateMipmaps)
     : Graphic3d_TextureMap(thePixmap, Graphic3d_TypeOfTexture_CUBEMAP),
@@ -44,10 +40,8 @@ Graphic3d_CubeMap::Graphic3d_CubeMap(const Handle(Image_PixMap)& thePixmap,
   myHasMipmaps = theToGenerateMipmaps;
 }
 
-// =======================================================================
-// function : ~Graphic3d_CubeMap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMap::~Graphic3d_CubeMap()
 {
   //

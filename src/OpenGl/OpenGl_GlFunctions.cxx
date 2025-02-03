@@ -1606,10 +1606,8 @@ static void APIENTRY glPixelTransferi(GLenum pname, GLint param)
 #endif
 } // namespace opencascade
 
-// =======================================================================
-// function : debugPrintError
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_GlFunctions::debugPrintError(const char* theName)
 {
   const int anErr = ::glGetError();
@@ -1635,10 +1633,8 @@ bool OpenGl_GlFunctions::debugPrintError(const char* theName)
   return anErr != GL_NO_ERROR;
 }
 
-// =======================================================================
-// function : readGlVersion
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GlFunctions::readGlVersion(Standard_Integer& theGlVerMajor,
                                        Standard_Integer& theGlVerMinor)
 {
@@ -1764,10 +1760,8 @@ void OpenGl_GlFunctions::readGlVersion(Standard_Integer& theGlVerMajor,
   }
 }
 
-// =======================================================================
-// function : load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, Standard_Boolean theIsCoreProfile)
 {
 #if !defined(GL_ES_VERSION_2_0)

@@ -30,10 +30,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 
-// =======================================================================
-// function : Xw_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
                      const Standard_CString                  theTitle,
                      const Standard_Integer                  thePxLeft,
@@ -123,10 +121,8 @@ Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
 #endif
 }
 
-// =======================================================================
-// function : Xw_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
                      const Aspect_Drawable                   theXWin,
                      const Aspect_FBConfig                   theFBConfig)
@@ -172,10 +168,8 @@ Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
 #endif
 }
 
-// =======================================================================
-// function : ~Xw_Window
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Xw_Window::~Xw_Window()
 {
   if (myIsOwnWin && myXWindow != 0 && !myDisplay.IsNull())
@@ -186,10 +180,8 @@ Xw_Window::~Xw_Window()
   }
 }
 
-// =======================================================================
-// function : IsMapped
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Xw_Window::IsMapped() const
 {
   if (myXWindow == 0)
@@ -211,10 +203,8 @@ Standard_Boolean Xw_Window::IsMapped() const
 #endif
 }
 
-// =======================================================================
-// function : Map
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::Map() const
 {
   if (IsVirtual() || myXWindow == 0)
@@ -228,10 +218,8 @@ void Xw_Window::Map() const
 #endif
 }
 
-// =======================================================================
-// function : Unmap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::Unmap() const
 {
   if (IsVirtual() || myXWindow == 0)
@@ -246,10 +234,8 @@ void Xw_Window::Unmap() const
 #endif
 }
 
-// =======================================================================
-// function : DoResize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_TypeOfResize Xw_Window::DoResize()
 {
   if (IsVirtual() || myXWindow == 0)
@@ -321,10 +307,8 @@ Aspect_TypeOfResize Xw_Window::DoResize()
 #endif
 }
 
-// =======================================================================
-// function : Ratio
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Xw_Window::Ratio() const
 {
   if (IsVirtual() || myXWindow == 0)
@@ -343,10 +327,8 @@ Standard_Real Xw_Window::Ratio() const
 #endif
 }
 
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::Position(Standard_Integer& theX1,
                          Standard_Integer& theY1,
                          Standard_Integer& theX2,
@@ -383,10 +365,8 @@ void Xw_Window::Position(Standard_Integer& theX1,
 #endif
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   if (IsVirtual() || myXWindow == 0)
@@ -406,10 +386,8 @@ void Xw_Window::Size(Standard_Integer& theWidth, Standard_Integer& theHeight) co
 #endif
 }
 
-// =======================================================================
-// function : SetTitle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::SetTitle(const TCollection_AsciiString& theTitle)
 {
   if (myXWindow != 0)
@@ -422,10 +400,8 @@ void Xw_Window::SetTitle(const TCollection_AsciiString& theTitle)
   }
 }
 
-// =======================================================================
-// function : InvalidateContent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Xw_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)& theDisp)
 {
   if (myXWindow == 0)
@@ -448,10 +424,8 @@ void Xw_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)& theDis
 #endif
 }
 
-// =======================================================================
-// function : VirtualKeyFromNative
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_VKey Xw_Window::VirtualKeyFromNative(unsigned long theKey)
 {
 #if defined(HAVE_XLIB)
@@ -599,10 +573,8 @@ Aspect_VKey Xw_Window::VirtualKeyFromNative(unsigned long theKey)
   return Aspect_VKey_UNKNOWN;
 }
 
-// =======================================================================
-// function : ProcessMessage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Xw_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
                                XEvent&
 #if defined(HAVE_XLIB) // msvc before VS2015 had problems with (void )theMsg

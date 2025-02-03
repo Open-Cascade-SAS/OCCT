@@ -31,10 +31,8 @@ namespace
 static volatile Standard_Integer THE_PROGRAM_OBJECT_COUNTER = 0;
 }
 
-// =======================================================================
-// function : ShadersFolder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
 {
   static Standard_Boolean        THE_IS_DEFINED = Standard_False;
@@ -176,10 +174,8 @@ void Graphic3d_ShaderProgram::ClearVariables()
   myVariables.Clear();
 }
 
-// =======================================================================
-// function : SetAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ShaderProgram::SetVertexAttributes(
   const Graphic3d_ShaderAttributeList& theAttributes)
 {

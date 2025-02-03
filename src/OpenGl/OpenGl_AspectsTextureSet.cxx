@@ -24,10 +24,8 @@ namespace
 static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsTextureSet::Release(OpenGl_Context* theCtx)
 {
   if (myTextures[0].IsNull())
@@ -70,10 +68,8 @@ void OpenGl_AspectsTextureSet::Release(OpenGl_Context* theCtx)
   myIsTextureReady = Standard_False;
 }
 
-// =======================================================================
-// function : UpdateRediness
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsTextureSet::UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect)
 {
   const Handle(Graphic3d_TextureSet)& aNewTextureSet = theAspect->TextureSet();
@@ -132,10 +128,8 @@ void OpenGl_AspectsTextureSet::UpdateRediness(const Handle(Graphic3d_Aspects)& t
   }
 }
 
-// =======================================================================
-// function : build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_AspectsTextureSet::build(const Handle(OpenGl_Context)&     theCtx,
                                      const Handle(Graphic3d_Aspects)&  theAspect,
                                      const Handle(OpenGl_PointSprite)& theSprite,

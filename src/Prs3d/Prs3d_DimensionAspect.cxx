@@ -59,10 +59,8 @@ void Prs3d_DimensionAspect::SetCommonColor(const Quantity_Color& theColor)
   myArrowAspect->SetColor(theColor);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Prs3d_DimensionAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

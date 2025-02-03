@@ -341,10 +341,8 @@ private:
 };
 #endif
 
-// =======================================================================
-// function : IsHmdPresent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::IsHmdPresent()
 {
 #ifdef HAVE_OPENVR
@@ -354,10 +352,8 @@ bool Aspect_OpenVRSession::IsHmdPresent()
 #endif
 }
 
-// =======================================================================
-// function : defaultActionsManifest
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Aspect_OpenVRSession::defaultActionsManifest()
 {
 #ifdef HAVE_OPENVR
@@ -368,10 +364,8 @@ TCollection_AsciiString Aspect_OpenVRSession::defaultActionsManifest()
 #endif
 }
 
-// =======================================================================
-// function : Aspect_OpenVRSession
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_OpenVRSession::Aspect_OpenVRSession()
     : myContext(new VRContext())
 {
@@ -491,20 +485,16 @@ Aspect_OpenVRSession::Aspect_OpenVRSession()
 #endif
 }
 
-// =======================================================================
-// function : ~Aspect_OpenVRSession
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_OpenVRSession::~Aspect_OpenVRSession()
 {
   closeVR();
   delete myContext;
 }
 
-// =======================================================================
-// function : closeVR
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::closeVR()
 {
 #ifdef HAVE_OPENVR
@@ -516,10 +506,8 @@ void Aspect_OpenVRSession::closeVR()
 #endif
 }
 
-// =======================================================================
-// function : getVRSystem
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void* Aspect_OpenVRSession::getVRSystem() const
 {
 #ifdef HAVE_OPENVR
@@ -529,19 +517,15 @@ void* Aspect_OpenVRSession::getVRSystem() const
 #endif
 }
 
-// =======================================================================
-// function : Close
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::Close()
 {
   closeVR();
 }
 
-// =======================================================================
-// function : IsOpen
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::IsOpen() const
 {
 #ifdef HAVE_OPENVR
@@ -551,10 +535,8 @@ bool Aspect_OpenVRSession::IsOpen() const
 #endif
 }
 
-// =======================================================================
-// function : Open
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::Open()
 {
 #ifdef HAVE_OPENVR
@@ -600,10 +582,8 @@ bool Aspect_OpenVRSession::Open()
 #endif
 }
 
-// =======================================================================
-// function : initInput
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::initInput()
 {
 #ifdef HAVE_OPENVR
@@ -670,10 +650,8 @@ bool Aspect_OpenVRSession::initInput()
 #endif
 }
 
-// =======================================================================
-// function : GetString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) const
 {
 #ifdef HAVE_OPENVR
@@ -706,10 +684,8 @@ TCollection_AsciiString Aspect_OpenVRSession::GetString(InfoString theInfo) cons
   return TCollection_AsciiString();
 }
 
-// =======================================================================
-// function : NamedTrackedDevice
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Aspect_OpenVRSession::NamedTrackedDevice(
   Aspect_XRTrackedDeviceRole theDevice) const
 {
@@ -745,10 +721,8 @@ Standard_Integer Aspect_OpenVRSession::NamedTrackedDevice(
   return -1;
 }
 
-// =======================================================================
-// function : loadRenderModel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
   Standard_Integer       theDevice,
   Standard_Boolean       theToApplyUnitFactor,
@@ -823,10 +797,8 @@ Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel(
 #endif
 }
 
-// =======================================================================
-// function : EyeToHeadTransform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 NCollection_Mat4<double> Aspect_OpenVRSession::EyeToHeadTransform(Aspect_Eye theEye) const
 {
 #ifdef HAVE_OPENVR
@@ -849,10 +821,8 @@ NCollection_Mat4<double> Aspect_OpenVRSession::EyeToHeadTransform(Aspect_Eye the
   return NCollection_Mat4<double>();
 }
 
-// =======================================================================
-// function : ProjectionMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 NCollection_Mat4<double> Aspect_OpenVRSession::ProjectionMatrix(Aspect_Eye theEye,
                                                                 double     theZNear,
                                                                 double     theZFar) const
@@ -874,10 +844,8 @@ NCollection_Mat4<double> Aspect_OpenVRSession::ProjectionMatrix(Aspect_Eye theEy
   return NCollection_Mat4<double>();
 }
 
-// =======================================================================
-// function : updateProjectionFrustums
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::updateProjectionFrustums()
 {
 #ifdef HAVE_OPENVR
@@ -913,10 +881,8 @@ void Aspect_OpenVRSession::updateProjectionFrustums()
 #endif
 }
 
-// =======================================================================
-// function : SetTrackingOrigin
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
 {
 #ifdef HAVE_OPENVR
@@ -938,10 +904,8 @@ void Aspect_OpenVRSession::SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
   myTrackOrigin = theOrigin;
 }
 
-// =======================================================================
-// function : WaitPoses
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::WaitPoses()
 {
 #ifdef HAVE_OPENVR
@@ -990,10 +954,8 @@ bool Aspect_OpenVRSession::WaitPoses()
 #endif
 }
 
-// =======================================================================
-// function : GetDigitalActionData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData(
   const Handle(Aspect_XRAction)& theAction) const
 {
@@ -1030,10 +992,8 @@ Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData(
   return anActionData;
 }
 
-// =======================================================================
-// function : GetAnalogActionData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData(
   const Handle(Aspect_XRAction)& theAction) const
 {
@@ -1069,10 +1029,8 @@ Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData(
   return anActionData;
 }
 
-// =======================================================================
-// function : GetPoseActionDataForNextFrame
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
   const Handle(Aspect_XRAction)& theAction) const
 {
@@ -1118,10 +1076,8 @@ Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame(
   return anActionData;
 }
 
-// =======================================================================
-// function : triggerHapticVibrationAction
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::triggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
                                                         const Aspect_XRHapticActionData& theParams)
 {
@@ -1160,10 +1116,8 @@ void Aspect_OpenVRSession::triggerHapticVibrationAction(const Handle(Aspect_XRAc
 #endif
 }
 
-// =======================================================================
-// function : ProcessEvents
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::ProcessEvents()
 {
 #ifdef HAVE_OPENVR
@@ -1247,37 +1201,29 @@ void Aspect_OpenVRSession::ProcessEvents()
 #endif
 }
 
-// =======================================================================
-// function : onTrackedDeviceActivated
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::onTrackedDeviceActivated(Standard_Integer theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " attached");
 }
 
-// =======================================================================
-// function : onTrackedDeviceDeactivated
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::onTrackedDeviceDeactivated(Standard_Integer theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " detached");
 }
 
-// =======================================================================
-// function : onTrackedDeviceUpdated
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_OpenVRSession::onTrackedDeviceUpdated(Standard_Integer theDeviceIndex)
 {
   Message::SendTrace(TCollection_AsciiString("OpenVR, Device ") + theDeviceIndex + " updated");
 }
 
-// =======================================================================
-// function : SubmitEye
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_OpenVRSession::SubmitEye(void*                  theTexture,
                                      Aspect_GraphicsLibrary theGraphicsLib,
                                      Aspect_ColorSpace      theColorSpace,

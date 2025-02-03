@@ -115,10 +115,8 @@ void SelectMgr_Selection::SetSensitivity(const Standard_Integer theNewSens)
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_Selection::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

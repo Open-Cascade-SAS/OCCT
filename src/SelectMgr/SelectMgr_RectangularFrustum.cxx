@@ -22,19 +22,15 @@
 #include <SelectMgr_FrustumBuilder.hxx>
 #include <SelectMgr_ViewClipRange.hxx>
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 SelectMgr_RectangularFrustum::SelectMgr_RectangularFrustum()
     : myScale(1.0)
 {
 }
 
-// =======================================================================
-// function : segmentSegmentDistance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_RectangularFrustum::segmentSegmentDistance(
   const gp_Pnt&            theSegPnt1,
   const gp_Pnt&            theSegPnt2,
@@ -105,10 +101,8 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance(
                                + aFigureVec.XYZ() * (aSegPntShift / aFigureVecMod));
 }
 
-// =======================================================================
-// function : segmentPlaneIntersection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool SelectMgr_RectangularFrustum::segmentPlaneIntersection(
   const gp_Vec&            thePlane,
   const gp_Pnt&            thePntOnPlane,
@@ -278,20 +272,16 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
   }
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_RectangularFrustum::Init(const gp_Pnt2d& thePoint)
 {
   mySelectionType = SelectMgr_SelectionType_Point;
   mySelRectangle.SetMousePos(thePoint);
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_RectangularFrustum::Init(const gp_Pnt2d& theMinPnt, const gp_Pnt2d& theMaxPnt)
 {
   mySelectionType = SelectMgr_SelectionType_Box;
@@ -299,10 +289,8 @@ void SelectMgr_RectangularFrustum::Init(const gp_Pnt2d& theMinPnt, const gp_Pnt2
   mySelRectangle.SetMaxPnt(theMaxPnt);
 }
 
-// =======================================================================
-// function : Build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_RectangularFrustum::Build()
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
@@ -479,10 +467,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::CopyWithBuilder(
   return aRes;
 }
 
-// =======================================================================
-// function : IsScalable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_RectangularFrustum::IsScalable() const
 {
   return mySelectionType == SelectMgr_SelectionType_Point;
@@ -1048,10 +1034,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCircle(const Standard_Rea
   return hasCircleOverlap(theRadius, theTrsf, theIsFilled, theInside);
 }
 
-// =======================================================================
-// function : GetMousePosition
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const gp_Pnt2d& SelectMgr_RectangularFrustum::GetMousePosition() const
 {
   if (mySelectionType == SelectMgr_SelectionType_Point)
@@ -1061,10 +1045,8 @@ const gp_Pnt2d& SelectMgr_RectangularFrustum::GetMousePosition() const
   return base_type::GetMousePosition();
 }
 
-// =======================================================================
-// function : OverlapsSphere
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere(
   const gp_Pnt&                  theCenter,
   const Standard_Real            theRadius,
@@ -1098,10 +1080,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere(
   return !theClipRange.IsClipped(thePickResult.Depth());
 }
 
-// =======================================================================
-// function : OverlapsSphere
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere(const gp_Pnt&       theCenter,
                                                               const Standard_Real theRadius,
                                                               Standard_Boolean*   theInside) const
@@ -1141,10 +1121,8 @@ gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint(const Standard_Real theDepth)
   return myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * theDepth / myScale;
 }
 
-// =======================================================================
-// function : GetPlanes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_RectangularFrustum::GetPlanes(
   NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
 {

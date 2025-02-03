@@ -19,10 +19,8 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 
-// =======================================================================
-// function : RWMesh_EdgeIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
                                          const Standard_Boolean theToMapColors,
@@ -32,10 +30,8 @@ RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TDF_Label&       theLabel,
   Next();
 }
 
-// =======================================================================
-// function : RWMesh_EdgeIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TopoDS_Shape&  theShape,
                                          const XCAFPrs_Style& theStyle)
     : RWMesh_ShapeIterator(theShape, TopAbs_EDGE, theStyle)
@@ -43,10 +39,8 @@ RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TopoDS_Shape&  theShape,
   Next();
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_EdgeIterator::Next()
 {
   for (; myIter.More(); myIter.Next())
@@ -68,10 +62,8 @@ void RWMesh_EdgeIterator::Next()
   resetEdge();
 }
 
-// =======================================================================
-// function : initEdge
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_EdgeIterator::initEdge()
 {
   initShape();

@@ -32,10 +32,8 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
                     Standard_Integer&         theNbSamplesU,
                     Standard_Integer&         theNbSamplesV);
 
-// =====================================================================================
-// function: Constructor
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 IntTools_TopolTool::IntTools_TopolTool()
 {
   myNbSmplU = 0;
@@ -44,10 +42,8 @@ IntTools_TopolTool::IntTools_TopolTool()
   myDV      = 1.;
 }
 
-// =====================================================================================
-// function: Constructor
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_Surface)& theSurface)
 {
   Initialize(theSurface);
@@ -57,19 +53,15 @@ IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_Surface)& theSurfa
   myDV      = 1.;
 }
 
-// =====================================================================================
-// function: Initialize
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 void IntTools_TopolTool::Initialize()
 {
   throw Standard_NotImplemented("IntTools_TopolTool::Initialize ()");
 }
 
-// =====================================================================================
-// function: Initialize
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
 {
   Adaptor3d_TopolTool::Initialize(theSurface);
@@ -80,10 +72,8 @@ void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
   myDV      = 1.;
 }
 
-// =====================================================================================
-// function: ComputeSamplePoints
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 void IntTools_TopolTool::ComputeSamplePoints()
 {
   Standard_Real uinf, usup, vinf, vsup;
@@ -362,10 +352,8 @@ void IntTools_TopolTool::ComputeSamplePoints()
   myDV = (vsup - vinf) / (myNbSmplV + 1);
 }
 
-// =====================================================================================
-// function: NbSamplesU
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 Standard_Integer IntTools_TopolTool::NbSamplesU()
 {
   if (myNbSmplU <= 0)
@@ -375,10 +363,8 @@ Standard_Integer IntTools_TopolTool::NbSamplesU()
   return myNbSmplU;
 }
 
-// =====================================================================================
-// function: NbSamplesV
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 Standard_Integer IntTools_TopolTool::NbSamplesV()
 {
   if (myNbSmplV <= 0)
@@ -388,10 +374,8 @@ Standard_Integer IntTools_TopolTool::NbSamplesV()
   return myNbSmplV;
 }
 
-// =====================================================================================
-// function: NbSamples
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 Standard_Integer IntTools_TopolTool::NbSamples()
 {
   if (myNbSmplU <= 0)
@@ -401,10 +385,8 @@ Standard_Integer IntTools_TopolTool::NbSamples()
   return (myNbSmplU * myNbSmplV);
 }
 
-// =====================================================================================
-// function: SamplePoint
-// purpose:
-// =====================================================================================
+//=================================================================================================
+
 void IntTools_TopolTool::SamplePoint(const Standard_Integer Index, gp_Pnt2d& P2d, gp_Pnt& P3d)
 {
   if (myUPars.IsNull())

@@ -15,10 +15,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)
 
-// =======================================================================
-// function : Graphic3d_TransformPersScaledAbove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TransformPersScaledAbove::Graphic3d_TransformPersScaledAbove(const Standard_Real theScale,
                                                                        const gp_Pnt&       thePnt)
     : Graphic3d_TransformPers(Graphic3d_TMF_ZoomPers, thePnt),
@@ -26,10 +24,8 @@ Graphic3d_TransformPersScaledAbove::Graphic3d_TransformPersScaledAbove(const Sta
 {
 }
 
-// =======================================================================
-// function : persistentScale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Graphic3d_TransformPersScaledAbove::persistentScale(
   const Handle(Graphic3d_Camera)& theCamera,
   const Standard_Integer          theViewportWidth,

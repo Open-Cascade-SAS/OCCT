@@ -189,10 +189,8 @@ static void UpdateSectionEdge(TopoDS_Edge&         theEdge,
                               TopoDS_Vertex&       theVertex,
                               const Standard_Real  theParam);
 
-// ===========================================================================================
-// function: Constructor
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 BRepFill_TrimShellCorner::BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
                                                    const BRepFill_TransitionStyle theTransition,
                                                    const gp_Ax2&                  theAxeOfBisPlane,
@@ -210,10 +208,8 @@ BRepFill_TrimShellCorner::BRepFill_TrimShellCorner(const Handle(TopTools_HArray2
   myFaces->ChangeArray2() = theFaces->Array2();
 }
 
-// ===========================================================================================
-// function: AddBounds
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 void BRepFill_TrimShellCorner::AddBounds(const Handle(TopTools_HArray2OfShape)& theBounds)
 {
   myBounds                 = new TopTools_HArray2OfShape(theBounds->LowerRow(),
@@ -223,10 +219,8 @@ void BRepFill_TrimShellCorner::AddBounds(const Handle(TopTools_HArray2OfShape)& 
   myBounds->ChangeArray2() = theBounds->Array2();
 }
 
-// ===========================================================================================
-// function: AddUEdges
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 void BRepFill_TrimShellCorner::AddUEdges(const Handle(TopTools_HArray2OfShape)& theUEdges)
 {
   myUEdges                 = new TopTools_HArray2OfShape(theUEdges->LowerRow(),
@@ -236,10 +230,8 @@ void BRepFill_TrimShellCorner::AddUEdges(const Handle(TopTools_HArray2OfShape)& 
   myUEdges->ChangeArray2() = theUEdges->Array2();
 }
 
-// ===========================================================================================
-// function: AddVEdges
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 void BRepFill_TrimShellCorner::AddVEdges(const Handle(TopTools_HArray2OfShape)& theVEdges,
                                          const Standard_Integer                 theIndex)
 {
@@ -249,10 +241,8 @@ void BRepFill_TrimShellCorner::AddVEdges(const Handle(TopTools_HArray2OfShape)& 
     myVEdges->SetValue(i, theVEdges->Value(i, theIndex));
 }
 
-// ===========================================================================================
-// function: Perform
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 void BRepFill_TrimShellCorner::Perform()
 {
   Standard_Integer anIndex1, anIndex2, nF1, nF2, i, j, aNbP, aNbC;
@@ -395,28 +385,22 @@ void BRepFill_TrimShellCorner::Perform()
   myDone = Standard_True;
 }
 
-// ===========================================================================================
-// function: IsDone
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 Standard_Boolean BRepFill_TrimShellCorner::IsDone() const
 {
   return myDone;
 }
 
-// ===========================================================================================
-// function: HasSection
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 Standard_Boolean BRepFill_TrimShellCorner::HasSection() const
 {
   return myHasSection;
 }
 
-// ===========================================================================================
-// function: Modified
-// purpose:
-// ===========================================================================================
+//=================================================================================================
+
 void BRepFill_TrimShellCorner::Modified(const TopoDS_Shape&   theShape,
                                         TopTools_ListOfShape& theModified)
 {

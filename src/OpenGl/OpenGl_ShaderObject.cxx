@@ -88,10 +88,8 @@ OpenGl_ShaderObject::~OpenGl_ShaderObject()
   Release(NULL);
 }
 
-// =======================================================================
-// function : LoadAndCompile
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderObject::LoadAndCompile(const Handle(OpenGl_Context)&  theCtx,
                                                      const TCollection_AsciiString& theId,
                                                      const TCollection_AsciiString& theSource,
@@ -163,10 +161,8 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile(const Handle(OpenGl_Context
   return true;
 }
 
-// =======================================================================
-// function : DumpSourceCode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderObject::DumpSourceCode(const Handle(OpenGl_Context)&  theCtx,
                                          const TCollection_AsciiString& theId,
                                          const TCollection_AsciiString& theSource) const
@@ -369,10 +365,8 @@ static bool restoreShaderSource(TCollection_AsciiString&       theSource,
   return true;
 }
 
-// =======================================================================
-// function : updateDebugDump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_ShaderObject::updateDebugDump(const Handle(OpenGl_Context)&  theCtx,
                                                       const TCollection_AsciiString& theProgramId,
                                                       const TCollection_AsciiString& theFolder,

@@ -202,10 +202,8 @@ Standard_Integer OSD_Process::Error() const
 
 void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
 
-// =======================================================================
-// function : OSD_Process
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_Process::OSD_Process()
 {
   //
@@ -233,10 +231,8 @@ Quantity_Date OSD_Process ::SystemDate()
 
 } // end OSD_Process :: SystemDate
 
-// =======================================================================
-// function : UserName
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OSD_Process::UserName()
 {
   #ifndef OCCT_UWP
@@ -295,19 +291,15 @@ Standard_Boolean OSD_Process ::IsSuperUser()
   #endif
 } // end OSD_Process :: IsSuperUser
 
-// =======================================================================
-// function : ProcessId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer OSD_Process::ProcessId()
 {
   return (Standard_Integer)GetCurrentProcessId();
 }
 
-// =======================================================================
-// function : CurrentDirectory
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_Path OSD_Process::CurrentDirectory()
 {
   OSD_Path anCurrentDirectory;
@@ -375,10 +367,8 @@ Standard_Integer OSD_Process ::Error() const
 
 #endif
 
-// =======================================================================
-// function : ExecutablePath
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OSD_Process::ExecutablePath()
 {
 #ifdef _WIN32
@@ -457,10 +447,8 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
 #endif
 }
 
-// =======================================================================
-// function : ExecutableFolder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString OSD_Process::ExecutableFolder()
 {
   TCollection_AsciiString aFullPath  = ExecutablePath();

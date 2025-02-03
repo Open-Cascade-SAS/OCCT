@@ -34,10 +34,8 @@ static Graphic3d_HorizontalTextAlignment THE_LABEL_HALIGH = Graphic3d_HTA_LEFT;
 static Graphic3d_VerticalTextAlignment   THE_LABEL_VALIGH = Graphic3d_VTA_BOTTOM;
 } // namespace
 
-// =======================================================================
-// function : Constructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
     : myMin(0.0f, 0.0f, 0.0f),
       myMax(100.0f, 100.0f, 100.0f),
@@ -46,29 +44,23 @@ OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
   //
 }
 
-// =======================================================================
-// function : SetValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::SetValues(const Graphic3d_GraduatedTrihedron& theData)
 {
   myData          = theData;
   myIsInitialized = Standard_False;
 }
 
-// =======================================================================
-// function : Destructor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraduatedTrihedron::~OpenGl_GraduatedTrihedron()
 {
   //
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::Release(OpenGl_Context* theCtx)
 {
   myAxes[0].Release(theCtx);
@@ -77,10 +69,8 @@ void OpenGl_GraduatedTrihedron::Release(OpenGl_Context* theCtx)
   myLabelValues.Release(theCtx);
 }
 
-// =======================================================================
-// function : initResources
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::initGlResources(const Handle(OpenGl_Context)& theCtx) const
 {
   myAxes[0].Release(theCtx.operator->());
@@ -321,10 +311,8 @@ Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes(const Standard_Shor
   }
 }
 
-// =======================================================================
-// function : renderLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::renderLine(const OpenGl_PrimitiveArray&    theLine,
                                            const Handle(OpenGl_Workspace)& theWorkspace,
                                            const OpenGl_Mat4&              theMat,
@@ -340,10 +328,8 @@ void OpenGl_GraduatedTrihedron::renderLine(const OpenGl_PrimitiveArray&    theLi
   theLine.Render(theWorkspace);
 }
 
-// =======================================================================
-// function : renderGridPlane
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& theWorkspace,
                                                 const Standard_Integer&         theIndex,
                                                 const GridAxes&                 theGridAxes,
@@ -391,10 +377,8 @@ void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& 
   }
 }
 
-// =======================================================================
-// function : renderAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWorkspace,
                                            const Standard_Integer&         theIndex,
                                            const OpenGl_Mat4&              theMat) const
@@ -475,10 +459,8 @@ void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWo
   anAxis.Line.Render(theWorkspace);
 }
 
-// =======================================================================
-// function : renderTickmarkTextLabels
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspace)& theWorkspace,
                                                      const OpenGl_Mat4&              theMat,
                                                      const Standard_Integer          theIndex,
@@ -826,10 +808,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitArrow(const Handle(OpenGl_Context)& th
                     anArray->Bounds());
 }
 
-// =======================================================================
-// function : InitTickmark
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::Axis::InitTickmark(const Handle(OpenGl_Context)& theContext,
                                                    const OpenGl_Vec3&            theDir) const
 {
@@ -844,10 +824,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitTickmark(const Handle(OpenGl_Context)&
                        anArray->Bounds());
 }
 
-// =======================================================================
-// function : InitLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::Axis::InitLine(const Handle(OpenGl_Context)& theContext,
                                                const OpenGl_Vec3&            theDir) const
 {
@@ -863,10 +841,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitLine(const Handle(OpenGl_Context)& the
                    anArray->Bounds());
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::Axis::Release(OpenGl_Context* theCtx)
 {
   Label.Release(theCtx);
@@ -875,10 +851,8 @@ void OpenGl_GraduatedTrihedron::Axis::Release(OpenGl_Context* theCtx)
   Arrow.Release(theCtx);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::DumpJson(Standard_OStream& theOStream,
                                          Standard_Integer  theDepth) const
 {

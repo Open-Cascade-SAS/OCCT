@@ -97,10 +97,8 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
                           Standard_Boolean&                        bAllowSamplingU,
                           Standard_Boolean&                        bAllowSamplingV);
 
-// ==================================================================================
-// function: IntTools_BeanFaceIntersector
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector()
     : myFirstParameter(0.),
       myLastParameter(0.),
@@ -117,10 +115,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector()
   myCurveResolution = Precision::PConfusion();
 }
 
-// ==================================================================================
-// function: IntTools_BeanFaceIntersector
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const TopoDS_Edge& theEdge,
                                                            const TopoDS_Face& theFace)
     : myFirstParameter(0.),
@@ -137,10 +133,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const TopoDS_Edge& th
   Init(theEdge, theFace);
 }
 
-// ==================================================================================
-// function: IntTools_BeanFaceIntersector
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
                                                            const BRepAdaptor_Surface& theSurface,
                                                            const Standard_Real theBeanTolerance,
@@ -157,10 +151,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
 }
 
-// ==================================================================================
-// function: IntTools_BeanFaceIntersector
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
                                                            const BRepAdaptor_Surface& theSurface,
                                                            const Standard_Real theFirstParOnCurve,
@@ -192,10 +184,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
     Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
 }
 
-// ==================================================================================
-// function: Init
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace)
 {
   if (myContext.IsNull())
@@ -220,10 +210,8 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge, const TopoDS
   myResults.Clear();
 }
 
-// ==================================================================================
-// function: Init
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
                                         const BRepAdaptor_Surface& theSurface,
                                         const Standard_Real        theBeanTolerance,
@@ -246,10 +234,8 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   myResults.Clear();
 }
 
-// ==================================================================================
-// function: Init
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
                                         const BRepAdaptor_Surface& theSurface,
                                         const Standard_Real        theFirstParOnCurve,
@@ -266,28 +252,22 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   SetSurfaceParameters(theUMinParameter, theUMaxParameter, theVMinParameter, theVMaxParameter);
 }
 
-// ==================================================================================
-// function: SetContext
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::SetContext(const Handle(IntTools_Context)& theContext)
 {
   myContext = theContext;
 }
 
-// ==================================================================================
-// function: Context
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 const Handle(IntTools_Context)& IntTools_BeanFaceIntersector::Context() const
 {
   return myContext;
 }
 
-// ==================================================================================
-// function: SetBeanParameters
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::SetBeanParameters(const Standard_Real theFirstParOnCurve,
                                                      const Standard_Real theLastParOnCurve)
 {
@@ -295,10 +275,8 @@ void IntTools_BeanFaceIntersector::SetBeanParameters(const Standard_Real theFirs
   myLastParameter  = theLastParOnCurve;
 }
 
-// ==================================================================================
-// function: SetSurfaceParameters
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::SetSurfaceParameters(const Standard_Real theUMinParameter,
                                                         const Standard_Real theUMaxParameter,
                                                         const Standard_Real theVMinParameter,
@@ -310,10 +288,8 @@ void IntTools_BeanFaceIntersector::SetSurfaceParameters(const Standard_Real theU
   myVMaxParameter = theVMaxParameter;
 }
 
-// ==================================================================================
-// function: Perform
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::Perform()
 {
   myIsDone = Standard_False;
@@ -403,28 +379,22 @@ void IntTools_BeanFaceIntersector::Perform()
   }
 }
 
-// ==================================================================================
-// function: Result
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 const IntTools_SequenceOfRanges& IntTools_BeanFaceIntersector::Result() const
 {
   return myResults;
 }
 
-// ==================================================================================
-// function: Result
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::Result(IntTools_SequenceOfRanges& theResults) const
 {
   theResults = myResults;
 }
 
-// ==================================================================================
-// function: Distance
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
 {
   gp_Pnt aPoint = myCurve.Value(theArg);
@@ -489,10 +459,8 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
   return aDistance;
 }
 
-// ==================================================================================
-// function: Distance
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
                                                      Standard_Real&      theUParameter,
                                                      Standard_Real&      theVParameter)
@@ -590,10 +558,8 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
   return aDistance;
 }
 
-// ==================================================================================
-// function: ComputeAroundExactIntersection
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 {
   IntCurveSurface_HInter anExactIntersector;
@@ -722,10 +688,8 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
   }
 }
 
-// ==================================================================================
-// function: FastComputeExactIntersection
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
 {
   GeomAbs_CurveType aCT = myCurve.GetType();
@@ -844,10 +808,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
   return isCoincide || !hasIntersection;
 }
 
-// ==================================================================================
-// function: ComputeLinePlane
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::ComputeLinePlane()
 {
   Standard_Real Tolang = 1.e-9;
@@ -941,10 +903,8 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   return;
 }
 
-// ==================================================================================
-// function: ComputeUsingExtremum
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 {
   Standard_Real Tol, af, al;
@@ -1121,10 +1081,8 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
   }
 }
 
-// ==================================================================================
-// function: ComputeNearRangeBoundaries
-// purpose:
-// ==================================================================================
+//=================================================================================================
+
 void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
 {
   Standard_Real U = myUMinParameter;
@@ -1455,10 +1413,8 @@ static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParamete
 //   return close;
 // }
 
-// ======================================================================================================================
-// function: LocalizeSolutions
-// purpose:
-// ======================================================================================================================
+//=================================================================================================
+
 Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   const IntTools_CurveRangeSample&   theCurveRange,
   const Bnd_Box&                     theBoxCurve,
@@ -1907,10 +1863,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   return Standard_True;
 }
 
-// ======================================================================================================================
-// function: ComputeLocalized
-// purpose:
-// ======================================================================================================================
+//=================================================================================================
+
 Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
 {
   Standard_Real Tol = Precision::PConfusion();
@@ -2194,10 +2148,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
   return Standard_True;
 }
 
-// ======================================================================================================================
-// function: TestComputeCoinside
-// purpose:
-// ======================================================================================================================
+//=================================================================================================
+
 Standard_Boolean IntTools_BeanFaceIntersector::TestComputeCoinside()
 {
   Standard_Real          cfp = myFirstParameter, clp = myLastParameter;

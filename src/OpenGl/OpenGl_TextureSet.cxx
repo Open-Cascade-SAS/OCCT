@@ -18,10 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)
 
-// =======================================================================
-// function : OpenGl_TextureSet
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TextureSet::OpenGl_TextureSet(const Handle(OpenGl_Texture)& theTexture)
     : myTextures(0, 0),
       myTextureSetBits(Graphic3d_TextureSetBits_NONE)
@@ -33,20 +31,16 @@ OpenGl_TextureSet::OpenGl_TextureSet(const Handle(OpenGl_Texture)& theTexture)
   }
 }
 
-// =======================================================================
-// function : IsModulate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_TextureSet::IsModulate() const
 {
   return myTextures.IsEmpty() || myTextures.First().Texture.IsNull()
          || myTextures.First().Texture->Sampler()->Parameters()->IsModulate();
 }
 
-// =======================================================================
-// function : HasNonPointSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_TextureSet::HasNonPointSprite() const
 {
   if (myTextures.IsEmpty())
@@ -60,10 +54,8 @@ bool OpenGl_TextureSet::HasNonPointSprite() const
   return !myTextures.First().Texture.IsNull();
 }
 
-// =======================================================================
-// function : HasPointSprite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_TextureSet::HasPointSprite() const
 {
   return !myTextures.IsEmpty() && !myTextures.Last().Texture.IsNull()

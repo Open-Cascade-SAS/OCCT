@@ -21,10 +21,8 @@
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void DsgPrs_DatumPrs::Add(const Handle(Prs3d_Presentation)& thePresentation,
                           const gp_Ax2&                     theDatum,
                           const Handle(Prs3d_Drawer)&       theDrawer)

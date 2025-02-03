@@ -18,10 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 
-// =======================================================================
-// function : Graphic3d_Layer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId theId, const Handle(BVH_Builder3d)& theBuilder)
     : myNbStructures(0),
       myNbStructuresNotCulled(0),
@@ -33,19 +31,15 @@ Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId theId, const Handle(BVH_Buil
   myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
 }
 
-// =======================================================================
-// function : ~Graphic3d_Layer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_Layer::~Graphic3d_Layer()
 {
   //
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
                           Graphic3d_DisplayPriority   thePriority,
                           Standard_Boolean            isForChangePriority)
@@ -80,10 +74,8 @@ void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
   ++myNbStructures;
 }
 
-// =======================================================================
-// function : Remove
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
                              Graphic3d_DisplayPriority&  thePriority,
                              Standard_Boolean            isForChangePriority)
@@ -140,10 +132,8 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
   return false;
 }
 
-// =======================================================================
-// function : InvalidateBVHData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Layer::InvalidateBVHData()
 {
   myIsBVHPrimitivesNeedsReset = Standard_True;
@@ -181,10 +171,8 @@ static void addBox3dToBndBox(Bnd_Box& theResBox, const Graphic3d_BndBox3d& theBo
   }
 }
 
-// =======================================================================
-// function : BoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
                                      const Handle(Graphic3d_Camera)& theCamera,
                                      Standard_Integer                theWindowWidth,
@@ -339,10 +327,8 @@ Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
   return aResBox;
 }
 
-// =======================================================================
-// function : considerZoomPersistenceObjects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
   Standard_Integer                theViewId,
   const Handle(Graphic3d_Camera)& theCamera,
@@ -477,10 +463,8 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
   return (aMaxCoef > 0.0) ? aMaxCoef : 1.0;
 }
 
-// =======================================================================
-// function : updateBVH
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Layer::updateBVH() const
 {
   if (!myIsBVHPrimitivesNeedsReset)
@@ -534,10 +518,8 @@ struct NodeInStack
 };
 } // namespace
 
-// =======================================================================
-// function : UpdateCulling
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Layer::UpdateCulling(
   Standard_Integer                                theViewId,
   const Graphic3d_CullingTool&                    theSelector,
@@ -706,10 +688,8 @@ void Graphic3d_Layer::UpdateCulling(
   }
 }
 
-// =======================================================================
-// function : Append
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_Layer::Append(const Graphic3d_Layer& theOther)
 {
   // add all structures to destination priority list
@@ -754,10 +734,8 @@ void Graphic3d_Layer::SetLayerSettings(const Graphic3d_ZLayerSettings& theSettin
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_Layer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

@@ -17,19 +17,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d, Graphic3d_Aspects)
 
-// =======================================================================
-// function : Graphic3d_AspectFillArea3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d()
 {
   myInteriorStyle = Aspect_IS_EMPTY;
 }
 
-// =======================================================================
-// function : Graphic3d_AspectFillArea3d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d(
   const Aspect_InteriorStyle      theInteriorStyle,
   const Quantity_Color&           theInteriorColor,

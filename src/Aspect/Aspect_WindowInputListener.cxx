@@ -15,10 +15,8 @@
 
 #include <WNT_HIDSpaceMouse.hxx>
 
-// =======================================================================
-// function : Aspect_WindowInputListener
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_WindowInputListener::Aspect_WindowInputListener()
     : myMousePressed(Aspect_VKeyMouse_NONE),
       myMouseModifiers(Aspect_VKeyFlags_NONE),
@@ -33,37 +31,29 @@ Aspect_WindowInputListener::Aspect_WindowInputListener()
   myEventTimer.Start();
 }
 
-// =======================================================================
-// function : ~Aspect_WindowInputListener
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Aspect_WindowInputListener::~Aspect_WindowInputListener()
 {
   //
 }
 
-// =======================================================================
-// function : KeyDown
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_WindowInputListener::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
   myKeys.KeyDown(theKey, theTime, thePressure);
 }
 
-// =======================================================================
-// function : KeyUp
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_WindowInputListener::KeyUp(Aspect_VKey theKey, double theTime)
 {
   myKeys.KeyUp(theKey, theTime);
 }
 
-// =======================================================================
-// function : KeyFromAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_WindowInputListener::KeyFromAxis(Aspect_VKey theNegative,
                                              Aspect_VKey thePositive,
                                              double      theTime,
@@ -72,10 +62,8 @@ void Aspect_WindowInputListener::KeyFromAxis(Aspect_VKey theNegative,
   myKeys.KeyFromAxis(theNegative, thePositive, theTime, thePressure);
 }
 
-// =======================================================================
-// function : AddTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_WindowInputListener::AddTouchPoint(Standard_Size          theId,
                                                const Graphic3d_Vec2d& thePnt,
                                                Standard_Boolean       theClearBefore)
@@ -88,10 +76,8 @@ void Aspect_WindowInputListener::AddTouchPoint(Standard_Size          theId,
   myTouchPoints.Add(theId, Aspect_Touch(thePnt, false));
 }
 
-// =======================================================================
-// function : RemoveTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_WindowInputListener::RemoveTouchPoint(Standard_Size    theId,
                                                   Standard_Boolean theClearSelectPnts)
 {
@@ -119,10 +105,8 @@ bool Aspect_WindowInputListener::RemoveTouchPoint(Standard_Size    theId,
   return true;
 }
 
-// =======================================================================
-// function : UpdateTouchPoint
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_WindowInputListener::UpdateTouchPoint(Standard_Size          theId,
                                                   const Graphic3d_Vec2d& thePnt)
 {
@@ -136,10 +120,8 @@ void Aspect_WindowInputListener::UpdateTouchPoint(Standard_Size          theId,
   }
 }
 
-// =======================================================================
-// function : update3dMouseTranslation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_WindowInputListener::update3dMouseTranslation(const WNT_HIDSpaceMouse& theEvent)
 {
   if (!theEvent.IsTranslation())
@@ -157,10 +139,8 @@ bool Aspect_WindowInputListener::update3dMouseTranslation(const WNT_HIDSpaceMous
   return true;
 }
 
-// =======================================================================
-// function : update3dMouseRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_WindowInputListener::update3dMouseRotation(const WNT_HIDSpaceMouse& theEvent)
 {
   if (!theEvent.IsRotation())
@@ -199,10 +179,8 @@ bool Aspect_WindowInputListener::update3dMouseRotation(const WNT_HIDSpaceMouse& 
   return toUpdate;
 }
 
-// =======================================================================
-// function : update3dMouseKeys
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Aspect_WindowInputListener::update3dMouseKeys(const WNT_HIDSpaceMouse& theEvent)
 {
   bool         toUpdate   = false;

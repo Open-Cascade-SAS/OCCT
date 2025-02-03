@@ -28,10 +28,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group, Graphic3d_Group)
 
-// =======================================================================
-// function : OpenGl_Group
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Group::OpenGl_Group(const Handle(Graphic3d_Structure)& theStruct)
     : Graphic3d_Group(theStruct),
       myAspects(NULL),
@@ -46,19 +44,15 @@ OpenGl_Group::OpenGl_Group(const Handle(Graphic3d_Structure)& theStruct)
   }
 }
 
-// =======================================================================
-// function : ~OpenGl_Group
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Group::~OpenGl_Group()
 {
   Release(Handle(OpenGl_Context)());
 }
 
-// =======================================================================
-// function : SetGroupPrimitivesAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::SetGroupPrimitivesAspect(const Handle(Graphic3d_Aspects)& theAspect)
 {
   if (IsDeleted())
@@ -83,10 +77,8 @@ void OpenGl_Group::SetGroupPrimitivesAspect(const Handle(Graphic3d_Aspects)& the
   Update();
 }
 
-// =======================================================================
-// function : SetPrimitivesAspect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::SetPrimitivesAspect(const Handle(Graphic3d_Aspects)& theAspect)
 {
   if (myAspects == NULL)
@@ -104,10 +96,8 @@ void OpenGl_Group::SetPrimitivesAspect(const Handle(Graphic3d_Aspects)& theAspec
   Update();
 }
 
-// =======================================================================
-// function : SynchronizeAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::SynchronizeAspects()
 {
   if (myAspects != NULL)
@@ -124,10 +114,8 @@ void OpenGl_Group::SynchronizeAspects()
   }
 }
 
-// =======================================================================
-// function : ReplaceAspects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::ReplaceAspects(const Graphic3d_MapOfAspectsToAspects& theMap)
 {
   if (theMap.IsEmpty())
@@ -154,10 +142,8 @@ void OpenGl_Group::ReplaceAspects(const Graphic3d_MapOfAspectsToAspects& theMap)
   }
 }
 
-// =======================================================================
-// function : AddPrimitiveArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray theType,
                                      const Handle(Graphic3d_IndexBuffer)& theIndices,
                                      const Handle(Graphic3d_Buffer)&      theAttribs,
@@ -179,10 +165,8 @@ void OpenGl_Group::AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray theTyp
   Graphic3d_Group::AddPrimitiveArray(theType, theIndices, theAttribs, theBounds, theToEvalMinMax);
 }
 
-// =======================================================================
-// function : AddText
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::AddText(const Handle(Graphic3d_Text)& theTextParams,
                            const Standard_Boolean        theToEvalMinMax)
 {
@@ -204,10 +188,8 @@ void OpenGl_Group::AddText(const Handle(Graphic3d_Text)& theTextParams,
   Graphic3d_Group::AddText(theTextParams, theToEvalMinMax);
 }
 
-// =======================================================================
-// function : SetFlippingOptions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::SetFlippingOptions(const Standard_Boolean theIsEnabled,
                                       const gp_Ax2&          theRefPlane)
 {
@@ -216,10 +198,8 @@ void OpenGl_Group::SetFlippingOptions(const Standard_Boolean theIsEnabled,
   AddElement(aFlipper);
 }
 
-// =======================================================================
-// function : SetStencilTestOptions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::SetStencilTestOptions(const Standard_Boolean theIsEnabled)
 {
   OpenGl_StencilTest* aStencilTest = new OpenGl_StencilTest();
@@ -227,10 +207,8 @@ void OpenGl_Group::SetStencilTestOptions(const Standard_Boolean theIsEnabled)
   AddElement(aStencilTest);
 }
 
-// =======================================================================
-// function : AddElement
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::AddElement(OpenGl_Element* theElem)
 {
   OpenGl_ElementNode* aNode = new OpenGl_ElementNode();
@@ -252,10 +230,8 @@ void OpenGl_Group::AddElement(OpenGl_Element* theElem)
   }
 }
 
-// =======================================================================
-// function : renderFiltered
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_Group::renderFiltered(const Handle(OpenGl_Workspace)& theWorkspace,
                                   OpenGl_Element*                 theElement) const
 {
@@ -268,10 +244,8 @@ bool OpenGl_Group::renderFiltered(const Handle(OpenGl_Workspace)& theWorkspace,
   return true;
 }
 
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Setup aspects
@@ -291,10 +265,8 @@ void OpenGl_Group::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
     theWorkspace->SetAspects(aBackAspects);
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::Clear(const Standard_Boolean theToUpdateStructureMgr)
 {
   if (IsDeleted())
@@ -311,10 +283,8 @@ void OpenGl_Group::Clear(const Standard_Boolean theToUpdateStructureMgr)
   myIsRaytracable = Standard_False;
 }
 
-// =======================================================================
-// function : Release
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::Release(const Handle(OpenGl_Context)& theGlCtx)
 {
   // Delete elements
@@ -330,10 +300,8 @@ void OpenGl_Group::Release(const Handle(OpenGl_Context)& theGlCtx)
   OpenGl_Element::Destroy(theGlCtx.get(), myAspects);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Group::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

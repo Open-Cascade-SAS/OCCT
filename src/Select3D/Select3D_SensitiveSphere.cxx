@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSphere, Select3D_SensitiveEntity)
 
-// ==================================================
-// Function: Select3D_SensitiveSphere
-// Purpose :
-// ==================================================
+//=================================================================================================
+
 Select3D_SensitiveSphere::Select3D_SensitiveSphere(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const gp_Pnt&                        theCenter,
                                                    const Standard_Real                  theRadius)
@@ -31,10 +29,8 @@ Select3D_SensitiveSphere::Select3D_SensitiveSphere(const Handle(SelectMgr_Entity
 {
 }
 
-// ==================================================
-// Function: Mathes
-// Purpose :
-// ==================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
@@ -60,10 +56,8 @@ Standard_Boolean Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeM
   return Standard_True;
 }
 
-// ==================================================
-// Function: GetConnected
-// Purpose :
-// ==================================================
+//=================================================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveSphere::GetConnected()
 {
   Handle(Select3D_SensitiveEntity) aNewEntity =
@@ -71,10 +65,8 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveSphere::GetConnected()
   return aNewEntity;
 }
 
-// ==================================================
-// Function: BoundingBox
-// Purpose :
-// ==================================================
+//=================================================================================================
+
 Select3D_BndBox3d Select3D_SensitiveSphere::BoundingBox()
 {
   const SelectMgr_Vec3 aMinPnt =

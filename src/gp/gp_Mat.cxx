@@ -25,10 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Dump.hxx>
 
-// =======================================================================
-// function : gp_Mat
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Mat::gp_Mat(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ& theCol3)
 {
   myMat[0][0] = theCol1.X();
@@ -42,10 +40,8 @@ gp_Mat::gp_Mat(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ& theCo
   myMat[2][2] = theCol3.Z();
 }
 
-// =======================================================================
-// function : SetCol
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetCol(const Standard_Integer theCol, const gp_XYZ& theValue)
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 3, " ");
@@ -69,10 +65,8 @@ void gp_Mat::SetCol(const Standard_Integer theCol, const gp_XYZ& theValue)
   }
 }
 
-// =======================================================================
-// function : SetCols
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetCols(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ& theCol3)
 {
   myMat[0][0] = theCol1.X();
@@ -86,10 +80,8 @@ void gp_Mat::SetCols(const gp_XYZ& theCol1, const gp_XYZ& theCol2, const gp_XYZ&
   myMat[2][2] = theCol3.Z();
 }
 
-// =======================================================================
-// function : SetCross
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetCross(const gp_XYZ& theRef)
 {
   const Standard_Real X = theRef.X();
@@ -104,10 +96,8 @@ void gp_Mat::SetCross(const gp_XYZ& theRef)
   myMat[2][1]                             = X;
 }
 
-// =======================================================================
-// function : SetDot
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetDot(const gp_XYZ& theRef)
 {
   const Standard_Real X = theRef.X();
@@ -124,10 +114,8 @@ void gp_Mat::SetDot(const gp_XYZ& theRef)
   myMat[2][1]           = myMat[1][2];
 }
 
-// =======================================================================
-// function : SetRotation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
 {
   //    Rot = I + sin(Ang) * M + (1. - cos(Ang)) * M*M
@@ -148,10 +136,8 @@ void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
   Add(aTemp);
 }
 
-// =======================================================================
-// function : SetRow
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetRow(const Standard_Integer theRow, const gp_XYZ& theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3, " ");
@@ -175,10 +161,8 @@ void gp_Mat::SetRow(const Standard_Integer theRow, const gp_XYZ& theValue)
   }
 }
 
-// =======================================================================
-// function : SetRows
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::SetRows(const gp_XYZ& theRow1, const gp_XYZ& theRow2, const gp_XYZ& theRow3)
 {
   myMat[0][0] = theRow1.X();
@@ -192,10 +176,8 @@ void gp_Mat::SetRows(const gp_XYZ& theRow1, const gp_XYZ& theRow2, const gp_XYZ&
   myMat[2][2] = theRow3.Z();
 }
 
-// =======================================================================
-// function : Column
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_XYZ gp_Mat::Column(const Standard_Integer theCol) const
 {
   Standard_OutOfRange_Raise_if(theCol < 1 || theCol > 3, "gp_Mat::Column() - wrong index");
@@ -206,19 +188,15 @@ gp_XYZ gp_Mat::Column(const Standard_Integer theCol) const
   return gp_XYZ(myMat[0][2], myMat[1][2], myMat[2][2]);
 }
 
-// =======================================================================
-// function : Diagonal
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_XYZ gp_Mat::Diagonal() const
 {
   return gp_XYZ(myMat[0][0], myMat[1][1], myMat[2][2]);
 }
 
-// =======================================================================
-// function : Row
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3, "gp_Mat::Row() - wrong index");
@@ -229,10 +207,8 @@ gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
   return gp_XYZ(myMat[2][0], myMat[2][1], myMat[2][2]);
 }
 
-// =======================================================================
-// function : Invert
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::Invert()
 {
   Standard_Real aNewMat[3][3];
@@ -263,10 +239,8 @@ void gp_Mat::Invert()
   Multiply(aDet);
 }
 
-// =======================================================================
-// function : Inverted
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 gp_Mat gp_Mat::Inverted() const
 {
   gp_Mat aNewMat;
@@ -289,10 +263,8 @@ gp_Mat gp_Mat::Inverted() const
   return aNewMat;
 }
 
-// =======================================================================
-// function : Power
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::Power(const Standard_Integer theN)
 {
   if (theN == 1)
@@ -329,10 +301,8 @@ void gp_Mat::Power(const Standard_Integer theN)
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void gp_Mat::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_VECTOR_CLASS(theOStream,

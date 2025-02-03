@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapSeparate, Graphic3d_CubeMap)
 
-// =======================================================================
-// function : Graphic3d_CubeMapSeparate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
   const NCollection_Array1<TCollection_AsciiString>& thePaths)
 {
@@ -42,10 +40,8 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
   }
 }
 
-// =======================================================================
-// function : Graphic3d_CubeMapSeparate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
   const NCollection_Array1<Handle(Image_PixMap)>& theImages)
 {
@@ -87,10 +83,8 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
   }
 }
 
-// =======================================================================
-// function : CompressedValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -131,10 +125,8 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
   return Handle(Image_CompressedPixMap)();
 }
 
-// =======================================================================
-// function : Value
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
   const Handle(Image_SupportedFormats)& theSupported)
 {
@@ -199,10 +191,8 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
   return Handle(Image_PixMap)();
 }
 
-// =======================================================================
-// function : IsDone
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_CubeMapSeparate::IsDone() const
 {
   if (!myImages[0].IsNull())
@@ -222,10 +212,8 @@ Standard_Boolean Graphic3d_CubeMapSeparate::IsDone() const
   return Standard_True;
 }
 
-// =======================================================================
-// function : resetImages
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CubeMapSeparate::resetImages()
 {
   for (unsigned int i = 0; i < 6; ++i)

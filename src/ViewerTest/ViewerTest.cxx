@@ -4695,10 +4695,8 @@ inline Standard_Boolean parseTrsfPersFlag(const TCollection_AsciiString& theFlag
   return Standard_True;
 }
 
-// =============================================================================
-// function : ParseCorner
-// purpose  :
-// =============================================================================
+//=================================================================================================
+
 Standard_Boolean ViewerTest::ParseCorner(Standard_CString               theArg,
                                          Aspect_TypeOfTriedronPosition& theCorner)
 {

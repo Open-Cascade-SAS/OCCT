@@ -141,10 +141,8 @@ private:
   Handle(TDataStd_NamedData) myResult;      //!< Result of parsing.
 };
 
-// =======================================================================
-// function : RWGltf_ExtrasParser
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_ExtrasParser::RWGltf_ExtrasParser(const TCollection_AsciiString& theParentID,
                                          const RWGltf_JsonValue&        theExtrasValue)
     : myParentID(theParentID),
@@ -153,10 +151,8 @@ RWGltf_ExtrasParser::RWGltf_ExtrasParser(const TCollection_AsciiString& theParen
 {
 }
 
-// =======================================================================
-// function : parseValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(TDataStd_NamedData) RWGltf_ExtrasParser::Parse()
 {
   parseObject(myExtrasValue);
@@ -165,10 +161,8 @@ Handle(TDataStd_NamedData) RWGltf_ExtrasParser::Parse()
   return myResult;
 }
 
-// =======================================================================
-// function : parseValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(TDataStd_NamedData) RWGltf_ExtrasParser::ParseExtras(
   const TCollection_AsciiString& theParentID,
   const RWGltf_JsonValue*        theExtrasValue)
@@ -182,10 +176,8 @@ Handle(TDataStd_NamedData) RWGltf_ExtrasParser::ParseExtras(
   return anExtrasParser.Parse();
 }
 
-// =======================================================================
-// function : parseValue
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_ExtrasParser::parseObject(const RWGltf_JsonValue& theValue,
                                       const std::string&      theValueName)
 {
@@ -211,10 +203,8 @@ bool RWGltf_ExtrasParser::parseObject(const RWGltf_JsonValue& theValue,
   return anIsAnyValProcessed;
 }
 
-// =======================================================================
-// function : parseNumber
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_ExtrasParser::parseNumber(const RWGltf_JsonValue& theValue,
                                       const std::string&      theValueName)
 {
@@ -241,10 +231,8 @@ bool RWGltf_ExtrasParser::parseNumber(const RWGltf_JsonValue& theValue,
   return false;
 }
 
-// =======================================================================
-// function : parseString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_ExtrasParser::parseString(const RWGltf_JsonValue& theValue,
                                       const std::string&      theValueName)
 {
@@ -260,10 +248,8 @@ bool RWGltf_ExtrasParser::parseString(const RWGltf_JsonValue& theValue,
   return false;
 }
 
-// =======================================================================
-// function : parseArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
                                      const std::string&      theValueName)
 {
@@ -327,10 +313,8 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
   return true;
 }
 
-// =======================================================================
-// function : parseArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(TDataStd_NamedData)& RWGltf_ExtrasParser::getResult()
 {
   if (myResult.IsNull())
@@ -367,10 +351,8 @@ inline const RWGltf_JsonValue* findObjectMember(const RWGltf_JsonValue& theObjec
   return anIter != theObject.MemberEnd() ? &anIter->value : NULL;
 }
 
-// =======================================================================
-// function : RWGltf_GltfJsonParser::FormatParseError
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const char* RWGltf_GltfJsonParser::FormatParseError(rapidjson::ParseErrorCode theCode)
 {
   switch (theCode)
@@ -415,10 +397,8 @@ const char* RWGltf_GltfJsonParser::FormatParseError(rapidjson::ParseErrorCode th
   return "UNKOWN syntax error";
 }
 
-// =======================================================================
-// function : GltfElementMap::Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::GltfElementMap::Init(const TCollection_AsciiString& theRootName,
                                                  const RWGltf_JsonValue*        theRoot)
 {
@@ -462,10 +442,8 @@ void RWGltf_GltfJsonParser::GltfElementMap::Init(const TCollection_AsciiString& 
   }
 }
 
-// =======================================================================
-// function : parseTransformationMatrix
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::parseTransformationMatrix(const TCollection_AsciiString& theSceneNodeId,
                                                       const RWGltf_JsonValue&        theMatrixVal,
                                                       TopLoc_Location& theResult) const
@@ -518,10 +496,8 @@ bool RWGltf_GltfJsonParser::parseTransformationMatrix(const TCollection_AsciiStr
   return true;
 }
 
-// =======================================================================
-// function : RWGltf_GltfJsonParser
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::parseTransformationComponents(
   const TCollection_AsciiString& theSceneNodeId,
   const RWGltf_JsonValue*        theRotationVal,
@@ -647,20 +623,16 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
 }
 #endif
 
-// =======================================================================
-// function : reportGltfSyntaxProblem
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::reportGltfSyntaxProblem(const TCollection_AsciiString& theMsg,
                                                     Message_Gravity                theGravity) const
 {
   Message::Send(myErrorPrefix + theMsg, theGravity);
 }
 
-// =======================================================================
-// function : RWGltf_GltfJsonParser
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_GltfJsonParser::RWGltf_GltfJsonParser(TopTools_SequenceOfShape& theRootShapes)
     : myRootShapes(&theRootShapes),
       myAttribMap(NULL),
@@ -680,10 +652,8 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser(TopTools_SequenceOfShape& theRootSh
   myCSTrsf.SetInputCoordinateSystem(RWMesh_CoordinateSystem_glTF);
 }
 
-// =======================================================================
-// function : SetFilePath
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::SetFilePath(const TCollection_AsciiString& theFilePath)
 {
   myFilePath = theFilePath;
@@ -693,10 +663,8 @@ void RWGltf_GltfJsonParser::SetFilePath(const TCollection_AsciiString& theFilePa
 }
 
 #ifdef HAVE_RAPIDJSON
-// =======================================================================
-// function : gltfParseRoots
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseRoots()
 {
   // find glTF root elements for smooth navigation
@@ -734,10 +702,8 @@ bool RWGltf_GltfJsonParser::gltfParseRoots()
   return true;
 }
 
-// =======================================================================
-// function : gltfParseAsset
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::gltfParseAsset()
 {
   const RWGltf_JsonValue* anAsset = myGltfRoots[RWGltf_GltfRootElement_Asset].Root();
@@ -800,10 +766,8 @@ void RWGltf_GltfJsonParser::gltfParseAsset()
   }
 }
 
-// =======================================================================
-// function : gltfParseMaterials
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::gltfParseMaterials()
 {
   const RWGltf_JsonValue* aMatList = myGltfRoots[RWGltf_GltfRootElement_Materials].Root();
@@ -876,10 +840,8 @@ void RWGltf_GltfJsonParser::gltfParseMaterials()
   }
 }
 
-// =======================================================================
-// function : gltfBindMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::gltfBindMaterial(
   const Handle(RWGltf_MaterialMetallicRoughness)& theMatPbr,
   const Handle(RWGltf_MaterialCommon)&            theMatCommon)
@@ -962,10 +924,8 @@ void RWGltf_GltfJsonParser::gltfBindMaterial(
   myMaterials.Bind(!theMatPbr.IsNull() ? theMatPbr->Id : theMatCommon->Id, aMat);
 }
 
-// =======================================================================
-// function : gltfParseStdMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseStdMaterial(Handle(RWGltf_MaterialCommon)& theMat,
                                                  const RWGltf_JsonValue&        theMatNode)
 {
@@ -1034,10 +994,8 @@ bool RWGltf_GltfJsonParser::gltfParseStdMaterial(Handle(RWGltf_MaterialCommon)& 
   return true;
 }
 
-// =======================================================================
-// function : gltfParsePbrMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParsePbrMaterial(Handle(RWGltf_MaterialMetallicRoughness)& theMat,
                                                  const RWGltf_JsonValue& theMatNode)
 {
@@ -1154,10 +1112,8 @@ bool RWGltf_GltfJsonParser::gltfParsePbrMaterial(Handle(RWGltf_MaterialMetallicR
   return true;
 }
 
-// =======================================================================
-// function : gltfParseCommonMaterial
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseCommonMaterial(Handle(RWGltf_MaterialCommon)& theMat,
                                                     const RWGltf_JsonValue&        theMatNode)
 {
@@ -1180,10 +1136,8 @@ bool RWGltf_GltfJsonParser::gltfParseCommonMaterial(Handle(RWGltf_MaterialCommon
   return true;
 }
 
-// =======================================================================
-// function : gltfParseTexture
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseTexture(Handle(Image_Texture)&  theTexture,
                                              const RWGltf_JsonValue* theTextureId)
 {
@@ -1334,10 +1288,8 @@ bool RWGltf_GltfJsonParser::gltfParseTexture(Handle(Image_Texture)&  theTexture,
   return true;
 }
 
-// =======================================================================
-// function : gltfParseTexturInGlbBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseTexturInGlbBuffer(
   Handle(Image_Texture)&         theTexture,
   const RWGltf_JsonValue&        theBinVal,
@@ -1380,10 +1332,8 @@ bool RWGltf_GltfJsonParser::gltfParseTexturInGlbBuffer(
   return true;
 }
 
-// =======================================================================
-// function : gltfParseTextureInBufferView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseTextureInBufferView(
   Handle(Image_Texture)&         theTexture,
   const TCollection_AsciiString& theSourceId,
@@ -1480,10 +1430,8 @@ bool RWGltf_GltfJsonParser::gltfParseTextureInBufferView(
   return true;
 }
 
-// =======================================================================
-// function : gltfParseScene
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseScene(const Message_ProgressRange& theProgress)
 {
   const RWGltf_JsonValue* aScenes = myGltfRoots[RWGltf_GltfRootElement_Scenes].Root();
@@ -1545,10 +1493,8 @@ bool RWGltf_GltfJsonParser::gltfParseScene(const Message_ProgressRange& theProgr
   return gltfParseSceneNodes(*myRootShapes, *aSceneNodes, theProgress);
 }
 
-// =======================================================================
-// function : gltfParseSceneNodes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseSceneNodes(TopTools_SequenceOfShape&    theShapeSeq,
                                                 const RWGltf_JsonValue&      theSceneNodes,
                                                 const Message_ProgressRange& theProgress)
@@ -1595,10 +1541,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNodes(TopTools_SequenceOfShape&    the
   return true;
 }
 
-// =======================================================================
-// function : gltfParseSceneNode
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  theNodeShape,
                                                const TCollection_AsciiString& theSceneNodeId,
                                                const RWGltf_JsonValue&        theSceneNode,
@@ -1740,10 +1684,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
   return true;
 }
 
-// =======================================================================
-// function : gltfParseMesh
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseMesh(TopoDS_Shape&                  theMeshShape,
                                           const TCollection_AsciiString& theMeshId,
                                           const RWGltf_JsonValue&        theMesh)
@@ -1804,10 +1746,8 @@ bool RWGltf_GltfJsonParser::gltfParseMesh(TopoDS_Shape&                  theMesh
   return true;
 }
 
-// =======================================================================
-// function : gltfParsePrimArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  thePrimArrayShape,
                                                const TCollection_AsciiString& theMeshId,
                                                const TCollection_AsciiString& theMeshName,
@@ -2061,10 +2001,8 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
   return true;
 }
 
-// =======================================================================
-// function : gltfParseAccessor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseAccessor(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
   const TCollection_AsciiString&               theName,
@@ -2227,10 +2165,8 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor(
                              theType);
 }
 
-// =======================================================================
-// function : gltfParseBufferView
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseBufferView(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
   const TCollection_AsciiString&               theName,
@@ -2300,10 +2236,8 @@ bool RWGltf_GltfJsonParser::gltfParseBufferView(
                          theType);
 }
 
-// =======================================================================
-// function : gltfParseBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::gltfParseBuffer(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
   const TCollection_AsciiString&               theName,
@@ -2399,10 +2333,8 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
   }
 }
 
-// =======================================================================
-// function : bindNamedShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     theShape,
                                            ShapeMapGroup                     theGroup,
                                            const TopLoc_Location&            theLoc,
@@ -2513,10 +2445,8 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
 }
 #endif
 
-// =======================================================================
-// function : Parse
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_GltfJsonParser::Parse(const Message_ProgressRange& theProgress)
 {
   Message_ProgressScope aPS(theProgress, "Parsing glTF", 1);

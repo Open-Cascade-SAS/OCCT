@@ -164,10 +164,8 @@ public:
   }
 };
 
-// =======================================================================
-// function : sign
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real sign(const BVH_Vec3d&       theVertex0,
                    const BVH_Vec3d&       theVertex1,
                    const BVH_Vec3d&       theVertex2,
@@ -178,10 +176,8 @@ Standard_Real sign(const BVH_Vec3d&       theVertex0,
          - (theVertex1[theX] - theVertex2[theX]) * (theVertex0[theY] - theVertex2[theY]);
 }
 
-// =======================================================================
-// function : pointInTriangle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean pointInTriangle(const BVH_Vec3d&       theTestPnt,
                                  const BVH_Vec3d&       theTrgVtx0,
                                  const BVH_Vec3d&       theTrgVtx1,

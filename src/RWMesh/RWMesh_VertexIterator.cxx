@@ -19,10 +19,8 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 
-// =======================================================================
-// function : RWMesh_VertexIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_VertexIterator::RWMesh_VertexIterator(const TDF_Label&       theLabel,
                                              const TopLoc_Location& theLocation,
                                              const Standard_Boolean theToMapColors,
@@ -32,10 +30,8 @@ RWMesh_VertexIterator::RWMesh_VertexIterator(const TDF_Label&       theLabel,
   Next();
 }
 
-// =======================================================================
-// function : RWMesh_VertexIterator
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWMesh_VertexIterator::RWMesh_VertexIterator(const TopoDS_Shape&  theShape,
                                              const XCAFPrs_Style& theStyle)
     : RWMesh_ShapeIterator(theShape, TopAbs_VERTEX, theStyle)
@@ -43,10 +39,8 @@ RWMesh_VertexIterator::RWMesh_VertexIterator(const TopoDS_Shape&  theShape,
   Next();
 }
 
-// =======================================================================
-// function : Next
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_VertexIterator::Next()
 {
   for (; myIter.More(); myIter.Next())
@@ -68,10 +62,8 @@ void RWMesh_VertexIterator::Next()
   resetVertex();
 }
 
-// =======================================================================
-// function : initEdge
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWMesh_VertexIterator::initVertex()
 {
   initShape();

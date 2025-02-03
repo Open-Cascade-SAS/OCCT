@@ -18,20 +18,16 @@
 
 #include <bitset>
 
-// =======================================================================
-// function : Graphic3d_CubeMapOrder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder()
     : myConvolution(0),
       myHasOverflows(false)
 {
 }
 
-// =======================================================================
-// function : Graphic3d_CubeMapOrder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder(unsigned char thePosXLocation,
                                                unsigned char theNegXLocation,
                                                unsigned char thePosYLocation,
@@ -49,20 +45,16 @@ Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder(unsigned char thePosXLocation,
   Set(Graphic3d_CMS_NEG_Z, theNegZLocation);
 }
 
-// =======================================================================
-// function : Graphic3d_CubeMapOrder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder(const Graphic3d_ValidatedCubeMapOrder& theOrder)
     : myConvolution(theOrder.Order.myConvolution),
       myHasOverflows(theOrder.Order.myHasOverflows)
 {
 }
 
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Set(const Graphic3d_CubeMapOrder& theOrder)
 {
   myConvolution  = theOrder.myConvolution;
@@ -85,10 +77,8 @@ Graphic3d_ValidatedCubeMapOrder Graphic3d_CubeMapOrder::Validated() const
   return *this;
 }
 
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Set(Graphic3d_CubeMapSide theCubeMapSide,
                                                     unsigned char         theValue)
 {
@@ -101,10 +91,8 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Set(Graphic3d_CubeMapSide theCub
   return *this;
 }
 
-// =======================================================================
-// function : Get
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned char Graphic3d_CubeMapOrder::Get(Graphic3d_CubeMapSide theCubeMapSide) const
 {
   return get(static_cast<unsigned char>(theCubeMapSide));
@@ -119,10 +107,8 @@ unsigned char Graphic3d_CubeMapOrder::operator[](Graphic3d_CubeMapSide theCubeMa
   return Get(theCubeMapSide);
 }
 
-// =======================================================================
-// function : SetDefault
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::SetDefault()
 {
   for (unsigned char i = 0; i < 6; ++i)
@@ -132,10 +118,8 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::SetDefault()
   return *this;
 }
 
-// =======================================================================
-// function : Permute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Permute(
   const Graphic3d_ValidatedCubeMapOrder& thePermutation)
 {
@@ -147,10 +131,8 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Permute(
   return *this;
 }
 
-// =======================================================================
-// function : Permuted
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Permuted(
   const Graphic3d_ValidatedCubeMapOrder& thePermutation) const
 {
@@ -159,10 +141,8 @@ Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Permuted(
   return anOrder;
 }
 
-// =======================================================================
-// function : Swap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Swap(Graphic3d_CubeMapSide theFirstSide,
                                                      Graphic3d_CubeMapSide theSecondSide)
 {
@@ -172,10 +152,8 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Swap(Graphic3d_CubeMapSide theFi
   return *this;
 }
 
-// =======================================================================
-// function : Swapped
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Swapped(Graphic3d_CubeMapSide theFirstSide,
                                                        Graphic3d_CubeMapSide theSecondSide) const
 {
@@ -184,10 +162,8 @@ Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Swapped(Graphic3d_CubeMapSide the
   return anOrder;
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Clear()
 {
   myConvolution  = 0;
@@ -195,19 +171,15 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Clear()
   return *this;
 }
 
-// =======================================================================
-// function : IsEmpty
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CubeMapOrder::IsEmpty() const
 {
   return myConvolution == 0;
 }
 
-// =======================================================================
-// function : HasRepetitions
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CubeMapOrder::HasRepetitions() const
 {
   std::bitset<6> aBitSet;
@@ -223,37 +195,29 @@ bool Graphic3d_CubeMapOrder::HasRepetitions() const
   return false;
 }
 
-// =======================================================================
-// function : HasOverflows
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CubeMapOrder::HasOverflows() const
 {
   return myHasOverflows;
 }
 
-// =======================================================================
-// function : IsValid
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CubeMapOrder::IsValid() const
 {
   return !HasRepetitions() && !HasOverflows();
 }
 
-// =======================================================================
-// function : get
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned char Graphic3d_CubeMapOrder::get(unsigned char theCubeMapSide) const
 {
   return (myConvolution / (1 << (theCubeMapSide * 3))) % (1 << 3);
 }
 
-// =======================================================================
-// function : set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CubeMapOrder::set(unsigned char theCubeMapSide, unsigned char theValue)
 {
   unsigned int aValuePlace = 1 << (theCubeMapSide * 3);
@@ -261,19 +225,15 @@ void Graphic3d_CubeMapOrder::set(unsigned char theCubeMapSide, unsigned char the
   myConvolution += aValuePlace * theValue;
 }
 
-// =======================================================================
-// function : set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CubeMapOrder::set(Graphic3d_CubeMapSide theCubeMapSide, unsigned char theValue)
 {
   set(static_cast<unsigned char>(theCubeMapSide), theValue);
 }
 
-// =======================================================================
-// function : Default
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Graphic3d_ValidatedCubeMapOrder& Graphic3d_CubeMapOrder::Default()
 {
   static const Graphic3d_ValidatedCubeMapOrder aCubeMapOrder =

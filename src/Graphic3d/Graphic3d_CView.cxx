@@ -63,10 +63,8 @@ Graphic3d_CView::~Graphic3d_CView()
   }
 }
 
-// =======================================================================
-// function : SetBackgroundSkydome
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SetBackgroundSkydome(const Aspect_SkydomeBackground& theAspect,
                                            Standard_Boolean                theToUpdatePBREnv)
 {
@@ -81,10 +79,8 @@ void Graphic3d_CView::SetBackgroundSkydome(const Aspect_SkydomeBackground& theAs
   }
 }
 
-// =======================================================================
-// function : Activate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Activate()
 {
   if (!IsActive())
@@ -120,10 +116,8 @@ void Graphic3d_CView::Activate()
   Update();
 }
 
-// =======================================================================
-// function : Deactivate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Deactivate()
 {
   if (IsActive())
@@ -157,10 +151,8 @@ void Graphic3d_CView::Deactivate()
   }
 }
 
-// ========================================================================
-// function : Remove
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Remove()
 {
   if (IsRemoved())
@@ -202,19 +194,15 @@ void Graphic3d_CView::Remove()
   myIsRemoved = Standard_True;
 }
 
-// ========================================================================
-// function : AddSubview
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void Graphic3d_CView::AddSubview(const Handle(Graphic3d_CView)& theView)
 {
   mySubviews.Append(theView);
 }
 
-// ========================================================================
-// function : RemoveSubview
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 bool Graphic3d_CView::RemoveSubview(const Graphic3d_CView* theView)
 {
   for (NCollection_Sequence<Handle(Graphic3d_CView)>::Iterator aViewIter(mySubviews);
@@ -230,10 +218,8 @@ bool Graphic3d_CView::RemoveSubview(const Graphic3d_CView* theView)
   return false;
 }
 
-// ========================================================================
-// function : Resized
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Resized()
 {
   if (IsSubview())
@@ -256,10 +242,8 @@ static int getSubViewOffset(double theOffset, int theWinSize)
   }
 }
 
-// ========================================================================
-// function : SubviewResized
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SubviewResized(const Handle(Aspect_NeutralWindow)& theWindow)
 {
   if (!IsSubview() || theWindow.IsNull())
@@ -311,10 +295,8 @@ void Graphic3d_CView::SubviewResized(const Handle(Aspect_NeutralWindow)& theWind
   theWindow->SetSize(aViewSize.x(), aViewSize.y());
 }
 
-// ========================================================================
-// function : SetComputedMode
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SetComputedMode(const Standard_Boolean theMode)
 {
   if ((theMode && myIsInComputedMode) || (!theMode && !myIsInComputedMode))
@@ -428,10 +410,8 @@ void Graphic3d_CView::SetComputedMode(const Standard_Boolean theMode)
   Update();
 }
 
-// =======================================================================
-// function : ReCompute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::ReCompute(const Handle(Graphic3d_Structure)& theStruct)
 {
   theStruct->CalculateBoundBox();
@@ -512,19 +492,15 @@ void Graphic3d_CView::ReCompute(const Handle(Graphic3d_Structure)& theStruct)
   myStructsComputed.Remove(anIndex);
 }
 
-// =======================================================================
-// function : Update
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Update(const Graphic3d_ZLayerId theLayerId)
 {
   InvalidateZLayerBoundingBox(theLayerId);
 }
 
-// =======================================================================
-// function : InvalidateZLayerBoundingBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::InvalidateZLayerBoundingBox(const Graphic3d_ZLayerId theLayerId)
 {
   if (Handle(Graphic3d_Layer) aLayer = Layer(theLayerId))
@@ -544,10 +520,8 @@ void Graphic3d_CView::InvalidateZLayerBoundingBox(const Graphic3d_ZLayerId theLa
   }
 }
 
-// =======================================================================
-// function : DisplayedStructures
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::DisplayedStructures(Graphic3d_MapOfStructure& theStructures) const
 {
   for (Graphic3d_MapOfStructure::Iterator aStructIter(myStructsDisplayed); aStructIter.More();
@@ -557,10 +531,8 @@ void Graphic3d_CView::DisplayedStructures(Graphic3d_MapOfStructure& theStructure
   }
 }
 
-// =======================================================================
-// function : MinMaxValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Bnd_Box Graphic3d_CView::MinMaxValues(const Standard_Boolean theToIncludeAuxiliary) const
 {
   if (!IsDefined())
@@ -587,10 +559,8 @@ Bnd_Box Graphic3d_CView::MinMaxValues(const Standard_Boolean theToIncludeAuxilia
   return aResult;
 }
 
-// =======================================================================
-// function : ConsiderZoomPersistenceObjects
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
 {
   if (!IsDefined())
@@ -617,10 +587,8 @@ Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
   return aMaxCoef;
 }
 
-// =======================================================================
-// function : MinMaxValues
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Bnd_Box Graphic3d_CView::MinMaxValues(const Graphic3d_MapOfStructure& theSet,
                                       const Standard_Boolean          theToIgnoreInfiniteFlag) const
 {
@@ -687,10 +655,8 @@ Bnd_Box Graphic3d_CView::MinMaxValues(const Graphic3d_MapOfStructure& theSet,
   return aResult;
 }
 
-// =======================================================================
-// function : acceptDisplay
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_TypeOfAnswer Graphic3d_CView::acceptDisplay(
   const Graphic3d_TypeOfStructure theStructType) const
 {
@@ -715,10 +681,8 @@ Graphic3d_TypeOfAnswer Graphic3d_CView::acceptDisplay(
   return Graphic3d_TOA_NO;
 }
 
-// =======================================================================
-// function : Compute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Compute()
 {
   // force HLRValidation to False on all structures calculated in the view
@@ -763,10 +727,8 @@ void Graphic3d_CView::Compute()
   }
 }
 
-// =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Clear(Graphic3d_Structure*   theStructure,
                             const Standard_Boolean theWithDestruction)
 {
@@ -779,10 +741,8 @@ void Graphic3d_CView::Clear(Graphic3d_Structure*   theStructure,
   }
 }
 
-// =======================================================================
-// function : Connect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Connect(const Graphic3d_Structure* theMother,
                               const Graphic3d_Structure* theDaughter)
 {
@@ -796,10 +756,8 @@ void Graphic3d_CView::Connect(const Graphic3d_Structure* theMother,
   }
 }
 
-// =======================================================================
-// function : Disconnect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Disconnect(const Graphic3d_Structure* theMother,
                                  const Graphic3d_Structure* theDaughter)
 {
@@ -813,10 +771,8 @@ void Graphic3d_CView::Disconnect(const Graphic3d_Structure* theMother,
   }
 }
 
-// =======================================================================
-// function : Display
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Display(const Handle(Graphic3d_Structure)& theStructure)
 {
   if (!IsActive())
@@ -977,10 +933,8 @@ void Graphic3d_CView::Display(const Handle(Graphic3d_Structure)& theStructure)
   Update(aStruct->GetZLayer());
 }
 
-// =======================================================================
-// function : Erase
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Erase(const Handle(Graphic3d_Structure)& theStructure)
 {
   if (!IsDisplayed(theStructure))
@@ -1011,10 +965,8 @@ void Graphic3d_CView::Erase(const Handle(Graphic3d_Structure)& theStructure)
   Update(theStructure->GetZLayer());
 }
 
-// =======================================================================
-// function : Highlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::Highlight(const Handle(Graphic3d_Structure)& theStructure)
 {
   const Standard_Integer anIndex = IsComputed(theStructure);
@@ -1025,10 +977,8 @@ void Graphic3d_CView::Highlight(const Handle(Graphic3d_Structure)& theStructure)
   }
 }
 
-// =======================================================================
-// function : SetTransform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SetTransform(const Handle(Graphic3d_Structure)& theStructure,
                                    const Handle(TopLoc_Datum3D)&      theTrsf)
 {
@@ -1061,10 +1011,8 @@ void Graphic3d_CView::SetTransform(const Handle(Graphic3d_Structure)& theStructu
   }
 }
 
-// =======================================================================
-// function : UnHighlight
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::UnHighlight(const Handle(Graphic3d_Structure)& theStructure)
 {
   Standard_Integer anIndex = IsComputed(theStructure);
@@ -1075,10 +1023,8 @@ void Graphic3d_CView::UnHighlight(const Handle(Graphic3d_Structure)& theStructur
   }
 }
 
-// ========================================================================
-// function : IsComputed
-// purpose  :
-// ========================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_CView::IsComputed(const Standard_Integer       theStructId,
                                              Handle(Graphic3d_Structure)& theComputedStruct) const
 {
@@ -1098,10 +1044,8 @@ Standard_Boolean Graphic3d_CView::IsComputed(const Standard_Integer       theStr
   return Standard_False;
 }
 
-// =======================================================================
-// function : IsComputed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_CView::IsComputed(const Graphic3d_Structure* theStructure) const
 {
   const Standard_Integer aStructId    = theStructure->Identification();
@@ -1118,19 +1062,15 @@ Standard_Integer Graphic3d_CView::IsComputed(const Graphic3d_Structure* theStruc
   return 0;
 }
 
-// =======================================================================
-// function : IsDisplayed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Graphic3d_CView::IsDisplayed(const Handle(Graphic3d_Structure)& theStructure) const
 {
   return myStructsDisplayed.Contains(theStructure);
 }
 
-// =======================================================================
-// function : ChangePriority
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::ChangePriority(const Handle(Graphic3d_Structure)& theStructure,
                                      const Graphic3d_DisplayPriority /*theOldPriority*/,
                                      const Graphic3d_DisplayPriority theNewPriority)
@@ -1153,10 +1093,8 @@ void Graphic3d_CView::ChangePriority(const Handle(Graphic3d_Structure)& theStruc
   changePriority(aCStruct, theNewPriority);
 }
 
-// =======================================================================
-// function : ChangeZLayer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::ChangeZLayer(const Handle(Graphic3d_Structure)& theStructure,
                                    const Graphic3d_ZLayerId           theLayerId)
 {
@@ -1178,10 +1116,8 @@ void Graphic3d_CView::ChangeZLayer(const Handle(Graphic3d_Structure)& theStructu
   changeZLayer(aCStruct, theLayerId);
 }
 
-// =======================================================================
-// function : HaveTheSameOwner
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer Graphic3d_CView::HaveTheSameOwner(
   const Handle(Graphic3d_Structure)& theStructure) const
 {
@@ -1206,10 +1142,8 @@ Standard_Integer Graphic3d_CView::HaveTheSameOwner(
   return 0;
 }
 
-// =======================================================================
-// function : CopySettings
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::CopySettings(const Handle(Graphic3d_CView)& theOther)
 {
   ChangeRenderingParams() = theOther->RenderingParams();
@@ -1225,10 +1159,8 @@ void Graphic3d_CView::CopySettings(const Handle(Graphic3d_CView)& theOther)
   SetClipPlanes(theOther->ClipPlanes());
 }
 
-// =======================================================================
-// function : SetShadingModel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SetShadingModel(Graphic3d_TypeOfShadingModel theModel)
 {
   if (theModel == Graphic3d_TypeOfShadingModel_DEFAULT)
@@ -1240,10 +1172,8 @@ void Graphic3d_CView::SetShadingModel(Graphic3d_TypeOfShadingModel theModel)
   myRenderParams.ShadingModel = theModel;
 }
 
-// =======================================================================
-// function : SetUnitFactor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::SetUnitFactor(Standard_Real theFactor)
 {
   if (theFactor <= 0.0)
@@ -1257,19 +1187,15 @@ void Graphic3d_CView::SetUnitFactor(Standard_Real theFactor)
   }
 }
 
-// =======================================================================
-// function : IsActiveXR
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CView::IsActiveXR() const
 {
   return !myXRSession.IsNull() && myXRSession->IsOpen();
 }
 
-// =======================================================================
-// function : InitXR
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_CView::InitXR()
 {
   if (myXRSession.IsNull())
@@ -1289,10 +1215,8 @@ bool Graphic3d_CView::InitXR()
   return myXRSession->IsOpen();
 }
 
-// =======================================================================
-// function : ReleaseXR
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_CView::ReleaseXR()
 {
   if (!myXRSession.IsNull())

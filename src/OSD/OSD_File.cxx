@@ -398,10 +398,8 @@ const OSD_WhoAmI Iam = OSD_WFile;
   #define NEWLINE '\10';
 #endif
 
-// =======================================================================
-// function : OSD_File
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_File::OSD_File()
     :
 #ifdef _WIN32
@@ -418,10 +416,8 @@ OSD_File::OSD_File()
   //
 }
 
-// =======================================================================
-// function : OSD_File
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_File::OSD_File(const OSD_Path& theName)
     : OSD_FileNode(theName),
 #ifdef _WIN32
@@ -438,10 +434,8 @@ OSD_File::OSD_File(const OSD_Path& theName)
   //
 }
 
-// =======================================================================
-// function : ~OSD_File
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_File::~OSD_File()
 {
   if (IsOpen())
@@ -454,10 +448,8 @@ OSD_File::~OSD_File()
   }
 }
 
-// =======================================================================
-// function : Build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Build(const OSD_OpenMode theMode, const OSD_Protection& theProtect)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
@@ -529,10 +521,8 @@ void OSD_File::Build(const OSD_OpenMode theMode, const OSD_Protection& theProtec
 #endif
 }
 
-// =======================================================================
-// function : Append
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProtect)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
@@ -619,10 +609,8 @@ void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProte
 #endif
 }
 
-// =======================================================================
-// function : Open
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Open(const OSD_OpenMode theMode, const OSD_Protection& theProtect)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
@@ -690,10 +678,8 @@ void OSD_File::Open(const OSD_OpenMode theMode, const OSD_Protection& theProtect
 #endif
 }
 
-// =======================================================================
-// function : BuildTemporary
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::BuildTemporary()
 {
 #ifdef _WIN32
@@ -791,10 +777,8 @@ void OSD_File::BuildTemporary()
 #endif
 }
 
-// =======================================================================
-// function : Read
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Read(TCollection_AsciiString& theBuffer, const Standard_Integer theNbBytes)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
@@ -845,10 +829,8 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const Standard_Integer t
   }
 }
 
-// =======================================================================
-// function : ReadLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
                         const Standard_Integer   theNbBytes,
                         Standard_Integer&        theNbBytesRead)
@@ -1032,10 +1014,8 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
 #endif
 }
 
-// =======================================================================
-// function : KindOfFile
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OSD_KindFile OSD_File::KindOfFile() const
 {
   TCollection_AsciiString aFullName;
@@ -1086,10 +1066,8 @@ OSD_KindFile OSD_File::KindOfFile() const
 #endif
 }
 
-// =======================================================================
-// function : Read
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Read(const Standard_Address theBuffer,
                     const Standard_Integer theNbBytes,
                     Standard_Integer&      theNbReadBytes)
@@ -1158,10 +1136,8 @@ void OSD_File::Read(const Standard_Address theBuffer,
 #endif
 }
 
-// =======================================================================
-// function : Write
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Write(const Standard_Address theBuffer, const Standard_Integer theNbBytes)
 {
   if (!IsOpen())
@@ -1205,10 +1181,8 @@ void OSD_File::Write(const Standard_Address theBuffer, const Standard_Integer th
 #endif
 }
 
-// =======================================================================
-// function : Seek
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Seek(const Standard_Integer theOffset, const OSD_FromWhere theWhence)
 {
   if (!IsOpen())
@@ -1273,10 +1247,8 @@ void OSD_File::Seek(const Standard_Integer theOffset, const OSD_FromWhere theWhe
 #endif
 }
 
-// =======================================================================
-// function : Close
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Close()
 {
   if (!IsOpen())
@@ -1307,10 +1279,8 @@ void OSD_File::Close()
   myIO = 0;
 }
 
-// =======================================================================
-// function : IsAtEnd
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::IsAtEnd()
 {
   if (!IsOpen())
@@ -1325,10 +1295,8 @@ Standard_Boolean OSD_File::IsAtEnd()
 #endif
 }
 
-// =======================================================================
-// function : Link
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 /*void OSD_File::Link (const TCollection_AsciiString& theToFile)
 {
   if (!IsOpen())
@@ -1350,10 +1318,8 @@ Standard_Boolean OSD_File::IsAtEnd()
   #define __leave return
 #endif
 
-// =======================================================================
-// function : SetLock
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::SetLock(const OSD_LockType theLock)
 {
   if (!IsOpen())
@@ -1493,10 +1459,8 @@ void OSD_File::SetLock(const OSD_LockType theLock)
   #undef __leave
 #endif
 
-// =======================================================================
-// function : UnLock
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::UnLock()
 {
   if (!IsOpen())
@@ -1570,10 +1534,8 @@ void OSD_File::UnLock()
 #endif
 }
 
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Size OSD_File::Size()
 {
 #ifdef _WIN32
@@ -1617,10 +1579,8 @@ Standard_Size OSD_File::Size()
 #endif
 }
 
-// =======================================================================
-// function : IsOpen
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::IsOpen() const
 {
 #ifdef _WIN32
@@ -1630,10 +1590,8 @@ Standard_Boolean OSD_File::IsOpen() const
 #endif
 }
 
-// =======================================================================
-// function : IsReadable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::IsReadable()
 {
   TCollection_AsciiString aFileName;
@@ -1652,10 +1610,8 @@ Standard_Boolean OSD_File::IsReadable()
 #endif
 }
 
-// =======================================================================
-// function : IsWriteable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::IsWriteable()
 {
   TCollection_AsciiString aFileName;
@@ -1674,10 +1630,8 @@ Standard_Boolean OSD_File::IsWriteable()
 #endif
 }
 
-// =======================================================================
-// function : IsExecutable
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::IsExecutable()
 {
 #ifdef _WIN32
@@ -1689,10 +1643,8 @@ Standard_Boolean OSD_File::IsExecutable()
 #endif
 }
 
-// =======================================================================
-// function : Rewind
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OSD_File::Rewind()
 {
 #ifdef _WIN32
@@ -1704,10 +1656,8 @@ void OSD_File::Rewind()
 #endif
 }
 
-// =======================================================================
-// function : ReadLastLine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::ReadLastLine(TCollection_AsciiString& theLine,
                                         const Standard_Integer   theDelay,
                                         const Standard_Integer   theNbTries)
@@ -1731,10 +1681,8 @@ Standard_Boolean OSD_File::ReadLastLine(TCollection_AsciiString& theLine,
   return Standard_False;
 }
 
-// =======================================================================
-// function : Edit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OSD_File::Edit()
 {
   std::cout << "Function OSD_File::Edit() not yet implemented.\n";

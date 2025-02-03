@@ -16,10 +16,8 @@
 
 #include <gp_Quaternion.hxx>
 
-// ================================================================
-// Function : RWMesh_CoordinateSystemConverter
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
     : myInputLengthUnit(-1.0),
       myOutputLengthUnit(-1.0),
@@ -33,10 +31,8 @@ RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
   //
 }
 
-// ================================================================
-// Function : Init
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
                                             Standard_Real theInputLengthUnit,
                                             const gp_Ax3& theOutputSystem,

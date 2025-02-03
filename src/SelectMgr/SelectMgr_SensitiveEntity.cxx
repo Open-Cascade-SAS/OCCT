@@ -40,10 +40,8 @@ void SelectMgr_SensitiveEntity::Clear()
   mySensitive.Nullify();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
                                          Standard_Integer  theDepth) const
 {

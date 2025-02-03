@@ -243,10 +243,8 @@ void Select3D_InteriorSensitivePointSet::Swap(const Standard_Integer theIdx1,
   myPolygonsIdxs->ChangeValue(theIdx2) = aPolygIdx1;
 }
 
-// =======================================================================
-// function : overlapsElement
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement(
   SelectBasics_PickResult&             thePickResult,
   SelectBasics_SelectingVolumeManager& theMgr,
@@ -260,10 +258,8 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement(
   return theMgr.OverlapsPolygon(aPoints->Array1(), Select3D_TOS_INTERIOR, thePickResult);
 }
 
-// =======================================================================
-// function : elementIsInside
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside(
   SelectBasics_SelectingVolumeManager& theMgr,
   Standard_Integer                     theElemIdx,
@@ -313,10 +309,8 @@ Standard_Integer Select3D_InteriorSensitivePointSet::NbSubElements() const
   return myPlanarPolygons.Length();
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Select3D_InteriorSensitivePointSet::DumpJson(Standard_OStream& theOStream,
                                                   Standard_Integer  theDepth) const
 {

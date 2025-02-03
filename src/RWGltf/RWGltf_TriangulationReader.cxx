@@ -100,29 +100,23 @@ static RWGltf_GltfAccessorCompType compTypeFromDraco(draco::DataType theType)
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReader)
 
-// =======================================================================
-// function : RWGltf_TriangulationReader
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 RWGltf_TriangulationReader::RWGltf_TriangulationReader()
 {
   //
 }
 
-// =======================================================================
-// function : reportError
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void RWGltf_TriangulationReader::reportError(const TCollection_AsciiString& theText) const
 {
   Message::SendFail(TCollection_AsciiString("File '") + myFileName + "' defines invalid glTF!\n"
                     + theText);
 }
 
-// =======================================================================
-// function : LoadStreamData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::LoadStreamData(
   const Handle(RWMesh_TriangulationSource)& theSourceMesh,
   const Handle(Poly_Triangulation)&         theDestMesh) const
@@ -146,10 +140,8 @@ bool RWGltf_TriangulationReader::LoadStreamData(
   return true;
 }
 
-// =======================================================================
-// function : readStreamData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::readStreamData(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
   const RWGltf_GltfPrimArrayData&              theGltfData,
@@ -166,10 +158,8 @@ bool RWGltf_TriangulationReader::readStreamData(
   return true;
 }
 
-// =======================================================================
-// function : readFileData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::readFileData(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
   const RWGltf_GltfPrimArrayData&              theGltfData,
@@ -200,10 +190,8 @@ bool RWGltf_TriangulationReader::readFileData(
   return true;
 }
 
-// =======================================================================
-// function : loadStreamData
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::loadStreamData(
   const Handle(RWMesh_TriangulationSource)& theSourceMesh,
   const Handle(Poly_Triangulation)&         theDestMesh,
@@ -239,10 +227,8 @@ bool RWGltf_TriangulationReader::loadStreamData(
   return wasLoaded;
 }
 
-// =======================================================================
-// function : readDracoBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::readDracoBuffer(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
   const RWGltf_GltfPrimArrayData&              theGltfData,
@@ -471,10 +457,8 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
 #endif
 }
 
-// =======================================================================
-// function : load
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::load(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
                                       const Handle(Poly_Triangulation)&         theDestMesh,
                                       const Handle(OSD_FileSystem)&             theFileSystem) const
@@ -530,10 +514,8 @@ bool RWGltf_TriangulationReader::load(const Handle(RWMesh_TriangulationSource)& 
   return true;
 }
 
-// =======================================================================
-// function : finalizeLoading
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::finalizeLoading(
   const Handle(RWMesh_TriangulationSource)& theSourceMesh,
   const Handle(Poly_Triangulation)&         theDestMesh) const
@@ -571,10 +553,8 @@ bool RWGltf_TriangulationReader::finalizeLoading(
   return RWMesh_TriangulationReader::finalizeLoading(theSourceMesh, theDestMesh);
 }
 
-// =======================================================================
-// function : readBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool RWGltf_TriangulationReader::readBuffer(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
   const Handle(Poly_Triangulation)&            theDestMesh,

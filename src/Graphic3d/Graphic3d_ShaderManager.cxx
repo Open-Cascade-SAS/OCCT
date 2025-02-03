@@ -187,10 +187,8 @@ const char THE_VERT_gl_Position_OUTLINE[] = EOL
 
 } // namespace
 
-// =======================================================================
-// function : genLightKey
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_ShaderManager::genLightKey(
   const Handle(Graphic3d_LightSet)& theLights,
   const bool                        theHasShadowMap) const
@@ -205,10 +203,8 @@ TCollection_AsciiString Graphic3d_ShaderManager::genLightKey(
   return TCollection_AsciiString("l_") + theLights->KeyEnabledShort() + aMaxLimit;
 }
 
-// =======================================================================
-// function : Graphic3d_ShaderManager
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ShaderManager::Graphic3d_ShaderManager(Aspect_GraphicsLibrary theGapi)
     : myGapi(theGapi),
       // desktop defines a dedicated API for point size, with gl_PointSize added later to GLSL
@@ -222,19 +218,15 @@ Graphic3d_ShaderManager::Graphic3d_ShaderManager(Aspect_GraphicsLibrary theGapi)
   memset(myGlslExtensions, 0, sizeof(myGlslExtensions));
 }
 
-// =======================================================================
-// function : ~Graphic3d_ShaderManager
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ShaderManager::~Graphic3d_ShaderManager()
 {
   //
 }
 
-// =======================================================================
-// function : hasGlslBitwiseOps
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_ShaderManager::hasGlslBitwiseOps() const
 {
   switch (myGapi)
@@ -250,10 +242,8 @@ bool Graphic3d_ShaderManager::hasGlslBitwiseOps() const
   return false;
 }
 
-// =======================================================================
-// function : defaultGlslVersion
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 int Graphic3d_ShaderManager::defaultGlslVersion(const Handle(Graphic3d_ShaderProgram)& theProgram,
                                                 const TCollection_AsciiString&         theName,
                                                 int                                    theBits,
@@ -385,10 +375,8 @@ int Graphic3d_ShaderManager::defaultGlslVersion(const Handle(Graphic3d_ShaderPro
   return aBits;
 }
 
-// =======================================================================
-// function : defaultOitGlslVersion
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_ShaderManager::defaultOitGlslVersion(
   const Handle(Graphic3d_ShaderProgram)& theProgram,
   const TCollection_AsciiString&         theName,
@@ -438,10 +426,8 @@ void Graphic3d_ShaderManager::defaultOitGlslVersion(
   theProgram->SetId(TCollection_AsciiString("occt_") + theName + (theMsaa ? "_msaa" : ""));
 }
 
-// =======================================================================
-// function : getStdProgramFont
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramFont() const
 {
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
@@ -482,10 +468,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramFont() con
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramFboBlit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramFboBlit(
   Standard_Integer theNbSamples,
   Standard_Boolean theIsFallback_sRGB) const
@@ -605,10 +589,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramFboBlit(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramOitCompositing
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitCompositing(
   const Standard_Boolean theMsaa) const
 {
@@ -664,10 +646,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitComposi
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramOitDepthPeelingBlend
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitDepthPeelingBlend(
   Standard_Boolean theMsaa) const
 {
@@ -701,10 +681,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitDepthPe
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramOitDepthPeelingFlush
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitDepthPeelingFlush(
   Standard_Boolean theMsaa) const
 {
@@ -747,10 +725,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramOitDepthPe
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : pointSpriteAlphaSrc
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_ShaderManager::pointSpriteAlphaSrc(Standard_Integer theBits) const
 {
   const bool isAlpha =
@@ -762,10 +738,8 @@ TCollection_AsciiString Graphic3d_ShaderManager::pointSpriteAlphaSrc(Standard_In
                  "occTexture2D(occSamplerPointSprite, " THE_VEC2_glPointCoord ").a; }";
 }
 
-// =======================================================================
-// function : pointSpriteShadingSrc
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_ShaderManager::pointSpriteShadingSrc(
   const TCollection_AsciiString& theBaseColorSrc,
   Standard_Integer               theBits) const
@@ -893,10 +867,8 @@ static TCollection_AsciiString prepareGeomMainSrc(
   return aSrcMainGeom;
 }
 
-// =======================================================================
-// function : getStdProgramUnlit
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramUnlit(
   Standard_Integer theBits,
   Standard_Boolean theIsOutline) const
@@ -1145,10 +1117,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramUnlit(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : stdComputeLighting
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
   Standard_Integer&                 theNbLights,
   const Handle(Graphic3d_LightSet)& theLights,
@@ -1366,10 +1336,8 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting(
   }
 }
 
-// =======================================================================
-// function : getStdProgramGouraud
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud(
   const Handle(Graphic3d_LightSet)& theLights,
   Standard_Integer                  theBits) const
@@ -1534,10 +1502,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramPhong
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong(
   const Handle(Graphic3d_LightSet)& theLights,
   const Standard_Integer            theBits,
@@ -1799,10 +1765,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramStereo
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramStereo(
   Graphic3d_StereoMode theStereoMode) const
 {
@@ -1938,10 +1902,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramStereo(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getStdProgramBoundBox
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramBoundBox() const
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
@@ -1978,10 +1940,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramBoundBox()
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getPBREnvBakingProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getPBREnvBakingProgram(
   Standard_Integer theIndex) const
 {
@@ -2045,10 +2005,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getPBREnvBakingProgram(
   return aProgramSrc;
 }
 
-// =======================================================================
-// function : getBgCubeMapProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgCubeMapProgram() const
 {
   Handle(Graphic3d_ShaderProgram) aProgSrc = new Graphic3d_ShaderProgram();
@@ -2116,10 +2074,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgCubeMapProgram() c
   return aProgSrc;
 }
 
-// =======================================================================
-// function : getBgSkydomeProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgSkydomeProgram() const
 {
   Handle(Graphic3d_ShaderProgram) aProgSrc = new Graphic3d_ShaderProgram();
@@ -2159,10 +2115,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgSkydomeProgram() c
   return aProgSrc;
 }
 
-// =======================================================================
-// function : getColoredQuadProgram
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getColoredQuadProgram() const
 {
   Handle(Graphic3d_ShaderProgram) aProgSrc = new Graphic3d_ShaderProgram();

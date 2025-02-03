@@ -61,9 +61,7 @@ runs:
       run: |
         git diff > format.patch
         if ((Get-Item format.patch).length -gt 0) {
-          echo "::error::Files need formatting. To fix: 1. Download format.patch 2. \"git apply format.patch\" 3. Commit and push"
           echo "has_changes=true" >> $env:GITHUB_OUTPUT
-          exit 1
         }
 
     - name: Upload patch
@@ -72,6 +70,13 @@ runs:
       with:
         name: format-patch
         path: format.patch
+
+    - name: Failing step for formatting issues
+      if: steps.git-check.outputs.has_changes == 'true'
+      shell: pwsh
+      run: |
+        echo "::error::Files need formatting. To fix: 1. Download format.patch 2. \"git apply format.patch\" 3. Commit and push"
+        exit 1
 
 branding:
   icon: 'check-square'

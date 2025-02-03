@@ -36,10 +36,8 @@ extern "C"
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTexture, Graphic3d_Texture2D)
 
-// ================================================================
-// Function : Graphic3d_MediaTexture
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Graphic3d_MediaTexture::Graphic3d_MediaTexture(const Handle(Standard_HMutex)& theMutex,
                                                Standard_Integer               thePlane)
     : Graphic3d_Texture2D("", Graphic3d_TypeOfTexture_2D),
@@ -52,10 +50,8 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(const Handle(Standard_HMutex)& th
   myParams->SetTextureUnit(Graphic3d_TextureUnit(int(Graphic3d_TextureUnit_0) + thePlane));
 }
 
-// ================================================================
-// Function : GetImage
-// Purpose  :
-// ================================================================
+//=================================================================================================
+
 Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage(const Handle(Image_SupportedFormats)&)
 {
   Standard_Mutex::Sentry aLock(myMutex.get());

@@ -109,10 +109,8 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
 
 vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 
-  //================================================================
-  // Function : Constructor
-  // Purpose  :
-  //================================================================
+  //=================================================================================================
+
   IVtkTools_SubPolyDataFilter::IVtkTools_SubPolyDataFilter()
     : myIdsArrayName(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS()),
       myDoFiltering(true),

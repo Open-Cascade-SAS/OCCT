@@ -166,10 +166,8 @@ void Bnd_Range::Split(const Standard_Real          theVal,
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Bnd_Range::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Bnd_Range)

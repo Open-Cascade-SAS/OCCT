@@ -98,10 +98,7 @@ Standard_Integer XCAFDoc_AssemblyGraph::NbLinks() const
   return aNumLinks;
 }
 
-// =======================================================================
-// function : GetUsageOccurrenceQuantity
-// purpose  :
-// =======================================================================
+//=================================================================================================
 
 Standard_Integer XCAFDoc_AssemblyGraph::NbOccurrences(const Standard_Integer theNode) const
 {

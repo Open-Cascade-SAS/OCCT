@@ -18,37 +18,29 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Buffer)
 
-// =======================================================================
-// function : OpenGl_VertexBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_VertexBuffer::OpenGl_VertexBuffer()
 {
   //
 }
 
-// =======================================================================
-// function : ~OpenGl_VertexBuffer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_VertexBuffer::~OpenGl_VertexBuffer()
 {
   //
 }
 
-// =======================================================================
-// function : GetTarget
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 unsigned int OpenGl_VertexBuffer::GetTarget() const
 {
   return GL_ARRAY_BUFFER;
 }
 
-// =======================================================================
-// function : BindVertexAttrib
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::BindVertexAttrib(const Handle(OpenGl_Context)& theGlCtx,
                                            const unsigned int            theAttribLoc) const
 {
@@ -62,10 +54,8 @@ void OpenGl_VertexBuffer::BindVertexAttrib(const Handle(OpenGl_Context)& theGlCt
     ->glVertexAttribPointer(theAttribLoc, GLint(myComponentsNb), myDataType, GL_FALSE, 0, myOffset);
 }
 
-// =======================================================================
-// function : UnbindVertexAttrib
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::UnbindVertexAttrib(const Handle(OpenGl_Context)& theGlCtx,
                                              const unsigned int            theAttribLoc) const
 {
@@ -77,55 +67,43 @@ void OpenGl_VertexBuffer::UnbindVertexAttrib(const Handle(OpenGl_Context)& theGl
   Unbind(theGlCtx);
 }
 
-// =======================================================================
-// function : BindAllAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::BindAllAttributes(const Handle(OpenGl_Context)&) const
 {
   //
 }
 
-// =======================================================================
-// function : BindPositionAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::BindPositionAttribute(const Handle(OpenGl_Context)&) const
 {
   //
 }
 
-// =======================================================================
-// function : UnbindAllAttributes
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::UnbindAllAttributes(const Handle(OpenGl_Context)&) const
 {
   //
 }
 
-// =======================================================================
-// function : HasColorAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_VertexBuffer::HasColorAttribute() const
 {
   return false;
 }
 
-// =======================================================================
-// function : HasNormalAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_VertexBuffer::HasNormalAttribute() const
 {
   return false;
 }
 
-// =======================================================================
-// function : bindAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::bindAttribute(const Handle(OpenGl_Context)&   theCtx,
                                         const Graphic3d_TypeOfAttribute theAttribute,
                                         const Standard_Integer          theNbComp,
@@ -159,10 +137,8 @@ void OpenGl_VertexBuffer::bindAttribute(const Handle(OpenGl_Context)&   theCtx,
                                            theOffset);
 }
 
-// =======================================================================
-// function : unbindAttribute
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::unbindAttribute(const Handle(OpenGl_Context)&   theCtx,
                                           const Graphic3d_TypeOfAttribute theAttribute)
 {
@@ -178,10 +154,8 @@ void OpenGl_VertexBuffer::unbindAttribute(const Handle(OpenGl_Context)&   theCtx
   theCtx->core20fwd->glDisableVertexAttribArray(theAttribute);
 }
 
-// =======================================================================
-// function : bindFixed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::bindFixed(const Handle(OpenGl_Context)&   theCtx,
                                     const Graphic3d_TypeOfAttribute theMode,
                                     const Standard_Integer          theNbComp,
@@ -219,10 +193,8 @@ void OpenGl_VertexBuffer::bindFixed(const Handle(OpenGl_Context)&   theCtx,
   }
 }
 
-// =======================================================================
-// function : unbindFixed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::unbindFixed(const Handle(OpenGl_Context)&   theCtx,
                                       const Graphic3d_TypeOfAttribute theMode)
 {
@@ -246,10 +218,8 @@ void OpenGl_VertexBuffer::unbindFixed(const Handle(OpenGl_Context)&   theCtx,
   }
 }
 
-// =======================================================================
-// function : unbindFixedColor
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_VertexBuffer::unbindFixedColor(const Handle(OpenGl_Context)& theCtx)
 {
   theCtx->core11ffp->glDisableClientState(GL_COLOR_ARRAY);

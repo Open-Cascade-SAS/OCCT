@@ -35,25 +35,19 @@ enum ChildLab
   ChildLab_Presentation
 };
 
-// =======================================================================
-// function : IsMine
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_Note::IsMine(const TDF_Label& theLabel)
 {
   return !Get(theLabel).IsNull();
 }
 
-// =======================================================================
-// function : XCAFDoc_Note
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 XCAFDoc_Note::XCAFDoc_Note() {}
 
-// =======================================================================
-// function : Get
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(XCAFDoc_Note) XCAFDoc_Note::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_Note) aNote;
@@ -66,10 +60,8 @@ Handle(XCAFDoc_Note) XCAFDoc_Note::Get(const TDF_Label& theLabel)
   return aNote;
 }
 
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_Note::Set(const TCollection_ExtendedString& theUserName,
                        const TCollection_ExtendedString& theTimeStamp)
 {
@@ -79,20 +71,16 @@ void XCAFDoc_Note::Set(const TCollection_ExtendedString& theUserName,
   myTimeStamp = theTimeStamp;
 }
 
-// =======================================================================
-// function : IsOrphan
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_Note::IsOrphan() const
 {
   Handle(XCAFDoc_GraphNode) aFather;
   return !Label().FindAttribute(XCAFDoc::NoteRefGUID(), aFather) || (aFather->NbChildren() == 0);
 }
 
-// =======================================================================
-// function : GetObject
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
 {
   Handle(XCAFNoteObjects_NoteObject) anObj = new XCAFNoteObjects_NoteObject();
@@ -141,10 +129,8 @@ Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
   return anObj;
 }
 
-// =======================================================================
-// function : SetObject
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_Note::SetObject(const Handle(XCAFNoteObjects_NoteObject)& theObject)
 {
   Backup();
@@ -183,30 +169,24 @@ void XCAFDoc_Note::SetObject(const Handle(XCAFNoteObjects_NoteObject)& theObject
   }
 }
 
-// =======================================================================
-// function : Restore
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_Note::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   myUserName  = Handle(XCAFDoc_Note)::DownCast(theAttr)->myUserName;
   myTimeStamp = Handle(XCAFDoc_Note)::DownCast(theAttr)->myTimeStamp;
 }
 
-// =======================================================================
-// function : Paste
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void XCAFDoc_Note::Paste(const Handle(TDF_Attribute)& theAttrInto,
                          const Handle(TDF_RelocationTable)& /*theRT*/) const
 {
   Handle(XCAFDoc_Note)::DownCast(theAttrInto)->Set(myUserName, myTimeStamp);
 }
 
-// =======================================================================
-// function : Dump
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_OStream& XCAFDoc_Note::Dump(Standard_OStream& theOS) const
 {
   TDF_Attribute::Dump(theOS);

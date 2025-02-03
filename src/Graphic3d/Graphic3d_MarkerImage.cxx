@@ -169,10 +169,8 @@ static Handle(Graphic3d_MarkerImage) getTextureImage(const Aspect_TypeOfMarker t
 }
 } // namespace
 
-// =======================================================================
-// function : Graphic3d_MarkerImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(Image_PixMap)& theImage,
                                              const Handle(Image_PixMap)& theImageAlpha)
     : myImage(theImage),
@@ -201,10 +199,8 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(Image_PixMap)& theImag
   }
 }
 
-// =======================================================================
-// function : Graphic3d_MarkerImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_MarkerImage::Graphic3d_MarkerImage(const TCollection_AsciiString& theId,
                                              const TCollection_AsciiString& theAlphaId,
                                              const Handle(Image_PixMap)&    theImage,
@@ -231,10 +227,8 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const TCollection_AsciiString& theI
   }
 }
 
-// =======================================================================
-// function : Graphic3d_MarkerImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(TColStd_HArray1OfByte)& theBitMap,
                                              const Standard_Integer               theWidth,
                                              const Standard_Integer               theHeight)
@@ -250,20 +244,16 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(TColStd_HArray1OfByte)
                    + TCollection_AsciiString(THE_MARKER_IMAGE_COUNTER);
 }
 
-// =======================================================================
-// function : IsColoredImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_MarkerImage::IsColoredImage() const
 {
   return !myImage.IsNull() && myImage->Format() != Image_Format_Alpha
          && myImage->Format() != Image_Format_Gray;
 }
 
-// =======================================================================
-// function : GetBitMapArray
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(TColStd_HArray1OfByte) Graphic3d_MarkerImage::GetBitMapArray(
   const Standard_Real    theAlphaValue,
   const Standard_Boolean theIsTopDown) const
@@ -306,10 +296,8 @@ Handle(TColStd_HArray1OfByte) Graphic3d_MarkerImage::GetBitMapArray(
   return aBitMap;
 }
 
-// =======================================================================
-// function : GetImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImage()
 {
   if (!myImage.IsNull() || myBitMap.IsNull())
@@ -344,10 +332,8 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImage()
   return myImage;
 }
 
-// =======================================================================
-// function : GetImageAlpha
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImageAlpha()
 {
   if (!myImageAlpha.IsNull())
@@ -382,28 +368,22 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImageAlpha()
   return myImageAlpha;
 }
 
-// =======================================================================
-// function : GetImageId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const TCollection_AsciiString& Graphic3d_MarkerImage::GetImageId() const
 {
   return myImageId;
 }
 
-// =======================================================================
-// function : GetImageAlphaId
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 const TCollection_AsciiString& Graphic3d_MarkerImage::GetImageAlphaId() const
 {
   return myImageAlphaId;
 }
 
-// =======================================================================
-// function : GetTextureSize
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Graphic3d_MarkerImage::GetTextureSize(Standard_Integer& theWidth,
                                            Standard_Integer& theHeight) const
 {
@@ -411,10 +391,8 @@ void Graphic3d_MarkerImage::GetTextureSize(Standard_Integer& theWidth,
   theHeight = myHeight;
 }
 
-// =======================================================================
-// function : GetMarkerImage
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker(
   const Aspect_TypeOfMarker theMarkerType,
   const Standard_ShortReal  theScale,

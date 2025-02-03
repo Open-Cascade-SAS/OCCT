@@ -162,10 +162,8 @@ void StdSelect_BRepOwner::UpdateHighlightTrsf(const Handle(V3d_Viewer)&         
   }
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void StdSelect_BRepOwner::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

@@ -18,20 +18,16 @@
 #include <OSD_Timer.hxx>
 #include <V3d_View.hxx>
 
-// =======================================================================
-// function : Instance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 ViewerTest_ContinuousRedrawer& ViewerTest_ContinuousRedrawer::Instance()
 {
   static ViewerTest_ContinuousRedrawer aRedrawer;
   return aRedrawer;
 }
 
-// =======================================================================
-// function : ViewerTest_ContinuousRedrawer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 ViewerTest_ContinuousRedrawer::ViewerTest_ContinuousRedrawer()
     : myThread(doThreadWrapper),
       myWakeEvent(false),
@@ -42,19 +38,15 @@ ViewerTest_ContinuousRedrawer::ViewerTest_ContinuousRedrawer()
   //
 }
 
-// =======================================================================
-// function : ~ViewerTest_ContinuousRedrawer
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 ViewerTest_ContinuousRedrawer::~ViewerTest_ContinuousRedrawer()
 {
   Stop();
 }
 
-// =======================================================================
-// function : Start
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
                                           Standard_Real           theTargetFps)
 {
@@ -82,10 +74,8 @@ void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
   }
 }
 
-// =======================================================================
-// function : Stop
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void ViewerTest_ContinuousRedrawer::Stop(const Handle(V3d_View)& theView)
 {
   if (!theView.IsNull() && myView != theView)
@@ -104,10 +94,8 @@ void ViewerTest_ContinuousRedrawer::Stop(const Handle(V3d_View)& theView)
   myView.Nullify();
 }
 
-// =======================================================================
-// function : Pause
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void ViewerTest_ContinuousRedrawer::Pause()
 {
   if (!myToPause)
@@ -117,10 +105,8 @@ void ViewerTest_ContinuousRedrawer::Pause()
   }
 }
 
-// =======================================================================
-// function : doThreadLoop
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void ViewerTest_ContinuousRedrawer::doThreadLoop()
 {
   Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();

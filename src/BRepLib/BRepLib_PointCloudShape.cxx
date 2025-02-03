@@ -30,10 +30,8 @@
 
 #include <random>
 
-// =======================================================================
-// function : BRepLib_PointCloudShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 BRepLib_PointCloudShape::BRepLib_PointCloudShape(const TopoDS_Shape& theShape,
                                                  const Standard_Real theTol)
     : myShape(theShape),
@@ -44,19 +42,15 @@ BRepLib_PointCloudShape::BRepLib_PointCloudShape(const TopoDS_Shape& theShape,
   //
 }
 
-// =======================================================================
-// function : ~BRepLib_PointCloudShape
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 BRepLib_PointCloudShape::~BRepLib_PointCloudShape()
 {
   //
 }
 
-// =======================================================================
-// function : NbPointsByDensity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer BRepLib_PointCloudShape::NbPointsByDensity(const Standard_Real theDensity)
 {
   clear();
@@ -78,10 +72,8 @@ Standard_Integer BRepLib_PointCloudShape::NbPointsByDensity(const Standard_Real 
   return aNbPoints;
 }
 
-// =======================================================================
-// function : GeneratePointsByDensity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepLib_PointCloudShape::GeneratePointsByDensity(const Standard_Real theDensity)
 {
   if (myFacePoints.IsEmpty())
@@ -103,10 +95,8 @@ Standard_Boolean BRepLib_PointCloudShape::GeneratePointsByDensity(const Standard
   return (aNbAdded > 0);
 }
 
-// =======================================================================
-// function : GeneratePointsByTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepLib_PointCloudShape::GeneratePointsByTriangulation()
 {
   clear();
@@ -122,10 +112,8 @@ Standard_Boolean BRepLib_PointCloudShape::GeneratePointsByTriangulation()
   return (aNbAdded > 0);
 }
 
-// =======================================================================
-// function : faceArea
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real BRepLib_PointCloudShape::faceArea(const TopoDS_Shape& theShape)
 {
   Standard_Real anArea = 0.0;
@@ -141,10 +129,8 @@ Standard_Real BRepLib_PointCloudShape::faceArea(const TopoDS_Shape& theShape)
   return anArea;
 }
 
-// =======================================================================
-// function : computeDensity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Real BRepLib_PointCloudShape::computeDensity()
 {
   // at first step find the face with smallest area
@@ -165,10 +151,8 @@ Standard_Real BRepLib_PointCloudShape::computeDensity()
   return anAreaMin * 0.1;
 }
 
-// =======================================================================
-// function : NbPointsByTriangulation
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Integer BRepLib_PointCloudShape::NbPointsByTriangulation() const
 {
   // at first step find the face with smallest area
@@ -188,10 +172,8 @@ Standard_Integer BRepLib_PointCloudShape::NbPointsByTriangulation() const
   return aNbPoints;
 }
 
-// =======================================================================
-// function : addDensityPoints
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepLib_PointCloudShape::addDensityPoints(const TopoDS_Shape& theFace)
 {
   // addition of the points with specified density on the face by random way
@@ -261,10 +243,8 @@ Standard_Boolean BRepLib_PointCloudShape::addDensityPoints(const TopoDS_Shape& t
   return Standard_True;
 }
 
-// =======================================================================
-// function : addTriangulationPoints
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepLib_PointCloudShape::addTriangulationPoints(const TopoDS_Shape& theFace)
 {
   TopLoc_Location            aLoc;
@@ -297,10 +277,8 @@ Standard_Boolean BRepLib_PointCloudShape::addTriangulationPoints(const TopoDS_Sh
   return Standard_True;
 }
 
-// =======================================================================
-// function : clear
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void BRepLib_PointCloudShape::clear()
 {
   myFaceArea.Clear();

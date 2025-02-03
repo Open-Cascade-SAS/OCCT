@@ -93,10 +93,8 @@ Standard_Boolean Graphic3d_ShaderObject::IsDone() const
   return !mySource.IsEmpty();
 }
 
-// =======================================================================
-// function : CreateFromSource
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource(
   TCollection_AsciiString&       theSource,
   Graphic3d_TypeOfShaderObject   theType,

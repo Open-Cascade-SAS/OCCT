@@ -30,10 +30,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   #endif
   Standard_ENABLE_DEPRECATION_WARNINGS
 
-  //=======================================================================
-  // function : forEachExternal
-  // purpose  :
-  //=======================================================================
+  //=================================================================================================
 
   void
   OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,

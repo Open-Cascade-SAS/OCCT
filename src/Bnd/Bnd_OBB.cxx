@@ -814,10 +814,8 @@ void Bnd_OBB::ReBuild(const TColgp_Array1OfPnt&   theListOfPoints,
   aTool.BuildBox(*this);
 }
 
-// =======================================================================
-// function : IsOut
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
 {
   if (IsVoid() || theOther.IsVoid())
@@ -919,10 +917,8 @@ Standard_Boolean Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
   return Standard_False;
 }
 
-// =======================================================================
-// function : IsOut
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean Bnd_OBB::IsOut(const gp_Pnt& theP) const
 {
   // 1. Project the point to myAxes[i] (i=0...2).
@@ -956,10 +952,8 @@ Standard_Boolean Bnd_OBB::IsCompletelyInside(const Bnd_OBB& theOther) const
   return Standard_True;
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Bnd_OBB::Add(const gp_Pnt& theP)
 {
   if (IsVoid())
@@ -982,10 +976,8 @@ void Bnd_OBB::Add(const gp_Pnt& theP)
   }
 }
 
-// =======================================================================
-// function : Add
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Bnd_OBB::Add(const Bnd_OBB& theOther)
 {
   if (!theOther.IsVoid())

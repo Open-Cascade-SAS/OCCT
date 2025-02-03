@@ -58,10 +58,8 @@ Quantity_Color Aspect_Background::Color() const
   return (MyColor);
 }
 
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void Aspect_Background::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Aspect_Background)
