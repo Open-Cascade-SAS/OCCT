@@ -17,6 +17,6 @@
 #======================================================================
 
 set (OCC_VERSION_MAJOR 7 )
-set (OCC_VERSION_MINOR 8 )
-set (OCC_VERSION_MAINTENANCE 2 )
-set (OCC_VERSION_DEVELOPMENT "dev" )
+set (OCC_VERSION_MINOR 9 )
+set (OCC_VERSION_MAINTENANCE 0 )
+set (OCC_VERSION_DEVELOPMENT "beta1" )
