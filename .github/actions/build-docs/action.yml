@@ -1,27 +1,14 @@
-# This workflow builds the OCCT reference manual and overview documentations.
-# It is triggered on pushes to the 'master' branch.
-# The workflow includes steps to checkout the repository, install dependencies, build the documentation, and upload the generated documentation and logs as artifacts.
-
 name: Build Documentation
+description: 'Build OCCT documentation using doxygen'
 
-on:
-  push:
-    branches:
-      - 'master'
-
-jobs:
-  build:
-    name: Build Refman Documentation
-    runs-on: windows-2022
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.1
-
+runs:
+  using: composite
+  steps:
     - name: Install dependencies
       run: |
         choco install -y graphviz
         choco install -y doxygen.install
+      shell: pwsh
 
     - name: Build refman documentation
       run: |

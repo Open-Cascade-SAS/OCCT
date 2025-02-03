@@ -33,6 +33,17 @@ jobs:
       with:
         base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
 
+  documentation:
+    name: Build Documentation
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.1
+
+    - name: Build documentation
+      uses: ./.github/actions/build-docs
+
   prepare-and-build-windows-x64:
     name: Prepare and Build on Windows with MSVC (x64)
     runs-on: windows-2022
