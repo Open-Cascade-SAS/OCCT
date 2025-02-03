@@ -2501,7 +2501,7 @@ Standard_Real BRepMesh_Delaun::polyArea(const IMeshData::SequenceOfInteger& theP
 }
 
 #ifdef OCCT_DEBUG
-  //=================================================================================================
+//=================================================================================================
 
   #include <TopoDS_Compound.hxx>
   #include <BRep_Builder.hxx>
