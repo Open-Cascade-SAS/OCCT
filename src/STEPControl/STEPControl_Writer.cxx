@@ -13,6 +13,7 @@
 
 #include <STEPControl_Writer.hxx>
 
+#include <APIHeaderSection_MakeHeader.hxx>
 #include <DE_ShapeFixParameters.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
@@ -140,10 +141,9 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
     XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     Model()->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
-  if (!thesession->Model().IsNull())
-  {
-    Handle(StepData_StepModel)::DownCast(thesession->Model())->InternalParameters = theParams;
-  }
+  Model()->InternalParameters = theParams;
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(Model());
   Handle(STEPControl_ActorWrite) ActWrite =
     Handle(STEPControl_ActorWrite)::DownCast(WS()->NormAdaptor()->ActorWrite());
   ActWrite->SetGroupMode(
@@ -156,6 +156,13 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
 
 IFSelect_ReturnStatus STEPControl_Writer::Write(const Standard_CString theFileName)
 {
+  Handle(StepData_StepModel) aModel = Model();
+  if (aModel.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aModel);
   return thesession->SendAll(theFileName);
 }
 
@@ -177,6 +184,8 @@ IFSelect_ReturnStatus STEPControl_Writer::WriteStream(std::ostream& theOStream)
 
   StepData_StepWriter aWriter(aModel);
   aWriter.SendModel(aProtocol);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aModel);
   return aWriter.Print(theOStream) ? IFSelect_RetDone : IFSelect_RetFail;
 }
 

@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <APIHeaderSection_MakeHeader.hxx>
 #include <DE_ShapeFixParameters.hxx>
 #include <IFSelect_WorkLibrary.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -101,6 +102,8 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filena
   Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters.InitFromStatic();
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aStepModel);
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   try
   {
@@ -143,6 +146,8 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString   file
   Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters        = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aStepModel);
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   try
   {
@@ -185,6 +190,8 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theN
   Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters.InitFromStatic();
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aStepModel);
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   try
   {
@@ -228,6 +235,8 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString   th
   Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
   aStepModel->InternalParameters        = theParams;
   aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  APIHeaderSection_MakeHeader aHeaderMaker;
+  aHeaderMaker.Apply(aStepModel);
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   try
   {
