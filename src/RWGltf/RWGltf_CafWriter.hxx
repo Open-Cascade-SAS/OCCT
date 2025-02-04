@@ -353,6 +353,14 @@ protected:
   //! @param[out] theMaterialMap  map of materials, filled with materials
   Standard_EXPORT virtual void writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
+  //! Write RWGltf_GltfRootElement_Materials section.
+  //! @param[in]  theShapeIter         Shape iterator to traverse shapes
+  //! @param[out] theIsStarted         Flag indicating that writing material has been started
+  //! @param[out] theAddedMaterialsNb  Number of added materials
+  Standard_EXPORT virtual void writeMaterial(RWMesh_ShapeIterator& theShapeIter,
+                                             Standard_Boolean&     theIsStarted,
+                                             Standard_Integer&     theAddedMaterialsNb);
+
   //! Write RWGltf_GltfRootElement_Meshes section.
   //! @param[in] theSceneNodeMap  ordered map of scene nodes
   //! @param[in] theMaterialMap   map of materials

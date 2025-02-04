@@ -269,7 +269,7 @@ void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
 #ifdef HAVE_RAPIDJSON
   if (theWriter == NULL
       || ((theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
-          && !theStyle.IsSetColorSurf()))
+          && !theStyle.IsSetColorSurf() && !theStyle.IsSetColorCurv()))
   {
     return;
   }
@@ -386,6 +386,10 @@ void RWGltf_GltfMaterialMap::DefineMaterial(const XCAFPrs_Style& theStyle,
       aPbrMat.Metallic = 0.0f;
       aPbrMat.BaseColor.SetAlpha(theStyle.GetColorSurfRGBA().Alpha());
     }
+  }
+  else if (theStyle.IsSetColorCurv())
+  {
+    aPbrMat.BaseColor.SetRGB(theStyle.GetColorCurv());
   }
   myWriter->StartObject();
   {
