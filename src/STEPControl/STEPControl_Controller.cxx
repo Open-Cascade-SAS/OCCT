@@ -15,7 +15,6 @@
 //    gka 05.04.99 S4136: parameters definitions changed
 
 #include <APIHeaderSection_EditHeader.hxx>
-#include <APIHeaderSection_MakeHeader.hxx>
 #include <IFSelect_EditForm.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectSignature.hxx>
