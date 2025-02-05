@@ -1989,9 +1989,14 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
       aShapeAttribs.RawName = theMeshName;
 
       // assign material and not color
-      // aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
-      aShapeAttribs.Style.SetMaterial(aMat);
-
+      if (aMode == RWGltf_GltfPrimitiveMode_Lines)
+      {
+        aShapeAttribs.Style.SetColorCurv(aMeshData->BaseColor().GetRGB());
+      }
+      else
+      {
+        aShapeAttribs.Style.SetMaterial(aMat);
+      }
       myAttribMap->Bind(aShape, aShapeAttribs);
     }
     myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayId, aShape);
@@ -2379,12 +2384,21 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
     {
       aShapeAttribs.RawName = theId;
     }
-    if (theShape.ShapeType() == TopAbs_FACE)
+    if (theShape.ShapeType() == TopAbs_FACE || theShape.ShapeType() == TopAbs_EDGE
+        || theShape.ShapeType() == TopAbs_VERTEX)
     {
       RWMesh_NodeAttributes aFaceAttribs;
       if (myAttribMap->Find(aShape, aFaceAttribs))
       {
         aShapeAttribs.Style.SetMaterial(aFaceAttribs.Style.Material());
+        if (aFaceAttribs.Style.IsSetColorCurv())
+        {
+          aShapeAttribs.Style.SetColorCurv(aFaceAttribs.Style.GetColorCurv());
+        }
+        if (aFaceAttribs.Style.IsSetColorSurf())
+        {
+          aShapeAttribs.Style.SetColorSurf(aFaceAttribs.Style.GetColorSurf());
+        }
         if (aShapeAttribs.Name.IsEmpty() && myUseMeshNameAsFallback)
         {
           // fallback using Mesh name
