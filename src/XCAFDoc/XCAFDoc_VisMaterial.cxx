@@ -139,7 +139,7 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
   aComMat.IsDefined      = true;
   aComMat.DiffuseTexture = myPbrMat.BaseColorTexture;
   aComMat.DiffuseColor   = myPbrMat.BaseColor.GetRGB();
-  aComMat.SpecularColor  = Quantity_Color(Graphic3d_Vec3(myPbrMat.Metallic));
+  aComMat.SpecularColor  = Quantity_Color(myPbrMat.BaseColor.GetRGB().Rgb() * myPbrMat.Metallic);
   aComMat.Transparency   = 1.0f - myPbrMat.BaseColor.Alpha();
   aComMat.Shininess      = 1.0f - myPbrMat.Roughness;
   if (myPbrMat.EmissiveTexture.IsNull())
@@ -214,7 +214,8 @@ void XCAFDoc_VisMaterial::FillMaterialAspect(Graphic3d_MaterialAspect& theAspect
       theAspect = Graphic3d_MaterialAspect(Graphic3d_NameOfMaterial_UserDefined);
       theAspect.SetDiffuseColor(myPbrMat.BaseColor.GetRGB());
       theAspect.SetAlpha(myPbrMat.BaseColor.Alpha());
-      theAspect.SetSpecularColor(Quantity_Color(Graphic3d_Vec3(myPbrMat.Metallic)));
+      theAspect.SetSpecularColor(
+        Quantity_Color(myPbrMat.BaseColor.GetRGB().Rgb() * myPbrMat.Metallic));
       theAspect.SetShininess(1.0f - myPbrMat.Roughness);
       if (theAspect.Shininess() < 0.01f)
       {
