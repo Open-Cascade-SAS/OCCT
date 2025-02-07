@@ -25,7 +25,12 @@ RWMesh_VertexIterator::RWMesh_VertexIterator(const TDF_Label&       theLabel,
                                              const TopLoc_Location& theLocation,
                                              const Standard_Boolean theToMapColors,
                                              const XCAFPrs_Style&   theStyle)
-    : RWMesh_ShapeIterator(theLabel, theLocation, TopAbs_VERTEX, theToMapColors, theStyle)
+    : RWMesh_ShapeIterator(theLabel,
+                           theLocation,
+                           TopAbs_VERTEX,
+                           TopAbs_EDGE,
+                           theToMapColors,
+                           theStyle)
 {
   Next();
 }
@@ -34,7 +39,7 @@ RWMesh_VertexIterator::RWMesh_VertexIterator(const TDF_Label&       theLabel,
 
 RWMesh_VertexIterator::RWMesh_VertexIterator(const TopoDS_Shape&  theShape,
                                              const XCAFPrs_Style& theStyle)
-    : RWMesh_ShapeIterator(theShape, TopAbs_VERTEX, theStyle)
+    : RWMesh_ShapeIterator(theShape, TopAbs_VERTEX, TopAbs_EDGE, theStyle)
 {
   Next();
 }

@@ -356,10 +356,8 @@ protected:
   //! Write RWGltf_GltfRootElement_Materials section.
   //! @param[in]  theShapeIter         Shape iterator to traverse shapes
   //! @param[out] theIsStarted         Flag indicating that writing material has been started
-  //! @param[out] theAddedMaterialsNb  Number of added materials
   Standard_EXPORT virtual void writeMaterial(RWMesh_ShapeIterator& theShapeIter,
-                                             Standard_Boolean&     theIsStarted,
-                                             Standard_Integer&     theAddedMaterialsNb);
+                                             Standard_Boolean&     theIsStarted);
 
   //! Write RWGltf_GltfRootElement_Meshes section.
   //! @param[in] theSceneNodeMap  ordered map of scene nodes
@@ -445,7 +443,6 @@ protected:
 
   //! Write shapes to RWGltf_GltfRootElement_Meshes section
   //! @param[in] theShapeIter          Shape iterator to traverse shapes
-  //! @param[in,out] theNbFacesInNode  Number of faces in the current node
   //! @param[in,out] theDracoBufInd    Draco buffer index
   //! @param[in,out] theToStartPrims   Flag to indicate if primitives should be started
   //! @param[in] theNodeName           Name of the current node
@@ -453,7 +450,6 @@ protected:
   //! @param[in,out] theDracoBufIndMap Map to store Draco buffer indices
   Standard_EXPORT virtual void writeShapes(
     RWMesh_ShapeIterator&                         theShapeIter,
-    Standard_Integer&                             theNbFacesInNode,
     Standard_Integer&                             theDracoBufInd,
     Standard_Boolean&                             theToStartPrims,
     const TCollection_AsciiString&                theNodeName,
