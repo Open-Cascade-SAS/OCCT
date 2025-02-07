@@ -22,12 +22,13 @@
 
 RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
                                            const TopLoc_Location& theLocation,
-                                           const TopAbs_ShapeEnum theShapeType,
+                                           const TopAbs_ShapeEnum theShapeTypeFind,
+                                           const TopAbs_ShapeEnum theShapeTypeAvoid,
                                            const Standard_Boolean theToMapColors,
                                            const XCAFPrs_Style&   theStyle)
     : myDefStyle(theStyle),
       myToMapColors(theToMapColors),
-      myShapeType(theShapeType),
+      myShapeType(theShapeTypeFind),
       myHasColor(false)
 {
   TopoDS_Shape aShape;
@@ -37,7 +38,7 @@ RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
   }
 
   aShape.Location(theLocation, false);
-  myIter.Init(aShape, myShapeType);
+  myIter.Init(aShape, myShapeType, theShapeTypeAvoid);
 
   if (theToMapColors)
   {
@@ -49,18 +50,19 @@ RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TDF_Label&       theLabel,
 //=================================================================================================
 
 RWMesh_ShapeIterator::RWMesh_ShapeIterator(const TopoDS_Shape&    theShape,
-                                           const TopAbs_ShapeEnum theShapeType,
+                                           const TopAbs_ShapeEnum theShapeTypeFind,
+                                           const TopAbs_ShapeEnum theShapeTypeAvoid,
                                            const XCAFPrs_Style&   theStyle)
     : myDefStyle(theStyle),
       myToMapColors(true),
-      myShapeType(theShapeType),
+      myShapeType(theShapeTypeFind),
       myHasColor(false)
 {
   if (theShape.IsNull())
   {
     return;
   }
-  myIter.Init(theShape, myShapeType);
+  myIter.Init(theShape, myShapeType, theShapeTypeAvoid);
 }
 
 //=================================================================================================
@@ -151,5 +153,10 @@ void RWMesh_ShapeIterator::initShape()
   {
     myHasColor = true;
     myColor    = myStyle.GetColorSurfRGBA();
+  }
+  else if (myStyle.IsSetColorCurv())
+  {
+    myHasColor = true;
+    myColor    = Quantity_ColorRGBA(myStyle.GetColorCurv());
   }
 }

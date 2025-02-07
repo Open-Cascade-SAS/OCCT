@@ -88,13 +88,15 @@ protected:
   //! Main constructor.
   RWMesh_ShapeIterator(const TDF_Label&       theLabel,
                        const TopLoc_Location& theLocation,
-                       const TopAbs_ShapeEnum theShapeType,
+                       const TopAbs_ShapeEnum theShapeTypeFind,
+                       const TopAbs_ShapeEnum theShapeTypeAvoid,
                        const Standard_Boolean theToMapColors = false,
                        const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
   RWMesh_ShapeIterator(const TopoDS_Shape&    theShape,
-                       const TopAbs_ShapeEnum theShapeType,
+                       const TopAbs_ShapeEnum theShapeTypeFind,
+                       const TopAbs_ShapeEnum theShapeTypeAvoid,
                        const XCAFPrs_Style&   theStyle = XCAFPrs_Style());
 
   //! Dispatch shape styles.

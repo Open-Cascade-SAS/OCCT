@@ -852,18 +852,14 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
 
     // transformation will be stored at scene nodes
     aMergedFaces.Clear(false);
-
-    Standard_Integer aBinDataSize = myBinDataMap.Size();
     {
       RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
       dispatchShapes(aDocNode, aPSentryBin, aMergedFaces, aFaceIter);
     }
-    if (aBinDataSize == myBinDataMap.Size())
     {
       RWMesh_EdgeIterator anEdgeIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
       dispatchShapes(aDocNode, aPSentryBin, aMergedFaces, anEdgeIter);
     }
-    if (aBinDataSize == myBinDataMap.Size())
     {
       RWMesh_VertexIterator aVertexIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
       dispatchShapes(aDocNode, aPSentryBin, aMergedFaces, aVertexIter);
@@ -1936,13 +1932,11 @@ void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 //=================================================================================================
 
 void RWGltf_CafWriter::writeMaterial(RWMesh_ShapeIterator& theShapeIter,
-                                     Standard_Boolean&     theIsStarted,
-                                     Standard_Integer&     theAddedMaterialsNb)
+                                     Standard_Boolean&     theIsStarted)
 {
   for (; theShapeIter.More(); theShapeIter.Next())
   {
     myMaterialMap->AddMaterial(myWriter.get(), theShapeIter.Style(), theIsStarted);
-    theAddedMaterialsNb++;
   }
 }
 
@@ -1959,21 +1953,18 @@ void RWGltf_CafWriter::writeMaterials(const RWGltf_GltfSceneNodeMap& theSceneNod
   for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter(theSceneNodeMap); aSceneNodeIter.More();
        aSceneNodeIter.Next())
   {
-    const XCAFPrs_DocumentNode& aDocNode           = aSceneNodeIter.Value();
-    Standard_Integer            anAddedMaterialsNb = 0;
+    const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
     {
       RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-      writeMaterial(aFaceIter, anIsStarted, anAddedMaterialsNb);
+      writeMaterial(aFaceIter, anIsStarted);
     }
-    if (anAddedMaterialsNb == 0)
     {
       RWMesh_EdgeIterator anEdgeIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-      writeMaterial(anEdgeIter, anIsStarted, anAddedMaterialsNb);
+      writeMaterial(anEdgeIter, anIsStarted);
     }
-    if (anAddedMaterialsNb == 0)
     {
       RWMesh_VertexIterator VertexIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-      writeMaterial(VertexIter, anIsStarted, anAddedMaterialsNb);
+      writeMaterial(VertexIter, anIsStarted);
     }
   }
   if (anIsStarted)
@@ -2096,14 +2087,13 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
 //=================================================================================================
 
 void RWGltf_CafWriter::writeShapes(RWMesh_ShapeIterator&                         theShapeIter,
-                                   Standard_Integer&                             theNbFacesInNode,
                                    Standard_Integer&                             theDracoBufInd,
                                    Standard_Boolean&                             theToStartPrims,
                                    const TCollection_AsciiString&                theNodeName,
                                    NCollection_Map<Handle(RWGltf_GltfFaceList)>& theWrittenShapes,
                                    NCollection_IndexedDataMap<int, int>&         theDracoBufIndMap)
 {
-  for (; theShapeIter.More(); theShapeIter.Next(), ++theNbFacesInNode)
+  for (; theShapeIter.More(); theShapeIter.Next())
   {
     if (toSkipShape(theShapeIter))
     {
@@ -2157,8 +2147,7 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
     const TCollection_AsciiString aNodeName =
       formatName(myMeshNameFormat, aDocNode.Label, aDocNode.RefLabel);
 
-    bool             toStartPrims = true;
-    Standard_Integer aNbShapes    = 0;
+    bool toStartPrims = true;
     aWrittenShapes.Clear(false);
     if (myToMergeFaces)
     {
@@ -2201,35 +2190,15 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
     {
       {
         RWMesh_FaceIterator anIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-        writeShapes(anIter,
-                    aNbShapes,
-                    aDracoBufInd,
-                    toStartPrims,
-                    aNodeName,
-                    aWrittenShapes,
-                    aDracoBufMap);
+        writeShapes(anIter, aDracoBufInd, toStartPrims, aNodeName, aWrittenShapes, aDracoBufMap);
       }
-      if (aNbShapes == 0)
       {
         RWMesh_EdgeIterator anIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-        writeShapes(anIter,
-                    aNbShapes,
-                    aDracoBufInd,
-                    toStartPrims,
-                    aNodeName,
-                    aWrittenShapes,
-                    aDracoBufMap);
+        writeShapes(anIter, aDracoBufInd, toStartPrims, aNodeName, aWrittenShapes, aDracoBufMap);
       }
-      if (aNbShapes == 0)
       {
         RWMesh_VertexIterator anIter(aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
-        writeShapes(anIter,
-                    aNbShapes,
-                    aDracoBufInd,
-                    toStartPrims,
-                    aNodeName,
-                    aWrittenShapes,
-                    aDracoBufMap);
+        writeShapes(anIter, aDracoBufInd, toStartPrims, aNodeName, aWrittenShapes, aDracoBufMap);
       }
     }
 

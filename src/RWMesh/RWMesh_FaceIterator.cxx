@@ -26,7 +26,12 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
                                          const Standard_Boolean theToMapColors,
                                          const XCAFPrs_Style&   theStyle)
-    : RWMesh_ShapeIterator(theLabel, theLocation, TopAbs_FACE, theToMapColors, theStyle),
+    : RWMesh_ShapeIterator(theLabel,
+                           theLocation,
+                           TopAbs_FACE,
+                           TopAbs_SHAPE,
+                           theToMapColors,
+                           theStyle),
       mySLTool(1, 1e-12),
       myHasNormals(false),
       myIsMirrored(false)
@@ -38,7 +43,7 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
 
 RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
                                          const XCAFPrs_Style& theStyle)
-    : RWMesh_ShapeIterator(theShape, TopAbs_FACE, theStyle),
+    : RWMesh_ShapeIterator(theShape, TopAbs_FACE, TopAbs_SHAPE, theStyle),
       mySLTool(1, 1e-12),
       myHasNormals(false),
       myIsMirrored(false)

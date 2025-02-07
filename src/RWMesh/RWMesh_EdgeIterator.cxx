@@ -25,7 +25,7 @@ RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
                                          const Standard_Boolean theToMapColors,
                                          const XCAFPrs_Style&   theStyle)
-    : RWMesh_ShapeIterator(theLabel, theLocation, TopAbs_EDGE, theToMapColors, theStyle)
+    : RWMesh_ShapeIterator(theLabel, theLocation, TopAbs_EDGE, TopAbs_FACE, theToMapColors, theStyle)
 {
   Next();
 }
@@ -34,7 +34,7 @@ RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TDF_Label&       theLabel,
 
 RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TopoDS_Shape&  theShape,
                                          const XCAFPrs_Style& theStyle)
-    : RWMesh_ShapeIterator(theShape, TopAbs_EDGE, theStyle)
+    : RWMesh_ShapeIterator(theShape, TopAbs_EDGE, TopAbs_FACE, theStyle)
 {
   Next();
 }
