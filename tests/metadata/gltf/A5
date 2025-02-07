@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug29633_nist_ctc_05_asme1_ap242-1.stp
-set ref_size 70034
+set ref_size 73100
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 FILESIZE : 1495040
