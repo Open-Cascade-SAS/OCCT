@@ -69,4 +69,3 @@ void BRepFill_DraftLaw::CleanLaw(const Standard_Real TolAngular)
     }
   }
 }
-Cacul une tranformation
