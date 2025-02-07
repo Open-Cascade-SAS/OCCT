@@ -104,7 +104,7 @@ public:
 
   //! Initializes by a grid of surfaces with given global
   //! parametrisation defined by UJoints and VJoints arrays,
-  //! each having langth equal to number of patches in corresponding
+  //! each having length equal to number of patches in corresponding
   //! direction + 1. Global joint values should be sorted in
   //! increasing order.
   //! All the Surfaces of the grid must have geometrical

@@ -1513,7 +1513,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
   // regular part of surface (interior), one part along degenerated boundary
   // and one along seam.
   // Since it cannot be adjusted later by arranging pcurves (curve is single),
-  // to fix it it is nesessary to have a possibility of adjusting seam
+  // to fix it it's necessary to have a possibility of adjusting seam
   // part of such curve either to left or right boundary of surface.
   // Test is performed only if flag AdjustOverDegen is not -1.
   // If AdjustOverDegen is True, seam part of curve is adjusted to

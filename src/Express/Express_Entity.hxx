@@ -53,7 +53,7 @@ public:
   Standard_EXPORT Standard_Integer
     NbFields(const Standard_Boolean theInherited = Standard_False) const;
 
-  //! Sets abstruct flag for entity;
+  //! Sets abstract flag for entity;
   Standard_EXPORT void SetAbstractFlag(const Standard_Boolean theIsAbstract);
 
   //! Returns abstract flag.

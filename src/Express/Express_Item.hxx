@@ -106,13 +106,13 @@ public:
   //! Set flag for presence of method Check in the class
   Standard_EXPORT void SetCheckFlag(const Standard_Boolean theCheckFlag);
 
-  //! Get flag resposible for  presence of method Check in the class
+  //! Get flag responsible for presence of method Check in the class
   Standard_EXPORT Standard_Boolean CheckFlag() const;
 
   //! Set flag for presence of method FillShared in the class
   Standard_EXPORT void SetFillSharedFlag(const Standard_Boolean theFillSharedFlag);
 
-  //! Get flag resposible for  presence of method FillShared in the class
+  //! Get flag responsible for presence of method FillShared in the class
   Standard_EXPORT Standard_Boolean FillSharedFlag() const;
 
   //! Set start entity index

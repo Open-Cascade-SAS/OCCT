@@ -10,7 +10,7 @@ puts "caf009-B2"
 
 set xDoc [CreateXmlDoc]
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # Open xml document

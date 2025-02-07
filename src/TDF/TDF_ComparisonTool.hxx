@@ -73,7 +73,7 @@ public:
     const Handle(TDF_DataSet)&         aDiffDataSet,
     const Standard_Integer             anOption = 2);
 
-  //! Substracts from <aRefDataSet> all the items bound
+  //! Subtracts from <aRefDataSet> all the items bound
   //! into <aRelocationTable>. The result is put into
   //! <aDiffDataSet>. Returns True if the difference
   //! contains at least one item. (An item is a target

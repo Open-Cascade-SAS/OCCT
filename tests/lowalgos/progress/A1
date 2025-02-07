@@ -16,7 +16,7 @@ trotate e3 0 0 0 0 0 1 90
 tcopy e3 e4 
 ttranslate e4 2 0 0 
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # create the surface 

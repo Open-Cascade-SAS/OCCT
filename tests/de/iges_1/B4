@@ -4,7 +4,7 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 
 set filename t500core.igs
 
-# set min as local lenght unit
+# set min as local length unit
 set lengthunit_start "min"
 
 set ref_data {

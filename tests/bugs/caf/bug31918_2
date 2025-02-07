@@ -67,7 +67,7 @@ set half_time2 [lindex [time {
 } 20] 0]
 puts "Second half of document open time $half_time2 mcs"
 
-# Check that open of two halfs of the document separately is not too much slower than open of the whole
+# Check that opening of two halves of the document separately is not too much slower than opening of the whole
 if { [expr ($half_time1 + $half_time2) * 0.9] > $whole_time } {
   puts "Error : loading of half of the document content is too slow relatively to the whole document load"
 }

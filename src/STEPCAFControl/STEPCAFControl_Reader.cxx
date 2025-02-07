@@ -6143,7 +6143,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadMetadata(const Handle(XSControl_Work
       const std::vector<TDF_Label> aLabels =
         collectShapeLabels(theWS, aTransientProcess, aPropertyDefinition);
 
-      // Fill all atributes for each shape label.
+      // Fill all attributes for each shape label.
       for (const auto& aLabel : aLabels)
       {
         Handle(TDataStd_NamedData) anAttribute = getNamedData(aLabel);

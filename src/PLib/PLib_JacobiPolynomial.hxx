@@ -33,7 +33,7 @@ DEFINE_STANDARD_HANDLE(PLib_JacobiPolynomial, PLib_Base)
 //! This class provides method  to work with Jacobi  Polynomials
 //! relatively to   an order of constraint
 //! q  = myWorkDegree-2*(myNivConstr+1)
-//! Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relatively  to  the weigth W(t)
+//! Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relatively  to  the weight W(t)
 //! iorder is the integer  value for the constraints:
 //! iorder = 0 <=> ConstraintOrder  = GeomAbs_C0
 //! iorder = 1 <=>  ConstraintOrder = GeomAbs_C1
@@ -80,7 +80,7 @@ public:
   Standard_EXPORT void Points(const Standard_Integer NbGaussPoints,
                               TColStd_Array1OfReal&  TabPoints) const;
 
-  //! returns the Jacobi weigths for Gauss integration only for
+  //! returns the Jacobi weights for Gauss integration only for
   //! the positive    values of the  Legendre roots   in the order they
   //! are given by the method Points
   //! NbGaussPoints   is the number of points chosen   for  the integral

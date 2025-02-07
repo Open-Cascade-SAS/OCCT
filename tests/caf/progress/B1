@@ -10,7 +10,7 @@ puts "caf009-B1"
 
 set bDoc [CreateBinDoc]
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # Open binary document

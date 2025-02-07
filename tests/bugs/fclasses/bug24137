@@ -18,5 +18,5 @@ regexp {([-0-9.+eE]+)$} [dump d_val] full dist
 set good_dist 0
 set toler 2.0e-06
 if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
-    puts "Faulty : the distanse is ${dist}. It is bad value"
+    puts "Faulty : the distance is ${dist}. It is bad value"
 }

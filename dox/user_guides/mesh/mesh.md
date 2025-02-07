@@ -87,7 +87,7 @@ Note that if a given value of linear deflection is less than shape tolerance the
 
 The application should provide deflection parameters to compute a satisfactory mesh. Angular deflection is relatively simple and allows using a default value (12-20 degrees). Linear deflection has an absolute meaning and the application should provide the correct value for its models. Giving small values may result in a too huge mesh (consuming a lot of memory, which results in a  long computation time and slow rendering) while big values result in an ugly mesh.
 
-For an application working in dimensions known in advance it can be reasonable to use the absolute linear deflection for all models. This provides meshes according to metrics and precision used in the application (for example, it it is known that the model will be stored in meters, 0.004 m is enough for most tasks).
+For an application working in dimensions known in advance it can be reasonable to use the absolute linear deflection for all models. This provides meshes according to metrics and precision used in the application (for example, it is known that the model will be stored in meters, 0.004 m is enough for most tasks).
 
 However, an application that imports models created in other applications may not use the same deflection for all models. Note that actually this is an abnormal situation and this application is probably just a viewer for CAD models with  dimensions varying by an order of magnitude. This problem can be solved by introducing the concept of a relative linear deflection with some  LOD (level of detail). The level of detail is a scale factor for absolute deflection, which is applied to model dimensions.
 

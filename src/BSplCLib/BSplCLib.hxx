@@ -1321,10 +1321,10 @@ public:
   //! result of the  poles are divided by the
   //! result of   the   interpolation of  the
   //! weights. Otherwise if HomogenousFlag == 1
-  //! the Poles and Weigths are treated homogeneously
+  //! the Poles and Weights are treated homogeneously
   //! that is that those are interpolated as they
   //! are and result is returned without division
-  //! by the interpolated weigths.
+  //! by the interpolated weights.
   Standard_EXPORT static Standard_Integer SolveBandedSystem(const math_Matrix&     Matrix,
                                                             const Standard_Integer UpperBandWidth,
                                                             const Standard_Integer LowerBandWidth,
@@ -1348,10 +1348,10 @@ public:
   //! result of the  poles are divided by the
   //! result of   the   interpolation of  the
   //! weights. Otherwise if HomogenousFlag == 1
-  //! the Poles and Weigths are treated homogeneously
+  //! the Poles and Weights are treated homogeneously
   //! that is that those are interpolated as they
   //! are and result is returned without division
-  //! by the interpolated weigths.
+  //! by the interpolated weights.
   Standard_EXPORT static Standard_Integer SolveBandedSystem(const math_Matrix&     Matrix,
                                                             const Standard_Integer UpperBandWidth,
                                                             const Standard_Integer LowerBandWidth,

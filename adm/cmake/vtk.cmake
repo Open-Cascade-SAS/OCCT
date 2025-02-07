@@ -26,7 +26,7 @@ endif()
 # include occt macros. compiler_bitness, os_wiht_bit, compiler
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
-# specify VTK folder in connectin with 3RDPARTY_DIR
+# specify VTK folder in connection with 3RDPARTY_DIR
 if (3RDPARTY_DIR AND EXISTS "${3RDPARTY_DIR}")
   #CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_DIR 3RDPARTY_VTK_DIR PATH "The directory containing VTK")
 

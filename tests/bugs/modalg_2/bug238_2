@@ -20,7 +20,7 @@ regexp {([-0-9.+eE]+)$} [dump $di_val] full dis
 if { [expr $dis > 1.e-5] } {
     puts "Faulty : Result shape is WRONG !!!" 
 } else {
-    puts " Result shape is COMPLITE"
+    puts " Result shape is COMPLETE"
 }
 
 checknbshapes result -vertex 14 -edge 7
