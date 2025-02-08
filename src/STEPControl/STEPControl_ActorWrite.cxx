@@ -1045,7 +1045,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape(
 
     TopoDS_Shape aShape = xShape;
 
-    Transfer_ActorOfFinderProcess::ParameterMap aParameters = GetShapeFixParameters();
+    XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
     XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", Tol, true, aParameters);
     XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d",
                                         aStepModel->InternalParameters.ReadMaxPrecisionVal,

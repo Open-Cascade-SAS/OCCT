@@ -199,7 +199,8 @@ void STEPControl_Writer::PrintStatsTransfer(const Standard_Integer what,
 
 //=============================================================================
 
-void STEPControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
+void STEPControl_Writer::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
@@ -209,7 +210,7 @@ void STEPControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters
 
 //=============================================================================
 
-void STEPControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
+void STEPControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
@@ -219,8 +220,9 @@ void STEPControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
 
 //=============================================================================
 
-void STEPControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                               const ParameterMap&          theAdditionalParameters)
+void STEPControl_Writer::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
@@ -230,10 +232,10 @@ void STEPControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theP
 
 //=============================================================================
 
-const STEPControl_Writer::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
+const XSAlgo_ShapeProcessor::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
 {
-  static const ParameterMap                   anEmptyMap;
-  const Handle(Transfer_ActorOfFinderProcess) anActor = GetActor();
+  static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
+  const Handle(Transfer_ActorOfFinderProcess)      anActor = GetActor();
   return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
@@ -249,10 +251,10 @@ void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 
 //=============================================================================
 
-const STEPControl_Writer::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
+const XSAlgo_ShapeProcessor::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
 {
-  static const ProcessingFlags                anEmptyFlags;
-  const Handle(Transfer_ActorOfFinderProcess) anActor = GetActor();
+  static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
+  const Handle(Transfer_ActorOfFinderProcess)         anActor = GetActor();
   return anActor.IsNull() ? anEmptyFlags : anActor->GetShapeProcessFlags();
 }
 
@@ -279,7 +281,7 @@ Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
 
 void STEPControl_Writer::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }

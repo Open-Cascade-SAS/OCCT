@@ -52,7 +52,7 @@ struct DE_ShapeFixParameters
   FixMode          FixIntersectingWiresMode            = FixMode::FixOrNot;
   FixMode          FixLoopWiresMode                    = FixMode::FixOrNot;
   FixMode          FixSplitFaceMode                    = FixMode::FixOrNot;
-  FixMode          AutoCorrectPrecisionMode            = FixMode::FixOrNot;
+  FixMode          AutoCorrectPrecisionMode            = FixMode::Fix;
   FixMode          ModifyTopologyMode                  = FixMode::NotFix;
   FixMode          ModifyGeometryMode                  = FixMode::Fix;
   FixMode          ClosedWireMode                      = FixMode::Fix;

@@ -65,7 +65,7 @@ provider.IGES.OCC.healing.remove.small.area.face :	 -1
 provider.IGES.OCC.healing.intersecting.wires :	 -1
 provider.IGES.OCC.healing.loop.wires :	 -1
 provider.IGES.OCC.healing.split.face :	 -1
-provider.IGES.OCC.healing.auto.correct.precision :	 -1
+provider.IGES.OCC.healing.auto.correct.precision :	 1
 provider.IGES.OCC.healing.modify.topology :	 0
 provider.IGES.OCC.healing.modify.geometry :	 1
 provider.IGES.OCC.healing.closed.wire :	 1
@@ -162,7 +162,7 @@ provider.STEP.OCC.healing.remove.small.area.face :	 -1
 provider.STEP.OCC.healing.intersecting.wires :	 -1
 provider.STEP.OCC.healing.loop.wires :	 -1
 provider.STEP.OCC.healing.split.face :	 -1
-provider.STEP.OCC.healing.auto.correct.precision :	 -1
+provider.STEP.OCC.healing.auto.correct.precision :	 1
 provider.STEP.OCC.healing.modify.topology :	 0
 provider.STEP.OCC.healing.modify.geometry :	 1
 provider.STEP.OCC.healing.closed.wire :	 1

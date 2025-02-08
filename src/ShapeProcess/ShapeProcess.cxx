@@ -180,9 +180,9 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& theContext,
-                                       const OperationsFlags&              theOperations,
-                                       const Message_ProgressRange&        theProgress)
+Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)&  theContext,
+                                       const ShapeProcess::OperationsFlags& theOperations,
+                                       const Message_ProgressRange&         theProgress)
 {
   if (!theContext)
   {
@@ -246,7 +246,7 @@ std::pair<ShapeProcess::Operation, bool> ShapeProcess::ToOperationFlag(const cha
 //=================================================================================================
 
 std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> ShapeProcess::getOperators(
-  const OperationsFlags& theFlags)
+  const ShapeProcess::OperationsFlags& theFlags)
 {
   std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> aResult;
   for (std::underlying_type<Operation>::type anOperation = Operation::First;

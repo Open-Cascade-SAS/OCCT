@@ -1000,13 +1000,10 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     // Set tolerances for shape processing.
     // These parameters are calculated inside STEPControl_ActorRead::Transfer() and cannot be set
     // from outside.
-    Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetShapeFixParameters();
+    XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
     XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
     XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
-    XSAlgo_ShapeProcessor::SetParameter("FixShape.NonManifold",
-                                        std::to_string(true),
-                                        true,
-                                        aParameters);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.NonManifold", "1", true, aParameters);
     XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
     TopoDS_Shape          fixedResult =
       aShapeProcessor.ProcessShape(comp, GetProcessingFlags().first, aPS1.Next());
@@ -1698,7 +1695,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
       // Set tolerances for shape processing.
       // These parameters are calculated inside STEPControl_ActorRead::Transfer() and cannot be set
       // from outside.
-      Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetShapeFixParameters();
+      XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
       XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
       XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
       XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
@@ -1885,7 +1882,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     {
       TopoDS_Shape S = sb->Result();
 
-      Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetShapeFixParameters();
+      XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
       XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
       XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
       XSAlgo_ShapeProcessor aShapeProcessor(aParameters);

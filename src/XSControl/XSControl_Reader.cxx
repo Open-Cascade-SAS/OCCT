@@ -413,7 +413,8 @@ void XSControl_Reader::GetStatsTransfer(const Handle(TColStd_HSequenceOfTransien
 
 //=============================================================================
 
-void XSControl_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
+void XSControl_Reader::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
@@ -423,7 +424,7 @@ void XSControl_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
 
 //=============================================================================
 
-void XSControl_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
+void XSControl_Reader::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
@@ -433,8 +434,9 @@ void XSControl_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
 
 //=============================================================================
 
-void XSControl_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                             const ParameterMap&          theAdditionalParameters)
+void XSControl_Reader::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
@@ -444,10 +446,10 @@ void XSControl_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& thePar
 
 //=============================================================================
 
-const XSControl_Reader::ParameterMap& XSControl_Reader::GetShapeFixParameters() const
+const XSAlgo_ShapeProcessor::ParameterMap& XSControl_Reader::GetShapeFixParameters() const
 {
-  static const ParameterMap                      anEmptyMap;
-  const Handle(Transfer_ActorOfTransientProcess) anActor = GetActor();
+  static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
+  const Handle(Transfer_ActorOfTransientProcess)   anActor = GetActor();
   return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
@@ -463,10 +465,10 @@ void XSControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags&
 
 //=============================================================================
 
-const XSControl_Reader::ProcessingFlags& XSControl_Reader::GetShapeProcessFlags() const
+const XSAlgo_ShapeProcessor::ProcessingFlags& XSControl_Reader::GetShapeProcessFlags() const
 {
-  static const ProcessingFlags                   anEmptyFlags;
-  const Handle(Transfer_ActorOfTransientProcess) anActor = GetActor();
+  static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
+  const Handle(Transfer_ActorOfTransientProcess)      anActor = GetActor();
   return anActor.IsNull() ? anEmptyFlags : anActor->GetProcessingFlags();
 }
 
@@ -493,7 +495,7 @@ Handle(Transfer_ActorOfTransientProcess) XSControl_Reader::GetActor() const
 
 void XSControl_Reader::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(GetDefaultShapeFixParameters());
   }

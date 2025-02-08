@@ -5809,29 +5809,32 @@ Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
+void STEPCAFControl_Reader::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   myReader.SetShapeFixParameters(theParameters);
 }
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
+void STEPCAFControl_Reader::SetShapeFixParameters(
+  XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   myReader.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                                  const ParameterMap& theAdditionalParameters)
+void STEPCAFControl_Reader::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
   myReader.SetShapeFixParameters(theParameters, theAdditionalParameters);
 }
 
 //=============================================================================
 
-const STEPCAFControl_Reader::ParameterMap& STEPCAFControl_Reader::GetShapeFixParameters() const
+const XSAlgo_ShapeProcessor::ParameterMap& STEPCAFControl_Reader::GetShapeFixParameters() const
 {
   return myReader.GetShapeFixParameters();
 }
@@ -5845,7 +5848,7 @@ void STEPCAFControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsF
 
 //=============================================================================
 
-const STEPCAFControl_Reader::ProcessingFlags& STEPCAFControl_Reader::GetShapeProcessFlags() const
+const XSAlgo_ShapeProcessor::ProcessingFlags& STEPCAFControl_Reader::GetShapeProcessFlags() const
 {
   return myReader.GetShapeProcessFlags();
 }
