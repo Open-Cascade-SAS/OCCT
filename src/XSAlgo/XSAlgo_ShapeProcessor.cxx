@@ -736,7 +736,7 @@ void XSAlgo_ShapeProcessor::SetShapeFixParameters(const DE_ShapeFixParameters& t
 //=============================================================================
 
 void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
-                                         DE_ShapeFixParameters::FixMode       theValue,
+                                         const DE_ShapeFixParameters::FixMode theValue,
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
@@ -751,7 +751,7 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
 //=============================================================================
 
 void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
-                                         double                               theValue,
+                                         const double                         theValue,
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {

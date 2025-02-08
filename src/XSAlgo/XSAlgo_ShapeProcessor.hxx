@@ -130,7 +130,7 @@ public:
   //! in the map.
   //! @param theMap Map to set the parameter in.
   Standard_EXPORT static void SetParameter(const char*                          theKey,
-                                           DE_ShapeFixParameters::FixMode       theValue,
+                                           const DE_ShapeFixParameters::FixMode theValue,
                                            const bool                           theIsReplace,
                                            XSAlgo_ShapeProcessor::ParameterMap& theMap);
 
@@ -141,7 +141,7 @@ public:
   //! in the map.
   //! @param theMap Map to set the parameter in.
   Standard_EXPORT static void SetParameter(const char*   theKey,
-                                           double        theValue,
+                                           const double  theValue,
                                            const bool    theIsReplace,
                                            ParameterMap& theMap);
 
