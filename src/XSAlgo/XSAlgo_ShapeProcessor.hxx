@@ -21,6 +21,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <unordered_map>
+
 class ShapeProcess_ShapeContext;
 class ShapeExtend_MsgRegistrator;
 class Transfer_TransientProcess;
@@ -32,7 +34,7 @@ class Transfer_Binder;
 class XSAlgo_ShapeProcessor
 {
 public:
-  using ParameterMap   = NCollection_DataMap<std::string, std::string>;
+  using ParameterMap   = std::unordered_map<std::string, std::string>;
   using ProcessingData = std::pair<ParameterMap, ShapeProcess::OperationsFlags>;
   // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
   // we use a pair. The first element is the flags, the second element is a boolean value that

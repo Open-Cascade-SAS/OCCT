@@ -116,24 +116,23 @@ TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&            
 void XSAlgo_ShapeProcessor::initializeContext(const TopoDS_Shape& theShape)
 {
   myContext = new ShapeProcess_ShapeContext(theShape, nullptr);
-  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParameterIter(myParameters);
-       aParameterIter.More();
-       aParameterIter.Next())
+  for (const auto& [key, value] : myParameters)
   {
-    myContext->ResourceManager()->SetResource(aParameterIter.Key().c_str(),
-                                              aParameterIter.Value().c_str());
+    myContext->ResourceManager()->SetResource(key.c_str(), value.c_str());
   }
   // Read and set detalization level.
-  std::string aResult;
-  if (myParameters.Find("DetalizationLevel", aResult))
+  auto it = myParameters.find("DetalizationLevel");
+  if (it != myParameters.end())
   {
-    const TopAbs_ShapeEnum aDetalizationLevel = static_cast<TopAbs_ShapeEnum>(std::stoi(aResult));
+    const TopAbs_ShapeEnum aDetalizationLevel =
+      static_cast<TopAbs_ShapeEnum>(std::stoi(it->second));
     myContext->SetDetalisation(aDetalizationLevel);
   }
   // Read and set non-manifold flag.
-  if (myParameters.Find("NonManifold", aResult))
+  it = myParameters.find("NonManifold");
+  if (it != myParameters.end())
   {
-    const Standard_Boolean aNonManifold = static_cast<Standard_Boolean>(std::stoi(aResult));
+    const Standard_Boolean aNonManifold = static_cast<Standard_Boolean>(std::stoi(it->second));
     myContext->SetNonManifold(aNonManifold);
   }
 }
@@ -581,7 +580,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     if (aKey != "exec.op")
     {
       // If it is not an operation flag, add it to the parameters.
-      aResultParameters.Bind(aKey, anIter.Value().ToCString());
+      aResultParameters.emplace(aKey, anIter.Value().ToCString());
     }
     else
     {
@@ -749,15 +748,13 @@ void XSAlgo_ShapeProcessor::SetShapeFixParameters(
   const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters,
   XSAlgo_ShapeProcessor::ParameterMap&       theTargetParameterMap)
 {
-  theTargetParameterMap.Clear();
+  theTargetParameterMap.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, theTargetParameterMap);
-  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParamIter(theAdditionalParameters);
-       aParamIter.More();
-       aParamIter.Next())
+  for (const auto& [key, value] : theAdditionalParameters)
   {
-    if (!theTargetParameterMap.IsBound(aParamIter.Key()))
+    if (theTargetParameterMap.find(key) == theTargetParameterMap.end())
     {
-      theTargetParameterMap.Bind(aParamIter.Key(), aParamIter.Value());
+      theTargetParameterMap[key] = value;
     }
   }
 }
@@ -801,11 +798,11 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
 {
   if (theIsReplace)
   {
-    theMap.Bind(theKey, std::move(theValue));
+    theMap.emplace(theKey, std::move(theValue));
   }
   else
   {
-    theMap.Bind(theKey, std::move(theValue));
+    theMap.emplace(theKey, std::move(theValue));
   }
 }
 
