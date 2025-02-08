@@ -154,14 +154,15 @@ private:
   void InitializeMissingParameters();
 
 private:
-  Handle(IGESData_IGESModel)          theModel;
-  Standard_Boolean                    theDone;
-  TopTools_SequenceOfShape            theShapes;
-  Handle(IGESToBRep_Actor)            theActor;
-  Handle(Transfer_TransientProcess)   theProc;
+  Handle(IGESData_IGESModel)        theModel;
+  Standard_Boolean                  theDone;
+  TopTools_SequenceOfShape          theShapes;
+  Handle(IGESToBRep_Actor)          theActor;
+  Handle(Transfer_TransientProcess) theProc;
+  // clang-format off
   XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams; //!< Parameters for shape processing.
-  XSAlgo_ShapeProcessor::ProcessingFlags
-    myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  // clang-format on
 };
 
 #endif // _IGESToBRep_Reader_HeaderFile

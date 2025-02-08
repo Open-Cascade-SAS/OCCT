@@ -95,9 +95,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess, Transfer_ActorOfProcessForTransient)
 
 private:
+  // clang-format off
   XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams; //!< Parameters for shape processing.
-  XSAlgo_ShapeProcessor::ProcessingFlags
-    myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  // clang-format on
 };
 
 #endif // _Transfer_ActorOfTransientProcess_HeaderFile
