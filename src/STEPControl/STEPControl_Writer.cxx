@@ -214,7 +214,7 @@ void STEPControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterM
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
-    anActor->SetShapeFixParameters(std::move(theParameters));
+    anActor->SetShapeFixParameters(theParameters);
   }
 }
 
@@ -281,7 +281,7 @@ Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
 
 void STEPControl_Writer::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }

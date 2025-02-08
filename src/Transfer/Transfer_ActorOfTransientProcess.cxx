@@ -69,7 +69,7 @@ void Transfer_ActorOfTransientProcess::SetShapeFixParameters(
 void Transfer_ActorOfTransientProcess::SetShapeFixParameters(
   XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
-  myShapeProcParams = std::move(theParameters);
+  myShapeProcParams = (theParameters);
 }
 
 //=============================================================================

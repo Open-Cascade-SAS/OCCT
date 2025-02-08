@@ -87,7 +87,7 @@ void Transfer_ActorOfFinderProcess::SetShapeFixParameters(
 void Transfer_ActorOfFinderProcess::SetShapeFixParameters(
   XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
-  myShapeProcParams = std::move(theParameters);
+  myShapeProcParams = theParameters;
 }
 
 //=============================================================================

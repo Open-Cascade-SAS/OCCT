@@ -653,7 +653,7 @@ void IGESToBRep_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags
 
 void IGESToBRep_Reader::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }

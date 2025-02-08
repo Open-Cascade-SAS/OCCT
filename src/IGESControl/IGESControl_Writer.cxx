@@ -321,7 +321,7 @@ void IGESControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 
 void IGESControl_Writer::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }
