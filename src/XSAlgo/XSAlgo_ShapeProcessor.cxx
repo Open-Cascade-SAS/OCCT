@@ -39,43 +39,6 @@
 #include <sstream>
 #include <unordered_set>
 
-namespace
-{
-//! Function to split a string based on multiple delimiters.
-//! @param aString String to split.
-//! @param delimiters Set of delimiters.
-//! @return Vector of tokens.
-std::vector<std::string> splitString(const std::string&              aString,
-                                     const std::unordered_set<char>& delimiters)
-{
-  std::vector<std::string> aResult;
-  std::string              aCurrentToken;
-
-  for (char aCurrentCharacter : aString)
-  {
-    if (delimiters.find(aCurrentCharacter) != delimiters.end())
-    {
-      if (!aCurrentToken.empty())
-      {
-        aResult.emplace_back(std::move(aCurrentToken));
-        aCurrentToken.clear();
-      }
-    }
-    else
-    {
-      aCurrentToken += aCurrentCharacter;
-    }
-  }
-
-  if (!aCurrentToken.empty())
-  {
-    aResult.emplace_back(std::move(aCurrentToken));
-  }
-
-  return aResult;
-}
-} // namespace
-
 //=============================================================================
 
 XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(
@@ -116,23 +79,28 @@ TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&            
 void XSAlgo_ShapeProcessor::initializeContext(const TopoDS_Shape& theShape)
 {
   myContext = new ShapeProcess_ShapeContext(theShape, nullptr);
-  for (const auto& [key, value] : myParameters)
+
+  // Set all parameters from the map
+  for (const auto& param : myParameters)
   {
-    myContext->ResourceManager()->SetResource(key.c_str(), value.c_str());
+    myContext->ResourceManager()->SetResource(param.first.ToCString(), param.second.ToCString());
   }
-  // Read and set detalization level.
-  auto it = myParameters.find("DetalizationLevel");
-  if (it != myParameters.end())
+
+  // Read and set detalization level
+  auto detailLevelIt = myParameters.find("DetalizationLevel");
+  if (detailLevelIt != myParameters.end() && detailLevelIt->second.IsIntegerValue())
   {
     const TopAbs_ShapeEnum aDetalizationLevel =
-      static_cast<TopAbs_ShapeEnum>(std::stoi(it->second));
+      static_cast<TopAbs_ShapeEnum>(detailLevelIt->second.IntegerValue());
     myContext->SetDetalisation(aDetalizationLevel);
   }
-  // Read and set non-manifold flag.
-  it = myParameters.find("NonManifold");
-  if (it != myParameters.end())
+
+  // Read and set non-manifold flag
+  auto nonManifoldIt = myParameters.find("NonManifold");
+  if (nonManifoldIt != myParameters.end() && nonManifoldIt->second.IsIntegerValue())
   {
-    const Standard_Boolean aNonManifold = static_cast<Standard_Boolean>(std::stoi(it->second));
+    const Standard_Boolean aNonManifold =
+      static_cast<Standard_Boolean>(nonManifoldIt->second.IntegerValue());
     myContext->SetNonManifold(aNonManifold);
   }
 }
@@ -547,10 +515,10 @@ Standard_Boolean XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEd
 //=============================================================================
 
 XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
-  const std::string& theFileResourceName,
-  const std::string& theScopeResourceName)
+  const TCollection_AsciiString& theFileResourceName,
+  const TCollection_AsciiString& theScopeResourceName)
 {
-  const Standard_CString            aFileName = Interface_Static::CVal(theFileResourceName.c_str());
+  const Standard_CString aFileName = Interface_Static::CVal(theFileResourceName.ToCString());
   Handle(ShapeProcess_ShapeContext) aContext =
     new ShapeProcess_ShapeContext(TopoDS_Shape(), aFileName);
   if (!aContext->ResourceManager()->IsInitialized())
@@ -558,44 +526,47 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     // If resource file wasn't found, use static values instead
     Interface_Static::FillMap(aContext->ResourceManager()->GetMap());
   }
-  const std::string aScope = Interface_Static::CVal(theScopeResourceName.c_str());
+  const TCollection_AsciiString aScope = Interface_Static::CVal(theScopeResourceName.ToCString());
 
   // Copy parameters to the result.
   XSAlgo_ShapeProcessor::ParameterMap             aResultParameters;
   ShapeProcess::OperationsFlags                   aResultFlags;
   const Resource_DataMapOfAsciiStringAsciiString& aMap = aContext->ResourceManager()->GetMap();
-  using RMapIter = Resource_DataMapOfAsciiStringAsciiString::Iterator;
-  for (RMapIter anIter(aMap); anIter.More(); anIter.Next())
+
+  for (Resource_DataMapOfAsciiStringAsciiString::Iterator anIter(aMap); anIter.More();
+       anIter.Next())
   {
-    std::string  aKey           = anIter.Key().ToCString();
-    const size_t aScopePosition = aKey.find(aScope);
-    if (aScopePosition != 0)
+    TCollection_AsciiString aKey = anIter.Key();
+    if (!aKey.StartsWith(aScope))
     {
-      // Ignore all parameters that don't start with the specified scope.
       continue;
     }
-    // Remove the scope from the key + 1 for the dot.
+
+    // Remove scope prefix and dot
     // "FromIGES.FixShape.FixFreeFaceMode" -> "FixShape.FixFreeFaceMode"
-    aKey.erase(0, aScope.size() + 1);
-    if (aKey != "exec.op")
+    aKey = aKey.SubString(aScope.Length() + 2, aKey.Length());
+
+    if (aKey.IsEqual("exec.op"))
     {
-      // If it is not an operation flag, add it to the parameters.
-      aResultParameters.emplace(aKey, anIter.Value().ToCString());
-    }
-    else
-    {
-      // Parse operations flags.
-      const std::vector<std::string> anOperationStrings =
-        splitString(anIter.Value().ToCString(), {' ', '\t', ',', ';'});
-      for (const auto& anOperationString : anOperationStrings)
+      // Parse operation flags using Token method
+      Standard_Integer              aTokenCount = 1;
+      TCollection_AsciiString       aToken;
+      const TCollection_AsciiString aSeparators(" \t,;");
+
+      while (!(aToken = anIter.Value().Token(aSeparators.ToCString(), aTokenCount)).IsEmpty())
       {
-        std::pair<ShapeProcess::Operation, bool> anOperationFlag =
-          ShapeProcess::ToOperationFlag(anOperationString.c_str());
+        std::pair<ShapeProcess::Operation, Standard_Boolean> anOperationFlag =
+          ShapeProcess::ToOperationFlag(aToken.ToCString());
         if (anOperationFlag.second)
         {
           aResultFlags.set(anOperationFlag.first);
         }
+        aTokenCount++;
       }
+    }
+    else
+    {
+      aResultParameters.emplace(aKey, anIter.Value());
     }
   }
   return {aResultParameters, aResultFlags};
@@ -611,10 +582,13 @@ void XSAlgo_ShapeProcessor::FillParameterMap(const DE_ShapeFixParameters&       
   SetParameter("FixShape.MaxTolerance3d", theParameters.MaxTolerance3d, theIsReplace, theMap);
   SetParameter("FixShape.MinTolerance3d", theParameters.MinTolerance3d, theIsReplace, theMap);
   SetParameter("DetalizationLevel",
-               std::to_string(theParameters.DetalizationLevel),
+               TCollection_AsciiString(static_cast<int>(theParameters.DetalizationLevel)),
                theIsReplace,
                theMap);
-  SetParameter("NonManifold", std::to_string(theParameters.NonManifold), theIsReplace, theMap);
+  SetParameter("NonManifold",
+               TCollection_AsciiString(static_cast<int>(theParameters.NonManifold)),
+               theIsReplace,
+               theMap);
   SetParameter("FixShape.FixFreeShellMode", theParameters.FixFreeShellMode, theIsReplace, theMap);
   SetParameter("FixShape.FixFreeFaceMode", theParameters.FixFreeFaceMode, theIsReplace, theMap);
   SetParameter("FixShape.FixFreeWireMode", theParameters.FixFreeWireMode, theIsReplace, theMap);
@@ -743,18 +717,18 @@ void XSAlgo_ShapeProcessor::FillParameterMap(const DE_ShapeFixParameters&       
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::SetShapeFixParameters(
-  const DE_ShapeFixParameters&               theParameters,
-  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters,
-  XSAlgo_ShapeProcessor::ParameterMap&       theTargetParameterMap)
+void XSAlgo_ShapeProcessor::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
+                                                  const ParameterMap& theAdditionalParameters,
+                                                  ParameterMap&       theTargetParameterMap)
 {
   theTargetParameterMap.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, theTargetParameterMap);
-  for (const auto& [key, value] : theAdditionalParameters)
+
+  for (const auto& param : theAdditionalParameters)
   {
-    if (theTargetParameterMap.find(key) == theTargetParameterMap.end())
+    if (theTargetParameterMap.find(param.first) == theTargetParameterMap.end())
     {
-      theTargetParameterMap[key] = value;
+      theTargetParameterMap[param.first] = param.second;
     }
   }
 }
@@ -766,11 +740,12 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
-  SetParameter(theKey,
-               std::to_string(
-                 static_cast<std::underlying_type<DE_ShapeFixParameters::FixMode>::type>(theValue)),
-               theIsReplace,
-               theMap);
+  SetParameter(
+    theKey,
+    TCollection_AsciiString(static_cast<int>(
+      static_cast<std::underlying_type<DE_ShapeFixParameters::FixMode>::type>(theValue))),
+    theIsReplace,
+    theMap);
 }
 
 //=============================================================================
@@ -780,29 +755,23 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
-  // Note that conversion with std::to_string() here is not possible, since it normally preserves
-  // only first 6 digits (before C++26). As a result, any value of 1e-7 or below will turn into 0.
-  // By using std::ostringstream with std::setprecision(6) formatting we will preserve first 6
-  // SIGNIFICANT digits.
-  std::ostringstream aStrStream;
-  aStrStream << std::setprecision(6) << theValue;
-  SetParameter(theKey, aStrStream.str(), theIsReplace, theMap);
+  SetParameter(theKey, TCollection_AsciiString(theValue), theIsReplace, theMap);
 }
 
 //=============================================================================
 
 void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
-                                         std::string&&                        theValue,
+                                         const TCollection_AsciiString&       theValue,
                                          const bool                           theIsReplace,
                                          XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
   if (theIsReplace)
   {
-    theMap.emplace(theKey, std::move(theValue));
+    theMap.emplace(theKey, theValue);
   }
   else
   {
-    theMap.emplace(theKey, std::move(theValue));
+    theMap.emplace(theKey, theValue);
   }
 }
 

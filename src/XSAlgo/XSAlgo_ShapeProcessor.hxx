@@ -34,7 +34,7 @@ class Transfer_Binder;
 class XSAlgo_ShapeProcessor
 {
 public:
-  using ParameterMap   = std::unordered_map<std::string, std::string>;
+  using ParameterMap   = std::unordered_map<TCollection_AsciiString, TCollection_AsciiString>;
   using ProcessingData = std::pair<ParameterMap, ShapeProcess::OperationsFlags>;
   // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
   // we use a pair. The first element is the flags, the second element is a boolean value that
@@ -99,8 +99,9 @@ public:
   //!        of the scope. For example, parameter "read.iges.sequence" may contain string
   //!        "FromIGES".
   //! @return Read parameter map.
-  Standard_EXPORT static ProcessingData ReadProcessingData(const std::string& theFileResourceName,
-                                                           const std::string& theScopeResourceName);
+  Standard_EXPORT static ProcessingData ReadProcessingData(
+    const TCollection_AsciiString& theFileResourceName,
+    const TCollection_AsciiString& theScopeResourceName);
 
   //! Fill the parameter map with the values from the specified parameters.
   //! @param theParameters Parameters to be used in the processing.
@@ -150,10 +151,10 @@ public:
   //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists
   //! in the map.
   //! @param theMap Map to set the parameter in.
-  Standard_EXPORT static void SetParameter(const char*   theKey,
-                                           std::string&& theValue,
-                                           const bool    theIsReplace,
-                                           ParameterMap& theMap);
+  Standard_EXPORT static void SetParameter(const char*                    theKey,
+                                           const TCollection_AsciiString& theValue,
+                                           const bool                     theIsReplace,
+                                           ParameterMap&                  theMap);
 
   //! The function is designed to set the length unit for the application before performing a
   //! transfer operation. It ensures that the length unit is correctly configured based on the
