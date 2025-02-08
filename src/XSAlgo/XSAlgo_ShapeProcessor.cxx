@@ -78,8 +78,9 @@ std::vector<std::string> splitString(const std::string&              aString,
 
 //=============================================================================
 
-XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const ParameterMap&          theParameters,
-                                             const DE_ShapeFixParameters& theShapeFixParameters)
+XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters,
+  const DE_ShapeFixParameters&               theShapeFixParameters)
     : myParameters(theParameters)
 {
   FillParameterMap(theShapeFixParameters, false, myParameters);
@@ -89,16 +90,16 @@ XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const ParameterMap&          thePar
 
 XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const DE_ShapeFixParameters& theParameters)
 {
-  ParameterMap aMap;
+  XSAlgo_ShapeProcessor::ParameterMap aMap;
   FillParameterMap(theParameters, false, aMap);
   myParameters = aMap;
 }
 
 //=============================================================================
 
-TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&          theShape,
-                                                 const OperationsFlags&       theOperations,
-                                                 const Message_ProgressRange& theProgress)
+TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&                  theShape,
+                                                 const ShapeProcess::OperationsFlags& theOperations,
+                                                 const Message_ProgressRange&         theProgress)
 {
   if (theShape.IsNull())
   {
@@ -115,24 +116,24 @@ TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&          th
 void XSAlgo_ShapeProcessor::initializeContext(const TopoDS_Shape& theShape)
 {
   myContext = new ShapeProcess_ShapeContext(theShape, nullptr);
-  for (const auto& aParameter : myParameters)
+  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParameterIter(myParameters);
+       aParameterIter.More();
+       aParameterIter.Next())
   {
-    myContext->ResourceManager()->SetResource(aParameter.first.c_str(), aParameter.second.c_str());
+    myContext->ResourceManager()->SetResource(aParameterIter.Key().c_str(),
+                                              aParameterIter.Value().c_str());
   }
   // Read and set detalization level.
-  auto aDetalizationLevelPtr = myParameters.find("DetalizationLevel");
-  if (aDetalizationLevelPtr != myParameters.end())
+  std::string aResult;
+  if (myParameters.Find("DetalizationLevel", aResult))
   {
-    const TopAbs_ShapeEnum aDetalizationLevel =
-      static_cast<TopAbs_ShapeEnum>(std::stoi(aDetalizationLevelPtr->second.c_str()));
+    const TopAbs_ShapeEnum aDetalizationLevel = static_cast<TopAbs_ShapeEnum>(std::stoi(aResult));
     myContext->SetDetalisation(aDetalizationLevel);
   }
   // Read and set non-manifold flag.
-  auto aNonManifoldPtr = myParameters.find("NonManifold");
-  if (aNonManifoldPtr != myParameters.end())
+  if (myParameters.Find("NonManifold", aResult))
   {
-    const Standard_Boolean aNonManifold =
-      static_cast<Standard_Boolean>(std::stoi(aNonManifoldPtr->second.c_str()));
+    const Standard_Boolean aNonManifold = static_cast<Standard_Boolean>(std::stoi(aResult));
     myContext->SetNonManifold(aNonManifold);
   }
 }
@@ -561,8 +562,8 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
   const std::string aScope = Interface_Static::CVal(theScopeResourceName.c_str());
 
   // Copy parameters to the result.
-  ParameterMap                                    aResultParameters;
-  OperationsFlags                                 aResultFlags;
+  XSAlgo_ShapeProcessor::ParameterMap             aResultParameters;
+  ShapeProcess::OperationsFlags                   aResultFlags;
   const Resource_DataMapOfAsciiStringAsciiString& aMap = aContext->ResourceManager()->GetMap();
   using RMapIter = Resource_DataMapOfAsciiStringAsciiString::Iterator;
   for (RMapIter anIter(aMap); anIter.More(); anIter.Next())
@@ -580,7 +581,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     if (aKey != "exec.op")
     {
       // If it is not an operation flag, add it to the parameters.
-      aResultParameters[aKey] = anIter.Value().ToCString();
+      aResultParameters.Bind(aKey, anIter.Value().ToCString());
     }
     else
     {
@@ -743,10 +744,30 @@ void XSAlgo_ShapeProcessor::FillParameterMap(const DE_ShapeFixParameters&       
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::SetParameter(const char*                    theKey,
-                                         DE_ShapeFixParameters::FixMode theValue,
-                                         const bool                     theIsReplace,
-                                         ParameterMap&                  theMap)
+void XSAlgo_ShapeProcessor::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters,
+  XSAlgo_ShapeProcessor::ParameterMap&       theTargetParameterMap)
+{
+  theTargetParameterMap.Clear();
+  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, theTargetParameterMap);
+  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParamIter(theAdditionalParameters);
+       aParamIter.More();
+       aParamIter.Next())
+  {
+    if (!theTargetParameterMap.IsBound(aParamIter.Key()))
+    {
+      theTargetParameterMap.Bind(aParamIter.Key(), aParamIter.Value());
+    }
+  }
+}
+
+//=============================================================================
+
+void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
+                                         DE_ShapeFixParameters::FixMode       theValue,
+                                         const bool                           theIsReplace,
+                                         XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
   SetParameter(theKey,
                std::to_string(
@@ -757,10 +778,10 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                    theKey,
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::SetParameter(const char*   theKey,
-                                         double        theValue,
-                                         const bool    theIsReplace,
-                                         ParameterMap& theMap)
+void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
+                                         double                               theValue,
+                                         const bool                           theIsReplace,
+                                         XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
   // Note that conversion with std::to_string() here is not possible, since it normally preserves
   // only first 6 digits (before C++26). As a result, any value of 1e-7 or below will turn into 0.
@@ -773,18 +794,18 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*   theKey,
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::SetParameter(const char*   theKey,
-                                         std::string&& theValue,
-                                         const bool    theIsReplace,
-                                         ParameterMap& theMap)
+void XSAlgo_ShapeProcessor::SetParameter(const char*                          theKey,
+                                         std::string&&                        theValue,
+                                         const bool                           theIsReplace,
+                                         XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
   if (theIsReplace)
   {
-    theMap[theKey] = std::move(theValue);
+    theMap.Bind(theKey, std::move(theValue));
   }
   else
   {
-    theMap.emplace(theKey, std::move(theValue));
+    theMap.Bind(theKey, std::move(theValue));
   }
 }
 

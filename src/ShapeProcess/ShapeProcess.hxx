@@ -66,7 +66,7 @@ public:
 
   // Bitset of operations. It is used to specify which operations should be performed.
   // For example, to perform DirectFaces and SameParameter operations, use:
-  // ShapeProcess::OperationsFlags flags;
+  // OperationsFlags flags;
   // flags.set(ShapeProcess::Operation::DirectFaces);
   // flags.set(ShapeProcess::Operation::SameParameter);
   // ShapeProcess::Perform(context, flags);

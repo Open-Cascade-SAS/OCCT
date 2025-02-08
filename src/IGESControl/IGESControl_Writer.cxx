@@ -285,32 +285,28 @@ Standard_Boolean IGESControl_Writer::Write(const Standard_CString file, const St
 
 //=============================================================================
 
-void IGESControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
+void IGESControl_Writer::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void IGESControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
+void IGESControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void IGESControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                               const ParameterMap&          theAdditionalParameters)
+void IGESControl_Writer::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
-  myShapeProcParams.clear();
-  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
-  for (const auto& aParam : theAdditionalParameters)
-  {
-    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
-    {
-      myShapeProcParams[aParam.first] = aParam.second;
-    }
-  }
+  XSAlgo_ShapeProcessor::SetShapeFixParameters(theParameters,
+                                               theAdditionalParameters,
+                                               myShapeProcParams);
 }
 
 //=============================================================================
@@ -325,7 +321,7 @@ void IGESControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 
 void IGESControl_Writer::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }

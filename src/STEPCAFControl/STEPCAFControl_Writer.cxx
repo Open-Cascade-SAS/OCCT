@@ -539,29 +539,32 @@ Standard_Boolean STEPCAFControl_Writer::ExternFile(
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
+void STEPCAFControl_Writer::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   myWriter.SetShapeFixParameters(theParameters);
 }
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
+void STEPCAFControl_Writer::SetShapeFixParameters(
+  XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   myWriter.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                                  const ParameterMap& theAdditionalParameters)
+void STEPCAFControl_Writer::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
   myWriter.SetShapeFixParameters(theParameters, theAdditionalParameters);
 }
 
 //=============================================================================
 
-const STEPCAFControl_Writer::ParameterMap& STEPCAFControl_Writer::GetShapeFixParameters() const
+const XSAlgo_ShapeProcessor::ParameterMap& STEPCAFControl_Writer::GetShapeFixParameters() const
 {
   return myWriter.GetShapeFixParameters();
 }
@@ -575,7 +578,7 @@ void STEPCAFControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsF
 
 //=============================================================================
 
-const STEPCAFControl_Writer::ProcessingFlags& STEPCAFControl_Writer::GetShapeProcessFlags() const
+const XSAlgo_ShapeProcessor::ProcessingFlags& STEPCAFControl_Writer::GetShapeProcessFlags() const
 {
   return myWriter.GetShapeProcessFlags();
 }

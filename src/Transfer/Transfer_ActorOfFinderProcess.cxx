@@ -76,14 +76,16 @@ Handle(Standard_Transient) Transfer_ActorOfFinderProcess::TransferTransient(
 
 //=============================================================================
 
-void Transfer_ActorOfFinderProcess::SetShapeFixParameters(const ParameterMap& theParameters)
+void Transfer_ActorOfFinderProcess::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void Transfer_ActorOfFinderProcess::SetShapeFixParameters(ParameterMap&& theParameters)
+void Transfer_ActorOfFinderProcess::SetShapeFixParameters(
+  XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
@@ -91,18 +93,12 @@ void Transfer_ActorOfFinderProcess::SetShapeFixParameters(ParameterMap&& thePara
 //=============================================================================
 
 void Transfer_ActorOfFinderProcess::SetShapeFixParameters(
-  const DE_ShapeFixParameters& theParameters,
-  const ParameterMap&          theAdditionalParameters)
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
-  myShapeProcParams.clear();
-  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
-  for (const auto& aParam : theAdditionalParameters)
-  {
-    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
-    {
-      myShapeProcParams[aParam.first] = aParam.second;
-    }
-  }
+  XSAlgo_ShapeProcessor::SetShapeFixParameters(theParameters,
+                                               theAdditionalParameters,
+                                               myShapeProcParams);
 }
 
 //=============================================================================

@@ -617,32 +617,28 @@ TopoDS_Shape IGESToBRep_Reader::OneShape() const
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(
+  const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                              const ParameterMap&          theAdditionalParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
-  myShapeProcParams.clear();
-  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
-  for (const auto& aParam : theAdditionalParameters)
-  {
-    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
-    {
-      myShapeProcParams[aParam.first] = aParam.second;
-    }
-  }
+  XSAlgo_ShapeProcessor::SetShapeFixParameters(theParameters,
+                                               theAdditionalParameters,
+                                               myShapeProcParams);
 }
 
 //=============================================================================
@@ -657,7 +653,7 @@ void IGESToBRep_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags
 
 void IGESToBRep_Reader::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }
