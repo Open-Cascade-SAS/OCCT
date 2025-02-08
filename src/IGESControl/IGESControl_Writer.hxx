@@ -161,14 +161,15 @@ private:
   void InitializeMissingParameters();
 
 private:
-  Handle(Transfer_FinderProcess)      myTP;
-  Handle(IGESData_IGESModel)          myModel;
-  IGESData_BasicEditor                myEditor;
-  Standard_Integer                    myWriteMode;
-  Standard_Boolean                    myIsComputed;
-  XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams; //!< Parameters for shape processing.
-  XSAlgo_ShapeProcessor::ProcessingFlags
-    myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  Handle(Transfer_FinderProcess) myTP;
+  Handle(IGESData_IGESModel)     myModel;
+  IGESData_BasicEditor           myEditor;
+  Standard_Integer               myWriteMode;
+  Standard_Boolean               myIsComputed;
+  // clang-format off
+  XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams;   //!< Parameters for shape processing.
+  XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  // clang-format on
 };
 
 #endif // _IGESControl_Writer_HeaderFile

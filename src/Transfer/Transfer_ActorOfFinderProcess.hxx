@@ -104,9 +104,10 @@ protected:
   Standard_Integer themodetrans;
 
 private:
-  XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams; //!< Parameters for shape processing.
-  XSAlgo_ShapeProcessor::ProcessingFlags
-    myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  // clang-format off
+  XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams;   //!< Parameters for shape processing.
+  XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
+  // clang-format on
 };
 
 #endif // _Transfer_ActorOfFinderProcess_HeaderFile

@@ -536,6 +536,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     TCollection_AsciiString aKey = anIter.Key();
     if (!aKey.StartsWith(aScope))
     {
+      // Ignore all parameters that don't start with the specified scope.
       continue;
     }
 
