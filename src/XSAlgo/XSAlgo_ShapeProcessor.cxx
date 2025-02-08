@@ -79,41 +79,28 @@ TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&            
 void XSAlgo_ShapeProcessor::initializeContext(const TopoDS_Shape& theShape)
 {
   myContext = new ShapeProcess_ShapeContext(theShape, nullptr);
-
-  // Set all parameters from the map
-  Message::SendWarning() << "====================";
-
-  for (const auto& param : myParameters)
+  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParameterIter(myParameters);
+       aParameterIter.More();
+       aParameterIter.Next())
   {
-    myContext->ResourceManager()->SetResource(param.first.ToCString(), param.second.ToCString());
-    Message::SendWarning() << "Set parameter: " << param.first << " = " << param.second;
-
+    myContext->ResourceManager()->SetResource(aParameterIter.Key().ToCString(),
+                                              aParameterIter.Value().ToCString());
   }
-
-  // Read and set detalization level
-  auto detailLevelIt = myParameters.find("DetalizationLevel");
-  if (detailLevelIt != myParameters.end() && detailLevelIt->second.IsIntegerValue())
+  // Read and set detalization level.
+  TCollection_AsciiString aResult;
+  if (myParameters.Find("DetalizationLevel", aResult) && aResult.IsIntegerValue())
   {
     const TopAbs_ShapeEnum aDetalizationLevel =
-      static_cast<TopAbs_ShapeEnum>(detailLevelIt->second.IntegerValue());
+      static_cast<TopAbs_ShapeEnum>(aResult.IntegerValue());
     myContext->SetDetalisation(aDetalizationLevel);
-    Message::SendWarning() << "Set Detalization: " << aDetalizationLevel;
-
   }
-
-  // Read and set non-manifold flag
-  auto nonManifoldIt = myParameters.find("NonManifold");
-  if (nonManifoldIt != myParameters.end() && nonManifoldIt->second.IsIntegerValue())
+  // Read and set non-manifold flag.
+  if (myParameters.Find("NonManifold", aResult) && aResult.IsIntegerValue())
   {
-    const Standard_Boolean aNonManifold =
-      static_cast<Standard_Boolean>(nonManifoldIt->second.IntegerValue());
+    const Standard_Boolean aNonManifold = static_cast<Standard_Boolean>(aResult.IntegerValue());
     myContext->SetNonManifold(aNonManifold);
-    Message::SendWarning() << "Set NonManifold: " << aNonManifold;
-
   }
-  Message::SendWarning() << "====================";
 }
-
 
 //=============================================================================
 
@@ -576,7 +563,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     }
     else
     {
-      aResultParameters.emplace(aKey, anIter.Value());
+      aResultParameters.Bind(aKey, anIter.Value());
     }
   }
   return {aResultParameters, aResultFlags};
@@ -727,18 +714,20 @@ void XSAlgo_ShapeProcessor::FillParameterMap(const DE_ShapeFixParameters&       
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                                  const ParameterMap& theAdditionalParameters,
-                                                  ParameterMap&       theTargetParameterMap)
+void XSAlgo_ShapeProcessor::SetShapeFixParameters(
+  const DE_ShapeFixParameters&               theParameters,
+  const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters,
+  XSAlgo_ShapeProcessor::ParameterMap&       theTargetParameterMap)
 {
-  theTargetParameterMap.clear();
+  theTargetParameterMap.Clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, theTargetParameterMap);
-
-  for (const auto& param : theAdditionalParameters)
+  for (XSAlgo_ShapeProcessor::ParameterMap::Iterator aParamIter(theAdditionalParameters);
+       aParamIter.More();
+       aParamIter.Next())
   {
-    if (theTargetParameterMap.find(param.first) == theTargetParameterMap.end())
+    if (!theTargetParameterMap.IsBound(aParamIter.Key()))
     {
-      theTargetParameterMap[param.first] = param.second;
+      theTargetParameterMap.Bind(aParamIter.Key(), aParamIter.Value());
     }
   }
 }
@@ -777,11 +766,14 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
 {
   if (theIsReplace)
   {
-    theMap.emplace(theKey, theValue);
+    theMap.Bind(theKey, theValue);
   }
   else
   {
-    theMap.emplace(theKey, theValue);
+    if (!theMap.IsBound(theKey))
+    {
+      theMap.Bind(theKey, theValue);
+    }
   }
 }
 

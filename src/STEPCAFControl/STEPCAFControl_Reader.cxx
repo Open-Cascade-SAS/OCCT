@@ -5820,7 +5820,7 @@ void STEPCAFControl_Reader::SetShapeFixParameters(
 void STEPCAFControl_Reader::SetShapeFixParameters(
   XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
-  myReader.SetShapeFixParameters(theParameters);
+  myReader.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================

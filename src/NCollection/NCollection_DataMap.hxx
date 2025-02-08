@@ -66,26 +66,26 @@ public:
     {
     }
 
-    // //! Constructor with 'Next'
-    // DataMapNode(const TheKeyType& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
-    //     : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
-    //       myKey(theKey)
-    // {
-    // }
+    //! Constructor with 'Next'
+    DataMapNode(const TheKeyType& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
+        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
+          myKey(theKey)
+    {
+    }
 
-    // //! Constructor with 'Next'
-    // DataMapNode(TheKeyType&& theKey, const TheItemType& theItem, NCollection_ListNode* theNext)
-    //     : NCollection_TListNode<TheItemType>(theItem, theNext),
-    //       myKey(std::forward<TheKeyType>(theKey))
-    // {
-    // }
+    //! Constructor with 'Next'
+    DataMapNode(TheKeyType&& theKey, const TheItemType& theItem, NCollection_ListNode* theNext)
+        : NCollection_TListNode<TheItemType>(theItem, theNext),
+          myKey(std::forward<TheKeyType>(theKey))
+    {
+    }
 
-    // //! Constructor with 'Next'
-    // DataMapNode(TheKeyType&& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
-    //     : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
-    //       myKey(std::forward<TheKeyType>(theKey))
-    // {
-    // }
+    //! Constructor with 'Next'
+    DataMapNode(TheKeyType&& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
+        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
+          myKey(std::forward<TheKeyType>(theKey))
+    {
+    }
 
     //! Key
     const TheKeyType& Key(void) const { return myKey; }
@@ -193,11 +193,11 @@ public:
       Bind(anIter.Key(), anIter.Value());
   }
 
-  // //! Move constructor
-  // NCollection_DataMap(NCollection_DataMap&& theOther) noexcept
-  //     : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
-  // {
-  // }
+  //! Move constructor
+  NCollection_DataMap(NCollection_DataMap&& theOther) noexcept
+      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
+  {
+  }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
@@ -225,14 +225,14 @@ public:
   //! Assignment operator
   NCollection_DataMap& operator=(const NCollection_DataMap& theOther) { return Assign(theOther); }
 
-  // //! Move operator
-  // NCollection_DataMap& operator=(NCollection_DataMap&& theOther) noexcept
-  // {
-  //   if (this == &theOther)
-  //     return *this;
-  //   exchangeMapsData(theOther);
-  //   return *this;
-  // }
+  //! Move operator
+  NCollection_DataMap& operator=(NCollection_DataMap&& theOther) noexcept
+  {
+    if (this == &theOther)
+      return *this;
+    exchangeMapsData(theOther);
+    return *this;
+  }
 
   //! ReSize
   void ReSize(const Standard_Integer N)
@@ -291,68 +291,68 @@ public:
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return Standard_True if Key was not bound already
-  // Standard_Boolean Bind(TheKeyType&& theKey, const TheItemType& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = theItem;
-  //     return Standard_False;
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash] =
-  //     new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey), theItem, data[aHash]);
-  //   Increment();
-  //   return Standard_True;
-  // }
+  Standard_Boolean Bind(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey), theItem, data[aHash]);
+    Increment();
+    return Standard_True;
+  }
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return Standard_True if Key was not bound already
-  // Standard_Boolean Bind(const TheKeyType& theKey, TheItemType&& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = std::forward<TheItemType>(theItem);
-  //     return Standard_False;
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash] =
-  //     new (this->myAllocator) DataMapNode(theKey, std::forward<TheItemType>(theItem), data[aHash]);
-  //   Increment();
-  //   return Standard_True;
-  // }
+  Standard_Boolean Bind(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(theKey, std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return Standard_True;
+  }
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return Standard_True if Key was not bound already
-  // Standard_Boolean Bind(TheKeyType&& theKey, TheItemType&& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = theItem;
-  //     return Standard_False;
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey),
-  //                                                     std::forward<TheItemType>(theItem),
-  //                                                     data[aHash]);
-  //   Increment();
-  //   return Standard_True;
-  // }
+  Standard_Boolean Bind(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey),
+                                                      std::forward<TheItemType>(theItem),
+                                                      data[aHash]);
+    Increment();
+    return Standard_True;
+  }
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
@@ -379,68 +379,68 @@ public:
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return pointer to modifiable Item
-  // TheItemType* Bound(TheKeyType&& theKey, const TheItemType& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = theItem;
-  //     return &aNode->ChangeValue();
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash] =
-  //     new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey), theItem, data[aHash]);
-  //   Increment();
-  //   return &data[aHash]->ChangeValue();
-  // }
+  TheItemType* Bound(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey), theItem, data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return pointer to modifiable Item
-  // TheItemType* Bound(const TheKeyType& theKey, TheItemType&& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = std::forward<TheItemType>(theItem);
-  //     return &aNode->ChangeValue();
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash] =
-  //     new (this->myAllocator) DataMapNode(theKey, std::forward<TheItemType>(theItem), data[aHash]);
-  //   Increment();
-  //   return &data[aHash]->ChangeValue();
-  // }
+  TheItemType* Bound(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(theKey, std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
   //! @param theItem new item; overrides value previously bound to the key
   //! @return pointer to modifiable Item
-  // TheItemType* Bound(TheKeyType&& theKey, TheItemType&& theItem)
-  // {
-  //   if (Resizable())
-  //     ReSize(Extent());
-  //   size_t       aHash;
-  //   DataMapNode* aNode;
-  //   if (lookup(theKey, aNode, aHash))
-  //   {
-  //     aNode->ChangeValue() = std::forward<TheItemType>(theItem);
-  //     return &aNode->ChangeValue();
-  //   }
-  //   DataMapNode** data = (DataMapNode**)myData1;
-  //   data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey),
-  //                                                     std::forward<TheItemType>(theItem),
-  //                                                     data[aHash]);
-  //   Increment();
-  //   return &data[aHash]->ChangeValue();
-  // }
+  TheItemType* Bound(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey),
+                                                      std::forward<TheItemType>(theItem),
+                                                      data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
 
   //! IsBound
   Standard_Boolean IsBound(const TheKeyType& theKey) const

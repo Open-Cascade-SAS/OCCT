@@ -428,7 +428,7 @@ void XSControl_Reader::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
-    anActor->SetShapeFixParameters(theParameters);
+    anActor->SetShapeFixParameters(std::move(theParameters));
   }
 }
 
@@ -495,7 +495,7 @@ Handle(Transfer_ActorOfTransientProcess) XSControl_Reader::GetActor() const
 
 void XSControl_Reader::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().empty())
+  if (GetShapeFixParameters().IsEmpty())
   {
     SetShapeFixParameters(GetDefaultShapeFixParameters());
   }

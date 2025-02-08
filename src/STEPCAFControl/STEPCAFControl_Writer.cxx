@@ -550,7 +550,7 @@ void STEPCAFControl_Writer::SetShapeFixParameters(
 void STEPCAFControl_Writer::SetShapeFixParameters(
   XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
-  myWriter.SetShapeFixParameters(theParameters);
+  myWriter.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================
