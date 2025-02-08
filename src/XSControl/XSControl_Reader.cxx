@@ -495,7 +495,7 @@ Handle(Transfer_ActorOfTransientProcess) XSControl_Reader::GetActor() const
 
 void XSControl_Reader::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().IsEmpty())
+  if (GetShapeFixParameters().empty())
   {
     SetShapeFixParameters(GetDefaultShapeFixParameters());
   }

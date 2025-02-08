@@ -281,7 +281,7 @@ Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
 
 void STEPControl_Writer::InitializeMissingParameters()
 {
-  if (GetShapeFixParameters().IsEmpty())
+  if (GetShapeFixParameters().empty())
   {
     SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }
