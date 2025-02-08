@@ -128,7 +128,7 @@ Sweep_NumShape Sweep_NumShapeTool::FirstVertex() const
       return Sweep_NumShape(1, TopAbs_VERTEX, myNumShape.Closed(), Standard_False, Standard_False);
     }
     else
-      throw Standard_ConstructionError("inifinite Shape");
+      throw Standard_ConstructionError("infinite Shape");
   }
   return myNumShape;
 }
@@ -148,7 +148,7 @@ Sweep_NumShape Sweep_NumShapeTool::LastVertex() const
                             Standard_False);
     }
     else
-      throw Standard_ConstructionError("inifinite Shape");
+      throw Standard_ConstructionError("infinite Shape");
   }
   return myNumShape;
 }

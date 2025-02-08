@@ -69,7 +69,7 @@ DEFINE_STANDARD_HANDLE(BRepBuilderAPI_Sewing, Standard_Transient)
 //! - set the cutting option as you need (default True)
 //! - define a tolerance
 //! - add shapes to be sewed -> Add
-//! - compute -> Perfom
+//! - compute -> Perform
 //! - output the resulted shapes
 //! - output free edges if necessary
 //! - output multiple edges if necessary
@@ -97,7 +97,7 @@ public:
                             const Standard_Boolean option3   = Standard_True,
                             const Standard_Boolean option4   = Standard_False);
 
-  //! Loades the context shape.
+  //! Loads the context shape.
   Standard_EXPORT void Load(const TopoDS_Shape& shape);
 
   //! Defines the shapes to be sewed or controlled
@@ -146,7 +146,7 @@ public:
 
   //! Gives the original edge (free boundary) which becomes the
   //! the section. Remember that sections constitute  common edges.
-  //! This imformation is important for control because with
+  //! This information is important for control because with
   //! original edge we can find the surface to which the section
   //! is attached.
   Standard_EXPORT const TopoDS_Edge& SectionToBoundary(const TopoDS_Edge& section) const;

@@ -1296,9 +1296,9 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
   {
     di << "Usage: \n";
     di << "getanasurf res shape [target [tol [sample]]] \n";
-    di << "target is reqired type of surface and can be: pln, cyl, con sph \n";
+    di << "target is required type of surface and can be: pln, cyl, con sph \n";
     di << "sample is surface of required type, which parameters are used as starting \n";
-    di << "point for seaching parametrs of surface by Least Square method when input shape \n";
+    di << "point for searching parameters of surface by Least Square method when input shape \n";
     di << "is edge or wire \n";
     return 1;
   }
@@ -1331,7 +1331,7 @@ static Standard_Integer getanasurf(Draw_Interpretor& di, Standard_Integer n, con
   if (n > 4)
     tol = Draw::Atof(a[4]);
 
-  // get sample  target for edge and wire
+  // get sample target for edge and wire
   GeomAdaptor_Surface aSampleSurf;
   if (n > 5 && (sh.ShapeType() == TopAbs_EDGE || sh.ShapeType() == TopAbs_WIRE))
   {
@@ -1410,7 +1410,7 @@ Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const cha
   {
     di << "Usage: \n";
     di << "getanacurve res shape [target [tol]] \n";
-    di << "target is reqired type of curve and can be: lin, cir, ell  \n";
+    di << "target is required type of curve and can be: lin, cir, ell  \n";
     return 1;
   }
   TopoDS_Shape sh = DBRep::Get(a[2]);
@@ -1419,7 +1419,7 @@ Standard_Integer getanacurve(Draw_Interpretor& di, Standard_Integer n, const cha
   TopAbs_ShapeEnum aShType = sh.ShapeType();
   if (!(aShType == TopAbs_WIRE || aShType == TopAbs_EDGE))
   {
-    di << "Wrong shape type, shape can be wire or or edge \n";
+    di << "Wrong shape type, shape can be wire or an edge \n";
     return 1;
   }
 

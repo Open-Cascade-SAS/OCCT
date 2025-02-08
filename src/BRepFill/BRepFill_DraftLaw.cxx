@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_DraftLaw, BRepFill_Edge3DLaw)
 
 //=======================================================================
 // function : ToG0
-// purpose  : Cacul une tranformation T tq T.M2 = M1
+// purpose  : Calculate a transformation T tq T.M2 = M1
 //=======================================================================
 static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T)
 {

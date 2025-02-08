@@ -358,7 +358,7 @@ public:
   /**
    * Public methods to check modifications of the object since last commit
    */
-  //! Returns true if object attributes or or his children were modified in the current open
+  //! Returns true if object attributes or its children were modified in the current open
   //! transaction
   Standard_EXPORT Standard_Boolean HasModifications() const;
 

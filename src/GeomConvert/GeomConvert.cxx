@@ -580,7 +580,7 @@ static Handle(Geom_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCurv
 
 //=======================================================================
 // function : Pretreatment
-// purpose  : Put the two first and two last weigths at one if they are
+// purpose  : Put the two first and two last weights at one if they are
 //           equal
 //=======================================================================
 
@@ -607,7 +607,7 @@ static void Pretreatment(TColGeom_Array1OfBSplineCurve& tab)
 //=======================================================================
 // function : NeedToBeTreated
 // purpose  : Say if the BSpline is rational and if the two first and two
-//           last weigths are different
+//           last weights are different
 //=======================================================================
 
 static Standard_Boolean NeedToBeTreated(const Handle(Geom_BSplineCurve)& BS)

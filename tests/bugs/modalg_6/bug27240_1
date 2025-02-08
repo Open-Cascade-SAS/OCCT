@@ -9,11 +9,11 @@ puts ""
 restore [locate_data_file bug27240_vent2-trim.brep] b
 explode b
 
-# workaround - increate the tolerance value of the vertex to fill the gap between section curves
+# workaround - increase the tolerance value of the vertex to fill the gap between section curves
 explode b_1 v
 settolerance b_1_1 0.005
 
-# workaround - increate the tolerance value of the edge to fill the gap between section curves
+# workaround - increase the tolerance value of the edge to fill the gap between section curves
 explode b_2 e
 settolerance b_2_5 0.0005
 

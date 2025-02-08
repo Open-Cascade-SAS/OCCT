@@ -129,15 +129,17 @@ public:
              const Standard_CString          theIsMulti  = 0,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
-  //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label
+  //! Method to writing sequence of root assemblies
+  //! or part of the file specified by use by one label
   Standard_EXPORT Standard_Boolean
     Transfer(const TDF_LabelSequence&        theLabelSeq,
              const STEPControl_StepModelType theMode     = STEPControl_AsIs,
              const Standard_CString          theIsMulti  = 0,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
-  //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label
-  //! This method uses if need to set parameters avoiding
+  //! Method to writing sequence of root assemblies
+  //! or part of the file specified by use by one label.
+  //! This method is utilized if there's a need to set parameters avoiding
   //! initialization from Interface_Static
   Standard_EXPORT Standard_Boolean
     Transfer(const TDF_LabelSequence&        theLabelSeq,
@@ -159,7 +161,7 @@ public:
             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a STEP file
-  //! This method uses if need to set parameters avoiding
+  //! This method is utilized if there's a need to set parameters avoiding
   //! initialization from Interface_Static
   //! Returns True if translation is OK
   Standard_EXPORT Standard_Boolean

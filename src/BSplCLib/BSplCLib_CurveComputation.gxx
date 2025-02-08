@@ -618,7 +618,7 @@ BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
 //function : Solves a LU factored Matrix 
 //purpose  : if HomogeneousFlag is 1 then the input and the output
 //           will be homogeneous that is no division or multiplication
-//           by weigths will happen. On the contrary if HomogeneousFlag
+//           by weights will happen. On the contrary if HomogeneousFlag
 //           is 0 then the poles will be multiplied first by the weights
 //           and after interpolation they will be divided by the weights
 //=======================================================================

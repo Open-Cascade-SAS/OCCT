@@ -23,7 +23,7 @@ for {set j 0} {$j < 301} {incr j; incr i} {
   lappend points p$i
 }
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # create the surface 

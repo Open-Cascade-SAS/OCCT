@@ -575,7 +575,7 @@ void XDEDRAW_Layers::InitCommands(Draw_Interpretor& di)
 
   di.Add("XSetLayer",
          "DocName {Shape|Label} StringLayer [shapeInOneLayer(0/1)] \t: Set reference between Shape "
-         "and Layer (add layer if nesessary). shapeInOneLayer 0 is default",
+         "and Layer (add layer if necessary). shapeInOneLayer 0 is default",
          __FILE__,
          setLayer,
          g);

@@ -197,7 +197,7 @@ All registered providers are set to the map with information about its vendor an
 
 @subsubsection occt_de_wrapper_3_3_1 Registering providers. Code sample
 
-It is nesessary to register only one ConfigurationNode for all needed formats.
+It is necessary to register only one ConfigurationNode for all needed formats.
 ~~~~{.cpp}
 Handle(DE_Wrapper) aSession = DE_Wrapper::GlobalWrapper();
 Handle(DE_ConfigurationNode) aNode = new DESTEP_ConfigurationNode();

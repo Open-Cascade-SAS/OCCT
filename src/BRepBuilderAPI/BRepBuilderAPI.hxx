@@ -79,8 +79,8 @@ class Geom_Plane;
 //! the NotDone error. When Done is false on a command
 //! the error description can be asked to the command.
 //!
-//! In  theory  the  comands can be    called with any
-//! arguments, argument  checking  is performed by the
+//! In theory the commands can be called with any
+//! arguments, argument checking is performed by the
 //! command.
 class BRepBuilderAPI
 {

@@ -2332,7 +2332,7 @@ void BRepBuilderAPI_Sewing::Dump() const
   std::cout << " Number of Vertices          : " << myNbVertices << std::endl;
   std::cout << " Number of Nodes             : " << mapVertices.Extent() << std::endl;
   std::cout << " Number of Free Edges        : " << myFreeEdges.Extent() << std::endl;
-  std::cout << " Number of Contigous Edges   : " << myContigousEdges.Extent() << std::endl;
+  std::cout << " Number of Contiguous Edges  : " << myContigousEdges.Extent() << std::endl;
   std::cout << " Number of Multiple Edges    : " << myMultipleEdges.Extent() << std::endl;
   std::cout << " Number of Degenerated Edges : " << myDegenerated.Extent() << std::endl;
   std::cout << " ===========================================================" << std::endl;

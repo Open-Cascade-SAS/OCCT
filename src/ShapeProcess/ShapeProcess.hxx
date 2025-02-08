@@ -39,7 +39,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Describes all available operations.
-  //! C++11 enum class is not used to allow implicit conversion to undelying type.
+  //! C++11 enum class is not used to allow implicit conversion to underlying type.
   enum Operation : uint8_t
   {
     First       = 0, // First operation index.

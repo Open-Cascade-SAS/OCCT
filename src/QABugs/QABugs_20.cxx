@@ -5002,7 +5002,7 @@ static Standard_Integer OCC33657_4(Draw_Interpretor& theDI,
   aReader.TransferRoots();
   TopoDS_Shape aSourceShape = aReader.OneShape();
 
-  // Analyzer to compare the shape with the the same shape after write-read sequence.
+  // Analyzer to compare the shape with the same shape after write-read sequence.
   ShapeAnalysis_ShapeContents aSourceAnalyzer;
   aSourceAnalyzer.Perform(aSourceShape);
 

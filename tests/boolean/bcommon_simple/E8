@@ -17,7 +17,7 @@ mkplane fa wa
 prism ba fa 0 0 4
 
 # prism from bottom
-# chenge of wire construction order
+# change of wire construction order
 
 vertex v5 2 0 0
 vertex v6 3 0 0

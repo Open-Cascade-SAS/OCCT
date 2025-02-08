@@ -12,7 +12,7 @@ mkedge e3 c2
 tcopy e3 e4 
 ttranslate e4 2 0 0 
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # create the surface 

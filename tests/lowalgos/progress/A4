@@ -10,7 +10,7 @@ for {set i 0} {$i < $n} {incr i} {
   lappend l p$i
 }
 
-# Configurate XProgress 
+# Configure XProgress 
 XProgress +t 
 
 # create the surface 

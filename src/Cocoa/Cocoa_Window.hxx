@@ -79,7 +79,7 @@ public:
   Standard_EXPORT Cocoa_Window(NSView* theViewNS);
 #endif
 
-  //! Destroys the Window and all resourses attached to it
+  //! Destroys the Window and all resources attached to it
   Standard_EXPORT ~Cocoa_Window();
 
   //! Opens the window <me>

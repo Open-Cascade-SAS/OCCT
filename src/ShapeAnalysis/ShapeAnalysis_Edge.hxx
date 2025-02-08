@@ -56,7 +56,7 @@ public:
   //! Tells if the edge has a 3d curve
   Standard_EXPORT Standard_Boolean HasCurve3d(const TopoDS_Edge& edge) const;
 
-  //! Returns the 3d curve and bounding parameteres for the edge
+  //! Returns the 3d curve and bounding parameters for the edge
   //! Returns False if no 3d curve.
   //! If <orient> is True (default), takes orientation into account:
   //! if the edge is reversed, cf and cl are toggled
@@ -86,7 +86,7 @@ public:
                                           Standard_Real&         cl,
                                           const Standard_Boolean orient = Standard_True) const;
 
-  //! Returns the pcurve and bounding parameteres for the edge
+  //! Returns the pcurve and bounding parameters for the edge
   //! lying on the surface.
   //! Returns False if the edge has no pcurve on this surface.
   //! If <orient> is True (default), takes orientation into account:

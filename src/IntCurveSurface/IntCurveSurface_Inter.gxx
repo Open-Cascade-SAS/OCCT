@@ -379,7 +379,7 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 {
   // Protection from double type overflow.
   // This may happen inside square magnitude computation based on normal,
-  // which was computed on bound parameteres (bug26525).
+  // which was computed on bound parameters (bug26525).
   Standard_Real UU1 = U1, UU2 = U2, VV1 = V1, VV2 = V2;
   if (U1 < -1.0e50)
     UU1 = -1.0e50;

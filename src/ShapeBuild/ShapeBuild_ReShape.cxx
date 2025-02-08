@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//    abv 28.04.99 S4137: ading method Apply for work on all types of shapes
+//    abv 28.04.99 S4137: adding method Apply for work on all types of shapes
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -220,7 +220,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
     }
     locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
     if (st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType())
-    { // fix for SAMTECH bug OCC322 about abcense internal vertices after sewing.
+    { // fix for SAMTECH bug OCC322 about absence internal vertices after sewing.
       B.Add(result, newsh);
       continue;
     }

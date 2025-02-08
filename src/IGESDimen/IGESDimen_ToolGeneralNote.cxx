@@ -277,7 +277,7 @@ void IGESDimen_ToolGeneralNote::OwnCopy(const Handle(IGESDimen_GeneralNote)& ano
     {
       Standard_Integer fontCode = another->FontCode(i);
       fontCodes->SetValue(i, fontCode);
-      ////          fontEntities->SetValue(i, NULL);    par defaut
+      ////          fontEntities->SetValue(i, NULL);    by default
     }
 
     Standard_Real slantAngle = another->SlantAngle(i);

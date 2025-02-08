@@ -170,7 +170,7 @@ Standard_Boolean TDF_RelocationTable::HasTransientRelocation(
 
 //=======================================================================
 // function : Clear
-// purpose  : Clears the relocation dictonnary.
+// purpose  : Clears the relocation dictionary.
 //=======================================================================
 
 void TDF_RelocationTable::Clear()

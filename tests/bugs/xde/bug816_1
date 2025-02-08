@@ -12,11 +12,11 @@ set file ${imagedir}/OCC816.stp
 restore [locate_data_file OCC816-apple.rle] result
 
 if [ catch { brepiges result $file } res ] {
-   puts "Faulty OCC816 : brepiges not complite"
+   puts "Faulty OCC816 : brepiges not complete"
 }
 
 if [ catch { igesbrep $file a *} res ] {
-   puts "Faulty OCC816 : igesbrep not complite"
+   puts "Faulty OCC816 : igesbrep not complete"
 }
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

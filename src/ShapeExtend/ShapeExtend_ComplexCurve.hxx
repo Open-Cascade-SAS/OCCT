@@ -43,7 +43,7 @@ public:
   Standard_EXPORT virtual const Handle(Geom_Curve)& Curve(const Standard_Integer index) const = 0;
 
   //! Returns number of the curve for the given parameter U
-  //! and local paramete r UOut for the found curve
+  //! and local parameter UOut for the found curve
   Standard_EXPORT virtual Standard_Integer LocateParameter(const Standard_Real U,
                                                            Standard_Real&      UOut) const = 0;
 

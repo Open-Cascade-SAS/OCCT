@@ -1,7 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename ardi1.igs
 
-# set in as local lenght unit
+# set in as local length unit
 set lengthunit_start "in"
 
 set ref_data {

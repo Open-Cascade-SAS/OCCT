@@ -70,13 +70,13 @@ Handle(StepVisual_CoordinatesList) GenerateCoordinateList(
 //           0, if theTriangulation has no normals.
 //           1, if all normals contained in theTriangulation are equal.
 //             Note that Poly_Triangulation supports only 2 options:
-//             either no normals or a normal assosciated with each node.
+//             either no normals or a normal associated with each node.
 //             So when source complex_triangulated_surface_set has just
 //             one normal, it will be just associated with every node in
 //             Poly_Triangulation. Return value of one indicates that
 //             that's what probably happen during reading.
 //           theTriangulation->NbNodes(), if each vertex has a unique
-//             node ossociated with it.
+//             node associated with it.
 //=======================================================================
 Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation)
 {

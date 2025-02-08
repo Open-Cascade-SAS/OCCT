@@ -21,7 +21,7 @@ Open ${xDoc} Doc
 box b 1 1 1
 SetShape Doc 0:2 b
 
-# Configurate XProgress
+# Configure XProgress
 XProgress +t
 
 # Save

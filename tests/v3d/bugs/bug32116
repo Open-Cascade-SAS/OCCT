@@ -27,15 +27,15 @@ vmanipulator m -stopTransform
 vmoveto {*}$mouse_drag
 
 if { [vreadpixel {*}$mouse_drag -rgb -name] != "CYAN" } { puts "Error: wrong manipulator position" }
-if { [vreadpixel 115 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 tranformation" }
-if { [vreadpixel 400 10 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 tranformation" }
+if { [vreadpixel 115 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 transformation" }
+if { [vreadpixel 400 10 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 transformation" }
 
 vdump ${imagedir}/${casename}_1.png
 
 vmoveto 0 0
 vzoom 0.2
 
-if { [vreadpixel 210 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 tranformation" }
-if { [vreadpixel 310 120 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 tranformation" }
+if { [vreadpixel 210 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 transformation" }
+if { [vreadpixel 310 120 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 transformation" }
 
 vdump ${imagedir}/${casename}_2.png

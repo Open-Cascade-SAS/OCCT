@@ -1,4 +1,4 @@
 # Check performance of STEPControl_Writer in multithreading environment.
-# If no crash occures, its fine.
+# If no crash occurs, its fine.
 pload QAcommands
 OCC33657_1

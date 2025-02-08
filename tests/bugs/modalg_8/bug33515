@@ -1,5 +1,5 @@
 puts "================================"
-puts "	0033515: Modeling Algorithm - BRepExtrema_DistShapeShape poduces wrong result"
+puts "	0033515: Modeling Algorithm - BRepExtrema_DistShapeShape produces wrong result"
 puts "================================"
 
 restore [locate_data_file bug33515_w1.brep] w1

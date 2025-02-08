@@ -109,7 +109,7 @@ Handle(Express_Item) Express_Schema::Item(const Handle(TCollection_HAsciiString)
 
 //=======================================================================
 // function : nameToCasCade
-// purpose  : auxilary for Prepare()
+// purpose  : auxiliary for Prepare()
 //           Convert STEP-style name (lowercase, with underscores)
 //           to CASCADE-style name (each word starts with uppercase, no intervals)
 //=======================================================================
@@ -135,7 +135,7 @@ static void nameToCasCade(const Handle(TCollection_HAsciiString)& theName)
 
 //=======================================================================
 // function : nameToCasCade
-// purpose  : auxilary for Prepare()
+// purpose  : auxiliary for Prepare()
 //           Convert names for Type object
 //=======================================================================
 static void nameToCasCade(const Handle(Express_Type)& theType)

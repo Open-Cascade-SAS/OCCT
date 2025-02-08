@@ -28,7 +28,7 @@ class TopoDS_Shape;
 
 //! Conversion of the complete geometry of a shape
 //! (all 3D analytical representation of surfaces and curves)
-//! into NURBS geometry (execpt for Planes). For example,
+//! into NURBS geometry (except for Planes). For example,
 //! all curves supporting edges of the basis shape are converted
 //! into BSpline curves, and all surfaces supporting its faces are
 //! converted into BSpline surfaces.

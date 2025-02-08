@@ -14,7 +14,7 @@
 #ifndef _RWGltf_GltfOStreamWriter_HeaderFile
 #define _RWGltf_GltfOStreamWriter_HeaderFile
 
-// disable warnings, occures in rapidjson
+// disable warnings, occurs in rapidjson
 #include <Standard_WarningsDisable.hxx>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/ostreamwrapper.h>
