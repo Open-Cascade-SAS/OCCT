@@ -70,6 +70,7 @@ runs:
         
         for sample in IESample Tutorial FuncDemo; do
           cd $sample
+          echo $CSF_OCCTIncludePath
           aQMakePath=`which qmake`
           export aSamplePath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
           host=`uname -s`

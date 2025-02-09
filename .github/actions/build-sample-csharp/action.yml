@@ -25,6 +25,7 @@ runs:
         REM Setup environment
         call "${{ github.workspace }}\occt-install\env.bat" vc14 win64 Release
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" x64
+        set "PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE;%PATH%"
 
         cd ${{ github.workspace }}/samples/CSharp
 

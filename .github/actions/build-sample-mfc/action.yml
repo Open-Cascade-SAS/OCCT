@@ -29,12 +29,22 @@ runs:
         cd ${{ github.workspace }}/samples/mfc/standard
         set "PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE;%PATH%"
         
-        REM Upgrade solution and project files
-        set PROJNAME=ALL-vc14
-        devenv.exe %PROJNAME%.sln /upgrade
+        REM First restore the solution
+        echo "Restoring solution..."
+        msbuild.exe ALL-vc14.sln -t:Restore -p:Configuration=Release -p:Platform=x64 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=restore.log;Verbosity=detailed
         
-        REM Build solution
-        devenv.exe %PROJNAME%.sln /build "Release|x64"
+        REM Build solution with detailed logging
+        echo "Building solution..."
+        msbuild.exe ALL-vc14.sln /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=build.log;Verbosity=detailed /m
+
+        REM Display logs if build fails
+        if errorlevel 1 (
+          echo "Build failed. Contents of restore.log:"
+          type restore.log
+          echo "Contents of build.log:"
+          type build.log
+          exit /b 1
+        )
 
     - name: Upload MFC Sample
       uses: actions/upload-artifact@v4.4.3
