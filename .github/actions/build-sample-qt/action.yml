@@ -72,8 +72,7 @@ runs:
           cd $sample
           echo "#!/bin/bash" > custom.sh
           echo "export QTDIR=/usr" >> custom.sh
-          qmake
-          make -j$(nproc)
+          . make.sh
           cd ..
         done
 
