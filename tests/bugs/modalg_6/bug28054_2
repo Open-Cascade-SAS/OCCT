@@ -31,6 +31,9 @@ rotate f3 7 0 7 1 0 1 32
 copy f2 f4
 rotate f4 0 -6 -6 0 -1 -1 81
 
+# disable the signal catching
+dsetsignal 0
+
 for { set i 1 } { $i <= 2 } { incr i } {
   for { set j 1 } { $j <= 4 } { incr j } {
     if { $i == 1 && $j == 4 } continue;
