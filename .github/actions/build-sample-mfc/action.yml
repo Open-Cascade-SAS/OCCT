@@ -1,0 +1,46 @@
+name: 'Build MFC Sample'
+description: 'Build MFC sample using OCCT installation'
+
+inputs:
+  platform:
+    description: 'Build platform (windows)'
+    required: true
+  install-artifact-name:
+    description: 'OCCT installation artifact name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download OCCT installation 
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: occt-install
+
+    - name: Setup MSBuild
+      if: inputs.platform == 'windows'
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build MFC Sample
+      if: inputs.platform == 'windows'
+      shell: cmd
+      run: |
+        cd samples\mfc\standard
+        
+        REM Setup environment
+        call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
+        
+        REM Upgrade solution and project files
+        set PROJNAME=ALL-vc14
+        devenv.exe %PROJNAME%.sln /upgrade
+        
+        REM Build solution
+        devenv.exe %PROJNAME%.sln /build "Release|x64"
+
+    - name: Upload MFC Sample
+      uses: actions/upload-artifact@v4.1.7
+      with:
+        name: mfc-sample-${{ inputs.platform }}-x64
+        path: samples/mfc/standard/build
+        retention-days: 7

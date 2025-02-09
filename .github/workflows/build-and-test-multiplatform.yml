@@ -445,6 +445,51 @@ jobs:
         platform: windows
         install-artifact-name: install-windows-x64
 
+  build-mfc-windows:
+    name: Build MFC Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build MFC Sample
+      uses: ./.github/actions/build-sample-mfc
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-qt-windows:
+    name: Build Qt Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build Qt Sample
+      uses: ./.github/actions/build-sample-qt
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-qt-linux:
+    name: Build Qt Sample on Linux
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build Qt Sample
+      uses: ./.github/actions/build-sample-qt
+      with:
+        platform: linux
+        install-artifact-name: install-linux-clang-x64
+
   test-windows-x64:
     name: Test on Windows (x64)
     runs-on: windows-2022

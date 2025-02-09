@@ -1,0 +1,100 @@
+name: 'Build Qt Sample'
+description: 'Build Qt samples using OCCT installation'
+
+inputs:
+  platform:
+    description: 'Build platform (windows/linux)'
+    required: true
+  install-artifact-name:
+    description: 'OCCT installation artifact name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download OCCT installation
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: occt-install
+
+    - name: Install Windows dependencies
+      if: inputs.platform == 'windows'
+      shell: pwsh
+      run: |
+          Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+
+    - name: Install Linux dependencies
+      if: inputs.platform == 'linux'
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev qtbase5-dev qt5-qmake qtbase5-dev-tools qtdeclarative5-dev qttools5-dev qttools5-dev-tools
+
+    - name: Setup MSBuild
+      if: inputs.platform == 'windows'
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build Qt Samples - Windows
+      if: inputs.platform == 'windows'
+      shell: cmd
+      run: |
+        cd samples\qt
+        
+        REM Setup environment
+        call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
+
+        REM Build IESample
+        cd IESample
+        qmake
+        devenv.exe IESample.sln /upgrade
+        devenv.exe IESample.sln /build "Release|x64"
+        cd ..
+
+        REM Build Tutorial
+        cd Tutorial
+        qmake
+        devenv.exe Tutorial.sln /upgrade
+        devenv.exe Tutorial.sln /build "Release|x64"
+        cd ..
+
+        REM Build FuncDemo
+        cd FuncDemo
+        qmake
+        devenv.exe FuncDemo.sln /upgrade
+        devenv.exe FuncDemo.sln /build "Release|x64"
+        cd ..
+
+    - name: Build Qt Samples - Linux
+      if: inputs.platform == 'linux'
+      shell: bash
+      run: |
+        cd samples/qt
+        source ${{ github.workspace }}/occt-install/env.sh
+        
+        # Build IESample
+        cd IESample
+        qmake
+        make -j$(nproc)
+        cd ..
+        
+        # Build Tutorial
+        cd Tutorial
+        qmake
+        make -j$(nproc)
+        cd ..
+        
+        # Build FuncDemo
+        cd FuncDemo
+        qmake
+        make -j$(nproc)
+        cd ..
+
+    - name: Upload Qt Samples
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: qt-samples-${{ inputs.platform }}-x64
+        path: |
+          samples/qt/*/build
+          samples/qt/*/release
+        retention-days: 7
