@@ -85,6 +85,10 @@ runs:
         cd ${{ github.workspace }}/occt-install/bin
         source env.sh
         echo "include path: ${CSF_OCCTIncludePath}"
+        source custom.sh "" 64
+        echo "include path: ${CSF_OCCTIncludePath}"
+        echo "OCCT root: ${CASROOT}"
+        export CSF_OCCTIncludePath="${{ github.workspace }}/occt-install/include/opencascade"
         cd ${{ github.workspace }}/samples/qt
         
         for sample in IESample Tutorial FuncDemo; do
