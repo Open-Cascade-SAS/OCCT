@@ -51,7 +51,7 @@ jobs:
 
     - name: Download and extract 3rdparty dependencies
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
