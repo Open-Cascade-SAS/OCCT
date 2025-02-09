@@ -84,8 +84,6 @@ runs:
       run: |
         cd ${{ github.workspace }}/occt-install/bin
         source env.sh
-        echo "include path: ${CSF_OCCTIncludePath}"
-        echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
         cd ${{ github.workspace }}/samples/qt
         
         for sample in IESample Tutorial FuncDemo; do
@@ -93,7 +91,7 @@ runs:
           aQMakePath=`which qmake`
           host=`uname -s`
           export STATION=$host
-          export RES_DIR="${{ github.workspace }}/samples/qt/${sample}/res"
+          export RES_DIR="${{ github.workspace }}/samples/qt/${sample}/result"
           qmake $sample.pro
           aNbJobs="$(getconf _NPROCESSORS_ONLN)"
           make -j$aNbJobs release
