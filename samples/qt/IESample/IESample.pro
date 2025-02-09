@@ -3,7 +3,11 @@ CONFIG += debug_and_release qt
 
 TARGET = IESample
 
-SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+isEmpty(CSF_OCCTSamplesPath) {
+    SAMPLESROOT = $$PWD/..
+} else {
+    SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+}
 
 HEADERS   = $${SAMPLESROOT}/Common/src/*.h \
             $${SAMPLESROOT}/Interface/src/*.h

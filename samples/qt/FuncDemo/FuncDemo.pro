@@ -3,7 +3,11 @@ CONFIG += debug_and_release qt
 
 TARGET = FuncDemo
 
-SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+isEmpty(CSF_OCCTSamplesPath) {
+    SAMPLESROOT = $$PWD/..
+} else {
+    SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+}
 
 HEADERS = src/*.h
 SOURCES = src/*.cpp
