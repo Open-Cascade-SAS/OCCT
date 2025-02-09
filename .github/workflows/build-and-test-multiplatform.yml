@@ -55,7 +55,7 @@ jobs:
 
     - name: Download and extract 3rdparty dependencies
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -121,7 +121,7 @@ jobs:
 
     - name: Download and extract 3rdparty dependencies
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -441,7 +441,7 @@ jobs:
 
     - name: Download and extract 3rdparty dependencies
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -449,9 +449,9 @@ jobs:
     - name: Download and extract test data
       run: |
         cd data
-        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
-        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
-        Remove-Item opencascade-dataset-7.8.0.zip
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
       shell: pwsh
 
     - name: Download and extract install directory
@@ -554,7 +554,7 @@ jobs:
     - name: Download and extract 3rdparty dependencies
       if: steps.check_failures.outputs.failed_count > 0
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -563,9 +563,9 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
-        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
-        Remove-Item opencascade-dataset-7.8.0.zip
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
       shell: pwsh
 
     - name: Download and extract install directory
@@ -682,7 +682,7 @@ jobs:
 
     - name: Download and extract 3rdparty dependencies
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -690,9 +690,9 @@ jobs:
     - name: Download and extract test data
       run: |
         cd data
-        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
-        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
-        Remove-Item opencascade-dataset-7.8.0.zip
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
       shell: pwsh
 
     - name: Download and extract install directory
@@ -795,7 +795,7 @@ jobs:
     - name: Download and extract 3rdparty dependencies
       if: steps.check_failures.outputs.failed_count > 0
       run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
@@ -804,9 +804,9 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
-        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
-        Remove-Item opencascade-dataset-7.8.0.zip
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
       shell: pwsh
 
     - name: Download and extract install directory
@@ -930,8 +930,8 @@ jobs:
     - name: Download test data
       run: |
         cd data
-        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
@@ -1024,8 +1024,8 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       if: steps.check_failures.outputs.failed_count > 0
@@ -1121,8 +1121,8 @@ jobs:
     - name: Download test data
       run: |
         cd data
-        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
@@ -1215,8 +1215,8 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       if: steps.check_failures.outputs.failed_count > 0
@@ -1311,8 +1311,8 @@ jobs:
     - name: Download test data
       run: |
         cd data
-        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
@@ -1404,8 +1404,8 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       if: steps.check_failures.outputs.failed_count > 0
@@ -1497,8 +1497,8 @@ jobs:
     - name: Download test data
       run: |
         cd data
-        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
@@ -1590,8 +1590,8 @@ jobs:
       if: steps.check_failures.outputs.failed_count > 0
       run: |
         cd data
-        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
-        tar -xf opencascade-dataset-7.8.0.tar.xz
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
 
     - name: Download and extract install directory
       if: steps.check_failures.outputs.failed_count > 0
