@@ -84,9 +84,6 @@ runs:
       run: |
         cd ${{ github.workspace }}/occt-install/bin
         source env.sh
-        source custom.sh "" 64
-        source env.sh
-        source custom.sh "" 64
         echo "include path: ${CSF_OCCTIncludePath}"
         echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
         cd ${{ github.workspace }}/samples/qt
