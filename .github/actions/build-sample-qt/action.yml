@@ -71,6 +71,10 @@ runs:
         for sample in IESample Tutorial FuncDemo; do
           cd $sample
           aQMakePath=`which qmake`
+          export aSamplePath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+          host=`uname -s`
+          export STATION=$host
+          export RES_DIR=${aSamplePath}/${STATION}/res
           qmake $sample.pro
           aNbJobs="$(getconf _NPROCESSORS_ONLN)"
           make -j$aNbJobs release

@@ -23,7 +23,7 @@ if [ "$1" == "@BIN_LETTER@" ]; then
 
     export CSF_OCCTBinPath="@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
     export CSF_OCCTLibPath="@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"
-    export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/inc"
+    export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     export CSF_OCCTResourcePath="@CMAKE_SOURCE_DIR@/src"
     export CSF_OCCTDataPath="@CMAKE_SOURCE_DIR@/data"
     export CSF_OCCTSamplesPath="@CMAKE_SOURCE_DIR@/samples"
