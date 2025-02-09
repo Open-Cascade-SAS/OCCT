@@ -85,6 +85,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
@@ -159,6 +160,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
@@ -426,6 +428,66 @@ jobs:
 
     - name: Build TInspector
       uses: ./.github/actions/build-tinspector
+      with:
+        platform: linux
+        install-artifact-name: install-linux-clang-x64
+
+  build-csharp-windows:
+    name: Build CSharp Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build CSharp Sample
+      uses: ./.github/actions/build-sample-csharp
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-mfc-windows:
+    name: Build MFC Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build MFC Sample
+      uses: ./.github/actions/build-sample-mfc
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-qt-windows:
+    name: Build Qt Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build Qt Sample
+      uses: ./.github/actions/build-sample-qt
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
+  build-qt-linux:
+    name: Build Qt Sample on Linux
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build Qt Sample
+      uses: ./.github/actions/build-sample-qt
       with:
         platform: linux
         install-artifact-name: install-linux-clang-x64

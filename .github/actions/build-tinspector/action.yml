@@ -16,9 +16,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.1.7
-
     - name: Download OCCT installation
       uses: actions/download-artifact@v4.1.7
       with:
@@ -32,7 +29,6 @@ runs:
           Invoke-WebRequest -Uri ${{ inputs.thirdparty_url }} -OutFile 3rdparty-vc14-64.zip
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
-
 
     - name: Install Linux dependencies
       if: inputs.platform == 'linux'

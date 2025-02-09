@@ -9,7 +9,11 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 TARGET = OCCTOverview
 
-SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+isEmpty(CSF_OCCTSamplesPath) {
+    SAMPLESROOT = $$PWD/..
+} else {
+    SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
+}
 
 
 HEADERS   = ./src/*.h \
