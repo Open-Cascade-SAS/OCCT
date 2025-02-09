@@ -90,6 +90,8 @@ runs:
         echo "include path: ${CSF_OCCTIncludePath}"
         bash env.sh
         echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
+        set LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${{ github.workspace }}/occt-install/bin:${{ github.workspace }}/occt-install/lib:${CSF_OCCTLibPath}
+        echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
         cd ${{ github.workspace }}/samples/qt
         
         for sample in IESample Tutorial FuncDemo; do
