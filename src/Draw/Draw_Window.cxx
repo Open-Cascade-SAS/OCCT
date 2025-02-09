@@ -1991,7 +1991,7 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
   #endif
   }
   Tcl_Exit(0);
-  #if (!((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION == 6) && (TCL_RELEASE_SERIAL >= 15))))
+  #if (!((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION == 6) && (TCL_RELEASE_SERIAL >= 15)))
   return 0;
   #endif
 }
