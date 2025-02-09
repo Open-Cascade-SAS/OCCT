@@ -65,14 +65,15 @@ runs:
       if: inputs.platform == 'linux'
       shell: bash
       run: |
-        source ${{ github.workspace }}/occt-install/bin/env.sh
+        source "${{ github.workspace }}/occt-install/bin/env.sh"
         cd ${{ github.workspace }}/samples/qt
         
         for sample in IESample Tutorial FuncDemo; do
           cd $sample
-          echo "#!/bin/bash" > custom.sh
-          echo "export QTDIR=/usr" >> custom.sh
-          . make.sh
+          aQMakePath=`which qmake`
+          qmake $sample.pro
+          aNbJobs="$(getconf _NPROCESSORS_ONLN)"
+          make -j$aNbJobs release
           cd ..
         done
 
@@ -81,6 +82,6 @@ runs:
       with:
         name: qt-samples-${{ inputs.platform }}-x64
         path: |
-          samples/qt/*/build
-          samples/qt/*/release
+          samples/qt/
+          samples/qt/
         retention-days: 7

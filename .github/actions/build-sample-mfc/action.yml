@@ -40,5 +40,5 @@ runs:
       uses: actions/upload-artifact@v4.4.3
       with:
         name: mfc-sample-${{ inputs.platform }}-x64
-        path: samples/mfc/standard/build
+        path: samples/mfc/
         retention-days: 7
