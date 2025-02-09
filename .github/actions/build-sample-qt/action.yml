@@ -55,9 +55,24 @@ runs:
 
         for %%s in (IESample Tutorial FuncDemo) do (
           cd %%s
+          echo "Generating project for %%s..."
           qmake
-          devenv.exe %%s.sln /upgrade
-          devenv.exe %%s.sln /build "Release|x64"
+          
+          echo "Restoring %%s..."
+          msbuild.exe %%s.sln -t:Restore -p:Configuration=Release -p:Platform=x64 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=%%s_restore.log;Verbosity=detailed
+          
+          echo "Building %%s..."
+          msbuild.exe %%s.sln /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=%%s_build.log;Verbosity=detailed /m
+          
+          REM Display logs if build fails
+          if errorlevel 1 (
+            echo "Build failed for %%s. Contents of restore log:"
+            type %%s_restore.log
+            echo "Contents of build log:"
+            type %%s_build.log
+            exit /b 1
+          )
+          
           cd ..
         )
 
@@ -66,11 +81,11 @@ runs:
       shell: bash
       run: |
         source "${{ github.workspace }}/occt-install/bin/env.sh"
+        echo "include path: ${CSF_OCCTIncludePath}"
         cd ${{ github.workspace }}/samples/qt
         
         for sample in IESample Tutorial FuncDemo; do
           cd $sample
-          echo $CSF_OCCTIncludePath
           aQMakePath=`which qmake`
           host=`uname -s`
           export STATION=$host

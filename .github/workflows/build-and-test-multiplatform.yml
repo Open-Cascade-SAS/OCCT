@@ -85,6 +85,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
@@ -159,6 +160,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
