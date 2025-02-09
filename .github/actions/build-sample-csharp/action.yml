@@ -26,11 +26,12 @@ runs:
       if: inputs.platform == 'windows'
       shell: cmd
       run: |
-        cd samples\CSharp
-        
         REM Setup environment
         call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
         
+        cd %github.workspace%/samples/CSharp
+        set "PATH=%DevEnvDir%;%PATH%"
+
         REM Upgrade solution and project files
         devenv.exe CSharp.sln /upgrade
         devenv.exe CSharp_D3D.sln /upgrade

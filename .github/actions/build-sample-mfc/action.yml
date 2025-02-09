@@ -26,10 +26,11 @@ runs:
       if: inputs.platform == 'windows'
       shell: cmd
       run: |
-        cd samples\mfc\standard
-        
         REM Setup environment
         call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
+
+        cd %github.workspace%/samples/mfc/standard
+        set "PATH=%DevEnvDir%;%PATH%"
         
         REM Upgrade solution and project files
         set PROJNAME=ALL-vc14
