@@ -49,7 +49,7 @@ runs:
 
         REM Setup Qt environment
         set "QTDIR=${{ github.workspace }}\3rdparty-vc14-64\qt5.11.2-vc14-64"
-        set "PATH=%QTDIR%\bin;%PATH%"
+        set "PATH=%QTDIR%\bin;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE;%PATH%"
 
         cd ${{ github.workspace }}/samples/qt
 
