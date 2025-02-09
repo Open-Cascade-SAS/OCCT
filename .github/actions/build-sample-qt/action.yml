@@ -45,58 +45,37 @@ runs:
       run: |
         REM Setup environment
         call "${{ github.workspace }}\occt-install\env.bat" vc14 win64 Release
-        
+        call "%VCVARS%" x64
+
         REM Setup Qt environment
         set "QTDIR=${{ github.workspace }}\3rdparty-vc14-64\qt5.11.2-vc14-64"
         set "PATH=%QTDIR%\bin;%DevEnvDir%;%PATH%"
 
         cd ${{ github.workspace }}/samples/qt
 
-        REM Build IESample
-        cd IESample
-        qmake
-        devenv.exe IESample.sln /upgrade
-        devenv.exe IESample.sln /build "Release|x64"
-        cd ..
-
-        REM Build Tutorial
-        cd Tutorial
-        qmake
-        devenv.exe Tutorial.sln /upgrade
-        devenv.exe Tutorial.sln /build "Release|x64"
-        cd ..
-
-        REM Build FuncDemo
-        cd FuncDemo
-        qmake
-        devenv.exe FuncDemo.sln /upgrade
-        devenv.exe FuncDemo.sln /build "Release|x64"
-        cd ..
+        for %%s in (IESample Tutorial FuncDemo) do (
+          cd %%s
+          qmake
+          devenv.exe %%s.sln /upgrade
+          devenv.exe %%s.sln /build "Release|x64"
+          cd ..
+        )
 
     - name: Build Qt Samples - Linux
       if: inputs.platform == 'linux'
       shell: bash
       run: |
         source ${{ github.workspace }}/occt-install/bin/env.sh
-        
         cd ${{ github.workspace }}/samples/qt
-        # Build IESample
-        cd IESample
-        qmake
-        make -j$(nproc)
-        cd ..
         
-        # Build Tutorial
-        cd Tutorial
-        qmake
-        make -j$(nproc)
-        cd ..
-        
-        # Build FuncDemo
-        cd FuncDemo
-        qmake
-        make -j$(nproc)
-        cd ..
+        for sample in IESample Tutorial FuncDemo; do
+          cd $sample
+          echo "#!/bin/bash" > custom.sh
+          echo "export QTDIR=/usr" >> custom.sh
+          chmod +x make.sh
+          ./make.sh
+          cd ..
+        done
 
     - name: Upload Qt Samples
       uses: actions/upload-artifact@v4.4.3

@@ -18,16 +18,13 @@ runs:
         name: ${{ inputs.install-artifact-name }}
         path: occt-install
 
-    - name: Setup MSBuild
-      if: inputs.platform == 'windows'
-      uses: microsoft/setup-msbuild@v2
-
     - name: Build MFC Sample
       if: inputs.platform == 'windows'
       shell: cmd
       run: |
         REM Setup environment
         call "${{ github.workspace }}\occt-install\env.bat" vc14 win64 Release
+        call "%VCVARS%" x64
 
         cd ${{ github.workspace }}/samples/mfc/standard
         set "PATH=%DevEnvDir%;%PATH%"
