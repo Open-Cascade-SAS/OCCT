@@ -8,10 +8,6 @@ inputs:
   install-artifact-name:
     description: 'OCCT installation artifact name'
     required: true
-  thirdparty_url:
-    description: 'URL to download 3rdparty dependencies'
-    required: false
-    default: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip'
 
 runs:
   using: "composite"
@@ -47,7 +43,7 @@ runs:
         devenv.exe CSharp_D3D.sln /build "Release|x64"
 
     - name: Upload CSharp Sample
-      uses: actions/upload-artifact@v4.1.7
+      uses: actions/upload-artifact@v4.4.3
       with:
         name: csharp-sample-${{ inputs.platform }}-x64
         path: samples/CSharp/build
