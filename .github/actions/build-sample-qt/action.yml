@@ -11,7 +11,7 @@ inputs:
   thirdparty_url:
     description: 'URL to download 3rdparty dependencies'
     required: false
-    default: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip'
+    default: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip'
 
 runs:
   using: "composite"
