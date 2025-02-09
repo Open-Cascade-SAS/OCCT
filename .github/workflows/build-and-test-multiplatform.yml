@@ -430,6 +430,21 @@ jobs:
         platform: linux
         install-artifact-name: install-linux-clang-x64
 
+  build-csharp-windows:
+    name: Build CSharp Sample on Windows
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build CSharp Sample
+      uses: ./.github/actions/build-sample-csharp
+      with:
+        platform: windows
+        install-artifact-name: install-windows-x64
+
   test-windows-x64:
     name: Test on Windows (x64)
     runs-on: windows-2022

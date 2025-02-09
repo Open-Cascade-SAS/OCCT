@@ -1,0 +1,53 @@
+name: 'Build CSharp Sample'
+description: 'Build CSharp sample using OCCT installation'
+
+inputs:
+  platform:
+    description: 'Build platform (windows)'
+    required: true
+  install-artifact-name:
+    description: 'OCCT installation artifact name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download OCCT installation
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: occt-install
+
+    - name: Setup MSBuild
+      if: inputs.platform == 'windows'
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build CSharp Sample
+      if: inputs.platform == 'windows'
+      shell: cmd
+      run: |
+        cd samples\CSharp
+        
+        REM Setup environment
+        call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
+        
+        REM Upgrade solution and project files
+        devenv.exe CSharp.sln /upgrade
+        devenv.exe CSharp_D3D.sln /upgrade
+        devenv.exe WinForms\IE_WinForms.csproj /upgrade
+        devenv.exe WPF_D3D\IE_WPF_D3D.csproj /upgrade
+        devenv.exe WPF_WinForms\IE_WPF_WinForms.csproj /upgrade
+        
+        REM Build solutions
+        devenv.exe CSharp.sln /build "Release|x64"
+        devenv.exe CSharp_D3D.sln /build "Release|x64"
+
+    - name: Upload CSharp Sample
+      uses: actions/upload-artifact@v4.1.7
+      with:
+        name: csharp-sample-${{ inputs.platform }}-x64
+        path: samples/CSharp/build
+        retention-days: 7
