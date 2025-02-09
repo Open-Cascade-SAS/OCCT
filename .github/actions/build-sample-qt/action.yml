@@ -72,10 +72,9 @@ runs:
           cd $sample
           echo $CSF_OCCTIncludePath
           aQMakePath=`which qmake`
-          export aSamplePath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
           host=`uname -s`
           export STATION=$host
-          export RES_DIR=${aSamplePath}/${STATION}/res
+          export RES_DIR="${{ github.workspace }}/samples/qt/${sample}/res"
           qmake $sample.pro
           aNbJobs="$(getconf _NPROCESSORS_ONLN)"
           make -j$aNbJobs release
