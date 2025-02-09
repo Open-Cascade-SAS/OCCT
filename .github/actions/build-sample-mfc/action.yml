@@ -24,7 +24,7 @@ runs:
       run: |
         REM Setup environment
         call "${{ github.workspace }}\occt-install\env.bat" vc14 win64 Release
-        call "%VCVARS%" x64
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build" x64
 
         cd ${{ github.workspace }}/samples/mfc/standard
         set "PATH=%DevEnvDir%;%PATH%"
