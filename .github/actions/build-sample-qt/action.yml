@@ -44,7 +44,9 @@ runs:
       shell: cmd
       run: |
         REM Setup environment
-        call "${{ github.workspace }}\occt-install\env.bat" vc14 win64 Release
+        cd ${{ github.workspace }}/occt-install/
+        call env.bat vc14 win64 Release
+
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" x64
 
         REM Setup Qt environment
@@ -56,8 +58,8 @@ runs:
         for %%s in (IESample Tutorial FuncDemo) do (
           cd %%s
           echo "Generating project for %%s..."
-          qmake
-          
+          qmake -tp vc -r -o %%s.sln %%s0.pro
+
           echo "Restoring %%s..."
           msbuild.exe %%s.sln -t:Restore -p:Configuration=Release -p:Platform=x64 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=%%s_restore.log;Verbosity=detailed
           
@@ -80,7 +82,8 @@ runs:
       if: inputs.platform == 'linux'
       shell: bash
       run: |
-        source "${{ github.workspace }}/occt-install/bin/env.sh"
+        cd ${{ github.workspace }}/occt-install/bin
+        source env.sh
         echo "include path: ${CSF_OCCTIncludePath}"
         cd ${{ github.workspace }}/samples/qt
         
