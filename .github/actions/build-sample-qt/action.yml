@@ -43,6 +43,10 @@ runs:
         
         REM Setup environment
         call "%github.workspace%\occt-install\env.bat" vc14 win64 Release
+        
+        REM Setup Qt environment
+        set "QTDIR=%github.workspace%\3rdparty-vc14-64\qt5.11.2-vc14-64"
+        set "PATH=%QTDIR%\bin;%PATH%"
 
         REM Build IESample
         cd IESample
