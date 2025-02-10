@@ -6322,12 +6322,12 @@ Standard_Boolean STEPCAFControl_Reader::fillAttributes(
 
         if (!anUnit.IsNull())
         {
-          Standard_Real aParam = 1.;
           if (anUnit.Type() == STANDARD_TYPE(StepBasic_DerivedUnit))
           {
             Handle(StepBasic_DerivedUnit) aDUnit = anUnit.DerivedUnit();
             if (!aDUnit.IsNull())
             {
+              Standard_Real aParam = 1.;
               for (Standard_Integer anInd = 1; anInd <= aDUnit->NbElements(); ++anInd)
               {
                 Handle(StepBasic_DerivedUnitElement) aDUElem = aDUnit->ElementsValue(anInd);
