@@ -30,46 +30,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 
 // Entete de fichier : liste d entites
-StepData_StepModel::StepData_StepModel()
-    : myReadUnitIsInitialized(Standard_False),
-      myWriteUnit(1.)
-{
-  switch (InternalParameters.WriteUnit)
-  {
-    case 1:
-      myWriteUnit = 25.4;
-      break;
-    case 2:
-      myWriteUnit = 1.;
-      break;
-    case 4:
-      myWriteUnit = 304.8;
-      break;
-    case 5:
-      myWriteUnit = 1609344.0;
-      break;
-    case 6:
-      myWriteUnit = 1000.0;
-      break;
-    case 7:
-      myWriteUnit = 1000000.0;
-      break;
-    case 8:
-      myWriteUnit = 0.0254;
-      break;
-    case 9:
-      myWriteUnit = 0.001;
-      break;
-    case 10:
-      myWriteUnit = 10.0;
-      break;
-    case 11:
-      myWriteUnit = 0.0000254;
-      break;
-    default:
-      GlobalCheck()->AddWarning("Incorrect write.step.unit parameter, use default value");
-  }
-}
+StepData_StepModel::StepData_StepModel() {}
 
 Handle(Standard_Transient) StepData_StepModel::Entity(const Standard_Integer num) const
 {
@@ -263,12 +224,54 @@ Standard_Real StepData_StepModel::LocalLengthUnit() const
 
 void StepData_StepModel::SetWriteLengthUnit(const Standard_Real theUnit)
 {
-  myWriteUnit = theUnit;
+  myWriteUnit              = theUnit;
+  myWriteUnitIsInitialized = Standard_True;
 }
 
 //=================================================================================================
 
 Standard_Real StepData_StepModel::WriteLengthUnit() const
 {
+  if (!myWriteUnitIsInitialized)
+  {
+    myWriteUnitIsInitialized = Standard_True;
+    switch (InternalParameters.WriteUnit)
+    {
+      case UnitsMethods_LengthUnit_Inch:
+        myWriteUnit = 25.4;
+        break;
+      case UnitsMethods_LengthUnit_Millimeter:
+        myWriteUnit = 1.;
+        break;
+      case UnitsMethods_LengthUnit_Foot:
+        myWriteUnit = 304.8;
+        break;
+      case UnitsMethods_LengthUnit_Mile:
+        myWriteUnit = 1609344.0;
+        break;
+      case UnitsMethods_LengthUnit_Meter:
+        myWriteUnit = 1000.0;
+        break;
+      case UnitsMethods_LengthUnit_Kilometer:
+        myWriteUnit = 1000000.0;
+        break;
+      case UnitsMethods_LengthUnit_Mil:
+        myWriteUnit = 0.0254;
+        break;
+      case UnitsMethods_LengthUnit_Micron:
+        myWriteUnit = 0.001;
+        break;
+      case UnitsMethods_LengthUnit_Centimeter:
+        myWriteUnit = 10.0;
+        break;
+      case UnitsMethods_LengthUnit_Microinch:
+        myWriteUnit = 0.0000254;
+        break;
+      default: {
+        myWriteUnitIsInitialized = Standard_False;
+        GlobalCheck()->AddWarning("Incorrect write.step.unit parameter, use default value");
+      }
+    }
+  }
   return myWriteUnit;
 }

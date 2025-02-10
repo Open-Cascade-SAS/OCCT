@@ -131,13 +131,13 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 
-protected:
 private:
   Interface_EntityList             theheader;
   Handle(TColStd_HArray1OfInteger) theidnums;
-  Standard_Boolean                 myReadUnitIsInitialized;
-  Standard_Real                    myWriteUnit;
-  Standard_Real                    myLocalLengthUnit;
+  Standard_Real                    myWriteUnit              = 1.0;
+  Standard_Real                    myLocalLengthUnit        = 1.0;
+  Standard_Boolean                 myReadUnitIsInitialized  = false;
+  Standard_Boolean                 myWriteUnitIsInitialized = false;
 };
 
 #endif // _StepData_StepModel_HeaderFile
