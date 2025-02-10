@@ -134,10 +134,10 @@ public:
 private:
   Interface_EntityList             theheader;
   Handle(TColStd_HArray1OfInteger) theidnums;
-  Standard_Real                    myWriteUnit              = 1.0;
+  mutable Standard_Real            myWriteUnit              = 1.0;
   Standard_Real                    myLocalLengthUnit        = 1.0;
   Standard_Boolean                 myReadUnitIsInitialized  = false;
-  Standard_Boolean                 myWriteUnitIsInitialized = false;
+  mutable Standard_Boolean         myWriteUnitIsInitialized = false;
 };
 
 #endif // _StepData_StepModel_HeaderFile
