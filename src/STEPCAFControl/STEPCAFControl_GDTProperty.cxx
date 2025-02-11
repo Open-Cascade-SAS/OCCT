@@ -109,7 +109,7 @@ Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation
 //=======================================================================
 // function : GenerateNormalsArray
 // purpose  : Generates array of normals from theTriangulation. Normals
-//           wiil be transformed with theTransformation.
+//           will be transformed with theTransformation.
 //           IMPORTANT: Output will be nullptr if theTriangulation has
 //           no normals.
 //=======================================================================
@@ -1567,7 +1567,7 @@ Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessel
   // Build tesselated_curve_set.
   Handle(StepVisual_TessellatedCurveSet) aTCS = GenerateTessellatedCurveSet(theShape);
 
-  // Fill the container of tesselated items.
+  // Fill the container of tessellated items.
   NCollection_Handle<StepVisual_Array1OfTessellatedItem> aTesselatedItems =
     new StepVisual_Array1OfTessellatedItem(1, static_cast<Standard_Integer>(aCTSSs.size()) + 1);
   aTesselatedItems->SetValue(1, aTCS);

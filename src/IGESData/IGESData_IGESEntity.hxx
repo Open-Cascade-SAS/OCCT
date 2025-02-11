@@ -185,7 +185,7 @@ public:
   //! Warning 0 is returned if no subscript number is defined for this IGES entity.
   Standard_EXPORT Standard_Integer SubScriptNumber() const;
 
-  //! Initializes a directory field as an Entiy of any kind
+  //! Initializes a directory field as an Entity of any kind
   //! See DirFieldEntity for more details
   Standard_EXPORT void InitDirFieldEntity(const Standard_Integer             fieldnum,
                                           const Handle(IGESData_IGESEntity)& ent);

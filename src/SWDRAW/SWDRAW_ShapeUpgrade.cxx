@@ -1799,7 +1799,7 @@ void SWDRAW_ShapeUpgrade::InitCommands(Draw_Interpretor& theCommands)
   //  theCommands.Add("DT_SplitFace", "DT_SplitFace Result Face Tol",
   //		  __FILE__, DT_SplitFace,g);
 
-  //  theCommands.Add("DT_Debug", "DT_Debug 0/1 : activation/desactivation of the debug messages",
+  //  theCommands.Add("DT_Debug", "DT_Debug 0/1 : activation/deactivation of the debug messages",
   //		  __FILE__, DT_Debug,g);
   //  theCommands.Add ("shellsolid","option[a-b-c-f] shape result",
   //		   __FILE__,shellsolid,g);

@@ -137,7 +137,7 @@ public: //! @name History methods
 protected:
   //! Analyze progress steps of the whole operation.
   //! @param theWhole - sum of progress of all operations.
-  //! @oaram theSteps - steps of the operations supported by PI
+  //! @param theSteps - steps of the operations supported by PI
   Standard_EXPORT void analyzeProgress(const Standard_Real   theWhole,
                                        TColStd_Array1OfReal& theSteps) const;
 

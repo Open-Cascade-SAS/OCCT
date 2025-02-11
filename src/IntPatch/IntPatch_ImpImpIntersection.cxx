@@ -4014,7 +4014,7 @@ public:
                                              Standard_Boolean&      theIsIncreasing);
 
   //! Computes U2 (U-parameter of the 2nd cylinder) and, if theDelta != 0,
-  //! esimates the tolerance of U2-computing (estimation result is
+  //! estimates the tolerance of U2-computing (estimation result is
   //! assigned to *theDelta value).
   static Standard_Boolean CylCylComputeParameters(const Standard_Real    theU1par,
                                                   const Standard_Integer theWLIndex,
@@ -6974,9 +6974,9 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                 && ((aVSurf2l - aV2[i]) * (aVSurf2l - aV2Prev[i]) < RealSmall()));
 
           // isFound1 == TRUE if intersection line intersects V-bounds
-          //   (First or Last - no matter) of the 1st cylynder
+          //   (First or Last - no matter) of the 1st cylinder
           // isFound2 == TRUE if intersection line intersects V-bounds
-          //   (First or Last - no matter) of the 2nd cylynder
+          //   (First or Last - no matter) of the 2nd cylinder
           Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
           Standard_Boolean isForce = Standard_False;
 

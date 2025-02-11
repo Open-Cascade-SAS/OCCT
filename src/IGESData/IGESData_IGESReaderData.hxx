@@ -46,7 +46,7 @@ class IGESData_IGESReaderData : public Interface_FileReaderData
 {
 
 public:
-  //! creates IGESReaderData correctly dimensionned (for arrays)
+  //! creates IGESReaderData correctly dimensioned (for arrays)
   //! <nbe> count of entities, that is, half nb of directory lines
   //! <nbp> : count of parameters
   Standard_EXPORT IGESData_IGESReaderData(const Standard_Integer nbe, const Standard_Integer nbp);

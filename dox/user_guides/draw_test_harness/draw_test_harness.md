@@ -6480,7 +6480,7 @@ blend b b 2 .
 ==fleche : 0.001 
 ==tolblend 0.01 0.0001 1e-05 0.001 
 ==Pick an object 
-# click on the edge you want ot fillet 
+# click on the edge you want to fillet 
 
 ==COMPUTE: temps total 0.1s dont : 
 ==- Init + ExtentAnalyse 0s 

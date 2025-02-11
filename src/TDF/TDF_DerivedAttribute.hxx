@@ -57,7 +57,7 @@ class TCollection_AsciiString;
     return TDF_DERIVED_##Class();                                                                  \
   }
 
-//! Class provides global access (through static methods) to all derived attributres information.
+//! Class provides global access (through static methods) to all derived attributes information.
 //! It is used internally by macros for registration of derived attributes and driver-tables
 //! for getting this data.
 class TDF_DerivedAttribute

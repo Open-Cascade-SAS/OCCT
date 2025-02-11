@@ -345,7 +345,7 @@ Function:
 
   Method:
   Let Pp be the projection of point P in plane XOY of the torus;
-  2 cases are consideres:
+  2 cases are considered:
   1- distance(Pp,O) < Tol:
      There is an infinite number of solutions; IsDone() = Standard_False.
   2- distance(Pp,O) > Tol:

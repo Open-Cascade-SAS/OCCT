@@ -459,7 +459,7 @@ Boolean flag regulating translation of entities that define tessellated geometry
 * TRIANGULATED_FACE
 * COMPLEX_TRIANGULATED_FACE
 
-Tesselated geometry is attached to shapes as objects of <i>Poly_Triangulation</i> type using STEP links.
+Tessellated geometry is attached to shapes as objects of <i>Poly_Triangulation</i> type using STEP links.
 
 * 0 (Off) -- do not translate 
 * 1 (On) --  translate 
@@ -1020,7 +1020,7 @@ Boolean flag regulating writing of entities that define tessellated geometry:
 * TESSELLATED_SOLID
 * TRIANGULATED_FACE
 
-Tesselated geometry is taken as objects of <i>Poly_Triangulation type</i> from the active <i>TopoDS_Face</i> triangulation.
+Tessellated geometry is taken as objects of <i>Poly_Triangulation type</i> from the active <i>TopoDS_Face</i> triangulation.
 
 * 0 (Off) -- do not write 
 * 1 (On) --  write 

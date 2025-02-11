@@ -18,7 +18,7 @@
 #include <AdvApp2Var_Context.hxx>
 #include <Standard_ConstructionError.hxx>
 
-// Calculaton of parameters
+// Calculation of parameters
 static Standard_Boolean lesparam(const Standard_Integer iordre,
                                  const Standard_Integer ncflim,
                                  const Standard_Integer icodeo,

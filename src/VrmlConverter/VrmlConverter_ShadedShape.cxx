@@ -53,7 +53,7 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
   gp_Pnt           p;
   TopExp_Explorer  ex;
 
-  // counting phasis. This phasis will count the valid triangle
+  // counting phase. This phase will count the valid triangle
   // and the vertices to allocate the correct size for the arrays:
 
   Standard_Integer nbTriangles = 0, nbVertices = 0;

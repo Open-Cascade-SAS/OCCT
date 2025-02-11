@@ -1465,7 +1465,7 @@ static Standard_Integer VPlaneBuilder(Draw_Interpretor& /*di*/,
       if (aShapes.Extent() < 1 || aShapes.Extent() > 3)
       {
         Message::SendFail()
-          << "Error: Wront number of selected shapes.\n"
+          << "Error: Wrong number of selected shapes.\n"
           << "\tYou should one of variant: face, edge and vertex or three vertices.";
         return 1;
       }
@@ -3878,7 +3878,7 @@ static int VDrawPArray(Draw_Interpretor& di, Standard_Integer argc, const char**
 
   if (!hasVertex)
   {
-    di << "You should pass any verticies in the list of array elements\n";
+    di << "You should pass any vertices in the list of array elements\n";
     return 1;
   }
 

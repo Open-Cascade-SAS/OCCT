@@ -91,7 +91,7 @@ DEFINE_STANDARD_HANDLE(PrsDim_Dimension, AIS_InteractiveObject)
 //! Being a 2D drawings, the dimensions are created on imaginary plane, called "dimension plane",
 //! which can be thought of as reference system of axes (X,Y,N) for constructing the presentation.
 //!
-//! The role of axes of the dimension plane is to guide you through the encapsualted automations
+//! The role of axes of the dimension plane is to guide you through the encapsulated automations
 //! of presentation building to help you understand how is the presentation will look and how it
 //! will be oriented in model space during construction.
 //!
@@ -515,7 +515,7 @@ protected:
                               gp_Pln&                                thePlane,
                               Standard_Boolean&                      theIsPlaneOld) const;
 
-protected: //! @name Static auxilliary methods for geometry extraction
+protected: //! @name Static auxiliary methods for geometry extraction
   //! If it is possible extracts circle from planar face.
   //! @param[in] theFace         the planar face
   //! @param[out] theCurve        the circular curve

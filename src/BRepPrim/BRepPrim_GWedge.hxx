@@ -34,11 +34,11 @@ class gp_Pln;
 class gp_Lin;
 class gp_Pnt;
 
-//! A wedge is defined by  :
+//! A wedge is defined by:
 //!
-//! Axes : an Axis2 (coordinate system)
+//! Axes: an Axis2 (coordinate system)
 //!
-//! YMin, YMax the  coordinates of the  ymin and ymax
+//! YMin, YMax the  coordinates of the ymin and ymax
 //! rectangular faces parallel to the ZX plane (of the
 //! coordinate systems)
 //!
@@ -61,7 +61,7 @@ public:
   //! Default constructor
   Standard_EXPORT BRepPrim_GWedge();
 
-  //! Creates a  GWedge  algorithm.   <Axes> is  the axis
+  //! Creates a GWedge algorithm. <Axes> is the axis
   //! system for the primitive.
   //!
   //! XMin, YMin, ZMin are set to 0
@@ -78,7 +78,7 @@ public:
                                   const Standard_Real     dy,
                                   const Standard_Real     dz);
 
-  //! Creates  a GWedge  primitive. <Axes> is   the  axis
+  //! Creates a GWedge primitive. <Axes> is the axis
   //! system for the primitive.
   //!
   //! XMin, YMin, ZMin are set to 0
@@ -97,7 +97,7 @@ public:
                                   const Standard_Real     dz,
                                   const Standard_Real     ltx);
 
-  //! Create  a GWedge primitive.   <Axes>  is  the  axis
+  //! Create a GWedge primitive. <Axes> is the axis
   //! system for the primitive.
   //!
   //! all the fields are set to the corresponding value
@@ -150,11 +150,11 @@ public:
   Standard_EXPORT Standard_Real GetX2Max() const;
 
   //! Opens <me> in <d1> direction. A face and its edges
-  //! or vertices are said nonexistant.
+  //! or vertices are said nonexistent.
   Standard_EXPORT void Open(const BRepPrim_Direction d1);
 
-  //! Closes   <me>  in <d1>  direction.  A face and its
-  //! edges or vertices are said existant.
+  //! Closes <me> in <d1> direction. A face and its
+  //! edges or vertices are said existent.
   Standard_EXPORT void Close(const BRepPrim_Direction d1);
 
   //! Returns True if <me> is open in <d1> direction.
@@ -169,7 +169,7 @@ public:
   //! Returns the Face of <me> located in <d1> direction.
   Standard_EXPORT const TopoDS_Face& Face(const BRepPrim_Direction d1);
 
-  //! Returns the plane  of the Face  of <me> located in
+  //! Returns the plane of the Face of <me> located in
   //! <d1> direction.
   Standard_EXPORT gp_Pln Plane(const BRepPrim_Direction d1);
 
@@ -186,11 +186,11 @@ public:
   //! Returns the Edge of <me> located in <d1><d2> direction.
   Standard_EXPORT const TopoDS_Edge& Edge(const BRepPrim_Direction d1, const BRepPrim_Direction d2);
 
-  //! Returns the line of  the Edge of <me>  located  in
+  //! Returns the line of the Edge of <me> located in
   //! <d1><d2> direction.
   Standard_EXPORT gp_Lin Line(const BRepPrim_Direction d1, const BRepPrim_Direction d2);
 
-  //! Returns True if <me> has a  Vertex in <d1><d2><d3>
+  //! Returns True if <me> has a Vertex in <d1><d2><d3>
   //! direction.
   Standard_EXPORT Standard_Boolean HasVertex(const BRepPrim_Direction d1,
                                              const BRepPrim_Direction d2,

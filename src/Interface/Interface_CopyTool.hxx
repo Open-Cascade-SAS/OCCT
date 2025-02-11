@@ -136,7 +136,7 @@ public:
   //! Clears LastFlags only. This allows to know what Entities are
   //! copied after its call (see method LastCopiedAfter). It can be
   //! used when copies are done by increments, which must be
-  //! distinghished. ClearLastFlags is also called by Clear.
+  //! distinguished. ClearLastFlags is also called by Clear.
   Standard_EXPORT void ClearLastFlags();
 
   //! Returns an copied Entity and its Result which were operated

@@ -1005,7 +1005,7 @@ static Standard_Integer FindEntities(const Handle(Transfer_FinderProcess)& theFP
     return 1;
   }
 
-  // may be S was splited during shape processing
+  // may be S was split during shape processing
   Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(theFP, theShape);
   Handle(Transfer_Binder)          aBinder = theFP->Find(aMapper);
   if (aBinder.IsNull())

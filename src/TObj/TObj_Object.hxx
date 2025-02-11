@@ -402,7 +402,7 @@ public:
    * Method for updating object after restoring
    */
 
-  //! Performs updating the links and dependances of the object which are not
+  //! Performs updating the links and dependences of the object which are not
   //! stored in persistence. Should be redefined if necessary.
   virtual Standard_EXPORT void AfterRetrieval();
 

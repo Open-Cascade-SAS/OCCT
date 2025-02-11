@@ -116,7 +116,7 @@ static Standard_Boolean getNormalFromVertex(const TopoDS_Shape&  theShape,
 
 //=======================================================================
 // function : FindExtrema
-// purpose  : This finction is called to find the nearest normal projection
+// purpose  : This function is called to find the nearest normal projection
 //           of a point <aPnt> on a shape <aShape>.
 //           1) return true if extrema is found.
 //           2) Set in:

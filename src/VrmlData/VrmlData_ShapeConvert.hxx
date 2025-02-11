@@ -88,7 +88,7 @@ public:
                                const Standard_Real    theDeflection = 0.01,
                                const Standard_Real    theDeflAngle  = 20. * M_PI / 180.);
   // this value of theDeflAngle is used by default
-  // for tesselation while shading (Drawer->HLRAngle())
+  // for tessellation while shading (Drawer->HLRAngle())
 
   /**
    * Add all shapes start from given document with colors and names to the internal structure

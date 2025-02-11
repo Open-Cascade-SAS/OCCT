@@ -35,7 +35,7 @@ class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepDS_Check;
 DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Check, Standard_Transient)
 
-//! a tool verifing integrity and structure of DS
+//! a tool verifying integrity and structure of DS
 class TopOpeBRepDS_Check : public Standard_Transient
 {
 

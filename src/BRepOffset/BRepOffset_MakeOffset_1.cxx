@@ -1298,7 +1298,7 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces(const Message_ProgressRange
         Standard_Boolean bAllInv = Standard_True;
         // Additional check for artificial case
         // if current image face consist only of edges from aMapEInv and aMENInv
-        // then recheck current face for the futher processing
+        // then recheck current face for the further processing
         Standard_Boolean    aToReCheckFace = bArtificialCase;
         const TopoDS_Shape& aFIm           = aItLFIm.Value();
         TopExp_Explorer     aExpE(aFIm, TopAbs_EDGE);
@@ -1321,7 +1321,7 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces(const Message_ProgressRange
         {
           aToReCheckFace = checkConnectionsOfFace(aFIm, aLFImages1);
         }
-        // do not delete image face from futher processing if aToReCheckFace is true
+        // do not delete image face from further processing if aToReCheckFace is true
         if (!aExpE.More() && !aToReCheckFace)
         {
           if (bAllInv)
@@ -5474,7 +5474,7 @@ namespace
 {
 //=======================================================================
 // function : mapShapes
-// purpose  : Collect theVecShapes into theMap with setted theType
+// purpose  : Collect theVecShapes into theMap with theType set
 //=======================================================================
 template <class Container>
 static void mapShapes(const Container&       theVecShapes,

@@ -3132,10 +3132,10 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
         // Then edge is trimmed by intersection line between
         // two adjacent extended offset faces and get vertices.
         // When intersection lines are invalid for any reason,
-        // (one of reson is mixed connectivity of faces)
-        // algoritm of cutting offset edge by intersection line
+        // (one reason is mixed connectivity of faces)
+        // algorithm of cutting offset edge by intersection line
         // can fail and offset edge cannot get vertices.
-        // Follwing workaround is only to avoid exception if V3 and V4 are Null
+        // Following workaround is only to avoid exception if V3 and V4 are Null
         // Vertex points are invalid.
         Standard_Real      anOEF, anOEL;
         TopAbs_Orientation anOEOri = OE.Orientation();

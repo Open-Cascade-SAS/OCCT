@@ -170,7 +170,7 @@ public:
   //!
   //! x(1)/w , x(2)/w ,  ... derivated <N,0> times
   //! ....
-  //! Warning: <RDers> must be dimensionned properly.
+  //! Warning: <RDers> must be dimensioned properly.
   Standard_EXPORT static void RationalDerivative(const Standard_Integer UDeg,
                                                  const Standard_Integer VDeg,
                                                  const Standard_Integer N,

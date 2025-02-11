@@ -143,7 +143,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   ChFiDS_SequenceOfSurfData& SeqFil2 = Corner2->ChangeSetOfSurfData()->ChangeSequence();
   Handle(ChFiDS_SurfData)&   Fd2     = SeqFil2.ChangeValue(IFd2);
 
-  // The concavities are analysed in case of differents concavities,
+  // The concavities are analysed in case of different concavities,
   // preview an evolutionary connection of type ThreeCorner of R to 0.
   // Otherwise the opposite face
   // and the eventual intersection of 2 pcurves on this face are found.

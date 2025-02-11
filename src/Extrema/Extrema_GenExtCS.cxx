@@ -687,7 +687,7 @@ void Extrema_GenExtCS::GlobMinCQuadric(const Adaptor3d_Curve& theC,
   //
 
   // Increase numbers of curve samples to improve searching global minimum
-  // because dimension of optimisation task is redused
+  // because dimension of optimisation task is reduced
   const Standard_Integer aMaxNbNodes = 50;
   Standard_Integer       aNewCsample = mytsample;
   Standard_Integer       anAddsample = Max(myusample / 2, 3);

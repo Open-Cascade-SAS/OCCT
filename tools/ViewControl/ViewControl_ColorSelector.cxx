@@ -256,7 +256,7 @@ public:
     return QVariant();
   }
 
-  //! Returns number of tree level line items = colums in table view
+  //! Returns number of tree level line items = columns in table view
   virtual int columnCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   {
     (void)theParent;

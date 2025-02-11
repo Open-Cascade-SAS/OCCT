@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_SelectSignature, IFSelect_SelectExtract)
 //! contains (the Type's Name must contain the criterium Text)
 //!
 //! Remark that no more interpretation is done, it is an
-//! alpha-numeric signature : for instance, DynamicType is matched
+//! alphanumeric signature : for instance, DynamicType is matched
 //! as such, super-types are not considered
 //!
 //! Also, numeric (integer) comparisons are supported : an item

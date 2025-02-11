@@ -267,7 +267,7 @@ Standard_Integer IGESConvGeom::SplineSurfaceFromIGES(const Handle(IGESGeom_Splin
   if ((NbUSeg < 1) || (NbVSeg < 1))
     return 5;
 
-  //  Output BSpline knots & multiplicities arraies for U & V :
+  //  Output BSpline knots & multiplicities arrays for U & V :
   //  =========================================================
 
   TColStd_Array1OfReal UKnot(1, NbUSeg + 1);

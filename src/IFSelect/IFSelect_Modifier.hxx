@@ -50,7 +50,7 @@ public:
   //! <TC> allows to run additional copies as required
   //!
   //! In case of Error, use methods CCheck from the ContextModif
-  //! to aknowledge an entity Check or a Global Check with messages
+  //! to acknowledge an entity Check or a Global Check with messages
   Standard_EXPORT virtual void Perform(IFSelect_ContextModif&                  ctx,
                                        const Handle(Interface_InterfaceModel)& target,
                                        const Handle(Interface_Protocol)&       protocol,

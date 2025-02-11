@@ -766,7 +766,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       if (aPrePointExist == IntPatch_SPntPole || aPrePointExist == IntPatch_SPntPoleSeamU)
       {
-        // set correxponding status: to be corrected later
+        // set corresponding status: to be corrected later
         if (aLinOn2S->NbPoints() == 1)
           anIsFirstDegenerated = Standard_True;
         else
@@ -778,7 +778,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       {
         if (aNbPointsPrev == aLinOn2S->NbPoints())
         {
-          // Vertex coinsides any point of line and was not added into line
+          // Vertex coincides any point of line and was not added into line
           aNewVertexParam = aNbPointsPrev;
         }
         aPrevParam = aParameter = aCurVertParam;

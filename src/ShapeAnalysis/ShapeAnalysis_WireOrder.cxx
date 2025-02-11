@@ -379,7 +379,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
         {
           aJointMask2D |= (1 << 3);
         }
-        // new approche for detecting best edge connection, for all other cases used old 3D
+        // new approch for detecting best edge connection, for all other cases used old 3D
         // algorithm
         Standard_Integer aFullMask = aJointMask3D & aJointMask2D;
         if (aFullMask != 0)

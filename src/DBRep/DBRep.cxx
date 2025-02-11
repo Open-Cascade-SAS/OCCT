@@ -223,8 +223,8 @@ static Standard_Integer hlr(Draw_Interpretor& di, Standard_Integer n, const char
     }
     else if (!strcasecmp(a[1], "ang"))
     {
-      di << "Angle de discretisation : ";
-      di << aParams.HLRAngle * 180 / M_PI << " degres\n";
+      di << "Angle of discretization : ";
+      di << aParams.HLRAngle * 180 / M_PI << " degrees\n";
     }
     else
       return 1;
@@ -733,7 +733,7 @@ static Standard_Integer nexplode(Draw_Interpretor& di, Standard_Integer n, const
       }
     }
   }
-  // Check of equality of MidXYZ
+  // Check equality of MidXYZ
   for (Index = 1; Index < MaxShapes; Index++)
   {
     if (MidXYZ(OrderInd(Index + 1)) == MidXYZ(OrderInd(Index)))

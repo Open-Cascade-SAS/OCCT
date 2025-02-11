@@ -1639,7 +1639,7 @@ public:
   //! WeightsResult one has  the result of the evaluation of
   //! the denominator
   //!
-  //! Warning:   <PolesResult> and <WeightsResult>  must be   dimensionned
+  //! Warning:   <PolesResult> and <WeightsResult>  must be   dimensioned
   //! properly.
   Standard_EXPORT static void Eval(const Standard_Real         U,
                                    const Standard_Boolean      PeriodicFlag,
@@ -1686,7 +1686,7 @@ public:
   //! <Continuity> must be equal to 1, 2 or 3.
   //! <Degree> must be greater or equal than <Continuity> + 1.
   //!
-  //! Warning:   <KnotsResult> and <PolesResult>  must be   dimensionned
+  //! Warning:   <KnotsResult> and <PolesResult>  must be   dimensioned
   //! properly.
   Standard_EXPORT static void TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
                                                      const Standard_Real         C1Coefficient,

@@ -1338,7 +1338,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       Standard_Boolean reverse = (!samegeom);
 #ifdef OCCT_DEBUG
       if (TopOpeBRepBuild_GetcontextNOSG())
-        // MSV 21.03.2002: restore the genaral behaviour, since the function
+        // MSV 21.03.2002: restore the general behaviour, since the function
         //                 FUN_UNKFstasta was corrected.
         reverse = Standard_False; // we exclude this line from #ifdef OCCT_DEBUG because
                                   // in optimised mode this line will never be included , and that
@@ -2143,7 +2143,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
         if (nfor < 1)
           b = shareG; // Esd is FOR's closing edge
         else if (nfor > 1)
-          return; // NYIRaise (unvalid shape)
+          return; // NYIRaise (invalid shape)
         else
         {
           const TopoDS_Face& FF    = TopoDS::Face(lfor.First());

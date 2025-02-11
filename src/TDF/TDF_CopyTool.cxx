@@ -92,7 +92,7 @@ void TDF_CopyTool::Copy(const Handle(TDF_DataSet)&         aSourceDataSet,
   // except for the label unattached attributes,
   // but everybody can update the relocation table...
 
-  // Now: the paste phasis!
+  // Now: the paste phase!
   TDF_DataMapIteratorOfAttributeDataMap attItr2(theAttMap);
   for (; attItr2.More(); attItr2.Next())
   {

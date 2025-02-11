@@ -67,7 +67,7 @@ public:
   //! Sets flag to skip data loading.
   void SetToSkipLateDataLoading(bool theToSkip) { myToSkipLateDataLoading = theToSkip; }
 
-  //! Returns TRUE if data should be loaded into itself without its transfering to new structure.
+  //! Returns TRUE if data should be loaded into itself without its transferring to new structure.
   //! It allows to keep information about deferred storage to load/unload this data later.
   //! TRUE by default.
   bool ToKeepLateData() { return myToKeepLateData; }

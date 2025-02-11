@@ -430,7 +430,7 @@ Handle(AIS_InteractiveContext) FindContextByView(const Handle(V3d_View)& theView
 
 //==============================================================================
 // function : IsWindowOverlapped
-// purpose  : Check if theWindow overlapp another view
+// purpose  : Check if theWindow overlap another view
 //==============================================================================
 
 Standard_Boolean IsWindowOverlapped(const Standard_Integer   thePxLeft,
@@ -5691,7 +5691,7 @@ static int VReadPixel(Draw_Interpretor& theDI, Standard_Integer theArgNb, const 
   }
 
   // redirect possible warning messages that could have been added by ToPixMap
-  // into the Tcl interpretor (via DefaultMessenger) to cout, so that they do not
+  // into the Tcl interpreter (via DefaultMessenger) to cout, so that they do not
   // contaminate result of the command
   Standard_CString aWarnLog = theDI.Result();
   if (aWarnLog != NULL && aWarnLog[0] != '\0')
@@ -13919,7 +13919,7 @@ vcolorscale name [-noupdate|-update] [-demo]
  -uniform    generate colors with the same lightness
  -textpos    horizontal label position relative to color scale bar
  -labelAtBorder vertical label position relative to color interval;
-             at border means the value inbetween neighbor intervals,
+             at border means the value in between neighbor intervals,
              at center means the center value within current interval
  -labels     set labels for all intervals
  -freeLabels same as -labels but does not require
@@ -13996,7 +13996,7 @@ vgrid [off] [-type {rect|circ}] [-mode {line|point}] [-origin X Y] [-rotAngle An
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(
 vpriviledgedplane [Ox Oy Oz Nx Ny Nz [Xx Xy Xz]]
-Sets or prints viewer's priviledged plane geometry:
+Sets or prints viewer's privileged plane geometry:
   Ox, Oy, Oz - plane origin;
   Nx, Ny, Nz - plane normal direction;
   Xx, Xy, Xz - plane x-reference axis direction.

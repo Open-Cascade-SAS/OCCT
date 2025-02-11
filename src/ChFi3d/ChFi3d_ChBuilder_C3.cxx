@@ -123,7 +123,7 @@ static Handle(GeomAdaptor_Surface) BoundSurf(const Handle(Geom_Surface)& S,
 //           the SurfData of the corner <SDCoin>. Here we know the
 //           extremities of the intersection <pdeb> and <pfin>, and
 //           their parameters <p2dfin>, <p2ddeb> on <SD>.
-//           <ptcoindeb> cointains the intersection 2d point on the corner
+//           <ptcoindeb> contains the intersection 2d point on the corner
 //            which corresponds to the point <pdeb>
 //           <derudeb> and <dervdeb> are the derivative vectors on the
 //            SurfData <SD> at the point <ptdeb>

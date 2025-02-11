@@ -70,7 +70,7 @@ public:
 
   //! Sends an additional Starting Line : this is the way used to
   //! send comments in an IGES File (at beginning of the file).
-  //! If the line is more than 72 char.s long, it is splited into
+  //! If the line is more than 72 chars long, it is split into
   //! as many lines as required to send it completely
   Standard_EXPORT void SendStartLine(const Standard_CString startline);
 
@@ -143,7 +143,7 @@ public:
                             const Standard_Boolean             negative = Standard_False);
 
   //! Helper method to avoid ambiguity of calls to above methods Send() for
-  //! classes derived from IGESData_IGESEntity, for VC++ 10 and 11 compillers
+  //! classes derived from IGESData_IGESEntity, for VC++ 10 and 11 compilers
   template <class T>
   void Send(const Handle(T)& val,
             Standard_Boolean negative = Standard_False,

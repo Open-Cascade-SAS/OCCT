@@ -42,7 +42,7 @@ public:
   //! Returns the index of <me> in Graph.theArcs.
   Standard_EXPORT Standard_Integer Index() const;
 
-  //! Returns  the index associated  of the  geometric
+  //! Returns the index associated of the geometric
   //! representation of <me>.
   Standard_EXPORT Standard_Integer GeomIndex() const;
 
@@ -58,13 +58,13 @@ public:
   //! Returns the other Node extremity of <me>.
   Standard_EXPORT Handle(MAT_Node) SecondNode() const;
 
-  //! an Arc has two Node, if <aNode> egal one
+  //! An Arc has two Node, if <aNode> equals one
   //! Returns the other.
   //!
   //! if <aNode> is not oh <me>
   Standard_EXPORT Handle(MAT_Node) TheOtherNode(const Handle(MAT_Node)& aNode) const;
 
-  //! Returnst True is there is an arc linked to
+  //! Returns True if there is an arc linked to
   //! the Node <aNode> located on the side <aSide> of <me>;
   //! if <aNode> is not on <me>
   Standard_EXPORT Standard_Boolean HasNeighbour(const Handle(MAT_Node)& aNode,

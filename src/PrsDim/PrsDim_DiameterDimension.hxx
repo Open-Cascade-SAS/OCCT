@@ -119,7 +119,7 @@ public:
 protected:
   //! Override this method to change logic of anchor point computation.
   //! Computes anchor point. Its computation is based on the current
-  //! dimension plane. Therfore, anchor point is an intersection of plane
+  //! dimension plane. Therefore, anchor point is an intersection of plane
   //! and circle.
   //! ATTENTION!
   //! 1) The plane should be set or computed before.

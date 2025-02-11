@@ -83,7 +83,7 @@ private:
   //! Private method. Returns the value for volume computation.
   //! Other returned values are:
   //! -  thePMP0 - PSurf(X,Y) minus Location.
-  //! -  theS and theD1 coeffitients that are computed and used
+  //! -  theS and theD1 coefficients that are computed and used
   //! for computation of center of mass and inertia values
   //! by plane.
   Standard_EXPORT Standard_Real VolumeValue(const Standard_Real X,
@@ -98,7 +98,7 @@ private:
   //! computation of a value.
   Standard_EXPORT Standard_Boolean CenterMassValue(const Standard_Real X, Standard_Real& F);
 
-  //! Private method. Computes the value of intertia. The type of
+  //! Private method. Computes the value of inertia. The type of
   //! a value returned is defined by the value type. If it is
   //! other then GProp_InertiaXX, GProp_InertiaYY,
   //! GProp_InertiaZZ, GProp_InertiaXY, GProp_InertiaXZ or

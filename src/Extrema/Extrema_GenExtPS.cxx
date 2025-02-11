@@ -171,7 +171,7 @@ Method:
   - F: Extrema_FuncExtPS created from P and S,
   - UV: math_Vector the components which of are parameters of the extremum on the
     grid,
-  - Tol: Min(TolU,TolV), (Prov.:math_FunctionSetRoot does not autorize a vector)
+  - Tol: Min(TolU,TolV), (Prov.:math_FunctionSetRoot does not authorize a vector)
   - UVinf: math_Vector the components which of are lower limits of u and v,
   - UVsup: math_Vector the components which of are upper limits of u and v.
 

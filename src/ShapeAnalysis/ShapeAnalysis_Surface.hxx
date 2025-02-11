@@ -227,7 +227,7 @@ public:
   //! also says this. Otherwise additional analysis is performed,
   //! comparing given precision with the following distances:
   //! - periodic B-Splines are closed,
-  //! - polinomial B-Spline with boundary multiplicities degree+1
+  //! - polynomial B-Spline with boundary multiplicities degree+1
   //! and Bezier - maximum distance between poles,
   //! - rational B-Spline or one with boundary multiplicities not
   //! degree+1 - maximum distance computed at knots and their
@@ -244,7 +244,7 @@ public:
   //! also says this. Otherwise additional analysis is performed,
   //! comparing given precision with the following distances:
   //! - periodic B-Splines are closed,
-  //! - polinomial B-Spline with boundary multiplicities degree+1
+  //! - polynomial B-Spline with boundary multiplicities degree+1
   //! and Bezier - maximum distance between poles,
   //! - rational B-Spline or one with boundary multiplicities not
   //! degree+1 - maximum distance computed at knots and their

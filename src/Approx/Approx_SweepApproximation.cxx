@@ -459,7 +459,7 @@ Standard_Boolean Approx_SweepApproximation::D0(const Standard_Real Param,
       AAffin->Value(ii).Transforms(myPoles2d->ChangeValue(ii).ChangeCoord());
     }
 
-    // Update variables of controle and return
+    // Update variables of control and return
     first   = First;
     last    = Last;
     myOrder = 0;

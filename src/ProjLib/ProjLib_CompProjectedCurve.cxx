@@ -367,7 +367,7 @@ static Standard_Boolean ExactBound(gp_Pnt&                          Sol,
   LastV  = Surface->LastVParameter();
   // Here we have to compute the boundary that projection is going to intersect
   gp_Vec2d D2d;
-  // these variables are to estimate which boundary has more apportunity
+  // these variables are to estimate which boundary has more opportunity
   // to be intersected
   Standard_Real RU1, RU2, RV1, RV2;
   d1(Sol.X(), U0, V0, D2d, Curve, Surface);
