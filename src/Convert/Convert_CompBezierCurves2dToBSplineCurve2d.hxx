@@ -172,7 +172,7 @@ private:
   TColgp_SequenceOfPnt2d            CurvePoles;
   TColStd_SequenceOfReal            CurveKnots;
   TColStd_SequenceOfInteger         KnotsMultiplicities;
-  Standard_Integer                  myDegree;
+  Standard_Integer                  myDegree{};
   Standard_Real                     myAngular;
   Standard_Boolean                  myDone;
 };

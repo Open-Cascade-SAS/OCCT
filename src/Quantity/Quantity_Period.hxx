@@ -146,8 +146,8 @@ public:
                                                   const Standard_Integer mics = 0);
 
 private:
-  Standard_Integer mySec;
-  Standard_Integer myUSec;
+  Standard_Integer mySec{};
+  Standard_Integer myUSec{};
 };
 
 #endif // _Quantity_Period_HeaderFile

@@ -197,7 +197,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const Standard_Integer aV
   union {
     int  bid;
     char t[13];
-  } CHN;
+  } CHN{};
 
   Sprintf(&CHN.t[0], "%d", aValue);
   allocate((int)strlen(CHN.t));
@@ -213,7 +213,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const Standard_Real aValu
   union {
     int  bid;
     char t[50];
-  } CHN;
+  } CHN{};
 
   Sprintf(&CHN.t[0], "%g", aValue);
   allocate((int)strlen(CHN.t));

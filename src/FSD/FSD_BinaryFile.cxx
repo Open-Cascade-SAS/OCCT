@@ -456,7 +456,7 @@ Storage_Error FSD_BinaryFile::BeginWriteInfoSection()
   union {
     char             ti2[4];
     Standard_Integer aResult;
-  } aWrapUnion;
+  } aWrapUnion{};
 
   aWrapUnion.ti2[0] = 1;
   aWrapUnion.ti2[1] = 2;
@@ -619,7 +619,7 @@ void FSD_BinaryFile::ReadInfo(Standard_Integer&              nbObj,
 
 void FSD_BinaryFile::ReadCompleteInfo(Standard_IStream& theIStream, Handle(Storage_Data)& theData)
 {
-  FSD_FileHeader aHeaderPos;
+  FSD_FileHeader aHeaderPos{};
   ReadHeader(theIStream, aHeaderPos);
 
   if (theData.IsNull())
@@ -1678,7 +1678,7 @@ Standard_Real FSD_BinaryFile::InverseReal(const Standard_Real theValue)
   union {
     Standard_Integer i[2];
     Standard_Real    aValue;
-  } aWrapUnion;
+  } aWrapUnion{};
 
   aWrapUnion.aValue = theValue;
 
@@ -1701,7 +1701,7 @@ Standard_ShortReal FSD_BinaryFile::InverseShortReal(const Standard_ShortReal the
   union {
     Standard_ShortReal aValue;
     Standard_Integer   aResult;
-  } aWrapUnion;
+  } aWrapUnion{};
 
   aWrapUnion.aValue  = theValue;
   aWrapUnion.aResult = InverseInt(aWrapUnion.aResult);
@@ -1729,7 +1729,7 @@ inline uint64_t OCCT_InverseSizeSpecialized<8>(const uint64_t theValue, int)
   union {
     Standard_Integer i[2];
     uint64_t         aValue;
-  } aWrapUnion;
+  } aWrapUnion{};
 
   aWrapUnion.aValue = theValue;
 

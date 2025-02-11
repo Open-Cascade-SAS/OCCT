@@ -93,13 +93,13 @@ private:
   const CSLib_Class2d& operator=(const CSLib_Class2d& Other) const;
 
   NCollection_Handle<TColStd_Array1OfReal> MyPnts2dX, MyPnts2dY;
-  Standard_Real                            Tolu;
-  Standard_Real                            Tolv;
-  Standard_Integer                         N;
-  Standard_Real                            Umin;
-  Standard_Real                            Vmin;
-  Standard_Real                            Umax;
-  Standard_Real                            Vmax;
+  Standard_Real                            Tolu{};
+  Standard_Real                            Tolv{};
+  Standard_Integer                         N{};
+  Standard_Real                            Umin{};
+  Standard_Real                            Vmin{};
+  Standard_Real                            Umax{};
+  Standard_Real                            Vmax{};
 };
 
 #endif // _CSLib_Class2d_HeaderFile

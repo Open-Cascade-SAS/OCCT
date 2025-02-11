@@ -194,8 +194,8 @@ public:
   }
 
 private:
-  Standard_Integer mySec;
-  Standard_Integer myUSec;
+  Standard_Integer mySec{};
+  Standard_Integer myUSec{};
 };
 
 #endif // _Quantity_Date_HeaderFile

@@ -128,8 +128,8 @@ private:
   math_Vector      Errinit;
   math_Vector      Vardua;
   math_Matrix      CTCinv;
-  Standard_Integer NbIter;
-  Standard_Boolean Done;
+  Standard_Integer NbIter{};
+  Standard_Boolean Done{};
 };
 
 #include <math_Uzawa.lxx>

@@ -372,7 +372,7 @@ private:
 
 private:
   FSD_BStream    myStream;
-  FSD_FileHeader myHeader;
+  FSD_FileHeader myHeader{};
 };
 
 #endif // _FSD_BinaryFile_HeaderFile

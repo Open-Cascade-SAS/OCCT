@@ -347,7 +347,7 @@ void Standard_GUID::ToExtString(const Standard_PExtCharacter aStrGuid) const
 
 Standard_UUID Standard_GUID::ToUUID() const
 {
-  Standard_UUID result;
+  Standard_UUID result{};
 
   result.Data1    = my32b;
   result.Data2    = my16b1;

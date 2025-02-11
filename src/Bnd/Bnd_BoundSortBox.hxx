@@ -106,16 +106,16 @@ private:
 
   Bnd_Box                         myBox;
   Handle(Bnd_HArray1OfBox)        myBndComponents;
-  Standard_Real                   Xmin;
-  Standard_Real                   Ymin;
-  Standard_Real                   Zmin;
-  Standard_Real                   deltaX;
-  Standard_Real                   deltaY;
-  Standard_Real                   deltaZ;
+  Standard_Real                   Xmin{};
+  Standard_Real                   Ymin{};
+  Standard_Real                   Zmin{};
+  Standard_Real                   deltaX{};
+  Standard_Real                   deltaY{};
+  Standard_Real                   deltaZ{};
   Standard_Integer                discrX;
   Standard_Integer                discrY;
   Standard_Integer                discrZ;
-  Standard_Integer                theFound;
+  Standard_Integer                theFound{};
   TColStd_DataMapOfIntegerInteger Crible;
   TColStd_ListOfInteger           lastResult;
   Standard_Address                TabBits;

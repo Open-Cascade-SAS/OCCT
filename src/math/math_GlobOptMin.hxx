@@ -248,19 +248,19 @@ private:
 
   // Algorithm data.
   Standard_Real myZ;
-  Standard_Real myE1; // Border coefficient.
-  Standard_Real myE2; // Minimum step size.
-  Standard_Real myE3; // Local extrema starting parameter.
+  Standard_Real myE1{}; // Border coefficient.
+  Standard_Real myE2{}; // Minimum step size.
+  Standard_Real myE3{}; // Local extrema starting parameter.
 
-  math_Vector   myX;        // Current modified solution.
-  math_Vector   myTmp;      // Current modified solution.
-  math_Vector   myV;        // Steps array.
-  math_Vector   myMaxV;     // Max Steps array.
-  Standard_Real myLastStep; // Last step.
+  math_Vector   myX;          // Current modified solution.
+  math_Vector   myTmp;        // Current modified solution.
+  math_Vector   myV;          // Steps array.
+  math_Vector   myMaxV;       // Max Steps array.
+  Standard_Real myLastStep{}; // Last step.
 
   NCollection_Array1<Standard_Real>                        myCellSize;
   Standard_Integer                                         myMinCellFilterSol;
-  Standard_Boolean                                         isFirstCellFilterInvoke;
+  Standard_Boolean                                         isFirstCellFilterInvoke{};
   NCollection_CellFilter<NCollection_CellFilter_Inspector> myFilter;
 
   // Continuity of local borders.

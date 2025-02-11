@@ -67,8 +67,8 @@ private:
                                const Standard_Real    Upper,
                                const Standard_Integer Order);
 
-  Standard_Real    Val;
-  Standard_Boolean Done;
+  Standard_Real    Val{};
+  Standard_Boolean Done{};
 };
 
 #include <math_GaussSingleIntegration.lxx>

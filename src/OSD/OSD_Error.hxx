@@ -61,7 +61,7 @@ private:
   TCollection_AsciiString myMessage;
   Standard_Integer        myErrno;
   OSD_WhoAmI              myCode;
-  Standard_Integer        extCode;
+  Standard_Integer        extCode{};
 };
 
 #endif // _OSD_Error_HeaderFile

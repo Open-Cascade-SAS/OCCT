@@ -328,14 +328,14 @@ protected:
   };
 
 private:
-  Standard_Real    Xmin;
-  Standard_Real    Xmax;
-  Standard_Real    Ymin;
-  Standard_Real    Ymax;
-  Standard_Real    Zmin;
-  Standard_Real    Zmax;
+  Standard_Real    Xmin{};
+  Standard_Real    Xmax{};
+  Standard_Real    Ymin{};
+  Standard_Real    Ymax{};
+  Standard_Real    Zmin{};
+  Standard_Real    Zmax{};
   Standard_Real    Gap;
-  Standard_Integer Flags;
+  Standard_Integer Flags{};
 };
 
 #endif // _Bnd_Box_HeaderFile

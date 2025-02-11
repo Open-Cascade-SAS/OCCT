@@ -358,7 +358,7 @@ private:
 
   //! Points of ditetrahedron
   //! given by their indices in myLExtremalPoints.
-  Standard_Integer myTriIdx[5];
+  Standard_Integer myTriIdx[5]{};
 
   //! List of extremal points
   gp_XYZ myLExtremalPoints[myNbExtremalPoints];

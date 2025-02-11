@@ -135,7 +135,8 @@ Resource_Manager::Resource_Manager(const Standard_CString aName, const Standard_
 
 Resource_Manager::Resource_Manager()
     : myName(""),
-      myVerbose(Standard_False)
+      myVerbose(Standard_False),
+      myInitialized(Standard_False)
 {
 }
 

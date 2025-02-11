@@ -64,7 +64,7 @@ public:
 private:
   // local buffer, to be sufficient for addressing by index [Degree+1][Degree+1]
   // (see math_Matrix implementation)
-  Standard_Real myBuffer[27 * 27];
+  Standard_Real myBuffer[27 * 27]{};
 };
 
 //=================================================================================================
