@@ -31,7 +31,7 @@
 //! \class ViewControl_TableModel
 //! \brief This is an extension of table model to visualize a container of values
 //! It is possible to:
-//! - set orientation to interpretate the values.
+//! - set orientation to interpret the values.
 //! - set table view header values.
 //! Items of the view are enabled and selectable.
 class ViewControl_TableModel : public QAbstractTableModel

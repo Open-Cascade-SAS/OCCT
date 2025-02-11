@@ -1807,7 +1807,7 @@ void IntPatch_WLineTool::ExtendTwoWLines(IntPatch_SequenceOfLine&         theSli
       continue;
     }
 
-    // Enable/Disable of some ckeck. Bit-mask is used for it.
+    // Enable/Disable of some check. Bit-mask is used for it.
     // E.g. if 1st point of aWLine1 matches with
     // 1st point of aWLine2 then we do not need in check
     // 1st point of aWLine1 and last point of aWLine2 etc.

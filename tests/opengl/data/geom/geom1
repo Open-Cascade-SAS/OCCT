@@ -11,7 +11,7 @@ void main() {
   gl_Position = occVertex;
 }"
 
-# define a Geometry shader drawing shrinked triangles
+# define a Geometry shader drawing shrunken triangles
 set aShaderGeom "
 layout(triangles) in;
 layout(triangle_strip, max_vertices=3) out;

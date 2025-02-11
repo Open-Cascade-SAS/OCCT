@@ -169,7 +169,7 @@ static Standard_Boolean Get3DPointAtMousePosition(const gp_Pnt& theFirstPoint,
 
 //=======================================================================
 // function : ParseDimensionParams
-// purpose  : Auxilliary function: sets aspect parameters for
+// purpose  : Auxiliary function: sets aspect parameters for
 //           length, angle, radius and diameter dimension.
 //
 // draw args: -text [3d|2d] [wf|sh|wireframe|shading] [Size]
@@ -560,7 +560,7 @@ static void SetDimensionParams(
 
 //=======================================================================
 // function : ParseAngleDimensionParams
-// purpose  : Auxilliary function: sets custom parameters for angle dimension.
+// purpose  : Auxiliary function: sets custom parameters for angle dimension.
 //
 // draw args: -type [interior|exterior]
 //           -showarrow [first|second|both|none]
@@ -999,7 +999,7 @@ Standard_Boolean IsParallel(const TopoDS_Shape& theShape1, const TopoDS_Shape& t
 
 //=======================================================================
 // function : VRelationBuilder
-// purpose  : Command for building realation presentation
+// purpose  : Command for building relation presentation
 //=======================================================================
 static int VRelationBuilder(Draw_Interpretor& /*theDi*/,
                             Standard_Integer theArgsNb,

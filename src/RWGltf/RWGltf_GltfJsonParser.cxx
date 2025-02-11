@@ -306,7 +306,7 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
     return true;
   }
 
-  // Unsupported type of array. Print waring and return.
+  // Unsupported type of array. Print warning and return.
   Message::SendWarning() << "Warning: Extras owner \"" << myParentID << "\", Value \""
                          << theValueName << "\" - "
                          << "Array of unsupported type is detected. It will be skipped.";

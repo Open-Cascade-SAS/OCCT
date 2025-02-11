@@ -50,7 +50,7 @@ public:
                             const Handle(IGESData_HArray1OfIGESEntity)&   allGeoms,
                             const Handle(IGESDimen_HArray1OfLeaderArrow)& allLeaders);
 
-  //! Changes FormNumber (indicates the Nature of the Symbole)
+  //! Changes FormNumber (indicates the Nature of the Symbol)
   //! Error if not in ranges [0-3] or [> 5000]
   Standard_EXPORT void SetFormNumber(const Standard_Integer form);
 

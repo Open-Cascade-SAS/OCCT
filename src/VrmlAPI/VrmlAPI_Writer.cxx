@@ -308,7 +308,7 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape&    aShape,
   TopTools_Array1OfShape Shapes(1, 1);
   Shapes.SetValue(1, aShape);
 
-  // Check shape tesselation
+  // Check shape tessellation
   TopExp_Explorer  anExp(aShape, TopAbs_FACE);
   TopLoc_Location  aLoc;
   Standard_Boolean hasTriangles = Standard_False;

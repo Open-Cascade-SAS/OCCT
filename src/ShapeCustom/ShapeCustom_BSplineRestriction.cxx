@@ -1642,7 +1642,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
       catch (Standard_Failure const& anException)
       {
 #ifdef OCCT_DEBUG
-        std::cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Cofficient :Decrease "
+        std::cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Coefficient :Decrease "
                      "Continuity    ";
         anException.Print(std::cout);
         std::cout << std::endl;

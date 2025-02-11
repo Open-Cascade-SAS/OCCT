@@ -69,7 +69,7 @@ MeshVS_Mesh::MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped)
 
   SetAutoHilight(Standard_False);
 
-  SetDisplayMode(MeshVS_DMF_WireFrame); // Mode as defaut
+  SetDisplayMode(MeshVS_DMF_WireFrame); // Mode as default
   SetHilightMode(MeshVS_DMF_WireFrame); // Wireframe as default hilight mode
 
   SetColor(Quantity_NOC_WHITE);

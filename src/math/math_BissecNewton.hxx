@@ -73,7 +73,7 @@ public:
 
   //! Prints on the stream o information on the current state
   //! of the object.
-  //! Is used to redifine the operator <<.
+  //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
   //! Destructor

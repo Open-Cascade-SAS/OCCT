@@ -103,7 +103,7 @@ public:
   Standard_EXPORT Handle(XSControl_WorkSession) WS() const;
 
   //! Loads a file and returns the read status
-  //! Zero for a Model which compies with the Controller
+  //! Zero for a Model which complies with the Controller
   Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const Standard_CString filename);
 
   //! Loads a file from stream and returns the read status

@@ -354,7 +354,7 @@ void IGESCAFControl_Writer::MakeColors(const TopoDS_Shape&                      
     }
     else
     {
-      // may be S was splited during shape process
+      // may be S was split during shape process
       Handle(Transfer_Binder) bnd = FP->Find(mapper);
       if (!bnd.IsNull())
       {

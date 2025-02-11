@@ -263,7 +263,7 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const Handle(SelectMgr_Selec
     BRepAdaptor_Curve aCurve(TopoDS::Edge(mySShape));
     if (aCurve.GetType() == GeomAbs_Line)
     {
-      // add sensetive element - line
+      // add sensitive element - line
       seg = new Select3D_SensitiveSegment(own, myAttachPoint2, myPoint2);
       aSelection->Add(seg);
     }
@@ -290,7 +290,7 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const Handle(SelectMgr_Selec
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myShape3));
     if (aCurve.GetType() == GeomAbs_Line)
     {
-      // add sensetive element - line
+      // add sensitive element - line
       seg = new Select3D_SensitiveSegment(own, myAttachPoint3, myPoint3);
       aSelection->Add(seg);
     }
@@ -322,7 +322,7 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const Handle(SelectMgr_Selec
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myShape4));
     if (aCurve.GetType() == GeomAbs_Line)
     {
-      // add sensetive element - line
+      // add sensitive element - line
       seg = new Select3D_SensitiveSegment(own, myAttachPoint4, myPoint4);
       aSelection->Add(seg);
     }

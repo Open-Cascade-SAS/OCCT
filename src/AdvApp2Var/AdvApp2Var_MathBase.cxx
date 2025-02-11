@@ -5339,7 +5339,7 @@ int mmherm1_(doublereal* debfin,
 
   /*     INPUT ARGUMENTS : */
   /*     -------------------- */
-  /*       DEBFIN : PARAMETES DEFINING THE CONSTRAINTS */
+  /*       DEBFIN : PARAMETERS DEFINING THE CONSTRAINTS */
   /*                 DEBFIN(1) : FIRST PARAMETER */
   /*                 DEBFIN(2) : SECOND PARAMETER */
 

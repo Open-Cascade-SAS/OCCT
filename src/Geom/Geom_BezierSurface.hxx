@@ -247,7 +247,7 @@ public:
   //! . UDegree is greater than MaxDegree.
   //! . the Length of CPoles is not equal to NbVPoles
   //! . a weight value is lower or equal to Resolution from
-  //! pacakage gp
+  //! package gp
   Standard_EXPORT void InsertPoleRowBefore(const Standard_Integer      UIndex,
                                            const TColgp_Array1OfPnt&   CPoles,
                                            const TColStd_Array1OfReal& CPoleWeights);

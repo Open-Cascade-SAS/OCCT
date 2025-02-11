@@ -90,7 +90,7 @@ IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline(
   IVtkTools_SubPolyDataFilter* aSUBFilterH =
     IVtkTools_SubPolyDataFilter::SafeDownCast(myFilterMap.Find(Filter_SUB_Hili));
 
-  // No highligthing exists initially
+  // No highlighting exists initially
   aSUBFilterH->SetInputConnection(aDataSource->GetOutputPort());
   aDMFilterH->SetInputConnection(aSUBFilterH->GetOutputPort());
 
@@ -119,7 +119,7 @@ IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline(
   IVtkTools_SubPolyDataFilter* aSUBFilterS =
     IVtkTools_SubPolyDataFilter::SafeDownCast(myFilterMap.Find(Filter_SUB_Sel));
 
-  // No highligthing exists initially
+  // No highlighting exists initially
   aSUBFilterS->SetInputConnection(aDataSource->GetOutputPort());
   aDMFilterS->SetInputConnection(aSUBFilterS->GetOutputPort());
 

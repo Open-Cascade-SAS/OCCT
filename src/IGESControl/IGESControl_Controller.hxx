@@ -57,7 +57,7 @@ public:
   //! <modetrans> is to be interpreted by each kind of XstepAdaptor
   //! Returns a status : 0 OK  1 No result  2 Fail  -1 bad modeshape
   //! -2 bad model (requires an IGESModel)
-  //! modeshape : 0  groupe of face (version < 5.1)
+  //! modeshape : 0 group of face (version < 5.1)
   //! 1  BREP-version 5.1 of IGES
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
     const TopoDS_Shape&                     shape,

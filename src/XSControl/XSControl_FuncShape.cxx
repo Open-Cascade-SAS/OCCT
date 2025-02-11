@@ -762,7 +762,7 @@ static IFSelect_ReturnStatus XSControl_trimport(const Handle(IFSelect_SessionPil
   if (argc < 4)
   {
     sout << "Give : filename or . for current model;  varname or . to take fileroot\n  GiveList, * "
-            "for all transferrable roots"
+            "for all transferable roots"
          << std::endl;
     return IFSelect_RetError;
   }
@@ -807,7 +807,7 @@ static IFSelect_ReturnStatus XSControl_trimport(const Handle(IFSelect_SessionPil
   if (arg3[0] == '*' && arg3[1] == '\0')
   {
     list = WS->GiveList("xst-transferrable-roots");
-    sout << "All Transferrable Roots : ";
+    sout << "All Transferable Roots : ";
   }
   else
   {

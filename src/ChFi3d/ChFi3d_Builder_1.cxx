@@ -946,7 +946,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
           {
             // there is no need of tolerance
             // to make a decision (PRO9486) the regularity is enough.
-            // However, the abcense of turn-back is checked (PRO9810)
+            // However, the absence of turn-back is checked (PRO9810)
             OnAjoute = ((!rev && av1v2 < M_PI / 2) || (rev && av1v2 > M_PI / 2));
             // mate attention to the single case (cf CTS21610_1)
             if (OnAjoute && (degeneOnEc || TangentOnVertex(LVEc, Ev, myEFMap, ta)))

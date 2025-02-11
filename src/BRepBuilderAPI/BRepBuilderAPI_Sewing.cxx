@@ -4733,7 +4733,7 @@ void BRepBuilderAPI_Sewing::CreateOutputInformations()
     }
   }
 
-  // Fill maps of Free, Contigous and Multiple edges
+  // Fill maps of Free, Contiguous and Multiple edges
   TopTools_IndexedDataMapOfShapeListOfShape::Iterator anIter(edgeSections);
   for (; anIter.More(); anIter.Next())
   {

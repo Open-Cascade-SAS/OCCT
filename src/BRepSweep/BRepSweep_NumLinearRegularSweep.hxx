@@ -58,13 +58,13 @@
 //! ...
 //!
 //! "GenObject" is used to identify an object from the
-//! Generating     Shape,  and  "DirObject"  from  the
-//! Directing Shape.  So may they   be  from different
+//! Generating Shape, and "DirObject" from the
+//! Directing Shape. So may they be from different
 //! types.
 //!
 //! The method Has... is given because in some special
-//! cases, a vertex,    an  edge or   a   face may  be
-//! geometricaly nonexistant or not useful.
+//! cases, a vertex, an  edge or a face may be
+//! geometricaly nonexistent or not useful.
 class BRepSweep_NumLinearRegularSweep
 {
 public:

@@ -1213,7 +1213,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di, Standard_Integer n, const
     di << "   --> TheInter  : ";
     if (TheInter)
     {
-      di << "Complet";
+      di << "Complete";
     }
     else
     {

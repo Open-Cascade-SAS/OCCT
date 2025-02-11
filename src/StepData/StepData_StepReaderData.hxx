@@ -53,7 +53,7 @@ class StepData_StepReaderData : public Interface_FileReaderData
 {
 
 public:
-  //! creates StepReaderData correctly dimensionned (necessary at
+  //! creates StepReaderData correctly dimensioned (necessary at
   //! creation time, because it contains arrays)
   //! nbheader is nb of records for Header, nbtotal for Header+Data
   //! and nbpar gives the total count of parameters

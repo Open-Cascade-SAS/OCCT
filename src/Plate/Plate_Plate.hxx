@@ -42,7 +42,7 @@ class gp_XYZ;
 class gp_XY;
 class math_Matrix;
 
-//! This class implement a variationnal spline algorithm able
+//! This class implement a variational spline algorithm able
 //! to define a two variable function satisfying some constraints
 //! and minimizing an energy like criterion.
 class Plate_Plate

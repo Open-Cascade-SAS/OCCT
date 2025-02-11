@@ -223,7 +223,7 @@ public:
   Standard_EXPORT static Standard_Real GetLengthUnit(
     const Handle(TDocStd_Document)& theDoc = nullptr);
 
-  //! Returns avaliable work sessions with their associated files.
+  //! Returns available work sessions with their associated files.
   Standard_EXPORT static XSControl_WorkSessionMap& WorkSessionList();
 
   //! Binds session and name into map recursively.

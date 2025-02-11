@@ -35,7 +35,7 @@ class Standard_Transient;
 //! WorkSession and an Ascii Form, to be considered as a Dump.
 //! It allows to write the File from the WorkSession, and later
 //! read the File to the WorkSession, by keeping required
-//! descriptions (such as dependances).
+//! descriptions (such as dependences).
 //!
 //! The produced File is under an Ascii Form, then it may be
 //! easily consulted.
@@ -75,7 +75,7 @@ public:
 
   //! Creates a SessionFile which Writes the content of a WorkSession
   //! to a File (directly calls Write)
-  //! Then, IsDone aknowledges on the result of the Operation.
+  //! Then, IsDone acknowledges on the result of the Operation.
   //! But such a SessionFile may not Read a File to a WorkSession.
   Standard_EXPORT IFSelect_SessionFile(const Handle(IFSelect_WorkSession)& WS,
                                        const Standard_CString              filename);

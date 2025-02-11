@@ -33,11 +33,11 @@ class TopoDS_Face;
 
 //! Computes the intersection between a face and a
 //! curve. To intersect one curve with shape method
-//! Init(Shape, curve, tTol) should be used.  To
+//! Init(Shape, curve, tTol) should be used. To
 //! intersect a few curves with specified shape it is
 //! necessary to load shape one time using method
 //! Load(shape, tol) and find intersection points for
-//! each curve using method Init(curve).  For
+//! each curve using method Init(curve). For
 //! iteration by intersection points method More() and
 //! Next() should be used.
 //!
@@ -59,19 +59,19 @@ public:
   //! Empty constructor;
   Standard_EXPORT BRepIntCurveSurface_Inter();
 
-  //! Load the Shape, the curve  and initialize the
+  //! Load the Shape, the curve and initialize the
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape&      theShape,
                             const GeomAdaptor_Curve& theCurve,
                             const Standard_Real      theTol);
 
-  //! Load the Shape, the curve  and initialize the
+  //! Load the Shape, the curve and initialize the
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape,
                             const gp_Lin&       theLine,
                             const Standard_Real theTol);
 
-  //! Load the Shape,   and initialize the
+  //! Load the Shape, and initialize the
   //! tolerance used for the classification.
   Standard_EXPORT void Load(const TopoDS_Shape& theShape, const Standard_Real theTol);
 
@@ -98,11 +98,11 @@ public:
   //! on the current face.
   Standard_EXPORT Standard_Real V() const;
 
-  //! returns the  parameter of the current point
+  //! returns the parameter of the current point
   //! on the curve.
   Standard_EXPORT Standard_Real W() const;
 
-  //! returns the current state  (IN or ON)
+  //! returns the current state (IN or ON)
   Standard_EXPORT TopAbs_State State() const;
 
   //! returns the transition of the line on the surface (IN or OUT or UNKNOWN)
@@ -115,7 +115,7 @@ protected:
   //! Internal function
   Standard_EXPORT void Find();
 
-  //! Method chec found intersection point
+  //! Method check found intersection point
   Standard_EXPORT Standard_Boolean FindPoint();
 
   //! Method to clear fields of class

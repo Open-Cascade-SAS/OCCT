@@ -57,7 +57,7 @@ public:
   //! Deactivate the given selection
   void Deactivate(const Handle(SelectMgr_Selection)& theSelection);
 
-  //! Converts VTK camera defiened for input view to OCC camera
+  //! Converts VTK camera defined for input view to OCC camera
   static Handle(Graphic3d_Camera) ConvertVtkToOccCamera(const IVtk_IView::Handle& theView);
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)

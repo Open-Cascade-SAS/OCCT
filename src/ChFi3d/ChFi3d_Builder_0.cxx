@@ -3306,7 +3306,7 @@ Standard_Real ChFi3d_ConvTol2dToTol3d(const Handle(Adaptor3d_Surface)& S, const 
 //=======================================================================
 // function : EvalTolReached
 // purpose  : The function above is too hard because
-//           parametrization of surfaces is not homogenous.
+//           parametrization of surfaces is not homogeneous.
 //=======================================================================
 
 Standard_Real ChFi3d_EvalTolReached(const Handle(Adaptor3d_Surface)& S1,

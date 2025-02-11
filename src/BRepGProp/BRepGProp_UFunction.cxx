@@ -154,7 +154,7 @@ Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real X, Sta
 
 //=======================================================================
 // function : InertiaValue
-// purpose  : Compute the value of intertia.
+// purpose  : Compute the value of inertia.
 //=======================================================================
 
 Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standard_Real& F)

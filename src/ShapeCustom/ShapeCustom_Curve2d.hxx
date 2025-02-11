@@ -26,7 +26,7 @@ class Geom2d_Curve;
 class Geom2d_BSplineCurve;
 
 //! Converts curve2d to analytical form with given
-//! precision or simpify curve2d.
+//! precision or simplify curve2d.
 class ShapeCustom_Curve2d
 {
 public:

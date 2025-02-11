@@ -81,7 +81,7 @@ public:
   //! Sets values of "myMinTol" and "myMaxTol" as follows
   //! myMaxTol = Max ("read.maxprecision.val", myEpsGeom * myUnitFactor)
   //! myMinTol = Precision::Confusion()
-  //! Remark:   This method is automatically invoked each time the values
+  //! Remark: This method is automatically invoked each time the values
   //! of "myEpsGeom" or "myUnitFactor" are changed
   Standard_EXPORT void UpdateMinMaxTol();
 
@@ -115,8 +115,8 @@ public:
   //! Changes the value of "mySurfaceCurve"
   void SetSurfaceCurve(const Standard_Integer ival);
 
-  //! Returns the value of  " mySurfaceCurve" 0 = value in
-  //! file , 2  = kepp 2d   and compute 3d   3 = keep 3d and
+  //! Returns the value of "mySurfaceCurve" 0 = value in
+  //! file, 2 = keep 2d and compute 3d, 3 = keep 3d and
   //! compute 2d
   Standard_Integer GetSurfaceCurve() const;
 

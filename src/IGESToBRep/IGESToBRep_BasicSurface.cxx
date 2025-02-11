@@ -673,7 +673,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
       TempUKnot.SetValue(++UIndex, UKnot1);
   }
 
-  //  Final knots & multiplicities arraies are dimensionned so as to be fully
+  //  Final knots & multiplicities arrays are dimensioned so as to be fully
   //  filled :
   //  =======================================================================
 
@@ -745,7 +745,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferBSplineSurface(
       TempVKnot.SetValue(++VIndex, VKnot1);
   }
 
-  //  Final knots & multiplicities arraies are dimensionned so as to be fully
+  //  Final knots & multiplicities arrays are dimensioned so as to be fully
   //  filled :
   //  =======================================================================
 

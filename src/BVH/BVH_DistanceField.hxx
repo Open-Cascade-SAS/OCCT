@@ -47,7 +47,7 @@ public:
   //! Returns parallel flag.
   inline Standard_Boolean IsParallel() const { return myIsParallel; }
 
-  //! Set parallel flag contolling possibility of parallel execution.
+  //! Set parallel flag controlling possibility of parallel execution.
   inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
 
 public:

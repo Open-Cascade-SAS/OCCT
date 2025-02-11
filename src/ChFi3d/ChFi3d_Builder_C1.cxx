@@ -4397,7 +4397,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     }
 
     // Fopbis is the face containing the trace of fillet CP.Arc() which of does not contain Vtx.
-    // Normallly Fobis is either the same as Fop (cylinder), or Fobis is G1 with Fop.
+    // Normally Fobis is either the same as Fop (cylinder), or Fobis is G1 with Fop.
     Fopbis.Orientation(TopAbs_FORWARD);
 
     // Fop calls the 4th face non-used for the vertex

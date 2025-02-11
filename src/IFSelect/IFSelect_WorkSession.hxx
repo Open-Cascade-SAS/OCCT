@@ -642,7 +642,7 @@ public:
   //! undefined), positive if OK, negative else :
   //! 0  : Nothing done
   //! 1  : OK, edition on the spot with no change to the graph
-  //! of dependances (purely local)
+  //! of dependencies (purely local)
   //! 2  : OK, model edited on the spot (graph recomputed, may
   //! have changed), protocol unchanged
   //! 3  : OK, new model produced, same protocol
@@ -654,7 +654,7 @@ public:
   //! -2 : Error on edition the spot, data may be corrupted
   //! (checking them is recommended)
   //! -3 : Error with a new data set, transformation ignored
-  //! -4 : OK as 4, but graph of dependances count not be recomputed
+  //! -4 : OK as 4, but graph of dependences count not be recomputed
   //! (the former one is kept) : check the protocol
   Standard_EXPORT Standard_Integer RunTransformer(const Handle(IFSelect_Transformer)& transf);
 
@@ -795,7 +795,7 @@ public:
   //! See the class PacketList for more details.
   Standard_EXPORT Handle(IFSelect_PacketList) EvalSplit() const;
 
-  //! Returns the list of Entities sent in files, accourding the
+  //! Returns the list of Entities sent in files, according to the
   //! count of files each one has been sent (these counts are reset
   //! by SetModel or SetRemaining(Forget) ) stored in Graph Status
   //! <count> = -1 (default) is for ENtities sent at least once

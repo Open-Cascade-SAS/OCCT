@@ -964,7 +964,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve(
     for (i = 0; i <= start->UpperIndex(); i++)
       Pole.SetValue(PoleIndex++, start->Pole(i));
 
-  //  Filling knots & multiplicities arraies :
+  //  Filling knots & multiplicities arrays :
   //  ========================================
 
   Standard_Integer        NbKnots = start->NbKnots();
@@ -992,7 +992,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve(
       TempKnot.SetValue(++KnotIndex, Knot1);
   }
 
-  //  Final knots & multiplicities arraies are dimensionned so as to be fully
+  //  Final knots & multiplicities arrays are dimensioned so as to be fully
   //  filled
   //  =======================================================================
 

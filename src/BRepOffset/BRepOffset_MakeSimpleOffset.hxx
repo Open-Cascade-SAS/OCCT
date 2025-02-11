@@ -68,7 +68,7 @@ public:
   Standard_EXPORT BRepOffset_MakeSimpleOffset(const TopoDS_Shape& theInputShape,
                                               const Standard_Real theOffsetValue);
 
-  //! Initialies shape for modifications.
+  //! Initialise shape for modifications.
   Standard_EXPORT void Initialize(const TopoDS_Shape& theInputShape,
                                   const Standard_Real theOffsetValue);
 

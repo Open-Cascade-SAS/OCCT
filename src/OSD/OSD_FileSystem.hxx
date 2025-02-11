@@ -59,7 +59,7 @@ public:
   //! (std::ios_base::in will be implicitly added)
   //! @param[in] theOffset     expected stream position from the beginning of the file (beginning of
   //! the stream by default);
-  //!                          -1 would keep seek position undefined (in case of re-using
+  //!                          -1 would keep seek position undefined (in case of reusing
   //!                          theOldStream)
   //! @param[in] theOldStream  a pointer to existing stream pointing to theUrl to be reused (without
   //! re-opening)

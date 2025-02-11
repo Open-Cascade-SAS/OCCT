@@ -62,7 +62,7 @@ public:
     const IMeshTools_Parameters& theParameters) const;
 
   //! Returns point in 3d space corresponded to the given
-  //! point defined in parameteric space of surface.
+  //! point defined in parametric space of surface.
   gp_Pnt Point(const gp_Pnt2d& thePoint2d) const
   {
     return GetSurface()->Value(thePoint2d.X(), thePoint2d.Y());
