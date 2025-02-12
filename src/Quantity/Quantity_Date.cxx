@@ -108,6 +108,8 @@ Quantity_Date::Quantity_Date(const Standard_Integer mm,
                              const Standard_Integer ss,
                              const Standard_Integer mis,
                              const Standard_Integer mics)
+    : mySec(0),
+      myUSec(0)
 {
 
   SetValues(mm, dd, yy, hh, mn, ss, mis, mics);

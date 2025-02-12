@@ -96,8 +96,8 @@ protected:
 private:
   Standard_Boolean Done;
   Standard_Boolean InfiniteStatus;
-  Standard_Integer NbSol;
-  Standard_Real    TheRoots[4];
+  Standard_Integer NbSol{};
+  Standard_Real    TheRoots[4]{};
 };
 
 #include <math_DirectPolynomialRoots.lxx>

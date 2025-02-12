@@ -46,9 +46,9 @@ struct BSplCLib_DataContainer
                                  "BSplCLib: bspline degree is greater than maximum supported");
   }
 
-  Standard_Real poles[2 * (25 + 1)];
-  Standard_Real knots[2 * 25];
-  Standard_Real ders[4];
+  Standard_Real poles[2 * (25 + 1)]{};
+  Standard_Real knots[2 * 25]{};
+  Standard_Real ders[4]{};
 };
 
 // methods for 1 dimensional BSplines

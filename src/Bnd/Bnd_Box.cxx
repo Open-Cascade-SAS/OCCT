@@ -32,24 +32,31 @@
 //=================================================================================================
 
 Bnd_Box::Bnd_Box()
+    // Equal to SetVoid();
     : Xmin(RealLast()),
       Xmax(-RealLast()),
       Ymin(RealLast()),
       Ymax(-RealLast()),
       Zmin(RealLast()),
       Zmax(-RealLast()),
-      Gap(0.0)
+      Gap(0.0),
+      Flags(VoidMask)
 {
-  SetVoid();
 }
 
 //=================================================================================================
 
 Bnd_Box::Bnd_Box(const gp_Pnt& theMin, const gp_Pnt& theMax)
-    : Gap(0.0)
+    // Equal to Update(theMin.X(), theMin.Y(), theMin.Z(), theMax.X(), theMax.Y(), theMax.Z());
+    : Xmin(theMin.X()),
+      Xmax(theMax.X()),
+      Ymin(theMin.Y()),
+      Ymax(theMax.Y()),
+      Zmin(theMin.Z()),
+      Zmax(theMax.Z()),
+      Gap(0.0),
+      Flags(0)
 {
-  SetVoid();
-  Update(theMin.X(), theMin.Y(), theMin.Z(), theMax.X(), theMax.Y(), theMax.Z());
 }
 
 //=================================================================================================

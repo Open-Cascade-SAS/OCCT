@@ -418,15 +418,25 @@ void BSB_T3Bits::AppendAxisX(const Standard_Integer i, const Standard_Integer v)
   axisX[0][i] = n;
 }
 
-//=======================================================================
 //=================================================================================================
 
 Bnd_BoundSortBox::Bnd_BoundSortBox()
-    : discrX(0),
+    : myBox(),
+      myBndComponents(nullptr),
+      Xmin(0.),
+      Ymin(0.),
+      Zmin(0.),
+      deltaX(0.),
+      deltaY(0.),
+      deltaZ(0.),
+      discrX(0),
       discrY(0),
-      discrZ(0)
+      discrZ(0),
+      theFound(0),
+      Crible(),
+      lastResult(),
+      TabBits(0)
 {
-  TabBits = 0;
 #if DEBUG
   NBCOMPARE       = 0L;
   NBBOITES        = 0L;

@@ -26,7 +26,8 @@
 
 Convert_CompBezierCurves2dToBSplineCurve2d::Convert_CompBezierCurves2dToBSplineCurve2d(
   const Standard_Real AngularTolerance)
-    : myAngular(AngularTolerance),
+    : myDegree(0),
+      myAngular(AngularTolerance),
       myDone(Standard_False)
 {
 }

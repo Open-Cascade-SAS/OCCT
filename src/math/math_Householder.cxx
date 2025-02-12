@@ -39,7 +39,8 @@ math_Householder::math_Householder(const math_Matrix&  A,
                                    const math_Vector&  B,
                                    const Standard_Real EPS)
     : Sol(1, A.ColNumber(), 1, 1),
-      Q(1, A.RowNumber(), 1, A.ColNumber())
+      Q(1, A.RowNumber(), 1, A.ColNumber()),
+      Done(Standard_False)
 {
 
   mylowerArow = A.LowerRow();
@@ -55,7 +56,8 @@ math_Householder::math_Householder(const math_Matrix&  A,
                                    const math_Matrix&  B,
                                    const Standard_Real EPS)
     : Sol(1, A.ColNumber(), 1, B.ColNumber()),
-      Q(1, A.RowNumber(), A.LowerCol(), A.UpperCol())
+      Q(1, A.RowNumber(), A.LowerCol(), A.UpperCol()),
+      Done(Standard_False)
 {
 
   mylowerArow = A.LowerRow();
@@ -73,7 +75,8 @@ math_Householder::math_Householder(const math_Matrix&     A,
                                    const Standard_Integer upperAcol,
                                    const Standard_Real    EPS)
     : Sol(1, upperAcol - lowerAcol + 1, 1, B.ColNumber()),
-      Q(1, upperArow - lowerArow + 1, 1, upperAcol - lowerAcol + 1)
+      Q(1, upperArow - lowerArow + 1, 1, upperAcol - lowerAcol + 1),
+      Done(Standard_False)
 {
   mylowerArow = lowerArow;
   myupperArow = upperArow;

@@ -26,6 +26,7 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration()
     : myIsDone(Standard_False),
       myValue(0.),
       myErrorReached(0.),
+      myAbsolutError(0.),
       myNbPntsReached(0),
       myNbIterReached(0)
 {
@@ -43,7 +44,9 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&     
     : myIsDone(Standard_False),
       myValue(0.),
       myErrorReached(0.),
-      myNbPntsReached(0)
+      myAbsolutError(0.),
+      myNbPntsReached(0),
+      myNbIterReached(0)
 {
   Perform(theFunction, theLower, theUpper, theNbPnts);
 }
@@ -62,7 +65,9 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&     
     : myIsDone(Standard_False),
       myValue(0.),
       myErrorReached(0.),
-      myNbPntsReached(0)
+      myAbsolutError(0.),
+      myNbPntsReached(0),
+      myNbIterReached(0)
 {
   Perform(theFunction, theLower, theUpper, theNbPnts, theTolerance, theMaxNbIter);
 }

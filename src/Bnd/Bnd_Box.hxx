@@ -83,8 +83,8 @@ public:
     Ymax  = -RealLast();
     Zmin  = RealLast();
     Zmax  = -RealLast();
-    Flags = VoidMask;
     Gap   = 0.0;
+    Flags = VoidMask;
   }
 
   //! Sets this bounding box so that it bounds

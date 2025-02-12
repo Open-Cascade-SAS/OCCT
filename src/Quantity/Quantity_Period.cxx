@@ -66,6 +66,8 @@ Quantity_Period::Quantity_Period(const Standard_Integer dd,
                                  const Standard_Integer ss,
                                  const Standard_Integer mils,
                                  const Standard_Integer mics)
+    : mySec(0),
+      myUSec(0)
 {
 
   SetValues(dd, hh, mn, ss, mils, mics);
@@ -77,6 +79,8 @@ Quantity_Period::Quantity_Period(const Standard_Integer dd,
 //
 // -------------------------------------------------------------
 Quantity_Period::Quantity_Period(const Standard_Integer ss, const Standard_Integer mics)
+    : mySec(0),
+      myUSec(0)
 {
 
   SetValues(ss, mics);

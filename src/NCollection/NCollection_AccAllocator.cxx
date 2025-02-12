@@ -86,7 +86,7 @@ void* NCollection_AccAllocator::Allocate(const size_t theSize)
 //=======================================================================
 void NCollection_AccAllocator::Free(void* theAddress)
 {
-  Key    aKey;
+  Key    aKey{};
   Block* aBlock = findBlock(theAddress, aKey);
 
 #if !defined No_Exception && !defined No_Standard_ProgramError

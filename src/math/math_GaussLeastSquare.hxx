@@ -65,11 +65,11 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  Standard_Boolean   Singular;
+  Standard_Boolean   Singular{};
   math_Matrix        LU;
   math_Matrix        A2;
   math_IntegerVector Index;
-  Standard_Real      D;
+  Standard_Real      D{};
 
 private:
   Standard_Boolean Done;

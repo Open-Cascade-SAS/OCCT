@@ -56,7 +56,7 @@ void OSD_Chronometer::GetProcessCPU(Standard_Real& theUserSeconds, Standard_Real
   static const long aCLK_TCK = CLK_TCK;
   #endif
 
-  tms aCurrentTMS;
+  tms aCurrentTMS{};
   times(&aCurrentTMS);
 
   theUserSeconds   = (Standard_Real)aCurrentTMS.tms_utime / aCLK_TCK;

@@ -145,7 +145,7 @@ union RealMap {
 //--------------------------------------------------------------------
 static int HardwareHighBitsOfDouble()
 {
-  RealMap MaxDouble;
+  RealMap MaxDouble{};
   MaxDouble.real = DBL_MAX;
   //=========================================================
   // representation of the max double in IEEE is
@@ -170,7 +170,7 @@ static int HardwareHighBitsOfDouble()
 //--------------------------------------------------------------------
 static int HardwareLowBitsOfDouble()
 {
-  RealMap MaxDouble;
+  RealMap MaxDouble{};
   MaxDouble.real = DBL_MAX;
   //=========================================================
   // representation of the max double in IEEE is
@@ -193,7 +193,7 @@ static const int LowBitsOfDouble  = HardwareLowBitsOfDouble();
 
 double NextAfter(const double x, const double y)
 {
-  RealMap res;
+  RealMap res{};
 
   res.real = x;
 
