@@ -38,7 +38,9 @@ Convert_ElementarySurfaceToBSplineSurface::Convert_ElementarySurfaceToBSplineSur
       nbUPoles(NbUPoles),
       nbVPoles(NbVPoles),
       nbUKnots(NbUKnots),
-      nbVKnots(NbVKnots)
+      nbVKnots(NbVKnots),
+      isuperiodic(Standard_False),
+      isvperiodic(Standard_False)
 
 {
 }

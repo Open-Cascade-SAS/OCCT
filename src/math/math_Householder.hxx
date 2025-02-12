@@ -104,7 +104,7 @@ protected:
 private:
   math_Matrix      Sol;
   math_Matrix      Q;
-  Standard_Boolean Done{};
+  Standard_Boolean Done;
   Standard_Integer mylowerArow;
   Standard_Integer myupperArow;
   Standard_Integer mylowerAcol;

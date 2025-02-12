@@ -145,8 +145,8 @@ protected:
   Standard_Integer        nbVPoles;
   Standard_Integer        nbUKnots;
   Standard_Integer        nbVKnots;
-  Standard_Boolean        isuperiodic{};
-  Standard_Boolean        isvperiodic{};
+  Standard_Boolean        isuperiodic;
+  Standard_Boolean        isvperiodic;
 
 private:
 };

@@ -25,7 +25,9 @@
 #include <math_Recipes.hxx>
 
 math_Jacobi::math_Jacobi(const math_Matrix& A)
-    : AA(1, A.RowNumber(), 1, A.RowNumber()),
+    : Done(Standard_False),
+      AA(1, A.RowNumber(), 1, A.RowNumber()),
+      NbRotations(0),
       EigenValues(1, A.RowNumber()),
       EigenVectors(1, A.RowNumber(), 1, A.RowNumber())
 {

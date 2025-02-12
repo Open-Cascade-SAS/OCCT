@@ -46,7 +46,9 @@ math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
       Vardua(1, Cont.RowNumber()),
-      CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber())
+      CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber()),
+      NbIter(0),
+      Done(Standard_False)
 {
 
   Perform(Cont, Secont, StartingPoint, Cont.RowNumber(), 0, EpsLix, EpsLic, NbIterations);
@@ -64,7 +66,9 @@ math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
       Vardua(1, Cont.RowNumber()),
-      CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber())
+      CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber()),
+      NbIter(0),
+      Done(Standard_False)
 {
 
   Perform(Cont, Secont, StartingPoint, Nce, Nci, EpsLix, EpsLic, NbIterations);

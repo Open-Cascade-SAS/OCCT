@@ -39,7 +39,8 @@ Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const Standard_Integer 
                                                          const Standard_Integer Degree)
     : degree(Degree),
       nbPoles(NbPoles),
-      nbKnots(NbKnots)
+      nbKnots(NbKnots),
+      isperiodic(Standard_False)
 
 {
   if (NbPoles >= 2)

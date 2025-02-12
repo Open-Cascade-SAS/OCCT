@@ -68,7 +68,7 @@ protected:
 private:
   Standard_Boolean Done;
   math_Matrix      AA;
-  Standard_Integer NbRotations{};
+  Standard_Integer NbRotations;
   math_Vector      EigenValues;
   math_Matrix      EigenVectors;
 };
