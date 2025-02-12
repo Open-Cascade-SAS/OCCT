@@ -30,12 +30,14 @@
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepVisual_DraughtingCallout.hxx>
 #include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDF_LabelMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
+class Interface_InterfaceModel;
 class XSControl_WorkSession;
 class TDocStd_Document;
 class STEPCAFControl_ExternFile;
@@ -337,7 +339,7 @@ protected:
     Handle(StepRepr_RepresentationContext)&       theRC,
     Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
 
-  void writePresentation(const Handle(XSControl_WorkSession)&    theWS,
+  void writePresentation(const Handle(Interface_InterfaceModel)& theModel,
                          const TopoDS_Shape&                     thePresentation,
                          const Handle(TCollection_HAsciiString)& thePrsName,
                          const Standard_Boolean                  theHasSemantic,
@@ -346,6 +348,37 @@ protected:
                          const gp_Pnt&                           theTextPosition,
                          const Handle(Standard_Transient)&       theDimension,
                          const StepData_Factors& theLocalFactors = StepData_Factors());
+
+  //! Creates a DraughtingCallout with the given presentation shape and name.
+  //! @param thePresentation the shape of the presentation.
+  //! @param thePrsName the name of the presentation.
+  //! @return the created DraughtingCallout.
+  Handle(StepVisual_DraughtingCallout) createDraughtingCallout(
+    const TopoDS_Shape&                     thePresentation,
+    const Handle(TCollection_HAsciiString)& thePrsName);
+
+  //! Writes draughting model item association to the STEP model.
+  //! @param theModel the interface model.
+  //! @param theDraugthingCallout the draughting callout.
+  //! @param theHasSemantic flag indicating if semantic data is present.
+  //! @param theDimension the dimension data.
+  void writeDraughtingModelItemAssociation(
+    const Handle(Interface_InterfaceModel)&     theModel,
+    const Handle(StepVisual_DraughtingCallout)& theDraugthingCallout,
+    const Standard_Boolean                      theHasSemantic,
+    const Handle(Standard_Transient)&           theDimension);
+
+  //! Writes annotation plane data to the STEP model.
+  //! @param theModel the interface model.
+  //! @param theDraugthingCallout the draughting callout.
+  //! @param theAnnotationPlane the annotation plane.
+  //! @param theTextPosition the text position.
+  //! @param theLocalFactors the local factors.
+  void writeAnnotationPlane(const Handle(Interface_InterfaceModel)&     theModel,
+                            const Handle(StepVisual_DraughtingCallout)& theDraugthingCallout,
+                            const gp_Ax2&                               theAnnotationPlane,
+                            const gp_Pnt&                               theTextPosition,
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Handle(StepDimTol_Datum) writeDatumAP242(
     const Handle(XSControl_WorkSession)& theWS,
