@@ -1575,8 +1575,8 @@ Handle(Geom2d_BSplineCurve) IGESToBRep_BasicCurve::Transfer2dCopiousData(
       aPole = gp_Pnt2d(start->TransformedPoint(i).X(), start->TransformedPoint(i).Y());
     else
       aPole = gp_Pnt2d(start->Point(i).X(), start->Point(i).Y());
-    //    if (!aPole.IsEqual(TempPole(TempIndex-1), GetEpsCoeff())) //modified by rln 16/12/97
-    //    CSR# PRO11641 entity 46GetEpsGeom()*GetUnitFactor()
+    //    if (!aPole.IsEqual(TempPole(TempIndex-1), GetEpsCoeff())) //modified by rln 16/12/97 CSR#
+    //    PRO11641 entity 46GetEpsGeom()*GetUnitFactor()
     // S4054: some filter must be kept UKI60556 entity 7 (two equal points)
     if (!aPole.IsEqual(TempPole(TempIndex - 1), gp::Resolution()))
       TempPole.SetValue(TempIndex++, aPole);
