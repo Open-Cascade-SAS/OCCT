@@ -1,0 +1,105 @@
+# This workflow validates the WebAssembly build on Ubuntu.
+# It is triggered on pushes to the master branch.
+# The workflow includes steps to install dependencies, configure, build, and clean up the project.
+
+name: WebAssembly build (Ubuntu)
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - 'master'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  USERNAME: Open-Cascade-SAS
+  VCPKG_EXE: ${{ github.workspace }}/vcpkg/vcpkg
+  FEED_URL: https://nuget.pkg.github.com/Open-Cascade-SAS/index.json
+  VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite"
+  EMSDK_VERSION: 3.1.74
+
+jobs:
+  wasm-build:
+    name: WebAssembly Build
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete
+        sudo apt-get install -y libxi-dev libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxrandr-dev libxxf86vm-dev
+
+    - name: Setup vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        ./vcpkg/bootstrap-vcpkg.sh
+
+    - name: Add NuGet sources
+      run: |
+        mono $(${VCPKG_EXE} fetch nuget | tail -n 1) \
+          sources add \
+          -Source "${FEED_URL}" \
+          -StorePasswordInClearText \
+          -Name GitHubPackages \
+          -UserName "${USERNAME}" \
+          -Password "${{ secrets.GITHUB_TOKEN }}"
+        mono $(${VCPKG_EXE} fetch nuget | tail -n 1) \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -Source "${FEED_URL}"
+
+    - name: Setup Emscripten
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install ${EMSDK_VERSION}
+        ./emsdk activate ${EMSDK_VERSION}
+        echo "EMSDK=${{ github.workspace }}/emsdk" >> $GITHUB_ENV
+        echo "${{ github.workspace }}/emsdk" >> $GITHUB_PATH
+        echo "${{ github.workspace }}/emsdk/upstream/emscripten" >> $GITHUB_PATH
+
+    - name: Configure OCCT with vcpkg
+      run: |
+        source "${{ github.workspace }}/emsdk/emsdk_env.sh"
+        mkdir -p "build-${{ matrix.build_type }}"
+        cd "build-${{ matrix.build_type }}"
+        export VCPKG_ROOT="${{ github.workspace }}/vcpkg"
+        emcmake cmake -G "Ninja" \
+          -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
+          -DVCPKG_TARGET_TRIPLET=wasm32-emscripten \
+          -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE="$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake" \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DBUILD_USE_VCPKG=ON \
+          -DUSE_MMGR_TYPE=NATIVE \
+          -DBUILD_LIBRARY_TYPE=Static \
+          -DBUILD_MODULE_Draw=OFF \
+          -DUSE_FREETYPE=ON \
+          -DUSE_TK=OFF \
+          -DUSE_DRACO=ON \
+          -DUSE_FFMPEG=OFF \
+          -DUSE_FREEIMAGE=OFF \
+          -DUSE_OPENVR=OFF \
+          -DUSE_VTK=OFF \
+          -DUSE_TBB=OFF \
+          -DUSE_RAPIDJSON=ON \
+          -DUSE_OPENGL=OFF \
+          -DINSTALL_DIR="${{ github.workspace }}/install-wasm-${{ matrix.build_type }}" \
+          -DCMAKE_CXX_FLAGS="-s WASM=1 -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1" \
+          -DCMAKE_EXECUTABLE_SUFFIX=".js" ..
+
+    - name: Build
+      run: |
+        cd build-${{ matrix.build_type }}
+        cmake --build . --config ${{ matrix.build_type }} --target install -- -j4

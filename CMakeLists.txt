@@ -566,6 +566,7 @@ endif()
 
 # OpenGL
 if (CAN_USE_OPENGL)
+  message(WARNING "OpenGL is used by OCCT")
   if (USE_OPENGL)
     add_definitions (-DHAVE_OPENGL_EXT)
   else()
@@ -578,6 +579,7 @@ endif()
 
 # OpenGL ES 2.0
 if (CAN_USE_GLES2 AND USE_GLES2)
+  message(WARNING "OpenGL ES 2.0 is used by OCCT")
   add_definitions (-DHAVE_GLES2_EXT)
   if (NOT IOS)
     list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/egl")
