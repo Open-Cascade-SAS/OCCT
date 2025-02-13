@@ -1130,9 +1130,11 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve(
     //: 5    BSplineC = new Geom_BSplineCurve(Poles, Weight, Knot, Mult, Degree);
   }
 
-  // sln 29.12.2001 OCC90 : If curve can not be created do nothing
-  if (Poles.IsEmpty() || !checkBSplineCurve(this, start, Knot, Weight))
+  // If curve can not be created do nothing
+  if (Poles.Size() < 2 || !checkBSplineCurve(this, start, Knot, Weight))
+  {
     return BSplineRes;
+  }
 
   {
     try
