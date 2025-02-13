@@ -1,5 +1,11 @@
 cmake_minimum_required (VERSION 3.10 FATAL_ERROR)
 
+# Special workaround to set up platform specific macroses
+# before it was done as a part of "PROJECT" command
+# But now we need to call PROJECT only after detection list of
+# dependencies and other settings (preparing for VCPKG building)
+enable_language(CXX)
+
 if (NOT DEFINED BUILD_USE_VCPKG)
   set (BUILD_USE_VCPKG OFF CACHE BOOL "Use vcpkg for 3rdparty libraries.")
   if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
