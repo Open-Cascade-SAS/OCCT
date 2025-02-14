@@ -123,6 +123,11 @@ else()
                          "Please use our contact form at https://occt3d.com/")
   unset (BUILD_SHARED_LIBS)
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
+  if (BUILD_OPT_PROFILE STREQUAL "Production")
+    set (BUILD_OPT_PROFILE "Default" CACHE STRING "Select profile for compiler and linker." FORCE)
+    message(WARNING "Static libraries are not optimized for production builds. "
+                    "Please use shared libraries for production builds.")
+  endif()
 endif()
 
 if (WIN32)
