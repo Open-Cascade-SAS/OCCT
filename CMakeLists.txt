@@ -397,6 +397,10 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND BUILD_MODULE_Draw)
   message (STATUS "Info. Draw module is turned off due to it is not supported on UWP")
   set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
 endif()
+if (EMSCRIPTEN AND BUILD_MODULE_DETools)
+  message (STATUS "Info. DETools module is turned off due to it is not supported on Emscripten")
+  set (BUILD_MODULE_DETools OFF CACHE BOOL "${BUILD_MODULE_DETools_DESCR}" FORCE)
+endif()
 
 # accumulate used toolkits (first level) in BUILD_TOOLKITS variable
 list (APPEND BUILD_TOOLKITS ${BUILD_ADDITIONAL_TOOLKITS})
