@@ -570,21 +570,19 @@ void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProte
     throw Standard_ProgramError("OSD_File::Append(): no name was given");
   }
 
-  const char*      anFDOpenMode;
-  Standard_Integer anOpenMode = O_APPEND;
+  const char*      anFDOpenMode = "r";
+  Standard_Integer anOpenMode   = O_APPEND | O_RDONLY;
   switch (theMode)
   {
-    case OSD_ReadOnly:
-      anOpenMode |= O_RDONLY;
-      anFDOpenMode = "r";
-      break;
     case OSD_WriteOnly:
-      anOpenMode |= O_WRONLY;
+      anOpenMode   = O_APPEND | O_WRONLY;
       anFDOpenMode = "a";
       break;
     case OSD_ReadWrite:
-      anOpenMode |= O_RDWR;
+      anOpenMode   = O_APPEND | O_RDWR;
       anFDOpenMode = "a+";
+      break;
+    case OSD_ReadOnly:
       break;
   }
 
