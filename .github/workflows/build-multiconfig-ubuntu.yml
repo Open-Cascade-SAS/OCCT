@@ -5,6 +5,9 @@
 name: Ubuntu build validation
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - 'master'
