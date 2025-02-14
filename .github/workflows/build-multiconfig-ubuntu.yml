@@ -5,9 +5,6 @@
 name: Ubuntu build validation
 
 on:
-  pull_request:
-    branches:
-      - '**'
   push:
     branches:
       - 'master'
@@ -116,7 +113,7 @@ jobs:
               -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
               -D BUILD_USE_PCH=OFF \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_OPT_PROFILE=Default \
               -D BUILD_LIBRARY_TYPE=Static \
               -D USE_TK=ON \
               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
