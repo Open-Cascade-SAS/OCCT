@@ -1,11 +1,5 @@
 cmake_minimum_required (VERSION 3.10 FATAL_ERROR)
 
-# Special workaround to set up platform specific macroses
-# before it was done as a part of "PROJECT" command
-# But now we need to call PROJECT only after detection list of
-# dependencies and other settings (preparing for VCPKG building)
-enable_language(CXX)
-
 if (NOT DEFINED BUILD_USE_VCPKG)
   set (BUILD_USE_VCPKG OFF CACHE BOOL "Use vcpkg for 3rdparty libraries.")
   if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
@@ -38,6 +32,30 @@ if (BUILD_USE_VCPKG)
   endif()
 
   set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg")
+
+  # Disable default features for vcpkg manifest
+  set (VCPKG_MANIFEST_NO_DEFAULT_FEATURES 1)
+
+  # detection for Emscripten toolchain
+  if(CMAKE_TOOLCHAIN_FILE MATCHES ".*mscripten\.cmake$" OR "${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}" MATCHES ".*mscripten\.cmake$")
+    set(EMSCRIPTEN 1)
+  endif()
+
+  # detection for Android toolchain
+  if(CMAKE_TOOLCHAIN_FILE MATCHES ".*ndroid\.toolchain\.cmake$" OR "${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}" MATCHES ".*ndroid\.toolchain\.cmake$")
+    set(ANDROID 1)
+  endif()
+
+  # detection for android common variables
+  if (NOT "${CMAKE_ANDROID_NDK}" STREQUAL "" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Android" OR NOT "${ANDROID_NDK}" STREQUAL "")
+    set (ANDROID 1)
+  endif()
+else()
+  # Setting up the system and compiler specific variables.
+  # Can't be done on early stages with VCPKG enabled.
+  # VCPKG installing dependencies as soon as call PROJECT,
+  # but for then moment need to define required list of dependencies.
+  PROJECT (OCCT)
 endif()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/adm/cmake")
@@ -572,7 +590,6 @@ endif()
 
 # OpenGL
 if (CAN_USE_OPENGL)
-  message(WARNING "OpenGL is used by OCCT")
   if (USE_OPENGL)
     add_definitions (-DHAVE_OPENGL_EXT)
   else()
@@ -585,12 +602,13 @@ endif()
 
 # OpenGL ES 2.0
 if (CAN_USE_GLES2 AND USE_GLES2)
-  message(WARNING "OpenGL ES 2.0 is used by OCCT")
   add_definitions (-DHAVE_GLES2_EXT)
   if (NOT IOS)
     list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/egl")
     list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/gles2")
-    OCCT_ADD_VCPKG_FEATURE ("angle")
+    if (NOT EMSCRIPTEN)
+      OCCT_ADD_VCPKG_FEATURE ("angle")
+    endif()
   endif()
 else()
   if (NOT CAN_USE_GLES2)
@@ -732,8 +750,12 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_QT")
 endif()
 
-# the name of the project
-project (OCCT)
+# VCPKG require delayed processing of 3rdparty.
+# That is why we delay the creating project and setting up
+# the platform specific variables.
+if (BUILD_USE_VCPKG)
+  project (OCCT)
+endif()
 
 # copying clang-format file to the root of the project
 file(COPY ${CMAKE_SOURCE_DIR}/.clang-format DESTINATION ${CMAKE_SOURCE_DIR})

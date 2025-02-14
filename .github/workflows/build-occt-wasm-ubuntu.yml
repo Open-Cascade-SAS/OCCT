@@ -85,8 +85,9 @@ jobs:
           -DUSE_MMGR_TYPE=NATIVE \
           -DBUILD_LIBRARY_TYPE=Static \
           -DBUILD_MODULE_Draw=OFF \
-          -DUSE_FREETYPE=ON \
+          -DUSE_FREETYPE=OFF \
           -DUSE_TK=OFF \
+          -DUSE_TCL=OFF \
           -DUSE_DRACO=ON \
           -DUSE_FFMPEG=OFF \
           -DUSE_FREEIMAGE=OFF \
@@ -94,7 +95,6 @@ jobs:
           -DUSE_VTK=OFF \
           -DUSE_TBB=OFF \
           -DUSE_RAPIDJSON=ON \
-          -DUSE_OPENGL=OFF \
           -DINSTALL_DIR="${{ github.workspace }}/install-wasm-${{ matrix.build_type }}" \
           -DCMAKE_CXX_FLAGS="-s WASM=1 -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1" \
           -DCMAKE_EXECUTABLE_SUFFIX=".js" ..
