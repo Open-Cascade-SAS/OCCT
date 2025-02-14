@@ -195,6 +195,11 @@ if (NOT DEFINED BUILD_INCLUDE_SYMLINK)
   set (BUILD_INCLUDE_SYMLINK OFF CACHE BOOL "${BUILD_INCLUDE_SYMLINK_DESCR}")
 endif()
 
+# Overview
+if (NOT DEFINED BUILD_DOC_Overview)
+  set (BUILD_DOC_Overview OFF CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
+endif()
+
 if (CMAKE_VERSION VERSION_LESS "3.14")
   OCCT_CHECK_AND_UNSET (BUILD_INCLUDE_SYMLINK)
 endif()
@@ -866,19 +871,6 @@ endif()
 
 if(APPLE)
   set (INSTALL_NAME_DIR "" CACHE STRING "install_name library suffix on OS X (e.g. @executable_path/../Frameworks)")
-endif()
-
-# Overview
-if (NOT DEFINED BUILD_DOC_Overview)
-  set (DO_ONLY_CHECK_FOR_DOXYGEN ON)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
-  set (DO_ONLY_CHECK_FOR_DOXYGEN OFF)
-
-  if (CAN_DOXYGEN_BE_USED)
-    message (STATUS "Info. Overview building is turned on")
-  endif()
-
-  set (BUILD_DOC_Overview ${CAN_DOXYGEN_BE_USED} CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
 endif()
 
 # include the patched or original list of definitions and flags
