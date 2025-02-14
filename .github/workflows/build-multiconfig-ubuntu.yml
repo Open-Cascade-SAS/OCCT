@@ -167,8 +167,7 @@ jobs:
               -D USE_VTK=ON \
               -D USE_TBB=ON \
               -D USE_RAPIDJSON=ON \
-              -D USE_OPENGL=ON \
-              ${{ matrix.config.compiler_flags }} ..
+              -D USE_OPENGL=ON ..
 
     - name: Build full with DEBUG define
       run: |
