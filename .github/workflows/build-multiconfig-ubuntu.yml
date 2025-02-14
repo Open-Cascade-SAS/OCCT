@@ -24,13 +24,16 @@ jobs:
           - {
               name: "GCC",
               cc: "gcc",
-              cxx: "g++"
+              cxx: "g++",
+              compiler_flags: ""
             }
           - {
               name: "Clang",
               cc: "clang",
-              cxx: "clang++"
+              cxx: "clang++",
+              compiler_flags: "-D CMAKE_CXX_FLAGS=\"-Werror -Wall -Wextra\" -D CMAKE_C_FLAGS=\"-Werror -Wall -Wextra\""
             }
+        build_type: [Debug, Release]
 
     steps:
     - name: Checkout repository
@@ -51,13 +54,13 @@ jobs:
         cmake -G "Ninja" \
               -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
               -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
-              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
+              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              ${{ matrix.config.compiler_flags }} ..
 
     - name: Build basic
       run: |
         cd build
-        cmake --build . -- -j 4
+        cmake --build . --config ${{ matrix.build_type }} -- -j 4
 
     - name: Clear up after build
       run: |
@@ -75,9 +78,9 @@ jobs:
               -D BUILD_OPT_PROFILE=Production \
               -D BUILD_LIBRARY_TYPE=Shared \
               -D USE_TK=ON \
-              -D CMAKE_BUILD_TYPE=Debug \
+              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
               -D USE_MMGR_TYPE=JEMALLOC \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D INSTALL_DIR=${{ github.workspace }}/install-${{ matrix.build_type }} \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
@@ -89,18 +92,17 @@ jobs:
               -D USE_TBB=ON \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
-              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
+              ${{ matrix.config.compiler_flags }} ..
 
     - name: Build full shared
       run: |
         cd build
-        cmake --build . --target install --config Debug -- -j 4
+        cmake --build . --target install --config ${{ matrix.build_type }} -- -j 4
     
     - name: Clear up after build
       run: |
         rm -rf build
-        rm -rf ${{ github.workspace }}/install
+        rm -rf ${{ github.workspace }}/install-${{ matrix.build_type }}
 
     - name: Configure full static
       run: |
@@ -111,12 +113,12 @@ jobs:
               -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
               -D BUILD_USE_PCH=OFF \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_OPT_PROFILE=Default \
               -D BUILD_LIBRARY_TYPE=Static \
               -D USE_TK=ON \
-              -D CMAKE_BUILD_TYPE=Debug \
+              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
               -D USE_MMGR_TYPE=JEMALLOC \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D INSTALL_DIR=${{ github.workspace }}/install-${{ matrix.build_type }} \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
@@ -128,18 +130,17 @@ jobs:
               -D USE_TBB=ON \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
-              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
+              ${{ matrix.config.compiler_flags }} ..
 
     - name: Build full static
       run: |
         cd build
-        cmake --build . --target install --config Debug -- -j 4
+        cmake --build . --target install --config ${{ matrix.build_type }} -- -j 4
 
     - name: Clear up after build
       run: |
         rm -rf build
-        rm -rf ${{ github.workspace }}/install
+        rm -rf ${{ github.workspace }}/install-${{ matrix.build_type }}
 
     - name: Configure full with DEBUG define
       run: |
@@ -154,8 +155,8 @@ jobs:
               -D BUILD_OPT_PROFILE=Production \
               -D BUILD_LIBRARY_TYPE=Shared \
               -D USE_TK=ON \
-              -D CMAKE_BUILD_TYPE=Debug \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -D INSTALL_DIR=${{ github.workspace }}/install-${{ matrix.build_type }} \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
@@ -171,9 +172,9 @@ jobs:
     - name: Build full with DEBUG define
       run: |
         cd build
-        cmake --build . --target install --config Debug -- -j 4
+        cmake --build . --target install --config ${{ matrix.build_type }} -- -j 4
       
     - name: Clear up after build
       run: |
         rm -rf build
-        rm -rf ${{ github.workspace }}/install
+        rm -rf ${{ github.workspace }}/install-${{ matrix.build_type }}
