@@ -233,13 +233,18 @@ void Average (const Standard_Real** theArray,
 
 To improve the open source readability and, consequently, maintainability, the following set of rules is applied.
 
+### Clang-format [MANDATORY]
+
+The source code should be formatted using the clang-format tool with the configuration file provided in the OCCT repository.
+The version of clang-format should be 18.1.8 or higher.
+
 ### International language [MANDATORY]
 
 All comments in all sources must be in English.
 
 ### Line length
 
-Try to stay within the limit of 120 characters per line in all sources.
+Try to stay within the limit of 100 characters per line in all sources.
 
 ### C++ style comments
 
@@ -253,49 +258,6 @@ Delete unused code instead of commenting it or using \#define.
 
 Indentation in all sources should be set to two space characters.
 Use of tabulation characters for indentation is disallowed.
-
-### Separating spaces
-
-Punctuation rules follow the rules of the English language.
-* C/C++ reserved words, commas, colons and semicolons should be followed by a space character if they are not at the end of a line.
-* There should be no space characters after '(' and before ')'. Closing and opening brackets should be separated by a space character.
-* For better readability it is also recommended to surround conventional operators by a space character. 
-Examples:
-
-~~~~{.cpp}
-while (true)                            // NOT: while( true ) ...
-{
-  DoSomething (theA, theB, theC, theD); // NOT: DoSomething(theA,theB,theC,theD);
-}
-for (anIter = 0; anIter < 10; ++anIter) // NOT: for (anIter=0;anIter<10;++anIter){
-{
-  theA = (theB + theC) * theD;          // NOT: theA=(theB+theC)*theD
-}
-~~~~
-
-### Declaration of pointers and references
-
-In declarations of simple pointers and references put asterisk (*) or ampersand (&) right after the type without extra space.
-
-Since declaration of several variables with mixed pointer types contrudicts this rule, it should be avoided. Instead, declare each variable independently with fully qualified type.
-
-Examples:
-
-~~~~{.cpp}
-Standard_Integer   *theVariable;      // not recommended
-Standard_Integer *  theVariable;      // not recommended
-Standard_Integer*   theVariable;      // this is OK
-
-Standard_Integer  *&theVariable;      // not recommended
-Standard_Integer *& theVariable;      // not recommended
-Standard_Integer*&  theVariable;      // this is OK
-
-Standard_Integer  **theVariable;      // not recommended
-Standard_Integer ** theVariable;      // not recommended
-Standard_Integer**  theVariable;      // this is OK
-
-Standard_Integer *theA, theB, **theC; // not recommended (declare each variable independently)
-~~~~
 
 ### Separate logical blocks
 
@@ -330,19 +292,16 @@ Each descriptive block should contain at least a function name and purpose descr
 See the following example:
 
 ~~~~{.cpp}
-// =======================================================================
-// function : TellMeSmthGood
-// purpose  : Gives me good news
-// =======================================================================
+
+// ================================================================================================
+
 void TellMeSmthGood()
 {
   ...
 }
 
-// =======================================================================
-// function : TellMeSmthBad
-// purpose  : Gives me bad news
-// =======================================================================
+// ================================================================================================
+
 void TellMeSmthBad()
 {
   ...
@@ -398,23 +357,6 @@ if (anIter <= theNbValues) // OK
 
 if (THE_LIMIT == theValue) // bad style (global constant vs. variable)
 if (theValue == THE_LIMIT) // OK
-~~~~
-
-### Alignment
-
-Use alignment wherever it enhances the readability. See the following example:
-
-~~~~{.cpp}
-MyPackage_MyClass anObject;
-Standard_Real     aMinimum = 0.0;
-Standard_Integer  aVal     = theVal;
-switch (aVal)
-{
-  case 0:  computeSomething();              break;
-  case 12: computeSomethingElse (aMinimum); break;
-  case 3:
-  default: computeSomethingElseYet();       break;
-}
 ~~~~
 
 ### Indentation of comments
