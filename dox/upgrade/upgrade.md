@@ -7,7 +7,7 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
-@ref upgrade_occt780 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.8.0)"
+@ref upgrade_occt790 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.9.0)"
 
 @subsection upgrade_intro_precautions Precautions
 
@@ -2409,3 +2409,77 @@ The most recommended manager is `JeMalloc`. To use it with a plugin system, like
 `BUILD_OPT_PROFILE` is a new variable to define optimization level. Available profiles:
 * `Default` - specializes only in quality-dependent parameters for the compiler.
 * `Production` - specializes in performance and quality-dependent parameters for the compiler and linker.
+
+@section upgrade_occt790 Upgrade to OCCT 7.9.0
+
+@subsection upgrade_790_code_formatting Code Formatting update
+
+The entire code base has been formatted with `clang-format` 18.1.8 (Windows) using settings available in the root of the repository.
+Most custom patches on top of previous releases will likely have merge conflicts.
+When encountering merge conflicts, it is recommended to use `clang-format` to format the code.
+To maintain patches, it is recommended to merge them into the main repository as part of a contribution. See [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+
+@subsection upgrade_790_migration Migration to GitHub
+
+The OCCT repository has been migrated to GitHub. The new repository is available at [GitHub](https://github.com/Open-Cascade-SAS/OCCT).
+The old repository will be available for some time, but it is recommended to use the new repository for all new changes.
+Contribution to the new repository is available through the GitHub interface - see [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+
+@subsection upgrade_790_configuration GenProj no longer supported
+
+The `GenProj` tool is no longer supported. It is recommended to use CMake for building OCCT.
+In case of problems, please refer to the [CMake Guide](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html).
+
+@subsection upgrade_790_modeling_scale_exception Disabling exception for transformation with scale
+
+The exception for transformation with scale has been disabled by default.
+These exceptions were enabled in OCCT 7.6.0 for all cases of applying a transformation on a `TopoDS_Shape` with scale or negative determinant.
+Now the exceptions are disabled by default but can be enabled by changing the parameter in the method which applies the transformation on `TopoDS_Shape`.
+
+@subsection upgrade_790_de_wrapper Migration of DE_Wrapper classes
+
+The DE Wrapper classes have been reorganized to follow a single style throughout the OCCT open source and commercial code.
+All DE formats starting from 7.8.0 were grouped into their own TKs with the `TKDE` prefix.
+Now all DE Wrapper interfaces have moved to their own package with the `DE` prefix.
+DE Wrapper classes follow the pattern: `DE<Format>_Parameters`, `DE<Format>_Provider`, and `DE<Format>_ConfigurationNode`.
+Example: `DESTEP_Parameters`, `DESTEP_Provider`, `DESTEP_ConfigurationNode`.
+
+@subsection upgrade_790_de_shape_healing Migration of shape healing parameters
+
+The shape healing parameters have migrated from the resource file to the DE interface.
+The previous implementation was based on the resource file or `Interface_Static`.
+Now the parameters are stored in the `DE_ShapeFixParameters` structure with the option to use a string-string map to store extra parameters.
+To use the previous interface, use code similar to:
+
+~~~~{.cpp}
+  STEPControl_Reader aReader;
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
+  aReader.SetShapeFixParameters(std::move(aProcessingData.first));
+  aReader.SetShapeProcessFlags(aProcessingData.second);
+~~~~
+
+It is recommended to use the new interface to store parameters in the `DE_ShapeFixParameters` structure directly.
+
+@subsection upgrade_790_de_interface_static Migration of DE parameters from Interface_Static
+
+During transfer operations, all parameters that were stored in `Interface_Static` have moved to their own DE structure.
+The parameters are read only once during initialization and stored in the model.
+Parameters are now available as part of the DE Wrapper interface, for example: `DESTEP_Parameters`, `DEIGES_Parameters`.
+Code samples showing how to set the parameters can be found in `DESTEP_Provider` and `DEIGES_Provider`.
+
+@subsection upgrade_790_general_handle_types Deprecated Handle types
+
+The `Handle_*` type names have been deprecated in favor of directly using the macro.
+The `Handle_*` type names are still available, but it is recommended to use the macro directly.
+Example:
+
+~~~~{.cpp}
+  Handle(TDataStd_Application) anApp = new TDataStd_Application(); // recommended
+  Handle_TDataStd_Application anApp = new TDataStd_Application(); // deprecated
+~~~~
+
+@subsection upgrade_790_general_map NCollection_Map algorithm method migration
+
+The `NCollection_Map` class has been reorganized to migrate extra methods to the `NCollection_MapAlgo` class.
+Boolean operations on maps are now available in the `NCollection_MapAlgo` class.
