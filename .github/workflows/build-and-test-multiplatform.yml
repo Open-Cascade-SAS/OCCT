@@ -534,12 +534,6 @@ jobs:
         .\systemwidedeploy.cmd 5
       shell: cmd
 
-    - name: Install Visual C++ 2010 Redistributable
-      run: |
-        choco install -y vcredist2010
-        refreshenv
-      shell: cmd
-
     - name: Install CJK Fonts
       run: |
         Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
@@ -649,13 +643,6 @@ jobs:
         cd mesa3d
         .\systemwidedeploy.cmd 1
         .\systemwidedeploy.cmd 5
-      shell: cmd
-
-    - name: Install Visual C++ 2010 Redistributable
-      if: steps.check_failures.outputs.failed_count > 0
-      run: |
-        choco install -y vcredist2010
-        refreshenv
       shell: cmd
 
     - name: Install CJK Fonts
@@ -775,12 +762,6 @@ jobs:
         .\systemwidedeploy.cmd 5
       shell: cmd
 
-    - name: Install Visual C++ 2010 Redistributable
-      run: |
-        choco install -y vcredist2010
-        refreshenv
-      shell: cmd
-
     - name: Install CJK Fonts
       run: |
         Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
@@ -890,13 +871,6 @@ jobs:
         cd mesa3d
         .\systemwidedeploy.cmd 1
         .\systemwidedeploy.cmd 5
-      shell: cmd
-
-    - name: Install Visual C++ 2010 Redistributable
-      if: steps.check_failures.outputs.failed_count > 0
-      run: |
-        choco install -y vcredist2010
-        refreshenv
       shell: cmd
 
     - name: Install CJK Fonts
@@ -1761,7 +1735,7 @@ jobs:
         run: |
           response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}&status=completed")
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}&status=success")
           latest_run_id=$(echo "$response" | jq -r '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms") | .id' | head -n 1)
           echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
 

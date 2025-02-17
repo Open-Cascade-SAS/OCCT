@@ -435,9 +435,17 @@ static Standard_Boolean FindCoordBounds(const TopTools_SequenceOfShape&         
   theNumberOfIntervals = aPairSeq.Length();
 
   if (aPairSeq.Length() == 2)
+  {
     theMinCoord = aPairSeq(2).first - thePeriod;
-  else
+  }
+  else if (aPairSeq.Length() > 0)
+  {
     theMinCoord = aPairSeq(1).first;
+  }
+  else
+  {
+    return Standard_False;
+  }
 
   theMaxCoord = aPairSeq(1).second;
   return Standard_True;
@@ -1225,6 +1233,13 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface, gp_Cylin
   {
     Handle(Geom_SurfaceOfRevolution) aRS = Handle(Geom_SurfaceOfRevolution)::DownCast(theInSurface);
     Handle(Geom_Curve)               aBasis = aRS->BasisCurve();
+
+    while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      Handle(Geom_TrimmedCurve) aTc = Handle(Geom_TrimmedCurve)::DownCast(aBasis);
+      aBasis                        = aTc->BasisCurve();
+    }
+
     if (aBasis->IsKind(STANDARD_TYPE(Geom_Line)))
     {
       Handle(Geom_Line) aBasisLine = Handle(Geom_Line)::DownCast(aBasis);
@@ -1247,6 +1262,13 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface, gp_Cylin
     Handle(Geom_SurfaceOfLinearExtrusion) aLES =
       Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theInSurface);
     Handle(Geom_Curve) aBasis = aLES->BasisCurve();
+
+    while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      Handle(Geom_TrimmedCurve) aTc = Handle(Geom_TrimmedCurve)::DownCast(aBasis);
+      aBasis                        = aTc->BasisCurve();
+    }
+
     if (aBasis->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
       Handle(Geom_Circle) aBasisCircle = Handle(Geom_Circle)::DownCast(aBasis);
