@@ -163,6 +163,7 @@ public: //! @name object display management
   Standard_EXPORT void RemoveAll(const Standard_Boolean theToUpdateViewer);
 
   //! Recomputes the seen parts presentation of the Object.
+  //! The object will be also unhighlighted and removed from selection.
   //! If theAllModes equals true, all presentations are present in the object even if unseen.
   Standard_EXPORT void Redisplay(const Handle(AIS_InteractiveObject)& theIObj,
                                  const Standard_Boolean               theToUpdateViewer,
@@ -175,13 +176,14 @@ public: //! @name object display management
                                  const Standard_Boolean      theToUpdateViewer);
 
   //! Recomputes the displayed presentations, flags the others.
-  //! Doesn't update presentations.
+  //! Doesn't update selections.
   Standard_EXPORT void RecomputePrsOnly(const Handle(AIS_InteractiveObject)& theIObj,
                                         const Standard_Boolean               theToUpdateViewer,
                                         const Standard_Boolean theAllModes = Standard_False);
 
   //! Recomputes the active selections, flags the others.
   //! Doesn't update presentations.
+  //! The object will be also unhighlighted and removed from selection.
   Standard_EXPORT void RecomputeSelectionOnly(const Handle(AIS_InteractiveObject)& anIObj);
 
   //! Updates displayed interactive object by checking and recomputing its flagged as "to be
