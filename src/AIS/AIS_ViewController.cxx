@@ -695,8 +695,21 @@ bool AIS_ViewController::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
     if (double(aDelta.cwiseAbs().maxComp()) < aTolClick)
     {
       ++myMouseClickCounter;
-      const bool isDoubleClick = myMouseClickCounter == 2 && myMouseClickTimer.IsStarted()
-                                 && myMouseClickTimer.ElapsedTime() <= myMouseDoubleClickInt;
+
+      const bool isCounterValid = myMouseClickCounter == 2;
+      const bool isTimerStarted = myMouseClickTimer.IsStarted();
+      const bool isTimerElapsed = myMouseClickTimer.ElapsedTime() > myMouseDoubleClickInt;
+
+      const bool isTimerValid = isTimerStarted && !isTimerElapsed;
+
+      const bool isDoubleClick = isCounterValid && isTimerValid;
+
+      if (!isTimerValid)
+      {
+        myMouseClickCounter = 1;
+      }
+
+      myMouseClickCounter %= 2;
 
       myMouseClickTimer.Stop();
       myMouseClickTimer.Reset();
