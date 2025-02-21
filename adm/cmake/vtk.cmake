@@ -74,7 +74,7 @@ if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} "${3RDPARTY_VTK_DIR}")
 endif()
 
-find_package(VTK COMPONENTS CommonCore RengeringUI RenderingOpenGL2 QUIET)
+find_package(VTK COMPONENTS CommonCore RengeringUI RenderingOpenGL2)
 
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} ${CACHED_VTK_DIR})
