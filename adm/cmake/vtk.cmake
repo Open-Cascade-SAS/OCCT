@@ -2,7 +2,7 @@
 
 # vcpkg processing
 if (BUILD_USE_VCPKG)
-  find_package(VTK REQUIRED)
+  find_package(VTK REQUIRED COMPONENTS CommonCore glew RengeringUI RenderingOpenGL2)
   set(CSF_VTK VTK::CommonCore)
   set(IS_VTK_9XX 1)
   if (WIN32)
@@ -74,7 +74,7 @@ if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} "${3RDPARTY_VTK_DIR}")
 endif()
 
-find_package(VTK QUIET)
+find_package(VTK COMPONENTS CommonCore glew RengeringUI RenderingOpenGL2 QUIET)
 
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} ${CACHED_VTK_DIR})
