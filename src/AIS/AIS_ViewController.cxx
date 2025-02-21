@@ -701,10 +701,8 @@ bool AIS_ViewController::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
       myMouseClickTimer.Stop();
       myMouseClickTimer.Reset();
       myMouseClickTimer.Start();
-      if (isDoubleClick)
-      {
-        myMouseClickCounter = 0;
-      }
+      myMouseClickCounter %= 2;
+
       toUpdateView = UpdateMouseClick(thePoint,
                                       (Aspect_VKeyMouse)myMouseSingleButton,
                                       theModifiers,
