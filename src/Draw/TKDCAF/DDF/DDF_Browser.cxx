@@ -75,6 +75,16 @@ void DDF_Browser::Dump(Standard_OStream& S) const
 
 //=================================================================================================
 
+void DDF_Browser::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!myDF.IsNull())
+  {
+    myDF->DumpJson(theOStream, theDepth);
+  }
+}
+
+//=================================================================================================
+
 void DDF_Browser::Whatis(Draw_Interpretor& I) const
 {
   I << "Data Framework Browser";
