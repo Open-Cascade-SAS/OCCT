@@ -62,7 +62,7 @@ bool DEGLTF_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                               % 2);
   InternalParameters.FileCS =
     (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs",
-                                                      (int)InternalParameters.SystemCS,
+                                                      (int)InternalParameters.FileCS,
                                                       aScope)
                               % 2);
 

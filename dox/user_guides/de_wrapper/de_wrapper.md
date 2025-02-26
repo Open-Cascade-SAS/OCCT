@@ -24,15 +24,15 @@ This guide principally deals with the following OCCT classes:
 
 | CAD format | Extensions | RW support | Thread Safety | Presentation | Package |
 | :--------- | :--------- | :--------- | :----------- | :----------- | :------ |
-| STEP | .stp, .step .stepz | RW | No | BRep, Mesh | STEPCAFControl |
-| XCAF | .xbf | RW | Yes | BRep, Mesh | DEXCAFCascade |
-| BREP | .brep | RW | Yes | BRep, Mesh | DEBRepCascade |
-| IGES | .igs, .iges | RW | No | BRep | IGESCAFControl |
-| OBJ | .obj | RW | Yes | Mesh | RWObj |
-| STL | .stl | RW | Yes | Mesh | RWStl |
-| PLY | .ply | W | Yes | Mesh | RWPly |
-| GLTF | .glTF .glb | RW | Yes | Mesh | RWGltf |
-| VRML | .wrl .vrml | RW | Yes | Mesh | Vrml |
+| STEP | .stp, .step .stepz | RW | No | BRep, Mesh | DESTEP |
+| XCAF | .xbf | RW | Yes | BRep, Mesh | DEXCAF |
+| BREP | .brep | RW | Yes | BRep, Mesh | DEBREP |
+| IGES | .igs, .iges | RW | No | BRep | DEIGES |
+| OBJ | .obj | RW | Yes | Mesh | DEOBJ |
+| STL | .stl | RW | Yes | Mesh | DESTL |
+| PLY | .ply | W | Yes | Mesh | DEPLY |
+| GLTF | .glTF .glb | RW | Yes | Mesh | DEGLTF |
+| VRML | .wrl .vrml | RW | Yes | Mesh | DEVRML |
 
 **Note** :
   * The format names in the first column match the FormatName values used for configuration nodes.
@@ -41,7 +41,7 @@ This guide principally deals with the following OCCT classes:
 @section occt_de_wrapper_3 DE Session Configuration
 
 Any providers can have their own read/write parameters. The transfer process is set up using DE configuration nodes, which hold all relevant parameters. There are two ways to change the parameter values: directly from code or by an external resource file/string.
-The session is a global or static DE_Wrapper object that stores registered DE configuration nodes and wraps DE commands to work with them. It has some configuration parameters of its own and also keeps track of loaded nodes and specilal global parameters.
+The session is a global or static DE_Wrapper object that stores registered DE configuration nodes and wraps DE commands to work with them. It has some configuration parameters of its own and also keeps track of loaded nodes and special global parameters.
 
 @subsection occt_de_wrapper_3_1 Getting a DE session. Code sample
 
