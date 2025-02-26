@@ -436,7 +436,8 @@ void Font_FontMgr::addFontAlias(const TCollection_AsciiString&        theAliasNa
 //=================================================================================================
 
 Font_FontMgr::Font_FontMgr()
-    : myToTraceAliases(Standard_False)
+    : myToTraceAliases(Standard_False),
+      myToPrintErrors(Standard_True)
 {
   Handle(Font_FontAliasSequence) aMono   = new Font_FontAliasSequence();
   Handle(Font_FontAliasSequence) aSerif  = new Font_FontAliasSequence();
@@ -1090,7 +1091,7 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont(const TCollection_AsciiString& th
   }
   if (aFont.IsNull())
   {
-    if (theDoFailMsg)
+    if (theDoFailMsg && myToPrintErrors)
     {
       Message::SendFail("Font_FontMgr, error: unable to find any font!");
     }

@@ -164,6 +164,13 @@ public:
   //! Can be disabled to avoid redundant messages with Message_Trace level.
   void SetTraceAliases(Standard_Boolean theToTrace) { myToTraceAliases = theToTrace; }
 
+  //! Return flag for printing error messages via Message_Fail messages; TRUE by default.
+  Standard_Boolean ToPrintErrors() const { return myToPrintErrors; }
+
+  //! Set flag for printing error messages.
+  //! Can be disabled to avoid error messages with Message_Fail level.
+  void SetPrintErrors(Standard_Boolean theToPrintErrors) { myToPrintErrors = theToPrintErrors; }
+
   //! Return font names with defined aliases.
   //! @param[out] theAliases  alias names
   Standard_EXPORT void GetAllAliases(TColStd_SequenceOfHAsciiString& theAliases) const;
@@ -278,6 +285,7 @@ private:
   NCollection_DataMap<TCollection_AsciiString, Handle(Font_FontAliasSequence)> myFontAliases;
   Handle(Font_FontAliasSequence)                                               myFallbackAlias;
   Standard_Boolean                                                             myToTraceAliases;
+  Standard_Boolean                                                             myToPrintErrors;
 };
 
 #endif // _Font_FontMgr_HeaderFile
