@@ -16,7 +16,7 @@
 #  For development version git commit hash can be added to the version string
 #======================================================================
 
-set (OCC_VERSION_MAJOR 7 )
-set (OCC_VERSION_MINOR 9 )
+set (OCC_VERSION_MAJOR 8 )
+set (OCC_VERSION_MINOR 0 )
 set (OCC_VERSION_MAINTENANCE 0 )
-set (OCC_VERSION_DEVELOPMENT )
+set (OCC_VERSION_DEVELOPMENT "dev" )
