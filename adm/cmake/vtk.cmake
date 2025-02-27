@@ -2,7 +2,14 @@
 
 # vcpkg processing
 if (BUILD_USE_VCPKG)
-  find_package(VTK REQUIRED)
+  find_package(VTK REQUIRED
+    COMPONENTS
+      CommonCore
+      RenderingUI
+      RenderingOpenGL2
+    OPTIONAL_COMPONENTS
+      mpi
+  )
   set(IS_VTK_9XX 1)
   if (WIN32)
     set (USED_3RDPARTY_VTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")

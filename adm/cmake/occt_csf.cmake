@@ -84,7 +84,9 @@ endif()
 
 # VTK
 if (USE_VTK)
-  # set (CSF_VTK
+  # the variable must to be empty, but keep there the list of libs
+  # that is used in the VTK component.
+  set (CSF_VTK
   #   vtkCommonCore
   #   vtkRenderingCore
   #   vtkRenderingFreeType
@@ -94,7 +96,7 @@ if (USE_VTK)
   #   vtkInteractionStyle
   #   vtkRenderingOpenGL
   #   vtkRenderingFreeTypeOpenGL
-  # )
+  )
 else()
   set (CSF_VTK)
 endif()
