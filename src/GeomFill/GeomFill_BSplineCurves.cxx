@@ -117,7 +117,6 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
     // if still non matched -> error, the algorithm cannot finish
     if (!Trouve)
     {
-      std::cout << "Error at" << i << std::endl;
       return Standard_False;
     }
   }
