@@ -134,7 +134,7 @@ if (EXECUTABLE_PROJECT)
 else()
   add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE} ${RESOURCE_FILES} ${${PROJECT_NAME}_MOC_FILES})
 
-  if (MSVC)
+  if (MSVC AND BUILD_SHARED_LIBS)
     if (BUILD_FORCE_RelWithDebInfo)
       set (aReleasePdbConf "Release")
     else()
