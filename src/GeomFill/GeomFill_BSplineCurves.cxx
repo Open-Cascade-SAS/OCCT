@@ -34,8 +34,8 @@
 //=======================================================================
 // function : Arrange
 // purpose  : Internal Use Only
-//           This function is used to prepare the Filling: The Curves
-//           are arranged in this way:
+//            This function is used to prepare the Filling: The Curves
+//            are arranged in this way:
 //                      CC3
 //                  ----->-----
 //                 |           |
@@ -46,6 +46,10 @@
 //                 |           |
 //                  ----->-----
 //                   CC1 = C1
+//
+//            In case a curve CCx is degenerated to start and end at
+//            the same point, it is inserted before the curvature leaves
+//            the point.
 //=======================================================================
 static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
                                 const Handle(Geom_BSplineCurve)& C2,
@@ -70,26 +74,51 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
   for (i = 1; i <= 3; i++)
   {
     Trouve = Standard_False;
+
+    // search for a degenerated curve = point, which would match first
     for (j = i; j <= 3 && !Trouve; j++)
     {
-      if (GC[j]->StartPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
+      if (GC[j]->StartPoint().Distance(GC[j]->EndPoint()) < Tol)
       {
-        Dummy  = GC[i];
-        GC[i]  = GC[j];
-        GC[j]  = Dummy;
-        Trouve = Standard_True;
-      }
-      else if (GC[j]->EndPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
-      {
-        GC[j]  = Handle(Geom_BSplineCurve)::DownCast(GC[j]->Reversed());
-        Dummy  = GC[i];
-        GC[i]  = GC[j];
-        GC[j]  = Dummy;
-        Trouve = Standard_True;
+        // this is a degenerated line, does it match the last endpoint?
+        if (GC[j]->StartPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
+        {
+          Dummy  = GC[i];
+          GC[i]  = GC[j];
+          GC[j]  = Dummy;
+          Trouve = Standard_True;
+        }
       }
     }
+
+    // if no degenerated curve matched, try an ordinary one as next curve
     if (!Trouve)
+    {
+      for (j = i; j <= 3 && !Trouve; j++)
+      {
+        if (GC[j]->StartPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
+        {
+          Dummy  = GC[i];
+          GC[i]  = GC[j];
+          GC[j]  = Dummy;
+          Trouve = Standard_True;
+        }
+        else if (GC[j]->EndPoint().Distance(GC[i - 1]->EndPoint()) < Tol)
+        {
+          GC[j]  = Handle(Geom_BSplineCurve)::DownCast(GC[j]->Reversed());
+          Dummy  = GC[i];
+          GC[i]  = GC[j];
+          GC[j]  = Dummy;
+          Trouve = Standard_True;
+        }
+      }
+    }
+
+    // if still non matched -> error, the algorithm cannot finish
+    if (!Trouve)
+    {
       return Standard_False;
+    }
   }
 
   CC1 = GC[0];
