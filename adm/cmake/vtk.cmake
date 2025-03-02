@@ -2,8 +2,14 @@
 
 # vcpkg processing
 if (BUILD_USE_VCPKG)
-  find_package(VTK REQUIRED)
-  set(CSF_VTK VTK::CommonCore)
+  find_package(VTK REQUIRED
+    COMPONENTS
+      CommonCore
+      RenderingUI
+      RenderingOpenGL2
+    OPTIONAL_COMPONENTS
+      mpi
+  )
   set(IS_VTK_9XX 1)
   if (WIN32)
     set (USED_3RDPARTY_VTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
@@ -74,7 +80,14 @@ if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} "${3RDPARTY_VTK_DIR}")
 endif()
 
-find_package(VTK QUIET)
+find_package(VTK QUIET
+  COMPONENTS
+    CommonCore
+    RenderingUI
+    RenderingOpenGL2
+  OPTIONAL_COMPONENTS
+    mpi
+)
 
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   set (ENV{VTK_DIR} ${CACHED_VTK_DIR})

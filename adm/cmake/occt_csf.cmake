@@ -82,6 +82,25 @@ else()
   set (CSF_Draco)
 endif()
 
+# VTK
+if (USE_VTK)
+  # the variable must to be empty, but keep there the list of libs
+  # that is used in the VTK component.
+  set (CSF_VTK
+  #   vtkCommonCore
+  #   vtkRenderingCore
+  #   vtkRenderingFreeType
+  #   vtkFiltersGeneral
+  #   vtkIOImage
+  #   vtkImagingCore
+  #   vtkInteractionStyle
+  #   vtkRenderingOpenGL
+  #   vtkRenderingFreeTypeOpenGL
+  )
+else()
+  set (CSF_VTK)
+endif()
+
 if (WIN32)
   set (CSF_advapi32      "advapi32.lib")
   set (CSF_gdi32         "gdi32.lib")
