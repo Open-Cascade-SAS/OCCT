@@ -16,7 +16,7 @@
 #ifndef _Message_ProgressIndicator_HeaderFile
 #define _Message_ProgressIndicator_HeaderFile
 
-#include <Standard_Mutex.hxx>
+#include <Standard_MemoryUtils.hxx>
 #include <Standard_Handle.hxx>
 
 DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, Standard_Transient)
@@ -135,7 +135,7 @@ private:
 
 private:
   Standard_Real          myPosition;  //!< Total progress position ranged from 0 to 1
-  Standard_Mutex         myMutex;     //!< Protection of myPosition from concurrent increment
+  std::mutex             myMutex;     //!< Protection of myPosition from concurrent increment
   Message_ProgressScope* myRootScope; //!< The root progress scope
 
 private:
@@ -152,8 +152,8 @@ private:
 inline void Message_ProgressIndicator::Increment(const Standard_Real          theStep,
                                                  const Message_ProgressScope& theScope)
 {
-  // protect incrementation by mutex to avoid problems in multithreaded scenarios
-  Standard_Mutex::Sentry aSentry(myMutex);
+  // protect incrementing by mutex to avoid problems in multithreaded scenarios
+  std::lock_guard<std::mutex> aLock(myMutex);
 
   myPosition = Min(myPosition + theStep, 1.);
 

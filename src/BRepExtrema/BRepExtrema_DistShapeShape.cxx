@@ -36,6 +36,7 @@
 #include <NCollection_Vector.hxx>
 #include <OSD_Parallel.hxx>
 #include <StdFail_NotDone.hxx>
+#include <Standard_MemoryUtils.hxx>
 
 #include <algorithm>
 
@@ -739,7 +740,7 @@ struct TreatmentFunctor
       aClassifier.Perform(aPnt, aTolerance);
       if (aClassifier.State() == TopAbs_IN)
       {
-        Standard_Mutex::Sentry aLock(Mutex.get());
+        opencascade::lock_guard<std::mutex> aLock(Mutex.get());
         *InnerSol = Standard_True;
         *DistRef  = 0.;
         *IsDone   = Standard_True;
@@ -760,7 +761,7 @@ struct TreatmentFunctor
   Standard_Real*                                        DistRef;
   volatile Standard_Boolean*                            InnerSol;
   volatile Standard_Boolean*                            IsDone;
-  Handle(Standard_HMutex)                               Mutex;
+  std::unique_ptr<std::mutex>                           Mutex;
 };
 
 //=================================================================================================
@@ -810,7 +811,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::SolidTreatment(
   aFunctor.IsDone          = &myIsDone;
   if (myIsMultiThread)
   {
-    aFunctor.Mutex.reset(new Standard_HMutex());
+    aFunctor.Mutex = opencascade::make_unique<std::mutex>();
   }
 
   OSD_Parallel::For(0, aNbTasks, aFunctor, !myIsMultiThread);

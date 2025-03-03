@@ -34,8 +34,12 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_WorkSession, IFSelect_WorkSession)
 
 namespace
 {
-static Standard_Mutex WS_GLOBAL_MUTEX; //!< Mutex to prevent data races during reading and writing.
+std::mutex& getGlobalMutex()
+{
+  static std::mutex WS_GLOBAL_MUTEX;
+  return WS_GLOBAL_MUTEX;
 }
+} // namespace
 
 //=================================================================================================
 
@@ -72,7 +76,7 @@ void XSControl_WorkSession::ClearData(const Standard_Integer mode)
 
 Standard_Boolean XSControl_WorkSession::SelectNorm(const Standard_CString normname)
 {
-  const Standard_Mutex::Sentry aMutexLock(WS_GLOBAL_MUTEX);
+  std::lock_guard<std::mutex> aMutex(getGlobalMutex());
   // Old norm and results
   myTransferReader->Clear(-1);
   //  ????  En toute rigueur, menage a faire dans XWS : virer les items
@@ -430,7 +434,7 @@ Standard_Integer XSControl_WorkSession::TransferReadRoots(const Message_Progress
 
 Handle(Interface_InterfaceModel) XSControl_WorkSession::NewModel()
 {
-  const Standard_Mutex::Sentry     aMutexLock(WS_GLOBAL_MUTEX);
+  std::lock_guard<std::mutex>      aMutex(getGlobalMutex());
   Handle(Interface_InterfaceModel) newmod;
   if (myController.IsNull())
     return newmod;
@@ -453,8 +457,8 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape(
   const Standard_Boolean       compgraph,
   const Message_ProgressRange& theProgress)
 {
-  const Standard_Mutex::Sentry aMutexLock(WS_GLOBAL_MUTEX);
-  IFSelect_ReturnStatus        status;
+  std::lock_guard<std::mutex> aMutex(getGlobalMutex());
+  IFSelect_ReturnStatus       status;
   if (myController.IsNull())
     return IFSelect_RetError;
   const Handle(Interface_InterfaceModel)& model = Model();

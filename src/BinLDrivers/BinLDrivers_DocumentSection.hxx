@@ -22,7 +22,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <TDocStd_FormatVersion.hxx>
 
 //! More or less independent part of the saved/restored document
