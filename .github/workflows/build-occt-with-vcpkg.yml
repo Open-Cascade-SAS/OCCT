@@ -9,6 +9,9 @@ on:
   push:
     branches:
       - 'master'
+  pull_request:
+    branches:
+      - '**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
