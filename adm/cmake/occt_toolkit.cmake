@@ -63,13 +63,13 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
 
   set (HEADER_FILES_FILTERING ${ALL_FILES})
   set (SOURCE_FILES_FILTERING ${ALL_FILES})
-  
-  list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|p|g|lxx)")
-  
+
+  list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|p|g|lxx|hxx|pxx|hpp|gxx)$")
+    
   if(APPLE)
-    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|mm)")
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|cxx|cpp|mm)$")
   else()
-    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c)")
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|cpp|cxx)$")
   endif()
 
   list (APPEND HEADER_FILES ${HEADER_FILES_FILTERING})
