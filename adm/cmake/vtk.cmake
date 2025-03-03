@@ -9,6 +9,12 @@ if (BUILD_USE_VCPKG)
       RenderingOpenGL2
     OPTIONAL_COMPONENTS
       mpi
+      utf8
+      eigen
+      doubleconversion
+      lz4
+      lzma
+      expat
   )
   set(IS_VTK_9XX 1)
   if (WIN32)
@@ -87,6 +93,12 @@ find_package(VTK QUIET
     RenderingOpenGL2
   OPTIONAL_COMPONENTS
     mpi
+    utf8
+    eigen
+    doubleconversion
+    lz4
+    lzma
+    expat
 )
 
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
