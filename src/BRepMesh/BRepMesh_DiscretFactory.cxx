@@ -23,7 +23,11 @@
 namespace
 {
 //! Embedded triangulation tool(s)
-static TCollection_AsciiString THE_FAST_DISCRET_MESH("FastDiscret");
+const TCollection_AsciiString& THE_FAST_DISCRET_MESH()
+{
+  static TCollection_AsciiString anInstance("FastDiscret");
+  return anInstance;
+}
 
 //! Generate system-dependent name for dynamic library
 //! (add standard prefixes and postfixes)
@@ -52,11 +56,11 @@ static void MakeLibName(const TCollection_AsciiString& theDefaultName,
 BRepMesh_DiscretFactory::BRepMesh_DiscretFactory()
     : myPluginEntry(NULL),
       myErrorStatus(BRepMesh_FE_NOERROR),
-      myDefaultName(THE_FAST_DISCRET_MESH),
+      myDefaultName(THE_FAST_DISCRET_MESH()),
       myFunctionName("DISCRETALGO")
 {
   // register built-in meshing algorithms
-  myNames.Add(THE_FAST_DISCRET_MESH);
+  myNames.Add(THE_FAST_DISCRET_MESH());
 }
 
 //=================================================================================================
@@ -88,7 +92,7 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiStri
                                                      const TCollection_AsciiString& theFuncName)
 {
   myErrorStatus = BRepMesh_FE_NOERROR;
-  if (theName == THE_FAST_DISCRET_MESH)
+  if (theName == THE_FAST_DISCRET_MESH())
   {
     // built-in, nothing to do
     myPluginEntry  = NULL;
@@ -173,7 +177,7 @@ Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(const TopoDS_Shape
       return aDiscretRoot;
     }
   }
-  else // if (myDefaultName == THE_FAST_DISCRET_MESH)
+  else // if (myDefaultName == THE_FAST_DISCRET_MESH())
   {
     // use built-in
     BRepMesh_IncrementalMesh::Discret(theShape, theDeflection, theAngle, anInstancePtr);

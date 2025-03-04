@@ -19,8 +19,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ResultFromTransient, Standard_Transient)
 
-static Handle(Interface_Check) voidcheck = new Interface_Check;
-
 Transfer_ResultFromTransient::Transfer_ResultFromTransient() {}
 
 void Transfer_ResultFromTransient::SetStart(const Handle(Standard_Transient)& start)
@@ -50,6 +48,7 @@ Standard_Boolean Transfer_ResultFromTransient::HasResult() const
 
 const Handle(Interface_Check) Transfer_ResultFromTransient::Check() const
 {
+  static Handle(Interface_Check) voidcheck = new Interface_Check;
   if (thebinder.IsNull())
     return voidcheck;
   return thebinder->Check();

@@ -20,9 +20,43 @@
 #include <TCollection_AsciiString.hxx>
 
 // --- Enum : BooleanOperator ---
-static TCollection_AsciiString boDifference(".DIFFERENCE.");
-static TCollection_AsciiString boIntersection(".INTERSECTION.");
-static TCollection_AsciiString boUnion(".UNION.");
+
+namespace
+{
+class BooleanOperatorStrings
+{
+private:
+  TCollection_AsciiString myDifference;
+  TCollection_AsciiString myIntersection;
+  TCollection_AsciiString myUnion;
+
+  // Private constructor for singleton pattern
+  BooleanOperatorStrings()
+      : myDifference(".DIFFERENCE."),
+        myIntersection(".INTERSECTION."),
+        myUnion(".UNION.")
+  {
+  }
+
+  // Prevent copying
+  BooleanOperatorStrings(const BooleanOperatorStrings&)            = delete;
+  BooleanOperatorStrings& operator=(const BooleanOperatorStrings&) = delete;
+
+public:
+  // Singleton accessor
+  static const BooleanOperatorStrings& Instance()
+  {
+    static BooleanOperatorStrings theInstance;
+    return theInstance;
+  }
+
+  const TCollection_AsciiString& Difference() const { return myDifference; }
+
+  const TCollection_AsciiString& Intersection() const { return myIntersection; }
+
+  const TCollection_AsciiString& Union() const { return myUnion; }
+};
+} // namespace
 
 RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
 
@@ -31,11 +65,12 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
                                            Handle(Interface_Check)&               ach,
                                            const Handle(StepShape_BooleanResult)& ent) const
 {
-
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "boolean_result"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -46,20 +81,33 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   // --- own field : operator ---
 
   StepShape_BooleanOperator aOperator = StepShape_boDifference;
+
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 2);
-    if (boDifference.IsEqual(text))
+    Standard_CString              text           = data->ParamCValue(num, 2);
+    const BooleanOperatorStrings& aBoolOpStrings = BooleanOperatorStrings::Instance();
+
+    if (aBoolOpStrings.Difference().IsEqual(text))
+    {
       aOperator = StepShape_boDifference;
-    else if (boIntersection.IsEqual(text))
+    }
+    else if (aBoolOpStrings.Intersection().IsEqual(text))
+    {
       aOperator = StepShape_boIntersection;
-    else if (boUnion.IsEqual(text))
+    }
+    else if (aBoolOpStrings.Union().IsEqual(text))
+    {
       aOperator = StepShape_boUnion;
+    }
     else
+    {
       ach->AddFail("Enumeration boolean_operator has not an allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #2 (operator) is not an enumeration");
+  }
 
   // --- own field : firstOperand (is a select type) ---
 
@@ -110,23 +158,25 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
 void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                   SW,
                                             const Handle(StepShape_BooleanResult)& ent) const
 {
-
   // --- inherited field name ---
 
   SW.Send(ent->Name());
 
   // --- own field : operator ---
+  const BooleanOperatorStrings& aBoolOpStrings = BooleanOperatorStrings::Instance();
 
   switch (ent->Operator())
   {
     case StepShape_boDifference:
-      SW.SendEnum(boDifference);
+      SW.SendEnum(aBoolOpStrings.Difference());
       break;
+
     case StepShape_boIntersection:
-      SW.SendEnum(boIntersection);
+      SW.SendEnum(aBoolOpStrings.Intersection());
       break;
+
     case StepShape_boUnion:
-      SW.SendEnum(boUnion);
+      SW.SendEnum(aBoolOpStrings.Union());
       break;
   }
 

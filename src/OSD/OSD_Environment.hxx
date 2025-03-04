@@ -42,6 +42,10 @@ public:
   //! set to an empty AsciiString.
   Standard_EXPORT OSD_Environment(const TCollection_AsciiString& Name);
 
+  //! Creates an Environment variable initialized with value
+  //! set to an empty AsciiString.
+  Standard_EXPORT OSD_Environment(TCollection_AsciiString&& theName);
+
   //! Creates an Environment variable initialized with Value.
   Standard_EXPORT OSD_Environment(const TCollection_AsciiString& Name,
                                   const TCollection_AsciiString& Value);
