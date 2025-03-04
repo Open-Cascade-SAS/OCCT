@@ -3286,20 +3286,10 @@ Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Tr
             if (theGDTL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aTol))
             {
               Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aTol->GetObject();
-              Handle(TColStd_HArray1OfReal) aDirArr               = anAx->Axis()->DirectionRatios();
-              Handle(TColStd_HArray1OfReal) aDirRArr = anAx->RefDirection()->DirectionRatios();
-              Handle(TColStd_HArray1OfReal) aLocArr  = anAx->Location()->Coordinates();
-              gp_Dir                        aDir;
-              gp_Dir                        aDirR;
-              gp_Pnt                        aPnt;
-              if (!aDirArr.IsNull() && aDirArr->Length() > 2 && !aDirRArr.IsNull()
-                  && aDirRArr->Length() > 2 && !aLocArr.IsNull() && aLocArr->Length() > 2)
+              const Handle(Geom_Axis2Placement) aGeomAx2 = StepToGeom::MakeAxis2Placement(anAx, theLocalFactors);
+              if (!aGeomAx2.IsNull())
               {
-                aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower() + 1, aDirArr->Lower() + 2);
-                aDirR.SetCoord(aDirRArr->Lower(), aDirRArr->Lower() + 1, aDirRArr->Lower() + 2);
-                aPnt.SetCoord(aLocArr->Lower(), aLocArr->Lower() + 1, aLocArr->Lower() + 2);
-                gp_Ax2 anA(aPnt, aDir, aDirR);
-                anObj->SetAxis(anA);
+                anObj->SetAxis(aGeomAx2->Ax2());
                 aTol->SetObject(anObj);
               }
             }
