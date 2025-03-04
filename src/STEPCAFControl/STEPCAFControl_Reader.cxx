@@ -3286,7 +3286,8 @@ Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Tr
             if (theGDTL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aTol))
             {
               Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aTol->GetObject();
-              const Handle(Geom_Axis2Placement) aGeomAx2 = StepToGeom::MakeAxis2Placement(anAx, theLocalFactors);
+              const Handle(Geom_Axis2Placement)             aGeomAx2 =
+                StepToGeom::MakeAxis2Placement(anAx, theLocalFactors);
               if (!aGeomAx2.IsNull())
               {
                 anObj->SetAxis(aGeomAx2->Ax2());
