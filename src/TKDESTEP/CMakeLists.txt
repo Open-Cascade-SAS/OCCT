@@ -1,3 +1,6 @@
+set (OCCT_PRIVATE_STATIC_LIB TRUE)
+
+# internal project which will be hidden
 project(TKDESTEP)
 
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
