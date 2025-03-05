@@ -19,28 +19,35 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
 
-static StepData_EnumTool tool(".ANY_CROSS_SECTION.",
-                              ".ANY_LONGITUDINAL_SECTION.",
-                              ".BASIC.",
-                              ".CONTACTING_FEATURE.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_U.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_V.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_W.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_X.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_Y.",
-                              ".DEGREE_OF_FREEDOM_CONSTRAINT_Z.",
-                              ".DISTANCE_VARIABLE.",
-                              ".FREE_STATE.",
-                              ".LEAST_MATERIAL_REQUIREMENT.",
-                              ".LINE.",
-                              ".MAJOR_DIAMETER.",
-                              ".MAXIMUM_MATERIAL_REQUIREMENT.",
-                              ".MINOR_DIAMETER.",
-                              ".ORIENTATION.",
-                              ".PITCH_DIAMETER.",
-                              ".PLANE.",
-                              ".POINT.",
-                              ".TRANSLATION.");
+namespace
+{
+StepData_EnumTool& GetTool()
+{
+  static StepData_EnumTool tool(".ANY_CROSS_SECTION.",
+                                ".ANY_LONGITUDINAL_SECTION.",
+                                ".BASIC.",
+                                ".CONTACTING_FEATURE.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_U.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_V.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_W.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_X.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_Y.",
+                                ".DEGREE_OF_FREEDOM_CONSTRAINT_Z.",
+                                ".DISTANCE_VARIABLE.",
+                                ".FREE_STATE.",
+                                ".LEAST_MATERIAL_REQUIREMENT.",
+                                ".LINE.",
+                                ".MAJOR_DIAMETER.",
+                                ".MAXIMUM_MATERIAL_REQUIREMENT.",
+                                ".MINOR_DIAMETER.",
+                                ".ORIENTATION.",
+                                ".PITCH_DIAMETER.",
+                                ".PLANE.",
+                                ".POINT.",
+                                ".TRANSLATION.");
+  return tool;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -50,7 +57,7 @@ StepDimTol_SimpleDatumReferenceModifierMember::StepDimTol_SimpleDatumReferenceMo
 
 Standard_CString StepDimTol_SimpleDatumReferenceModifierMember::EnumText() const
 {
-  return tool.Text(Int()).ToCString();
+  return GetTool().Text(Int()).ToCString();
 }
 
 //=================================================================================================
@@ -58,7 +65,7 @@ Standard_CString StepDimTol_SimpleDatumReferenceModifierMember::EnumText() const
 void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const Standard_Integer /*theValue*/,
                                                                 const Standard_CString theText)
 {
-  Standard_Integer aVal = tool.Value(theText);
+  Standard_Integer aVal = GetTool().Value(theText);
   if (aVal >= 0)
     SetInt(aVal);
 }
