@@ -1327,7 +1327,7 @@ static Standard_Boolean Generated(const TDF_Label&                L,
                   {
                     a1NB = Standard_True;
                     break;
-                  } // lost only 1 neigbour
+                  } // lost only 1 neighbour
                 }
                 else if (aS.ShapeType() == TopAbs_FACE)
                 {
@@ -1341,7 +1341,7 @@ static Standard_Boolean Generated(const TDF_Label&                L,
                       {
                         a1NB = Standard_True;
                         break;
-                      } // lost only 1 neigbour
+                      } // lost only 1 neighbour
                     }
                   }
                 }

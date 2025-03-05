@@ -941,7 +941,7 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
     }
   }
   else
-  { // On segmente le resultat
+  { // We segment the result
     Handle(Geom2d_TrimmedCurve) TC;
     Handle(Geom2d_Curve)        aCCheck = CurvePtr;
 
@@ -1148,8 +1148,8 @@ void GeomLib::BuildCurve3d(const Standard_Real       Tolerance,
   TColStd_Array1OfReal Param_de_decoupeC3(1, NbIntervalC3 + 1);
   Curve.Intervals(Param_de_decoupeC3, GeomAbs_C3);
 
-  // Note extension of the parameteric range
-  // Pour forcer le Trim au premier appel de l'evaluateur
+  // Note extension of the parametric range
+  // To force Trim on first evaluator call
   GeomLib_CurveOnSurfaceEvaluator ev(Curve, FirstParameter - 1., LastParameter + 1.);
 
   // Approximation avec decoupe preferentiel

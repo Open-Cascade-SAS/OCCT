@@ -28,7 +28,7 @@
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
-//! Provides an encapsulation of the TCL interpretor to define Draw commands.
+//! Provides an encapsulation of the TCL interpreter to define Draw commands.
 class Draw_Interpretor
 {
 
@@ -56,7 +56,7 @@ public:
                                     Standard_Integer  theArgNb,
                                     const char**      theArgVec) = 0;
 
-    Draw_Interpretor* myDI; //!< pointer to Draw Interpretor
+    Draw_Interpretor* myDI; //!< pointer to Draw Interpreter
 
     // make sure allocation and de-allocation is done by the same memory allocator
     DEFINE_STANDARD_ALLOC
@@ -116,7 +116,7 @@ public:
   //! Empty constructor
   Standard_EXPORT Draw_Interpretor();
 
-  //! Initialize TCL interpretor
+  //! Initialize TCL interpreter
   Standard_EXPORT void Init();
 
   //! Creates a new command with name <theCommandName>, help string <theHelp> in group <theGroup>.

@@ -29,8 +29,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver, TPrsStd_Driver)
 
 #undef OPTIM_UPDATE // If this variable is defined there will be done
 
-//                      more otimized update of AIS_Shape. If an object was
-//                      erased in the viewer and it's location was changed
+//                      more optimized update of AIS_Shape. If an object was
+//                      erased in the viewer and its location was changed
 //                      but topological data wasn't then when displayed only
 //                      the object's presentation will be moved to new location
 //                      without recompute. The shape in AIS_Shape will

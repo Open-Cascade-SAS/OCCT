@@ -102,7 +102,7 @@ Standard_Boolean ShapeFix_IntersectionTool::SplitEdge(const TopoDS_Edge&   edge,
   sae.PCurve(edge, face, c2d, a, b, Standard_True);
   if (Abs(a - param) < 0.01 * preci || Abs(b - param) < 0.01 * preci)
     return Standard_False;
-  // check distanse between edge and new vertex
+  // check distance between edge and new vertex
   gp_Pnt          P1;
   TopLoc_Location L;
   if (BRep_Tool::SameParameter(edge) && !BRep_Tool::Degenerated(edge))

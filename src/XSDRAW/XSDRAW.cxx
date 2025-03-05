@@ -157,7 +157,7 @@ void XSDRAW::LoadDraw(Draw_Interpretor& theCommands)
   LoadSession();
 
   // skl: we make remove commands "x" and "exit" in order to this commands are
-  //      performed not in IFSelect_SessionPilot but in standard Tcl interpretor
+  //      performed not in IFSelect_SessionPilot but in standard Tcl interpreter
   XSDRAW::RemoveCommand("x");
   XSDRAW::RemoveCommand("exit");
 

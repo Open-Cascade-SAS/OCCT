@@ -42,7 +42,7 @@ public:
   //! Returns the contained value
   Standard_EXPORT const TopoDS_Shape& Value() const;
 
-  //! Specific testof equality : defined as False if <other> has
+  //! Specific test of equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
   Standard_EXPORT Standard_Boolean

@@ -21,8 +21,8 @@ foreach pnt ${pnts} {
  set log [projponf f $pnt -min -t]
  regexp {proj dist = ([-0-9.+eE]+)} ${log} full distmax
  if { ${distmax} > ${CMP_TOL} } {
-    puts "Error: Wrong distanse ($pnt)"
+    puts "Error: Wrong distance ($pnt)"
  } else {
-    puts "OK: Good distanse ($pnt)"
+    puts "OK: Good distance ($pnt)"
  }
 }

@@ -16,7 +16,7 @@ regexp {([-0-9.+eE]+)$} [dump d_val] full dist
 regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance d ] full toler
 set good_dist 0
 if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
-    puts "Faulty : the distanse is ${dist}. It is bad value"
+    puts "Faulty : the distance is ${dist}. It is bad value"
 }
 
 # 2

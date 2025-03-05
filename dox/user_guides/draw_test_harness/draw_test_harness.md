@@ -1261,7 +1261,7 @@ clear
 
 **Example:** 
 ~~~~{.php}
-# erase eveerything with a name starting with c_ 
+# erase everything with a name starting with c_ 
 foreach var [directory c_*] {erase $var} 
 
 # clear 2d views 

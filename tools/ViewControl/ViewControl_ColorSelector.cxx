@@ -71,7 +71,7 @@ public:
   //! Returns item information(short) for display role.
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant Data(const int theRow,
                                         const int theColumn,
                                         int       theRole = Qt::DisplayRole) const Standard_OVERRIDE

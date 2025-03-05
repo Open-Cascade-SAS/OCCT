@@ -28,7 +28,7 @@ class Draw_Printer : public Message_Printer
 {
   DEFINE_STANDARD_RTTIEXT(Draw_Printer, Message_Printer)
 public:
-  //! Creates a printer connected to the interpretor.
+  //! Creates a printer connected to the interpreter.
   Standard_EXPORT Draw_Printer(Draw_Interpretor& theTcl);
 
 protected:
