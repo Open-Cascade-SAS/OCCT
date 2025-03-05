@@ -665,6 +665,22 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        # Repeat failed tests for 10 times
+        for /l %%i in (1,1,10) do (
+          DRAWEXE.exe -v -c testgrid -regress results/windows-x64-retest -outdir results/windows-x64-retest -parallel 0 -overwrite
+          DRAWEXE.exe -v -c "testsummarize results/windows-x64-retest"
+        )
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
     - name: Upload regression test results
       if: steps.check_failures.outputs.failed_count > 0
       uses: actions/upload-artifact@v4.4.3
@@ -893,6 +909,22 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        call env.bat clang win64 release
+        # Repeat failed tests for 10 times
+        for /l %%i in (1,1,10) do (
+          DRAWEXE.exe -v -c testgrid -regress results/windows-clang-x64-retest -outdir results/windows-clang-x64-retest -parallel 0 -overwrite
+          DRAWEXE.exe -v -c "testsummarize results/windows-clang-x64-retest"
+        )
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
     - name: Upload regression test results
       if: steps.check_failures.outputs.failed_count > 0
       uses: actions/upload-artifact@v4.4.3
@@ -1091,6 +1123,23 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        cd bin
+        source env.sh
+        # Repeat failed tests for 10 times
+        for i in {1..10}; do
+          ./DRAWEXE -v -c testgrid -regress results/macos-x64-retest -outdir results/macos-x64-retest -parallel 0 -overwrite
+          ./DRAWEXE -v -c "testsummarize results/macos-x64-retest"
+        done
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
     - name: Copy retest results back to original location
       if: steps.check_failures.outputs.failed_count > 0
       run: |
@@ -1276,6 +1325,23 @@ jobs:
          cd bin
          source env.sh
          ./DRAWEXE -v -c testgrid -regress results/macos-gcc-x64 -outdir results/macos-gcc-x64-retest -parallel 0
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        cd bin
+        source env.sh
+        # Repeat failed tests for 10 times
+        for i in {1..10}; do
+          ./DRAWEXE -v -c testgrid -regress results/macos-gcc-x64-retest -outdir results/macos-gcc-x64-retest -parallel 0 -overwrite
+          ./DRAWEXE -v -c "testsummarize results/macos-gcc-x64-retest"
+        done
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -1468,6 +1534,24 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        cd bin
+        source env.sh
+        # Repeat failed tests for 10 times
+        for i in {1..10}; do
+          ./DRAWEXE -v -c testgrid -regress results/linux-clang-x64-retest -outdir results/linux-clang-x64-retest -parallel 0 -overwrite
+          ./DRAWEXE -v -c "testsummarize results/linux-clang-x64-retest"
+        done
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
     - name: Upload regression test results
       if: steps.check_failures.outputs.failed_count > 0
       uses: actions/upload-artifact@v4.4.3
@@ -1647,6 +1731,24 @@ jobs:
          cd bin
          source env.sh
          ./DRAWEXE -v -c testgrid -regress results/linux-gcc-x64 -outdir results/linux-gcc-x64-retest -parallel 0
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Repeating failed tests
+      if: steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20
+      run: |
+        cd install
+        cd bin
+        source env.sh
+        # Repeat failed tests for 10 times
+        for i in {1..10}; do
+          ./DRAWEXE -v -c testgrid -regress results/linux-gcc-x64-retest -outdir results/linux-gcc-x64-retest -parallel 0 -overwrite
+          ./DRAWEXE -v -c "testsummarize results/linux-gcc-x64-retest"
+        done
       shell: bash
       env:
         DISPLAY: :99
