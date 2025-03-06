@@ -75,6 +75,8 @@ public:
   //! @param theModifiers  key modifiers
   //! @param theIsDoubleClick flag indicating double mouse click
   //! @return TRUE if object handled click
+  //! For all selection schemes, allowing to select an object,
+  //! it's available
   virtual Standard_Boolean HandleMouseClick(const Graphic3d_Vec2i& thePoint,
                                             Aspect_VKeyMouse       theButton,
                                             Aspect_VKeyFlags       theModifiers,

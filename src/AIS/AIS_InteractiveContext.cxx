@@ -2742,7 +2742,10 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectPoint(const Graphic3d_Vec2i&    t
 
 AIS_StatusOfPick AIS_InteractiveContext::SelectDetected(const AIS_SelectionScheme theSelScheme)
 {
-  if (theSelScheme == AIS_SelectionScheme_Replace && !myLastPicked.IsNull())
+  // For all selection schemes, allowing to select an object,
+  // HandleMouseClick is available
+  if (theSelScheme != AIS_SelectionScheme_Remove && theSelScheme != AIS_SelectionScheme_Clear
+      && !myLastPicked.IsNull())
   {
     Graphic3d_Vec2i aMousePos(-1, -1);
     gp_Pnt2d        aMouseRealPos = MainSelector()->GetManager().GetMousePosition();
