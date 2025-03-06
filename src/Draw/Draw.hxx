@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! (Re)Load a Draw Harness plugin.
-  //! @param[in][out] theDI    Tcl interpretor to append loaded commands
+  //! @param[in][out] theDI    Tcl interpreter to append loaded commands
   //! @param[in] theKey  plugin code name to be resolved in resource file
   //! @param[in] theResourceFileName    description file name
   //! @param[in] theDefaultsDirectory   default folder for looking description file
@@ -58,7 +58,7 @@ public: //! @name Tcl variables management tools
   //! Sets a numeric variable.
   Standard_EXPORT static void Set(const Standard_CString Name, const Standard_Real val);
 
-  //! Returns main DRAW interpretor.
+  //! Returns main DRAW interpreter.
   Standard_EXPORT static Draw_Interpretor& GetInterpretor();
 
   //! Returns a variable value.

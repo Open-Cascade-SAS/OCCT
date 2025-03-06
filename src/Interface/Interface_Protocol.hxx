@@ -108,7 +108,7 @@ public:
 
   //! Returns True if <ent> is an Unknown Entity for the Norm, i.e.
   //! same Type as them created by method UnknownEntity
-  //! (for an Entity out of the Norm, answer can be unpredicable)
+  //! (for an Entity out of the Norm, answer can be unpredictable)
   Standard_EXPORT virtual Standard_Boolean IsUnknownEntity(
     const Handle(Standard_Transient)& ent) const = 0;
 

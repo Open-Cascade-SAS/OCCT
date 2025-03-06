@@ -26,7 +26,7 @@ class Interface_Check;
 class Interface_ReportEntity;
 DEFINE_STANDARD_HANDLE(Interface_ReportEntity, Standard_Transient)
 
-//! A ReportEntity is produced to aknowledge and memorize the
+//! A ReportEntity is produced to acknowledge and memorize the
 //! binding between a Check and an Entity. The Check can bring
 //! Fails (+ Warnings if any), or only Warnings. If it is empty,
 //! the Report Entity is for an Unknown Entity.

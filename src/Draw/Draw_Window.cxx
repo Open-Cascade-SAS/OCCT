@@ -1882,9 +1882,9 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
   ResetStdChannel(TCL_STDERR);
 
   #if (TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5))
-  // Plain Tcl (8.6.4+) initializes interpretor channels automatically, but
+  // Plain Tcl (8.6.4+) initializes interpreter channels automatically, but
   // ActiveState Tcl (at least 8.6.4) does not seem to do that, so channels
-  // need to be set into interpretor explicitly
+  // need to be set into interpreter explicitly
   {
     Tcl_Channel aChannelIn  = Tcl_GetStdChannel(TCL_STDIN);
     Tcl_Channel aChannelOut = Tcl_GetStdChannel(TCL_STDOUT);

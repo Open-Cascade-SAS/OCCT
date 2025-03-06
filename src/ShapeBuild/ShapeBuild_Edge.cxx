@@ -131,7 +131,7 @@ entity 132 edge 1
 
 //=================================================================================================
 
-// Added, cause invoke ShapeAnalysis leads to cyclic dependancy.
+// Added, cause invoke ShapeAnalysis leads to cyclic dependency.
 static Standard_Real AdjustByPeriod(const Standard_Real Val,
                                     const Standard_Real ToVal,
                                     const Standard_Real Period)

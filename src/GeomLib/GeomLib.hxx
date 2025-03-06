@@ -197,7 +197,7 @@ public:
   //! @param[in] Interval2  second interval to fuse
   //! @param[in] Confision  tolerance to compare intervals
   //! @param[in] IsAdjustToFirstInterval  flag to set method of fusion, if intervals are close
-  //!                               if false, intervals are fusing by half-division methdod
+  //!                               if false, intervals are fusing by half-division method
   //!                               if true, intervals are fusing by selecting value from Interval1
   //! @param[out] Fusion  output interval
   Standard_EXPORT static void FuseIntervals(

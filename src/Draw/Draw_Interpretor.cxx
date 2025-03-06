@@ -311,7 +311,7 @@ void Draw_Interpretor::add(const Standard_CString          theCommandName,
                            Draw_Interpretor::CallBackData* theCallback,
                            const Standard_CString          theGroup)
 {
-  Standard_ASSERT_RAISE(myInterp != NULL, "Attempt to add command to Null interpretor");
+  Standard_ASSERT_RAISE(myInterp != NULL, "Attempt to add command to Null interpreter");
 
   Tcl_CreateCommand(myInterp, theCommandName, CommandCmd, (ClientData)theCallback, CommandDelete);
 

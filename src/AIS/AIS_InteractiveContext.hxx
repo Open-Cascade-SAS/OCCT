@@ -255,14 +255,14 @@ public: //! @name highlighting management
     return myStyles[Prs3d_TypeOfHighlight_Dynamic];
   }
 
-  //! Setup the style of dynamic highlighting corrsponding to Prs3d_TypeOfHighlight_Selected.
+  //! Setup the style of dynamic highlighting corresponding to Prs3d_TypeOfHighlight_Selected.
   //! This is just a short-cut to SetHighlightStyle(Prs3d_TypeOfHighlight_Dynamic,theStyle).
   void SetHighlightStyle(const Handle(Prs3d_Drawer)& theStyle)
   {
     myStyles[Prs3d_TypeOfHighlight_Dynamic] = theStyle;
   }
 
-  //! Returns current selection style settings corrsponding to Prs3d_TypeOfHighlight_Selected.
+  //! Returns current selection style settings corresponding to Prs3d_TypeOfHighlight_Selected.
   //! This is just a short-cut to HighlightStyle(Prs3d_TypeOfHighlight_Selected).
   const Handle(Prs3d_Drawer)& SelectionStyle() const
   {
@@ -299,7 +299,7 @@ public: //! @name highlighting management
                                         const Handle(Prs3d_Drawer)&          theStyle,
                                         const Standard_Boolean               theToUpdateViewer);
 
-  //! Removes hilighting from the Object.
+  //! Removes highlighting from the Object.
   Standard_EXPORT void Unhilight(const Handle(AIS_InteractiveObject)& theIObj,
                                  const Standard_Boolean               theToUpdateViewer);
 

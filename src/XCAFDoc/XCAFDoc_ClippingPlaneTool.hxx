@@ -110,7 +110,7 @@ public:
   Standard_EXPORT Standard_Boolean GetCapping(const TDF_Label& theClippingPlaneL) const;
 
   //! Get capping value for given clipping plane label
-  //! Return true if Label is valid abd capping is exist.
+  //! Return true if Label is valid and capping exists.
   Standard_EXPORT Standard_Boolean GetCapping(const TDF_Label&  theClippingPlaneL,
                                               Standard_Boolean& theCapping) const;
 

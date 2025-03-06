@@ -678,7 +678,7 @@ void Draw::Set(const Standard_CString name, const Handle(Draw_Drawable3D)& D)
 // MKV 29.03.05
 static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*, int)
 {
-  // protect if the map was destroyed before the interpretor
+  // protect if the map was destroyed before the interpreter
   if (Draw::Drawables().IsEmpty())
   {
     return NULL;

@@ -467,7 +467,7 @@ void TPrsStd_ConstraintTools::ComputePerpendicular(const Handle(TDataXtd_Constra
   {
 #ifdef OCCT_DEBUG
     std::cout
-      << "TPrsStd_ConstraintTools::ComputePerpendicular: at leat two constraintes are needed"
+      << "TPrsStd_ConstraintTools::ComputePerpendicular: at least two constraints are needed"
       << std::endl;
 #endif
     NullifyAIS(anAIS);
@@ -535,7 +535,7 @@ void TPrsStd_ConstraintTools::ComputeParallel(const Handle(TDataXtd_Constraint)&
   if (nbgeom < 2)
   {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeParallel: at least 2 constraintes are needed"
+    std::cout << "TPrsStd_ConstraintTools::ComputeParallel: at least 2 constraints are needed"
               << std::endl;
 #endif
     NullifyAIS(anAIS);
@@ -605,7 +605,7 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const Handle(TDataXtd_Constraint)&
   if (nbgeom < 3)
   {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraintes are needed"
+    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraints are needed"
               << std::endl;
 #endif
     NullifyAIS(anAIS);
@@ -753,7 +753,7 @@ void TPrsStd_ConstraintTools::ComputeTangent(const Handle(TDataXtd_Constraint)& 
   if (nbgeom < 2)
   {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeTangent: at leat two constraintes are needed"
+    std::cout << "TPrsStd_ConstraintTools::ComputeTangent: at least two constraints are needed"
               << std::endl;
 #endif
     NullifyAIS(anAIS);
@@ -1172,7 +1172,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
   if (nbgeom < 2)
   {
     throw Standard_ProgramError(
-      "TPrsStd_ConstraintTools::ComputeConcentric: at least 2 constraintes are needed");
+      "TPrsStd_ConstraintTools::ComputeConcentric: at least 2 constraints are needed");
   }
   if (!aConst->IsPlanar())
   {
@@ -2234,7 +2234,7 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   if (nbgeom < 2)
   {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: at leat two constraintes are needed"
+    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: at least two constraints are needed"
               << std::endl;
 #endif
     NullifyAIS(anAIS);
@@ -2305,7 +2305,7 @@ void TPrsStd_ConstraintTools::ComputeRound(const Handle(TDataXtd_Constraint)& aC
   if (nbgeom < 1)
   {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeRound: at leat one geometry is needed"
+    std::cout << "TPrsStd_ConstraintTools::ComputeRound: at least one geometry is needed"
               << std::endl;
 #endif
     NullifyAIS(anAIS);

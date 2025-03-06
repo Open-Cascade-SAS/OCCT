@@ -704,7 +704,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         }
         else
         {
-          // add point, set correxponding status: to be corrected later
+          // add point, set corresponding status: to be corrected later
           Standard_Boolean ToAdd = Standard_False;
           if (aLinOn2S->NbPoints() == 0)
           {

@@ -2605,7 +2605,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::moveTo(const Handle(V3d_View)& the
   }
   else
   {
-    // previously detected object is unhilighted if it is not selected or hilighted
+    // previously detected object is unhighlighted if it is not selected or highlighted
     // with selection color if it is selected
     aStatus = AIS_SOD_Nothing;
     if (myAutoHilight && !myLastPicked.IsNull() && myLastPicked->HasSelectable())
