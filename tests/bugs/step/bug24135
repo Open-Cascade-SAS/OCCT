@@ -12,7 +12,7 @@ stepread [locate_data_file bug24135_Drum.stp] a *
 
 set exception_status 0
 set msg [ tpstat c ]
-set index [ lsearch $msg Exeption ]
+set index [ lsearch $msg Exception ]
 
 if {$index > -1} {
   set exception_status 1
