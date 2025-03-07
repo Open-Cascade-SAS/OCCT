@@ -137,18 +137,18 @@ static void Sample()
   // Setting the new  TPrsStd_AISPresentation to <ShapeLabel>
   // It can be done in two different ways:
 
-  Handle(TPrsStd_AISPresentation) Presenation;
+  Handle(TPrsStd_AISPresentation) Presentation;
   //  1. By giving to TPrsStd_AISPresentation attribute Standard_GUID of an attribute  to be displayed:
   //  This GUID will be used to find driver for building AIS_InteractiveObject in the map of drivers
         
-  Presenation = TPrsStd_AISPresentation::Set( ShapeLabel, TNaming_NamedShape::GetID() );
+  Presentation = TPrsStd_AISPresentation::Set( ShapeLabel, TNaming_NamedShape::GetID() );
  
   //  2. Or by giving the attribute itself to TPrsStd_AISPresentation attribute:
   //  An ID of attribute  will be used to find driver for building AIS_InteractiveObject in the map of drivers
 
   Handle(TNaming_NamedShape) NS;
   if( ShapeLabel.FindAttribute( TNaming_NamedShape::GetID(), NS) ) {
-    Presenation = TPrsStd_AISPresentation::Set( NS );
+    Presentation = TPrsStd_AISPresentation::Set( NS );
   }
 
 

@@ -49,26 +49,26 @@ proc action_time args {
 set whole_time [action_time]
 puts "Whole document open time $whole_time mcs"
 
-set quater_time [action_time -read0:2]
-puts "Quater of document open time $quater_time mcs"
+set quarter_time [action_time -read0:2]
+puts "Quarter of document open time $quarter_time mcs"
 
-# Check that open of quater of the document is significantly faster than open of whole.
-if { [expr $quater_time * 1.5] > $whole_time } {
-  puts "Error : loading of quater of the document content too slow relatively to the whole document load"
+# Check that open of quarter of the document is significantly faster than open of whole.
+if { [expr $quarter_time * 1.5] > $whole_time } {
+  puts "Error : loading of quarter of the document content too slow relatively to the whole document load"
 }
 
-set four_quaters_time [action_time -read0:1 -read0:2 -read0:3 -read0:4]
-puts "Four quaters of document open time $four_quaters_time mcs"
+set four_quarters_time [action_time -read0:1 -read0:2 -read0:3 -read0:4]
+puts "Four quarters of document open time $four_quarters_time mcs"
 
-# Check that open of four quaters of the document is not too much slower than opening of the whole document.
-if { [expr $four_quaters_time * 0.9] > $whole_time } {
-  puts "Error : loading of four quaters of the document content too slow relatively to the whole document load"
+# Check that open of four quarters of the document is not too much slower than opening of the whole document.
+if { [expr $four_quarters_time * 0.9] > $whole_time } {
+  puts "Error : loading of four quarters of the document content too slow relatively to the whole document load"
 }
 
 set no_arrays_time [lindex [time {
   Open ${docname} D4 -skipTDataStd_IntegerArray -read0:2
 }] 0]
-puts "Quater of document without arrays open time $no_arrays_time mcs"
+puts "Quarter of document without arrays open time $no_arrays_time mcs"
 
 set attrs [Attributes D4 0:2:13]
 if {"${attrs}" != "TDataStd_Real "} {
