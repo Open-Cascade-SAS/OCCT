@@ -565,6 +565,8 @@ public: //! @name Selection management
   //! (Prs3d_TypeOfHighlight_Selected and Prs3d_TypeOfHighlight_LocalSelected)
   //! @sa PrsMgr_PresentableObject::HilightAttributes() defining per-object highlight style of
   //! selected owners (overrides defaults)
+  //! For all selection schemes, allowing to select an object,
+  //! HandleMouseClick is available
   Standard_EXPORT AIS_StatusOfPick
     SelectDetected(const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
 
