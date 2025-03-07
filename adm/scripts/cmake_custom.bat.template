@@ -28,9 +28,6 @@ rem Use semicolon-separated list of toolkits if you want to disable all modules
 rem  and build only some toolkits.
 rem set BUILD_ADDITIONAL_TOOLKITS=
 
-rem Set a directory recognized as a patch for OCCT.
-rem set BUILD_PATCH=
-
 rem set BUILD_MODULE_ApplicationFramework=ON
 rem set BUILD_MODULE_DataExchange=ON
 rem set BUILD_MODULE_DETools=OFF
