@@ -96,12 +96,7 @@ string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
 set (USED_RCFILE "")
 if (MSVC)
   set (USED_RCFILE "${CMAKE_BINARY_DIR}/resources/${PROJECT_NAME}.rc")
-
-  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/adm/templates/occt_toolkit.rc.in")
-    configure_file("${APPLY_OCCT_PATCH_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
-  else()
-    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
-  endif()
+  configure_file("${CMAKE_SOURCE_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
 endif()
 
 set (CURRENT_MODULE)

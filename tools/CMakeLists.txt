@@ -32,13 +32,9 @@ set (CMAKE_SUPPRESS_REGENERATION TRUE)
 
 set (CMAKE_CONFIGURATION_TYPES Release Debug RelWithDebInfo CACHE INTERNAL "" FORCE)
 
-# macro: include patched file if it exists
+# include cmake file
 macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/${BEING_INCLUDED_FILE}.cmake")
-    include (${BUILD_PATCH}/${BEING_INCLUDED_FILE}.cmake)
-  else()
-    include (${CMAKE_SOURCE_DIR}/${BEING_INCLUDED_FILE}.cmake)
-  endif()
+  include (${CMAKE_SOURCE_DIR}/${BEING_INCLUDED_FILE}.cmake)
 endmacro()
 
 macro (OCCT_INCLUDE_3RDPARTY_PRODUCT USE_PRODUCT PRODUCT_CONFIG_FILE)
@@ -247,7 +243,7 @@ if (NOT DEFINED INSTALL_DIR_DATA)
   endif()
 endif()
 
-# include the patched or original list of definitions and flags
+# include original list of definitions and flags
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_defs_flags")
 
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
@@ -334,7 +330,7 @@ if (WIN32)
 endif()
 
 # OCCT tools
-# include the patched or original list of tools
+# include original list of tools
 # list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
 # list <OCCT_TOOLS> will contain all tools
 OCCT_MODULES_AND_TOOLKITS (TOOLS "TOOL_TOOLKITS" OCCT_TOOLS)
