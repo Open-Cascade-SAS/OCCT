@@ -84,13 +84,9 @@ else ()
 endif()
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# macro: include patched file if it exists
+# include cmake file
 macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/${BEING_INCLUDED_FILE}.cmake")
-    include (${BUILD_PATCH}/${BEING_INCLUDED_FILE}.cmake)
-  else()
-    include (${CMAKE_SOURCE_DIR}/${BEING_INCLUDED_FILE}.cmake)
-  endif()
+  include (${CMAKE_SOURCE_DIR}/${BEING_INCLUDED_FILE}.cmake)
 endmacro()
 
 # set using memory manager option for TKernel
@@ -322,9 +318,6 @@ elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
   set (BIN_LETTER "i")
 endif()
 
-# a directory recognized as a 'patch' for OCCT
-set (BUILD_PATCH "" CACHE PATH "${BUILD_PATCH_DESCR}")
-
 # the list of being built toolkits
 set (BUILD_ADDITIONAL_TOOLKITS "" CACHE STRING "${BUILD_ADDITIONAL_TOOLKITS_DESCR}")
 separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
@@ -390,7 +383,7 @@ else()
   set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
 endif()
 
-# include the patched or original list of modules
+# include original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
 # list <OCCT_MODULES> will contain all modules
 OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
@@ -912,7 +905,7 @@ if(APPLE)
   set (INSTALL_NAME_DIR "" CACHE STRING "install_name library suffix on OS X (e.g. @executable_path/../Frameworks)")
 endif()
 
-# include the patched or original list of definitions and flags
+# include original list of definitions and flags
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_defs_flags")
 
 foreach (OCCT_3RDPARTY_LIST ${OCCT_3RDPARTY_CMAKE_LIST})
@@ -1029,7 +1022,7 @@ else()
 endif()
 
 # OCCT tools
-# include the patched or original list of tools
+# include original list of tools
 # list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
 # list <OCCT_TOOLS> will contain all tools
 if (BUILD_Inspector)
@@ -1092,14 +1085,8 @@ if (${DRAWEXE_INDEX} GREATER -1)
   OCCT_INSTALL_FILE_OR_DIR ("data/" "${INSTALL_DIR_DATA}")
   OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR_SAMPLES}")
 
-  # copy draw script to install script folder
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/draw.${SCRIPT_EXT}")
-    install (FILES "${BUILD_PATCH}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-  else()
-    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-  endif()
+  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
   # copy draw script to CMake binary folder
   OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
@@ -1298,14 +1285,8 @@ if (BUILD_MODULE_UwpSample)
 endif()
 
 if (BUILD_TOOL_TOOLKITS)
-  # copy tinspector script to install script folder
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/inspector.${SCRIPT_EXT}")
-    install (FILES "${BUILD_PATCH}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-  else()
-    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-  endif()
+  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
   set (OpenCASCADE_BINARY_DIR "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
   # patch TInspectorEXE

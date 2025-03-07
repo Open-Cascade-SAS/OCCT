@@ -1,13 +1,5 @@
 # variable description
 
-# 
-set (BUILD_PATCH_DESCR 
-"Points to the directory recognized as a 'patch' for OCCT. If specified,
-the files from this directory take precedence over the corresponding native
-OCCT sources. This way you are able to introduce patches to Open CASCADE
-Technology not affecting the original source distribution")
-
-
 set (BUILD_LIBRARY_TYPE_DESCR 
 "Specifies the type of library to be created. 'Shared' libraries
 are linked dynamically and loaded at runtime. 'Static' libraries

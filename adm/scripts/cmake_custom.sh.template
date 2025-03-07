@@ -21,9 +21,6 @@ FREETYPE_DIR="$OCCT3RDPARTY/freetype-2.7.1"
 #  and build only some toolkits.
 #BUILD_ADDITIONAL_TOOLKITS=
 
-# Set a directory recognized as a patch for OCCT.
-#BUILD_PATCH=
-
 #BUILD_MODULE_ApplicationFramework=ON
 #BUILD_MODULE_DataExchange=ON
 #BUILD_MODULE_DETools=OFF
