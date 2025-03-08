@@ -31,13 +31,26 @@ if (NOT ${Qt5_FOUND})
   # Now we can apply standard CMake finder for Qt. We do this mostly
   # to have qt4_wrap_cpp() function available
   find_package(Qt4)
+elseif(NOT ${USE_QT_FROM_3RDPARTY_DIR} AND WIN32)
+  # Qt5_DIR typically points to lib/cmake/Qt5, need to go up to Qt root
+  get_filename_component(QT_CMAKE_DIR "${Qt5_DIR}" DIRECTORY)
+  get_filename_component(QT_LIB_DIR "${QT_CMAKE_DIR}" DIRECTORY)
+  get_filename_component(QT_ROOT_DIR "${QT_LIB_DIR}" DIRECTORY)
+  
+  # Verify this is indeed the Qt root by checking for bin and packages directories
+  if(EXISTS "${QT_ROOT_DIR}/bin")
+    set(3RDPARTY_QT_DIR ${QT_ROOT_DIR} CACHE PATH "The directory containing Qt" FORCE)
+  else()
+    message(WARNING "Found Qt5 at ${Qt5_DIR} but could not determine Qt root directory with bin/ and plugins/ folders")
+    set(3RDPARTY_QT_DIR ${Qt5_DIR} CACHE PATH "The directory containing Qt" FORCE)
+  endif()
 else()
-  set (3RDPARTY_QT_DIR ${Qt5_DIR} CACHE PATH "The directory containing Qt" FORCE)
+  set(3RDPARTY_QT_DIR ${Qt5_DIR} CACHE PATH "The directory containing Qt" FORCE)
 endif()
 
 set (USED_3RDPARTY_QT_DIR "${3RDPARTY_QT_DIR}")
 
-if (3RDPARTY_QT_DIR OR EXISTS "${3RDPARTY_QT_DIR}")
+if (3RDPARTY_QT_DIR OR EXISTS "${3RDPARTY_QT_DIR}/bin")
   list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_QT_DIR}/bin")
 else()
   list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_QT_DLL_DIR)
