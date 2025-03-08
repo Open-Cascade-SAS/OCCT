@@ -1,6 +1,0 @@
-IVtkDraw.cxx
-IVtkDraw.hxx
-IVtkDraw_HighlightAndSelectionPipeline.cxx
-IVtkDraw_HighlightAndSelectionPipeline.hxx
-IVtkDraw_Interactor.cxx
-IVtkDraw_Interactor.hxx

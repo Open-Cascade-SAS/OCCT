@@ -1,0 +1,41 @@
+# Source files for BRepOffset package
+set(OCCT_BRepOffset_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BRepOffset_FILES
+  BRepOffset.cxx
+  BRepOffset.hxx
+  BRepOffset_Analyse.cxx
+  BRepOffset_Analyse.hxx
+  BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval.hxx
+  BRepOffset_DataMapIteratorOfDataMapOfShapeMapOfShape.hxx
+  BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx
+  BRepOffset_DataMapOfShapeListOfInterval.hxx
+  BRepOffset_DataMapOfShapeMapOfShape.hxx
+  BRepOffset_DataMapOfShapeOffset.hxx
+  BRepOffset_Error.hxx
+  BRepOffset_Inter2d.cxx
+  BRepOffset_Inter2d.hxx
+  BRepOffset_Inter3d.cxx
+  BRepOffset_Inter3d.hxx
+  BRepOffset_Interval.cxx
+  BRepOffset_Interval.hxx
+  BRepOffset_Interval.lxx
+  BRepOffset_ListIteratorOfListOfInterval.hxx
+  BRepOffset_ListOfInterval.hxx
+  BRepOffset_MakeLoops.cxx
+  BRepOffset_MakeLoops.hxx
+  BRepOffset_MakeOffset.cxx
+  BRepOffset_MakeOffset_1.cxx
+  BRepOffset_MakeOffset.hxx
+  BRepOffset_MakeSimpleOffset.cxx
+  BRepOffset_MakeSimpleOffset.hxx
+  BRepOffset_Mode.hxx
+  BRepOffset_Offset.cxx
+  BRepOffset_Offset.hxx
+  BRepOffset_SimpleOffset.cxx
+  BRepOffset_SimpleOffset.hxx
+  BRepOffset_Offset.lxx
+  BRepOffset_Status.hxx
+  BRepOffset_Tool.cxx
+  BRepOffset_Tool.hxx
+)

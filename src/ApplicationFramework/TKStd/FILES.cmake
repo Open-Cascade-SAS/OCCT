@@ -1,0 +1,7 @@
+# Source files for TKStd
+set(OCCT_TKStd_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKStd_FILES
+  PACKAGES
+  EXTERNLIB
+)

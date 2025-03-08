@@ -1,0 +1,23 @@
+# Auto-generated list of packages for TKDEIGES toolkit
+set(OCCT_TKDEIGES_LIST_OF_PACKAGES
+  IGESCAFControl
+  IGESData
+  IGESFile
+  IGESBasic
+  IGESGraph
+  IGESGeom
+  IGESDimen
+  IGESDraw
+  IGESSolid
+  IGESDefs
+  IGESAppli
+  IGESConvGeom
+  IGESSelect
+  IGESToBRep
+  GeomToIGES
+  Geom2dToIGES
+  BRepToIGES
+  BRepToIGESBRep
+  IGESControl
+  DEIGES
+)

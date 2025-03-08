@@ -386,7 +386,8 @@ endif()
 # include original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
 # list <OCCT_MODULES> will contain all modules
-OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
+OCCT_INCLUDE_CMAKE_FILE ("src/MODULES")
+set (OCCT_MODULES ${OCCT_LIST_OF_MODULES})
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   BUILD_MODULE (${OCCT_MODULE})
@@ -410,7 +411,7 @@ list (APPEND BUILD_TOOLKITS ${BUILD_ADDITIONAL_TOOLKITS})
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
-    list (APPEND BUILD_TOOLKITS ${${OCCT_MODULE}_TOOLKITS})
+    list (APPEND BUILD_TOOLKITS ${OCCT_${OCCT_MODULE}_LIST_OF_TOOLKITS})
   endif()
 endforeach()
 
@@ -1199,7 +1200,7 @@ endif()
 
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  OCCT_ADD_SUBDIRECTORY ("src/${BUILD_TOOLKIT}")
+  add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
 endforeach()
 
 if (BUILD_DOC_Overview)
