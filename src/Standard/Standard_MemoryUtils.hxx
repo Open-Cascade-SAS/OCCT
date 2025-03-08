@@ -67,7 +67,7 @@ std::unique_ptr<T> make_unique(Args&&... theArgs)
 
 //! A scoped lock type for mutex pointers.
 //!
-//! A ptr_lock_guard controls mutex ownership within a scope, releasing
+//! A lock_guard controls mutex ownership within a scope, releasing
 //! ownership in the destructor. Unlike std::lock_guard, it works with mutex pointers
 //! and handles the case when the pointer is null.
 template <typename _Mutex>
