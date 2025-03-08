@@ -34,4 +34,4 @@
 #define IFSelect_ModelModifier IGESSelect_ModelModifier
 #define IFSelect_ModelModifier_hxx <IGESSelect_ModelModifier.hxx>
 #define Handle_IFSelect_ModelModifier Handle(IGESSelect_ModelModifier)
-#include "../IFSelect/IFSelect_ModelModifier.gxx"
+#include <IFSelect_ModelModifier.gxx>

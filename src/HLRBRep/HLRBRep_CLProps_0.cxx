@@ -37,4 +37,4 @@
 #define Tool_hxx <HLRBRep_CLPropsATool.hxx>
 #define LProp_CLProps HLRBRep_CLProps
 #define LProp_CLProps_hxx <HLRBRep_CLProps.hxx>
-#include "../LProp/LProp_CLProps.gxx"
+#include <LProp_CLProps.gxx>

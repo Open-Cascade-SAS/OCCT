@@ -33,4 +33,4 @@
 #define AppParCurves_Function BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox
 #define AppParCurves_Function_hxx                                                                  \
   <BRepApprox_ParFunctionOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#include "../AppParCurves/AppParCurves_Function.gxx"
+#include <AppParCurves_Function.gxx>

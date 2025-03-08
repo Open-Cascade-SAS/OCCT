@@ -38,4 +38,4 @@
 #define Tool_hxx <Geom2dLProp_Curve2dTool.hxx>
 #define LProp_CLProps Geom2dLProp_CLProps2d
 #define LProp_CLProps_hxx <Geom2dLProp_CLProps2d.hxx>
-#include "../LProp/LProp_CLProps.gxx"
+#include <LProp_CLProps.gxx>

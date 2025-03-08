@@ -25,4 +25,4 @@
 #define ThePolyhedron_hxx <HLRBRep_ThePolyhedronOfInterCSurf.hxx>
 #define IntCurveSurface_PolyhedronTool HLRBRep_ThePolyhedronToolOfInterCSurf
 #define IntCurveSurface_PolyhedronTool_hxx <HLRBRep_ThePolyhedronToolOfInterCSurf.hxx>
-#include "../IntCurveSurface/IntCurveSurface_PolyhedronTool.gxx"
+#include <IntCurveSurface_PolyhedronTool.gxx>

@@ -28,4 +28,4 @@
 #define ParTool_hxx <IntCurve_PConicTool.hxx>
 #define IntImpParGen_ImpParTool IntCurve_MyImpParToolOfIntImpConicParConic
 #define IntImpParGen_ImpParTool_hxx <IntCurve_MyImpParToolOfIntImpConicParConic.hxx>
-#include "../IntImpParGen/IntImpParGen_ImpParTool.gxx"
+#include <IntImpParGen_ImpParTool.gxx>

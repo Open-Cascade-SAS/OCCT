@@ -22,4 +22,4 @@
 #define MultiLine_hxx <AppCont_Function.hxx>
 #define Approx_ComputeCLine Approx_FitAndDivide
 #define Approx_ComputeCLine_hxx <Approx_FitAndDivide.hxx>
-#include "../Approx/Approx_ComputeCLine.gxx"
+#include <Approx_ComputeCLine.gxx>

@@ -29,4 +29,4 @@
 #define AppParCurves_ResolConstraint GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox
 #define AppParCurves_ResolConstraint_hxx                                                           \
   <GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox.hxx>
-#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
+#include <AppParCurves_ResolConstraint.gxx>

@@ -24,4 +24,4 @@
 #define Interface_JaggedArray IGESDefs_HArray1OfHArray1OfTextDisplayTemplate
 #define Interface_JaggedArray_hxx <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
 #define Handle_Interface_JaggedArray Handle(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate)
-#include "../Interface/Interface_JaggedArray.gxx"
+#include <Interface_JaggedArray.gxx>

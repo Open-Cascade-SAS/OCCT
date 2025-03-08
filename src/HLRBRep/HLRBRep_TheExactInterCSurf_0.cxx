@@ -37,4 +37,4 @@
 #define TheFunction_hxx <HLRBRep_TheCSFunctionOfInterCSurf.hxx>
 #define IntImp_IntCS HLRBRep_TheExactInterCSurf
 #define IntImp_IntCS_hxx <HLRBRep_TheExactInterCSurf.hxx>
-#include "../IntImp/IntImp_IntCS.gxx"
+#include <IntImp_IntCS.gxx>

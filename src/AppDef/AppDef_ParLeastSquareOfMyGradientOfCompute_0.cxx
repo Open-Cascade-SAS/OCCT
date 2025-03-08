@@ -32,4 +32,4 @@
 #define ToolLine_hxx <AppDef_MyLineTool.hxx>
 #define AppParCurves_LeastSquare AppDef_ParLeastSquareOfMyGradientOfCompute
 #define AppParCurves_LeastSquare_hxx <AppDef_ParLeastSquareOfMyGradientOfCompute.hxx>
-#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
+#include <AppParCurves_LeastSquare.gxx>

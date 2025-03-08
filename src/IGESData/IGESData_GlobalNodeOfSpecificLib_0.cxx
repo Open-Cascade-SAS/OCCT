@@ -41,4 +41,4 @@
 #define Handle_LibCtl_Node Handle(IGESData_NodeOfSpecificLib)
 #define LibCtl_Library IGESData_SpecificLib
 #define LibCtl_Library_hxx <IGESData_SpecificLib.hxx>
-#include "../LibCtl/LibCtl_GlobalNode.gxx"
+#include <LibCtl_GlobalNode.gxx>

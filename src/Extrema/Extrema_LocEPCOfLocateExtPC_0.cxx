@@ -45,4 +45,4 @@
 #define Extrema_SeqPCOfPCLocF_hxx <Extrema_SequenceOfPOnCurv.hxx>
 #define Extrema_GenLocateExtPC Extrema_LocEPCOfLocateExtPC
 #define Extrema_GenLocateExtPC_hxx <Extrema_LocEPCOfLocateExtPC.hxx>
-#include "../Extrema/Extrema_GenLocateExtPC.gxx"
+#include <Extrema_GenLocateExtPC.gxx>

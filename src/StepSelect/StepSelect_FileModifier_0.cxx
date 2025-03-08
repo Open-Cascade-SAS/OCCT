@@ -26,4 +26,4 @@
 #define IFSelect_FileModifier StepSelect_FileModifier
 #define IFSelect_FileModifier_hxx <StepSelect_FileModifier.hxx>
 #define Handle_IFSelect_FileModifier Handle(StepSelect_FileModifier)
-#include "../IFSelect/IFSelect_FileModifier.gxx"
+#include <IFSelect_FileModifier.gxx>

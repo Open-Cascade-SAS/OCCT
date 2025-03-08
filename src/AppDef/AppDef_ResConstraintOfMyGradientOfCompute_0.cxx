@@ -28,4 +28,4 @@
 #define ToolLine_hxx <AppDef_MyLineTool.hxx>
 #define AppParCurves_ResolConstraint AppDef_ResConstraintOfMyGradientOfCompute
 #define AppParCurves_ResolConstraint_hxx <AppDef_ResConstraintOfMyGradientOfCompute.hxx>
-#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
+#include <AppParCurves_ResolConstraint.gxx>

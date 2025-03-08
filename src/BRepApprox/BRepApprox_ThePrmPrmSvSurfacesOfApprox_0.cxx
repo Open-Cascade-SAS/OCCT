@@ -44,4 +44,4 @@
   <BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox.hxx>
 #define ApproxInt_PrmPrmSvSurfaces BRepApprox_ThePrmPrmSvSurfacesOfApprox
 #define ApproxInt_PrmPrmSvSurfaces_hxx <BRepApprox_ThePrmPrmSvSurfacesOfApprox.hxx>
-#include "../ApproxInt/ApproxInt_PrmPrmSvSurfaces.gxx"
+#include <ApproxInt_PrmPrmSvSurfaces.gxx>

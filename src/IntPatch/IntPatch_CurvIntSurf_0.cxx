@@ -38,4 +38,4 @@
 #define TheFunction_hxx <IntPatch_CSFunction.hxx>
 #define IntImp_IntCS IntPatch_CurvIntSurf
 #define IntImp_IntCS_hxx <IntPatch_CurvIntSurf.hxx>
-#include "../IntImp/IntImp_IntCS.gxx"
+#include <IntImp_IntCS.gxx>

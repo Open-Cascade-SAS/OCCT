@@ -41,4 +41,4 @@
 #define ApproxInt_TheZerImpFunc_hxx <BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox.hxx>
 #define ApproxInt_ImpPrmSvSurfaces BRepApprox_TheImpPrmSvSurfacesOfApprox
 #define ApproxInt_ImpPrmSvSurfaces_hxx <BRepApprox_TheImpPrmSvSurfacesOfApprox.hxx>
-#include "../ApproxInt/ApproxInt_ImpPrmSvSurfaces.gxx"
+#include <ApproxInt_ImpPrmSvSurfaces.gxx>

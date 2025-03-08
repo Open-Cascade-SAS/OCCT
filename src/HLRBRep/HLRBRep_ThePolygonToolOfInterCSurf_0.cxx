@@ -29,4 +29,4 @@
 #define TheBoundingBox_hxx <Bnd_Box.hxx>
 #define IntCurveSurface_PolygonTool HLRBRep_ThePolygonToolOfInterCSurf
 #define IntCurveSurface_PolygonTool_hxx <HLRBRep_ThePolygonToolOfInterCSurf.hxx>
-#include "../IntCurveSurface/IntCurveSurface_PolygonTool.gxx"
+#include <IntCurveSurface_PolygonTool.gxx>

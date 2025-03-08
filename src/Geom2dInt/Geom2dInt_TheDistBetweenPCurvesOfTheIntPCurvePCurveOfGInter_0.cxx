@@ -27,4 +27,4 @@
 #define IntCurve_DistBetweenPCurvesGen Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
 #define IntCurve_DistBetweenPCurvesGen_hxx                                                         \
   <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
-#include "../IntCurve/IntCurve_DistBetweenPCurvesGen.gxx"
+#include <IntCurve_DistBetweenPCurvesGen.gxx>

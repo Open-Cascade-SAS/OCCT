@@ -28,4 +28,4 @@
 #define ThePSurfaceTool_hxx <BRepApprox_SurfaceTool.hxx>
 #define IntImp_ZerParFunc BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox
 #define IntImp_ZerParFunc_hxx <BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox.hxx>
-#include "../IntImp/IntImp_ZerParFunc.gxx"
+#include <IntImp_ZerParFunc.gxx>

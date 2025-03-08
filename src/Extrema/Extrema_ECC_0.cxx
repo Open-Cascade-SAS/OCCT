@@ -43,4 +43,4 @@
 #define Extrema_GExtPC Extrema_ExtPC
 #define Extrema_GenExtCC Extrema_ECC
 #define Extrema_GenExtCC_hxx <Extrema_ECC.hxx>
-#include "../Extrema/Extrema_GenExtCC.gxx"
+#include <Extrema_GenExtCC.gxx>

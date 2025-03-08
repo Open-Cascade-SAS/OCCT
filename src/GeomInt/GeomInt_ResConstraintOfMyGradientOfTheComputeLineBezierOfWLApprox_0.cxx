@@ -30,4 +30,4 @@
   GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
 #define AppParCurves_ResolConstraint_hxx                                                           \
   <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
+#include <AppParCurves_ResolConstraint.gxx>

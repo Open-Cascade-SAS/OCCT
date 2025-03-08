@@ -28,4 +28,4 @@
 #define TheCurveTool_hxx <HLRBRep_LineTool.hxx>
 #define IntCurveSurface_Polygon HLRBRep_ThePolygonOfInterCSurf
 #define IntCurveSurface_Polygon_hxx <HLRBRep_ThePolygonOfInterCSurf.hxx>
-#include "../IntCurveSurface/IntCurveSurface_Polygon.gxx"
+#include <IntCurveSurface_Polygon.gxx>

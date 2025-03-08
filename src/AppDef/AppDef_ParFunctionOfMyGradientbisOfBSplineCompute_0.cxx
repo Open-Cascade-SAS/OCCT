@@ -32,4 +32,4 @@
 #define ResolCons_hxx <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
 #define AppParCurves_Function AppDef_ParFunctionOfMyGradientbisOfBSplineCompute
 #define AppParCurves_Function_hxx <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
-#include "../AppParCurves/AppParCurves_Function.gxx"
+#include <AppParCurves_Function.gxx>

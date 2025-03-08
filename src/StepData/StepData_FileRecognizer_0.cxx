@@ -31,4 +31,4 @@
 #define Interface_Recognizer StepData_FileRecognizer
 #define Interface_Recognizer_hxx <StepData_FileRecognizer.hxx>
 #define Handle_Interface_Recognizer Handle(StepData_FileRecognizer)
-#include "../Interface/Interface_Recognizer.gxx"
+#include <Interface_Recognizer.gxx>

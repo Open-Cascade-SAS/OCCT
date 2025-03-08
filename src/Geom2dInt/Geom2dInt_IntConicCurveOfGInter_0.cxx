@@ -38,4 +38,4 @@
 #define TheIntConicCurve_hxx <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #define IntCurve_UserIntConicCurveGen Geom2dInt_IntConicCurveOfGInter
 #define IntCurve_UserIntConicCurveGen_hxx <Geom2dInt_IntConicCurveOfGInter.hxx>
-#include "../IntCurve/IntCurve_UserIntConicCurveGen.gxx"
+#include <IntCurve_UserIntConicCurveGen.gxx>

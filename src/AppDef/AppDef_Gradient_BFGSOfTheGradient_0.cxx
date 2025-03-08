@@ -38,4 +38,4 @@
 #define AppParCurves_Gradient_BFGS_hxx <AppDef_Gradient_BFGSOfTheGradient.hxx>
 #define AppParCurves_Gradient AppDef_TheGradient
 #define AppParCurves_Gradient_hxx <AppDef_TheGradient.hxx>
-#include "../AppParCurves/AppParCurves_Gradient_BFGS.gxx"
+#include <AppParCurves_Gradient_BFGS.gxx>

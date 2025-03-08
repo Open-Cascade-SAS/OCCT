@@ -43,4 +43,4 @@
 #define Extrema_SeqPOnC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtCC Extrema_CCLocFOfLocECC2d
 #define Extrema_FuncExtCC_hxx <Extrema_CCLocFOfLocECC2d.hxx>
-#include "../Extrema/Extrema_FuncExtCC.gxx"
+#include <Extrema_FuncExtCC.gxx>

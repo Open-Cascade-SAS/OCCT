@@ -34,4 +34,4 @@
   <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
 #define IntCurveSurface_QuadricCurveExactInter HLRBRep_TheQuadCurvExactInterCSurf
 #define IntCurveSurface_QuadricCurveExactInter_hxx <HLRBRep_TheQuadCurvExactInterCSurf.hxx>
-#include "../IntCurveSurface/IntCurveSurface_QuadricCurveExactInter.gxx"
+#include <IntCurveSurface_QuadricCurveExactInter.gxx>

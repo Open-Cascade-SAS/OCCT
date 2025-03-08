@@ -54,4 +54,4 @@
 #define Handle_IntWalk_TheIWLine Handle(Contap_TheIWLineOfTheIWalking)
 #define IntWalk_IWalking Contap_TheIWalking
 #define IntWalk_IWalking_hxx <Contap_TheIWalking.hxx>
-#include "../IntWalk/IntWalk_IWalking.gxx"
+#include <IntWalk_IWalking.gxx>

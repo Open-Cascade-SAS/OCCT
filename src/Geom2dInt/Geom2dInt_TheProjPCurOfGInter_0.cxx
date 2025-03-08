@@ -39,4 +39,4 @@
   <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_ProjPCurGen Geom2dInt_TheProjPCurOfGInter
 #define IntCurve_ProjPCurGen_hxx <Geom2dInt_TheProjPCurOfGInter.hxx>
-#include "../IntCurve/IntCurve_ProjPCurGen.gxx"
+#include <IntCurve_ProjPCurGen.gxx>

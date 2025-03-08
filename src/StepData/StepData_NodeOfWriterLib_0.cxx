@@ -41,4 +41,4 @@
 #define Handle_LibCtl_Node Handle(StepData_NodeOfWriterLib)
 #define LibCtl_Library StepData_WriterLib
 #define LibCtl_Library_hxx <StepData_WriterLib.hxx>
-#include "../LibCtl/LibCtl_Node.gxx"
+#include <LibCtl_Node.gxx>

@@ -32,4 +32,4 @@
 #define ResolCons_hxx <AppDef_TheResol.hxx>
 #define AppParCurves_Function AppDef_TheFunction
 #define AppParCurves_Function_hxx <AppDef_TheFunction.hxx>
-#include "../AppParCurves/AppParCurves_Function.gxx"
+#include <AppParCurves_Function.gxx>

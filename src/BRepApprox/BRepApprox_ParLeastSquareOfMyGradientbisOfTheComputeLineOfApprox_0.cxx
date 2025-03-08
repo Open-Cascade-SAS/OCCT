@@ -33,4 +33,4 @@
 #define AppParCurves_LeastSquare BRepApprox_ParLeastSquareOfMyGradientbisOfTheComputeLineOfApprox
 #define AppParCurves_LeastSquare_hxx                                                               \
   <BRepApprox_ParLeastSquareOfMyGradientbisOfTheComputeLineOfApprox.hxx>
-#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
+#include <AppParCurves_LeastSquare.gxx>

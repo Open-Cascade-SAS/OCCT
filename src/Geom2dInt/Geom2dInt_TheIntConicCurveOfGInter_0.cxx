@@ -49,4 +49,4 @@
   <Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter.hxx>
 #define IntCurve_IntConicCurveGen Geom2dInt_TheIntConicCurveOfGInter
 #define IntCurve_IntConicCurveGen_hxx <Geom2dInt_TheIntConicCurveOfGInter.hxx>
-#include "../IntCurve/IntCurve_IntConicCurveGen.gxx"
+#include <IntCurve_IntConicCurveGen.gxx>

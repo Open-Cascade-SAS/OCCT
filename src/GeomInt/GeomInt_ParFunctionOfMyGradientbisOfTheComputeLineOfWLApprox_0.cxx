@@ -33,4 +33,4 @@
 #define AppParCurves_Function GeomInt_ParFunctionOfMyGradientbisOfTheComputeLineOfWLApprox
 #define AppParCurves_Function_hxx                                                                  \
   <GeomInt_ParFunctionOfMyGradientbisOfTheComputeLineOfWLApprox.hxx>
-#include "../AppParCurves/AppParCurves_Function.gxx"
+#include <AppParCurves_Function.gxx>

@@ -29,4 +29,4 @@
 #define IntCurveSurface_QuadricCurveFunc IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
 #define IntCurveSurface_QuadricCurveFunc_hxx                                                       \
   <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
-#include "../IntCurveSurface/IntCurveSurface_QuadricCurveFunc.gxx"
+#include <IntCurveSurface_QuadricCurveFunc.gxx>

@@ -22,4 +22,4 @@
 #define MultiLine_hxx <BRepFill_MultiLine.hxx>
 #define Approx_ComputeCLine BRepFill_ComputeCLine
 #define Approx_ComputeCLine_hxx <BRepFill_ComputeCLine.hxx>
-#include "../Approx/Approx_ComputeCLine.gxx"
+#include <Approx_ComputeCLine.gxx>

@@ -30,4 +30,4 @@
 #define Squares_hxx <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
 #define AppParCurves_BSpFunction AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute
 #define AppParCurves_BSpFunction_hxx <AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute.hxx>
-#include "../AppParCurves/AppParCurves_BSpFunction.gxx"
+#include <AppParCurves_BSpFunction.gxx>

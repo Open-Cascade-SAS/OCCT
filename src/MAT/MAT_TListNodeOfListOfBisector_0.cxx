@@ -30,4 +30,4 @@
 #define MAT_TList MAT_ListOfBisector
 #define MAT_TList_hxx <MAT_ListOfBisector.hxx>
 #define Handle_MAT_TList Handle(MAT_ListOfBisector)
-#include "../MAT/MAT_TListNode.gxx"
+#include <MAT_TListNode.gxx>

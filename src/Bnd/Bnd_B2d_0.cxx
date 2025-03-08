@@ -25,4 +25,4 @@
 #define RealType_hxx <Standard_Real.hxx>
 #define Bnd_B2x Bnd_B2d
 #define Bnd_B2x_hxx <Bnd_B2d.hxx>
-#include "../Bnd/Bnd_B2x.gxx"
+#include <Bnd_B2x.gxx>

@@ -37,4 +37,4 @@
   <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
 #define IntImpParGen_Intersector HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter
 #define IntImpParGen_Intersector_hxx <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
-#include "../IntImpParGen/IntImpParGen_Intersector.gxx"
+#include <IntImpParGen_Intersector.gxx>

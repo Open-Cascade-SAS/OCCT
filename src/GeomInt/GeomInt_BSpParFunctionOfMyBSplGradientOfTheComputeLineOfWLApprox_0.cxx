@@ -31,4 +31,4 @@
 #define AppParCurves_BSpFunction GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox
 #define AppParCurves_BSpFunction_hxx                                                               \
   <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include "../AppParCurves/AppParCurves_BSpFunction.gxx"
+#include <AppParCurves_BSpFunction.gxx>
