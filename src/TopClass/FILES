@@ -1,9 +1,4 @@
-TopClass.cxx
 TopClass_Classifier2d.gxx
 TopClass_Classifier2d.lxx
-TopClass_Classifier3d.gxx
-TopClass_Classifier3d.lxx
 TopClass_FaceClassifier.gxx
 TopClass_FaceClassifier.lxx
-TopClass_SolidExplorer.cxx
-TopClass_SolidExplorer.hxx
