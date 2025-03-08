@@ -1,0 +1,20 @@
+# External dependencies for TKDECascade
+set(OCCT_TKDECascade_EXTERNAL_LIBS
+  TKBin
+  TKBinL
+  TKBinTObj
+  TKBinXCAF
+  TKBRep
+  TKStd
+  TKXml
+  TKXmlL
+  TKXmlTObj
+  TKXmlXCAF
+  TKDE
+  TKernel
+  TKMath
+  TKLCAF
+  TKXCAF
+  TKStdL
+  TKCDF
+)

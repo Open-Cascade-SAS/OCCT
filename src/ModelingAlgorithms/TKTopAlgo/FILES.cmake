@@ -1,0 +1,7 @@
+# Source files for TKTopAlgo
+set(OCCT_TKTopAlgo_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKTopAlgo_FILES
+  EXTERNLIB
+  PACKAGES
+)

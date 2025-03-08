@@ -1,0 +1,50 @@
+# Source files for Contap package
+set(OCCT_Contap_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_Contap_FILES
+  Contap_ArcFunction.cxx
+  Contap_ArcFunction.hxx
+  Contap_ArcFunction.lxx
+  Contap_ContAna.cxx
+  Contap_ContAna.hxx
+  Contap_ContAna.lxx
+  Contap_Contour.cxx
+  Contap_Contour.hxx
+  Contap_Contour.lxx
+  Contap_HContTool.cxx
+  Contap_HContTool.hxx
+  Contap_HCurve2dTool.cxx
+  Contap_HCurve2dTool.hxx
+  Contap_HCurve2dTool.lxx
+  Contap_IType.hxx
+  Contap_Line.cxx
+  Contap_Line.hxx
+  Contap_Line.lxx
+  Contap_Point.cxx
+  Contap_Point.hxx
+  Contap_Point.lxx
+  Contap_SequenceOfIWLineOfTheIWalking.hxx
+  Contap_SequenceOfPathPointOfTheSearch.hxx
+  Contap_SequenceOfSegmentOfTheSearch.hxx
+  Contap_SurfFunction.cxx
+  Contap_SurfFunction.hxx
+  Contap_SurfFunction.lxx
+  Contap_SurfProps.cxx
+  Contap_SurfProps.hxx
+  Contap_TFunction.hxx
+  Contap_TheHSequenceOfPoint.hxx
+  Contap_TheIWalking.hxx
+  Contap_TheIWalking_0.cxx
+  Contap_TheIWLineOfTheIWalking.hxx
+  Contap_TheIWLineOfTheIWalking_0.cxx
+  Contap_ThePathPointOfTheSearch.hxx
+  Contap_ThePathPointOfTheSearch_0.cxx
+  Contap_TheSearch.hxx
+  Contap_TheSearch_0.cxx
+  Contap_TheSearchInside.hxx
+  Contap_TheSearchInside_0.cxx
+  Contap_TheSegmentOfTheSearch.hxx
+  Contap_TheSegmentOfTheSearch_0.cxx
+  Contap_TheSequenceOfLine.hxx
+  Contap_TheSequenceOfPoint.hxx
+)

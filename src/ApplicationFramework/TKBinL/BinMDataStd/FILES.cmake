@@ -1,0 +1,51 @@
+# Source files for BinMDataStd package
+set(OCCT_BinMDataStd_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BinMDataStd_FILES
+  BinMDataStd.cxx
+  BinMDataStd.hxx
+  BinMDataStd_AsciiStringDriver.cxx
+  BinMDataStd_AsciiStringDriver.hxx
+  BinMDataStd_BooleanArrayDriver.cxx
+  BinMDataStd_BooleanArrayDriver.hxx
+  BinMDataStd_BooleanListDriver.cxx
+  BinMDataStd_BooleanListDriver.hxx
+  BinMDataStd_ByteArrayDriver.cxx
+  BinMDataStd_ByteArrayDriver.hxx
+  BinMDataStd_ExpressionDriver.cxx
+  BinMDataStd_ExpressionDriver.hxx
+  BinMDataStd_ExtStringArrayDriver.cxx
+  BinMDataStd_ExtStringArrayDriver.hxx
+  BinMDataStd_ExtStringListDriver.cxx
+  BinMDataStd_ExtStringListDriver.hxx
+  BinMDataStd_IntegerArrayDriver.cxx
+  BinMDataStd_IntegerArrayDriver.hxx
+  BinMDataStd_IntegerDriver.cxx
+  BinMDataStd_IntegerDriver.hxx
+  BinMDataStd_IntegerListDriver.cxx
+  BinMDataStd_IntegerListDriver.hxx
+  BinMDataStd_IntPackedMapDriver.cxx
+  BinMDataStd_IntPackedMapDriver.hxx
+  BinMDataStd_NamedDataDriver.cxx
+  BinMDataStd_NamedDataDriver.hxx
+  BinMDataStd_GenericExtStringDriver.cxx
+  BinMDataStd_GenericExtStringDriver.hxx
+  BinMDataStd_RealArrayDriver.cxx
+  BinMDataStd_RealArrayDriver.hxx
+  BinMDataStd_RealDriver.cxx
+  BinMDataStd_RealDriver.hxx
+  BinMDataStd_RealListDriver.cxx
+  BinMDataStd_RealListDriver.hxx
+  BinMDataStd_ReferenceArrayDriver.cxx
+  BinMDataStd_ReferenceArrayDriver.hxx
+  BinMDataStd_ReferenceListDriver.cxx
+  BinMDataStd_ReferenceListDriver.hxx
+  BinMDataStd_GenericEmptyDriver.cxx
+  BinMDataStd_GenericEmptyDriver.hxx
+  BinMDataStd_TreeNodeDriver.cxx
+  BinMDataStd_TreeNodeDriver.hxx
+  BinMDataStd_UAttributeDriver.cxx
+  BinMDataStd_UAttributeDriver.hxx
+  BinMDataStd_VariableDriver.cxx
+  BinMDataStd_VariableDriver.hxx
+)

@@ -1,0 +1,44 @@
+# Source files for VrmlData package
+set(OCCT_VrmlData_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_VrmlData_FILES
+  VrmlData_Appearance.hxx
+  VrmlData_ArrayVec3d.hxx
+  VrmlData_Box.hxx
+  VrmlData_Color.hxx
+  VrmlData_Cone.hxx
+  VrmlData_Coordinate.hxx
+  VrmlData_Cylinder.hxx
+  VrmlData_DataMapOfShapeAppearance.hxx
+  VrmlData_ErrorStatus.hxx
+  VrmlData_Faceted.hxx
+  VrmlData_Geometry.cxx
+  VrmlData_Geometry.hxx
+  VrmlData_Group.cxx
+  VrmlData_Group.hxx
+  VrmlData_ImageTexture.hxx
+  VrmlData_InBuffer.hxx
+  VrmlData_IndexedFaceSet.cxx
+  VrmlData_IndexedFaceSet.hxx
+  VrmlData_IndexedLineSet.cxx
+  VrmlData_IndexedLineSet.hxx
+  VrmlData_ListOfNode.hxx
+  VrmlData_MapOfNode.hxx
+  VrmlData_Material.cxx
+  VrmlData_Material.hxx
+  VrmlData_Node.cxx
+  VrmlData_Node.hxx
+  VrmlData_Normal.hxx
+  VrmlData_Scene.cxx
+  VrmlData_Scene.hxx
+  VrmlData_ShapeConvert.cxx
+  VrmlData_ShapeConvert.hxx
+  VrmlData_ShapeNode.hxx
+  VrmlData_Sphere.hxx
+  VrmlData_Texture.hxx
+  VrmlData_TextureCoordinate.hxx
+  VrmlData_TextureTransform.hxx
+  VrmlData_UnknownNode.hxx
+  VrmlData_WorldInfo.cxx
+  VrmlData_WorldInfo.hxx
+)

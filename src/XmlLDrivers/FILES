@@ -1,9 +1,0 @@
-XmlLDrivers.cxx
-XmlLDrivers.hxx
-XmlLDrivers_DocumentRetrievalDriver.cxx
-XmlLDrivers_DocumentRetrievalDriver.hxx
-XmlLDrivers_DocumentStorageDriver.cxx
-XmlLDrivers_DocumentStorageDriver.hxx
-XmlLDrivers_NamespaceDef.cxx
-XmlLDrivers_NamespaceDef.hxx
-XmlLDrivers_SequenceOfNamespaceDef.hxx

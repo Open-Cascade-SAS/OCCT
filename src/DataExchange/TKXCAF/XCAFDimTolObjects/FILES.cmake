@@ -1,0 +1,36 @@
+# Source files for XCAFDimTolObjects package
+set(OCCT_XCAFDimTolObjects_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_XCAFDimTolObjects_FILES
+  FILES
+  XCAFDimTolObjects_DatumObject.cxx
+  XCAFDimTolObjects_DatumObject.hxx
+  XCAFDimTolObjects_DimensionObject.cxx
+  XCAFDimTolObjects_DimensionObject.hxx
+  XCAFDimTolObjects_GeomToleranceObject.cxx
+  XCAFDimTolObjects_GeomToleranceObject.hxx
+  XCAFDimTolObjects_Tool.cxx
+  XCAFDimTolObjects_Tool.hxx
+  XCAFDimTolObjects_DatumModifWithValue.hxx
+  XCAFDimTolObjects_DatumSingleModif.hxx
+  XCAFDimTolObjects_DatumTargetType.hxx
+  XCAFDimTolObjects_DimensionModif.hxx
+  XCAFDimTolObjects_DimensionFormVariance.hxx
+  XCAFDimTolObjects_DimensionGrade.hxx
+  XCAFDimTolObjects_DimensionQualifier.hxx
+  XCAFDimTolObjects_DimensionType.hxx
+  XCAFDimTolObjects_GeomToleranceModif.hxx
+  XCAFDimTolObjects_GeomToleranceType.hxx
+  XCAFDimTolObjects_GeomToleranceTypeValue.hxx
+  XCAFDimTolObjects_GeomToleranceMatReqModif.hxx
+  XCAFDimTolObjects_GeomToleranceZoneModif.hxx
+  XCAFDimTolObjects_DimensionModifiersSequence.hxx
+  XCAFDimTolObjects_GeomToleranceModifiersSequence.hxx
+  XCAFDimTolObjects_DatumModifiersSequence.hxx
+  XCAFDimTolObjects_DatumObjectSequence.hxx
+  XCAFDimTolObjects_DimensionObjectSequence.hxx
+  XCAFDimTolObjects_GeomToleranceObjectSequence.hxx
+  XCAFDimTolObjects_DataMapOfToleranceDatum.hxx
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane.hxx
+  XCAFDimTolObjects_AngularQualifier.hxx
+)

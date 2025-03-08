@@ -1,0 +1,51 @@
+# Source files for TopoDS package
+set(OCCT_TopoDS_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TopoDS_FILES
+  TopoDS.hxx
+  TopoDS_AlertAttribute.hxx
+  TopoDS_AlertAttribute.cxx
+  TopoDS_Builder.cxx
+  TopoDS_Builder.hxx
+  TopoDS_Builder.lxx
+  TopoDS_Compound.hxx
+  TopoDS_CompSolid.hxx
+  TopoDS_Edge.hxx
+  TopoDS_Face.hxx
+  TopoDS_FrozenShape.hxx
+  TopoDS_HShape.cxx
+  TopoDS_HShape.hxx
+  TopoDS_HShape.lxx
+  TopoDS_Iterator.cxx
+  TopoDS_Iterator.hxx
+  TopoDS_ListIteratorOfListOfShape.hxx
+  TopoDS_ListOfShape.hxx
+  TopoDS_LockedShape.hxx
+  TopoDS_Shape.cxx
+  TopoDS_Shape.hxx
+  TopoDS_Shell.hxx
+  TopoDS_Solid.hxx
+  TopoDS_TCompound.cxx
+  TopoDS_TCompound.hxx
+  TopoDS_TCompSolid.cxx
+  TopoDS_TCompSolid.hxx
+  TopoDS_TEdge.cxx
+  TopoDS_TEdge.hxx
+  TopoDS_TFace.cxx
+  TopoDS_TFace.hxx
+  TopoDS_TShape.cxx
+  TopoDS_TShape.hxx
+  TopoDS_TShell.cxx
+  TopoDS_TShell.hxx
+  TopoDS_TSolid.cxx
+  TopoDS_TSolid.hxx
+  TopoDS_TVertex.cxx
+  TopoDS_TVertex.hxx
+  TopoDS_TWire.cxx
+  TopoDS_TWire.hxx
+  TopoDS_UnCompatibleShapes.hxx
+  TopoDS_Vertex.hxx
+  TopoDS_Wire.hxx
+  TopoDS_AlertWithShape.cxx
+  TopoDS_AlertWithShape.hxx
+)
