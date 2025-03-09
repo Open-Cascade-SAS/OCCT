@@ -18,8 +18,9 @@
 
 #include <Standard.hxx>
 
-#include <Message_ProgressIndicator.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Standard_ThreadId.hxx>
 
 class Draw_ProgressIndicator;
 DEFINE_STANDARD_HANDLE(Draw_ProgressIndicator, Message_ProgressIndicator)

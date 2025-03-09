@@ -27,6 +27,8 @@
 #include <OSD_ThreadPool.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 
+#include <memory>
+
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 
 //! Abstract base functor for parallel execution of glTF data loading.
@@ -61,7 +63,7 @@ public:
     }
     if (myThreadPool.HasThreads())
     {
-      Standard_Mutex::Sentry aLock(&myMutex);
+      std::lock_guard<std::mutex> aLock(myMutex);
       myProgress.Next();
     }
     else
@@ -78,7 +80,7 @@ protected:
 
 protected:
   NCollection_Vector<TopoDS_Face>* myFaceList;
-  mutable Standard_Mutex           myMutex;
+  mutable std::mutex               myMutex;
   mutable Message_ProgressScope    myProgress;
   const OSD_ThreadPool::Launcher&  myThreadPool;
 };
