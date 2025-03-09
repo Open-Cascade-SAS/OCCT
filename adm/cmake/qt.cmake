@@ -44,7 +44,7 @@ elseif(NOT ${USE_QT_FROM_3RDPARTY_DIR} AND WIN32)
     message(WARNING "Found Qt5 at ${Qt5_DIR} but could not determine Qt root directory with bin/ and plugins/ folders")
     set(3RDPARTY_QT_DIR ${Qt5_DIR} CACHE PATH "The directory containing Qt" FORCE)
   endif()
-else()
+elseif(NOT ${USE_QT_FROM_3RDPARTY_DIR})
   set(3RDPARTY_QT_DIR ${Qt5_DIR} CACHE PATH "The directory containing Qt" FORCE)
 endif()
 
