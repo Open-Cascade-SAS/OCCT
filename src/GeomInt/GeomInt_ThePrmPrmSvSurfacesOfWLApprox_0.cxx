@@ -42,4 +42,4 @@
   <GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox.hxx>
 #define ApproxInt_PrmPrmSvSurfaces GeomInt_ThePrmPrmSvSurfacesOfWLApprox
 #define ApproxInt_PrmPrmSvSurfaces_hxx <GeomInt_ThePrmPrmSvSurfacesOfWLApprox.hxx>
-#include "../ApproxInt/ApproxInt_PrmPrmSvSurfaces.gxx"
+#include <ApproxInt_PrmPrmSvSurfaces.gxx>

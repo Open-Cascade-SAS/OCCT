@@ -39,4 +39,4 @@
 #define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtPC Extrema_PCFOfEPCOfExtPC2d
 #define Extrema_FuncExtPC_hxx <Extrema_PCFOfEPCOfExtPC2d.hxx>
-#include "../Extrema/Extrema_FuncExtPC.gxx"
+#include <Extrema_FuncExtPC.gxx>

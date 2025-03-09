@@ -38,4 +38,4 @@
 #define Tool_hxx <BRepLProp_CurveTool.hxx>
 #define LProp_CLProps BRepLProp_CLProps
 #define LProp_CLProps_hxx <BRepLProp_CLProps.hxx>
-#include "../LProp/LProp_CLProps.gxx"
+#include <LProp_CLProps.gxx>

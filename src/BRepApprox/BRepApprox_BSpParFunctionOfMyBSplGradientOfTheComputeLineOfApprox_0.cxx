@@ -31,4 +31,4 @@
 #define AppParCurves_BSpFunction BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox
 #define AppParCurves_BSpFunction_hxx                                                               \
   <BRepApprox_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfApprox.hxx>
-#include "../AppParCurves/AppParCurves_BSpFunction.gxx"
+#include <AppParCurves_BSpFunction.gxx>

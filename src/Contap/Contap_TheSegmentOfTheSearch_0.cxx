@@ -29,4 +29,4 @@
 #define ThePathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
 #define IntStart_Segment Contap_TheSegmentOfTheSearch
 #define IntStart_Segment_hxx <Contap_TheSegmentOfTheSearch.hxx>
-#include "../IntStart/IntStart_Segment.gxx"
+#include <IntStart_Segment.gxx>

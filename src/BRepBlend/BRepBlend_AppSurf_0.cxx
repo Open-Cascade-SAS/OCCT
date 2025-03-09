@@ -29,4 +29,4 @@
 #define TheLine_hxx <BRepBlend_Line.hxx>
 #define AppBlend_AppSurf BRepBlend_AppSurf
 #define AppBlend_AppSurf_hxx <BRepBlend_AppSurf.hxx>
-#include "../AppBlend/AppBlend_AppSurf.gxx"
+#include <AppBlend_AppSurf.gxx>

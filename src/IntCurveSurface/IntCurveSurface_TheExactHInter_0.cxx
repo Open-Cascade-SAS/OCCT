@@ -38,4 +38,4 @@
 #define TheFunction_hxx <IntCurveSurface_TheCSFunctionOfHInter.hxx>
 #define IntImp_IntCS IntCurveSurface_TheExactHInter
 #define IntImp_IntCS_hxx <IntCurveSurface_TheExactHInter.hxx>
-#include "../IntImp/IntImp_IntCS.gxx"
+#include <IntImp_IntCS.gxx>

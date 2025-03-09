@@ -66,4 +66,4 @@
   <GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define Approx_ComputeLine GeomInt_TheComputeLineBezierOfWLApprox
 #define Approx_ComputeLine_hxx <GeomInt_TheComputeLineBezierOfWLApprox.hxx>
-#include "../Approx/Approx_ComputeLine.gxx"
+#include <Approx_ComputeLine.gxx>

@@ -95,4 +95,4 @@
   <GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define ApproxInt_Approx GeomInt_WLApprox
 #define ApproxInt_Approx_hxx <GeomInt_WLApprox.hxx>
-#include "../ApproxInt/ApproxInt_Approx.gxx"
+#include <ApproxInt_Approx.gxx>

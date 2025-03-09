@@ -41,4 +41,4 @@
 #define Handle_LibCtl_Node Handle(Interface_NodeOfReaderLib)
 #define LibCtl_Library Interface_ReaderLib
 #define LibCtl_Library_hxx <Interface_ReaderLib.hxx>
-#include "../LibCtl/LibCtl_GlobalNode.gxx"
+#include <LibCtl_GlobalNode.gxx>

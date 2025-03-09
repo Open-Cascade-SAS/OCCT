@@ -48,4 +48,4 @@
 #define Extrema_SeqPOnCOfCCLocF_hxx <Extrema_SequenceOfPOnCurv.hxx>
 #define Extrema_GenLocateExtCC Extrema_LocECC
 #define Extrema_GenLocateExtCC_hxx <Extrema_LocECC.hxx>
-#include "../Extrema/Extrema_GenLocateExtCC.gxx"
+#include <Extrema_GenLocateExtCC.gxx>

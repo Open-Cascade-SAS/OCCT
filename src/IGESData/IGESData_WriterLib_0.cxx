@@ -40,4 +40,4 @@
 #define Handle_LibCtl_Node Handle(IGESData_NodeOfWriterLib)
 #define LibCtl_Library IGESData_WriterLib
 #define LibCtl_Library_hxx <IGESData_WriterLib.hxx>
-#include "../LibCtl/LibCtl_Library.gxx"
+#include <LibCtl_Library.gxx>

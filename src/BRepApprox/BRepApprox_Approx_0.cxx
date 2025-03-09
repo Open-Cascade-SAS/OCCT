@@ -95,4 +95,4 @@
   <BRepApprox_MyGradientOfTheComputeLineBezierOfApprox.hxx>
 #define ApproxInt_Approx BRepApprox_Approx
 #define ApproxInt_Approx_hxx <BRepApprox_Approx.hxx>
-#include "../ApproxInt/ApproxInt_Approx.gxx"
+#include <ApproxInt_Approx.gxx>

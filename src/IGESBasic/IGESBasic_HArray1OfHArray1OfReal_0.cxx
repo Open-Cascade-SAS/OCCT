@@ -24,4 +24,4 @@
 #define Interface_JaggedArray IGESBasic_HArray1OfHArray1OfReal
 #define Interface_JaggedArray_hxx <IGESBasic_HArray1OfHArray1OfReal.hxx>
 #define Handle_Interface_JaggedArray Handle(IGESBasic_HArray1OfHArray1OfReal)
-#include "../Interface/Interface_JaggedArray.gxx"
+#include <Interface_JaggedArray.gxx>

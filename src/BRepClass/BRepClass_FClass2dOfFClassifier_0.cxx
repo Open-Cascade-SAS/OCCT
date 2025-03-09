@@ -27,4 +27,4 @@
 #define TheIntersector_hxx <BRepClass_Intersector.hxx>
 #define TopClass_Classifier2d BRepClass_FClass2dOfFClassifier
 #define TopClass_Classifier2d_hxx <BRepClass_FClass2dOfFClassifier.hxx>
-#include "../TopClass/TopClass_Classifier2d.gxx"
+#include <TopClass_Classifier2d.gxx>

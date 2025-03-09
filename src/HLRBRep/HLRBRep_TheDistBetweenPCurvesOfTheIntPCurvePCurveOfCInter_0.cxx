@@ -26,4 +26,4 @@
 #define IntCurve_DistBetweenPCurvesGen HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
 #define IntCurve_DistBetweenPCurvesGen_hxx                                                         \
   <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
-#include "../IntCurve/IntCurve_DistBetweenPCurvesGen.gxx"
+#include <IntCurve_DistBetweenPCurvesGen.gxx>

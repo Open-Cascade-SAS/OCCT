@@ -33,4 +33,4 @@
 #define TopClass_FClass2d_hxx <BRepClass_FClass2dOfFClassifier.hxx>
 #define TopClass_FaceClassifier BRepClass_FClassifier
 #define TopClass_FaceClassifier_hxx <BRepClass_FClassifier.hxx>
-#include "../TopClass/TopClass_FaceClassifier.gxx"
+#include <TopClass_FaceClassifier.gxx>

@@ -35,4 +35,4 @@
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Extrema_CurveLocator Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter
 #define Extrema_CurveLocator_hxx <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
-#include "../Extrema/Extrema_CurveLocator.gxx"
+#include <Extrema_CurveLocator.gxx>

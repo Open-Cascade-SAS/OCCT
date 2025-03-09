@@ -38,4 +38,4 @@
   <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #define IntCurve_ProjPCurGen HLRBRep_TheProjPCurOfCInter
 #define IntCurve_ProjPCurGen_hxx <HLRBRep_TheProjPCurOfCInter.hxx>
-#include "../IntCurve/IntCurve_ProjPCurGen.gxx"
+#include <IntCurve_ProjPCurGen.gxx>

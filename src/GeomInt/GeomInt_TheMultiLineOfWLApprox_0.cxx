@@ -26,4 +26,4 @@
 #define TheSvSurfaces_hxx <ApproxInt_SvSurfaces.hxx>
 #define ApproxInt_MultiLine GeomInt_TheMultiLineOfWLApprox
 #define ApproxInt_MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
-#include "../ApproxInt/ApproxInt_MultiLine.gxx"
+#include <ApproxInt_MultiLine.gxx>

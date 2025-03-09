@@ -32,4 +32,4 @@
 #define Tool_hxx <GeomLProp_SurfaceTool.hxx>
 #define LProp_SLProps GeomLProp_SLProps
 #define LProp_SLProps_hxx <GeomLProp_SLProps.hxx>
-#include "../LProp/LProp_SLProps.gxx"
+#include <LProp_SLProps.gxx>

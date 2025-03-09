@@ -34,4 +34,4 @@
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Extrema_CurveLocator HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter
 #define Extrema_CurveLocator_hxx <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
-#include "../Extrema/Extrema_CurveLocator.gxx"
+#include <Extrema_CurveLocator.gxx>

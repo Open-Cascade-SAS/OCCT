@@ -40,4 +40,4 @@
   <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
 #define IntCurve_IntPolyPolyGen Geom2dInt_TheIntPCurvePCurveOfGInter
 #define IntCurve_IntPolyPolyGen_hxx <Geom2dInt_TheIntPCurvePCurveOfGInter.hxx>
-#include "../IntCurve/IntCurve_IntPolyPolyGen.gxx"
+#include <IntCurve_IntPolyPolyGen.gxx>

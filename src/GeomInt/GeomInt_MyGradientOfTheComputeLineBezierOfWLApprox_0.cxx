@@ -45,4 +45,4 @@
   <GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_Gradient GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox
 #define AppParCurves_Gradient_hxx <GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox.hxx>
-#include "../AppParCurves/AppParCurves_Gradient.gxx"
+#include <AppParCurves_Gradient.gxx>

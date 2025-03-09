@@ -31,4 +31,4 @@
 #define Tool_hxx <LProp3d_SurfaceTool.hxx>
 #define LProp_SLProps LProp3d_SLProps
 #define LProp_SLProps_hxx <LProp3d_SLProps.hxx>
-#include "../LProp/LProp_SLProps.gxx"
+#include <LProp_SLProps.gxx>

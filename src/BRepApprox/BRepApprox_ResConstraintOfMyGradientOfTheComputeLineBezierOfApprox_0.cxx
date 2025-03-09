@@ -30,4 +30,4 @@
   BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox
 #define AppParCurves_ResolConstraint_hxx                                                           \
   <BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
-#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
+#include <AppParCurves_ResolConstraint.gxx>

@@ -33,4 +33,4 @@
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
 #define IntImp_ZerCSParFunc IntCurveSurface_TheCSFunctionOfHInter
 #define IntImp_ZerCSParFunc_hxx <IntCurveSurface_TheCSFunctionOfHInter.hxx>
-#include "../IntImp/IntImp_ZerCSParFunc.gxx"
+#include <IntImp_ZerCSParFunc.gxx>

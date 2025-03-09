@@ -72,4 +72,4 @@
   <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
 #define IntCurveSurface_Inter IntCurveSurface_HInter
 #define IntCurveSurface_Inter_hxx <IntCurveSurface_HInter.hxx>
-#include "../IntCurveSurface/IntCurveSurface_Inter.gxx"
+#include <IntCurveSurface_Inter.gxx>

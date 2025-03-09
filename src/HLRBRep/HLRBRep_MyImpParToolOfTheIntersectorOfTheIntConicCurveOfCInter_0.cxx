@@ -28,4 +28,4 @@
 #define IntImpParGen_ImpParTool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
 #define IntImpParGen_ImpParTool_hxx                                                                \
   <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
-#include "../IntImpParGen/IntImpParGen_ImpParTool.gxx"
+#include <IntImpParGen_ImpParTool.gxx>

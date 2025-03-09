@@ -53,4 +53,4 @@
 #define IntStart_SequenceOfSegment_hxx <IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx>
 #define IntStart_SearchOnBoundaries IntPatch_TheSOnBounds
 #define IntStart_SearchOnBoundaries_hxx <IntPatch_TheSOnBounds.hxx>
-#include "../IntStart/IntStart_SearchOnBoundaries.gxx"
+#include <IntStart_SearchOnBoundaries.gxx>

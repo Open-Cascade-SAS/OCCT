@@ -22,4 +22,4 @@
 #define TheShape_hxx <Standard_Integer.hxx>
 #define TopBas_Interference TopBas_TestInterference
 #define TopBas_Interference_hxx <TopBas_TestInterference.hxx>
-#include "../TopBas/TopBas_Interference.gxx"
+#include <TopBas_Interference.gxx>

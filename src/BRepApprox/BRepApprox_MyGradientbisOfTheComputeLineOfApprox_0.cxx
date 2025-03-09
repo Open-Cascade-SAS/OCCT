@@ -44,4 +44,4 @@
   <BRepApprox_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #define AppParCurves_Gradient BRepApprox_MyGradientbisOfTheComputeLineOfApprox
 #define AppParCurves_Gradient_hxx <BRepApprox_MyGradientbisOfTheComputeLineOfApprox.hxx>
-#include "../AppParCurves/AppParCurves_Gradient.gxx"
+#include <AppParCurves_Gradient.gxx>
