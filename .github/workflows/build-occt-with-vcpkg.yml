@@ -117,6 +117,7 @@ jobs:
               -DUSE_TK=OFF \
               -DBUILD_USE_PCH=ON \
               -DBUILD_INCLUDE_SYMLINK=ON \
+              -DBUILD_LIBRARY_TYPE="Static" \
               -DINSTALL_DIR=${{ github.workspace }}/install-${{ matrix.build_type }} \
               -DUSE_DRACO=ON \
               -DUSE_FFMPEG=ON \
