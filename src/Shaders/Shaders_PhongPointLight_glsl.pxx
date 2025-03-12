@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PhongPointLight.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PhongPointLight.glsl
 
 static const char Shaders_PhongPointLight_glsl[] =
   "//! Function computes contribution of isotropic point light source\n"
@@ -18,8 +19,7 @@ static const char Shaders_PhongPointLight_glsl[] =
   "\n"
   "  float aDist = length (aLight);\n"
   "  float aRange = occLight_Range (theId);\n"
-  "  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), "
-  "occLight_ConstAttenuation (theId));\n"
+  "  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), occLight_ConstAttenuation (theId));\n"
   "  if (anAtten <= 0.0) return;\n"
   "  aLight /= aDist;\n"
   "\n"
@@ -38,3 +38,5 @@ static const char Shaders_PhongPointLight_glsl[] =
   "  Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten;\n"
   "  Specular += occLight_Specular(theId) * aSpecl * anAtten;\n"
   "}\n";
+
+// clang-format on

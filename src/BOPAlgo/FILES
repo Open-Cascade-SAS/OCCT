@@ -77,5 +77,4 @@ BOPAlgo_GlueEnum.hxx
 BOPAlgo_Splitter.hxx
 BOPAlgo_Splitter.cxx
 BOPAlgo_Alerts.hxx
-BOPAlgo.msg
 BOPAlgo_BOPAlgo_msg.pxx

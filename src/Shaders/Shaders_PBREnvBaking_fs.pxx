@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBREnvBaking.fs
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PBREnvBaking.fs
 
 static const char Shaders_PBREnvBaking_fs[] =
   "THE_SHADER_IN vec3 ViewDirection; //!< direction of fetching from environment cubemap\n"
@@ -16,10 +17,8 @@ static const char Shaders_PBREnvBaking_fs[] =
   "#endif\n"
   "\n"
   "#ifdef THE_TO_BAKE_SPECULAR\n"
-  // clang-format off
   "uniform int   uCurrentLevel;        //!< current level of specular IBL map (ignored in case of diffuse map's processing)\n"
   "uniform float uEnvSolidAngleSource; //!< source solid angle sample computed from one edge's size of source environment map's zero mipmap level\n"
-  // clang-format on
   "#endif\n"
   "\n"
   "//! Returns coordinates of point theNumber from Hammersley point set having size theSize.\n"
@@ -41,8 +40,7 @@ static const char Shaders_PBREnvBaking_fs[] =
   "  return vec2(float(theNumber) / float(theSize), aVanDerCorput);\n"
   "}\n"
   "\n"
-  "//! This function does importance sampling on hemisphere surface using GGX normal distribution "
-  "function\n"
+  "//! This function does importance sampling on hemisphere surface using GGX normal distribution function\n"
   "//! in tangent space (positive z axis is surface normal direction).\n"
   "vec3 importanceSample (in vec2  theHammersleyPoint,\n"
   "                       in float theRoughness)\n"
@@ -50,8 +48,7 @@ static const char Shaders_PBREnvBaking_fs[] =
   "  float aPhi = PI_2 * theHammersleyPoint.x;\n"
   "  theRoughness *= theRoughness;\n"
   "  theRoughness *= theRoughness;\n"
-  "  float aCosTheta = sqrt((1.0 - theHammersleyPoint.y) / (1.0 + (theRoughness - 1.0) * "
-  "theHammersleyPoint.y));\n"
+  "  float aCosTheta = sqrt((1.0 - theHammersleyPoint.y) / (1.0 + (theRoughness - 1.0) * theHammersleyPoint.y));\n"
   "  float aSinTheta = sqrt(1.0 - aCosTheta * aCosTheta);\n"
   "  return vec3(aSinTheta * cos(aPhi),\n"
   "              aSinTheta * sin(aPhi),\n"
@@ -69,8 +66,7 @@ static const char Shaders_PBREnvBaking_fs[] =
   "              aCosTheta);\n"
   "}\n"
   "\n"
-  "//! Transforms resulted sampled direction from tangent space to world space considering the "
-  "surface normal.\n"
+  "//! Transforms resulted sampled direction from tangent space to world space considering the surface normal.\n"
   "vec3 fromTangentSpace (in vec3 theVector,\n"
   "                       in vec3 theNormal)\n"
   "{\n"
@@ -184,10 +180,8 @@ static const char Shaders_PBREnvBaking_fs[] =
   "  float aNdotL = dot (aLight, theNormal);\n"
   "  if (aNdotL > 0.0)\n"
   "  {\n"
-  "    float aSolidAngleSample = 1.0 / (float(theSize) * (occPBRDistribution (aHdotV, "
-  "theRoughness) * 0.25 + 0.0001) + 0.0001);\n"
-  "    float aLod = (theRoughness == 0.0) ? 0.0 : 0.5 * log2 (aSolidAngleSample / "
-  "uEnvSolidAngleSource);\n"
+  "    float aSolidAngleSample = 1.0 / (float(theSize) * (occPBRDistribution (aHdotV, theRoughness) * 0.25 + 0.0001) + 0.0001);\n"
+  "    float aLod = (theRoughness == 0.0) ? 0.0 : 0.5 * log2 (aSolidAngleSample / uEnvSolidAngleSource);\n"
   "    return vec4 (occTextureCubeLod (uEnvMap, aLight, aLod).rgb * aNdotL, aNdotL);\n"
   "  }\n"
   "  return vec4 (0.0);\n"
@@ -225,8 +219,7 @@ static const char Shaders_PBREnvBaking_fs[] =
   "  int aFixedDiv1 = aFixedPrec / 256;\n"
   "  int aFixedDiv2 = aFixedDiv1 / 256;\n"
   "  int aFixedDiv3 = aFixedDiv2 / 256;\n"
-  "  vec4 aPacked = vec4(float(aFixedPrec), float(aFixedDiv1), float(aFixedDiv2), "
-  "float(aFixedDiv3));\n"
+  "  vec4 aPacked = vec4(float(aFixedPrec), float(aFixedDiv1), float(aFixedDiv2), float(aFixedDiv3));\n"
   "  aRes = fract (aPacked * (1.0 / 256.0));\n"
   "#endif\n"
   "  occFragColor = aRes;\n"
@@ -235,3 +228,5 @@ static const char Shaders_PBREnvBaking_fs[] =
   "  occFragColor = vec4 (bakeSpecularMap (aViewDirection, aRoughness), 1.0);\n"
   "#endif\n"
   "}\n";
+
+// clang-format on

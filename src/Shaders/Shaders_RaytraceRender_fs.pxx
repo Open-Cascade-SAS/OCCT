@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/RaytraceRender.fs
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/RaytraceRender.fs
 
 static const char Shaders_RaytraceRender_fs[] =
   "out vec4 OutColor;\n"
@@ -135,3 +136,5 @@ static const char Shaders_RaytraceRender_fs[] =
   "\n"
   "#endif // PATH_TRACING\n"
   "}\n";
+
+// clang-format on
