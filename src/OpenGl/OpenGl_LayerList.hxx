@@ -110,7 +110,7 @@ public:
                               OpenGl_FrameBuffer*             theOitAccumFbo) const;
 
   //! Update occlusion test
-  Standard_EXPORT void UpdateOcclusion(const Handle(OpenGl_Workspace) & theWorkspace);
+  Standard_EXPORT void UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Returns the set of OpenGL Z-layers.
   const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const { return myLayers; }

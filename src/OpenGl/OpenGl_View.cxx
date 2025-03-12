@@ -2636,8 +2636,8 @@ void OpenGl_View::InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
 void OpenGl_View::UpdateOcclusion()
 {
   myZLayers.UpdateOcclusion(myWorkspace);
- 
-  // re-validate occlusion results  
+
+  // re-validate occlusion results
   myRenderParams.OcclusionQueryState = Graphic3d_RenderingParams::OcclusionQuery_On;
 }
 

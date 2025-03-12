@@ -103,7 +103,8 @@ public:
   {
     OcclusionQuery_Off,     //!< occlusion query is disabled
     OcclusionQuery_On,      //!< occlusion query is active
-    OcclusionQuery_NoUpdate //!< occlusion query is active, but the list of occluded entities is not updated
+    OcclusionQuery_NoUpdate //!< occlusion query is active, but the list of occluded entities is not
+                            //!< updated
   };
 
 public:

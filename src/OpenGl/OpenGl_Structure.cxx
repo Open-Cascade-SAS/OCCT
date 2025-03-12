@@ -630,9 +630,9 @@ void OpenGl_Structure::Render(const Handle(OpenGl_Workspace)& theWorkspace) cons
 
 //=================================================================================================
 
-void OpenGl_Structure::RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspace) const 
+void OpenGl_Structure::RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Handle(OpenGl_Context) &aCtx = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   aCtx->ApplyModelViewMatrix();
   renderBoundingBox(theWorkspace);
 }
@@ -641,13 +641,13 @@ void OpenGl_Structure::RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspa
 
 void OpenGl_Structure::UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Handle(OpenGl_Context) &aCtx = theWorkspace->GetGlContext();
-  if (myQuery->GetID()==0)
-      myQuery->Create(aCtx, GL_SAMPLES_PASSED);
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  if (myQuery->GetID() == 0)
+    myQuery->Create(aCtx, GL_SAMPLES_PASSED);
 
-  if(myQuery->IsResultsReady(aCtx))
+  if (myQuery->IsResultsReady(aCtx))
   {
-    int aResult = myQuery->GetResults(aCtx);
+    int                    aResult = myQuery->GetResults(aCtx);
     const Standard_Integer aViewId = theWorkspace->View()->Identification();
     if (aResult)
       SetOcclusionSate(aViewId, Standard_False);
@@ -655,7 +655,7 @@ void OpenGl_Structure::UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorksp
       SetOcclusionSate(aViewId, Standard_True);
   }
 
-  if(!myQuery->IsInUse())
+  if (!myQuery->IsInUse())
   {
     myQuery->Begin(aCtx);
     RenderOccluder(theWorkspace);

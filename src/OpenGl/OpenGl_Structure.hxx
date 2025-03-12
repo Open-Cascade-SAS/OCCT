@@ -99,12 +99,12 @@ public:
   //! Renders the structure.
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  //! Renders occluder presentation of the structure 
+  //! Renders occluder presentation of the structure
   Standard_EXPORT void RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Performs occlusion test for the structure
   Standard_EXPORT void UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace) const;
-  
+
   //! Releases structure resources.
   Standard_EXPORT virtual void Release(const Handle(OpenGl_Context)& theGlCtx);
 

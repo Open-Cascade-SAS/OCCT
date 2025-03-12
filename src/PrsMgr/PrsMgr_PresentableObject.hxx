@@ -77,9 +77,12 @@ public:
 
   //! Return view affinity mask.
   const Handle(Graphic3d_ViewAffinity)& ViewAffinity() const { return myViewAffinity; }
-  
+
   //! Return view occlusion mask.
-  const Handle(Graphic3d_ViewOcclusionMask)& ViewOcclusionMask() const { return myViewOcclusionMask; }
+  const Handle(Graphic3d_ViewOcclusionMask)& ViewOcclusionMask() const
+  {
+    return myViewOcclusionMask;
+  }
 
   //! Returns true if the Interactive Object has display mode setting overriding global setting
   //! (within Interactive Context).

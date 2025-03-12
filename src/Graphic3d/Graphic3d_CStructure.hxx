@@ -176,13 +176,13 @@ public:
 
   //! Returns true if the structure occluded in specified view, otherwise
   //! returns false.
-  Standard_Boolean IsOccluded(const Standard_Integer theViewId) const 
+  Standard_Boolean IsOccluded(const Standard_Integer theViewId) const
   {
     return (!OcclusionMask->IsVisible(theViewId));
   }
 
   //! Marks structure as Occluded by other structure in specified view,!
-  void SetOcclusionSate(const Standard_Integer theViewId, const bool theIsVisible) const 
+  void SetOcclusionSate(const Standard_Integer theViewId, const bool theIsVisible) const
   {
     OcclusionMask->SetVisible(theViewId, !theIsVisible);
   }
@@ -241,7 +241,7 @@ public:
                                         Standard_Integer  theDepth = -1) const;
 
 public:
-  Handle(Graphic3d_ViewAffinity) ViewAffinity; //!< view affinity mask
+  Handle(Graphic3d_ViewAffinity)      ViewAffinity;  //!< view affinity mask
   Handle(Graphic3d_ViewOcclusionMask) OcclusionMask; //!< view occlusion mask
 
 protected:

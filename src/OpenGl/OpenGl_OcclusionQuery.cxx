@@ -21,90 +21,81 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_OcclusionQuery, OpenGl_Resource)
 
-// =======================================================================
-// function :
-// purpose  :
-// =======================================================================
-OpenGl_OcclusionQuery::OpenGl_OcclusionQuery(): myID(0), inUse(false), started(false)
+//=================================================================================================
+
+OpenGl_OcclusionQuery::OpenGl_OcclusionQuery()
+    : myID(0),
+      inUse(false),
+      started(false)
 {
 }
 
-// =======================================================================
-// function :
-// purpose  :
-// =======================================================================
-OpenGl_OcclusionQuery::~OpenGl_OcclusionQuery() 
+//=================================================================================================
+
+OpenGl_OcclusionQuery::~OpenGl_OcclusionQuery()
 {
   Release(NULL);
 }
-// =======================================================================
-// function : Create()
-// purpose  :
-// =======================================================================
-void OpenGl_OcclusionQuery::Create(const Handle(OpenGl_Context) & theCtx,
-                                   GLenum theQueryType) {
+
+//=================================================================================================
+
+void OpenGl_OcclusionQuery::Create(const Handle(OpenGl_Context)& theCtx, GLenum theQueryType)
+{
   theCtx->core15->glGenQueries(1, &myID);
-  myType = theQueryType;
-  inUse = false;
+  myType  = theQueryType;
+  inUse   = false;
   started = false;
 }
-// =======================================================================
-// function : Begin()
-// purpose  :
-// =======================================================================
-void OpenGl_OcclusionQuery::Begin(const Handle(OpenGl_Context) & theCtx) 
+
+//=================================================================================================
+
+void OpenGl_OcclusionQuery::Begin(const Handle(OpenGl_Context)& theCtx)
 {
-  inUse = true;
+  inUse   = true;
   started = true;
-  theCtx->core15->glBeginQuery(myType, myID); 
+  theCtx->core15->glBeginQuery(myType, myID);
 }
- 
-// =======================================================================
-// function : End()
-// purpose  :
-// =======================================================================
-void OpenGl_OcclusionQuery::End(const Handle(OpenGl_Context) & theCtx) const
+
+//=================================================================================================
+
+void OpenGl_OcclusionQuery::End(const Handle(OpenGl_Context)& theCtx) const
 {
   theCtx->core15->glEndQuery(myType);
 }
 
-// =======================================================================
-// function : isResultsReady()
-// purpose  :
-// =======================================================================
-int OpenGl_OcclusionQuery::IsResultsReady(const Handle(OpenGl_Context) & theCtx) const
+//=================================================================================================
+
+int OpenGl_OcclusionQuery::IsResultsReady(const Handle(OpenGl_Context)& theCtx) const
 {
   // check if the query started before check for results
-  if(!started)
+  if (!started)
     return false;
 
   GLint aReady = 0;
   theCtx->core15->glGetQueryObjectiv(myID, GL_QUERY_RESULT_AVAILABLE, &aReady);
   return aReady;
-  }
+}
 
-// =======================================================================
-// function : GetResults()
-// purpose  :
-// =======================================================================
-int OpenGl_OcclusionQuery::GetResults(const Handle(OpenGl_Context) & theCtx)
+//=================================================================================================
+
+int OpenGl_OcclusionQuery::GetResults(const Handle(OpenGl_Context)& theCtx)
 {
   inUse = false;
   GLint aResult;
-  theCtx->core15->glGetQueryObjectiv(myID, GL_QUERY_RESULT, &aResult); 
+  theCtx->core15->glGetQueryObjectiv(myID, GL_QUERY_RESULT, &aResult);
   return aResult;
 }
 
-// =======================================================================
-// function : Release()
-// purpose  : Destroy the query opengl resources 
-// =======================================================================
-void OpenGl_OcclusionQuery::Release(OpenGl_Context *theCtx) {
+//=================================================================================================
+
+void OpenGl_OcclusionQuery::Release(OpenGl_Context* theCtx)
+{
   if (myID == 0)
     return;
-  if (theCtx != NULL) {
+  if (theCtx != NULL)
+  {
     theCtx->core15->glDeleteQueries(1, &myID);
-    myID = 0;
+    myID    = 0;
     started = false;
   }
 }

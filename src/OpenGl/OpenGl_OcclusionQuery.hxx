@@ -25,7 +25,8 @@ class OpenGl_Context;
 DEFINE_STANDARD_HANDLE(OpenGl_OcclusionQuery, OpenGl_Resource)
 
 //! Implementation of OpenGl view.
-class OpenGl_OcclusionQuery : public OpenGl_Resource {
+class OpenGl_OcclusionQuery : public OpenGl_Resource
+{
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_OcclusionQuery, OpenGl_Resource)
 
@@ -34,39 +35,39 @@ public:
 
   //! Default destructor.
   Standard_EXPORT virtual ~OpenGl_OcclusionQuery();
-  
+
   //! Create the occlusion test Gl resources.
   Standard_EXPORT virtual void Create(const Handle(OpenGl_Context)& theCtx, GLenum theType);
 
   //! Begins occlusion query.
-  Standard_EXPORT virtual void Begin(const Handle(OpenGl_Context) & theCtx);
+  Standard_EXPORT virtual void Begin(const Handle(OpenGl_Context)& theCtx);
 
   //! Ends occlusion query
-  Standard_EXPORT virtual void End(const Handle(OpenGl_Context) & theCtx) const;
+  Standard_EXPORT virtual void End(const Handle(OpenGl_Context)& theCtx) const;
 
   //! Check if the query results ready for retrive or not.
-  Standard_EXPORT virtual int IsResultsReady(const Handle(OpenGl_Context) & theCtx) const;
+  Standard_EXPORT virtual int IsResultsReady(const Handle(OpenGl_Context)& theCtx) const;
 
   //! Return the query results based on query type.
-  Standard_EXPORT virtual int GetResults(const Handle(OpenGl_Context) & theCtx);
+  Standard_EXPORT virtual int GetResults(const Handle(OpenGl_Context)& theCtx);
 
   //! Return is the query in use or not
   Standard_EXPORT bool IsInUse() { return inUse; }
 
   //! Return Query ID
-  Standard_EXPORT unsigned int GetID() const {return myID;}; 
+  Standard_EXPORT unsigned int GetID() const { return myID; };
 
   //! Destroys query object.
-  Standard_EXPORT virtual void Release (OpenGl_Context * theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Returns estimated GPU memory usage - not implemented.
   virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
 
 private:
-  GLuint   myID;                     //!< OpenGL query ID.
-  GLenum   myType;                   //!< OpenGL query Type.
-  bool     inUse;                    //!< store bool answer is the query still inprogress or finished.
-  bool     started;                  //!< bool answer is the query stated before or this the first time.
+  GLuint myID;    //!< OpenGL query ID.
+  GLenum myType;  //!< OpenGL query Type.
+  bool   inUse;   //!< store bool answer is the query still inprogress or finished.
+  bool   started; //!< bool answer is the query stated before or this the first time.
 };
 
 #endif // _OpenGl_OcclusionQuery_Header

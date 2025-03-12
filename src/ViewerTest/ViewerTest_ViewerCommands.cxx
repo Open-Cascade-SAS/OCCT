@@ -13639,21 +13639,21 @@ static int VChangeMouseGesture(Draw_Interpretor&,
 
 //=================================================================================================
 
-static Standard_Integer VNbOccluded(Draw_Interpretor & theDi,
-                                  Standard_Integer theArgNb,
-                                  const char **theArgVec) {
+static Standard_Integer VNbOccluded(Draw_Interpretor& theDi,
+                                    Standard_Integer  theArgNb,
+                                    const char**      theArgVec)
+{
   NCollection_List<TCollection_AsciiString> aViewList;
   if (theArgNb > 1)
   {
-    TCollection_AsciiString anArg (theArgVec[1]);
+    TCollection_AsciiString anArg(theArgVec[1]);
     anArg.UpperCase();
-    if (anArg.IsEqual ("ALL")
-     || anArg.IsEqual ("*"))
+    if (anArg.IsEqual("ALL") || anArg.IsEqual("*"))
     {
-      for (ViewerTest_ViewerCommandsViewMap::Iterator anIter (ViewerTest_myViews);
-           anIter.More(); anIter.Next())
+      for (ViewerTest_ViewerCommandsViewMap::Iterator anIter(ViewerTest_myViews); anIter.More();
+           anIter.Next())
       {
-        aViewList.Append (anIter.Key1());
+        aViewList.Append(anIter.Key1());
       }
       if (aViewList.IsEmpty())
       {
@@ -13663,13 +13663,13 @@ static Standard_Integer VNbOccluded(Draw_Interpretor & theDi,
     }
     else
     {
-      ViewerTest_Names aViewName (theArgVec[1]);
-      if (!ViewerTest_myViews.IsBound1 (aViewName.GetViewName()))
+      ViewerTest_Names aViewName(theArgVec[1]);
+      if (!ViewerTest_myViews.IsBound1(aViewName.GetViewName()))
       {
         Message::SendFail() << "Error: the view with name '" << theArgVec[1] << "' does not exist";
         return 1;
       }
-      aViewList.Append (aViewName.GetViewName());
+      aViewList.Append(aViewName.GetViewName());
     }
   }
   else
@@ -13677,16 +13677,18 @@ static Standard_Integer VNbOccluded(Draw_Interpretor & theDi,
     // query from the active view
     if (ViewerTest::CurrentView().IsNull())
     {
-      Message::SendFail ("Error: no active view");
+      Message::SendFail("Error: no active view");
       return 1;
     }
-    aViewList.Append (ViewerTest_myViews.Find2 (ViewerTest::CurrentView()));
+    aViewList.Append(ViewerTest_myViews.Find2(ViewerTest::CurrentView()));
   }
 
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(aViewList);
-       anIter.More(); anIter.Next()) {
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(aViewList); anIter.More();
+       anIter.Next())
+  {
     Handle(V3d_View) aView = ViewerTest_myViews.Find1(anIter.Value());
-    aView->ChangeRenderingParams().OcclusionQueryState = Graphic3d_RenderingParams::OcclusionQuery_NoUpdate;
+    aView->ChangeRenderingParams().OcclusionQueryState =
+      Graphic3d_RenderingParams::OcclusionQuery_NoUpdate;
     aView->Redraw();
     aView->Redraw();
     aView->View()->UpdateOcclusion();
@@ -13705,9 +13707,9 @@ static void ViewerTest_ExitProc(ClientData)
 {
   NCollection_List<TCollection_AsciiString> aViewList;
   for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter(
-        ViewerTest_myViews);
-      anIter.More();
-      anIter.Next())
+         ViewerTest_myViews);
+       anIter.More();
+       anIter.Next())
   {
     aViewList.Append(anIter.Key1());
   }

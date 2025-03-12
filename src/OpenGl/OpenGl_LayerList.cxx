@@ -897,11 +897,11 @@ void OpenGl_LayerList::Render(const Handle(OpenGl_Workspace)& theWorkspace,
 
 //=================================================================================================
 
-void OpenGl_LayerList::UpdateOcclusion(const Handle(OpenGl_Workspace) & theWorkspace)
-{  
-  const Handle(OpenGl_Context) &aCtx = theWorkspace->GetGlContext();
+void OpenGl_LayerList::UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace)
+{
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   aCtx->core11fwd->glEnable(GL_DEPTH_TEST);
-  aCtx->core11fwd->glDepthFunc (GL_LESS);
+  aCtx->core11fwd->glDepthFunc(GL_LESS);
 
   // Remember global settings for glDepth mask and write mask
   GLboolean aPrevColorMask[4];
@@ -909,48 +909,57 @@ void OpenGl_LayerList::UpdateOcclusion(const Handle(OpenGl_Workspace) & theWorks
   aCtx->core11fwd->glGetBooleanv(GL_COLOR_WRITEMASK, aPrevColorMask);
   aCtx->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &aPrevDepthMask);
 
-  // Turn off writing to depth and color buffers 
+  // Turn off writing to depth and color buffers
   aCtx->core11fwd->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-  // Start record occlusion test computational cost  
-  const Handle(OpenGl_FrameStats) &aStats = theWorkspace->GetGlContext()->FrameStats();
-  OSD_Timer &aTimer = aStats->ActiveDataFrame().ChangeTimer( Graphic3d_FrameStatsTimer_OcclusionCulling);
+  // Start record occlusion test computational cost
+  const Handle(OpenGl_FrameStats)& aStats = theWorkspace->GetGlContext()->FrameStats();
+  OSD_Timer&                       aTimer =
+    aStats->ActiveDataFrame().ChangeTimer(Graphic3d_FrameStatsTimer_OcclusionCulling);
   aTimer.Start();
 
   // Loop for all layers
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers);
-       aLayerIter.More(); aLayerIter.Next()) {
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myLayers); aLayerIter.More();
+       aLayerIter.Next())
+  {
 
-    const Handle(Graphic3d_Layer) &aLayer = aLayerIter.ChangeValue();
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.ChangeValue();
 
     // Exclude frustum culled layer
     if (aLayer->IsCulled())
       continue;
 
-    aCtx->core11fwd->glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+    aCtx->core11fwd->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render priority list
     const Standard_Integer aViewId = theWorkspace->View()->Identification();
 
-    for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom; aPriorityIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorityIter) 
+    for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+         aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
+         ++aPriorityIter)
     {
-      const Graphic3d_IndexedMapOfStructure &aStructures = aLayer->Structures((Graphic3d_DisplayPriority)aPriorityIter);
-      for (OpenGl_Structure::StructIterator aStructIter(aStructures); aStructIter.More(); aStructIter.Next()) 
+      const Graphic3d_IndexedMapOfStructure& aStructures =
+        aLayer->Structures((Graphic3d_DisplayPriority)aPriorityIter);
+      for (OpenGl_Structure::StructIterator aStructIter(aStructures); aStructIter.More();
+           aStructIter.Next())
       {
-        const OpenGl_Structure *aStruct = aStructIter.Value();  
-       
+        const OpenGl_Structure* aStruct = aStructIter.Value();
+
         // Exclude view frustum culled structs
-        if (aStruct->IsCulled() || !aStruct->IsVisible(aViewId) ||aStruct->IsForHighlight)
+        if (aStruct->IsCulled() || !aStruct->IsVisible(aViewId) || aStruct->IsForHighlight)
           continue;
-        
+
         aStruct->UpdateOcclusion(theWorkspace);
       }
     }
   }
 
-  // Back to prev settings 
+  // Back to prev settings
   aCtx->core11fwd->glDepthMask(aPrevDepthMask);
-  aCtx->core11fwd->glColorMask(aPrevColorMask[0], aPrevColorMask[1], aPrevColorMask[2], aPrevColorMask[3]);
+  aCtx->core11fwd->glColorMask(aPrevColorMask[0],
+                               aPrevColorMask[1],
+                               aPrevColorMask[2],
+                               aPrevColorMask[3]);
 
   aTimer.Stop();
   aStats->ActiveDataFrame()[Graphic3d_FrameStatsTimer_CpuCulling] = aTimer.UserTimeCPU();
@@ -959,10 +968,10 @@ void OpenGl_LayerList::UpdateOcclusion(const Handle(OpenGl_Workspace) & theWorks
 //=================================================================================================
 
 void OpenGl_LayerList::renderTransparent(const Handle(OpenGl_Workspace)&   theWorkspace,
-                                          OpenGl_LayerStack::iterator&      theLayerIter,
-                                          const OpenGl_GlobalLayerSettings& theGlobalSettings,
-                                          OpenGl_FrameBuffer*               theReadDrawFbo,
-                                          OpenGl_FrameBuffer*               theOitAccumFbo) const
+                                         OpenGl_LayerStack::iterator&      theLayerIter,
+                                         const OpenGl_GlobalLayerSettings& theGlobalSettings,
+                                         OpenGl_FrameBuffer*               theReadDrawFbo,
+                                         OpenGl_FrameBuffer*               theOitAccumFbo) const
 {
   // Check if current iterator has already reached the end of the stack.
   // This should happen if no additional layers has been added to
