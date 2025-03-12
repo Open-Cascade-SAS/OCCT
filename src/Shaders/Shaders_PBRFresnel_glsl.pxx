@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBRFresnel.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PBRFresnel.glsl
 
 static const char Shaders_PBRFresnel_glsl[] =
   "//! Functions to calculate fresnel coefficient and approximate zero fresnel value.\n"
@@ -37,3 +38,5 @@ static const char Shaders_PBRFresnel_glsl[] =
   "  theCosV *= theCosV * theCosV * theCosV * theCosV;\n"
   "  return f0 + (max(vec3(1.0 - theRoughness), f0) - f0) * theCosV;\n"
   "}\n";
+
+// clang-format on
