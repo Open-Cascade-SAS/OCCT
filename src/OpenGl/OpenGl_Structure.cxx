@@ -108,7 +108,8 @@ OpenGl_Structure::OpenGl_Structure(const Handle(Graphic3d_StructureManager)& the
       myInstancedStructure(NULL),
       myIsRaytracable(Standard_False),
       myModificationState(0),
-      myIsMirrored(Standard_False)
+      myIsMirrored(Standard_False),
+      myQuery(new OpenGl_OcclusionQuery())
 {
   updateLayerTransformation();
 }
@@ -629,6 +630,41 @@ void OpenGl_Structure::Render(const Handle(OpenGl_Workspace)& theWorkspace) cons
 
 //=================================================================================================
 
+void OpenGl_Structure::RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspace) const
+{
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  aCtx->ApplyModelViewMatrix();
+  renderBoundingBox(theWorkspace);
+}
+
+//=================================================================================================
+
+void OpenGl_Structure::UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace) const
+{
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  if (myQuery->GetID() == 0)
+    myQuery->Create(aCtx, GL_SAMPLES_PASSED);
+
+  if (myQuery->IsResultsReady(aCtx))
+  {
+    int                    aResult = myQuery->GetResults(aCtx);
+    const Standard_Integer aViewId = theWorkspace->View()->Identification();
+    if (aResult)
+      SetOcclusionSate(aViewId, Standard_False);
+    else
+      SetOcclusionSate(aViewId, Standard_True);
+  }
+
+  if (!myQuery->IsInUse())
+  {
+    myQuery->Begin(aCtx);
+    RenderOccluder(theWorkspace);
+    myQuery->End(aCtx);
+  }
+}
+
+//=================================================================================================
+
 void OpenGl_Structure::Release(const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
@@ -644,6 +680,8 @@ void OpenGl_Structure::ReleaseGlResources(const Handle(OpenGl_Context)& theGlCtx
   {
     aGroupIter.ChangeValue()->Release(theGlCtx);
   }
+
+  myQuery->Release(theGlCtx.get());
 }
 
 //=================================================================================================

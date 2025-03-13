@@ -154,6 +154,12 @@ public:
   //! Returns the set of structures displayed in this view.
   Standard_EXPORT void DisplayedStructures(Graphic3d_MapOfStructure& theStructures) const;
 
+  //! Returns number of occluded structures in the view
+  Standard_EXPORT void OccludedStructures(Graphic3d_MapOfStructure& theStructures) const;
+
+  //! Update occlusion test for displayed structures in the view
+  Standard_EXPORT virtual void UpdateOcclusion() = 0;
+
   //! Returns number of displayed structures in the view.
   virtual Standard_Integer NumberOfDisplayedStructures() const
   {

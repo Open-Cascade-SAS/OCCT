@@ -2501,6 +2501,10 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   {
     myAccumFrames        = 0;
     myWorldViewProjState = aWVPState;
+
+    // Invalidiate occlusion test if camera has changed.
+    if (myRenderParams.OcclusionQueryState == Graphic3d_RenderingParams::OcclusionQuery_On)
+      myRenderParams.OcclusionQueryState = Graphic3d_RenderingParams::OcclusionQuery_NoUpdate;
   }
 
   myLocalOrigin.SetCoord(0.0, 0.0, 0.0);
@@ -2629,6 +2633,16 @@ void OpenGl_View::InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
 
 //=================================================================================================
 
+void OpenGl_View::UpdateOcclusion()
+{
+  myZLayers.UpdateOcclusion(myWorkspace);
+
+  // re-validate occlusion results
+  myRenderParams.OcclusionQueryState = Graphic3d_RenderingParams::OcclusionQuery_On;
+}
+
+//=================================================================================================
+
 void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
                                 OpenGl_FrameBuffer*          theReadDrawFbo,
                                 OpenGl_FrameBuffer*          theOitAccumFbo,
@@ -2644,6 +2658,10 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
   {
     return;
   }
+
+  // Update occlusion here after update culling to ensure the frusrum culling updated
+  if (myRenderParams.OcclusionQueryState == Graphic3d_RenderingParams::OcclusionQuery_NoUpdate)
+    UpdateOcclusion();
 
   Handle(OpenGl_Context) aCtx       = myWorkspace->GetGlContext();
   Standard_Boolean       toRenderGL = theToDrawImmediate

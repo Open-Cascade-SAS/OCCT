@@ -21,6 +21,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OpenGl_OcclusionQuery.hxx>
 
 #include <NCollection_List.hxx>
 
@@ -97,6 +98,12 @@ public:
 
   //! Renders the structure.
   Standard_EXPORT virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Renders occluder presentation of the structure
+  Standard_EXPORT void RenderOccluder(const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Performs occlusion test for the structure
+  Standard_EXPORT void UpdateOcclusion(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Releases structure resources.
   Standard_EXPORT virtual void Release(const Handle(OpenGl_Context)& theGlCtx);
@@ -184,6 +191,8 @@ protected:
   mutable Standard_Size      myModificationState;
 
   Standard_Boolean           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
+
+  Handle(OpenGl_OcclusionQuery)      myQuery; //! test the occlusion status of the structure;
   // clang-format on
 };
 

@@ -208,3 +208,4 @@ Graphic3d_Layer.cxx
 Graphic3d_Layer.hxx
 Graphic3d_ZLayerId.hxx
 Graphic3d_ZLayerSettings.hxx
+Graphic3d_ViewOcclusionMask.hxx
