@@ -153,7 +153,7 @@ public:
         CameraApertureRadius(0.0f),
         CameraFocalPlaneDist(1.0f),
         FrustumCullingState(FrustumCulling_On),
-        OcclusionQueryState(OcclusionQuery_Off),
+        OcclusionQueryState(OcclusionQuery_On),
         ToneMappingMethod(Graphic3d_ToneMappingMethod_Disabled),
         Exposure(0.f),
         WhitePoint(1.f),
