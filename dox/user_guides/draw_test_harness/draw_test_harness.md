@@ -10885,6 +10885,7 @@ mdist
 
 
 This section describes commands that make possible to use Inspector.
+Inspector available in https://github.com/Open-Cascade-SAS/Inspector repository.
 
 @subsection occt_draw_13_1 tinspector
 

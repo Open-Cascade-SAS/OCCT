@@ -327,8 +327,6 @@ if (MSVC)
 endif()
 set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
 
-set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
-
 # uwp sample
 if (MSVC)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
@@ -745,8 +743,8 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
 endif()
 
-# qt for inspector and samples
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+# qt for samples
+if (BUILD_SAMPLES_QT)
   # check qt 3rdparty path
   add_definitions (-DHAVE_QT)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/qt")
@@ -1021,28 +1019,6 @@ else()
   set (SCRIPT_EXT sh)
 endif()
 
-# OCCT tools
-# include original list of tools
-# list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
-# list <OCCT_TOOLS> will contain all tools
-if (BUILD_Inspector)
-  add_definitions (-DHAVE_Inspector)
-
-  OCCT_MODULES_AND_TOOLKITS (TOOLS "TOOL_TOOLKITS" OCCT_TOOLS)
-  foreach (OCCT_TOOL ${OCCT_TOOLS})
-    list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
-  endforeach()
-
-  # collect all the headers to <binary dir>/inc/inspector folder
-
-  # Ensure the include directory exists
-  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/inspector")
-
-  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/inc/inspector ...")
-  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "tools" "${INSTALL_DIR_INCLUDE}/inspector")
-endif()
-
 # OCCT samples
 # get absolute path from INSTALL_DIR
 set (INSTALL_DIR_ABSOLUTE "${INSTALL_DIR}")
@@ -1227,13 +1203,6 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
   endif()
 endif()
 
-# include patched toolkit projects or original ones
-if (BUILD_TOOL_TOOLKITS)
-  foreach (BUILD_TOOL_TOOLKIT ${BUILD_TOOL_TOOLKITS})
-    OCCT_ADD_SUBDIRECTORY ("tools/${BUILD_TOOL_TOOLKIT}")
-  endforeach()
-endif()
-
 message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
 # samples do not support patch usage
 if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
@@ -1255,7 +1224,7 @@ endif()
 
 OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
 
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+if (BUILD_SAMPLES_QT)
   if (BUILD_SAMPLES_QT)
     if (NOT Qt5_FOUND OR "${Qt5Gui_EGL_INCLUDE_DIRS}" STREQUAL "" OR NOT WIN32)
       list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
@@ -1282,15 +1251,6 @@ endif()
 
 if (BUILD_MODULE_UwpSample)
   add_subdirectory(samples/xaml)
-endif()
-
-if (BUILD_TOOL_TOOLKITS)
-  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-
-  set (OpenCASCADE_BINARY_DIR "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
-  # patch TInspectorEXE
-  OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

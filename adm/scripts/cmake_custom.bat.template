@@ -16,7 +16,6 @@ rem set "BUILD_DIR=build-vs%VS%-%VSPLATFORM%"
 rem set "INSTALL_DIR=%SrcRoot%\install"
 
 rem set BUILD_DOC_Overview=OFF
-rem set BUILD_Inspector=OFF
 rem set BUILD_LIBRARY_TYPE=Shared
 rem set BUILD_RELEASE_DISABLE_EXCEPTIONS=ON
 rem set BUILD_WITH_DEBUG=OFF
