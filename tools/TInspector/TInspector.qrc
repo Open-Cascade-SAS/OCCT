@@ -1,7 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-    <qresource>
-        <file alias="folder_open.png">icons/folder_open.png</file>
-        <file alias="folder_import.png">icons/folder_import.png</file>
-        <file alias="plugin_actions.png">icons/plugin_actions.png</file>
-    </qresource>
-</RCC>

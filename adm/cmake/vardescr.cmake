@@ -137,13 +137,6 @@ set (BUILD_SAMPLES_QT_DESCR
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
 
-set (BUILD_Inspector_DESCR
-"Indicates whether OCCT inspector should be built together with OCCT.
-This inspector provides functionality to interactively inspect low-level content
-of the OCAF data model, OCCT viewer, etc. have been introduced in OCCT.
-It can be executed with script inspector.bat from the installation directory (INSTALL_DIR) or
-using 'tinspector' command in DRAW interpretator")
-
 set (BUILD_MODULE_UwpSample_DESCR
 "Indicates whether OCCT UWP sample should be built together with OCCT.")
 
