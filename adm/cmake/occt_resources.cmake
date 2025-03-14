@@ -3,8 +3,8 @@
 macro (OCCT_GENERATE_CONTENT_ONLY CurrentResource)
   set (RESOURCE_FILES)
   set (isResDirectory FALSE)
-  if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/src/${CurrentResource}")
-    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${CurrentResource}/FILES" RESOURCE_FILES)
+  if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/resources/${CurrentResource}")
+    file (STRINGS "${CMAKE_SOURCE_DIR}/resources/${CurrentResource}/FILES" RESOURCE_FILES)
     set (CurrentResource_Directory "${CurrentResource}")
     set (isResDirectory TRUE)
   else()
@@ -27,37 +27,23 @@ macro (OCCT_GENERATE_CONTENT_ONLY CurrentResource)
         string (REPLACE "." "_" CurrentResource_FileName "${CurrentResource_FileName}")
         set (HEADER_FILE_NAME "${CurrentResource_Directory}_${CurrentResource_FileName}.pxx")
 
-        set (toProcessResFile TRUE)
-        if (isResDirectory)
-          list (FIND RESOURCE_FILES "${HEADER_FILE_NAME}" aResIndex)
-          if ("${aResIndex}" STREQUAL "-1")
-            set (toProcessResFile FALSE)
-          endif()
+        message(STATUS "Info. Generating header file from resource file: ${CMAKE_SOURCE_DIR}/resources/${CurrentResource_Directory}/${RESOURCE_FILE}")
+        # generate content for header file
+        set (OCCT_HEADER_FILE_CONTENT "// This file has been automatically generated from resource file resources/${CurrentResource_Directory}/${RESOURCE_FILE}\n\n")
+        # read resource file
+        file (STRINGS "${CMAKE_SOURCE_DIR}/resources/${CurrentResource_Directory}/${RESOURCE_FILE}" RESOURCE_FILE_LINES_LIST)
+        set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}static const char ${CurrentResource_Directory}_${CurrentResource_FileName}[] =")
+        foreach (line IN LISTS RESOURCE_FILE_LINES_LIST)
+          string (REPLACE "\"" "\\\"" line "${line}")
+          set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}\n  \"${line}\\n\"")
+        endforeach()
+        set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT};\n\n")
+        # Save generated content to header file
+        set (HEADER_FILE "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${HEADER_FILE_NAME}")
+        if (EXISTS "${HEADER_FILE}")
+          file (REMOVE "${HEADER_FILE}")
         endif()
-
-        if (toProcessResFile)
-          message(STATUS "Info. Generating header file from resource file: ${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${RESOURCE_FILE}")
-
-          # generate content for header file
-          set (OCCT_HEADER_FILE_CONTENT "// This file has been automatically generated from resource file src/${CurrentResource_Directory}/${RESOURCE_FILE}\n\n")
-
-          # read resource file
-          file (STRINGS "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${RESOURCE_FILE}" RESOURCE_FILE_LINES_LIST)
-
-          set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}static const char ${CurrentResource_Directory}_${CurrentResource_FileName}[] =")
-          foreach (line IN LISTS RESOURCE_FILE_LINES_LIST)
-            string (REPLACE "\"" "\\\"" line "${line}")
-            set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}\n  \"${line}\\n\"")
-          endforeach()
-          set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT};")
-
-          # Save generated content to header file
-          set (HEADER_FILE "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${HEADER_FILE_NAME}")
-          if (EXISTS "${HEADER_FILE}")
-            file (REMOVE "${HEADER_FILE}")
-          endif()
-          configure_file ("${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${HEADER_FILE}" @ONLY NEWLINE_STYLE LF)
-        endif()
+        configure_file ("${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${HEADER_FILE}" @ONLY NEWLINE_STYLE LF)
       endif()
     endforeach()
   endif()

@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/RaytraceSmooth.fs
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/RaytraceSmooth.fs
 
 static const char Shaders_RaytraceSmooth_fs[] =
   "//! Input ray-traced image.\n"
@@ -74,11 +75,12 @@ static const char Shaders_RaytraceSmooth_fs[] =
   "                       aRay.Direct.y < 0.f ? -aInvDirect.y : aInvDirect.y,\n"
   "                       aRay.Direct.z < 0.f ? -aInvDirect.z : aInvDirect.z);\n"
   "\n"
-  "    aColor = mix (aClr0, clamp (Radiance (aRay, aInvDirect), 0.0, 1.0), 1.0 / "
-  "float(uSamples));\n"
+  "    aColor = mix (aClr0, clamp (Radiance (aRay, aInvDirect), 0.0, 1.0), 1.0 / float(uSamples));\n"
   "  }\n"
   "\n"
   "  OutColor = aColor;\n"
   "\n"
   "#endif\n"
   "}\n";
+
+// clang-format on

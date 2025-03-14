@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBRIllumination.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PBRIllumination.glsl
 
 static const char Shaders_PBRIllumination_glsl[] =
   "//! Calculates direct illumination using Cook-Torrance BRDF.\n"
@@ -27,6 +28,7 @@ static const char Shaders_PBRIllumination_glsl[] =
   "  aDiffuse *= INV_PI;\n"
   "  aDiffuse *= theBaseColor.rgb;\n"
   "  aDiffuse = mix (vec3(0.0), aDiffuse, theBaseColor.a);\n"
-  "  return (aDiffuse + aSpecular) * theLightColor * theLightIntensity * max(0.0, dot(theLight, "
-  "theNormal));\n"
+  "  return (aDiffuse + aSpecular) * theLightColor * theLightIntensity * max(0.0, dot(theLight, theNormal));\n"
   "}\n";
+
+// clang-format on

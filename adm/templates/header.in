@@ -1,1 +1,2 @@
-@OCCT_HEADER_FILE_CONTENT@
+// clang-format off
+@OCCT_HEADER_FILE_CONTENT@// clang-format on
