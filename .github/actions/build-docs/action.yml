@@ -51,7 +51,7 @@ runs:
           set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
           cd build
           cmake --build . --target doc --config Release
-      shell: pwsh
+      shell: cmd
 
     - name: Upload refman documentation
       uses: actions/upload-artifact@v4.4.3
