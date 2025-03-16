@@ -330,7 +330,8 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXCLUDE_PATTERNS = */src/* */inc/* */drv/* */Properties/*\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "ENABLED_SECTIONS = OVERVIEW_SECTION\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "GENERATE_TAGFILE = ${OUTPUT_DIR}/occt.tag\n")
-
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "GENERATE_TREEVIEW = YES\n")
+    
     # Setup tag file for cross-referencing with Reference Manual
     if(BUILD_DOC_RefMan)
       file(APPEND ${DOXYGEN_CONFIG_FILE} "\n# Cross-referencing with Reference Manual\n")
@@ -385,7 +386,7 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
         endforeach()
       endforeach()
       string(REPLACE ";" " " MODULE_PATHS_STR "${MODULE_PATHS}")
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${MODULE_PATHS_STR}\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT += ${MODULE_PATHS_STR}\n") # Use += to append to existing INPUT
     endif()
 
     # Configure image path for reference manual
@@ -398,21 +399,16 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     else()
       file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${CMAKE_SOURCE_DIR}/dox/resources\n")
     endif()
-  endif()
 
-  # Add main page file if generated
-  if(EXISTS "${OUTPUT_DIR}/main_page.dox")
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT += ${OUTPUT_DIR}/main_page.dox\n")
-  endif()
+    # Add main page file if generated
+    if(EXISTS "${OUTPUT_DIR}/main_page.dox")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT += ${OUTPUT_DIR}/main_page.dox\n") # Use += to append to existing INPUT
+    endif()
 
-  # Add header files to Doxygen input
-  if(DEFINED DOXYGEN_INPUT_FILES_STRING)
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT += ${DOXYGEN_INPUT_FILES_STRING}\n")
-  endif()
-
-  # Configure Doxygen example paths
-  if(NOT DOC_TYPE STREQUAL "OVERVIEW")
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATH += ${CMAKE_SOURCE_DIR}/samples\n")
+    # Add header files to Doxygen input
+    if(DEFINED DOXYGEN_INPUT_FILES_STRING)
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT += ${DOXYGEN_INPUT_FILES_STRING}\n") # Use += to append to existing INPUT
+    endif()
   endif()
 
   # Custom CSS
@@ -571,6 +567,9 @@ function(OCCT_SETUP_DOC_TARGETS)
     file(MAKE_DIRECTORY ${REFMAN_OUTPUT_DIR})
     file(MAKE_DIRECTORY "${REFMAN_OUTPUT_DIR}/html")
 
+    # Copy index file to provide fast access to HTML documentation
+    file(COPY "${CMAKE_SOURCE_DIR}/dox/resources/index.html" DESTINATION "${REFMAN_OUTPUT_DIR}")
+
     # Generate main page for reference manual
     OCCT_DOC_GENERATE_MAIN_PAGE(${REFMAN_OUTPUT_DIR} "main_page.dox")
 
@@ -579,7 +578,7 @@ function(OCCT_SETUP_DOC_TARGETS)
     OCCT_DOC_CONFIGURE_DOXYGEN(${REFMAN_OUTPUT_DIR} "Doxyfile" ${DOC_TYPE})
 
     # Add custom target for reference manual
-    add_custom_target(doc_refman
+    add_custom_target(RefMan
       COMMAND ${DOXYGEN_EXECUTABLE} ${REFMAN_OUTPUT_DIR}/Doxyfile
       COMMENT "Generating Reference Manual with Doxygen"
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -606,7 +605,7 @@ function(OCCT_SETUP_DOC_TARGETS)
     OCCT_DOC_CONFIGURE_DOXYGEN(${OVERVIEW_OUTPUT_DIR} "Doxyfile" ${DOC_TYPE})
 
     # Add custom target for overview documentation
-    add_custom_target(doc_overview
+    add_custom_target(Overview
       COMMAND ${DOXYGEN_EXECUTABLE} ${OVERVIEW_OUTPUT_DIR}/Doxyfile
       COMMENT "Generating Overview documentation with Doxygen"
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -633,18 +632,23 @@ function(OCCT_SETUP_DOC_TARGETS)
   # Combined documentation target
   if(BUILD_DOC_Overview AND BUILD_DOC_RefMan)
     add_custom_target(doc ALL
-      DEPENDS doc_overview doc_refman
+      DEPENDS Overview RefMan
       COMMENT "Generating all documentation"
     )
+    set_property (TARGET doc PROPERTY FOLDER "Documentation")
+    set_property (TARGET Overview PROPERTY FOLDER "Documentation")
+    set_property (TARGET RefMan PROPERTY FOLDER "Documentation")
   elseif(BUILD_DOC_Overview)
     add_custom_target(doc ALL
-      DEPENDS doc_overview
+      DEPENDS Overview
       COMMENT "Generating Overview documentation"
     )
+    set_property (TARGET Overview PROPERTY FOLDER "Documentation")
   elseif(BUILD_DOC_RefMan)
     add_custom_target(doc ALL
-      DEPENDS doc_refman
+      DEPENDS RefMan
       COMMENT "Generating Reference Manual"
     )
+    set_property (TARGET RefMan PROPERTY FOLDER "Documentation")
   endif()
 endfunction()

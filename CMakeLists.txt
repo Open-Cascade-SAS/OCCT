@@ -434,19 +434,6 @@ set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
 
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
 
-if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
-  # Include documentation macros
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")
-  
-  # Setup documentation targets
-  OCCT_SETUP_DOC_TARGETS()
-else()
-  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
-  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_RefMan")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_DOXYGEN_EXECUTABLE")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_DOT_EXECUTABLE")
-endif()
-
 # search for TKIVtk and TKIVtkDraw in BUILD_TOOLKITS
 list (FIND BUILD_TOOLKITS TKIVtk CAN_USE_VTK)
 if (CAN_USE_VTK EQUAL -1)
@@ -724,7 +711,7 @@ else()
 endif()
 
 # Doxygen
-if (BUILD_DOC_Overview)
+if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
   if (NOT DEFINED INSTALL_DOC_Overview)
     set (INSTALL_DOC_Overview OFF CACHE BOOL "${INSTALL_DOC_Overview_DESCR}")
   endif()
@@ -732,7 +719,7 @@ if (BUILD_DOC_Overview)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/doxygen")
 else()
   OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
-
+  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_RefMan")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
 endif()
@@ -1197,7 +1184,9 @@ foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
 endforeach()
 
 if (BUILD_DOC_Overview)
-  OCCT_ADD_SUBDIRECTORY (dox)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")
+  # Setup documentation targets
+  OCCT_SETUP_DOC_TARGETS()
 endif()
 
 # patch DRAWEXE
