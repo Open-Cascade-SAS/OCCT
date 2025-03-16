@@ -335,7 +335,7 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     # Setup tag file for cross-referencing with Reference Manual
     if(BUILD_DOC_RefMan)
       file(APPEND ${DOXYGEN_CONFIG_FILE} "\n# Cross-referencing with Reference Manual\n")
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "TAGFILES = \"${CMAKE_BINARY_DIR}/doc/refman/occt_refman.tag=../refman/html\"\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "TAGFILES = \"${CMAKE_BINARY_DIR}/doc/refman/occt_refman.tag=../../refman/html\"\n")
     endif()
 
     # Input files for overview
