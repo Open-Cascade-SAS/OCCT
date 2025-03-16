@@ -207,6 +207,8 @@ set (USE_XLIB_DESCR "Indicates whether X11 is used or not")
 
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
 
+set (USE_GTEST_DESCR "Indicates whether Google Test framework should be used for OCCT testing")
+
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)
   set (BUILD_MODULE_${MODULE_NAME} ${ENABLE_MODULE} CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
