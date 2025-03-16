@@ -10,6 +10,46 @@ runs:
         choco install -y doxygen.install
       shell: pwsh
 
+    - name: Download and extract 3rdparty dependencies
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Configure OCCT
+      run: |
+          mkdir build
+          cd build
+          cmake -T host=x64 `
+                -D USE_FREETYPE=ON `
+                -D USE_TK=OFF `
+                -D BUILD_USE_PCH=ON `
+                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_INCLUDE_SYMLINK=ON `
+                -D CMAKE_BUILD_TYPE=Release `
+                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+                -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
+                -D USE_DRACO=ON `
+                -D USE_FFMPEG=ON `
+                -D USE_FREEIMAGE=ON `
+                -D USE_GLES2=ON `
+                -D USE_OPENVR=ON `
+                -D USE_VTK=ON `
+                -D USE_TBB=ON `
+                -D USE_RAPIDJSON=ON `
+                -D USE_OPENGL=ON `
+                -D CMAKE_CXX_FLAGS="/W4 /WX" `
+                -D CMAKE_C_FLAGS="/W4 /WX" ..
+      shell: pwsh
+
+    - name: Build OCCT
+      run: |
+          set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
+          cd build
+          cmake --build . --target doc --config Release
+
     - name: Build refman documentation
       run: |
         set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
@@ -21,26 +61,12 @@ runs:
       uses: actions/upload-artifact@v4.4.3
       with:
         name: refman-doc
-        path: doc/refman
+        path: build/doc/refman
         retention-days: 90
-
-    - name: Upload generation log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: doxygen.log
-        path: doc/html_doxygen_err.log
-        retention-days: 90
-
-    - name: Build documentation Overview
-      run: |
-        set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
-        cd adm
-        bash gendoc -overview
-      shell: cmd
 
     - name: Upload overview documentation
       uses: actions/upload-artifact@v4.4.3
       with:
         name: overview-doc
-        path: doc/overview
+        path: build/doc/overview
         retention-days: 90
