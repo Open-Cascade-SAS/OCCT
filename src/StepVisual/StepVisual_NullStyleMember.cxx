@@ -19,7 +19,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_NullStyleMember, StepData_SelectInt)
 
-static StepData_EnumTool tool(".NULL.");
+namespace
+{
+StepData_EnumTool& GetTool()
+{
+  static StepData_EnumTool tool(".NULL.");
+  return tool;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -29,7 +36,7 @@ StepVisual_NullStyleMember::StepVisual_NullStyleMember() {}
 
 Standard_CString StepVisual_NullStyleMember::EnumText() const
 {
-  return tool.Text(Int()).ToCString();
+  return GetTool().Text(Int()).ToCString();
 }
 
 //=================================================================================================
@@ -37,7 +44,7 @@ Standard_CString StepVisual_NullStyleMember::EnumText() const
 void StepVisual_NullStyleMember::SetEnumText(const Standard_Integer /*theValue*/,
                                              const Standard_CString theText)
 {
-  Standard_Integer aVal = tool.Value(theText);
+  Standard_Integer aVal = GetTool().Value(theText);
   if (aVal >= 0)
     SetInt(aVal);
 }

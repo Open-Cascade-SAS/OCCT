@@ -57,13 +57,18 @@
 #include <Standard_Stream.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static TCollection_AsciiString ColorsHint("The possible colors are: \n\
+namespace
+{
+#define THE_COLOR_HINT                                                                             \
+  "The possible colors are: \n\
   white, red, green, blue, cyan,\n\
   golden, magenta, brown, orange, pink,\n\
-  salmon, violet, yellow, darkgreen, coral");
+  salmon, violet, yellow, darkgreen, coral"
 
-static TCollection_AsciiString MarkersHint("The possible markers are: \n\
-  square, diamond, x, plus, circle, circle_zoom");
+#define THE_MARKER_HINT                                                                            \
+  "The possible markers are: \n\
+  square, diamond, x, plus, circle, circle_zoom"
+} // namespace
 
 //=======================================================================
 // function : DrawTrSurf_CurveColor
@@ -1319,65 +1324,50 @@ void DrawTrSurf::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("discr", "discr [names...] nbintervals", __FILE__, draw, g);
 
   theCommands.Add("defle", "defle [names...] defle", __FILE__, draw, g);
-
   theCommands.Add("setcurvcolor",
-                  TCollection_AsciiString("setcurvcolor [color] : set curve color\
+                  "setcurvcolor [color] : set curve color\
  by default, or print the current curve color if no argument (this does not modify\
- the color of the curve)\n\n")
-                    .Cat(ColorsHint)
-                    .ToCString(),
+ the color of the curve)\n\n" THE_COLOR_HINT,
                   __FILE__,
                   setcurvcolor,
                   g);
 
   theCommands.Add("changecurvcolor",
-                  TCollection_AsciiString("changecurvcolor color curve: change\
- color of the curve\n\n")
-                    .Cat(ColorsHint)
-                    .ToCString(),
+                  "changecurvcolor color curve: change\
+ color of the curve\n\n" THE_COLOR_HINT,
                   __FILE__,
                   changecurvcolor,
                   g);
 
   theCommands.Add("setpointcolor",
-                  TCollection_AsciiString("setpointcolor [color] : set point color\
+                  "setpointcolor [color] : set point color\
  by default, or print the current point color if no argument (this does not modify\
- the color of the point)\n\n")
-                    .Cat(ColorsHint)
-                    .ToCString(),
+ the color of the point)\n\n" THE_COLOR_HINT,
                   __FILE__,
                   setpointcolor,
                   g);
 
   theCommands.Add("changepointcolor",
-                  TCollection_AsciiString("changepointcolor color point: change\
- color of the point\n\n")
-                    .Cat(ColorsHint)
-                    .ToCString(),
+                  "changepointcolor color point: change\
+ color of the point\n\n" THE_COLOR_HINT,
                   __FILE__,
                   changepointcolor,
                   g);
 
   theCommands.Add("setpointmarker",
-                  TCollection_AsciiString("setpointmarker [marker] : set point marker\
+                  "setpointmarker [marker] : set point marker\
  by default, or print the current point marker if no argument (this does not modify\
- the marker of the point)\n\n")
-                    .Cat(MarkersHint)
-                    .ToCString(),
+ the marker of the point)\n\n" THE_MARKER_HINT,
                   __FILE__,
                   setpointmarker,
                   g);
 
   theCommands.Add("changepointmarker",
-                  TCollection_AsciiString("changepointmarker marker point: change\
- marker of the point\n\n")
-                    .Cat(MarkersHint)
-                    .ToCString(),
+                  "changepointmarker marker point: change\
+ marker of the point\n\n" THE_MARKER_HINT,
                   __FILE__,
                   changepointmarker,
                   g);
-
-  g = "Geometric transformations";
 
   theCommands.Add("translate", "translate name [names...] dx dy dz", __FILE__, transform, g);
 

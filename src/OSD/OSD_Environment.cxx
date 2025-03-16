@@ -48,29 +48,33 @@ OSD_Environment::OSD_Environment() {}
 // ----------------------------------------------------------------------
 
 OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name)
+    : myName(Name)
 {
-
   if (!Name.IsAscii() || Name.Search("$") != -1)
     throw Standard_ConstructionError("OSD_Environment::OSD_Environment: bad argument");
-
-  myName = Name;
 }
 
 // ----------------------------------------------------------------------
 // Create an environment variable and initialize it
 // ----------------------------------------------------------------------
 
+OSD_Environment::OSD_Environment(TCollection_AsciiString&& theName)
+    : myName(std::move(theName))
+{
+  if (!myName.IsAscii() || myName.Search("$") != -1)
+    throw Standard_ConstructionError("OSD_Environment::OSD_Environment: bad argument");
+}
+
 OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name,
                                  const TCollection_AsciiString& Value)
+    : myName(Name),
+      myValue(Value)
 {
 
   if (!Name.IsAscii() || !Value.IsAscii() ||
       // JPT : Dec-7-1992     Name.Search("$") != -1 || Value.Search("$") != -1)
       Name.Search("$") != -1)
     throw Standard_ConstructionError("OSD_Environment::OSD_Environment: bad argument");
-
-  myName  = Name;
-  myValue = Value;
 }
 
 // ----------------------------------------------------------------------
@@ -252,19 +256,20 @@ static void __fastcall _set_error(OSD_Error&, DWORD);
 OSD_Environment ::OSD_Environment() {} // end constructor ( 1 )
 
 OSD_Environment ::OSD_Environment(const TCollection_AsciiString& Name)
+    : myName(Name)
 {
+}
 
-  myName = Name;
-
-} // end constructor ( 2 )
+OSD_Environment ::OSD_Environment(TCollection_AsciiString&& theName)
+    : myName(std::move(theName))
+{
+}
 
 OSD_Environment ::OSD_Environment(const TCollection_AsciiString& Name,
                                   const TCollection_AsciiString& Value)
+    : myName(Name),
+      myValue(Value)
 {
-
-  myName  = Name;
-  myValue = Value;
-
 } // end constructor ( 3 )
 
 void OSD_Environment ::SetValue(const TCollection_AsciiString& Value)
