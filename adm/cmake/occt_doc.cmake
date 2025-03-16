@@ -632,12 +632,13 @@ function(OCCT_SETUP_DOC_TARGETS)
   # Combined documentation target
   if(BUILD_DOC_Overview AND BUILD_DOC_RefMan)
     add_custom_target(doc ALL
-      DEPENDS Overview RefMan
+      DEPENDS RefMan Overview
       COMMENT "Generating all documentation"
     )
     set_property (TARGET doc PROPERTY FOLDER "Documentation")
     set_property (TARGET Overview PROPERTY FOLDER "Documentation")
     set_property (TARGET RefMan PROPERTY FOLDER "Documentation")
+    add_dependencies(Overview RefMan) # Ensure Overview uses RefMan tag file
   elseif(BUILD_DOC_Overview)
     add_custom_target(doc ALL
       DEPENDS Overview
