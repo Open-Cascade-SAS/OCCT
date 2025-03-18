@@ -35,11 +35,18 @@ runs:
       shell: bash
       run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev qtbase5-dev qt5-qmake qtbase5-dev-tools qtdeclarative5-dev qttools5-dev qttools5-dev-tools
 
+    - name: Checkout TInspector
+      shell: bash
+      run: |
+        git clone https://github.com/Open-Cascade-SAS/Inspector.git inspector
+        cd inspector
+        git checkout 6da9ba776ef72a17dca3331974df4200024c7f34
+
     - name: Configure TInspector - Windows
       if: inputs.platform == 'windows'
       shell: pwsh
       run: |
-        cd tools
+        cd inspector
         mkdir build
         cd build
         cmake -G "Visual Studio 17 2022" -A x64 `
@@ -47,40 +54,40 @@ runs:
               -D BUILD_SHARED_LIBS=ON `
               -D 3RDPARTY_DIR=${{ github.workspace }}//3rdparty-vc14-64 `
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install `
-              -D INSTALL_DIR=${{ github.workspace }}/tools/install `
+              -D INSTALL_DIR=${{ github.workspace }}/inspector/install `
               ..
 
     - name: Configure TInspector - Linux
       if: inputs.platform == 'linux'
       shell: bash
       run: |
-        cd tools
+        cd inspector
         mkdir build
         cd build
         cmake -G "Unix Makefiles" \
               -D CMAKE_BUILD_TYPE=Release \
               -D BUILD_SHARED_LIBS=ON \
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
-              -D INSTALL_DIR=${{ github.workspace }}/tools/install \
+              -D INSTALL_DIR=${{ github.workspace }}/inspector/install \
               ..
 
     - name: Build TInspector - Windows
       if: inputs.platform == 'windows'
       shell: pwsh
       run: |
-        cd tools/build
+        cd inspector/build
         cmake --build . --config Release --target install
 
     - name: Build TInspector - Linux
       if: inputs.platform == 'linux'
       shell: bash
       run: |
-        cd tools/build
+        cd inspector/build
         make install -j$(nproc)
 
     - name: Upload TInspector installation
       uses: actions/upload-artifact@v4.4.3
       with:
         name: inspector-${{ inputs.platform }}-x64
-        path: tools/install
+        path: inspector/install
         retention-days: 7
