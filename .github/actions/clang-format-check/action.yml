@@ -39,24 +39,19 @@ runs:
       shell: pwsh
       run: |
         $changedFiles = git diff --name-only origin/${{ inputs.base-ref }} HEAD |
-          Where-Object { $_ -match '${{ inputs.file-pattern }}' }
+          Where-Object { $_ -match '${{ inputs.file-pattern }}' } |
+          Where-Object { Test-Path $_ }
         
-        if ($changedFiles -and $changedFiles.Count -gt 0) {
-          Write-Output "Found $($changedFiles.Count) changed files matching pattern"
-          $changedFiles | Set-Content "changed_files.txt"
+        $changedFiles | Set-Content "changed_files.txt"
+        if ($changedFiles.Count -gt 0) {
           echo "has_files=true" >> $env:GITHUB_OUTPUT
-        } else {
-          Write-Output "No files found matching pattern"
-          echo "has_files=false" >> $env:GITHUB_OUTPUT
-          # Creating an empty file to avoid "file not found" errors
-          "" | Set-Content "changed_files.txt"
         }
 
     - name: Check formatting
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
       run: |
-        $files = Get-Content "changed_files.txt"
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
         $files | ForEach-Object -ThrottleLimit 8 -Parallel {
           clang-format -i -style=file $_
         }
