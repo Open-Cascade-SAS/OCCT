@@ -734,6 +734,8 @@ static Standard_CString schemaAP242DIS =
 
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuse.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
 #include <StepVisual_TessellatedConnectingEdge.hxx>
@@ -1567,6 +1569,8 @@ StepAP214_Protocol::StepAP214_Protocol()
   types.Bind(STANDARD_TYPE(StepRepr_BooleanRepresentationItem), 822);
   types.Bind(STANDARD_TYPE(StepRepr_RealRepresentationItem), 823);
   types.Bind(STANDARD_TYPE(StepRepr_MechanicalDesignAndDraughtingRelationship), 824);
+  types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuse), 825);
+  types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular), 826);
 }
 
 //=================================================================================================

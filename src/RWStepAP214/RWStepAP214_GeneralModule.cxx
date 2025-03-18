@@ -471,6 +471,8 @@
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleFillArea.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleParameterLine.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbient.pxx"
+#include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse.pxx"
+#include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleRendering.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleRenderingWithProperties.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleSegmentationCurve.pxx"
@@ -5284,6 +5286,18 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer           
       aTool.Share(anEnt, iter);
     }
     break;
+    case 825: {
+      DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuse, anEnt, ent);
+      RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse aTool;
+      aTool.Share(anEnt, iter);
+    }
+    break;
+    case 826: {
+      DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular, anEnt, ent);
+      RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular aTool;
+      aTool.Share(anEnt, iter);
+    }
+    break;
     default:
       break;
   }
@@ -7588,7 +7602,12 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid(const Standard_Integer      
     case 824:
       ent = new StepRepr_MechanicalDesignAndDraughtingRelationship;
       break;
-
+    case 825:
+      ent = new StepVisual_SurfaceStyleReflectanceAmbientDiffuse;
+      break;
+    case 826:
+      ent = new StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular;
+      break;
     default:
       return Standard_False;
   }
