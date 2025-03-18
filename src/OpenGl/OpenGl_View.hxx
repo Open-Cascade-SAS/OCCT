@@ -204,6 +204,9 @@ public:
   //! Returns additional buffers for depth peeling OIT.
   const Handle(OpenGl_DepthPeeling)& DepthPeelingFbos() const { return myDepthPeelingFbos; }
 
+  //! Perform occlusion test for the set of structures presented in the view
+  Standard_EXPORT virtual void UpdateOcclusion() Standard_OVERRIDE;
+
 public:
   //! Returns gradient background fill colors.
   Standard_EXPORT virtual Aspect_GradientBackground GradientBackground() const Standard_OVERRIDE;

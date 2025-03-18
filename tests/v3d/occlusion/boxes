@@ -1,0 +1,33 @@
+puts "=============================================================================================="
+puts "CR33607: Visualization - Test occlusion query on two boxes using two orthographic projections"
+puts "=============================================================================================="
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+
+box b 10 10 10
+box c 12 0 0 10 10 10
+
+# check normal right view angle 
+vinit name=View1
+vsetdispmode 1
+vdisplay c b
+vright
+vfit
+vzoom 0.5
+
+#run occlusion query test for each view 
+if {[vnboccluded View1] != "1"} {
+    puts "ERROR: occluded objects in view 1 expected to be 1"
+  }
+
+# check front view angle
+vclear
+vdisplay c b
+vfront
+vfit
+
+if {[vnboccluded View1] != "0"} {
+    puts "ERROR: occluded objects in view 2 expected to be 0"
+  }

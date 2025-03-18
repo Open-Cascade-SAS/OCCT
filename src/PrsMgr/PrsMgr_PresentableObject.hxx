@@ -19,6 +19,7 @@
 
 #include <Aspect_TypeOfFacingModel.hxx>
 #include <gp_GTrsf.hxx>
+#include <Graphic3d_ViewOcclusionMask.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <PrsMgr_ListOfPresentableObjects.hxx>
@@ -76,6 +77,12 @@ public:
 
   //! Return view affinity mask.
   const Handle(Graphic3d_ViewAffinity)& ViewAffinity() const { return myViewAffinity; }
+
+  //! Return view occlusion mask.
+  const Handle(Graphic3d_ViewOcclusionMask)& ViewOcclusionMask() const
+  {
+    return myViewOcclusionMask;
+  }
 
   //! Returns true if the Interactive Object has display mode setting overriding global setting
   //! (within Interactive Context).
@@ -601,6 +608,7 @@ protected:
   PrsMgr_PresentableObject*              myParent;                  //!< pointer to the parent object
   PrsMgr_Presentations                   myPresentations;           //!< list of presentations
   Handle(Graphic3d_ViewAffinity)         myViewAffinity;            //!< view affinity mask
+  Handle(Graphic3d_ViewOcclusionMask)    myViewOcclusionMask;       //!< view occlusion mask
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;              //!< sequence of object-specific clipping planes
   Handle(Prs3d_Drawer)                   myDrawer;                  //!< main presentation attributes
   Handle(Prs3d_Drawer)                   myHilightDrawer;           //!< (optional) custom presentation attributes for highlighting selected object

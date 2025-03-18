@@ -42,6 +42,7 @@ const gp_Trsf& PrsMgr_PresentableObject::getIdentityTrsf()
 PrsMgr_PresentableObject::PrsMgr_PresentableObject(const PrsMgr_TypeOfPresentation3d theType)
     : myParent(NULL),
       myViewAffinity(new Graphic3d_ViewAffinity()),
+      myViewOcclusionMask(new Graphic3d_ViewOcclusionMask()),
       myDrawer(new Prs3d_Drawer()),
       myTypeOfPresentation3d(theType),
       myDisplayStatus(PrsMgr_DisplayStatus_None),

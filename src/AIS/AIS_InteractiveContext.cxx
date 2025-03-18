@@ -413,7 +413,8 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& theIOb
   if (!myObjects.IsBound(theIObj))
   {
     setObjectStatus(theIObj, PrsMgr_DisplayStatus_Displayed, theDispMode, theSelectionMode);
-    theIObj->ViewAffinity()->SetVisible(true); // reset view affinity mask
+    theIObj->ViewAffinity()->SetVisible(true);      // reset view affinity mask
+    theIObj->ViewOcclusionMask()->SetVisible(true); // reset view occlusion mask
     myMainVwr->StructureManager()->RegisterObject(theIObj, theIObj->ViewAffinity());
     myMainPM->Display(theIObj, theDispMode);
     if (theSelectionMode != -1)
@@ -491,7 +492,8 @@ void AIS_InteractiveContext::Load(const Handle(AIS_InteractiveObject)& theIObj,
                     PrsMgr_DisplayStatus_Erased,
                     aDispMode,
                     theSelMode != -1 ? theSelMode : aSelModeDef);
-    theIObj->ViewAffinity()->SetVisible(true); // reset view affinity mask
+    theIObj->ViewAffinity()->SetVisible(true);      // reset view affinity mask
+    theIObj->ViewOcclusionMask()->SetVisible(true); // reset view occlusion mask
     myMainVwr->StructureManager()->RegisterObject(theIObj, theIObj->ViewAffinity());
   }
 
