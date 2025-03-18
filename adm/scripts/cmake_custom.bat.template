@@ -29,7 +29,6 @@ rem set BUILD_ADDITIONAL_TOOLKITS=
 
 rem set BUILD_MODULE_ApplicationFramework=ON
 rem set BUILD_MODULE_DataExchange=ON
-rem set BUILD_MODULE_DETools=OFF
 rem set BUILD_MODULE_Draw=ON
 rem set BUILD_MODULE_ModelingAlgorithms=ON
 rem set BUILD_MODULE_ModelingData=ON
