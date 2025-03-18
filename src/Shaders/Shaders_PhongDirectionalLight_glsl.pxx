@@ -1,5 +1,5 @@
-// This file has been automatically generated from resource file
-// src/Shaders/PhongDirectionalLight.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PhongDirectionalLight.glsl
 
 static const char Shaders_PhongDirectionalLight_glsl[] =
   "//! Function computes contribution of directional light source\n"
@@ -31,3 +31,5 @@ static const char Shaders_PhongDirectionalLight_glsl[] =
   "  Diffuse  += occLight_Diffuse  (theId) * aNdotL * theShadow;\n"
   "  Specular += occLight_Specular (theId) * aSpecl * theShadow;\n"
   "}\n";
+
+// clang-format on

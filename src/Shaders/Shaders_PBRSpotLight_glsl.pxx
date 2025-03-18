@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBRSpotLight.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PBRSpotLight.glsl
 
 static const char Shaders_PBRSpotLight_glsl[] =
   "//! Function computes contribution of spotlight source\n"
@@ -35,11 +36,9 @@ static const char Shaders_PBRSpotLight_glsl[] =
   "  if ((1.0 - aRelativeAngle) <= anExponent)\n"
   "  {\n"
   "    float anAngularAttenuationOffset = cos(0.5 * occLight_SpotCutOff(theId));\n"
-  "    float anAngularAttenuationScale = 1.0 / max(0.001, cos(0.5 * occLight_SpotCutOff(theId) * "
-  "(1.0 - anExponent)) - anAngularAttenuationOffset);\n"
+  "    float anAngularAttenuationScale = 1.0 / max(0.001, cos(0.5 * occLight_SpotCutOff(theId) * (1.0 - anExponent)) - anAngularAttenuationOffset);\n"
   "    anAngularAttenuationOffset *= -anAngularAttenuationScale;\n"
-  "    float anAngularAttenuantion = clamp(aCosA * anAngularAttenuationScale + "
-  "anAngularAttenuationOffset, 0.0, 1.0);\n"
+  "    float anAngularAttenuantion = clamp(aCosA * anAngularAttenuationScale + anAngularAttenuationOffset, 0.0, 1.0);\n"
   "    anAtten *= anAngularAttenuantion * anAngularAttenuantion;\n"
   "  }\n"
   "  theNormal = theIsFront ? theNormal : -theNormal;\n"
@@ -48,3 +47,5 @@ static const char Shaders_PBRSpotLight_glsl[] =
   "                                        occLight_Specular(theId),\n"
   "                                        occLight_Intensity(theId) * anAtten) * theShadow;\n"
   "}\n";
+
+// clang-format on

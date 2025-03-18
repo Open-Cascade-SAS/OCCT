@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PBRPointLight.glsl
+// clang-format off
+// This file has been automatically generated from resource file resources/Shaders/PBRPointLight.glsl
 
 static const char Shaders_PBRPointLight_glsl[] =
   "//! Function computes contribution of isotropic point light source\n"
@@ -28,3 +29,5 @@ static const char Shaders_PBRPointLight_glsl[] =
   "                                        occLight_Specular (theId),\n"
   "                                        occLight_Intensity(theId) * anAtten);\n"
   "}\n";
+
+// clang-format on
