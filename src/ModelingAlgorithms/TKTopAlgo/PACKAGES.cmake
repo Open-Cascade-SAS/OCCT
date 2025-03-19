@@ -1,0 +1,19 @@
+# Auto-generated list of packages for TKTopAlgo toolkit
+set(OCCT_TKTopAlgo_LIST_OF_PACKAGES
+  IntCurvesFace
+  MAT
+  MAT2d
+  Bisector
+  BRepMAT2d
+  BRepCheck
+  BRepBndLib
+  BRepExtrema
+  BRepClass
+  BRepClass3d
+  BRepLib
+  BRepGProp
+  BRepIntCurveSurface
+  BRepTopAdaptor
+  BRepBuilderAPI
+  BRepApprox
+)

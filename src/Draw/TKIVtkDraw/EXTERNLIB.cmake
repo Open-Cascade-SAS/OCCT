@@ -1,0 +1,26 @@
+# External dependencies for TKIVtkDraw
+set(OCCT_TKIVtkDraw_EXTERNAL_LIBS
+  CSF_VTK
+  CSF_TclLibs
+  CSF_XwLibs
+  CSF_user32
+  TKernel
+  TKBRep
+  TKDraw
+  TKG2d
+  TKG3d
+  TKGeomAlgo
+  TKGeomBase
+  TKMath
+  TKMesh
+  TKService
+  TKTopAlgo
+  TKV3d
+  TKOpenGl
+  TKIVtk
+  vtkIOImage
+  vtkImagingCore
+  vtkInteractionStyle
+  vtkRenderingOpenGL
+  vtkRenderingFreeTypeOpenGL
+)

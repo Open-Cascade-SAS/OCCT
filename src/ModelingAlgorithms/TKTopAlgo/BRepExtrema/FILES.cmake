@@ -1,0 +1,39 @@
+# Source files for BRepExtrema package
+set(OCCT_BRepExtrema_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BRepExtrema_FILES
+  BRepExtrema_DistanceSS.cxx
+  BRepExtrema_DistanceSS.hxx
+  BRepExtrema_DistShapeShape.cxx
+  BRepExtrema_DistShapeShape.hxx
+  BRepExtrema_ElementFilter.hxx
+  BRepExtrema_ExtCC.cxx
+  BRepExtrema_ExtCC.hxx
+  BRepExtrema_ExtCF.cxx
+  BRepExtrema_ExtCF.hxx
+  BRepExtrema_ExtFF.cxx
+  BRepExtrema_ExtFF.hxx
+  BRepExtrema_ExtPC.cxx
+  BRepExtrema_ExtPC.hxx
+  BRepExtrema_ExtPF.cxx
+  BRepExtrema_ExtPF.hxx
+  BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx
+  BRepExtrema_OverlapTool.cxx
+  BRepExtrema_OverlapTool.hxx
+  BRepExtrema_Poly.cxx
+  BRepExtrema_Poly.hxx
+  BRepExtrema_ProximityValueTool.cxx
+  BRepExtrema_ProximityValueTool.hxx
+  BRepExtrema_ProximityDistTool.cxx
+  BRepExtrema_ProximityDistTool.hxx
+  BRepExtrema_SelfIntersection.cxx
+  BRepExtrema_SelfIntersection.hxx
+  BRepExtrema_SeqOfSolution.hxx
+  BRepExtrema_ShapeProximity.cxx
+  BRepExtrema_ShapeProximity.hxx
+  BRepExtrema_SolutionElem.hxx
+  BRepExtrema_SupportType.hxx
+  BRepExtrema_TriangleSet.cxx
+  BRepExtrema_TriangleSet.hxx
+  BRepExtrema_UnCompatibleShape.hxx
+)

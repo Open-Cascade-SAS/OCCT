@@ -1,0 +1,39 @@
+# Source files for ProjLib package
+set(OCCT_ProjLib_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_ProjLib_FILES
+  ProjLib.cxx
+  ProjLib.hxx
+  ProjLib_CompProjectedCurve.cxx
+  ProjLib_CompProjectedCurve.hxx
+  ProjLib_ComputeApprox.cxx
+  ProjLib_ComputeApprox.hxx
+  ProjLib_ComputeApproxOnPolarSurface.cxx
+  ProjLib_ComputeApproxOnPolarSurface.hxx
+  ProjLib_Cone.cxx
+  ProjLib_Cone.hxx
+  ProjLib_Cylinder.cxx
+  ProjLib_Cylinder.hxx
+  ProjLib_HCompProjectedCurve.hxx
+  ProjLib_HProjectedCurve.hxx
+  ProjLib_HSequenceOfHSequenceOfPnt.hxx
+  ProjLib_Plane.cxx
+  ProjLib_Plane.hxx
+  ProjLib_PrjFunc.cxx
+  ProjLib_PrjFunc.hxx
+  ProjLib_PrjResolve.cxx
+  ProjLib_PrjResolve.hxx
+  ProjLib_ProjectedCurve.cxx
+  ProjLib_ProjectedCurve.hxx
+  ProjLib_ProjectOnPlane.cxx
+  ProjLib_ProjectOnPlane.hxx
+  ProjLib_ProjectOnSurface.cxx
+  ProjLib_ProjectOnSurface.hxx
+  ProjLib_Projector.cxx
+  ProjLib_Projector.hxx
+  ProjLib_SequenceOfHSequenceOfPnt.hxx
+  ProjLib_Sphere.cxx
+  ProjLib_Sphere.hxx
+  ProjLib_Torus.cxx
+  ProjLib_Torus.hxx
+)

@@ -1,0 +1,47 @@
+# Source files for IntCurveSurface package
+set(OCCT_IntCurveSurface_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_IntCurveSurface_FILES
+  IntCurveSurface_HInter.hxx
+  IntCurveSurface_HInter_0.cxx
+  IntCurveSurface_Inter.gxx
+  IntCurveSurface_Intersection.cxx
+  IntCurveSurface_Intersection.hxx
+  IntCurveSurface_IntersectionPoint.cxx
+  IntCurveSurface_IntersectionPoint.hxx
+  IntCurveSurface_IntersectionPoint.lxx
+  IntCurveSurface_IntersectionSegment.cxx
+  IntCurveSurface_IntersectionSegment.hxx
+  IntCurveSurface_Polygon.gxx
+  IntCurveSurface_PolygonTool.gxx
+  IntCurveSurface_PolygonTool.lxx
+  IntCurveSurface_Polyhedron.gxx
+  IntCurveSurface_Polyhedron.lxx
+  IntCurveSurface_PolyhedronTool.gxx
+  IntCurveSurface_PolyhedronTool.lxx
+  IntCurveSurface_QuadricCurveExactInter.gxx
+  IntCurveSurface_QuadricCurveFunc.gxx
+  IntCurveSurface_SequenceOfPnt.hxx
+  IntCurveSurface_SequenceOfSeg.hxx
+  IntCurveSurface_TheCSFunctionOfHInter.hxx
+  IntCurveSurface_TheCSFunctionOfHInter_0.cxx
+  IntCurveSurface_TheExactHInter.hxx
+  IntCurveSurface_TheExactHInter_0.cxx
+  IntCurveSurface_TheHCurveTool.hxx
+  IntCurveSurface_TheHCurveTool.cxx
+  IntCurveSurface_TheInterferenceOfHInter.hxx
+  IntCurveSurface_TheInterferenceOfHInter_0.cxx
+  IntCurveSurface_ThePolygonOfHInter.hxx
+  IntCurveSurface_ThePolygonOfHInter_0.cxx
+  IntCurveSurface_ThePolygonToolOfHInter.hxx
+  IntCurveSurface_ThePolygonToolOfHInter_0.cxx
+  IntCurveSurface_ThePolyhedronOfHInter.hxx
+  IntCurveSurface_ThePolyhedronOfHInter_0.cxx
+  IntCurveSurface_ThePolyhedronToolOfHInter.hxx
+  IntCurveSurface_ThePolyhedronToolOfHInter_0.cxx
+  IntCurveSurface_TheQuadCurvExactHInter.hxx
+  IntCurveSurface_TheQuadCurvExactHInter_0.cxx
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter_0.cxx
+  IntCurveSurface_TransitionOnCurve.hxx
+)

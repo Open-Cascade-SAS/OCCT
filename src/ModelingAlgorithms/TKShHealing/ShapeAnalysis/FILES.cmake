@@ -1,0 +1,53 @@
+# Source files for ShapeAnalysis package
+set(OCCT_ShapeAnalysis_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_ShapeAnalysis_FILES
+  ShapeAnalysis.cxx
+  ShapeAnalysis.hxx
+  ShapeAnalysis_BoxBndTree.cxx
+  ShapeAnalysis_BoxBndTree.hxx
+  ShapeAnalysis_CheckSmallFace.cxx
+  ShapeAnalysis_CheckSmallFace.hxx
+  ShapeAnalysis_CheckSmallFace.lxx
+  ShapeAnalysis_Curve.cxx
+  ShapeAnalysis_Curve.hxx
+  ShapeAnalysis_DataMapIteratorOfDataMapOfShapeListOfReal.hxx
+  ShapeAnalysis_DataMapOfShapeListOfReal.hxx
+  ShapeAnalysis_Edge.cxx
+  ShapeAnalysis_Edge.hxx
+  ShapeAnalysis_FreeBoundData.cxx
+  ShapeAnalysis_FreeBoundData.hxx
+  ShapeAnalysis_FreeBoundData.lxx
+  ShapeAnalysis_FreeBounds.cxx
+  ShapeAnalysis_FreeBounds.hxx
+  ShapeAnalysis_FreeBounds.lxx
+  ShapeAnalysis_FreeBoundsProperties.cxx
+  ShapeAnalysis_FreeBoundsProperties.hxx
+  ShapeAnalysis_FreeBoundsProperties.lxx
+  ShapeAnalysis_Geom.cxx
+  ShapeAnalysis_Geom.hxx
+  ShapeAnalysis_HSequenceOfFreeBounds.hxx
+  ShapeAnalysis_SequenceOfFreeBounds.hxx
+  ShapeAnalysis_ShapeContents.cxx
+  ShapeAnalysis_ShapeContents.hxx
+  ShapeAnalysis_ShapeTolerance.cxx
+  ShapeAnalysis_ShapeTolerance.hxx
+  ShapeAnalysis_Shell.cxx
+  ShapeAnalysis_Shell.hxx
+  ShapeAnalysis_Surface.cxx
+  ShapeAnalysis_Surface.hxx
+  ShapeAnalysis_Surface.lxx
+  ShapeAnalysis_TransferParameters.cxx
+  ShapeAnalysis_TransferParameters.hxx
+  ShapeAnalysis_TransferParametersProj.cxx
+  ShapeAnalysis_TransferParametersProj.hxx
+  ShapeAnalysis_Wire.cxx
+  ShapeAnalysis_Wire.hxx
+  ShapeAnalysis_Wire.lxx
+  ShapeAnalysis_WireOrder.cxx
+  ShapeAnalysis_WireOrder.hxx
+  ShapeAnalysis_WireVertex.cxx
+  ShapeAnalysis_WireVertex.hxx
+  ShapeAnalysis_CanonicalRecognition.cxx
+  ShapeAnalysis_CanonicalRecognition.hxx
+)

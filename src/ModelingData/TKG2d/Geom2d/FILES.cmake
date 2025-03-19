@@ -1,0 +1,48 @@
+# Source files for Geom2d package
+set(OCCT_Geom2d_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_Geom2d_FILES
+  Geom2d_AxisPlacement.cxx
+  Geom2d_AxisPlacement.hxx
+  Geom2d_BezierCurve.cxx
+  Geom2d_BezierCurve.hxx
+  Geom2d_BoundedCurve.cxx
+  Geom2d_BoundedCurve.hxx
+  Geom2d_BSplineCurve.cxx
+  Geom2d_BSplineCurve.hxx
+  Geom2d_BSplineCurve_1.cxx
+  Geom2d_CartesianPoint.cxx
+  Geom2d_CartesianPoint.hxx
+  Geom2d_Circle.cxx
+  Geom2d_Circle.hxx
+  Geom2d_Conic.cxx
+  Geom2d_Conic.hxx
+  Geom2d_Curve.cxx
+  Geom2d_Curve.hxx
+  Geom2d_Direction.cxx
+  Geom2d_Direction.hxx
+  Geom2d_Ellipse.cxx
+  Geom2d_Ellipse.hxx
+  Geom2d_Geometry.cxx
+  Geom2d_Geometry.hxx
+  Geom2d_Hyperbola.cxx
+  Geom2d_Hyperbola.hxx
+  Geom2d_Line.cxx
+  Geom2d_Line.hxx
+  Geom2d_OffsetCurve.cxx
+  Geom2d_OffsetCurve.hxx
+  Geom2d_Parabola.cxx
+  Geom2d_Parabola.hxx
+  Geom2d_Point.cxx
+  Geom2d_Point.hxx
+  Geom2d_Transformation.cxx
+  Geom2d_Transformation.hxx
+  Geom2d_TrimmedCurve.cxx
+  Geom2d_TrimmedCurve.hxx
+  Geom2d_UndefinedDerivative.hxx
+  Geom2d_UndefinedValue.hxx
+  Geom2d_Vector.cxx
+  Geom2d_Vector.hxx
+  Geom2d_VectorWithMagnitude.cxx
+  Geom2d_VectorWithMagnitude.hxx
+)

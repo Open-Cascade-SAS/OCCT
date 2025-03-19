@@ -1,0 +1,39 @@
+# Source files for Convert package
+set(OCCT_Convert_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_Convert_FILES
+  Convert_CircleToBSplineCurve.cxx
+  Convert_CircleToBSplineCurve.hxx
+  Convert_CompBezierCurves2dToBSplineCurve2d.cxx
+  Convert_CompBezierCurves2dToBSplineCurve2d.hxx
+  Convert_CompBezierCurvesToBSplineCurve.cxx
+  Convert_CompBezierCurvesToBSplineCurve.hxx
+  Convert_CompPolynomialToPoles.cxx
+  Convert_CompPolynomialToPoles.hxx
+  Convert_ConeToBSplineSurface.cxx
+  Convert_ConeToBSplineSurface.hxx
+  Convert_ConicToBSplineCurve.cxx
+  Convert_ConicToBSplineCurve.hxx
+  Convert_CosAndSinEvalFunction.hxx
+  Convert_CylinderToBSplineSurface.cxx
+  Convert_CylinderToBSplineSurface.hxx
+  Convert_ElementarySurfaceToBSplineSurface.cxx
+  Convert_ElementarySurfaceToBSplineSurface.hxx
+  Convert_EllipseToBSplineCurve.cxx
+  Convert_EllipseToBSplineCurve.hxx
+  Convert_GridPolynomialToPoles.cxx
+  Convert_GridPolynomialToPoles.hxx
+  Convert_HyperbolaToBSplineCurve.cxx
+  Convert_HyperbolaToBSplineCurve.hxx
+  Convert_ParabolaToBSplineCurve.cxx
+  Convert_ParabolaToBSplineCurve.hxx
+  Convert_ParameterisationType.hxx
+  Convert_PolynomialCosAndSin.cxx
+  Convert_PolynomialCosAndSin.hxx
+  Convert_SequenceOfArray1OfPoles.hxx
+  Convert_SequenceOfArray1OfPoles2d.hxx
+  Convert_SphereToBSplineSurface.cxx
+  Convert_SphereToBSplineSurface.hxx
+  Convert_TorusToBSplineSurface.cxx
+  Convert_TorusToBSplineSurface.hxx
+)
