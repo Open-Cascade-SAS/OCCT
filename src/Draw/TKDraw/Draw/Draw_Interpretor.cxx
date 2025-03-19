@@ -331,7 +331,7 @@ void Draw_Interpretor::add(const Standard_CString          theCommandName,
 
   OSD_Path         aPath(theFileName);
   Standard_Integer nbTrek = aPath.TrekLength();
-  for (Standard_Integer i = 2; i < nbTrek; ++i)
+  for (Standard_Integer i = 4; i < nbTrek; ++i)
   {
     aPath.RemoveATrek(1);
   }
