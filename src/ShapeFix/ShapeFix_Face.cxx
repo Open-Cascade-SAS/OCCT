@@ -1783,11 +1783,15 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
 
   BRep_Builder                 B;
   Handle(Geom_ToroidalSurface) aTorSurf = Handle(Geom_ToroidalSurface)::DownCast(mySurf->Surface());
-  Standard_Boolean             anIsDegeneratedTor =
-    (aTorSurf.IsNull() ? Standard_False : aTorSurf->MajorRadius() < aTorSurf->MinorRadius());
+  // checking for degeneration case in case of no second wire
+  const Standard_Boolean anIsDegeneratedTor = !w2.IsNull() || aTorSurf.IsNull()
+                                                ? Standard_False
+                                                : aTorSurf->MajorRadius() < aTorSurf->MinorRadius();
 
   if (w1.IsNull())
+  {
     return Standard_False;
+  }
   else if (w2.IsNull())
   {
     // For spheres and BSpline cone-like surfaces(bug 24055):
