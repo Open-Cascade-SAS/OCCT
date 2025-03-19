@@ -33,6 +33,7 @@ function(OCCT_DOC_CREATE_MODULE_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME)
 
   foreach(MODULE ${OCCT_MODULES})
     if(NOT "${MODULE}" STREQUAL "")
+      # module name in lowercase
       file(APPEND ${DOT_FILE} "\t${MODULE} [ URL = \"module_${MODULE}.html\" ]\n")
 
       # Add dependencies between modules
@@ -119,7 +120,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
     # List all modules
     foreach(MODULE ${OCCT_MODULES})
       if(NOT "${MODULE}" STREQUAL "")
-        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage module_${MODULE}\n")
+        # page id must be in lowercase
+        string(TOLOWER ${MODULE} MODULE_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage module_${MODULE_LOWER}\n")
       endif()
     endforeach()
     # Add modules relationship diagram
