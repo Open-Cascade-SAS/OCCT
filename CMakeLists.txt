@@ -225,6 +225,15 @@ if (NOT DEFINED BUILD_DOC_Overview)
   set (BUILD_DOC_Overview OFF CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
 endif()
 
+# Reference Manual
+if (NOT DEFINED BUILD_DOC_RefMan)
+  set (BUILD_DOC_RefMan OFF CACHE BOOL "${BUILD_DOC_RefMan_DESCR}")
+endif()
+
+if (NOT DEFINED INSTALL_DOC_RefMan)
+  set (INSTALL_DOC_RefMan OFF CACHE BOOL "${INSTALL_DOC_RefMan_DESCR}")
+endif()
+
 if (CMAKE_VERSION VERSION_LESS "3.14")
   OCCT_CHECK_AND_UNSET (BUILD_INCLUDE_SYMLINK)
 endif()
@@ -702,7 +711,7 @@ else()
 endif()
 
 # Doxygen
-if (BUILD_DOC_Overview)
+if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
   if (NOT DEFINED INSTALL_DOC_Overview)
     set (INSTALL_DOC_Overview OFF CACHE BOOL "${INSTALL_DOC_Overview_DESCR}")
   endif()
@@ -710,7 +719,7 @@ if (BUILD_DOC_Overview)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/doxygen")
 else()
   OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
-
+  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_RefMan")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
 endif()
@@ -1175,7 +1184,9 @@ foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
 endforeach()
 
 if (BUILD_DOC_Overview)
-  OCCT_ADD_SUBDIRECTORY (dox)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")
+  # Setup documentation targets
+  OCCT_SETUP_DOC_TARGETS()
 endif()
 
 # patch DRAWEXE
