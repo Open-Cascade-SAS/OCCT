@@ -182,14 +182,15 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
           file(APPEND ${MAIN_PAGE_FILE} "\\page package_${PACKAGE} Package ${PACKAGE}\n")
 
           # Find header files in the package
-          file(GLOB PACKAGE_HEADERS "${CMAKE_SOURCE_DIR}/src/${PACKAGE}/*.hxx")
-          foreach(HEADER ${PACKAGE_HEADERS})
+          EXTRACT_PACKAGE_FILES ("src" ${PACKAGE} ALL_FILES _)
+          set (HEADER_FILES_FILTERING ${ALL_FILES})
+          list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|hxx|hpp)$")
+
+          foreach(HEADER ${HEADER_FILES_FILTERING})
             get_filename_component(HEADER_NAME ${HEADER} NAME_WE)
-            if(NOT HEADER_NAME MATCHES "^Handle_" AND NOT HEADER_NAME MATCHES "^Standard$")
-              file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage ${HEADER_NAME}\n")
-              # Append header file to DOXYGEN_INPUT_FILES list
-              list(APPEND DOXYGEN_INPUT_FILES "${HEADER}")
-            endif()
+            file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage ${HEADER_NAME}\n")
+            # Append header file to DOXYGEN_INPUT_FILES list
+            list(APPEND DOXYGEN_INPUT_FILES "${HEADER}")
           endforeach()
 
           file(APPEND ${MAIN_PAGE_FILE} "**/\n\n")
