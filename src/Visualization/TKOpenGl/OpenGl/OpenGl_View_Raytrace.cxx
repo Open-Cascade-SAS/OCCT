@@ -27,13 +27,13 @@
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 
-#include "../Shaders/Shaders_RaytraceBase_vs.pxx"
-#include "../Shaders/Shaders_RaytraceBase_fs.pxx"
-#include "../Shaders/Shaders_PathtraceBase_fs.pxx"
-#include "../Shaders/Shaders_RaytraceRender_fs.pxx"
-#include "../Shaders/Shaders_RaytraceSmooth_fs.pxx"
-#include "../Shaders/Shaders_Display_fs.pxx"
-#include "../Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
+#include "../../TKService/Shaders/Shaders_RaytraceBase_vs.pxx"
+#include "../../TKService/Shaders/Shaders_RaytraceBase_fs.pxx"
+#include "../../TKService/Shaders/Shaders_PathtraceBase_fs.pxx"
+#include "../../TKService/Shaders/Shaders_RaytraceRender_fs.pxx"
+#include "../../TKService/Shaders/Shaders_RaytraceSmooth_fs.pxx"
+#include "../../TKService/Shaders/Shaders_Display_fs.pxx"
+#include "../../TKService/Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
 
 //! Use this macro to output ray-tracing debug info
 // #define RAY_TRACE_PRINT_INFO

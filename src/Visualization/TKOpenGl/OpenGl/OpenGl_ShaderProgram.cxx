@@ -23,8 +23,8 @@
 
 #include <OpenGl_GlCore32.hxx>
 
-#include "../Shaders/Shaders_DeclarationsImpl_glsl.pxx"
-#include "../Shaders/Shaders_Declarations_glsl.pxx"
+#include "../../TKService/Shaders/Shaders_DeclarationsImpl_glsl.pxx"
+#include "../../TKService/Shaders/Shaders_Declarations_glsl.pxx"
 
 #ifdef _WIN32
   #include <malloc.h> // for alloca()
