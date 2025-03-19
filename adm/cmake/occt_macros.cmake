@@ -249,6 +249,10 @@ function(EXTRACT_TOOLKIT_EXTERNLIB RELATIVE_PATH OCCT_TOOLKIT RESULT_LIBS)
 endfunction()
 
 function (EXTRACT_PACKAGE_FILES RELATIVE_PATH OCCT_PACKAGE RESULT_FILES RESULT_INCLUDE_FOLDER)
+
+  # Package name can be relative path, need to get only the name of the final element
+  get_filename_component (OCCT_PACKAGE ${OCCT_PACKAGE} NAME)
+
   # package name is not unique, it can be reuse in tools and src,
   # use extra parameter as relative path to distinguish between them
   set (OCCT_PACKAGE_FILES "")
@@ -273,7 +277,7 @@ function (EXTRACT_PACKAGE_FILES RELATIVE_PATH OCCT_PACKAGE RESULT_FILES RESULT_I
   endforeach()
 
   if (NOT FILE_PATH_LIST)
-    message (WARNING "FILES has not been found in ${OCCT_PACKAGE_INCLUDE_DIR}")
+    message (WARNING "FILES has not been found in ${OCCT_PACKAGE_INCLUDE_DIR} for package ${OCCT_PACKAGE}")
   endif()
 
   set (${RESULT_FILES} ${FILE_PATH_LIST} PARENT_SCOPE)
