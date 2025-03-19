@@ -137,7 +137,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
       if(DOC_SINGLE_MODULE)
         file(APPEND ${MAIN_PAGE_FILE} "\\mainpage OCCT Module ${MODULE}\n")
       else()
-        file(APPEND ${MAIN_PAGE_FILE} "\\page module_${MODULE} Module ${MODULE}\n")
+         # page id must be in lowercase
+        string(TOLOWER ${MODULE} MODULE_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\page module_${MODULE_LOWER} Module ${MODULE}\n")
       endif()
 
       # List toolkits in the module
@@ -157,7 +159,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
     if(NOT "${MODULE}" STREQUAL "")
       foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
         file(APPEND ${MAIN_PAGE_FILE} "/**\n")
-        file(APPEND ${MAIN_PAGE_FILE} "\\page toolkit_${TOOLKIT} Toolkit ${TOOLKIT}\n")
+        # page id must be in lowercase
+        string(TOLOWER ${TOOLKIT} TOOLKIT_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\page toolkit_${TOOLKIT_LOWER} Toolkit ${TOOLKIT}\n")
 
         # List packages in toolkit
         foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
@@ -179,7 +183,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
       foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
         foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
           file(APPEND ${MAIN_PAGE_FILE} "/**\n")
-          file(APPEND ${MAIN_PAGE_FILE} "\\page package_${PACKAGE} Package ${PACKAGE}\n")
+          # page id must be in lowercase
+          string(TOLOWER ${PACKAGE} PACKAGE_LOWER)
+          file(APPEND ${MAIN_PAGE_FILE} "\\page package_${PACKAGE_LOWER} Package ${PACKAGE}\n")
 
           # Find header files in the package
           EXTRACT_PACKAGE_FILES ("src" ${PACKAGE} ALL_FILES _)
