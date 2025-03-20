@@ -31,6 +31,9 @@ function(OCCT_DOC_CREATE_MODULE_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME)
   # Create .dot file for module dependencies
   file(WRITE ${DOT_FILE} "digraph ${FILENAME}\n{\n")
 
+  # Create a list to track unique module connections
+  set(MODULE_CONNECTIONS)
+
   foreach(MODULE ${OCCT_MODULES})
     if(NOT "${MODULE}" STREQUAL "")
       # module name in lowercase
@@ -41,7 +44,15 @@ function(OCCT_DOC_CREATE_MODULE_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME)
         foreach(DEPENDENT_TOOLKIT ${TOOLKIT_DEPENDENCY_${MODULE_TOOLKIT}})
           if(DEFINED TOOLKIT_PARENT_MODULE_${DEPENDENT_TOOLKIT} AND 
              NOT "${TOOLKIT_PARENT_MODULE_${DEPENDENT_TOOLKIT}}" STREQUAL "${MODULE}")
-            file(APPEND ${DOT_FILE} "\t${TOOLKIT_PARENT_MODULE_${DEPENDENT_TOOLKIT}} -> ${MODULE} [ dir = \"back\", color = \"midnightblue\", style = \"solid\" ]\n")
+            # Create a unique connection identifier
+            set(CONNECTION "${TOOLKIT_PARENT_MODULE_${DEPENDENT_TOOLKIT}}->${MODULE}")
+            list(FIND MODULE_CONNECTIONS "${CONNECTION}" CONNECTION_EXISTS)
+            
+            # Add connection only if it doesn't exist yet
+            if(${CONNECTION_EXISTS} EQUAL -1)
+              list(APPEND MODULE_CONNECTIONS "${CONNECTION}")
+              file(APPEND ${DOT_FILE} "\t${TOOLKIT_PARENT_MODULE_${DEPENDENT_TOOLKIT}} -> ${MODULE} [ dir = \"back\", color = \"midnightblue\", style = \"solid\" ]\n")
+            endif()
           endif()
         endforeach()
       endforeach()
@@ -147,7 +158,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
 
       # List toolkits in the module
       foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
-        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage toolkit_${TOOLKIT}\n")
+        # page id must be in lowercase
+        string(TOLOWER ${TOOLKIT} TOOLKIT_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage toolkit_${TOOLKIT_LOWER}\n")
       endforeach()
 
       # Add module diagram
@@ -169,7 +182,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
         # List packages in toolkit
         foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
           set(PACKAGE_NAME ${PACKAGE})
-          file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage package_${PACKAGE_NAME}\n")
+          # page id must be in lowercase
+          string(TOLOWER ${PACKAGE_NAME} PACKAGE_NAME_LOWER)
+          file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage package_${PACKAGE_NAME_LOWER}\n")
         endforeach()
 
         # Add toolkit dependencies diagram
@@ -645,7 +660,6 @@ function(OCCT_SETUP_DOC_TARGETS)
       DEPENDS RefMan Overview
       COMMENT "Generating all documentation"
     )
-    set_property (TARGET doc PROPERTY FOLDER "Documentation")
     set_property (TARGET Overview PROPERTY FOLDER "Documentation")
     set_property (TARGET RefMan PROPERTY FOLDER "Documentation")
     add_dependencies(Overview RefMan) # Ensure Overview uses RefMan tag file
@@ -662,4 +676,5 @@ function(OCCT_SETUP_DOC_TARGETS)
     )
     set_property (TARGET RefMan PROPERTY FOLDER "Documentation")
   endif()
+  set_property (TARGET doc PROPERTY FOLDER "Documentation")
 endfunction()

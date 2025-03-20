@@ -1184,7 +1184,7 @@ foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
   add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
 endforeach()
 
-if (BUILD_DOC_Overview)
+if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")
   # Setup documentation targets
   OCCT_SETUP_DOC_TARGETS()
