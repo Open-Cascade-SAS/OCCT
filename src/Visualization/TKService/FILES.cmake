@@ -1,0 +1,7 @@
+# Source files for TKService
+set(OCCT_TKService_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKService_FILES
+  EXTERNLIB
+  PACKAGES
+)

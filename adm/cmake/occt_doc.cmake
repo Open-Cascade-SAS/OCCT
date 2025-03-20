@@ -33,6 +33,7 @@ function(OCCT_DOC_CREATE_MODULE_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME)
 
   foreach(MODULE ${OCCT_MODULES})
     if(NOT "${MODULE}" STREQUAL "")
+      # module name in lowercase
       file(APPEND ${DOT_FILE} "\t${MODULE} [ URL = \"module_${MODULE}.html\" ]\n")
 
       # Add dependencies between modules
@@ -119,7 +120,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
     # List all modules
     foreach(MODULE ${OCCT_MODULES})
       if(NOT "${MODULE}" STREQUAL "")
-        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage module_${MODULE}\n")
+        # page id must be in lowercase
+        string(TOLOWER ${MODULE} MODULE_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage module_${MODULE_LOWER}\n")
       endif()
     endforeach()
     # Add modules relationship diagram
@@ -137,7 +140,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
       if(DOC_SINGLE_MODULE)
         file(APPEND ${MAIN_PAGE_FILE} "\\mainpage OCCT Module ${MODULE}\n")
       else()
-        file(APPEND ${MAIN_PAGE_FILE} "\\page module_${MODULE} Module ${MODULE}\n")
+         # page id must be in lowercase
+        string(TOLOWER ${MODULE} MODULE_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\page module_${MODULE_LOWER} Module ${MODULE}\n")
       endif()
 
       # List toolkits in the module
@@ -157,7 +162,9 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
     if(NOT "${MODULE}" STREQUAL "")
       foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
         file(APPEND ${MAIN_PAGE_FILE} "/**\n")
-        file(APPEND ${MAIN_PAGE_FILE} "\\page toolkit_${TOOLKIT} Toolkit ${TOOLKIT}\n")
+        # page id must be in lowercase
+        string(TOLOWER ${TOOLKIT} TOOLKIT_LOWER)
+        file(APPEND ${MAIN_PAGE_FILE} "\\page toolkit_${TOOLKIT_LOWER} Toolkit ${TOOLKIT}\n")
 
         # List packages in toolkit
         foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
@@ -179,17 +186,20 @@ function(OCCT_DOC_GENERATE_MAIN_PAGE OUTPUT_DIR OUTPUT_FILE)
       foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
         foreach(PACKAGE ${PACKAGES_IN_TOOLKIT_${TOOLKIT}})
           file(APPEND ${MAIN_PAGE_FILE} "/**\n")
-          file(APPEND ${MAIN_PAGE_FILE} "\\page package_${PACKAGE} Package ${PACKAGE}\n")
+          # page id must be in lowercase
+          string(TOLOWER ${PACKAGE} PACKAGE_LOWER)
+          file(APPEND ${MAIN_PAGE_FILE} "\\page package_${PACKAGE_LOWER} Package ${PACKAGE}\n")
 
           # Find header files in the package
-          file(GLOB PACKAGE_HEADERS "${CMAKE_SOURCE_DIR}/src/${PACKAGE}/*.hxx")
-          foreach(HEADER ${PACKAGE_HEADERS})
+          EXTRACT_PACKAGE_FILES ("src" ${PACKAGE} ALL_FILES _)
+          set (HEADER_FILES_FILTERING ${ALL_FILES})
+          list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|hxx|hpp)$")
+
+          foreach(HEADER ${HEADER_FILES_FILTERING})
             get_filename_component(HEADER_NAME ${HEADER} NAME_WE)
-            if(NOT HEADER_NAME MATCHES "^Handle_" AND NOT HEADER_NAME MATCHES "^Standard$")
-              file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage ${HEADER_NAME}\n")
-              # Append header file to DOXYGEN_INPUT_FILES list
-              list(APPEND DOXYGEN_INPUT_FILES "${HEADER}")
-            endif()
+            file(APPEND ${MAIN_PAGE_FILE} "\\li \\subpage ${HEADER_NAME}\n")
+            # Append header file to DOXYGEN_INPUT_FILES list
+            list(APPEND DOXYGEN_INPUT_FILES "${HEADER}")
           endforeach()
 
           file(APPEND ${MAIN_PAGE_FILE} "**/\n\n")

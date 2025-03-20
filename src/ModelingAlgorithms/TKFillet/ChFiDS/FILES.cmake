@@ -1,0 +1,52 @@
+# Source files for ChFiDS package
+set(OCCT_ChFiDS_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_ChFiDS_FILES
+  ChFiDS_ChamfMethod.hxx
+  ChFiDS_ChamfMode.hxx
+  ChFiDS_ChamfSpine.cxx
+  ChFiDS_ChamfSpine.hxx
+  ChFiDS_CircSection.cxx
+  ChFiDS_CircSection.hxx
+  ChFiDS_CommonPoint.cxx
+  ChFiDS_CommonPoint.hxx
+  ChFiDS_ElSpine.cxx
+  ChFiDS_ElSpine.hxx
+  ChFiDS_ErrorStatus.hxx
+  ChFiDS_FaceInterference.cxx
+  ChFiDS_FaceInterference.hxx
+  ChFiDS_FaceInterference.lxx
+  ChFiDS_FilSpine.cxx
+  ChFiDS_FilSpine.hxx
+  ChFiDS_HData.hxx
+  ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx
+  ChFiDS_ListIteratorOfListOfHElSpine.hxx
+  ChFiDS_ListIteratorOfListOfStripe.hxx
+  ChFiDS_ListIteratorOfRegularities.hxx
+  ChFiDS_ListOfHElSpine.hxx
+  ChFiDS_ListOfStripe.hxx
+  ChFiDS_Map.cxx
+  ChFiDS_Map.hxx
+  ChFiDS_Regul.cxx
+  ChFiDS_Regul.hxx
+  ChFiDS_Regularities.hxx
+  ChFiDS_SecArray1.hxx
+  ChFiDS_SecHArray1.hxx
+  ChFiDS_SequenceOfSpine.hxx
+  ChFiDS_SequenceOfSurfData.hxx
+  ChFiDS_Spine.cxx
+  ChFiDS_Spine.hxx
+  ChFiDS_Spine.lxx
+  ChFiDS_State.hxx
+  ChFiDS_Stripe.cxx
+  ChFiDS_Stripe.hxx
+  ChFiDS_Stripe.lxx
+  ChFiDS_StripeArray1.hxx
+  ChFiDS_StripeMap.cxx
+  ChFiDS_StripeMap.hxx
+  ChFiDS_StripeMap.lxx
+  ChFiDS_SurfData.cxx
+  ChFiDS_SurfData.hxx
+  ChFiDS_SurfData.lxx
+  ChFiDS_TypeOfConcavity.hxx
+)

@@ -1,0 +1,7 @@
+# Source files for TKGeomBase
+set(OCCT_TKGeomBase_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKGeomBase_FILES
+  EXTERNLIB
+  PACKAGES
+)
