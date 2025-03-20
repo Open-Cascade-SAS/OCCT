@@ -225,6 +225,15 @@ if (NOT DEFINED BUILD_DOC_Overview)
   set (BUILD_DOC_Overview OFF CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
 endif()
 
+# Reference Manual
+if (NOT DEFINED BUILD_DOC_RefMan)
+  set (BUILD_DOC_RefMan OFF CACHE BOOL "${BUILD_DOC_RefMan_DESCR}")
+endif()
+
+if (NOT DEFINED INSTALL_DOC_RefMan)
+  set (INSTALL_DOC_RefMan OFF CACHE BOOL "${INSTALL_DOC_RefMan_DESCR}")
+endif()
+
 if (CMAKE_VERSION VERSION_LESS "3.14")
   OCCT_CHECK_AND_UNSET (BUILD_INCLUDE_SYMLINK)
 endif()
@@ -327,8 +336,6 @@ if (MSVC)
 endif()
 set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
 
-set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
-
 # uwp sample
 if (MSVC)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
@@ -386,7 +393,8 @@ endif()
 # include original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
 # list <OCCT_MODULES> will contain all modules
-OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
+OCCT_INCLUDE_CMAKE_FILE ("src/MODULES")
+set (OCCT_MODULES ${OCCT_LIST_OF_MODULES})
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   BUILD_MODULE (${OCCT_MODULE})
@@ -400,17 +408,13 @@ if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND BUILD_MODULE_Draw)
   message (STATUS "Info. Draw module is turned off due to it is not supported on UWP")
   set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
 endif()
-if (EMSCRIPTEN AND BUILD_MODULE_DETools)
-  message (STATUS "Info. DETools module is turned off due to it is not supported on Emscripten")
-  set (BUILD_MODULE_DETools OFF CACHE BOOL "${BUILD_MODULE_DETools_DESCR}" FORCE)
-endif()
 
 # accumulate used toolkits (first level) in BUILD_TOOLKITS variable
 list (APPEND BUILD_TOOLKITS ${BUILD_ADDITIONAL_TOOLKITS})
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
-    list (APPEND BUILD_TOOLKITS ${${OCCT_MODULE}_TOOLKITS})
+    list (APPEND BUILD_TOOLKITS ${OCCT_${OCCT_MODULE}_LIST_OF_TOOLKITS})
   endif()
 endforeach()
 
@@ -708,7 +712,7 @@ else()
 endif()
 
 # Doxygen
-if (BUILD_DOC_Overview)
+if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
   if (NOT DEFINED INSTALL_DOC_Overview)
     set (INSTALL_DOC_Overview OFF CACHE BOOL "${INSTALL_DOC_Overview_DESCR}")
   endif()
@@ -716,7 +720,7 @@ if (BUILD_DOC_Overview)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/doxygen")
 else()
   OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
-
+  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_RefMan")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
 endif()
@@ -745,8 +749,8 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
 endif()
 
-# qt for inspector and samples
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+# qt for samples
+if (BUILD_SAMPLES_QT)
   # check qt 3rdparty path
   add_definitions (-DHAVE_QT)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/qt")
@@ -1021,28 +1025,6 @@ else()
   set (SCRIPT_EXT sh)
 endif()
 
-# OCCT tools
-# include original list of tools
-# list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
-# list <OCCT_TOOLS> will contain all tools
-if (BUILD_Inspector)
-  add_definitions (-DHAVE_Inspector)
-
-  OCCT_MODULES_AND_TOOLKITS (TOOLS "TOOL_TOOLKITS" OCCT_TOOLS)
-  foreach (OCCT_TOOL ${OCCT_TOOLS})
-    list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
-  endforeach()
-
-  # collect all the headers to <binary dir>/inc/inspector folder
-
-  # Ensure the include directory exists
-  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/inspector")
-
-  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/inc/inspector ...")
-  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "tools" "${INSTALL_DIR_INCLUDE}/inspector")
-endif()
-
 # OCCT samples
 # get absolute path from INSTALL_DIR
 set (INSTALL_DIR_ABSOLUTE "${INSTALL_DIR}")
@@ -1168,9 +1150,9 @@ foreach(RESOURCE ${RESOURCES})
   get_filename_component(RESOURCE_FOLDER ${RESOURCE} DIRECTORY)
   if(NOT "${RESOURCE_FOLDER}" STREQUAL "")
     get_filename_component(RESOURCE_FOLDER ${RESOURCE_FOLDER} NAME)
-    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR_RESOURCE}/${RESOURCE_FOLDER}")
+    OCCT_INSTALL_FILE_OR_DIR ("resources/${RESOURCE}" "${INSTALL_DIR_RESOURCE}/${RESOURCE_FOLDER}")
   else()
-    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR_RESOURCE}")
+    OCCT_INSTALL_FILE_OR_DIR ("resources/${RESOURCE}" "${INSTALL_DIR_RESOURCE}")
   endif()
 endforeach()
 
@@ -1199,11 +1181,13 @@ endif()
 
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  OCCT_ADD_SUBDIRECTORY ("src/${BUILD_TOOLKIT}")
+  add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
 endforeach()
 
-if (BUILD_DOC_Overview)
-  OCCT_ADD_SUBDIRECTORY (dox)
+if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")
+  # Setup documentation targets
+  OCCT_SETUP_DOC_TARGETS()
 endif()
 
 # patch DRAWEXE
@@ -1227,13 +1211,6 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
   endif()
 endif()
 
-# include patched toolkit projects or original ones
-if (BUILD_TOOL_TOOLKITS)
-  foreach (BUILD_TOOL_TOOLKIT ${BUILD_TOOL_TOOLKITS})
-    OCCT_ADD_SUBDIRECTORY ("tools/${BUILD_TOOL_TOOLKIT}")
-  endforeach()
-endif()
-
 message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
 # samples do not support patch usage
 if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
@@ -1255,7 +1232,7 @@ endif()
 
 OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
 
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+if (BUILD_SAMPLES_QT)
   if (BUILD_SAMPLES_QT)
     if (NOT Qt5_FOUND OR "${Qt5Gui_EGL_INCLUDE_DIRS}" STREQUAL "" OR NOT WIN32)
       list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
@@ -1282,15 +1259,6 @@ endif()
 
 if (BUILD_MODULE_UwpSample)
   add_subdirectory(samples/xaml)
-endif()
-
-if (BUILD_TOOL_TOOLKITS)
-  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
-          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-
-  set (OpenCASCADE_BINARY_DIR "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
-  # patch TInspectorEXE
-  OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

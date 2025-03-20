@@ -32,7 +32,6 @@ set "BUILD_ModelingAlgorithms=ON"
 set "BUILD_Visualization=ON"
 set "BUILD_ApplicationFramework=ON"
 set "BUILD_DataExchange=ON"
-set "BUILD_DETools=OFF"
 set "BUILD_Draw=ON"
 
 rem Optional 3rd-party libraries to enable
@@ -155,7 +154,6 @@ if ["%toCMake%"] == ["1"] (
  -D BUILD_MODULE_Visualization:BOOL="%BUILD_Visualization%" ^
  -D BUILD_MODULE_ApplicationFramework:BOOL="%BUILD_ApplicationFramework%" ^
  -D BUILD_MODULE_DataExchange:BOOL="%BUILD_DataExchange%" ^
- -D BUILD_MODULE_DETools:BOOL="%BUILD_DETools%" ^
  -D BUILD_MODULE_Draw:BOOL="%BUILD_Draw%" ^
  -D 3RDPARTY_TCL_DIR:PATH="%aTclTk%" ^
  -D 3RDPARTY_TCL_INCLUDE_DIR:FILEPATH="%aTclTk%/include" ^

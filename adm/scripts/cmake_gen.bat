@@ -17,7 +17,6 @@ set "INSTALL_DIR=%SrcRoot%\install"
 
 set BUILD_ADDITIONAL_TOOLKITS=
 set BUILD_DOC_Overview=OFF
-set BUILD_Inspector=OFF
 set BUILD_LIBRARY_TYPE=Shared
 set BUILD_RELEASE_DISABLE_EXCEPTIONS=ON
 set BUILD_WITH_DEBUG=OFF
@@ -27,7 +26,6 @@ set BUILD_FORCE_RelWithDebInfo=OFF
 
 set BUILD_MODULE_ApplicationFramework=ON
 set BUILD_MODULE_DataExchange=ON
-set BUILD_MODULE_DETools=OFF
 set BUILD_MODULE_Draw=ON
 set BUILD_MODULE_ModelingAlgorithms=ON
 set BUILD_MODULE_ModelingData=ON
@@ -58,11 +56,9 @@ cmake -G "%arch_compile%" ^
   -D 3RDPARTY_DIR:STRING="%OCCT3RDPARTY%" ^
   -D BUILD_ADDITIONAL_TOOLKITS:STRING="%BUILD_ADDITIONAL_TOOLKITS%" ^
   -D BUILD_DOC_Overview:BOOL=%BUILD_DOC_Overview% ^
-  -D BUILD_Inspector:BOOL=%BUILD_Inspector% ^
   -D BUILD_LIBRARY_TYPE:STRING=%BUILD_LIBRARY_TYPE% ^
   -D BUILD_MODULE_ApplicationFramework:BOOL=%BUILD_MODULE_ApplicationFramework% ^
   -D BUILD_MODULE_DataExchange:BOOL=%BUILD_MODULE_DataExchange% ^
-  -D BUILD_MODULE_DETools:BOOL=%BUILD_MODULE_DETools% ^
   -D BUILD_MODULE_Draw:BOOL=%BUILD_MODULE_Draw% ^
   -D BUILD_MODULE_FoundationClasses:BOOL=ON ^
   -D BUILD_MODULE_ModelingAlgorithms:BOOL=%BUILD_MODULE_ModelingAlgorithms% ^

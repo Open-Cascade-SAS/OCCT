@@ -1,0 +1,22 @@
+# External dependencies for TKIVtk
+set(OCCT_TKIVtk_EXTERNAL_LIBS
+  CSF_VTK
+  TKernel
+  TKBRep
+  TKG2d
+  TKG3d
+  TKGeomAlgo
+  TKGeomBase
+  TKMath
+  TKMesh
+  TKService
+  TKTopAlgo
+  TKV3d
+  vtkCommonCore
+  vtkRenderingCore
+  vtkRenderingOpenGL
+  vtkRenderingFreeType
+  vtkRenderingFreeTypeOpenGL
+  vtkFiltersGeneral
+  vtkInteractionStyle
+)

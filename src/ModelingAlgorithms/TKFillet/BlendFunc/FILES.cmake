@@ -1,0 +1,49 @@
+# Source files for BlendFunc package
+set(OCCT_BlendFunc_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_BlendFunc_FILES
+  BlendFunc.cxx
+  BlendFunc.hxx
+  BlendFunc_GenChamfer.cxx
+  BlendFunc_GenChamfer.hxx
+  BlendFunc_GenChamfInv.cxx
+  BlendFunc_GenChamfInv.hxx
+  BlendFunc_Chamfer.cxx
+  BlendFunc_Chamfer.hxx
+  BlendFunc_ChamfInv.cxx
+  BlendFunc_ChamfInv.hxx
+  BlendFunc_ChAsym.cxx
+  BlendFunc_ChAsym.hxx
+  BlendFunc_ChAsymInv.cxx
+  BlendFunc_ChAsymInv.hxx
+  BlendFunc_ConstRad.cxx
+  BlendFunc_ConstRad.hxx
+  BlendFunc_ConstRadInv.cxx
+  BlendFunc_ConstRadInv.hxx
+  BlendFunc_Corde.cxx
+  BlendFunc_Corde.hxx
+  BlendFunc_CSCircular.cxx
+  BlendFunc_CSCircular.hxx
+  BlendFunc_CSConstRad.cxx
+  BlendFunc_CSConstRad.hxx
+  BlendFunc_EvolRad.cxx
+  BlendFunc_EvolRad.hxx
+  BlendFunc_EvolRadInv.cxx
+  BlendFunc_EvolRadInv.hxx
+  BlendFunc_Ruled.cxx
+  BlendFunc_Ruled.hxx
+  BlendFunc_RuledInv.cxx
+  BlendFunc_RuledInv.hxx
+  BlendFunc_SectionShape.hxx
+  BlendFunc_Tensor.cxx
+  BlendFunc_Tensor.hxx
+  BlendFunc_Tensor.lxx
+  BlendFunc_ConstThroat.cxx
+  BlendFunc_ConstThroat.hxx
+  BlendFunc_ConstThroatInv.cxx
+  BlendFunc_ConstThroatInv.hxx
+  BlendFunc_ConstThroatWithPenetration.cxx
+  BlendFunc_ConstThroatWithPenetration.hxx
+  BlendFunc_ConstThroatWithPenetrationInv.cxx
+  BlendFunc_ConstThroatWithPenetrationInv.hxx
+)

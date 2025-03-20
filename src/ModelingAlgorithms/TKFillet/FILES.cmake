@@ -1,0 +1,7 @@
+# Source files for TKFillet
+set(OCCT_TKFillet_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKFillet_FILES
+  EXTERNLIB
+  PACKAGES
+)

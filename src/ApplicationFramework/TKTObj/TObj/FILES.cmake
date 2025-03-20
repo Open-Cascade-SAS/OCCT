@@ -1,0 +1,50 @@
+# Source files for TObj package
+set(OCCT_TObj_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TObj_FILES
+  TObj_Application.cxx
+  TObj_Application.hxx
+  TObj_Assistant.cxx
+  TObj_Assistant.hxx
+  TObj_CheckModel.cxx
+  TObj_CheckModel.hxx
+  TObj_Container.hxx
+  TObj_DeletingMode.hxx
+  TObj_HiddenPartition.cxx
+  TObj_HiddenPartition.hxx
+  TObj_LabelIterator.cxx
+  TObj_LabelIterator.hxx
+  TObj_Model.cxx
+  TObj_Model.hxx
+  TObj_ModelIterator.cxx
+  TObj_ModelIterator.hxx
+  TObj_Object.cxx
+  TObj_Object.hxx
+  TObj_ObjectIterator.cxx
+  TObj_ObjectIterator.hxx
+  TObj_OcafObjectIterator.cxx
+  TObj_OcafObjectIterator.hxx
+  TObj_Partition.cxx
+  TObj_Partition.hxx
+  TObj_Persistence.cxx
+  TObj_Persistence.hxx
+  TObj_ReferenceIterator.cxx
+  TObj_ReferenceIterator.hxx
+  TObj_SequenceIterator.cxx
+  TObj_SequenceIterator.hxx
+  TObj_SequenceOfIterator.hxx
+  TObj_SequenceOfObject.hxx
+  TObj_TIntSparseArray.cxx
+  TObj_TIntSparseArray.hxx
+  TObj_TModel.cxx
+  TObj_TModel.hxx
+  TObj_TNameContainer.cxx
+  TObj_TNameContainer.hxx
+  TObj_TObject.cxx
+  TObj_TObject.hxx
+  TObj_TReference.cxx
+  TObj_TReference.hxx
+  TObj_TXYZ.cxx
+  TObj_TXYZ.hxx
+  TObj_TObj_msg.pxx
+)

@@ -34,7 +34,6 @@ export BUILD_ModelingAlgorithms=ON
 export BUILD_Visualization=ON
 export BUILD_ApplicationFramework=ON
 export BUILD_DataExchange=ON
-export BUILD_DETools=OFF
 export BUILD_Draw=ON
 
 export USE_FREETYPE=ON
@@ -145,7 +144,6 @@ function buildArch {
   -D BUILD_MODULE_Visualization:BOOL="${BUILD_Visualization}" \
   -D BUILD_MODULE_ApplicationFramework:BOOL="${BUILD_ApplicationFramework}" \
   -D BUILD_MODULE_DataExchange:BOOL="${BUILD_DataExchange}" \
-  -D BUILD_MODULE_DETools:BOOL="${BUILD_DETools}" \
   -D BUILD_MODULE_Draw:BOOL="${BUILD_Draw}" \
   -D BUILD_DOC_Overview:BOOL="OFF" \
     "$aCasSrc" 2>&1 | tee -a "$aLogFile"

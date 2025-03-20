@@ -1,0 +1,24 @@
+# External dependencies for TKXSDRAWIGES
+set(OCCT_TKXSDRAWIGES_EXTERNAL_LIBS
+  TKBRep
+  TKV3d
+  TKMath
+  TKernel
+  TKService
+  TKXSBase
+  TKMeshVS
+  TKG3d
+  TKViewerTest
+  TKG2d
+  TKTopAlgo
+  TKGeomBase
+  TKGeomAlgo
+  TKMesh
+  TKDraw
+  TKLCAF
+  TKDCAF
+  TKXCAF
+  TKXSBase
+  TKDEIGES
+  TKXSDRAW
+)

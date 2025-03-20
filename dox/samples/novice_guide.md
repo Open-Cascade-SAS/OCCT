@@ -62,7 +62,6 @@ Additionally, @ref occt_user_guides__modeling_algos "Modeling Algorithms" are us
 
 The **Topology** section of the Overview demonstrates the functions used in 3D operations.
 Multiple use cases are provided, including different object intersections, modifying and calculations.
-Some of these use cases are described in the documentation, such as @ref occt_user_guides__inspector "Inspector" usage.
 
 @figure{sample_overview_qt_topology.png,"",240} height=440px
 

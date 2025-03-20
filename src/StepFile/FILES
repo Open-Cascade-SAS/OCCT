@@ -1,9 +1,0 @@
-lex.step.cxx
-step.tab.cxx
-step.tab.hxx
-StepFile_ReadData.cxx
-StepFile_ReadData.hxx
-StepFile_Read.cxx
-StepFile_Read.hxx
-step.lex
-step.yacc

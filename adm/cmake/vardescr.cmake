@@ -113,7 +113,6 @@ endmacro()
 
 BUILD_MODULE_MESSAGE (BUILD_MODULE_ApplicationFramework "ApplicationFramework")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_DataExchange         "DataExchange")
-BUILD_MODULE_MESSAGE (BUILD_MODULE_DETools              "DETools")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_Draw                 "Draw")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_FoundationClasses    "FoundationClasses")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_ModelingAlgorithms   "ModelingAlgorithms")
@@ -136,13 +135,6 @@ set (BUILD_SAMPLES_QT_DESCR
 "Indicates whether OCCT Qt samples should be built together with OCCT.
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
-
-set (BUILD_Inspector_DESCR
-"Indicates whether OCCT inspector should be built together with OCCT.
-This inspector provides functionality to interactively inspect low-level content
-of the OCAF data model, OCCT viewer, etc. have been introduced in OCCT.
-It can be executed with script inspector.bat from the installation directory (INSTALL_DIR) or
-using 'tinspector' command in DRAW interpretator")
 
 set (BUILD_MODULE_UwpSample_DESCR
 "Indicates whether OCCT UWP sample should be built together with OCCT.")
@@ -207,7 +199,30 @@ set (USE_XLIB_DESCR "Indicates whether X11 is used or not")
 
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
 
+# Documentation variables
+set (BUILD_DOC_Overview_DESCR 
+     "Build OCCT overview documentation using Doxygen")
+     
+set (BUILD_DOC_RefMan_DESCR 
+     "Build OCCT reference manual documentation using Doxygen")
+     
+set (INSTALL_DOC_Overview_DESCR 
+     "Install OCCT overview documentation")
+     
+set (INSTALL_DOC_RefMan_DESCR 
+     "Install OCCT reference manual documentation")
+
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)
   set (BUILD_MODULE_${MODULE_NAME} ${ENABLE_MODULE} CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
+  OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/TOOLKITS)
+  set (${MODULE_NAME}_TOOLKITS ${OCCT_${MODULE_NAME}_LIST_OF_TOOLKITS})
+  foreach (TOOLKIT ${OCCT_${MODULE_NAME}_LIST_OF_TOOLKITS})
+    OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/PACKAGES)
+    OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/EXTERNLIB)
+    OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/FILES)
+    foreach (PACKAGE ${OCCT_${TOOLKIT}_LIST_OF_PACKAGES})
+      OCCT_INCLUDE_CMAKE_FILE (src/${MODULE_NAME}/${TOOLKIT}/${PACKAGE}/FILES)
+    endforeach()
+  endforeach()
 endmacro()

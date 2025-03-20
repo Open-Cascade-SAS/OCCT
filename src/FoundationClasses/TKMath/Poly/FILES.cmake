@@ -1,0 +1,42 @@
+# Source files for Poly package
+set(OCCT_Poly_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_Poly_FILES
+  Poly.cxx
+  Poly.hxx
+  Poly_Array1OfTriangle.hxx
+  Poly_ArrayOfNodes.cxx
+  Poly_ArrayOfNodes.hxx
+  Poly_ArrayOfUVNodes.cxx
+  Poly_ArrayOfUVNodes.hxx
+  Poly_CoherentLink.cxx
+  Poly_CoherentLink.hxx
+  Poly_CoherentNode.cxx
+  Poly_CoherentNode.hxx
+  Poly_CoherentTriangle.cxx
+  Poly_CoherentTriangle.hxx
+  Poly_CoherentTriangulation.cxx
+  Poly_CoherentTriangulation.hxx
+  Poly_CoherentTriPtr.cxx
+  Poly_CoherentTriPtr.hxx
+  Poly_Connect.cxx
+  Poly_Connect.hxx
+  Poly_HArray1OfTriangle.hxx
+  Poly_ListOfTriangulation.hxx
+  Poly_MakeLoops.cxx
+  Poly_MakeLoops.hxx
+  Poly_MeshPurpose.hxx
+  Poly_MergeNodesTool.cxx
+  Poly_MergeNodesTool.hxx
+  Poly_Polygon2D.cxx
+  Poly_Polygon2D.hxx
+  Poly_Polygon3D.cxx
+  Poly_Polygon3D.hxx
+  Poly_PolygonOnTriangulation.cxx
+  Poly_PolygonOnTriangulation.hxx
+  Poly_Triangle.hxx
+  Poly_TriangulationParameters.hxx
+  Poly_TriangulationParameters.cxx
+  Poly_Triangulation.cxx
+  Poly_Triangulation.hxx
+)

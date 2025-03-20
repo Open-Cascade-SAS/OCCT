@@ -1,7 +1,0 @@
-GeomliteTest.cxx
-GeomliteTest.hxx
-GeomliteTest_API2dCommands.cxx
-GeomliteTest_ApproxCommands.cxx
-GeomliteTest_CurveCommands.cxx
-GeomliteTest_ModificationCommands.cxx
-GeomliteTest_SurfaceCommands.cxx

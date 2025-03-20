@@ -1,0 +1,54 @@
+# Source files for Units package
+set(OCCT_Units_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_Units_FILES
+  Units.cxx
+  Units.hxx
+  Units_Dimensions.cxx
+  Units_Dimensions.hxx
+  Units_Dimensions.lxx
+  Units_Explorer.cxx
+  Units_Explorer.hxx
+  Units_Lexicon.cxx
+  Units_Lexicon.hxx
+  Units_Lexicon.lxx
+  Units_MathSentence.cxx
+  Units_MathSentence.hxx
+  Units_Measurement.cxx
+  Units_Measurement.hxx
+  Units_NoSuchType.hxx
+  Units_NoSuchUnit.hxx
+  Units_Operators.hxx
+  Units_QtsSequence.hxx
+  Units_QuantitiesSequence.hxx
+  Units_Quantity.cxx
+  Units_Quantity.hxx
+  Units_Quantity.lxx
+  Units_Sentence.cxx
+  Units_Sentence.hxx
+  Units_Sentence.lxx
+  Units_ShiftedToken.cxx
+  Units_ShiftedToken.hxx
+  Units_ShiftedUnit.cxx
+  Units_ShiftedUnit.hxx
+  Units_TksSequence.hxx
+  Units_Token.cxx
+  Units_Token.hxx
+  Units_Token.lxx
+  Units_TokensSequence.hxx
+  Units_Unit.cxx
+  Units_Unit.hxx
+  Units_Unit.lxx
+  Units_UnitsDictionary.cxx
+  Units_UnitsDictionary.hxx
+  Units_UnitsDictionary.lxx
+  Units_UnitSentence.cxx
+  Units_UnitSentence.hxx
+  Units_UnitsLexicon.cxx
+  Units_UnitsLexicon.hxx
+  Units_UnitsLexicon.lxx
+  Units_UnitsSequence.hxx
+  Units_UnitsSystem.cxx
+  Units_UnitsSystem.hxx
+  Units_UtsSequence.hxx
+)
