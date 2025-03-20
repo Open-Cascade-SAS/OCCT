@@ -39,7 +39,7 @@ macro (OCCT_GENERATE_CONTENT_ONLY CurrentResource)
         endforeach()
         set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT};\n\n")
         # Save generated content to header file
-        set (HEADER_FILE "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${HEADER_FILE_NAME}")
+        set (HEADER_FILE "${OCCT_${CurrentResource_Directory}_FILES_LOCATION}/${HEADER_FILE_NAME}")
         if (EXISTS "${HEADER_FILE}")
           file (REMOVE "${HEADER_FILE}")
         endif()
