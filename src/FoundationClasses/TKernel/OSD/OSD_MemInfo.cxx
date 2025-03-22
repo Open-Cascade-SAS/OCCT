@@ -165,18 +165,23 @@ void OSD_MemInfo::Update()
   #elif (defined(__linux__) || defined(__linux))
   if (IsActive(MemHeapUsage))
   {
-    #if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
-      #if __GLIBC_PREREQ(2, 33)
+    #if defined(__GLIBC__)
+      #define HAS_MALLINFO
+      #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2, 33)
         #define HAS_MALLINFO2
       #endif
     #endif
 
-    #ifdef HAS_MALLINFO2
+    #ifdef HAS_MALLINFO
+      #ifdef HAS_MALLINFO2
     const struct mallinfo2 aMI = mallinfo2();
-    #else
+      #else
     const struct mallinfo aMI = mallinfo();
-    #endif
+      #endif
     myCounters[MemHeapUsage] = aMI.uordblks;
+    #else
+    myCounters[MemHeapUsage] = 0;
+    #endif
   }
 
   if (!IsActive(MemVirtual) && !IsActive(MemWorkingSet) && !IsActive(MemWorkingSetPeak)
