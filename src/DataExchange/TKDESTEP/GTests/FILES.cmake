@@ -1,0 +1,5 @@
+# Test source files for TKDESTEP
+set(OCCT_TKDESTEP_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKDESTEP_GTests_FILES
+)

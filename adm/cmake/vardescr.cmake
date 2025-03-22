@@ -212,6 +212,8 @@ set (INSTALL_DOC_Overview_DESCR
 set (INSTALL_DOC_RefMan_DESCR 
      "Install OCCT reference manual documentation")
 
+set (USE_GTEST_DESCR "Indicates whether Google Test framework should be used for OCCT testing")
+
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)
   set (BUILD_MODULE_${MODULE_NAME} ${ENABLE_MODULE} CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
