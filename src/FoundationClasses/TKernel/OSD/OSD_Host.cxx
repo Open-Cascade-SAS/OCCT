@@ -139,7 +139,7 @@ TCollection_AsciiString OSD_Host::InternetAddress()
   char                    buffer[16];
   TCollection_AsciiString result, host;
 
-  host = HostName();
+  host                    = HostName();
   const auto* aHostByName = gethostbyname(host.ToCString());
   if (aHostByName == nullptr)
   {
