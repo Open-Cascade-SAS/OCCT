@@ -769,7 +769,7 @@ typedef void (*SIG_PFV)(int);
 
   #include <signal.h>
 
-  #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
+  #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && defined(__GLIBC__)
     #include <sys/signal.h>
   #endif
 
@@ -994,7 +994,7 @@ static void SegvHandler(const int              theSignal,
 
 void OSD::SetFloatingSignal(Standard_Boolean theFloatingSignal)
 {
-  #if defined(__linux__)
+  #if defined(__linux__) && defined(__GLIBC__)
   feclearexcept(FE_ALL_EXCEPT);
   if (theFloatingSignal)
   {
@@ -1025,7 +1025,7 @@ void OSD::SetFloatingSignal(Standard_Boolean theFloatingSignal)
 
 Standard_Boolean OSD::ToCatchFloatingSignals()
 {
-  #if defined(__linux__)
+  #if defined(__linux__) && defined(__GLIBC__)
   return (fegetexcept() & _OSD_FPX) != 0;
   #else
   return Standard_False;
