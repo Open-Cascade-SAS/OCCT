@@ -36,8 +36,9 @@ function(OCCT_DOC_CREATE_MODULE_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME)
 
   foreach(MODULE ${OCCT_MODULES})
     if(NOT "${MODULE}" STREQUAL "")
-      # module name in lowercase
-      file(APPEND ${DOT_FILE} "\t${MODULE} [ URL = \"module_${MODULE}.html\" ]\n")
+      # Convert module name to lowercase for URL
+      string(TOLOWER ${MODULE} MODULE_LOWER)
+      file(APPEND ${DOT_FILE} "\t${MODULE} [ URL = \"module_${MODULE_LOWER}.html\" ]\n")
 
       # Add dependencies between modules
       foreach(MODULE_TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE}})
@@ -73,7 +74,9 @@ function(OCCT_DOC_CREATE_TOOLKIT_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME MODULE_NAM
   file(WRITE ${DOT_FILE} "digraph ${FILENAME}\n{\n")
 
   foreach(TOOLKIT ${TOOLKITS_IN_MODULE_${MODULE_NAME}})
-    file(APPEND ${DOT_FILE} "\t${TOOLKIT} [ URL = \"toolkit_${TOOLKIT}.html\" ]\n")
+    # Convert toolkit name to lowercase for URL
+    string(TOLOWER ${TOOLKIT} TOOLKIT_LOWER)
+    file(APPEND ${DOT_FILE} "\t${TOOLKIT} [ URL = \"toolkit_${TOOLKIT_LOWER}.html\" ]\n")
 
     # Add dependencies between toolkits in the same module
     foreach(DEPENDENT_TOOLKIT ${TOOLKIT_DEPENDENCY_${TOOLKIT}})
@@ -97,11 +100,15 @@ function(OCCT_DOC_CREATE_SINGLE_TOOLKIT_DEPENDENCY_GRAPH OUTPUT_DIR FILENAME TOO
   # Create .dot file for dependencies of a single toolkit
   file(WRITE ${DOT_FILE} "digraph ${FILENAME}\n{\n")
 
-  file(APPEND ${DOT_FILE} "\t${TOOLKIT_NAME} [ URL = \"toolkit_${TOOLKIT_NAME}.html\", shape = box ]\n")
+  # Convert toolkit name to lowercase for URL
+  string(TOLOWER ${TOOLKIT_NAME} TOOLKIT_NAME_LOWER)
+  file(APPEND ${DOT_FILE} "\t${TOOLKIT_NAME} [ URL = \"toolkit_${TOOLKIT_NAME_LOWER}.html\", shape = box ]\n")
 
   # Add toolkit dependencies
   foreach(DEPENDENT_TOOLKIT ${TOOLKIT_DEPENDENCY_${TOOLKIT_NAME}})
-    file(APPEND ${DOT_FILE} "\t${DEPENDENT_TOOLKIT} [ URL = \"toolkit_${DEPENDENT_TOOLKIT}.html\", shape = box ]\n")
+    # Convert dependent toolkit name to lowercase for URL
+    string(TOLOWER ${DEPENDENT_TOOLKIT} DEPENDENT_TOOLKIT_LOWER)
+    file(APPEND ${DOT_FILE} "\t${DEPENDENT_TOOLKIT} [ URL = \"toolkit_${DEPENDENT_TOOLKIT_LOWER}.html\", shape = box ]\n")
     file(APPEND ${DOT_FILE} "\t${TOOLKIT_NAME} -> ${DEPENDENT_TOOLKIT} [ color = \"midnightblue\", style = \"solid\" ]\n")    
   endforeach()
 
