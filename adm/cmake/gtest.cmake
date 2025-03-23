@@ -8,7 +8,7 @@ endif()
 
 # Check if the user has specified whether to install Google Test
 if (NOT DEFINED INSTALL_GTEST)
-  set(INSTALL_GTEST CACHE BOOL "Install Google Test" OFF)
+  set(INSTALL_GTEST OFF CACHE BOOL "Install Google Test")
 endif()
 
 # Google Test configuration options

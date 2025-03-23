@@ -3,24 +3,21 @@
 set (TEST_PROJECT_NAME OpenCascadeGTest)
 
 # Initialize Google Test environment and create the target
-macro(OCCT_INIT_GTEST)
+function(OCCT_INIT_GTEST)
   if (NOT GOOGLETEST_FOUND)
     message(STATUS "Google Test not available. Skipping test project ${TEST_PROJECT_NAME}")
     return()
   endif()
 
   # Initialize test data collections
-  set(OCCT_GTEST_SOURCE_FILES)
-  set(OCCT_GTEST_SOURCE_FILES_ABS)
-  set(OCCT_GTEST_TESTS_LIST)
+  set(OCCT_GTEST_SOURCE_FILES "" PARENT_SCOPE)
+  set(OCCT_GTEST_SOURCE_FILES_ABS "" PARENT_SCOPE)
+  set(OCCT_GTEST_TESTS_LIST "" PARENT_SCOPE)
 
   # Create the test executable once
   add_executable(${TEST_PROJECT_NAME})
 
   set_target_properties(${TEST_PROJECT_NAME} PROPERTIES FOLDER "Testing")
-
-  # Workaround for MSVC to avoid linker errors
-  target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
 
   # Link with Google Test
   target_link_libraries(${TEST_PROJECT_NAME} PRIVATE GTest::gtest_main)
@@ -49,10 +46,10 @@ macro(OCCT_INIT_GTEST)
       install(FILES ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${TEST_PROJECT_NAME}.wasm DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
     endif()
   endif()
-endmacro()
+endfunction()
 
 # Add tests from a specific toolkit to the main test executable
-macro(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
+function(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
   # Skip if Google Test is not available or the test executable wasn't created
   if (NOT GOOGLETEST_FOUND OR NOT TARGET ${TEST_PROJECT_NAME})
     return()
@@ -82,7 +79,7 @@ macro(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
     # Get absolute paths of test source files and add them to the executable
     set(TEST_SOURCE_FILES_ABS)
     foreach(TEST_SOURCE_FILE ${TEST_SOURCE_FILES})
-      set (TEST_SOURCE_FILE_ABS "${OCCT_${TOOLKIT_NAME}_GTests_FILES_LOCATION}/${TEST_SOURCE_FILE}")
+      set(TEST_SOURCE_FILE_ABS "${OCCT_${TOOLKIT_NAME}_GTests_FILES_LOCATION}/${TEST_SOURCE_FILE}")
       list(APPEND TEST_SOURCE_FILES_ABS "${TEST_SOURCE_FILE_ABS}")
     endforeach()
 
@@ -110,13 +107,23 @@ macro(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
     endforeach()
 
     # Add these tests to the main list so we can set environment for all tests later
-    list(APPEND OCCT_GTEST_TESTS_LIST ${TOOLKIT_TESTS})
-    set(OCCT_GTEST_TESTS_LIST "${OCCT_GTEST_TESTS_LIST}")
+    # Get the existing list first
+    if(DEFINED OCCT_GTEST_TESTS_LIST)
+      set(TEMP_GTEST_TESTS_LIST ${OCCT_GTEST_TESTS_LIST})
+    else()
+      set(TEMP_GTEST_TESTS_LIST "")
+    endif()
+    
+    # Append the new tests
+    list(APPEND TEMP_GTEST_TESTS_LIST ${TOOLKIT_TESTS})
+    
+    # Update the parent scope variable
+    set(OCCT_GTEST_TESTS_LIST "${TEMP_GTEST_TESTS_LIST}" PARENT_SCOPE)
   endif()
-endmacro()
+endfunction()
 
 # Set environment variables for all collected tests
-macro(OCCT_SET_GTEST_ENVIRONMENT)
+function(OCCT_SET_GTEST_ENVIRONMENT)
   if (NOT GOOGLETEST_FOUND OR NOT TARGET ${TEST_PROJECT_NAME})
     return()
   endif()
@@ -233,4 +240,4 @@ macro(OCCT_SET_GTEST_ENVIRONMENT)
     # Set environment for all tests in the project
     set_tests_properties(${OCCT_GTEST_TESTS_LIST} PROPERTIES ENVIRONMENT "${TEST_ENVIRONMENT}")
   endif()
-endmacro()
+endfunction()
