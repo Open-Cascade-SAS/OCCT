@@ -23,17 +23,7 @@ macro(OCCT_INIT_GTEST)
   target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
 
   # Link with Google Test
-  if(TARGET gtest AND TARGET gtest_main)
-    # Use targets from FetchContent
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE gtest gtest_main)
-  elseif(TARGET GTest::gtest AND TARGET GTest::gtest_main)
-    # Use targets from find_package with imported targets
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE GTest::gtest GTest::gtest_main)
-  else()
-    # Fall back to direct library paths
-    target_include_directories(${TEST_PROJECT_NAME} PRIVATE ${GTEST_INCLUDE_DIRS})
-    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${GTEST_BOTH_LIBRARIES})
-  endif()
+  target_link_libraries(${TEST_PROJECT_NAME} PRIVATE GTest::gtest_main)
 
   # Add pthreads if necessary (for Linux)
   if (UNIX AND NOT APPLE)

@@ -54,10 +54,6 @@ else()
 
     # Set variables for consistent use throughout the build system
     set(GOOGLETEST_FOUND TRUE)
-    set(GTEST_INCLUDE_DIRS ${googletest_SOURCE_DIR}/googletest/include)
-    set(GTEST_LIBRARIES gtest)
-    set(GTEST_MAIN_LIBRARIES gtest_main)
-    set(GTEST_BOTH_LIBRARIES ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES})
   else()
     message(STATUS "Google Test not available. Tests will be skipped.")
     set(GOOGLETEST_FOUND FALSE)
