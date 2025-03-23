@@ -1,6 +1,6 @@
 # Google Test integration for OCCT toolkits
 
-set (TEST_PROJECT_NAME OCCT_GTests)
+set (TEST_PROJECT_NAME GTests)
 
 # Initialize Google Test environment and create the target
 macro(OCCT_INIT_GTEST)
@@ -8,17 +8,17 @@ macro(OCCT_INIT_GTEST)
     message(STATUS "Google Test not available. Skipping test project ${TEST_PROJECT_NAME}")
     return()
   endif()
-  
+
   # Initialize test data collections
   set(OCCT_GTEST_SOURCE_FILES)
   set(OCCT_GTEST_SOURCE_FILES_ABS)
   set(OCCT_GTEST_TESTS_LIST)
-  
+
   # Create the test executable once
   add_executable(${TEST_PROJECT_NAME})
 
   set_target_properties(${TEST_PROJECT_NAME} PROPERTIES FOLDER "Testing")
-  
+
   # Link with Google Test
   if(TARGET gtest AND TARGET gtest_main)
     # Use targets from FetchContent
@@ -31,12 +31,12 @@ macro(OCCT_INIT_GTEST)
     target_include_directories(${TEST_PROJECT_NAME} PRIVATE ${GTEST_INCLUDE_DIRS})
     target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${GTEST_BOTH_LIBRARIES})
   endif()
-  
+
   # Add pthreads if necessary (for Linux)
   if (UNIX AND NOT APPLE)
     target_link_libraries(${TEST_PROJECT_NAME} PRIVATE pthread)
   endif()
-  
+
   # Link with all active toolkits that are libraries
   foreach(TOOLKIT ${BUILD_TOOLKITS})
     if(TARGET ${TOOLKIT})
@@ -46,6 +46,16 @@ macro(OCCT_INIT_GTEST)
       endif()
     endif()
   endforeach()
+
+  if (INSTALL_GTEST)
+    # Install the test executable
+    install (TARGETS ${TEST_PROJECT_NAME}
+             DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}")
+
+    if (EMSCRIPTEN)
+      install(FILES ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${TEST_PROJECT_NAME}.wasm DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
+    endif()
+  endif()
 endmacro()
 
 # Add tests from a specific toolkit to the main test executable
@@ -60,16 +70,16 @@ macro(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
   if(EXISTS "${FILES_CMAKE_PATH}")
     # Reset toolkit test files list
     set(OCCT_${TOOLKIT_NAME}_GTests_FILES)
-    
+
     # Include the toolkit's FILES.cmake which sets OCCT_${TOOLKIT_NAME}_GTests_FILES
     include("${FILES_CMAKE_PATH}")
     set(TEST_SOURCE_FILES "${OCCT_${TOOLKIT_NAME}_GTests_FILES}")
-    
+
     # Skip if no test files found
     if(NOT TEST_SOURCE_FILES)
       return()
     endif()
-    
+
     # Get module name for test organization
     get_target_property(TOOLKIT_MODULE ${TOOLKIT_NAME} MODULE)
     if(NOT TOOLKIT_MODULE)
@@ -82,19 +92,30 @@ macro(OCCT_COLLECT_TOOLKIT_TESTS TOOLKIT_NAME)
       set (TEST_SOURCE_FILE_ABS "${OCCT_${TOOLKIT_NAME}_GTests_FILES_LOCATION}/${TEST_SOURCE_FILE}")
       list(APPEND TEST_SOURCE_FILES_ABS "${TEST_SOURCE_FILE_ABS}")
     endforeach()
-    
+
     # Add test sources to the executable
-    target_sources(${TEST_PROJECT_NAME} PRIVATE ${TEST_SOURCE_FILE_ABS})
-    
-    # Register tests with CTest using test discovery for this toolkit's files
+    target_sources(${TEST_PROJECT_NAME} PRIVATE ${TEST_SOURCE_FILES_ABS})
+
+    # Create a more reliable test discovery approach
+    # Use the WORKING_DIRECTORY parameter to ensure proper test execution context
     gtest_add_tests(
       TARGET ${TEST_PROJECT_NAME}
       TEST_PREFIX "${TOOLKIT_MODULE}::${TOOLKIT_NAME}::"
       SOURCES ${TEST_SOURCE_FILES_ABS}
       TEST_LIST TOOLKIT_TESTS
       SKIP_DEPENDENCY
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
-    
+
+    # Configure test output properties to improve result capture
+    foreach(test_name ${TOOLKIT_TESTS})
+      set_tests_properties(${test_name} PROPERTIES
+        # Use proper result detection by checking output and return code
+        PASS_REGULAR_EXPRESSION "\\[  PASSED  \\]"
+        FAIL_REGULAR_EXPRESSION "\\[  FAILED  \\]"
+      )
+    endforeach()
+
     # Add these tests to the main list so we can set environment for all tests later
     list(APPEND OCCT_GTEST_TESTS_LIST ${TOOLKIT_TESTS})
     set(OCCT_GTEST_TESTS_LIST "${OCCT_GTEST_TESTS_LIST}")
@@ -136,12 +157,12 @@ macro(OCCT_SET_GTEST_ENVIRONMENT)
       "CSF_OCCTIncludePath=${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}"
       "CASROOT=${CMAKE_SOURCE_DIR}"
     )
-    
+
     # Build PATH environment variable
     set(PATH_ELEMENTS
       "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     )
-    
+
     # Add 3rdparty paths to PATH
     if(3RDPARTY_TCL_LIBRARY_DIR)
       list(APPEND PATH_ELEMENTS "${3RDPARTY_TCL_LIBRARY_DIR}")
@@ -172,7 +193,7 @@ macro(OCCT_SET_GTEST_ENVIRONMENT)
         list(APPEND PATH_ELEMENTS "${DLL_DIR}")
       endforeach()
     endif()
-    
+
     # Create the PATH variable that ctest will use
     if(WIN32)
       string(REPLACE ";" "\\;" TEST_PATH_ENV "$ENV{PATH}")
@@ -181,31 +202,31 @@ macro(OCCT_SET_GTEST_ENVIRONMENT)
     else()
       string(REPLACE ";" ":" PATH_ELEMENTS_STR "${PATH_ELEMENTS}")
       list(APPEND TEST_ENVIRONMENT "PATH=${PATH_ELEMENTS_STR}:$ENV{PATH}")
-      
+
       # Set LD_LIBRARY_PATH for Unix systems
       list(APPEND TEST_ENVIRONMENT "LD_LIBRARY_PATH=${PATH_ELEMENTS_STR}:$ENV{LD_LIBRARY_PATH}")
-      
+
       # Set DYLD_LIBRARY_PATH for macOS
       if(APPLE)
         list(APPEND TEST_ENVIRONMENT "DYLD_LIBRARY_PATH=${PATH_ELEMENTS_STR}:$ENV{DYLD_LIBRARY_PATH}")
       endif()
     endif()
-    
+
     # Add DrawResources related environment if it exists
     if(EXISTS "${CMAKE_SOURCE_DIR}/resources/DrawResources")
       list(APPEND TEST_ENVIRONMENT "DRAWHOME=${CMAKE_SOURCE_DIR}/resources/DrawResources")
       list(APPEND TEST_ENVIRONMENT "CSF_DrawPluginDefaults=${CMAKE_SOURCE_DIR}/resources/DrawResources")
-      
+
       if(EXISTS "${CMAKE_SOURCE_DIR}/resources/DrawResources/DrawDefault")
         list(APPEND TEST_ENVIRONMENT "DRAWDEFAULT=${CMAKE_SOURCE_DIR}/resources/DrawResources/DrawDefault")
       endif()
     endif()
-    
+
     # Set FPE signal handler if enabled
     if(BUILD_ENABLE_FPE_SIGNAL_HANDLER)
       list(APPEND TEST_ENVIRONMENT "CSF_FPE=1")
     endif()
-    
+
     # Set TCL/TK library paths if they differ
     if(3RDPARTY_TCL_LIBRARY_DIR AND 3RDPARTY_TK_LIBRARY_DIR AND NOT 3RDPARTY_TCL_LIBRARY_DIR STREQUAL 3RDPARTY_TK_LIBRARY_DIR)
       if(3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT)
@@ -215,7 +236,7 @@ macro(OCCT_SET_GTEST_ENVIRONMENT)
         list(APPEND TEST_ENVIRONMENT "TK_LIBRARY=${3RDPARTY_TK_LIBRARY_DIR}/../lib/tk${3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT}")
       endif()
     endif()
-    
+
     # Set environment for all tests in the project
     set_tests_properties(${OCCT_GTEST_TESTS_LIST} PROPERTIES ENVIRONMENT "${TEST_ENVIRONMENT}")
   endif()

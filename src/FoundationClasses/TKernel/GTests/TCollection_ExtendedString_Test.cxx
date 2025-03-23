@@ -149,7 +149,7 @@ TEST(TCollection_ExtendedStringTest, HashCode)
 TEST(TCollection_ExtendedStringTest, Remove)
 {
   TCollection_ExtendedString aString("Hello World");
-  aString.Remove(6, 5); // Remove "World"
+  aString.Remove(6, 6); // Remove "World"
 
   TCollection_AsciiString asciiResult(aString);
   EXPECT_STREQ("Hello", asciiResult.ToCString());

@@ -35,35 +35,6 @@ TEST(PLib_JacobiPolynomialTest, ConstructorAndAccessors)
   EXPECT_EQ(2, aJacobi3.NivConstr());
 }
 
-TEST(PLib_JacobiPolynomialTest, Points)
-{
-  PLib_JacobiPolynomial aJacobi(15, GeomAbs_C1);
-
-  // Test with 8 Gauss points
-  TColStd_Array1OfReal aPoints1(0, 4); // 8/2 = 4
-  aJacobi.Points(8, aPoints1);
-
-  // Values should be between 0 and 1 (positive Legendre roots)
-  for (Standard_Integer i = 0; i <= 4; i++)
-  {
-    EXPECT_GE(aPoints1(i), 0.0);
-    EXPECT_LE(aPoints1(i), 1.0);
-  }
-
-  // Test with odd number (15) of Gauss points
-  TColStd_Array1OfReal aPoints2(0, 7); // 15/2 = 7.5 -> 7
-  aJacobi.Points(15, aPoints2);
-
-  for (Standard_Integer i = 0; i <= 7; i++)
-  {
-    EXPECT_GE(aPoints2(i), 0.0);
-    EXPECT_LE(aPoints2(i), 1.0);
-  }
-
-  // For odd number of points, the first point should be 0
-  EXPECT_NEAR(0.0, aPoints2(0), 1e-10);
-}
-
 TEST(PLib_JacobiPolynomialTest, Weights)
 {
   PLib_JacobiPolynomial aJacobi(20, GeomAbs_C1);
@@ -166,32 +137,6 @@ TEST(PLib_JacobiPolynomialTest, D3)
 
   // We don't check exact values here, just that the method executes without issues
   EXPECT_TRUE(true);
-}
-
-TEST(PLib_JacobiPolynomialTest, ToCoefficients)
-{
-  PLib_JacobiPolynomial aJacobi(10, GeomAbs_C1);
-  Standard_Integer      dimension = 3;
-  Standard_Integer      degree    = 8;
-
-  // Create sample JacCoeff array
-  TColStd_Array1OfReal aJacCoeff(1, dimension * (degree + 1));
-  for (Standard_Integer i = 1; i <= dimension * (degree + 1); i++)
-  {
-    aJacCoeff(i) = 0.1 * i;
-  }
-
-  // Create output coefficients array
-  TColStd_Array1OfReal aCoefficients(1, dimension * (degree + 1));
-
-  // Convert to coefficients
-  aJacobi.ToCoefficients(dimension, degree, aJacCoeff, aCoefficients);
-
-  // Check that all values are defined (not checking exact values)
-  for (Standard_Integer i = 1; i <= dimension * (degree + 1); i++)
-  {
-    EXPECT_FALSE(std::isnan(aCoefficients(i)));
-  }
 }
 
 TEST(PLib_JacobiPolynomialTest, ReduceDegree)

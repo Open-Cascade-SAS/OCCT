@@ -95,6 +95,9 @@ jobs:
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++17 `
+                -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="/W4 /WX" `
                 -D CMAKE_C_FLAGS="/W4 /WX" ..
       shell: pwsh
@@ -170,6 +173,9 @@ jobs:
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++17 `
+                -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
                 -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ..
       shell: pwsh
@@ -224,6 +230,9 @@ jobs:
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++17 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -277,6 +286,9 @@ jobs:
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++17 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -333,6 +345,9 @@ jobs:
               -D USE_TBB=OFF \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++17 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -388,7 +403,10 @@ jobs:
               -D USE_VTK=ON \
               -D USE_TBB=OFF \
               -D USE_RAPIDJSON=ON \
-              -D USE_OPENGL=ON ..
+              -D USE_OPENGL=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++17 \
+              -D INSTALL_GTEST=ON ..
 
     - name: Build OCCT
       run: |
@@ -401,6 +419,336 @@ jobs:
         name: install-linux-gcc-x64
         path: install
         retention-days: 7
+
+  run-gtest-windows-x64:
+    name: Run GTest on Windows with MSVC (x64)
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-windows-x64
+        path: install
+
+    - name: Download and extract 3rdparty dependencies
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        cd bin
+        set GTEST_OUTPUT=""
+        GTests.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        type gtest_output.log
+        exit /b 0
+      shell: cmd
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-windows-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        $log = Get-Content "gtest_output.log" -Raw
+        if ($log -match "\[\s+FAILED\s+\]") {
+          Write-Error "GTest failures detected in the output."
+          exit 1
+        } else {
+          Write-Output "No GTest failures detected."
+        }
+      shell: pwsh
+
+  run-gtest-windows-clang-x64:
+    name: Run GTest on Windows with Clang (x64)
+    needs: prepare-and-build-windows-clang-x64
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-windows-clang-x64
+        path: install
+
+    - name: Download and extract 3rdparty dependencies
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install
+        call env.bat clang win64 release
+        cd bin
+        set GTEST_OUTPUT=""
+        GTests.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        type gtest_output.log
+        exit /b 0
+      shell: cmd
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-windows-clang-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        $log = Get-Content "gtest_output.log" -Raw
+        if ($log -match "\[\s+FAILED\s+\]") {
+          Write-Error "GTest failures detected in the output."
+          exit 1
+        } else {
+          Write-Output "No GTest failures detected."
+        }
+      shell: pwsh
+
+  run-gtest-macos-x64:
+    name: Run GTest on macOS with Clang (x64)
+    needs: prepare-and-build-macos-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-macos-x64
+        path: install
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+
+    - name: Set execute permissions on GTests
+      run: chmod +x install/bin/GTests
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install/bin
+        source env.sh
+        ./GTests --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        cat gtest_output.log
+      shell: bash
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-macos-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        if grep -q "\[  FAILED  \]" gtest_output.log; then
+          echo "::error::GTest failures detected in the output."
+          exit 1
+        else
+          echo "No GTest failures detected."
+        fi
+      shell: bash
+
+  run-gtest-macos-gcc-x64:
+    name: Run GTest on macOS with GCC (x64)
+    needs: prepare-and-build-macos-gcc-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-macos-gcc-x64
+        path: install
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+
+    - name: Set execute permissions on GTests
+      run: chmod +x install/bin/GTests
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install/bin
+        source env.sh
+        ./GTests --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        cat gtest_output.log
+      shell: bash
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-macos-gcc-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        if grep -q "\[  FAILED  \]" gtest_output.log; then
+          echo "::error::GTest failures detected in the output."
+          exit 1
+        else
+          echo "No GTest failures detected."
+        fi
+      shell: bash
+
+  run-gtest-linux-clang-x64:
+    name: Run GTest on Linux with Clang (x64)
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-linux-clang-x64
+        path: install
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+
+    - name: Setup Xvfb and Mesa
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Set execute permissions on GTests
+      run: chmod +x install/bin/GTests
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install/bin
+        source env.sh
+        ./GTests --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        cat gtest_output.log
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-linux-clang-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        if grep -q "\[  FAILED  \]" gtest_output.log; then
+          echo "::error::GTest failures detected in the output."
+          exit 1
+        else
+          echo "No GTest failures detected."
+        fi
+      shell: bash
+
+  run-gtest-linux-gcc-x64:
+    name: Run GTest on Linux with GCC (x64)
+    needs: prepare-and-build-linux-gcc-x64
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-linux-gcc-x64
+        path: install
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+
+    - name: Setup Xvfb and Mesa
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Set execute permissions on GTests
+      run: chmod +x install/bin/GTests
+
+    - name: Run GTests
+      id: run-gtest
+      run: |
+        cd install/bin
+        source env.sh
+        ./GTests --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        cat gtest_output.log
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+
+    - name: Upload GTest results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: gtest-results-linux-gcc-x64
+        path: |
+          install/bin/gtest_results.xml
+          install/bin/gtest_output.log
+        retention-days: 15
+
+    - name: Check for test failures
+      run: |
+        cd install/bin
+        if grep -q "\[  FAILED  \]" gtest_output.log; then
+          echo "::error::GTest failures detected in the output."
+          exit 1
+        else
+          echo "No GTest failures detected."
+        fi
+      shell: bash
 
   build-inspector-windows:
     name: Build TInspector on Windows

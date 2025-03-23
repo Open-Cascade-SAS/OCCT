@@ -115,7 +115,7 @@ TEST(TCollection_AsciiStringTest, SearchAndLocation)
   EXPECT_EQ(-1, aString.Search("nonexistent"));
 
   // Test SearchFromEnd
-  EXPECT_EQ(29, aString.SearchFromEnd("test"));
+  EXPECT_EQ(27, aString.SearchFromEnd("test"));
 
   // Test Location
   EXPECT_EQ(3, aString.Location(TCollection_AsciiString("i"), 1, aString.Length()));
@@ -127,7 +127,7 @@ TEST(TCollection_AsciiStringTest, RemoveAndInsert)
   TCollection_AsciiString aString("Hello World");
 
   // Test Remove
-  aString.Remove(6, 5);
+  aString.Remove(6, 6);
   EXPECT_STREQ("Hello", aString.ToCString());
 
   // Test Insert
