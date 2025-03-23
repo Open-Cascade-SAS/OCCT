@@ -27,14 +27,18 @@ else()
   message(STATUS "Googletest not found in system paths")
   if(GTEST_USE_FETCHCONTENT)
     include(FetchContent)
+
+    # Set option to disable GMock before declaring the content
+    set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject" FORCE)
+
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
     FetchContent_Declare(
       googletest
       URL https://github.com/google/googletest/archive/refs/tags/v1.16.0.zip
       DOWNLOAD_EXTRACT_TIMESTAMP true
     )
-
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
     FetchContent_MakeAvailable(googletest)
 
@@ -46,14 +50,6 @@ else()
     if(TARGET gtest_main)
       set_target_properties(gtest_main PROPERTIES FOLDER "ThirdParty/GoogleTest")
       target_compile_definitions(gtest_main PRIVATE GTEST_CREATE_SHARED_LIBRARY=1)
-    endif()
-    if(TARGET gmock)
-      set_target_properties(gmock PROPERTIES FOLDER "ThirdParty/GoogleTest")
-      target_compile_definitions(gmock PRIVATE GTEST_CREATE_SHARED_LIBRARY=1)
-    endif()
-    if(TARGET gmock_main)
-      set_target_properties(gmock_main PROPERTIES FOLDER "ThirdParty/GoogleTest")
-      target_compile_definitions(gmock_main PRIVATE GTEST_CREATE_SHARED_LIBRARY=1)
     endif()
 
     # Set variables for consistent use throughout the build system
