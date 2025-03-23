@@ -27,6 +27,8 @@ function(OCCT_INIT_GTEST)
     target_link_libraries(${TEST_PROJECT_NAME} PRIVATE pthread)
   endif()
 
+  target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY=1)
+
   # Link with all active toolkits that are libraries
   foreach(TOOLKIT ${BUILD_TOOLKITS})
     if(TARGET ${TOOLKIT})
