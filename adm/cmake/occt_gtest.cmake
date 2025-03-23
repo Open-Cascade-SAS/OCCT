@@ -19,6 +19,9 @@ macro(OCCT_INIT_GTEST)
 
   set_target_properties(${TEST_PROJECT_NAME} PROPERTIES FOLDER "Testing")
 
+  # Workaround for MSVC to avoid linker errors
+  target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
+
   # Link with Google Test
   if(TARGET gtest AND TARGET gtest_main)
     # Use targets from FetchContent

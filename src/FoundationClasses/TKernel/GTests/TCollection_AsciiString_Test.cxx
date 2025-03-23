@@ -204,7 +204,7 @@ TEST(TCollection_AsciiStringTest, ValueConversion)
 
   // Test real value conversion
   TCollection_AsciiString realString("123.456");
-  EXPECT_FLOAT_EQ(123.456, realString.RealValue());
+  EXPECT_DOUBLE_EQ(123.456, realString.RealValue());
   EXPECT_TRUE(realString.IsRealValue());
 
   // Test invalid conversions

@@ -29,7 +29,7 @@ else()
     include(FetchContent)
     FetchContent_Declare(
       googletest
-      URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+      URL https://github.com/google/googletest/archive/refs/tags/v1.16.0.zip
       DOWNLOAD_EXTRACT_TIMESTAMP true
     )
 
@@ -50,10 +50,6 @@ else()
     endif()
     if(TARGET gmock_main)
       set_target_properties(gmock_main PROPERTIES FOLDER "ThirdParty/GoogleTest")
-      # Fix for gmock_main linking issue - ensure it links against gmock
-      if(TARGET gmock)
-        target_link_libraries(gmock_main PRIVATE gmock)
-      endif()
     endif()
 
     # Set variables for consistent use throughout the build system
