@@ -1214,6 +1214,7 @@ else()
   # Disable GTest integration if not enabled
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GTEST")
   OCCT_CHECK_AND_UNSET_GROUP ("GTest")
+  OCCT_CHECK_AND_UNSET ("INSTALL_GTEST")
 endif()
 
 if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
