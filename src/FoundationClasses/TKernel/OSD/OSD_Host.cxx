@@ -139,8 +139,13 @@ TCollection_AsciiString OSD_Host::InternetAddress()
   char                    buffer[16];
   TCollection_AsciiString result, host;
 
-  host = HostName();
-  memcpy(&internet_address, gethostbyname(host.ToCString()), sizeof(struct hostent));
+  host                    = HostName();
+  const auto* aHostByName = gethostbyname(host.ToCString());
+  if (aHostByName == nullptr)
+  {
+    aHostByName = gethostbyname("localhost");
+  }
+  memcpy(&internet_address, aHostByName, sizeof(struct hostent));
 
   // Gets each bytes into integers
   a = (unsigned char)internet_address.h_addr_list[0][0];
