@@ -21,13 +21,13 @@ jobs:
   clang-format:
     name: Check code formatting
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
       with:
         fetch-depth: 0
-    
+
     - name: Run clang-format check
       uses: ./.github/actions/clang-format-check
       with:
@@ -97,9 +97,7 @@ jobs:
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
                 -D BUILD_CPP_STANDARD=C++14 `
-                -D INSTALL_GTEST=ON `
-                -D CMAKE_CXX_FLAGS="/W4 /WX" `
-                -D CMAKE_C_FLAGS="/W4 /WX" ..
+                -D INSTALL_GTEST=ON ..
       shell: pwsh
 
     - name: Build OCCT
@@ -424,7 +422,7 @@ jobs:
     name: Build TInspector on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -439,7 +437,7 @@ jobs:
     name: Build TInspector on Linux
     needs: prepare-and-build-linux-clang-x64
     runs-on: ubuntu-24.04
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -454,7 +452,7 @@ jobs:
     name: Build CSharp Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -469,7 +467,7 @@ jobs:
     name: Build MFC Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -484,7 +482,7 @@ jobs:
     name: Build Qt Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -499,7 +497,7 @@ jobs:
     name: Build Qt Sample on Linux
     needs: prepare-and-build-linux-clang-x64
     runs-on: ubuntu-24.04
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -1164,7 +1162,7 @@ jobs:
         cd install/bin/results/macos-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../macos-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/macos-x64
@@ -1381,7 +1379,7 @@ jobs:
         cd install/bin/results/macos-gcc-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../macos-gcc-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/macos-gcc-x64
@@ -1585,7 +1583,7 @@ jobs:
         cd install/bin/results/linux-clang-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../linux-clang-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/linux-clang-x64
@@ -1789,7 +1787,7 @@ jobs:
         cd install/bin/results/linux-gcc-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../linux-gcc-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/linux-gcc-x64

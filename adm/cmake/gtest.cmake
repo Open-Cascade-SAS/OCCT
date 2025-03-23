@@ -35,6 +35,7 @@ else()
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
     FetchContent_MakeAvailable(googletest)
 
     # Set proper grouping for the targets in solution explorer
@@ -49,6 +50,10 @@ else()
     endif()
     if(TARGET gmock_main)
       set_target_properties(gmock_main PROPERTIES FOLDER "ThirdParty/GoogleTest")
+      # Fix for gmock_main linking issue - ensure it links against gmock
+      if(TARGET gmock)
+        target_link_libraries(gmock_main PRIVATE gmock)
+      endif()
     endif()
 
     # Set variables for consistent use throughout the build system
