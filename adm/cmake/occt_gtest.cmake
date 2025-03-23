@@ -1,6 +1,6 @@
 # Google Test integration for OCCT toolkits
 
-set (TEST_PROJECT_NAME GTests)
+set (TEST_PROJECT_NAME OpenCascadeGTest)
 
 # Initialize Google Test environment and create the target
 macro(OCCT_INIT_GTEST)

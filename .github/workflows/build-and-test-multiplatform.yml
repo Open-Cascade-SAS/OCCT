@@ -96,7 +96,7 @@ jobs:
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
+                -D BUILD_CPP_STANDARD=C++14 `
                 -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="/W4 /WX" `
                 -D CMAKE_C_FLAGS="/W4 /WX" ..
@@ -174,7 +174,7 @@ jobs:
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
+                -D BUILD_CPP_STANDARD=C++14 `
                 -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
                 -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ..
@@ -231,7 +231,7 @@ jobs:
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
+              -D BUILD_CPP_STANDARD=C++14 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
@@ -287,7 +287,7 @@ jobs:
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
+              -D BUILD_CPP_STANDARD=C++14 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
@@ -346,7 +346,7 @@ jobs:
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
+              -D BUILD_CPP_STANDARD=C++14 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
@@ -405,7 +405,7 @@ jobs:
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
+              -D BUILD_CPP_STANDARD=C++14 \
               -D INSTALL_GTEST=ON ..
 
     - name: Build OCCT

@@ -61,9 +61,9 @@ runs:
       if: inputs.platform != 'windows'
       shell: bash
       run: |
-        chmod +x install/bin/GTests
+        chmod +x install/bin/OpenCascadeGTest
 
-    - name: Run GTests on Windows
+    - name: Run OpenCascadeGTest on Windows
       if: inputs.platform == 'windows'
       id: run-gtest-windows
       shell: cmd
@@ -72,11 +72,11 @@ runs:
         call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
         cd bin
         set GTEST_OUTPUT=""
-        GTests.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        OpenCascadeGTest.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
         type gtest_output.log
         exit /b 0
 
-    - name: Run GTests on Unix platforms
+    - name: Run OpenCascadeGTest on Unix platforms
       if: inputs.platform != 'windows'
       id: run-gtest-unix
       shell: bash
@@ -86,7 +86,7 @@ runs:
       run: |
         cd install/bin
         source env.sh
-        ./GTests --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
         cat gtest_output.log
 
     - name: Upload GTest results
