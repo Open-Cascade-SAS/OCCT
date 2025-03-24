@@ -82,6 +82,12 @@ elseif ("${BUILD_CPP_STANDARD}" STREQUAL "C++23")
 else ()
   message (FATAL_ERROR, "misprint in c++ standard name")
 endif()
+
+if (DEFINED BUILD_GTEST AND BUILD_GTEST AND CMAKE_CXX_STANDARD LESS 14)
+  set (CMAKE_CXX_STANDARD 14)
+  message (STATUS "Info: C++14 standard is required for GTest. Set to C++14.")
+endif()
+
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # include cmake file
@@ -447,6 +453,10 @@ if (NOT CAN_USE_VTK EQUAL -1)
   endif()
 else()
   OCCT_CHECK_AND_UNSET (USE_VTK)
+endif()
+
+if (NOT DEFINED BUILD_GTEST)
+  set (BUILD_GTEST OFF CACHE BOOL "${BUILD_GTEST_DESCR}")
 endif()
 
 # Rebuild *.yacc and *.lex files that are contained by TKMath toolkit
@@ -1183,6 +1193,29 @@ endif()
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
   add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
 endforeach()
+
+# Setup Google Test integration if enabled
+if (BUILD_GTEST)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/gtest")
+  enable_testing()
+
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_gtest")
+  # Initialize GTest environment and create the target first
+  OCCT_INIT_GTEST()
+  
+  # Collect test files from all active toolkits and add them to the target
+  foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
+    OCCT_COLLECT_TOOLKIT_TESTS(${BUILD_TOOLKIT})
+  endforeach()
+  
+  # Set environment variables for all tests
+  OCCT_SET_GTEST_ENVIRONMENT()
+else()
+  # Disable GTest integration if not enabled
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GTEST")
+  OCCT_CHECK_AND_UNSET_GROUP ("GTest")
+  OCCT_CHECK_AND_UNSET ("INSTALL_GTEST")
+endif()
 
 if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_doc")

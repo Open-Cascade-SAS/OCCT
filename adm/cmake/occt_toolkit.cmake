@@ -189,6 +189,7 @@ elseif (BUILD_SOVERSION_NUMBERS GREATER 1)
 elseif (BUILD_SOVERSION_NUMBERS GREATER 0)
   set (OCC_SOVERSION "${OCC_VERSION_MAJOR}")
 endif()
+
 set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}"
                                                   SOVERSION     "${OCC_SOVERSION}"
                                                   VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")

@@ -21,13 +21,13 @@ jobs:
   clang-format:
     name: Check code formatting
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
       with:
         fetch-depth: 0
-    
+
     - name: Run clang-format check
       uses: ./.github/actions/clang-format-check
       with:
@@ -95,8 +95,9 @@ jobs:
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
-                -D CMAKE_CXX_FLAGS="/W4 /WX" `
-                -D CMAKE_C_FLAGS="/W4 /WX" ..
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++14 `
+                -D INSTALL_GTEST=ON ..
       shell: pwsh
 
     - name: Build OCCT
@@ -170,6 +171,9 @@ jobs:
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++14 `
+                -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
                 -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ..
       shell: pwsh
@@ -224,6 +228,9 @@ jobs:
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -277,6 +284,9 @@ jobs:
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -333,6 +343,9 @@ jobs:
               -D USE_TBB=OFF \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
@@ -388,7 +401,10 @@ jobs:
               -D USE_VTK=ON \
               -D USE_TBB=OFF \
               -D USE_RAPIDJSON=ON \
-              -D USE_OPENGL=ON ..
+              -D USE_OPENGL=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON ..
 
     - name: Build OCCT
       run: |
@@ -406,7 +422,7 @@ jobs:
     name: Build TInspector on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -421,7 +437,7 @@ jobs:
     name: Build TInspector on Linux
     needs: prepare-and-build-linux-clang-x64
     runs-on: ubuntu-24.04
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -436,7 +452,7 @@ jobs:
     name: Build CSharp Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -451,7 +467,7 @@ jobs:
     name: Build MFC Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -466,7 +482,7 @@ jobs:
     name: Build Qt Sample on Windows
     needs: prepare-and-build-windows-x64
     runs-on: windows-2022
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -481,7 +497,7 @@ jobs:
     name: Build Qt Sample on Linux
     needs: prepare-and-build-linux-clang-x64
     runs-on: ubuntu-24.04
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -1146,7 +1162,7 @@ jobs:
         cd install/bin/results/macos-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../macos-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/macos-x64
@@ -1363,7 +1379,7 @@ jobs:
         cd install/bin/results/macos-gcc-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../macos-gcc-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/macos-gcc-x64
@@ -1567,7 +1583,7 @@ jobs:
         cd install/bin/results/linux-clang-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../linux-clang-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/linux-clang-x64
@@ -1771,7 +1787,7 @@ jobs:
         cd install/bin/results/linux-gcc-x64-retest
         if [ "$(ls -A)" ]; then
           cp -rf * ../linux-gcc-x64/
-          
+
           cd ../../
           source env.sh
           ./DRAWEXE -v -c testsummarize results/linux-gcc-x64
@@ -1801,6 +1817,108 @@ jobs:
           fi
           echo "Found $FAILED_COUNT FAILED tests"
         fi
+
+  run-gtest-windows-x64:
+    name: Run GTest on Windows with MSVC (x64)
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: windows
+        compiler: msvc
+        install-artifact-name: install-windows-x64
+        artifact-suffix: x64
+
+  run-gtest-windows-clang-x64:
+    name: Run GTest on Windows with Clang (x64)
+    needs: prepare-and-build-windows-clang-x64
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: windows
+        compiler: clang
+        install-artifact-name: install-windows-clang-x64
+        artifact-suffix: x64
+
+  run-gtest-macos-x64:
+    name: Run GTest on macOS with Clang (x64)
+    needs: prepare-and-build-macos-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-x64
+        artifact-suffix: x64
+
+  run-gtest-macos-gcc-x64:
+    name: Run GTest on macOS with GCC (x64)
+    needs: prepare-and-build-macos-gcc-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: macos
+        compiler: gcc
+        install-artifact-name: install-macos-gcc-x64
+        artifact-suffix: x64
+
+  run-gtest-linux-clang-x64:
+    name: Run GTest on Linux with Clang (x64)
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: linux
+        compiler: clang
+        install-artifact-name: install-linux-clang-x64
+        artifact-suffix: x64
+
+  run-gtest-linux-gcc-x64:
+    name: Run GTest on Linux with GCC (x64)
+    needs: prepare-and-build-linux-gcc-x64
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: linux
+        compiler: gcc
+        install-artifact-name: install-linux-gcc-x64
+        artifact-suffix: x64
 
   test-summary:
     name: 'Summarize Test Results'
