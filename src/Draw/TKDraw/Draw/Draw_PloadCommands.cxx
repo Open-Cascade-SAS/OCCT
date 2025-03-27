@@ -60,17 +60,17 @@ static Standard_Boolean findPluginFile(TCollection_AsciiString& thePluginName,
     }
     else
     {
-      // now try by CASROOT
-      thePluginDir = OSD_Environment("CASROOT").Value();
+      // now try by CSF_OCCTResourcePath
+      thePluginDir = OSD_Environment("CSF_OCCTResourcePath").Value();
       if (!thePluginDir.IsEmpty())
       {
-        thePluginDir += "/src/DrawResources";
+        thePluginDir += "/DrawResources";
         aToSetCSFVariable = Standard_True; // CSF variable to be set later
       }
       else
       {
         Message::SendFail() << "Failed to load plugin: Neither " << aCSFVariable
-                            << ", nor CASROOT variables have been set";
+                            << ", nor CSF_OCCTResourcePath variables have been set";
         return Standard_False;
       }
     }

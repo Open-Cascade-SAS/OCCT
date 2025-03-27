@@ -1240,7 +1240,7 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
       set (X_COMPILER_BITNESS "Win32")
     endif()
 
-    OCCT_CONFIGURE ("adm/templates/DRAWEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/src/DRAWEXE/DRAWEXE.vcxproj.user")
+    OCCT_CONFIGURE ("adm/templates/DRAWEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/src/Draw/DRAWEXE/DRAWEXE.vcxproj.user")
   endif()
 endif()
 

@@ -452,10 +452,10 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   else
   {
     TCollection_AsciiString aDrawHome;
-    TCollection_AsciiString aCasRoot(OSD_Environment("CASROOT").Value());
+    TCollection_AsciiString aCasRoot(OSD_Environment("CSF_OCCTResourcePath").Value());
     if (!aCasRoot.IsEmpty())
     {
-      aDrawHome = aCasRoot + "/src/DrawResources";
+      aDrawHome = aCasRoot + "/DrawResources";
     }
     else
     {
