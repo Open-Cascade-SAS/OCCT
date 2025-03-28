@@ -1,0 +1,101 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _MergeSTEPEntities_CircleHasher_HeaderFile
+#define _MergeSTEPEntities_CircleHasher_HeaderFile
+
+#include <MergeSTEPEntities_Axis2Placement2dHasher.hxx>
+#include <MergeSTEPEntities_Axis2Placement3dHasher.hxx>
+
+#include <Standard_HashUtils.hxx>
+#include <StepGeom_Circle.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+//! OCCT-style hasher for StepGeom_Circle entities.
+struct MergeSTEPEntities_CircleHasher
+{
+  //! Returns hash for a Circle entity.
+  std::size_t operator()(const Handle(StepGeom_Circle)& theCircle) const noexcept
+  {
+    const size_t aPositionHash =
+      !theCircle->Position().Axis2Placement2d().IsNull()
+        ? MergeSTEPEntities_Axis2Placement2dHasher{}(theCircle->Position().Axis2Placement2d())
+      : !theCircle->Position().Axis2Placement3d().IsNull()
+        ? MergeSTEPEntities_Axis2Placement3dHasher{}(theCircle->Position().Axis2Placement3d())
+        : opencascade::MurmurHash::optimalSeed();
+
+    const size_t aRadiusHash = opencascade::hash(static_cast<int>(theCircle->Radius()));
+
+    const size_t aHashes[2]{aPositionHash, aRadiusHash};
+    const size_t aCombinedHash = opencascade::hashBytes(aHashes, sizeof(aHashes));
+    if (theCircle->Name().IsNull())
+    {
+      // If the name is not present, return the hash.
+      return aCombinedHash;
+    }
+    // Add the name to the hash if it is present.
+    const size_t aHashWithName[2]{
+      aCombinedHash,
+      std::hash<TCollection_AsciiString>{}(theCircle->Name()->String())};
+    return opencascade::hashBytes(aHashWithName, sizeof(aHashWithName));
+  }
+
+  //! Compares two Circle entities.
+  bool operator()(const Handle(StepGeom_Circle)& theCircle1,
+                  const Handle(StepGeom_Circle)& theCircle2) const noexcept
+  {
+    // Compare names.
+    if (theCircle1->Name().IsNull() != theCircle2->Name().IsNull())
+    {
+      return false;
+    }
+    if (!theCircle1->Name()->IsSameString(theCircle2->Name()))
+    {
+      return false;
+    }
+
+    // Compare axis placements.
+    if (theCircle1->Position().CaseNumber() != theCircle2->Position().CaseNumber())
+    {
+      return false;
+    }
+
+    if (theCircle1->Position().CaseNumber() == 1)
+    {
+      if (!MergeSTEPEntities_Axis2Placement2dHasher{}(theCircle1->Position().Axis2Placement2d(),
+                                                      theCircle2->Position().Axis2Placement2d()))
+      {
+        return false;
+      }
+    }
+    else if (theCircle1->Position().CaseNumber() == 2)
+    {
+      if (!MergeSTEPEntities_Axis2Placement3dHasher{}(theCircle1->Position().Axis2Placement3d(),
+                                                      theCircle2->Position().Axis2Placement3d()))
+      {
+        return false;
+      }
+    }
+
+    // Compare radius.
+    constexpr Standard_Real aTolerance = 1e-12;
+    if (Abs(theCircle1->Radius() - theCircle2->Radius()) > aTolerance)
+    {
+      return false;
+    }
+
+    return true;
+  }
+};
+
+#endif // _MergeSTEPEntities_CircleHasher_HeaderFile

@@ -23,6 +23,7 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
+#include <MergeSTEPEntities_Merger.hxx>
 #include <Message.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_Parallel.hxx>
@@ -1093,6 +1094,39 @@ static Standard_Integer WriteStep(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
+static Standard_Integer MergeSTEPEntities(Draw_Interpretor& theDI,
+                                          Standard_Integer  theNbArgs,
+                                          const char**      theArgVec)
+{
+  if (theNbArgs < 2)
+  {
+    theDI << "Incorrect number of arguments\n";
+    theDI << "Usage: MergeSTEPEntities input_file output_file\n";
+    return 1;
+  }
+
+  STEPControl_Reader aReader;
+  if (aReader.ReadFile(theArgVec[1]) != IFSelect_RetDone)
+  {
+    theDI << "Error: Cannot read file " << theArgVec[1] << "\n";
+    return 1;
+  }
+
+  MergeSTEPEntities_Merger aMerger(aReader.WS());
+  aMerger.Perform();
+
+  STEPControl_Writer aWriter(aReader.WS(), Standard_False);
+  if (aWriter.Write(theArgVec[2]) != IFSelect_RetDone)
+  {
+    theDI << "Error: Cannot write file " << theArgVec[2] << "\n";
+    return 1;
+  }
+
+  return 0;
+}
+
+//=================================================================================================
+
 void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
 {
   static Standard_Boolean aIsActivated = Standard_False;
@@ -1144,6 +1178,15 @@ void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
     __FILE__,
     WriteStep,
     aGroup);
+
+  theDI.Add("MergeSTEPEntities",
+            "MergeSTEPEntities input_file output_file"
+            "\n\t\t: Merge equal entities in STEP file"
+            "\n\t\t:   input_file  - Step file to read"
+            "\n\t\t:   output_file - Step file to write output to",
+            __FILE__,
+            MergeSTEPEntities,
+            aGroup);
 
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);

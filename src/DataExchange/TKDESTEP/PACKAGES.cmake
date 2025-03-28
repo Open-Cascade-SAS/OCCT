@@ -41,4 +41,5 @@ set(OCCT_TKDESTEP_LIST_OF_PACKAGES
   APIHeaderSection
   HeaderSection
   DESTEP
+  MergeSTEPEntities
 )
