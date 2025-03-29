@@ -274,15 +274,15 @@ if (BUILD_SHARED_LIBS)
   mark_as_advanced (3RDPARTY_TK_LIBRARY 3RDPARTY_TK_DLL)
 endif()
 
-# unset all redundant variables
-#TCL
-OCCT_CHECK_AND_UNSET (TCL_LIBRARY)
-OCCT_CHECK_AND_UNSET (TCL_INCLUDE_PATH)
-OCCT_CHECK_AND_UNSET (TCL_TCLSH)
+# hide all redundant variables
+
+mark_as_advanced (TCL_LIBRARY)
+mark_as_advanced (TCL_INCLUDE_PATH)
+mark_as_advanced (TCL_TCLSH)
 #TK
-OCCT_CHECK_AND_UNSET (TK_LIBRARY)
-OCCT_CHECK_AND_UNSET (TK_INCLUDE_PATH)
-OCCT_CHECK_AND_UNSET (TK_WISH)
+mark_as_advanced (TK_LIBRARY)
+mark_as_advanced (TK_INCLUDE_PATH)
+mark_as_advanced (TK_WISH)
 
 if (NOT BUILD_SHARED_LIBS)
   OCCT_CHECK_AND_UNSET (3RDPARTY_TK_LIBRARY)
