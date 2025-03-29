@@ -1,0 +1,10 @@
+puts "========================================================================="
+puts "GH466: BRepBndLib::AddClose crashes"
+puts "========================================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug_gh466.brep] result
+
+OCC566 result
