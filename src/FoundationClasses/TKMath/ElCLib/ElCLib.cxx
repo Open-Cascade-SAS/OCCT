@@ -109,12 +109,17 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
     return;
   }
 
-  U1 -= Floor((U1 - UFirst) / period) * period;
-  if (ULast - U1 < Preci)
-    U1 -= period;
-  U2 -= Floor((U2 - U1) / period) * period;
-  if (U2 - U1 < Preci)
-    U2 += period;
+  // Adjust U1 to be in [UFirst, ULast]
+  U1 = UFirst + fmod(U1 - UFirst, period);
+  if (U1 < UFirst) U1 += period;
+
+  // Handle the case where U1 is very close to ULast
+  if (ULast - U1 <= Preci)
+    U1 = UFirst;  // or other appropriate handling
+    
+  // Adjust U2 to be in [U1, U1 + period]
+  U2 = U1 + fmod(U2 - U1, period);
+  if (U2 < U1) U2 += period;
 }
 
 //=================================================================================================
