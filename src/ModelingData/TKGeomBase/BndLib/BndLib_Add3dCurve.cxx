@@ -197,7 +197,7 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
         Handle(Geom_Geometry)     G = Bs->Copy();
         Handle(Geom_BSplineCurve) Bsaux(Handle(Geom_BSplineCurve)::DownCast(G));
         Standard_Real             u1 = U1, u2 = U2;
-        Standard_Real aSegmentTol = 2. * Precision::PConfusion();
+        Standard_Real             aSegmentTol = 2. * Precision::PConfusion();
         //// modified by jgv, 24.10.01 for BUC61031 ////
         if (Bsaux->IsPeriodic())
           ElCLib::AdjustPeriodic(Bsaux->FirstParameter(),
