@@ -341,6 +341,7 @@ if (NOT INSTALL_VTK)
   endif()
 endif()
 
-OCCT_CHECK_AND_UNSET (VTK_INCLUDE_DIRS)
-OCCT_CHECK_AND_UNSET (VTK_LIBRARY_DIRS)
-OCCT_CHECK_AND_UNSET (VTK_DIR)
+# hide some variables
+mark_as_advanced (VTK_INCLUDE_DIRS)
+mark_as_advanced (VTK_LIBRARY_DIRS)
+mark_as_advanced (VTK_DIR)

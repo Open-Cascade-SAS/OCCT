@@ -83,5 +83,5 @@ else()
   set (3RDPARTY_EIGEN_INCLUDE_DIR "" CACHE PATH "the path to Eigen header file" FORCE)
 endif()
 
-# unset all redundant variables
-OCCT_CHECK_AND_UNSET(Eigen3_DIR)
+# hide all redundant variables
+mark_as_advanced(Eigen3_DIR)

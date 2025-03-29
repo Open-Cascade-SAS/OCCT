@@ -90,5 +90,5 @@ else()
   set (3RDPARTY_RAPIDJSON_INCLUDE_DIR "" CACHE PATH "the path to RapidJSON header file" FORCE)
 endif()
 
-# unset all redundant variables
-OCCT_CHECK_AND_UNSET(RapidJSON_DIR)
+# hide all redundant variables
+mark_as_advanced(RapidJSON_DIR)

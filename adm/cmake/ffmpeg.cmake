@@ -247,7 +247,7 @@ foreach (LIBRARY_NAME ${CSF_FFmpeg})
   mark_as_advanced (3RDPARTY_FFMPEG_LIBRARY_${LIBRARY_NAME} 3RDPARTY_FFMPEG_DLL_${LIBRARY_NAME})
 endforeach()
 
-# unset all redundant variables
-OCCT_CHECK_AND_UNSET (FFMPEG_INCLUDE_DIRS)
-OCCT_CHECK_AND_UNSET (FFMPEG_LIBRARY_DIRS)
-OCCT_CHECK_AND_UNSET (FFMPEG_DIR)
+# hide all redundant variables
+mark_as_advanced (FFMPEG_INCLUDE_DIRS)
+mark_as_advanced (FFMPEG_LIBRARY_DIRS)
+mark_as_advanced (FFMPEG_DIR)

@@ -56,7 +56,7 @@ else()
   endif()
 endif()
 
-# unset all redundant variables
-OCCT_CHECK_AND_UNSET (DOXYGEN_SKIP_DOT)
-OCCT_CHECK_AND_UNSET (DOXYGEN_EXECUTABLE)
-OCCT_CHECK_AND_UNSET (DOXYGEN_DOT_EXECUTABLE)
+# hide all redundant variables
+mark_as_advanced (DOXYGEN_SKIP_DOT)
+mark_as_advanced (DOXYGEN_EXECUTABLE)
+mark_as_advanced (DOXYGEN_DOT_EXECUTABLE)

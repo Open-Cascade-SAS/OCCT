@@ -389,10 +389,10 @@ endif()
   endif()
 #endif()
 
-# unset all redundant variables
-OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_ft2build)
-OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_freetype2)
-OCCT_CHECK_AND_UNSET(FREETYPE_LIBRARY_RELEASE)
+# hide all redundant variables
+mark_as_advanced(FREETYPE_INCLUDE_DIR_ft2build)
+mark_as_advanced(FREETYPE_INCLUDE_DIR_freetype2)
+mark_as_advanced(FREETYPE_LIBRARY_RELEASE)
 
 if (BUILD_SHARED_LIBS)
   mark_as_advanced (3RDPARTY_FREETYPE_LIBRARY 3RDPARTY_FREETYPE_DLL)
