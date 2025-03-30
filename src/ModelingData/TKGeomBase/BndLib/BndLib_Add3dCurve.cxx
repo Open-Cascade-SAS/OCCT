@@ -193,16 +193,15 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
       if (Abs(Bs->FirstParameter() - U1) > Precision::Parametric(Tol)
           || Abs(Bs->LastParameter() - U2) > Precision::Parametric(Tol))
       {
-
         Handle(Geom_Geometry)     G = Bs->Copy();
         Handle(Geom_BSplineCurve) Bsaux(Handle(Geom_BSplineCurve)::DownCast(G));
         Standard_Real             u1 = U1, u2 = U2;
-        Standard_Real             aSegmentTol = 2. * Precision::PConfusion();
+
         //// modified by jgv, 24.10.01 for BUC61031 ////
         if (Bsaux->IsPeriodic())
           ElCLib::AdjustPeriodic(Bsaux->FirstParameter(),
                                  Bsaux->LastParameter(),
-                                 aSegmentTol,
+                                 Precision::PConfusion(),
                                  u1,
                                  u2);
         else
@@ -216,8 +215,13 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
             u2 = Bsaux->LastParameter();
           //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
         }
-        if (Abs(u2 - u1) < aSegmentTol)
-          aSegmentTol = Abs(u2 - u1) * 0.01;
+        const Standard_Real anU2Periodic =
+          Bsaux->IsPeriodic() ? (u2 - (Bsaux->LastParameter() - Bsaux->FirstParameter())) : u2;
+        Standard_Real aSegmentTol = 2. * Precision::PConfusion();
+        if (Abs((anU2Periodic - u1) < aSegmentTol))
+        {
+          aSegmentTol = Abs(anU2Periodic - u1) * 0.01;
+        }
         Bsaux->Segment(u1, u2, aSegmentTol);
         Bs = Bsaux;
       }
