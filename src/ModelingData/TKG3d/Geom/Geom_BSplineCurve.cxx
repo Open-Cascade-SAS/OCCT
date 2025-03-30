@@ -97,7 +97,17 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& theWeights)
 
 Handle(Geom_Geometry) Geom_BSplineCurve::Copy() const
 {
-  return new Geom_BSplineCurve(*this);
+  Handle(Geom_BSplineCurve) C;
+  if (IsRational())
+    C = new Geom_BSplineCurve(poles->Array1(),
+                              weights->Array1(),
+                              knots->Array1(),
+                              mults->Array1(),
+                              deg,
+                              periodic);
+  else
+    C = new Geom_BSplineCurve(poles->Array1(), knots->Array1(), mults->Array1(), deg, periodic);
+  return C;
 }
 
 //=================================================================================================
@@ -1049,29 +1059,6 @@ void Geom_BSplineCurve::MovePointAndTangent(const Standard_Real    U,
     poles->ChangeArray1() = new_poles;
     maxderivinvok         = 0;
   }
-}
-
-//=================================================================================================
-
-Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
-    : rational(theOther.rational),
-      periodic(theOther.periodic),
-      knotSet(theOther.knotSet),
-      smooth(theOther.smooth),
-      deg(theOther.deg),
-      maxderivinv(theOther.maxderivinv),
-      maxderivinvok(theOther.maxderivinvok)
-{
-  if (!theOther.poles.IsNull())
-    poles = new TColgp_HArray1OfPnt(theOther.poles->Array1());
-  if (!theOther.weights.IsNull())
-    weights = new TColStd_HArray1OfReal(theOther.weights->Array1());
-  if (!theOther.flatknots.IsNull())
-    flatknots = new TColStd_HArray1OfReal(theOther.flatknots->Array1());
-  if (!theOther.knots.IsNull())
-    knots = new TColStd_HArray1OfReal(theOther.knots->Array1());
-  if (!theOther.mults.IsNull())
-    mults = new TColStd_HArray1OfInteger(theOther.mults->Array1());
 }
 
 //=================================================================================================

@@ -833,10 +833,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
 
 protected:
-
-  //! Copy constructor
-  Standard_EXPORT Geom_BSplineCurve(const Geom_BSplineCurve& theOther);
-
 private:
   //! Recompute  the  flatknots,  the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
