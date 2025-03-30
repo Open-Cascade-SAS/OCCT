@@ -273,13 +273,12 @@ if (TK_FOUND AND 3RDPARTY_TCL_DIR)
   endif()
 endif()
 
-# unset all redundant variables
-#TCL
-OCCT_CHECK_AND_UNSET (TCL_LIBRARY)
-OCCT_CHECK_AND_UNSET (TCL_INCLUDE_PATH)
-OCCT_CHECK_AND_UNSET (TCL_TCLSH)
+# hide all redundant variables
+# TCL
+mark_as_advanced (TCL_LIBRARY)
+mark_as_advanced (TCL_INCLUDE_PATH)
+mark_as_advanced (TCL_TCLSH)
 #TK
-OCCT_CHECK_AND_UNSET (TK_LIBRARY)
-OCCT_CHECK_AND_UNSET (TK_INCLUDE_PATH)
-OCCT_CHECK_AND_UNSET (TK_WISH)
-
+mark_as_advanced (TK_LIBRARY)
+mark_as_advanced (TK_INCLUDE_PATH)
+mark_as_advanced (TK_WISH)
