@@ -72,29 +72,20 @@ Standard_Real ElCLib::InPeriod(const Standard_Real theU,
                                const Standard_Real theUFirst,
                                const Standard_Real theULast)
 {
-  // Early return for infinite bounds
   if (Precision::IsInfinite(theU) || Precision::IsInfinite(theUFirst)
       || Precision::IsInfinite(theULast))
-  {
+  { // In order to avoid FLT_Overflow exception
     return theU;
   }
 
   const Standard_Real aPeriod = theULast - theUFirst;
 
-  // Early return for near-zero period to avoid division issues
   if (aPeriod < Epsilon(theULast))
   {
     return theU;
   }
 
-  // Use std::fmod for better performance and corner case handling
-  Standard_Real aResult = theUFirst + std::fmod(theU - theUFirst, aPeriod);
-  if (aResult < theUFirst)
-  {
-    aResult += aPeriod; // Handle negative values
-  }
-
-  return aResult;
+  return Max(theUFirst, theU + aPeriod * Ceiling((theUFirst - theU) / aPeriod));
 }
 
 //=================================================================================================
@@ -105,7 +96,6 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
                             Standard_Real&      U1,
                             Standard_Real&      U2)
 {
-  // Early return for infinite bounds
   if (Precision::IsInfinite(UFirst) || Precision::IsInfinite(ULast))
   {
     U1 = UFirst;
@@ -115,7 +105,6 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
 
   const Standard_Real aPeriod = ULast - UFirst;
 
-  // Early return for near-zero period to avoid division issues
   if (aPeriod < Epsilon(ULast))
   {
     // In order to avoid FLT_Overflow exception
@@ -125,27 +114,12 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
     return;
   }
 
-  // Adjust U1 to be within [UFirst, ULast)
-  U1 = UFirst + std::fmod(U1 - UFirst, aPeriod);
-  if (U1 < UFirst)
-  {
-    U1 += aPeriod; // Handle negative values
-  }
-
-  // Handle case where U1 is very close to ULast
+  U1 -= Floor((U1 - UFirst) / aPeriod) * aPeriod;
   if (ULast - U1 < Preci)
   {
     U1 -= aPeriod;
   }
-
-  // Adjust U2 to be within [U1, U1+period)
-  U2 = U1 + std::fmod(U2 - U1, aPeriod);
-  if (U2 < U1)
-  {
-    U2 += aPeriod; // Handle negative values
-  }
-
-  // Handle case where U2 is very close to U1
+  U2 -= Floor((U2 - U1) / aPeriod) * aPeriod;
   if (U2 - U1 < Preci)
   {
     U2 += aPeriod;
