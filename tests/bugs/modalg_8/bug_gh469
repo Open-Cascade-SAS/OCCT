@@ -1,0 +1,10 @@
+puts "========================================================================="
+puts "GH469: Bounding box is void when using BRepBndLib::AddOptimal"
+puts "========================================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug_gh469.brep] result
+
+bounding result -optimal

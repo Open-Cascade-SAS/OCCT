@@ -619,8 +619,13 @@ void FindExactUVBounds(const TopoDS_Face&  FF,
     BndLib_Add2dCurve::AddOptimal(aC2D, aT1, aT2, TolUV, aBox);
     //
   }
-  //
-  aBox.Get(umin, vmin, umax, vmax);
+
+  // In some cases no edges are found
+  if (!aBox.IsVoid())
+  {
+    aBox.Get(umin, vmin, umax, vmax);
+  }
+
   //
   TopLoc_Location      aLoc;
   Handle(Geom_Surface) aS = BRep_Tool::Surface(FF, aLoc);
