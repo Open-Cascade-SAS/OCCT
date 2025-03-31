@@ -27,49 +27,38 @@ inline constexpr uint64_t shift_mix(uint64_t theV) noexcept
 // Loads n bytes, where 1 <= n < 8, using a constexpr-compatible approach
 inline constexpr uint64_t load_bytes(const char* thePnt, int theNb) noexcept
 {
-  // Using switch statement which is constexpr-compatible
+  // Initialize result value
+  uint64_t aResult = 0;
+
+  // Use switch with fall-through for better performance and branch prediction
   switch (theNb)
   {
-    case 1:
-      return static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
-    case 2:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
-    case 3:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
-    case 4:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
-    case 5:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[4])) << 32)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
-    case 6:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[5])) << 40)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[4])) << 32)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
     case 7:
-      return (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[6])) << 48)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[5])) << 40)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[4])) << 32)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16)
-             | (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8)
-             | static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[6])) << 48) | aResult;
+      Standard_FALLTHROUGH
+    case 6:
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[5])) << 40) | aResult;
+      Standard_FALLTHROUGH
+    case 5:
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[4])) << 32) | aResult;
+      Standard_FALLTHROUGH
+    case 4:
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[3])) << 24) | aResult;
+      Standard_FALLTHROUGH
+    case 3:
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[2])) << 16) | aResult;
+      Standard_FALLTHROUGH
+    case 2:
+      aResult = (static_cast<uint64_t>(static_cast<unsigned char>(thePnt[1])) << 8) | aResult;
+      Standard_FALLTHROUGH
+    case 1:
+      aResult = static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0])) | aResult;
+      Standard_FALLTHROUGH
     default:
-      // For safety, handle values outside the expected range (1-7)
-      // by defaulting to handling a single byte
-      return static_cast<uint64_t>(static_cast<unsigned char>(thePnt[0]));
+      break;
   }
+
+  return aResult;
 }
 
 template <typename T>
