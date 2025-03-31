@@ -91,7 +91,7 @@ constexpr T optimalSeed()
 }; // namespace FNVHash
 
 template <typename T1, typename T = size_t>
-T hash(const T1 theValue) noexcept
+T hash(const T1& theValue) noexcept
 {
   return opencascade::MurmurHash::hash_combine<T1, T>(theValue);
 }
@@ -103,7 +103,7 @@ T hashBytes(const T1* theKey, int theLen)
 }
 
 template <typename T1, typename T = size_t>
-T hash_combine(const T1 theValue, const int theLen, const T theSeed)
+T hash_combine(const T1& theValue, const int theLen, const T theSeed)
 {
   return opencascade::MurmurHash::hash_combine<T1, T>(theValue, theLen, theSeed);
 }
