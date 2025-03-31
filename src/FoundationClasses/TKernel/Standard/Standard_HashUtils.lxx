@@ -83,8 +83,8 @@ inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) 
 inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
   constexpr uint32_t aMul  = 0x5bd1e995;
-  uint32_t       aHash = theSeed ^ theLen;
-  const char*    aBuf  = static_cast<const char*>(theKey);
+  uint32_t           aHash = theSeed ^ theLen;
+  const char*        aBuf  = static_cast<const char*>(theKey);
 
   // Mix 4 bytes at a time into the hash.
   while (theLen >= 4)
@@ -133,10 +133,10 @@ namespace FNVHash
 //=======================================================================
 inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
-  const char* cptr = static_cast<const char*>(theKey);
+  const char*        cptr      = static_cast<const char*>(theKey);
   constexpr uint32_t FNV_PRIME = 16777619UL;
-  uint32_t hash = theSeed;
-  
+  uint32_t           hash      = theSeed;
+
   for (; theLen; --theLen)
   {
     hash ^= static_cast<uint32_t>(*cptr++);
@@ -151,10 +151,10 @@ inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noex
 //=======================================================================
 inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
-  const char* cptr = static_cast<const char*>(theKey);
+  const char*        cptr      = static_cast<const char*>(theKey);
   constexpr uint64_t FNV_PRIME = 1099511628211ULL;
-  uint64_t hash = theSeed;
-  
+  uint64_t           hash      = theSeed;
+
   for (; theLen; --theLen)
   {
     hash ^= static_cast<uint64_t>(*cptr++);
