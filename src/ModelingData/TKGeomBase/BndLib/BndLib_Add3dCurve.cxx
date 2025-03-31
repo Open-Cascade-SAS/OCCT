@@ -215,9 +215,13 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
             u2 = Bsaux->LastParameter();
           //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
         }
+        const Standard_Real anU2Periodic =
+          Bsaux->IsPeriodic() ? (u2 - (Bsaux->LastParameter() - Bsaux->FirstParameter())) : u2;
         Standard_Real aSegmentTol = 2. * Precision::PConfusion();
-        if (Abs(u2 - u1) < aSegmentTol)
-          aSegmentTol = Abs(u2 - u1) * 0.01;
+        if (Abs((anU2Periodic - u1) < aSegmentTol))
+        {
+          aSegmentTol = Abs(anU2Periodic - u1) * 0.01;
+        }
         Bsaux->Segment(u1, u2, aSegmentTol);
         Bs = Bsaux;
       }
