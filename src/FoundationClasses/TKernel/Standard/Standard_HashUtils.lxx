@@ -19,13 +19,13 @@ namespace MurmurHash
 {
 namespace MurmurHashUtils
 {
-inline uint64_t shift_mix(uint64_t theV)
+inline constexpr uint64_t shift_mix(uint64_t theV) noexcept
 {
   return theV ^ (theV >> 47);
 }
 
 // Loads n bytes, where 1 <= n < 8.
-inline uint64_t load_bytes(const char* thePnt, int theNb)
+inline constexpr uint64_t load_bytes(const char* thePnt, int theNb) noexcept
 {
   uint64_t aRes = 0;
   --theNb;
@@ -36,7 +36,7 @@ inline uint64_t load_bytes(const char* thePnt, int theNb)
 }
 
 template <typename T>
-inline T unaligned_load(const char* thePnt)
+inline T unaligned_load(const char* thePnt) noexcept
 {
   T aRes;
   memcpy(&aRes, thePnt, sizeof(aRes));
@@ -48,7 +48,7 @@ inline T unaligned_load(const char* thePnt)
 // function : MurmurHash64A
 // purpose  :
 //=======================================================================
-inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed)
+inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
   static constexpr uint64_t aMul = (((uint64_t)0xc6a4a793UL) << 32UL) + (uint64_t)0x5bd1e995UL;
   const char* const         aBuf = static_cast<const char*>(theKey);
@@ -80,9 +80,9 @@ inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed)
 // function : MurmurHash2A
 // purpose  :
 //=======================================================================
-inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed)
+inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
-  const uint32_t aMul  = 0x5bd1e995;
+  constexpr uint32_t aMul  = 0x5bd1e995;
   uint32_t       aHash = theSeed ^ theLen;
   const char*    aBuf  = static_cast<const char*>(theKey);
 
@@ -131,30 +131,36 @@ namespace FNVHash
 // function : FNVHash1A
 // purpose  :
 //=======================================================================
-inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed)
+inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
   const char* cptr = static_cast<const char*>(theKey);
+  constexpr uint32_t FNV_PRIME = 16777619UL;
+  uint32_t hash = theSeed;
+  
   for (; theLen; --theLen)
   {
-    theSeed ^= static_cast<uint32_t>(*cptr++);
-    theSeed *= static_cast<uint32_t>(16777619UL);
+    hash ^= static_cast<uint32_t>(*cptr++);
+    hash *= FNV_PRIME;
   }
-  return theSeed;
+  return hash;
 }
 
 //=======================================================================
 // function : FNVHash64A
 // purpose  :
 //=======================================================================
-inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed)
+inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
   const char* cptr = static_cast<const char*>(theKey);
+  constexpr uint64_t FNV_PRIME = 1099511628211ULL;
+  uint64_t hash = theSeed;
+  
   for (; theLen; --theLen)
   {
-    theSeed ^= static_cast<uint64_t>(*cptr++);
-    theSeed *= static_cast<uint64_t>(1099511628211ULL);
+    hash ^= static_cast<uint64_t>(*cptr++);
+    hash *= FNV_PRIME;
   }
-  return theSeed;
+  return hash;
 }
 } // namespace FNVHash
 } // namespace opencascade
