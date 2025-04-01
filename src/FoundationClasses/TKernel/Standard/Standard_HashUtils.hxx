@@ -28,11 +28,11 @@ namespace opencascade
 //! The default value for the seed is optimal for general cases at a certain hash size.
 namespace MurmurHash
 {
-inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) noexcept;
-inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept;
+uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed) noexcept;
+uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept;
 
 template <typename T1, typename T = size_t>
-inline constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type hash_combine(
+typename std::enable_if<sizeof(T) == 8, uint64_t>::type hash_combine(
   const T1& theValue,
   const int theLen  = sizeof(T1),
   const T   theSeed = 0xA329F1D3A586ULL) noexcept
@@ -41,7 +41,7 @@ inline constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type hash_co
 }
 
 template <typename T1, typename T = size_t>
-inline constexpr typename std::enable_if<sizeof(T) != 8, T>::type hash_combine(
+typename std::enable_if<sizeof(T) != 8, T>::type hash_combine(
   const T1& theValue,
   const int theLen  = sizeof(T1),
   const T   theSeed = 0xc70f6907U) noexcept
@@ -50,7 +50,7 @@ inline constexpr typename std::enable_if<sizeof(T) != 8, T>::type hash_combine(
 }
 
 template <typename T = size_t>
-inline constexpr T optimalSeed() noexcept
+constexpr T optimalSeed() noexcept
 {
   return sizeof(T) == 8 ? static_cast<T>(0xA329F1D3A586ULL) : static_cast<T>(0xc70f6907U);
 }
@@ -64,11 +64,11 @@ inline constexpr T optimalSeed() noexcept
 //! The default value for the seed is optimal for general cases at a certain hash size.
 namespace FNVHash
 {
-inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept;
-inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept;
+uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept;
+uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept;
 
 template <typename T1, typename T = size_t>
-static inline constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type hash_combine(
+static typename std::enable_if<sizeof(T) == 8, uint64_t>::type hash_combine(
   const T1& theValue,
   const int theLen  = sizeof(T1),
   const T   theSeed = 14695981039346656037ULL) noexcept
@@ -77,7 +77,7 @@ static inline constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type 
 }
 
 template <typename T1, typename T = size_t>
-static inline constexpr typename std::enable_if<sizeof(T) != 8, T>::type hash_combine(
+static typename std::enable_if<sizeof(T) != 8, T>::type hash_combine(
   const T1& theValue,
   const int theLen  = sizeof(T1),
   const T   theSeed = 2166136261U) noexcept
@@ -86,26 +86,26 @@ static inline constexpr typename std::enable_if<sizeof(T) != 8, T>::type hash_co
 }
 
 template <typename T = size_t>
-inline constexpr T optimalSeed() noexcept
+constexpr T optimalSeed() noexcept
 {
   return sizeof(T) == 8 ? static_cast<T>(14695981039346656037ULL) : static_cast<T>(2166136261U);
 }
 }; // namespace FNVHash
 
 template <typename T1, typename T = size_t>
-inline constexpr T hash(const T1& theValue) noexcept
+T hash(const T1& theValue) noexcept
 {
   return opencascade::MurmurHash::hash_combine<T1, T>(theValue);
 }
 
 template <typename T1, typename T = size_t>
-inline constexpr T hashBytes(const T1* theKey, int theLen) noexcept
+T hashBytes(const T1* theKey, int theLen) noexcept
 {
   return opencascade::MurmurHash::hash_combine<T1, T>(*theKey, theLen);
 }
 
 template <typename T1, typename T = size_t>
-inline constexpr T hash_combine(const T1& theValue, const int theLen, const T theSeed) noexcept
+T hash_combine(const T1& theValue, const int theLen, const T theSeed) noexcept
 {
   return opencascade::MurmurHash::hash_combine<T1, T>(theValue, theLen, theSeed);
 }
