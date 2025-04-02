@@ -41,7 +41,7 @@ protected:
     {
       aProcessor.ProcessEntity(myWS->Model()->Value(anIndex));
     }
-    
+
     TColStd_MapOfTransient aRemovedEntities;
     aProcessor.Perform(aRemovedEntities);
     return aRemovedEntities;
