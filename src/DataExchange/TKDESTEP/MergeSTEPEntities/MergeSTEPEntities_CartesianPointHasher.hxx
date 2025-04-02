@@ -60,7 +60,7 @@ struct MergeSTEPEntities_CartesianPointHasher
     {
       return false;
     }
-    for (Standard_Integer anIndex = 0; anIndex < aCoords1.size(); ++anIndex)
+    for (size_t anIndex = 0; anIndex < aCoords1.size(); ++anIndex)
     {
       if (std::abs(aCoords1[anIndex] - aCoords2[anIndex]) > aTolerance)
       {

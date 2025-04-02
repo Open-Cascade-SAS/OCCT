@@ -161,7 +161,7 @@ template <typename ProcessedType, typename ProcessedTypeHasher>
 void MergeSTEPEntities_EntityProcessor<ProcessedType, ProcessedTypeHasher>::Perform(
   TColStd_MapOfTransient& theReplacedEntities)
 {
-  for (DuplicateMap::Iterator anIter(myDuplicateMap); anIter.More(); anIter.Next())
+  for (typename DuplicateMap::Iterator anIter(myDuplicateMap); anIter.More(); anIter.Next())
   {
     const Handle(ProcessedType)&              anEntity    = anIter.Key();
     const std::vector<Handle(ProcessedType)>& aDuplicates = anIter.Value();
