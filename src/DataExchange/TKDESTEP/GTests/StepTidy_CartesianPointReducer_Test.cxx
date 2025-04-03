@@ -511,6 +511,19 @@ TEST_F(StepTidy_CartesianPointReducerTest,
   Handle(StepGeom_CartesianPoint) aPt1 = addCartesianPoint();
   Handle(StepGeom_CartesianPoint) aPt2 = addCartesianPoint();
 
+  // Creating rational BSpline surface to use.
+  Handle(StepGeom_RationalBSplineSurface) aRationalBSplineSurface =
+    new StepGeom_RationalBSplineSurface;
+  aRationalBSplineSurface->Init(new TCollection_HAsciiString,
+                                1,
+                                1,
+                                new StepGeom_HArray2OfCartesianPoint(1, 1, 1, 1),
+                                StepGeom_bssfUnspecified,
+                                StepData_LUnknown,
+                                StepData_LUnknown,
+                                StepData_LUnknown,
+                                new TColStd_HArray2OfReal(1, 1, 1, 1));
+
   // Creating surface containing the first Cartesian point.
   Handle(StepGeom_HArray2OfCartesianPoint) aFirstControlPoints =
     new StepGeom_HArray2OfCartesianPoint(1, 1, 1, 1);
@@ -541,7 +554,7 @@ TEST_F(StepTidy_CartesianPointReducerTest,
                       StepData_LUnknown,
                       StepData_LUnknown,
                       aFirstBSSWN,
-                      new StepGeom_RationalBSplineSurface);
+                      aRationalBSplineSurface);
   addToModel(aFirstSurface);
 
   // Creating surface containing the second Cartesian point.
@@ -573,8 +586,8 @@ TEST_F(StepTidy_CartesianPointReducerTest,
                        StepData_LUnknown,
                        StepData_LUnknown,
                        StepData_LUnknown,
-                       new StepGeom_BSplineSurfaceWithKnots,
-                       new StepGeom_RationalBSplineSurface);
+                       aSecondBSSWN,
+                       aRationalBSplineSurface);
 
   // Performing removal of duplicate Cartesian points.
   TColStd_MapOfTransient aRemovedEntities = replaceDuplicateCartesianPoints();
