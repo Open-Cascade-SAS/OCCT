@@ -60,7 +60,7 @@ struct StepTidy_CartesianPointHasher
     {
       return false;
     }
-    for (size_t anIndex = 0; anIndex < theCartesianPoint1->NbCoordinates(); ++anIndex)
+    for (int anIndex = 0; anIndex < theCartesianPoint1->NbCoordinates(); ++anIndex)
     {
       if (std::abs(aCoords1[anIndex] - aCoords2[anIndex]) > aTolerance)
       {
