@@ -446,12 +446,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   {
     ach->AddFail("ERROR: No.of KnotMultiplicities not equal No.of Knots in V");
   }
-  if(nbMulU == 0)
+  if (nbMulU == 0)
   {
     ach->AddWarning("WARNING: No.of KnotMultiplicities in U is zero");
     return;
   }
-  if(nbMulV == 0)
+  if (nbMulV == 0)
   {
     ach->AddWarning("WARNING: No.of KnotMultiplicities in V is zero");
     return;
