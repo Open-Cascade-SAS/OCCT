@@ -292,6 +292,12 @@ void STEPCAFControl_Writer::Init(const Handle(XSControl_WorkSession)& theWS,
 
 IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const Standard_CString theFileName)
 {
+  if (myIsCleanDuplicates)
+  {
+    // remove duplicates
+    myWriter.CleanDuplicateEntities();
+  }
+
   IFSelect_ReturnStatus aStatus = myWriter.Write(theFileName);
   if (aStatus != IFSelect_RetDone)
   {

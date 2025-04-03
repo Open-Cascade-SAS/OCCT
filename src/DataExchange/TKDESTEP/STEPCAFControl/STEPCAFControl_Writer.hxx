@@ -226,6 +226,18 @@ public:
 
   Standard_Boolean GetMaterialMode() const { return myMatMode; }
 
+  //! Set clean duplicates flag.
+  //! If set to True, duplicates will be removed from the model.
+  //! @param theCleanDuplicates the flag to set.
+  void SetCleanDuplicates(const Standard_Boolean theCleanDuplicates)
+  {
+    myIsCleanDuplicates = theCleanDuplicates;
+  }
+
+  //! Returns the flag indicating whether duplicates should be removed from the model.
+  //! @return the flag indicating whether duplicates should be removed from the model.
+  Standard_Boolean GetCleanDuplicates() const { return myIsCleanDuplicates; }
+
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(
@@ -382,7 +394,8 @@ private:
   MoniTool_DataMapOfShapeTransient                                                myMapCompMDGPR;
   Standard_Boolean                                                                myGDTMode;
   Standard_Boolean                                                                myMatMode;
-  NCollection_Vector<Handle(StepRepr_RepresentationItem)>                         myGDTAnnotations;
+  Standard_Boolean                                        myIsCleanDuplicates;
+  NCollection_Vector<Handle(StepRepr_RepresentationItem)> myGDTAnnotations;
   Handle(StepVisual_DraughtingModel)                      myGDTPresentationDM;
   Handle(StepVisual_HArray1OfPresentationStyleAssignment) myGDTPrsCurveStyle;
   Handle(StepRepr_ProductDefinitionShape)                 myGDTCommonPDS;
