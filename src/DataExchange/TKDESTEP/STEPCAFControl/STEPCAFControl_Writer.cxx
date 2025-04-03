@@ -249,7 +249,8 @@ STEPCAFControl_Writer::STEPCAFControl_Writer()
       myPropsMode(Standard_True),
       mySHUOMode(Standard_True),
       myGDTMode(Standard_True),
-      myMatMode(Standard_True)
+      myMatMode(Standard_True),
+      myIsCleanDuplicates(Standard_False)
 {
   STEPCAFControl_Controller::Init();
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession;
