@@ -55,6 +55,7 @@ runs:
               -D 3RDPARTY_DIR=${{ github.workspace }}//3rdparty-vc14-64 `
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install `
               -D INSTALL_DIR=${{ github.workspace }}/inspector/install `
+              -D CMAKE_POLICY_VERSION_MINIMUM=3.5 `
               ..
 
     - name: Configure TInspector - Linux
@@ -69,6 +70,7 @@ runs:
               -D BUILD_SHARED_LIBS=ON \
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
               -D INSTALL_DIR=${{ github.workspace }}/inspector/install \
+              -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
               ..
 
     - name: Build TInspector - Windows
