@@ -194,6 +194,8 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     (STEPControl_StepModelType)theResource->IntegerVal("write.model.type",
                                                        InternalParameters.WriteModelType,
                                                        aScope);
+  InternalParameters.CleanDuplicates =
+    theResource->BooleanVal("write.cleanduplicates", InternalParameters.CleanDuplicates, aScope);
 
   return DE_ShapeFixConfigurationNode::Load(theResource);
 }
@@ -560,6 +562,13 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "is being translated to STEP\n";
   aResult += "!Default value: 0. Available values: 0, 1, 2, 3, 4\n";
   aResult += aScope + "write.model.type :\t " + InternalParameters.WriteModelType + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up a flag that indicates whether or not duplicate entities should be "
+             "removed from the model befor writing.\n";
+  aResult += "!Default value: -. Available values: \"-\", \"+\"\n";
+  aResult += aScope + "write.cleanduplicates :\t " + InternalParameters.CleanDuplicates + "\n";
   aResult += "!\n";
 
   aResult += DE_ShapeFixConfigurationNode::Save();

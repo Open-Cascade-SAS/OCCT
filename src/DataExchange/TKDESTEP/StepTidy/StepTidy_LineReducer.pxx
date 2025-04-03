@@ -1,0 +1,83 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_LineReducer_HeaderFile
+#define _StepTidy_LineReducer_HeaderFile
+
+#include <StepTidy_EntityReducer.pxx>
+#include <StepTidy_LineHasher.pxx>
+
+#include <StepGeom_Line.hxx>
+
+//! Processor for merging StepGeom_Line entities.
+//! This processor merges lines with the same point and direction and names.
+class StepTidy_LineReducer : public StepTidy_EntityReducer<StepGeom_Line, StepTidy_LineHasher>
+{
+public:
+  //! Constructor. Stores the work session and registers replacer functions.
+  //! @param theWS the work session.
+  Standard_EXPORT StepTidy_LineReducer(const Handle(XSControl_WorkSession)& theWS);
+
+private:
+  //! Replacer function for StepShape_EdgeCurve entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing entity in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceEdgeCurve(const Handle(StepGeom_Line)& theOldEntity,
+                               const Handle(StepGeom_Line)& theNewEntity,
+                               Handle(Standard_Transient)   theSharing);
+
+  //! Replacer function for StepGeom_TrimmedCurve entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing entity in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceTrimmedCurve(const Handle(StepGeom_Line)& theOldEntity,
+                                  const Handle(StepGeom_Line)& theNewEntity,
+                                  Handle(Standard_Transient)   theSharing);
+
+  //! Replacer function for StepGeom_SurfaceCurve entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing entity in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceSurfaceCurve(const Handle(StepGeom_Line)& theOldEntity,
+                                  const Handle(StepGeom_Line)& theNewEntity,
+                                  Handle(Standard_Transient)   theSharing);
+
+  //! Replacer function for StepRepr_DefinitionalRepresentation entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing entity in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceDefinitionalRepresentation(const Handle(StepGeom_Line)& theOldEntity,
+                                                const Handle(StepGeom_Line)& theNewEntity,
+                                                Handle(Standard_Transient)   theSharing);
+
+  //! Replacer function for StepGeom_SeamCurve entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing entity in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceSeamCurve(const Handle(StepGeom_Line)& theOldEntity,
+                               const Handle(StepGeom_Line)& theNewEntity,
+                               Handle(Standard_Transient)   theSharing);
+};
+
+#endif // _StepTidy_LineReducer_HeaderFile

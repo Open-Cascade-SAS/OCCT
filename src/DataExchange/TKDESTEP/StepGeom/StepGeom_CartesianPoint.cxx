@@ -39,6 +39,7 @@ void StepGeom_CartesianPoint::Init2D(const Handle(TCollection_HAsciiString)& aNa
   nbcoord   = 2;
   coords[0] = X;
   coords[1] = Y;
+  coords[2] = 0;
   // --- classe inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
 }
@@ -65,13 +66,14 @@ void StepGeom_CartesianPoint::SetCoordinates(const Handle(TColStd_HArray1OfReal)
   //	coordinates = aCoordinates;
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_CartesianPoint::Coordinates() const
+void StepGeom_CartesianPoint::SetCoordinates(const std::array<Standard_Real, 3>& theCoordinates)
 {
-  Handle(TColStd_HArray1OfReal) coordinates = new TColStd_HArray1OfReal(1, nbcoord);
-  coordinates->SetValue(1, coords[0]);
-  coordinates->SetValue(2, coords[1]);
-  coordinates->SetValue(3, coords[2]);
-  return coordinates;
+  coords = theCoordinates;
+}
+
+const std::array<Standard_Real, 3>& StepGeom_CartesianPoint::Coordinates() const
+{
+  return coords;
 }
 
 Standard_Real StepGeom_CartesianPoint::CoordinatesValue(const Standard_Integer num) const

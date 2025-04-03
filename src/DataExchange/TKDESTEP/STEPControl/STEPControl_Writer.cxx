@@ -23,6 +23,7 @@
 #include <StepData_StepModel.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_StepWriter.hxx>
+#include <StepTidy_DuplicateCleaner.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XSAlgo.hxx>
@@ -195,6 +196,14 @@ void STEPControl_Writer::PrintStatsTransfer(const Standard_Integer what,
                                             const Standard_Integer mode) const
 {
   thesession->TransferWriter()->PrintStats(what, mode);
+}
+
+//=================================================================================================
+
+Standard_EXPORT void STEPControl_Writer::CleanDuplicateEntities()
+{
+  StepTidy_DuplicateCleaner aCleaner(thesession);
+  aCleaner.Perform();
 }
 
 //=============================================================================

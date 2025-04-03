@@ -1,0 +1,194 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_BaseTestFixture_HeaderFile
+#define _StepTidy_BaseTestFixture_HeaderFile
+
+#include <STEPControl_Controller.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Circle.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Plane.hxx>
+#include <StepGeom_Vector.hxx>
+#include <XSControl_WorkSession.hxx>
+
+#include <gtest/gtest.h>
+
+class StepTidy_BaseTestFixture : public testing::Test
+{
+protected:
+  // Initialize the work session and model.
+  StepTidy_BaseTestFixture()
+      : myWS()
+  {
+    STEPControl_Controller::Init();
+    myWS = new XSControl_WorkSession;
+    myWS->SelectNorm("STEP");
+    myWS->SetModel(myWS->NormAdaptor()->NewModel());
+  }
+
+  // Add a Cartesian point to the model.
+  // @param theName the name of the Cartesian point.
+  // @param thePoint the coordinates of the Cartesian point.
+  // @return the added Cartesian point.
+  Handle(StepGeom_CartesianPoint) addCartesianPoint(const char*   theName  = nullptr,
+                                                    const gp_XYZ& thePoint = gp_XYZ(0.,
+                                                                                    0.,
+                                                                                    0.)) const
+  {
+    const Handle(StepGeom_CartesianPoint)  aCartesianPoint = new StepGeom_CartesianPoint;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    aCartesianPoint->Init3D(aName, thePoint.X(), thePoint.Y(), thePoint.Z());
+    myWS->Model()->AddWithRefs(aCartesianPoint);
+    return aCartesianPoint;
+  }
+
+  // Add a direction to the model.
+  // @param theName the name of the direction.
+  // @param theDirection the direction ratios.
+  // @return the added direction.
+  Handle(StepGeom_Direction) addDirection(const char*   theName      = nullptr,
+                                          const gp_XYZ& theDirection = gp_XYZ(0., 0., 1.)) const
+  {
+    const Handle(StepGeom_Direction)       aDirection = new StepGeom_Direction;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    Handle(TColStd_HArray1OfReal) aDirectionRatios = new TColStd_HArray1OfReal(1, 3);
+    aDirectionRatios->SetValue(1, theDirection.X());
+    aDirectionRatios->SetValue(2, theDirection.Y());
+    aDirectionRatios->SetValue(3, theDirection.Z());
+    aDirection->Init(aName, aDirectionRatios);
+    myWS->Model()->AddWithRefs(aDirection);
+    return aDirection;
+  }
+
+  // Add a vector to the model.
+  // @param theName the name of the vector.
+  // @param theOrientation the orientation of the vector.
+  // @param aMagnitude the magnitude of the vector.
+  // @return the added vector.
+  Handle(StepGeom_Vector) addVector(const char*   theName        = nullptr,
+                                    const gp_XYZ& theOrientation = gp_XYZ(0., 0., 1.),
+                                    const double  aMagnitude     = 1.) const
+  {
+    const Handle(StepGeom_Vector)          aVector = new StepGeom_Vector;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    aVector->Init(aName, addDirection(nullptr, theOrientation), aMagnitude);
+    myWS->Model()->AddWithRefs(aVector);
+    return aVector;
+  }
+
+  // Add an Axis2Placement3d to the model.
+  // @param theName the name of the Axis2Placement3d.
+  // @param theLocation the location of the Axis2Placement3d.
+  // @param theAxis the axis of the Axis2Placement3d.
+  // @param theRefDirection the reference direction of the Axis2Placement3d.
+  // @return the added Axis2Placement3d.
+  Handle(StepGeom_Axis2Placement3d) addAxis2Placement3d(
+    const char*   theName         = nullptr,
+    const gp_XYZ& theLocation     = gp_XYZ(0., 0., 0.),
+    const gp_XYZ& theAxis         = gp_XYZ(0., 0., 1.),
+    const gp_XYZ& theRefDirection = gp_XYZ(0., 1., 0.)) const
+  {
+    const Handle(StepGeom_Axis2Placement3d) aAxis2Placement3d = new StepGeom_Axis2Placement3d;
+    const Handle(TCollection_HAsciiString)  aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    aAxis2Placement3d->Init(aName,
+                            addCartesianPoint(nullptr, theLocation),
+                            true,
+                            addDirection(nullptr, theAxis),
+                            true,
+                            addDirection(nullptr, theRefDirection));
+    myWS->Model()->AddWithRefs(aAxis2Placement3d);
+    return aAxis2Placement3d;
+  }
+
+  // Add a line to the model.
+  // @param theName the name of the line.
+  // @param theLocation the location of the line.
+  // @param theOrientation the orientation of the line vector.
+  // @param theMagnitude the magnitude of the line vector.
+  // @return the added line.
+  Handle(StepGeom_Line) addLine(const char*   theName        = nullptr,
+                                const gp_XYZ& theLocation    = gp_XYZ(0., 0., 0.),
+                                const gp_XYZ& theOrientation = gp_XYZ(0., 0., 1.),
+                                const double  aMagnitude     = 1.) const
+  {
+    const Handle(StepGeom_Line)            aLine = new StepGeom_Line;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    aLine->Init(aName,
+                addCartesianPoint(nullptr, theLocation),
+                addVector(nullptr, theOrientation, aMagnitude));
+    myWS->Model()->AddWithRefs(aLine);
+    return aLine;
+  }
+
+  // Add a circle to the model.
+  // @param theName the name of the circle.
+  // @param theLocation the location of the circle.
+  // @param theAxis the axis of the circle.
+  // @param theRefDirection the reference direction of the circle.
+  // @param theRadius the radius of the circle.
+  // @return the added circle.
+  Handle(StepGeom_Circle) addCircle(const char*   theName         = nullptr,
+                                    const gp_XYZ& theLocation     = gp_XYZ(0., 0., 0.),
+                                    const gp_XYZ& theAxis         = gp_XYZ(0., 0., 1.),
+                                    const gp_XYZ& theRefDirection = gp_XYZ(0., 1., 0.),
+                                    const double  theRadius       = 1.) const
+  {
+    const Handle(StepGeom_Circle)          aCircle = new StepGeom_Circle;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    StepGeom_Axis2Placement aSelector;
+    aSelector.SetValue(addAxis2Placement3d(nullptr, theLocation, theAxis, theRefDirection));
+    aCircle->Init(aName, aSelector, theRadius);
+    myWS->Model()->AddWithRefs(aCircle);
+    return aCircle;
+  }
+
+  // Add a plane to the model.
+  // @param theName the name of the plane.
+  // @param theLocation the location of the plane.
+  // @param theAxis the axis of the plane.
+  // @param theRefDirection the reference direction of the plane.
+  // @return the added plane.
+  Handle(StepGeom_Plane) addPlane(const char*   theName         = nullptr,
+                                  const gp_XYZ& theLocation     = gp_XYZ(0., 0., 0.),
+                                  const gp_XYZ& theAxis         = gp_XYZ(0., 0., 1.),
+                                  const gp_XYZ& theRefDirection = gp_XYZ(0., 1., 0.)) const
+  {
+    const Handle(StepGeom_Plane)           aPlane = new StepGeom_Plane;
+    const Handle(TCollection_HAsciiString) aName =
+      theName ? new TCollection_HAsciiString(theName) : new TCollection_HAsciiString();
+    aPlane->Init(aName, addAxis2Placement3d(nullptr, theLocation, theAxis, theRefDirection));
+    myWS->Model()->AddWithRefs(aPlane);
+    return aPlane;
+  }
+
+  // Add an entity to the model.
+  // @param theEntity the entity to add.
+  void addToModel(const Handle(Standard_Transient)& theEntity) const
+  {
+    myWS->Model()->AddWithRefs(theEntity);
+  }
+
+protected:
+  Handle(XSControl_WorkSession) myWS;
+};
+
+#endif // _StepTidy_BaseTestFixture_HeaderFile

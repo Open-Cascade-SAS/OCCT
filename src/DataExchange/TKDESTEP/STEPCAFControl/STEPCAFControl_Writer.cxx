@@ -249,7 +249,8 @@ STEPCAFControl_Writer::STEPCAFControl_Writer()
       myPropsMode(Standard_True),
       mySHUOMode(Standard_True),
       myGDTMode(Standard_True),
-      myMatMode(Standard_True)
+      myMatMode(Standard_True),
+      myIsCleanDuplicates(Standard_False)
 {
   STEPCAFControl_Controller::Init();
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession;
@@ -266,7 +267,8 @@ STEPCAFControl_Writer::STEPCAFControl_Writer(const Handle(XSControl_WorkSession)
       myPropsMode(Standard_True),
       mySHUOMode(Standard_True),
       myGDTMode(Standard_True),
-      myMatMode(Standard_True)
+      myMatMode(Standard_True),
+      myIsCleanDuplicates(Standard_False)
 {
   STEPCAFControl_Controller::Init();
   Init(theWS, theScratch);
@@ -292,6 +294,12 @@ void STEPCAFControl_Writer::Init(const Handle(XSControl_WorkSession)& theWS,
 
 IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const Standard_CString theFileName)
 {
+  if (myIsCleanDuplicates)
+  {
+    // remove duplicates
+    myWriter.CleanDuplicateEntities();
+  }
+
   IFSelect_ReturnStatus aStatus = myWriter.Write(theFileName);
   if (aStatus != IFSelect_RetDone)
   {
