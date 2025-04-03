@@ -1,0 +1,53 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_PlaneReducer_HeaderFile
+#define _StepTidy_PlaneReducer_HeaderFile
+
+#include <StepTidy_EntityReducer.pxx>
+#include <StepTidy_PlaneHasher.pxx>
+
+#include <StepGeom_Plane.hxx>
+
+//! Processor for merging StepGeom_Plane entities.
+//! This processor merges planes with the same names and placements.
+class StepTidy_PlaneReducer : public StepTidy_EntityReducer<StepGeom_Plane, StepTidy_PlaneHasher>
+{
+public:
+  //! Constructor. Stores the work session and registers replacer functions.
+  //! @param theWS the work session.
+  Standard_EXPORT StepTidy_PlaneReducer(const Handle(XSControl_WorkSession)& theWS);
+
+private:
+  //! Replacer function for StepShape_AdvancedFace entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing StepShape_AdvancedFace in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replaceAdvancedFace(const Handle(StepGeom_Plane)& theOldEntity,
+                                  const Handle(StepGeom_Plane)& theNewEntity,
+                                  Handle(Standard_Transient)    theSharing);
+
+  //! Replacer function for StepGeom_Pcurve entities.
+  //! Replaces the old entity with the new one in the sharing entity.
+  //! @param theOldEntity the old entity to replace.
+  //! @param theNewEntity the new entity to replace with.
+  //! @param theSharing the sharing StepGeom_Pcurve in which to replace the old entity.
+  //! @return true if the entity was replaced, false otherwise.
+  static bool replacePcurve(const Handle(StepGeom_Plane)& theOldEntity,
+                            const Handle(StepGeom_Plane)& theNewEntity,
+                            Handle(Standard_Transient)    theSharing);
+};
+
+#endif // _StepTidy_DirectionReducer_HeaderFile

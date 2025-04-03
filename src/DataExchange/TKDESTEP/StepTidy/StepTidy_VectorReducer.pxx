@@ -1,0 +1,42 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_VectorReducer_HeaderFile
+#define _StepTidy_VectorReducer_HeaderFile
+
+#include <StepTidy_EntityReducer.pxx>
+#include <StepTidy_VectorHasher.pxx>
+
+#include <StepGeom_Vector.hxx>
+
+//! Processor for merging StepGeom_Vector entities.
+//! This processor merges vectors with the same orientation and magnitude and names.
+class StepTidy_VectorReducer : public StepTidy_EntityReducer<StepGeom_Vector, StepTidy_VectorHasher>
+{
+public:
+  //! Constructor. Stores the work session and registers replacer functions.
+  //! @param theWS the work session.
+  Standard_EXPORT StepTidy_VectorReducer(const Handle(XSControl_WorkSession)& theWS);
+
+private:
+  //! Replaces the old vector with the new one in the StepGeom_Line entity.
+  //! @param theOldEntity the old vector.
+  //! @param theNewEntity the new vector to replace the old one.
+  //! @param theSharing the StepGeom_Line entity to update.
+  //! @return true if the vector was replaced, false otherwise.
+  static bool replaceLine(const Handle(StepGeom_Vector)& theOldEntity,
+                          const Handle(StepGeom_Vector)& theNewEntity,
+                          Handle(Standard_Transient)     theSharing);
+};
+
+#endif // _StepTidy_VectorReducer_HeaderFile

@@ -1,0 +1,70 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_VectorHasher_HeaderFile
+#define _StepTidy_VectorHasher_HeaderFile
+
+#include <StepTidy_DirectionHasher.pxx>
+
+#include <Standard_HashUtils.hxx>
+#include <StepGeom_Vector.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+//! OCCT-style hasher for StepGeom_Vector entities.
+struct StepTidy_VectorHasher
+{
+  // Hashes the Vector by its name and Vector ratios.
+  std::size_t operator()(const Handle(StepGeom_Vector)& theVector) const noexcept
+  {
+    const size_t aHashes[2]{StepTidy_DirectionHasher{}(theVector->Orientation()),
+                            opencascade::hash(static_cast<int>(theVector->Magnitude()))};
+    const size_t aCombinedHash = opencascade::hashBytes(aHashes, sizeof(aHashes));
+    if (theVector->Name().IsNull())
+    {
+      // If the name is not present, return the hash.
+      return aCombinedHash;
+    }
+    // Add the name to the hash if it is present.
+    const size_t aCombinedHashWithName[2]{
+      aCombinedHash,
+      std::hash<TCollection_AsciiString>{}(theVector->Name()->String())};
+    return opencascade::hashBytes(aCombinedHashWithName, sizeof(aCombinedHashWithName));
+  }
+
+  // Compares two Vectors by their names and Vector ratios.
+  bool operator()(const Handle(StepGeom_Vector)& theVector1,
+                  const Handle(StepGeom_Vector)& theVector2) const noexcept
+  {
+    // Compare names.
+    if (theVector1->Name().IsNull() != theVector2->Name().IsNull())
+    {
+      return false;
+    }
+    if (!theVector1->Name()->IsSameString(theVector2->Name()))
+    {
+      return false;
+    }
+
+    // Compare magnitudes.
+    constexpr double aTolerance = 1e-12;
+    if (fabs(theVector1->Magnitude() - theVector2->Magnitude()) > aTolerance)
+    {
+      return false;
+    }
+
+    // Compare orientations.
+    return StepTidy_DirectionHasher{}(theVector1->Orientation(), theVector2->Orientation());
+  }
+};
+
+#endif // _StepTidy_VectorHasher_HeaderFile
