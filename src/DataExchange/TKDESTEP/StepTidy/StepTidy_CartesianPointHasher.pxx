@@ -56,11 +56,11 @@ struct StepTidy_CartesianPointHasher
     constexpr double                    aTolerance = 1e-12;
     const std::array<Standard_Real, 3>& aCoords1   = theCartesianPoint1->Coordinates();
     const std::array<Standard_Real, 3>& aCoords2   = theCartesianPoint2->Coordinates();
-    if (aCoords1.size() != aCoords2.size())
+    if (theCartesianPoint1->NbCoordinates() != theCartesianPoint2->NbCoordinates())
     {
       return false;
     }
-    for (size_t anIndex = 0; anIndex < aCoords1.size(); ++anIndex)
+    for (size_t anIndex = 0; anIndex < theCartesianPoint1->NbCoordinates(); ++anIndex)
     {
       if (std::abs(aCoords1[anIndex] - aCoords2[anIndex]) > aTolerance)
       {
