@@ -195,6 +195,7 @@ provider.STEP.OCC.write.name :	 1
 provider.STEP.OCC.write.layer :	 1
 provider.STEP.OCC.write.props :	 1
 provider.STEP.OCC.write.model.type :	 0
+provider.STEP.OCC.write.cleanduplicates : 0
 provider.STEP.OCC.healing.tolerance3d :	 1e-06
 provider.STEP.OCC.healing.max.tolerance3d :	 1
 provider.STEP.OCC.healing.min.tolerance3d :	 1e-07

@@ -1,0 +1,64 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_DirectionReducer_HeaderFile
+#define _StepTidy_DirectionReducer_HeaderFile
+
+#include <StepTidy_EntityReducer.pxx>
+#include <StepTidy_DirectionHasher.pxx>
+
+#include <StepGeom_Direction.hxx>
+
+//! Processor for merging StepGeom_Direction entities.
+//! This processor merges directions with the same direction ratios and names.
+//! The processor replaces all occurrences of the old directions with the new ones.
+//! The processor does not remove old directions from the model.
+//! See StepTidy_EntityReducer for the description of the Reducer workflow.
+class StepTidy_DirectionReducer
+    : public StepTidy_EntityReducer<StepGeom_Direction, StepTidy_DirectionHasher>
+{
+public:
+  //! Constructor. Stores the work session and registers replacer functions.
+  //! @param theWS the work session.
+  Standard_EXPORT StepTidy_DirectionReducer(const Handle(XSControl_WorkSession)& theWS);
+
+private:
+  //! Replaces the old direction with the new one in the StepGeom_Axis1Placement entity.
+  //! @param theOldEntity the old direction.
+  //! @param theNewEntity the new direction.
+  //! @param theSharing the StepGeom_Axis1Placement entity to update.
+  //! @return true if the direction was replaced, false otherwise.
+  static bool replaceAxis1Placement(const Handle(StepGeom_Direction)& theOldEntity,
+                                    const Handle(StepGeom_Direction)& theNewEntity,
+                                    Handle(Standard_Transient)        theSharing);
+
+  //! Replaces the old direction with the new one in the StepGeom_Axis2Placement3d entity.
+  //! @param theOldEntity the old direction.
+  //! @param theNewEntity the new direction.
+  //! @param theSharing the StepGeom_Axis2Placement3d entity to update.
+  //! @return true if the direction was replaced, false otherwise.
+  static bool replaceAxis2Placement3d(const Handle(StepGeom_Direction)& theOldEntity,
+                                      const Handle(StepGeom_Direction)& theNewEntity,
+                                      Handle(Standard_Transient)        theSharing);
+
+  //! Replaces the old direction with the new one in the StepGeom_Vector entity.
+  //! @param theOldEntity the old direction.
+  //! @param theNewEntity the new direction.
+  //! @param theSharing the StepGeom_Vector entity to update.
+  //! @return true if the direction was replaced, false otherwise.
+  static bool replaceVector(const Handle(StepGeom_Direction)& theOldEntity,
+                            const Handle(StepGeom_Direction)& theNewEntity,
+                            Handle(Standard_Transient)        theSharing);
+};
+
+#endif // _StepTidy_DirectionReducer_HeaderFile

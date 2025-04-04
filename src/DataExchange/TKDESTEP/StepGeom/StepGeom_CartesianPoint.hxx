@@ -23,6 +23,9 @@
 #include <Standard_Integer.hxx>
 #include <StepGeom_Point.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+
+#include <array>
+
 class TCollection_HAsciiString;
 
 class StepGeom_CartesianPoint;
@@ -49,7 +52,9 @@ public:
 
   Standard_EXPORT void SetCoordinates(const Handle(TColStd_HArray1OfReal)& aCoordinates);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Coordinates() const;
+  Standard_EXPORT void SetCoordinates(const std::array<Standard_Real, 3>& theCoordinates);
+
+  Standard_EXPORT const std::array<Standard_Real, 3>& Coordinates() const;
 
   Standard_EXPORT Standard_Real CoordinatesValue(const Standard_Integer num) const;
 
@@ -59,8 +64,8 @@ public:
 
 protected:
 private:
-  Standard_Integer nbcoord;
-  Standard_Real    coords[3];
+  Standard_Integer             nbcoord;
+  std::array<Standard_Real, 3> coords;
 };
 
 #endif // _StepGeom_CartesianPoint_HeaderFile

@@ -1,0 +1,78 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_DirectionHasher_HeaderFile
+#define _StepTidy_DirectionHasher_HeaderFile
+
+#include <Standard_HashUtils.hxx>
+#include <StepGeom_Direction.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+//! OCCT-style hasher for StepGeom_Direction entities.
+struct StepTidy_DirectionHasher
+{
+  // Hashes the direction by its name and direction ratios.
+  std::size_t operator()(const Handle(StepGeom_Direction)& theDirection) const noexcept
+  {
+    // Prepare an array of direction ratios.
+    const Handle(TColStd_HArray1OfReal) aCoords = theDirection->DirectionRatios();
+    int                                 anArray[3]{};
+    for (int anIndex = aCoords->Lower(); anIndex < aCoords->Upper(); ++anIndex)
+    {
+      anArray[anIndex] = static_cast<int>(aCoords->Value(anIndex));
+    }
+    // If direction has no name, hash only direction ratios.
+    if (theDirection->Name().IsNull())
+    {
+      return opencascade::hashBytes(anArray, sizeof(anArray));
+    }
+    // Otherwise, hash both direction ratios and name.
+    const size_t aHashes[2]{opencascade::hashBytes(anArray, sizeof(anArray)),
+                            std::hash<TCollection_AsciiString>{}(theDirection->Name()->String())};
+    return opencascade::hashBytes(aHashes, sizeof(aHashes));
+  }
+
+  // Compares two directions by their names and direction ratios.
+  bool operator()(const Handle(StepGeom_Direction)& theDirection1,
+                  const Handle(StepGeom_Direction)& theDirection2) const noexcept
+  {
+    // Compare names.
+    if (theDirection1->Name().IsNull() != theDirection2->Name().IsNull())
+    {
+      return false;
+    }
+    if (!theDirection1->Name()->IsSameString(theDirection2->Name()))
+    {
+      return false;
+    }
+
+    // Compare coordinates.
+    constexpr double                    aTolerance = 1e-12;
+    const Handle(TColStd_HArray1OfReal) aCoords1   = theDirection1->DirectionRatios();
+    const Handle(TColStd_HArray1OfReal) aCoords2   = theDirection2->DirectionRatios();
+    if (aCoords1->Length() != aCoords2->Length())
+    {
+      return false;
+    }
+    for (Standard_Integer i = aCoords1->Lower(); i <= aCoords1->Upper(); ++i)
+    {
+      if (std::abs(aCoords1->Value(i) - aCoords2->Value(i)) > aTolerance)
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+#endif // _StepTidy_DirectionHasher_HeaderFile

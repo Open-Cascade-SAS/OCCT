@@ -131,6 +131,8 @@ public:
   Standard_EXPORT void PrintStatsTransfer(const Standard_Integer what,
                                           const Standard_Integer mode = 0) const;
 
+  Standard_EXPORT void CleanDuplicateEntities();
+
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(

@@ -116,6 +116,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
   aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
+  aWriter.SetCleanDuplicates(aNode->InternalParameters.CleanDuplicates);
   DESTEP_Parameters aParams        = aNode->InternalParameters;
   Standard_Real     aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
@@ -274,6 +275,11 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
                         << "\t: abandon, no model loaded";
     return false;
   }
+  if (aNode->InternalParameters.CleanDuplicates)
+  {
+    aWriter.CleanDuplicateEntities();
+  }
+
   if (aWriter.Write(thePath.ToCString()) != IFSelect_RetDone)
   {
     Message::SendFail() << "DESTEP_Provider: Error on writing file";

@@ -1,0 +1,241 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_EntityReducer_HeaderFile
+#define _StepTidy_EntityReducer_HeaderFile
+
+#include <Interface_Graph.hxx>
+#include <NCollection_Allocator.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_HashUtils.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <TColStd_MapOfTransient.hxx>
+
+#include <functional>
+
+//! Base class for removing duplicate entities.
+//! Implements the logic of processing entities and removing duplicates.
+//! Child classes should only implement and register replacer functions
+//! for each specific type of sharing entity.
+//! How to use:
+//! 1. Create an instance of the child class.
+//! 2. Add entities to the processor using ProcessEntity() method. Entities
+//!    that can be merged will be stored in the internal map, others will be ignored.
+//! 3. Call Perform() method to replace duplicate entities. After this call
+//!    all duplicate entities will be replaced in a model with the first processed entity
+//!    that is evaluated as equal to them.
+//!    IMPORTANT: Duplicated entities will be replaced but not removed from the model!
+//! 4. Call GetReplacedEntities() to get a list of replaced duplicates. This list can be used
+//!    to remove entities from the model.
+//! @tparam ProcessedType Type of the processed entities.
+//! @tparam ProcessedTypeHasher OCCT-Style hasher for the processed entities.
+template <typename ProcessedType, typename ProcessedTypeHasher>
+class StepTidy_EntityReducer
+{
+protected:
+  // Map of duplicate entities. Key is the first processed entity, value is a list of duplicates.
+  using DuplicateMap = NCollection_DataMap<Handle(ProcessedType),
+                                           std::vector<Handle(ProcessedType)>,
+                                           ProcessedTypeHasher>;
+  // Function to replace an entity in sharings. First argument is the old entity, second is the new
+  // entity, third is the sharing in which the entity should be replaced. Returns true if the entity
+  // was replaced, false otherwise.
+  using ReplacerFunction = std::function<bool(const Handle(ProcessedType)&,
+                                              const Handle(ProcessedType)&,
+                                              const Handle(Standard_Transient))>;
+  // Map of replacer functions. Key is the type of the sharing entity, value is the replacer
+  // function for this type.
+  using ReplacerMap = NCollection_DataMap<Handle(Standard_Type), ReplacerFunction>;
+
+protected:
+  //! Constructor. Accepts a work session containing the model to process.
+  //! Protected to prevent direct instantiation of the base class. Only child classes should be
+  //! allowed to instantiate.
+  //! @param theWS Work session.
+  StepTidy_EntityReducer(const Handle(XSControl_WorkSession)& theWS);
+
+public:
+  //! Function to process an entity. If the entity can be merged, it will be stored in the internal
+  //! map. If the entity cannot be merged, it will be ignored.
+  //! Entity can only be processed if:
+  //! 1. The type of entity is ProcessedType.
+  //! 2. All sharings of the entity have a registered replacer function.
+  //! @param theEntity Entity to process.
+  //! @return True if the entity was processed, false if it was ignored.
+  Standard_EXPORT bool ProcessEntity(const Handle(Standard_Transient)& theEntity);
+
+  //! Function to replace duplicate entities. After this call, all duplicate entities will be
+  //! replaced with the first processed entity that is evaluated as equal to them.
+  //! IMPORTANT: Duplicated entities will be replaced but not removed from the model!
+  //! @param theReplacedEntities List where replaced entities will be stored.
+  //!        This list can be used to remove entities from the model.
+  Standard_EXPORT void Perform(TColStd_MapOfTransient& theReplacedEntities);
+
+protected:
+  //! Register a replacer function for a specific type of sharing entity.
+  //! Should be used by child classes to register replacer functions for each specific type of
+  //! sharing entity. If a sharing entity of the specified type is encountered during processing,
+  //! the registered replacer function will be called to replace the old entity with the new one.
+  //! All replacers must be registered before calling ProcessEntity() method.
+  //! @param theType Type of the sharing entity.
+  //! @param theReplacer Replacer function.
+  void registerReplacer(const Handle(Standard_Type)& theType, const ReplacerFunction& theReplacer);
+
+public:
+  //! Checks if all sharings have registered replacers for their types.
+  //! @param theSharings List of sharings to check.
+  //! @return True if all sharings have registered replacers, false otherwise.
+  bool hasAllReplacers(const Handle(TColStd_HSequenceOfTransient)& theSharings) const;
+
+  //! Replaces an old entity with a new entity in sharings.
+  //! Should only be called if all sharings have registered replacers.
+  //! @param theOldEntity Old entity to replace.
+  //! @param theNewEntity New entity to replace old entity with.
+  //! @param theSharings List of old entity sharings to replace the entity in.
+  //! @return True if all entities were replaced, false if at least one entity was not replaced.
+  bool replaceInSharings(const Handle(ProcessedType)&                theOldEntity,
+                         const Handle(ProcessedType)&                theNewEntity,
+                         const Handle(TColStd_HSequenceOfTransient)& theSharings) const;
+
+private:
+  Handle(XSControl_WorkSession) myWS;           //!< Work session.
+  ReplacerMap                   myReplacerMap;  //!< Map of replacer functions.
+  DuplicateMap                  myDuplicateMap; //!< Map of duplicate entities.
+};
+
+//==================================================================================================
+
+template <typename ProcessedType, typename ProcessedTypeHasher>
+StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::StepTidy_EntityReducer(
+  const Handle(XSControl_WorkSession)& theWS)
+    : myWS(theWS),
+      myReplacerMap(),
+      myDuplicateMap()
+{
+}
+
+//==================================================================================================
+
+template <typename ProcessedType, typename ProcessedTypeHasher>
+bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
+  const Handle(Standard_Transient)& theEntity)
+{
+  const Handle(ProcessedType) anEntity = Handle(ProcessedType)::DownCast(theEntity);
+  if (anEntity.IsNull())
+  {
+    return false;
+  }
+  const Interface_Graph&                     aGraph    = myWS->Graph();
+  const Handle(TColStd_HSequenceOfTransient) aSharings = aGraph.GetSharings(anEntity);
+  if (hasAllReplacers(aSharings))
+  {
+    std::vector<Handle(ProcessedType)>* anIter = myDuplicateMap.ChangeSeek(anEntity);
+    if (anIter == nullptr)
+    {
+      // Add as a new key.
+      myDuplicateMap.Bind(anEntity, std::vector<Handle(ProcessedType)>{});
+    }
+    else
+    {
+      // Add as a value.
+      anIter->push_back(anEntity);
+    }
+  }
+
+  return true;
+}
+
+//==================================================================================================
+
+template <typename ProcessedType, typename ProcessedTypeHasher>
+void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
+  TColStd_MapOfTransient& theReplacedEntities)
+{
+  for (typename DuplicateMap::Iterator anIter(myDuplicateMap); anIter.More(); anIter.Next())
+  {
+    const Handle(ProcessedType)&              anEntity    = anIter.Key();
+    const std::vector<Handle(ProcessedType)>& aDuplicates = anIter.Value();
+    if (aDuplicates.empty())
+    {
+      continue;
+    }
+
+    const Interface_Graph& aGraph = myWS->Graph();
+    for (const auto& aDuplicate : aDuplicates)
+    {
+      Handle(TColStd_HSequenceOfTransient) aSharings = aGraph.GetSharings(aDuplicate);
+      if (aSharings.IsNull())
+      {
+        continue;
+      }
+
+      if (replaceInSharings(aDuplicate, anEntity, aSharings))
+      {
+        theReplacedEntities.Add(aDuplicate);
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+template <typename ProcessedType, typename ProcessedTypeHasher>
+void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::registerReplacer(
+  const Handle(Standard_Type)& theType,
+  const ReplacerFunction&      theReplacer)
+{
+  myReplacerMap.Bind(theType, theReplacer);
+}
+
+//==================================================================================================
+
+template <typename ProcessedType, typename ProcessedTypeHasher>
+bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::hasAllReplacers(
+  const Handle(TColStd_HSequenceOfTransient)& theSharings) const
+{
+  if (theSharings.IsNull())
+  {
+    return false;
+  }
+  return std::all_of(theSharings->cbegin(),
+                     theSharings->cend(),
+                     [this](const Handle(Standard_Transient)& theSharing) {
+                       return myReplacerMap.IsBound(theSharing->DynamicType());
+                     });
+}
+
+//==================================================================================================
+template <typename ProcessedType, typename ProcessedTypeHasher>
+bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::replaceInSharings(
+  const Handle(ProcessedType)&                theOldEntity,
+  const Handle(ProcessedType)&                theNewEntity,
+  const Handle(TColStd_HSequenceOfTransient)& theSharings) const
+{
+  bool isAllReplaced = true;
+  for (const auto& aSharing : *theSharings)
+  {
+    if (aSharing.IsNull())
+    {
+      continue;
+    }
+
+    const ReplacerFunction& aReplacer = myReplacerMap.Find(aSharing->DynamicType());
+    if (!aReplacer(theOldEntity, theNewEntity, aSharing))
+    {
+      isAllReplaced = false;
+    }
+  }
+  return isAllReplaced;
+}
+
+#endif // _StepTidy_EntityReducer_HeaderFile

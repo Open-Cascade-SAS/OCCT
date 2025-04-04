@@ -200,6 +200,7 @@ public:
   bool WriteLayer = true; //<! LayerMode is used to indicate write Layers or not
   bool WriteProps = true; //<! PropsMode is used to indicate write Validation properties or not
   STEPControl_StepModelType WriteModelType = STEPControl_AsIs; //<! Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP
+  bool CleanDuplicates = false; //<! Indicates whether to remove duplicate entities from the STEP file
   // clang-format on
 };
 

@@ -312,6 +312,12 @@ void RWStepGeom_RWBSplineCurveWithKnots::Check(const Handle(StepGeom_BSplineCurv
   {
     ach->AddFail("ERROR: No.of KnotMultiplicities not equal No.of Knots");
   }
+  if (nbMult == 0)
+  {
+    ach->AddFail("ERROR: No.of KnotMultiplicities is equal to 0");
+    return;
+  }
+
   Standard_Integer i; // svv Jan 10 2000: porting on DEC
   for (i = 1; i <= nbMult - 1; i++)
   {

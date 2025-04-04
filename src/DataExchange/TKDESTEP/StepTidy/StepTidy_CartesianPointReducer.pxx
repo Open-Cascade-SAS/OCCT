@@ -1,0 +1,161 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _StepTidy_CartesianPointReducer_HeaderFile
+#define _StepTidy_CartesianPointReducer_HeaderFile
+
+#include <StepTidy_EntityReducer.pxx>
+#include <StepTidy_CartesianPointHasher.pxx>
+
+#include <StepGeom_CartesianPoint.hxx>
+
+//! Processor for merging StepGeom_CartesianPoint entities.
+//! This processor is responsible for merging Cartesian points with the same coordinates and names.
+//! It is used to remove duplicate Cartesian points from the STEP model.
+//! See StepTidy_EntityReducer for the description of the Reducer workflow.
+class StepTidy_CartesianPointReducer
+    : public StepTidy_EntityReducer<StepGeom_CartesianPoint, StepTidy_CartesianPointHasher>
+{
+public:
+  //! Constructor. Accepts a work session containing the model to process.
+  //! Registers replacer functions for all supported sharing entities.
+  //! @param theWS Work session.
+  Standard_EXPORT StepTidy_CartesianPointReducer(const Handle(XSControl_WorkSession)& theWS);
+
+private:
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_Axis2Placement3d.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_Axis2Placement3d sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceAxis2Placement3d(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                      const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                      Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepShape_VertexPoint.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepShape_VertexPoint sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceVertexPoint(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                 const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                 Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepShape_GeometricSet.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepShape_GeometricSet sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceGeometricCurveSet(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                       const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                       Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepVisual_PresentationLayerAssignment.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepVisual_PresentationLayerAssignment sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replacePresentationLayerAssignment(
+    const Handle(StepGeom_CartesianPoint)& theOldEntity,
+    const Handle(StepGeom_CartesianPoint)& theNewEntity,
+    Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepVisual_StyledItem.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepVisual_StyledItem sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceStyledItem(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_BSplineCurveWithKnots.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_BSplineCurveWithKnots sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceBSplineCurveWithKnots(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                           const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                           Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_Line.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_Line sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceLine(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                          const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                          Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_BSplineSurfaceWithKnots.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_BSplineSurfaceWithKnots sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceBSplineSurfaceWithKnots(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                             const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                             Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_Axis1Placement.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_Axis1Placement sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceAxis1Placement(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                    const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                    Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepRepr_Representation.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepRepr_Representation sharing the old entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceRepresentation(const Handle(StepGeom_CartesianPoint)& theOldEntity,
+                                    const Handle(StepGeom_CartesianPoint)& theNewEntity,
+                                    Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve sharing the old
+  //!        entity.
+  //! @return True if the entity was replaced, false if it was not.
+  static bool replaceBSplineCurveWithKnotsAndRationalBSplineCurve(
+    const Handle(StepGeom_CartesianPoint)& theOldEntity,
+    const Handle(StepGeom_CartesianPoint)& theNewEntity,
+    Handle(Standard_Transient)             theSharing);
+
+  //! Replaces the old Cartesian point with the new Cartesian point in
+  //! the sharing StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.
+  //! @param theOldEntity Old Cartesian point to replace.
+  //! @param theNewEntity New Cartesian point to replace the old entity with.
+  //! @param theSharing The StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface sharing the
+  //!       old entity.
+  static bool replaceBSplineSurfaceWithKnotsAndRationalBSplineSurface(
+    const Handle(StepGeom_CartesianPoint)& theOldEntity,
+    const Handle(StepGeom_CartesianPoint)& theNewEntity,
+    Handle(Standard_Transient)             theSharing);
+};
+
+#endif // _StepTidy_CartesianPointReducer_HeaderFile
