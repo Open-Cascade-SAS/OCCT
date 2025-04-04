@@ -2003,7 +2003,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
     {
       if (style != aHSeqOfInvisStyle->Value(si))
         continue;
-      // found that current style is invisible.
+        // found that current style is invisible.
 #ifdef OCCT_DEBUG
       std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name()
                 << ") is invisible" << std::endl;
