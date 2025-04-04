@@ -24,6 +24,9 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
+
+#include <array>
+
 class TCollection_HAsciiString;
 
 class StepGeom_Direction;
@@ -36,22 +39,35 @@ public:
   //! Returns a Direction
   Standard_EXPORT StepGeom_Direction();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TColStd_HArray1OfReal)&    aDirectionRatios);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
+                            const Handle(TColStd_HArray1OfReal)&    theDirectionRatios);
 
-  Standard_EXPORT void SetDirectionRatios(const Handle(TColStd_HArray1OfReal)& aDirectionRatios);
+  Standard_EXPORT void Init3D(const Handle(TCollection_HAsciiString)& theName,
+                              const Standard_Real                     theDirectionRatios1,
+                              const Standard_Real                     theDirectionRatios2,
+                              const Standard_Real                     theDirectionRatios3);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) DirectionRatios() const;
+  Standard_EXPORT void Init2D(const Handle(TCollection_HAsciiString)& theName,
+                              const Standard_Real                     theDirectionRatios1,
+                              const Standard_Real                     theDirectionRatios2);
 
-  Standard_EXPORT Standard_Real DirectionRatiosValue(const Standard_Integer num) const;
+  Standard_EXPORT void SetDirectionRatios(const Handle(TColStd_HArray1OfReal)& theDirectionRatios);
+
+  Standard_EXPORT void SetDirectionRatios(const std::array<Standard_Real, 3>& theDirectionRatios);
+
+  Standard_EXPORT const std::array<Standard_Real, 3>& DirectionRatios() const;
+
+  Standard_EXPORT Standard_Real DirectionRatiosValue(const Standard_Integer theInd) const;
+
+  Standard_EXPORT void SetNbDirectionRatios(const Standard_Integer theSize);
 
   Standard_EXPORT Standard_Integer NbDirectionRatios() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Direction, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfReal) directionRatios;
+  Standard_Integer             myNbCoord;
+  std::array<Standard_Real, 3> myCoords;
 };
 
 #endif // _StepGeom_Direction_HeaderFile

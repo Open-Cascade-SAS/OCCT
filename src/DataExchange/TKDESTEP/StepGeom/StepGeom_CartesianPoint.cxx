@@ -19,71 +19,71 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianPoint, StepGeom_Point)
 
 StepGeom_CartesianPoint::StepGeom_CartesianPoint() {}
 
-void StepGeom_CartesianPoint::Init(const Handle(TCollection_HAsciiString)& aName,
+void StepGeom_CartesianPoint::Init(const Handle(TCollection_HAsciiString)& theName,
                                    const Handle(TColStd_HArray1OfReal)&    aCoordinates)
 {
-  // --- classe own fields ---
-  nbcoord   = aCoordinates->Length();
-  coords[0] = aCoordinates->Value(1);
-  coords[1] = aCoordinates->Value(2);
-  coords[2] = aCoordinates->Value(3);
-  //	coordinates = aCoordinates;
+  SetCoordinates(aCoordinates);
   // --- classe inherited fields ---
-  StepRepr_RepresentationItem::Init(aName);
+  StepRepr_RepresentationItem::Init(theName);
 }
 
-void StepGeom_CartesianPoint::Init2D(const Handle(TCollection_HAsciiString)& aName,
-                                     const Standard_Real                     X,
-                                     const Standard_Real                     Y)
+void StepGeom_CartesianPoint::Init2D(const Handle(TCollection_HAsciiString)& theName,
+                                     const Standard_Real                     theX,
+                                     const Standard_Real                     theY)
 {
-  nbcoord   = 2;
-  coords[0] = X;
-  coords[1] = Y;
-  coords[2] = 0;
+  myNbCoord   = 2;
+  myCoords[0] = theX;
+  myCoords[1] = theY;
+  myCoords[2] = 0;
   // --- classe inherited fields ---
-  StepRepr_RepresentationItem::Init(aName);
+  StepRepr_RepresentationItem::Init(theName);
 }
 
-void StepGeom_CartesianPoint::Init3D(const Handle(TCollection_HAsciiString)& aName,
-                                     const Standard_Real                     X,
-                                     const Standard_Real                     Y,
-                                     const Standard_Real                     Z)
+void StepGeom_CartesianPoint::Init3D(const Handle(TCollection_HAsciiString)& theName,
+                                     const Standard_Real                     theX,
+                                     const Standard_Real                     theY,
+                                     const Standard_Real                     theZ)
 {
-  nbcoord   = 3;
-  coords[0] = X;
-  coords[1] = Y;
-  coords[2] = Z;
+  myNbCoord   = 3;
+  myCoords[0] = theX;
+  myCoords[1] = theY;
+  myCoords[2] = theZ;
   // --- classe inherited fields ---
-  StepRepr_RepresentationItem::Init(aName);
+  StepRepr_RepresentationItem::Init(theName);
 }
 
 void StepGeom_CartesianPoint::SetCoordinates(const Handle(TColStd_HArray1OfReal)& aCoordinates)
 {
-  nbcoord   = aCoordinates->Length();
-  coords[0] = aCoordinates->Value(1);
-  coords[1] = aCoordinates->Value(2);
-  coords[2] = aCoordinates->Value(3);
-  //	coordinates = aCoordinates;
+  myNbCoord = aCoordinates->Length();
+  if (myNbCoord > 0)
+    myCoords[0] = aCoordinates->Value(1);
+  if (myNbCoord > 1)
+    myCoords[1] = aCoordinates->Value(2);
+  if (myNbCoord > 2)
+    myCoords[2] = aCoordinates->Value(3);
 }
 
 void StepGeom_CartesianPoint::SetCoordinates(const std::array<Standard_Real, 3>& theCoordinates)
 {
-  coords = theCoordinates;
+  myCoords = theCoordinates;
 }
 
 const std::array<Standard_Real, 3>& StepGeom_CartesianPoint::Coordinates() const
 {
-  return coords;
+  return myCoords;
 }
 
 Standard_Real StepGeom_CartesianPoint::CoordinatesValue(const Standard_Integer num) const
 {
-  return coords[num - 1];
-  //	return coordinates->Value(num);
+  return myCoords[num - 1];
+}
+
+void StepGeom_CartesianPoint::SetNbCoordinates(const Standard_Integer num)
+{
+  myNbCoord = num;
 }
 
 Standard_Integer StepGeom_CartesianPoint::NbCoordinates() const
 {
-  return nbcoord;
-  //	return coordinates->Length();
+  return myNbCoord;
 }

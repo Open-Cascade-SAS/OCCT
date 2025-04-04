@@ -40,24 +40,31 @@ void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& dat
 
   // --- own field : directionRatios ---
 
-  Handle(TColStd_HArray1OfReal) aDirectionRatios;
-  Standard_Real                 aDirectionRatiosItem;
-  Standard_Integer              nsub2;
-  if (data->ReadSubList(num, 2, "direction_ratios", ach, nsub2))
+  Standard_Real    aCoordinatesItem;
+  Standard_Integer aNSub2, aNbCoord = 0;
+  Standard_Real    aXYZ[3] = {0., 0., 0.};
+  if (data->ReadSubList(num, 2, "coordinates", ach, aNSub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aDirectionRatios     = new TColStd_HArray1OfReal(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    Standard_Integer aNbElements = data->NbParams(aNSub2);
+    if (aNbElements > 3)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-      if (data->ReadReal(nsub2, i2, "direction_ratios", ach, aDirectionRatiosItem))
-        aDirectionRatios->SetValue(i2, aDirectionRatiosItem);
+      ach->AddWarning("More than 3 coordinates, ignored");
+    }
+    aNbCoord = Min(aNbElements, 3);
+    for (Standard_Integer i2 = 0; i2 < aNbCoord; i2++)
+    {
+      if (data->ReadReal(aNSub2, i2 + 1, "coordinates", ach, aCoordinatesItem))
+      {
+        aXYZ[i2] = aCoordinatesItem;
+      }
     }
   }
 
   //--- Initialisation of the read entity ---
-
-  ent->Init(aName, aDirectionRatios);
+  if (aNbCoord == 3)
+    ent->Init3D(aName, aXYZ[0], aXYZ[1], aXYZ[2]);
+  else
+    ent->Init2D(aName, aXYZ[0], aXYZ[1]);
 }
 
 void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&              SW,

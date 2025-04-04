@@ -2003,7 +2003,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
     {
       if (style != aHSeqOfInvisStyle->Value(si))
         continue;
-        // found that current style is invisible.
+      // found that current style is invisible.
 #ifdef OCCT_DEBUG
       std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name()
                 << ") is invisible" << std::endl;
@@ -4393,26 +4393,19 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)&    theEnt,
           return;
         aDimObj->SetPath(aSh);
       }
-      else if (!anAP.IsNull())
+      else if (!anAP.IsNull() && !anAP->RefDirection().IsNull() && !anAP->Name().IsNull()
+               && !anAP->Axis().IsNull() && anAP->Name()->String().IsEqual("orientation"))
       {
-        if (anAP->Name()->String().IsEqual("orientation") && !anAP->Axis().IsNull())
+        // for Oriented Dimensional Location
+        const Handle(StepGeom_Direction)&   aRefDirection = anAP->RefDirection();
+        const std::array<Standard_Real, 3>& aDirArr       = aRefDirection->DirectionRatios();
+        if (aRefDirection->NbDirectionRatios() >= 3)
         {
-          // for Oriented Dimensional Location
-          Handle(TColStd_HArray1OfReal) aDirArr = anAP->RefDirection()->DirectionRatios();
-          gp_Dir                        aDir;
-          Standard_Integer              aDirLower = aDirArr->Lower();
-          if (!aDirArr.IsNull() && aDirArr->Length() > 2)
-          {
-            aDir.SetCoord(aDirArr->Value(aDirLower),
-                          aDirArr->Value(aDirLower + 1),
-                          aDirArr->Value(aDirLower + 2));
-            aDimObj->SetDirection(aDir);
-          }
-          else if (aDirArr->Length() > 1)
-          {
-            aDir.SetCoord(aDirArr->Value(aDirLower), aDirArr->Value(aDirLower + 1), 0);
-            aDimObj->SetDirection(aDir);
-          }
+          aDimObj->SetDirection({aDirArr[0], aDirArr[1], aDirArr[2]});
+        }
+        else if (aRefDirection->NbDirectionRatios() == 2)
+        {
+          aDimObj->SetDirection({aDirArr[0], aDirArr[1], 0.});
         }
       }
     }
