@@ -27,38 +27,42 @@ runs:
         name: ${{ inputs.results-artifact-name }}
         path: install/results
 
-    - name: Check for test failures
+    - name: Check for test failures (Windows)
       id: check_failures
-      shell: ${{ inputs.platform == 'windows' && 'pwsh' || 'bash' }}
+      if: ${{ inputs.platform == 'windows' }}
+      shell: pwsh
       run: |
-        if [ "${{ inputs.platform }}" = "windows" ]; then
-          $failedCount = 0
-          if (Test-Path "install/results/${{ inputs.test-directory-name }}/tests.log") {
-            $content = Get-Content "install/results/${{ inputs.test-directory-name }}/tests.log"
-            $totalLine = $content | Select-String "Total cases:"
-            if ($totalLine) {
-              if ($totalLine -match "FAILED") {
-                $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
-              }
-            }
-            echo "failed_count=$failedCount" >> $env:GITHUB_OUTPUT
-            if ($failedCount -gt 0) {
-              echo "Tests failed count: $failedCount"
+        $failedCount = 0
+        if (Test-Path "install/results/${{ inputs.test-directory-name }}/tests.log") {
+          $content = Get-Content "install/results/${{ inputs.test-directory-name }}/tests.log"
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
             }
           }
-        else
-          failed_count=0
-          if [ -f "install/results/${{ inputs.test-directory-name }}/tests.log" ]; then
-            total_line=$(grep "Total cases:" install/results/${{ inputs.test-directory-name }}/tests.log)
-            if [ ! -z "$total_line" ]; then
-              if [[ $total_line =~ "FAILED" ]]; then
-                failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
-              fi
+          echo "failed_count=$failedCount" >> $env:GITHUB_OUTPUT
+          if ($failedCount -gt 0) {
+            echo "Tests failed count: $failedCount"
+          }
+        }
+
+    - name: Check for test failures (macOS/Linux)
+      id: check_failures
+      if: ${{ inputs.platform != 'windows' }}
+      shell: bash
+      run: |
+        failed_count=0
+        if [ -f "install/results/${{ inputs.test-directory-name }}/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/results/${{ inputs.test-directory-name }}/tests.log)
+          if [ ! -z "$total_line" ]; then
+            if [[ $total_line =~ "FAILED" ]]; then
+              failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
             fi
-            echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
-            if [ "$failed_count" -gt 0 ]; then
-              echo "Tests failed count: $failed_count"
-            fi
+          fi
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+          if [ "$failed_count" -gt 0 ]; then
+            echo "Tests failed count: $failed_count"
           fi
         fi
 
