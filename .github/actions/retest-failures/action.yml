@@ -28,7 +28,7 @@ runs:
         path: install/results
 
     - name: Check for test failures (Windows)
-      id: check_failures
+      id: check_failures_windows
       if: ${{ inputs.platform == 'windows' }}
       shell: pwsh
       run: |
@@ -48,7 +48,7 @@ runs:
         }
 
     - name: Check for test failures (macOS/Linux)
-      id: check_failures
+      id: check_failures_unix
       if: ${{ inputs.platform != 'windows' }}
       shell: bash
       run: |
@@ -65,6 +65,18 @@ runs:
             echo "Tests failed count: $failed_count"
           fi
         fi
+
+    - name: Set failed count
+      id: check_failures
+      shell: ${{ inputs.platform == 'windows' && 'pwsh' || 'bash' }}
+      run: |
+        ${{ inputs.platform == 'windows' && '
+        # Windows PowerShell
+        echo "failed_count=${{ steps.check_failures_windows.outputs.failed_count }}" >> $env:GITHUB_OUTPUT
+        ' || '
+        # Unix Bash
+        echo "failed_count=${{ steps.check_failures_unix.outputs.failed_count }}" >> $GITHUB_OUTPUT
+        ' }}
 
     - name: Download and extract 3rdparty dependencies (Windows)
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
