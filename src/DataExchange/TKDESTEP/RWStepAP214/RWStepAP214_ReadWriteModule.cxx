@@ -436,6 +436,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuse.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
@@ -1454,6 +1456,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleTransparent.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbient.pxx"
+#include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse.pxx"
+#include "../RWStepVisual/RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleRendering.pxx"
 #include "../RWStepVisual/RWStepVisual_RWSurfaceStyleRenderingWithProperties.pxx"
 
@@ -10813,6 +10817,18 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer               
     case 824: {
       DeclareAndCast(StepRepr_MechanicalDesignAndDraughtingRelationship, anent, ent);
       RWStepRepr_RWMechanicalDesignAndDraughtingRelationship aTool;
+      aTool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 825: {
+      DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuse, anent, ent);
+      RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse aTool;
+      aTool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 826: {
+      DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular, anent, ent);
+      RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular aTool;
       aTool.ReadStep(data, num, ach, anent);
     }
     break;
