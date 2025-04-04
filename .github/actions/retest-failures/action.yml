@@ -1,0 +1,294 @@
+name: 'Retest Failures'
+description: 'Rerun failed tests and update test results'
+
+inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  compiler:
+    description: 'Compiler (msvc, clang, gcc)'
+    required: true
+  install-artifact-name:
+    description: 'Name of the artifact containing the install directory'
+    required: true
+  results-artifact-name:
+    description: 'Name of the artifact containing the test results'
+    required: true
+  test-directory-name:
+    description: 'Name of the directory containing test results'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.results-artifact-name }}
+        path: install/results
+
+    - name: Check for test failures
+      id: check_failures
+      shell: ${{ inputs.platform == 'windows' && 'pwsh' || 'bash' }}
+      run: |
+        if [ "${{ inputs.platform }}" = "windows" ]; then
+          $failedCount = 0
+          if (Test-Path "install/results/${{ inputs.test-directory-name }}/tests.log") {
+            $content = Get-Content "install/results/${{ inputs.test-directory-name }}/tests.log"
+            $totalLine = $content | Select-String "Total cases:"
+            if ($totalLine) {
+              if ($totalLine -match "FAILED") {
+                $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+              }
+            }
+            echo "failed_count=$failedCount" >> $env:GITHUB_OUTPUT
+            if ($failedCount -gt 0) {
+              echo "Tests failed count: $failedCount"
+            }
+          }
+        else
+          failed_count=0
+          if [ -f "install/results/${{ inputs.test-directory-name }}/tests.log" ]; then
+            total_line=$(grep "Total cases:" install/results/${{ inputs.test-directory-name }}/tests.log)
+            if [ ! -z "$total_line" ]; then
+              if [[ $total_line =~ "FAILED" ]]; then
+                failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
+              fi
+            fi
+            echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+            if [ "$failed_count" -gt 0 ]; then
+              echo "Tests failed count: $failed_count"
+            fi
+          fi
+        fi
+
+    - name: Download and extract 3rdparty dependencies (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: pwsh
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+
+    - name: Install dependencies (macOS)
+      if: ${{ inputs.platform == 'macos' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+
+    - name: Install dependencies (Linux)
+      if: ${{ inputs.platform == 'linux' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+
+    - name: Setup Xvfb and Mesa (Linux)
+      if: ${{ inputs.platform == 'linux' && steps.check_failures.outputs.failed_count > 0 }}
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Download test data (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: pwsh
+      run: |
+        cd data
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
+
+    - name: Download test data (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: |
+        cd data
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.${{ inputs.platform == 'macos' && 'tar.xz' || 'tar.xz' }}
+        tar -xf opencascade-dataset-7.9.0.tar.xz
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: install
+
+    - name: Download and extract Mesa3D (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: pwsh
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: cmd
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+
+    - name: Install CJK Fonts (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: pwsh
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+
+    - name: Set execute permissions on DRAWEXE (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: chmod +x install/${{ inputs.platform == 'macos' && 'bin' || 'bin' }}/DRAWEXE
+
+    - name: Run regression tests (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: cmd
+      run: |
+        cd install
+        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }} -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Run regression tests (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c testgrid -regress results/${{ inputs.test-directory-name }} -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0
+      env:
+        DISPLAY: ${{ inputs.platform == 'linux' && ':99' || '' }}
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Repeating failed tests (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20 }}
+      shell: cmd
+      run: |
+        cd install
+        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        # Repeat failed tests for 10 times
+        for /l %%i in (1,1,10) do (
+          DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }}-retest -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0 -overwrite
+          DRAWEXE.exe -v -c "testsummarize results/${{ inputs.test-directory-name }}-retest"
+        )
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Repeating failed tests (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20 }}
+      shell: bash
+      run: |
+        cd install
+        cd bin
+        source env.sh
+        # Repeat failed tests for 10 times
+        for i in {1..10}; do
+          ./DRAWEXE -v -c testgrid -regress results/${{ inputs.test-directory-name }}-retest -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0 -overwrite
+          ./DRAWEXE -v -c "testsummarize results/${{ inputs.test-directory-name }}-retest"
+        done
+      env:
+        DISPLAY: ${{ inputs.platform == 'linux' && ':99' || '' }}
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.results-artifact-name }}-retest
+        path: install/${{ (inputs.platform == 'windows') && '' || 'bin/' }}results/${{ inputs.test-directory-name }}-retest
+        retention-days: 15
+        overwrite: true
+
+    - name: Copy retest results back to original location (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: cmd
+      run: |
+        cd install/results/${{ inputs.test-directory-name }}-retest
+        if exist "*" (
+          xcopy /s /y /i . ../${{ inputs.test-directory-name }}\
+          cd ..\..\
+          call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+          DRAWEXE.exe -v -c "testsummarize results/${{ inputs.test-directory-name }}"
+        ) else (
+          echo No retest results to copy - directory is empty
+        )
+
+    - name: Copy retest results back to original location (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: |
+        cd install/bin/results/${{ inputs.test-directory-name }}-retest
+        if [ "$(ls -A)" ]; then
+          cp -rf * ../${{ inputs.test-directory-name }}/
+
+          cd ../../
+          source env.sh
+          ./DRAWEXE -v -c testsummarize results/${{ inputs.test-directory-name }}
+        else
+          echo "No retest results to copy - directory is empty"
+        fi
+
+    - name: Upload updated test results (Windows)
+      if: ${{ inputs.platform == 'windows' && hashFiles('install/results/${{ inputs.test-directory-name }}-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.results-artifact-name }}
+        path: install/results/${{ inputs.test-directory-name }}*
+        retention-days: 15
+        overwrite: true
+
+    - name: Upload updated test results (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && hashFiles('install/bin/results/${{ inputs.test-directory-name }}-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.results-artifact-name }}
+        path: install/bin/results/${{ inputs.test-directory-name }}*
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      shell: pwsh
+      run: |
+        cd install/results/${{ inputs.test-directory-name }}-retest
+        $failedCount = 0
+        if (Test-Path tests.log) {
+          $content = Get-Content tests.log
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+            }
+          }
+          if ($failedCount -gt 0) {
+            Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
+            echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
+            exit 1
+          }
+          Write-Output "Found $failedCount FAILED tests"
+        }
+
+    - name: Check test failures (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      shell: bash
+      run: |
+        cd install/bin/results/${{ inputs.test-directory-name }}-retest
+        if [ -f tests.log ]; then
+          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
+          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "Found $FAILED_COUNT FAILED tests"
+        fi

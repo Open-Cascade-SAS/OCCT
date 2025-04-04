@@ -1,0 +1,222 @@
+name: 'Build OCCT'
+description: 'Prepare and build OCCT on a specific platform'
+
+inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  compiler:
+    description: 'Compiler (msvc, clang, gcc)'
+    required: true
+  artifact-name:
+    description: 'Name of the artifact to store build results'
+    required: true
+  additional-cmake-flags:
+    description: 'Additional CMake flags'
+    required: false
+    default: ''
+  use-vtk:
+    description: 'Enable VTK'
+    required: false
+    default: 'true'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download and extract 3rdparty dependencies (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Download and extract Mesa3D (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+      shell: pwsh
+
+    - name: Run system-wide deployment (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+      shell: cmd
+
+    - name: Install Ninja (Windows Clang)
+      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
+      run: |
+        choco install ninja -y
+        ninja --version
+      shell: pwsh
+
+    - name: Install dependencies (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+      shell: bash
+
+    - name: Install dependencies (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      shell: bash
+
+    - name: Install rapidjson (macOS/Linux)
+      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+      shell: bash
+
+    - name: Configure OCCT (Windows MSVC)
+      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'msvc' }}
+      run: |
+          mkdir build
+          cd build
+          cmake -T host=x64 `
+                -D USE_FREETYPE=ON `
+                -D USE_TK=OFF `
+                -D BUILD_USE_PCH=ON `
+                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_INCLUDE_SYMLINK=ON `
+                -D CMAKE_BUILD_TYPE=Release `
+                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+                -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
+                -D USE_DRACO=ON `
+                -D USE_FFMPEG=ON `
+                -D USE_FREEIMAGE=ON `
+                -D USE_GLES2=ON `
+                -D USE_OPENVR=ON `
+                -D USE_VTK=${{ inputs.use-vtk }} `
+                -D USE_TBB=ON `
+                -D USE_RAPIDJSON=ON `
+                -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++14 `
+                -D INSTALL_GTEST=ON ${{ inputs.additional-cmake-flags }} ..
+      shell: pwsh
+
+    - name: Configure OCCT (Windows Clang)
+      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
+      run: |
+          mkdir build
+          cd build
+          cmake -G "Ninja" `
+                -D CMAKE_C_COMPILER=clang `
+                -D CMAKE_CXX_COMPILER=clang++ `
+                -D USE_FREETYPE=ON `
+                -D USE_TK=OFF `
+                -D BUILD_USE_PCH=ON `
+                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_INCLUDE_SYMLINK=ON `
+                -D CMAKE_BUILD_TYPE=Release `
+                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+                -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
+                -D USE_DRACO=ON `
+                -D USE_FFMPEG=ON `
+                -D USE_FREEIMAGE=ON `
+                -D USE_GLES2=ON `
+                -D USE_OPENVR=ON `
+                -D USE_VTK=${{ inputs.use-vtk }} `
+                -D USE_TBB=ON `
+                -D USE_RAPIDJSON=ON `
+                -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++14 `
+                -D INSTALL_GTEST=ON `
+                -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
+                -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ${{ inputs.additional-cmake-flags }} ..
+      shell: pwsh
+
+    - name: Configure OCCT (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Unix Makefiles" \
+              -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
+              -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
+              -D BUILD_USE_PCH=ON \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D CMAKE_BUILD_TYPE=Release \
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_RAPIDJSON=ON \
+              -D USE_DRACO=ON \
+              -D USE_FREETYPE=ON \
+              -D USE_OPENGL=ON \
+              -D USE_FREEIMAGE=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON \
+              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ${{ inputs.additional-cmake-flags }} ..
+      shell: bash
+
+    - name: Configure OCCT (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Unix Makefiles" \
+              -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
+              -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
+              -D BUILD_USE_PCH=ON \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=Production \
+              -D USE_TK=OFF \
+              -D CMAKE_BUILD_TYPE=Release \
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=${{ inputs.use-vtk }} \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON \
+              -D BUILD_GTEST=ON \
+              -D BUILD_CPP_STANDARD=C++14 \
+              -D INSTALL_GTEST=ON \
+              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ${{ inputs.additional-cmake-flags }} ..
+      shell: bash
+
+    - name: Build OCCT (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+          cd build
+          cmake --build . --target install --config Release
+      shell: pwsh
+
+    - name: Build OCCT (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: |
+        cd build
+        make install -j$(sysctl -n hw.logicalcpu)
+      shell: bash
+
+    - name: Build OCCT (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: |
+        cd build
+        cmake --build . --target install --config Release -- -j
+      shell: bash
+
+    - name: Upload install directory
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: install
+        retention-days: 7
