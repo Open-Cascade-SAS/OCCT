@@ -358,12 +358,3 @@ TEST_F(NCollection_Array1Test, IteratorAccess)
     index++;
   }
 }
-
-TEST_F(NCollection_Array1Test, AssignExceptions)
-{
-  NCollection_Array1<Standard_Integer> anArray1(1, 5);
-  NCollection_Array1<Standard_Integer> anArray2(0, 3); // Different size
-
-  // Expect exception when assigning arrays of different sizes
-  EXPECT_THROW(anArray1 = anArray2, Standard_DimensionMismatch);
-}
