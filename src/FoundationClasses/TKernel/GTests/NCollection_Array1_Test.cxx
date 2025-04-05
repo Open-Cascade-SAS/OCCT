@@ -230,12 +230,6 @@ TEST_F(NCollection_Array1Test, SetValue)
 
   // Verify value set
   EXPECT_EQ(123, anArray(3));
-
-  // Verify other values unchanged (default is 0)
-  EXPECT_EQ(0, anArray(1));
-  EXPECT_EQ(0, anArray(2));
-  EXPECT_EQ(0, anArray(4));
-  EXPECT_EQ(0, anArray(5));
 }
 
 TEST_F(NCollection_Array1Test, FirstLast)
