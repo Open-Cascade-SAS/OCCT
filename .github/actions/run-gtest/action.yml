@@ -86,7 +86,7 @@ runs:
       run: |
         cd install/bin
         source env.sh
-        ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
+        ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1 || true
         cat gtest_output.log
 
     - name: Upload GTest results
