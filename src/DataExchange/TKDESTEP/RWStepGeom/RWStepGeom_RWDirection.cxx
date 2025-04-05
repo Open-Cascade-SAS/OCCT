@@ -43,17 +43,17 @@ void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& dat
   Standard_Real    aCoordinatesItem;
   Standard_Integer aNSub2, aNbCoord = 0;
   Standard_Real    aXYZ[3] = {0., 0., 0.};
-  if (data->ReadSubList(num, 2, "coordinates", ach, aNSub2))
+  if (data->ReadSubList(num, 2, "direction_ratios", ach, aNSub2))
   {
     Standard_Integer aNbElements = data->NbParams(aNSub2);
     if (aNbElements > 3)
     {
-      ach->AddWarning("More than 3 coordinates, ignored");
+      ach->AddWarning("More than 3 direction ratios, ignored");
     }
     aNbCoord = Min(aNbElements, 3);
     for (Standard_Integer i2 = 0; i2 < aNbCoord; i2++)
     {
-      if (data->ReadReal(aNSub2, i2 + 1, "coordinates", ach, aCoordinatesItem))
+      if (data->ReadReal(aNSub2, i2 + 1, "direction_ratios", ach, aCoordinatesItem))
       {
         aXYZ[i2] = aCoordinatesItem;
       }
