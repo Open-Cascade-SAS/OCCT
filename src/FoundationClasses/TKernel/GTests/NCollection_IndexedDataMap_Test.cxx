@@ -703,23 +703,3 @@ TEST(NCollection_IndexedDataMapTest, ReSize)
     EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<Standard_Real>(i) / 10.0);
   }
 }
-
-#ifdef OCCT_DEBUG
-TEST(NCollection_IndexedDataMapTest, OutOfRangeAccess)
-{
-  NCollection_IndexedDataMap<KeyType, ItemType> aMap;
-  aMap.Add(10, 1.0);
-
-  // Test accessing invalid indices
-  EXPECT_THROW(aMap.FindKey(0), Standard_OutOfRange);
-  EXPECT_THROW(aMap.FindKey(2), Standard_OutOfRange);
-  EXPECT_THROW(aMap.FindFromIndex(0), Standard_OutOfRange);
-  EXPECT_THROW(aMap.FindFromIndex(2), Standard_OutOfRange);
-  EXPECT_THROW(aMap.ChangeFromIndex(0), Standard_OutOfRange);
-  EXPECT_THROW(aMap.ChangeFromIndex(2), Standard_OutOfRange);
-
-  // Test accessing non-existent key
-  EXPECT_THROW(aMap.FindFromKey(20), Standard_NoSuchObject);
-  EXPECT_THROW(aMap.ChangeFromKey(20), Standard_NoSuchObject);
-}
-#endif

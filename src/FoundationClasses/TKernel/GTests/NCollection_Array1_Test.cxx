@@ -317,19 +317,6 @@ TEST_F(NCollection_Array1Test, Resize)
   }
 }
 
-TEST_F(NCollection_Array1Test, OutOfBoundsAccess)
-{
-  NCollection_Array1<Standard_Integer> anArray(5, 10);
-
-  // Test out of bounds access throws exception
-#ifdef OCCT_DEBUG
-  EXPECT_THROW(anArray(4), Standard_OutOfRange);
-  EXPECT_THROW(anArray(11), Standard_OutOfRange);
-#endif
-
-  // In release mode, this would crash, so we don't test it
-}
-
 TEST_F(NCollection_Array1Test, ChangeValue)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);

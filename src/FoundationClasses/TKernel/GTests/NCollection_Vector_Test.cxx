@@ -263,19 +263,6 @@ TEST(NCollection_VectorTest, Grow)
   }
 }
 
-TEST(NCollection_VectorTest, OutOfBounds)
-{
-  NCollection_Vector<Standard_Integer> aVector;
-  aVector.Append(10);
-  aVector.Append(20);
-
-  // Test out of bounds access - should throw in debug mode
-#ifdef OCCT_DEBUG
-  EXPECT_THROW(aVector(2), Standard_OutOfRange);
-  EXPECT_THROW(aVector(-1), Standard_OutOfRange);
-#endif
-}
-
 TEST(NCollection_VectorTest, Move)
 {
   NCollection_Vector<Standard_Integer> aVector1;

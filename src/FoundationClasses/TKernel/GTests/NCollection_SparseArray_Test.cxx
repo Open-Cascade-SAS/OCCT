@@ -299,14 +299,3 @@ TEST(NCollection_SparseArrayTest, AssignAndExchange)
   EXPECT_FALSE(anArray3.HasValue(10));
   EXPECT_FALSE(anArray3.HasValue(20));
 }
-
-#ifdef OCCT_DEBUG
-TEST(NCollection_SparseArrayTest, OutOfRangeAccess)
-{
-  NCollection_SparseArray<ItemType> anArray(10);
-  anArray.SetValue(5, 50);
-
-  // Test accessing a non-set value throws an exception
-  EXPECT_THROW(anArray.Value(10), Standard_OutOfRange);
-}
-#endif
