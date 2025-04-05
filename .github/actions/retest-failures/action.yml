@@ -28,7 +28,7 @@ runs:
         name: ${{ inputs.results-artifact-name }}
         path: install/results
       
-    - name: Download Download previous test results (macOS/Linux)
+    - name: Download previous test results (macOS/Linux)
       if: ${{ inputs.platform != 'windows' }}
       uses: actions/download-artifact@v4.1.7
       with:
@@ -205,7 +205,7 @@ runs:
         CSF_TestDataPath: ${{ github.workspace }}/data
 
     - name: Repeating failed tests (macOS/Linux)
-      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20 }}
+      if: ${{ inputs.platform != 'windows' && steps.check_failures.outputs.failed_count > 0 && steps.check_failures.outputs.failed_count < 20 }}
       shell: bash
       run: |
         cd install
@@ -235,10 +235,10 @@ runs:
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       shell: cmd
       run: |
-        cd install/results/${{ inputs.test-directory-name }}-retest
+        cd install\results\${{ inputs.test-directory-name }}-retest
         if exist "*" (
-          xcopy /s /y /i . ../${{ inputs.test-directory-name }}\
-          cd ..\..\
+          xcopy /s /y /i . "..\${{ inputs.test-directory-name }}"
+          cd ..\..
           call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
           DRAWEXE.exe -v -c "testsummarize results/${{ inputs.test-directory-name }}"
         ) else (
@@ -246,7 +246,7 @@ runs:
         )
 
     - name: Copy retest results back to original location (macOS/Linux)
-      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      if: ${{ inputs.platform != 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       shell: bash
       run: |
         cd install/bin/results/${{ inputs.test-directory-name }}-retest
@@ -260,21 +260,11 @@ runs:
           echo "No retest results to copy - directory is empty"
         fi
 
-    - name: Upload updated test results (Windows)
-      if: ${{ inputs.platform == 'windows' && hashFiles('install/results/${{ inputs.test-directory-name }}-retest/*') != '' }}
+    - name: Upload updated test results
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.results-artifact-name }}
-        path: install/results/${{ inputs.test-directory-name }}*
-        retention-days: 15
-        overwrite: true
-
-    - name: Upload updated test results (macOS/Linux)
-      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && hashFiles('install/bin/results/${{ inputs.test-directory-name }}-retest/*') != '' }}
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: ${{ inputs.results-artifact-name }}
-        path: install/bin/results/${{ inputs.test-directory-name }}*
+        path: install/${{ inputs.platform == 'windows' && 'results' || 'bin/results' }}/${{ inputs.test-directory-name }}*
         retention-days: 15
         overwrite: true
 
@@ -301,7 +291,7 @@ runs:
         }
 
     - name: Check test failures (macOS/Linux)
-      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}
+      if: ${{ inputs.platform != 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       shell: bash
       run: |
         cd install/bin/results/${{ inputs.test-directory-name }}-retest
