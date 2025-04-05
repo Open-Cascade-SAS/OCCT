@@ -1,0 +1,178 @@
+name: 'Run Tests'
+description: 'Run OCCT tests on a specific platform'
+
+inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  compiler:
+    description: 'Compiler (msvc, clang, gcc)'
+    required: true
+  install-artifact-name:
+    description: 'Name of the artifact containing the install directory'
+    required: true
+  test-directory-name:
+    description: 'Name of the directory to store test results'
+    required: true
+  test-script:
+    description: 'The test script to run'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download and extract 3rdparty dependencies (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Install dependencies (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+      shell: bash
+
+    - name: Install dependencies (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'gcc' && 'gcc g++' || 'clang' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+      shell: bash
+
+    - name: Setup Xvfb and Mesa (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Download and extract test data (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        cd data
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.zip -OutFile opencascade-dataset-7.9.0.zip
+        Expand-Archive -Path opencascade-dataset-7.9.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.9.0.zip
+      shell: pwsh
+
+    - name: Download test data (macOS/Linux)
+      if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') }}
+      run: |
+        cd data
+        wget -q https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/opencascade-dataset-7.9.0.tar.xz
+        tar -xf opencascade-dataset-7.9.0.tar.xz
+      shell: bash
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.install-artifact-name }}
+        path: install
+
+    - name: Download and extract Mesa3D (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+      shell: pwsh
+
+    - name: Run system-wide deployment (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+      shell: cmd
+
+    - name: Install CJK Fonts (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+      shell: pwsh
+
+    - name: Set LIBGL_ALWAYS_SOFTWARE environment variable (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set execute permissions on DRAWEXE (macOS/Linux)
+      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+      run: chmod +x install/bin/DRAWEXE
+      shell: bash
+
+    - name: Run tests (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        cd install
+        call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
+        DRAWEXE.exe -v -f ${{ github.workspace }}/${{ inputs.test-script }}
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Run tests (macOS/Linux)
+      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -f ${{ github.workspace }}/${{ inputs.test-script }}
+      shell: bash
+      env:
+        DISPLAY: ${{ inputs.platform == 'linux' && ':99' || '' }}
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      run: |
+        cd install
+        call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
+        DRAWEXE.exe -v -c cleanuptest results/${{ inputs.test-directory-name }}
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results (macOS/Linux)
+      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c cleanuptest results/${{ inputs.test-directory-name }}
+      shell: bash
+      env:
+        DISPLAY: ${{ inputs.platform == 'linux' && ':99' || '' }}
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload test results (Windows)
+      if: ${{ inputs.platform == 'windows' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-${{ inputs.test-directory-name }}
+        path: |
+          install/results/**/*.log
+          install/results/**/*.png
+          install/results/**/*.html
+        retention-days: 15
+
+    - name: Upload test results (macOS/Linux)
+      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-${{ inputs.test-directory-name }}
+        path: |
+          install/bin/results/**/*.log
+          install/bin/results/**/*.png
+          install/bin/results/**/*.html
+        retention-days: 15

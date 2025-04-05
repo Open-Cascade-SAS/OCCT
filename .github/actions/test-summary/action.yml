@@ -1,0 +1,94 @@
+name: 'Test Summary'
+description: 'Compare test results between current branch and master'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      shell: bash
+
+    - name: Setup Xvfb and Mesa
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Set environment variables
+      run: |
+        echo "DISPLAY=:99" >> $GITHUB_ENV
+        echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Download and extract install directory
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-linux-gcc-x64
+        path: install
+
+    - name: Set execute permissions on DRAWEXE
+      run: chmod +x install/bin/DRAWEXE
+      shell: bash
+
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}&status=success")
+        latest_run_id=$(echo "$response" | jq -r '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms") | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Download master branch test results
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+          echo "Downloading results for $platform"
+          gh run download ${{ env.latest_run_id }} -n "results-$platform" -D "install/bin/results/master/"
+        done
+      shell: bash
+
+    - name: Download current branch test results
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+          echo "Downloading results for $platform"
+          gh run download -n "results-$platform" -D "install/bin/results/current/"
+        done
+      shell: bash
+
+    - name: Compare test results
+      run: |
+        echo "Comparing test results..."
+        cd install/bin
+        source env.sh
+        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+          ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" &
+        done
+        wait
+      shell: bash
+
+    - name: Install BeautifulSoup
+      run: pip install beautifulsoup4
+      shell: bash
+
+    - name: Clean unused test images
+      run: |
+        # copy to the install/bin/results directory
+        cp ${{ github.workspace }}/.github/actions/scripts/cleanup_test_images.py install/bin/results
+        cd install/bin/results
+        python cleanup_test_images.py
+      shell: bash
+
+    - name: Upload comparison results
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: test-compare-results
+        retention-days: 15
+        overwrite: true
+        path: |
+          install/bin/results/**/diff-*.html
+          install/bin/results/**/diff-*.log
+          install/bin/results/**/summary.html
+          install/bin/results/**/tests.log
+          install/bin/results/**/*.png
