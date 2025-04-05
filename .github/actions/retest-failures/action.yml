@@ -296,11 +296,16 @@ runs:
       run: |
         cd install/bin/results/${{ inputs.test-directory-name }}-retest
         if [ -f tests.log ]; then
-          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
-          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
-            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
-            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
-            exit 1
+          TOTAL_LINE=$(grep "Total cases:" tests.log | tail -n1)
+          echo "Total line: $TOTAL_LINE"
+          if [[ $TOTAL_LINE =~ ([0-9]+)[[:space:]]FAILED ]]; then
+            FAILED_COUNT="${BASH_REMATCH[1]}"
+            if [ $FAILED_COUNT -gt 0 ]; then
+              echo "Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+              echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+              echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+              exit 1
+            fi
           fi
-          echo "Found $FAILED_COUNT FAILED tests"
+          echo "Found 0 FAILED tests"
         fi
