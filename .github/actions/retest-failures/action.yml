@@ -70,13 +70,11 @@ runs:
       id: check_failures
       shell: ${{ inputs.platform == 'windows' && 'pwsh' || 'bash' }}
       run: |
-        ${{ inputs.platform == 'windows' && '
-        # Windows PowerShell
-        echo "failed_count=${{ steps.check_failures_windows.outputs.failed_count }}" >> $env:GITHUB_OUTPUT
-        ' || '
-        # Unix Bash
-        echo "failed_count=${{ steps.check_failures_unix.outputs.failed_count }}" >> $GITHUB_OUTPUT
-        ' }}
+        ${{ inputs.platform == 'windows' && format('
+        echo "failed_count={0}" >> $env:GITHUB_OUTPUT
+        ', steps.check_failures_windows.outputs.failed_count) || format('
+        echo "failed_count={0}" >> $GITHUB_OUTPUT
+        ', steps.check_failures_unix.outputs.failed_count) }}
 
     - name: Download and extract 3rdparty dependencies (Windows)
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
