@@ -21,11 +21,19 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download previous test results
+    - name: Download previous test results (Windows)
+      if: ${{ inputs.platform == 'windows' }}
       uses: actions/download-artifact@v4.1.7
       with:
         name: ${{ inputs.results-artifact-name }}
         path: install/results
+      
+    - name: Download Download previous test results (macOS/Linux)
+      if: ${{ inputs.platform != 'windows' }}
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: ${{ inputs.results-artifact-name }}
+        path: install/bin/results
 
     - name: Check for test failures (Windows)
       id: check_failures_windows
@@ -53,8 +61,8 @@ runs:
       shell: bash
       run: |
         failed_count=0
-        if [ -f "install/results/${{ inputs.test-directory-name }}/tests.log" ]; then
-          total_line=$(grep "Total cases:" install/results/${{ inputs.test-directory-name }}/tests.log)
+        if [ -f "install/bin/results/${{ inputs.test-directory-name }}/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/bin/results/${{ inputs.test-directory-name }}/tests.log)
           if [ ! -z "$total_line" ]; then
             if [[ $total_line =~ "FAILED" ]]; then
               failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
