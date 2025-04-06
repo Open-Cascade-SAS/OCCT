@@ -52,13 +52,13 @@ jobs:
               dependencies: "mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gcc-libs mingw-w64-ucrt-x86_64-omp mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-rapidjson mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-draco mingw-w64-ucrt-x86_64-freeimage mingw-w64-ucrt-x86_64-tbb mingw-w64-ucrt-x86_64-tk mingw-w64-ucrt-x86_64-tcl mingw-w64-ucrt-x86_64-openvr mingw-w64-ucrt-x86_64-jemalloc mingw-w64-ucrt-x86_64-mesa mingw-w64-ucrt-x86_64-angleproject mingw-w64-ucrt-x86_64-llvm-openmp mingw-w64-ucrt-x86_64-winpthreads-git mingw-w64-ucrt-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
             }
           - {
-              name: "Clang32",
-              cc: "clang",
-              cxx: "clang++",
-              package: "mingw-w64-clang-i686-toolchain",
-              thirdparty_dir: "/clang32",
-              compiler_flags: "-D CMAKE_CXX_FLAGS=\"-Wall -Wextra -m32\" -D CMAKE_C_FLAGS=\"-Wall -Wextra -m32\" -D CMAKE_SIZEOF_VOID_P=4",
-              dependencies: "mingw-w64-clang-i686-cmake mingw-w64-clang-i686-ninja mingw-w64-clang-i686-rapidjson mingw-w64-clang-i686-freetype mingw-w64-clang-i686-draco mingw-w64-clang-i686-freeimage mingw-w64-clang-i686-tbb mingw-w64-clang-i686-tk mingw-w64-clang-i686-tcl mingw-w64-clang-i686-openvr mingw-w64-clang-i686-jemalloc mingw-w64-clang-i686-mesa mingw-w64-clang-i686-angleproject mingw-w64-clang-i686-llvm-openmp mingw-w64-clang-i686-winpthreads-git mingw-w64-clang-i686-libwinpthread-git"
+              name: "MINGW32",
+              cc: "i686-w64-mingw32-gcc",
+              cxx: "i686-w64-mingw32-g++",
+              package: "mingw-w64-i686-toolchain",
+              thirdparty_dir: "/mingw32",
+              compiler_flags: "-D CMAKE_SIZEOF_VOID_P=4",
+              dependencies: "mingw-w64-i686-cmake mingw-w64-i686-ninja mingw-w64-i686-rapidjson mingw-w64-i686-freetype mingw-w64-i686-draco mingw-w64-i686-freeimage mingw-w64-i686-tbb mingw-w64-i686-tk mingw-w64-i686-tcl mingw-w64-i686-openvr mingw-w64-i686-jemalloc mingw-w64-i686-mesa mingw-w64-i686-angleproject mingw-w64-i686-llvm-openmp mingw-w64-i686-winpthreads-git mingw-w64-i686-libwinpthread-git"
             }
         build_type: [Debug, Release]
 
@@ -69,7 +69,7 @@ jobs:
     - name: Set up MSYS2
       uses: msys2/setup-msys2@v2
       with:
-        msystem: ${{ matrix.config.name == 'Clang' && 'CLANG64' || matrix.config.name == 'UCRT' && 'UCRT64' || matrix.config.name == 'Clang32' && 'CLANG32' || 'MINGW64' }}
+        msystem: ${{ matrix.config.name == 'Clang' && 'CLANG64' || matrix.config.name == 'UCRT' && 'UCRT64' || matrix.config.name == 'MINGW32' && 'MINGW32' || 'MINGW64' }}
         update: true
         install: ${{ matrix.config.package }} ${{ matrix.config.dependencies }}
 
