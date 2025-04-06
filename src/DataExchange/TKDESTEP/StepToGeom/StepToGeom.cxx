@@ -2510,7 +2510,7 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
   }
 
   if (SR.RotationAboutDirection().IsNull()
-      || SR.RotationAboutDirection()->DirectionOfAxis()->DirectionRatios()->Length() != 3
+      || SR.RotationAboutDirection()->DirectionOfAxis()->NbDirectionRatios() != 3
       || theCntxt.IsNull())
   {
     return NULL;
