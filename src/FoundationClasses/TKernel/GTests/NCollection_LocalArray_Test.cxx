@@ -141,7 +141,7 @@ TEST(NCollection_LocalArrayTest, CustomType)
 
   // Set and retrieve values
   array[0] = ts;
-  EXPECT_EQ(ts, array[0]);
+  EXPECT_TRUE(ts == array[0]);
 }
 
 // Test transition from stack to heap allocation and back
