@@ -226,6 +226,10 @@ Standard_Integer BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&              
     index = myEdges.Add(E);
     myCurves.Append(C);
   }
+  else
+  {
+    //myCurves.ChangeValue(index) = C;
+  }
 
   return index;
 }
@@ -317,7 +321,14 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape(
 
 Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge& myedge)
 {
-  BRepToIGES_BRWire BR(*this);
+  Standard_Integer anInd = IndexEdge(myedge);
+  if (anInd != 0)
+  {
+    Handle(IGESData_IGESEntity) ICurve3d = Handle(IGESData_IGESEntity)::DownCast(myCurves(anInd));
+    if (!ICurve3d.IsNull())
+      return ICurve3d;
+  }
+    BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
   TopTools_DataMapOfShapeShape anEmptyMap;
   return BR.TransferEdge(myedge, anEmptyMap, Standard_True);
