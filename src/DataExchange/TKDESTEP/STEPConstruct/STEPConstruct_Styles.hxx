@@ -25,6 +25,7 @@
 #include <STEPConstruct_Tool.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <STEPConstruct_RenderingProperties.hxx>
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
 #include <STEPConstruct_DataMapOfPointTransient.hxx>
 
@@ -137,8 +138,7 @@ public:
     const Handle(StepRepr_RepresentationItem)& item,
     const Handle(StepVisual_Colour)&           SurfCol,
     const Handle(StepVisual_Colour)&           CurveCol,
-    const Handle(StepVisual_Colour)&           RenderCol,
-    const Standard_Real                        RenderTransp,
+    const STEPConstruct_RenderingProperties&   theRenderingProps,
     const Standard_Boolean                     isForNAUO = Standard_False) const;
 
   //! Returns a PresentationStyleAssignment entity which defines
@@ -157,8 +157,7 @@ public:
                                              Handle(StepVisual_Colour)&           theSurfaceColour,
                                              Handle(StepVisual_Colour)&           theBoundaryColour,
                                              Handle(StepVisual_Colour)&           theCurveColour,
-                                             Handle(StepVisual_Colour)&           theRenderColour,
-                                             Standard_Real&    theRenderTransparency,
+                                             STEPConstruct_RenderingProperties&   theRenderingProps,
                                              Standard_Boolean& theIsComponent) const;
 
   //! Create STEP color entity by given Quantity_Color

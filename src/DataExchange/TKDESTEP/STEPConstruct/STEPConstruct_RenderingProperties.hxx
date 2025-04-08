@@ -15,6 +15,7 @@
 #define STEPConstruct_RenderingProperties_HeaderFile
 
 #include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <StepVisual_ShadingSurfaceMethod.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 #include <XCAFDoc_VisMaterialCommon.hxx>
@@ -52,7 +53,7 @@ public:
   //! @param[in] theColor color
   //! @param[in] theTransparency transparency value
   Standard_EXPORT STEPConstruct_RenderingProperties(const Handle(StepVisual_Colour)& theColor,
-                                                    const Standard_Real theTransparency = 0.0);
+                                                    const Standard_Real theTransparency);
 
   //! Constructor from XCAFDoc_VisMaterialCommon.
   //! Creates rendering properties using material properties from the OCCT material.
@@ -63,10 +64,8 @@ public:
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   //! @param[in] theRenderingMethod rendering method
-  Standard_EXPORT STEPConstruct_RenderingProperties(
-    const Quantity_Color&                 theSurfaceColor,
-    const Standard_Real                   theTransparency    = 0.0,
-    const StepVisual_ShadingSurfaceMethod theRenderingMethod = StepVisual_ssmNormalShading);
+  Standard_EXPORT STEPConstruct_RenderingProperties(const Quantity_Color& theSurfaceColor,
+                                                    const Standard_Real   theTransparency = 0.0);
 
   //! Initializes from STEP rendering properties entity.
   //! Extracts color, transparency, and other properties from the STEP entity.
@@ -83,7 +82,7 @@ public:
   //! @param[in] theColor STEP color entity
   //! @param[in] theTransparency transparency value
   Standard_EXPORT void Init(const Handle(StepVisual_Colour)& theColor,
-                            const Standard_Real              theTransparency = 0.0);
+                            const Standard_Real              theTransparency);
 
   //! Initializes from XCAFDoc_VisMaterialCommon.
   //! @param[in] theMaterial common visualization material properties
@@ -93,10 +92,8 @@ public:
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   //! @param[in] theRenderingMethod rendering method
-  Standard_EXPORT void Init(
-    const Quantity_Color&                 theSurfaceColor,
-    const Standard_Real                   theTransparency    = 0.0,
-    const StepVisual_ShadingSurfaceMethod theRenderingMethod = StepVisual_ssmNormalShading);
+  Standard_EXPORT void Init(const Quantity_Color& theSurfaceColor,
+                            const Standard_Real   theTransparency = 0.0);
 
   //! Sets ambient reflectance value
   //! @param[in] theAmbientReflectance ambient reflectance value
@@ -126,25 +123,45 @@ public:
   Standard_EXPORT Handle(StepVisual_SurfaceStyleRenderingWithProperties) CreateRenderingProperties()
     const;
 
+  // Creates and returns rendering properties entity with the specified color
+  //! @param[in] theRenderColour color to be used for rendering
+  //! @return created rendering properties entity
+  Standard_EXPORT Handle(StepVisual_SurfaceStyleRenderingWithProperties) CreateRenderingProperties(
+    const Handle(StepVisual_Colour)& theRenderColour) const;
+
   //! Creates and returns XCAF material entity
   //! @return created XCAF material entity
   Standard_EXPORT XCAFDoc_VisMaterialCommon CreateXCAFMaterial() const;
 
+  //! Creates the ColorRGBA object from the current color and transparency
+  //! @return ColorRGBA object
+  Quantity_ColorRGBA GetRGBAColor() const
+  {
+    return Quantity_ColorRGBA(mySurfaceColor, 1.0 - myTransparency);
+  }
+
   //! Returns surface color
   //! @return surface color
-  Standard_EXPORT Quantity_Color SurfaceColor() const;
+  Quantity_Color SurfaceColor() const { return mySurfaceColor; }
 
   //! Returns transparency value
   //! @return transparency value
-  Standard_EXPORT Standard_Real Transparency() const;
+  Standard_Real Transparency() const { return myTransparency; }
 
   //! Returns rendering method
   //! @return rendering method
-  Standard_EXPORT StepVisual_ShadingSurfaceMethod RenderingMethod() const;
+  StepVisual_ShadingSurfaceMethod RenderingMethod() const { return myRenderingMethod; }
+
+  //! Sets rendering method
+  //! @param[in] theRenderingMethod rendering method
+  void SetRenderingMethod(const StepVisual_ShadingSurfaceMethod theRenderingMethod)
+  {
+    myRenderingMethod = theRenderingMethod;
+  }
 
   //! Returns whether the rendering properties are defined
   //! @return true if defined, false otherwise
-  Standard_EXPORT Standard_Boolean IsDefined() const;
+  Standard_Boolean IsDefined() const { return myIsDefined; }
 
   //! Returns whether material is convertible to STEP
   //! @return true if fully defined for conversion, false otherwise

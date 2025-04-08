@@ -114,8 +114,7 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
 
 STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
   const Quantity_Color&                 theSurfaceColor,
-  const Standard_Real                   theTransparency,
-  const StepVisual_ShadingSurfaceMethod theRenderingMethod)
+  const Standard_Real                   theTransparency)
     : mySurfaceColor(Quantity_NOC_WHITE),
       myTransparency(0.0),
       myRenderingMethod(StepVisual_ssmNormalShading),
@@ -126,7 +125,7 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
       mySpecularExponent(0.0, Standard_False),
       mySpecularColour(Quantity_NOC_WHITE, Standard_False)
 {
-  Init(theSurfaceColor, theTransparency, theRenderingMethod);
+  Init(theSurfaceColor, theTransparency);
 }
 
 //=================================================================================================
@@ -176,13 +175,22 @@ void STEPConstruct_RenderingProperties::SetAmbientDiffuseAndSpecularReflectance(
 Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingProperties::
   CreateRenderingProperties() const
 {
+  return CreateRenderingProperties(STEPConstruct_Styles::EncodeColor(mySurfaceColor));
+}
+
+//=================================================================================================
+
+Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingProperties::
+  CreateRenderingProperties(const Handle(StepVisual_Colour)& theRenderColour) const
+{
   if (!myIsDefined)
   {
     return nullptr;
   }
 
   // Create STEP RGB color or use predefined color using STEPConstruct_Styles utility
-  Handle(StepVisual_Colour) aStepColor = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
+  Handle(StepVisual_Colour) aStepColor =
+    !theRenderColour.IsNull() ? theRenderColour : STEPConstruct_Styles::EncodeColor(mySurfaceColor);
 
   // Count and determine which properties to create.
   // Transparency is always included.
@@ -334,7 +342,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
     // Convert STEP specular exponent to XCAF shininess using fixed scale factor
     const Standard_Real kScaleFactor = 128.0;
     Standard_Real       aShininess   = mySpecularExponent.first / kScaleFactor;
-    aMaterial.Shininess             = (Standard_ShortReal)Min(1.0, aShininess);
+    aMaterial.Shininess              = (Standard_ShortReal)Min(1.0, aShininess);
   }
 
   return aMaterial;
@@ -401,11 +409,11 @@ void STEPConstruct_RenderingProperties::Init(
         Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)::DownCast(aAmbient);
       if (!aFullRefl.IsNull())
       {
-        myIsDefined                 = Standard_True;
-        myAmbientReflectance.first  = aFullRefl->AmbientReflectance();
-        myDiffuseReflectance.first  = aFullRefl->DiffuseReflectance();
-        mySpecularReflectance.first = aFullRefl->SpecularReflectance();
-        mySpecularExponent.first    = aFullRefl->SpecularExponent();
+        myIsDefined                  = Standard_True;
+        myAmbientReflectance.first   = aFullRefl->AmbientReflectance();
+        myDiffuseReflectance.first   = aFullRefl->DiffuseReflectance();
+        mySpecularReflectance.first  = aFullRefl->SpecularReflectance();
+        mySpecularExponent.first     = aFullRefl->SpecularExponent();
         myAmbientReflectance.second  = Standard_True;
         myDiffuseReflectance.second  = Standard_True;
         mySpecularReflectance.second = Standard_True;
@@ -415,11 +423,11 @@ void STEPConstruct_RenderingProperties::Init(
       }
       else if (!aAmbientDiffuse.IsNull())
       {
-        myAmbientReflectance.first = aAmbientDiffuse->AmbientReflectance();
+        myAmbientReflectance.first  = aAmbientDiffuse->AmbientReflectance();
         myAmbientReflectance.second = Standard_True;
-        myDiffuseReflectance.first = aAmbientDiffuse->DiffuseReflectance();
+        myDiffuseReflectance.first  = aAmbientDiffuse->DiffuseReflectance();
         myDiffuseReflectance.second = Standard_True;
-        myIsDefined                = Standard_True;
+        myIsDefined                 = Standard_True;
       }
       else if (!aAmbient.IsNull())
       {
@@ -618,46 +626,17 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
 
 void STEPConstruct_RenderingProperties::Init(
   const Quantity_Color&                 theSurfaceColor,
-  const Standard_Real                   theTransparency,
-  const StepVisual_ShadingSurfaceMethod theRenderingMethod)
+  const Standard_Real                   theTransparency)
 {
   mySurfaceColor        = theSurfaceColor;
   myTransparency        = theTransparency;
-  myRenderingMethod     = theRenderingMethod;
+  myRenderingMethod     = StepVisual_ssmNormalShading;
   myIsDefined           = Standard_True;
   myAmbientReflectance  = std::make_pair(0.0, Standard_False);
   myDiffuseReflectance  = std::make_pair(0.0, Standard_False);
   mySpecularReflectance = std::make_pair(0.0, Standard_False);
   mySpecularExponent    = std::make_pair(0.0, Standard_False);
   mySpecularColour      = std::make_pair(Quantity_NOC_WHITE, Standard_False);
-}
-
-//=================================================================================================
-
-Quantity_Color STEPConstruct_RenderingProperties::SurfaceColor() const
-{
-  return mySurfaceColor;
-}
-
-//=================================================================================================
-
-Standard_Real STEPConstruct_RenderingProperties::Transparency() const
-{
-  return myTransparency;
-}
-
-//=================================================================================================
-
-StepVisual_ShadingSurfaceMethod STEPConstruct_RenderingProperties::RenderingMethod() const
-{
-  return myRenderingMethod;
-}
-
-//=================================================================================================
-
-Standard_Boolean STEPConstruct_RenderingProperties::IsDefined() const
-{
-  return myIsDefined;
 }
 
 //=================================================================================================

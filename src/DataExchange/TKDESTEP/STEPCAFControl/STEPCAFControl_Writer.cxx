@@ -1253,20 +1253,24 @@ static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyle
         Handle(StepVisual_PresentationStyleAssignment) aPSA;
         if (aStyle.IsVisible() || !aSurfColor.IsNull() || !aCurvColor.IsNull())
         {
-          aPSA = theStyles.MakeColorPSA(anItem,
-                                        aSurfColor,
-                                        aCurvColor,
-                                        aSurfColor,
-                                        aRenderTransp,
-                                        theIsComponent);
+          STEPConstruct_RenderingProperties aRenderProps;
+          if (aRenderTransp > 0.0)
+          {
+            aRenderProps.Init(aStyle.GetColorSurfRGBA());
+          }
+          aPSA =
+            theStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aRenderProps, theIsComponent);
         }
         else
         {
           // default white color
           aSurfColor =
             theStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
-          aPSA =
-            theStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aSurfColor, 0.0, theIsComponent);
+          aPSA = theStyles.MakeColorPSA(anItem,
+                                        aSurfColor,
+                                        aCurvColor,
+                                        STEPConstruct_RenderingProperties(),
+                                        theIsComponent);
           if (theIsComponent)
             setDefaultInstanceColor(theOverride, aPSA);
 
@@ -2019,8 +2023,13 @@ static Standard_Boolean createSHUOStyledItem(const XCAFPrs_Style& theStyle,
     aSurfColor        = aStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE));
     isSetDefaultColor = Standard_True;
   }
+  STEPConstruct_RenderingProperties aRenderProps;
+  if (aRenderTransp > 0.0)
+  {
+    aRenderProps.Init(theStyle.GetColorSurfRGBA());
+  }
   Handle(StepVisual_PresentationStyleAssignment) aPSA =
-    aStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aSurfColor, aRenderTransp, isComponent);
+    aStyles.MakeColorPSA(anItem, aSurfColor, aCurvColor, aRenderProps, isComponent);
   Handle(StepVisual_StyledItem) anOverride; // null styled item
 
   // find the repr item of the shape

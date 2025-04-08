@@ -47,7 +47,7 @@ protected:
   {
     // Create the surface color
     Handle(TCollection_HAsciiString) aColorName = new TCollection_HAsciiString("");
-    Handle(StepVisual_Colour) aSurfaceColor  = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
+    Handle(StepVisual_Colour) aSurfaceColor     = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
 
     // Create transparency property
     Handle(StepVisual_SurfaceStyleTransparent) aTransp = new StepVisual_SurfaceStyleTransparent();
@@ -362,7 +362,8 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, InitWithCustomRenderingMethod)
   STEPConstruct_RenderingProperties aProps;
 
   // Initialize with phong shading
-  aProps.Init(mySurfaceColor, myTransparency, StepVisual_ssmDotShading);
+  aProps.Init(mySurfaceColor, myTransparency);
+  aProps.SetRenderingMethod(StepVisual_ssmDotShading);
 
   EXPECT_TRUE(aProps.IsDefined());
   EXPECT_TRUE(AreColorsEqual(aProps.SurfaceColor(), mySurfaceColor));

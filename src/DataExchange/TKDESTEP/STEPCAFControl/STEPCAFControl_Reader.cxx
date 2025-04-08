@@ -1024,17 +1024,11 @@ static void SetAssemblyComponentStyle(
   if (theStyle.IsNull())
     return;
 
-  Handle(StepVisual_Colour) aSurfCol, aBoundCol, aCurveCol, aRenderCol;
-  Standard_Real             aRenderTransp;
+  Handle(StepVisual_Colour)         aSurfCol, aBoundCol, aCurveCol;
+  STEPConstruct_RenderingProperties aRenderProps;
   // check if it is component style
   Standard_Boolean anIsComponent = Standard_False;
-  if (!theStyles.GetColors(theStyle,
-                           aSurfCol,
-                           aBoundCol,
-                           aCurveCol,
-                           aRenderCol,
-                           aRenderTransp,
-                           anIsComponent))
+  if (!theStyles.GetColors(theStyle, aSurfCol, aBoundCol, aCurveCol, aRenderProps, anIsComponent))
     return;
 
   const Interface_Graph& aGraph = theTP->Graph();
@@ -1103,7 +1097,7 @@ static void SetAssemblyComponentStyle(
 
   aShape.Location(aLoc, Standard_False);
 
-  if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull())
+  if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || aRenderProps.IsDefined())
   {
     Quantity_Color     aSCol, aBCol, aCCol, aRCol;
     Quantity_ColorRGBA aFullSCol;
@@ -1116,13 +1110,12 @@ static void SetAssemblyComponentStyle(
       theStyles.DecodeColor(aBoundCol, aBCol);
     if (!aCurveCol.IsNull())
       theStyles.DecodeColor(aCurveCol, aCCol);
-    if (!aRenderCol.IsNull())
+    if (aRenderProps.IsDefined())
     {
-      theStyles.DecodeColor(aRenderCol, aRCol);
-      aFullSCol = Quantity_ColorRGBA(aRCol, static_cast<float>(1.0f - aRenderTransp));
+      aFullSCol = aRenderProps.GetRGBAColor();
     }
 
-    if (!aSurfCol.IsNull() || !aRenderCol.IsNull())
+    if (!aSurfCol.IsNull() || aRenderProps.IsDefined())
       theCTool->SetInstanceColor(aShape, XCAFDoc_ColorSurf, aFullSCol);
     if (!aBoundCol.IsNull())
       theCTool->SetInstanceColor(aShape, XCAFDoc_ColorCurv, aBCol);
@@ -1182,17 +1175,12 @@ static void SetStyle(const Handle(XSControl_WorkSession)&        theWS,
     anIsVisible = Standard_False;
     break;
   }
-  Handle(StepVisual_Colour) aSurfCol, aBoundCol, aCurveCol, aRenderCol;
-  Standard_Real             aRenderTransp;
+
+  Handle(StepVisual_Colour) aSurfCol, aBoundCol, aCurveCol;
   // check if it is component style
-  Standard_Boolean anIsComponent = Standard_False;
-  if (!theStyles.GetColors(theStyle,
-                           aSurfCol,
-                           aBoundCol,
-                           aCurveCol,
-                           aRenderCol,
-                           aRenderTransp,
-                           anIsComponent)
+  Standard_Boolean                  anIsComponent = Standard_False;
+  STEPConstruct_RenderingProperties aRenderProps;
+  if (!theStyles.GetColors(theStyle, aSurfCol, aBoundCol, aCurveCol, aRenderProps, anIsComponent)
       && anIsVisible)
     return;
 
@@ -1272,12 +1260,13 @@ static void SetStyle(const Handle(XSControl_WorkSession)&        theWS,
     if (aS.IsNull())
       continue;
 
-    if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull()
+    if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || aRenderProps.IsDefined()
         || !anIsVisible)
     {
       TDF_Label        aL;
       Standard_Boolean isFound = theSTool->SearchUsingMap(aS, aL, Standard_False, Standard_True);
-      if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull())
+      if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull()
+          || aRenderProps.IsDefined())
       {
         Quantity_Color     aSCol, aBCol, aCCol, aRCol;
         Quantity_ColorRGBA aFullSCol;
@@ -1290,14 +1279,13 @@ static void SetStyle(const Handle(XSControl_WorkSession)&        theWS,
           theStyles.DecodeColor(aBoundCol, aBCol);
         if (!aCurveCol.IsNull())
           theStyles.DecodeColor(aCurveCol, aCCol);
-        if (!aRenderCol.IsNull())
+        if (aRenderProps.IsDefined())
         {
-          theStyles.DecodeColor(aRenderCol, aRCol);
-          aFullSCol = Quantity_ColorRGBA(aRCol, static_cast<float>(1.0f - aRenderTransp));
+          aFullSCol = aRenderProps.GetRGBAColor();
         }
         if (isFound)
         {
-          if (!aSurfCol.IsNull() || !aRenderCol.IsNull())
+          if (!aSurfCol.IsNull() || aRenderProps.IsDefined())
             theCTool->SetColor(aL, aFullSCol, XCAFDoc_ColorSurf);
           if (!aBoundCol.IsNull())
             theCTool->SetColor(aL, aBCol, XCAFDoc_ColorCurv);
@@ -1311,7 +1299,7 @@ static void SetStyle(const Handle(XSControl_WorkSession)&        theWS,
             TDF_Label aL1;
             if (theSTool->SearchUsingMap(it.Value(), aL1, Standard_False, Standard_True))
             {
-              if (!aSurfCol.IsNull() || !aRenderCol.IsNull())
+              if (!aSurfCol.IsNull() || aRenderProps.IsDefined())
                 theCTool->SetColor(aL1, aFullSCol, XCAFDoc_ColorSurf);
               if (!aBoundCol.IsNull())
                 theCTool->SetColor(aL1, aBCol, XCAFDoc_ColorCurv);
@@ -2003,7 +1991,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
     {
       if (style != aHSeqOfInvisStyle->Value(si))
         continue;
-        // found that current style is invisible.
+      // found that current style is invisible.
 #ifdef OCCT_DEBUG
       std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name()
                 << ") is invisible" << std::endl;
@@ -2012,11 +2000,11 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
       break;
     }
 
-    Handle(StepVisual_Colour) SurfCol, BoundCol, CurveCol, RenderCol;
-    Standard_Real             RenderTransp;
+    Handle(StepVisual_Colour) SurfCol, BoundCol, CurveCol;
     // check if it is component style
-    Standard_Boolean IsComponent = Standard_False;
-    if (!Styles.GetColors(style, SurfCol, BoundCol, CurveCol, RenderCol, RenderTransp, IsComponent)
+    Standard_Boolean                  IsComponent = Standard_False;
+    STEPConstruct_RenderingProperties aRenderProps;
+    if (!Styles.GetColors(style, SurfCol, BoundCol, CurveCol, aRenderProps, IsComponent)
         && IsVisible)
       continue;
     if (!IsComponent)
@@ -2056,7 +2044,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
         continue;
       }
       // now set the style to the SHUO main label.
-      if (!SurfCol.IsNull() || !RenderCol.IsNull())
+      if (!SurfCol.IsNull() || aRenderProps.IsDefined())
       {
         Quantity_Color     col;
         Quantity_ColorRGBA colRGBA;
@@ -2065,10 +2053,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
           Styles.DecodeColor(SurfCol, col);
           colRGBA = Quantity_ColorRGBA(col);
         }
-        if (!RenderCol.IsNull())
+        if (aRenderProps.IsDefined())
         {
-          Styles.DecodeColor(RenderCol, col);
-          colRGBA = Quantity_ColorRGBA(col, static_cast<float>(1.0 - RenderTransp));
+          colRGBA = aRenderProps.GetRGBAColor();
         }
         CTool->SetColor(aLabelForStyle, colRGBA, XCAFDoc_ColorSurf);
       }
