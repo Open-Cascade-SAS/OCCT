@@ -436,6 +436,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuse.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
