@@ -35,6 +35,7 @@ class StepVisual_PresentationStyleAssignment;
 class TopoDS_Shape;
 class StepRepr_RepresentationContext;
 class StepVisual_MechanicalDesignGeometricPresentationRepresentation;
+class StepData_StepModel;
 class StepShape_ContextDependentShapeRepresentation;
 class StepRepr_ProductDefinitionShape;
 class StepVisual_Colour;
