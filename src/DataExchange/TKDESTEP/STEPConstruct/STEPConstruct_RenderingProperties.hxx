@@ -69,7 +69,6 @@ public:
   //! Constructor from surface color, transparency, and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
-  //! @param[in] theRenderingMethod rendering method
   Standard_EXPORT STEPConstruct_RenderingProperties(const Quantity_Color& theSurfaceColor,
                                                     const Standard_Real   theTransparency = 0.0);
 
@@ -81,7 +80,6 @@ public:
 
   //! Initializes from RGBA color.
   //! @param[in] theRGBAColor color with transparency
-  //! @param[in] theTransparency transparency value
   Standard_EXPORT void Init(const Quantity_ColorRGBA& theRGBAColor);
 
   //! Initializes from STEP color and transparency value.
@@ -101,7 +99,6 @@ public:
   //! Initializes from surface color, transparency and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
-  //! @param[in] theRenderingMethod rendering method
   Standard_EXPORT void Init(const Quantity_Color& theSurfaceColor,
                             const Standard_Real   theTransparency = 0.0);
 

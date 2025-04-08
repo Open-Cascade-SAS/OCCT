@@ -215,11 +215,12 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
   Standard_Integer aNbProps = 1;
 
   // Determine which reflectance properties to include
-  Standard_Boolean hasFullReflectance =
-    (mySpecularReflectance.second && myDiffuseReflectance.second && myAmbientReflectance.second);
-  Standard_Boolean hasDiffuseAndAmbient =
+  const Standard_Boolean hasFullReflectance =
+    (mySpecularColour.second && mySpecularExponent.second && mySpecularReflectance.second
+     && myDiffuseReflectance.second && myAmbientReflectance.second);
+  const Standard_Boolean hasDiffuseAndAmbient =
     (myDiffuseReflectance.second && myAmbientReflectance.second && !mySpecularReflectance.second);
-  Standard_Boolean hasAmbientOnly =
+  const Standard_Boolean hasAmbientOnly =
     (myAmbientReflectance.second && !myDiffuseReflectance.second && !mySpecularReflectance.second);
 
   // Add reflectance property if we have any defined
@@ -270,19 +271,11 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
     Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular) aFullRefl =
       new StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular;
 
-    // Set specular color if defined, otherwise use surface color
-    Handle(StepVisual_Colour) aSpecColor =
-      mySpecularColour.second ? STEPConstruct_Styles::EncodeColor(mySpecularColour.first)
-                              : aStepColor;
-
-    // Set specular exponent if defined, otherwise use default
-    Standard_Real aSpecExp = mySpecularExponent.second ? mySpecularExponent.first : 10.0;
-
     aFullRefl->Init(myAmbientReflectance.first,
                     myDiffuseReflectance.first,
                     mySpecularReflectance.first,
-                    aSpecExp,
-                    aSpecColor);
+                    mySpecularExponent.first,
+                    STEPConstruct_Styles::EncodeColor(mySpecularColour.first));
 
     StepVisual_RenderingPropertiesSelect aRPS;
     aRPS.SetValue(aFullRefl);
@@ -324,12 +317,12 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
   if (myAmbientReflectance.second)
   {
     // Get the reflectance factor, clamped to valid range
-    Standard_Real aAmbientFactor = Max(0.0, Min(1.0, myAmbientReflectance.first));
+    const Standard_Real aAmbientFactor = Max(0.0, Min(1.0, myAmbientReflectance.first));
 
     // Apply factor to surface color (RGB components individually)
-    Standard_Real aRed   = mySurfaceColor.Red() * aAmbientFactor;
-    Standard_Real aGreen = mySurfaceColor.Green() * aAmbientFactor;
-    Standard_Real aBlue  = mySurfaceColor.Blue() * aAmbientFactor;
+    const Standard_Real aRed   = mySurfaceColor.Red() * aAmbientFactor;
+    const Standard_Real aGreen = mySurfaceColor.Green() * aAmbientFactor;
+    const Standard_Real aBlue  = mySurfaceColor.Blue() * aAmbientFactor;
 
     Quantity_Color aAmbientColor(aRed, aGreen, aBlue, Quantity_TOC_RGB);
     aMaterial.AmbientColor = aAmbientColor;
@@ -344,11 +337,11 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
   else if (mySpecularReflectance.second)
   {
     // Apply specular reflectance factor to surface color
-    Standard_Real aSpecularFactor = Max(0.0, Min(1.0, mySpecularReflectance.first));
+    const Standard_Real aSpecularFactor = Max(0.0, Min(1.0, mySpecularReflectance.first));
 
-    Standard_Real aRed   = mySurfaceColor.Red() * aSpecularFactor;
-    Standard_Real aGreen = mySurfaceColor.Green() * aSpecularFactor;
-    Standard_Real aBlue  = mySurfaceColor.Blue() * aSpecularFactor;
+    const Standard_Real aRed   = mySurfaceColor.Red() * aSpecularFactor;
+    const Standard_Real aGreen = mySurfaceColor.Green() * aSpecularFactor;
+    const Standard_Real aBlue  = mySurfaceColor.Blue() * aSpecularFactor;
 
     Quantity_Color aSpecularColor(aRed, aGreen, aBlue, Quantity_TOC_RGB);
     aMaterial.SpecularColor = aSpecularColor;
@@ -359,7 +352,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
   {
     // Convert STEP specular exponent to XCAF shininess using fixed scale factor
     const Standard_Real kScaleFactor = 128.0;
-    Standard_Real       aShininess   = mySpecularExponent.first / kScaleFactor;
+    const Standard_Real aShininess   = mySpecularExponent.first / kScaleFactor;
     aMaterial.Shininess              = (Standard_ShortReal)Min(1.0, aShininess);
   }
 
@@ -526,20 +519,13 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
   mySpecularExponent    = std::make_pair(0.0, Standard_False);
   mySpecularColour      = std::make_pair(Quantity_NOC_WHITE, Standard_False);
 
-  // Calculate ambient reflectance factor relative to diffuse color
-  // Compare ambient color to diffuse color directly to get reflectance factor
-  Standard_Real aRed, aGreen, aBlue, aMin, aMax;
-
-  // Initialize to avoid potential division by zero
-  aMin = aMax = 0.0;
-
   // Extract RGB components from diffuse color
-  Standard_Real aDiffRed   = theMaterial.DiffuseColor.Red();
-  Standard_Real aDiffGreen = theMaterial.DiffuseColor.Green();
-  Standard_Real aDiffBlue  = theMaterial.DiffuseColor.Blue();
+  const Standard_Real aDiffRed   = theMaterial.DiffuseColor.Red();
+  const Standard_Real aDiffGreen = theMaterial.DiffuseColor.Green();
+  const Standard_Real aDiffBlue  = theMaterial.DiffuseColor.Blue();
 
   // Find maximum diffuse component to avoid division by zero for dark colors
-  Standard_Real aDiffMax = Max(aDiffRed, Max(aDiffGreen, aDiffBlue));
+  const Standard_Real aDiffMax = Max(aDiffRed, Max(aDiffGreen, aDiffBlue));
 
   // Check if ambient color is non-default and diffuse color has non-zero components
   if (aDiffMax > Precision::Confusion())
@@ -550,13 +536,14 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
     Standard_Real aAmbBlue  = theMaterial.AmbientColor.Blue();
 
     // Calculate per-channel ratios
-    aRed   = (aDiffRed > Precision::Confusion()) ? aAmbRed / aDiffRed : 0.0;
-    aGreen = (aDiffGreen > Precision::Confusion()) ? aAmbGreen / aDiffGreen : 0.0;
-    aBlue  = (aDiffBlue > Precision::Confusion()) ? aAmbBlue / aDiffBlue : 0.0;
+    const Standard_Real aRed = (aDiffRed > Precision::Confusion()) ? aAmbRed / aDiffRed : 0.0;
+    const Standard_Real aGreen =
+      (aDiffGreen > Precision::Confusion()) ? aAmbGreen / aDiffGreen : 0.0;
+    const Standard_Real aBlue = (aDiffBlue > Precision::Confusion()) ? aAmbBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
-    aMin = Min(aRed, Min(aGreen, aBlue));
-    aMax = Max(aRed, Max(aGreen, aBlue));
+    const Standard_Real aMin = Min(aRed, Min(aGreen, aBlue));
+    const Standard_Real aMax = Max(aRed, Max(aGreen, aBlue));
 
     // If ratios are reasonably close, use average as ambient reflectance factor
     // otherwise the ambient color isn't a simple multiplier of diffuse
@@ -587,18 +574,19 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
   if (aDiffMax > Precision::Confusion())
   {
     // Extract RGB components from specular color
-    Standard_Real aSpecRed   = theMaterial.SpecularColor.Red();
-    Standard_Real aSpecGreen = theMaterial.SpecularColor.Green();
-    Standard_Real aSpecBlue  = theMaterial.SpecularColor.Blue();
+    const Standard_Real aSpecRed   = theMaterial.SpecularColor.Red();
+    const Standard_Real aSpecGreen = theMaterial.SpecularColor.Green();
+    const Standard_Real aSpecBlue  = theMaterial.SpecularColor.Blue();
 
     // Calculate per-channel ratios
-    aRed   = (aDiffRed > Precision::Confusion()) ? aSpecRed / aDiffRed : 0.0;
-    aGreen = (aDiffGreen > Precision::Confusion()) ? aSpecGreen / aDiffGreen : 0.0;
-    aBlue  = (aDiffBlue > Precision::Confusion()) ? aSpecBlue / aDiffBlue : 0.0;
+    const Standard_Real aRed = (aDiffRed > Precision::Confusion()) ? aSpecRed / aDiffRed : 0.0;
+    const Standard_Real aGreen =
+      (aDiffGreen > Precision::Confusion()) ? aSpecGreen / aDiffGreen : 0.0;
+    const Standard_Real aBlue = (aDiffBlue > Precision::Confusion()) ? aSpecBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
-    aMin = Min(aRed, Min(aGreen, aBlue));
-    aMax = Max(aRed, Max(aGreen, aBlue));
+    const Standard_Real aMin = Min(aRed, Min(aGreen, aBlue));
+    const Standard_Real aMax = Max(aRed, Max(aGreen, aBlue));
 
     // If ratios are reasonably close, use average as specular reflectance factor
     const Standard_Real kMaxRatioDeviation = 0.2; // Max allowed deviation between RGB ratios
