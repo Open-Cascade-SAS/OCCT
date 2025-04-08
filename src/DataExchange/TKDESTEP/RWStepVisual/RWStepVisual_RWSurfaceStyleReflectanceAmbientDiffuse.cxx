@@ -20,15 +20,18 @@
 
 //=================================================================================================
 
-RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse() {}
+RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse()
+{
+}
 
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
-  const Handle(StepData_StepReaderData)&                           theData,
-  const Standard_Integer                                           theNum,
-  Handle(Interface_Check)&                                         theAch,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)&  theEnt) const
+  const Handle(StepData_StepReaderData)&                          theData,
+  const Standard_Integer                                          theNum,
+  Handle(Interface_Check)&                                        theAch,
+  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "surface_style_reflectance_ambient_diffuse"))
@@ -49,7 +52,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::WriteStep(
-  StepData_StepWriter&                                         theSW,
+  StepData_StepWriter&                                            theSW,
   const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const
 {
   // Inherited fields of SurfaceStyleReflectanceAmbient

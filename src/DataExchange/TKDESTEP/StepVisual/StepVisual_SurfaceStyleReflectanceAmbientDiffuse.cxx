@@ -13,7 +13,8 @@
 
 #include <StepVisual_SurfaceStyleReflectanceAmbientDiffuse.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbientDiffuse, StepVisual_SurfaceStyleReflectanceAmbient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbientDiffuse,
+                           StepVisual_SurfaceStyleReflectanceAmbient)
 
 //=================================================================================================
 
