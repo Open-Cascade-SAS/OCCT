@@ -221,10 +221,18 @@ public:
 
   Standard_Boolean GetDimTolMode() const { return myGDTMode; }
 
-  //! Set dimtolmode for indicate write D&GTs or not.
+  //! Set flag for indicate write material or not.
   void SetMaterialMode(const Standard_Boolean theMaterialMode) { myMatMode = theMaterialMode; }
 
   Standard_Boolean GetMaterialMode() const { return myMatMode; }
+
+  //! Set flag for indicate write visual material or not.
+  void SetVisualMaterialMode(const Standard_Boolean theVisualMaterialMode)
+  {
+    myVisMatMode = theVisualMaterialMode;
+  }
+
+  Standard_Boolean GetVisualMaterialMode() const { return myVisMatMode; }
 
   //! Set clean duplicates flag.
   //! If set to True, duplicates will be removed from the model.
@@ -394,6 +402,7 @@ private:
   MoniTool_DataMapOfShapeTransient                                                myMapCompMDGPR;
   Standard_Boolean                                                                myGDTMode;
   Standard_Boolean                                                                myMatMode;
+  Standard_Boolean                                                                myVisMatMode;
   Standard_Boolean                                        myIsCleanDuplicates;
   NCollection_Vector<Handle(StepRepr_RepresentationItem)> myGDTAnnotations;
   Handle(StepVisual_DraughtingModel)                      myGDTPresentationDM;

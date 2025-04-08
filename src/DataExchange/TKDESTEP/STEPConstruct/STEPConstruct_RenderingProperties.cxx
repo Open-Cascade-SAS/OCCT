@@ -25,6 +25,7 @@
 #include <StepVisual_PreDefinedItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XCAFDoc_VisMaterialCommon.hxx>
+#include <XCAFDoc_VisMaterial.hxx>
 
 //=================================================================================================
 
@@ -113,8 +114,25 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
 //=================================================================================================
 
 STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
-  const Quantity_Color&                 theSurfaceColor,
-  const Standard_Real                   theTransparency)
+  const Handle(XCAFDoc_VisMaterial)& theMaterial)
+    : mySurfaceColor(Quantity_NOC_WHITE),
+      myTransparency(0.0),
+      myRenderingMethod(StepVisual_ssmNormalShading),
+      myIsDefined(Standard_False),
+      myAmbientReflectance(0.0, Standard_False),
+      myDiffuseReflectance(0.0, Standard_False),
+      mySpecularReflectance(0.0, Standard_False),
+      mySpecularExponent(0.0, Standard_False),
+      mySpecularColour(Quantity_NOC_WHITE, Standard_False)
+{
+  Init(theMaterial);
+}
+
+//=================================================================================================
+
+STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
+  const Quantity_Color& theSurfaceColor,
+  const Standard_Real   theTransparency)
     : mySurfaceColor(Quantity_NOC_WHITE),
       myTransparency(0.0),
       myRenderingMethod(StepVisual_ssmNormalShading),
@@ -624,9 +642,21 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
 
 //=================================================================================================
 
-void STEPConstruct_RenderingProperties::Init(
-  const Quantity_Color&                 theSurfaceColor,
-  const Standard_Real                   theTransparency)
+void STEPConstruct_RenderingProperties::Init(const Handle(XCAFDoc_VisMaterial)& theMaterial)
+{
+  if (theMaterial.IsNull())
+  {
+    return;
+  }
+
+  // Use the material to initialize rendering properties
+  Init(theMaterial->ConvertToCommonMaterial());
+}
+
+//=================================================================================================
+
+void STEPConstruct_RenderingProperties::Init(const Quantity_Color& theSurfaceColor,
+                                             const Standard_Real   theTransparency)
 {
   mySurfaceColor        = theSurfaceColor;
   myTransparency        = theTransparency;

@@ -250,6 +250,7 @@ STEPCAFControl_Writer::STEPCAFControl_Writer()
       mySHUOMode(Standard_True),
       myGDTMode(Standard_True),
       myMatMode(Standard_True),
+      myVisMatMode(Standard_False),
       myIsCleanDuplicates(Standard_False)
 {
   STEPCAFControl_Controller::Init();
@@ -268,6 +269,7 @@ STEPCAFControl_Writer::STEPCAFControl_Writer(const Handle(XSControl_WorkSession)
       mySHUOMode(Standard_True),
       myGDTMode(Standard_True),
       myMatMode(Standard_True),
+      myVisMatMode(Standard_False),
       myIsCleanDuplicates(Standard_False)
 {
   STEPCAFControl_Controller::Init();
@@ -1192,8 +1194,9 @@ static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyle
                            STEPConstruct_DataMapOfAsciiStringTransient& theDPDCs,
                            STEPConstruct_DataMapOfPointTransient&       theColRGBs,
                            const Handle(XCAFDoc_ShapeTool)&             theShTool,
-                           const XCAFPrs_Style*                         theInherit = 0,
-                           const Standard_Boolean theIsComponent                   = Standard_False)
+                           const XCAFPrs_Style*                         theInherit,
+                           const Standard_Boolean                       theIsComponent,
+                           const Standard_Boolean                       theVisMaterialMode)
 {
   // skip already processed shapes
   if (!theMap.Add(theShape))
@@ -1212,6 +1215,8 @@ static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyle
       aStyle.SetColorCurv(anOwnStyle.GetColorCurv());
     if (anOwnStyle.IsSetColorSurf())
       aStyle.SetColorSurf(anOwnStyle.GetColorSurfRGBA());
+    if (!anOwnStyle.Material().IsNull())
+      aStyle.SetMaterial(anOwnStyle.Material());
   }
 
   // translate colors to STEP
@@ -1251,10 +1256,15 @@ static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyle
         const Handle(StepRepr_RepresentationItem)& anItem =
           Handle(StepRepr_RepresentationItem)::DownCast(anEntIter.Value());
         Handle(StepVisual_PresentationStyleAssignment) aPSA;
-        if (aStyle.IsVisible() || !aSurfColor.IsNull() || !aCurvColor.IsNull())
+        if (aStyle.IsVisible() || !aSurfColor.IsNull() || !aCurvColor.IsNull()
+            || (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty()))
         {
           STEPConstruct_RenderingProperties aRenderProps;
-          if (aRenderTransp > 0.0)
+          if (theVisMaterialMode && !aStyle.Material().IsNull() && !aStyle.Material()->IsEmpty())
+          {
+            aRenderProps.Init(aStyle.Material());
+          }
+          else if (aRenderTransp > 0.0)
           {
             aRenderProps.Init(aStyle.GetColorSurfRGBA());
           }
@@ -1300,7 +1310,9 @@ static void MakeSTEPStyles(STEPConstruct_Styles&                        theStyle
                    theDPDCs,
                    theColRGBs,
                    theShTool,
-                   (aHasOwn ? &aStyle : 0));
+                   (aHasOwn ? &aStyle : 0),
+                   Standard_False,
+                   theVisMaterialMode);
   }
 }
 
@@ -1421,7 +1433,8 @@ Standard_Boolean STEPCAFControl_Writer::writeColors(const Handle(XSControl_WorkS
                    ColRGBs,
                    aSTool,
                    0,
-                   anIsComponent);
+                   anIsComponent,
+                   GetVisualMaterialMode());
 
     const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
     const Handle(Transfer_FinderProcess)&   aFP = aTW->FinderProcess();
@@ -4277,7 +4290,7 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
   Handle(StepRepr_RepresentationItem) anItem     = NULL;
   myGDTPrsCurveStyle->SetValue(
     1,
-    aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor, aCurvColor, 0.0));
+    aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor, STEPConstruct_RenderingProperties()));
   for (Interface_EntityIterator aModelIter = aModel->Entities();
        aModelIter.More() && myGDTCommonPDS.IsNull();
        aModelIter.Next())

@@ -691,7 +691,7 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::GetColorPSA
   }
   else
   {
-    PSA = MakeColorPSA(item, Col, Col, Col, 0.0);
+    PSA = MakeColorPSA(item, Col, Col, STEPConstruct_RenderingProperties());
     myMapOfStyles.Add(Col, PSA);
   }
   return PSA;

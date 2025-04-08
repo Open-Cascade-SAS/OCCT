@@ -24,6 +24,7 @@
 
 class StepVisual_SurfaceStyleRenderingWithProperties;
 class StepVisual_Colour;
+class XCAFDoc_VisMaterial;
 
 //! Class for working with STEP rendering properties.
 //! Provides functionality to create and manipulate rendering properties
@@ -60,6 +61,11 @@ public:
   //! @param[in] theMaterial common visualization material properties
   Standard_EXPORT STEPConstruct_RenderingProperties(const XCAFDoc_VisMaterialCommon& theMaterial);
 
+  //! Constructor from XCAFDoc_VisMaterial.
+  //! Creates rendering properties using material properties from the OCCT material.
+  //! @param[in] theMaterial visualization material properties
+  Standard_EXPORT STEPConstruct_RenderingProperties(const Handle(XCAFDoc_VisMaterial)& theMaterial);
+
   //! Constructor from surface color, transparency, and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
@@ -87,6 +93,10 @@ public:
   //! Initializes from XCAFDoc_VisMaterialCommon.
   //! @param[in] theMaterial common visualization material properties
   Standard_EXPORT void Init(const XCAFDoc_VisMaterialCommon& theMaterial);
+
+  //! Initializes from XCAFDoc_VisMaterial.
+  //! @param[in] theMaterial visualization material properties
+  Standard_EXPORT void Init(const Handle(XCAFDoc_VisMaterial)& theMaterial);
 
   //! Initializes from surface color, transparency and rendering method.
   //! @param[in] theSurfaceColor surface color
