@@ -190,6 +190,10 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("write.layer", InternalParameters.WriteLayer, aScope);
   InternalParameters.WriteProps =
     theResource->BooleanVal("write.props", InternalParameters.WriteProps, aScope);
+  InternalParameters.WriteMaterial =
+    theResource->BooleanVal("write.material", InternalParameters.WriteMaterial, aScope);
+  InternalParameters.WriteVisMaterial =
+    theResource->BooleanVal("write.vismaterial", InternalParameters.WriteVisMaterial, aScope);
   InternalParameters.WriteModelType =
     (STEPControl_StepModelType)theResource->IntegerVal("write.model.type",
                                                        InternalParameters.WriteModelType,
@@ -554,6 +558,20 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
              "properties or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.props :\t " + InternalParameters.WriteProps + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up the write.material parameter which is used to indicate write "
+             "Material properties or not\n";
+  aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
+  aResult += aScope + "write.material :\t " + InternalParameters.WriteMaterial + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up the write.vismaterial parameter which is used to indicate write "
+             "Visual Material properties or not\n";
+  aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
+  aResult += aScope + "write.vismaterial :\t " + InternalParameters.WriteVisMaterial + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
