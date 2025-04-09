@@ -784,7 +784,7 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
     puts $doxyFile "PROJECT_NUMBER         = $occt_version"
     puts $doxyFile "OUTPUT_DIRECTORY       = $outDir/."
     puts $doxyFile "GENERATE_TAGFILE       = $outDir/${name}.tag"
-
+    set searchMode "local"
     if { [string tolower $searchMode] == "none" } {
       puts $doxyFile "SEARCHENGINE           = NO"
       puts $doxyFile "SERVER_BASED_SEARCH    = NO"
@@ -865,6 +865,7 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
           puts $doxyFile "TAGFILES               = $tagFileDir/OCCT.tag=../../refman/html"
         }
       }
+      set searchMode "local"
       # HTML Search engine options
       if { [string tolower $searchMode] == "none" } {
         puts $doxyFile "SEARCHENGINE           = NO"
