@@ -116,6 +116,8 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
   aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
+  aWriter.SetMaterialMode(aNode->InternalParameters.WriteMaterial);
+  aWriter.SetVisualMaterialMode(aNode->InternalParameters.WriteVisMaterial);
   aWriter.SetCleanDuplicates(aNode->InternalParameters.CleanDuplicates);
   DESTEP_Parameters aParams        = aNode->InternalParameters;
   Standard_Real     aScaleFactorMM = 1.;

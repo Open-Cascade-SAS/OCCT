@@ -128,6 +128,10 @@ set(OCCT_RWStepVisual_FILES
   RWStepVisual_RWSurfaceStyleParameterLine.pxx
   RWStepVisual_RWSurfaceStyleReflectanceAmbient.cxx
   RWStepVisual_RWSurfaceStyleReflectanceAmbient.pxx
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse.cxx
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse.pxx
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular.cxx
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular.pxx
   RWStepVisual_RWSurfaceStyleRendering.cxx
   RWStepVisual_RWSurfaceStyleRendering.pxx
   RWStepVisual_RWSurfaceStyleRenderingWithProperties.cxx
