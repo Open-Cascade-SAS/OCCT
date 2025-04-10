@@ -126,6 +126,9 @@ public:
   //! Return face list for loading triangulation.
   NCollection_Vector<TopoDS_Face>& FaceList() { return myFaceList; }
 
+  //! Set inpit stream.
+  void SetStream(std::shared_ptr<std::istream>& theStream) { myStream = theStream; }
+
 protected:
 #ifdef HAVE_RAPIDJSON
   //! Search mandatory root elements in the document.
@@ -421,6 +424,11 @@ private:
                                      const RWGltf_JsonValue*        theScaleVal,
                                      const RWGltf_JsonValue*        theTranslationVal,
                                      TopLoc_Location&               theResult) const;
+
+  //! Fill lines and points data not deferred.
+  //! @param theMeshData source glTF triangulation
+  Standard_EXPORT bool fillMeshData(const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData) const;
+
 #endif
 protected:
   //! Print message about invalid glTF syntax.
@@ -436,6 +444,8 @@ protected:
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< transformation from glTF to OCCT coordinate system
                                                     // clang-format on
   TColStd_IndexedDataMapOfStringString* myMetadata; //!< file metadata
+
+  std::shared_ptr<std::istream> myStream; //!< input stream
 
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)>
                                                                               myMaterialsPbr;

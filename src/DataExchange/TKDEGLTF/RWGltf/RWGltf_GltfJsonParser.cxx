@@ -1932,10 +1932,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
     {
       Message::SendWarning("Deferred loading is available only for triangulations. Other elements "
                            "will be loaded immediately.");
-      Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
-      aReader->SetCoordinateSystemConverter(myCSTrsf);
-      aMeshData->SetReader(aReader);
-      aMeshData->LoadDeferredData();
+      fillMeshData(aMeshData);
     }
 
     TopoDS_Shape aShape;
@@ -2456,6 +2453,32 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
     myAttribMap->Bind(theShape, aShapeAttribs);
   }
   myShapeMap[theGroup].Bind(theId, theShape);
+}
+
+//=================================================================================================
+
+bool RWGltf_GltfJsonParser::fillMeshData(
+  const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData) const
+{
+  for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter(theMeshData->Data());
+       aDataIter.More();
+       aDataIter.Next())
+  {
+    const RWGltf_GltfPrimArrayData& aData = aDataIter.Value();
+
+    Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
+    aReader->SetCoordinateSystemConverter(myCSTrsf);
+    std::shared_ptr<std::istream> aNewStream = myStream;
+    aNewStream->seekg(aData.StreamOffset);
+
+    if (!aReader
+           ->ReadStream(theMeshData, theMeshData, *aNewStream.get(), aData.Accessor, aData.Type))
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 #endif
 
