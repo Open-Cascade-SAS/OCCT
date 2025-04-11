@@ -215,12 +215,33 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
             u2 = Bsaux->LastParameter();
           //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
         }
-        const Standard_Real anU2Periodic =
-          Bsaux->IsPeriodic() ? (u2 - (Bsaux->LastParameter() - Bsaux->FirstParameter())) : u2;
         Standard_Real aSegmentTol = 2. * Precision::PConfusion();
-        if (Abs((anU2Periodic - u1) < aSegmentTol))
+
+        // For periodic curves, check if parameters are close in either direction
+        if (Bsaux->IsPeriodic())
         {
-          aSegmentTol = Abs(anU2Periodic - u1) * 0.01;
+          const Standard_Real aPeriod = Bsaux->LastParameter() - Bsaux->FirstParameter();
+
+          // Check direct distance between parameters
+          const Standard_Real aDirectDiff = Abs(u2 - u1);
+
+          // Check distances across period boundary (in both directions)
+          const Standard_Real aCrossPeriodDiff1 = Abs(u2 - aPeriod - u1);
+          const Standard_Real aCrossPeriodDiff2 = Abs(u1 - aPeriod - u2);
+
+          // Find the minimum difference (closest approach)
+          const Standard_Real aMinDiff =
+            Min(aDirectDiff, Min(aCrossPeriodDiff1, aCrossPeriodDiff2));
+
+          if (aMinDiff < aSegmentTol)
+          {
+            aSegmentTol = aMinDiff * 0.01;
+          }
+        }
+        // For non-periodic curves, just check direct parameter difference
+        else if (Abs(u2 - u1) < aSegmentTol)
+        {
+          aSegmentTol = Abs(u2 - u1) * 0.01;
         }
         Bsaux->Segment(u1, u2, aSegmentTol);
         Bs = Bsaux;

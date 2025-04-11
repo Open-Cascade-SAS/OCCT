@@ -193,6 +193,8 @@ provider.STEP.OCC.write.color :	 1
 provider.STEP.OCC.write.nonmanifold :	 0
 provider.STEP.OCC.write.name :	 1
 provider.STEP.OCC.write.layer :	 1
+provider.STEP.OCC.write.material :	 1
+provider.STEP.OCC.write.vismaterial :	 0
 provider.STEP.OCC.write.props :	 1
 provider.STEP.OCC.write.model.type :	 0
 provider.STEP.OCC.write.cleanduplicates : 0

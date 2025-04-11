@@ -227,6 +227,10 @@ set(OCCT_StepVisual_FILES
   StepVisual_SurfaceStyleParameterLine.hxx
   StepVisual_SurfaceStyleReflectanceAmbient.cxx
   StepVisual_SurfaceStyleReflectanceAmbient.hxx
+  StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.cxx
+  StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx
+  StepVisual_SurfaceStyleReflectanceAmbientDiffuse.cxx
+  StepVisual_SurfaceStyleReflectanceAmbientDiffuse.hxx
   StepVisual_SurfaceStyleRendering.cxx
   StepVisual_SurfaceStyleRendering.hxx
   StepVisual_SurfaceStyleRenderingWithProperties.cxx

@@ -260,11 +260,21 @@ runs:
           echo "No retest results to copy - directory is empty"
         fi
 
-    - name: Upload updated test results
+    - name: Upload updated test results (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.results-artifact-name }}
-        path: install/${{ inputs.platform == 'windows' && 'results' || 'bin/results' }}/${{ inputs.test-directory-name }}*
+        path: install/results/${{ inputs.test-directory-name }}*
+        retention-days: 15
+        overwrite: true
+
+    - name: Upload updated test results (macOS/Linux)
+      if : ${{ inputs.platform != 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.results-artifact-name }}
+        path: install/bin/results/${{ inputs.test-directory-name }}*
         retention-days: 15
         overwrite: true
 
