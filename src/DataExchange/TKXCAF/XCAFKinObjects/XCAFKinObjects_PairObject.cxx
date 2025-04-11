@@ -23,7 +23,8 @@ XCAFKinObjects_PairObject::XCAFKinObjects_PairObject() {}
 
 //=================================================================================================
 
-XCAFKinObjects_PairObject::XCAFKinObjects_PairObject(const Handle(XCAFKinObjects_PairObject)& theObj)
+XCAFKinObjects_PairObject::XCAFKinObjects_PairObject(
+  const Handle(XCAFKinObjects_PairObject)& theObj)
 {
   myName  = theObj->myName;
   myType  = theObj->myType;

@@ -114,7 +114,8 @@ Standard_Real XCAFKinObjects_LowOrderPairObjectWithCoupling::PinionRadius() cons
 
 //=================================================================================================
 
-void XCAFKinObjects_LowOrderPairObjectWithCoupling::SetRadiusFirstLink(const Standard_Real theRadius)
+void XCAFKinObjects_LowOrderPairObjectWithCoupling::SetRadiusFirstLink(
+  const Standard_Real theRadius)
 {
   if (Type() == XCAFKinObjects_PairType_Gear)
   {
@@ -135,7 +136,8 @@ Standard_Real XCAFKinObjects_LowOrderPairObjectWithCoupling::RadiusFirstLink() c
 
 //=================================================================================================
 
-void XCAFKinObjects_LowOrderPairObjectWithCoupling::SetRadiusSecondLink(const Standard_Real theRadius)
+void XCAFKinObjects_LowOrderPairObjectWithCoupling::SetRadiusSecondLink(
+  const Standard_Real theRadius)
 {
   if (Type() == XCAFKinObjects_PairType_Gear)
   {

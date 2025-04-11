@@ -33,9 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFKinObjects_KinematicPairValue, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFKinObjects_KinematicPairValue::XCAFKinObjects_KinematicPairValue()
-{
-}
+XCAFKinObjects_KinematicPairValue::XCAFKinObjects_KinematicPairValue() {}
 
 //=================================================================================================
 
@@ -64,8 +62,9 @@ Standard_Boolean XCAFKinObjects_KinematicPairValue::IsValidLabel(const TDF_Label
 
 //=================================================================================================
 
-Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set(const TDF_Label& theValue,
-                                                                         const TDF_Label& theJoint)
+Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set(
+  const TDF_Label& theValue,
+  const TDF_Label& theJoint)
 {
   TDataStd_UAttribute::Set(theValue, XCAFKinObjects_KinematicPairValue::getUID());
   Handle(XCAFKinObjects_KinematicPairValue) anAttr;
@@ -94,7 +93,8 @@ Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set
 
 //=================================================================================================
 
-Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set(const TDF_Label& theValue)
+Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set(
+  const TDF_Label& theValue)
 {
   TDataStd_UAttribute::Set(theValue, XCAFKinObjects_KinematicPairValue::getUID());
   Handle(XCAFKinObjects_KinematicPairValue) anAttr;
@@ -109,7 +109,8 @@ Handle(XCAFKinObjects_KinematicPairValue) XCAFKinObjects_KinematicPairValue::Set
 
 //=================================================================================================
 
-void XCAFKinObjects_KinematicPairValue::SetObject(const Handle(XCAFKinObjects_PairValueObject)& theObject)
+void XCAFKinObjects_KinematicPairValue::SetObject(
+  const Handle(XCAFKinObjects_PairValueObject)& theObject)
 {
   Backup();
 
@@ -133,7 +134,7 @@ void XCAFKinObjects_KinematicPairValue::SetObject(const Handle(XCAFKinObjects_Pa
 Handle(XCAFKinObjects_PairValueObject) XCAFKinObjects_KinematicPairValue::GetObject() const
 {
   // Type
-  Handle(TDataStd_Integer)           aTypeAttr;
+  Handle(TDataStd_Integer)               aTypeAttr;
   Handle(XCAFKinObjects_PairValueObject) anObject = new XCAFKinObjects_PairValueObject();
   if (Label().FindAttribute(TDataStd_Integer::GetID(), aTypeAttr))
   {
@@ -173,14 +174,14 @@ Handle(TDF_Attribute) XCAFKinObjects_KinematicPairValue::NewEmpty() const
 //=================================================================================================
 
 void XCAFKinObjects_KinematicPairValue::Paste(const Handle(TDF_Attribute)& /*theInfo*/,
-                                          const Handle(TDF_RelocationTable)& /*theRT*/) const
+                                              const Handle(TDF_RelocationTable)& /*theRT*/) const
 {
 }
 
 //=================================================================================================
 
 void XCAFKinObjects_KinematicPairValue::DumpJson(Standard_OStream& theOStream,
-                                             Standard_Integer  theDepth) const
+                                                 Standard_Integer  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

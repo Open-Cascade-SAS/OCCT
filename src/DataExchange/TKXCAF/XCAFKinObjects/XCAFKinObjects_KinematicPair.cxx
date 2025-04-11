@@ -52,9 +52,7 @@ enum ChildLab
 
 //=================================================================================================
 
-XCAFKinObjects_KinematicPair::XCAFKinObjects_KinematicPair()
-{
-}
+XCAFKinObjects_KinematicPair::XCAFKinObjects_KinematicPair() {}
 
 //=================================================================================================
 
@@ -166,7 +164,8 @@ void XCAFKinObjects_KinematicPair::SetObject(const Handle(XCAFKinObjects_PairObj
       Handle(XCAFKinObjects_HighOrderPairObject)::DownCast(theObject);
     TDataStd_Integer::Set(Label(), getParamsID(), (Standard_Integer)anObject->Orientation());
     BRep_Builder aBuilder;
-    if (theObject->Type() == XCAFKinObjects_PairType_PointOnSurface && !anObject->Surface().IsNull())
+    if (theObject->Type() == XCAFKinObjects_PairType_PointOnSurface
+        && !anObject->Surface().IsNull())
     {
       TopoDS_Face aFace;
       aBuilder.MakeFace(aFace, anObject->Surface(), Precision::Confusion());
@@ -224,12 +223,13 @@ void XCAFKinObjects_KinematicPair::SetObject(const Handle(XCAFKinObjects_PairObj
 Handle(XCAFKinObjects_PairObject) XCAFKinObjects_KinematicPair::GetObject() const
 {
   // Type
-  Handle(TDataStd_Integer)      aTypeAttr;
+  Handle(TDataStd_Integer)          aTypeAttr;
   Handle(XCAFKinObjects_PairObject) anObject = new XCAFKinObjects_PairObject();
   if (Label().FindAttribute(TDataStd_Integer::GetID(), aTypeAttr))
   {
     int aType = aTypeAttr->Get();
-    if (aType >= XCAFKinObjects_PairType_FullyConstrained && aType <= XCAFKinObjects_PairType_Unconstrained)
+    if (aType >= XCAFKinObjects_PairType_FullyConstrained
+        && aType <= XCAFKinObjects_PairType_Unconstrained)
       anObject = new XCAFKinObjects_LowOrderPairObject();
     else if (aType >= XCAFKinObjects_PairType_Screw
              && aType <= XCAFKinObjects_PairType_LinearFlexibleAndPinion)
@@ -394,14 +394,14 @@ Handle(TDF_Attribute) XCAFKinObjects_KinematicPair::NewEmpty() const
 //=================================================================================================
 
 void XCAFKinObjects_KinematicPair::Paste(const Handle(TDF_Attribute)& /*theInfo*/,
-                                     const Handle(TDF_RelocationTable)& /*theRT*/) const
+                                         const Handle(TDF_RelocationTable)& /*theRT*/) const
 {
 }
 
 //=================================================================================================
 
 void XCAFKinObjects_KinematicPair::DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth) const
+                                            Standard_Integer  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

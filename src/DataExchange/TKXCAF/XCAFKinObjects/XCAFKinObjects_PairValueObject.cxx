@@ -264,7 +264,7 @@ Standard_Real XCAFKinObjects_PairValueObject::GetSecondTranslation() const
 //=================================================================================================
 
 void XCAFKinObjects_PairValueObject::SetFirstPointOnSurface(const Standard_Real theU,
-                                                        const Standard_Real theV)
+                                                            const Standard_Real theV)
 {
   switch (myType)
   {
@@ -288,7 +288,7 @@ void XCAFKinObjects_PairValueObject::SetFirstPointOnSurface(const Standard_Real 
 //=================================================================================================
 
 Standard_Boolean XCAFKinObjects_PairValueObject::GetFirstPointOnSurface(Standard_Real& theU,
-                                                                    Standard_Real& theV) const
+                                                                        Standard_Real& theV) const
 {
   switch (myType)
   {
@@ -313,7 +313,7 @@ Standard_Boolean XCAFKinObjects_PairValueObject::GetFirstPointOnSurface(Standard
 //=================================================================================================
 
 void XCAFKinObjects_PairValueObject::SetSecondPointOnSurface(const Standard_Real theU,
-                                                         const Standard_Real theV)
+                                                             const Standard_Real theV)
 {
   if (myType != XCAFKinObjects_PairType_SlidingSurface)
     return;
@@ -324,7 +324,7 @@ void XCAFKinObjects_PairValueObject::SetSecondPointOnSurface(const Standard_Real
 //=================================================================================================
 
 Standard_Boolean XCAFKinObjects_PairValueObject::GetSecondPointOnSurface(Standard_Real& theU,
-                                                                     Standard_Real& theV) const
+                                                                         Standard_Real& theV) const
 {
   if (myType != XCAFKinObjects_PairType_SlidingSurface)
     return Standard_False;
@@ -393,8 +393,8 @@ Standard_Real XCAFKinObjects_PairValueObject::GetSecondPointOnCurve() const
 //=================================================================================================
 
 void XCAFKinObjects_PairValueObject::SetYPR(const Standard_Real theYaw,
-                                        const Standard_Real thePitch,
-                                        const Standard_Real theRoll)
+                                            const Standard_Real thePitch,
+                                            const Standard_Real theRoll)
 {
   switch (myType)
   {
@@ -422,8 +422,8 @@ void XCAFKinObjects_PairValueObject::SetYPR(const Standard_Real theYaw,
 //=================================================================================================
 
 Standard_Boolean XCAFKinObjects_PairValueObject::GetYPR(Standard_Real& theYaw,
-                                                    Standard_Real& thePitch,
-                                                    Standard_Real& theRoll) const
+                                                        Standard_Real& thePitch,
+                                                        Standard_Real& theRoll) const
 {
   switch (myType)
   {
