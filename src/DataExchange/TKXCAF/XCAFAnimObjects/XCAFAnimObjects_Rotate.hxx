@@ -95,7 +95,7 @@ public:
   //! Returns a 2D array containing the general presentation of this operation.
   //! Each row represents a keyframe, with columns containing rotation values.
   //! @return 2D array of rotation values
-  NCollection_Array2<double> GeneralPresentation() const { return myRotatePresentation; }
+  NCollection_Array2<double> GeneralPresentation() const Standard_OVERRIDE { return myRotatePresentation; }
 
   //! Returns the raw rotation array containing rotation data.
   //! @return 2D array with rotation values at each keyframe

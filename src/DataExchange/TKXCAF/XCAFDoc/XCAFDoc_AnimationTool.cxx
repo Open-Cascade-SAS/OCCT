@@ -22,7 +22,7 @@
 #include <TDataStd_UAttribute.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <XCAFDoc.hxx>
-#include <XCAFAnimation.hxx>
+#include <XCAFDoc_Animation.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_AnimationTool,
@@ -124,8 +124,8 @@ TDF_Label XCAFDoc_AnimationTool::BaseLabel() const
 
 bool XCAFDoc_AnimationTool::IsAnimation(const TDF_Label& theLabel) const
 {
-  Handle(XCAFAnimation) anAnimAtr;
-  if (theLabel.FindAttribute(XCAFAnimation::GetID(), anAnimAtr))
+  Handle(XCAFDoc_Animation) anAnimAtr;
+  if (theLabel.FindAttribute(XCAFDoc_Animation::GetID(), anAnimAtr))
   {
     return true;
   }
@@ -139,8 +139,8 @@ void XCAFDoc_AnimationTool::SetAnimation(const TDF_Label& theShLabel,
 {
   // set reference
   Handle(TDataStd_TreeNode) aRefNode, aMainNode;
-  aMainNode = TDataStd_TreeNode::Set(theAnimLabel, XCAFAnimation::AnimRefShapeGUID());
-  aRefNode  = TDataStd_TreeNode::Set(theShLabel, XCAFAnimation::AnimRefShapeGUID());
+  aMainNode = TDataStd_TreeNode::Set(theAnimLabel, XCAFDoc_Animation::AnimRefShapeGUID());
+  aRefNode  = TDataStd_TreeNode::Set(theShLabel, XCAFDoc_Animation::AnimRefShapeGUID());
   aRefNode->Remove();
   aMainNode->Prepend(aRefNode);
 }
@@ -296,7 +296,7 @@ bool XCAFDoc_AnimationTool::GetRefAnimationLabel(const TDF_Label& theShLabel,
                                                  TDF_Label&       theAnimLabel) const
 {
   Handle(TDataStd_TreeNode) aNode;
-  if (!theShLabel.FindAttribute(XCAFAnimation::AnimRefShapeGUID(), aNode) || !aNode->HasFather())
+  if (!theShLabel.FindAttribute(XCAFDoc_Animation::AnimRefShapeGUID(), aNode) || !aNode->HasFather())
   {
     return false;
   }
@@ -310,7 +310,7 @@ bool XCAFDoc_AnimationTool::GetRefShapeLabel(const TDF_Label& theAnimLabel,
                                              TDF_Label&       theShLabel) const
 {
   Handle(TDataStd_TreeNode) aNode;
-  if (!theAnimLabel.FindAttribute(XCAFAnimation::AnimRefShapeGUID(), aNode)
+  if (!theAnimLabel.FindAttribute(XCAFDoc_Animation::AnimRefShapeGUID(), aNode)
       || !aNode->Label().IsNull())
   {
     return false;
@@ -326,7 +326,7 @@ TDF_Label XCAFDoc_AnimationTool::AddAnimation() const
   TDF_Label     anAnimL;
   TDF_TagSource aTag;
   anAnimL                      = aTag.NewChild(Label());
-  Handle(XCAFAnimation)   aTol = XCAFAnimation::Set(anAnimL);
+  Handle(XCAFDoc_Animation)   aTol = XCAFDoc_Animation::Set(anAnimL);
   TCollection_AsciiString aStr = "Animation";
   TDataStd_Name::Set(anAnimL, aStr);
   return anAnimL;
