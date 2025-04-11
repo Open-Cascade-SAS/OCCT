@@ -220,7 +220,7 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
                 << std::flush;
       modepri = -1;
 
-      // amv 26.09.2003 : this is used to avoid error of enter's simbol
+      // amv 26.09.2003 : this is used to avoid error of enter's symbol
       char str[80];
       std::cin >> str;
       modepri = Draw::Atoi(str);
@@ -427,7 +427,7 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
         if (list.IsNull())
         {
           theDI
-            << "No list defined. Give a selection name or * for all visible transferrable roots\n";
+            << "No list defined. Give a selection name or * for all visible transferable roots\n";
           continue;
         }
       }
