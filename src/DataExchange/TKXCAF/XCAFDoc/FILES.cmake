@@ -46,6 +46,8 @@ set(OCCT_XCAFDoc_FILES
   XCAFDoc_GraphNode.cxx
   XCAFDoc_GraphNode.hxx
   XCAFDoc_GraphNodeSequence.hxx
+  XCAFDoc_KinematicTool.cxx
+  XCAFDoc_KinematicTool.hxx
   XCAFDoc_LayerTool.cxx
   XCAFDoc_LayerTool.hxx
   XCAFDoc_LengthUnit.cxx
