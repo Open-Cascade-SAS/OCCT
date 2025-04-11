@@ -36,6 +36,19 @@ public:
   Standard_EXPORT bool LoadStreamData(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
                                       const Handle(Poly_Triangulation)&         theDestMesh) const;
 
+  //! Fills triangulation, lines and points data.
+  //! @param theSourceGltfMesh source glTF triangulation
+  //! @param theDestMesh       triangulation to be modified
+  //! @param theStream         input stream to read from
+  //! @param theAccessor       buffer accessor
+  //! @param theType           array type
+  //! @return FALSE on error
+  Standard_EXPORT bool ReadStream(const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
+                                  const Handle(Poly_Triangulation)&            theDestMesh,
+                                  std::istream&                                theStream,
+                                  const RWGltf_GltfAccessor&                   theAccessor,
+                                  RWGltf_GltfArrayType                         theType) const;
+
 protected:
   //! Reports error.
   Standard_EXPORT virtual void reportError(const TCollection_AsciiString& theText) const;

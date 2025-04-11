@@ -563,6 +563,19 @@ bool RWGltf_TriangulationReader::readBuffer(
   RWGltf_GltfArrayType                         theType) const
 
 {
+  return ReadStream(theSourceMesh, theDestMesh, theStream, theAccessor, theType);
+}
+
+//=================================================================================================
+
+bool RWGltf_TriangulationReader::ReadStream(
+  const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
+  const Handle(Poly_Triangulation)&            theDestMesh,
+  std::istream&                                theStream,
+  const RWGltf_GltfAccessor&                   theAccessor,
+  RWGltf_GltfArrayType                         theType) const
+
+{
   const TCollection_AsciiString& aName     = theSourceMesh->Id();
   const RWGltf_GltfPrimitiveMode aPrimMode = theSourceMesh->PrimitiveMode();
   if (aPrimMode != RWGltf_GltfPrimitiveMode_Triangles && aPrimMode != RWGltf_GltfPrimitiveMode_Lines
