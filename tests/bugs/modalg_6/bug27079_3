@@ -20,6 +20,6 @@ bop f1 f2
 bopsection result
 
 checkprops result -l 13.7747
-checknbshapes result -vertex 3 -edge 2
+checknbshapes result -vertex 4 -edge 3
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
