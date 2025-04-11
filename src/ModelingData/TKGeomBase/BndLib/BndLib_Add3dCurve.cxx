@@ -230,7 +230,8 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
           const Standard_Real aCrossPeriodDiff2 = Abs(u1 - aPeriod - u2);
 
           // Find the minimum difference (closest approach)
-          const Standard_Real aMinDiff = Min(aDirectDiff, Min(aCrossPeriodDiff1, aCrossPeriodDiff2));
+          const Standard_Real aMinDiff =
+            Min(aDirectDiff, Min(aCrossPeriodDiff1, aCrossPeriodDiff2));
 
           if (aMinDiff < aSegmentTol)
           {
