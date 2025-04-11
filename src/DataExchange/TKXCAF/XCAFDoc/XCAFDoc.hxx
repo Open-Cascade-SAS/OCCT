@@ -108,6 +108,18 @@ public:
   Standard_EXPORT static const Standard_GUID& ViewRefNoteGUID();
   Standard_EXPORT static const Standard_GUID& ViewRefAnnotationGUID();
 
+  //! Return GUIDs for GraphNode representing specified types of Kinematics
+  Standard_EXPORT static const Standard_GUID& KinematicRefShapeGUID();
+
+  //! Return GUIDs for TreeNode representing specified types of Kinematics
+  Standard_EXPORT static const Standard_GUID& KinematicRefLink1GUID();
+
+  //! Return GUIDs for TreeNode representing specified types of Kinematics
+  Standard_EXPORT static const Standard_GUID& KinematicRefLink2GUID();
+
+  //! Return GUIDs for TreeNode representing specified types of Kinematics
+  Standard_EXPORT static const Standard_GUID& KinematicRefJointGUID();
+
   //! Returns GUID for UAttribute identifying lock flag
   Standard_EXPORT static const Standard_GUID& LockGUID();
 

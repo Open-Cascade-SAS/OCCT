@@ -4,6 +4,7 @@ set(OCCT_TKXCAF_LIST_OF_PACKAGES
   XCAFDimTolObjects
   XCAFNoteObjects
   XCAFDoc
+  XCAFKinObjects
   XCAFPrs
   XCAFView
 )
