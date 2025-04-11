@@ -20,6 +20,7 @@
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <OSD_File.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_ThreadPool.hxx>
@@ -2460,6 +2461,18 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
 bool RWGltf_GltfJsonParser::fillMeshData(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData) const
 {
+  if (myStream == nullptr)
+  {
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    myStream = aFileSystem->OpenIStream(myFilePath, std::ios::in | std::ios::binary);
+  }
+
+  if (myStream == nullptr)
+  {
+    reportGltfError("Buffer '" + myFilePath + "' isn't defined.");
+    return false;
+  }
+
   for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter(theMeshData->Data());
        aDataIter.More();
        aDataIter.Next())

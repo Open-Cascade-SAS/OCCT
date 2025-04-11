@@ -445,7 +445,7 @@ protected:
                                                     // clang-format on
   TColStd_IndexedDataMapOfStringString* myMetadata; //!< file metadata
 
-  std::shared_ptr<std::istream> myStream; //!< input stream
+  mutable std::shared_ptr<std::istream> myStream; //!< input stream
 
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)>
                                                                               myMaterialsPbr;
