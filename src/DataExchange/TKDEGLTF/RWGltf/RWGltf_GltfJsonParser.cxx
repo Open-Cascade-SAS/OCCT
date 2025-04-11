@@ -2461,6 +2461,7 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
 bool RWGltf_GltfJsonParser::fillMeshData(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData) const
 {
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter(theMeshData->Data());
        aDataIter.More();
        aDataIter.Next())
@@ -2477,8 +2478,9 @@ bool RWGltf_GltfJsonParser::fillMeshData(
     }
     else
     {
-      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      aNewStream = aFileSystem->OpenIStream(aData.StreamUri, std::ios::in | std::ios::binary, aData.StreamOffset);
+      aNewStream = aFileSystem->OpenIStream(aData.StreamUri,
+                                            std::ios::in | std::ios::binary,
+                                            aData.StreamOffset);
     }
 
     if (aNewStream == nullptr)
