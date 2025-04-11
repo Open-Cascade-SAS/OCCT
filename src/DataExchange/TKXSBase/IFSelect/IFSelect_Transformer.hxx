@@ -58,7 +58,7 @@ public:
   //! has been made on the spot, it is assumed to cause no change
   //! to the graph of dependances
   //! - if it equates the starting Model, it has been transformed on
-  //! the spot (possibiliy some entities were replaced inside it)
+  //! the spot (possibly some entities were replaced inside it)
   //! - if it is new, it corresponds to a new data set which replaces
   //! the starting one
   //!

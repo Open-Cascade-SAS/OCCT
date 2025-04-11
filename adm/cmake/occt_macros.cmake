@@ -268,7 +268,7 @@ function (EXTRACT_PACKAGE_FILES RELATIVE_PATH OCCT_PACKAGE RESULT_FILES RESULT_I
   set (OCCT_PACKAGE_FILES "${OCCT_${OCCT_PACKAGE}_FILES}")
 
   # collect and search for the files in the package directory or patched one
-  # FILE contains inly filename that must to be inside package or patched directory
+  # FILE only contains filename that must to be inside package or patched directory
   set (FILE_PATH_LIST)
 
   foreach (OCCT_FILE ${OCCT_PACKAGE_FILES})

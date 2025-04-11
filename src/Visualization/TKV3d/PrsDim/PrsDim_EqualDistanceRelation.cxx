@@ -236,7 +236,7 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const Handle(SelectMgr_Selec
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myFShape));
     if (aCurve.GetType() == GeomAbs_Line)
     {
-      // add sensetive element - line
+      // add sensitive element - line
       seg = new Select3D_SensitiveSegment(own, myAttachPoint1, myPoint1);
       aSelection->Add(seg);
     }
