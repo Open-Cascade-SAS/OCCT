@@ -2461,18 +2461,6 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
 bool RWGltf_GltfJsonParser::fillMeshData(
   const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData) const
 {
-  if (myStream == nullptr)
-  {
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    myStream = aFileSystem->OpenIStream(myFilePath, std::ios::in | std::ios::binary);
-  }
-
-  if (myStream == nullptr)
-  {
-    reportGltfError("Buffer '" + myFilePath + "' isn't defined.");
-    return false;
-  }
-
   for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter(theMeshData->Data());
        aDataIter.More();
        aDataIter.Next())
@@ -2481,8 +2469,23 @@ bool RWGltf_GltfJsonParser::fillMeshData(
 
     Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
     aReader->SetCoordinateSystemConverter(myCSTrsf);
-    std::shared_ptr<std::istream> aNewStream = myStream;
-    aNewStream->seekg(aData.StreamOffset);
+    std::shared_ptr<std::istream> aNewStream;
+    if (myStream != nullptr)
+    {
+      aNewStream = myStream;
+      aNewStream->seekg(aData.StreamOffset);
+    }
+    else
+    {
+      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      aNewStream = aFileSystem->OpenIStream(aData.StreamUri, std::ios::in | std::ios::binary, aData.StreamOffset);
+    }
+
+    if (aNewStream == nullptr)
+    {
+      reportGltfError("Buffer '" + aData.StreamUri + "' isn't defined.");
+      return false;
+    }
 
     if (!aReader
            ->ReadStream(theMeshData, theMeshData, *aNewStream.get(), aData.Accessor, aData.Type))
