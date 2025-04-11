@@ -6,6 +6,10 @@ set(OCCT_XCAFDoc_FILES
   GUID.txt
   XCAFDoc.cxx
   XCAFDoc.hxx
+  XCAFDoc_Animation.cxx
+  XCAFDoc_Animation.hxx
+  XCAFDoc_AnimationTool.cxx
+  XCAFDoc_AnimationTool.hxx
   XCAFDoc_AssemblyItemId.cxx
   XCAFDoc_AssemblyItemId.hxx
   XCAFDoc_AssemblyItemRef.cxx
