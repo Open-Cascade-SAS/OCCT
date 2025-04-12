@@ -411,7 +411,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           for (k = 1; k <= yRoots1.NbSolutions(); k++)
           {
             y = yRoots1.Value(k);
-            // Check if this value is already catched
+            // Check if this value is already caught
             IsSame = Standard_False;
             for (l = 1; l < k; l++)
               if (Abs(y - yRoots1.Value(l)) <= 10 * Tolerance)
@@ -436,7 +436,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         for (k = 1; k <= yRoots1.NbSolutions(); k++)
         {
           y = yRoots1.Value(k);
-          // Check if this value is already catched
+          // Check if this value is already caught
           IsSame     = Standard_False;
           FirstIndex = (i == 1) ? 1 : FirstSol(i);
           for (l = FirstIndex; l < CurSol; l++)
@@ -527,7 +527,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               p = -(b2 * y + d2) / a2;
               q = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
 
-              // Check if this value is already catched
+              // Check if this value is already caught
               IsSame     = Standard_False;
               FirstIndex = (i == 1) ? 1 : FirstSol(i);
               for (l = FirstIndex; l < CurSol; l++)
@@ -574,7 +574,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             p = -(b2 * y + d2) / a2;
             q = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
 
-            // Check if this value is already catched
+            // Check if this value is already caught
             IsSame = Standard_False;
             for (l = 1; l < k; l++)
               if (Abs(y - yRoots.Value(l)) <= 10 * Tolerance)

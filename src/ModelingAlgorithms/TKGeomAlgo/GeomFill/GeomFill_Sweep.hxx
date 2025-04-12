@@ -90,7 +90,7 @@ public:
   //! parametrisation sens of path (or of section if ExchangeUV)
   Standard_EXPORT Standard_Boolean VReversed() const;
 
-  //! Build the Sweeep  Surface
+  //! Build the Sweeep Surface
   //! ApproxStyle defines Approximation Strategy
   //! - GeomFill_Section : The composed Function : Location X Section
   //! is directly approximated.
@@ -111,13 +111,13 @@ public:
                              const Standard_Integer             Degmax     = 10,
                              const Standard_Integer             Segmax     = 30);
 
-  //! Tells if the Surface is Buildt.
+  //! Tells if the Surface is Built.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-  //! Gets the Approximation  error.
+  //! Gets the Approximation error.
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
-  //! Gets the Approximation  error.
+  //! Gets the Approximation error.
   Standard_EXPORT void ErrorOnRestriction(const Standard_Boolean IsFirst,
                                           Standard_Real&         UError,
                                           Standard_Real&         VError) const;
