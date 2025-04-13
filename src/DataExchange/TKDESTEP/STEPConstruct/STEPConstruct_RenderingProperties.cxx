@@ -295,7 +295,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
 
   // Use surface color as the base diffuse color
   aMaterial.DiffuseColor = mySurfaceColor;
-  aMaterial.Transparency = myTransparency;
+  aMaterial.Transparency = static_cast<float>(myTransparency);
   aMaterial.IsDefined    = Standard_True;
 
   // Set default values for other properties
