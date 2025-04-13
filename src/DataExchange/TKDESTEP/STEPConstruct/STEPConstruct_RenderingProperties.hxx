@@ -144,7 +144,7 @@ public:
   //! @return ColorRGBA object
   Quantity_ColorRGBA GetRGBAColor() const
   {
-    return Quantity_ColorRGBA(mySurfaceColor, 1.0 - myTransparency);
+    return Quantity_ColorRGBA(mySurfaceColor, static_cast<float>(1.0 - myTransparency));
   }
 
   //! Returns surface color
