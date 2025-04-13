@@ -237,10 +237,7 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
   // Add transparency
   Handle(StepVisual_SurfaceStyleTransparent) aTransparent = new StepVisual_SurfaceStyleTransparent;
   aTransparent->Init(myTransparency);
-
-  StepVisual_RenderingPropertiesSelect aRPS;
-  aRPS.SetValue(aTransparent);
-  aProps->SetValue(aPropIndex++, aRPS);
+  aProps->ChangeValue(aPropIndex++).SetValue(aTransparent);
 
   // Add the appropriate reflectance model based on what we have
   if (hasAmbientOnly)
@@ -250,9 +247,7 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
       new StepVisual_SurfaceStyleReflectanceAmbient;
     aAmbient->Init(myAmbientReflectance.first);
 
-    StepVisual_RenderingPropertiesSelect aRPS;
-    aRPS.SetValue(aAmbient);
-    aProps->SetValue(aPropIndex++, aRPS);
+    aProps->ChangeValue(aPropIndex++).SetValue(aAmbient);
   }
   else if (hasDiffuseAndAmbient)
   {
@@ -261,9 +256,7 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
       new StepVisual_SurfaceStyleReflectanceAmbientDiffuse;
     aAmbientDiffuse->Init(myAmbientReflectance.first, myDiffuseReflectance.first);
 
-    StepVisual_RenderingPropertiesSelect aRPS;
-    aRPS.SetValue(aAmbientDiffuse);
-    aProps->SetValue(aPropIndex++, aRPS);
+    aProps->ChangeValue(aPropIndex++).SetValue(aAmbientDiffuse);
   }
   else if (hasFullReflectance)
   {
@@ -277,9 +270,7 @@ Handle(StepVisual_SurfaceStyleRenderingWithProperties) STEPConstruct_RenderingPr
                     mySpecularExponent.first,
                     STEPConstruct_Styles::EncodeColor(mySpecularColour.first));
 
-    StepVisual_RenderingPropertiesSelect aRPS;
-    aRPS.SetValue(aFullRefl);
-    aProps->SetValue(aPropIndex++, aRPS);
+    aProps->ChangeValue(aPropIndex++).SetValue(aFullRefl);
   }
 
   // Create STEP surface style rendering with properties
@@ -400,7 +391,7 @@ void STEPConstruct_RenderingProperties::Init(
   {
     for (Standard_Integer i = 1; i <= aProperties->Length(); i++)
     {
-      StepVisual_RenderingPropertiesSelect aPropSelect = aProperties->Value(i);
+      const StepVisual_RenderingPropertiesSelect& aPropSelect = aProperties->Value(i);
 
       // Check for transparency
       Handle(StepVisual_SurfaceStyleTransparent) aTransparent =
