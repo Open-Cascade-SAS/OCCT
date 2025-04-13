@@ -71,7 +71,12 @@ if (WIN32)
 
     # Get installed configuration of tbb
     get_target_property (TARGET_TBB_IMPORT_CONFS TBB::tbb IMPORTED_CONFIGURATIONS)
-    list (GET TARGET_TBB_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+    # Prioritize RELEASE configuration if available
+    if (";${TARGET_TBB_IMPORT_CONFS};" MATCHES ";RELEASE;")
+      set (CHOSEN_IMPORT_CONF "RELEASE")
+    else()
+      list (GET TARGET_TBB_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+    endif()
 
     separate_arguments (CSF_TBB)
     foreach (LIB IN LISTS CSF_TBB)
@@ -204,7 +209,12 @@ else ()
 
   # Get installed configuration of tbb
   get_target_property (TARGET_TBB_IMPORT_CONFS TBB::tbb IMPORTED_CONFIGURATIONS)
-  list (GET TARGET_TBB_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+  # Prioritize RELEASE configuration if available
+  if (";${TARGET_TBB_IMPORT_CONFS};" MATCHES ";RELEASE;")
+    set (CHOSEN_IMPORT_CONF "RELEASE")
+  else()
+    list (GET TARGET_TBB_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+  endif()
 
   separate_arguments (CSF_TBB)
   foreach (LIB IN LISTS CSF_TBB)
