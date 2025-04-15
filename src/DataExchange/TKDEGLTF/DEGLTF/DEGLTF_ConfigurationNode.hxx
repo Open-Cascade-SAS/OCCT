@@ -101,6 +101,7 @@ public:
     bool ReadSkipLateDataLoading = false; //!< Flag to skip triangulation loading
     bool ReadKeepLateData = true;//!< Flag to keep information about deferred storage to load/unload triangulation later
     bool ReadPrintDebugMessages = false; //!< Flag to print additional debug information
+    bool ReadApplyScale = true; //!< Flag to apply non-uniform scale factor to the triangulations (modify nodes coordinates)
     // Writing
     TCollection_AsciiString WriteComment; //!< Export special comment
     TCollection_AsciiString WriteAuthor; //!< Author of exported file name
