@@ -430,7 +430,7 @@ struct hash<Handle(TheTransientType)>
           theHandle){} template <class T2,                                                         \
                                  typename =                                                        \
                                    typename std::enable_if<std::is_base_of<C1, T2>::value>::type>  \
-        inline Handle_##C1(const opencascade::handle<T2>& theOther) : Handle(C1)(                  \
+        inline Handle_##C1(const Handle(T2)& theOther) : Handle(C1)(                               \
           theOther){} template <class T2,                                                          \
                                 typename =                                                         \
                                   typename std::enable_if<std::is_base_of<C1, T2>::value>::type>   \
