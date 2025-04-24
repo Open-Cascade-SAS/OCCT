@@ -81,6 +81,12 @@ public:
   //! Set map for storing node attributes.
   void SetAttributeMap(RWMesh_NodeAttributeMap& theAttribMap) { myAttribMap = &theAttribMap; }
 
+  //! Set map for storing non-uniform scalings.
+  void SetScaleMap(NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>& theScaleMap)
+  {
+    myShapeScaleMap = &theScaleMap;
+  }
+
   //! Set list for storing external files.
   void SetExternalFiles(NCollection_IndexedMap<TCollection_AsciiString>& theExternalFiles)
   {
@@ -119,6 +125,10 @@ public:
 
   //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
   void SetMeshNameAsFallback(bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
+
+  //! Set flag to apply non-uniform scaling directly to the triangulation (modify nodes).
+  //! TRUE by default. In case of FALSE the average scale is applied to the transformation matrix.
+  void SetToApplyScale(bool theToApplyScale) { myToApplyScale = theToApplyScale; }
 
   //! Parse glTF document.
   Standard_EXPORT bool Parse(const Message_ProgressRange& theProgress);
@@ -289,11 +299,20 @@ protected:
   //! Bind name attribute.
   void bindNodeShape(TopoDS_Shape&                     theShape,
                      const TopLoc_Location&            theLoc,
+                     const bool                        theHasScale,
+                     const gp_XYZ&                     theScale,
                      const TCollection_AsciiString&    theNodeId,
                      const RWGltf_JsonValue*           theUserName,
                      const Handle(TDataStd_NamedData)& theExtras)
   {
-    bindNamedShape(theShape, ShapeMapGroup_Nodes, theLoc, theNodeId, theUserName, theExtras);
+    bindNamedShape(theShape,
+                   ShapeMapGroup_Nodes,
+                   theLoc,
+                   theHasScale,
+                   theScale,
+                   theNodeId,
+                   theUserName,
+                   theExtras);
   }
 
   //! Bind name attribute.
@@ -305,6 +324,8 @@ protected:
     bindNamedShape(theShape,
                    ShapeMapGroup_Meshes,
                    TopLoc_Location(),
+                   false,
+                   gp_XYZ(),
                    theMeshId,
                    theUserName,
                    theExtras);
@@ -326,6 +347,8 @@ protected:
   Standard_EXPORT void bindNamedShape(TopoDS_Shape&                     theShape,
                                       ShapeMapGroup                     theGroup,
                                       const TopLoc_Location&            theLoc,
+                                      const bool                        theHasScale,
+                                      const gp_XYZ&                     theScale,
                                       const TCollection_AsciiString&    theId,
                                       const RWGltf_JsonValue*           theUserName,
                                       const Handle(TDataStd_NamedData)& theExtras);
@@ -417,13 +440,18 @@ private:
   //! @param theTranslationVal Json value containing translation component of transformation.
   //!        May be null in which case it is ignored.
   //! @param theResult TopLoc_Location object where result of parsing will be written.
+  //! @param theHasScale The flag indicates if scale component was found in the transformation.
+  //! @param theScale Found scale vector. Only valid if @p theHasScale is true.
+  //!        Otherwise, it is undefined.
   //! @param If true - parsing was successful, transformation is written into @p theResult.
   //!        If true - failed to parse, @p theResult is unchanged.
   bool parseTransformationComponents(const TCollection_AsciiString& theSceneNodeId,
                                      const RWGltf_JsonValue*        theRotationVal,
                                      const RWGltf_JsonValue*        theScaleVal,
                                      const RWGltf_JsonValue*        theTranslationVal,
-                                     TopLoc_Location&               theResult) const;
+                                     TopLoc_Location&               theResult,
+                                     bool&                          theHasScale,
+                                     gp_XYZ&                        theScale) const;
 
   //! Fill lines and points data not deferred.
   //! @param theMeshData source glTF triangulation
@@ -439,7 +467,9 @@ protected:
   TopTools_SequenceOfShape* myRootShapes; //!< sequence of result root shapes
   RWMesh_NodeAttributeMap*  myAttribMap;  //!< shape attributes
   NCollection_IndexedMap<TCollection_AsciiString>*
-    myExternalFiles;                                //!< list of external file references
+    myExternalFiles; //!< list of external file references
+  NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
+    myShapeScaleMap;                                //!< map of shapes with non-uniform scalings
                                                     // clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< transformation from glTF to OCCT coordinate system
                                                     // clang-format on
@@ -470,6 +500,7 @@ protected:
   bool                      myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   bool                      myToProbeHeader;  //!< flag to probe header without full reading, FALSE by default
   bool                      myToReadAssetExtras; //!< flag to translate asset.extras into metadata, TRUE by default
+  bool                      myToApplyScale;      //!< flag to apply non-uniform scaling
   // clang-format on
 
 #ifdef HAVE_RAPIDJSON

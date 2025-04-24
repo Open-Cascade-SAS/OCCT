@@ -119,6 +119,7 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
   Standard_Boolean        toPrintDebugInfo      = Standard_False;
   Standard_Boolean        toLoadAllScenes       = Standard_False;
   Standard_Boolean        toPrintAssetInfo      = Standard_False;
+  Standard_Boolean        toApplyScale          = Standard_True;
   Standard_Boolean        isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -166,6 +167,10 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
     else if (anArgCase == "-assetinfo" || anArgCase == "-metadata")
     {
       toPrintAssetInfo = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArgCase == "-applyscale")
+    {
+      toApplyScale = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
     else if (aDestName.IsEmpty())
     {
@@ -229,6 +234,7 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
   aReader.SetToKeepLateData(toKeepLateData);
   aReader.SetToPrintDebugMessages(toPrintDebugInfo);
   aReader.SetLoadAllScenes(toLoadAllScenes);
+  aReader.SetToApplyScale(toApplyScale);
   if (aDestName.IsEmpty())
   {
     aReader.ProbeHeader(aFilePath);
@@ -523,7 +529,10 @@ void XSDRAWGLTF::Factory(Draw_Interpretor& theDI)
             "\n\t\t:   -allScenes load all scenes defined in the document instead of default one "
             "(false by default)"
             "\n\t\t:   -toPrintDebugInfo print additional debug information during data reading"
-            "\n\t\t:   -assetInfo print asset information",
+            "\n\t\t:   -assetInfo print asset information"
+            "\n\t\t:   -applyScale apply non-uniform scaling directly to the triangulation (modify "
+            "\n\t\t:               nodes) (true by default). In case of false the average scale is "
+            "\n\t\t:               applied to the transformation matrix.",
             __FILE__,
             ReadGltf,
             aGroup);
