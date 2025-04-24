@@ -26,6 +26,11 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
+#include <TDocStd_Document.hxx>
+#include <TopoDS.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeMapTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 
@@ -170,7 +175,8 @@ RWGltf_CafReader::RWGltf_CafReader()
       myIsDoublePrecision(false),
       myToSkipLateDataLoading(false),
       myToKeepLateData(true),
-      myToPrintDebugMessages(false)
+      myToPrintDebugMessages(false),
+      myToApplyScale(true)
 {
   myCoordSysConverter.SetInputLengthUnit(1.0); // glTF defines model in meters
   myCoordSysConverter.SetInputCoordinateSystem(RWMesh_CoordinateSystem_glTF);
@@ -299,6 +305,9 @@ Standard_Boolean RWGltf_CafReader::performMesh(std::istream&                  th
   {
     aDoc.SetBinaryFormat(aBinBodyOffset, aBinBodyLen);
   }
+  myShapeScaleMap = new NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>();
+  aDoc.SetToApplyScale(myToApplyScale);
+  aDoc.SetScaleMap(*myShapeScaleMap);
 
 #ifdef HAVE_RAPIDJSON
   rapidjson::ParseResult    aRes;
@@ -417,4 +426,264 @@ void RWGltf_CafReader::updateLateDataReader(
       }
     }
   }
+}
+
+//=================================================================================================
+
+void RWGltf_CafReader::fillDocument()
+{
+  if (!myToFillDoc || myXdeDoc.IsNull() || myRootShapes.IsEmpty())
+  {
+    return;
+  }
+  // set units
+  Standard_Real aLengthUnit = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(myXdeDoc, aLengthUnit))
+  {
+    XCAFDoc_DocumentTool::SetLengthUnit(myXdeDoc, SystemLengthUnit());
+  }
+  else if (aLengthUnit != SystemLengthUnit())
+  {
+    Message::SendWarning("Warning: Length unit of document not equal to the system length unit");
+  }
+
+  const Standard_Boolean wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
+  XCAFDoc_ShapeTool::SetAutoNaming(Standard_False);
+  const TCollection_AsciiString aRootName; // = generateRootName (theFile);
+  CafDocumentTools              aTools;
+  aTools.ShapeTool       = XCAFDoc_DocumentTool::ShapeTool(myXdeDoc->Main());
+  aTools.ColorTool       = XCAFDoc_DocumentTool::ColorTool(myXdeDoc->Main());
+  aTools.VisMaterialTool = XCAFDoc_DocumentTool::VisMaterialTool(myXdeDoc->Main());
+  for (TopTools_SequenceOfShape::Iterator aRootIter(myRootShapes); aRootIter.More();
+       aRootIter.Next())
+  {
+    addShapeIntoDoc(aTools, aRootIter.Value(), TDF_Label(), aRootName);
+  }
+  XCAFDoc_DocumentTool::ShapeTool(myXdeDoc->Main())->UpdateAssemblies();
+  XCAFDoc_ShapeTool::SetAutoNaming(wasAutoNaming);
+}
+
+//=================================================================================================
+
+Standard_Boolean RWGltf_CafReader::addShapeIntoDoc(CafDocumentTools&              theTools,
+                                                   const TopoDS_Shape&            theShape,
+                                                   const TDF_Label&               theLabel,
+                                                   const TCollection_AsciiString& theParentName,
+                                                   const Standard_Boolean         theHasScale,
+                                                   const gp_XYZ&                  theScale)
+{
+  if (theShape.IsNull() || myXdeDoc.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const TopAbs_ShapeEnum aShapeType     = theShape.ShapeType();
+  TopoDS_Shape           aShapeToAdd    = theShape;
+  const TopoDS_Shape     aShapeNoLoc    = theShape.Located(TopLoc_Location());
+  Standard_Boolean       toMakeAssembly = Standard_False;
+  bool                   isShapeScaled  = myShapeScaleMap->IsBound(theShape);
+  gp_XYZ                 aCurScale;
+
+  if (theHasScale)
+  {
+    // update translation part
+    gp_Trsf aTrsf        = theShape.Location().Transformation();
+    gp_XYZ  aTranslation = aTrsf.TranslationPart();
+    aTranslation.SetX(aTranslation.X() * theScale.X());
+    aTranslation.SetY(aTranslation.Y() * theScale.Y());
+    aTranslation.SetZ(aTranslation.Z() * theScale.Z());
+    aTrsf.SetTranslationPart(aTranslation);
+    aShapeToAdd.Location(TopLoc_Location(aTrsf));
+  }
+
+  if (isShapeScaled && aShapeType == TopAbs_FACE)
+  {
+    // Scale triangulation
+    aCurScale = myShapeScaleMap->Find(theShape);
+    TopLoc_Location aLoc;
+    TopoDS_Face     aFace = TopoDS::Face(aShapeToAdd);
+    myShapeScaleMap->UnBind(theShape);
+    const Handle(Poly_Triangulation)& aPolyTri = BRep_Tool::Triangulation(aFace, aLoc);
+    if (!aPolyTri.IsNull())
+    {
+      for (int aNodeIdx = 1; aNodeIdx <= aPolyTri->NbNodes(); ++aNodeIdx)
+      {
+        gp_Pnt aNode = aPolyTri->Node(aNodeIdx);
+        aNode.SetX(aNode.X() * aCurScale.X());
+        aNode.SetY(aNode.Y() * aCurScale.Y());
+        aNode.SetZ(aNode.Z() * aCurScale.Z());
+        aPolyTri->SetNode(aNodeIdx, aNode);
+      }
+    }
+  }
+
+  if (theShape.ShapeType() == TopAbs_COMPOUND)
+  {
+    RWMesh_NodeAttributes aSubFaceAttribs;
+    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
+         !toMakeAssembly && aSubShapeIter.More();
+         aSubShapeIter.Next())
+    {
+      if (aSubShapeIter.Value().ShapeType() != TopAbs_FACE)
+      {
+        toMakeAssembly = Standard_True;
+        break;
+      }
+
+      const TopoDS_Face& aFace = TopoDS::Face(aSubShapeIter.Value());
+      toMakeAssembly =
+        toMakeAssembly
+        || (myAttribMap.Find(aFace, aSubFaceAttribs) && !aSubFaceAttribs.Name.IsEmpty());
+    }
+
+    if (toMakeAssembly)
+    {
+      // create an empty Compound to add as assembly, so that we can add children one-by-one via
+      // AddComponent()
+      TopoDS_Compound aCompound;
+      BRep_Builder    aBuilder;
+      aBuilder.MakeCompound(aCompound);
+      aCompound.Location(theShape.Location(), Standard_False);
+      aShapeToAdd = aCompound;
+    }
+  }
+
+  TDF_Label aNewLabel, anOldLabel;
+  if (theLabel.IsNull())
+  {
+    // add new shape
+    aNewLabel = theTools.ShapeTool->AddShape(aShapeToAdd, toMakeAssembly);
+  }
+  else if (theTools.ShapeTool->IsAssembly(theLabel))
+  {
+    // add shape as component
+    if (theTools.ComponentMap.Find(aShapeNoLoc, anOldLabel))
+    {
+      aNewLabel = theTools.ShapeTool->AddComponent(theLabel, anOldLabel, theShape.Location());
+    }
+    else
+    {
+      aNewLabel = theTools.ShapeTool->AddComponent(theLabel, aShapeToAdd, toMakeAssembly);
+
+      TDF_Label aRefLabel = aNewLabel;
+      theTools.ShapeTool->GetReferredShape(aNewLabel, aRefLabel);
+      if (!aRefLabel.IsNull())
+      {
+        theTools.ComponentMap.Bind(aShapeNoLoc, aRefLabel);
+      }
+    }
+  }
+  else
+  {
+    // add shape as sub-shape
+    aNewLabel = theTools.ShapeTool->AddSubShape(theLabel, theShape);
+    if (!aNewLabel.IsNull())
+    {
+      Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set(aNewLabel);
+      aShapeMapTool->SetShape(theShape);
+    }
+  }
+  if (aNewLabel.IsNull())
+  {
+    return Standard_False;
+  }
+
+  if (toMakeAssembly)
+  {
+    TDF_Label aRefLabel;
+    theTools.ShapeTool->GetReferredShape(aNewLabel, aRefLabel);
+    if (!aRefLabel.IsNull())
+    {
+      theTools.OriginalShapeMap.Bind(theShape, aRefLabel);
+    }
+  }
+
+  // if new label is a reference get referred shape
+  TDF_Label aNewRefLabel = aNewLabel;
+  theTools.ShapeTool->GetReferredShape(aNewLabel, aNewRefLabel);
+
+  RWMesh_NodeAttributes aRefShapeAttribs;
+  myAttribMap.Find(aShapeNoLoc, aRefShapeAttribs);
+
+  bool hasProductName = false;
+  if (aNewLabel != aNewRefLabel)
+  {
+    // put attributes to the Instance (overrides Product attributes)
+    RWMesh_NodeAttributes aShapeAttribs;
+    if (!theShape.Location().IsIdentity() && myAttribMap.Find(theShape, aShapeAttribs))
+    {
+      if (!aShapeAttribs.Style.IsEqual(aRefShapeAttribs.Style))
+      {
+        setShapeStyle(theTools, aNewLabel, aShapeAttribs.Style);
+      }
+      if (aShapeAttribs.NamedData != aRefShapeAttribs.NamedData)
+      {
+        setShapeNamedData(theTools, aNewLabel, aShapeAttribs.NamedData);
+      }
+      setShapeName(aNewLabel, aShapeType, aShapeAttribs.Name, theLabel, theParentName);
+      if (aRefShapeAttribs.Name.IsEmpty() && !aShapeAttribs.Name.IsEmpty())
+      {
+        // it is not nice having unnamed Product, so copy name from first Instance (probably the
+        // only one)
+        hasProductName = true;
+        setShapeName(aNewRefLabel, aShapeType, aShapeAttribs.Name, theLabel, theParentName);
+      }
+      else if (aShapeAttribs.Name.IsEmpty() && !aRefShapeAttribs.Name.IsEmpty())
+      {
+        // copy name from Product
+        setShapeName(aNewLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+      }
+    }
+    else
+    {
+      // copy name from Product
+      setShapeName(aNewLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+    }
+  }
+
+  if (!anOldLabel.IsNull())
+  {
+    // already defined in the document
+    return Standard_True;
+  }
+
+  // put attributes to the Product (shared across Instances)
+  if (!hasProductName)
+  {
+    setShapeName(aNewRefLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+  }
+  setShapeStyle(theTools, aNewRefLabel, aRefShapeAttribs.Style);
+  setShapeNamedData(theTools, aNewRefLabel, aRefShapeAttribs.NamedData);
+
+  if (theTools.ShapeTool->IsAssembly(aNewRefLabel))
+  {
+    bool   aHasScale = theHasScale | isShapeScaled;
+    gp_XYZ aScale    = theScale;
+    if (isShapeScaled)
+    {
+      aScale.SetX(aCurScale.X() * theScale.X());
+      aScale.SetY(aCurScale.Y() * theScale.Y());
+      aScale.SetZ(aCurScale.Z() * theScale.Z());
+    }
+    // store sub-shapes (iterator is set to not inherit Location of parent object)
+    TCollection_AsciiString aDummyName;
+    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
+         aSubShapeIter.More();
+         aSubShapeIter.Next())
+    {
+      addShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel, aDummyName, aHasScale, aScale);
+    }
+  }
+  else
+  {
+    // store a plain list of sub-shapes in case if they have custom attributes (usually per-face
+    // color)
+    for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False);
+         aSubShapeIter.More();
+         aSubShapeIter.Next())
+    {
+      addSubShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel);
+    }
+  }
+  return Standard_True;
 }

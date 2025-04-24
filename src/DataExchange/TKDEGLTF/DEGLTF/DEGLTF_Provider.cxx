@@ -41,6 +41,7 @@ static void SetReaderParameters(RWGltf_CafReader&                       theReade
   theReader.SetToSkipLateDataLoading(theNode->InternalParameters.ReadSkipLateDataLoading);
   theReader.SetToKeepLateData(theNode->InternalParameters.ReadKeepLateData);
   theReader.SetToPrintDebugMessages(theNode->InternalParameters.ReadPrintDebugMessages);
+  theReader.SetToApplyScale(theNode->InternalParameters.ReadApplyScale);
 }
 } // namespace
 

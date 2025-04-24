@@ -15,6 +15,7 @@
 #include "RWGltf_GltfJsonParser.hxx"
 
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <FSD_Base64.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
@@ -504,8 +505,11 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
   const RWGltf_JsonValue*        theRotationVal,
   const RWGltf_JsonValue*        theScaleVal,
   const RWGltf_JsonValue*        theTranslationVal,
-  TopLoc_Location&               theResult) const
+  TopLoc_Location&               theResult,
+  bool&                          theHasScale,
+  gp_XYZ&                        theScale) const
 {
+  theHasScale = false;
   gp_Trsf aTrsf;
   if (theRotationVal != NULL)
   {
@@ -584,13 +588,16 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
         || Abs(aScaleVec.y() - aScaleVec.z()) > Precision::Confusion()
         || Abs(aScaleVec.x() - aScaleVec.z()) > Precision::Confusion())
     {
-      Graphic3d_Mat4d aScaleMat;
-      aScaleMat.SetDiagonal(aScaleVec);
-
       Graphic3d_Mat4d aMat4;
       aTrsf.GetMat4(aMat4);
 
-      aMat4 = aMat4 * aScaleMat;
+      if (!myToApplyScale)
+      {
+        Graphic3d_Mat4d aScaleMat;
+        aScaleMat.SetDiagonal(aScaleVec);
+        aMat4 = aMat4 * aScaleMat;
+      }
+
       aTrsf = gp_Trsf();
       aTrsf.SetValues(aMat4.GetValue(0, 0),
                       aMat4.GetValue(0, 1),
@@ -605,9 +612,18 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(
                       aMat4.GetValue(2, 2),
                       aMat4.GetValue(2, 3));
 
-      Message::SendWarning(TCollection_AsciiString("glTF reader, scene node '") + theSceneNodeId
-                           + "' defines unsupported scaling " + aScaleVec.x() + " " + aScaleVec.y()
-                           + " " + aScaleVec.z());
+      TCollection_AsciiString aWarnMessage = TCollection_AsciiString("glTF reader, scene node '")
+                                             + theSceneNodeId + "' defines unsupported scaling "
+                                             + aScaleVec.x() + " " + aScaleVec.y() + " "
+                                             + aScaleVec.z();
+      if (myToApplyScale)
+      {
+        aWarnMessage += TCollection_AsciiString(". It was applied to the triangulation directly");
+        theHasScale = true;
+        theScale    = gp_XYZ(aScaleVec.x(), aScaleVec.y(), aScaleVec.z());
+      }
+
+      Message::SendWarning(aWarnMessage);
     }
     else if (Abs(aScaleVec.x() - 1.0) > Precision::Confusion())
     {
@@ -638,6 +654,7 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser(TopTools_SequenceOfShape& theRootSh
     : myRootShapes(&theRootShapes),
       myAttribMap(NULL),
       myExternalFiles(NULL),
+      myShapeScaleMap(NULL),
       myMetadata(NULL),
       myBinBodyOffset(0),
       myBinBodyLen(0),
@@ -647,7 +664,8 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser(TopTools_SequenceOfShape& theRootSh
       myToLoadAllScenes(false),
       myUseMeshNameAsFallback(true),
       myToProbeHeader(false),
-      myToReadAssetExtras(true)
+      myToReadAssetExtras(true),
+      myToApplyScale(true)
 {
   myCSTrsf.SetInputLengthUnit(1.0); // meters
   myCSTrsf.SetInputCoordinateSystem(RWMesh_CoordinateSystem_glTF);
@@ -1567,6 +1585,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
   const RWGltf_JsonValue* anExtrasVal   = findObjectMember(theSceneNode, "extras");
 
   TopLoc_Location aNodeLoc;
+  bool            aHasScale = false;
+  gp_XYZ          aScale;
   const bool      aHasTransformComponents =
     aTrsfRotVal != NULL || aTrsfScaleVal != NULL || aTrsfTransVal != NULL;
   const bool aHasTransformMatrix = aTrsfMatVal != NULL;
@@ -1588,7 +1608,9 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
                                        aTrsfRotVal,
                                        aTrsfScaleVal,
                                        aTrsfTransVal,
-                                       aNodeLoc))
+                                       aNodeLoc,
+                                       aHasScale,
+                                       aScale))
     {
       return false;
     }
@@ -1605,7 +1627,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
   if (aChildren != NULL && !gltfParseSceneNodes(aChildShapes, *aChildren, theProgress))
   {
     theNodeShape = aNodeShape;
-    bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+    bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
     return false;
   }
   for (TopTools_SequenceOfShape::Iterator aChildShapeIter(aChildShapes); aChildShapeIter.More();
@@ -1627,7 +1649,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
       if (aMesh == NULL)
       {
         theNodeShape = aNodeShape;
-        bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+        bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
         reportGltfError("Scene node '" + theSceneNodeId + "' refers to non-existing mesh.");
         return false;
       }
@@ -1636,7 +1658,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
       if (!gltfParseMesh(aMeshShape, getKeyString(*aMeshIter), *aMesh))
       {
         theNodeShape = aNodeShape;
-        bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+        bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
         return false;
       }
       if (!aMeshShape.IsNull())
@@ -1654,7 +1676,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
     if (aMesh == NULL)
     {
       theNodeShape = aNodeShape;
-      bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+      bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
       reportGltfError("Scene node '" + theSceneNodeId + "' refers to non-existing mesh.");
       return false;
     }
@@ -1663,13 +1685,15 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
     if (!gltfParseMesh(aMeshShape, getKeyString(*aMesh_2), *aMesh))
     {
       theNodeShape = aNodeShape;
-      bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+      bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
       return false;
     }
     if (!aMeshShape.IsNull())
     {
       aBuilder.Add(aNodeShape, aMeshShape);
       ++aNbSubShapes;
+      if (aHasScale)
+        myShapeScaleMap->Bind(aMeshShape, aScale);
     }
   }
 
@@ -1681,7 +1705,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
   {
     theNodeShape = aNodeShape;
   }
-  bindNodeShape(theNodeShape, aNodeLoc, theSceneNodeId, aName, anExtras);
+  bindNodeShape(theNodeShape, aNodeLoc, aHasScale, aScale, theSceneNodeId, aName, anExtras);
   return true;
 }
 
@@ -2337,10 +2361,11 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
 }
 
 //=================================================================================================
-
 void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     theShape,
                                            ShapeMapGroup                     theGroup,
                                            const TopLoc_Location&            theLoc,
+                                           const bool                        theHasScale,
+                                           const gp_XYZ&                     theScale,
                                            const TCollection_AsciiString&    theId,
                                            const RWGltf_JsonValue*           theUserName,
                                            const Handle(TDataStd_NamedData)& theExtras)
@@ -2348,6 +2373,19 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
   if (theShape.IsNull())
   {
     return;
+  }
+
+  if (theHasScale && myShapeScaleMap->IsBound(theShape))
+  {
+    // Check scaling values
+    gp_XYZ aScale = myShapeScaleMap->Find(theShape);
+    if ((aScale - theScale).Modulus() > Precision::Confusion())
+    {
+      // Create a shape copy to avoid problems with different scaling
+      BRepBuilderAPI_Copy aCopy;
+      aCopy.Perform(theShape, Standard_True, Standard_True);
+      theShape = aCopy.Shape();
+    }
   }
 
   TopoDS_Shape aShape = theShape;
@@ -2452,6 +2490,11 @@ void RWGltf_GltfJsonParser::bindNamedShape(TopoDS_Shape&                     the
       }
     }
     myAttribMap->Bind(theShape, aShapeAttribs);
+  }
+
+  if (theHasScale)
+  {
+    myShapeScaleMap->Bind(theShape, theScale);
   }
   myShapeMap[theGroup].Bind(theId, theShape);
 }

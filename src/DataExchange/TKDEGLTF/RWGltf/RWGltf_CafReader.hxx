@@ -45,6 +45,10 @@ public:
   //! main (default) scene will be loaded.
   bool ToLoadAllScenes() const { return myToLoadAllScenes; }
 
+  //! Return TRUE if non-uniform scaling should be applied directly to the triangulation.
+  //! FALSE if the average scale should be applied to the transformation matrix.
+  bool ToApplyScale() const { return myToApplyScale; }
+
   //! Set flag to flag to load all scenes in the document, FALSE by default which means only main
   //! (default) scene will be loaded.
   void SetLoadAllScenes(bool theToLoadAll) { myToLoadAllScenes = theToLoadAll; }
@@ -66,6 +70,10 @@ public:
 
   //! Sets flag to skip data loading.
   void SetToSkipLateDataLoading(bool theToSkip) { myToSkipLateDataLoading = theToSkip; }
+
+  //! Set flag to apply non-uniform scaling directly to the triangulation (modify nodes).
+  //! TRUE by default. In case of FALSE the average scale is applied to the transformation matrix.
+  void SetToApplyScale(bool theToApplyScale) { myToApplyScale = theToApplyScale; }
 
   //! Returns TRUE if data should be loaded into itself without its transferring to new structure.
   //! It allows to keep information about deferred storage to load/unload this data later.
@@ -91,6 +99,17 @@ protected:
                                                        const Message_ProgressRange&   theProgress,
                                                        const Standard_Boolean         theToProbe)
     Standard_OVERRIDE;
+
+  //! Fill document with new root shapes.
+  Standard_EXPORT virtual void fillDocument() Standard_OVERRIDE;
+
+  //! Append new shape into the document (recursively).
+  Standard_EXPORT Standard_Boolean addShapeIntoDoc(CafDocumentTools&              theTools,
+                                                   const TopoDS_Shape&            theShape,
+                                                   const TDF_Label&               theLabel,
+                                                   const TCollection_AsciiString& theParentName,
+                                                   const Standard_Boolean theHasScale = false,
+                                                   const gp_XYZ& theScale = gp_XYZ(0., 0., 0.));
 
   //! Create primitive array reader context.
   //! Can be overridden by sub-class to read triangulation into application-specific data structures
@@ -123,6 +142,9 @@ protected:
   Standard_Boolean myToKeepLateData;        //!< flag to keep information about deferred storage to load/unload triangulation later
                                            // clang-format on
   Standard_Boolean myToPrintDebugMessages; //!< flag to print additional debug information
+  Standard_Boolean myToApplyScale;         //!< flag to apply non-uniform scaling
+  NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
+    myShapeScaleMap; //!< map of shapes with non-uniform scalings
 };
 
 #endif // _RWGltf_CafReader_HeaderFile

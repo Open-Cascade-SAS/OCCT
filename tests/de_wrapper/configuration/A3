@@ -128,6 +128,7 @@ provider.GLTF.OCC.read.use.mesh.name.as.fallback :	 1
 provider.GLTF.OCC.read.skip.late.data.loading :	 0
 provider.GLTF.OCC.read.keep.late.data :	 1
 provider.GLTF.OCC.read.print.debug.message :	 0
+provider.GLTF.OCC.read.apply.scale :	 1
 provider.GLTF.OCC.write.comment :	 
 provider.GLTF.OCC.write.author :	 
 provider.GLTF.OCC.write.trsf.format :	 0
