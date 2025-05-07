@@ -26,6 +26,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeCartesianTransformationOperator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <Message_ProgressScope.hxx>
@@ -41,6 +42,7 @@
 #include <STEPControl_StepModelType.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepGeom_Point.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
@@ -1656,8 +1658,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound(
   Message_ProgressScope aPS(theProgress, NULL, nbs);
   for (i = 1; i <= nbs && aPS.More(); i++)
   {
-    Handle(TransferBRep_ShapeMapper)  subs = TransferBRep::ShapeMapper(FP, RepItemSeq->Value(i));
-    Handle(StepGeom_Axis2Placement3d) AX1;
+    Handle(TransferBRep_ShapeMapper) subs = TransferBRep::ShapeMapper(FP, RepItemSeq->Value(i));
+    Handle(StepGeom_GeometricRepresentationItem) AX1;
 
     Handle(Transfer_Binder) bnd = TransferSubShape(subs,
                                                    SDR0,
@@ -1709,7 +1711,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound(
 Handle(Transfer_Binder) STEPControl_ActorWrite::TransferSubShape(
   const Handle(Transfer_Finder)&                         start,
   const Handle(StepShape_ShapeDefinitionRepresentation)& SDR0,
-  Handle(StepGeom_Axis2Placement3d)&                     AX1,
+  Handle(StepGeom_GeometricRepresentationItem)&          AX1,
   const Handle(Transfer_FinderProcess)&                  FP,
   const StepData_Factors&                                theLocalFactors,
   const Handle(TopTools_HSequenceOfShape)&               shapeGroup,
@@ -1781,14 +1783,39 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferSubShape(
   //  FP->GetTypedTransient (resbind,STANDARD_TYPE(StepShape_ShapeRepresentation),resultat);
   //  sdr->SetUsedRepresentation(resultat);  // to be used by MakeItem
 
-  // make location for assembly placement
-  GeomToStep_MakeAxis2Placement3d          mkax(aLoc, theLocalFactors);
-  const Handle(StepGeom_Axis2Placement3d)& AxLoc = mkax.Value();
-  AX1                                            = AxLoc;
-
   // create assembly structures (CDSR, NAUO etc.)
   STEPConstruct_Assembly mkitem;
-  mkitem.Init(sdr, SDR0, myContext.GetDefaultAxis(), AxLoc);
+
+  // make location for assembly placement
+  if (Abs(aLoc.ScaleFactor() - 1.0) > Precision::Confusion())
+  {
+    if (aStepModel->InternalParameters.WriteScalingTrsf)
+      FP->AddWarning(
+        start,
+        "The shape has a scaling factor, exported as cartesian_transformation_operator");
+    else
+      FP->AddWarning(start, "The shape has a scaling factor, skipped");
+  }
+  if (Abs(aLoc.ScaleFactor() - 1.0) < Precision::Confusion()
+      || !aStepModel->InternalParameters.WriteScalingTrsf)
+  {
+    // create a new axis2placement3d
+    GeomToStep_MakeAxis2Placement3d mkax(aLoc, theLocalFactors);
+    mkitem.Init(sdr, SDR0, myContext.GetDefaultAxis(), mkax.Value());
+    AX1 = mkax.Value();
+  }
+  else
+  {
+    // create a new cartesian transformation
+    GeomToStep_MakeCartesianTransformationOperator aMaker(aLoc, theLocalFactors);
+    if (!aMaker.IsDone())
+    {
+      FP->AddFail(start, "The transfomation relation creation failed");
+    }
+    mkitem.Init(sdr, SDR0, aMaker.Value());
+    AX1 = aMaker.Value();
+  }
+
   mkitem.MakeRelationship();
   Handle(TColStd_HSequenceOfTransient) roots = myContext.GetRootsForAssemblyLink(mkitem);
 

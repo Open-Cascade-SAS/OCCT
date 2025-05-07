@@ -22,6 +22,7 @@
 #include <StepBasic_ProductDefinition.hxx>
 #include <STEPConstruct_Assembly.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
@@ -51,8 +52,25 @@ void STEPConstruct_Assembly::Init(const Handle(StepShape_ShapeDefinitionRepresen
   thesr   = Handle(StepShape_ShapeRepresentation)::DownCast(aSDR->UsedRepresentation());
   thesr0  = Handle(StepShape_ShapeRepresentation)::DownCast(SDR0->UsedRepresentation());
   theval.Nullify();
-  theax0 = Ax0;
-  theloc = AxLoc;
+  theax0            = Ax0;
+  theloc            = AxLoc;
+  myIsCartesianTrsf = false;
+}
+
+//=================================================================================================
+
+void STEPConstruct_Assembly::Init(
+  const Handle(StepShape_ShapeDefinitionRepresentation)&    aSDR,
+  const Handle(StepShape_ShapeDefinitionRepresentation)&    SDR0,
+  const Handle(StepGeom_CartesianTransformationOperator3d)& theTrsfOp)
+{
+  thesdr  = aSDR;
+  thesdr0 = SDR0;
+  thesr   = Handle(StepShape_ShapeRepresentation)::DownCast(aSDR->UsedRepresentation());
+  thesr0  = Handle(StepShape_ShapeRepresentation)::DownCast(SDR0->UsedRepresentation());
+  theval.Nullify();
+  myTrsfOp          = theTrsfOp;
+  myIsCartesianTrsf = true;
 }
 
 //=================================================================================================
@@ -91,10 +109,19 @@ void STEPConstruct_Assembly::MakeRelationship()
   PDS->Init(pdsname, Standard_True, pdsdesc, CD);
 
   // create transformation
-  Handle(StepRepr_ItemDefinedTransformation) ItemDef = new StepRepr_ItemDefinedTransformation;
-  Handle(TCollection_HAsciiString)           idname  = new TCollection_HAsciiString("");
-  Handle(TCollection_HAsciiString)           idescr  = new TCollection_HAsciiString("");
-  ItemDef->Init(idname, idescr, theax0, theloc);
+  Handle(Standard_Transient) aTrsfItem;
+  if (!myIsCartesianTrsf)
+  {
+    Handle(StepRepr_ItemDefinedTransformation) ItemDef = new StepRepr_ItemDefinedTransformation;
+    Handle(TCollection_HAsciiString)           idname  = new TCollection_HAsciiString("");
+    Handle(TCollection_HAsciiString)           idescr  = new TCollection_HAsciiString("");
+    ItemDef->Init(idname, idescr, theax0, theloc);
+    aTrsfItem = ItemDef;
+  }
+  else
+  {
+    aTrsfItem = myTrsfOp;
+  }
 
   // create SRRWT
   Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation) SRRWT =
@@ -102,7 +129,7 @@ void STEPConstruct_Assembly::MakeRelationship()
   Handle(TCollection_HAsciiString) stname = new TCollection_HAsciiString("");
   Handle(TCollection_HAsciiString) stescr = new TCollection_HAsciiString("");
   StepRepr_Transformation          StepTrans;
-  StepTrans.SetValue(ItemDef);
+  StepTrans.SetValue(aTrsfItem);
   SRRWT->Init(stname, stescr, thesr, thesr0, StepTrans);
 
   // create CDSR (final result, root)
