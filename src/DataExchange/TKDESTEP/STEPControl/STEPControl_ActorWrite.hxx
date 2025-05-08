@@ -29,7 +29,7 @@ class Transfer_Finder;
 class Transfer_Binder;
 class Transfer_FinderProcess;
 class StepShape_ShapeDefinitionRepresentation;
-class StepGeom_Axis2Placement3d;
+class StepGeom_GeometricRepresentationItem;
 class TopoDS_Shape;
 class StepShape_NonManifoldSurfaceShapeRepresentation;
 
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT Handle(Transfer_Binder) TransferSubShape(
     const Handle(Transfer_Finder)&                         start,
     const Handle(StepShape_ShapeDefinitionRepresentation)& SDR,
-    Handle(StepGeom_Axis2Placement3d)&                     AX1,
+    Handle(StepGeom_GeometricRepresentationItem)&          AX1,
     const Handle(Transfer_FinderProcess)&                  FP,
     const StepData_Factors&                                theLocalFactors = StepData_Factors(),
     const Handle(TopTools_HSequenceOfShape)&               shapeGroup      = NULL,

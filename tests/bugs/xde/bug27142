@@ -3,7 +3,6 @@ puts "0027142: Data Exchange - add possibility to set location in XCAFDoc_ShapeT
 puts "=========="
 puts ""
 
-puts "TODO 0027142 ALL: Error: area of d1"
 puts "TODO 0027142 ALL: Error: area of d2"
 puts "TODO 0027142 ALL: Error: center of gravity"
 
