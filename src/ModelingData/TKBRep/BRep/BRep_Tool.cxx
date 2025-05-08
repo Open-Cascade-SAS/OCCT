@@ -795,6 +795,11 @@ Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Edge&                E,
                                      const Handle(Poly_Triangulation)& T,
                                      const TopLoc_Location&            L)
 {
+  if (T.IsNull())
+  {
+    return Standard_False;
+  }
+  
   TopLoc_Location l = L.Predivided(E.Location());
 
   // find the representation
