@@ -277,14 +277,9 @@ const TopoDS_Shape& BOPDS_DS::Shape(const Standard_Integer theI) const
 
 Standard_Integer BOPDS_DS::Index(const TopoDS_Shape& theS) const
 {
-  Standard_Integer iRet;
-  //
-  iRet = -1;
-  if (myMapShapeIndex.IsBound(theS))
-  {
-    iRet = myMapShapeIndex.Find(theS);
-  }
-  return iRet;
+  Standard_Integer anIndex = -1;
+  myMapShapeIndex.Find(theS, anIndex);
+  return anIndex;
 }
 
 //=================================================================================================
