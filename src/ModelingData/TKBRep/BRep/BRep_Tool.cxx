@@ -799,7 +799,7 @@ Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Edge&                E,
   {
     return Standard_False;
   }
-  
+
   TopLoc_Location l = L.Predivided(E.Location());
 
   // find the representation
