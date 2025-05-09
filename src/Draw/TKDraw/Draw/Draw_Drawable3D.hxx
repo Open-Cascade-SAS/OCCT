@@ -68,6 +68,10 @@ public:
   //! For variable dump.
   Standard_EXPORT virtual void Dump(Standard_OStream& S) const;
 
+  //! For variable dumpjson.
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer theDepth) const;
+
   //! Save drawable into stream; default implementation raises Standard_NotImplemented exception.
   Standard_EXPORT virtual void Save(Standard_OStream& theStream) const;
 

@@ -80,6 +80,7 @@
   #include <X11/Xlib.h>
   #include <X11/Xutil.h>
   #include <GL/glx.h>
+  #include <Xw_DisplayConnection.hxx>
   #include <Xw_Window.hxx>
   #include <vtkXRenderWindowInteractor.h>
   #include <vtkXOpenGLRenderWindow.h>
@@ -281,8 +282,8 @@ void IVtkDraw::ViewerInit(const IVtkWinParams& theParams)
 
   if (!GetRenderer())
   {
-    SetDisplayConnection(new Aspect_DisplayConnection());
 #ifdef _WIN32
+    SetDisplayConnection (new Aspect_DisplayConnection ());
     if (GetWindow().IsNull())
     {
       GetWindow() = new WNT_Window("IVtkTest",
@@ -296,12 +297,14 @@ void IVtkDraw::ViewerInit(const IVtkWinParams& theParams)
       GetWindow()->SetVirtual(Draw_VirtualWindows);
     }
 #else
-
+    SetDisplayConnection (new Xw_DisplayConnection ());
     if (GetWindow().IsNull())
     {
-      GetWindow() =
-        new Xw_Window(GetDisplayConnection(), "IVtkTest", aPxLeft, aPxTop, aPxWidth, aPxHeight);
-      GetWindow()->SetVirtual(Draw_VirtualWindows);
+      GetWindow() = new Xw_Window(Handle(Xw_DisplayConnection)::DownCast(GetDisplayConnection()),
+                                  "IVtkTest",
+                                  aPxLeft, aPxTop,
+                                  aPxWidth, aPxHeight);
+      GetWindow()->SetVirtual (Draw_VirtualWindows);
     }
 #endif
     // Init pipeline

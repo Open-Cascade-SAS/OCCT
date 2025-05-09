@@ -62,7 +62,11 @@ public:
   }
 
   //! Returns connection to Display or NULL.
-  const Handle(Aspect_DisplayConnection)& DisplayConnection() const { return myDisplay; }
+  virtual const Handle(Aspect_DisplayConnection)& DisplayConnection() const
+  {
+    static const Handle(Aspect_DisplayConnection) anEmptyDisp;
+    return anEmptyDisp;
+  }
 
   //! Returns the window background.
   Standard_EXPORT Aspect_Background Background() const;
@@ -165,7 +169,6 @@ protected:
   Standard_EXPORT Aspect_Window();
 
 protected:
-  Handle(Aspect_DisplayConnection) myDisplay; //!< Display connection
   Aspect_Background                MyBackground;
   Aspect_GradientBackground        MyGradientBackground;
   Aspect_FillMethod                MyBackgroundFillMethod;

@@ -18,6 +18,7 @@
 #include <Draw_Segment2D.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Segment2D, Draw_Drawable2D)
 
@@ -79,4 +80,15 @@ void Draw_Segment2D::Dump(Standard_OStream& S) const
 {
   S << std::setw(17) << myFirst.X() << " " << std::setw(17) << myFirst.Y() << " - " << std::setw(17)
     << myLast.X() << " " << std::setw(17) << myLast.Y() << "\n";
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Draw_Segment2D::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, Draw_Segment2D)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myFirst)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myLast)
 }

@@ -54,11 +54,13 @@ public:
   {
     MemPrivate = 0,    //!< Virtual memory allocated for data and stack excluding libraries
     MemVirtual,        //!< Reserved and committed memory of the virtual address space
+    MemVirtualMax,     //!< Upper limit for total memory allocations
     MemWorkingSet,     //!< Memory pages that are currently resident in physical memory
     MemWorkingSetPeak, //!< Peak working set size
     MemSwapUsage,      //!< Space allocated for the pagefile
     MemSwapUsagePeak,  //!< Peak space allocated for the pagefile
     MemHeapUsage,      //!< Total space allocated from the heap
+    MemStackSize,      //!< Stack size within current thread
     MemCounter_NB      //!< Indicates total counters number
   };
 

@@ -184,3 +184,12 @@ void DrawTrSurf_Point::Whatis(Draw_Interpretor& S) const
 {
   S << "point";
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Point::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  myPoint.DumpJson(theOStream, theDepth);
+}

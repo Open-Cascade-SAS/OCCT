@@ -26,18 +26,18 @@
 // #include <X11/XF86keysym.h>
 #endif
 
-#include <Aspect_DisplayConnection.hxx>
+#include <Xw_DisplayConnection.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 
 //=================================================================================================
 
-Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
-                     const Standard_CString                  theTitle,
-                     const Standard_Integer                  thePxLeft,
-                     const Standard_Integer                  thePxTop,
-                     const Standard_Integer                  thePxWidth,
-                     const Standard_Integer                  thePxHeight)
+Xw_Window::Xw_Window(const Handle(Xw_DisplayConnection)& theXDisplay,
+                     const Standard_CString              theTitle,
+                     const Standard_Integer              thePxLeft,
+                     const Standard_Integer              thePxTop,
+                     const Standard_Integer              thePxWidth,
+                     const Standard_Integer              thePxHeight)
     : Aspect_Window(),
       myXWindow(0),
       myFBConfig(NULL),
@@ -123,9 +123,9 @@ Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
 
 //=================================================================================================
 
-Xw_Window::Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
-                     const Aspect_Drawable                   theXWin,
-                     const Aspect_FBConfig                   theFBConfig)
+Xw_Window::Xw_Window(const Handle(Xw_DisplayConnection)& theXDisplay,
+                     const Aspect_Drawable               theXWin,
+                     const Aspect_FBConfig               theFBConfig)
     : Aspect_Window(),
       myXWindow(theXWin),
       myFBConfig(theFBConfig),
@@ -178,6 +178,13 @@ Xw_Window::~Xw_Window()
     XDestroyWindow(myDisplay->GetDisplay(), (Window)myXWindow);
 #endif
   }
+}
+
+//=================================================================================================
+
+const Handle(Aspect_DisplayConnection)& Xw_Window::DisplayConnection() const
+{
+  return myDisplay;
 }
 
 //=================================================================================================
@@ -410,8 +417,12 @@ void Xw_Window::InvalidateContent(const Handle(Aspect_DisplayConnection)& theDis
   }
 
 #if defined(HAVE_XLIB)
-  const Handle(Aspect_DisplayConnection)& aDisp  = !theDisp.IsNull() ? theDisp : myDisplay;
-  Display*                                aDispX = aDisp->GetDisplay();
+  Xw_DisplayConnection* aDisp = !theDisp.IsNull() ? dynamic_cast<Xw_DisplayConnection*>(theDisp.get()) : myDisplay.get();
+  if (aDisp == nullptr)
+  {
+    throw Aspect_WindowDefinitionError("Xw_Window::InvalidateContent(): Invalid X Display");
+  }
+  Display* aDispX = aDisp->GetDisplay();
 
   XEvent anEvent;
   memset(&anEvent, 0, sizeof(anEvent));

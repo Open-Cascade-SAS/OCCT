@@ -321,7 +321,7 @@ void StdSelect_BRepSelectionTool::ComputeSensitive(const TopoDS_Shape&          
       TopTools_IndexedMapOfShape aSubfacesMap;
       TopExp::MapShapes(theShape, TopAbs_FACE, aSubfacesMap);
 
-      if (!GetSensitiveForCylinder(aSubfacesMap, theOwner, theSelection))
+      /*if (!GetSensitiveForCylinder (aSubfacesMap, theOwner, theSelection))*/
       {
         for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
         {
@@ -656,9 +656,10 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
   TopLoc_Location aLoc;
   if (Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace, aLoc))
   {
-    TopLoc_Location             aLocSurf;
-    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theFace, aLocSurf);
-    if (Handle(Geom_SphericalSurface) aGeomSphere = Handle(Geom_SphericalSurface)::DownCast(aSurf))
+    // disable optimized sensitives for cylinders/spheres until proper bugfixes
+    /*TopLoc_Location aLocSurf;
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (theFace, aLocSurf);
+    if (Handle(Geom_SphericalSurface) aGeomSphere = Handle(Geom_SphericalSurface)::DownCast (aSurf))
     {
       bool isFullSphere = theFace.NbChildren() == 0;
       if (theFace.NbChildren() == 1)
@@ -764,7 +765,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
           return Standard_True;
         }
       }
-    }
+    }*/
 
     Handle(Select3D_SensitiveTriangulation) STG =
       new Select3D_SensitiveTriangulation(theOwner, aTriangulation, aLoc, theInteriorFlag);

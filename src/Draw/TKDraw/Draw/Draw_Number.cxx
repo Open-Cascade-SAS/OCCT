@@ -17,6 +17,7 @@
 #include <Draw_Number.hxx>
 
 #include <Draw_Display.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Number, Draw_Drawable3D)
 
@@ -77,4 +78,14 @@ Handle(Draw_Drawable3D) Draw_Number::Restore(Standard_IStream& theStream)
 void Draw_Number::Whatis(Draw_Interpretor& S) const
 {
   S << "numeric";
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Draw_Number::DumpJson(Standard_OStream& theOStream, Standard_Integer ) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, Draw_Number)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue)
 }

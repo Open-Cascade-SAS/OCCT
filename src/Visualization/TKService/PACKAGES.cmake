@@ -6,6 +6,7 @@ set(OCCT_TKService_LIST_OF_PACKAGES
   Image
   Media
   Wasm
+  Wayland
   WNT
   Cocoa
   Font

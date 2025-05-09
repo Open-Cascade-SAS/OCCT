@@ -47,6 +47,10 @@ public:
 
   Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
+  //! For variable dumpjson.
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer theDepth) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(DDocStd_DrawDocument, DDF_Data)

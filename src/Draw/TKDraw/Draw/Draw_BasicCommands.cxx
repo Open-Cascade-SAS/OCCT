@@ -63,6 +63,11 @@ static clock_t CPU_CURRENT; // cpu time already used at last
 
 #endif /* _WIN32 */
 
+#if defined(__EMSCRIPTEN__)
+  #include <emscripten/version.h>
+  #include <emscripten/heap.h>
+#endif
+
 extern Standard_Boolean Draw_Batch;
 
 static clock_t   CPU_LIMIT; // Cpu_limit in Sec.
@@ -344,6 +349,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #elif !defined(_WIN32)
   di << "Xlib disabled\n";
 #endif
+#ifdef HAVE_WAYLAND
+  di << "Wayland enabled (HAVE_WAYLAND)\n";
+#elif !defined(_WIN32)
+  di << "Wayland disabled\n";
+#endif
 #ifdef HAVE_TBB
   di << "TBB enabled (HAVE_TBB)\n";
 #else
@@ -463,6 +473,12 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
   #endif
   #if defined(__wasm_simd128__)
      << " SIMD128"
+  #endif
+  #if defined(__WASM_EXCEPTIONS__)
+     << " wasm-exceptions"
+  #endif
+  #if defined(__EMSCRIPTEN_PTHREADS__)
+     << " pthreads"
   #endif
      << "\n";
 #else
@@ -850,6 +866,10 @@ static int dmeminfo(Draw_Interpretor& theDI, Standard_Integer theArgNb, const ch
     {
       aCounters.Add(OSD_MemInfo::MemVirtual);
     }
+    else if (anArg == "virtmax" || anArg == "vmax")
+    {
+      aCounters.Add (OSD_MemInfo::MemVirtualMax);
+    }
     else if (anArg == "heap" || anArg == "h")
     {
       aCounters.Add(OSD_MemInfo::MemHeapUsage);
@@ -874,6 +894,36 @@ static int dmeminfo(Draw_Interpretor& theDI, Standard_Integer theArgNb, const ch
     {
       aCounters.Add(OSD_MemInfo::MemPrivate);
     }
+    else if (anArg == "stack")
+    {
+      aCounters.Add (OSD_MemInfo::MemStackSize);
+    }
+#if defined(__EMSCRIPTEN__)
+    else if ((anArg == "-resize" || anArg == "-wasmresize") && anIter + 1 < theArgNb)
+    {
+      aCounters.Add (OSD_MemInfo::MemVirtual);
+      aCounters.Add (OSD_MemInfo::MemVirtualMax);
+
+      Standard_Integer aNewSizeMiB = 0;
+      if (!Draw::ParseInteger(theArgVec[++anIter], aNewSizeMiB))
+      {
+        theDI << "Syntax error at '" << theArgVec[anIter] << "'";
+        return 1;
+      }
+      const Standard_Integer anOldSizeMiB = Standard_Integer(emscripten_get_heap_size() / (1024 * 1024));
+      if (aNewSizeMiB <= anOldSizeMiB)
+      {
+        theDI << "Heap cannot be shrinked\n";
+        continue;
+      }
+      int aRes = emscripten_resize_heap(size_t(aNewSizeMiB) * 1024 * 1024);
+      if (aRes != 1)
+      {
+        theDI << "Error: unable to resize heap";
+        return 1;
+      }
+    }
+#endif
     else
     {
       theDI << "Syntax error at '" << theArgVec[anIter] << "'!\n";
@@ -1323,9 +1373,15 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
                   mallochook,
                   g);
   theCommands.Add("meminfo",
-                  "meminfo [virt|v] [heap|h] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
-                  " : memory counters for this process",
-                  __FILE__,
+                  "meminfo [virt|v] [heap|h] [wset|w] [wsetpeak] [swap] [swappeak] [private] [virtMax|vmax] [stack]"
+                  "\n\t\t: Prints memory counters for this process (and stack size for the main thread)."
+#if defined(__EMSCRIPTEN__)
+                  "\n\t\t:"
+                  "\n\t\t: meminfo [-wasmResize nbMiB]"
+                  "\n\t\t: Tries to resize WebAssembly memory array to specified size in MiB."
+                  "\n\t\t: New size should be below 'virtMax' and cannot shrink existing 'virt'."
+#endif
+                  , __FILE__,
                   dmeminfo,
                   g);
   theCommands.Add("dperf",

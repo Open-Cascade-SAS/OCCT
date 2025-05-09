@@ -398,14 +398,22 @@ static Standard_Integer autodisplay(Draw_Interpretor& di, Standard_Integer n, co
 static Standard_Integer whatis(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n <= 1)
+  {
+    di << "Syntax error: wrong number of arguments";
     return 1;
+  }
+
   for (Standard_Integer i = 1; i < n; i++)
   {
     Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
-    if (!D.IsNull())
+    if (D.IsNull())
     {
-      D->Whatis(di);
+      di.Reset();
+      di << "Syntax error: '" << a[i] << "' is not a drawable";
+      return 1;
     }
+
+    D->Whatis(di);
   }
   return 0;
 }
@@ -417,9 +425,12 @@ static Standard_Integer whatis(Draw_Interpretor& di, Standard_Integer n, const c
 static Standard_Integer value(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 2)
+  {
+    di << "Syntax error: wrong number of arguments";
     return 1;
-  di << Draw::Atof(a[1]);
+  }
 
+  di << Draw::Atof(a[1]);
   return 0;
 }
 
@@ -429,24 +440,21 @@ static Standard_Integer dname(Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if (n <= 1)
   {
+    di << "Syntax error: wrong number of arguments";
     return 1;
   }
-  //
-  Standard_PCharacter     pC;
-  Standard_Integer        i;
-  Handle(Draw_Drawable3D) aD;
-  //
-  for (i = 1; i < n; ++i)
+
+  for (Standard_Integer i = 1; i < n; ++i)
   {
-    aD = Draw::Get(a[i]);
-    if (!aD.IsNull())
+    Handle(Draw_Drawable3D) aD = Draw::Get(a[i]);
+    if (aD.IsNull())
     {
-      // modified by NIZNHY-PKV Tue Jun 10 10:18:13 2008f
-      // di << a[i];
-      pC = (Standard_PCharacter)aD->Name();
-      di << pC;
-      // modified by NIZNHY-PKV Tue Jun 10 10:18:18 2008t
+      di.Reset();
+      di << "Syntax error: '" << a[i] << "' is not a drawable";
+      return 1;
     }
+
+    di << aD->Name();
   }
   return 0;
 }
@@ -454,22 +462,76 @@ static Standard_Integer dname(Draw_Interpretor& di, Standard_Integer n, const ch
 //=======================================================================
 // dump
 //=======================================================================
-
-static Standard_Integer dump(Draw_Interpretor& DI, Standard_Integer n, const char** a)
+static Standard_Integer dump(Draw_Interpretor& theDI,
+                             Standard_Integer theNbArgs,
+                             const char** theArgVec)
 {
-  if (n < 2)
-    return 1;
-  Standard_Integer i;
-  for (i = 1; i < n; i++)
+  NCollection_List<Handle(Draw_Drawable3D)> aList;
+  bool toDumpJson = TCollection_AsciiString::IsSameString(theArgVec[0], "dumpjson", false);
+  bool isPrettyFormat = true;
+  int  aDumpDepth = -1;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
-    if (!D.IsNull())
+    TCollection_AsciiString anArg(theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-json")
     {
-      Standard_SStream sss;
-      sss.precision(15);
-      sss << "\n\n*********** Dump of " << a[i] << " *************\n";
-      D->Dump(sss);
-      DI << sss;
+      toDumpJson = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArg == "-depth")
+    {
+      if (anArgIter + 1 >= theNbArgs
+       || !Draw::ParseInteger(theArgVec[anArgIter + 1], aDumpDepth)
+       || aDumpDepth < -1)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+      anArgIter += 1;
+    }
+    else if (anArg == "-pretty" || anArg == "-format")
+    {
+      isPrettyFormat = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
+    else
+    {
+      Handle(Draw_Drawable3D) aD = Draw::Get(theArgVec[anArgIter]);
+      if (aD.IsNull())
+      {
+        theDI << "Syntax error: '" << theArgVec[anArgIter] << "' is not a drawable";
+        return 1;
+      }
+      aList.Append(aD);
+    }
+  }
+
+  if (aList.IsEmpty())
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  for (const Handle(Draw_Drawable3D)& aDraw : aList)
+  {
+    Standard_SStream aStream;
+    aStream.precision(15);
+    if (toDumpJson)
+    {
+      aDraw->DumpJson(aStream, aDumpDepth);
+      if (isPrettyFormat)
+      {
+        theDI << Standard_Dump::FormatJson(aStream, 2);
+      }
+      else
+      {
+        theDI << aStream;
+      }
+    }
+    else
+    {
+      theDI << "\n\n*********** Dump of " << aDraw->Name() << " *************\n";
+      aDraw->Dump(aStream);
+      theDI << aStream;
     }
   }
   return 0;
@@ -1321,11 +1383,24 @@ void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
   theCommandsArg.Add("clear", "clear display", __FILE__, erase, g);
   theCommandsArg.Add("2dclear", "clear display (2d objects)", __FILE__, erase, g);
   theCommandsArg.Add("repaint", "repaint, force redraw", __FILE__, repaintall, g);
-
-  theCommandsArg.Add("dtyp", "dtyp name1 name2", __FILE__, whatis, g);
+  theCommandsArg.Add("dtyp", "dtyp name1 name2 ...\n\t\t: Print drawable type (for whatis).",
+                     __FILE__, whatis, g);
   theCommandsArg.Add("dval", "dval name, return value", __FILE__, value, g);
-  theCommandsArg.Add("dname", "dname name, print name", __FILE__, dname, g);
-  theCommandsArg.Add("dump", "dump name1 name2 ...", __FILE__, dump, g);
+  theCommandsArg.Add("dname", "dname name\n\t\t: Print drawable name.",
+                     __FILE__, dname, g);
+  theCommandsArg.Add("dump",
+                     "dump name1 name2 ... [-json {0|1}]=0 [-depth Value]=-1 [-pretty {0|1}]=1"
+                     "\n\t\t: Dump drawable contents in text format."
+                     "\n\t\t:  -json   print contents as JSON structure;"
+                     "\n\t\t:  -depth  recursion depth for JSON dump;"
+                     "\n\t\t:  -pretty format JSON for readability.",
+                     __FILE__, dump, g);
+  theCommandsArg.Add("dumpjson",
+                     "dumpjson name1 name2 ... [-depth Value]=-1 [-pretty {0|1}]=1"
+                     "\n\t\t: Dump drawable contents in JSON format."
+                     "\n\t\t:  -depth  recursion depth for JSON dump;"
+                     "\n\t\t:  -pretty format JSON for readability.",
+                     __FILE__, dump, g);
   theCommandsArg.Add("copy", "copy name1 toname1 name2 toname2 ...", __FILE__, copy, g);
   // san - 02/08/2002 - `rename` command changed to `renamevar` since it conflicts with
   // the built-in Tcl command `rename`

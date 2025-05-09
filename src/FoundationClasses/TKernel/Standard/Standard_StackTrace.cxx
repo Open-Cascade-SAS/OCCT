@@ -197,11 +197,7 @@ Standard_Boolean Standard::StackTrace(char*     theBuffer,
 #if defined(__EMSCRIPTEN__)
   // theNbTraces is ignored
   // EM_LOG_JS_STACK?
-  return emscripten_get_callstack(EM_LOG_C_STACK | EM_LOG_DEMANGLE | EM_LOG_NO_PATHS
-                                    | EM_LOG_FUNC_PARAMS,
-                                  theBuffer,
-                                  theBufferSize)
-         > 0;
+  return emscripten_get_callstack (EM_LOG_C_STACK | EM_LOG_NO_PATHS, theBuffer, theBufferSize) > 0;
 #elif defined(__ANDROID__)
   Message::SendTrace("Standard::StackTrace() is not implemented for this platform");
   return false;

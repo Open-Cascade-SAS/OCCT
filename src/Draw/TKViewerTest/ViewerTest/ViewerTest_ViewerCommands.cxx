@@ -96,6 +96,7 @@
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
 #elif defined(HAVE_XLIB)
+  #include <Xw_DisplayConnection.hxx>
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h>
   #include <X11/Xutil.h>
@@ -536,7 +537,7 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
 #if defined(HAVE_XLIB)
     if (!theParams.DisplayName.IsEmpty())
     {
-      SetDisplayConnection(new Aspect_DisplayConnection(theParams.DisplayName));
+      SetDisplayConnection(new Xw_DisplayConnection(theParams.DisplayName));
     }
     else
     {
@@ -547,7 +548,7 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
       Tcl_Interp* aTclInterp = aCommands.Interp();
       Tk_Window aMainWindow = Tk_MainWindow (aTclInterp);
       aDispX = aMainWindow != NULL ? Tk_Display (aMainWindow) : NULL;*/
-      SetDisplayConnection(new Aspect_DisplayConnection(aDispX));
+      SetDisplayConnection(new Xw_DisplayConnection(aDispX));
     }
 #else
     SetDisplayConnection(new Aspect_DisplayConnection());
@@ -810,11 +811,12 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
 #if defined(HAVE_XLIB)
   if (isNewDriver)
   {
-    ::Display* aDispX = (::Display*)GetDisplayConnection()->GetDisplayAspect();
-    Tcl_CreateFileHandler(XConnectionNumber(aDispX),
+    Handle(Xw_DisplayConnection) anXDispCon = Handle(Xw_DisplayConnection)::DownCast(GetDisplayConnection());
+    ::Display* aDispX = (::Display* )anXDispCon->GetDisplayAspect();
+    Tcl_CreateFileHandler(anXDispCon->FileDescriptor(),
                           TCL_READABLE,
                           VProcessEvents,
-                          (ClientData)aDispX);
+                          (ClientData )aDispX);
   }
 #endif
 

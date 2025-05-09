@@ -275,3 +275,15 @@ void DrawTrSurf_Surface::Whatis(Draw_Interpretor& S) const
 {
   S << "a surface";
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Surface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!surf.IsNull())
+  {
+    surf->DumpJson(theOStream, theDepth);
+  }
+}

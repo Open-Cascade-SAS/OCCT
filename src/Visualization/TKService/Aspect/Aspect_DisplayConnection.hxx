@@ -24,107 +24,42 @@
 struct Aspect_XDisplay;
 struct Aspect_XVisualInfo;
 
-//! This class creates and provides connection with X server.
-//! Raises exception if can not connect to X server.
-//! On Windows and Mac OS X (in case when Cocoa used) platforms this class does nothing.
-//! WARNING: Do not close display connection manually!
+//! This interface defines connection to platform-specific display.
 class Aspect_DisplayConnection : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_DisplayConnection, Standard_Transient)
 public:
-  //! Default constructor. Creates connection with display name taken from "DISPLAY" environment
-  //! variable
+
+  //! Empty constructor.
   Standard_EXPORT Aspect_DisplayConnection();
 
-  //! Destructor. Close opened connection.
+  //! Destructor.
   Standard_EXPORT virtual ~Aspect_DisplayConnection();
 
-  //! Constructor. Creates connection with display specified in theDisplayName.
-  //! Display name should be in format "hostname:number" or "hostname:number.screen_number", where:
-  //! hostname      - Specifies the name of the host machine on which the display is physically
-  //! attached. number        - Specifies the number of the display server on that host machine.
-  //! screen_number - Specifies the screen to be used on that server. Optional variable.
-  Standard_EXPORT Aspect_DisplayConnection(const TCollection_AsciiString& theDisplayName);
-
-  //! Constructor wrapping existing Display instance.
-  //! WARNING! it is a responsibility of application to keep this pointer
-  //! valid while Aspect_DisplayConnection is alive and to close Display when it is no more needed.
-  Standard_EXPORT Aspect_DisplayConnection(Aspect_XDisplay* theDisplay);
-
   //! @return pointer to Display structure that serves as the connection to the X server.
-  Aspect_XDisplay* GetDisplayAspect() { return myDisplay; }
+  virtual Aspect_XDisplay* GetDisplayAspect() { return nullptr; }
 
-  //! @return TRUE if X Display has been allocated by this class
-  Standard_Boolean IsOwnDisplay() const { return myIsOwnDisplay; }
-
-  //! @return identifier(atom) for custom named property associated with windows that use current
-  //! connection to X server.
-  uint64_t GetAtom(const Aspect_XAtom theAtom) const { return myAtoms.Find(theAtom); }
-
-  //! @return display name for this connection.
-  const TCollection_AsciiString& GetDisplayName() { return myDisplayName; }
-
-  //! Open connection with display specified in myDisplayName class field
-  //! or takes theDisplay parameter when it is not NULL.
-  //! WARNING! When external Display is specified, it is a responsibility of application
-  //! to keep this pointer valid while Aspect_DisplayConnection is alive
-  //! and to close Display when it is no more needed.
-  //! @param theDisplay external pointer to allocated Display, or NULL if new connection should be
-  //! created
-  Standard_EXPORT void Init(Aspect_XDisplay* theDisplay);
-
-  //! Return default window visual or NULL when undefined.
-  Aspect_XVisualInfo* GetDefaultVisualInfo() const { return myDefVisualInfo; }
-
-  //! @return native Window FB config (GLXFBConfig on Xlib)
-  Aspect_FBConfig GetDefaultFBConfig() const { return myDefFBConfig; }
-
-  //! Set default window visual; the visual will be deallocated using XFree().
-  Standard_EXPORT void SetDefaultVisualInfo(Aspect_XVisualInfo* theVisual,
-                                            Aspect_FBConfig     theFBConfig);
-
-#ifdef X_PROTOCOL
-  //! Constructor wrapping existing Display instance.
-  //! WARNING! it is a responsibility of application to keep this pointer
-  //! valid while Aspect_DisplayConnection is alive and to close Display when it is no more needed.
-  Aspect_DisplayConnection(Display* theDisplay)
-      : Aspect_DisplayConnection((Aspect_XDisplay*)theDisplay)
+  //! @return identifier(atom) for custom named property associated with windows that use current connection to display.
+  virtual uint64_t GetAtom (const Aspect_XAtom theAtom) const
   {
+    (void )theAtom;
+    return 0;
   }
 
-  //! @return pointer to Display structure that serves as the connection to the X server.
-  Display* GetDisplay() { return (Display*)myDisplay; }
-
-  //! Return default window visual or NULL when undefined.
-  XVisualInfo* GetDefaultVisualInfoX() const { return (XVisualInfo*)myDefVisualInfo; }
-
-  //! Set default window visual; the visual will be deallocated using XFree().
-  void SetDefaultVisualInfo(XVisualInfo* theVisual, Aspect_FBConfig theFBConfig)
+  //! Set default window visual.
+  virtual void SetDefaultVisualInfo (Aspect_XVisualInfo* theVisual,
+                                     Aspect_FBConfig theFBConfig)
   {
-    SetDefaultVisualInfo((Aspect_XVisualInfo*)theVisual, theFBConfig);
+    (void )theVisual;
+    (void )theFBConfig;
   }
 
-  //! @return identifier(atom) for custom named property associated with windows that use current
-  //! connection to X server.
-  Atom GetAtomX(const Aspect_XAtom theAtom) const { return (Atom)GetAtom(theAtom); }
-
-  //! Open connection with display specified in myDisplayName class field
-  //! or takes theDisplay parameter when it is not NULL.
-  void Init(Display* theDisplay) { Init((Aspect_XDisplay*)theDisplay); }
-#endif
-
 private:
-  Aspect_XDisplay*                            myDisplay;
-  Aspect_XVisualInfo*                         myDefVisualInfo;
-  Aspect_FBConfig                             myDefFBConfig;
-  NCollection_DataMap<Aspect_XAtom, uint64_t> myAtoms;
-  TCollection_AsciiString                     myDisplayName;
-  Standard_Boolean                            myIsOwnDisplay;
 
-private:
   //! To protect the connection from closing copying allowed only through the handles.
-  Aspect_DisplayConnection(const Aspect_DisplayConnection&);
-  Aspect_DisplayConnection& operator=(const Aspect_DisplayConnection&);
+  Aspect_DisplayConnection            (const Aspect_DisplayConnection& ) Standard_DELETE;
+  Aspect_DisplayConnection& operator= (const Aspect_DisplayConnection& ) Standard_DELETE;
+
 };
 
 DEFINE_STANDARD_HANDLE(Aspect_DisplayConnection, Standard_Transient)

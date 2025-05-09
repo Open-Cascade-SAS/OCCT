@@ -735,21 +735,19 @@ public: //! @name Selection management
   Handle(Standard_Transient) Applicative() const { return SelectedInteractive()->GetOwner(); }
 
 public: //! @name immediate mode rendering
-  //! initializes the list of presentations to be displayed
-  //! returns False if no local context is opened.
+  Standard_DEPRECATED("Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
   Standard_EXPORT Standard_Boolean BeginImmediateDraw();
 
-  //! returns True if <anIObj> has been stored in the list.
-  Standard_EXPORT Standard_Boolean ImmediateAdd(const Handle(AIS_InteractiveObject)& theObj,
-                                                const Standard_Integer               theMode = 0);
+  Standard_DEPRECATED("Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
+  Standard_EXPORT Standard_Boolean ImmediateAdd(const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode = 0);
 
-  //! returns True if the immediate display has been done.
+  Standard_DEPRECATED("Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
   Standard_EXPORT Standard_Boolean EndImmediateDraw(const Handle(V3d_View)& theView);
 
-  //! Uses the First Active View of Main Viewer!
-  //! returns True if the immediate display has been done.
+  Standard_DEPRECATED("Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
   Standard_EXPORT Standard_Boolean EndImmediateDraw();
 
+  Standard_DEPRECATED("Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
   Standard_EXPORT Standard_Boolean IsImmediateModeOn() const;
 
   //! Redraws immediate structures in all views of the viewer given taking into account its

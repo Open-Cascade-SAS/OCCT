@@ -86,6 +86,10 @@ class DrawTrSurf_Surface : public DrawTrSurf_Drawable
   //! For variable dump.
   Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
+  //! For variable dumpjson.
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer theDepth) const Standard_OVERRIDE;
+
   //! Save drawable into stream.
   Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
 

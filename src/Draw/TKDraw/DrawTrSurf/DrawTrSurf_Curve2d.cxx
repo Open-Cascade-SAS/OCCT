@@ -229,3 +229,15 @@ Standard_Boolean DrawTrSurf_Curve2d::Is3D() const
 {
   return Standard_False;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Curve2d::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!curv.IsNull())
+  {
+    curv->DumpJson(theOStream, theDepth);
+  }
+}

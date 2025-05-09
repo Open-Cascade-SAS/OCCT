@@ -232,3 +232,15 @@ void DrawTrSurf_Curve::Whatis(Draw_Interpretor& S) const
 {
   S << " a 3d curve";
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Curve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!curv.IsNull())
+  {
+    curv->DumpJson(theOStream, theDepth);
+  }
+}

@@ -103,12 +103,14 @@ The following table gives the full list of environment variables used at the con
 |----------|------|---------|
 | CMAKE_BUILD_TYPE | String | Specifies the build type on single-configuration generators (such as make). Possible values are Debug, Release and RelWithDebInfo |
 | USE_FREETYPE  | Boolean | Indicates whether FreeType product should be used in OCCT for text rendering |
-| USE_FREEIMAGE | Boolean | Indicates whether FreeImage product should be used in OCCT visualization module for support of popular graphics image formats |
+| USE_FREEIMAGE | Boolean | Indicates whether FreeImage product should be used in OCCT visualization module for support of popular graphics image formats (PNG, BMP, etc.) |
 | USE_FFMPEG    | Boolean | Indicates whether FFmpeg framework should be used for video encoding/decoding support |
 | USE_OPENVR    | Boolean | Indicates whether OpenVR product should be used in OCCT visualization module for VR support |
 | USE_OPENGL    | Boolean | Indicates whether TKOpenGl graphic driver using OpenGL library (desktop) should be built |
 | USE_GLES2     | Boolean | Indicates whether TKOpenGles graphic driver using OpenGL ES library should be built |
 | USE_RAPIDJSON | Boolean | Indicates whether RapidJSON product should be used for JSON format support |
+| USE_XLIB      | Boolean | Indicates whether Xlib should be supported by OCCT visualization module for window creation |
+| USE_WAYLAND   | Boolean | Indicates whether Wayland should be supported by OCCT visualization module for window creation |
 | USE_DRACO     | Boolean | Indicates whether Draco mesh compression library should be used |
 | USE_TK        | Boolean | Indicates whether Tcl/Tk product should be used in Draw Harness for user interface |
 | USE_TBB       | Boolean | Indicates whether TBB (Threading Building Blocks) should be used for parallel computations |

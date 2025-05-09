@@ -34,10 +34,14 @@
 #include <OSD_MemInfo.hxx>
 
 #if defined(__EMSCRIPTEN__)
-  #include <emscripten.h>
+  #include <emscripten/heap.h>
+#endif
+#if defined(USE_MIMALLOC)
+  #include <mimalloc.h>
+#endif
 
-//! Return WebAssembly heap size in bytes.
-EM_JS(double, OSD_MemInfo_getModuleHeapLength, (), { return Module.HEAP8.length; });
+#ifndef _WIN32
+  #include <pthread.h>
 #endif
 
 //=================================================================================================
@@ -124,6 +128,15 @@ void OSD_MemInfo::Update()
     }
   }
 
+  #if (_WIN32_WINNT >= 0x0602)
+  if (IsActive(MemStackSize))
+  {
+    ULONG_PTR aStackLow = 0, aStackUp = 0;
+    GetCurrentThreadStackLimits(&aStackLow, &aStackUp);
+    myCounters[MemStackSize] = Standard_Size(aStackUp - aStackLow);
+  }
+  #endif
+
   if (IsActive(MemHeapUsage))
   {
     _HEAPINFO hinfo;
@@ -141,9 +154,41 @@ void OSD_MemInfo::Update()
   }
 
   #elif defined(__EMSCRIPTEN__)
-  if (IsActive(MemHeapUsage) || IsActive(MemWorkingSet) || IsActive(MemWorkingSetPeak))
+  #if defined(USE_MIMALLOC)
+  // -sMALLOC=mimalloc provides own diagnostics API
+  if (IsActive(MemWorkingSet)
+   || IsActive(MemWorkingSetPeak))
   {
-    // /proc/%d/status is not emulated - get more info from mallinfo()
+    size_t current_rss = 0, peak_rss = 0;
+    mi_process_info(nullptr, nullptr, nullptr, &current_rss, &peak_rss, nullptr, nullptr, nullptr);
+    // workaround negative number returned by mi_process_info() (which mi_stats_print(NULL) prints as such)
+    if (intptr_t(current_rss) < 0) { current_rss = 0; }
+    if (intptr_t(peak_rss) < 0) { peak_rss = 0; }
+    myCounters[MemWorkingSet] = current_rss;
+    myCounters[MemWorkingSetPeak] = peak_rss;
+  }
+  if (IsActive(MemHeapUsage))
+  {
+    struct MiVisitor
+    {
+      static bool visitor(const mi_heap_t* , const mi_heap_area_t* theArea, void*, size_t, void* thePtr)
+      {
+        Standard_Size* aCounter = (Standard_Size*)thePtr;
+        *aCounter += theArea->committed;
+        return true;
+      }
+    };
+
+    myCounters[MemHeapUsage] = 0;
+    const mi_heap_t* aDefHeap = mi_heap_get_default();
+    mi_heap_visit_blocks(aDefHeap, false, &MiVisitor::visitor, &myCounters[MemHeapUsage]);
+  }
+  #else
+  // -sMALLOC=dlmalloc provides mallinfo()
+  if (IsActive(MemHeapUsage)
+   || IsActive(MemWorkingSet)
+   || IsActive(MemWorkingSetPeak))
+  {
     const struct mallinfo aMI = mallinfo();
     if (IsActive(MemHeapUsage))
     {
@@ -158,9 +203,14 @@ void OSD_MemInfo::Update()
       myCounters[MemWorkingSetPeak] = aMI.usmblks;
     }
   }
+  #endif
   if (IsActive(MemVirtual))
   {
-    myCounters[MemVirtual] = (size_t)OSD_MemInfo_getModuleHeapLength();
+    myCounters[MemVirtual] = emscripten_get_heap_size();
+  }
+  if (IsActive(MemVirtualMax))
+  {
+    myCounters[MemVirtualMax] = emscripten_get_heap_max();
   }
   #elif (defined(__linux__) || defined(__linux))
   if (IsActive(MemHeapUsage))
@@ -261,6 +311,42 @@ void OSD_MemInfo::Update()
   }
   #endif
 #endif
+
+#ifndef _WIN32
+  if (IsActive(MemStackSize))
+  {
+    // pthread_attr_init() returns default attributes for creating new threads;
+    // some systems provide non-POSIX extensions to get values of specific thread:
+    // - pthread_getattr_np() on Linux and Android
+    // - pthread_get_stacksize_np() on macOS
+#if defined(__ANDROID__)
+#define HAS_GETATTR_NP
+#elif defined(__GLIBC__) && defined(__GLIBC_PREREQ) && !defined(__EMSCRIPTEN__)
+#if __GLIBC_PREREQ(2,4)
+#define HAS_GETATTR_NP
+#endif
+#endif
+
+#ifdef __APPLE__
+    myCounters[MemStackSize] = pthread_get_stacksize_np(pthread_self());
+#else
+    pthread_attr_t aPAttr;
+#ifdef HAS_GETATTR_NP
+    if (pthread_getattr_np(pthread_self(), &aPAttr) == 0)
+#else
+    if (pthread_attr_init(&aPAttr) == 0)
+#endif
+    {
+      size_t aStackSize = 0;
+      if (pthread_attr_getstacksize(&aPAttr, &aStackSize) == 0)
+      {
+        myCounters[MemStackSize] = aStackSize;
+      }
+      pthread_attr_destroy(&aPAttr);
+    }
+#endif
+  }
+#endif
 }
 
 //=================================================================================================
@@ -298,12 +384,31 @@ TCollection_AsciiString OSD_MemInfo::ToString() const
   if (hasValue(MemVirtual))
   {
     anInfo += TCollection_AsciiString("  Virtual memory:     ")
-              + Standard_Integer(ValueMiB(MemVirtual)) + " MiB\n";
+              + Standard_Integer(ValueMiB(MemVirtual)) + " MiB";
+    if (hasValue(MemVirtualMax))
+    {
+      anInfo += TCollection_AsciiString(" (limit: ")
+                + Standard_Integer(ValueMiB(MemVirtualMax)) + " MiB)";
+    }
+    anInfo += "\n";
   }
   if (hasValue(MemHeapUsage))
   {
-    anInfo += TCollection_AsciiString("  Heap memory:     ")
+    anInfo += TCollection_AsciiString("  Heap memory:        ")
               + Standard_Integer(ValueMiB(MemHeapUsage)) + " MiB\n";
+  }
+  if (hasValue(MemStackSize))
+  {
+    anInfo += TCollection_AsciiString("  Thread stack size:  ");
+    const Standard_Size aValMiB = ValueMiB(MemStackSize);
+    if (aValMiB != 0)
+    {
+      anInfo += TCollection_AsciiString(Standard_Integer(aValMiB)) + " MiB\n";
+    }
+    else
+    {
+      anInfo += TCollection_AsciiString(Standard_Integer(Value(MemStackSize) / 1024)) + " KiB\n";
+    }
   }
   return anInfo;
 }

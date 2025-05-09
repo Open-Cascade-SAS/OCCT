@@ -18,6 +18,10 @@
 #include <OSD_Timer.hxx>
 #include <V3d_View.hxx>
 
+#if defined(HAVE_XLIB)
+  #include <Xw_DisplayConnection.hxx>
+#endif
+
 //=================================================================================================
 
 ViewerTest_ContinuousRedrawer& ViewerTest_ContinuousRedrawer::Instance()
@@ -109,7 +113,13 @@ void ViewerTest_ContinuousRedrawer::Pause()
 
 void ViewerTest_ContinuousRedrawer::doThreadLoop()
 {
-  Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();
+  Handle(Aspect_DisplayConnection) aDisp =
+#if defined(HAVE_XLIB)
+    new Xw_DisplayConnection();
+#else
+    new Aspect_DisplayConnection();
+#endif
+
   OSD_Timer                        aTimer;
   aTimer.Start();
   Standard_Real       aTimeOld   = 0.0;

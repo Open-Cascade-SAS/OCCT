@@ -67,46 +67,66 @@ public:
   //! Use the extraction filters to obtain the results you want for A.
   Standard_EXPORT HLRBRep_HLRToShape(const Handle(HLRBRep_Algo)& A);
 
+  //! Return visible sharp edges (of C0-continuity).
   TopoDS_Shape VCompound();
 
+  //! Return visible sharp edges (of C0-continuity) of specified shape.
   TopoDS_Shape VCompound(const TopoDS_Shape& S);
 
+  //! Return visible smooth edges (G1-continuity between two surfaces).
   TopoDS_Shape Rg1LineVCompound();
 
+  //! Return visible smooth edges (G1-continuity between two surfaces) of specified shape.
   TopoDS_Shape Rg1LineVCompound(const TopoDS_Shape& S);
 
+  //! Return visible sewn edges (of CN-continuity on one surface).
   TopoDS_Shape RgNLineVCompound();
 
+  //! Return visible sewn edges (of CN-continuity on one surface) of specified shape.
   TopoDS_Shape RgNLineVCompound(const TopoDS_Shape& S);
 
+  //! Return visible outline edges ("silhouette").
   TopoDS_Shape OutLineVCompound();
 
   TopoDS_Shape OutLineVCompound3d();
 
+  //! Return visible outline edges ("silhouette") of specified shape.
   TopoDS_Shape OutLineVCompound(const TopoDS_Shape& S);
 
+  //! Return visible isoparameters.
   TopoDS_Shape IsoLineVCompound();
 
+  //! Return visible isoparameters of specified shape.
   TopoDS_Shape IsoLineVCompound(const TopoDS_Shape& S);
 
+  //! Return hidden sharp edges (of C0-continuity).
   TopoDS_Shape HCompound();
 
+  //! Return hidden sharp edges (of C0-continuity) of specified shape.
   TopoDS_Shape HCompound(const TopoDS_Shape& S);
 
+  //! Return hidden smooth edges (G1-continuity between two surfaces).
   TopoDS_Shape Rg1LineHCompound();
 
+  //! Return hidden smooth edges (G1-continuity between two surfaces) of specified shape.
   TopoDS_Shape Rg1LineHCompound(const TopoDS_Shape& S);
 
+  //! Return hidden sewn edges (of CN-continuity on one surface).
   TopoDS_Shape RgNLineHCompound();
 
+  //! Return hidden sewn edges (of CN-continuity on one surface) of specified shape.
   TopoDS_Shape RgNLineHCompound(const TopoDS_Shape& S);
 
+  //! Return hidden outline edges ("silhouette").
   TopoDS_Shape OutLineHCompound();
 
+  //! Return hidden outline edges ("silhouette") of specified shape.
   TopoDS_Shape OutLineHCompound(const TopoDS_Shape& S);
 
+  //! Return hidden isoparameters.
   TopoDS_Shape IsoLineHCompound();
 
+  //! Return hidden isoparameters of specified shape.
   TopoDS_Shape IsoLineHCompound(const TopoDS_Shape& S);
 
   //! Returns compound of resulting edges

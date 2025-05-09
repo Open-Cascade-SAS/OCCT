@@ -3212,7 +3212,7 @@ static int VComputeHLR(Draw_Interpretor&, Standard_Integer theArgNb, const char*
     }
   }
 
-  if (aHlrName.IsEmpty() || aSh.IsNull() || (ViewerTest::GetAISContext().IsNull() && hasViewDirArg))
+  if (aHlrName.IsEmpty() || aSh.IsNull() || (ViewerTest::GetAISContext().IsNull() && !hasViewDirArg))
   {
     Message::SendFail("Syntax error: wrong number of arguments");
     return 1;

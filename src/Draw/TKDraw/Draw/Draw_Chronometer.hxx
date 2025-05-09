@@ -41,6 +41,10 @@ public:
   //! For variable dump.
   Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
 
+  //! For variable dumpjson.
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer theDepth) const Standard_OVERRIDE;
+
   //! For variable whatis command.
   Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 

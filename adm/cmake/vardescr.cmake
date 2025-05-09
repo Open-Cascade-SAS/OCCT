@@ -197,6 +197,8 @@ VTK by means of its dedicated VIS component (VTK Integration Services).")
 
 set (USE_XLIB_DESCR "Indicates whether X11 is used or not")
 
+set (USE_WAYLAND_DESCR "Indicates whether Wayland is used or not")
+
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
 
 # Documentation variables

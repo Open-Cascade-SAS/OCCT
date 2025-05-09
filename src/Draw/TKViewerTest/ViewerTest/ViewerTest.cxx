@@ -6552,6 +6552,85 @@ static Standard_Integer VLoadSelection(Draw_Interpretor& /*theDi*/,
   return 0;
 }
 
+//=================================================================================================
+
+static int VDumpJson(Draw_Interpretor& theDI,
+                     Standard_Integer  theNbArgs,
+                     const char**      theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    theDI << "Error: no active view";
+    return 1;
+  }
+
+  NCollection_List<Handle(AIS_InteractiveObject)> aList;
+  bool isPrettyFormat = true;
+  int  aDumpDepth = -1;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg(theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-depth")
+    {
+      if (anArgIter + 1 >= theNbArgs
+       || !Draw::ParseInteger(theArgVec[anArgIter + 1], aDumpDepth)
+       || aDumpDepth < -1)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+      anArgIter += 1;
+    }
+    else if (anArg == "-pretty" || anArg == "-format")
+    {
+      isPrettyFormat = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
+    else
+    {
+      Handle(AIS_InteractiveObject) anIO;
+      if (!GetMapOfAIS().Find2(theArgVec[anArgIter], anIO))
+      {
+        Message::SendFail() << "Syntax error: '" << theArgVec[anArgIter] << "' is not bound to some object.";
+        return 1;
+      }
+
+      aList.Append(anIO);
+    }
+  }
+
+  if (aList.IsEmpty())
+  {
+    Standard_SStream aStream;
+    aCtx->DumpJson(aStream, aDumpDepth);
+    if (isPrettyFormat)
+    {
+      theDI << Standard_Dump::FormatJson(aStream, 2);
+    }
+    else
+    {
+      theDI << aStream;
+    }
+    return 0;
+  }
+
+  for (const Handle(AIS_InteractiveObject)& aPrs : aList)
+  {
+    Standard_SStream aStream;
+    aPrs->DumpJson(aStream, aDumpDepth);
+    if (isPrettyFormat)
+    {
+      theDI << Standard_Dump::FormatJson(aStream, 2);
+    }
+    else
+    {
+      theDI << aStream;
+    }
+  }
+  return 0;
+}
+
 //==============================================================================
 // function : ViewerTest::Commands
 // purpose  : Add all the viewer command in the Draw_Interpretor
@@ -6713,6 +6792,13 @@ vdump <filename>.png [-width Width -height Height]
       [-buffer shadowmap lightname]
 Dumps content of the active view into image file.
 )" /* [vdump] */);
+
+  addCmd("vdumpjson", VDumpJson, /* [vdumpjson] */ R"(
+vdumpjson [-depth Value]=-1 [-pretty {0|1}]=1 [name1] ... [name n]
+Dumps named objects in 3D Viewer (or entire interactive context) to JSON.
+ -depth  recursion depth for JSON dump;
+ -pretty format JSON for readability.
+)" /* [vdumpjson] */);
 
   addCmd("vsub", VSubInt, /* [vsub] */ R"(
 vsub 0/1 (off/on) [obj] : Subintensity(on/off) of selected objects

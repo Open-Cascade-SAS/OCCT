@@ -102,3 +102,15 @@ void DrawTrSurf_Polygon3D::Whatis(Draw_Interpretor& I) const
 {
   I << "polygon3D";
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Polygon3D::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!myPolygon3D.IsNull())
+  {
+    myPolygon3D->DumpJson(theOStream, theDepth);
+  }
+}

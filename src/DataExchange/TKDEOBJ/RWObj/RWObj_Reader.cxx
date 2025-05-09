@@ -301,15 +301,21 @@ void RWObj_Reader::pushIndices(const char* thePos)
     if (*thePos == '/')
     {
       ++thePos;
-      a3Indices[1] = int(strtol(thePos, &aNext, 10) - 1);
-      thePos       = aNext;
+      if (*thePos != '/')
+      {
+        a3Indices[1] = int(strtol (thePos, &aNext, 10) - 1);
+        thePos = aNext;
+      }
 
       // parse Normal index
       if (*thePos == '/')
       {
         ++thePos;
-        a3Indices[2] = int(strtol(thePos, &aNext, 10) - 1);
-        thePos       = aNext;
+        if (!IsSpace(*thePos))
+        {
+          a3Indices[2] = int(strtol (thePos, &aNext, 10) - 1);
+          thePos = aNext;
+        }
       }
     }
 
