@@ -14,17 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_Array1OfBox.hxx>
 #include <Bnd_BoundSortBox.hxx>
-#include <Bnd_Box.hxx>
+
 #include <gp_Pln.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_NullValue.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
-#include <stdio.h>
-//-- ================================================================================
+#include <unordered_map>
+
+//==================================================================================================
 //--  lbr le 27 fev 97
 //--
 //--
@@ -71,1039 +69,663 @@
 //--
 //--       *) Preserve a table representation of bit of voxels of space BE
 //--          that contains at least one box Bi.
-//--       *) While box bt is texted, it is checked if this box includes in
+//--       *) While box bt is tested, it is checked if this box includes in
 //--          the table of bit at least one occupied voxel.
 //--          If the occupied voxel is touched : no rejection
 //--          Otherwise return
 //--
 //--      **) Another rejection was adopted. It consists in trying to locate in
 //--          the above structures (tables X,Y,Z and  table of Bits) a box Bi which is greater than
-// the
-//--          bounding box BE.
+//--          the bounding box BE.
 //--
-//--          The indices of these boxes are located in table ToTest, and these
+//--          The indices of these boxes are located in table myLargeBoxes, and these
 //            boxes are compared systematically with bt.
 //--
 //--   Note : tables C replace here HArray1OfListOfInteger and other
 //--          structures that are sufficient for data adding but slow for reading.
 //--
 //--          Here the data is added at start (Initialize and SortBoxes) and later,
-//--          it takes much time to parse the tables. The slowly written, byut fastly read
-// structures
-//--          are thus better.
+//--          it takes much time to parse the tables. The slowly written, but quickly read
+//--          structures are thus better.
 //--
-//=======================================================================
-#define VERIFICATION 0
-#define DEBUG 0
-#define DIMAXIS 20
+//==================================================================================================
 
-#if DEBUG
-static unsigned int APPELREJECTION  = 0L;
-static unsigned int REJECTNIV0      = 0L;
-static unsigned int REJECTNIV1      = 0L;
-static unsigned int NBCOMPARE       = 0L;
-static unsigned int NBBOITES        = 0L;
-static unsigned int NBBOITESATESTER = 0L;
-#endif
-//=======================================================================
-static Standard_Integer ComputeSize(const Standard_Integer n)
+//==================================================================================================
+
+// This function determines the resolution of the voxel grid based on the number of boxes.
+// The resolution is a power of 2 as in the original code. Current implementation supports
+// resolutions any value of resolution.
+// @param theBoxesCount The number of boxes to be sorted.
+// @return The resolution of the voxel grid.
+static Standard_Integer getBnd_VoxelGridResolution(const Standard_Integer theBoxesCount)
 {
-  if (n > 40000)
-    return (128);
-  if (n > 10000)
-    return (64);
-  if (n > 1000)
-    return (32);
-  if (n > 100)
-    return (16);
-  return (8);
+  if (theBoxesCount > 40000)
+  {
+    return 128;
+  }
+  if (theBoxesCount > 10000)
+  {
+    return 64;
+  }
+  if (theBoxesCount > 1000)
+  {
+    return 32;
+  }
+  if (theBoxesCount > 100)
+  {
+    return 16;
+  }
+  return 8;
 }
 
-//=======================================================================
-static unsigned int _P2[32] = {
-  1,        2,        4,        8,         16,        32,        64,         128,
-  256,      512,      1024,     2048,      4096,      8192,      16384,      32768,
-  65536,    131072,   262144,   524288,    1048576,   2097152,   4194304,    8388608,
-  16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648U};
+//==================================================================================================
 
-//-- size is power of 2 > 4
-class BSB_T3Bits
+// This class represents a 3D voxel grid used for spatial partitioning of boxes.
+// It provides methods to add boxes, check occupancy, and retrieve slices of the grid.
+// It can be populated with boxes by using the AddBox method, which takes a box index and its
+// voxel coordinates.
+class Bnd_VoxelGrid : public Standard_Transient
 {
 public:
-  Standard_Integer _DECAL;
-  Standard_Integer _DECAL2;
-  Standard_Integer _BASE;
-  Standard_Integer _BASEM1;
-
-  unsigned int     ind;
-  unsigned int     Isize;
-  Standard_Integer ssize;
-  Standard_Real    Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
-
-  unsigned int*      p;
-  Standard_Integer** axisX;
-  Standard_Integer** axisY;
-  Standard_Integer** axisZ;
-
-  Standard_Integer* ToTest;
+  DEFINE_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 public:
-  BSB_T3Bits(int size);
-  ~BSB_T3Bits();
+  using VectorInt = std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>>;
 
-  //-- Part HArray1OfListOfInteger
+private:
+  using VectorBool = std::vector<bool, NCollection_Allocator<bool>>;
+  using VoxelMap =
+    std::unordered_map<Standard_Integer,
+                       VectorInt,
+                       std::hash<Standard_Integer>,
+                       std::equal_to<Standard_Integer>,
+                       NCollection_Allocator<std::pair<const Standard_Integer, VectorInt>>>;
 
-  void AppendAxisX(const Standard_Integer i, const Standard_Integer v);
-  void AppendAxisY(const Standard_Integer i, const Standard_Integer v);
-  void AppendAxisZ(const Standard_Integer i, const Standard_Integer v);
+public:
+  // Constructor that initializes the Bnd_VoxelGrid object with a given size.
+  // @param theSize The size of the grid in each dimension.
+  Bnd_VoxelGrid(const Standard_Integer theResolution);
 
-  void Add(unsigned int t)
+  // Adds a box to the voxel grid.
+  // The box is defined by its minimum and maximum voxel coordinates.
+  // @param theBoxIndex The index of the box to be added.
+  // @param theVoxelBox An array of 6 integers representing the minimum and maximum voxel
+  //                    coordinates of the box in the order: [minX, minY, minZ, maxX, maxY, maxZ].
+  void AddBox(const Standard_Integer                 theBoxIndex,
+              const std::array<Standard_Integer, 6>& theVoxelBox);
+
+  // Returns the list of box indices that occupy the specified voxel index in the X direction.
+  // In other words, the vector will contain the indices of boxes that occupy the voxels with
+  // indices in the range
+  // [[theVoxelIndex, 0, 0], [theVoxelIndex, 0, 1], ..., [theVoxelIndex, resolution, resolution]].
+  // @param theVoxelIndex The index of the voxel in the X direction.
+  // @return A pointer to a vector of integers representing the box indices.
+  //         The vector can be null if no boxes occupy the voxel.
+  const VectorInt* GetSliceX(const Standard_Integer theVoxelIndex) const;
+
+  // Returns the list of box indices that occupy the specified voxel index in the Y direction.
+  // In other words, the vector will contain the indices of boxes that occupy the voxels with
+  // indices in the range
+  // [[0, theVoxelIndex, 0], [1, theVoxelIndex, 0], ..., [resolution, theVoxelIndex, resolution]].
+  // @param theVoxelIndex The index of the voxel in the Y direction.
+  // @return A pointer to a vector of integers representing the box indices.
+  //         The vector can be null if no boxes occupy the voxel.
+  const VectorInt* GetSliceY(const Standard_Integer theVoxelIndex) const;
+
+  // Returns the list of box indices that occupy the specified voxel index in the Z direction.
+  // In other words, the vector will contain the indices of boxes that occupy the voxels with
+  // indices in the range
+  // [[0, 0, theVoxelIndex], [1, 0, theVoxelIndex], ..., [resolution, resolution, theVoxelIndex]].
+  // @param theVoxelIndex The index of the voxel in the Z direction.
+  // @return A pointer to a vector of integers representing the box indices.
+  //         The vector can be null if no boxes occupy the voxel.
+  const VectorInt* GetSliceZ(const Standard_Integer theVoxelIndex) const;
+
+  // Returns true if the specified voxel box is occupied by any box previously added to the grid
+  // via the AddBox method.
+  // @param theVoxelBox An array of 6 integers representing the minimum and maximum voxel
+  //                    coordinates of the box in the order: [minX, minY, minZ, maxX, maxY, maxZ].
+  // @return True if the voxel box is occupied, false otherwise.
+  bool IsOccupied(const std::array<Standard_Integer, 6>& theVoxelBox) const;
+
+private:
+  // Appends a slice of the voxel grid in the X direction.
+  // This method is used to store the indices of boxes that occupy a specific voxel index in the X
+  // direction.
+  // @param theVoxelIndexMin The minimum voxel index in the X direction.
+  // @param theVoxelIndexMax The maximum voxel index in the X direction.
+  // @param theBoxIndex The index of the box to be added.
+  void AppendSliceX(const Standard_Integer theVoxelIndexMin,
+                    const Standard_Integer theVoxelIndexMax,
+                    const Standard_Integer theBoxIndex);
+
+  // Appends a slice of the voxel grid in the Y direction.
+  // This method is used to store the indices of boxes that occupy a specific voxel index in the Y
+  // direction.
+  // @param theVoxelIndexMin The minimum voxel index in the Y direction.
+  // @param theVoxelIndexMax The maximum voxel index in the Y direction.
+  // @param theBoxIndex The index of the box to be added.
+  void AppendSliceY(const Standard_Integer theVoxelIndexMin,
+                    const Standard_Integer theVoxelIndexMax,
+                    const Standard_Integer theBoxIndex);
+
+  // Appends a slice of the voxel grid in the Z direction.
+  // This method is used to store the indices of boxes that occupy a specific voxel index in the Z
+  // direction.
+  // @param theVoxelIndexMin The minimum voxel index in the Z direction.
+  // @param theVoxelIndexMax The maximum voxel index in the Z direction.
+  // @param theBoxIndex The index of the box to be added.
+  void AppendSliceZ(const Standard_Integer theVoxelIndexMin,
+                    const Standard_Integer theVoxelIndexMax,
+                    const Standard_Integer theBoxIndex);
+
+  // Marks the voxel at the specified coordinates as occupied.
+  // @param theX The x-coordinate of the voxel to mark.
+  // @param theY The y-coordinate of the voxel to mark.
+  // @param theZ The z-coordinate of the voxel to mark.
+  inline void SetOccupied(const Standard_Integer theX,
+                          const Standard_Integer theY,
+                          const Standard_Integer theZ)
   {
-    int o = t & 31;
-    int k = t >> 5;
-    p[k] |= _P2[o];
+    myVoxelBits[toIndex(theX, theY, theZ)] = true;
   }
 
-  int Val(unsigned int t)
+  // Returns true if the voxel at the specified coordinates is marked as occupied.
+  // @param theX The x-coordinate of the voxel to check.
+  // @param theY The y-coordinate of the voxel to check.
+  // @param theZ The z-coordinate of the voxel to check.
+  // @return True if the voxel is occupied, false otherwise.
+  inline bool IsOccupied(const Standard_Integer theX,
+                         const Standard_Integer theY,
+                         const Standard_Integer theZ) const
   {
-    int o = t & 31;
-    int k = t >> 5;
-    return (p[k] & _P2[o]);
+    return myVoxelBits[toIndex(theX, theY, theZ)];
   }
 
-  void Raz(unsigned int t)
+  // Converts the 3D grid coordinates to a 1D index.
+  // The index is calculated based on the formula:
+  // index = x * dimensionSize^2 + y * dimensionSize + z
+  // This formula maps the 3D coordinates to a unique index in the 1D array.
+  // @param theX The x-coordinate in the grid.
+  // @param theY The y-coordinate in the grid.
+  // @param theZ The z-coordinate in the grid.
+  // @return The calculated index in the 1D array.
+  inline Standard_Integer toIndex(const Standard_Integer theX,
+                                  const Standard_Integer theY,
+                                  const Standard_Integer theZ) const
   {
-    int o = t & 31;
-    int k = t >> 5;
-    p[k] &= ~(_P2[o]);
-  }
-
-  Standard_Integer NbAxisX(const Standard_Integer i) { return (axisX[0][i]); }
-
-  Standard_Integer NbAxisY(const Standard_Integer i) { return (axisY[0][i]); }
-
-  Standard_Integer NbAxisZ(const Standard_Integer i) { return (axisZ[0][i]); }
-
-  inline Standard_Integer GrilleInteger(Standard_Integer ix,
-                                        Standard_Integer iy,
-                                        Standard_Integer iz)
-  {
-    Standard_Integer tz = iz << _DECAL2;
-    Standard_Integer ty = iy << _DECAL;
-    Standard_Integer t  = ix;
-    t |= ty;
-    t |= tz;
-    return (t);
-  }
-
-  inline void IntegerGrille(Standard_Integer  t,
-                            Standard_Integer& ix,
-                            Standard_Integer& iy,
-                            Standard_Integer& iz)
-  {
-    ix = t & _BASEM1;
-    t >>= _DECAL;
-    iy = t & _BASEM1;
-    t >>= _DECAL;
-    iz = t;
+    return theX * myResolution * myResolution + theY * myResolution + theZ;
   }
 
 private:
-  BSB_T3Bits(const BSB_T3Bits&);
-  BSB_T3Bits& operator=(const BSB_T3Bits&);
+  const Standard_Integer myResolution; //< Number of voxels in one dimension of the grid.
+  VectorBool myVoxelBits; //< Array of bits representing the occupancy of voxels in the grid.
+  VoxelMap   mySlicesX;   //< Map of voxel indices to lists of box indices for the X-axis.
+  VoxelMap   mySlicesY;   //< Map of voxel indices to lists of box indices for the Y-axis.
+  VoxelMap   mySlicesZ;   //< Map of voxel indices to lists of box indices for the Z-axis.
 };
 
-//=======================================================================
-BSB_T3Bits::~BSB_T3Bits()
+IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
+
+//==================================================================================================
+
+Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution)
+    : myResolution(theResolution),
+      myVoxelBits(theResolution * theResolution * theResolution),
+      mySlicesX(),
+      mySlicesY(),
+      mySlicesZ()
 {
-  if (p)
+}
+
+//==================================================================================================
+
+void Bnd_VoxelGrid::AddBox(const Standard_Integer                 theBoxIndex,
+                           const std::array<Standard_Integer, 6>& theVoxelBox)
+{
+  const Standard_Integer aMinVoxelX = theVoxelBox[0];
+  const Standard_Integer aMinVoxelY = theVoxelBox[1];
+  const Standard_Integer aMinVoxelZ = theVoxelBox[2];
+  const Standard_Integer aMaxVoxelX = theVoxelBox[3];
+  const Standard_Integer aMaxVoxelY = theVoxelBox[4];
+  const Standard_Integer aMaxVoxelZ = theVoxelBox[5];
+
+  AppendSliceX(aMinVoxelX, aMaxVoxelX, theBoxIndex);
+  AppendSliceY(aMinVoxelY, aMaxVoxelY, theBoxIndex);
+  AppendSliceZ(aMinVoxelZ, aMaxVoxelZ, theBoxIndex);
+  // Fill table with bits.
+  for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
   {
-    delete[] p;
-    p = 0;
-  }
-#if DEBUG
-  printf("\n BASE:%d\n", _BASE);
-#endif
-  for (Standard_Integer i = 0; i <= ssize; i++)
-  {
-    if (axisX[i])
+    for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
     {
-      delete[] axisX[i];
-      axisX[i] = 0;
+      for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
+      {
+        SetOccupied(aVoxelX, aVoxelY, aVoxelZ);
+      }
     }
-    if (axisY[i])
-    {
-      delete[] axisY[i];
-      axisY[i] = 0;
-    }
-    if (axisZ[i])
-    {
-      delete[] axisZ[i];
-      axisZ[i] = 0;
-    }
-  }
-  free(axisX);
-  axisX = 0;
-  free(axisY);
-  axisY = 0;
-  free(axisZ);
-  axisZ = 0;
-  if (ToTest)
-  {
-    delete[] ToTest;
-    ToTest = 0;
   }
 }
 
-//=======================================================================
-BSB_T3Bits::BSB_T3Bits(int size)
-    : ind(0),
-      Xmin(0),
-      Xmax(0),
-      Ymin(0),
-      Ymax(0),
-      Zmin(0),
-      Zmax(0)
+//==================================================================================================
+
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceX(const Standard_Integer theVoxelIndex) const
 {
-  switch (size)
-  {
-    case 128: {
-      _DECAL  = 7;
-      _DECAL2 = 14;
-      _BASE   = 128;
-      _BASEM1 = 127;
-      break;
-    }
-    case 64: {
-      _DECAL  = 6;
-      _DECAL2 = 12;
-      _BASE   = 64;
-      _BASEM1 = 63;
-      break;
-    }
-    case 32: {
-      _DECAL  = 5;
-      _DECAL2 = 10;
-      _BASE   = 32;
-      _BASEM1 = 31;
-      break;
-    }
-    case 16: {
-      _DECAL  = 4;
-      _DECAL2 = 8;
-      _BASE   = 16;
-      _BASEM1 = 15;
-      break;
-    }
-    default: {
-      _DECAL  = 3;
-      _DECAL2 = 6;
-      _BASE   = 8;
-      _BASEM1 = 7;
-      break;
-    }
-  }
-  Standard_Integer i;
-  unsigned int     nb = (size * size * size) >> 5;
-  Isize               = nb;
-  ssize               = size;
-  p                   = new unsigned int[nb];
-  do
-  {
-    p[--nb] = 0;
-  } while (nb);
-
-  axisX = (Standard_Integer**)malloc((size + 1) * sizeof(Standard_Integer*));
-  axisY = (Standard_Integer**)malloc((size + 1) * sizeof(Standard_Integer*));
-  axisZ = (Standard_Integer**)malloc((size + 1) * sizeof(Standard_Integer*));
-
-  axisX[0] = new Standard_Integer[_BASE + 1];
-  axisY[0] = new Standard_Integer[_BASE + 1];
-  axisZ[0] = new Standard_Integer[_BASE + 1];
-
-  for (i = 0; i < (_BASE + 1); i++)
-  {
-    axisX[0][i] = 0;
-    axisY[0][i] = 0;
-    axisZ[0][i] = 0;
-  }
-
-  for (i = 1; i <= size; i++)
-  {
-    axisX[i]    = new Standard_Integer[DIMAXIS];
-    axisY[i]    = new Standard_Integer[DIMAXIS];
-    axisZ[i]    = new Standard_Integer[DIMAXIS];
-    axisX[i][0] = DIMAXIS;
-    axisY[i][0] = DIMAXIS;
-    axisZ[i][0] = DIMAXIS;
-    axisX[i][1] = axisY[i][1] = axisZ[i][1] = -1;
-  }
-  ToTest = 0;
+  auto it = mySlicesX.find(theVoxelIndex);
+  return it != mySlicesX.end() ? &it->second : nullptr;
 }
 
-//=======================================================================
-void BSB_T3Bits::AppendAxisZ(const Standard_Integer i, const Standard_Integer v)
+//==================================================================================================
+
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceY(const Standard_Integer theVoxelIndex) const
 {
-  Standard_Integer n = axisZ[0][i];
-  n++;
-  if (n < axisZ[i][0])
+  auto it = mySlicesY.find(theVoxelIndex);
+  return it != mySlicesY.end() ? &it->second : nullptr;
+}
+
+//==================================================================================================
+
+const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceZ(const Standard_Integer theVoxelIndex) const
+{
+  auto it = mySlicesZ.find(theVoxelIndex);
+  return it != mySlicesZ.end() ? &it->second : nullptr;
+}
+
+//==================================================================================================
+
+bool Bnd_VoxelGrid::IsOccupied(const std::array<Standard_Integer, 6>& theVoxelBox) const
+{
+  const Standard_Integer aMinVoxelX = theVoxelBox[0];
+  const Standard_Integer aMinVoxelY = theVoxelBox[1];
+  const Standard_Integer aMinVoxelZ = theVoxelBox[2];
+  const Standard_Integer aMaxVoxelX = theVoxelBox[3];
+  const Standard_Integer aMaxVoxelY = theVoxelBox[4];
+  const Standard_Integer aMaxVoxelZ = theVoxelBox[5];
+
+  for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
   {
-    axisZ[i][n] = v;
-  }
-  else
-  {
-    Standard_Integer  s  = axisZ[i][0];
-    Standard_Integer* nt = new Standard_Integer[s + s];
-    nt[0]                = s + s;
-    for (Standard_Integer j = 1; j < s; j++)
+    for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
     {
-      nt[j] = axisZ[i][j];
+      for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
+      {
+        if (IsOccupied(aVoxelX, aVoxelY, aVoxelZ))
+        {
+          return true; // Found an occupied voxel.
+        }
+      }
     }
-    nt[n] = v;
-    delete[] axisZ[i];
-    axisZ[i] = nt;
   }
-  axisZ[0][i] = n;
+  return false; // No occupied voxels found.
 }
 
-//=======================================================================
-void BSB_T3Bits::AppendAxisY(const Standard_Integer i, const Standard_Integer v)
+//==================================================================================================
+
+void Bnd_VoxelGrid::AppendSliceX(const Standard_Integer theVoxelIndexMin,
+                                 const Standard_Integer theVoxelIndexMax,
+                                 const Standard_Integer theBoxIndex)
 {
-  Standard_Integer n = axisY[0][i];
-  n++;
-  if (n < axisY[i][0])
+  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
-    axisY[i][n] = v;
+    mySlicesX[i].push_back(theBoxIndex);
   }
-  else
-  {
-    Standard_Integer  s  = axisY[i][0];
-    Standard_Integer* nt = new Standard_Integer[s + s];
-    nt[0]                = s + s;
-    for (Standard_Integer j = 1; j < s; j++)
-    {
-      nt[j] = axisY[i][j];
-    }
-    nt[n] = v;
-    delete[] axisY[i];
-    axisY[i] = nt;
-  }
-  axisY[0][i] = n;
 }
 
-//=======================================================================
-void BSB_T3Bits::AppendAxisX(const Standard_Integer i, const Standard_Integer v)
+//==================================================================================================
+
+void Bnd_VoxelGrid::AppendSliceY(const Standard_Integer theVoxelIndexMin,
+                                 const Standard_Integer theVoxelIndexMax,
+                                 const Standard_Integer theBoxIndex)
 {
-  Standard_Integer n = axisX[0][i];
-
-  n++;
-  if (n < axisX[i][0])
+  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
-    axisX[i][n] = v;
+    mySlicesY[i].push_back(theBoxIndex);
   }
-  else
-  {
-    //-- it is required to extend
-    Standard_Integer  s  = axisX[i][0];
-    Standard_Integer* nt = new Standard_Integer[s + s];
-    nt[0]                = s + s;
-    for (Standard_Integer j = 1; j < s; j++)
-    {
-      nt[j] = axisX[i][j];
-    }
-    nt[n] = v;
-    delete[] axisX[i];
-    axisX[i] = nt;
-  }
-  axisX[0][i] = n;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+void Bnd_VoxelGrid::AppendSliceZ(const Standard_Integer theVoxelIndexMin,
+                                 const Standard_Integer theVoxelIndexMax,
+                                 const Standard_Integer theBoxIndex)
+{
+  for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
+  {
+    mySlicesZ[i].push_back(theBoxIndex);
+  }
+}
+
+//==================================================================================================
 
 Bnd_BoundSortBox::Bnd_BoundSortBox()
-    : myBox(),
-      myBndComponents(nullptr),
-      Xmin(0.),
-      Ymin(0.),
-      Zmin(0.),
-      deltaX(0.),
-      deltaY(0.),
-      deltaZ(0.),
-      discrX(0),
-      discrY(0),
-      discrZ(0),
-      theFound(0),
-      Crible(),
-      lastResult(),
-      TabBits(0)
+    : myEnclosingBox(),
+      myBoxes(nullptr),
+      myCoeffX(0.),
+      myCoeffY(0.),
+      myCoeffZ(0.),
+      myResolution(0),
+      myLastResult(),
+      myLargeBoxes(),
+      myVoxelGrid(nullptr)
 {
-#if DEBUG
-  NBCOMPARE       = 0L;
-  NBBOITES        = 0L;
-  NBBOITESATESTER = 0L;
-  APPELREJECTION  = 0L;
-  REJECTNIV0      = 0L;
-  REJECTNIV1      = 0L;
-#endif
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Bnd_Box&                  CompleteBox,
-                                  const Handle(Bnd_HArray1OfBox)& SetOfBox)
+void Bnd_BoundSortBox::Initialize(const Handle(Bnd_HArray1OfBox)& theSetOfBoxes)
 {
-  myBox                        = CompleteBox;
-  myBndComponents              = SetOfBox;
-  const Bnd_Array1OfBox& taBox = myBndComponents->Array1();
-  discrX = discrY = discrZ = ComputeSize(taBox.Upper() - taBox.Lower());
-  Standard_Real Xmax, Ymax, Zmax;
-  if (CompleteBox.IsVoid())
+  myBoxes = theSetOfBoxes;
+
+  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
+  {
+    const Bnd_Box& aBox = myBoxes->Value(aBoxIndex);
+    if (!aBox.IsVoid())
+    {
+      myEnclosingBox.Add(aBox);
+    }
+  }
+
+  myResolution = getBnd_VoxelGridResolution(myBoxes->Size());
+
+  if (myEnclosingBox.IsVoid())
+  {
     return;
-  CompleteBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  deltaX = (Xmax - Xmin == 0. ? 0. : discrX / (Xmax - Xmin));
-  deltaY = (Ymax - Ymin == 0. ? 0. : discrY / (Ymax - Ymin));
-  deltaZ = (Zmax - Zmin == 0. ? 0. : discrZ / (Zmax - Zmin));
-  SortBoxes();
+  }
+
+  calculateCoefficients();
+  resetVoxelGrid();
+
+  sortBoxes();
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Handle(Bnd_HArray1OfBox)& SetOfBox)
+void Bnd_BoundSortBox::Initialize(const Bnd_Box&                  theEnclosingBox,
+                                  const Handle(Bnd_HArray1OfBox)& theSetOfBoxes)
 {
-  myBndComponents              = SetOfBox;
-  const Bnd_Array1OfBox& taBox = myBndComponents->Array1();
-  Standard_Integer       i0, i1;
-  i0     = taBox.Lower();
-  i1     = taBox.Upper();
-  discrX = discrY = discrZ = ComputeSize(i1 - i0);
-  Standard_Integer labox;
-  for (labox = i0; labox <= i1; labox++)
+  myBoxes        = theSetOfBoxes;
+  myEnclosingBox = theEnclosingBox;
+  myResolution   = getBnd_VoxelGridResolution(myBoxes->Size());
+
+  if (myEnclosingBox.IsVoid())
   {
-    if (!taBox(labox).IsVoid())
-    {
-      myBox.Add(taBox(labox));
-    }
-  }
-  Standard_Real Xmax, Ymax, Zmax;
-  if (myBox.IsVoid())
     return;
-  myBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  deltaX = (Xmax - Xmin == 0. ? 0. : discrX / (Xmax - Xmin));
-  deltaY = (Ymax - Ymin == 0. ? 0. : discrY / (Ymax - Ymin));
-  deltaZ = (Zmax - Zmin == 0. ? 0. : discrZ / (Zmax - Zmin));
-  SortBoxes();
+  }
+
+  calculateCoefficients();
+  resetVoxelGrid();
+
+  sortBoxes();
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Bnd_BoundSortBox::SortBoxes()
+void Bnd_BoundSortBox::Initialize(const Bnd_Box& theEnclosingBox, const Standard_Integer theNbBoxes)
 {
-  Standard_Integer       labox;
-  Standard_Integer       lacaseX, firstcaseX, lastcaseX;
-  Standard_Integer       lacaseY, firstcaseY, lastcaseY;
-  Standard_Integer       lacaseZ, firstcaseZ, lastcaseZ;
-  Standard_Real          xmin, ymin, zmin, xmax, ymax, zmax;
-  const Bnd_Array1OfBox& taBox = myBndComponents->Array1();
-  Standard_Integer       i0    = taBox.Lower();
-  Standard_Integer       i1    = taBox.Upper();
-  BSB_T3Bits*            Map   = 0;
-  if (TabBits)
-  {
-    BSB_T3Bits* _Map = (BSB_T3Bits*)TabBits;
-    delete _Map;
-  }
-  Map     = new BSB_T3Bits(discrX);
-  TabBits = (void*)Map;
-  if (Map->ToTest == 0)
-  {
-    Standard_Integer s = i1 - i0;
-    if (s < 2)
-      s = 2;
-    Map->ToTest = new Standard_Integer[s];
-    for (Standard_Integer i = 0; i < s; i++)
-    {
-      Map->ToTest[i] = i0 - 1;
-    }
-  }
-  Standard_Real _Xmax, _Xmin, _Ymax, _Ymin, _Zmin, _Zmax;
-  myBox.Get(_Xmin, _Ymin, _Zmin, _Xmax, _Ymax, _Zmax);
-  Map->Xmax = _Xmax;
-  Map->Ymax = _Ymax;
-  Map->Zmax = _Zmax;
-  Map->Xmin = _Xmin;
-  Map->Ymin = _Ymin;
-  Map->Zmin = _Zmin;
-  for (labox = i0; labox <= i1; labox++)
-  {
-    if (!taBox(labox).IsVoid())
-    {
-      taBox(labox).Get(xmin, ymin, zmin, xmax, ymax, zmax);
-      if (xmin > Xmin)
-        firstcaseX = (Standard_Integer)((xmin - Xmin) * deltaX) - 1;
-      else
-        firstcaseX = 1;
-      if (ymin > Ymin)
-        firstcaseY = (Standard_Integer)((ymin - Ymin) * deltaY) - 1;
-      else
-        firstcaseY = 1;
-      if (zmin > Zmin)
-        firstcaseZ = (Standard_Integer)((zmin - Zmin) * deltaZ) - 1;
-      else
-        firstcaseZ = 1;
-      if (xmax < _Xmax)
-        lastcaseX = (Standard_Integer)((xmax - Xmin) * deltaX) + 1;
-      else
-        lastcaseX = discrX;
-      if (ymax < _Ymax)
-        lastcaseY = (Standard_Integer)((ymax - Ymin) * deltaY) + 1;
-      else
-        lastcaseY = discrY;
-      if (zmax < _Zmax)
-        lastcaseZ = (Standard_Integer)((zmax - Zmin) * deltaZ) + 1;
-      else
-        lastcaseZ = discrZ;
-      if (firstcaseX < 1)
-        firstcaseX = 1;
-      else if (firstcaseX > discrX)
-        firstcaseX = discrX;
-      if (firstcaseY < 1)
-        firstcaseY = 1;
-      else if (firstcaseY > discrY)
-        firstcaseY = discrY;
-      if (firstcaseZ < 1)
-        firstcaseZ = 1;
-      else if (firstcaseZ > discrZ)
-        firstcaseZ = discrZ;
-
-      if (lastcaseX < 1)
-        lastcaseX = 1;
-      else if (lastcaseX > discrX)
-        lastcaseX = discrX;
-      if (lastcaseY < 1)
-        lastcaseY = 1;
-      else if (lastcaseY > discrY)
-        lastcaseY = discrY;
-      if (lastcaseZ < 1)
-        lastcaseZ = 1;
-      else if (lastcaseZ > discrZ)
-        lastcaseZ = discrZ;
-
-      Standard_Integer n = (lastcaseX - firstcaseX);
-      if (n > (lastcaseY - firstcaseY))
-        n = lastcaseY - firstcaseY;
-      if (n > (lastcaseZ - firstcaseZ))
-        n = lastcaseZ - firstcaseZ;
-#if DEBUG
-      NBBOITES++;
-#endif
-      n <<= 2;
-      if (n > discrX)
-      {
-#if DEBUG
-        NBBOITESATESTER++;
-#endif
-        for (Standard_Integer i = 0; i < (i1 - i0); i++)
-        {
-          if (Map->ToTest[i] < i0)
-          {
-            Map->ToTest[i] = labox;
-            break;
-          }
-        }
-      }
-      else
-      {
-        for (lacaseX = firstcaseX; lacaseX <= lastcaseX; lacaseX++)
-        {
-          Map->AppendAxisX(lacaseX, labox);
-        }
-        for (lacaseY = firstcaseY; lacaseY <= lastcaseY; lacaseY++)
-        {
-          Map->AppendAxisY(lacaseY, labox);
-        }
-        for (lacaseZ = firstcaseZ; lacaseZ <= lastcaseZ; lacaseZ++)
-        {
-          Map->AppendAxisZ(lacaseZ, labox);
-        }
-        //------------------------------------------------------------
-        //-- fill table with bits
-        //--
-        if (Map)
-        {
-          for (lacaseX = firstcaseX; lacaseX <= lastcaseX; lacaseX++)
-          {
-            for (lacaseY = firstcaseY; lacaseY <= lastcaseY; lacaseY++)
-            {
-              for (lacaseZ = firstcaseZ; lacaseZ <= lastcaseZ; lacaseZ++)
-              {
-                unsigned int t = Map->GrilleInteger(lacaseX - 1, lacaseY - 1, lacaseZ - 1);
-                Map->Add(t);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-//=================================================================================================
-
-void Bnd_BoundSortBox::Initialize(const Bnd_Box& CompleteBox, const Standard_Integer nbComponents)
-{
-  Standard_NullValue_Raise_if(nbComponents <= 0, "BoundSortBox nul!");
-  myBox           = CompleteBox;
-  myBndComponents = new Bnd_HArray1OfBox(1, nbComponents);
-
+  Standard_NullValue_Raise_if(theNbBoxes <= 0, "Unexpected: theNbBoxes <= 0");
+  myBoxes = new Bnd_HArray1OfBox(1, theNbBoxes);
   //***>>> JCD - 04.08.2000 - Array initialization is missing...
   Bnd_Box emptyBox;
-  myBndComponents->Init(emptyBox);
+  myBoxes->Init(emptyBox);
   //***<<< JCD - End
+  myEnclosingBox = theEnclosingBox;
+  myResolution   = getBnd_VoxelGridResolution(theNbBoxes);
 
-  discrX = discrY = discrZ = ComputeSize(nbComponents);
-  Standard_Real Xmax, Ymax, Zmax;
-
-  if (CompleteBox.IsVoid())
+  if (myEnclosingBox.IsVoid())
+  {
     return;
-  CompleteBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  myBox.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-  deltaX = (Xmax - Xmin == 0. ? 0. : discrX / (Xmax - Xmin));
-  deltaY = (Ymax - Ymin == 0. ? 0. : discrY / (Ymax - Ymin));
-  deltaZ = (Zmax - Zmin == 0. ? 0. : discrZ / (Zmax - Zmin));
-  if (TabBits)
-  {
-    BSB_T3Bits* _Map = (BSB_T3Bits*)TabBits;
-    delete _Map;
-    TabBits = 0;
   }
-  BSB_T3Bits* Map = 0;
-  Map             = new BSB_T3Bits(discrX);
-  TabBits         = (void*)Map;
+
+  calculateCoefficients();
+  resetVoxelGrid();
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Bnd_BoundSortBox::Add(const Bnd_Box& theBox, const Standard_Integer boxIndex)
+void Bnd_BoundSortBox::Add(const Bnd_Box& theBox, const Standard_Integer theIndex)
 {
-  Standard_MultiplyDefined_Raise_if(!(myBndComponents->Value(boxIndex).IsVoid()),
+  Standard_MultiplyDefined_Raise_if(!(myBoxes->Value(theIndex).IsVoid()),
                                     " This box is already defined !");
-  if (!theBox.IsVoid())
+  if (theBox.IsVoid())
   {
-    Standard_Integer i0 = myBndComponents->Lower();
-    Standard_Integer i1 = myBndComponents->Upper();
-    Standard_Integer theGapX, firstGapX, lastGapX;
-    Standard_Integer theGapY, firstGapY, lastGapY;
-    Standard_Integer theGapZ, firstGapZ, lastGapZ;
-    Standard_Real    xmin, ymin, zmin, xmax, ymax, zmax;
-    myBndComponents->SetValue(boxIndex, theBox);
-    theBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-    BSB_T3Bits* Map = (BSB_T3Bits*)TabBits;
-    if (Map->ToTest == 0)
-    {
-      Standard_Integer s = i1 - i0;
-      if (s < 2)
-        s = 2;
-      Map->ToTest = new Standard_Integer[s];
-      for (Standard_Integer i = 0; i < s; i++)
-      {
-        Map->ToTest[i] = i0 - 1;
-      }
-    }
-    Standard_Real _Xmax, _Ymax, _Zmax;
-    _Xmax = Map->Xmax;
-    _Ymax = Map->Ymax;
-    _Zmax = Map->Zmax;
-    if (xmin > Xmin)
-      firstGapX = (Standard_Integer)((xmin - Xmin) * deltaX) - 1;
-    else
-      firstGapX = 1;
-    if (ymin > Ymin)
-      firstGapY = (Standard_Integer)((ymin - Ymin) * deltaY) - 1;
-    else
-      firstGapY = 1;
-    if (zmin > Zmin)
-      firstGapZ = (Standard_Integer)((zmin - Zmin) * deltaZ) - 1;
-    else
-      firstGapZ = 1;
-    if (xmax < _Xmax)
-      lastGapX = (Standard_Integer)((xmax - Xmin) * deltaX) + 1;
-    else
-      lastGapX = discrX;
-    if (ymax < _Ymax)
-      lastGapY = (Standard_Integer)((ymax - Ymin) * deltaY) + 1;
-    else
-      lastGapY = discrY;
-    if (zmax < _Zmax)
-      lastGapZ = (Standard_Integer)((zmax - Zmin) * deltaZ) + 1;
-    else
-      lastGapZ = discrZ;
-    if (firstGapX < 1)
-      firstGapX = 1;
-    else if (firstGapX > discrX)
-      firstGapX = discrX;
-    if (firstGapY < 1)
-      firstGapY = 1;
-    else if (firstGapY > discrY)
-      firstGapY = discrY;
-    if (firstGapZ < 1)
-      firstGapZ = 1;
-    else if (firstGapZ > discrZ)
-      firstGapZ = discrZ;
-
-    if (lastGapX < 1)
-      lastGapX = 1;
-    else if (lastGapX > discrX)
-      lastGapX = discrX;
-    if (lastGapY < 1)
-      lastGapY = 1;
-    else if (lastGapY > discrY)
-      lastGapY = discrY;
-    if (lastGapZ < 1)
-      lastGapZ = 1;
-    else if (lastGapZ > discrZ)
-      lastGapZ = discrZ;
-    Standard_Integer n = (lastGapX - firstGapX);
-    if (n > (lastGapY - firstGapY))
-      n = lastGapY - firstGapY;
-    if (n > (lastGapZ - firstGapZ))
-      n = lastGapZ - firstGapZ;
-    n <<= 2;
-#if DEBUG
-    NBBOITES++;
-#endif
-    if (n > discrX)
-    {
-#if DEBUG
-      NBBOITESATESTER++;
-#endif
-      for (Standard_Integer i = 0; i < (i1 - i0); i++)
-      {
-        if (Map->ToTest[i] < i0)
-        {
-          Map->ToTest[i] = boxIndex;
-          break;
-        }
-      }
-    }
-    for (theGapY = firstGapY; theGapY <= lastGapY; theGapY++)
-    {
-      Map->AppendAxisY(theGapY, boxIndex);
-    }
-    for (theGapX = firstGapX; theGapX <= lastGapX; theGapX++)
-    {
-      Map->AppendAxisX(theGapX, boxIndex);
-    }
-    for (theGapZ = firstGapZ; theGapZ <= lastGapZ; theGapZ++)
-    {
-      Map->AppendAxisZ(theGapZ, boxIndex);
-    }
-    //------------------------------------------------------------
-    //-- fill table with bits
-    //--
-    if (TabBits)
-    {
-      Map = (BSB_T3Bits*)TabBits;
-      for (theGapX = firstGapX; theGapX <= lastGapX; theGapX++)
-      {
-        for (theGapY = firstGapY; theGapY <= lastGapY; theGapY++)
-        {
-          for (theGapZ = firstGapZ; theGapZ <= lastGapZ; theGapZ++)
-          {
-            unsigned int t = Map->GrilleInteger(theGapX - 1, theGapY - 1, theGapZ - 1);
-            Map->Add(t);
-          }
-        }
-      }
-    }
+    return;
   }
+
+  myBoxes->SetValue(theIndex, theBox);
+
+  addBox(theBox, theIndex);
 }
 
-//=======================================================================
-#if VERIFICATION
-static void VerifCompare(const TColStd_ListOfInteger& lastResult,
-                         const Bnd_Box&               theBox,
-                         const Bnd_Array1OfBox&       taBox)
-{
-  static int       Verif = 1;
-  Standard_Integer i;
-
-  if (Verif)
-  {
-    Standard_Integer i0, i1;
-    i0        = taBox.Lower();
-    i1        = taBox.Upper();
-    char* qwe = new char[i1 + 1]; //-- $$$$$$$ ATTENTION IF I0 < 0
-    for (i = i0; i <= i1; i++)
-      qwe[i] = '\0';
-    TColStd_ListIteratorOfListOfInteger theList(lastResult);
-    for (; theList.More(); theList.Next())
-    {
-      qwe[theList.Value()] = (char)1;
-    }
-    Standard_Integer labox;
-    for (labox = i0; labox <= i1; labox++)
-    {
-      if (!taBox(labox).IsOut(theBox))
-      {
-        qwe[labox] += 2;
-      }
-    }
-    for (i = i0; i <= i1; i++)
-    {
-      if (qwe[i] == 2)
-      {
-        printf("\nPb with box: %d ", i);
-      }
-      else if (qwe[i] == 1)
-      {
-        printf("\n false rejection by %d \n", i);
-      }
-    }
-    delete[] qwe;
-  }
-}
-#endif
-//=================================================================================================
+//==================================================================================================
 
 const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
 
 {
-  Standard_Integer lacase;
-#if DEBUG
-  NBCOMPARE++;
-#endif
-  lastResult.Clear();
-  if (theBox.IsVoid())
-    return lastResult;
-  if (theBox.IsOut(myBox))
-  {
-#if DEBUG
-    REJECTNIV0++;
-#endif
-    return lastResult;
-  }
-  const Bnd_Array1OfBox& taBox = myBndComponents->Array1();
-  //-- Rejection with the table of bits
-  Standard_Boolean touch = Standard_True;
-  touch                  = Standard_False;
-  Standard_Real _Xmax, _Ymax, _Zmax;
-  BSB_T3Bits*   Map = (BSB_T3Bits*)TabBits;
-  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-  _Xmax = Map->Xmax;
-  _Ymax = Map->Ymax;
-  _Zmax = Map->Zmax;
-  theBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-  Standard_Integer i0, i1, j0, j1, k0, k1;
-  if (xmin > Xmin)
-    i0 = (Standard_Integer)((xmin - Xmin) * deltaX) - 1;
-  else
-    i0 = 1;
-  if (ymin > Ymin)
-    j0 = (Standard_Integer)((ymin - Ymin) * deltaY) - 1;
-  else
-    j0 = 1;
-  if (zmin > Zmin)
-    k0 = (Standard_Integer)((zmin - Zmin) * deltaZ) - 1;
-  else
-    k0 = 1;
-  if (xmax < _Xmax)
-    i1 = (Standard_Integer)((xmax - Xmin) * deltaX) + 1;
-  else
-    i1 = discrX;
-  if (ymax < _Ymax)
-    j1 = (Standard_Integer)((ymax - Ymin) * deltaY) + 1;
-  else
-    j1 = discrY;
-  if (zmax < _Zmax)
-    k1 = (Standard_Integer)((zmax - Zmin) * deltaZ) + 1;
-  else
-    k1 = discrZ;
-  if (i0 < 1)
-    i0 = 1;
-  else if (i0 > discrX)
-    i0 = discrX;
-  if (j0 < 1)
-    j0 = 1;
-  else if (j0 > discrY)
-    j0 = discrY;
-  if (k0 < 1)
-    k0 = 1;
-  else if (k0 > discrZ)
-    k0 = discrZ;
+  myLastResult.Clear();
 
-  if (i1 < 1)
-    i1 = 1;
-  else if (i1 > discrX)
-    i1 = discrX;
-  if (j1 < 1)
-    j1 = 1;
-  else if (j1 > discrY)
-    j1 = discrY;
-  if (k1 < 1)
-    k1 = 1;
-  else if (k1 > discrZ)
-    k1 = discrZ;
-  i0--;
-  j0--;
-  k0--;
-  i1--;
-  j1--;
-  k1--;
-  for (Standard_Integer i = i0; touch == Standard_False && i <= i1; i++)
+  if (theBox.IsVoid() || theBox.IsOut(myEnclosingBox))
   {
-    for (Standard_Integer j = j0; touch == Standard_False && j <= j1; j++)
+    return myLastResult;
+  }
+
+  // Processing the large boxes. These boxes are not voxelized and are checked
+  // against the given box directly which is presumably faster.
+  for (auto& aBoxIndex : myLargeBoxes)
+  {
+    const Bnd_Box& aBox = myBoxes->Value(aBoxIndex);
+    if (!aBox.IsOut(theBox))
     {
-      for (Standard_Integer k = k0; touch == Standard_False && k <= k1; k++)
+      myLastResult.Append(aBoxIndex);
+    }
+  }
+
+  // Obtaining the box voxel coordinates.
+  auto&& [aMinVoxelX, aMinVoxelY, aMinVoxelZ, aMaxVoxelX, aMaxVoxelY, aMaxVoxelZ] =
+    getBoundingVoxels(theBox);
+
+  // Check if the given box has any intersections within the voxel map.
+  // If not, there is nothing to check.
+  if (!myVoxelGrid->IsOccupied(
+        {aMinVoxelX, aMinVoxelY, aMinVoxelZ, aMaxVoxelX, aMaxVoxelY, aMaxVoxelZ}))
+  {
+    return myLastResult;
+  }
+
+  // This vector is a structure to store the indices of boxes that occupy the same voxels
+  // as the given box. Index of element in vector corresponds to the index of the box in
+  // the array of boxes. The value of the element is a bit mask indicating which axes
+  // the box occupies. The first bit (0b01) indicates the X-axis, and the second bit (0b10)
+  // indicates the Y-axis. If both bits are set (0b11), and the box also occupies the Z-axis,
+  // we check for actual intersection with the given box and add it to the result if
+  // intersection occurs.
+  std::vector<uint8_t> aResultIndices(myBoxes->Upper() + 1, 0);
+  constexpr uint8_t    anOccupiedX  = 0b01;
+  constexpr uint8_t    anOccupiedY  = 0b10;
+  constexpr uint8_t    anOccupiedXY = 0b11;
+
+  // Checking the voxels along X-axis.
+  for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
+  {
+    const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceX(aVoxelX);
+    if (aBoxIndices == nullptr)
+    {
+      continue;
+    }
+    for (const auto& aBoxIndex : *aBoxIndices)
+    {
+      // Set the first bit (0b01) to indicate that the box occupies the X-axis.
+      aResultIndices[aBoxIndex] |= anOccupiedX;
+    }
+  }
+
+  // Checking the voxels along Y-axis.
+  for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
+  {
+    const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceY(aVoxelY);
+    if (aBoxIndices == nullptr)
+    {
+      continue;
+    }
+    for (const auto& aBoxIndex : *aBoxIndices)
+    {
+      // Set the second bit (0b10) to indicate that the box occupies the Y-axis.
+      aResultIndices[aBoxIndex] |= anOccupiedY;
+    }
+  }
+
+  // Checking the voxels along Z-axis.
+  for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
+  {
+    const Bnd_VoxelGrid::VectorInt* aBoxIndices = myVoxelGrid->GetSliceZ(aVoxelZ);
+    if (aBoxIndices == nullptr)
+    {
+      continue;
+    }
+    for (const auto& aBoxIndex : *aBoxIndices)
+    {
+      // If box also occupies X and Y axes, we will check for intersection with the given box.
+      if (aResultIndices[aBoxIndex] == anOccupiedXY)
       {
-        unsigned int t = Map->GrilleInteger(i, j, k);
-        if (Map->Val(t))
+        // Clear the bit mask for this box to avoid checking and adding it multiple times.
+        aResultIndices[aBoxIndex] = 0;
+        // Perform actual intersection check.
+        if (!myBoxes->Value(aBoxIndex).IsOut(theBox))
         {
-          touch = Standard_True;
+          // Add to the result if intersection occurs.
+          myLastResult.Append(aBoxIndex);
         }
       }
     }
   }
-  //-- processing of systematically tested boxes
-  if (Map->ToTest)
-  {
-    Standard_Integer l0 = taBox.Lower();
-    Standard_Integer l1 = taBox.Upper();
-    l1 -= l0;
-    for (Standard_Integer l = 0; Map->ToTest[l] >= l0 && l < (l1 - l0); l++)
-    {
-      if (Map->ToTest[l] >= l0)
-      {
-        if (!taBox(Map->ToTest[l]).IsOut(theBox))
-        {
-          lastResult.Append(Map->ToTest[l]);
-        }
-      }
-    }
-  }
-  if (touch == Standard_False)
-  {
-#if DEBUG
-    REJECTNIV1++;
-#endif
-#if VERIFICATION
-    VerifCompare(lastResult, theBox, taBox);
-#endif
-    return (lastResult);
-  }
-  //------------------------
-  //-- classic processing --
-  //------------------------
-  i0++;
-  i1++;
-  j0++;
-  j1++;
-  k0++;
-  k1++;
-  Crible.Clear();
-  theFound               = 6;
-  Standard_Integer cardY = 0;
-  for (lacase = j0; lacase <= j1; lacase++)
-  {
-    Standard_Integer nby = Map->NbAxisY(lacase);
-    while (nby > 0)
-    {
-      cardY++;
-      Crible.Bind(Map->axisY[lacase][nby], 4);
-      nby--;
-    }
-  }
-  if (cardY == 0)
-  {
-#if VERIFICATION
-    VerifCompare(lastResult, theBox, taBox);
-#endif
-    return lastResult;
-  }
-  Standard_Integer cardZ = 0;
-  for (lacase = k0; lacase <= k1; lacase++)
-  {
-    Standard_Integer nbz = Map->NbAxisZ(lacase);
-    while (nbz > 0)
-    {
-      cardZ++;
-      if (Crible.IsBound(Map->axisZ[lacase][nbz]))
-      {
-        Crible.Bind(Map->axisZ[lacase][nbz], 6);
-      }
-      nbz--;
-    }
-  }
-  if (cardZ == 0)
-  {
-#if VERIFICATION
-    VerifCompare(lastResult, theBox, taBox);
-#endif
-    return lastResult;
-  }
-  for (lacase = i0; lacase <= i1; lacase++)
-  {
-    Standard_Integer nbx = Map->NbAxisX(lacase);
-    while (nbx > 0)
-    {
-      Standard_Integer x = Map->axisX[lacase][nbx];
-      if (Crible.IsBound(x))
-      {
-        if (Crible(x) == theFound)
-        {
-          Crible.UnBind(x);
-          if (!taBox(x).IsOut(theBox))
-          {
-            lastResult.Append(x);
-          }
-        }
-      }
-      nbx--;
-    }
-  }
-#if VERIFICATION
-  VerifCompare(lastResult, theBox, taBox);
-#endif
-  return lastResult;
+
+  return myLastResult;
 }
 
-//=================================================================================================
-
-void Bnd_BoundSortBox::Dump() const {}
-
-//=================================================================================================
+//==================================================================================================
 
 const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare(const gp_Pln& thePlane)
 
 {
-  lastResult.Clear();
-  Standard_Integer       i;
-  const Bnd_Array1OfBox& boxes = myBndComponents->Array1();
-  for (i = boxes.Lower(); i <= boxes.Upper(); i++)
+  myLastResult.Clear();
+  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
   {
-    if (!boxes(i).IsOut(thePlane))
-      lastResult.Append(i);
+    const Bnd_Box& aBox = myBoxes->Value(aBoxIndex);
+    if (!aBox.IsOut(thePlane))
+    {
+      myLastResult.Append(aBoxIndex);
+    }
   }
-  return lastResult;
+  return myLastResult;
 }
 
-//=======================================================================
-void Bnd_BoundSortBox::Destroy()
+//==================================================================================================
+
+void Bnd_BoundSortBox::calculateCoefficients()
 {
-#if DEBUG
-  printf(
-    "\nDESTROY NBCOMPARE:%lu  REJECTNIV0:%lu  REJECTIONSOK=%lu  NBBOITES:%lu NBBOITESATESTER:%lu\n",
-    NBCOMPARE,
-    REJECTNIV0,
-    REJECTNIV1,
-    NBBOITES,
-    NBBOITESATESTER);
-#endif
-  BSB_T3Bits* Map = (BSB_T3Bits*)TabBits;
-  if (Map)
+  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  myEnclosingBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+  myCoeffX = (aXmax - aXmin == 0. ? 0. : myResolution / (aXmax - aXmin));
+  myCoeffY = (aYmax - aYmin == 0. ? 0. : myResolution / (aYmax - aYmin));
+  myCoeffZ = (aZmax - aZmin == 0. ? 0. : myResolution / (aZmax - aZmin));
+}
+
+//==================================================================================================
+
+void Bnd_BoundSortBox::resetVoxelGrid()
+{
+  myVoxelGrid = new Bnd_VoxelGrid(myResolution);
+  myLargeBoxes.clear();
+  myLargeBoxes.reserve(std::max(myBoxes->Size(), 2));
+}
+
+//==================================================================================================
+
+void Bnd_BoundSortBox::sortBoxes()
+{
+  for (Standard_Integer aBoxIndex = myBoxes->Lower(); aBoxIndex <= myBoxes->Upper(); ++aBoxIndex)
   {
-    delete Map;
-    Map = 0;
+    addBox(myBoxes->Value(aBoxIndex), aBoxIndex);
   }
 }
 
-//=======================================================================
+//==================================================================================================
+
+std::array<Standard_Integer, 6> Bnd_BoundSortBox::getBoundingVoxels(const Bnd_Box& theBox) const
+{
+  // Start point of the voxel grid.
+  const gp_Pnt aGridStart = myEnclosingBox.CornerMin();
+
+  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZmax;
+  theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZmax);
+
+  // Calculate the voxel indices for the bounding box.
+  // The math is as follows:
+  // Voxel grid covers the space defined by the enclosing box: from
+  // myEnclosingBox.CornerMin() to myEnclosingBox.CornerMax().
+  // Therefore, we can say that for the particular dimension:
+  // Vmax / Lmax == V / L, where
+  // Vmax is the number of voxels in the grid along that dimension,
+  // Lmax is the length of the enclosing bounding box along that dimension,
+  // V is the voxel coordinate along that dimension that we want to calculate,
+  // L is the distance from myEnclosingBox.CornerMin() to the coordinate of the box
+  //   along that dimension.
+  // Rearranging gives us:
+  // V = (Vmax / Lmax) * L
+  // Vmax / Lmax is myCoeff(X|Y|Z), precalculated during initialization.
+  // L can be simply calculated by substracting the respective coordinate of
+  // myEnclosingBox.CornerMin() from the coordinate of the box.
+  // Note: adding and substracting one to make sure that that the box is inside the
+  // voxel coordinates. Just a safety measure.
+  const Standard_Integer aXMinIndex =
+    std::clamp(static_cast<Standard_Integer>((aXMin - aGridStart.X()) * myCoeffX) - 1,
+               0,
+               myResolution - 1);
+  const Standard_Integer aYMinIndex =
+    std::clamp(static_cast<Standard_Integer>((aYMin - aGridStart.Y()) * myCoeffY) - 1,
+               0,
+               myResolution - 1);
+  const Standard_Integer aZMinIndex =
+    std::clamp(static_cast<Standard_Integer>((aZMin - aGridStart.Z()) * myCoeffZ) - 1,
+               0,
+               myResolution - 1);
+  const Standard_Integer aXMaxIndex =
+    std::clamp(static_cast<Standard_Integer>((aXMax - aGridStart.X()) * myCoeffX) + 1,
+               0,
+               myResolution - 1);
+  const Standard_Integer aYMaxIndex =
+    std::clamp(static_cast<Standard_Integer>((aYMax - aGridStart.Y()) * myCoeffY) + 1,
+               0,
+               myResolution - 1);
+  const Standard_Integer aZMaxIndex =
+    std::clamp(static_cast<Standard_Integer>((aZmax - aGridStart.Z()) * myCoeffZ) + 1,
+               0,
+               myResolution - 1);
+
+  return {aXMinIndex, aYMinIndex, aZMinIndex, aXMaxIndex, aYMaxIndex, aZMaxIndex};
+}
+
+//==================================================================================================
+
+void Bnd_BoundSortBox::addBox(const Bnd_Box& theBox, const Standard_Integer theIndex)
+{
+  if (theBox.IsVoid())
+  {
+    return;
+  }
+
+  auto&& [aMinVoxelX, aMinVoxelY, aMinVoxelZ, aMaxVoxelX, aMaxVoxelY, aMaxVoxelZ] =
+    getBoundingVoxels(theBox);
+
+  const Standard_Integer aBoxMinSide =
+    std::min({aMaxVoxelX - aMinVoxelX, aMaxVoxelY - aMinVoxelY, aMaxVoxelZ - aMinVoxelZ});
+
+  // If the box spans a significant portion of the grid,
+  // it is more efficient to test it normally rather than using voxel-based checks.
+  if (aBoxMinSide * 4 > myResolution)
+  {
+    myLargeBoxes.push_back(theIndex);
+  }
+  else
+  {
+    myVoxelGrid->AddBox(theIndex,
+                        {aMinVoxelX, aMinVoxelY, aMinVoxelZ, aMaxVoxelX, aMaxVoxelY, aMaxVoxelZ});
+  }
+}
