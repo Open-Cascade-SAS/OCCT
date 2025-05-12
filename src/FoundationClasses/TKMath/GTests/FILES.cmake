@@ -3,4 +3,5 @@ set(OCCT_TKMath_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKMath_GTests_FILES
   ElCLib_Test.cxx
+  math_Matrix_Test.cxx
 )
