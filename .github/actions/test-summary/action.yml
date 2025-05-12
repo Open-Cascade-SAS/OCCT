@@ -33,7 +33,9 @@ runs:
         response=$(curl -s \
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}&status=success")
-        latest_run_id=$(echo "$response" | jq -r '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms") | .id' | head -n 1)
+        latest_run_id=$(echo "$response" | jq -r \
+          --arg repo "${{ github.repository }}" \
+          '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms" and .repository.full_name==$repo) | .id' | head -n 1)
         echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
       shell: bash
 
