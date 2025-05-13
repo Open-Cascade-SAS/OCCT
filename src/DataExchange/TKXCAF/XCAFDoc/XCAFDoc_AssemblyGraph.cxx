@@ -128,18 +128,29 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
     TDF_Label aLabel = it.Value();
 
     TDF_Label anOriginal;
+    Standard_Integer aRootId, anIdToProceed;
     if (!myShapeTool->GetReferredShape(aLabel, anOriginal))
+    {
       anOriginal = aLabel;
+      aRootId = addNode(anOriginal, 0);
+      anIdToProceed = aRootId;
+    }
+    else
+    {
+      aRootId = addNode(aLabel, 0);
+      if (aRootId == 0)
+        continue;
+      anIdToProceed = addNode(anOriginal, aRootId);
+    }
 
-    const Standard_Integer aRootId = addNode(anOriginal, 0);
-    if (aRootId == 0)
+    if (aRootId == 0 || anIdToProceed == 0)
       continue;
 
     myRoots.Add(aRootId);
 
     // Add components (the objects nested into the current one).
     if (myShapeTool->IsAssembly(anOriginal))
-      addComponents(anOriginal, aRootId);
+      addComponents(anOriginal, anIdToProceed);
   }
 }
 
@@ -208,7 +219,7 @@ Standard_Integer XCAFDoc_AssemblyGraph::addNode(const TDF_Label&       theLabel,
     else
       aNodeType = NodeType_Subassembly;
   }
-  else if (myShapeTool->IsComponent(theLabel))
+  else if (myShapeTool->IsReference(theLabel))
   {
     aNodeType = NodeType_Occurrence;
   }
