@@ -28,6 +28,7 @@
 #include <OSD_MAllocHook.hxx>
 #include <OSD_MemInfo.hxx>
 #include <OSD_Parallel.hxx>
+#include <OSD_PerfMeter.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_SStream.hxx>
@@ -35,7 +36,6 @@
 #include <Standard_Version.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <OSD_PerfMeter.h>
 #ifdef _WIN32
 
   #include <windows.h>
@@ -969,10 +969,14 @@ static int dparallel(Draw_Interpretor& theDI, Standard_Integer theArgNb, const c
 static int dperf(Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
 {
   // reset if argument is provided and it is not '0'
-  int  reset = (theArgNb > 1 ? theArgVec[1][0] != '0' && theArgVec[1][0] != '\0' : 0);
-  char buffer[25600];
-  perf_sprint_all_meters(buffer, 25600 - 1, reset);
-  theDI << buffer;
+  int reset = (theArgNb > 1 ? theArgVec[1][0] != '0' && theArgVec[1][0] != '\0' : 0);
+  const TCollection_AsciiString anOutput = OSD_PerfMeter::PrintALL();
+  theDI << anOutput;
+  if (reset)
+  {
+    OSD_PerfMeter::ResetALL();
+  }
+
   return 0;
 }
 
