@@ -127,12 +127,12 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
   {
     TDF_Label aLabel = it.Value();
 
-    TDF_Label anOriginal;
+    TDF_Label        anOriginal;
     Standard_Integer aRootId, anIdToProceed;
     if (!myShapeTool->GetReferredShape(aLabel, anOriginal))
     {
-      anOriginal = aLabel;
-      aRootId = addNode(anOriginal, 0);
+      anOriginal    = aLabel;
+      aRootId       = addNode(anOriginal, 0);
       anIdToProceed = aRootId;
     }
     else
