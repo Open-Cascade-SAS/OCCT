@@ -14,6 +14,7 @@
 #ifndef _StepTidy_BaseTestFixture_HeaderFile
 #define _StepTidy_BaseTestFixture_HeaderFile
 
+#include <gp_XYZ.hxx>
 #include <STEPControl_Controller.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianPoint.hxx>

@@ -15,6 +15,7 @@
 
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <GeomToStep_MakeDirection.hxx>
+#include <gp_Trsf.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 
 //=============================================================================

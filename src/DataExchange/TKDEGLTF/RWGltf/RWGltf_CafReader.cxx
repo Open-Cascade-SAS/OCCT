@@ -28,6 +28,7 @@
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
