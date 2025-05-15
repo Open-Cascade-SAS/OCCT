@@ -579,7 +579,7 @@ bool RWGltf_TriangulationReader::ReadStream(
   const TCollection_AsciiString& aName     = theSourceMesh->Id();
   const RWGltf_GltfPrimitiveMode aPrimMode = theSourceMesh->PrimitiveMode();
   if (aPrimMode != RWGltf_GltfPrimitiveMode_Triangles && aPrimMode != RWGltf_GltfPrimitiveMode_Lines
-      && aPrimMode != RWGltf_GltfPrimitiveMode_Points)
+      && aPrimMode != RWGltf_GltfPrimitiveMode_LineStrip && aPrimMode != RWGltf_GltfPrimitiveMode_Points)
   {
     Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
                          + "' skipped unsupported primitive array");
