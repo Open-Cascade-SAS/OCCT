@@ -69,6 +69,8 @@ extern "C" void        Tk_GeometryRequest(Tk_Window tkwin, int reqWidth, int req
 
 #if defined(HAVE_XLIB)
   #include <X11/Xutil.h>
+
+  #include <Xw_DisplayConnection.hxx>
 #endif
 
 #if defined(_WIN32)
@@ -214,10 +216,10 @@ static Standard_Boolean tty;
   #if defined(HAVE_XLIB)
 static unsigned long thePixels[MAXCOLOR];
 
-Display*                                Draw_WindowDisplay = NULL;
-Colormap                                Draw_WindowColorMap;
-static Standard_Integer                 Draw_WindowScreen = 0;
-static Handle(Aspect_DisplayConnection) Draw_DisplayConnection;
+Display*                            Draw_WindowDisplay = NULL;
+Colormap                            Draw_WindowColorMap;
+static Standard_Integer             Draw_WindowScreen = 0;
+static Handle(Xw_DisplayConnection) Draw_DisplayConnection;
 
 //! Return list of windows.
 static NCollection_List<Draw_Window*>& getDrawWindowList()
@@ -1301,7 +1303,7 @@ Standard_Boolean Init_Appli()
   {
     try
     {
-      Draw_DisplayConnection = new Aspect_DisplayConnection();
+      Draw_DisplayConnection = new Xw_DisplayConnection();
     }
     catch (Standard_Failure const& theFail)
     {

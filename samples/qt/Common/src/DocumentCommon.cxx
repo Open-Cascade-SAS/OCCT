@@ -17,6 +17,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 #include <OSD_Environment.hxx>
+#include <Xw_DisplayConnection.hxx>
 #endif
 #include <TCollection_AsciiString.hxx>
 
@@ -37,7 +38,7 @@ Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString ,
   {
     Handle(Aspect_DisplayConnection) aDisplayConnection;
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    aDisplayConnection = new Aspect_DisplayConnection (OSD_Environment ("DISPLAY").Value());
+    aDisplayConnection = new Xw_DisplayConnection (OSD_Environment ("DISPLAY").Value());
 #endif
     aGraphicDriver = new OpenGl_GraphicDriver (aDisplayConnection);
   }
