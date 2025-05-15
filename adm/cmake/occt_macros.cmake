@@ -381,6 +381,11 @@ function (COLLECT_AND_INSTALL_OCCT_HEADER_FILES THE_ROOT_TARGET_OCCT_DIR THE_OCC
       list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|g|p|lxx|hxx|pxx|hpp|gxx)$")
       list (APPEND OCCT_HEADER_FILES_COMPLETE ${HEADER_FILES_FILTERING})
     endforeach()
+    # parse root of the toolkit file
+    EXTRACT_PACKAGE_FILES (${THE_RELATIVE_PATH} ${OCCT_TOOLKIT} ALL_FILES _)
+    set (HEADER_FILES_FILTERING ${ALL_FILES})
+    list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|g|p|lxx|hxx|pxx|hpp|gxx)$")
+    list (APPEND OCCT_HEADER_FILES_COMPLETE ${HEADER_FILES_FILTERING})
   endforeach()
 
   # Check that copying is done and match the include installation type.
@@ -438,10 +443,12 @@ function(ADD_PRECOMPILED_HEADER INPUT_TARGET PRECOMPILED_HEADER THE_IS_PRIVATE)
   if (NOT BUILD_USE_PCH)
     return()
   endif()
+
+  # Angular bracket syntax is achieved using $<ANGLE-R> for closing bracket
   if (${THE_IS_PRIVATE})
-    target_precompile_headers(${INPUT_TARGET} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER}>")
+    target_precompile_headers(${INPUT_TARGET} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:<${PRECOMPILED_HEADER}$<ANGLE-R>>")
   else()
-    target_precompile_headers(${INPUT_TARGET} PUBLIC "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER}>")
+    target_precompile_headers(${INPUT_TARGET} PUBLIC "$<$<COMPILE_LANGUAGE:CXX>:<${PRECOMPILED_HEADER}$<ANGLE-R>>")
   endif()
 endfunction()
 
@@ -836,12 +843,12 @@ function (PROCESS_CSF_LIBRARIES CURRENT_CSF LIST_NAME TARGET_NAME)
 
   foreach (RELEASE_DIR ${FOUND_RELEASE_DIRS})
     get_filename_component(RELEASE_DIR_ABS "${RELEASE_DIR}" ABSOLUTE)
-    target_link_directories(${TARGET_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_DIR_ABS}>;$<$<CONFIG:RELWITHDEBINFO>:${RELEASE_DIR_ABS}>")
+    target_link_directories(${TARGET_NAME} PRIVATE "$<$<CONFIG:RELEASE>:${RELEASE_DIR_ABS}>;$<$<CONFIG:RELWITHDEBINFO>:${RELEASE_DIR_ABS}>")
   endforeach()
 
   foreach (DEBUG_DIR ${FOUND_DEBUG_DIRS})
     get_filename_component(DEBUG_DIR_ABS "${DEBUG_DIR}" ABSOLUTE)
-    target_link_directories(${TARGET_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_DIR_ABS}>")
+    target_link_directories(${TARGET_NAME} PRIVATE "$<$<CONFIG:DEBUG>:${DEBUG_DIR_ABS}>")
   endforeach()
 endfunction()
 macro(OCCT_ADD_VCPKG_FEATURE THE_FEATURE)
