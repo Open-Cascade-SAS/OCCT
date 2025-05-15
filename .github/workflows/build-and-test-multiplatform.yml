@@ -19,10 +19,9 @@ concurrency:
         && format('{0}-{1}', github.workflow, github.event.pull_request.number)
         || format('{0}-{1}', github.workflow, github.run_id) }}
   cancel-in-progress: >
-    ${{ github.event_name == 'pull_request'
-        && !(github.head_ref == 'IR' && github.repository == 'Open-Cascade-SAS/OCCT')
-        ? 'true'
-        : 'false' }}
+    ${{ (github.event_name == 'pull_request'
+        && !(github.head_ref == 'IR' && github.repository == 'Open-Cascade-SAS/OCCT'))
+        && 'true' || 'false' }}
 
 jobs:
   clang-format:
