@@ -1,0 +1,96 @@
+# This test case is to reproduce the crash during blend operation
+# Given a geometry with two curves and a "rim" at the end, performing
+# a fillet with a radius that is too large leads to a segfault.
+
+dset tolerance 0.0001
+
+# back edge
+dset xEdgeBackLeft -5
+vertex vEdgeBackRight 0 0 0
+vertex vEdgeBackLeft xEdgeBackLeft 0 0
+edge edgeBack vEdgeBackLeft vEdgeBackRight
+
+# edge circle at the back
+dset radiusCircleBack 5.56
+dset angleCircleBackStart -0.755726
+dset xCircleBack xEdgeBackLeft-radiusCircleBack
+
+circle circleBack xCircleBack 0 0 radiusCircleBack
+mkedge edgeCircleBack circleBack angleCircleBackStart 0
+settolerance edgeCircleBack tolerance
+
+# edge circle at the front
+dset radiusCircleFrontBottom 8.95
+dset angleCircleFrontBottomStart 2.385867
+dset angleCircleFrontBottomEnd -2.163565
+dset yCircleFrontBottom -9.95121
+
+circle circleFrontBottom 0 yCircleFrontBottom 0 radiusCircleFrontBottom
+mkedge edgeCircleFrontBottom circleFrontBottom angleCircleFrontBottomStart angleCircleFrontBottomEnd
+settolerance edgeCircleFrontBottom tolerance
+
+# edge at the front and bottom
+dset yEdgeFrontBottom -17.374312
+dset xEdgeFrontBottomLeft xEdgeBackLeft
+vertex vEdgeFrontBottomLeft xEdgeFrontBottomLeft yEdgeFrontBottom 0
+vertex vEdgeFrontBottomRight 0 yEdgeFrontBottom 0
+edge edgeFrontBottom vEdgeFrontBottomLeft vEdgeFrontBottomRight
+
+# edge at the right bottom
+edge edgeRightBottom vEdgeFrontBottomRight vEdgeBackRight
+
+# the bottom wire
+wire wireBottom edgeBack edgeCircleBack edgeCircleFrontBottom edgeFrontBottom edgeRightBottom
+
+# the bottom face
+mkplane planeBottom wireBottom
+
+# the bottom solid
+dset heightBottom 10.0
+prism solidBottom planeBottom 0 0 heightBottom
+
+# the top circle
+dset yCircleTop yCircleFrontBottom
+dset radiusCircleTop 8.57
+dset angleCircleTopStart pi/2
+dset angleCircleTop 2.618290
+dset angleYAxis pi-angleCircleTop
+dset angleCircleTopEnd angleCircleTopStart+angleCircleTop
+circle circleTop 0 yCircleTop heightBottom radiusCircleTop
+mkedge edgeCircleTop circleTop angleCircleTopStart angleCircleTopEnd
+settolerance edgeCircleTop tolerance
+
+# edge at the front at the top
+dset yEdgeFrontTop yEdgeFrontBottom
+dset xEdgeFrontTopLeft 0-radiusCircleTop*sin(angleYAxis)
+vertex vEdgeFrontTopLeft xEdgeFrontTopLeft yEdgeFrontTop heightBottom
+vertex vEdgeFrontTopRight 0 yEdgeFrontTop heightBottom
+edge edgeFrontTop vEdgeFrontTopLeft vEdgeFrontTopRight
+settolerance edgeFrontTop tolerance
+
+# edge at the right at the top
+dset yEdgeRightTopBack yCircleTop+radiusCircleTop
+dset yEdgeRightTopFront yEdgeFrontBottom
+vertex vEdgeRightTopBack 0 yEdgeRightTopBack heightBottom
+vertex vEdgeRightTopFront 0 yEdgeRightTopFront heightBottom
+edge edgeRightTop vEdgeRightTopBack vEdgeRightTopFront
+
+# the top wire
+wire wireTop edgeCircleTop edgeFrontTop edgeRightTop
+
+# the top face
+mkplane planeTop wireTop
+
+# the top solid
+dset heightTop 10.0
+prism solidTop planeTop 0 0 heightTop
+
+bop solidBottom solidTop
+bopfuse fuse
+explode fuse E
+
+# Algorithm is expected to fail with a Tcl exception.
+puts "TODO ALL: Tcl Exception: tolerance ang"
+puts "TODO ALL: TEST INCOMPLETE"
+
+blend b fuse 1 fuse_14
