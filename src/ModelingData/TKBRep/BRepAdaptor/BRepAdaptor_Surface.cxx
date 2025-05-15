@@ -70,6 +70,11 @@ Handle(Adaptor3d_Surface) BRepAdaptor_Surface::ShallowCopy() const
 
 void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const Standard_Boolean Restriction)
 {
+  if (F.IsNull())
+  {
+    return;
+  }
+
   myFace = F;
   TopLoc_Location             L;
   const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(F, L);
