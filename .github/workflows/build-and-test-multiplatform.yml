@@ -15,7 +15,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: ${{ !(github.ref == 'refs/heads/IR' && github.repository == 'Open-Cascade-SAS/OCCT') }} 
+  cancel-in-progress: ${{ !(github.ref == 'refs/heads/IR' && github.repository == 'Open-Cascade-SAS/OCCT') }}
 
 jobs:
   clang-format:
