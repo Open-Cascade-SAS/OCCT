@@ -21,7 +21,8 @@ concurrency:
   cancel-in-progress: >
     ${{ github.event_name == 'pull_request'
         && !(github.head_ref == 'IR' && github.repository == 'Open-Cascade-SAS/OCCT')
-        || 'false' }}
+        ? 'true'
+        : 'false' }}
 
 jobs:
   clang-format:
