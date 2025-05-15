@@ -233,7 +233,7 @@ bool RWGltf_ExtrasParser::parseNumber(const RWGltf_JsonValue& theValue,
   return false;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool RWGltf_ExtrasParser::parseString(const RWGltf_JsonValue& theValue,
                                       const std::string&      theValueName)
