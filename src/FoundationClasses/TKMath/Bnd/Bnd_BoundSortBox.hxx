@@ -26,7 +26,12 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
+
+#include <array>
+#include <vector>
+
 class gp_Pln;
+class Bnd_VoxelGrid;
 
 //! A tool to compare a bounding box or a plane with a set of
 //! bounding boxes. It sorts the set of bounding boxes to give
@@ -35,90 +40,111 @@ class gp_Pln;
 //! while the box being compared bounds a shape to be
 //! compared. The resulting list of intersecting boxes therefore
 //! gives the list of items which potentially intersect the shape to be compared.
+//! How to use this class:
+//! - Create an instance of this class.
+//! - Initialize it with the set of boxes to be sorted using one of the
+//!   Initialize() methods.
+//! - Call the Compare() method with the box or plane to be compared.
+//!   Compare() will return the list of indices of the boxes which intersect
+//!   the box or plane passed as argument.
 class Bnd_BoundSortBox
 {
 public:
   DEFINE_STANDARD_ALLOC
 
+private:
+  using VectorInt = std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>>;
+
+public:
   //! Constructs an empty comparison algorithm for bounding boxes.
   //! The bounding boxes are then defined using the Initialize function.
   Standard_EXPORT Bnd_BoundSortBox();
 
-  //! Initializes this comparison algorithm with
-  //! -   the set of bounding boxes SetOfBox.
-  Standard_EXPORT void Initialize(const Bnd_Box&                  CompleteBox,
-                                  const Handle(Bnd_HArray1OfBox)& SetOfBox);
+  //! Initializes this comparison algorithm with the set of boxes.
+  //! @param theSetOfBoxes The set of bounding boxes to be used by this algorithm.
+  Standard_EXPORT void Initialize(const Handle(Bnd_HArray1OfBox)& theSetOfBoxes);
 
-  //! Initializes this comparison algorithm with
-  //! -   the set of bounding boxes SetOfBox, where
-  //! CompleteBox is given as the global bounding box of SetOfBox.
-  Standard_EXPORT void Initialize(const Handle(Bnd_HArray1OfBox)& SetOfBox);
+  //! Initializes this comparison algorithm with the set of boxes and the bounding box
+  //! that encloses all those boxes. This version of initialization can be used if complete
+  //! box is known in advance to avoid calculating it again inside the algorithm.
+  //! @param theEnclosingBox The bounding box that contains all the boxes in @p theSetOfBoxes.
+  //! @param theSetOfBoxes The set of bounding boxes to be used by this algorithm.
+  Standard_EXPORT void Initialize(const Bnd_Box&                  theEnclosingBox,
+                                  const Handle(Bnd_HArray1OfBox)& theSetOfBoxes);
 
-  //! Initializes this comparison algorithm, giving it only
-  //! -   the maximum number nbComponents
-  //! of the bounding boxes to be managed. Use the Add
-  //! function to define the array of bounding boxes to be sorted by this algorithm.
-  Standard_EXPORT void Initialize(const Bnd_Box& CompleteBox, const Standard_Integer nbComponents);
+  //! Initializes this comparison algorithm with the bounding box that encloses all the boxes
+  //! that will be used by this algorithm. and the expected number of those boxes.
+  //! Boxes to be considered can then be added using the Add() method.
+  //! @param theEnclosingBox The bounding box that contains all the boxes to be sorted.
+  //! @param theNbComponents The number of components to be added.
+  Standard_EXPORT void Initialize(const Bnd_Box&         theEnclosingBox,
+                                  const Standard_Integer theNbBoxes);
 
-  //! Adds the bounding box theBox at position boxIndex in
-  //! the array of boxes to be sorted by this comparison algorithm.
-  //! This function is used only in conjunction with the third
-  //! syntax described in the synopsis of Initialize.
-  //!
+  //! Adds the bounding box theBox at position boxIndex in the internal array of boxes
+  //! to be sorted by this comparison algorithm. This function is used only in
+  //! conjunction with the Initialize(const Bnd_Box&, const Standard_Integer) method.
   //! Exceptions:
-  //!
-  //! - Standard_OutOfRange if boxIndex is not in the
-  //! range [ 1,nbComponents ] where
-  //! nbComponents is the maximum number of bounding
-  //! boxes declared for this comparison algorithm at
-  //! initialization.
-  //!
-  //! - Standard_MultiplyDefined if a box already exists at
-  //! position boxIndex in the array of boxes to be sorted by
-  //! this comparison algorithm.
-  Standard_EXPORT void Add(const Bnd_Box& theBox, const Standard_Integer boxIndex);
+  //! - Standard_OutOfRange if boxIndex is not in the range [ 1,nbComponents ] where
+  //!   nbComponents is the maximum number of bounding boxes declared for this algorithm at
+  //!   initialization.
+  //! - Standard_MultiplyDefined if a box already exists at position @p theIndex in the
+  //!   internal array of boxes.
+  //! @param theBox The bounding box to be added.
+  //! @param theIndex The index of the bounding box in the internal array where the box
+  //!        will be added. The index is 1-based.
+  Standard_EXPORT void Add(const Bnd_Box& theBox, const Standard_Integer theIndex);
 
-  //! Compares the bounding box theBox,
-  //! with the set of bounding boxes to be sorted by this
-  //! comparison algorithm, and returns the list of intersecting
-  //! bounding boxes as a list of indexes on the array of
-  //! bounding boxes used by this algorithm.
+  //! Compares the bounding box theBox, with the set of bounding boxes provided to this
+  //! algorithm at initialization, and returns the list of indices of bounding boxes
+  //! that intersect the @p theBox or are inside it.
+  //! The indices correspond to the indices of the bounding boxes in the array provided
+  //! to this algorithm at initialization.
+  //! @param theBox The bounding box to be compared.
+  //! @return The list of indices of bounding boxes that intersect the bounding box theBox
+  //!         or are inside it.
   Standard_EXPORT const TColStd_ListOfInteger& Compare(const Bnd_Box& theBox);
 
-  //! Compares the plane P
-  //! with the set of bounding boxes to be sorted by this
-  //! comparison algorithm, and returns the list of intersecting
-  //! bounding boxes as a list of indexes on the array of
-  //! bounding boxes used by this algorithm.
-  Standard_EXPORT const TColStd_ListOfInteger& Compare(const gp_Pln& P);
+  //! Compares the plane @p thePlane with the set of bounding boxes provided to this
+  //! algorithm at initialization, and returns the list of indices of bounding boxes
+  //! that intersect the @p thePlane.
+  //! The indices correspond to the indices of the bounding boxes in the array provided
+  //! to this algorithm at initialization.
+  //! @param thePlane The plane to be compared.
+  //! @return The list of indices of bounding boxes that intersect the plane thePlane.
+  Standard_EXPORT const TColStd_ListOfInteger& Compare(const gp_Pln& thePlane);
 
-  Standard_EXPORT void Dump() const;
-
-  Standard_EXPORT void Destroy();
-
-  ~Bnd_BoundSortBox() { Destroy(); }
-
-protected:
 private:
-  //! Prepares  BoundSortBox and  sorts   the  boxes of
-  //! <SetOfBox> .
-  Standard_EXPORT void SortBoxes();
+  //! Precalculates the coefficients for the voxel grid based on the enclosing box dimensions.
+  //! The coefficients will be used to map the box coordinates to the voxel grid.
+  void calculateCoefficients();
 
-  Bnd_Box                         myBox;
-  Handle(Bnd_HArray1OfBox)        myBndComponents;
-  Standard_Real                   Xmin;
-  Standard_Real                   Ymin;
-  Standard_Real                   Zmin;
-  Standard_Real                   deltaX;
-  Standard_Real                   deltaY;
-  Standard_Real                   deltaZ;
-  Standard_Integer                discrX;
-  Standard_Integer                discrY;
-  Standard_Integer                discrZ;
-  Standard_Integer                theFound;
-  TColStd_DataMapOfIntegerInteger Crible;
-  TColStd_ListOfInteger           lastResult;
-  Standard_Address                TabBits;
+  //! Resets the voxel grid and clears the list of large boxes.
+  void resetVoxelGrid();
+
+  //! Performs the sorting of the boxes in the voxel grid.
+  //! This method is called after the boxes have been added to the voxel grid.
+  void sortBoxes();
+
+  //! Returns indices of voxels that contain minimum and maximum points of the box.
+  //! @param theBox The bounding box to be compared.
+  //! @return The indices of the voxels that contain the minimum and maximum points of the box
+  //!         in the order: [minX, minY, minZ, maxX, maxY, maxZ].
+  std::array<Standard_Integer, 6> getBoundingVoxels(const Bnd_Box& theBox) const;
+
+  //! Adds the box stored in myBoxes to the voxel map.
+  //! @param theBox The bounding box to be added.
+  //! @param theIndex The index of the bounding box in myBoxes.
+  void addBox(const Bnd_Box& theBox, const Standard_Integer theIndex);
+
+  Bnd_Box myEnclosingBox;            //!< The bounding box that contains all the boxes to be sorted.
+  Handle(Bnd_HArray1OfBox) myBoxes;  //!< The set of bounding boxes to be sorted.
+  Standard_Real            myCoeffX; //!< Coefficient for X direction.
+  Standard_Real            myCoeffY; //!< Coefficient for Y direction.
+  Standard_Real            myCoeffZ; //!< Coefficient for Z direction.
+  Standard_Integer         myResolution; //!< The number of voxels in each direction.
+  TColStd_ListOfInteger    myLastResult; //!< The last result of the Compare() method.
+  VectorInt                myLargeBoxes; //!< The list of large boxes.
+  Handle(Bnd_VoxelGrid)    myVoxelGrid;  //!< The voxel grid used for sorting the boxes.
 };
 
 #endif // _Bnd_BoundSortBox_HeaderFile
