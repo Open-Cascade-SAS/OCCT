@@ -2131,6 +2131,10 @@ Standard_Boolean StepToGeom::MakeTransformation3d(
 
     const gp_Ax3 result(Pgp, D3, D1);
     CT.SetTransformation(result);
+    if (SCTO->HasScale())
+    {
+      CT.SetScaleFactor(SCTO->Scale());
+    }
     CT = CT.Inverted(); //: n8 abv 16 Feb 99: tr8_as2_db.stp: reverse for accordance with LV tool
     return Standard_True;
   }

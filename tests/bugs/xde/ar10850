@@ -1,0 +1,17 @@
+puts "AR10850 - XCAFDoc_Editor::RescaleGeometry does not rescale translation of roots references"
+
+pload OCAF
+Close D -silent
+XOpen [locate_data_file "ar10850_3D-EYE_chair_OCC_noscale.xbf"] D
+
+XGetOneShape a D
+set ref_diag [eval distpp [bounding a]]
+
+XRescaleGeometry D 0.001
+
+XGetOneShape a D
+set diag [eval distpp [bounding a]]
+
+checkreal "bounding box diagonal" $diag [expr $ref_diag * 0.001] 0 0.001
+
+Close D

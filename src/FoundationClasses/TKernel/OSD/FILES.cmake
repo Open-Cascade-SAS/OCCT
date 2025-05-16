@@ -66,7 +66,6 @@ set(OCCT_OSD_FILES
   OSD_Path.cxx
   OSD_Path.hxx
   OSD_PerfMeter.cxx
-  OSD_PerfMeter.h
   OSD_PerfMeter.hxx
   OSD_Process.cxx
   OSD_Process.hxx

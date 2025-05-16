@@ -15,389 +15,379 @@
  commercial license or contractual agreement.
 */
 
-/*======================================================================
- */
-/*Purpose :       Set of functions to measure the CPU user time
- */
-/*25/09/2001 : AGV : (const char *) in prototypes;
- */
-/*09/11/2001 : AGV : Add functions perf_*_imeter for performance
- */
-/*Add function perf_tick_meter
- */
-/*14/05/2002 : AGV : Portability UNIX/Windows
- */
-/*======================================================================*/
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <OSD_PerfMeter.hxx>
+
 #include <OSD_Chronometer.hxx>
-#include <OSD_PerfMeter.h>
 
-/*======================================================================
-        DEFINITIONS
-======================================================================*/
+#include <unordered_map>
 
-typedef Standard_Real PERF_TIME;
-
-#define PICK_TIME(_utime)                                                                          \
-  {                                                                                                \
-    Standard_Real ktime;                                                                           \
-    OSD_Chronometer::GetThreadCPU(_utime, ktime);                                                  \
-  }
-
-typedef struct
+// Simple stopwatch class to measure elapsed time
+// and provides methods to start, stop, and get the elapsed time in seconds.
+class Stopwatch
 {
-  char*     name;       /* identifier */
-  PERF_TIME cumul_time; /* cumulative time */
-  PERF_TIME start_time; /* to store start time */
-  int       nb_enter;   /* number of enters */
-} t_TimeCounter;
+public:
+  // Constructor initializes the stopwatch.
+  // It does not start the stopwatch.
+  Stopwatch();
 
-#define MAX_METERS 100
+  // Starts the stopwatch. If it is already running, it resets the start time.
+  void Start();
 
-static t_TimeCounter MeterTable[MAX_METERS];
-static int           nb_meters = 0;
+  // Stops the stopwatch. If it is already stopped, it does nothing.
+  void Stop();
 
-static int find_meter(const char* const MeterName);
-static int _perf_init_meter(const char* const MeterName, const int doFind);
+  // Returns the elapsed time in seconds since the stopwatch was started.
+  // If the stopwatch is still running, it returns the time since the last start.
+  // If the stopwatch was stopped, it returns the time between the last start and stop.
+  // If the stopwatch was never started, it returns 0.
+  double Elapsed() const;
 
-/*======================================================================
-Function :      perf_init_meter
-Purpose  :      Creates new counter (if it is absent) identified by
-                MeterName and resets its cumulative value
-Returns  :      iMeter if OK, -1 if alloc problem
-======================================================================*/
-int perf_init_meter(const char* const MeterName)
+  // Returns true if the stopwatch is currently running.
+  // Returns false if the stopwatch is stopped or was never started.
+  inline bool IsRunning() const;
+
+  // Returns true if the stopwatch has been started at least once and has a non-zero elapsed time.
+  // Returns false if the stopwatch was never started or has zero elapsed time.
+  inline bool IsActive() const;
+
+private:
+  // Returns the current time in seconds.
+  static double getTime();
+
+private:
+  double myStartTime; //< The time when the stopwatch was started.
+  double myEndTime;   //< The time when the stopwatch was stopped.
+                      //  Equal to myStartTime if the stopwatch is
+                      //  running or was never started.
+  bool myIsTicking;   //< Indicates whether the stopwatch is
+                      //  currently running.
+};
+
+//==================================================================================================
+
+Stopwatch::Stopwatch()
+    : myStartTime(getTime()),
+      myEndTime(myStartTime),
+      myIsTicking(false)
 {
-  return _perf_init_meter(MeterName, ~0);
 }
 
-/*======================================================================
-Function :      perf_tick_meter
-Purpose  :      Increments the counter of meter MeterName without changing
-                its state with respect to measurement of time.
-        creates new meter if there is no such meter
-Returns  :      iMeter if OK, -1 if no such meter and cannot create a new one
-======================================================================*/
-int perf_tick_meter(const char* const MeterName)
-{
-  int ic = find_meter(MeterName);
+//==================================================================================================
 
-  if (ic == -1)
+void Stopwatch::Start()
+{
+  myStartTime = getTime();
+  myIsTicking = true;
+}
+
+//==================================================================================================
+
+void Stopwatch::Stop()
+{
+  if (!myIsTicking)
   {
-    /* create new meter */
-    ic = _perf_init_meter(MeterName, 0);
+    return;
   }
 
-  if (ic >= 0)
-    MeterTable[ic].nb_enter++;
-
-  return ic;
+  myEndTime   = getTime();
+  myIsTicking = false;
 }
 
-/*======================================================================
-Function :      perf_tick_imeter
-Purpose  :      Increments the counter of meter iMeter without changing
-                its state with respect to measurement of time.
-Returns  :      iMeter if OK, -1 if no such meter
-======================================================================*/
-int perf_tick_imeter(const int iMeter)
+//==================================================================================================
+
+double Stopwatch::Elapsed() const
 {
-  if (iMeter >= 0 && iMeter < nb_meters)
+  const double anEndTime = myIsTicking ? getTime() : myEndTime;
+  return anEndTime - myStartTime;
+}
+
+//==================================================================================================
+
+bool Stopwatch::IsRunning() const
+{
+  return myIsTicking;
+}
+
+//==================================================================================================
+
+bool Stopwatch::IsActive() const
+{
+  return myIsTicking || (myEndTime - myStartTime) > 0.0;
+}
+
+//==================================================================================================
+
+double Stopwatch::getTime()
+{
+  Standard_Real aUserSeconds   = 0.0;
+  Standard_Real aSystemSeconds = 0.0;
+  OSD_Chronometer::GetThreadCPU(aUserSeconds, aSystemSeconds);
+  (void)(aSystemSeconds); // Unused variable
+  return aUserSeconds;
+}
+
+//==================================================================================================
+
+// Singleton class to manage multiple stopwatches.
+// It provides methods to create, retrieve, and print stopwatches by name.
+// It also handles the lifetime of the stopwatches and prints their results when the program ends.
+// The class is designed to be used as a singleton, ensuring that there is only one instance of the
+// stopwatch manager throughout the program.
+class StopwatchStorage
+{
+private:
+  StopwatchStorage()                                   = default;
+  StopwatchStorage(const StopwatchStorage&)            = delete;
+  StopwatchStorage& operator=(const StopwatchStorage&) = delete;
+  StopwatchStorage(StopwatchStorage&&)                 = delete;
+  StopwatchStorage& operator=(StopwatchStorage&&)      = delete;
+
+  ~StopwatchStorage() { PrintAll(); }
+
+public:
+  // Returns the singleton instance of the StopwatchStorage class.
+  static StopwatchStorage& Instance();
+
+  // Retrieves a stopwatch by name. If the stopwatch does not exist, it returns nullptr.
+  // If the stopwatch exists, it returns a pointer to the stopwatch.
+  // This allows the user to access and manipulate the stopwatch directly.
+  // @param theName The name of the stopwatch to retrieve.
+  // @return A pointer to the stopwatch if it exists, nullptr otherwise.
+  Stopwatch* GetStopwatch(const std::string& theName);
+
+  // Creates a new stopwatch with the specified name.
+  // If a stopwatch with the same name already exists, it will be replaced.
+  // @param theName The name of the stopwatch to create.
+  // @return A reference to the created stopwatch.
+  Stopwatch& CreateStopwatch(const std::string& theName);
+
+  // Checks if a stopwatch with the specified name exists.
+  // This method allows the user to check if a stopwatch is already created before attempting to
+  // create or retrieve it.
+  // @param theName The name of the stopwatch to check.
+  // @return True if the stopwatch exists, false otherwise.
+  bool HasStopwatch(const std::string& theName) const;
+
+  // Deletes a stopwatch with the specified name.
+  // If the stopwatch does not exist, it does nothing.
+  // This method allows the user to remove a stopwatch from the storage.
+  // @param theName The name of the stopwatch to delete.
+  // @return True if the stopwatch was successfully deleted, false otherwise.
+  void KillStopwatch(const std::string& theName);
+
+  // Clears all stopwatches from the storage.
+  // This method removes all stopwatches and resets the storage to its initial state.
+  // It is useful for cleaning up the storage when it is no longer needed.
+  void Clear();
+
+  // Prints the results of a specific stopwatch by name.
+  // If the stopwatch does not exist, it does nothing.
+  // If the stopwatch is still running, it prints a warning message.
+  // If the stopwatch was never started, it prints a message indicating that.
+  // @param theName The name of the stopwatch to print.
+  // @return A string containing the results of the stopwatch.
+  std::string Print(const std::string& theName) const;
+
+  // Prints the results of all stopwatches in the storage.
+  // It iterates through all stopwatches and prints their results.
+  // If a stopwatch is still running, it prints a warning message.
+  // If a stopwatch was never started, it prints a message indicating that.
+  // @return A string containing the results of all stopwatches.
+  std::string PrintAll() const;
+
+private:
+  // Helper method to print the results of a specific stopwatch.
+  // It formats the output and appends it to the provided output string.
+  // @param theName The name of the stopwatch to print.
+  // @param theOutput The output string to append the results to.
+  void print(const std::string& theName, std::string& theOutput) const;
+
+private:
+  std::unordered_map<std::string, Stopwatch> myStopwatches; //< Map to store stopwatches by name.
+};
+
+//==================================================================================================
+
+StopwatchStorage& StopwatchStorage::Instance()
+{
+  static StopwatchStorage instance;
+  return instance;
+}
+
+//===================================================================================================
+
+Stopwatch* StopwatchStorage::GetStopwatch(const std::string& theName)
+{
+  auto it = myStopwatches.find(theName);
+  return (it != myStopwatches.end()) ? &it->second : nullptr;
+}
+
+//===================================================================================================
+
+Stopwatch& StopwatchStorage::CreateStopwatch(const std::string& theName)
+{
+  myStopwatches[theName] = Stopwatch();
+  return myStopwatches[theName];
+}
+
+//===================================================================================================
+
+bool StopwatchStorage::HasStopwatch(const std::string& theName) const
+{
+  return myStopwatches.find(theName) != myStopwatches.end();
+}
+
+//===================================================================================================
+
+void StopwatchStorage::KillStopwatch(const std::string& theName)
+{
+  myStopwatches.erase(theName);
+}
+
+//===================================================================================================
+
+void StopwatchStorage::Clear()
+{
+  myStopwatches.clear();
+}
+
+//===================================================================================================
+
+std::string StopwatchStorage::Print(const std::string& theName) const
+{
+  std::string anOutput;
+  auto        it = myStopwatches.find(theName);
+  if (it != myStopwatches.end())
   {
-    MeterTable[iMeter].nb_enter++;
-    return iMeter;
+    print(theName, anOutput);
   }
-  return -1;
+  return anOutput;
 }
 
-/*======================================================================
-Function :      perf_start_meter
-Purpose  :      Forces meter MeterName to begin to count by remembering
-                the current data of timer;
-        creates new meter if there is no such meter
-Returns  :      iMeter if OK, -1 if no such meter and cannot create a new one
-======================================================================*/
-int perf_start_meter(const char* const MeterName)
-{
-  int ic = find_meter(MeterName);
+//===================================================================================================
 
-  if (ic == -1)
+std::string StopwatchStorage::PrintAll() const
+{
+  std::string anOutput;
+  for (const auto& aStopwatch : myStopwatches)
   {
-    /* create new meter */
-    ic = _perf_init_meter(MeterName, 0);
+    print(aStopwatch.first, anOutput);
   }
-
-  if (ic >= 0)
-    PICK_TIME(MeterTable[ic].start_time)
-
-  return ic;
+  return anOutput;
 }
 
-/*======================================================================
-Function :      perf_start_imeter
-Purpose  :      Forces meter with number iMeter to begin count by remembering
-                the current data of timer;
-        the meter must be previously created
-Returns  :      iMeter if OK, -1 if no such meter
-======================================================================*/
-int perf_start_imeter(const int iMeter)
+//===================================================================================================
+
+void StopwatchStorage::print(const std::string& theName, std::string& theOutput) const
 {
-  if (iMeter >= 0 && iMeter < nb_meters)
+  auto it = myStopwatches.find(theName);
+  if (it == myStopwatches.end())
   {
-    PICK_TIME(MeterTable[iMeter].start_time)
-    return iMeter;
+    return;
   }
-  return -1;
-}
 
-/*======================================================================
-Function :      perf_stop_meter
-Purpose  :      Forces meter MeterName to stop and cumulate time elapsed
-                since start
-Returns  :      iMeter if OK, -1 if no such meter or it is has not been started
-======================================================================*/
-int perf_stop_meter(const char* const MeterName)
-{
-  const int ic = find_meter(MeterName);
-
-  if (ic >= 0 && MeterTable[ic].start_time)
+  if (!it->second.IsActive())
   {
-    t_TimeCounter* const ptc = &MeterTable[ic];
-    PERF_TIME            utime;
-    PICK_TIME(utime)
-    ptc->cumul_time += utime - ptc->start_time;
-    ptc->start_time = 0;
-    ptc->nb_enter++;
+    theOutput += "Stopwatch " + theName + " have never been started.\n";
+    return;
   }
 
-  return ic;
-}
-
-/*======================================================================
-Function :      perf_stop_imeter
-Purpose  :      Forces meter with number iMeter to stop and cumulate the time
-                elapsed since the start
-Returns  :      iMeter if OK, -1 if no such meter or it is has not been started
-======================================================================*/
-int perf_stop_imeter(const int iMeter)
-{
-  if (iMeter >= 0 && iMeter < nb_meters)
+  if (it->second.IsRunning())
   {
-    t_TimeCounter* const ptc = &MeterTable[iMeter];
-    if (ptc->start_time)
-    {
-      PERF_TIME utime;
-      PICK_TIME(utime)
-      ptc->cumul_time += utime - ptc->start_time;
-      ptc->start_time = 0;
-      ptc->nb_enter++;
-      return iMeter;
-    }
+    theOutput += "Warning: Stopwatch " + theName + " is still running.\n";
+    return;
   }
-  return -1;
+  theOutput += "Stopwatch " + theName + ": " + std::to_string(it->second.Elapsed()) + " sec\n";
 }
 
-/*======================================================================
-Function :      perf_get_meter
-Purpose  :      Tells the time cumulated by meter MeterName and the number
-                of enters to this meter
-Output   :      *nb_enter, *seconds if the pointers != NULL
-Returns  :      iMeter if OK, -1 if no such meter
-======================================================================*/
-int perf_get_meter(const char* const MeterName, int* nb_enter, double* seconds)
-{
-  const int ic = find_meter(MeterName);
+//==================================================================================================
 
-  if (ic >= 0)
+OSD_PerfMeter::OSD_PerfMeter(const TCollection_AsciiString& theMeterName, const bool theToAutoStart)
+{
+  Init(theMeterName);
+
+  if (theToAutoStart)
   {
-    if (nb_enter)
-      *nb_enter = MeterTable[ic].nb_enter;
-    if (seconds)
-      *seconds = MeterTable[ic].cumul_time;
+    Start();
   }
-  return ic;
 }
 
-/*======================================================================
-Function :      perf_print_all_meters
-Purpose  :      Prints on stdout the cumulated time and the number of
-                enters for each meter in MeterTable;
-                resets all meters if reset is non-null
-======================================================================*/
-void perf_print_all_meters(int reset)
-{
-  char buffer[MAX_METERS * 256];
-  perf_sprint_all_meters(buffer, MAX_METERS * 256, reset);
-  printf("%s", buffer);
-}
+//==================================================================================================
 
-/*======================================================================
-Function :      perf_print_all_meters
-Purpose  :      Prints to string buffer the cumulated time and the number of
-                enters for each meter in MeterTable;
-                resets all meters if reset is non-null
-======================================================================*/
-void perf_sprint_all_meters(char* buffer, int length, int reset)
-{
-  char string[256];
+OSD_PerfMeter::~OSD_PerfMeter() {}
 
-  int i;
-  for (i = 0; i < nb_meters; i++)
+//==================================================================================================
+
+void OSD_PerfMeter::Init(const TCollection_AsciiString& theMeterName)
+{
+  myMeterName = theMeterName;
+  if (!StopwatchStorage::Instance().HasStopwatch(myMeterName.ToCString()))
   {
-    const t_TimeCounter* const ptc = &MeterTable[i];
-    if (ptc && ptc->nb_enter)
-    {
-      int n =
-        sprintf(string,
-                "          Perf meter results               :   enters  seconds  microsec/enter\n");
-      if (n < length)
-      {
-        memcpy(buffer, string, n);
-        buffer += n;
-        length -= n;
-      }
-      break;
-    }
+    StopwatchStorage::Instance().CreateStopwatch(myMeterName.ToCString());
   }
+}
 
-  while (i < nb_meters)
+//==================================================================================================
+
+void OSD_PerfMeter::Start() const
+{
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  if (aStopwatch != nullptr)
   {
-    t_TimeCounter* const ptc = &MeterTable[i++];
-
-    if (ptc && ptc->nb_enter)
-    {
-      const double secs = ptc->cumul_time;
-
-      int n = 0;
-      if (ptc->start_time)
-        n = sprintf(string, "Warning : meter %42s has not been stopped\n", ptc->name);
-
-      n += sprintf(string + n,
-                   "%-42s : %7d %8.2f %10.2f\n",
-                   ptc->name,
-                   ptc->nb_enter,
-                   secs,
-                   (secs > 0. ? 1000000 * secs / ptc->nb_enter : 0.));
-      if (n < length)
-      {
-        memcpy(buffer, string, n);
-        buffer += n;
-        length -= n;
-      }
-
-      if (reset)
-      {
-        ptc->cumul_time = 0;
-        ptc->start_time = 0;
-        ptc->nb_enter   = 0;
-      }
-    }
+    aStopwatch->Start();
   }
-  *buffer = '\0';
 }
 
-/*======================================================================
-Function :      perf_close_meter
-Purpose  :      Prints out a meter and resets it
-Returns  :      none
-======================================================================*/
-void perf_close_meter(const char* const MeterName)
-{
-  perf_close_imeter(find_meter(MeterName));
-}
+//==================================================================================================
 
-/*======================================================================
-Function :      perf_close_imeter
-Purpose  :      Prints out a meter and resets it
-Returns  :      none
-======================================================================*/
-void perf_close_imeter(const int iMeter)
+void OSD_PerfMeter::Stop() const
 {
-  if (iMeter >= 0 && iMeter < nb_meters && MeterTable[iMeter].nb_enter)
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  if (aStopwatch != nullptr)
   {
-    t_TimeCounter* const ptc = &MeterTable[iMeter];
-    if (ptc->start_time)
-      printf("  ===> Warning : meter %s has not been stopped\n", ptc->name);
-    printf("  ===> [%s] : %d enters, %9.3f seconds\n", ptc->name, ptc->nb_enter, ptc->cumul_time);
-    ptc->cumul_time = 0;
-    ptc->start_time = 0;
-    ptc->nb_enter   = 0;
+    aStopwatch->Stop();
   }
 }
 
-/*======================================================================
-Function :      perf_destroy_all_meters
-Purpose  :      Deletes all meters and frees memory
-Returns  :      none
-======================================================================*/
-void perf_destroy_all_meters(void)
+//==================================================================================================
+
+double OSD_PerfMeter::Elapsed() const
 {
-  int i;
-  for (i = 0; i < nb_meters; i++)
-    free(MeterTable[i].name);
-  nb_meters = 0;
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  return aStopwatch ? aStopwatch->Elapsed() : 0.0;
 }
 
-/* agv - non portable: #pragma fini (perf_print_and_destroy)
-         using atexit instead (see _perf_init_meter below)            */
+//==================================================================================================
 
-void perf_print_and_destroy(void)
+void OSD_PerfMeter::Kill() const
 {
-  perf_print_all_meters(0);
-  perf_destroy_all_meters();
+  StopwatchStorage::Instance().KillStopwatch(myMeterName.ToCString());
 }
 
-/*======================================================================
-Function :      _perf_init_meter
-Purpose  :      Creates new counter (if it is absent) identified by
-                MeterName and resets its cumulative value
-Returns  :      index of meter if OK, -1 if alloc problem
-Remarks  :      For internal use in this module
-======================================================================*/
-static int _perf_init_meter(const char* const MeterName, const int doFind)
-{
-  static int hasbeencalled = 0;
-  int        ic            = -1;
-  if (doFind)
-    ic = find_meter(MeterName);
+//==================================================================================================
 
-  if (ic == -1)
+TCollection_AsciiString OSD_PerfMeter::Print() const
+{
+  Stopwatch* aStopwatch = StopwatchStorage::Instance().GetStopwatch(myMeterName.ToCString());
+  if (aStopwatch != nullptr)
   {
-    if (nb_meters >= MAX_METERS)
-      return 0;
-    ic = nb_meters;
-
-    MeterTable[ic].name = strdup(MeterName);
-    if (!MeterTable[ic].name)
-      return -1;
-
-    nb_meters++;
+    const std::string anOutput = StopwatchStorage::Instance().Print(myMeterName.ToCString());
+    return anOutput.c_str();
   }
-
-  MeterTable[ic].cumul_time = 0;
-  MeterTable[ic].start_time = 0;
-  MeterTable[ic].nb_enter   = 0;
-  if (hasbeencalled == 0)
-  {
-    atexit(perf_print_and_destroy);
-    hasbeencalled = ~0;
-  }
-  return ic;
+  return "";
 }
 
-/*======================================================================
-Function :      find_meter
-Purpose  :      Finds the meter MeterName in the MeterTable
-Returns  :      Index of meter object, -1 if not found
-Remarks  :      For internal use in this module
-======================================================================*/
-static int find_meter(const char* const MeterName)
+//==================================================================================================
+
+TCollection_AsciiString OSD_PerfMeter::PrintALL()
 {
-  int i;
-  for (i = 0; i < nb_meters; i++)
-    if (!strcmp(MeterTable[i].name, MeterName))
-      return i;
-  return -1;
+  const std::string anOutput = StopwatchStorage::Instance().PrintAll();
+  return anOutput.c_str();
+}
+
+//==================================================================================================
+
+void OSD_PerfMeter::ResetALL()
+{
+  StopwatchStorage::Instance().Clear();
 }

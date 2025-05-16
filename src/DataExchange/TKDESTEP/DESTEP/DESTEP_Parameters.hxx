@@ -203,6 +203,7 @@ public:
   bool WriteVisMaterial = false;  //<! VisMaterialMode is used to indicate write Visual Material or not
   STEPControl_StepModelType WriteModelType = STEPControl_AsIs; //<! Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP
   bool CleanDuplicates = false; //<! Indicates whether to remove duplicate entities from the STEP file
+  bool WriteScalingTrsf = true; //<! Indicates if scaling should be written as Cartesian Operator or skipped
   // clang-format on
 };
 

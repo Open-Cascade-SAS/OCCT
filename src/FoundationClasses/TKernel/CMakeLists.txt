@@ -14,4 +14,4 @@ else ()
 endif()
 
 # Add the precompiled header
-ADD_PRECOMPILED_HEADER(TKernel "${CMAKE_CURRENT_SOURCE_DIR}/TKernel_pch.hxx" FALSE)
+ADD_PRECOMPILED_HEADER(TKernel "TKernel_pch.hxx" FALSE)

@@ -99,7 +99,7 @@ runs:
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++14 `
+                -D BUILD_CPP_STANDARD=C++17 `
                 -D INSTALL_GTEST=ON ${{ inputs.additional-cmake-flags }} ..
       shell: pwsh
 
@@ -130,7 +130,7 @@ runs:
                 -D USE_RAPIDJSON=ON `
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++14 `
+                -D BUILD_CPP_STANDARD=C++17 `
                 -D INSTALL_GTEST=ON `
                 -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
                 -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ${{ inputs.additional-cmake-flags }} ..
@@ -155,7 +155,7 @@ runs:
               -D USE_OPENGL=ON \
               -D USE_FREEIMAGE=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++14 \
+              -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
               -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ${{ inputs.additional-cmake-flags }} ..
@@ -187,7 +187,7 @@ runs:
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++14 \
+              -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
               ${{ inputs.compiler == 'clang' && '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"' || '' }} ${{ inputs.additional-cmake-flags }} ..
       shell: bash

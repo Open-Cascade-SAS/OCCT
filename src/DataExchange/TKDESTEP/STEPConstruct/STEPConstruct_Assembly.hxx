@@ -24,6 +24,7 @@
 class StepShape_ShapeDefinitionRepresentation;
 class StepShape_ShapeRepresentation;
 class StepGeom_Axis2Placement3d;
+class StepGeom_CartesianTransformationOperator3d;
 class StepRepr_NextAssemblyUsageOccurrence;
 class StepShape_ContextDependentShapeRepresentation;
 class Interface_Graph;
@@ -52,6 +53,14 @@ public:
                             const Handle(StepGeom_Axis2Placement3d)&               Ax0,
                             const Handle(StepGeom_Axis2Placement3d)&               Loc);
 
+  //! Initialises with starting values
+  //! theTrsfOp : local transformation to apply, may have scaling factor
+  //! Makes a MappedItem
+  //! Resulting Value is returned by ItemValue
+  Standard_EXPORT void Init(const Handle(StepShape_ShapeDefinitionRepresentation)&    theSR,
+                            const Handle(StepShape_ShapeDefinitionRepresentation)&    theSDR0,
+                            const Handle(StepGeom_CartesianTransformationOperator3d)& theTrsfOp);
+
   //! Make a (ShapeRepresentationRelationship,...WithTransformation)
   //! Resulting Value is returned by ItemValue
   Standard_EXPORT void MakeRelationship();
@@ -74,13 +83,15 @@ public:
 
 protected:
 private:
-  Handle(StepShape_ShapeDefinitionRepresentation) thesdr;
-  Handle(StepShape_ShapeDefinitionRepresentation) thesdr0;
-  Handle(StepShape_ShapeRepresentation)           thesr;
-  Handle(StepShape_ShapeRepresentation)           thesr0;
-  Handle(Standard_Transient)                      theval;
-  Handle(StepGeom_Axis2Placement3d)               theloc;
-  Handle(StepGeom_Axis2Placement3d)               theax0;
+  Handle(StepShape_ShapeDefinitionRepresentation)    thesdr;
+  Handle(StepShape_ShapeDefinitionRepresentation)    thesdr0;
+  Handle(StepShape_ShapeRepresentation)              thesr;
+  Handle(StepShape_ShapeRepresentation)              thesr0;
+  Handle(Standard_Transient)                         theval;
+  Handle(StepGeom_Axis2Placement3d)                  theloc;
+  Handle(StepGeom_Axis2Placement3d)                  theax0;
+  Handle(StepGeom_CartesianTransformationOperator3d) myTrsfOp;
+  bool                                               myIsCartesianTrsf;
 };
 
 #endif // _STEPConstruct_Assembly_HeaderFile
