@@ -23,6 +23,10 @@ inputs:
     description: 'Enable precompiled headers'
     required: false
     default: 'true'
+  build-opt-profile:
+    description: 'Build optimization profile'
+    required: false
+    default: 'Production'
 
 runs:
   using: "composite"
@@ -87,7 +91,7 @@ runs:
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
@@ -118,7 +122,7 @@ runs:
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
@@ -149,6 +153,7 @@ runs:
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
+              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
@@ -175,7 +180,7 @@ runs:
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D USE_TK=OFF \
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \

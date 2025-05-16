@@ -137,6 +137,7 @@ jobs:
         compiler: clang
         artifact-name: install-linux-clang-no-pch
         build-use-pch: 'false'
+        build-opt-profile: 'Default'
 
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)
