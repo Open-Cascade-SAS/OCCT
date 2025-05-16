@@ -19,6 +19,10 @@ inputs:
     description: 'Enable VTK'
     required: false
     default: 'true'
+  build-use-pch:
+    description: 'Enable precompiled headers'
+    required: false
+    default: 'true'
 
 runs:
   using: "composite"
@@ -82,7 +86,7 @@ runs:
           cmake -T host=x64 `
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
-                -D BUILD_USE_PCH=ON `
+                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=Production `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=Release `
@@ -113,7 +117,7 @@ runs:
                 -D CMAKE_CXX_COMPILER=clang++ `
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
-                -D BUILD_USE_PCH=ON `
+                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=Production `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=Release `
@@ -144,7 +148,7 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=ON \
+              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
@@ -169,7 +173,7 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=ON \
+              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
               -D USE_TK=OFF \

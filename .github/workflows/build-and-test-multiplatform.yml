@@ -122,6 +122,22 @@ jobs:
         compiler: clang
         artifact-name: install-linux-clang-x64
 
+  prepare-and-build-linux-clang-no-pch:
+    name: Prepare and Build on Ubuntu with Clang (No PCH)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: linux
+        compiler: clang
+        artifact-name: install-linux-clang-no-pch
+        build-use-pch: 'false'
+
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)
     runs-on: ubuntu-24.04
