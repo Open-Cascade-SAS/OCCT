@@ -118,7 +118,7 @@ The following table gives the full list of environment variables used at the con
 | BUILD_INCLUDE_SYMLINK | Boolean | Use symbolic links instead of copies for header files in build directory |
 | BUILD_MODULE_<MODULE>| Boolean | Indicates whether the corresponding OCCT module should be built |
 | BUILD_LIBRARY_TYPE | String | Specifies library type ("Shared" or "Static") |
-| BUILD_CPP_STANDARD | String | Select C++ standard (C++11, C++14, C++17, C++20, C++23) |
+| BUILD_CPP_STANDARD | String | Select C++ standard (C++17, C++20, C++23, C++26) |
 | 3RDPARTY_DIR | Path | Defines the root directory where all required 3rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
 | 3RDPARTY_FREETYPE_* | Path | Path to FreeType binaries |
 | 3RDPARTY_TCL_* 3RDPARTY_TK_* | Path | Path to Tcl/Tk binaries |
