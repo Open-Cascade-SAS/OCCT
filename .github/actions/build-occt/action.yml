@@ -108,7 +108,8 @@ runs:
                 -D USE_OPENGL=ON `
                 -D BUILD_GTEST=ON `
                 -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON ${{ inputs.additional-cmake-flags }} ..
+                -D INSTALL_GTEST=ON `
+                ${{ inputs.additional-cmake-flags }} ..
       shell: pwsh
 
     - name: Configure OCCT (Windows Clang)
@@ -140,8 +141,7 @@ runs:
                 -D BUILD_GTEST=ON `
                 -D BUILD_CPP_STANDARD=C++17 `
                 -D INSTALL_GTEST=ON `
-                -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
-                -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ${{ inputs.additional-cmake-flags }} ..
+                ${{ inputs.additional-cmake-flags }} ..
       shell: pwsh
 
     - name: Configure OCCT (macOS)
@@ -167,7 +167,7 @@ runs:
               -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ${{ inputs.additional-cmake-flags }} ..
+              ${{ inputs.additional-cmake-flags }} ..
       shell: bash
 
     - name: Configure OCCT (Linux)
@@ -198,7 +198,7 @@ runs:
               -D BUILD_GTEST=ON \
               -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
-              ${{ inputs.compiler == 'clang' && '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"' || '' }} ${{ inputs.additional-cmake-flags }} ..
+              ${{ inputs.additional-cmake-flags }} ..
       shell: bash
 
     - name: Build OCCT (Windows)

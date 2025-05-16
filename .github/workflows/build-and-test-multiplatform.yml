@@ -138,6 +138,7 @@ jobs:
         artifact-name: install-linux-clang-no-pch
         build-use-pch: 'false'
         build-opt-profile: 'Default'
+        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"'
 
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)
