@@ -178,7 +178,7 @@ Handle(TDataStd_NamedData) RWGltf_ExtrasParser::ParseExtras(
   return anExtrasParser.Parse();
 }
 
-//=================================================================================================
+//================================================================================================
 
 bool RWGltf_ExtrasParser::parseObject(const RWGltf_JsonValue& theValue,
                                       const std::string&      theValueName)
