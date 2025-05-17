@@ -47,16 +47,6 @@ public:
   Standard_HIDDEN void WriteStep(StepData_StepWriter&            SW,
                                  const Handle(StepBasic_SiUnit)& ent) const;
 
-  Standard_HIDDEN Standard_Boolean DecodePrefix(StepBasic_SiPrefix&    aPrefix,
-                                                const Standard_CString text) const;
-
-  Standard_HIDDEN Standard_Boolean DecodeName(StepBasic_SiUnitName&  aName,
-                                              const Standard_CString text) const;
-
-  Standard_HIDDEN TCollection_AsciiString EncodePrefix(const StepBasic_SiPrefix aPrefix) const;
-
-  Standard_HIDDEN TCollection_AsciiString EncodeName(const StepBasic_SiUnitName aName) const;
-
 protected:
 private:
 };
