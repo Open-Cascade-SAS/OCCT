@@ -224,7 +224,7 @@ public:
   //! m - maximum depth slope for the polygon currently being displayed,
   //! r - minimum window coordinates depth resolution (implementation-specific)
   //!
-  //! Default settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 0.
+  //! Default settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 1.
   //!
   //! Negative offset values move polygons closer to the viewport,
   //! while positive values shift polygons away.
