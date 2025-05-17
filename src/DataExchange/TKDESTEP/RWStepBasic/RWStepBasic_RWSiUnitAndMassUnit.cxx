@@ -62,8 +62,8 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderD
     return;
 
   // --- field : prefix ---
-  StepBasic_SiPrefix   aPrefix    = StepBasic_spExa;
-  Standard_Boolean     hasAprefix = Standard_False;
+  StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
+  Standard_Boolean   hasAprefix = Standard_False;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
@@ -123,7 +123,7 @@ void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(
   SW.StartEntity("SI_UNIT");
 
   // --- field : prefix ---
-  Standard_Boolean     hasAprefix = ent->HasPrefix();
+  Standard_Boolean hasAprefix = ent->HasPrefix();
   if (hasAprefix)
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else

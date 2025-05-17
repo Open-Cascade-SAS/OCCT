@@ -73,7 +73,8 @@ void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& dat
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 4);
-    if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text, aMasterRepresentation))
+    if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text,
+                                                                         aMasterRepresentation))
     {
       ach->AddFail("Enumeration preferred_surface_curve_representation has not an allowed value");
     }
@@ -109,7 +110,8 @@ void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
 
   // --- inherited field masterRepresentation ---
 
-  SW.SendEnum(RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToString(ent->MasterRepresentation()));
+  SW.SendEnum(
+    RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToString(ent->MasterRepresentation()));
 }
 
 void RWStepGeom_RWSeamCurve::Share(const Handle(StepGeom_SeamCurve)& ent,
