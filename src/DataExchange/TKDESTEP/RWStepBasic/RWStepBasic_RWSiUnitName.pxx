@@ -51,7 +51,7 @@ static constexpr char sunCoulomb[]       = ".COULOMB.";
 //! Convert StepBasic_SiUnitName to string
 //! @param theNameEnum The StepBasic_SiUnitName value to convert
 //! @return The corresponding string representation
-static const char* ConvertToString(const StepBasic_SiUnitName theNameEnum)
+inline const char* ConvertToString(const StepBasic_SiUnitName theNameEnum)
 {
   switch (theNameEnum)
   {
@@ -119,7 +119,7 @@ static const char* ConvertToString(const StepBasic_SiUnitName theNameEnum)
 //! @param theNameStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_SiUnitName value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString theNameStr, StepBasic_SiUnitName& theResultEnum)
+inline bool ConvertToEnum(const Standard_CString theNameStr, StepBasic_SiUnitName& theResultEnum)
 {
   if (IsEqual(theNameStr, sunHertz))
   {

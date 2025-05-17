@@ -39,7 +39,7 @@ static constexpr char spDeca[]  = ".DECA.";
 //! Convert StepBasic_SiPrefix to string
 //! @param theSourceEnum The StepBasic_SiPrefix value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
+inline const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -83,7 +83,7 @@ static const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
 //! @param thePrefixStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_SiPrefix value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString thePrefixStr, StepBasic_SiPrefix& theResultEnum)
+inline bool ConvertToEnum(const Standard_CString thePrefixStr, StepBasic_SiPrefix& theResultEnum)
 {
   if (IsEqual(thePrefixStr, spExa))
   {

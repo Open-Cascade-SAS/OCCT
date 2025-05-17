@@ -29,7 +29,7 @@ static constexpr char bscfHyperbolicArc[] = ".HYPERBOLIC_ARC.";
 //! Convert StepGeom_BSplineCurveForm to string
 //! @param theSourceEnum The StepGeom_BSplineCurveForm value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepGeom_BSplineCurveForm theSourceEnum)
+inline const char* ConvertToString(const StepGeom_BSplineCurveForm theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -53,7 +53,7 @@ static const char* ConvertToString(const StepGeom_BSplineCurveForm theSourceEnum
 //! @param theFormString The string to convert
 //! @param theResultEnum The corresponding StepGeom_BSplineCurveForm value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString     theFormString,
+inline bool ConvertToEnum(const Standard_CString     theFormString,
                           StepGeom_BSplineCurveForm& theResultEnum)
 {
   if (IsEqual(theFormString, bscfEllipticArc))

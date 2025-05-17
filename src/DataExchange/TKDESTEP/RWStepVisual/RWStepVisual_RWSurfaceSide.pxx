@@ -26,7 +26,7 @@ static constexpr char ssBoth[]     = ".BOTH.";
 //! Convert StepVisual_SurfaceSide to string
 //! @param theSourceEnum The StepVisual_SurfaceSide value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepVisual_SurfaceSide theSourceEnum)
+inline const char* ConvertToString(const StepVisual_SurfaceSide theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -44,7 +44,7 @@ static const char* ConvertToString(const StepVisual_SurfaceSide theSourceEnum)
 //! @param theSideStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_SurfaceSide value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString theSideStr, StepVisual_SurfaceSide& theResultEnum)
+inline bool ConvertToEnum(const Standard_CString theSideStr, StepVisual_SurfaceSide& theResultEnum)
 {
   if (IsEqual(theSideStr, ssNegative))
   {

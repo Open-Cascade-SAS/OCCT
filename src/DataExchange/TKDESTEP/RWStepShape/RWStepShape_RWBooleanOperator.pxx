@@ -26,7 +26,7 @@ static constexpr char boUnion[]        = ".UNION.";
 //! Convert StepShape_BooleanOperator to string
 //! @param theSourceEnum The StepShape_BooleanOperator value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum)
+inline const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -44,7 +44,7 @@ static const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum
 //! @param theOperatorStr The string to convert
 //! @param theResultEnum The corresponding StepShape_BooleanOperator value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString     theOperatorStr,
+inline bool ConvertToEnum(const Standard_CString     theOperatorStr,
                           StepShape_BooleanOperator& theResultEnum)
 {
   if (IsEqual(theOperatorStr, boDifference))
