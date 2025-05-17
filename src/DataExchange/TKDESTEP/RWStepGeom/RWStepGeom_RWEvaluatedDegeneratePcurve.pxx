@@ -34,21 +34,22 @@ class RWStepGeom_RWEvaluatedDegeneratePcurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepGeom_RWEvaluatedDegeneratePcurve();
+  inline RWStepGeom_RWEvaluatedDegeneratePcurve();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&            data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                                 const Standard_Integer                            num,
                                 Handle(Interface_Check)&                          ach,
                                 const Handle(StepGeom_EvaluatedDegeneratePcurve)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              SW,
+  inline void WriteStep(StepData_StepWriter&                              SW,
                                  const Handle(StepGeom_EvaluatedDegeneratePcurve)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepGeom_EvaluatedDegeneratePcurve)& ent,
+  inline void Share(const Handle(StepGeom_EvaluatedDegeneratePcurve)& ent,
                              Interface_EntityIterator&                         iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepGeom_RWEvaluatedDegeneratePcurve_impl.pxx"
 #endif // _RWStepGeom_RWEvaluatedDegeneratePcurve_HeaderFile

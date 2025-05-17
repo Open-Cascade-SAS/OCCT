@@ -34,26 +34,27 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWFeatureForDatumTargetRelationship();
+  inline RWStepRepr_RWFeatureForDatumTargetRelationship();
 
   //! Reads ShapeAspectRelationship
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                    data,
     const Standard_Integer                                    num,
     Handle(Interface_Check)&                                  ach,
     const Handle(StepRepr_FeatureForDatumTargetRelationship)& ent) const;
 
   //! Writes ShapeAspectRelationship
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                      SW,
     const Handle(StepRepr_FeatureForDatumTargetRelationship)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_FeatureForDatumTargetRelationship)& ent,
+  inline void Share(const Handle(StepRepr_FeatureForDatumTargetRelationship)& ent,
                              Interface_EntityIterator&                                 iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWFeatureForDatumTargetRelationship_impl.pxx"
 #endif // _RWStepRepr_RWFeatureForDatumTargetRelationship_HeaderFile

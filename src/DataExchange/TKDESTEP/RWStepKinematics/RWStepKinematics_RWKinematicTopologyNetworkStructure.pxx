@@ -33,19 +33,20 @@ class RWStepKinematics_RWKinematicTopologyNetworkStructure
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWKinematicTopologyNetworkStructure();
+  inline RWStepKinematics_RWKinematicTopologyNetworkStructure();
 
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          theData,
     const Standard_Integer                                          theNum,
     Handle(Interface_Check)&                                        theArch,
     const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                            theSW,
     const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
+  inline void Share(const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
                              Interface_EntityIterator& iter) const;
 };
+#include "RWStepKinematics_RWKinematicTopologyNetworkStructure_impl.pxx"
 #endif // _RWStepKinematics_RWKinematicTopologyNetworkStructure_HeaderFile_

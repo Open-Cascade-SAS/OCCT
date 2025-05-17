@@ -35,20 +35,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWParallelOffset();
+  inline RWStepRepr_RWParallelOffset();
 
   //! Reads ParallelOffset
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(StepRepr_ParallelOffset)& ent) const;
 
   //! Writes ParallelOffset
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                   SW,
+  inline void WriteStep(StepData_StepWriter&                   SW,
                                  const Handle(StepRepr_ParallelOffset)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_ParallelOffset)& ent,
+  inline void Share(const Handle(StepRepr_ParallelOffset)& ent,
                              Interface_EntityIterator&              iter) const;
 };
+#include "RWStepRepr_RWParallelOffset_impl.pxx"
 #endif // _RWStepRepr_RWParallelOffset_HeaderFile

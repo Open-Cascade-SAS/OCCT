@@ -35,20 +35,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWRunoutZoneDefinition();
+  inline RWStepDimTol_RWRunoutZoneDefinition();
 
   //! Reads RunoutZoneDefinition
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&         data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                                 const Standard_Integer                         num,
                                 Handle(Interface_Check)&                       ach,
                                 const Handle(StepDimTol_RunoutZoneDefinition)& ent) const;
 
   //! Writes RunoutZoneDefinition
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                           SW,
+  inline void WriteStep(StepData_StepWriter&                           SW,
                                  const Handle(StepDimTol_RunoutZoneDefinition)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_RunoutZoneDefinition)& ent,
+  inline void Share(const Handle(StepDimTol_RunoutZoneDefinition)& ent,
                              Interface_EntityIterator&                      iter) const;
 };
+#include "RWStepDimTol_RWRunoutZoneDefinition_impl.pxx"
 #endif // _RWStepDimTol_RWRunoutZoneDefinition_HeaderFile

@@ -34,26 +34,27 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepElement_RWAnalysisItemWithinRepresentation();
+  inline RWStepElement_RWAnalysisItemWithinRepresentation();
 
   //! Reads AnalysisItemWithinRepresentation
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                      data,
     const Standard_Integer                                      num,
     Handle(Interface_Check)&                                    ach,
     const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
 
   //! Writes AnalysisItemWithinRepresentation
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                        SW,
     const Handle(StepElement_AnalysisItemWithinRepresentation)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepElement_AnalysisItemWithinRepresentation)& ent,
+  inline void Share(const Handle(StepElement_AnalysisItemWithinRepresentation)& ent,
                              Interface_EntityIterator& iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepElement_RWAnalysisItemWithinRepresentation_impl.pxx"
 #endif // _RWStepElement_RWAnalysisItemWithinRepresentation_HeaderFile

@@ -2,34 +2,34 @@
 set(OCCT_RWStepElement_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepElement_FILES
-  RWStepElement_RWAnalysisItemWithinRepresentation.cxx
+  RWStepElement_RWAnalysisItemWithinRepresentation_impl.pxx
   RWStepElement_RWAnalysisItemWithinRepresentation.pxx
-  RWStepElement_RWCurve3dElementDescriptor.cxx
+  RWStepElement_RWCurve3dElementDescriptor_impl.pxx
   RWStepElement_RWCurve3dElementDescriptor.pxx
-  RWStepElement_RWCurveElementEndReleasePacket.cxx
+  RWStepElement_RWCurveElementEndReleasePacket_impl.pxx
   RWStepElement_RWCurveElementEndReleasePacket.pxx
-  RWStepElement_RWCurveElementSectionDefinition.cxx
+  RWStepElement_RWCurveElementSectionDefinition_impl.pxx
   RWStepElement_RWCurveElementSectionDefinition.pxx
-  RWStepElement_RWCurveElementSectionDerivedDefinitions.cxx
+  RWStepElement_RWCurveElementSectionDerivedDefinitions_impl.pxx
   RWStepElement_RWCurveElementSectionDerivedDefinitions.pxx
-  RWStepElement_RWElementDescriptor.cxx
+  RWStepElement_RWElementDescriptor_impl.pxx
   RWStepElement_RWElementDescriptor.pxx
-  RWStepElement_RWElementMaterial.cxx
+  RWStepElement_RWElementMaterial_impl.pxx
   RWStepElement_RWElementMaterial.pxx
-  RWStepElement_RWSurface3dElementDescriptor.cxx
+  RWStepElement_RWSurface3dElementDescriptor_impl.pxx
   RWStepElement_RWSurface3dElementDescriptor.pxx
-  RWStepElement_RWSurfaceElementProperty.cxx
+  RWStepElement_RWSurfaceElementProperty_impl.pxx
   RWStepElement_RWSurfaceElementProperty.pxx
-  RWStepElement_RWSurfaceSection.cxx
+  RWStepElement_RWSurfaceSection_impl.pxx
   RWStepElement_RWSurfaceSection.pxx
-  RWStepElement_RWSurfaceSectionField.cxx
+  RWStepElement_RWSurfaceSectionField_impl.pxx
   RWStepElement_RWSurfaceSectionField.pxx
-  RWStepElement_RWSurfaceSectionFieldConstant.cxx
+  RWStepElement_RWSurfaceSectionFieldConstant_impl.pxx
   RWStepElement_RWSurfaceSectionFieldConstant.pxx
-  RWStepElement_RWSurfaceSectionFieldVarying.cxx
+  RWStepElement_RWSurfaceSectionFieldVarying_impl.pxx
   RWStepElement_RWSurfaceSectionFieldVarying.pxx
-  RWStepElement_RWUniformSurfaceSection.cxx
+  RWStepElement_RWUniformSurfaceSection_impl.pxx
   RWStepElement_RWUniformSurfaceSection.pxx
-  RWStepElement_RWVolume3dElementDescriptor.cxx
+  RWStepElement_RWVolume3dElementDescriptor_impl.pxx
   RWStepElement_RWVolume3dElementDescriptor.pxx
 )

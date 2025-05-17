@@ -2,246 +2,246 @@
 set(OCCT_RWStepBasic_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepBasic_FILES
-  RWStepBasic_RWAction.cxx
+  RWStepBasic_RWAction_impl.pxx
   RWStepBasic_RWAction.pxx
-  RWStepBasic_RWActionAssignment.cxx
+  RWStepBasic_RWActionAssignment_impl.pxx
   RWStepBasic_RWActionAssignment.pxx
-  RWStepBasic_RWActionMethod.cxx
+  RWStepBasic_RWActionMethod_impl.pxx
   RWStepBasic_RWActionMethod.pxx
-  RWStepBasic_RWActionRequestAssignment.cxx
+  RWStepBasic_RWActionRequestAssignment_impl.pxx
   RWStepBasic_RWActionRequestAssignment.pxx
-  RWStepBasic_RWActionRequestSolution.cxx
+  RWStepBasic_RWActionRequestSolution_impl.pxx
   RWStepBasic_RWActionRequestSolution.pxx
-  RWStepBasic_RWAddress.cxx
+  RWStepBasic_RWAddress_impl.pxx
   RWStepBasic_RWAddress.pxx
   RWStepBasic_RWAheadOrBehind.pxx
-  RWStepBasic_RWApplicationContext.cxx
+  RWStepBasic_RWApplicationContext_impl.pxx
   RWStepBasic_RWApplicationContext.pxx
-  RWStepBasic_RWApplicationContextElement.cxx
+  RWStepBasic_RWApplicationContextElement_impl.pxx
   RWStepBasic_RWApplicationContextElement.pxx
-  RWStepBasic_RWApplicationProtocolDefinition.cxx
+  RWStepBasic_RWApplicationProtocolDefinition_impl.pxx
   RWStepBasic_RWApplicationProtocolDefinition.pxx
-  RWStepBasic_RWApproval.cxx
+  RWStepBasic_RWApproval_impl.pxx
   RWStepBasic_RWApproval.pxx
-  RWStepBasic_RWApprovalDateTime.cxx
+  RWStepBasic_RWApprovalDateTime_impl.pxx
   RWStepBasic_RWApprovalDateTime.pxx
-  RWStepBasic_RWApprovalPersonOrganization.cxx
+  RWStepBasic_RWApprovalPersonOrganization_impl.pxx
   RWStepBasic_RWApprovalPersonOrganization.pxx
-  RWStepBasic_RWApprovalRelationship.cxx
+  RWStepBasic_RWApprovalRelationship_impl.pxx
   RWStepBasic_RWApprovalRelationship.pxx
-  RWStepBasic_RWApprovalRole.cxx
+  RWStepBasic_RWApprovalRole_impl.pxx
   RWStepBasic_RWApprovalRole.pxx
-  RWStepBasic_RWApprovalStatus.cxx
+  RWStepBasic_RWApprovalStatus_impl.pxx
   RWStepBasic_RWApprovalStatus.pxx
-  RWStepBasic_RWCalendarDate.cxx
+  RWStepBasic_RWCalendarDate_impl.pxx
   RWStepBasic_RWCalendarDate.pxx
-  RWStepBasic_RWCertification.cxx
+  RWStepBasic_RWCertification_impl.pxx
   RWStepBasic_RWCertification.pxx
-  RWStepBasic_RWCertificationAssignment.cxx
+  RWStepBasic_RWCertificationAssignment_impl.pxx
   RWStepBasic_RWCertificationAssignment.pxx
-  RWStepBasic_RWCertificationType.cxx
+  RWStepBasic_RWCertificationType_impl.pxx
   RWStepBasic_RWCertificationType.pxx
-  RWStepBasic_RWCharacterizedObject.cxx
+  RWStepBasic_RWCharacterizedObject_impl.pxx
   RWStepBasic_RWCharacterizedObject.pxx
-  RWStepBasic_RWContract.cxx
+  RWStepBasic_RWContract_impl.pxx
   RWStepBasic_RWContract.pxx
-  RWStepBasic_RWContractAssignment.cxx
+  RWStepBasic_RWContractAssignment_impl.pxx
   RWStepBasic_RWContractAssignment.pxx
-  RWStepBasic_RWContractType.cxx
+  RWStepBasic_RWContractType_impl.pxx
   RWStepBasic_RWContractType.pxx
-  RWStepBasic_RWConversionBasedUnit.cxx
+  RWStepBasic_RWConversionBasedUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndAreaUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndAreaUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndAreaUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndLengthUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndLengthUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndLengthUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndMassUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndMassUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndMassUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndRatioUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndRatioUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndRatioUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndTimeUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndTimeUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndTimeUnit.pxx
-  RWStepBasic_RWConversionBasedUnitAndVolumeUnit.cxx
+  RWStepBasic_RWConversionBasedUnitAndVolumeUnit_impl.pxx
   RWStepBasic_RWConversionBasedUnitAndVolumeUnit.pxx
-  RWStepBasic_RWCoordinatedUniversalTimeOffset.cxx
+  RWStepBasic_RWCoordinatedUniversalTimeOffset_impl.pxx
   RWStepBasic_RWCoordinatedUniversalTimeOffset.pxx
-  RWStepBasic_RWDate.cxx
+  RWStepBasic_RWDate_impl.pxx
   RWStepBasic_RWDate.pxx
-  RWStepBasic_RWDateAndTime.cxx
+  RWStepBasic_RWDateAndTime_impl.pxx
   RWStepBasic_RWDateAndTime.pxx
-  RWStepBasic_RWDateRole.cxx
+  RWStepBasic_RWDateRole_impl.pxx
   RWStepBasic_RWDateRole.pxx
-  RWStepBasic_RWDateTimeRole.cxx
+  RWStepBasic_RWDateTimeRole_impl.pxx
   RWStepBasic_RWDateTimeRole.pxx
-  RWStepBasic_RWDerivedUnit.cxx
+  RWStepBasic_RWDerivedUnit_impl.pxx
   RWStepBasic_RWDerivedUnit.pxx
-  RWStepBasic_RWDerivedUnitElement.cxx
+  RWStepBasic_RWDerivedUnitElement_impl.pxx
   RWStepBasic_RWDerivedUnitElement.pxx
-  RWStepBasic_RWDimensionalExponents.cxx
+  RWStepBasic_RWDimensionalExponents_impl.pxx
   RWStepBasic_RWDimensionalExponents.pxx
-  RWStepBasic_RWDocument.cxx
+  RWStepBasic_RWDocument_impl.pxx
   RWStepBasic_RWDocument.pxx
-  RWStepBasic_RWDocumentFile.cxx
+  RWStepBasic_RWDocumentFile_impl.pxx
   RWStepBasic_RWDocumentFile.pxx
-  RWStepBasic_RWDocumentProductAssociation.cxx
+  RWStepBasic_RWDocumentProductAssociation_impl.pxx
   RWStepBasic_RWDocumentProductAssociation.pxx
-  RWStepBasic_RWDocumentProductEquivalence.cxx
+  RWStepBasic_RWDocumentProductEquivalence_impl.pxx
   RWStepBasic_RWDocumentProductEquivalence.pxx
-  RWStepBasic_RWDocumentRelationship.cxx
+  RWStepBasic_RWDocumentRelationship_impl.pxx
   RWStepBasic_RWDocumentRelationship.pxx
-  RWStepBasic_RWDocumentRepresentationType.cxx
+  RWStepBasic_RWDocumentRepresentationType_impl.pxx
   RWStepBasic_RWDocumentRepresentationType.pxx
-  RWStepBasic_RWDocumentType.cxx
+  RWStepBasic_RWDocumentType_impl.pxx
   RWStepBasic_RWDocumentType.pxx
-  RWStepBasic_RWDocumentUsageConstraint.cxx
+  RWStepBasic_RWDocumentUsageConstraint_impl.pxx
   RWStepBasic_RWDocumentUsageConstraint.pxx
-  RWStepBasic_RWEffectivity.cxx
+  RWStepBasic_RWEffectivity_impl.pxx
   RWStepBasic_RWEffectivity.pxx
-  RWStepBasic_RWEffectivityAssignment.cxx
+  RWStepBasic_RWEffectivityAssignment_impl.pxx
   RWStepBasic_RWEffectivityAssignment.pxx
-  RWStepBasic_RWEulerAngles.cxx
+  RWStepBasic_RWEulerAngles_impl.pxx
   RWStepBasic_RWEulerAngles.pxx
-  RWStepBasic_RWExternalIdentificationAssignment.cxx
+  RWStepBasic_RWExternalIdentificationAssignment_impl.pxx
   RWStepBasic_RWExternalIdentificationAssignment.pxx
-  RWStepBasic_RWExternallyDefinedItem.cxx
+  RWStepBasic_RWExternallyDefinedItem_impl.pxx
   RWStepBasic_RWExternallyDefinedItem.pxx
-  RWStepBasic_RWExternalSource.cxx
+  RWStepBasic_RWExternalSource_impl.pxx
   RWStepBasic_RWExternalSource.pxx
-  RWStepBasic_RWGeneralProperty.cxx
+  RWStepBasic_RWGeneralProperty_impl.pxx
   RWStepBasic_RWGeneralProperty.pxx
-  RWStepBasic_RWGeneralPropertyAssociation.cxx
+  RWStepBasic_RWGeneralPropertyAssociation_impl.pxx
   RWStepBasic_RWGeneralPropertyAssociation.pxx
-  RWStepBasic_RWGeneralPropertyRelationship.cxx
+  RWStepBasic_RWGeneralPropertyRelationship_impl.pxx
   RWStepBasic_RWGeneralPropertyRelationship.pxx
-  RWStepBasic_RWGroup.cxx
+  RWStepBasic_RWGroup_impl.pxx
   RWStepBasic_RWGroup.pxx
-  RWStepBasic_RWGroupAssignment.cxx
+  RWStepBasic_RWGroupAssignment_impl.pxx
   RWStepBasic_RWGroupAssignment.pxx
-  RWStepBasic_RWGroupRelationship.cxx
+  RWStepBasic_RWGroupRelationship_impl.pxx
   RWStepBasic_RWGroupRelationship.pxx
-  RWStepBasic_RWIdentificationAssignment.cxx
+  RWStepBasic_RWIdentificationAssignment_impl.pxx
   RWStepBasic_RWIdentificationAssignment.pxx
-  RWStepBasic_RWIdentificationRole.cxx
+  RWStepBasic_RWIdentificationRole_impl.pxx
   RWStepBasic_RWIdentificationRole.pxx
-  RWStepBasic_RWLengthMeasureWithUnit.cxx
+  RWStepBasic_RWLengthMeasureWithUnit_impl.pxx
   RWStepBasic_RWLengthMeasureWithUnit.pxx
-  RWStepBasic_RWLengthUnit.cxx
+  RWStepBasic_RWLengthUnit_impl.pxx
   RWStepBasic_RWLengthUnit.pxx
-  RWStepBasic_RWLocalTime.cxx
+  RWStepBasic_RWLocalTime_impl.pxx
   RWStepBasic_RWLocalTime.pxx
-  RWStepBasic_RWMassMeasureWithUnit.cxx
+  RWStepBasic_RWMassMeasureWithUnit_impl.pxx
   RWStepBasic_RWMassMeasureWithUnit.pxx
-  RWStepBasic_RWMassUnit.cxx
+  RWStepBasic_RWMassUnit_impl.pxx
   RWStepBasic_RWMassUnit.pxx
-  RWStepBasic_RWMeasureWithUnit.cxx
+  RWStepBasic_RWMeasureWithUnit_impl.pxx
   RWStepBasic_RWMeasureWithUnit.pxx
-  RWStepBasic_RWMechanicalContext.cxx
+  RWStepBasic_RWMechanicalContext_impl.pxx
   RWStepBasic_RWMechanicalContext.pxx
-  RWStepBasic_RWNameAssignment.cxx
+  RWStepBasic_RWNameAssignment_impl.pxx
   RWStepBasic_RWNameAssignment.pxx
-  RWStepBasic_RWNamedUnit.cxx
+  RWStepBasic_RWNamedUnit_impl.pxx
   RWStepBasic_RWNamedUnit.pxx
-  RWStepBasic_RWObjectRole.cxx
+  RWStepBasic_RWObjectRole_impl.pxx
   RWStepBasic_RWObjectRole.pxx
-  RWStepBasic_RWOrdinalDate.cxx
+  RWStepBasic_RWOrdinalDate_impl.pxx
   RWStepBasic_RWOrdinalDate.pxx
-  RWStepBasic_RWOrganization.cxx
+  RWStepBasic_RWOrganization_impl.pxx
   RWStepBasic_RWOrganization.pxx
-  RWStepBasic_RWOrganizationalAddress.cxx
+  RWStepBasic_RWOrganizationalAddress_impl.pxx
   RWStepBasic_RWOrganizationalAddress.pxx
-  RWStepBasic_RWOrganizationRole.cxx
+  RWStepBasic_RWOrganizationRole_impl.pxx
   RWStepBasic_RWOrganizationRole.pxx
-  RWStepBasic_RWPerson.cxx
+  RWStepBasic_RWPerson_impl.pxx
   RWStepBasic_RWPerson.pxx
-  RWStepBasic_RWPersonalAddress.cxx
+  RWStepBasic_RWPersonalAddress_impl.pxx
   RWStepBasic_RWPersonalAddress.pxx
-  RWStepBasic_RWPersonAndOrganization.cxx
+  RWStepBasic_RWPersonAndOrganization_impl.pxx
   RWStepBasic_RWPersonAndOrganization.pxx
-  RWStepBasic_RWPersonAndOrganizationRole.cxx
+  RWStepBasic_RWPersonAndOrganizationRole_impl.pxx
   RWStepBasic_RWPersonAndOrganizationRole.pxx
-  RWStepBasic_RWPlaneAngleMeasureWithUnit.cxx
+  RWStepBasic_RWPlaneAngleMeasureWithUnit_impl.pxx
   RWStepBasic_RWPlaneAngleMeasureWithUnit.pxx
-  RWStepBasic_RWPlaneAngleUnit.cxx
+  RWStepBasic_RWPlaneAngleUnit_impl.pxx
   RWStepBasic_RWPlaneAngleUnit.pxx
-  RWStepBasic_RWProduct.cxx
+  RWStepBasic_RWProduct_impl.pxx
   RWStepBasic_RWProduct.pxx
-  RWStepBasic_RWProductCategory.cxx
+  RWStepBasic_RWProductCategory_impl.pxx
   RWStepBasic_RWProductCategory.pxx
-  RWStepBasic_RWProductCategoryRelationship.cxx
+  RWStepBasic_RWProductCategoryRelationship_impl.pxx
   RWStepBasic_RWProductCategoryRelationship.pxx
-  RWStepBasic_RWProductConceptContext.cxx
+  RWStepBasic_RWProductConceptContext_impl.pxx
   RWStepBasic_RWProductConceptContext.pxx
-  RWStepBasic_RWProductContext.cxx
+  RWStepBasic_RWProductContext_impl.pxx
   RWStepBasic_RWProductContext.pxx
-  RWStepBasic_RWProductDefinition.cxx
+  RWStepBasic_RWProductDefinition_impl.pxx
   RWStepBasic_RWProductDefinition.pxx
-  RWStepBasic_RWProductDefinitionContext.cxx
+  RWStepBasic_RWProductDefinitionContext_impl.pxx
   RWStepBasic_RWProductDefinitionContext.pxx
-  RWStepBasic_RWProductDefinitionEffectivity.cxx
+  RWStepBasic_RWProductDefinitionEffectivity_impl.pxx
   RWStepBasic_RWProductDefinitionEffectivity.pxx
-  RWStepBasic_RWProductDefinitionFormation.cxx
+  RWStepBasic_RWProductDefinitionFormation_impl.pxx
   RWStepBasic_RWProductDefinitionFormation.pxx
-  RWStepBasic_RWProductDefinitionFormationRelationship.cxx
+  RWStepBasic_RWProductDefinitionFormationRelationship_impl.pxx
   RWStepBasic_RWProductDefinitionFormationRelationship.pxx
-  RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.cxx
+  RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource_impl.pxx
   RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.pxx
-  RWStepBasic_RWProductDefinitionReference.cxx
+  RWStepBasic_RWProductDefinitionReference_impl.pxx
   RWStepBasic_RWProductDefinitionReference.pxx
-  RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation.cxx
+  RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation_impl.pxx
   RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation.pxx
-  RWStepBasic_RWProductDefinitionRelationship.cxx
+  RWStepBasic_RWProductDefinitionRelationship_impl.pxx
   RWStepBasic_RWProductDefinitionRelationship.pxx
-  RWStepBasic_RWProductDefinitionWithAssociatedDocuments.cxx
+  RWStepBasic_RWProductDefinitionWithAssociatedDocuments_impl.pxx
   RWStepBasic_RWProductDefinitionWithAssociatedDocuments.pxx
-  RWStepBasic_RWProductRelatedProductCategory.cxx
+  RWStepBasic_RWProductRelatedProductCategory_impl.pxx
   RWStepBasic_RWProductRelatedProductCategory.pxx
-  RWStepBasic_RWProductType.cxx
+  RWStepBasic_RWProductType_impl.pxx
   RWStepBasic_RWProductType.pxx
-  RWStepBasic_RWRatioMeasureWithUnit.cxx
+  RWStepBasic_RWRatioMeasureWithUnit_impl.pxx
   RWStepBasic_RWRatioMeasureWithUnit.pxx
-  RWStepBasic_RWRoleAssociation.cxx
+  RWStepBasic_RWRoleAssociation_impl.pxx
   RWStepBasic_RWRoleAssociation.pxx
-  RWStepBasic_RWSecurityClassification.cxx
+  RWStepBasic_RWSecurityClassification_impl.pxx
   RWStepBasic_RWSecurityClassification.pxx
-  RWStepBasic_RWSecurityClassificationLevel.cxx
+  RWStepBasic_RWSecurityClassificationLevel_impl.pxx
   RWStepBasic_RWSecurityClassificationLevel.pxx
   RWStepBasic_RWSiPrefix.pxx
-  RWStepBasic_RWSiUnit.cxx
+  RWStepBasic_RWSiUnit_impl.pxx
   RWStepBasic_RWSiUnit.pxx
-  RWStepBasic_RWSiUnitAndAreaUnit.cxx
+  RWStepBasic_RWSiUnitAndAreaUnit_impl.pxx
   RWStepBasic_RWSiUnitAndAreaUnit.pxx
-  RWStepBasic_RWSiUnitAndLengthUnit.cxx
+  RWStepBasic_RWSiUnitAndLengthUnit_impl.pxx
   RWStepBasic_RWSiUnitAndLengthUnit.pxx
-  RWStepBasic_RWSiUnitAndMassUnit.cxx
+  RWStepBasic_RWSiUnitAndMassUnit_impl.pxx
   RWStepBasic_RWSiUnitAndMassUnit.pxx
-  RWStepBasic_RWSiUnitAndPlaneAngleUnit.cxx
+  RWStepBasic_RWSiUnitAndPlaneAngleUnit_impl.pxx
   RWStepBasic_RWSiUnitAndPlaneAngleUnit.pxx
-  RWStepBasic_RWSiUnitAndRatioUnit.cxx
+  RWStepBasic_RWSiUnitAndRatioUnit_impl.pxx
   RWStepBasic_RWSiUnitAndRatioUnit.pxx
-  RWStepBasic_RWSiUnitAndSolidAngleUnit.cxx
+  RWStepBasic_RWSiUnitAndSolidAngleUnit_impl.pxx
   RWStepBasic_RWSiUnitAndSolidAngleUnit.pxx
-  RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit.cxx
+  RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit_impl.pxx
   RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit.pxx
-  RWStepBasic_RWSiUnitAndTimeUnit.cxx
+  RWStepBasic_RWSiUnitAndTimeUnit_impl.pxx
   RWStepBasic_RWSiUnitAndTimeUnit.pxx
-  RWStepBasic_RWSiUnitAndVolumeUnit.cxx
+  RWStepBasic_RWSiUnitAndVolumeUnit_impl.pxx
   RWStepBasic_RWSiUnitAndVolumeUnit.pxx
   RWStepBasic_RWSiUnitName.pxx
-  RWStepBasic_RWSolidAngleMeasureWithUnit.cxx
+  RWStepBasic_RWSolidAngleMeasureWithUnit_impl.pxx
   RWStepBasic_RWSolidAngleMeasureWithUnit.pxx
-  RWStepBasic_RWSolidAngleUnit.cxx
+  RWStepBasic_RWSolidAngleUnit_impl.pxx
   RWStepBasic_RWSolidAngleUnit.pxx
   RWStepBasic_RWSource.pxx
-  RWStepBasic_RWThermodynamicTemperatureUnit.cxx
+  RWStepBasic_RWThermodynamicTemperatureUnit_impl.pxx
   RWStepBasic_RWThermodynamicTemperatureUnit.pxx
-  RWStepBasic_RWUncertaintyMeasureWithUnit.cxx
+  RWStepBasic_RWUncertaintyMeasureWithUnit_impl.pxx
   RWStepBasic_RWUncertaintyMeasureWithUnit.pxx
-  RWStepBasic_RWVersionedActionRequest.cxx
+  RWStepBasic_RWVersionedActionRequest_impl.pxx
   RWStepBasic_RWVersionedActionRequest.pxx
-  RWStepBasic_RWWeekOfYearAndDayDate.cxx
+  RWStepBasic_RWWeekOfYearAndDayDate_impl.pxx
   RWStepBasic_RWWeekOfYearAndDayDate.pxx
 )

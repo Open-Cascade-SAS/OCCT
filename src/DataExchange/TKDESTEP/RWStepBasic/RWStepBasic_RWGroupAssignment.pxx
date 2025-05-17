@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepBasic_RWGroupAssignment();
+  inline RWStepBasic_RWGroupAssignment();
 
   //! Reads GroupAssignment
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&   data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
                                 const Standard_Integer                   num,
                                 Handle(Interface_Check)&                 ach,
                                 const Handle(StepBasic_GroupAssignment)& ent) const;
 
   //! Writes GroupAssignment
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                     SW,
+  inline void WriteStep(StepData_StepWriter&                     SW,
                                  const Handle(StepBasic_GroupAssignment)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepBasic_GroupAssignment)& ent,
+  inline void Share(const Handle(StepBasic_GroupAssignment)& ent,
                              Interface_EntityIterator&                iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepBasic_RWGroupAssignment_impl.pxx"
 #endif // _RWStepBasic_RWGroupAssignment_HeaderFile

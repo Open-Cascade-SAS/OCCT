@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWCurveElementInterval();
+  inline RWStepFEA_RWCurveElementInterval();
 
   //! Reads CurveElementInterval
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                                 const Standard_Integer                      num,
                                 Handle(Interface_Check)&                    ach,
                                 const Handle(StepFEA_CurveElementInterval)& ent) const;
 
   //! Writes CurveElementInterval
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
+  inline void WriteStep(StepData_StepWriter&                        SW,
                                  const Handle(StepFEA_CurveElementInterval)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_CurveElementInterval)& ent,
+  inline void Share(const Handle(StepFEA_CurveElementInterval)& ent,
                              Interface_EntityIterator&                   iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWCurveElementInterval_impl.pxx"
 #endif // _RWStepFEA_RWCurveElementInterval_HeaderFile

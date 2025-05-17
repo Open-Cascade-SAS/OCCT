@@ -34,18 +34,19 @@ class RWStepVisual_RWTessellatedSolid
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWTessellatedSolid();
+  inline RWStepVisual_RWTessellatedSolid();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&     theData,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&     theData,
                                 const Standard_Integer                     theNum,
                                 Handle(Interface_Check)&                   theCheck,
                                 const Handle(StepVisual_TessellatedSolid)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                       theSW,
+  inline void WriteStep(StepData_StepWriter&                       theSW,
                                  const Handle(StepVisual_TessellatedSolid)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_TessellatedSolid)& theEnt,
+  inline void Share(const Handle(StepVisual_TessellatedSolid)& theEnt,
                              Interface_EntityIterator&                  theIter) const;
 };
 
+#include "RWStepVisual_RWTessellatedSolid_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedSolid_HeaderFile_

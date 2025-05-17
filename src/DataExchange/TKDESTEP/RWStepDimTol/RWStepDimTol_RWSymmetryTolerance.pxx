@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWSymmetryTolerance();
+  inline RWStepDimTol_RWSymmetryTolerance();
 
   //! Reads SymmetryTolerance
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                                 const Standard_Integer                      num,
                                 Handle(Interface_Check)&                    ach,
                                 const Handle(StepDimTol_SymmetryTolerance)& ent) const;
 
   //! Writes SymmetryTolerance
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
+  inline void WriteStep(StepData_StepWriter&                        SW,
                                  const Handle(StepDimTol_SymmetryTolerance)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_SymmetryTolerance)& ent,
+  inline void Share(const Handle(StepDimTol_SymmetryTolerance)& ent,
                              Interface_EntityIterator&                   iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepDimTol_RWSymmetryTolerance_impl.pxx"
 #endif // _RWStepDimTol_RWSymmetryTolerance_HeaderFile

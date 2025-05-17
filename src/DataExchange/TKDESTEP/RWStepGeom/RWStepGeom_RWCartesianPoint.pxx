@@ -33,18 +33,19 @@ class RWStepGeom_RWCartesianPoint
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepGeom_RWCartesianPoint();
+  inline RWStepGeom_RWCartesianPoint();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(StepGeom_CartesianPoint)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                   SW,
+  inline void WriteStep(StepData_StepWriter&                   SW,
                                  const Handle(StepGeom_CartesianPoint)& ent) const;
 
 protected:
 private:
 };
 
+#include "RWStepGeom_RWCartesianPoint_impl.pxx"
 #endif // _RWStepGeom_RWCartesianPoint_HeaderFile

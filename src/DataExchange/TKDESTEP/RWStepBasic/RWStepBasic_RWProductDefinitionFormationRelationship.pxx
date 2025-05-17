@@ -34,26 +34,27 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepBasic_RWProductDefinitionFormationRelationship();
+  inline RWStepBasic_RWProductDefinitionFormationRelationship();
 
   //! Reads ProductDefinitionFormationRelationship
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          data,
     const Standard_Integer                                          num,
     Handle(Interface_Check)&                                        ach,
     const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent) const;
 
   //! Writes ProductDefinitionFormationRelationship
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                            SW,
     const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent,
+  inline void Share(const Handle(StepBasic_ProductDefinitionFormationRelationship)& ent,
                              Interface_EntityIterator& iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepBasic_RWProductDefinitionFormationRelationship_impl.pxx"
 #endif // _RWStepBasic_RWProductDefinitionFormationRelationship_HeaderFile
