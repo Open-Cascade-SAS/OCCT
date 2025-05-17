@@ -122,9 +122,9 @@ jobs:
         compiler: clang
         artifact-name: install-linux-clang-x64
 
-  prepare-and-build-linux-clang-no-pch:
-    name: Prepare and Build on Ubuntu with Clang (No PCH)
-    runs-on: ubuntu-24.04
+  prepare-and-build-macos-clang-no-pch:
+    name: Prepare and Build on macOS with Clang (No PCH)
+    runs-on: macos-15
 
     steps:
     - name: Checkout repository
@@ -133,9 +133,9 @@ jobs:
     - name: Build OCCT
       uses: ./.github/actions/build-occt
       with:
-        platform: linux
+        platform: macos
         compiler: clang
-        artifact-name: install-linux-clang-no-pch
+        artifact-name: install-macos-clang-no-pch
         build-use-pch: 'false'
         build-opt-profile: 'Default'
         additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"'
