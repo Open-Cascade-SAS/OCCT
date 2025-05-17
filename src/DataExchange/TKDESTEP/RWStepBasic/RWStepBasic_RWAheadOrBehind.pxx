@@ -26,7 +26,7 @@ static constexpr char aobBehind[] = ".BEHIND.";
 //! Convert StepBasic_AheadOrBehind to string
 //! @param theSourceEnum The StepBasic_AheadOrBehind value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
+inline const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -44,7 +44,7 @@ static const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
 //! @param theAheadOrBehindStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_AheadOrBehind value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString   theAheadOrBehindStr,
+inline bool ConvertToEnum(const Standard_CString   theAheadOrBehindStr,
                           StepBasic_AheadOrBehind& theResultEnum)
 {
   if (IsEqual(theAheadOrBehindStr, aobAhead))

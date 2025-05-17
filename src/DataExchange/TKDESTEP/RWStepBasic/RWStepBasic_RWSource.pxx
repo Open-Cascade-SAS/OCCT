@@ -26,7 +26,7 @@ static constexpr char sMade[]     = ".MADE.";
 //! Convert StepBasic_Source to string
 //! @param theSourceEnum The StepBasic_Source value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepBasic_Source theSourceEnum)
+inline const char* ConvertToString(const StepBasic_Source theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -44,7 +44,7 @@ static const char* ConvertToString(const StepBasic_Source theSourceEnum)
 //! @param theSourceStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_Source value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString theSourceStr, StepBasic_Source& theResultEnum)
+inline bool ConvertToEnum(const Standard_CString theSourceStr, StepBasic_Source& theResultEnum)
 {
   if (IsEqual(theSourceStr, sBought))
   {

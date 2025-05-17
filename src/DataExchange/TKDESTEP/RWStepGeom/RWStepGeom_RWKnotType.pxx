@@ -31,7 +31,7 @@ static constexpr char ktUnspecified[]          = (".UNSPECIFIED.");
 //! Convert StepGeom_KnotType to string
 //! @param theSourceEnum The StepGeom_KnotType value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
+inline const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -51,7 +51,7 @@ static const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
 //! @param theKnotTypeString The string to convert
 //! @param theResultEnum The corresponding StepGeom_KnotType value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString theKnotTypeString,
+inline bool ConvertToEnum(const Standard_CString theKnotTypeString,
                           StepGeom_KnotType&     theResultEnum)
 {
   if (IsEqual(theKnotTypeString, ktUniformKnots))

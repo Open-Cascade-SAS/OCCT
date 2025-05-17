@@ -25,7 +25,7 @@ static constexpr char copParallel[] = ".PARALLEL.";
 //! Convert StepVisual_CentralOrParallel to string
 //! @param theSourceEnum The StepVisual_CentralOrParallel value to convert
 //! @return The corresponding string representation or nullptr if not found
-static const char* ConvertToString(const StepVisual_CentralOrParallel theSourceEnum)
+inline const char* ConvertToString(const StepVisual_CentralOrParallel theSourceEnum)
 {
   switch (theSourceEnum)
   {
@@ -41,7 +41,7 @@ static const char* ConvertToString(const StepVisual_CentralOrParallel theSourceE
 //! @param theCentralOrParallelStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_CentralOrParallel value
 //! @return Standard_True if the conversion was successful, Standard_False otherwise
-static bool ConvertToEnum(const Standard_CString        theCentralOrParallelStr,
+inline bool ConvertToEnum(const Standard_CString        theCentralOrParallelStr,
                           StepVisual_CentralOrParallel& theResultEnum)
 {
   if (IsEqual(theCentralOrParallelStr, copCentral))
