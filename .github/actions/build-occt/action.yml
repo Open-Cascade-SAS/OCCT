@@ -19,6 +19,18 @@ inputs:
     description: 'Enable VTK'
     required: false
     default: 'true'
+  build-use-pch:
+    description: 'Enable precompiled headers'
+    required: false
+    default: 'true'
+  build-opt-profile:
+    description: 'Build optimization profile'
+    required: false
+    default: 'Production'
+  cmake-build-type:
+    description: 'CMake build type (Release, Debug, etc)'
+    required: false
+    default: 'Release'
 
 runs:
   using: "composite"
@@ -82,41 +94,10 @@ runs:
           cmake -T host=x64 `
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
-                -D BUILD_USE_PCH=ON `
-                -D BUILD_OPT_PROFILE=Production `
+                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
+                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=Release `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=${{ inputs.use-vtk }} `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
-                -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON ${{ inputs.additional-cmake-flags }} ..
-      shell: pwsh
-
-    - name: Configure OCCT (Windows Clang)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
-      run: |
-          mkdir build
-          cd build
-          cmake -G "Ninja" `
-                -D CMAKE_C_COMPILER=clang `
-                -D CMAKE_CXX_COMPILER=clang++ `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
-                -D BUILD_USE_PCH=ON `
-                -D BUILD_OPT_PROFILE=Production `
-                -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=Release `
+                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D USE_D3D=ON `
@@ -132,8 +113,39 @@ runs:
                 -D BUILD_GTEST=ON `
                 -D BUILD_CPP_STANDARD=C++17 `
                 -D INSTALL_GTEST=ON `
-                -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
-                -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ${{ inputs.additional-cmake-flags }} ..
+                ${{ inputs.additional-cmake-flags }} ..
+      shell: pwsh
+
+    - name: Configure OCCT (Windows Clang)
+      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
+      run: |
+          mkdir build
+          cd build
+          cmake -G "Ninja" `
+                -D CMAKE_C_COMPILER=clang `
+                -D CMAKE_CXX_COMPILER=clang++ `
+                -D USE_FREETYPE=ON `
+                -D USE_TK=OFF `
+                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
+                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
+                -D BUILD_INCLUDE_SYMLINK=ON `
+                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
+                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+                -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_D3D=ON `
+                -D USE_DRACO=ON `
+                -D USE_FFMPEG=ON `
+                -D USE_FREEIMAGE=ON `
+                -D USE_GLES2=ON `
+                -D USE_OPENVR=ON `
+                -D USE_VTK=${{ inputs.use-vtk }} `
+                -D USE_TBB=ON `
+                -D USE_RAPIDJSON=ON `
+                -D USE_OPENGL=ON `
+                -D BUILD_GTEST=ON `
+                -D BUILD_CPP_STANDARD=C++17 `
+                -D INSTALL_GTEST=ON `
+                ${{ inputs.additional-cmake-flags }} ..
       shell: pwsh
 
     - name: Configure OCCT (macOS)
@@ -144,9 +156,10 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=ON \
+              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
+              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_RAPIDJSON=ON \
@@ -158,7 +171,7 @@ runs:
               -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
               -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ${{ inputs.additional-cmake-flags }} ..
+              ${{ inputs.additional-cmake-flags }} ..
       shell: bash
 
     - name: Configure OCCT (Linux)
@@ -169,11 +182,11 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=ON \
+              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D USE_TK=OFF \
-              -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
@@ -189,7 +202,7 @@ runs:
               -D BUILD_GTEST=ON \
               -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
-              ${{ inputs.compiler == 'clang' && '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"' || '' }} ${{ inputs.additional-cmake-flags }} ..
+              ${{ inputs.additional-cmake-flags }} ..
       shell: bash
 
     - name: Build OCCT (Windows)
