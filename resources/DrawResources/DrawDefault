@@ -28,6 +28,9 @@ if { [info exists env(DRAWHOME) ] } {
 } else {
   if { [info exists env(CASROOT) ] } {
     set dir [file join $env(CASROOT) src DrawResources]
+    if { ! [file isdirectory $dir] } {
+      set dir [file join $env(CASROOT) resources DrawResources]
+    }
   } else {
     puts "Warning: CASROOT is not defined, some features may not load correctly"
     set dir [file dirname [info script]]
