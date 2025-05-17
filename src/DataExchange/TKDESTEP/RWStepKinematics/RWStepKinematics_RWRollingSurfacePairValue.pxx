@@ -33,18 +33,19 @@ class RWStepKinematics_RWRollingSurfacePairValue
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWRollingSurfacePairValue();
+  inline RWStepKinematics_RWRollingSurfacePairValue();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                theData,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&                theData,
                                 const Standard_Integer                                theNum,
                                 Handle(Interface_Check)&                              theArch,
                                 const Handle(StepKinematics_RollingSurfacePairValue)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                  theSW,
     const Handle(StepKinematics_RollingSurfacePairValue)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_RollingSurfacePairValue)& theEnt,
+  inline void Share(const Handle(StepKinematics_RollingSurfacePairValue)& theEnt,
                              Interface_EntityIterator&                             iter) const;
 };
+#include "RWStepKinematics_RWRollingSurfacePairValue_impl.pxx"
 #endif // _RWStepKinematics_RWRollingSurfacePairValue_HeaderFile_

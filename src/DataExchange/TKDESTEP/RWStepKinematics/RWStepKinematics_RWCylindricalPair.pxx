@@ -33,17 +33,18 @@ class RWStepKinematics_RWCylindricalPair
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWCylindricalPair();
+  inline RWStepKinematics_RWCylindricalPair();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&        theData,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&        theData,
                                 const Standard_Integer                        theNum,
                                 Handle(Interface_Check)&                      theArch,
                                 const Handle(StepKinematics_CylindricalPair)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                          theSW,
+  inline void WriteStep(StepData_StepWriter&                          theSW,
                                  const Handle(StepKinematics_CylindricalPair)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_CylindricalPair)& theEnt,
+  inline void Share(const Handle(StepKinematics_CylindricalPair)& theEnt,
                              Interface_EntityIterator&                     iter) const;
 };
+#include "RWStepKinematics_RWCylindricalPair_impl.pxx"
 #endif // _RWStepKinematics_RWCylindricalPair_HeaderFile_

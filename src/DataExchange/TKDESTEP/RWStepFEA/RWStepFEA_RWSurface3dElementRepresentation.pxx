@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWSurface3dElementRepresentation();
+  inline RWStepFEA_RWSurface3dElementRepresentation();
 
   //! Reads Surface3dElementRepresentation
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&                data,
                                 const Standard_Integer                                num,
                                 Handle(Interface_Check)&                              ach,
                                 const Handle(StepFEA_Surface3dElementRepresentation)& ent) const;
 
   //! Writes Surface3dElementRepresentation
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                  SW,
+  inline void WriteStep(StepData_StepWriter&                                  SW,
                                  const Handle(StepFEA_Surface3dElementRepresentation)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_Surface3dElementRepresentation)& ent,
+  inline void Share(const Handle(StepFEA_Surface3dElementRepresentation)& ent,
                              Interface_EntityIterator&                             iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWSurface3dElementRepresentation_impl.pxx"
 #endif // _RWStepFEA_RWSurface3dElementRepresentation_HeaderFile

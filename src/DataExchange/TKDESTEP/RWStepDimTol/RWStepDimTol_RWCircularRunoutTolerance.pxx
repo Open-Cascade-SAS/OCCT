@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWCircularRunoutTolerance();
+  inline RWStepDimTol_RWCircularRunoutTolerance();
 
   //! Reads CircularRunoutTolerance
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&            data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                                 const Standard_Integer                            num,
                                 Handle(Interface_Check)&                          ach,
                                 const Handle(StepDimTol_CircularRunoutTolerance)& ent) const;
 
   //! Writes CircularRunoutTolerance
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              SW,
+  inline void WriteStep(StepData_StepWriter&                              SW,
                                  const Handle(StepDimTol_CircularRunoutTolerance)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_CircularRunoutTolerance)& ent,
+  inline void Share(const Handle(StepDimTol_CircularRunoutTolerance)& ent,
                              Interface_EntityIterator&                         iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepDimTol_RWCircularRunoutTolerance_impl.pxx"
 #endif // _RWStepDimTol_RWCircularRunoutTolerance_HeaderFile

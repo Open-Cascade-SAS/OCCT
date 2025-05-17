@@ -34,19 +34,19 @@ class RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem();
+  inline RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem();
 
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                           data,
     const Standard_Integer                                                           num,
     Handle(Interface_Check)&                                                         ach,
     const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const;
 
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                                             SW,
     const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const;
 
-  Standard_HIDDEN void Share(
+  inline void Share(
     const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent,
     Interface_EntityIterator&                                                        iter) const;
 
@@ -54,4 +54,5 @@ protected:
 private:
 };
 
+#include "RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem_impl.pxx"
 #endif // _RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem_HeaderFile
