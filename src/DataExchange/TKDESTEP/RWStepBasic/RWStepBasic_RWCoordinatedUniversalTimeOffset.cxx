@@ -17,10 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : AheadOrBehind ---
-static TCollection_AsciiString aobAhead(".AHEAD.");
-static TCollection_AsciiString aobExact(".EXACT.");
-static TCollection_AsciiString aobBehind(".BEHIND.");
+#include "RWStepBasic_RWAheadOrBehind.pxx"
 
 RWStepBasic_RWCoordinatedUniversalTimeOffset::RWStepBasic_RWCoordinatedUniversalTimeOffset() {}
 
@@ -63,14 +60,10 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 3);
-    if (aobAhead.IsEqual(text))
-      aSense = StepBasic_aobAhead;
-    else if (aobExact.IsEqual(text))
-      aSense = StepBasic_aobExact;
-    else if (aobBehind.IsEqual(text))
-      aSense = StepBasic_aobBehind;
-    else
+    if (!RWStepBasic_RWAheadOrBehind::ConvertToEnum(text, aSense))
+    {
       ach->AddFail("Enumeration ahead_or_behind has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #3 (sense) is not an enumeration");
@@ -103,16 +96,5 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::WriteStep(
 
   // --- own field : sense ---
 
-  switch (ent->Sense())
-  {
-    case StepBasic_aobAhead:
-      SW.SendEnum(aobAhead);
-      break;
-    case StepBasic_aobExact:
-      SW.SendEnum(aobExact);
-      break;
-    case StepBasic_aobBehind:
-      SW.SendEnum(aobBehind);
-      break;
-  }
+  SW.SendEnum(RWStepBasic_RWAheadOrBehind::ConvertToString(ent->Sense()));
 }

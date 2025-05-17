@@ -22,10 +22,7 @@
 #include <StepGeom_TrimmingSelect.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : TrimmingPreference ---
-static TCollection_AsciiString tpParameter(".PARAMETER.");
-static TCollection_AsciiString tpUnspecified(".UNSPECIFIED.");
-static TCollection_AsciiString tpCartesian(".CARTESIAN.");
+#include "RWStepGeom_RWTrimmingPreference.pxx"
 
 RWStepGeom_RWTrimmedCurve::RWStepGeom_RWTrimmedCurve() {}
 
@@ -102,14 +99,10 @@ void RWStepGeom_RWTrimmedCurve::ReadStep(const Handle(StepData_StepReaderData)& 
   if (data->ParamType(num, 6) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 6);
-    if (tpParameter.IsEqual(text))
-      aMasterRepresentation = StepGeom_tpParameter;
-    else if (tpUnspecified.IsEqual(text))
-      aMasterRepresentation = StepGeom_tpUnspecified;
-    else if (tpCartesian.IsEqual(text))
-      aMasterRepresentation = StepGeom_tpCartesian;
-    else
+    if (!RWStepGeom_RWTrimmingPreference::ConvertToEnum(text, aMasterRepresentation))
+    {
       ach->AddFail("Enumeration trimming_preference has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #6 (master_representation) is not an enumeration");
@@ -155,18 +148,7 @@ void RWStepGeom_RWTrimmedCurve::WriteStep(StepData_StepWriter&                 S
 
   // --- own field : masterRepresentation ---
 
-  switch (ent->MasterRepresentation())
-  {
-    case StepGeom_tpParameter:
-      SW.SendEnum(tpParameter);
-      break;
-    case StepGeom_tpUnspecified:
-      SW.SendEnum(tpUnspecified);
-      break;
-    case StepGeom_tpCartesian:
-      SW.SendEnum(tpCartesian);
-      break;
-  }
+  SW.SendEnum(RWStepGeom_RWTrimmingPreference::ConvertToString(ent->MasterRepresentation()));
 }
 
 void RWStepGeom_RWTrimmedCurve::Share(const Handle(StepGeom_TrimmedCurve)& ent,
