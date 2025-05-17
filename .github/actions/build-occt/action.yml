@@ -27,6 +27,10 @@ inputs:
     description: 'Build optimization profile'
     required: false
     default: 'Production'
+  cmake-build-type:
+    description: 'CMake build type (Release, Debug, etc)'
+    required: false
+    default: 'Release'
 
 runs:
   using: "composite"
@@ -93,7 +97,7 @@ runs:
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=Release `
+                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D USE_D3D=ON `
@@ -125,7 +129,7 @@ runs:
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=Release `
+                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D USE_D3D=ON `
@@ -155,7 +159,7 @@ runs:
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
-              -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_RAPIDJSON=ON \
@@ -182,7 +186,7 @@ runs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D USE_TK=OFF \
-              -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
