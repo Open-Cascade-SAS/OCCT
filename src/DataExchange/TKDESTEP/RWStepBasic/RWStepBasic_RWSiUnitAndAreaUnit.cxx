@@ -50,8 +50,8 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const Handle(StepData_StepReaderD
   if (!data->CheckNbParams(num, 2, ach, "si_unit"))
     return;
 
-  StepBasic_SiPrefix   aPrefix    = StepBasic_spExa;
-  Standard_Boolean     hasAprefix = Standard_False;
+  StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
+  Standard_Boolean   hasAprefix = Standard_False;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
@@ -100,7 +100,7 @@ void RWStepBasic_RWSiUnitAndAreaUnit::WriteStep(
   SW.Send(ent->Dimensions());
   SW.StartEntity("SI_UNIT");
 
-  Standard_Boolean     hasAprefix = ent->HasPrefix();
+  Standard_Boolean hasAprefix = ent->HasPrefix();
   if (hasAprefix)
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else

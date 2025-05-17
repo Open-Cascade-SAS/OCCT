@@ -81,7 +81,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep(
   {
     Standard_CString text = data->ParamCValue(num, 3);
     if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
-    { 
+    {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
     }
   }
@@ -193,7 +193,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::WriteStep(
   // --- field : curveForm ---
 
   SW.SendEnum(RWStepGeom_RWBSplineCurveForm::ConvertToString(ent->CurveForm()));
- 
+
   // --- field : closedCurve ---
 
   SW.SendLogical(ent->ClosedCurve());

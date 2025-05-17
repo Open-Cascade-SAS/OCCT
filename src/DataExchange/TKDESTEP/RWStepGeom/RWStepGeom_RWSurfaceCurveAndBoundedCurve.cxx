@@ -87,7 +87,8 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   if (data->ParamType(num1, 3) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num1, 3);
-    if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text, aMasterRepresentation))
+    if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text,
+                                                                         aMasterRepresentation))
     {
       ach->AddFail("Enumeration preferred_surface_curve_representation has not an allowed value");
     }
