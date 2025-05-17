@@ -12,6 +12,7 @@ set(OCCT_RWStepShape_FILES
   RWStepShape_RWAngularSize.pxx
   RWStepShape_RWBlock.cxx
   RWStepShape_RWBlock.pxx
+  RWStepShape_RWBooleanOperator.pxx
   RWStepShape_RWBooleanResult.cxx
   RWStepShape_RWBooleanResult.pxx
   RWStepShape_RWBoxDomain.cxx

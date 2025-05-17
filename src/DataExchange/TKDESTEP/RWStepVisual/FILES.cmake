@@ -34,6 +34,7 @@ set(OCCT_RWStepVisual_FILES
   RWStepVisual_RWCameraModelD3MultiClippingUnion.pxx
   RWStepVisual_RWCameraUsage.cxx
   RWStepVisual_RWCameraUsage.pxx
+  RWStepVisual_RWCentralOrParallel.pxx
   RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel.cxx
   RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel.pxx
   RWStepVisual_RWColour.cxx
@@ -116,6 +117,7 @@ set(OCCT_RWStepVisual_FILES
   RWStepVisual_RWRepositionedTessellatedItem.pxx
   RWStepVisual_RWStyledItem.cxx
   RWStepVisual_RWStyledItem.pxx
+  RWStepVisual_RWSurfaceSide.pxx
   RWStepVisual_RWSurfaceSideStyle.cxx
   RWStepVisual_RWSurfaceSideStyle.pxx
   RWStepVisual_RWSurfaceStyleBoundary.cxx
@@ -150,6 +152,7 @@ set(OCCT_RWStepVisual_FILES
   RWStepVisual_RWTemplateInstance.pxx
   RWStepVisual_RWTextLiteral.cxx
   RWStepVisual_RWTextLiteral.pxx
+  RWStepVisual_RWTextPath.pxx
   RWStepVisual_RWTextStyle.cxx
   RWStepVisual_RWTextStyle.pxx
   RWStepVisual_RWTextStyleForDefinedFont.cxx
