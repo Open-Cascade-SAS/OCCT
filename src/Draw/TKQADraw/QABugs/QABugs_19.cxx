@@ -130,58 +130,6 @@ static Standard_Integer OCC23361(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer OCC23237(Draw_Interpretor& di,
-                                 Standard_Integer /*argc*/,
-                                 const char** /*argv*/)
-{
-  OSD_PerfMeter aPM("TestMeter", 0);
-  OSD_Timer     aTM;
-
-  // run some operation in cycle for about 2 seconds to have good values of times to compare
-  int count = 0;
-  printf("OSD_PerfMeter test.\nRunning Boolean operation on solids in loop.\n");
-  for (; aTM.ElapsedTime() < 2.; count++)
-  {
-    aPM.Start();
-    aTM.Start();
-
-    // do some operation that will take considerable time compared with time of starting / stopping
-    // timers
-    BRepPrimAPI_MakeBox    aBox(10., 10., 10.);
-    BRepPrimAPI_MakeSphere aSphere(10.);
-    BRepAlgoAPI_Cut        aCutter(aBox.Shape(), aSphere.Shape());
-
-    aTM.Stop();
-    aPM.Stop();
-  }
-
-  int              aNbEnters          = 0;
-  Standard_Real    aPerfMeter_CPUtime = 0., aTimer_CPUTime = 0., aS;
-  Standard_Integer aM, aH;
-  aTM.Show(aS, aM, aH, aTimer_CPUTime);
-
-  perf_get_meter("TestMeter", &aNbEnters, &aPerfMeter_CPUtime);
-  perf_init_meter("TestMeter");
-
-  Standard_Real aTimeDiff = (fabs(aTimer_CPUTime - aPerfMeter_CPUtime) / aTimer_CPUTime);
-
-  printf("\nMeasurement results (%d cycles):\n", count);
-  printf("\nOSD_PerfMeter CPU time: %lf\nOSD_Timer CPU time: %lf\n",
-         aPerfMeter_CPUtime,
-         aTimer_CPUTime);
-  printf("Time delta is: %.3lf %%\n", aTimeDiff * 100);
-
-  if (aTimeDiff > 0.2)
-    di << "OCC23237: Error: too much difference between CPU and elapsed times";
-  else if (aNbEnters != count)
-    di << "OCC23237: Error: counter reported by PerfMeter (" << aNbEnters
-       << ") does not correspond to actual number of cycles";
-  else
-    di << "OCC23237: OK";
-
-  return 0;
-}
-
 class IncrementerDecrementer
 {
 public:
@@ -5462,7 +5410,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
 
   theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add("OCC23361", "OCC23361", __FILE__, OCC23361, group);
-  theCommands.Add("OCC23237", "OCC23237", __FILE__, OCC23237, group);
   theCommands.Add("OCC22980", "OCC22980", __FILE__, OCC22980, group);
   theCommands.Add("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);

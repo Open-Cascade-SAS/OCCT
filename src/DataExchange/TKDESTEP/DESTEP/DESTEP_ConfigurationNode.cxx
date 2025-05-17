@@ -200,6 +200,8 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                                                        aScope);
   InternalParameters.CleanDuplicates =
     theResource->BooleanVal("write.cleanduplicates", InternalParameters.CleanDuplicates, aScope);
+  InternalParameters.WriteScalingTrsf =
+    theResource->BooleanVal("write.scaling.trsf", InternalParameters.WriteScalingTrsf, aScope);
 
   return DE_ShapeFixConfigurationNode::Load(theResource);
 }
@@ -587,6 +589,13 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
              "removed from the model befor writing.\n";
   aResult += "!Default value: -. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.cleanduplicates :\t " + InternalParameters.CleanDuplicates + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult +=
+    "!Defines export scaling factor in transformation as Cartesian Operator (On) or skip(Off)";
+  aResult += "!Default value: 1(\"On\"). Available values: 0(\"OFF\"), 1(\"On\")\n";
+  aResult += aScope + "write.scaling.trsf :\t " + InternalParameters.WriteScalingTrsf + "\n";
   aResult += "!\n";
 
   aResult += DE_ShapeFixConfigurationNode::Save();

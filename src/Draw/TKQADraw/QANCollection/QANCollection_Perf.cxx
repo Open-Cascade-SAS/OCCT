@@ -97,9 +97,9 @@ DEFINE_HSEQUENCE(QANCollection_HSequencePerf, QANCollection_SequencePerf)
 
 static void printAllMeters(Draw_Interpretor& theDI)
 {
-  char buffer[25600];
-  perf_sprint_all_meters(buffer, 25600 - 1, 1);
-  theDI << buffer;
+  const TCollection_AsciiString aStr = OSD_PerfMeter::PrintALL();
+  theDI << aStr << "\n";
+  OSD_PerfMeter::ResetALL();
 }
 
 // ===================== Test perform of Array1 type ==========================
@@ -109,79 +109,60 @@ static void CompArray1(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNCrea ("NCollection_Array1 creation",0);
-  ////////////////////////////////Perf_Meter aTCrea ("TCollection_Array1 creation",0);
-  ////////////////////////////////Perf_Meter aNFill ("NCollection_Array1 filling",0);
-  ////////////////////////////////Perf_Meter aTFill ("TCollection_Array1 filling",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_Array1 finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_Array1 finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Array1 operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Array1 operator=",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Array1 Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////aNCrea.Start();
-    PERF_START_METER("NCollection_Array1 creation")
-    ////////////////////////////////QANCollection_Array1 a1(1,theSize), a2(1,theSize);
+    OSD_PerfMeter            aCreationMeter("NCollection_Array1 creation");
     QANCollection_Array1Perf a1(1, theSize), a2(1, theSize);
-    ////////////////////////////////aNCrea.Stop();
-    PERF_STOP_METER("NCollection_Array1 creation")
-    ////////////////////////////////aNFill.Start();
-    PERF_START_METER("NCollection_Array1 filling")
+    aCreationMeter.Stop();
+
+    OSD_PerfMeter aFillingMeter("NCollection_Array1 filling");
     for (j = 1; j <= theSize; j++)
       Random(a1(j));
-    ////////////////////////////////aNFill.Stop();
-    PERF_STOP_METER("NCollection_Array1 filling")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_Array1 finding")
+    aFillingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_Array1 finding");
     for (j = 1; j <= theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.Value(iIndex + 1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_Array1 finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_Array1 operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_Array1 operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_Array1 operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_Array1 Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_Array1 Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_Array1 Assign")
+    aAssignFnMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////aTCrea.Start();
-    PERF_START_METER("TCollection_Array1 creation")
+    OSD_PerfMeter      aCreationMeter("TCollection_Array1 creation");
     TColgp_Array1OfPnt a1(1, theSize), a2(1, theSize);
-    ////////////////////////////////aTCrea.Stop();
-    PERF_STOP_METER("TCollection_Array1 creation")
-    ////////////////////////////////aTFill.Start();
-    PERF_START_METER("TCollection_Array1 filling")
+    aCreationMeter.Stop();
+
+    OSD_PerfMeter aFillingMeter("TCollection_Array1 filling");
     for (j = 1; j <= theSize; j++)
+    {
       Random(a1(j));
-    ////////////////////////////////aTFill.Stop();
-    PERF_STOP_METER("TCollection_Array1 filling")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_Array1 finding")
+    }
+    aFillingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_Array1 finding");
     for (j = 1; j <= theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.Value(iIndex + 1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_Array1 finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_Array1 operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_Array1 operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_Array1 operator=")
+    aAssignOperMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -192,34 +173,19 @@ static void CompArray2(Draw_Interpretor&      theDI,
                        const Standard_Integer theSize)
 {
   Standard_Integer i, j, k;
-
-  ////////////////////////////////Perf_Meter aNCrea ("NCollection_Array2 creation",0);
-  ////////////////////////////////Perf_Meter aTCrea ("TCollection_Array2 creation",0);
-  ////////////////////////////////Perf_Meter aNFill ("NCollection_Array2 filling",0);
-  ////////////////////////////////Perf_Meter aTFill ("TCollection_Array2 filling",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_Array2 finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_Array2 finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Array2 operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Array2 operator=",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Array2 Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////aNCrea.Start();
-    PERF_START_METER("NCollection_Array2 creation")
-    ////////////////////////////////QANCollection_Array2 a1(1,theSize,1,theSize),
-    /// a2(1,theSize,1,theSize);
+    OSD_PerfMeter            aCreationMeter("NCollection_Array2 creation");
     QANCollection_Array2Perf a1(1, theSize, 1, theSize), a2(1, theSize, 1, theSize);
-    ////////////////////////////////aNCrea.Stop();
-    PERF_STOP_METER("NCollection_Array2 creation")
-    ////////////////////////////////aNFill.Start();
-    PERF_START_METER("NCollection_Array2 filling")
+    aCreationMeter.Stop();
+
+    OSD_PerfMeter aFillingMeter("NCollection_Array2 filling");
     for (j = 1; j <= theSize; j++)
       for (k = 1; k <= theSize; k++)
         Random(a1(j, k));
-    ////////////////////////////////aNFill.Stop();
-    PERF_STOP_METER("NCollection_Array2 filling")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_Array2 finding")
+    aFillingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_Array2 finding");
     for (j = 1; j <= theSize * theSize; j++)
     {
       Standard_Integer m, n;
@@ -227,36 +193,30 @@ static void CompArray2(Draw_Interpretor&      theDI,
       Random(n, theSize);
       a1.Value(m + 1, n + 1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_Array2 finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_Array2 operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_Array2 operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_Array2 operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_Array2 Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_Array2 Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_Array2 Assign")
+    aAssignFnMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////aTCrea.Start();
-    PERF_START_METER("TCollection_Array2 creation")
+    OSD_PerfMeter      aCreationMeter("TCollection_Array2 creation");
     TColgp_Array2OfPnt a1(1, theSize, 1, theSize), a2(1, theSize, 1, theSize);
-    ////////////////////////////////aTCrea.Stop();
-    PERF_STOP_METER("TCollection_Array2 creation")
-    ////////////////////////////////aTFill.Start();
-    PERF_START_METER("TCollection_Array2 filling")
+    aCreationMeter.Stop();
+
+    OSD_PerfMeter aFillingMeter("TCollection_Array2 filling");
     for (j = 1; j <= theSize; j++)
       for (k = 1; k <= theSize; k++)
         Random(a1(j, k));
-    ////////////////////////////////aTFill.Stop();
-    PERF_STOP_METER("TCollection_Array2 filling")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_Array2 finding")
+    aFillingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_Array2 finding");
     for (j = 1; j <= theSize * theSize; j++)
     {
       Standard_Integer m, n;
@@ -264,13 +224,11 @@ static void CompArray2(Draw_Interpretor&      theDI,
       Random(n, theSize);
       a1.Value(m + 1, n + 1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_Array2 finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_Array2 operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_Array2 operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_Array2 operator=")
+    aAssignOperMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -282,67 +240,52 @@ static void CompList(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNAppe ("NCollection_List appending",0);
-  ////////////////////////////////Perf_Meter aTAppe ("TCollection_List appending",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_List operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_List operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_List clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_List clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_List Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_List a1, a2;
     QANCollection_ListPerf a1, a2;
-    ////////////////////////////////aNAppe.Start();
-    PERF_START_METER("NCollection_List appending")
+
+    OSD_PerfMeter aAppendingMeter("NCollection_List appending");
     for (j = 1; j <= theSize; j++)
     {
       ItemType anItem;
       Random(anItem);
       a1.Append(anItem);
     }
-    ////////////////////////////////aNAppe.Stop();
-    PERF_STOP_METER("NCollection_List appending")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_List operator=")
+    aAppendingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_List operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_List operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_List Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_List Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_List Assign")
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_List clearing")
+    aAssignFnMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("NCollection_List clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_List clearing")
+    aClearingMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     QANCollection_ListOfPnt a1, a2;
-    ////////////////////////////////aTAppe.Start();
-    PERF_START_METER("TCollection_List appending")
+
+    OSD_PerfMeter aAppendingMeter("TCollection_List appending");
     for (j = 1; j <= theSize; j++)
     {
       ItemType anItem;
       Random(anItem);
       a1.Append(anItem);
     }
-    ////////////////////////////////aTAppe.Stop();
-    PERF_STOP_METER("TCollection_List appending")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_List operator=")
+    aAppendingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_List operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_List operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_List clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("TCollection_List clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_List clearing")
+    aClearMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -354,89 +297,70 @@ static void CompSequence(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNAppe ("NCollection_Sequence appending",0);
-  ////////////////////////////////Perf_Meter aTAppe ("TCollection_Sequence appending",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_Sequence finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_Sequence finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Sequence operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Sequence operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_Sequence clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_Sequence clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Sequence Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_Sequence a1, a2;
     QANCollection_SequencePerf a1, a2;
-    ////////////////////////////////aNAppe.Start();
-    PERF_START_METER("NCollection_Sequence appending")
+
+    OSD_PerfMeter aAppendingMeter("NCollection_Sequence appending");
     for (j = 1; j <= theSize; j++)
     {
       ItemType anItem;
       Random(anItem);
       a1.Append(anItem);
     }
-    ////////////////////////////////aNAppe.Stop();
-    PERF_STOP_METER("NCollection_Sequence appending")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_Sequence finding")
+    aAppendingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_Sequence finding");
     for (j = 1; j <= theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.Value(iIndex + 1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_Sequence finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_Sequence operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_Sequence operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_Sequence operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_Sequence Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_Sequence Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_Sequence Assign")
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_Sequence clearing")
+    aAssignFnMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("NCollection_Sequence clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_Sequence clearing")
+    aClearingMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     TColgp_SequenceOfPnt a1, a2;
-    ////////////////////////////////aTAppe.Start();
-    PERF_START_METER("TCollection_Sequence appending")
+
+    OSD_PerfMeter aAppendingMeter("TCollection_Sequence appending");
     for (j = 1; j <= theSize; j++)
     {
       ItemType anItem;
       Random(anItem);
       a1.Append(anItem);
     }
-    ////////////////////////////////aTAppe.Stop();
-    PERF_STOP_METER("TCollection_Sequence appending")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_Sequence finding")
+    aAppendingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_Sequence finding");
     for (j = 1; j <= theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.Value(iIndex + 1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_Sequence finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_Sequence operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_Sequence operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_Sequence operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_Sequence clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("TCollection_Sequence clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_Sequence clearing")
+    aClearMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -448,89 +372,70 @@ static void CompMap(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNBind ("NCollection_Map adding",0);
-  ////////////////////////////////Perf_Meter aTBind ("TCollection_Map adding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Map operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Map operator=",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_Map finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_Map finding",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_Map clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_Map clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Map Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_Map a1, a2;
     QANCollection_MapPerf a1, a2;
-    ////////////////////////////////aNBind.Start();
-    PERF_START_METER("NCollection_Map adding")
+
+    OSD_PerfMeter aAddingMeter("NCollection_Map adding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Add(aKey1);
     }
-    ////////////////////////////////aNBind.Stop();
-    PERF_STOP_METER("NCollection_Map adding")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_Map finding")
+    aAddingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_Map finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_Map finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_Map operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_Map operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_Map operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_Map Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_Map Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_Map Assign")
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_Map clearing")
+    aAssignFnMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("NCollection_Map clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_Map clearing")
+    aClearingMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     TColStd_MapOfReal a1, a2;
-    ////////////////////////////////aTBind.Start();
-    PERF_START_METER("TCollection_Map adding")
+
+    OSD_PerfMeter aAddingMeter("TCollection_Map adding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Add(aKey1);
     }
-    ////////////////////////////////aTBind.Stop();
-    PERF_STOP_METER("TCollection_Map adding")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_Map finding")
+    aAddingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_Map finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_Map finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_Map operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_Map operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_Map operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_Map clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("TCollection_Map clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_Map clearing")
+    aClearMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -542,21 +447,11 @@ static void CompDataMap(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNBind ("NCollection_DataMap binding",0);
-  ////////////////////////////////Perf_Meter aTBind ("TCollection_DataMap binding",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_DataMap finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_DataMap finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_DataMap operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_DataMap operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_DataMap clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_DataMap clearing",0);
-  //////////////////////////////////Perf_Meter aNAssi ("NCollection_DataMap Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_DataMap a1, a2;
     QANCollection_DataMapPerf a1, a2;
-    ////////////////////////////////aNBind.Start();
-    PERF_START_METER("NCollection_DataMap binding")
+
+    OSD_PerfMeter aBindingMeter("NCollection_DataMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -565,38 +460,31 @@ static void CompDataMap(Draw_Interpretor&      theDI,
       Random(anItem);
       a1.Bind(aKey1, anItem);
     }
-    ////////////////////////////////aNBind.Stop();
-    PERF_STOP_METER("NCollection_DataMap binding")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_DataMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_DataMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.IsBound(aKey1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_DataMap finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_DataMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_DataMap operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_DataMap operator=")
-    // aNAssi.Start();
-    // a2.Assign(a1);
-    // aNAssi.Stop();
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_DataMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("NCollection_DataMap clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_DataMap clearing")
+    aClearMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     QANCollection_DataMapOfRealPnt a1, a2;
-    ////////////////////////////////aTBind.Start();
-    PERF_START_METER("TCollection_DataMap binding")
+
+    OSD_PerfMeter aBindingMeter("TCollection_DataMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -605,28 +493,24 @@ static void CompDataMap(Draw_Interpretor&      theDI,
       Random(anItem);
       a1.Bind(aKey1, anItem);
     }
-    ////////////////////////////////aTBind.Stop();
-    PERF_STOP_METER("TCollection_DataMap binding")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_DataMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_DataMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.IsBound(aKey1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_DataMap finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_DataMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_DataMap operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_DataMap operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_DataMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("TCollection_DataMap clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_DataMap clearing")
+    aClearMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -639,21 +523,11 @@ static void CompDoubleMap(Draw_Interpretor&      theDI,
   Standard_Integer i, j;
   Standard_Integer iFail1 = 0, iFail2 = 0;
 
-  ////////////////////////////////Perf_Meter aNBind ("NCollection_DoubleMap binding",0);
-  ////////////////////////////////Perf_Meter aTBind ("TCollection_DoubleMap binding",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_DoubleMap finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_DoubleMap finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_DoubleMap operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_DoubleMap operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_DoubleMap clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_DoubleMap clearing",0);
-  //////////////////////////////////Perf_Meter aNAssi ("NCollection_DoubleMap Assign",0);
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_DoubleMap a1, a2;
     QANCollection_DoubleMapPerf a1, a2;
-    ////////////////////////////////aNBind.Start();
-    PERF_START_METER("NCollection_DoubleMap binding")
+
+    OSD_PerfMeter aBindingMeter("NCollection_DoubleMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -667,10 +541,9 @@ static void CompDoubleMap(Draw_Interpretor&      theDI,
       iFail1--;
       a1.Bind(aKey1, aKey2);
     }
-    ////////////////////////////////aNBind.Stop();
-    PERF_STOP_METER("NCollection_DoubleMap binding")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_DoubleMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_DoubleMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -679,28 +552,22 @@ static void CompDoubleMap(Draw_Interpretor&      theDI,
       Random(aKey2);
       a1.AreBound(aKey1, aKey2);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_DoubleMap finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_DoubleMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_DoubleMap operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_DoubleMap operator=")
-    // aNAssi.Start();
-    // a2.Assign(a1);
-    // aNAssi.Stop();
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_DoubleMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("NCollection_DoubleMap clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_DoubleMap clearing")
+    aClearMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     QANCollection_DoubleMapOfRealInteger a1, a2;
-    ////////////////////////////////aTBind.Start();
-    PERF_START_METER("TCollection_DoubleMap binding")
+
+    OSD_PerfMeter aBindingMeter("TCollection_DoubleMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -714,10 +581,9 @@ static void CompDoubleMap(Draw_Interpretor&      theDI,
       iFail2--;
       a1.Bind(aKey1, aKey2);
     }
-    ////////////////////////////////aTBind.Stop();
-    PERF_STOP_METER("TCollection_DoubleMap binding")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_DoubleMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_DoubleMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -726,18 +592,15 @@ static void CompDoubleMap(Draw_Interpretor&      theDI,
       Random(aKey2);
       a1.AreBound(aKey1, aKey2);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_DoubleMap finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_DoubleMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_DoubleMap operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_DoubleMap operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_DoubleMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearMeter("TCollection_DoubleMap clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_DoubleMap clearing")
+    aClearMeter.Stop();
   }
   printAllMeters(theDI);
   if (iFail1 || iFail2)
@@ -751,90 +614,70 @@ static void CompIndexedMap(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNBind ("NCollection_IndexedMap adding",0);
-  ////////////////////////////////Perf_Meter aTBind ("TCollection_IndexedMap adding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_IndexedMap operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_IndexedMap operator=",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_IndexedMap finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_IndexedMap finding",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_IndexedMap clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_IndexedMap clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_IndexedMap Assign",0);
-
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_IndexedMap a1, a2;
     QANCollection_IndexedMapPerf a1, a2;
-    ////////////////////////////////aNBind.Start();
-    PERF_START_METER("NCollection_IndexedMap adding")
+
+    OSD_PerfMeter aAddingMeter("NCollection_IndexedMap adding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Add(aKey1);
     }
-    ////////////////////////////////aNBind.Stop();
-    PERF_STOP_METER("NCollection_IndexedMap adding")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_IndexedMap finding")
+    aAddingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_IndexedMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_IndexedMap finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_IndexedMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_IndexedMap operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_IndexedMap operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_IndexedMap Assign")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aAssignFnMeter("NCollection_IndexedMap Assign");
     a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_IndexedMap Assign")
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_IndexedMap clearing")
+    aAssignFnMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("NCollection_IndexedMap clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_IndexedMap clearing")
+    aClearingMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     TColStd_IndexedMapOfReal a1, a2;
-    ////////////////////////////////aTBind.Start();
-    PERF_START_METER("TCollection_IndexedMap adding")
+
+    OSD_PerfMeter aAddingMeter("TCollection_IndexedMap adding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Add(aKey1);
     }
-    ////////////////////////////////aTBind.Stop();
-    PERF_STOP_METER("TCollection_IndexedMap adding")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_IndexedMap finding")
+    aAddingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_IndexedMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_IndexedMap finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_IndexedMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_IndexedMap operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_IndexedMap operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_IndexedMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("TCollection_IndexedMap clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_IndexedMap clearing")
+    aClearingMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -846,22 +689,12 @@ static void CompIndexedDataMap(Draw_Interpretor&      theDI,
 {
   Standard_Integer i, j;
 
-  ////////////////////////////////Perf_Meter aNBind ("NCollection_IndexedDataMap binding",0);
-  ////////////////////////////////Perf_Meter aTBind ("TCollection_IndexedDataMap binding",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_IndexedDataMap finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_IndexedDataMap finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_IndexedDataMap operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_IndexedDataMap operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_IndexedDataMap clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_IndexedDataMap clearing",0);
-  //////////////////////////////////Perf_Meter aNAssi ("NCollection_IndexedDataMap Assign",0);
-
   for (i = 0; i < theRep; i++)
   {
-    ////////////////////////////////QANCollection_IDMap a1, a2;
+
     QANCollection_IDMapPerf a1, a2;
-    ////////////////////////////////aNBind.Start();
-    PERF_START_METER("NCollection_IndexedDataMap binding")
+
+    OSD_PerfMeter aBindingMeter("NCollection_IndexedDataMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -870,38 +703,31 @@ static void CompIndexedDataMap(Draw_Interpretor&      theDI,
       Random(anItem);
       a1.Add(aKey1, anItem);
     }
-    ////////////////////////////////aNBind.Stop();
-    PERF_STOP_METER("NCollection_IndexedDataMap binding")
-    ////////////////////////////////aNFind.Start();
-    PERF_START_METER("NCollection_IndexedDataMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("NCollection_IndexedDataMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aNFind.Stop();
-    PERF_STOP_METER("NCollection_IndexedDataMap finding")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_IndexedDataMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("NCollection_IndexedDataMap operator=");
     a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_IndexedDataMap operator=")
-    // aNAssi.Start();
-    // a2.Assign(a1);
-    // aNAssi.Stop();
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_IndexedDataMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("NCollection_IndexedDataMap clearing");
     a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_IndexedDataMap clearing")
+    aClearingMeter.Stop();
   }
 
   for (i = 0; i < theRep; i++)
   {
     QANCollection_IndexedDataMapOfRealPnt a1, a2;
-    ////////////////////////////////aTBind.Start();
-    PERF_START_METER("TCollection_IndexedDataMap binding")
+
+    OSD_PerfMeter aBindingMeter("TCollection_IndexedDataMap binding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
@@ -910,28 +736,24 @@ static void CompIndexedDataMap(Draw_Interpretor&      theDI,
       Random(anItem);
       a1.Add(aKey1, anItem);
     }
-    ////////////////////////////////aTBind.Stop();
-    PERF_STOP_METER("TCollection_IndexedDataMap binding")
-    ////////////////////////////////aTFind.Start();
-    PERF_START_METER("TCollection_IndexedDataMap finding")
+    aBindingMeter.Stop();
+
+    OSD_PerfMeter aFindingMeter("TCollection_IndexedDataMap finding");
     for (j = 1; j <= theSize; j++)
     {
       Key1Type aKey1;
       Random(aKey1);
       a1.Contains(aKey1);
     }
-    ////////////////////////////////aTFind.Stop();
-    PERF_STOP_METER("TCollection_IndexedDataMap finding")
-    ////////////////////////////////aTOper.Start();
-    PERF_START_METER("TCollection_IndexedDataMap operator=")
+    aFindingMeter.Stop();
+
+    OSD_PerfMeter aAssignOperMeter("TCollection_IndexedDataMap operator=");
     a2 = a1;
-    ////////////////////////////////aTOper.Stop();
-    PERF_STOP_METER("TCollection_IndexedDataMap operator=")
-    ////////////////////////////////aTClea.Start();
-    PERF_START_METER("TCollection_IndexedDataMap clearing")
+    aAssignOperMeter.Stop();
+
+    OSD_PerfMeter aClearingMeter("TCollection_IndexedDataMap clearing");
     a2.Clear();
-    ////////////////////////////////aTClea.Stop();
-    PERF_STOP_METER("TCollection_IndexedDataMap clearing")
+    aClearingMeter.Stop();
   }
   printAllMeters(theDI);
 }
@@ -944,51 +766,50 @@ static void CompSparseArray(Draw_Interpretor&      theDI,
   Standard_Integer i, j;
   for (i = 0; i < theRep; i++)
   {
-    PERF_START_METER("NCollection_SparseArray creation")
-
+    OSD_PerfMeter                             aCreationMeter("NCollection_SparseArray creation");
     NCollection_SparseArray<Standard_Integer> a1(theSize), a2(theSize);
+    aCreationMeter.Stop();
 
-    PERF_STOP_METER("NCollection_SparseArray creation")
-
-    PERF_START_METER("NCollection_SparseArray filling")
+    OSD_PerfMeter aFillingMeter("NCollection_SparseArray filling");
     for (j = 0; j < theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.SetValue(j, iIndex + 1);
     }
+    aFillingMeter.Stop();
 
-    PERF_STOP_METER("NCollection_SparseArray filling")
-
-    PERF_START_METER("NCollection_SparseArray size")
+    OSD_PerfMeter aSizeMeter("NCollection_SparseArray size");
     Standard_Size sizeSparseArray = a1.Size();
     (void)sizeSparseArray; // avoid compiler warning on unused variable
-    PERF_STOP_METER("NCollection_SparseArray size")
+    aSizeMeter.Stop();
 
-    PERF_START_METER("NCollection_Array1 Assign")
+    OSD_PerfMeter aAssignFnMeter("NCollection_SparseArray Assign");
     a2.Assign(a1);
-    PERF_STOP_METER("NCollection_Array1 Assign")
-    PERF_START_METER("NCollection_SparseArray HasValue")
+    aAssignFnMeter.Stop();
+
+    OSD_PerfMeter aHasValueMeter("NCollection_SparseArray HasValue");
     for (j = 0; j < theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a2.HasValue(iIndex + 1);
     }
-    PERF_STOP_METER("NCollection_SparseArray HasValue")
-    PERF_START_METER("NCollection_SparseArray UnsetValue")
+    aHasValueMeter.Stop();
+
+    OSD_PerfMeter aUnsetValueMeter("NCollection_SparseArray UnsetValue");
     for (j = 0; j < theSize; j++)
     {
       Standard_Integer iIndex;
       Random(iIndex, theSize);
       a1.UnsetValue(iIndex + 1);
     }
-    PERF_STOP_METER("NCollection_SparseArray UnsetValue")
+    aUnsetValueMeter.Stop();
 
-    PERF_START_METER("NCollection_SparseArray Clear")
+    OSD_PerfMeter aClearMeter("NCollection_SparseArray Clear");
     a1.Clear();
     a2.Clear();
-    PERF_STOP_METER("NCollection_SparseArray Clear")
+    aClearMeter.Stop();
   }
 
   printAllMeters(theDI);

@@ -25,6 +25,8 @@ set(OCCT_GeomToStep_FILES
   GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx
   GeomToStep_MakeCartesianPoint.cxx
   GeomToStep_MakeCartesianPoint.hxx
+  GeomToStep_MakeCartesianTransformationOperator.cxx
+  GeomToStep_MakeCartesianTransformationOperator.hxx
   GeomToStep_MakeCircle.cxx
   GeomToStep_MakeCircle.hxx
   GeomToStep_MakeCircle_gen.pxx

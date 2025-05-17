@@ -47,6 +47,9 @@
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -76,11 +79,62 @@
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-//
 static Standard_Real ToleranceFF(const BRepAdaptor_Surface& aBAS1,
                                  const BRepAdaptor_Surface& aBAS2);
 
-/////////////////////////////////////////////////////////////////////////
+//=================================================================================================
+
+static Standard_Boolean IsPlaneFF(const Handle(Geom_Surface)& theSurface)
+{
+  if (theSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
+    return Standard_True;
+  }
+  else if (const Handle(Geom_OffsetSurface) anOffsetSurface =
+             Handle(Geom_OffsetSurface)::DownCast(theSurface))
+  {
+    return anOffsetSurface->BasisSurface()->IsKind(STANDARD_TYPE(Geom_Plane));
+  }
+  else if (const Handle(Geom_RectangularTrimmedSurface) aTrimmedSurface =
+             Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface))
+  {
+    return aTrimmedSurface->BasisSurface()->IsKind(STANDARD_TYPE(Geom_Plane));
+  }
+
+  return Standard_False;
+}
+
+//=================================================================================================
+
+static Standard_Boolean IsClosedFF(const TopoDS_Edge&                theEdge,
+                                   const Handle(Geom_Surface)&       theSurface,
+                                   const Handle(Poly_Triangulation)& theTriangulation,
+                                   const TopLoc_Location&            theLocation,
+                                   Standard_Boolean                  theIsPlane)
+{
+  if (!theIsPlane)
+  {
+    // Check surface
+    const TopLoc_Location aLocation = theLocation.Predivided(theEdge.Location());
+
+    // find the representation
+    const BRep_TEdge* aTEdge = static_cast<const BRep_TEdge*>(theEdge.TShape().get());
+    for (BRep_ListIteratorOfListOfCurveRepresentation anIter(aTEdge->Curves()); anIter.More();
+         anIter.Next())
+    {
+      const Handle(BRep_CurveRepresentation)& aCurveRepresentation = anIter.Value();
+      if (aCurveRepresentation->IsCurveOnSurface(theSurface, aLocation)
+          && aCurveRepresentation->IsCurveOnClosedSurface())
+      {
+        return Standard_True;
+      }
+    }
+  }
+
+  // Check triangulation
+  return BRep_Tool::IsClosed(theEdge, theTriangulation, theLocation);
+}
+
 //=================================================================================================
 
 class BOPAlgo_FaceFace : public IntTools_FaceFace, public BOPAlgo_ParallelAlgo
@@ -225,11 +279,10 @@ protected:
   gp_Trsf          myTrsf;
 };
 
-//
-//=======================================================================
+//=================================================================================================
+
 typedef NCollection_Vector<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
 
-/////////////////////////////////////////////////////////////////////////
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
@@ -354,59 +407,82 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 
       if (aBAS1.GetType() != GeomAbs_Plane || aBAS2.GetType() != GeomAbs_Plane)
       {
+        TopLoc_Location                   aLocation1;
+        const Handle(Geom_Surface)&       aSurface1 = BRep_Tool::Surface(aF1, aLocation1);
+        const Handle(Poly_Triangulation)& aTriangulation1 =
+          BRep_Tool::Triangulation(aF1, aLocation1);
+        const Standard_Boolean anIsPlane1 = IsPlaneFF(aSurface1);
 
-        Standard_Boolean isFound = Standard_False;
-        for (TopExp_Explorer aExp1(aF1, TopAbs_EDGE); !isFound && aExp1.More(); aExp1.Next())
+        TopLoc_Location                   aLocation2;
+        const Handle(Geom_Surface)&       aSurface2 = BRep_Tool::Surface(aF2, aLocation2);
+        const Handle(Poly_Triangulation)& aTriangulation2 =
+          BRep_Tool::Triangulation(aF2, aLocation2);
+        const Standard_Boolean anIsPlane2 = IsPlaneFF(aSurface2);
+
+        Standard_Boolean anIsFound = Standard_False;
+        for (TopoDS_Iterator aItW1(aF1); !anIsFound && aItW1.More(); aItW1.Next())
         {
-          const TopoDS_Edge&     aE1 = TopoDS::Edge(aExp1.Current());
-          const Standard_Integer nE1 = myDS->Index(aE1);
-
-          for (TopExp_Explorer aExp2(aF2, TopAbs_EDGE); !isFound && aExp2.More(); aExp2.Next())
+          for (TopoDS_Iterator aItE1(aItW1.Value()); !anIsFound && aItE1.More(); aItE1.Next())
           {
-            const TopoDS_Edge&     aE2 = TopoDS::Edge(aExp2.Current());
-            const Standard_Integer nE2 = myDS->Index(aE2);
+            const TopoDS_Edge&     anEdge1      = TopoDS::Edge(aItE1.Value());
+            const Standard_Integer anEdgeIndex1 = myDS->Index(anEdge1);
 
-            Standard_Boolean bIsClosed1 = BRep_Tool::IsClosed(aE1, aF1);
-            Standard_Boolean bIsClosed2 = BRep_Tool::IsClosed(aE2, aF2);
-            if (!bIsClosed1 && !bIsClosed2)
+            for (TopoDS_Iterator aItW2(aF2); !anIsFound && aItW2.More(); aItW2.Next())
             {
-              continue;
-            }
-
-            const TColStd_ListOfInteger* pPoints = aEEMap.Seek(BOPDS_Pair(nE1, nE2));
-            if (!pPoints)
-            {
-              continue;
-            }
-
-            for (TColStd_ListOfInteger::Iterator itEEP(*pPoints); itEEP.More(); itEEP.Next())
-            {
-              const Standard_Integer& nVN  = itEEP.Value();
-              const TopoDS_Vertex&    aVN  = TopoDS::Vertex(myDS->Shape(nVN));
-              const gp_Pnt&           aPnt = BRep_Tool::Pnt(aVN);
-
-              // Compute points exactly on the edges
-              GeomAPI_ProjectPointOnCurve& aProjPC1 = myContext->ProjPC(aE1);
-              GeomAPI_ProjectPointOnCurve& aProjPC2 = myContext->ProjPC(aE2);
-              aProjPC1.Perform(aPnt);
-              aProjPC2.Perform(aPnt);
-              if (!aProjPC1.NbPoints() && !aProjPC2.NbPoints())
+              for (TopoDS_Iterator aItE2(aItW2.Value()); !anIsFound && aItE2.More(); aItE2.Next())
               {
-                continue;
-              }
-              gp_Pnt aP1 = aProjPC1.NbPoints() > 0 ? aProjPC1.NearestPoint() : aPnt;
-              gp_Pnt aP2 = aProjPC2.NbPoints() > 0 ? aProjPC2.NearestPoint() : aPnt;
+                const TopoDS_Edge&     anEdge2      = TopoDS::Edge(aItE2.Value());
+                const Standard_Integer anEdgeIndex2 = myDS->Index(anEdge2);
 
-              Standard_Real aShiftDist = aP1.Distance(aP2);
-              if (aShiftDist > BRep_Tool::Tolerance(aVN))
-              {
-                // Move one of the faces to the point of exact intersection of edges
-                gp_Trsf aTrsf;
-                aTrsf.SetTranslation(bIsClosed1 ? gp_Vec(aP1, aP2) : gp_Vec(aP2, aP1));
-                TopLoc_Location aLoc(aTrsf);
-                (bIsClosed1 ? &aFShifted1 : &aFShifted2)->Move(aLoc);
-                aShiftValue = aShiftDist;
-                isFound     = Standard_True;
+                const Standard_Boolean anIsClosed1 =
+                  IsClosedFF(anEdge1, aSurface1, aTriangulation1, aLocation1, anIsPlane1);
+                const Standard_Boolean anIsClosed2 =
+                  IsClosedFF(anEdge2, aSurface2, aTriangulation2, aLocation2, anIsPlane2);
+                if (!anIsClosed1 && !anIsClosed2)
+                {
+                  continue;
+                }
+
+                const TColStd_ListOfInteger* aVertexIndices =
+                  aEEMap.Seek(BOPDS_Pair(anEdgeIndex1, anEdgeIndex2));
+                if (!aVertexIndices)
+                {
+                  continue;
+                }
+
+                for (TColStd_ListOfInteger::Iterator itEEP(*aVertexIndices); itEEP.More();
+                     itEEP.Next())
+                {
+                  const Standard_Integer aVertexIndex = itEEP.Value();
+                  const TopoDS_Vertex&   aVertex      = TopoDS::Vertex(myDS->Shape(aVertexIndex));
+                  const gp_Pnt&          aVertexPoint = BRep_Tool::Pnt(aVertex);
+
+                  // Compute points exactly on the edges
+                  GeomAPI_ProjectPointOnCurve& aProjPC1 = myContext->ProjPC(anEdge1);
+                  GeomAPI_ProjectPointOnCurve& aProjPC2 = myContext->ProjPC(anEdge2);
+                  aProjPC1.Perform(aVertexPoint);
+                  aProjPC2.Perform(aVertexPoint);
+                  if (!aProjPC1.NbPoints() && !aProjPC2.NbPoints())
+                  {
+                    continue;
+                  }
+                  const gp_Pnt aP1 =
+                    aProjPC1.NbPoints() > 0 ? aProjPC1.NearestPoint() : aVertexPoint;
+                  const gp_Pnt aP2 =
+                    aProjPC2.NbPoints() > 0 ? aProjPC2.NearestPoint() : aVertexPoint;
+
+                  const Standard_Real aShiftDist = aP1.Distance(aP2);
+                  if (aShiftDist > BRep_Tool::Tolerance(aVertex))
+                  {
+                    // Move one of the faces to the point of exact intersection of edges
+                    gp_Trsf aTrsf;
+                    aTrsf.SetTranslation(anIsClosed1 ? gp_Vec(aP1, aP2) : gp_Vec(aP2, aP1));
+                    TopLoc_Location aLoc(aTrsf);
+                    (anIsClosed1 ? &aFShifted1 : &aFShifted2)->Move(aLoc);
+                    aShiftValue = aShiftDist;
+                    anIsFound   = Standard_True;
+                  }
+                }
               }
             }
           }

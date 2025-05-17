@@ -317,6 +317,13 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape(
 
 Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge& myedge)
 {
+  Standard_Integer anInd = IndexEdge(myedge);
+  if (anInd != 0)
+  {
+    Handle(IGESData_IGESEntity) ICurve3d = Handle(IGESData_IGESEntity)::DownCast(myCurves(anInd));
+    if (!ICurve3d.IsNull())
+      return ICurve3d;
+  }
   BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
   TopTools_DataMapOfShapeShape anEmptyMap;

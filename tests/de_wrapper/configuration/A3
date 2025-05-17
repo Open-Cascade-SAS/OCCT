@@ -128,6 +128,7 @@ provider.GLTF.OCC.read.use.mesh.name.as.fallback :	 1
 provider.GLTF.OCC.read.skip.late.data.loading :	 0
 provider.GLTF.OCC.read.keep.late.data :	 1
 provider.GLTF.OCC.read.print.debug.message :	 0
+provider.GLTF.OCC.read.apply.scale :	 1
 provider.GLTF.OCC.write.comment :	 
 provider.GLTF.OCC.write.author :	 
 provider.GLTF.OCC.write.trsf.format :	 0
@@ -198,6 +199,7 @@ provider.STEP.OCC.write.vismaterial :	 0
 provider.STEP.OCC.write.props :	 1
 provider.STEP.OCC.write.model.type :	 0
 provider.STEP.OCC.write.cleanduplicates : 0
+provider.STEP.OCC.write.scaling.trsf : 1
 provider.STEP.OCC.healing.tolerance3d :	 1e-06
 provider.STEP.OCC.healing.max.tolerance3d :	 1
 provider.STEP.OCC.healing.min.tolerance3d :	 1e-07

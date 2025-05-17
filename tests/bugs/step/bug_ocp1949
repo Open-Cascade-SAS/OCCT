@@ -1,0 +1,51 @@
+puts "================================================"
+puts "OCP-1949: Apply a scaling transformation to STEP"
+puts "================================================"
+puts ""
+
+pload OCAF
+
+Close D1 -silent
+Close D2 -silent
+
+ReadGltf D1 [locate_data_file bug_ocp1948_PSU_Cartoning_subunit__right-01.01.01.03-CART-03_green_bottom.glb]
+
+# apply parameters for tessellation export
+set conf "
+provider.STEP.OCC.write.schema :	 5
+provider.STEP.OCC.write.tessellated :	 1
+"
+LoadConfiguration ${conf} -recursive on
+param write.step.schema 5
+param write.step.tessellated 1
+
+WriteStep D1 "$imagedir/${casename}.stp"
+ReadStep D2 "$imagedir/${casename}.stp"
+
+XGetOneShape a1 D1
+XGetOneShape a2 D2
+
+# check center of gravity
+set pos1 [vprops a1]
+set pos2 [vprops a2]
+
+set REF_X [lindex $pos1  9]
+set REF_Y [lindex $pos1 12]
+set REF_Z [lindex $pos1 15]
+set tol 1e-4
+
+if {([expr abs($REF_X - [lindex $pos2  9])] > $tol) || 
+    ([expr abs($REF_Y - [lindex $pos2 12])] > $tol) ||
+    ([expr abs($REF_Z - [lindex $pos2 15])] > $tol)} {
+  puts "Error: wrong position of the imported model."
+  }
+
+# cleaning
+Close D1
+Close D2
+file delete "$imagedir/${casename}.stp"
+set conf "
+provider.STEP.OCC.write.schema :	 4
+provider.STEP.OCC.write.tessellated :	 2
+"
+LoadConfiguration ${conf} -recursive on

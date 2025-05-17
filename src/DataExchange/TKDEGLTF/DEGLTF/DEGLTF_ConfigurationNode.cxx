@@ -100,6 +100,8 @@ bool DEGLTF_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("read.print.debug.message",
                             InternalParameters.ReadPrintDebugMessages,
                             aScope);
+  InternalParameters.ReadApplyScale =
+    theResource->BooleanVal("read.apply.scale", InternalParameters.ReadApplyScale, aScope);
 
   InternalParameters.WriteComment =
     theResource->StringVal("write.comment", InternalParameters.WriteComment, aScope);
@@ -258,6 +260,13 @@ TCollection_AsciiString DEGLTF_ConfigurationNode::Save() const
   aResult += "!Default value: 0(false). Available values: 0(false), 1(true)\n";
   aResult +=
     aScope + "read.print.debug.message :\t " + InternalParameters.ReadPrintDebugMessages + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult +=
+    "!Flag to apply non-uniform transformation directly to the triangulation (modify nodes)\n";
+  aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
+  aResult += aScope + "read.apply.scale :\t " + InternalParameters.ReadApplyScale + "\n";
   aResult += "!\n";
 
   aResult += "!\n";

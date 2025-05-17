@@ -14,8 +14,10 @@ on:
       - 'master'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: ${{ github.event_name == 'pull_request' 
+    && format('{0}-{1}', github.workflow, github.event.pull_request.number)
+    || format('{0}-{1}', github.workflow, github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && !(github.head_ref == 'IR' && github.repository == 'Open-Cascade-SAS/OCCT') && true || false }}
 
 jobs:
   clang-format:
@@ -119,6 +121,25 @@ jobs:
         platform: linux
         compiler: clang
         artifact-name: install-linux-clang-x64
+
+  prepare-and-build-macos-clang-no-pch:
+    name: Prepare and Build on macOS with Clang (No PCH)
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: macos
+        compiler: clang
+        artifact-name: install-macos-clang-no-pch
+        build-use-pch: 'false'
+        build-opt-profile: 'Default'
+        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra"'
+        cmake-build-type: 'Debug'
 
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)

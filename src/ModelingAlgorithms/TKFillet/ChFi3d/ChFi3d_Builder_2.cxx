@@ -1097,22 +1097,23 @@ static void ChFi3d_BuildPlane(TopOpeBRepDS_DataStructure&    DStr,
                               const Standard_Boolean         isfirst,
                               const Standard_Integer         ons)
 {
-  Handle(Geom2d_Curve) Hc;
-  TopoDS_Face          F = TopoDS::Face(DStr.Shape(SD->Index(ons)));
-  Standard_Real        u, v;
-  gp_Pnt               P;
-  // gp_Vec V1,V2;
+  const TopoDS_Face F = TopoDS::Face(DStr.Shape(SD->Index(ons)));
+  if (F.IsNull())
+  {
+    return;
+  }
 
   if (SD->Vertex(isfirst, ons).IsOnArc())
   {
-    Hc = BRep_Tool::CurveOnSurface(SD->Vertex(isfirst, ons).Arc(), F, u, v);
+    Standard_Real              u, v;
+    const Handle(Geom2d_Curve) Hc =
+      BRep_Tool::CurveOnSurface(SD->Vertex(isfirst, ons).Arc(), F, u, v);
     Hc->Value(SD->Vertex(isfirst, ons).ParameterOnArc()).Coord(u, v);
     BRepLProp_SLProps theProp(*HS, u, v, 1, 1.e-12);
     if (theProp.IsNormalDefined())
     {
-      P                       = theProp.Value();
-      Handle(Geom_Plane) Pln  = new Geom_Plane(P, theProp.Normal());
-      TopoDS_Face        NewF = BRepLib_MakeFace(Pln, Precision::Confusion());
+      const Handle(Geom_Plane) Pln  = new Geom_Plane(theProp.Value(), theProp.Normal());
+      TopoDS_Face              NewF = BRepLib_MakeFace(Pln, Precision::Confusion());
       NewF.Orientation(F.Orientation());
       pons.SetCoord(0., 0.);
       HS->Initialize(NewF);
