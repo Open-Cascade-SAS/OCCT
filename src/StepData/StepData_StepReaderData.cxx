@@ -33,6 +33,7 @@
 #include <StepData_SelectReal.hxx>
 #include <StepData_SelectType.hxx>
 #include <StepData_StepReaderData.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_UtfIterator.hxx>
@@ -387,28 +388,11 @@ void StepData_StepReaderData::SetRecord(const Standard_Integer num,
                                         const Standard_Integer /* nbpar */)
 {
   Standard_Integer numlst;
-  /*
-    if (strcmp(type,"/ * (SUB) * /") == 0) {    // defini dans recfile.pc
-      thetypes.SetValue (num,sublist);
-    } else {
-      thenbents ++;   // total de termes propres du fichier
-      thetypes.SetValue(num,TCollection_AsciiString(type));
-  //    if (strcmp(ident,"SCOPE") != 0) thenbscop ++;  // ?? a verifier
-    }
-  */
+
   if (type[0] != '(')
     thenbents++; // total de termes propres du fichier
 
-  // thetypes.ChangeValue(num).SetValue(1,type); gka memory
-  //============================================
-  Standard_Integer        index = 0;
-  TCollection_AsciiString strtype(type);
-  if (thenametypes.Contains(type))
-    index = thenametypes.FindIndex(strtype);
-  else
-    index = thenametypes.Add(strtype);
-  thetypes.ChangeValue(num) = index;
-  //===========================================
+  thetypes.ChangeValue(num) = thenametypes.Add(TCollection_AsciiString(type));
 
   if (ident[0] == '$')
   {
@@ -1998,12 +1982,14 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
   //   Passe initiale : Resolution directe par Map
   //   si tout passe (pas de collision), OK. Sinon, autres passes a prevoir
   //   On resoud du meme coup les sous-listes
-  Standard_Integer        nbdirec = NbRecords();
+  Standard_Integer                 nbdirec = NbRecords();
+  Handle(NCollection_IncAllocator) anAlloc =
+    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
   TColStd_Array1OfInteger subn(0, thelastn);
 
   Standard_Boolean            pbmap = Standard_False; // au moins un conflit
   Standard_Integer            nbmap = 0;
-  TColStd_IndexedMapOfInteger imap(thenbents);
+  TColStd_IndexedMapOfInteger imap(thenbents, anAlloc);
   TColStd_Array1OfInteger     indm(0, nbdirec); // Index Map -> Record Number (seulement si map)
 
   Standard_Integer num; // svv Jan11 2000 : porting on DEC
@@ -2099,10 +2085,11 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
   Handle(TColStd_HArray1OfInteger) indx;             // pour EXPORT (silya)
 
   imap.Clear();
+  anAlloc->Reset();
   Standard_Boolean iamap = withmap; // (par defaut True)
   nbmap                  = 0;
 
-  TColStd_SequenceOfInteger scopile; // chainage des scopes note par pile
+  TColStd_SequenceOfInteger scopile(anAlloc); // chainage des scopes note par pile
   Standard_Integer          nr = 0;
   for (num = 1; num <= nbdirec; num++)
   {
