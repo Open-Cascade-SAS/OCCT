@@ -124,20 +124,23 @@ TEST(NCollection_LocalArrayTest, CustomMaxArraySize)
 }
 
 // Test with custom type
-struct TestStruct
+struct NCollection_LocalArray_TestStruct
 {
   int    a;
   double b;
 
-  bool operator==(const TestStruct& other) const { return a == other.a && b == other.b; }
+  bool operator==(const NCollection_LocalArray_TestStruct& other) const
+  {
+    return a == other.a && b == other.b;
+  }
 };
 
 TEST(NCollection_LocalArrayTest, CustomType)
 {
-  NCollection_LocalArray<TestStruct> array(5);
+  NCollection_LocalArray<NCollection_LocalArray_TestStruct> array(5);
   EXPECT_EQ(5, array.Size());
 
-  TestStruct ts{10, 3.14};
+  NCollection_LocalArray_TestStruct ts{10, 3.14};
 
   // Set and retrieve values
   array[0] = ts;
