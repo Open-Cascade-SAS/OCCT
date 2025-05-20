@@ -515,19 +515,27 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
                                        std::ostream&              theBinFile,
                                        const RWMesh_EdgeIterator& theEdgeIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theEdgeIter.ElemLower();
+  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes;
   theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
-  theGltfFace.Indices.Count += theEdgeIter.NbNodes();
-  for (Standard_Integer anElemIter = theEdgeIter.ElemLower(); anElemIter <= theEdgeIter.ElemUpper();
-       ++anElemIter)
+  
+  const Standard_Integer numSegments = Max(0, theEdgeIter.NbNodes() - 1);
+  // each segment writes two indices
+  theGltfFace.Indices.Count += numSegments * 2;
+
+  for (Standard_Integer i = 0; i < numSegments; ++i)
   {
+    Standard_Integer i0 = aNodeFirst + i;
+    Standard_Integer i1 = aNodeFirst + i + 1;
+
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
     {
-      writeVertex(theBinFile, (uint16_t)(anElemIter + aNodeFirst));
+      writeVertex(theBinFile, (uint16_t)i0);
+      writeVertex(theBinFile, (uint16_t)i1);
     }
     else
     {
-      writeVertex(theBinFile, anElemIter + aNodeFirst);
+      writeVertex(theBinFile, i0);
+      writeVertex(theBinFile, i1);
     }
   }
 }
