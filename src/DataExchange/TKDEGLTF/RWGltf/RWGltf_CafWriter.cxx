@@ -499,12 +499,12 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
 
 void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
                                        std::ostream&              theBinFile,
-                                       const RWMesh_EdgeIterator& theFaceIter)
+                                       const RWMesh_EdgeIterator& theEdgeIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
-  theGltfFace.NbIndexedNodes += theFaceIter.NbNodes();
-  theGltfFace.Indices.Count += theFaceIter.NbNodes();
-  for (Standard_Integer anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
+  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theEdgeIter.ElemLower();
+  theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
+  theGltfFace.Indices.Count += theEdgeIter.NbNodes();
+  for (Standard_Integer anElemIter = theEdgeIter.ElemLower(); anElemIter <= theEdgeIter.ElemUpper();
        ++anElemIter)
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
@@ -522,12 +522,12 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
 
 void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFace,
                                          std::ostream&                theBinFile,
-                                         const RWMesh_VertexIterator& theFaceIter)
+                                         const RWMesh_VertexIterator& theVertexIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
-  theGltfFace.NbIndexedNodes += theFaceIter.NbNodes();
-  theGltfFace.Indices.Count += theFaceIter.NbNodes();
-  for (Standard_Integer anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
+  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theVertexIter.ElemLower();
+  theGltfFace.NbIndexedNodes += theVertexIter.NbNodes();
+  theGltfFace.Indices.Count += theVertexIter.NbNodes();
+  for (Standard_Integer anElemIter = theVertexIter.ElemLower(); anElemIter <= theVertexIter.ElemUpper();
        ++anElemIter)
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
@@ -545,7 +545,7 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
 
 void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
-                                   const RWMesh_ShapeIterator&                    theFaceIter,
+                                   const RWMesh_ShapeIterator&                    theShapeIter,
                                    Standard_Integer&                              theAccessorNb,
                                    const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh)
 {
@@ -574,17 +574,17 @@ void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                             
     }
   }
 
-  if (const RWMesh_FaceIterator* aFaceIter = dynamic_cast<const RWMesh_FaceIterator*>(&theFaceIter))
+  if (const RWMesh_FaceIterator* aFaceIter = dynamic_cast<const RWMesh_FaceIterator*>(&theShapeIter))
   {
     saveTriangleIndices(theGltfFace, theBinFile, *aFaceIter, theMesh);
   }
   else if (const RWMesh_EdgeIterator* anEdgeIter =
-             dynamic_cast<const RWMesh_EdgeIterator*>(&theFaceIter))
+             dynamic_cast<const RWMesh_EdgeIterator*>(&theShapeIter))
   {
     saveEdgeIndices(theGltfFace, theBinFile, *anEdgeIter);
   }
   else if (const RWMesh_VertexIterator* aVertexIter =
-             dynamic_cast<const RWMesh_VertexIterator*>(&theFaceIter))
+             dynamic_cast<const RWMesh_VertexIterator*>(&theShapeIter))
   {
     saveVertexIndices(theGltfFace, theBinFile, *aVertexIter);
   }
