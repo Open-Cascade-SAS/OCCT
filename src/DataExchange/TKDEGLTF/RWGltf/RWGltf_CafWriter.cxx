@@ -286,7 +286,7 @@ TopAbs_ShapeEnum RWGltf_CafWriter::getShapeType(const TopoDS_Shape& theShape) co
     // Compounds are created in the case of merged faces
     TopoDS_Iterator it(theShape);
     Standard_ProgramError_Raise_if(!it.More(), "Empty compound");
-    aShapeType = it.Value().ShapeType();    
+    aShapeType = it.Value().ShapeType();
   }
 
   return aShapeType;
@@ -517,7 +517,7 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
 {
   const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes;
   theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
-  
+
   const Standard_Integer numSegments = Max(0, theEdgeIter.NbNodes() - 1);
   // each segment writes two indices
   theGltfFace.Indices.Count += numSegments * 2;
@@ -549,7 +549,8 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
   const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theVertexIter.ElemLower();
   theGltfFace.NbIndexedNodes += theVertexIter.NbNodes();
   theGltfFace.Indices.Count += theVertexIter.NbNodes();
-  for (Standard_Integer anElemIter = theVertexIter.ElemLower(); anElemIter <= theVertexIter.ElemUpper();
+  for (Standard_Integer anElemIter = theVertexIter.ElemLower();
+       anElemIter <= theVertexIter.ElemUpper();
        ++anElemIter)
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
@@ -596,7 +597,8 @@ void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                             
     }
   }
 
-  if (const RWMesh_FaceIterator* aFaceIter = dynamic_cast<const RWMesh_FaceIterator*>(&theShapeIter))
+  if (const RWMesh_FaceIterator* aFaceIter =
+        dynamic_cast<const RWMesh_FaceIterator*>(&theShapeIter))
   {
     saveTriangleIndices(theGltfFace, theBinFile, *aFaceIter, theMesh);
   }
@@ -985,7 +987,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         aWrittenPrimData.Bind(aGltfFace->Shape, aGltfFace);
 
         Standard_Boolean wasWrittenNonFace = Standard_False;
-        TopAbs_ShapeEnum shapeType = getShapeType(aGltfFace->Shape);
+        TopAbs_ShapeEnum shapeType         = getShapeType(aGltfFace->Shape);
 
         switch (shapeType)
         {
