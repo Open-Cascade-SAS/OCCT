@@ -278,6 +278,22 @@ TCollection_AsciiString RWGltf_CafWriter::formatName(RWMesh_NameFormat theFormat
 
 //=================================================================================================
 
+TopAbs_ShapeEnum RWGltf_CafWriter::getShapeType(const TopoDS_Shape& theShape) const
+{
+  TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
+  if (aShapeType == TopAbs_COMPOUND)
+  {
+    // Compounds are created in the case of merged faces
+    TopoDS_Iterator it(theShape);
+    Standard_ProgramError_Raise_if(!it.More(), "Empty compound");
+    aShapeType = it.Value().ShapeType();    
+  }
+
+  return aShapeType;
+}
+
+//=================================================================================================
+
 Standard_Boolean RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theShapeIter) const
 {
   return theShapeIter.IsEmpty();
@@ -287,19 +303,17 @@ Standard_Boolean RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theSh
 
 Standard_Boolean RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGltfFace) const
 {
-  switch (theGltfFace.Shape.ShapeType())
+  TopAbs_ShapeEnum shapeType = getShapeType(theGltfFace.Shape);
+
+  switch (shapeType)
   {
-    case TopAbs_COMPOUND:
-    case TopAbs_COMPSOLID:
-    case TopAbs_SOLID:
-    case TopAbs_SHELL:
     case TopAbs_FACE:
       return true;
-    case TopAbs_WIRE:
     case TopAbs_EDGE:
     case TopAbs_VERTEX:
-    default:
       return false;
+    default:
+      throw Standard_ProgramError("Unsupported shape type");
   }
 }
 
@@ -963,7 +977,9 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         aWrittenPrimData.Bind(aGltfFace->Shape, aGltfFace);
 
         Standard_Boolean wasWrittenNonFace = Standard_False;
-        switch (aGltfFace->Shape.ShapeType())
+        TopAbs_ShapeEnum shapeType = getShapeType(aGltfFace->Shape);
+
+        switch (shapeType)
         {
           case TopAbs_EDGE: {
             RWMesh_EdgeIterator anIter(aGltfFace->Shape, aGltfFace->Style);
@@ -2027,7 +2043,10 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
     }
 
     myWriter->Key("mode");
-    switch (theGltfFace.Shape.ShapeType())
+
+    TopAbs_ShapeEnum shapeType = getShapeType(theGltfFace.Shape);
+
+    switch (shapeType)
     {
       case TopAbs_EDGE:
         myWriter->Int(RWGltf_GltfPrimitiveMode_Lines);

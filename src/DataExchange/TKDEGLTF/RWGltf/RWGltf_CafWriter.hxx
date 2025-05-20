@@ -209,6 +209,9 @@ protected:
                                          const Message_ProgressRange&                theProgress);
 
 protected:
+  //! Returns the underlying shape in case of a compound.
+  Standard_EXPORT virtual TopAbs_ShapeEnum getShapeType(const TopoDS_Shape& theShape) const;
+
   //! Return TRUE if face shape should be skipped (e.g. because it is invalid or empty).
   Standard_EXPORT virtual Standard_Boolean toSkipShape(
     const RWMesh_ShapeIterator& theShapeIter) const;
