@@ -2030,7 +2030,7 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
     switch (theGltfFace.Shape.ShapeType())
     {
       case TopAbs_EDGE:
-        myWriter->Int(RWGltf_GltfPrimitiveMode_LineStrip);
+        myWriter->Int(RWGltf_GltfPrimitiveMode_Lines);
         break;
       case TopAbs_VERTEX:
         myWriter->Int(RWGltf_GltfPrimitiveMode_Points);
