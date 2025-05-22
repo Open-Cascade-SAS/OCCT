@@ -1,0 +1,29 @@
+# This test is to check the fix for issue #544
+# We have to make sure that boolean operation doesn't stuck in infinite loop.
+
+# Load the base solid
+restore [locate_data_file bug_gh544.brep] body
+# restore solid.brep body
+
+# get all the wires
+explode body W
+
+# make it a face
+mkplane f body_18
+
+# prism it, z = 12
+prism p f 0 0 12
+
+# settings to fuse
+bclearobjects
+bcleartools
+baddobjects p
+baddtools body
+bfillds
+
+# set simplify to true
+bsimplify -f 1
+
+# If this doesn't stuck in infinite loop, behavior is correct.
+# If it does, it will be killed by the timeout eventually.
+bapibop res_simple 1
