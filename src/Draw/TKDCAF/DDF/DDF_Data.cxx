@@ -62,6 +62,16 @@ void DDF_Data::Dump(Standard_OStream& S) const
 
 //=================================================================================================
 
+void DDF_Data::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  if (!myDF.IsNull())
+  {
+    myDF->DumpJson(theOStream, theDepth);
+  }
+}
+
+//=================================================================================================
+
 Handle(TDF_Data) DDF_Data::DataFramework() const
 {
   return myDF;
