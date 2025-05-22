@@ -283,7 +283,8 @@ TopAbs_ShapeEnum RWGltf_CafWriter::getShapeType(const TopoDS_Shape& theShape) co
   TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
   if (aShapeType == TopAbs_COMPOUND)
   {
-    // Compounds are created in the case of merged faces
+    // Compounds are created in the case of merged faces.
+    // Assuming that all shapes in the compound are of the same type
     TopoDS_Iterator it(theShape);
     Standard_ProgramError_Raise_if(!it.More(), "Empty compound");
     aShapeType = it.Value().ShapeType();
