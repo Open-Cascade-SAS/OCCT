@@ -1,0 +1,77 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWTransitionCode_HeaderFile
+#define _RWStepGeom_RWTransitionCode_HeaderFile
+
+#include <StepGeom_TransitionCode.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWTransitionCode
+{
+static constexpr char tcDiscontinuous[]                 = ".DISCONTINUOUS.";
+static constexpr char tcContSameGradientSameCurvature[] = ".CONT_SAME_GRADIENT_SAME_CURVATURE.";
+static constexpr char tcContSameGradient[]              = ".CONT_SAME_GRADIENT.";
+static constexpr char tcContinuous[]                    = ".CONTINUOUS.";
+
+//! Convert StepGeom_TransitionCode to string
+//! @param theTransitionCodeEnum The StepGeom_TransitionCode value to convert
+//! @return The corresponding string representation
+inline const char* ConvertToString(const StepGeom_TransitionCode theTransitionCodeEnum)
+{
+  switch (theTransitionCodeEnum)
+  {
+    case StepGeom_tcDiscontinuous:
+      return tcDiscontinuous;
+    case StepGeom_tcContSameGradientSameCurvature:
+      return tcContSameGradientSameCurvature;
+    case StepGeom_tcContSameGradient:
+      return tcContSameGradient;
+    case StepGeom_tcContinuous:
+      return tcContinuous;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_TransitionCode
+//! @param theTransitionCodeStr The string to convert
+//! @param theResultEnum The corresponding StepGeom_TransitionCode value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString   theTransitionCodeStr,
+                          StepGeom_TransitionCode& theResultEnum)
+{
+  if (IsEqual(theTransitionCodeStr, tcDiscontinuous))
+  {
+    theResultEnum = StepGeom_tcDiscontinuous;
+  }
+  else if (IsEqual(theTransitionCodeStr, tcContSameGradientSameCurvature))
+  {
+    theResultEnum = StepGeom_tcContSameGradientSameCurvature;
+  }
+  else if (IsEqual(theTransitionCodeStr, tcContSameGradient))
+  {
+    theResultEnum = StepGeom_tcContSameGradient;
+  }
+  else if (IsEqual(theTransitionCodeStr, tcContinuous))
+  {
+    theResultEnum = StepGeom_tcContinuous;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWTransitionCode
+
+#endif // _RWStepGeom_RWTransitionCode_HeaderFile

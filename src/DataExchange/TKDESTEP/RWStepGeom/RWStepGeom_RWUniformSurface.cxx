@@ -18,18 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_UniformSurface.hxx>
 
-// --- Enum : BSplineSurfaceForm ---
-static TCollection_AsciiString bssfSurfOfLinearExtrusion(".SURF_OF_LINEAR_EXTRUSION.");
-static TCollection_AsciiString bssfPlaneSurf(".PLANE_SURF.");
-static TCollection_AsciiString bssfGeneralisedCone(".GENERALISED_CONE.");
-static TCollection_AsciiString bssfToroidalSurf(".TOROIDAL_SURF.");
-static TCollection_AsciiString bssfConicalSurf(".CONICAL_SURF.");
-static TCollection_AsciiString bssfSphericalSurf(".SPHERICAL_SURF.");
-static TCollection_AsciiString bssfUnspecified(".UNSPECIFIED.");
-static TCollection_AsciiString bssfRuledSurf(".RULED_SURF.");
-static TCollection_AsciiString bssfSurfOfRevolution(".SURF_OF_REVOLUTION.");
-static TCollection_AsciiString bssfCylindricalSurf(".CYLINDRICAL_SURF.");
-static TCollection_AsciiString bssfQuadricSurf(".QUADRIC_SURF.");
+#include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 
 RWStepGeom_RWUniformSurface::RWStepGeom_RWUniformSurface() {}
 
@@ -98,30 +87,10 @@ void RWStepGeom_RWUniformSurface::ReadStep(const Handle(StepData_StepReaderData)
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 5);
-    if (bssfSurfOfLinearExtrusion.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSurfOfLinearExtrusion;
-    else if (bssfPlaneSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfPlaneSurf;
-    else if (bssfGeneralisedCone.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfGeneralisedCone;
-    else if (bssfToroidalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfToroidalSurf;
-    else if (bssfConicalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfConicalSurf;
-    else if (bssfSphericalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSphericalSurf;
-    else if (bssfUnspecified.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfUnspecified;
-    else if (bssfRuledSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfRuledSurf;
-    else if (bssfSurfOfRevolution.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSurfOfRevolution;
-    else if (bssfCylindricalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfCylindricalSurf;
-    else if (bssfQuadricSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfQuadricSurf;
-    else
+    if (!RWStepGeom_RWBSplineSurfaceForm::ConvertToEnum(text, aSurfaceForm))
+    {
       ach->AddFail("Enumeration b_spline_surface_form has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
@@ -190,42 +159,7 @@ void RWStepGeom_RWUniformSurface::WriteStep(StepData_StepWriter&                
 
   // --- inherited field surfaceForm ---
 
-  switch (ent->SurfaceForm())
-  {
-    case StepGeom_bssfSurfOfLinearExtrusion:
-      SW.SendEnum(bssfSurfOfLinearExtrusion);
-      break;
-    case StepGeom_bssfPlaneSurf:
-      SW.SendEnum(bssfPlaneSurf);
-      break;
-    case StepGeom_bssfGeneralisedCone:
-      SW.SendEnum(bssfGeneralisedCone);
-      break;
-    case StepGeom_bssfToroidalSurf:
-      SW.SendEnum(bssfToroidalSurf);
-      break;
-    case StepGeom_bssfConicalSurf:
-      SW.SendEnum(bssfConicalSurf);
-      break;
-    case StepGeom_bssfSphericalSurf:
-      SW.SendEnum(bssfSphericalSurf);
-      break;
-    case StepGeom_bssfUnspecified:
-      SW.SendEnum(bssfUnspecified);
-      break;
-    case StepGeom_bssfRuledSurf:
-      SW.SendEnum(bssfRuledSurf);
-      break;
-    case StepGeom_bssfSurfOfRevolution:
-      SW.SendEnum(bssfSurfOfRevolution);
-      break;
-    case StepGeom_bssfCylindricalSurf:
-      SW.SendEnum(bssfCylindricalSurf);
-      break;
-    case StepGeom_bssfQuadricSurf:
-      SW.SendEnum(bssfQuadricSurf);
-      break;
-  }
+  SW.SendEnum(RWStepGeom_RWBSplineSurfaceForm::ConvertToString(ent->SurfaceForm()));
 
   // --- inherited field uClosed ---
 

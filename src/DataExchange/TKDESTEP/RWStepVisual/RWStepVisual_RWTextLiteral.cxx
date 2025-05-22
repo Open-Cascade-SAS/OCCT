@@ -19,11 +19,7 @@
 #include <StepVisual_TextPath.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : TextPath ---
-static TCollection_AsciiString tpUp(".UP.");
-static TCollection_AsciiString tpRight(".RIGHT.");
-static TCollection_AsciiString tpDown(".DOWN.");
-static TCollection_AsciiString tpLeft(".LEFT.");
+#include "RWStepVisual_RWTextPath.pxx"
 
 RWStepVisual_RWTextLiteral::RWStepVisual_RWTextLiteral() {}
 
@@ -68,16 +64,10 @@ void RWStepVisual_RWTextLiteral::ReadStep(const Handle(StepData_StepReaderData)&
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 5);
-    if (tpUp.IsEqual(text))
-      aPath = StepVisual_tpUp;
-    else if (tpRight.IsEqual(text))
-      aPath = StepVisual_tpRight;
-    else if (tpDown.IsEqual(text))
-      aPath = StepVisual_tpDown;
-    else if (tpLeft.IsEqual(text))
-      aPath = StepVisual_tpLeft;
-    else
+    if (!RWStepVisual_RWTextPath::ConvertToEnum(text, aPath))
+    {
       ach->AddFail("Enumeration text_path has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #5 (path) is not an enumeration");
@@ -115,21 +105,7 @@ void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                 
 
   // --- own field : path ---
 
-  switch (ent->Path())
-  {
-    case StepVisual_tpUp:
-      SW.SendEnum(tpUp);
-      break;
-    case StepVisual_tpRight:
-      SW.SendEnum(tpRight);
-      break;
-    case StepVisual_tpDown:
-      SW.SendEnum(tpDown);
-      break;
-    case StepVisual_tpLeft:
-      SW.SendEnum(tpLeft);
-      break;
-  }
+  SW.SendEnum(RWStepVisual_RWTextPath::ConvertToString(ent->Path()));
 
   // --- own field : font ---
 
