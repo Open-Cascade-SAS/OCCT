@@ -484,6 +484,9 @@ OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
 
 set (OCCT_3RDPARTY_CMAKE_LIST)
 
+# define CSF variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
+
 # Tcl (mandatory for Draw Harness)
 if (USE_TCL)
   message (STATUS "Info: TCL is used by OCCT")
@@ -778,9 +781,6 @@ file(COPY ${CMAKE_SOURCE_DIR}/.clang-format DESTINATION ${CMAKE_SOURCE_DIR})
 # Get all used variables: OS_WITH_BIT, COMPILER
 OCCT_MAKE_OS_WITH_BITNESS()
 OCCT_MAKE_COMPILER_SHORT_NAME()
-
-# define CSF variable
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 # do not define INSTALL_DIR_BIN for win.
 # Leave library structure for win: <prefix>/win64/vc10/bin(d)
