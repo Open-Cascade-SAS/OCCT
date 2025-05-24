@@ -1,0 +1,70 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWPreferredSurfaceCurveRepresentation_HeaderFile
+#define _RWStepGeom_RWPreferredSurfaceCurveRepresentation_HeaderFile
+
+#include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWPreferredSurfaceCurveRepresentation
+{
+static constexpr char pscrPcurveS2[] = ".PCURVE_S2.";
+static constexpr char pscrPcurveS1[] = ".PCURVE_S1.";
+static constexpr char pscrCurve3d[]  = ".CURVE_3D.";
+
+//! Convert StepGeom_PreferredSurfaceCurveRepresentation to string
+//! @param theSourceEnum The StepGeom_PreferredSurfaceCurveRepresentation value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepGeom_PreferredSurfaceCurveRepresentation theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepGeom_pscrPcurveS2:
+      return pscrPcurveS2;
+    case StepGeom_pscrPcurveS1:
+      return pscrPcurveS1;
+    case StepGeom_pscrCurve3d:
+      return pscrCurve3d;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_PreferredSurfaceCurveRepresentation
+//! @param theRepresentationStr The string to convert
+//! @param theResultEnum The corresponding StepGeom_PreferredSurfaceCurveRepresentation value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString                        theRepresentationStr,
+                          StepGeom_PreferredSurfaceCurveRepresentation& theResultEnum)
+{
+  if (IsEqual(theRepresentationStr, pscrPcurveS2))
+  {
+    theResultEnum = StepGeom_pscrPcurveS2;
+  }
+  else if (IsEqual(theRepresentationStr, pscrPcurveS1))
+  {
+    theResultEnum = StepGeom_pscrPcurveS1;
+  }
+  else if (IsEqual(theRepresentationStr, pscrCurve3d))
+  {
+    theResultEnum = StepGeom_pscrCurve3d;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWPreferredSurfaceCurveRepresentation
+
+#endif // _RWStepGeom_RWPreferredSurfaceCurveRepresentation_HeaderFile

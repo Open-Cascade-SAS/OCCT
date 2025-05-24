@@ -1,0 +1,244 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepBasic_RWSiUnitName_HeaderFile
+#define _RWStepBasic_RWSiUnitName_HeaderFile
+
+#include <StepBasic_SiUnitName.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepBasic_RWSiUnitName
+{
+static constexpr char sunHertz[]         = ".HERTZ.";
+static constexpr char sunDegreeCelsius[] = ".DEGREE_CELSIUS.";
+static constexpr char sunSiemens[]       = ".SIEMENS.";
+static constexpr char sunSievert[]       = ".SIEVERT.";
+static constexpr char sunLux[]           = ".LUX.";
+static constexpr char sunWatt[]          = ".WATT.";
+static constexpr char sunOhm[]           = ".OHM.";
+static constexpr char sunSecond[]        = ".SECOND.";
+static constexpr char sunBecquerel[]     = ".BECQUEREL.";
+static constexpr char sunPascal[]        = ".PASCAL.";
+static constexpr char sunHenry[]         = ".HENRY.";
+static constexpr char sunTesla[]         = ".TESLA.";
+static constexpr char sunVolt[]          = ".VOLT.";
+static constexpr char sunJoule[]         = ".JOULE.";
+static constexpr char sunKelvin[]        = ".KELVIN.";
+static constexpr char sunAmpere[]        = ".AMPERE.";
+static constexpr char sunGram[]          = ".GRAM.";
+static constexpr char sunSteradian[]     = ".STERADIAN.";
+static constexpr char sunMole[]          = ".MOLE.";
+static constexpr char sunLumen[]         = ".LUMEN.";
+static constexpr char sunGray[]          = ".GRAY.";
+static constexpr char sunCandela[]       = ".CANDELA.";
+static constexpr char sunFarad[]         = ".FARAD.";
+static constexpr char sunRadian[]        = ".RADIAN.";
+static constexpr char sunNewton[]        = ".NEWTON.";
+static constexpr char sunMetre[]         = ".METRE.";
+static constexpr char sunWeber[]         = ".WEBER.";
+static constexpr char sunCoulomb[]       = ".COULOMB.";
+
+//! Convert StepBasic_SiUnitName to string
+//! @param theNameEnum The StepBasic_SiUnitName value to convert
+//! @return The corresponding string representation
+inline const char* ConvertToString(const StepBasic_SiUnitName theNameEnum)
+{
+  switch (theNameEnum)
+  {
+    case StepBasic_sunHertz:
+      return sunHertz;
+    case StepBasic_sunDegreeCelsius:
+      return sunDegreeCelsius;
+    case StepBasic_sunSiemens:
+      return sunSiemens;
+    case StepBasic_sunSievert:
+      return sunSievert;
+    case StepBasic_sunLux:
+      return sunLux;
+    case StepBasic_sunWatt:
+      return sunWatt;
+    case StepBasic_sunOhm:
+      return sunOhm;
+    case StepBasic_sunSecond:
+      return sunSecond;
+    case StepBasic_sunBecquerel:
+      return sunBecquerel;
+    case StepBasic_sunPascal:
+      return sunPascal;
+    case StepBasic_sunHenry:
+      return sunHenry;
+    case StepBasic_sunTesla:
+      return sunTesla;
+    case StepBasic_sunVolt:
+      return sunVolt;
+    case StepBasic_sunJoule:
+      return sunJoule;
+    case StepBasic_sunKelvin:
+      return sunKelvin;
+    case StepBasic_sunAmpere:
+      return sunAmpere;
+    case StepBasic_sunGram:
+      return sunGram;
+    case StepBasic_sunSteradian:
+      return sunSteradian;
+    case StepBasic_sunMole:
+      return sunMole;
+    case StepBasic_sunLumen:
+      return sunLumen;
+    case StepBasic_sunGray:
+      return sunGray;
+    case StepBasic_sunCandela:
+      return sunCandela;
+    case StepBasic_sunFarad:
+      return sunFarad;
+    case StepBasic_sunRadian:
+      return sunRadian;
+    case StepBasic_sunNewton:
+      return sunNewton;
+    case StepBasic_sunMetre:
+      return sunMetre;
+    case StepBasic_sunWeber:
+      return sunWeber;
+    case StepBasic_sunCoulomb:
+      return sunCoulomb;
+  }
+  return nullptr; // Default value
+}
+
+//! Convert string to StepBasic_SiUnitName
+//! @param theNameStr The string to convert
+//! @param theResultEnum The corresponding StepBasic_SiUnitName value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString theNameStr, StepBasic_SiUnitName& theResultEnum)
+{
+  if (IsEqual(theNameStr, sunHertz))
+  {
+    theResultEnum = StepBasic_sunHertz;
+  }
+  else if (IsEqual(theNameStr, sunDegreeCelsius))
+  {
+    theResultEnum = StepBasic_sunDegreeCelsius;
+  }
+  else if (IsEqual(theNameStr, sunSiemens))
+  {
+    theResultEnum = StepBasic_sunSiemens;
+  }
+  else if (IsEqual(theNameStr, sunSievert))
+  {
+    theResultEnum = StepBasic_sunSievert;
+  }
+  else if (IsEqual(theNameStr, sunLux))
+  {
+    theResultEnum = StepBasic_sunLux;
+  }
+  else if (IsEqual(theNameStr, sunWatt))
+  {
+    theResultEnum = StepBasic_sunWatt;
+  }
+  else if (IsEqual(theNameStr, sunOhm))
+  {
+    theResultEnum = StepBasic_sunOhm;
+  }
+  else if (IsEqual(theNameStr, sunSecond))
+  {
+    theResultEnum = StepBasic_sunSecond;
+  }
+  else if (IsEqual(theNameStr, sunBecquerel))
+  {
+    theResultEnum = StepBasic_sunBecquerel;
+  }
+  else if (IsEqual(theNameStr, sunPascal))
+  {
+    theResultEnum = StepBasic_sunPascal;
+  }
+  else if (IsEqual(theNameStr, sunHenry))
+  {
+    theResultEnum = StepBasic_sunHenry;
+  }
+  else if (IsEqual(theNameStr, sunTesla))
+  {
+    theResultEnum = StepBasic_sunTesla;
+  }
+  else if (IsEqual(theNameStr, sunVolt))
+  {
+    theResultEnum = StepBasic_sunVolt;
+  }
+  else if (IsEqual(theNameStr, sunJoule))
+  {
+    theResultEnum = StepBasic_sunJoule;
+  }
+  else if (IsEqual(theNameStr, sunKelvin))
+  {
+    theResultEnum = StepBasic_sunKelvin;
+  }
+  else if (IsEqual(theNameStr, sunAmpere))
+  {
+    theResultEnum = StepBasic_sunAmpere;
+  }
+  else if (IsEqual(theNameStr, sunGram))
+  {
+    theResultEnum = StepBasic_sunGram;
+  }
+  else if (IsEqual(theNameStr, sunSteradian))
+  {
+    theResultEnum = StepBasic_sunSteradian;
+  }
+  else if (IsEqual(theNameStr, sunMole))
+  {
+    theResultEnum = StepBasic_sunMole;
+  }
+  else if (IsEqual(theNameStr, sunLumen))
+  {
+    theResultEnum = StepBasic_sunLumen;
+  }
+  else if (IsEqual(theNameStr, sunGray))
+  {
+    theResultEnum = StepBasic_sunGray;
+  }
+  else if (IsEqual(theNameStr, sunCandela))
+  {
+    theResultEnum = StepBasic_sunCandela;
+  }
+  else if (IsEqual(theNameStr, sunFarad))
+  {
+    theResultEnum = StepBasic_sunFarad;
+  }
+  else if (IsEqual(theNameStr, sunRadian))
+  {
+    theResultEnum = StepBasic_sunRadian;
+  }
+  else if (IsEqual(theNameStr, sunNewton))
+  {
+    theResultEnum = StepBasic_sunNewton;
+  }
+  else if (IsEqual(theNameStr, sunMetre))
+  {
+    theResultEnum = StepBasic_sunMetre;
+  }
+  else if (IsEqual(theNameStr, sunWeber))
+  {
+    theResultEnum = StepBasic_sunWeber;
+  }
+  else if (IsEqual(theNameStr, sunCoulomb))
+  {
+    theResultEnum = StepBasic_sunCoulomb;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+} // namespace RWStepBasic_RWSiUnitName
+#endif // _RWStepBasic_RWSiUnitName_HeaderFile
