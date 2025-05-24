@@ -278,6 +278,23 @@ TCollection_AsciiString RWGltf_CafWriter::formatName(RWMesh_NameFormat theFormat
 
 //=================================================================================================
 
+TopAbs_ShapeEnum RWGltf_CafWriter::getShapeType(const TopoDS_Shape& theShape) const
+{
+  TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
+  if (aShapeType == TopAbs_COMPOUND)
+  {
+    // Compounds are created in the case of merged faces.
+    // Assuming that all shapes in the compound are of the same type
+    TopoDS_Iterator it(theShape);
+    Standard_ProgramError_Raise_if(!it.More(), "Empty compound");
+    aShapeType = it.Value().ShapeType();
+  }
+
+  return aShapeType;
+}
+
+//=================================================================================================
+
 Standard_Boolean RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theShapeIter) const
 {
   return theShapeIter.IsEmpty();
@@ -287,19 +304,17 @@ Standard_Boolean RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theSh
 
 Standard_Boolean RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGltfFace) const
 {
-  switch (theGltfFace.Shape.ShapeType())
+  TopAbs_ShapeEnum shapeType = getShapeType(theGltfFace.Shape);
+
+  switch (shapeType)
   {
-    case TopAbs_COMPOUND:
-    case TopAbs_COMPSOLID:
-    case TopAbs_SOLID:
-    case TopAbs_SHELL:
     case TopAbs_FACE:
       return true;
-    case TopAbs_WIRE:
     case TopAbs_EDGE:
     case TopAbs_VERTEX:
-    default:
       return false;
+    default:
+      throw Standard_ProgramError("Unsupported shape type");
   }
 }
 
@@ -499,21 +514,29 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
 
 void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
                                        std::ostream&              theBinFile,
-                                       const RWMesh_EdgeIterator& theFaceIter)
+                                       const RWMesh_EdgeIterator& theEdgeIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
-  theGltfFace.NbIndexedNodes += theFaceIter.NbNodes();
-  theGltfFace.Indices.Count += theFaceIter.NbNodes();
-  for (Standard_Integer anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
-       ++anElemIter)
+  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes;
+  theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
+
+  const Standard_Integer numSegments = Max(0, theEdgeIter.NbNodes() - 1);
+  // each segment writes two indices
+  theGltfFace.Indices.Count += numSegments * 2;
+
+  for (Standard_Integer i = 0; i < numSegments; ++i)
   {
+    Standard_Integer i0 = aNodeFirst + i;
+    Standard_Integer i1 = aNodeFirst + i + 1;
+
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
     {
-      writeVertex(theBinFile, (uint16_t)(anElemIter + aNodeFirst));
+      writeVertex(theBinFile, (uint16_t)i0);
+      writeVertex(theBinFile, (uint16_t)i1);
     }
     else
     {
-      writeVertex(theBinFile, anElemIter + aNodeFirst);
+      writeVertex(theBinFile, i0);
+      writeVertex(theBinFile, i1);
     }
   }
 }
@@ -522,12 +545,13 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
 
 void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFace,
                                          std::ostream&                theBinFile,
-                                         const RWMesh_VertexIterator& theFaceIter)
+                                         const RWMesh_VertexIterator& theVertexIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
-  theGltfFace.NbIndexedNodes += theFaceIter.NbNodes();
-  theGltfFace.Indices.Count += theFaceIter.NbNodes();
-  for (Standard_Integer anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
+  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theVertexIter.ElemLower();
+  theGltfFace.NbIndexedNodes += theVertexIter.NbNodes();
+  theGltfFace.Indices.Count += theVertexIter.NbNodes();
+  for (Standard_Integer anElemIter = theVertexIter.ElemLower();
+       anElemIter <= theVertexIter.ElemUpper();
        ++anElemIter)
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
@@ -545,7 +569,7 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
 
 void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
-                                   const RWMesh_ShapeIterator&                    theFaceIter,
+                                   const RWMesh_ShapeIterator&                    theShapeIter,
                                    Standard_Integer&                              theAccessorNb,
                                    const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh)
 {
@@ -574,17 +598,18 @@ void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                             
     }
   }
 
-  if (const RWMesh_FaceIterator* aFaceIter = dynamic_cast<const RWMesh_FaceIterator*>(&theFaceIter))
+  if (const RWMesh_FaceIterator* aFaceIter =
+        dynamic_cast<const RWMesh_FaceIterator*>(&theShapeIter))
   {
     saveTriangleIndices(theGltfFace, theBinFile, *aFaceIter, theMesh);
   }
   else if (const RWMesh_EdgeIterator* anEdgeIter =
-             dynamic_cast<const RWMesh_EdgeIterator*>(&theFaceIter))
+             dynamic_cast<const RWMesh_EdgeIterator*>(&theShapeIter))
   {
     saveEdgeIndices(theGltfFace, theBinFile, *anEdgeIter);
   }
   else if (const RWMesh_VertexIterator* aVertexIter =
-             dynamic_cast<const RWMesh_VertexIterator*>(&theFaceIter))
+             dynamic_cast<const RWMesh_VertexIterator*>(&theShapeIter))
   {
     saveVertexIndices(theGltfFace, theBinFile, *aVertexIter);
   }
@@ -963,7 +988,9 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         aWrittenPrimData.Bind(aGltfFace->Shape, aGltfFace);
 
         Standard_Boolean wasWrittenNonFace = Standard_False;
-        switch (aGltfFace->Shape.ShapeType())
+        TopAbs_ShapeEnum shapeType         = getShapeType(aGltfFace->Shape);
+
+        switch (shapeType)
         {
           case TopAbs_EDGE: {
             RWMesh_EdgeIterator anIter(aGltfFace->Shape, aGltfFace->Style);
@@ -2027,10 +2054,13 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
     }
 
     myWriter->Key("mode");
-    switch (theGltfFace.Shape.ShapeType())
+
+    TopAbs_ShapeEnum shapeType = getShapeType(theGltfFace.Shape);
+
+    switch (shapeType)
     {
       case TopAbs_EDGE:
-        myWriter->Int(RWGltf_GltfPrimitiveMode_LineStrip);
+        myWriter->Int(RWGltf_GltfPrimitiveMode_Lines);
         break;
       case TopAbs_VERTEX:
         myWriter->Int(RWGltf_GltfPrimitiveMode_Points);
