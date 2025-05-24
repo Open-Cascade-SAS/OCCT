@@ -137,7 +137,7 @@ const Handle(TColStd_HArray1OfListOfInteger)& Interface_Graph::SharingTable() co
 
 void Interface_Graph::Evaluate()
 {
-  // Evaluation performs on the all entities of the model
+  // Evaluation is performed on all entities of the model
   const Standard_Integer anEntityNumber = Size();
 
   // Global allocator stored as a field of the single container of the sharings
