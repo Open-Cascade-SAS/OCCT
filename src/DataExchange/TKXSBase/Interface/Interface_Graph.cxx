@@ -143,11 +143,12 @@ void Interface_Graph::Evaluate()
   // Global allocator stored as a field of the single container of the sharings
   // and will be destructed with the container.
   Handle(NCollection_IncAllocator) anAlloc =
-    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+    new NCollection_IncAllocator(NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE);
   thesharings = new TColStd_HArray1OfListOfInteger(1, anEntityNumber);
+  TColStd_Array1OfListOfInteger& aSharingArrayOfLists = thesharings->ChangeArray1();
   for (Standard_Integer i = 1; i <= anEntityNumber; i++)
   {
-    thesharings->ChangeValue(i).Clear(anAlloc);
+    aSharingArrayOfLists(i).Clear(anAlloc);
   }
 
   if (themodel->GTool().IsNull())
@@ -163,14 +164,14 @@ void Interface_Graph::Evaluate()
   // Allocator is used to reuse memory for the lists of shared entities.
   Handle(NCollection_IncAllocator) anAlloc2 =
     new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+  Handle(TColStd_HSequenceOfTransient) aListOfEntities = new TColStd_HSequenceOfTransient();
   for (Standard_Integer i = 1; i <= anEntityNumber; i++)
   {
-    anAlloc2->Reset();
-    const Handle(Standard_Transient)&    anEntity        = themodel->Value(i);
-    Handle(TColStd_HSequenceOfTransient) aListOfEntities = new TColStd_HSequenceOfTransient();
     aListOfEntities->Clear(anAlloc2);
-    Interface_EntityIterator anIter(aListOfEntities);
-    const Standard_Integer   aNumber = EntityNumber(anEntity);
+    anAlloc2->Reset();
+    const Handle(Standard_Transient)& anEntity = themodel->Value(i);
+    Interface_EntityIterator          anIter(aListOfEntities);
+    const Standard_Integer            aNumber = EntityNumber(anEntity);
     if (aNumber == 0)
     {
       continue;
@@ -205,7 +206,7 @@ void Interface_Graph::Evaluate()
         }
         continue;
       }
-      thesharings->ChangeValue(aShareNum).Append(i);
+      aSharingArrayOfLists(aShareNum).Append(i);
     }
   }
 }
