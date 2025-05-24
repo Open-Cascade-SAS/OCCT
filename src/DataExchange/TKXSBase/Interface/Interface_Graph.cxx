@@ -166,10 +166,10 @@ void Interface_Graph::Evaluate()
   for (Standard_Integer i = 1; i <= anEntityNumber; i++)
   {
     anAlloc2->Reset();
-    const Handle(Standard_Transient)&    anEntity        = themodel->Value(i);
-    Handle(TColStd_HSequenceOfTransient) aListofEntities = new TColStd_HSequenceOfTransient();
-    aListofEntities->Clear(anAlloc2);
-    Interface_EntityIterator anIter(aListofEntities);
+    const Handle(Standard_ Transient)&   anEntity        = themodel->Value(i);
+    Handle(TColStd_HSequenceOfTransient) aListOfEntities = new TColStd_HSequenceOfTransient();
+    aListOfEntities->Clear(anAlloc2);
+    Interface_EntityIterator anIter(aListOfEntities);
     const Standard_Integer   aNumber = EntityNumber(anEntity);
     if (aNumber == 0)
     {
