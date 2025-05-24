@@ -19,6 +19,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <BRepCheck_Status.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
@@ -31,6 +32,7 @@
 #include <Message_ProgressScope.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
@@ -117,6 +119,7 @@
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 #include <UnitsMethods.hxx>
+#include <OSD_Parallel.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
@@ -324,6 +327,7 @@ Handle(Transfer_Binder) STEPControl_ActorRead::Transfer(const Handle(Standard_Tr
                                                         const Message_ProgressRange& theProgress)
 {
   // [BEGIN] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
+  const Standard_Integer     aNbTPitems = TP->NbMapped();
   StepData_Factors           aLocalFactors;
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   if (!aStepModel->IsInitializedUnit())
@@ -356,8 +360,11 @@ Handle(Transfer_Binder) STEPControl_ActorRead::Transfer(const Handle(Standard_Tr
     }
   }
   // [END] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  Standard_Boolean aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
-  return TransferShape(start, TP, aLocalFactors, Standard_True, aTrsfUse, theProgress);
+  Standard_Boolean        aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
+  Handle(Transfer_Binder) aResult =
+    TransferShape(start, TP, aLocalFactors, Standard_True, aTrsfUse, theProgress);
+  PostHealing(TP, aNbTPitems);
+  return aResult;
 }
 
 // ============================================================================
@@ -1695,13 +1702,13 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
       // Set tolerances for shape processing.
       // These parameters are calculated inside STEPControl_ActorRead::Transfer() and cannot be set
       // from outside.
-      XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
-      XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
-      XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
-      XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
-      mappedShape =
-        aShapeProcessor.ProcessShape(mappedShape, GetProcessingFlags().first, aPS.Next());
-      aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
+      // XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
+      // XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true,
+      // aParameters); XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol,
+      // true, aParameters); XSAlgo_ShapeProcessor aShapeProcessor(aParameters); mappedShape =
+      //   aShapeProcessor.ProcessShape(mappedShape, GetProcessingFlags().first, aPS.Next());
+      // aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
+      myShapesToHeal.Add(mappedShape);
     }
   }
   found = !mappedShape.IsNull();
@@ -2346,19 +2353,15 @@ void STEPControl_ActorRead::computeIDEASClosings(
   }
 }
 
-//=======================================================================
-// Method  : SetModel
-// Purpose :
-//=======================================================================
+//=================================================================================================
+
 void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& theModel)
 {
   myModel = theModel;
 }
 
-//=======================================================================
-// Method  : TransferRelatedSRR
-// Purpose : Helper method to transfer SRR related to the representation
-//=======================================================================
+//=================================================================================================
+
 TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(
   const Handle(Transfer_TransientProcess)&     theTP,
   const Handle(StepShape_ShapeRepresentation)& theRep,
@@ -2407,4 +2410,69 @@ TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(
     }
   }
   return aResult;
+}
+
+//=================================================================================================
+
+void STEPControl_ActorRead::PostHealing(const Handle(Transfer_TransientProcess)& theTP,
+                                        const Standard_Integer                   theFirstIndex)
+{
+  NCollection_Array1<std::unique_ptr<XSAlgo_ShapeProcessor>> aInfos(1, myShapesToHeal.Size());
+  NCollection_Array1<TopTools_DataMapOfShapeShape> aOrigToCopyMapArr(1, myShapesToHeal.Size());
+  NCollection_Array1<TopTools_DataMapOfShapeShape> aCopyToOrigMapArr(1, myShapesToHeal.Size());
+  XSAlgo_ShapeProcessor::ParameterMap              aParameters = GetShapeFixParameters();
+  XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
+  XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
+  OSD_Parallel::For(1, myShapesToHeal.Size() + 1, [&](int i) {
+    TopoDS_Shape        anOrig = myShapesToHeal.FindKey(i);
+    BRepBuilderAPI_Copy aCurCopy(anOrig, true, true);
+    TopoDS_Shape        aCopy = aCurCopy.Shape();
+    // Collect all the modified shapes in Copy()
+    // for futher update of binders not to lost attached attributes
+    for (int aTypeIt = anOrig.ShapeType() + 1; aTypeIt <= TopAbs_VERTEX; aTypeIt++)
+    {
+      for (TopExp_Explorer anExp(anOrig, (TopAbs_ShapeEnum)aTypeIt); anExp.More(); anExp.Next())
+      {
+        const TopoDS_Shape& aSx         = anExp.Current();
+        const TopoDS_Shape& aModifShape = aCurCopy.ModifiedShape(aSx);
+        aOrigToCopyMapArr.ChangeValue(i).Bind(aSx, aModifShape);
+        aCopyToOrigMapArr.ChangeValue(i).Bind(aModifShape, aSx);
+      }
+    }
+    aInfos[i] = std::make_unique<XSAlgo_ShapeProcessor>(aParameters);
+    aCopy     = aInfos[i]->ProcessShape(aCopy, GetProcessingFlags().first, Message_ProgressRange());
+    *(Handle(TopoDS_TShape)&)anOrig.TShape() = *aCopy.TShape();
+  });
+
+  // Update Shape context for correct attributes attaching
+  Handle(ShapeProcess_ShapeContext) aFullContext =
+    new ShapeProcess_ShapeContext(TopoDS_Shape(), nullptr);
+  TopTools_DataMapOfShapeShape& aHealedMap = (TopTools_DataMapOfShapeShape&)aFullContext->Map();
+
+  // Copy maps to the common binders map
+  for (int i = 1; i <= aOrigToCopyMapArr.Size(); i++)
+  {
+    const auto&                       aForwMap = aOrigToCopyMapArr.Value(i);
+    const auto&                       aRevMap  = aCopyToOrigMapArr.Value(i);
+    Handle(ShapeProcess_ShapeContext) aContext = aInfos.ChangeValue(i)->GetContext();
+
+    for (TopTools_DataMapOfShapeShape::Iterator aMapIt(aForwMap); aMapIt.More(); aMapIt.Next())
+    {
+      aHealedMap.Bind(aMapIt.Key(), aMapIt.Value());
+    }
+    for (TopTools_DataMapOfShapeShape::Iterator anIter(aContext->Map()); anIter.More();
+         anIter.Next())
+    {
+      TopoDS_Shape aShape;
+      if (aRevMap.Find(anIter.Key(), aShape))
+      {
+        aHealedMap.Bind(aShape, anIter.Value());
+      }
+    }
+  }
+  XSAlgo_ShapeProcessor::MergeShapeTransferInfo(theTP,
+                                                aHealedMap,
+                                                theFirstIndex,
+                                                aFullContext->Messages());
+  myShapesToHeal.Clear();
 }
