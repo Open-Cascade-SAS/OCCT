@@ -22,6 +22,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
@@ -136,42 +137,75 @@ const Handle(TColStd_HArray1OfListOfInteger)& Interface_Graph::SharingTable() co
 
 void Interface_Graph::Evaluate()
 {
-  //  Evaluation d un Graphe de dependances : sur chaque Entite, on prend sa
-  //  liste "Shared". On en deduit les "Sharing"  directement
-  Standard_Integer n = Size();
-  // clang-format off
-  thesharings = new TColStd_HArray1OfListOfInteger(1,n);//TColStd_HArray1OfTransient(1,n);//Clear();
-  // clang-format on
-  if (themodel->GTool().IsNull())
-    return;
+  // Evaluation performs on the all entities of the model
+  const Standard_Integer anEntityNumber = Size();
 
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
-  for (i = 1; i <= n; i++)
+  // Global allocator stored as a field of the single container of the sharings
+  // and will be destructed with the container.
+  Handle(NCollection_IncAllocator) anAlloc =
+    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+  thesharings = new TColStd_HArray1OfListOfInteger(1, anEntityNumber);
+  for (Standard_Integer i = 1; i <= anEntityNumber; i++)
   {
-    //    ATTENTION : Si Entite non chargee donc illisible, basculer sur son
-    //    "Contenu" equivalent
-    Handle(Standard_Transient) ent = themodel->Value(i);
+    thesharings->ChangeValue(i).Clear(anAlloc);
+  }
 
-    //    Resultat obtenu via GeneralLib
-    Interface_EntityIterator iter = GetShareds(ent);
+  if (themodel->GTool().IsNull())
+  {
+    return;
+  }
 
-    //    Mise en forme : liste d entiers
-    for (iter.Start(); iter.More(); iter.Next())
+  // Fill the sharing table with the entities shared by each entity
+  // and the entities which share each entity.
+  // The entities are iterated in the order of their numbers in the model.
+  // The entities which are not present in the model are ignored.
+  // The entities which are not shared by any other entity are ignored.
+  // Allocator is used to reuse memory for the lists of shared entities.
+  Handle(NCollection_IncAllocator) anAlloc2 =
+    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+  for (Standard_Integer i = 1; i <= anEntityNumber; i++)
+  {
+    anAlloc2->Reset();
+    const Handle(Standard_Transient)&    anEntity        = themodel->Value(i);
+    Handle(TColStd_HSequenceOfTransient) aListofEntities = new TColStd_HSequenceOfTransient();
+    aListofEntities->Clear(anAlloc2);
+    Interface_EntityIterator anIter(aListofEntities);
+    const Standard_Integer   aNumber = EntityNumber(anEntity);
+    if (aNumber == 0)
     {
-      //    num = 0 -> on sort du Model de depart, le noter "Error" et passer
-      const Handle(Standard_Transient)& entshare = iter.Value();
-      if (entshare == ent)
-        continue;
+      continue;
+    }
 
-      Standard_Integer num = EntityNumber(entshare);
+    Handle(Standard_Transient) aCurEnt = anEntity;
+    if (themodel->IsRedefinedContent(aNumber))
+      aCurEnt = themodel->ReportEntity(aNumber)->Content();
 
-      if (!num)
+    Handle(Interface_GeneralModule) aModule;
+    Standard_Integer                aCN;
+    if (themodel->GTool()->Select(aCurEnt, aModule, aCN))
+    {
+      aModule->FillShared(themodel, aCN, aCurEnt, anIter);
+    }
+
+    for (anIter.Start(); anIter.More(); anIter.Next())
+    {
+      const Handle(Standard_Transient)& anEntShare = anIter.Value();
+      if (anEntShare == anEntity)
       {
-        if (!thestats.IsNull())
-          theflags.SetTrue(i, Graph_ShareError);
         continue;
       }
-      thesharings->ChangeValue(num).Append(i);
+
+      const Standard_Integer aShareNum = EntityNumber(anEntShare);
+
+      if (aShareNum == 0)
+      {
+        if (!thestats.IsNull())
+        {
+          theflags.SetTrue(i, Graph_ShareError);
+        }
+        continue;
+      }
+      thesharings->ChangeValue(aShareNum).Append(i);
     }
   }
 }
@@ -456,11 +490,7 @@ Interface_EntityIterator Interface_Graph::Shareds(const Handle(Standard_Transien
 Handle(TColStd_HSequenceOfTransient) Interface_Graph::GetShareds(
   const Handle(Standard_Transient)& ent) const
 {
-  Handle(TColStd_HSequenceOfTransient) aseq = new TColStd_HSequenceOfTransient;
-  Interface_EntityIterator             iter = Shareds(ent);
-  for (; iter.More(); iter.Next())
-    aseq->Append(iter.Value());
-  return aseq;
+  return Shareds(ent).Content();
 }
 
 Handle(TColStd_HSequenceOfTransient) Interface_Graph::GetSharings(
@@ -480,9 +510,7 @@ Handle(TColStd_HSequenceOfTransient) Interface_Graph::GetSharings(
 
 Interface_EntityIterator Interface_Graph::Sharings(const Handle(Standard_Transient)& ent) const
 {
-  Interface_EntityIterator iter;
-  iter.AddList(GetSharings(ent));
-  return iter;
+  return Interface_EntityIterator(GetSharings(ent));
 }
 
 static void AddTypedSharings(const Handle(Standard_Transient)& ent,
