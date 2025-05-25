@@ -126,6 +126,13 @@ public:
   //! Loads the face the wire lies on
   Standard_EXPORT void SetFace(const TopoDS_Face& face);
 
+  //! Loads the face the wire lies on and surface analysis object
+  Standard_EXPORT void SetFace(const TopoDS_Face&                   theFace,
+                               const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
+
+  //! Loads the surface analysis object
+  Standard_EXPORT void SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
+
   //! Loads the surface the wire lies on
   Standard_EXPORT void SetSurface(const Handle(Geom_Surface)& surface);
 
