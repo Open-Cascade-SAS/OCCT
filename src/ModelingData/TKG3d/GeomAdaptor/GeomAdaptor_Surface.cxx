@@ -739,8 +739,13 @@ void GeomAdaptor_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pn
     case GeomAbs_BezierSurface:
     case GeomAbs_BSplineSurface:
       if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      mySurfaceCache->D0(U, V, P);
+      {
+        mySurface->D0(U, V, P);
+      }
+      else
+      {
+        mySurfaceCache->D0(U, V, P);
+      }
       break;
 
     case GeomAbs_OffsetSurface:
