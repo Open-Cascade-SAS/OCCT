@@ -1851,11 +1851,11 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
   integer i__1, i__2;
 
   /* Local variables */
-  intptr_t   ideb;
+  intptr_t                       ideb;
   NCollection_Array1<doublereal> dtab(0, 32000 - 1);
   NCollection_Array1<intptr_t> itab(0, 160 - 1); // was [4][40] but now flattened to a single array
-  intptr_t   ipre;
-  integer    i__, j, k;
+  intptr_t                     ipre;
+  integer                      i__, j, k;
 
   /************************************************************************
   *******/

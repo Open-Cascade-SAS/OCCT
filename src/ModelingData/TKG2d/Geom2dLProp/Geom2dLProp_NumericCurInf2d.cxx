@@ -51,7 +51,7 @@ void Geom2dLProp_NumericCurInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C,
 {
   isDone = Standard_True;
 
-  Standard_Real EpsH = 1.e-4 * (UMax - UMin);
+  Standard_Real           EpsH = 1.e-4 * (UMax - UMin);
   constexpr Standard_Real Tol  = Precision::PConfusion();
 
   // la premiere recherce se fait avec une tolerance assez grande
