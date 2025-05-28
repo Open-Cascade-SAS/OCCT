@@ -2198,8 +2198,6 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints2d(Handle(TColgp_HArray1Of
   params = newParams;
 }
 
-#define OCCT_DEBUG
-
 //=================================================================================================
 
 //: S4030: modified for optimization
@@ -2231,31 +2229,14 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
     Standard_Real workingPrec = prec;
     Standard_Boolean isBSplineSurface = mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
     if (isBSplineSurface) {
-      // Use adaptive tolerance based on surface complexity and point count
-      // More points suggest higher precision requirements, but BSplines need more relaxed tolerance
-      Standard_Real adaptiveFactor = 1.0 + (nbrPnt > 20 ? 0.5 : 0.2); // Scale with complexity
-      workingPrec = Max(myPreci, 2e-04) * adaptiveFactor; // Enhanced tolerance for BSpline surfaces
+      workingPrec = Max(workingPrec, myPreci);
     }
 
     Standard_Boolean isoParam = Standard_False;
     isoPar2d3d                = Standard_False;
 
-#ifdef OCCT_DEBUG
-    if (isBSplineSurface) {
-      Message::SendInfo() << "ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric: Processing BSpline surface with " 
-                          << nbrPnt << " points, working tolerance=" << workingPrec 
-                          << " (adaptive factor applied)";
-    }
-#endif
-
     Standard_Real U1, U2, V1, V2;
     mySurf->Bounds(U1, U2, V1, V2);
-
-#ifdef OCCT_DEBUG
-    if (isBSplineSurface) {
-      Message::SendInfo() << "BSpline surface bounds: U=[" << U1 << ", " << U2 << "], V=[" << V1 << ", " << V2 << "]";
-    }
-#endif
 
     if (mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
@@ -2322,13 +2303,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       if (cI.IsNull())
         continue;
 
-#ifdef OCCT_DEBUG
-      if (isBSplineSurface) {
-        Message::SendInfo() << "BSpline: Testing boundary " << j << " (" 
-                            << (isoU ? "U=" : "V=") << isoVal << ")";
-      }
-#endif
-
       if (isoU)
       {
         tt1 = V1;
@@ -2368,12 +2342,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           mp[i]    = 1;
           tp[i]    = tt1;
           PtEQext1 = Standard_True;
-#ifdef OCCT_DEBUG
-          if (isBSplineSurface) {
-            Message::SendInfo() << "BSpline: Point " << (i == 0 ? "P1" : "P2") 
-                                << " matches curve start (dist=" << sqrt(currd2[i]) << ")";
-          }
-#endif
           continue;
         }
 
@@ -2383,12 +2351,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           mp[i]    = 2;
           tp[i]    = tt2;
           PtEQext2 = Standard_True;
-#ifdef OCCT_DEBUG
-          if (isBSplineSurface) {
-            Message::SendInfo() << "BSpline: Point " << (i == 0 ? "P1" : "P2") 
-                                << " matches curve end (dist=" << sqrt(currd2[i]) << ")";
-          }
-#endif
           continue;
         }
 
@@ -2416,20 +2378,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         {
           mp[i] = 3;
           tp[i] = t;
-#ifdef OCCT_DEBUG
-          if (isBSplineSurface) {
-            Message::SendInfo() << "BSpline: Point " << (i == 0 ? "P1" : "P2") 
-                                << " projected on boundary (dist=" << dist << ", t=" << t << ")";
-          }
-#endif
         }
-#ifdef OCCT_DEBUG
-        else if (isBSplineSurface) {
-          Message::SendInfo() << "BSpline: Point " << (i == 0 ? "P1" : "P2") 
-                              << " projection failed (dist=" << dist << ", t=" << t 
-                              << ", range=[" << Cf << "," << Cl << "])";
-        }
-#endif
       }
 
       //: e7 abv 21 Apr 98: ProSTEP TR8, r0501_pe #56679:
@@ -2466,14 +2415,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       if (mindist2 <= md2)
         continue;
 
-#ifdef OCCT_DEBUG
-      if (isBSplineSurface) {
-        Message::SendInfo() << "BSpline: Found potential isoparametric on boundary " << j 
-                            << " (" << (isoU ? "U=" : "V=") << isoVal 
-                            << "), total distance=" << sqrt(md2);
-      }
-#endif
-
       mindist2 = md2;
       mpt[0]   = mp[0];
       mpt[1]   = mp[1];
@@ -2486,209 +2427,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       t2       = tt2;
     }
 
-#ifdef OCCT_DEBUG
-    if (isBSplineSurface && (mpt[0] <= 0 || mpt[1] <= 0)) {
-      Message::SendInfo() << "BSpline: Endpoints not found on boundaries (mpt[0]=" << mpt[0] 
-                          << ", mpt[1]=" << mpt[1] << ")";
-    }
-#endif
-
-    // Special handling for BSpline surfaces: if endpoints weren't found on boundaries,
-    // try a more relaxed approach focusing on points that are very close to boundaries
-    if (isBSplineSurface && (mpt[0] <= 0 || mpt[1] <= 0) && (p1OnIso || p2OnIso)) {
-      // If at least one endpoint is on a boundary, check if this could still be an isoparametric
-      Standard_Real relaxedTolerance = 20.0 * workingPrec; // Even more relaxed for boundary proximity
-      
-#ifdef OCCT_DEBUG
-      Message::SendInfo() << "BSpline: Trying relaxed boundary check with tolerance=" << relaxedTolerance;
-#endif
-      
-      // Re-evaluate with relaxed tolerance for very close projections
-      for (Standard_Integer j = 1; j <= 4; j++) {
-        Standard_Real isoVal = 0.;
-        Standard_Boolean isoU = Standard_False;
-        Handle(Geom_Curve) cI;
-        Standard_Real tt1, tt2;
-        
-        if (j == 1) {
-          if (Precision::IsInfinite(U1)) continue;
-          cI = mySurf->UIso(U1); isoU = Standard_True; isoVal = U1;
-        } else if (j == 2) {
-          if (Precision::IsInfinite(U2)) continue;
-          cI = mySurf->UIso(U2); isoU = Standard_True; isoVal = U2;
-        } else if (j == 3) {
-          if (Precision::IsInfinite(V1)) continue;
-          cI = mySurf->VIso(V1); isoU = Standard_False; isoVal = V1;
-        } else if (j == 4) {
-          if (Precision::IsInfinite(V2)) continue;
-          cI = mySurf->VIso(V2); isoU = Standard_False; isoVal = V2;
-        }
-        
-        if (cI.IsNull()) continue;
-        
-        if (isoU) { tt1 = V1; tt2 = V2; } else { tt1 = U1; tt2 = U2; }
-        
-        // Check if all points can be projected within relaxed tolerance
-        Standard_Boolean allPointsClose = Standard_True;
-        Standard_Real Cf = cI->FirstParameter();
-        Standard_Real Cl = cI->LastParameter();
-        if (Precision::IsInfinite(Cf)) Cf = -1000;
-        if (Precision::IsInfinite(Cl)) Cl = +1000;
-        
-        ShapeAnalysis_Curve sac;
-        Standard_Real maxDist = 0.0;
-        Standard_Integer failedPoint = 0;
-        
-        for (Standard_Integer i = 1; i <= nbrPnt && allPointsClose; i++) {
-          gp_Pnt projPt;
-          Standard_Real projT;
-          Standard_Real dist = sac.Project(cI, points(i), relaxedTolerance, projPt, projT, Cf, Cl);
-          if (dist > relaxedTolerance) {
-            allPointsClose = Standard_False;
-            failedPoint = i;
-          }
-          maxDist = Max(maxDist, dist);
-        }
-        
-#ifdef OCCT_DEBUG
-        if (isBSplineSurface) {
-          Message::SendInfo() << "BSpline: Boundary " << j << " (" << (isoU ? "U=" : "V=") 
-                              << isoVal << ") max distance=" << maxDist 
-                              << (allPointsClose ? " ACCEPTED" : " REJECTED");
-          if (!allPointsClose && failedPoint > 0) {
-            Message::SendInfo() << "BSpline: Failed at point " << failedPoint;
-          }
-        }
-#endif
-        
-        if (allPointsClose) {
-#ifdef OCCT_DEBUG
-          Message::SendInfo() << "BSpline: Found relaxed isoparametric on boundary " << j 
-                              << " (" << (isoU ? "U=" : "V=") << isoVal << ")";
-#endif
-          // Accept this as an isoparametric curve
-          mpt[0] = mpt[1] = 3; // Mark as projected
-          isoTypeU = isoU;
-          isoValue = isoVal;
-          cIso = cI;
-          t1 = tt1;
-          t2 = tt2;
-          
-          // Set up parameter values
-          gp_Pnt projPt1, projPt2;
-          Standard_Real projT1, projT2;
-          sac.Project(cI, points(1), relaxedTolerance, projPt1, projT1, Cf, Cl);
-          sac.Project(cI, points(nbrPnt), relaxedTolerance, projPt2, projT2, Cf, Cl);
-          tpar[0] = projT1;
-          tpar[1] = projT2;
-          
-          break; // Found a suitable boundary
-        }
-      }
-    }
-    
-    // Additional fallback for BSpline surfaces: even if no endpoints found on boundaries,
-    // check if the curve might still be very close to a boundary overall
-    if (!isoParam && isBSplineSurface && !p1OnIso && !p2OnIso) {
-      Standard_Real globalTolerance = 50.0 * workingPrec; // Very relaxed for global check
-      
-#ifdef OCCT_DEBUG
-      Message::SendInfo() << "BSpline: No endpoints on boundaries, trying global proximity check with tolerance=" 
-                          << globalTolerance;
-#endif
-      
-      for (Standard_Integer j = 1; j <= 4; j++) {
-        Standard_Real isoVal = 0.;
-        Standard_Boolean isoU = Standard_False;
-        Handle(Geom_Curve) cI;
-        Standard_Real tt1, tt2;
-        
-        if (j == 1) {
-          if (Precision::IsInfinite(U1)) continue;
-          cI = mySurf->UIso(U1); isoU = Standard_True; isoVal = U1;
-        } else if (j == 2) {
-          if (Precision::IsInfinite(U2)) continue;
-          cI = mySurf->UIso(U2); isoU = Standard_True; isoVal = U2;
-        } else if (j == 3) {
-          if (Precision::IsInfinite(V1)) continue;
-          cI = mySurf->VIso(V1); isoU = Standard_False; isoVal = V1;
-        } else if (j == 4) {
-          if (Precision::IsInfinite(V2)) continue;
-          cI = mySurf->VIso(V2); isoU = Standard_False; isoVal = V2;
-        }
-        
-        if (cI.IsNull()) continue;
-        
-        // Check global proximity to this boundary
-        Standard_Integer closePoints = 0;
-        Standard_Real Cf = cI->FirstParameter();
-        Standard_Real Cl = cI->LastParameter();
-        if (Precision::IsInfinite(Cf)) Cf = -1000;
-        if (Precision::IsInfinite(Cl)) Cl = +1000;
-        
-        ShapeAnalysis_Curve sac;
-        for (Standard_Integer i = 1; i <= nbrPnt; i++) {
-          gp_Pnt projPt;
-          Standard_Real projT;
-          Standard_Real dist = sac.Project(cI, points(i), globalTolerance, projPt, projT, Cf, Cl);
-          if (dist <= globalTolerance) {
-            closePoints++;
-          }
-        }
-        
-        Standard_Real proximityRatio = Standard_Real(closePoints) / Standard_Real(nbrPnt);
-        
-#ifdef OCCT_DEBUG
-        Message::SendInfo() << "BSpline: Boundary " << j << " proximity: " << closePoints 
-                            << "/" << nbrPnt << " points (" << (proximityRatio * 100.0) << "%)";
-#endif
-        
-        if (proximityRatio >= 0.9) { // 90% of points close to boundary
-          // Accept as isoparametric
-          isoParam = Standard_True;
-          mpt[0] = mpt[1] = 3;
-          isoTypeU = isoU;
-          isoValue = isoVal;
-          cIso = cI;
-          if (isoU) { t1 = V1; t2 = V2; } else { t1 = U1; t2 = U2; }
-          
-          // Project endpoints for parameter setup
-          gp_Pnt projPt1, projPt2;
-          Standard_Real projT1, projT2;
-          sac.Project(cI, points(1), globalTolerance, projPt1, projT1, Cf, Cl);
-          sac.Project(cI, points(nbrPnt), globalTolerance, projPt2, projT2, Cf, Cl);
-          tpar[0] = projT1;
-          tpar[1] = projT2;
-          
-          p1OnIso = p2OnIso = Standard_True;
-          if (isoU) {
-            valueP1.SetCoord(isoVal, projT1);
-            valueP2.SetCoord(isoVal, projT2);
-          } else {
-            valueP1.SetCoord(projT1, isoVal);
-            valueP2.SetCoord(projT2, isoVal);
-          }
-          
-#ifdef OCCT_DEBUG
-          Message::SendInfo() << "BSpline: Accepted based on global proximity (90% rule) on boundary " 
-                              << j << " (" << (isoU ? "U=" : "V=") << isoVal << ")";
-#endif
-          break;
-        }
-      }
-    }
-
     // probablely it concerns an isoparametrics
     if (mpt[0] > 0 && mpt[1] > 0)
     {
-
-#ifdef OCCT_DEBUG
-      if (isBSplineSurface) {
-        Message::SendInfo() << "BSpline: Both endpoints found on boundary, checking if curve is isoparametric..."
-                            << " Type: " << (isoTypeU ? "U" : "V") << "=" << isoValue
-                            << " t1=" << tpar[0] << " t2=" << tpar[1];
-      }
-#endif
 
       p1OnIso = p2OnIso = Standard_True;
       if (isoTypeU)
@@ -2705,14 +2446,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       if (mpt[0] != 3 && mpt[1] != 3)
       {
         isoPar2d3d = Standard_True;
-        // For BSpline surfaces, use a more forgiving tolerance for intermediate point checking
-        Standard_Real intermediatePointTolerance = workingPrec;
-        if (isBSplineSurface) {
-          // Allow slightly larger deviations for intermediate points on BSpline surfaces
-          // This is because BSpline approximation can introduce small errors
-          intermediatePointTolerance = workingPrec * 1.5; // 50% more tolerance for intermediate points
-        }
-        
         for (Standard_Integer i = 2; i < nbrPnt && isoPar2d3d; i++)
         {
           if (tpar[1] > tpar[0])
@@ -2720,17 +2453,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           else
             t = t1 + t2 - params(i);
           cIso->D0(t, pt);
-          Standard_Real deviation = points(i).Distance(pt);
-          if (!points(i).IsEqual(pt, intermediatePointTolerance))
-          {
+          if (!points(i).IsEqual(pt, workingPrec))
             isoPar2d3d = Standard_False;
-#ifdef OCCT_DEBUG
-            if (isBSplineSurface) {
-              Message::SendInfo() << "BSpline: Point " << i << " not on isoparametric (distance=" 
-                                  << deviation << ", tolerance=" << intermediatePointTolerance << ")";
-            }
-#endif
-          }
         }
       }
 
@@ -2738,20 +2462,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         isoParam = Standard_True;
       else
       {
-        // For BSpline surfaces with very precise endpoint matching, be more lenient
-        // Check if endpoints are extremely close (indicating likely isoparametric)
-        Standard_Boolean endpointsExtremelyClose = Standard_False;
-        if (isBSplineSurface && (mpt[0] == 1 || mpt[0] == 2) && (mpt[1] == 1 || mpt[1] == 2)) {
-          // Both endpoints match curve extremities exactly - this is a strong indicator
-          endpointsExtremelyClose = Standard_True;
-        }
-        
-#ifdef OCCT_DEBUG
-        if (isBSplineSurface) {
-          Message::SendInfo() << "BSpline: Direct comparison failed, trying distance-based check..."
-                              << " (endpoints extremely close: " << (endpointsExtremelyClose ? "true" : "false") << ")";
-        }
-#endif
         Standard_Real    prevParam = tpar[0];
         Standard_Real    Cf, Cl;
         Standard_Boolean isoByDistance = Standard_True;
@@ -2763,20 +2473,13 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           Cl = +1000;
 
         ShapeAnalysis_Curve sac;
-        // For BSpline surfaces, use enhanced tolerance for distance-based validation
-        Standard_Real distanceCheckTolerance = workingPrec;
-        if (isBSplineSurface) {
-          // Allow more relaxed tolerance for distance-based checks on BSpline surfaces
-          distanceCheckTolerance = workingPrec * 2.0; // Double tolerance for distance-based checks
-        }
-        
         for (Standard_Integer i = 2; i < nbrPnt && isoByDistance; i++)
         {
           Standard_Real dist = sac.NextProject(
             prevParam,
             cIso,
             points(i),
-            distanceCheckTolerance,
+            workingPrec,
             pt,
             t,
             Cf,
@@ -2786,115 +2489,19 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           // clang-format on
           prevParam = t;
           pout(i)   = t;
-          if ((dist > distanceCheckTolerance) || (t < Cf) || (t > Cl))
+          if ((dist > workingPrec) || (t < Cf) || (t > Cl))
           {
             isoByDistance = Standard_False;
-#ifdef OCCT_DEBUG
-            if (isBSplineSurface) {
-              Message::SendInfo() << "BSpline: Point " << i << " failed distance check (dist=" 
-                                  << dist << ", tolerance=" << distanceCheckTolerance 
-                                  << ", t=" << t << ", range=[" << Cf << "," << Cl << "])";
-            }
-#endif
           }
         }
         if (isoByDistance)
           isoParam = Standard_True;
-        
-        // Special case for BSpline surfaces: if endpoints are extremely close to boundaries
-        // and most intermediate points are reasonably close, accept as isoparametric
-        if (!isoParam && isBSplineSurface && endpointsExtremelyClose) {
-          Standard_Real relaxedIntermediateTolerance = workingPrec * 3.0; // Very relaxed for this case
-          Standard_Integer closePoints = 0;
-          
-          ShapeAnalysis_Curve sac;
-          Standard_Real Cf = cIso->FirstParameter();
-          Standard_Real Cl = cIso->LastParameter();
-          if (Precision::IsInfinite(Cf)) Cf = -1000;
-          if (Precision::IsInfinite(Cl)) Cl = +1000;
-          
-          for (Standard_Integer i = 2; i < nbrPnt; i++) {
-            gp_Pnt projPt;
-            Standard_Real projT;
-            Standard_Real dist = sac.Project(cIso, points(i), relaxedIntermediateTolerance, projPt, projT, Cf, Cl);
-            if (dist <= relaxedIntermediateTolerance && projT >= Cf && projT <= Cl) {
-              closePoints++;
-            }
-          }
-          
-          Standard_Real closeRatio = (nbrPnt > 2) ? (Standard_Real(closePoints) / Standard_Real(nbrPnt - 2)) : 1.0;
-          
-#ifdef OCCT_DEBUG
-          Message::SendInfo() << "BSpline: Extremely close endpoints - checking " << closePoints 
-                              << "/" << (nbrPnt - 2) << " intermediate points (" 
-                              << (closeRatio * 100.0) << "%)";
-#endif
-          
-          if (closeRatio >= 0.6) { // 60% threshold for extremely close endpoints
-            isoParam = Standard_True;
-#ifdef OCCT_DEBUG
-            Message::SendInfo() << "BSpline: Accepted based on extremely close endpoints and 60% intermediate point rule";
-#endif
-          }
-        }
-      }
-      
-      // Additional check for BSpline surfaces: if we have endpoints on boundaries 
-      // but failed due to strict intermediate point checking, try statistical approach
-      if (!isoParam && isBSplineSurface) {
-        Standard_Real statisticalTolerance = 8.0 * workingPrec; // More conservative multiplier
-        Standard_Integer successfulPoints = 0;
-        Standard_Integer totalPoints = nbrPnt - 2; // Exclude endpoints which we know are good
-        
-        ShapeAnalysis_Curve sac;
-        Standard_Real Cf = cIso->FirstParameter();
-        Standard_Real Cl = cIso->LastParameter();
-        if (Precision::IsInfinite(Cf)) Cf = -1000;
-        if (Precision::IsInfinite(Cl)) Cl = +1000;
-        
-        for (Standard_Integer i = 2; i < nbrPnt; i++) {
-          gp_Pnt projPt;
-          Standard_Real projT;
-          Standard_Real dist = sac.Project(cIso, points(i), statisticalTolerance, projPt, projT, Cf, Cl);
-          if (dist <= statisticalTolerance && projT >= Cf && projT <= Cl) {
-            successfulPoints++;
-          }
-        }
-        
-        // Accept if 75% or more of intermediate points are within tolerance (reduced from 80%)
-        Standard_Real successRate = (totalPoints > 0) ? (Standard_Real(successfulPoints) / Standard_Real(totalPoints)) : 1.0;
-        
-#ifdef OCCT_DEBUG
-        if (isBSplineSurface) {
-          Message::SendInfo() << "BSpline: Statistical check - " << successfulPoints 
-                              << "/" << totalPoints << " points within tolerance (" 
-                              << (successRate * 100.0) << "%)";
-        }
-#endif
-        
-        if (successRate >= 0.75) { // 75% threshold (reduced from 80%)
-          isoParam = Standard_True;
-#ifdef OCCT_DEBUG
-          Message::SendInfo() << "BSpline: Accepted based on statistical threshold (75% rule)";
-#endif
-        }
       }
     }
     /*  if (!isoParam) {    CKY 29-mai-1997 : garder tout ce qu on peut ?
         p1OnIso = Standard_False;
         p2OnIso = Standard_False;
       }  */
-
-#ifdef OCCT_DEBUG
-    if (isBSplineSurface) {
-      Message::SendInfo() << "BSpline: IsAnIsoparametric result: " << (isoParam ? "TRUE" : "FALSE")
-                          << " (p1OnIso=" << (p1OnIso ? "true" : "false") 
-                          << ", p2OnIso=" << (p2OnIso ? "true" : "false")
-                          << ", isoPar2d3d=" << (isoPar2d3d ? "true" : "false") 
-                          << ", tolerance=" << workingPrec << ")";
-    }
-#endif
-
     return isoParam;
   } // RAJOUT
   catch (Standard_Failure const& anException)
