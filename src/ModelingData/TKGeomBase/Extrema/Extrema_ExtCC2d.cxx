@@ -35,6 +35,7 @@ Extrema_ExtCC2d::Extrema_ExtCC2d()
       myIsPar(Standard_False),
       mynbext(0),
       inverse(Standard_False),
+      myC(nullptr),
       myv1(0.0),
       myv2(0.0),
       mytolc1(0.0),
