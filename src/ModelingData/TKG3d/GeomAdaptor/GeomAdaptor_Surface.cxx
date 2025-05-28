@@ -1685,7 +1685,7 @@ void GeomAdaptor_Surface::InitializeSpanCacheMatrix() const
   // Create matrix to store cache handles for each span (0-based indexing)
   // Matrix indices are 0 to (span count - 1) since we subtract 1 from LocateParameter results
   mySpanCacheMatrix = new NCollection_Array2<Handle(BSplSLib_Cache)>(
-    0, aMaxUSpan, 0, aMaxVSpan);
+    0, aMaxUSpan * 2, 0, aMaxVSpan * 2);
   
   //Message::SendInfo() << "GeomAdaptor_Surface: Initialized span cache matrix ["
   //                    << aMaxUSpan << " x " << aMaxVSpan << "] = "
