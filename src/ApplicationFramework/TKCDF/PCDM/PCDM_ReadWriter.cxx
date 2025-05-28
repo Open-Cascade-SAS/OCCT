@@ -57,6 +57,7 @@ void PCDM_ReadWriter::Open(const Handle(Storage_BaseDriver)& aDriver,
         break;
       case Storage_VSAlreadyOpen:
         aMsg << "; file was already opened";
+        break;
       default:
         break;
     }

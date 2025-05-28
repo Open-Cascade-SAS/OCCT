@@ -14,6 +14,7 @@
 // AdvApp2Var_SysBase.cxx
 #include <assert.h>
 #include <cmath>
+#include <NCollection_Array1.hxx>
 #include <string.h>
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_Data.hxx>
@@ -1851,8 +1852,8 @@ int mcrcomm_(integer* kop, integer* noct, intptr_t* iadr, integer* ier)
 
   /* Local variables */
   intptr_t   ideb;
-  doublereal dtab[32000];
-  intptr_t   itab[160] /* was [4][40] */;
+  NCollection_Array1<doublereal> dtab(0, 32000 - 1);
+  NCollection_Array1<intptr_t> itab(0, 160 - 1); // was [4][40] but now flattened to a single array
   intptr_t   ipre;
   integer    i__, j, k;
 

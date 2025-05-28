@@ -32,6 +32,8 @@ TopTrans_CurveTransition::TopTrans_CurveTransition()
       CurvFirst(0.0),
       CurvLast(0.0)
 {
+  TranFirst = TopAbs_FORWARD;
+  TranLast  = TopAbs_FORWARD;
 }
 
 //=======================================================================

@@ -110,6 +110,7 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
       break;
     case LDOM_Integer:
       myVal.i = anOther.myVal.i;
+      break;
     default:;
   }
 }
@@ -167,7 +168,9 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
       break;
     case LDOM_Integer:
       myVal.i = anOther.myVal.i;
-    default:;
+      break;
+    default:
+      break;
   }
   return *this;
 }
