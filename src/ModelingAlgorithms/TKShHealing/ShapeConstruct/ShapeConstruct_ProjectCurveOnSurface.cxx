@@ -73,8 +73,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntCurve_IntConicConic.hxx>
-#include <Message.hxx>
-#include <Message_Msg.hxx>
 
 #include <algorithm>
 IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
@@ -2222,14 +2220,13 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
   { // RAJOUT
     OCC_CATCH_SIGNALS
 
-    constexpr Standard_Real prec = Precision::Confusion(); // myPreci;
+    Standard_Real prec = Precision::Confusion(); // myPreci;
     
     // For BSpline surfaces, use adaptive tolerance for isoparametric detection
     // as BSpline boundaries may have small approximation errors
-    Standard_Real workingPrec = prec;
     Standard_Boolean isBSplineSurface = mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
     if (isBSplineSurface) {
-      workingPrec = Max(workingPrec, myPreci);
+      prec = Max(prec, myPreci);
     }
 
     Standard_Boolean isoParam = Standard_False;
@@ -2337,7 +2334,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
 
         // si ext1 == ext2 => valueP1 == valueP2 => vect null plus tard
         currd2[i] = points(k).SquareDistance(ext1);
-        if (currd2[i] <= workingPrec * workingPrec && !PtEQext1)
+        if (currd2[i] <= prec * prec && !PtEQext1)
         {
           mp[i]    = 1;
           tp[i]    = tt1;
@@ -2346,7 +2343,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         }
 
         currd2[i] = points(k).SquareDistance(ext2);
-        if (currd2[i] <= workingPrec * workingPrec && !PtEQext2)
+        if (currd2[i] <= prec * prec && !PtEQext2)
         {
           mp[i]    = 2;
           tp[i]    = tt2;
@@ -2372,9 +2369,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           Cl = +1000;
 
         ShapeAnalysis_Curve sac;
-        Standard_Real       dist = sac.Project(cI, points(k), workingPrec, pt, t, Cf, Cl);
+        Standard_Real       dist = sac.Project(cI, points(k), prec, pt, t, Cf, Cl);
         currd2[i]                = dist * dist;
-        if ((dist <= workingPrec) && (t >= Cf) && (t <= Cl))
+        if ((dist <= prec) && (t >= Cf) && (t <= Cl))
         {
           mp[i] = 3;
           tp[i] = t;
@@ -2453,7 +2450,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           else
             t = t1 + t2 - params(i);
           cIso->D0(t, pt);
-          if (!points(i).IsEqual(pt, workingPrec))
+          if (!points(i).IsEqual(pt, prec))
             isoPar2d3d = Standard_False;
         }
       }
@@ -2479,7 +2476,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
             prevParam,
             cIso,
             points(i),
-            workingPrec,
+            prec,
             pt,
             t,
             Cf,
@@ -2489,10 +2486,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           // clang-format on
           prevParam = t;
           pout(i)   = t;
-          if ((dist > workingPrec) || (t < Cf) || (t > Cl))
-          {
+          if ((dist > prec) || (t < Cf) || (t > Cl))
             isoByDistance = Standard_False;
-          }
         }
         if (isoByDistance)
           isoParam = Standard_True;
