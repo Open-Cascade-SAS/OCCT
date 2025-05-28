@@ -19,10 +19,7 @@
 #include <StepVisual_SurfaceStyleUsage.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : SurfaceSide ---
-static TCollection_AsciiString ssNegative(".NEGATIVE.");
-static TCollection_AsciiString ssPositive(".POSITIVE.");
-static TCollection_AsciiString ssBoth(".BOTH.");
+#include "RWStepVisual_RWSurfaceSide.pxx"
 
 RWStepVisual_RWSurfaceStyleUsage::RWStepVisual_RWSurfaceStyleUsage() {}
 
@@ -44,14 +41,10 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 1);
-    if (ssNegative.IsEqual(text))
-      aSide = StepVisual_ssNegative;
-    else if (ssPositive.IsEqual(text))
-      aSide = StepVisual_ssPositive;
-    else if (ssBoth.IsEqual(text))
-      aSide = StepVisual_ssBoth;
-    else
+    if (!RWStepVisual_RWSurfaceSide::ConvertToEnum(text, aSide))
+    {
       ach->AddFail("Enumeration surface_side has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #1 (side) is not an enumeration");
@@ -74,18 +67,7 @@ void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
 
   // --- own field : side ---
 
-  switch (ent->Side())
-  {
-    case StepVisual_ssNegative:
-      SW.SendEnum(ssNegative);
-      break;
-    case StepVisual_ssPositive:
-      SW.SendEnum(ssPositive);
-      break;
-    case StepVisual_ssBoth:
-      SW.SendEnum(ssBoth);
-      break;
-  }
+  SW.SendEnum(RWStepVisual_RWSurfaceSide::ConvertToString(ent->Side()));
 
   // --- own field : style ---
 

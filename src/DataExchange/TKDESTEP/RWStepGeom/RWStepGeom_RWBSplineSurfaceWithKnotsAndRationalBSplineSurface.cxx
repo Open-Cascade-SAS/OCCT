@@ -29,24 +29,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
-// --- Enum : BSplineSurfaceForm ---
-static TCollection_AsciiString bssfSurfOfLinearExtrusion(".SURF_OF_LINEAR_EXTRUSION.");
-static TCollection_AsciiString bssfPlaneSurf(".PLANE_SURF.");
-static TCollection_AsciiString bssfGeneralisedCone(".GENERALISED_CONE.");
-static TCollection_AsciiString bssfToroidalSurf(".TOROIDAL_SURF.");
-static TCollection_AsciiString bssfConicalSurf(".CONICAL_SURF.");
-static TCollection_AsciiString bssfSphericalSurf(".SPHERICAL_SURF.");
-static TCollection_AsciiString bssfUnspecified(".UNSPECIFIED.");
-static TCollection_AsciiString bssfRuledSurf(".RULED_SURF.");
-static TCollection_AsciiString bssfSurfOfRevolution(".SURF_OF_REVOLUTION.");
-static TCollection_AsciiString bssfCylindricalSurf(".CYLINDRICAL_SURF.");
-static TCollection_AsciiString bssfQuadricSurf(".QUADRIC_SURF.");
-
-// --- Enum : KnotType ---
-static TCollection_AsciiString ktUniformKnots(".UNIFORM_KNOTS.");
-static TCollection_AsciiString ktQuasiUniformKnots(".QUASI_UNIFORM_KNOTS.");
-static TCollection_AsciiString ktPiecewiseBezierKnots(".PIECEWISE_BEZIER_KNOTS.");
-static TCollection_AsciiString ktUnspecified(".UNSPECIFIED.");
+#include "RWStepGeom_RWBSplineSurfaceForm.pxx"
+#include "RWStepGeom_RWKnotType.pxx"
 
 RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface()
@@ -117,30 +101,10 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 4);
-    if (bssfSurfOfLinearExtrusion.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSurfOfLinearExtrusion;
-    else if (bssfPlaneSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfPlaneSurf;
-    else if (bssfGeneralisedCone.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfGeneralisedCone;
-    else if (bssfToroidalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfToroidalSurf;
-    else if (bssfConicalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfConicalSurf;
-    else if (bssfSphericalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSphericalSurf;
-    else if (bssfUnspecified.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfUnspecified;
-    else if (bssfRuledSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfRuledSurf;
-    else if (bssfSurfOfRevolution.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfSurfOfRevolution;
-    else if (bssfCylindricalSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfCylindricalSurf;
-    else if (bssfQuadricSurf.IsEqual(text))
-      aSurfaceForm = StepGeom_bssfQuadricSurf;
-    else
+    if (!RWStepGeom_RWBSplineSurfaceForm::ConvertToEnum(text, aSurfaceForm))
+    {
       ach->AddFail("Enumeration b_spline_surface_form has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #4 (surface_form) is not an enumeration");
@@ -242,16 +206,10 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 5);
-    if (ktUniformKnots.IsEqual(text))
-      aKnotSpec = StepGeom_ktUniformKnots;
-    else if (ktQuasiUniformKnots.IsEqual(text))
-      aKnotSpec = StepGeom_ktQuasiUniformKnots;
-    else if (ktPiecewiseBezierKnots.IsEqual(text))
-      aKnotSpec = StepGeom_ktPiecewiseBezierKnots;
-    else if (ktUnspecified.IsEqual(text))
-      aKnotSpec = StepGeom_ktUnspecified;
-    else
+    if (!RWStepGeom_RWKnotType::ConvertToEnum(text, aKnotSpec))
+    {
       ach->AddFail("Enumeration knot_type has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #5 (knot_spec) is not an enumeration");
@@ -367,43 +325,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   }
   SW.CloseSub();
   // --- field : surfaceForm ---
-
-  switch (ent->SurfaceForm())
-  {
-    case StepGeom_bssfSurfOfLinearExtrusion:
-      SW.SendEnum(bssfSurfOfLinearExtrusion);
-      break;
-    case StepGeom_bssfPlaneSurf:
-      SW.SendEnum(bssfPlaneSurf);
-      break;
-    case StepGeom_bssfGeneralisedCone:
-      SW.SendEnum(bssfGeneralisedCone);
-      break;
-    case StepGeom_bssfToroidalSurf:
-      SW.SendEnum(bssfToroidalSurf);
-      break;
-    case StepGeom_bssfConicalSurf:
-      SW.SendEnum(bssfConicalSurf);
-      break;
-    case StepGeom_bssfSphericalSurf:
-      SW.SendEnum(bssfSphericalSurf);
-      break;
-    case StepGeom_bssfUnspecified:
-      SW.SendEnum(bssfUnspecified);
-      break;
-    case StepGeom_bssfRuledSurf:
-      SW.SendEnum(bssfRuledSurf);
-      break;
-    case StepGeom_bssfSurfOfRevolution:
-      SW.SendEnum(bssfSurfOfRevolution);
-      break;
-    case StepGeom_bssfCylindricalSurf:
-      SW.SendEnum(bssfCylindricalSurf);
-      break;
-    case StepGeom_bssfQuadricSurf:
-      SW.SendEnum(bssfQuadricSurf);
-      break;
-  }
+  SW.SendEnum(RWStepGeom_RWBSplineSurfaceForm::ConvertToString(ent->SurfaceForm()));
   // --- field : uClosed ---
 
   SW.SendLogical(ent->UClosed());
@@ -451,21 +373,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   SW.CloseSub();
   // --- field : knotSpec ---
 
-  switch (ent->KnotSpec())
-  {
-    case StepGeom_ktUniformKnots:
-      SW.SendEnum(ktUniformKnots);
-      break;
-    case StepGeom_ktQuasiUniformKnots:
-      SW.SendEnum(ktQuasiUniformKnots);
-      break;
-    case StepGeom_ktPiecewiseBezierKnots:
-      SW.SendEnum(ktPiecewiseBezierKnots);
-      break;
-    case StepGeom_ktUnspecified:
-      SW.SendEnum(ktUnspecified);
-      break;
-  }
+  SW.SendEnum(RWStepGeom_RWKnotType::ConvertToString(ent->KnotSpec()));
 
   // --- Instance of plex component GeometricRepresentationItem ---
 
