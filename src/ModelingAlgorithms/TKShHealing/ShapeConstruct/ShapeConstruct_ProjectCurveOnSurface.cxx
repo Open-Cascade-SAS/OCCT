@@ -42,7 +42,6 @@
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -2220,14 +2219,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
   { // RAJOUT
     OCC_CATCH_SIGNALS
 
-    Standard_Real prec = Precision::Confusion(); // myPreci;
-    
-    // For BSpline surfaces, use adaptive tolerance for isoparametric detection
-    // as BSpline boundaries may have small approximation errors
-    Standard_Boolean isBSplineSurface = mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
-    if (isBSplineSurface) {
-      prec = Max(prec, myPreci);
-    }
+    constexpr Standard_Real prec = Precision::Confusion(); // myPreci;
 
     Standard_Boolean isoParam = Standard_False;
     isoPar2d3d                = Standard_False;

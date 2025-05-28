@@ -59,6 +59,7 @@
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Message.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion() * 0.5;
 
@@ -133,6 +134,9 @@ Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
   {
     aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
   }
+
+  // Initialize span cache matrix to nullptr - each copy manages its own cache
+  aCopy->mySpanCacheMatrix = nullptr;
 
   return aCopy;
 }
@@ -718,6 +722,22 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU, const Standard_
                                myBSplineSurface->VKnotSequence(),
                                myBSplineSurface->Poles(),
                                myBSplineSurface->Weights());
+    numberOfRebuilds++;
+    //if (numberOfRebuilds > 2000)
+    //{
+    //  // write info about number of poles and knots and weights and other details.
+    //  Message::SendWarning() << "GeomAdaptor_Surface::RebuildCache: "
+    //                         << "number of rebuilds = " << numberOfRebuilds
+    //                         << ", UDegree = " << myBSplineSurface->UDegree()
+    //                         << ", VDegree = " << myBSplineSurface->VDegree()
+    //                         << ", NbUPoles = " << myBSplineSurface->NbUPoles()
+    //                         << ", NbVPoles = " << myBSplineSurface->NbVPoles()
+    //                         << ", NbUKnots = " << myBSplineSurface->NbUKnots()
+    //                         << ", NbVKnots = " << myBSplineSurface->NbVKnots()
+    //                         << ", theU = " << theU
+    //                         << ", theV = " << theV;
+    //}
+
   }
 }
 
@@ -738,9 +758,47 @@ void GeomAdaptor_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pn
   {
     case GeomAbs_BezierSurface:
     case GeomAbs_BSplineSurface:
-      if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      mySurfaceCache->D0(U, V, P);
+      if (ShouldUseSpanCacheMatrix())
+      {
+        // Use span cache matrix for surfaces with many spans
+        Standard_Integer aUSpan, aVSpan;
+        Standard_Real aNewU = U, aNewV = V;
+        
+        // Locate span indices
+        BSplCLib::LocateParameter(myBSplineSurface->UDegree(), 
+                                 myBSplineSurface->UKnotSequence(),
+                                 myBSplineSurface->UMultiplicities(),
+                                 aNewU, myBSplineSurface->IsUPeriodic(),
+                                 myBSplineSurface->UKnotSequence().Lower(),
+                                 myBSplineSurface->UKnotSequence().Upper(),
+                                 aUSpan, aNewU);
+        BSplCLib::LocateParameter(myBSplineSurface->VDegree(),
+                                 myBSplineSurface->VKnotSequence(), 
+                                 myBSplineSurface->VMultiplicities(),
+                                 aNewV, myBSplineSurface->IsVPeriodic(),
+                                 myBSplineSurface->VKnotSequence().Lower(),
+                                 myBSplineSurface->VKnotSequence().Upper(),
+                                 aVSpan, aNewV);
+        
+        // Get cache for this specific span (convert to 0-based indices)
+        Handle(BSplSLib_Cache) aSpanCache = GetSpanCache(aUSpan - 1, aVSpan - 1, U, V);
+        if (!aSpanCache.IsNull())
+        {
+          aSpanCache->D0(U, V, P);
+        }
+        else
+        {
+          // Fallback to direct evaluation
+          myBSplineSurface->D0(U, V, P);
+        }
+      }
+      else
+      {
+        // Use traditional single cache
+        if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
+          RebuildCache(U, V);
+        mySurfaceCache->D0(U, V, P);
+      }
       break;
 
     case GeomAbs_OffsetSurface:
@@ -794,8 +852,43 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
       if (!myBSplineSurface.IsNull() && (USide != 0 || VSide != 0)
           && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
         myBSplineSurface->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
+      else if (ShouldUseSpanCacheMatrix())
+      {
+        // Use span cache matrix for surfaces with many spans
+        Standard_Integer aUSpan, aVSpan;
+        Standard_Real aNewU = U, aNewV = V;
+        
+        // Locate span indices
+        BSplCLib::LocateParameter(myBSplineSurface->UDegree(), 
+                                 myBSplineSurface->UKnotSequence(),
+                                 myBSplineSurface->UMultiplicities(),
+                                 aNewU, myBSplineSurface->IsUPeriodic(),
+                                 myBSplineSurface->UKnotSequence().Lower(),
+                                 myBSplineSurface->UKnotSequence().Upper(),
+                                 aUSpan, aNewU);
+        BSplCLib::LocateParameter(myBSplineSurface->VDegree(),
+                                 myBSplineSurface->VKnotSequence(), 
+                                 myBSplineSurface->VMultiplicities(),
+                                 aNewV, myBSplineSurface->IsVPeriodic(),
+                                 myBSplineSurface->VKnotSequence().Lower(),
+                                 myBSplineSurface->VKnotSequence().Upper(),
+                                 aVSpan, aNewV);
+        
+        // Get cache for this specific span (convert to 0-based indices)
+        Handle(BSplSLib_Cache) aSpanCache = GetSpanCache(aUSpan - 1, aVSpan - 1, U, V);
+        if (!aSpanCache.IsNull())
+        {
+          aSpanCache->D1(U, V, P, D1U, D1V);
+        }
+        else
+        {
+          // Fallback to direct evaluation
+          myBSplineSurface->D1(U, V, P, D1U, D1V);
+        }
+      }
       else
       {
+        // Use traditional single cache
         if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
           RebuildCache(U, V);
         mySurfaceCache->D1(U, V, P, D1U, D1V);
@@ -857,8 +950,43 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
       if (!myBSplineSurface.IsNull() && (USide != 0 || VSide != 0)
           && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
         myBSplineSurface->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
+      else if (ShouldUseSpanCacheMatrix())
+      {
+        // Use span cache matrix for surfaces with many spans
+        Standard_Integer aUSpan, aVSpan;
+        Standard_Real aNewU = U, aNewV = V;
+        
+        // Locate span indices
+        BSplCLib::LocateParameter(myBSplineSurface->UDegree(), 
+                                 myBSplineSurface->UKnotSequence(),
+                                 myBSplineSurface->UMultiplicities(),
+                                 aNewU, myBSplineSurface->IsUPeriodic(),
+                                 myBSplineSurface->UKnotSequence().Lower(),
+                                 myBSplineSurface->UKnotSequence().Upper(),
+                                 aUSpan, aNewU);
+        BSplCLib::LocateParameter(myBSplineSurface->VDegree(),
+                                 myBSplineSurface->VKnotSequence(), 
+                                 myBSplineSurface->VMultiplicities(),
+                                 aNewV, myBSplineSurface->IsVPeriodic(),
+                                 myBSplineSurface->VKnotSequence().Lower(),
+                                 myBSplineSurface->VKnotSequence().Upper(),
+                                 aVSpan, aNewV);
+        
+        // Get cache for this specific span (convert to 0-based indices)
+        Handle(BSplSLib_Cache) aSpanCache = GetSpanCache(aUSpan - 1, aVSpan - 1, U, V);
+        if (!aSpanCache.IsNull())
+        {
+          aSpanCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        }
+        else
+        {
+          // Fallback to direct evaluation
+          myBSplineSurface->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        }
+      }
       else
       {
+        // Use traditional single cache
         if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
           RebuildCache(U, V);
         mySurfaceCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
@@ -1520,4 +1648,105 @@ void GeomAdaptor_Surface::Span(const Standard_Integer Side,
       }
     }
   }
+}
+
+//=================================================================================================
+
+Standard_Boolean GeomAdaptor_Surface::ShouldUseSpanCacheMatrix() const
+{
+  if (mySurfaceType != GeomAbs_BSplineSurface || myBSplineSurface.IsNull())
+    return Standard_False;
+    
+  // Use span cache matrix for surfaces with many spans and frequent span changes
+  Standard_Integer aNbUSpans = myBSplineSurface->NbUKnots() - myBSplineSurface->UDegree();
+  Standard_Integer aNbVSpans = myBSplineSurface->NbVKnots() - myBSplineSurface->VDegree();
+  Standard_Integer aTotalSpans = aNbUSpans * aNbVSpans;
+  
+  // Use span matrix if:
+  // 1. Total spans is reasonable (< 1000 to avoid excessive memory)
+  // 2. We have many cache rebuilds indicating frequent span changes
+  // 3. Surface has high knot density
+  return (aTotalSpans < 1000 && 
+          aTotalSpans > 10 && 
+          numberOfRebuilds > 2);
+}
+
+//=================================================================================================
+
+void GeomAdaptor_Surface::InitializeSpanCacheMatrix() const
+{
+  if (mySpanCacheMatrix != nullptr || !ShouldUseSpanCacheMatrix())
+    return;
+    
+  // Calculate span counts
+  Standard_Integer aMaxUSpan = myBSplineSurface->NbUKnots() - myBSplineSurface->UDegree();
+  Standard_Integer aMaxVSpan = myBSplineSurface->NbVKnots() - myBSplineSurface->VDegree();
+  
+  // Create matrix to store cache handles for each span (0-based indexing)
+  // Matrix indices are 0 to (span count - 1) since we subtract 1 from LocateParameter results
+  mySpanCacheMatrix = new NCollection_Array2<Handle(BSplSLib_Cache)>(
+    0, aMaxUSpan, 0, aMaxVSpan);
+  
+  //Message::SendInfo() << "GeomAdaptor_Surface: Initialized span cache matrix ["
+  //                    << aMaxUSpan << " x " << aMaxVSpan << "] = "
+  //                    << (aMaxUSpan * aMaxVSpan) << " cache slots (indices 0-" 
+  //                    << (aMaxUSpan) << ", 0-" << (aMaxVSpan) << ")";
+}
+
+//=================================================================================================
+
+Handle(BSplSLib_Cache) GeomAdaptor_Surface::GetSpanCache(const Standard_Integer theUSpan, 
+                                                         const Standard_Integer theVSpan,
+                                                         const Standard_Real theU, 
+                                                         const Standard_Real theV) const
+{
+  if (mySpanCacheMatrix == nullptr)
+    InitializeSpanCacheMatrix();
+    
+  if (mySpanCacheMatrix == nullptr || 
+      theUSpan < mySpanCacheMatrix->LowerRow() || theUSpan > mySpanCacheMatrix->UpperRow() ||
+      theVSpan < mySpanCacheMatrix->LowerCol() || theVSpan > mySpanCacheMatrix->UpperCol())
+  {
+    //Message::SendWarning() << "GeomAdaptor_Surface::GetSpanCache: Invalid span indices ["
+    //                       << theUSpan << "," << theVSpan << "], matrix bounds ["
+    //                       << (mySpanCacheMatrix ? mySpanCacheMatrix->LowerRow() : -1) << ".."
+    //                       << (mySpanCacheMatrix ? mySpanCacheMatrix->UpperRow() : -1) << ", "
+    //                       << (mySpanCacheMatrix ? mySpanCacheMatrix->LowerCol() : -1) << ".."
+    //                       << (mySpanCacheMatrix ? mySpanCacheMatrix->UpperCol() : -1) << "]";
+    return Handle(BSplSLib_Cache)();
+  }
+    
+  // Get existing cache for this span
+  Handle(BSplSLib_Cache) aSpanCache = mySpanCacheMatrix->Value(theUSpan, theVSpan);
+  
+  if (aSpanCache.IsNull())
+  {
+    //Message::SendInfo() << "GeomAdaptor_Surface: Creating cache for span [" 
+    //                    << theUSpan << "," << theVSpan << "] at UV(" 
+    //                    << theU << "," << theV << ")";
+                        
+    // Create new cache for this span
+    aSpanCache = new BSplSLib_Cache(myBSplineSurface->UDegree(),
+                                   myBSplineSurface->IsUPeriodic(),
+                                   myBSplineSurface->UKnotSequence(),
+                                   myBSplineSurface->VDegree(),
+                                   myBSplineSurface->IsVPeriodic(),
+                                   myBSplineSurface->VKnotSequence(),
+                                   myBSplineSurface->Weights());
+                                   
+    // Build cache for this span
+    aSpanCache->BuildCache(theU, theV,
+                          myBSplineSurface->UKnotSequence(),
+                          myBSplineSurface->VKnotSequence(),
+                          myBSplineSurface->Poles(),
+                          myBSplineSurface->Weights());
+                          
+    // Store in matrix
+    mySpanCacheMatrix->SetValue(theUSpan, theVSpan, aSpanCache);
+    
+    // Only count as rebuild when creating new cache
+    numberOfRebuilds++;
+  }
+  
+  return aSpanCache;
 }

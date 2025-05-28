@@ -24,6 +24,7 @@
 #include <Geom_Surface.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array2.hxx>
 
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 
@@ -46,13 +47,15 @@ public:
         myVLast(0.),
         myTolU(0.),
         myTolV(0.),
-        mySurfaceType(GeomAbs_OtherSurface)
+        mySurfaceType(GeomAbs_OtherSurface),
+        mySpanCacheMatrix(nullptr)
   {
   }
 
   GeomAdaptor_Surface(const Handle(Geom_Surface)& theSurf)
       : myTolU(0.),
-        myTolV(0.)
+        myTolV(0.),
+        mySpanCacheMatrix(nullptr)
   {
     Load(theSurf);
   }
@@ -65,8 +68,15 @@ public:
                       const Standard_Real         theVLast,
                       const Standard_Real         theTolU = 0.0,
                       const Standard_Real         theTolV = 0.0)
+      : mySpanCacheMatrix(nullptr)
   {
     Load(theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
+  }
+
+  //! Destructor - cleans up span cache matrix
+  ~GeomAdaptor_Surface()
+  {
+    delete mySpanCacheMatrix;
   }
 
   //! Shallow copy of adaptor
@@ -332,6 +342,24 @@ private:
   //! \param theV second parameter to identify the span for caching
   Standard_EXPORT void RebuildCache(const Standard_Real theU, const Standard_Real theV) const;
 
+private:
+  //! Gets or creates span cache for specific U and V span indices
+  //! \param theUSpan U span index
+  //! \param theVSpan V span index  
+  //! \param theU U parameter for cache building
+  //! \param theV V parameter for cache building
+  //! \return Handle to the cache for this span
+  Standard_EXPORT Handle(BSplSLib_Cache) GetSpanCache(const Standard_Integer theUSpan, 
+                                                      const Standard_Integer theVSpan,
+                                                      const Standard_Real theU, 
+                                                      const Standard_Real theV) const;
+  
+  //! Initializes the span cache matrix for high-span-count surfaces
+  Standard_EXPORT void InitializeSpanCacheMatrix() const;
+  
+  //! Determines if span cache matrix should be used instead of single cache
+  Standard_Boolean ShouldUseSpanCacheMatrix() const;
+
 protected:
   Handle(Geom_Surface) mySurface;
   Standard_Real        myUFirst;
@@ -348,6 +376,10 @@ protected:
   // clang-format off
   Handle(GeomEvaluator_Surface) myNestedEvaluator; ///< Calculates values of nested complex surfaces (offset surface, surface of extrusion or revolution)
   // clang-format on
+  mutable size_t numberOfRebuilds = 0; ///< Number of times the cache was rebuilt
+  
+  // Span Cache Matrix - stores cache for each U,V span combination
+  mutable NCollection_Array2<Handle(BSplSLib_Cache)>* mySpanCacheMatrix; ///< Matrix of caches for different spans (nullptr when not initialized)
 };
 
 #endif // _GeomAdaptor_Surface_HeaderFile
