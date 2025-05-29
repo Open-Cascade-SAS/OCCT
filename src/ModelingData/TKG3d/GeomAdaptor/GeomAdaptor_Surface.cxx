@@ -59,6 +59,7 @@
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <NCollection_DataMap.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion() * 0.5;
 
@@ -154,6 +155,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
   myVFirst = VFirst;
   myVLast  = VLast;
   mySurfaceCache.Nullify();
+  ClearSpanCaches();
 
   if (mySurface != S)
   {
@@ -737,11 +739,19 @@ void GeomAdaptor_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pn
   switch (mySurfaceType)
   {
     case GeomAbs_BezierSurface:
-    case GeomAbs_BSplineSurface:
-      if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      mySurfaceCache->D0(U, V, P);
+    case GeomAbs_BSplineSurface: {
+      Handle(BSplSLib_Cache) aCache = GetSpanCache(U, V);
+      if (!aCache.IsNull())
+      {
+        aCache->D0(U, V, P);
+      }
+      else
+      {
+        // Fallback to direct surface evaluation
+        mySurface->D0(U, V, P);
+      }
       break;
+    }
 
     case GeomAbs_OffsetSurface:
     case GeomAbs_SurfaceOfExtrusion:
@@ -796,9 +806,16 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
         myBSplineSurface->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
       else
       {
-        if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        mySurfaceCache->D1(U, V, P, D1U, D1V);
+        Handle(BSplSLib_Cache) aCache = GetSpanCache(U, V);
+        if (!aCache.IsNull())
+        {
+          aCache->D1(U, V, P, D1U, D1V);
+        }
+        else
+        {
+          // Fallback to direct surface evaluation
+          mySurface->D1(U, V, P, D1U, D1V);
+        }
       }
       break;
     }
@@ -859,9 +876,16 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
         myBSplineSurface->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
       else
       {
-        if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        mySurfaceCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        Handle(BSplSLib_Cache) aCache = GetSpanCache(U, V);
+        if (!aCache.IsNull())
+        {
+          aCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        }
+        else
+        {
+          // Fallback to direct surface evaluation
+          mySurface->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        }
       }
       break;
     }
@@ -1521,3 +1545,109 @@ void GeomAdaptor_Surface::Span(const Standard_Integer Side,
     }
   }
 }
+
+//=================================================================================================
+
+Handle(BSplSLib_Cache) GeomAdaptor_Surface::GetSpanCache(const Standard_Real theU, const Standard_Real theV) const
+{
+  if (mySurfaceType != GeomAbs_BSplineSurface && mySurfaceType != GeomAbs_BezierSurface)
+  {
+    return Handle(BSplSLib_Cache)();
+  }
+
+  // Determine span indices for the given parameters
+  Standard_Integer aSpanIndexU = 0, aSpanIndexV = 0;
+  Standard_Real aU = theU, aV = theV;
+  
+  if (mySurfaceType == GeomAbs_BSplineSurface)
+  {
+    // Locate span indices for B-spline surface
+    BSplCLib::LocateParameter(myBSplineSurface->UDegree(),
+                              myBSplineSurface->UKnotSequence(),
+                              BSplCLib::NoMults(),
+                              aU,
+                              myBSplineSurface->IsUPeriodic(),
+                              aSpanIndexU,
+                              aU);
+    
+    BSplCLib::LocateParameter(myBSplineSurface->VDegree(),
+                              myBSplineSurface->VKnotSequence(),
+                              BSplCLib::NoMults(),
+                              aV,
+                              myBSplineSurface->IsVPeriodic(),
+                              aSpanIndexV,
+                              aV);
+  }
+  else // GeomAbs_BezierSurface
+  {
+    // For Bezier surfaces, there's only one span
+    aSpanIndexU = 0;
+    aSpanIndexV = 0;
+  }
+
+  // Create span key
+  GeomAdaptor_SpanKey aSpanKey(aSpanIndexU, aSpanIndexV);
+  
+  // Try to find existing cache for this span
+  Handle(BSplSLib_Cache) aCache;
+  if (mySpanCaches.Find(aSpanKey, aCache))
+  {
+    if (aCache->IsCacheValid(theU, theV))
+    {
+      return aCache;
+    }
+  }
+  
+  // Create new cache for this span
+  Handle(BSplSLib_Cache) aNewCache;
+  
+  if (mySurfaceType == GeomAbs_BezierSurface)
+  {
+    // Create cache for Bezier
+    Handle(Geom_BezierSurface) aBezier = Handle(Geom_BezierSurface)::DownCast(mySurface);
+    Standard_Integer           aDegU   = aBezier->UDegree();
+    Standard_Integer           aDegV   = aBezier->VDegree();
+    TColStd_Array1OfReal       aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
+    TColStd_Array1OfReal       aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
+    
+    aNewCache = new BSplSLib_Cache(aDegU,
+                                   aBezier->IsUPeriodic(),
+                                   aFlatKnotsU,
+                                   aDegV,
+                                   aBezier->IsVPeriodic(),
+                                   aFlatKnotsV,
+                                   aBezier->Weights());
+    aNewCache->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
+  }
+  else // GeomAbs_BSplineSurface
+  {
+    // Create cache for B-spline
+    aNewCache = new BSplSLib_Cache(myBSplineSurface->UDegree(),
+                                   myBSplineSurface->IsUPeriodic(),
+                                   myBSplineSurface->UKnotSequence(),
+                                   myBSplineSurface->VDegree(),
+                                   myBSplineSurface->IsVPeriodic(),
+                                   myBSplineSurface->VKnotSequence(),
+                                   myBSplineSurface->Weights());
+    aNewCache->BuildCache(theU,
+                          theV,
+                          myBSplineSurface->UKnotSequence(),
+                          myBSplineSurface->VKnotSequence(),
+                          myBSplineSurface->Poles(),
+                          myBSplineSurface->Weights());
+  }
+  
+  // Store the cache in the container
+  mySpanCaches.Bind(aSpanKey, aNewCache);
+  
+  return aNewCache;
+}
+
+//=================================================================================================
+
+void GeomAdaptor_Surface::ClearSpanCaches() const
+{
+  mySpanCaches.Clear();
+}
+
+//=================================================================================================

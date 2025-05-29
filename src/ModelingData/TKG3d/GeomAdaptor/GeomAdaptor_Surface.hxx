@@ -24,6 +24,7 @@
 #include <Geom_Surface.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <NCollection_DataMap.hxx>
 
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 
@@ -37,6 +38,48 @@ DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 //! thread-safe and parallel evaluations need to be prevented.
 class GeomAdaptor_Surface : public Adaptor3d_Surface
 {
+  // Define a key type for span identification
+  struct GeomAdaptor_SpanKey
+  {
+    Standard_Integer SpanIndexU;
+    Standard_Integer SpanIndexV;
+
+    GeomAdaptor_SpanKey()
+        : SpanIndexU(0),
+          SpanIndexV(0)
+    {
+    }
+
+    GeomAdaptor_SpanKey(Standard_Integer theU, Standard_Integer theV)
+        : SpanIndexU(theU),
+          SpanIndexV(theV)
+    {
+    }
+  };
+
+  // Define hasher for the key
+  struct GeomAdaptor_SpanKeyHasher
+  {
+    size_t operator()(const GeomAdaptor_SpanKey& theKey) const noexcept
+    {
+      // Simple hash combining the two indices
+      Standard_Integer aCombinedHash[2] = {theKey.SpanIndexU, theKey.SpanIndexV};
+      return opencascade::hashBytes(aCombinedHash, sizeof(aCombinedHash));
+    }
+
+    bool operator()(const GeomAdaptor_SpanKey& theKey1,
+                    const GeomAdaptor_SpanKey& theKey2) const noexcept
+    {
+      return theKey1.SpanIndexU == theKey2.SpanIndexU && theKey1.SpanIndexV == theKey2.SpanIndexV;
+    }
+  };
+
+  // Define the cache container type
+  typedef NCollection_DataMap<GeomAdaptor_SpanKey,
+                              Handle(BSplSLib_Cache),
+                              GeomAdaptor_SpanKeyHasher>
+    GeomAdaptor_SpanCacheMap;
+
   DEFINE_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 public:
   GeomAdaptor_Surface()
@@ -332,6 +375,16 @@ private:
   //! \param theV second parameter to identify the span for caching
   Standard_EXPORT void RebuildCache(const Standard_Real theU, const Standard_Real theV) const;
 
+  //! Gets or creates a cache for the specific span containing the given parameters
+  //! \param theU first parameter to identify the span for caching
+  //! \param theV second parameter to identify the span for caching
+  //! \return handle to the cache for the span, or null handle if not applicable
+  Standard_EXPORT Handle(BSplSLib_Cache) GetSpanCache(const Standard_Real theU,
+                                                      const Standard_Real theV) const;
+
+  //! Clears all span caches
+  Standard_EXPORT void ClearSpanCaches() const;
+
 protected:
   Handle(Geom_Surface) mySurface;
   Standard_Real        myUFirst;
@@ -343,6 +396,9 @@ protected:
 
   Handle(Geom_BSplineSurface)    myBSplineSurface; ///< B-spline representation to prevent downcasts
   mutable Handle(BSplSLib_Cache) mySurfaceCache;   ///< Cached data for B-spline or Bezier surface
+                                                   ///< (deprecated, use mySpanCaches instead)
+  mutable GeomAdaptor_SpanCacheMap
+    mySpanCaches; ///< Container of caches indexed by span coordinates
 
   GeomAbs_SurfaceType mySurfaceType;
   // clang-format off
