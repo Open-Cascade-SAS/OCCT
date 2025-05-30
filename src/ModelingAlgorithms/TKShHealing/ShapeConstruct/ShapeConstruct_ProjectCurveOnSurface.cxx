@@ -108,6 +108,7 @@ ShapeConstruct_ProjectCurveOnSurface::ShapeConstruct_ProjectCurveOnSurface()
   myBuild           = Standard_False;
   myAdjustOverDegen = 1; //: c0 //szv#4:S4163:12Mar99 was boolean
   myNbCashe         = 0; //: q9
+  myStatus          = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 }
 
 //=================================================================================================

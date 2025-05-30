@@ -63,11 +63,21 @@
 //! Expands to C++17 attribute statement "[[fallthrough]];" on compilers that
 //! declare support of C++17, or to "__attribute__((fallthrough));" on
 //! GCC 7+.
-#if defined(__cplusplus) && (__cplusplus >= 201703L)
-  // part of C++17 standard
-  #define Standard_FALLTHROUGH [[fallthrough]];
+#if defined(__has_cpp_attribute)
+  #if __has_cpp_attribute(fallthrough)
+    // C++17 standard attribute is supported
+    #define Standard_FALLTHROUGH [[fallthrough]];
+  #elif __has_cpp_attribute(clang::fallthrough)
+    // Clang-specific attribute
+    #define Standard_FALLTHROUGH [[clang::fallthrough]];
+  #elif __has_cpp_attribute(gnu::fallthrough)
+    // GCC-specific attribute (rare, but possible)
+    #define Standard_FALLTHROUGH [[gnu::fallthrough]];
+  #else
+    #define Standard_FALLTHROUGH
+  #endif
 #elif defined(__GNUC__) && (__GNUC__ >= 7)
-  // gcc 7+
+  // GCC 7+ supports __attribute__((fallthrough))
   #define Standard_FALLTHROUGH __attribute__((fallthrough));
 #else
   #define Standard_FALLTHROUGH

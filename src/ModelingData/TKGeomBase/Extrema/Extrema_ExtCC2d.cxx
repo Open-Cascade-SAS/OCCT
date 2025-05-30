@@ -25,6 +25,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
+#include <Standard_MemoryUtils.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
@@ -34,6 +35,7 @@ Extrema_ExtCC2d::Extrema_ExtCC2d()
       myIsPar(Standard_False),
       mynbext(0),
       inverse(Standard_False),
+      myC(nullptr),
       myv1(0.0),
       myv2(0.0),
       mytolc1(0.0),
@@ -109,6 +111,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
   P2f = Extrema_Curve2dTool::Value(*myC, U21);
   P2l = Extrema_Curve2dTool::Value(*myC, U22);
 
+  std::shared_ptr<Extrema_ExtElC2d> aXtream;
+  std::shared_ptr<Extrema_ECC2d>    aParamSolver;
+
   switch (type1)
   {
       //
@@ -120,44 +125,45 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       {
         case GeomAbs_Line: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(*myC),
-                                 Extrema_Curve2dTool::Circle(C1),
-                                 Tol);
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
+                                                               Extrema_Curve2dTool::Circle(C1),
+                                                               Tol);
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         case GeomAbs_Circle: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(C1),
-                                 Extrema_Curve2dTool::Circle(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(C1),
+                                                               Extrema_Curve2dTool::Circle(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(C1),
-                                 Extrema_Curve2dTool::Ellipse(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(C1),
+                                                               Extrema_Curve2dTool::Ellipse(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
         }
         break;
         case GeomAbs_Parabola: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(C1),
-                                 Extrema_Curve2dTool::Parabola(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(C1),
+                                                               Extrema_Curve2dTool::Parabola(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         case GeomAbs_Hyperbola: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(C1),
-                                 Extrema_Curve2dTool::Hyperbola(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aXtream =
+            opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(C1),
+                                                       Extrema_Curve2dTool::Hyperbola(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         default: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
           Standard_Real Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
-          Results(aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
+          Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
         }
         break;
       }; // switch(type2)
@@ -173,50 +179,51 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       {
         case GeomAbs_Line: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(*myC), Extrema_Curve2dTool::Ellipse(C1));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
+                                                               Extrema_Curve2dTool::Ellipse(C1));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         case GeomAbs_Circle: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(*myC),
-                                 Extrema_Curve2dTool::Ellipse(C1));
-          Results(Xtrem, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
+                                                               Extrema_Curve2dTool::Ellipse(C1));
+          Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
         }
         break;
         case GeomAbs_Parabola: {
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(C1),
           // Extrema_Curve2dTool::Parabola(*myC));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         case GeomAbs_Hyperbola: {
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(C1),
           // Extrema_Curve2dTool::Hyperbola(*myC));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 2 * M_PI, 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         default: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
           Standard_Real Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
-          Results(aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
+          Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
         }
         break;
       }; // switch(type2)
@@ -232,55 +239,55 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       {
         case GeomAbs_Line: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(*myC),
-                                 Extrema_Curve2dTool::Parabola(C1));
-          Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
+                                                               Extrema_Curve2dTool::Parabola(C1));
+          Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Circle: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(*myC),
-                                 Extrema_Curve2dTool::Parabola(C1));
-          Results(Xtrem, U11, U12, U21, U22, 0., 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
+                                                               Extrema_Curve2dTool::Parabola(C1));
+          Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
           // inverse = Standard_True;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(*myC),
           // Extrema_Curve2dTool::Parabola(C1));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 2 * M_PI);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Parabola: {
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Parabola(C1),
           // Extrema_Curve2dTool::Parabola(*myC));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Hyperbola: {
           // inverse = Standard_True;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Hyperbola(*myC),
           // Extrema_Curve2dTool::Parabola(C1));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 0.);
         }
         break;
         default: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
           Standard_Real Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
-          Results(aParamSolver, U11, U12, U21, U22, 0., Period2);
+          Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
       }; // switch(type2)
@@ -296,54 +303,54 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       {
         case GeomAbs_Line: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(*myC),
-                                 Extrema_Curve2dTool::Hyperbola(C1));
-          Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
+                                                               Extrema_Curve2dTool::Hyperbola(C1));
+          Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Circle: {
           inverse = Standard_True;
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Circle(*myC),
-                                 Extrema_Curve2dTool::Hyperbola(C1));
-          Results(Xtrem, U11, U12, U21, U22, 0., 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
+                                                               Extrema_Curve2dTool::Hyperbola(C1));
+          Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
           // inverse = Standard_True;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(*myC),
           // Extrema_Curve2dTool::Hyperbola(C1));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 2 * M_PI);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Parabola: {
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Hyperbola(C1),
           // Extrema_Curve2dTool::Parabola(*myC));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Hyperbola: {
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Hyperbola(C1),
           // Extrema_Curve2dTool::Hyperbola(*myC));
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
-          Results(aParamSolver, U11, U12, U21, U22, 0., 0.);
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
+          Results(*aParamSolver, U11, U12, U21, U22, 0., 0.);
         }
         break;
         default: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
           Standard_Real Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
-          Results(aParamSolver, U11, U12, U21, U22, 0., Period2);
+          Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
       }; // switch(type2)
@@ -358,44 +365,46 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       switch (type2)
       {
         case GeomAbs_Line: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(C1),
-                                 Extrema_Curve2dTool::Line(*myC),
-                                 Tol);
-          Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(C1),
+                                                               Extrema_Curve2dTool::Line(*myC),
+                                                               Tol);
+          Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Circle: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(C1),
-                                 Extrema_Curve2dTool::Circle(*myC),
-                                 Tol);
-          Results(Xtrem, U11, U12, U21, U22, 0., 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(C1),
+                                                               Extrema_Curve2dTool::Circle(*myC),
+                                                               Tol);
+          Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(C1), Extrema_Curve2dTool::Ellipse(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 0., 2 * M_PI);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(C1),
+                                                               Extrema_Curve2dTool::Ellipse(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Parabola: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(C1),
-                                 Extrema_Curve2dTool::Parabola(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+          aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(C1),
+                                                               Extrema_Curve2dTool::Parabola(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Hyperbola: {
-          Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Line(C1),
-                                 Extrema_Curve2dTool::Hyperbola(*myC));
-          Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+          aXtream =
+            opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(C1),
+                                                       Extrema_Curve2dTool::Hyperbola(*myC));
+          Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         default: {
-          Extrema_ECC2d aParamSolver(C1, *myC);
-          aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-          aParamSolver.Perform();
+          aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+          aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+          aParamSolver->Perform();
           Standard_Real Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
-          Results(aParamSolver, U11, U12, U21, U22, 0., Period2);
+          Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
       }; // switch(type2)
@@ -406,16 +415,16 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       // La premiere courbe est une BezierCurve ou une BSplineCurve:
       //
     default: {
-      Extrema_ECC2d aParamSolver(C1, *myC);
-      aParamSolver.SetSingleSolutionFlag(GetSingleSolutionFlag());
-      aParamSolver.Perform();
+      aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
+      aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
+      aParamSolver->Perform();
       Standard_Real Period1 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(C1))
         Period1 = Extrema_Curve2dTool::Period(C1);
       Standard_Real Period2 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(*myC))
         Period2 = Extrema_Curve2dTool::Period(*myC);
-      Results(aParamSolver, U11, U12, U21, U22, Period1, Period2);
+      Results(*aParamSolver, U11, U12, U21, U22, Period1, Period2);
     }
     break;
   };

@@ -49,7 +49,7 @@ template <class T, class... Args>
 std::shared_ptr<T> make_oshared(NCollection_OccAllocator<T>&& theAlloc, Args&&... theArgs)
 {
   return std::allocate_shared<T, NCollection_OccAllocator<T>, Args...>(
-    std::forward < NCollection_OccAllocator<T>(> theAlloc),
+    std::forward<NCollection_OccAllocator<T>>(theAlloc),
     std::forward<Args>(theArgs)...);
 }
 
