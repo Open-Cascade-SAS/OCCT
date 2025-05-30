@@ -2068,6 +2068,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
                 ParamEnd2 = ParamEnd - Org2SurL1;
               }
             }
+            break;
           default: //~~~ Segment Infini a droite
             break;
         }

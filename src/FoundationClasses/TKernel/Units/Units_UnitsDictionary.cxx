@@ -18,6 +18,7 @@
 
 #include <OSD.hxx>
 #include <OSD_OpenFile.hxx>
+#include <NCollection_Array2.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -93,14 +94,15 @@ static const char* readLine(TCollection_AsciiString& theLine, const char* theStr
 
 void Units_UnitsDictionary::Creates()
 {
-  Standard_Boolean            ismove;
-  Standard_Integer            i, j, k, charnumber, unitscomputed;
-  Standard_Real               matrix[50][50], coeff = 0, move = 0;
-  Handle(Units_Token)         token;
-  Handle(Units_UnitsSequence) theunitssequence;
-  Handle(Units_Unit)          unit;
-  Handle(Units_ShiftedUnit)   shiftedunit;
-  Handle(Units_Quantity)      quantity;
+  Standard_Boolean                  ismove;
+  Standard_Integer                  i, j, k, charnumber, unitscomputed;
+  NCollection_Array2<Standard_Real> matrix(0, 49, 0, 49);
+  Standard_Real                     coeff = 0, move = 0;
+  Handle(Units_Token)               token;
+  Handle(Units_UnitsSequence)       theunitssequence;
+  Handle(Units_Unit)                unit;
+  Handle(Units_ShiftedUnit)         shiftedunit;
+  Handle(Units_Quantity)            quantity;
 
   thequantitiessequence = new Units_QuantitiesSequence();
 
@@ -125,23 +127,23 @@ void Units_UnitsDictionary::Creates()
       {
         unitscomputed = 0;
         for (i = 0; i <= numberofunits; i++)
-          matrix[i][i] = 1.;
+          matrix(i, i) = 1.;
         for (i = 0; i <= numberofunits; i++)
         {
-          if (matrix[i][0])
+          if (matrix(i, 0))
             unitscomputed++;
         }
         while (unitscomputed != numberofunits + 1)
         {
           for (j = 1; j <= numberofunits; j++)
           {
-            if (!matrix[j][0])
+            if (!matrix(j, 0))
             {
               for (i = 1; i < j; i++)
               {
-                if (matrix[j][i] && matrix[i][0])
+                if (matrix(j, i) && matrix(i, 0))
                 {
-                  matrix[j][0] = matrix[i][0] * matrix[j][i];
+                  matrix(j, 0) = matrix(i, 0) * matrix(j, i);
                   unitscomputed++;
                   if (unitscomputed == numberofunits + 1)
                     break;
@@ -149,9 +151,9 @@ void Units_UnitsDictionary::Creates()
               }
               for (k = j + 1; k <= numberofunits; k++)
               {
-                if (matrix[k][j] && matrix[k][0])
+                if (matrix(k, j) && matrix(k, 0))
                 {
-                  matrix[j][0] = matrix[k][0] / matrix[k][j];
+                  matrix(j, 0) = matrix(k, 0) / matrix(k, j);
                   unitscomputed++;
                   if (unitscomputed == numberofunits + 1)
                     break;
@@ -165,7 +167,7 @@ void Units_UnitsDictionary::Creates()
         for (i = 1; i <= theunitssequence->Length(); i++)
         {
           unit = theunitssequence->Value(i);
-          unit->Value(matrix[i][0]);
+          unit->Value(matrix(i, 0));
         }
       }
 
@@ -224,7 +226,7 @@ void Units_UnitsDictionary::Creates()
       for (i = 0; i < 50; i++)
       {
         for (j = 0; j < 50; j++)
-          matrix[i][j] = 0.;
+          matrix(i, j) = 0.;
       }
 
       // skip next line (dotted)
@@ -330,19 +332,19 @@ void Units_UnitsDictionary::Creates()
 
         if (j < numberofunits)
         {
-          matrix[numberofunits][j] = coeff;
+          matrix(numberofunits, j) = coeff;
         }
         else
         {
           Units_UnitSentence unitsentence(unit2, thequantitiessequence);
-          matrix[numberofunits][0] = coeff * (unitsentence.Evaluate())->Value();
+          matrix(numberofunits, 0) = coeff * (unitsentence.Evaluate())->Value();
         }
       }
       else
       {
         if (numberofunits == 1)
         {
-          matrix[1][0] = coeff;
+          matrix(1, 0) = coeff;
           unit         = theunitssequence->Value(numberofunits);
           unit->Value(coeff);
         }

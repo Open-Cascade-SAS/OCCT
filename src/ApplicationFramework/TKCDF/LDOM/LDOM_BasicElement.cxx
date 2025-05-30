@@ -74,7 +74,8 @@ void LDOM_BasicElement::RemoveNodes()
         aTxt                 = NULL;
         break;
       }
-      default:;
+      default:
+        break;
     }
     aNode = aNext;
   }

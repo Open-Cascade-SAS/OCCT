@@ -486,6 +486,7 @@ void Recadre(const Standard_Boolean,
         U1 += M_PI + M_PI;
       while (U1 > (U1p + 1.5 * M_PI))
         U1 -= M_PI + M_PI;
+      break;
     default:
       break;
   }
@@ -504,6 +505,7 @@ void Recadre(const Standard_Boolean,
         U2 += M_PI + M_PI;
       while (U2 > (U2p + 1.5 * M_PI))
         U2 -= M_PI + M_PI;
+      break;
     default:
       break;
   }
