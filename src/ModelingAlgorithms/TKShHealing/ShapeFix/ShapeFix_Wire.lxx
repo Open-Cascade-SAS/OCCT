@@ -39,6 +39,21 @@ inline void ShapeFix_Wire::SetSurface(const Handle(Geom_Surface)& surf)
   myAnalyzer->SetSurface(surf);
 }
 
+//=================================================================================================
+
+inline void ShapeFix_Wire::SetFace(const TopoDS_Face&                   theFace,
+                                   const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis)
+{
+  myAnalyzer->SetFace(theFace, theSurfaceAnalysis);
+}
+
+//=================================================================================================
+
+inline void ShapeFix_Wire::SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis)
+{
+  myAnalyzer->SetSurface(theSurfaceAnalysis);
+}
+
 //=======================================================================
 // function : SetSurface
 // purpose  :
