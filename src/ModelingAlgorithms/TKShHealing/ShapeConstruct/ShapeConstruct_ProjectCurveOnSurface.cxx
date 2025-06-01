@@ -185,286 +185,280 @@ void fillPointsAndParams(const Handle(GeomAdaptor_Curve)&               theCurve
 
 //=================================================================================================
 // function : generateBSplinePoints
-// purpose  : Generate parameters and points for B-spline curves
+// purpose  : Generate optimal parameters for B-spline curves
 //=================================================================================================
-Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&         theBSpline,
-                                       const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
-                                       const Standard_Real                      theFirst,
-                                       const Standard_Real                      theLast,
-                                       const Standard_Integer                   theNbControlPoints,
-                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
-                                       NCollection_DynamicArray<Standard_Real>& theParams)
+static Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)& theBSpline,
+                                              const Handle(GeomAdaptor_Curve)& theCurveAdaptor,
+                                              const Standard_Real              theFirst,
+                                              const Standard_Real              theLast,
+                                              const Standard_Integer theNbPointsPerKnotSpan,
+                                              NCollection_DynamicArray<gp_Pnt>&        thePoints,
+                                              NCollection_DynamicArray<Standard_Real>& theParams)
 {
-  // Extract B-spline properties for robust parameter generation
-  const Standard_Integer aDegree    = theBSpline->Degree();
-  const Standard_Integer aNbPoles   = theBSpline->NbPoles();
-  const Standard_Integer aNbKnots   = theBSpline->NbKnots();
-  const Standard_Boolean isPeriodic = theBSpline->IsPeriodic();
-  const Standard_Real    anInterval = theLast - theFirst;
-  
-  // Safety check for degenerate cases
-  if (aNbPoles < 2 || aDegree < 1 || anInterval <= Precision::PConfusion())
+  thePoints.Clear();
+  theParams.Clear();
+
+  if (theBSpline.IsNull() || theCurveAdaptor.IsNull() || theLast < theFirst
+      || theNbPointsPerKnotSpan < 1)
   {
-    // Fallback to simple linear distribution
-    return generateGeneralPoints(theCurveAdaptor, theFirst, theLast, theNbControlPoints, thePoints, theParams);
+    if (theLast == theFirst && !theBSpline.IsNull() && !theCurveAdaptor.IsNull())
+    { // Single point case
+      NCollection_DynamicArray<Standard_Real> singleParam;
+      singleParam.Append(theFirst);
+      fillPointsAndParams(theCurveAdaptor, singleParam, thePoints, theParams);
+      return thePoints.Size();
+    }
+    return 0;
   }
 
-  // Step 1: Calculate Greville parameters using BSplCLib utilities for maximum robustness
-  // Greville parameter for control point i: t_i = (u_{i+1} + u_{i+2} + ... + u_{i+p}) / p
-  // These parameters represent the optimal evaluation points for each control point's influence
-  NCollection_DynamicArray<Standard_Real> aGrevilleParams;
-  NCollection_DynamicArray<Standard_Real> aKnotParams;
-  
-  try 
+  NCollection_DynamicArray<Standard_Real> aCandidateParams;
+
+  // Add initial and final parameters
+  aCandidateParams.Append(theFirst);
+  aCandidateParams.Append(theLast);
+
+  const Standard_Integer aDegree    = theBSpline->Degree();
+  const Standard_Integer aNbKnots   = theBSpline->NbKnots();
+  const Standard_Boolean isPeriodic = theBSpline->IsPeriodic();
+
+  // Add distinct knots within the range (theFirst, theLast)
+  for (Standard_Integer i = 1; i <= aNbKnots; ++i)
   {
-    // Use BSplCLib to get proper knot multiplicities and handle periodicity correctly
-    const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
-    const TColStd_Array1OfInteger& aMults = theBSpline->Multiplicities();
-    
-    // Build complete knot vector with multiplicities using BSplCLib approach
-    TColStd_Array1OfReal aFullKnotVector(1, BSplCLib::KnotSequenceLength(aMults, aDegree, isPeriodic));
-    BSplCLib::KnotSequence(aKnots, aMults, aDegree, isPeriodic, aFullKnotVector);
-    
-    // Calculate Greville parameters for each control point
-    for (Standard_Integer iPole = 1; iPole <= aNbPoles; ++iPole)
+    const Standard_Real aKnot = theBSpline->Knot(i);
+    if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
     {
-      // For control point i, sum knots from (i+1) to (i+degree)
-      Standard_Real aGrevilleSum = 0.0;
-      Standard_Integer aValidKnots = 0;
-      
-      for (Standard_Integer j = 1; j <= aDegree; ++j)
-      {
-        const Standard_Integer aKnotIndex = iPole + j;
-        if (aKnotIndex >= 1 && aKnotIndex <= aFullKnotVector.Length())
-        {
-          aGrevilleSum += aFullKnotVector(aKnotIndex);
-          aValidKnots++;
-        }
-      }
-      
-      if (aValidKnots > 0)
-      {
-        const Standard_Real aGrevilleParam = aGrevilleSum / Standard_Real(aValidKnots);
-        
-        // Only include if within parameter range with tolerance
-        if (aGrevilleParam >= theFirst - Precision::PConfusion() && 
-            aGrevilleParam <= theLast + Precision::PConfusion())
-        {
-          // Clamp to exact bounds to prevent numerical drift
-          const Standard_Real aClampedParam = Max(theFirst, Min(theLast, aGrevilleParam));
-          aGrevilleParams.Append(aClampedParam);
-        }
-      }
-    }
-    
-    // Also collect all distinct knot values as structural critical points
-    for (Standard_Integer iKnot = 1; iKnot <= aKnots.Length(); ++iKnot)
-    {
-      const Standard_Real aKnotValue = aKnots(iKnot);
-      if (aKnotValue >= theFirst - Precision::PConfusion() && 
-          aKnotValue <= theLast + Precision::PConfusion())
-      {
-        const Standard_Real aClampedKnot = Max(theFirst, Min(theLast, aKnotValue));
-        aKnotParams.Append(aClampedKnot);
-      }
+      aCandidateParams.Append(aKnot);
     }
   }
-  catch (const Standard_Failure& anException)
+
+  // // Add Greville abscissae (pole-influenced parameters)
+  // // These are averages of 'aDegree' consecutive knots from the full knot sequence.
+  // if (aDegree > 0)
+  // {
+  //   TColStd_Array1OfReal    anOrigKnots(1, aNbKnots);
+  //   TColStd_Array1OfInteger aMults(1, aNbKnots);
+  //   theBSpline->Knots(anOrigKnots);
+  //   theBSpline->Multiplicities(aMults);
+
+  //   const Standard_Integer aKnotSeqLength =
+  //     BSplCLib::KnotSequenceLength(aMults, aDegree, isPeriodic);
+  //   if (aKnotSeqLength > 0)
+  //   {
+  //     TColStd_Array1OfReal aKnotSequence(1, aKnotSeqLength);
+  //     BSplCLib::KnotSequence(anOrigKnots, aMults, aDegree, isPeriodic, aKnotSequence);
+
+  //     for (Standard_Integer i = 1; i <= aKnotSeqLength - aDegree; ++i)
+  //     {
+  //       Standard_Real aPoleParam = 0.0;
+  //       for (Standard_Integer j = 0; j < aDegree; ++j)
+  //       {
+  //         aPoleParam += aKnotSequence.Value(i + j);
+  //       }
+  //       aPoleParam /= aDegree;
+
+  //       if (aPoleParam > theFirst + Precision::PConfusion()
+  //           && aPoleParam < theLast - Precision::PConfusion())
+  //       {
+  //         aCandidateParams.Append(aPoleParam);
+  //       }
+  //     }
+  //   }
+  // }
+
+  // // Add intermediate points based on theNbPointsPerKnotSpan
+  // // Define effective knot spans by theFirst, theLast, and distinct knots in between.
+  // if (theNbPointsPerKnotSpan > 1)
+  // {
+  //   NCollection_DynamicArray<Standard_Real> aSpanBoundaries;
+  //   aSpanBoundaries.Append(theFirst);
+  //   for (Standard_Integer i = 1; i <= aNbKnots; ++i)
+  //   {
+  //     const Standard_Real aKnot = theBSpline->Knot(i);
+  //     if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
+  //     {
+  //       aSpanBoundaries.Append(aKnot);
+  //     }
+  //   }
+  //   aSpanBoundaries.Append(theLast);
+  //   std::sort(aSpanBoundaries.begin(), aSpanBoundaries.end());
+  //   // aSpanBoundaries.Sort(); // Sort to define spans correctly
+
+  //   // Remove duplicates from span boundaries before iterating
+  //   TColStd_SequenceOfReal uniqueSpanBoundaries;
+  //   if (!aSpanBoundaries.IsEmpty())
+  //   {
+  //     uniqueSpanBoundaries.Append(aSpanBoundaries.First());
+  //     for (Standard_Integer i = 1; i < aSpanBoundaries.Length(); ++i)
+  //     {
+  //       if (aSpanBoundaries.Value(i) > uniqueSpanBoundaries.Last() + Precision::PConfusion())
+  //       {
+  //         uniqueSpanBoundaries.Append(aSpanBoundaries.Value(i));
+  //       }
+  //     }
+  //   }
+
+  //   for (Standard_Integer i = 1; i < uniqueSpanBoundaries.Length(); ++i)
+  //   {
+  //     const Standard_Real u_start_span = uniqueSpanBoundaries.Value(i);
+  //     const Standard_Real u_end_span   = uniqueSpanBoundaries.Value(i + 1);
+
+  //     if (u_end_span > u_start_span + Precision::PConfusion())
+  //     {
+  //       for (Standard_Integer k = 1; k < theNbPointsPerKnotSpan;
+  //            ++k) // k segments means k-1 internal points
+  //       {
+  //         Standard_Real param_to_add =
+  //           u_start_span + ((u_end_span - u_start_span) * k) / theNbPointsPerKnotSpan;
+  //         if (param_to_add > theFirst + Precision::PConfusion()
+  //             && param_to_add < theLast - Precision::PConfusion())
+  //         {
+  //           aCandidateParams.Append(param_to_add);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  // Sort all candidate parameters and remove duplicates, ensuring minimum spacing
+  std::vector<Standard_Real> tempVec;
+  for (Standard_Integer i = 0; i < aCandidateParams.Size(); ++i)
   {
-    // Enhanced fallback: use basic knot extraction if BSplCLib fails
-    #ifdef OCCT_DEBUG
-    std::cout << "BSplCLib failed, using fallback: " << anException.GetMessageString() << std::endl;
-    #endif
-    
-    // Simple knot-based fallback
-    for (Standard_Integer iKnot = 1; iKnot <= aNbKnots; ++iKnot)
-    {
-      const Standard_Real aKnotParam = theBSpline->Knot(iKnot);
-      if (aKnotParam >= theFirst - Precision::PConfusion() && 
-          aKnotParam <= theLast + Precision::PConfusion())
-      {
-        const Standard_Real aClampedParam = Max(theFirst, Min(theLast, aKnotParam));
-        aGrevilleParams.Append(aClampedParam);
-      }
-    }
+    tempVec.push_back(aCandidateParams.Value(i));
   }
-  catch (...)
-  {
-    // Ultimate fallback to uniform distribution
-    #ifdef OCCT_DEBUG
-    std::cout << "All B-spline analysis failed, using uniform fallback" << std::endl;
-    #endif
-    
-    return generateGeneralPoints(theCurveAdaptor, theFirst, theLast, theNbControlPoints, thePoints, theParams);
-  }
-  
-  // Step 2: Merge all critical parameters (Greville + knots + boundaries)
-  NCollection_DynamicArray<Standard_Real> aCriticalParams;
-  
-  // Always include exact boundaries
-  aCriticalParams.Append(theFirst);
-  aCriticalParams.Append(theLast);
-  
-  // Add all Greville parameters (these represent control point influence centers)
-  for (NCollection_DynamicArray<Standard_Real>::Iterator anIterator(aGrevilleParams);
-       anIterator.More();
-       anIterator.Next())
-  {
-    const Standard_Real aParam = anIterator.Value();
-    if (aParam > theFirst + Precision::PConfusion() && 
-        aParam < theLast - Precision::PConfusion())
-    {
-      aCriticalParams.Append(aParam);
-    }
-  }
-  
-  // Add all distinct knot parameters (structural discontinuities)
-  for (NCollection_DynamicArray<Standard_Real>::Iterator anIterator(aKnotParams);
-       anIterator.More();
-       anIterator.Next())
-  {
-    const Standard_Real aParam = anIterator.Value();
-    if (aParam > theFirst + Precision::PConfusion() && 
-        aParam < theLast - Precision::PConfusion())
-    {
-      aCriticalParams.Append(aParam);
-    }
-  }
-  
-  // Step 3: Sort and intelligently consolidate critical parameters
-  std::sort(aCriticalParams.begin(), aCriticalParams.end());
-  
-  // Calculate adaptive spacing based on curve complexity and parameter range
-  // For high-complexity curves (many poles/knots), use tighter spacing
-  const Standard_Real aComplexityFactor = Standard_Real(aNbPoles + aNbKnots);
-  const Standard_Real aBaseSpacing = anInterval / Max(aComplexityFactor * 0.5, 10.0);
-  const Standard_Real aMinSpacing = Max(Precision::PConfusion() * 10.0, aBaseSpacing * 0.05);
-  const Standard_Real aIdealSpacing = aBaseSpacing * 0.2;
-  
-  // Advanced consolidation: preserve critical parameters but merge very close ones intelligently
-  NCollection_DynamicArray<Standard_Real> aConsolidatedCritical;
-  
-  if (aCriticalParams.Length() > 0)
-  {
-    aConsolidatedCritical.Append(aCriticalParams[0]); // Always keep first
-    
-    for (Standard_Integer i = 1; i < aCriticalParams.Length(); ++i)
-    {
-      const Standard_Real aCurrParam = aCriticalParams[i];
-      const Standard_Real aPrevParam = aConsolidatedCritical.Last();
-      const Standard_Real aDistance = aCurrParam - aPrevParam;
-      
-      if (aDistance >= aMinSpacing)
-      {
-        // Keep this parameter as it's sufficiently spaced
-        aConsolidatedCritical.Append(aCurrParam);
-      }
-      else if (aDistance >= aMinSpacing * 0.5 && aConsolidatedCritical.Length() < aNbPoles)
-      {
-        // For moderate spacing and if we haven't reached pole count, keep it
-        aConsolidatedCritical.Append(aCurrParam);
-      }
-      // Otherwise, skip this parameter as it's too close to the previous one
-    }
-  }
-  
-  // Step 4: Add intermediate parameters using adaptive density control
-  // For complex B-splines, theNbControlPoints controls the overall target density
+  std::sort(tempVec.begin(), tempVec.end());
+
   NCollection_DynamicArray<Standard_Real> aFinalParams;
-  
-  // Calculate target parameter density based on B-spline complexity
-  const Standard_Real aTargetDensity = Standard_Real(Max(theNbControlPoints, aNbPoles / 3));
-  const Standard_Real aExpectedTotalParams = Min(aTargetDensity, aComplexityFactor);
-  const Standard_Real aCurrentCriticalCount = Standard_Real(aConsolidatedCritical.Length());
-  
-  // Determine how many intermediate parameters we need
-  const Standard_Real aNeededIntermediates = Max(0.0, aExpectedTotalParams - aCurrentCriticalCount);
-  
-  for (Standard_Integer i = 0; i < aConsolidatedCritical.Length(); ++i)
+  const Standard_Real                     range       = theLast - theFirst;
+  const Standard_Real                     aMinSpacing = (range > Precision::PConfusion())
+                                                          ? Max(Precision::PConfusion(), range / 10000.0)
+                                                          : Precision::PConfusion();
+
+  if (!tempVec.empty())
   {
-    aFinalParams.Append(aConsolidatedCritical[i]);
-    
-    // Add intermediate points between consecutive critical parameters
-    if (i < aConsolidatedCritical.Length() - 1)
+    // Ensure theFirst is included
+    Standard_Real firstParam = tempVec[0];
+    if (Abs(firstParam - theFirst) < Precision::PConfusion())
+      firstParam = theFirst;
+    else if (firstParam > theFirst + aMinSpacing)
+      firstParam = theFirst; // If sorted list starts after theFirst
+
+    if (firstParam >= theFirst - Precision::PConfusion()
+        && firstParam <= theLast + Precision::PConfusion())
     {
-      const Standard_Real aStart = aConsolidatedCritical[i];
-      const Standard_Real aEnd   = aConsolidatedCritical[i + 1];
-      const Standard_Real aSegmentLength = aEnd - aStart;
-      
-      // Calculate intermediate points based on segment importance and remaining budget
-      const Standard_Real aSegmentRatio = aSegmentLength / anInterval;
-      const Standard_Real aSegmentBudget = aNeededIntermediates * aSegmentRatio;
-      
-      // Use minimum ideal spacing to determine actual intermediate count
-      const Standard_Integer aMaxIntermediates = Standard_Integer(aSegmentLength / aIdealSpacing) - 1;
-      const Standard_Integer aDesiredIntermediates = Standard_Integer(aSegmentBudget);
-      const Standard_Integer aActualIntermediates = Min(Max(aDesiredIntermediates, 0), 
-                                                         Min(aMaxIntermediates, 8)); // Cap at 8 per segment
-      
-      // Add intermediate points if the segment warrants them
-      if (aActualIntermediates >= 1 && aSegmentLength > aIdealSpacing * 2.0)
+      aFinalParams.Append(firstParam < theFirst ? theFirst : firstParam);
+    }
+
+    for (size_t i = 0; i < tempVec.size(); ++i)
+    {
+      Standard_Real currentParam = tempVec[i];
+      // Clamp to bounds if very close
+      if (Abs(currentParam - theFirst) < Precision::PConfusion())
+        currentParam = theFirst;
+      if (Abs(currentParam - theLast) < Precision::PConfusion())
+        currentParam = theLast;
+
+      if (currentParam < theFirst - Precision::PConfusion()
+          || currentParam > theLast + Precision::PConfusion())
       {
-        for (Standard_Integer j = 1; j <= aActualIntermediates; ++j)
+        continue; // Skip points outside the desired range
+      }
+
+      if (aFinalParams.IsEmpty())
+      { // Should have been seeded by theFirst if valid
+        if (currentParam >= theFirst && currentParam <= theLast)
+          aFinalParams.Append(currentParam);
+      }
+      else if (currentParam > aFinalParams.Last() + aMinSpacing)
+      {
+        if (currentParam <= theLast)
+        { // Do not add beyond theLast
+          aFinalParams.Append(currentParam);
+        }
+        else if (Abs(currentParam - theLast) < aMinSpacing
+                 && aFinalParams.Last() < theLast - aMinSpacing)
         {
-          const Standard_Real aIntermediateParam = aStart + (aSegmentLength * j) / (aActualIntermediates + 1);
-          aFinalParams.Append(aIntermediateParam);
+          // If current is slightly > theLast, but last added is far from theLast, add theLast
+          aFinalParams.Append(theLast);
         }
       }
     }
-  }
-  
-  // Step 5: Final sort to ensure proper parameter ordering
-  std::sort(aFinalParams.begin(), aFinalParams.end());
-  
-  // Step 6: Final validation and cleanup
-  NCollection_DynamicArray<Standard_Real> aValidatedParams;
-  Standard_Real aPrevValidParam = -Precision::Infinite();
-  
-  for (NCollection_DynamicArray<Standard_Real>::Iterator anIterator(aFinalParams);
-       anIterator.More();
-       anIterator.Next())
-  {
-    const Standard_Real aParam = anIterator.Value();
-    if (aParam >= theFirst && aParam <= theLast && 
-        aParam - aPrevValidParam >= Precision::PConfusion())
+    // Ensure theLast is included if not already effectively the last point
+    if (aFinalParams.IsEmpty() && theLast >= theFirst)
+    { // e.g. theFirst == theLast, tempVec was empty or filtered out
+      aFinalParams.Append(theFirst);
+    }
+    else if (!aFinalParams.IsEmpty() && aFinalParams.Last() < theLast - aMinSpacing)
     {
-      aValidatedParams.Append(aParam);
-      aPrevValidParam = aParam;
+      aFinalParams.Append(theLast);
+    }
+    else if (!aFinalParams.IsEmpty() && Abs(aFinalParams.Last() - theLast) > Precision::PConfusion()
+             && theLast > aFinalParams.Last())
+    {
+      // If last point is not theLast, but theLast is greater and not too close, update last to be
+      // theLast
+      if (theLast - aFinalParams.Last() < aMinSpacing)
+      {
+        aFinalParams.ChangeValue(aFinalParams.Size() - 1) = theLast;
+      }
     }
   }
-  
-  // Ensure we have at least minimum required parameters
-  if (aValidatedParams.Length() < 2)
-  {
-    aValidatedParams.Clear();
-    aValidatedParams.Append(theFirst);
-    aValidatedParams.Append(theLast);
+  else if (theLast >= theFirst)
+  { // tempVec is empty, but range is valid (e.g. theFirst == theLast)
+    aFinalParams.Append(theFirst);
+    if (theLast > theFirst + Precision::PConfusion())
+    {
+      aFinalParams.Append(theLast);
+    }
   }
-  
-  //#ifdef OCCT_DEBUG
-  std::cout << "Advanced B-spline parameter generation:" << std::endl
-            << "  Input: degree=" << aDegree 
-            << ", poles=" << aNbPoles 
-            << ", knots=" << aNbKnots
-            << ", periodic=" << (isPeriodic ? "yes" : "no")
-            << ", range=[" << theFirst << ", " << theLast << "]"
-            << ", interval=" << anInterval << std::endl
-            << "  Analysis: Greville=" << aGrevilleParams.Length()
-            << ", knot params=" << aKnotParams.Length()
-            << ", critical before consolidation=" << aCriticalParams.Length()
-            << ", critical after consolidation=" << aConsolidatedCritical.Length() << std::endl
-            << "  Spacing: base=" << aBaseSpacing
-            << ", min=" << aMinSpacing  
-            << ", ideal=" << aIdealSpacing << std::endl
-            << "  Result: final parameters=" << aValidatedParams.Length()
-            << ", target density=" << aTargetDensity 
-            << ", complexity factor=" << aComplexityFactor << std::endl;
-  //#endif
-  
-  // Generate points at all validated parameters
-  fillPointsAndParams(theCurveAdaptor, aValidatedParams, thePoints, theParams);
-  
-  return aValidatedParams.Length();
+
+  Message::SendInfo() << "Generated " << aFinalParams.Size() << " parameters for B-spline curve."
+                      << std::endl;
+
+  // Write flat knots sequence into stream
+  const auto& seq = theBSpline->KnotSequence();
+  for (Standard_Integer i = 1; i <= seq.Length(); ++i)
+  {
+    Message::SendInfo() << "Knot[" << i << "] = " << seq(i) << std::endl;
+  }
+
+  // Write norma;knots
+  for (Standard_Integer i = 1; i <= theBSpline->NbKnots(); ++i)
+  {
+    Message::SendInfo() << "Knot[" << i << "] = " << theBSpline->Knot(i) << std::endl;
+  }
+
+  Message::SendInfo() << "Final parameters count: " << aFinalParams.Size() << std::endl;
+
+  for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
+  {
+    theBSpline->PeriodicNormalization(aFinalParams.ChangeValue(i));
+    Message::SendInfo() << "Param[" << i << "] = " << aFinalParams.Value(i) << std::endl;
+  }
+
+  // static int FirstTime = 0;
+
+  // NCollection_DynamicArray<Standard_Real> aFinalParamsCopy(!FirstTime ? aFinalParams.Size()
+  //                                                                     : aFinalParams.Size() - 3);
+  // for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
+  //{
+  //   if (FirstTime > 0 && (i == 27 || i == 26 || i == 28))
+  //   {
+  //     // I need to take value (point for that values)
+  //     gp_Pnt aPoint = theCurveAdaptor->Curve()->Value(aFinalParams.Value(i));
+  //     Message::SendInfo() << "Removed Points; " <<  "Point[" << i << "] = " << aPoint.X() << ", "
+  //     << aPoint.Y() << ", "
+  //                         << aPoint.Z() << std::endl;
+  //     continue;
+  //   }
+  //   // I need to take value (point for that values)
+  //   gp_Pnt aPoint = theCurveAdaptor->Curve()->Value(aFinalParams.Value(i));
+  //   //Message::SendInfo() << "Point[" << i << "] = " << aPoint.X() << ", " << aPoint.Y() << ", "
+  //   //                    << aPoint.Z() << std::endl;
+  //   aFinalParamsCopy.Append(aFinalParams.Value(i));
+  // }
+  // FirstTime++;
+  fillPointsAndParams(theCurveAdaptor, aFinalParams, thePoints, theParams);
+  return thePoints.Size();
 }
 
 //=================================================================================================
@@ -675,6 +669,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   {
     theParams2d->SetValue(iPnt, getContainerValue(params, iPnt));
     thePnts2d->SetValue(iPnt, getContainerValue(pnt2d, iPnt));
+    Message::SendInfo() << "Point[" << iPnt << "] = " << thePnts2d->Value(iPnt).X() << ", "
+                        << thePnts2d->Value(iPnt).Y() << std::endl;
+    Message::SendInfo() << "Param[" << iPnt << "] = " << theParams2d->Value(iPnt) << std::endl;
   }
   c2d = InterpolatePCurve(nbPini, thePnts2d, theParams2d);
 
@@ -1420,6 +1417,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
       }
     }
     changeContainerValue(pnt2d, aPntIndex) = p2d;
+    Message::SendInfo() << "Current point: " << p2d.X() << ", " << p2d.Y()
+                        << " (3d point: " << p3d.X() << ", " << p3d.Y() << ", " << p3d.Z() << ")";
     if (nbrPnt > 23 && ii > 2 && ii < nbrPnt)
     {
       // additional check for possible invalid jump by U or V parameter
