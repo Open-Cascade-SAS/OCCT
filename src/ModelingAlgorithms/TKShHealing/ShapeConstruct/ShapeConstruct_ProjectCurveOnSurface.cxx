@@ -241,14 +241,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
 
   // discretize the 3d curve
 
-  Standard_Integer nbrPnt;
-
-  //   $$$$    :92 abv 28 Jan 98   see PRO10107, big BSplineCurve C0
-  Standard_Integer nbPini = NCONTROL; // as in BRepCheck_Edge (RLN/Nijni)
-  // 20; // number of points for interpolation, should be "parametric dependent"
-
-  //: 92 abv 28 Jan 98: if curve is BSpline with many intervals,
-  // increase number of points to provide at least Degree()+1 points per interval
   Handle(Geom_BSplineCurve) bspl;
   if (theC3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
@@ -258,18 +250,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   else
   {
     bspl = Handle(Geom_BSplineCurve)::DownCast(theC3d);
-  }
-  if (!bspl.IsNull())
-  {
-    Standard_Integer nint = 0;
-    for (Standard_Integer i = 1; i < bspl->NbKnots(); i++)
-    {
-      if (bspl->Knot(i + 1) > First && bspl->Knot(i) < Last)
-        nint++;
-    }
-    Standard_Integer minPnt = nint * (bspl->Degree() + 1);
-    while (nbPini < minPnt)
-      nbPini += NCONTROL - 1;
   }
 
   //    $$$$    end :92 (big BSplineCurve C0)
@@ -362,26 +342,115 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   SequenceOfPnt  points(NCONTROL);
   SequenceOfReal params(NCONTROL);
 
-  const Standard_Real deltaT = (Last - First) / (nbPini - 1);
-  for (Standard_Integer iPnt = 1; iPnt <= nbPini; iPnt++)
-  {
-    Standard_Real t;
-    if (iPnt == 1)
-      t = First;
-    else if (iPnt == nbPini)
-      t = Last;
-    else
-      t = First + (iPnt - 1) * deltaT;
+  // Collect all critical parameters that must be included
+  NCollection_DynamicArray<Standard_Real> aCriticalParams;
+  aCriticalParams.Append(First);
+  aCriticalParams.Append(Last);
 
-    gp_Pnt p3d;
-    c3d->D0(t, p3d);
-    points.Append(p3d);
-    params.Append(t);
+  Standard_Integer nbPini = NCONTROL;
+
+  if (!bspl.IsNull())
+  {
+    // Add all knots within the parameter range
+    for (Standard_Integer i = 1; i <= bspl->NbKnots(); ++i)
+    {
+      Standard_Real aKnot = bspl->Knot(i);
+      if (aKnot > First + Precision::PConfusion() && aKnot < Last - Precision::PConfusion())
+      {
+        aCriticalParams.Append(aKnot);
+      }
+    }
+
+    // Sort critical parameters
+    std::sort(aCriticalParams.begin(), aCriticalParams.end());
+
+    // Calculate intervals between critical parameters
+    const Standard_Integer nint              = aCriticalParams.Length() - 1;
+    const Standard_Integer aMinPntPerInt     = bspl->Degree() + 1;
+
+    // Ensure we have enough points: at least (Degree+1) points per knot interval
+    const Standard_Integer aMinTotalPnts = nint * aMinPntPerInt + 1;
+    nbPini                        = Max(nbPini, aMinTotalPnts);
+
+    // Add critical parameters first
+    for (Standard_Integer i = 1; i <= aCriticalParams.Length(); ++i)
+    {
+      Standard_Real aT = aCriticalParams.Value(i - 1);
+      gp_Pnt        aP3d;
+      c3d->D0(aT, aP3d);
+      points.Append(aP3d);
+      params.Append(aT);
+    }
+
+    // Add intermediate points between critical parameters
+    for (Standard_Integer i = 1; i < aCriticalParams.Length(); ++i)
+    {
+      Standard_Real aT1             = aCriticalParams.Value(i - 1);
+      Standard_Real aT2             = aCriticalParams.Value(i);
+      Standard_Real anIntervalLen   = aT2 - aT1;
+
+      // Calculate number of intermediate points needed for this interval
+      Standard_Integer anIntervalPnts = Max(
+        aMinPntPerInt - 1,
+        Standard_Integer((anIntervalLen / (Last - First)) * (nbPini - aCriticalParams.Length())));
+
+      // Add intermediate points
+      for (Standard_Integer j = 1; j <= anIntervalPnts; ++j)
+      {
+        Standard_Real aT = aT1 + (anIntervalLen * j) / (anIntervalPnts + 1);
+        gp_Pnt        aP3d;
+        c3d->D0(aT, aP3d);
+        points.Append(aP3d);
+        params.Append(aT);
+      }
+    }
+
+    // Sort all points by parameter value
+    NCollection_DynamicArray<std::pair<Standard_Real, gp_Pnt> > aSortedPairs;
+    for (Standard_Integer i = 1; i <= points.Length(); ++i)
+    {
+      aSortedPairs.Append(std::make_pair(params.Value(i - 1), points.Value(i - 1)));
+    }
+
+    std::sort(aSortedPairs.begin(),
+              aSortedPairs.end(),
+              [](const std::pair<Standard_Real, gp_Pnt>& theA,
+                 const std::pair<Standard_Real, gp_Pnt>& theB) { return theA.first < theB.first; });
+
+    // Rebuild sequences with sorted data
+    points.Clear();
+    params.Clear();
+    for (NCollection_DynamicArray<std::pair<Standard_Real, gp_Pnt> >::Iterator aIt(aSortedPairs); aIt.More(); aIt.Next())
+    {
+      params.Append(aIt.Value().first);
+      points.Append(aIt.Value().second);
+    }
+  }
+  else
+  {
+    // For non-B-spline curves, use uniform distribution as before
+    const Standard_Real aDeltaT = (Last - First) / (nbPini - 1);
+    for (Standard_Integer iPnt = 1; iPnt <= nbPini; ++iPnt)
+    {
+      Standard_Real aT;
+      if (iPnt == 1)
+        aT = First;
+      else if (iPnt == nbPini)
+        aT = Last;
+      else
+        aT = First + (iPnt - 1) * aDeltaT;
+
+      gp_Pnt aP3d;
+      c3d->D0(aT, aP3d);
+      points.Append(aP3d);
+      params.Append(aT);
+    }
   }
 
   //  CALCUL par approximation
   SequenceOfPnt2d pnt2d;
-  nbrPnt = nbPini;
+  nbPini                  = points.Length();
+  Standard_Integer nbrPnt = nbPini;
   ApproxPCurve(nbrPnt, c3d, TolFirst, TolLast, points, params, pnt2d, c2d); // szv#4:S4163:12Mar99
                                                                             // OK not needed
   nbPini = points.Length();

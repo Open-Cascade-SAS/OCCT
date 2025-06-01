@@ -470,7 +470,7 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve(const TopoDS_Edge&                 
 
     BRep_Builder B;
 
-    Standard_Real            preci = (prec > 0. ? prec : BRep_Tool::Tolerance(edge));
+    const Standard_Real      preci = (prec > 0. ? prec : BRep_Tool::Tolerance(edge));
     const Handle(Geom_Curve) c3d   = BRep_Tool::Curve(edge, /*Loc,*/ First, Last);
     //  Handle(Geom_Curve) c3d = BRep_Tool::Curve(E, First, Last);
     if (c3d.IsNull())
