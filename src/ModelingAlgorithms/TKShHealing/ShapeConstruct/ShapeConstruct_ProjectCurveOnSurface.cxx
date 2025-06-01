@@ -58,6 +58,8 @@
 #include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ShapeAnalysis.hxx>
@@ -242,11 +244,11 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   //    $$$$    end :92 (big BSplineCurve C0)
 
   // this number should be "parametric dependent"
-  TColgp_SequenceOfPnt                points;
-  TColStd_SequenceOfReal              params;
-  NCollection_Sequence<Standard_Real> aKnotCoeffs;
-  gp_Pnt                              p3d;
-  Standard_Integer                    iPnt;
+  SequenceOfPnt    points;
+  SequenceOfReal   params;
+  SequenceOfReal   aKnotCoeffs;
+  gp_Pnt           p3d;
+  Standard_Integer iPnt;
 
   // In case of bspline compute parametrization speed on each
   // knot interval inside [aFirstParam, aLastParam].
@@ -348,7 +350,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   }
 
   //  CALCUL par approximation
-  TColgp_SequenceOfPnt2d pnt2d;
+  SequenceOfPnt2d pnt2d;
   ApproxPCurve(nbrPnt, c3d, TolFirst, TolLast, points, params, pnt2d, c2d); // szv#4:S4163:12Mar99
                                                                             // OK not needed
   nbPini = points.Length();
@@ -613,12 +615,12 @@ static Standard_Boolean fixPeriodictyTroubles(
 //=================================================================================================
 
 Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
-  const TColgp_SequenceOfPnt&   thepoints,
-  const TColStd_SequenceOfReal& theparams,
-  TColgp_SequenceOfPnt2d&       thePnt2ds,
-  Standard_Real                 theTol,
-  Standard_Boolean&             isRecompute,
-  Standard_Boolean&             isFromCashe) const
+  const SequenceOfPnt&  thepoints,
+  const SequenceOfReal& theparams,
+  SequenceOfPnt2d&      thePnt2ds,
+  Standard_Real         theTol,
+  Standard_Boolean&     isRecompute,
+  Standard_Boolean&     isFromCashe) const
 {
   Standard_Integer nb = thepoints.Length();
   gp_Pnt           aP[4];
@@ -731,7 +733,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
 
   // Restore old tolerance in 2d space to avoid big gap cases.
   aTol2 = anOldTol2;
-  // Check that straight line in 2d with parameterisation as in 3d will fit
+  // Check that straight line in 2d with parameterization as in 3d will fit
   // fit 3d curve at all points.
   Standard_Real dPar = theparams(nb) - theparams(1);
   if (Abs(dPar) < Precision::PConfusion())
@@ -777,7 +779,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
     }
   }
 
-  // check if pcurve can be represented by Geom2d_Line (parameterised by length)
+  // check if pcurve can be represented by Geom2d_Line (parameterized by length)
   Standard_Real aLLength = aVec0.Magnitude();
   if (Abs(aLLength - dPar) <= Precision::PConfusion())
   {
@@ -810,19 +812,15 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
   const Handle(GeomAdaptor_Curve)& c3d,
   const Standard_Real              TolFirst,
   const Standard_Real              TolLast,
-  TColgp_SequenceOfPnt&            points,
-  TColStd_SequenceOfReal&          params,
-  TColgp_SequenceOfPnt2d&          pnt2d,
+  SequenceOfPnt&                   points,
+  SequenceOfReal&                  params,
+  SequenceOfPnt2d&                 pnt2d,
   Handle(Geom2d_Curve)&            c2d)
 {
   // for performance, first try to handle typical case when pcurve is straight
   Standard_Boolean isRecompute     = Standard_False;
   Standard_Boolean isFromCasheLine = Standard_False;
-  for (Standard_Integer iseq = 1; iseq <= nbrPnt; iseq++)
-  {
-    gp_Pnt2d aP2d(0., 0.);
-    pnt2d.Append(aP2d);
-  }
+  pnt2d.SetValue(nbrPnt, gp_Pnt2d(0., 0.)); // init all by {0, 0}
   c2d = getLine(points, params, pnt2d, myPreci, isRecompute, isFromCasheLine);
   if (!c2d.IsNull())
   {
@@ -979,15 +977,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
     }
   }
 
-  //  Si pas isoParam, on a quand meme du p1OnIso/p2OnIso possible ... !!!
-  //  (utile pour detromper bug de projection). Mais detromper aussi circularite
-  // else {
-  // if (p1OnIso) valueP1 =
-  // BestExtremum (valueP1,points(1),points(2));
-  // if (p2OnIso) valueP2 =
-  // BestExtremum (valueP2,points(nbrPnt),points(nbrPnt-1));
-  //}
-
   Standard_Real    Up          = ul - uf;
   Standard_Real    Vp          = vl - vf;
   Standard_Real    gap         = myPreci;        //: q1
@@ -995,10 +984,11 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
   // auxiliaruy variables to shift 2dcurve, according to previous
   Standard_Boolean isFromCashe = Standard_False;
   gp_Pnt2d         aSavedPoint;
-  if (myNbCashe > 0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt)))
-    // if(myCashe3d[0].Distance(points(nbrPnt))<myPreci)
-    if (myCashe3d[0].Distance(points(nbrPnt)) < Precision::Confusion())
-      ChangeCycle = Standard_True;
+  if (myNbCashe > 0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt))
+      && myCashe3d[0].Distance(points(nbrPnt)) < Precision::Confusion())
+  {
+    ChangeCycle = Standard_True;
+  }
   Standard_Boolean needResolveUJump = Standard_False;
   Standard_Boolean needResolveVJump = Standard_False;
   gp_Pnt           prevP3d;
@@ -1186,16 +1176,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
                        IsUiso);
     }
   }
-
-  //  attention aux singularites ... (hors cas iso qui les traite deja)
-  //  if (!isoParam) {
-  //    p2d = pnt2d (1);
-  //    if (mySurf->ProjectDegenerated (points(1),myPreci,pnt2d (2),p2d))
-  //      pnt2d (1) = p2d;
-  //    p2d = pnt2d (nbrPnt);
-  //    if (mySurf->ProjectDegenerated (points(nbrPnt),myPreci,pnt2d (nbrPnt-1),p2d))
-  //      pnt2d (nbrPnt) = p2d;
-  //  }
 
   // Si la surface est UCLosed et VClosed, on recadre les points
   // algo un peu complique, on retarde l implementation
@@ -1612,9 +1592,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
   //: q9: fill cache
   myNbCashe = 2;
   if (ChangeCycle)
-  { // msv 10.08.04: avoid using of uninitialised field
-    // if(myCashe3d[0].Distance(points(1))>Precision::Confusion() &&
-    //    myCashe3d[1].Distance(points(1))>Precision::Confusion()) {
+  {
     myCashe3d[0] = points(1);
     myCashe3d[1] = points.Last();
     myCashe2d[0] = pnt2d(1);
@@ -1633,10 +1611,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
 //=================================================================================================
 
 Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
-  const Standard_Integer /*nbrPnt*/,
   Handle(TColgp_HArray1OfPnt2d)& points2d,
-  Handle(TColStd_HArray1OfReal)& params,
-  const Handle(Geom_Curve)& /*orig*/) const
+  Handle(TColStd_HArray1OfReal)& params) const
 {
   //  Standard_Real resol = Min(mySurf->Adaptor3d()->VResolution(myPreci),
   //  mySurf->Adaptor3d()->UResolution(myPreci));
@@ -1695,14 +1671,6 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
     anException.Print(std::cout);
     std::cout << "Pb Geom2dAPI_Approximate, tol2d=" << theTolerance2d << " NbParams=" << nbp
               << " NbPnts=" << nb2 << std::endl;
-//     if (nb2 > nbp) nb2 = nbp;
-//     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
-//     //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
-//     dbl.AddReals (rb2,rbp);
-//     for (Standard_Integer i = 1; i <= nb2; i ++) {
-//       gp_XYZ quoi (points2d->Value(i).X(),points2d->Value(i).Y(),params->Value(i) );
-//       dbl.AddXYZ (quoi);
-//     }
 #endif
     (void)anException;
     C2d.Nullify();
@@ -1733,22 +1701,12 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(
   catch (Standard_Failure const& anException)
   {
 #ifdef OCCT_DEBUG
-    //: s5
-    // //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
     std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(): Exception: ";
     anException.Print(std::cout);
     std::cout << "Pb Geom2dAPI_Interpolate, tol2d=" << theTolerance2d << " NbParams=" << nbp
               << " NbPnts=" << nb2 << std::endl;
-//     if (nb2 > nbp) nb2 = nbp;
-//     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
-// //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
-//     dbl.AddReals (rb2,rbp);
-//     for (Standard_Integer i = 1; i <= nb2; i ++) {
-//       gp_XYZ quoi (points2d->Value(i).X(),points2d->Value(i).Y(),params->Value(i) );
-//       dbl.AddXYZ (quoi);
-//     }
 #endif
     (void)anException;
     C2d.Nullify();
@@ -1795,8 +1753,8 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(
 //============================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(GeomAdaptor_Curve)& theC3d,
-                                                            const TColStd_SequenceOfReal& theParams,
-                                                            TColgp_SequenceOfPnt2d&       thePnt2d,
+                                                            const SequenceOfReal&  theParams,
+                                                            SequenceOfPnt2d&       thePnt2d,
                                                             const Standard_Boolean theIsFirstPoint,
                                                             const gp_Pnt2d& thePointOnIsoLine,
                                                             const Standard_Boolean theIsUiso)
@@ -1924,10 +1882,28 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
   const Standard_Real              prevCoord,
   const Handle(GeomAdaptor_Curve)& c3d,
   Standard_Integer&                theIndex,
-  TColgp_SequenceOfPnt&            points,
-  TColStd_SequenceOfReal&          params,
-  TColgp_SequenceOfPnt2d&          pnt2d)
+  SequenceOfPnt&                   points,
+  SequenceOfReal&                  params,
+  SequenceOfPnt2d&                 pnt2d)
 {
+
+  // Lambda for inserting element at specified index using SetValue
+  auto insertAt = [](auto& theArray, const Standard_Integer theIndex, const auto& theValue) {
+    const Standard_Integer aLength = theArray.Length();
+
+    // Extend array by setting a value at the new last position
+    theArray.SetValue(aLength, theArray.Value(aLength - 1));
+
+    // Move elements from the end towards the insertion point
+    for (Standard_Integer i = aLength; i > theIndex; i--)
+    {
+      theArray.SetValue(i, theArray.Value(i - 1));
+    }
+
+    // Set the new value at the insertion point
+    theArray.SetValue(theIndex, theValue);
+  };
+
   Standard_Real CorrectedCurCoord =
     ElCLib::InPeriod(CurCoord, prevCoord - Period / 2, prevCoord + Period / 2);
   if (!ToAdjust)
@@ -1977,9 +1953,10 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
       }
       if (Success)
       {
-        points.InsertBefore(theIndex, MidP3d);
-        params.InsertBefore(theIndex, MidPar);
-        pnt2d.InsertBefore(theIndex, MidP2d);
+        // Insert operations using lambda
+        insertAt(points, theIndex, MidP3d);
+        insertAt(params, theIndex, MidPar);
+        insertAt(pnt2d, theIndex, MidP2d);
         theIndex++;
       }
       else
@@ -2034,9 +2011,10 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints(Handle(TColgp_HArray1OfPn
     }
   }
   if (DistMin2 < RealLast())
-    // clang-format off
-    preci = 0.9 * Sqrt (DistMin2); // preci est la distance min entre les points on la reduit un peu
-  // clang-format on
+  {
+    // preci est la distance min entre les points on la reduit un peu
+    preci = 0.9 * Sqrt(DistMin2);
+  }
   if (nbPntDropped == 0)
     return;
 
@@ -2168,19 +2146,19 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints2d(Handle(TColgp_HArray1Of
 //: p9 abv 11 Mar 99: PRO7226 #489490: find nearest boundary instead of first one
 
 Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
-  const Standard_Integer        nbrPnt,
-  const TColgp_SequenceOfPnt&   points,
-  const TColStd_SequenceOfReal& params,
-  Standard_Boolean&             isoTypeU,
-  Standard_Boolean&             p1OnIso,
-  gp_Pnt2d&                     valueP1,
-  Standard_Boolean&             p2OnIso,
-  gp_Pnt2d&                     valueP2,
-  Standard_Boolean&             isoPar2d3d,
-  Handle(Geom_Curve)&           cIso,
-  Standard_Real&                t1,
-  Standard_Real&                t2,
-  TColStd_Array1OfReal&         pout) const
+  const Standard_Integer nbrPnt,
+  const SequenceOfPnt&   points,
+  const SequenceOfReal&  params,
+  Standard_Boolean&      isoTypeU,
+  Standard_Boolean&      p1OnIso,
+  gp_Pnt2d&              valueP1,
+  Standard_Boolean&      p2OnIso,
+  gp_Pnt2d&              valueP2,
+  Standard_Boolean&      isoPar2d3d,
+  Handle(Geom_Curve)&    cIso,
+  Standard_Real&         t1,
+  Standard_Real&         t2,
+  TColStd_Array1OfReal&  pout) const
 {
   try
   { // RAJOUT
@@ -2345,9 +2323,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       if (mp[0] > 0 && (!p1OnIso || currd2[0] < mind2[0]))
       {
         p1OnIso = Standard_True;
-        // clang-format off
-      mind2[0] = currd2[0]; // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file
-        // clang-format on
+        // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file
+        mind2[0] = currd2[0];
         if (isoU)
           valueP1.SetCoord(isoVal, tp[0]);
         else
@@ -2431,18 +2408,17 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         ShapeAnalysis_Curve sac;
         for (Standard_Integer i = 2; i < nbrPnt && isoByDistance; i++)
         {
-          Standard_Real dist = sac.NextProject(
-            prevParam,
-            cIso,
-            points(i),
-            prec,
-            pt,
-            t,
-            Cf,
-            Cl,
-            // clang-format off
-					      Standard_False); //:j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
-          // clang-format on
+          Standard_Real dist =
+            sac.NextProject(prevParam,
+                            cIso,
+                            points(i),
+                            prec,
+                            pt,
+                            t,
+                            Cf,
+                            Cl,
+                            //: j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
+                            Standard_False);
           prevParam = t;
           pout(i)   = t;
           if ((dist > prec) || (t < Cf) || (t > Cl))
@@ -2452,10 +2428,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           isoParam = Standard_True;
       }
     }
-    /*  if (!isoParam) {    CKY 29-mai-1997 : garder tout ce qu on peut ?
-        p1OnIso = Standard_False;
-        p2OnIso = Standard_False;
-      }  */
     return isoParam;
   } // RAJOUT
   catch (Standard_Failure const& anException)

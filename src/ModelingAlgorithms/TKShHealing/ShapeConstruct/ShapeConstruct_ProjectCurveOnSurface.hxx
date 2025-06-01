@@ -26,6 +26,7 @@
 #include <Standard_Transient.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
@@ -59,6 +60,10 @@ DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 //! the surface) are recognized with the given precision.
 class ShapeConstruct_ProjectCurveOnSurface : public Standard_Transient
 {
+protected:
+  using SequenceOfPnt = NCollection_DynamicArray<gp_Pnt>;
+  using SequenceOfPnt2d = NCollection_DynamicArray<gp_Pnt2d>;
+  using SequenceOfReal = NCollection_DynamicArray<Standard_Real>;
 
 public:
   //! Empty constructor.
@@ -124,9 +129,9 @@ protected:
   //! points2d - 2d points lies on line in parametric space
   //! theTol - tolerance used for compare initial points 3d and
   //! 3d points obtained from line lying in parameric space of surface
-  Standard_EXPORT Handle(Geom2d_Curve) getLine(const TColgp_SequenceOfPnt&   points,
-                                               const TColStd_SequenceOfReal& params,
-                                               TColgp_SequenceOfPnt2d&       points2d,
+  Standard_EXPORT Handle(Geom2d_Curve) getLine(const SequenceOfPnt&   points,
+                                               const SequenceOfReal& params,
+                                               SequenceOfPnt2d&       points2d,
                                                const Standard_Real           theTol,
                                                Standard_Boolean&             IsRecompute,
                                                Standard_Boolean&             isFromCashe) const;
@@ -152,16 +157,16 @@ private:
 
   Standard_EXPORT Standard_Boolean ApproxPCurve(const Standard_Integer           nbrPnt,
                                                 const Handle(GeomAdaptor_Curve)& c3d,
-                                                const Standard_Real              TolFirst,
-                                                const Standard_Real              TolLast,
-                                                TColgp_SequenceOfPnt&            points,
-                                                TColStd_SequenceOfReal&          params,
-                                                TColgp_SequenceOfPnt2d&          points2d,
+                                                const Standard_Real               TolFirst,
+                                                const Standard_Real               TolLast,
+                                                SequenceOfPnt&                    points,
+                                                SequenceOfReal&                   params,
+                                                SequenceOfPnt2d&                  points2d,
                                                 Handle(Geom2d_Curve)&            c2d);
 
   Standard_EXPORT void CorrectExtremity(const Handle(GeomAdaptor_Curve)& theC3d,
-                                        const TColStd_SequenceOfReal&    theParams,
-                                        TColgp_SequenceOfPnt2d&          thePnt2d,
+                                        const SequenceOfReal&            theParams,
+                                        SequenceOfPnt2d&                  thePnt2d,
                                         const Standard_Boolean           theIsFirstPoint,
                                         const gp_Pnt2d&                  thePointOnIsoLine,
                                         const Standard_Boolean           theIsUiso);
@@ -174,19 +179,17 @@ private:
                                                      const Standard_Real              prevCoord,
                                                      const Handle(GeomAdaptor_Curve)& c3d,
                                                      Standard_Integer&                theIndex,
-                                                     TColgp_SequenceOfPnt&            points,
-                                                     TColStd_SequenceOfReal&          params,
-                                                     TColgp_SequenceOfPnt2d&          pnt2d);
+                                                     SequenceOfPnt&                   points,
+                                                     SequenceOfReal&                  params,
+                                                     SequenceOfPnt2d&                 pnt2d);
 
   Standard_EXPORT Handle(Geom2d_Curve) InterpolatePCurve(
     const Standard_Integer         nbrPnt,
     Handle(TColgp_HArray1OfPnt2d)& points2d,
     Handle(TColStd_HArray1OfReal)& params) const;
 
-  Standard_EXPORT Handle(Geom2d_Curve) ApproximatePCurve(const Standard_Integer         nbrPnt,
-                                                         Handle(TColgp_HArray1OfPnt2d)& points2d,
-                                                         Handle(TColStd_HArray1OfReal)& params,
-                                                         const Handle(Geom_Curve)&      orig) const;
+  Standard_EXPORT Handle(Geom2d_Curve) ApproximatePCurve(Handle(TColgp_HArray1OfPnt2d)& points2d,
+                                                         Handle(TColStd_HArray1OfReal)& params) const;
 
   Standard_EXPORT Handle(Geom_Curve) InterpolateCurve3d(
     const Standard_Integer         nbrPnt,
@@ -202,8 +205,8 @@ private:
                                      Standard_Real&                 preci) const;
 
   Standard_EXPORT Standard_Boolean IsAnIsoparametric(const Standard_Integer        nbrPnt,
-                                                     const TColgp_SequenceOfPnt&   points,
-                                                     const TColStd_SequenceOfReal& params,
+                                                     const SequenceOfPnt&           points,
+                                                     const SequenceOfReal&         params,
                                                      Standard_Boolean&             isoTypeU,
                                                      Standard_Boolean&             p1OnIso,
                                                      gp_Pnt2d&                     valueP1,
