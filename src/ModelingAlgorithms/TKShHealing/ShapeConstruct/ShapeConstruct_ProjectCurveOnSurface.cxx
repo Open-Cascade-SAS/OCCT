@@ -592,15 +592,15 @@ bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
 
 //=================================================================================================
 // function : RebuildBSpline
-// purpose  : Rebuild B-spline curve with fixed knot spacing
+// purpose  : Rebuild B-spline curve with fixed knot spacing while preserving geometry
 //=================================================================================================
 Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
-                                  const Standard_Real       theFirst,
-                                  const Standard_Real       theLast,
-                                  const Standard_Real       theTol)
+                                  const Standard_Real              theFirst,
+                                  const Standard_Real              theLast,
+                                  const Standard_Real              theTol)
 {
   // Extract B-spline curve
-  Handle(Geom_BSplineCurve) aBSpline  = theC3d;
+  Handle(Geom_BSplineCurve) aBSpline = theC3d;
 
   try
   {
@@ -611,15 +611,14 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
     const TColgp_Array1OfPnt&      aPoles          = aBSpline->Poles();
     const TColStd_Array1OfReal&    anOriginalKnots = aBSpline->Knots();
     const TColStd_Array1OfInteger& aMults          = aBSpline->Multiplicities();
+    const Standard_Integer         aNbKnots        = anOriginalKnots.Length();
 
-    // Create working copy of knots
-    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
-    for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+    if (aNbKnots < 2)
     {
-      aNewKnots(i) = anOriginalKnots(i);
+      return theC3d; // Nothing to fix
     }
 
-    // Calculate tolerance for knot adjustment
+    // Calculate tolerance for detecting problematic knots
     std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
     for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
     {
@@ -631,99 +630,229 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
     }
 
     if (anIntervals.empty())
-    {
-      // All intervals are problematic, create uniform spacing
-      Standard_Real aTotalRange =
-        anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
-      if (aTotalRange <= Precision::Confusion())
-        aTotalRange = 1.0; // Fallback
+      return nullptr; // No valid intervals, return original
 
-      const Standard_Integer aNbKnots = anOriginalKnots.Length();
-      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
-      {
-        const Standard_Real t =
-          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
-        aNewKnots(i) = anOriginalKnots(anOriginalKnots.Lower()) + t * aTotalRange;
-      }
+    // Sort intervals to find median and calculate statistics
+    std::sort(anIntervals.begin(), anIntervals.end());
+
+    // Calculate median interval for reference
+    Standard_Real aMedianInterval;
+    const size_t  aMid = anIntervals.size() / 2;
+    if (anIntervals.size() % 2 == 0)
+    {
+      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
     }
     else
     {
-      // Use proportional spacing strategy
-      std::sort(anIntervals.begin(), anIntervals.end());
+      aMedianInterval = anIntervals[aMid];
+    }
 
-      Standard_Real aMedianInterval;
-      const size_t  aMid = anIntervals.size() / 2;
-      if (anIntervals.size() % 2 == 0)
+    // Calculate average of "normal" intervals (exclude smallest 25%)
+    Standard_Real    aTotalNormalInterval = 0.0;
+    Standard_Integer aNormalCount         = 0;
+    const size_t     aQuarter             = anIntervals.size() / 4;
+    for (size_t i = aQuarter; i < anIntervals.size(); i++)
+    {
+      aTotalNormalInterval += anIntervals[i];
+      aNormalCount++;
+    }
+    Standard_Real anAverageNormalInterval =
+      (aNormalCount > 0) ? (aTotalNormalInterval / aNormalCount) : aMedianInterval;
+
+    // More aggressive tolerance - anything less than 10% of median is problematic
+    Standard_Real aTolerance = aMedianInterval * 0.1;
+    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+
+    // Check if we actually have problematic knots
+    Standard_Boolean hasProblematicKnots = Standard_False;
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
       {
-        aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
+        hasProblematicKnots = Standard_True;
+        break;
+      }
+    }
+
+    if (!hasProblematicKnots)
+      return theC3d; // No problems found
+
+    // Strategy: Use much more aggressive spacing adjustments
+    // Minimum spacing should be a significant fraction of normal intervals
+    Standard_Real aMinSpacing = Max(anAverageNormalInterval * 0.5, aMedianInterval * 0.3);
+    aMinSpacing               = Max(aMinSpacing, Precision::Confusion() * 10000);
+
+    // Create new knot vector with aggressive redistribution
+    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
+
+    // Method 1: Try progressive adjustment with large minimum spacing
+    Standard_Boolean useProgressiveMethod = Standard_True;
+
+    // Always keep first knot
+    aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
+
+    // Process subsequent knots with aggressive spacing
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real aPrevKnot          = aNewKnots(i - 1);
+      const Standard_Real aCurrKnot          = anOriginalKnots(i);
+      const Standard_Real anOriginalInterval = aCurrKnot - anOriginalKnots(i - 1);
+
+      if (anOriginalInterval > Precision::Confusion() && anOriginalInterval < aTolerance)
+      {
+        // This is a problematic knot - apply aggressive adjustment
+        // Use larger of: minimum spacing or double the original interval
+        Standard_Real aNewKnot = aPrevKnot + Max(aMinSpacing, anOriginalInterval * 2.0);
+        aNewKnots(i)           = aNewKnot;
       }
       else
       {
-        aMedianInterval = anIntervals[aMid];
+        // Good knot - but still ensure minimum spacing
+        Standard_Real aNewKnot = Max(aCurrKnot, aPrevKnot + aMinSpacing);
+        aNewKnots(i)           = aNewKnot;
       }
+    }
 
-      Standard_Real aTolerance = aMedianInterval * 1e-3;
-      aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+    // Check if the progressive method created a knot sequence that extends beyond original range
+    Standard_Real aOriginalRange =
+      anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
+    Standard_Real aNewRange = aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
 
-      // Calculate average "good" interval
-      Standard_Real    aTotalGoodInterval = 0.0;
-      Standard_Integer aGoodIntervalCount = 0;
-
-      for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    if (aNewRange > aOriginalRange * 1.5)
+    {
+      // If we've extended too much, use scaling approach
+      useProgressiveMethod = Standard_False;
+    }
+    else
+    {
+      // Check if our progressive knot vector still has problematic spacing
+      for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
       {
-        const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-        if (anInterval >= aTolerance)
+        const Standard_Real anInterval = aNewKnots(i) - aNewKnots(i - 1);
+        if (anInterval < aMinSpacing * 0.8)
         {
-          aTotalGoodInterval += anInterval;
-          aGoodIntervalCount++;
-        }
-      }
-
-      if (aGoodIntervalCount > 0)
-      {
-        const Standard_Real anAvgGoodInterval = aTotalGoodInterval / aGoodIntervalCount;
-
-        // Rebuild knot sequence with proportional spacing
-        aNewKnots(anOriginalKnots.Lower()) =
-          anOriginalKnots(anOriginalKnots.Lower()); // Keep first knot
-
-        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
-        {
-          const Standard_Real anOriginalInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-          Standard_Real       aNewInterval;
-
-          if (anOriginalInterval < aTolerance)
-          {
-            // Use average interval for problematic knots
-            aNewInterval = anAvgGoodInterval;
-          }
-          else
-          {
-            // Keep original interval for good knots
-            aNewInterval = anOriginalInterval;
-          }
-
-          aNewKnots(i) = aNewKnots(i - 1) + aNewInterval;
-        }
-      }
-      else
-      {
-        // Fallback to uniform spacing if no good intervals found
-        const Standard_Real    aFirstKnot  = anOriginalKnots(anOriginalKnots.Lower());
-        const Standard_Real    aLastKnot   = anOriginalKnots(anOriginalKnots.Upper());
-        const Standard_Real    aTotalRange = aLastKnot - aFirstKnot;
-        const Standard_Integer aNbKnots    = anOriginalKnots.Length();
-
-        for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
-        {
-          const Standard_Real t =
-            Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
-          aNewKnots(i) = aFirstKnot + t * aTotalRange;
+          useProgressiveMethod = Standard_False;
+          break;
         }
       }
     }
 
-    // Create the new curve
+    if (!useProgressiveMethod)
+    {
+      // Method 2: Intelligent redistribution that preserves overall range
+      // but ensures proper spacing
+
+      // Count problematic knots to determine redistribution strategy
+      Standard_Integer aProblematicCount = 0;
+      for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+        if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+        {
+          aProblematicCount++;
+        }
+      }
+
+      if (aProblematicCount < aNbKnots / 3)
+      {
+        // Method 2a: Selective redistribution - only fix problematic areas
+        aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
+
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real aPrevOrigKnot  = anOriginalKnots(i - 1);
+          const Standard_Real aCurrOrigKnot  = anOriginalKnots(i);
+          const Standard_Real anOrigInterval = aCurrOrigKnot - aPrevOrigKnot;
+
+          if (anOrigInterval > Precision::Confusion() && anOrigInterval < aTolerance)
+          {
+            // Problematic knot - use aggressive expansion
+            const Standard_Real aTargetInterval = Max(aMinSpacing, anAverageNormalInterval * 0.7);
+            aNewKnots(i)                        = aNewKnots(i - 1) + aTargetInterval;
+          }
+          else
+          {
+            // Good knot - try to preserve but ensure minimum spacing
+            Standard_Real aDesiredKnot = aCurrOrigKnot;
+
+            // Adjust if it violates minimum spacing
+            if (aDesiredKnot - aNewKnots(i - 1) < aMinSpacing * 0.8)
+            {
+              aDesiredKnot = aNewKnots(i - 1) + aMinSpacing;
+            }
+
+            aNewKnots(i) = aDesiredKnot;
+          }
+        }
+
+        // Scale to fit original range if needed
+        Standard_Real aCurrentNewRange =
+          aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
+        if (aCurrentNewRange > aOriginalRange * 1.2)
+        {
+          Standard_Real aScale     = aOriginalRange / aCurrentNewRange;
+          Standard_Real aFirstKnot = aNewKnots(aNewKnots.Lower());
+
+          for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
+          {
+            Standard_Real anOffset = aNewKnots(i) - aFirstKnot;
+            aNewKnots(i)           = aFirstKnot + anOffset * aScale;
+          }
+        }
+      }
+      else
+      {
+        // Method 2b: Many problematic knots - use smart uniform distribution
+        // Create zones: problematic areas get more spacing
+
+        const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
+        const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
+
+        // Calculate total "weight" - problematic intervals get higher weight
+        Standard_Real aTotalWeight = 0.0;
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+          if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+          {
+            aTotalWeight += 3.0; // Problematic intervals get triple weight
+          }
+          else
+          {
+            aTotalWeight += 1.0; // Normal intervals get unit weight
+          }
+        }
+
+        // Distribute range according to weights
+        aNewKnots(anOriginalKnots.Lower()) = aFirstKnot;
+        Standard_Real aCurrentPos          = aFirstKnot;
+        Standard_Real aUnitSpacing         = aOriginalRange / aTotalWeight;
+
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real anOrigInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+          Standard_Real       aStepSize;
+
+          if (anOrigInterval > Precision::Confusion() && anOrigInterval < aTolerance)
+          {
+            aStepSize = aUnitSpacing * 3.0; // Triple spacing for problematic areas
+          }
+          else
+          {
+            aStepSize = aUnitSpacing * 1.0; // Normal spacing
+          }
+
+          aCurrentPos += aStepSize;
+          aNewKnots(i) = aCurrentPos;
+        }
+
+        // Ensure last knot matches exactly
+        aNewKnots(aNewKnots.Upper()) = aLastKnot;
+      }
+    }
+
+    // Create the new curve with fixed knots
     Handle(Geom_BSplineCurve) aNewBSpline;
 
     if (aBSpline->IsRational())
@@ -735,7 +864,52 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
     {
       aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
     }
-      return aNewBSpline;
+
+    // Validation: check that we actually improved the knot spacing
+    Standard_Boolean isImproved      = Standard_True;
+    Standard_Real    aMinNewInterval = RealLast();
+
+    for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aNewKnots(i) - aNewKnots(i - 1);
+      if (anInterval < aMinNewInterval)
+      {
+        aMinNewInterval = anInterval;
+      }
+
+      // Check if we still have very small intervals
+      if (anInterval < aTolerance * 2.0)
+      {
+        isImproved = Standard_False;
+      }
+    }
+
+    if (!isImproved)
+    {
+      // Last resort: force uniform distribution
+      const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
+      const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
+
+      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real t =
+          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
+        aNewKnots(i) = aFirstKnot + t * (aLastKnot - aFirstKnot);
+      }
+
+      // Recreate curve with uniform knots
+      if (aBSpline->IsRational())
+      {
+        const TColStd_Array1OfReal* aWeights = aBSpline->Weights();
+        aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
+      }
+      else
+      {
+        aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
+      }
+    }
+
+    return aNewBSpline;
   }
   catch (Standard_Failure const& anException)
   {
@@ -745,11 +919,10 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
     std::cout << std::endl;
 #endif
     (void)anException;
-    // If rebuilding fails, return null to let the caller handle it
-    return Handle(Geom_Curve)();
+    // If rebuilding fails, return original curve
+    return nullptr;
   }
 }
-
 } // namespace
 
 //=================================================================================================
@@ -1652,8 +1825,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
       }
     }
     changeContainerValue(pnt2d, aPntIndex) = p2d;
-    Message::SendInfo() << "Current point: " << p2d.X() << ", " << p2d.Y()
-                        << " (3d point: " << p3d.X() << ", " << p3d.Y() << ", " << p3d.Z() << ")";
+
     if (nbrPnt > 23 && ii > 2 && ii < nbrPnt)
     {
       // additional check for possible invalid jump by U or V parameter
