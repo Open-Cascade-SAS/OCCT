@@ -110,13 +110,15 @@ static void AdjustSecondPointToFirstPoint(const gp_Pnt2d&             theFirstPo
 //=================================================================================================
 
 template <typename T>
-const T::value_type& getContainerValue(const T& theSeq, const Standard_Integer theIndex)
+const typename T::value_type& getContainerValue(const T& theSeq, const Standard_Integer theIndex)
 {
-  if (theIndex < 1 || theIndex > theSeq.Length())
-  {
-    throw Standard_OutOfRange("Index out of range in getContainerValue");
-  }
   return theSeq.Value(theIndex - 1); // TSeq is 0-based, but we use 1-based index
+}
+
+template <typename T>
+typename T::value_type& changeContainerValue(T& theSeq, const Standard_Integer theIndex)
+{
+  return theSeq.ChangeValue(theIndex - 1); // TSeq is 0-based, but we use 1-based index
 }
 
 //=================================================================================================
@@ -126,10 +128,6 @@ void setContainerValue(T&                            theSeq,
                        const Standard_Integer        theIndex,
                        const typename T::value_type& theValue)
 {
-  if (theIndex < 1 || theIndex > theSeq.Length())
-  {
-    throw Standard_OutOfRange("Index out of range in setContainerValue");
-  }
   theSeq.ChangeValue(theIndex - 1) = theValue; // TSeq is 0-based, but we use 1-based index
 }
 
@@ -1143,7 +1141,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
         gap = mySurf->Gap();
       }
     }
-    getContainerValue(pnt2d, aPntIndex) = p2d;
+    changeContainerValue(pnt2d, aPntIndex) = p2d;
     if (nbrPnt > 23 && ii > 2 && ii < nbrPnt)
     {
       // additional check for possible invalid jump by U or V parameter
@@ -1306,7 +1304,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
         shiftX = Up;
       if (shiftX != 0.)
         for (Standard_Integer aPntIter = 1; aPntIter <= pnt2d.Length(); ++aPntIter)
-          getContainerValue(pnt2d, aPntIter).SetX(getContainerValue(pnt2d, aPntIter).X() + shiftX);
+          changeContainerValue(pnt2d, aPntIter)
+            .SetX(getContainerValue(pnt2d, aPntIter).X() + shiftX);
     }
   }
   // Si la surface est VCLosed, on recadre les points
@@ -1398,7 +1397,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
         shiftY = Vp;
       if (shiftY != 0.)
         for (Standard_Integer aPntIter = 1; aPntIter <= pnt2d.Length(); ++aPntIter)
-          getContainerValue(pnt2d, aPntIter).SetY(getContainerValue(pnt2d, aPntIter).Y() + shiftY);
+          changeContainerValue(pnt2d, aPntIter)
+            .SetY(getContainerValue(pnt2d, aPntIter).Y() + shiftY);
     }
   }
 
@@ -1461,26 +1461,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
           // on decalle le point (aPntIter - 1) en V Last
           gp_Pnt2d newPrev(getContainerValue(pnt2d, aPntIter - 1).X(),
                            vf); // instead of  vl RLN/Nijni
-          getContainerValue(pnt2d, aPntIter - 1) = newPrev;
+          changeContainerValue(pnt2d, aPntIter - 1) = newPrev;
         }
         else if (prevOnLast)
         {
           // on decalle le point (aPntIter - 1) en V first
           gp_Pnt2d newPrev(getContainerValue(pnt2d, aPntIter - 1).X(),
                            vl); // instead of  vf RLN/Nijni
-          getContainerValue(pnt2d, aPntIter - 1) = newPrev;
+          changeContainerValue(pnt2d, aPntIter - 1) = newPrev;
         }
         else if (currOnFirst)
         {
           // on decalle le point (aPntIter) en V Last
           gp_Pnt2d newCurr(getContainerValue(pnt2d, aPntIter).X(), vf); // instead of vl  RLN/Nijni
-          getContainerValue(pnt2d, aPntIter) = newCurr;
+          changeContainerValue(pnt2d, aPntIter) = newCurr;
         }
         else if (currOnLast)
         {
           // on decalle le point (aPntIter) en V First
           gp_Pnt2d newCurr(getContainerValue(pnt2d, aPntIter).X(), vl); // instead of vf  RLN/Nijni
-          getContainerValue(pnt2d, aPntIter) = newCurr;
+          changeContainerValue(pnt2d, aPntIter) = newCurr;
         }
         // on verifie
 #ifdef OCCT_DEBUG
@@ -1543,26 +1543,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
           Standard_Real dU = Up / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
-            getContainerValue(pnt2d, ind - 1).SetX(PrevX);
+            changeContainerValue(pnt2d, ind - 1).SetX(PrevX);
             for (Standard_Integer j = ind - 2; j > 0; j--)
             {
               Standard_Real CurX = getContainerValue(pnt2d, j).X();
               while (CurX < PrevX - dU)
-                getContainerValue(pnt2d, j).SetX(CurX += Up);
+                changeContainerValue(pnt2d, j).SetX(CurX += Up);
               while (CurX > PrevX + dU)
-                getContainerValue(pnt2d, j).SetX(CurX -= Up);
+                changeContainerValue(pnt2d, j).SetX(CurX -= Up);
             }
           }
           else if (OnBound)
           {
-            getContainerValue(pnt2d, ind).SetX(PrevX);
+            changeContainerValue(pnt2d, ind).SetX(PrevX);
             for (Standard_Integer j = ind + 1; j <= pnt2d.Length(); j++)
             {
               Standard_Real CurX = getContainerValue(pnt2d, j).X();
               while (CurX < PrevX - dU)
-                getContainerValue(pnt2d, j).SetX(CurX += Up);
+                changeContainerValue(pnt2d, j).SetX(CurX += Up);
               while (CurX > PrevX + dU)
-                getContainerValue(pnt2d, j).SetX(CurX -= Up);
+                changeContainerValue(pnt2d, j).SetX(CurX -= Up);
             }
           }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
@@ -1599,26 +1599,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
           Standard_Real dV = Vp / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
-            getContainerValue(pnt2d, ind - 1).SetY(PrevY);
+            changeContainerValue(pnt2d, ind - 1).SetY(PrevY);
             for (Standard_Integer j = ind - 2; j > 0; j--)
             {
               Standard_Real CurY = getContainerValue(pnt2d, j).Y();
               while (CurY < PrevY - dV)
-                getContainerValue(pnt2d, j).SetY(CurY += Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY += Vp);
               while (CurY > PrevY + dV)
-                getContainerValue(pnt2d, j).SetY(CurY -= Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY -= Vp);
             }
           }
           else if (OnBound)
           {
-            getContainerValue(pnt2d, ind).SetY(PrevY);
+            changeContainerValue(pnt2d, ind).SetY(PrevY);
             for (Standard_Integer j = ind + 1; j <= pnt2d.Length(); j++)
             {
               Standard_Real CurY = getContainerValue(pnt2d, j).Y();
               while (CurY < PrevY - dV)
-                getContainerValue(pnt2d, j).SetY(CurY += Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY += Vp);
               while (CurY > PrevY + dV)
-                getContainerValue(pnt2d, j).SetY(CurY -= Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY -= Vp);
             }
           }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
@@ -2008,7 +2008,7 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
   if (ToAdjust)
   {
     CurCoord = CorrectedCurCoord;
-    getContainerValue(pnt2d, theIndex).SetCoord(theIndCoord, CurCoord);
+    changeContainerValue(pnt2d, theIndex).SetCoord(theIndCoord, CurCoord);
   }
 }
 
@@ -2461,8 +2461,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
                             Cl,
                             //: j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
                             Standard_False);
-          prevParam                  = t;
-          getContainerValue(pout, i) = t;
+          prevParam                     = t;
+          changeContainerValue(pout, i) = t;
           if ((dist > prec) || (t < Cf) || (t > Cl))
             isoByDistance = Standard_False;
         }
