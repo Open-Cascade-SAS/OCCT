@@ -61,9 +61,9 @@ DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 class ShapeConstruct_ProjectCurveOnSurface : public Standard_Transient
 {
 protected:
-  using SequenceOfPnt = NCollection_DynamicArray<gp_Pnt>;
+  using SequenceOfPnt   = NCollection_DynamicArray<gp_Pnt>;
   using SequenceOfPnt2d = NCollection_DynamicArray<gp_Pnt2d>;
-  using SequenceOfReal = NCollection_DynamicArray<Standard_Real>;
+  using SequenceOfReal  = NCollection_DynamicArray<Standard_Real>;
 
 public:
   //! Empty constructor.
@@ -129,12 +129,12 @@ protected:
   //! points2d - 2d points lies on line in parametric space
   //! theTol - tolerance used for compare initial points 3d and
   //! 3d points obtained from line lying in parameric space of surface
-  Standard_EXPORT Handle(Geom2d_Curve) getLine(const SequenceOfPnt&   points,
+  Standard_EXPORT Handle(Geom2d_Curve) getLine(const SequenceOfPnt&  points,
                                                const SequenceOfReal& params,
-                                               SequenceOfPnt2d&       points2d,
-                                               const Standard_Real           theTol,
-                                               Standard_Boolean&             IsRecompute,
-                                               Standard_Boolean&             isFromCache) const;
+                                               SequenceOfPnt2d&      points2d,
+                                               const Standard_Real   theTol,
+                                               Standard_Boolean&     IsRecompute,
+                                               Standard_Boolean&     isFromCache) const;
 
   //! Computes the projection of 3d curve onto a surface using the
   //! standard algorithm from ProjLib. Returns False if standard
@@ -157,16 +157,16 @@ private:
 
   Standard_EXPORT Standard_Boolean ApproxPCurve(const Standard_Integer           nbrPnt,
                                                 const Handle(GeomAdaptor_Curve)& c3d,
-                                                const Standard_Real               TolFirst,
-                                                const Standard_Real               TolLast,
-                                                SequenceOfPnt&                    points,
-                                                SequenceOfReal&                   params,
-                                                SequenceOfPnt2d&                  points2d,
+                                                const Standard_Real              TolFirst,
+                                                const Standard_Real              TolLast,
+                                                SequenceOfPnt&                   points,
+                                                SequenceOfReal&                  params,
+                                                SequenceOfPnt2d&                 points2d,
                                                 Handle(Geom2d_Curve)&            c2d);
 
   Standard_EXPORT void CorrectExtremity(const Handle(GeomAdaptor_Curve)& theC3d,
                                         const SequenceOfReal&            theParams,
-                                        SequenceOfPnt2d&                  thePnt2d,
+                                        SequenceOfPnt2d&                 thePnt2d,
                                         const Standard_Boolean           theIsFirstPoint,
                                         const gp_Pnt2d&                  thePointOnIsoLine,
                                         const Standard_Boolean           theIsUiso);
@@ -188,8 +188,9 @@ private:
     Handle(TColgp_HArray1OfPnt2d)& points2d,
     Handle(TColStd_HArray1OfReal)& params) const;
 
-  Standard_EXPORT Handle(Geom2d_Curve) ApproximatePCurve(Handle(TColgp_HArray1OfPnt2d)& points2d,
-                                                         Handle(TColStd_HArray1OfReal)& params) const;
+  Standard_EXPORT Handle(Geom2d_Curve) ApproximatePCurve(
+    Handle(TColgp_HArray1OfPnt2d)& points2d,
+    Handle(TColStd_HArray1OfReal)& params) const;
 
   Standard_EXPORT Handle(Geom_Curve) InterpolateCurve3d(
     const Standard_Integer         nbrPnt,
@@ -204,19 +205,19 @@ private:
                                      Handle(TColStd_HArray1OfReal)& params,
                                      Standard_Real&                 preci) const;
 
-  Standard_EXPORT Standard_Boolean IsAnIsoparametric(const Standard_Integer        nbrPnt,
-                                                     const SequenceOfPnt&           points,
-                                                     const SequenceOfReal&         params,
-                                                     Standard_Boolean&             isoTypeU,
-                                                     Standard_Boolean&             p1OnIso,
-                                                     gp_Pnt2d&                     valueP1,
-                                                     Standard_Boolean&             p2OnIso,
-                                                     gp_Pnt2d&                     valueP2,
-                                                     Standard_Boolean&             isoPar2d3d,
-                                                     Handle(Geom_Curve)&           cIso,
-                                                     Standard_Real&                t1,
-                                                     Standard_Real&                t2,
-                                                     TColStd_Array1OfReal&         pout) const;
+  Standard_EXPORT Standard_Boolean IsAnIsoparametric(const Standard_Integer nbrPnt,
+                                                     const SequenceOfPnt&   points,
+                                                     const SequenceOfReal&  params,
+                                                     Standard_Boolean&      isoTypeU,
+                                                     Standard_Boolean&      p1OnIso,
+                                                     gp_Pnt2d&              valueP1,
+                                                     Standard_Boolean&      p2OnIso,
+                                                     gp_Pnt2d&              valueP2,
+                                                     Standard_Boolean&      isoPar2d3d,
+                                                     Handle(Geom_Curve)&    cIso,
+                                                     Standard_Real&         t1,
+                                                     Standard_Real&         t2,
+                                                     TColStd_Array1OfReal&  pout) const;
 };
 
 #endif // _ShapeConstruct_ProjectCurveOnSurface_HeaderFile

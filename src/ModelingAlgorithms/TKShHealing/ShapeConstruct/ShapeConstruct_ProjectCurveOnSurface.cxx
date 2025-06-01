@@ -128,7 +128,7 @@ void setContainerValue(T&                            theSeq,
                        const Standard_Integer        theIndex,
                        const typename T::value_type& theValue)
 {
-  theSeq.ChangeValue(theIndex - 1) = theValue; // TSeq is 0-based, but we use 1-based index
+  theSeq.SetValue(theIndex - 1, theValue);     // TSeq is 0-based, but we use 1-based index
 }
 
 } // namespace
