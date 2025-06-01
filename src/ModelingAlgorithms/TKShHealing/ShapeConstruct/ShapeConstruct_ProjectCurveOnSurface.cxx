@@ -611,10 +611,7 @@ bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
 // function : RebuildBSpline
 // purpose  : Rebuild B-spline curve with fixed knot spacing while preserving geometry
 //=================================================================================================
-Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
-                                  const Standard_Real              theFirst,
-                                  const Standard_Real              theLast,
-                                  const Standard_Real              theTol)
+Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
 {
   // Extract B-spline curve
   Handle(Geom_BSplineCurve) aBSpline = theC3d;
@@ -1054,7 +1051,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
       aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
     }
     aBSpline->Segment(aFirst, aLast, myPreci);
-    Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline, aFirst, aLast, myPreci);
+    Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline);
     if (aNewBSpline.IsNull())
     {
       c2d = ProjectAnalytic(theC3d);
