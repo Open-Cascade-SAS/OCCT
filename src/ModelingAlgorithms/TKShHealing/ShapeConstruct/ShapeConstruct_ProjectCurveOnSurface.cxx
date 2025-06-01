@@ -185,279 +185,213 @@ void fillPointsAndParams(const Handle(GeomAdaptor_Curve)&               theCurve
 
 //=================================================================================================
 // function : generateBSplinePoints
-// purpose  : Generate optimal parameters for B-spline curves
+// purpose  : Generate parameters for B-spline curves with uniform arc-length distribution
 //=================================================================================================
-static Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)& theBSpline,
-                                              const Handle(GeomAdaptor_Curve)& theCurveAdaptor,
-                                              const Standard_Real              theFirst,
-                                              const Standard_Real              theLast,
-                                              const Standard_Integer theNbPointsPerKnotSpan,
-                                              NCollection_DynamicArray<gp_Pnt>&        thePoints,
-                                              NCollection_DynamicArray<Standard_Real>& theParams)
+Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&  theBSpline,
+                                       const Handle(GeomAdaptor_Curve)&  theCurveAdaptor,
+                                       const Standard_Real               theFirst,
+                                       const Standard_Real               theLast,
+                                       const Standard_Integer            theNbPointsPerKnotSpan,
+                                       NCollection_DynamicArray<gp_Pnt>& thePoints,
+                                       NCollection_DynamicArray<Standard_Real>& theParams)
 {
   thePoints.Clear();
   theParams.Clear();
 
-  if (theBSpline.IsNull() || theCurveAdaptor.IsNull() || theLast < theFirst
-      || theNbPointsPerKnotSpan < 1)
+  if (theBSpline.IsNull() || theCurveAdaptor.IsNull()
+      || theFirst > theLast + Precision::PConfusion() || theNbPointsPerKnotSpan < 1)
   {
-    if (theLast == theFirst && !theBSpline.IsNull() && !theCurveAdaptor.IsNull())
-    { // Single point case
-      NCollection_DynamicArray<Standard_Real> singleParam;
-      singleParam.Append(theFirst);
-      fillPointsAndParams(theCurveAdaptor, singleParam, thePoints, theParams);
-      return thePoints.Size();
-    }
     return 0;
   }
 
-  NCollection_DynamicArray<Standard_Real> aCandidateParams;
-
-  // Add initial and final parameters
-  aCandidateParams.Append(theFirst);
-  aCandidateParams.Append(theLast);
-
-  const Standard_Integer aDegree    = theBSpline->Degree();
-  const Standard_Integer aNbKnots   = theBSpline->NbKnots();
   const Standard_Boolean isPeriodic = theBSpline->IsPeriodic();
+  const Standard_Integer aDegree    = theBSpline->Degree();
 
-  // Add distinct knots within the range (theFirst, theLast)
+  // Step 1: Collect critical parameters (knots)
+  std::vector<Standard_Real> criticalParams;
+
+  // Add boundary parameters
+  criticalParams.push_back(theFirst);
+  criticalParams.push_back(theLast);
+
+  // Add distinct knots within the range
+  const Standard_Integer aNbKnots = theBSpline->NbKnots();
   for (Standard_Integer i = 1; i <= aNbKnots; ++i)
   {
     const Standard_Real aKnot = theBSpline->Knot(i);
-    if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
+
+    if (isPeriodic)
     {
-      aCandidateParams.Append(aKnot);
-    }
-  }
-
-  // // Add Greville abscissae (pole-influenced parameters)
-  // // These are averages of 'aDegree' consecutive knots from the full knot sequence.
-  // if (aDegree > 0)
-  // {
-  //   TColStd_Array1OfReal    anOrigKnots(1, aNbKnots);
-  //   TColStd_Array1OfInteger aMults(1, aNbKnots);
-  //   theBSpline->Knots(anOrigKnots);
-  //   theBSpline->Multiplicities(aMults);
-
-  //   const Standard_Integer aKnotSeqLength =
-  //     BSplCLib::KnotSequenceLength(aMults, aDegree, isPeriodic);
-  //   if (aKnotSeqLength > 0)
-  //   {
-  //     TColStd_Array1OfReal aKnotSequence(1, aKnotSeqLength);
-  //     BSplCLib::KnotSequence(anOrigKnots, aMults, aDegree, isPeriodic, aKnotSequence);
-
-  //     for (Standard_Integer i = 1; i <= aKnotSeqLength - aDegree; ++i)
-  //     {
-  //       Standard_Real aPoleParam = 0.0;
-  //       for (Standard_Integer j = 0; j < aDegree; ++j)
-  //       {
-  //         aPoleParam += aKnotSequence.Value(i + j);
-  //       }
-  //       aPoleParam /= aDegree;
-
-  //       if (aPoleParam > theFirst + Precision::PConfusion()
-  //           && aPoleParam < theLast - Precision::PConfusion())
-  //       {
-  //         aCandidateParams.Append(aPoleParam);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // // Add intermediate points based on theNbPointsPerKnotSpan
-  // // Define effective knot spans by theFirst, theLast, and distinct knots in between.
-  // if (theNbPointsPerKnotSpan > 1)
-  // {
-  //   NCollection_DynamicArray<Standard_Real> aSpanBoundaries;
-  //   aSpanBoundaries.Append(theFirst);
-  //   for (Standard_Integer i = 1; i <= aNbKnots; ++i)
-  //   {
-  //     const Standard_Real aKnot = theBSpline->Knot(i);
-  //     if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
-  //     {
-  //       aSpanBoundaries.Append(aKnot);
-  //     }
-  //   }
-  //   aSpanBoundaries.Append(theLast);
-  //   std::sort(aSpanBoundaries.begin(), aSpanBoundaries.end());
-  //   // aSpanBoundaries.Sort(); // Sort to define spans correctly
-
-  //   // Remove duplicates from span boundaries before iterating
-  //   TColStd_SequenceOfReal uniqueSpanBoundaries;
-  //   if (!aSpanBoundaries.IsEmpty())
-  //   {
-  //     uniqueSpanBoundaries.Append(aSpanBoundaries.First());
-  //     for (Standard_Integer i = 1; i < aSpanBoundaries.Length(); ++i)
-  //     {
-  //       if (aSpanBoundaries.Value(i) > uniqueSpanBoundaries.Last() + Precision::PConfusion())
-  //       {
-  //         uniqueSpanBoundaries.Append(aSpanBoundaries.Value(i));
-  //       }
-  //     }
-  //   }
-
-  //   for (Standard_Integer i = 1; i < uniqueSpanBoundaries.Length(); ++i)
-  //   {
-  //     const Standard_Real u_start_span = uniqueSpanBoundaries.Value(i);
-  //     const Standard_Real u_end_span   = uniqueSpanBoundaries.Value(i + 1);
-
-  //     if (u_end_span > u_start_span + Precision::PConfusion())
-  //     {
-  //       for (Standard_Integer k = 1; k < theNbPointsPerKnotSpan;
-  //            ++k) // k segments means k-1 internal points
-  //       {
-  //         Standard_Real param_to_add =
-  //           u_start_span + ((u_end_span - u_start_span) * k) / theNbPointsPerKnotSpan;
-  //         if (param_to_add > theFirst + Precision::PConfusion()
-  //             && param_to_add < theLast - Precision::PConfusion())
-  //         {
-  //           aCandidateParams.Append(param_to_add);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Sort all candidate parameters and remove duplicates, ensuring minimum spacing
-  std::vector<Standard_Real> tempVec;
-  for (Standard_Integer i = 0; i < aCandidateParams.Size(); ++i)
-  {
-    tempVec.push_back(aCandidateParams.Value(i));
-  }
-  std::sort(tempVec.begin(), tempVec.end());
-
-  NCollection_DynamicArray<Standard_Real> aFinalParams;
-  const Standard_Real                     range       = theLast - theFirst;
-  const Standard_Real                     aMinSpacing = (range > Precision::PConfusion())
-                                                          ? Max(Precision::PConfusion(), range / 10000.0)
-                                                          : Precision::PConfusion();
-
-  if (!tempVec.empty())
-  {
-    // Ensure theFirst is included
-    Standard_Real firstParam = tempVec[0];
-    if (Abs(firstParam - theFirst) < Precision::PConfusion())
-      firstParam = theFirst;
-    else if (firstParam > theFirst + aMinSpacing)
-      firstParam = theFirst; // If sorted list starts after theFirst
-
-    if (firstParam >= theFirst - Precision::PConfusion()
-        && firstParam <= theLast + Precision::PConfusion())
-    {
-      aFinalParams.Append(firstParam < theFirst ? theFirst : firstParam);
-    }
-
-    for (size_t i = 0; i < tempVec.size(); ++i)
-    {
-      Standard_Real currentParam = tempVec[i];
-      // Clamp to bounds if very close
-      if (Abs(currentParam - theFirst) < Precision::PConfusion())
-        currentParam = theFirst;
-      if (Abs(currentParam - theLast) < Precision::PConfusion())
-        currentParam = theLast;
-
-      if (currentParam < theFirst - Precision::PConfusion()
-          || currentParam > theLast + Precision::PConfusion())
+      // Handle periodic case - find all knot instances in the range
+      const Standard_Real aPeriod = theBSpline->LastParameter() - theBSpline->FirstParameter();
+      if (aPeriod > Precision::PConfusion())
       {
-        continue; // Skip points outside the desired range
-      }
+        // Find all periodic repetitions of this knot in the range
+        Standard_Real currentKnot = aKnot;
 
-      if (aFinalParams.IsEmpty())
-      { // Should have been seeded by theFirst if valid
-        if (currentParam >= theFirst && currentParam <= theLast)
-          aFinalParams.Append(currentParam);
-      }
-      else if (currentParam > aFinalParams.Last() + aMinSpacing)
-      {
-        if (currentParam <= theLast)
-        { // Do not add beyond theLast
-          aFinalParams.Append(currentParam);
-        }
-        else if (Abs(currentParam - theLast) < aMinSpacing
-                 && aFinalParams.Last() < theLast - aMinSpacing)
+        // Adjust to the range
+        while (currentKnot < theFirst - aPeriod)
+          currentKnot += aPeriod;
+        while (currentKnot > theLast + aPeriod)
+          currentKnot -= aPeriod;
+
+        // Add all instances in the range
+        while (currentKnot <= theLast + Precision::PConfusion())
         {
-          // If current is slightly > theLast, but last added is far from theLast, add theLast
-          aFinalParams.Append(theLast);
+          if (currentKnot >= theFirst - Precision::PConfusion()
+              && currentKnot > theFirst + Precision::PConfusion()
+              && currentKnot < theLast - Precision::PConfusion())
+          {
+            criticalParams.push_back(currentKnot);
+          }
+          currentKnot += aPeriod;
         }
       }
     }
-    // Ensure theLast is included if not already effectively the last point
-    if (aFinalParams.IsEmpty() && theLast >= theFirst)
-    { // e.g. theFirst == theLast, tempVec was empty or filtered out
-      aFinalParams.Append(theFirst);
-    }
-    else if (!aFinalParams.IsEmpty() && aFinalParams.Last() < theLast - aMinSpacing)
+    else
     {
-      aFinalParams.Append(theLast);
-    }
-    else if (!aFinalParams.IsEmpty() && Abs(aFinalParams.Last() - theLast) > Precision::PConfusion()
-             && theLast > aFinalParams.Last())
-    {
-      // If last point is not theLast, but theLast is greater and not too close, update last to be
-      // theLast
-      if (theLast - aFinalParams.Last() < aMinSpacing)
+      // Non-periodic case
+      if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
       {
-        aFinalParams.ChangeValue(aFinalParams.Size() - 1) = theLast;
+        criticalParams.push_back(aKnot);
       }
     }
   }
-  else if (theLast >= theFirst)
-  { // tempVec is empty, but range is valid (e.g. theFirst == theLast)
-    aFinalParams.Append(theFirst);
-    if (theLast > theFirst + Precision::PConfusion())
+
+  // Sort and remove duplicates
+  std::sort(criticalParams.begin(), criticalParams.end());
+  criticalParams.erase(std::unique(criticalParams.begin(),
+                                   criticalParams.end(),
+                                   [](Standard_Real a, Standard_Real b) {
+                                     return Abs(a - b) < Precision::PConfusion();
+                                   }),
+                       criticalParams.end());
+
+  // Step 2: Generate uniformly spaced points between critical parameters
+  NCollection_DynamicArray<Standard_Real> finalParams;
+
+  for (size_t i = 0; i < criticalParams.size() - 1; ++i)
+  {
+    const Standard_Real u1 = criticalParams[i];
+    const Standard_Real u2 = criticalParams[i + 1];
+
+    if (u2 <= u1 + Precision::PConfusion())
+      continue;
+
+    // Add first point of the span
+    finalParams.Append(u1);
+
+    // Generate intermediate points using arc-length parameterization
+    if (theNbPointsPerKnotSpan > 1)
     {
-      aFinalParams.Append(theLast);
+      // Calculate approximate arc length of the span
+      const Standard_Integer numSamples  = 20; // For arc length estimation
+      Standard_Real          totalLength = 0.0;
+      gp_Pnt                 prevPnt;
+      theCurveAdaptor->D0(u1, prevPnt);
+
+      for (Standard_Integer j = 1; j <= numSamples; ++j)
+      {
+        const Standard_Real t = u1 + (u2 - u1) * j / numSamples;
+        gp_Pnt              currentPnt;
+        theCurveAdaptor->D0(t, currentPnt);
+        totalLength += prevPnt.Distance(currentPnt);
+        prevPnt = currentPnt;
+      }
+
+      // Generate points with uniform arc-length distribution
+      const Standard_Real targetSegmentLength = totalLength / theNbPointsPerKnotSpan;
+      Standard_Real       currentLength       = 0.0;
+      Standard_Real       currentParam        = u1;
+
+      theCurveAdaptor->D0(u1, prevPnt);
+
+      for (Standard_Integer segmentIdx = 1; segmentIdx < theNbPointsPerKnotSpan; ++segmentIdx)
+      {
+        const Standard_Real targetLength = segmentIdx * targetSegmentLength;
+
+        // Find parameter that gives the target arc length
+        Standard_Real paramStep = (u2 - u1) / (numSamples * 4); // Fine step for search
+        currentLength           = 0.0;
+        currentParam            = u1;
+        theCurveAdaptor->D0(u1, prevPnt);
+
+        while (currentParam < u2 && currentLength < targetLength)
+        {
+          const Standard_Real nextParam = Min(currentParam + paramStep, u2);
+          gp_Pnt              nextPnt;
+          theCurveAdaptor->D0(nextParam, nextPnt);
+
+          const Standard_Real segLength = prevPnt.Distance(nextPnt);
+
+          if (currentLength + segLength >= targetLength)
+          {
+            // Interpolate to find exact parameter
+            const Standard_Real ratio = (targetLength - currentLength) / segLength;
+            currentParam              = currentParam + ratio * paramStep;
+            break;
+          }
+
+          currentLength += segLength;
+          currentParam = nextParam;
+          prevPnt      = nextPnt;
+        }
+
+        if (currentParam > u1 + Precision::PConfusion()
+            && currentParam < u2 - Precision::PConfusion())
+        {
+          finalParams.Append(currentParam);
+        }
+      }
     }
   }
 
-  Message::SendInfo() << "Generated " << aFinalParams.Size() << " parameters for B-spline curve."
-                      << std::endl;
-
-  // Write flat knots sequence into stream
-  const auto& seq = theBSpline->KnotSequence();
-  for (Standard_Integer i = 1; i <= seq.Length(); ++i)
+  // Add the last critical parameter
+  if (!criticalParams.empty())
   {
-    Message::SendInfo() << "Knot[" << i << "] = " << seq(i) << std::endl;
+    finalParams.Append(criticalParams.back());
   }
 
-  // Write norma;knots
-  for (Standard_Integer i = 1; i <= theBSpline->NbKnots(); ++i)
+  // Step 3: Handle periodic normalization
+  if (isPeriodic)
   {
-    Message::SendInfo() << "Knot[" << i << "] = " << theBSpline->Knot(i) << std::endl;
+    for (Standard_Integer i = 0; i < finalParams.Size(); ++i)
+    {
+      Standard_Real param = finalParams.Value(i);
+      theBSpline->PeriodicNormalization(param);
+      finalParams.SetValue(i, param);
+    }
   }
 
-  Message::SendInfo() << "Final parameters count: " << aFinalParams.Size() << std::endl;
-
-  for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
+  // Step 4: Final sorting and cleanup
+  std::vector<Standard_Real> tempParams;
+  for (Standard_Integer i = 0; i < finalParams.Size(); ++i)
   {
-    theBSpline->PeriodicNormalization(aFinalParams.ChangeValue(i));
-    Message::SendInfo() << "Param[" << i << "] = " << aFinalParams.Value(i) << std::endl;
+    tempParams.push_back(finalParams.Value(i));
   }
 
-  // static int FirstTime = 0;
+  std::sort(tempParams.begin(), tempParams.end());
+  tempParams.erase(std::unique(tempParams.begin(),
+                               tempParams.end(),
+                               [](Standard_Real a, Standard_Real b) {
+                                 return Abs(a - b) < Precision::PConfusion();
+                               }),
+                   tempParams.end());
 
-  // NCollection_DynamicArray<Standard_Real> aFinalParamsCopy(!FirstTime ? aFinalParams.Size()
-  //                                                                     : aFinalParams.Size() - 3);
-  // for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
-  //{
-  //   if (FirstTime > 0 && (i == 27 || i == 26 || i == 28))
-  //   {
-  //     // I need to take value (point for that values)
-  //     gp_Pnt aPoint = theCurveAdaptor->Curve()->Value(aFinalParams.Value(i));
-  //     Message::SendInfo() << "Removed Points; " <<  "Point[" << i << "] = " << aPoint.X() << ", "
-  //     << aPoint.Y() << ", "
-  //                         << aPoint.Z() << std::endl;
-  //     continue;
-  //   }
-  //   // I need to take value (point for that values)
-  //   gp_Pnt aPoint = theCurveAdaptor->Curve()->Value(aFinalParams.Value(i));
-  //   //Message::SendInfo() << "Point[" << i << "] = " << aPoint.X() << ", " << aPoint.Y() << ", "
-  //   //                    << aPoint.Z() << std::endl;
-  //   aFinalParamsCopy.Append(aFinalParams.Value(i));
-  // }
-  // FirstTime++;
-  fillPointsAndParams(theCurveAdaptor, aFinalParams, thePoints, theParams);
+  // Convert back to NCollection_DynamicArray
+  NCollection_DynamicArray<Standard_Real> cleanParams;
+  for (const Standard_Real& param : tempParams)
+  {
+    if (param >= theFirst - Precision::PConfusion() && param <= theLast + Precision::PConfusion())
+    {
+      // if (Abs(1 - param) > 0.01)
+      cleanParams.Append(param);
+    }
+  }
+
+  // Step 5: Generate 3D points
+  fillPointsAndParams(theCurveAdaptor, cleanParams, thePoints, theParams);
+
   return thePoints.Size();
 }
 
@@ -539,6 +473,280 @@ Standard_Integer generateCurvePoints(const Handle(GeomAdaptor_Curve)&         th
                                  theNbControlPoints,
                                  thePoints,
                                  theParams);
+  }
+}
+
+//=================================================================================================
+// function : isBSplineCurveInvalid
+// purpose  : Check if B-spline curve has problematic knot spacing that could cause issues
+//=================================================================================================
+bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
+                           const Standard_Real       theFirst,
+                           const Standard_Real       theLast)
+{
+  if (theCurve.IsNull())
+    return Standard_False;
+
+  // Check if it's a B-spline curve (directly or through trimmed curve)
+  Handle(Geom_BSplineCurve) aBSpline;
+  if (theCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
+    Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
+  }
+  else
+  {
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+  }
+
+  if (aBSpline.IsNull())
+    return Standard_False; // Not a B-spline, so no knot issues
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    const TColStd_Array1OfReal& aKnots = aBSpline->Knots();
+
+    if (aKnots.Length() < 2)
+      return Standard_False; // Too few knots to have problems
+
+    // Calculate automatic tolerance based on knot distribution
+    std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
+    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+      if (anInterval > Precision::Confusion())
+      {
+        anIntervals.push_back(anInterval);
+      }
+    }
+
+    if (anIntervals.empty())
+      return Standard_True; // All intervals are zero - definitely problematic
+
+    // Sort intervals to find median
+    std::sort(anIntervals.begin(), anIntervals.end());
+
+    // Calculate median interval
+    Standard_Real aMedianInterval;
+    const size_t  aMid = anIntervals.size() / 2;
+    if (anIntervals.size() % 2 == 0)
+    {
+      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
+    }
+    else
+    {
+      aMedianInterval = anIntervals[aMid];
+    }
+
+    // Tolerance is a fraction of median interval
+    // If an interval is less than 1/1000 of median, it's considered problematic
+    Standard_Real aTolerance = aMedianInterval * 1e-3;
+    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+
+    // Check for problematic intervals
+    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+      {
+        return Standard_True; // Found problematic knot spacing
+      }
+    }
+
+    // Additional check: look for knots that are within the parameter range
+    // and check if any are too close relative to the working range
+    const Standard_Real aWorkingRange = theLast - theFirst;
+    if (aWorkingRange > Precision::Confusion())
+    {
+      const Standard_Real aRelativeTolerance = aWorkingRange * 1e-6; // 0.0001% of range
+
+      for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+
+        // Check if knots are in working range and too close
+        if (aKnots(i - 1) >= theFirst - Precision::Confusion()
+            && aKnots(i) <= theLast + Precision::Confusion() && anInterval > Precision::Confusion()
+            && anInterval < aRelativeTolerance)
+        {
+          return Standard_True;
+        }
+      }
+    }
+
+    return Standard_False; // No problems detected
+  }
+  catch (Standard_Failure const& anException)
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Warning: isBSplineCurveInvalid(): Exception: ";
+    anException.Print(std::cout);
+    std::cout << std::endl;
+#endif
+    (void)anException;
+    return Standard_True; // If we can't analyze it, assume it's problematic
+  }
+}
+
+//=================================================================================================
+// function : RebuildBSpline
+// purpose  : Rebuild B-spline curve with fixed knot spacing
+//=================================================================================================
+Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
+                                  const Standard_Real       theFirst,
+                                  const Standard_Real       theLast,
+                                  const Standard_Real       theTol)
+{
+  // Extract B-spline curve
+  Handle(Geom_BSplineCurve) aBSpline  = theC3d;
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    // Get original curve data
+    const Standard_Integer         aDegree         = aBSpline->Degree();
+    const TColgp_Array1OfPnt&      aPoles          = aBSpline->Poles();
+    const TColStd_Array1OfReal&    anOriginalKnots = aBSpline->Knots();
+    const TColStd_Array1OfInteger& aMults          = aBSpline->Multiplicities();
+
+    // Create working copy of knots
+    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
+    for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+    {
+      aNewKnots(i) = anOriginalKnots(i);
+    }
+
+    // Calculate tolerance for knot adjustment
+    std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+      if (anInterval > Precision::Confusion())
+      {
+        anIntervals.push_back(anInterval);
+      }
+    }
+
+    if (anIntervals.empty())
+    {
+      // All intervals are problematic, create uniform spacing
+      Standard_Real aTotalRange =
+        anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
+      if (aTotalRange <= Precision::Confusion())
+        aTotalRange = 1.0; // Fallback
+
+      const Standard_Integer aNbKnots = anOriginalKnots.Length();
+      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real t =
+          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
+        aNewKnots(i) = anOriginalKnots(anOriginalKnots.Lower()) + t * aTotalRange;
+      }
+    }
+    else
+    {
+      // Use proportional spacing strategy
+      std::sort(anIntervals.begin(), anIntervals.end());
+
+      Standard_Real aMedianInterval;
+      const size_t  aMid = anIntervals.size() / 2;
+      if (anIntervals.size() % 2 == 0)
+      {
+        aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
+      }
+      else
+      {
+        aMedianInterval = anIntervals[aMid];
+      }
+
+      Standard_Real aTolerance = aMedianInterval * 1e-3;
+      aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+
+      // Calculate average "good" interval
+      Standard_Real    aTotalGoodInterval = 0.0;
+      Standard_Integer aGoodIntervalCount = 0;
+
+      for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+        if (anInterval >= aTolerance)
+        {
+          aTotalGoodInterval += anInterval;
+          aGoodIntervalCount++;
+        }
+      }
+
+      if (aGoodIntervalCount > 0)
+      {
+        const Standard_Real anAvgGoodInterval = aTotalGoodInterval / aGoodIntervalCount;
+
+        // Rebuild knot sequence with proportional spacing
+        aNewKnots(anOriginalKnots.Lower()) =
+          anOriginalKnots(anOriginalKnots.Lower()); // Keep first knot
+
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real anOriginalInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+          Standard_Real       aNewInterval;
+
+          if (anOriginalInterval < aTolerance)
+          {
+            // Use average interval for problematic knots
+            aNewInterval = anAvgGoodInterval;
+          }
+          else
+          {
+            // Keep original interval for good knots
+            aNewInterval = anOriginalInterval;
+          }
+
+          aNewKnots(i) = aNewKnots(i - 1) + aNewInterval;
+        }
+      }
+      else
+      {
+        // Fallback to uniform spacing if no good intervals found
+        const Standard_Real    aFirstKnot  = anOriginalKnots(anOriginalKnots.Lower());
+        const Standard_Real    aLastKnot   = anOriginalKnots(anOriginalKnots.Upper());
+        const Standard_Real    aTotalRange = aLastKnot - aFirstKnot;
+        const Standard_Integer aNbKnots    = anOriginalKnots.Length();
+
+        for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real t =
+            Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
+          aNewKnots(i) = aFirstKnot + t * aTotalRange;
+        }
+      }
+    }
+
+    // Create the new curve
+    Handle(Geom_BSplineCurve) aNewBSpline;
+
+    if (aBSpline->IsRational())
+    {
+      const TColStd_Array1OfReal* aWeights = aBSpline->Weights();
+      aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
+    }
+    else
+    {
+      aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
+    }
+      return aNewBSpline;
+  }
+  catch (Standard_Failure const& anException)
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Warning: RebuildBSpline(): Exception: ";
+    anException.Print(std::cout);
+    std::cout << std::endl;
+#endif
+    (void)anException;
+    // If rebuilding fails, return null to let the caller handle it
+    return Handle(Geom_Curve)();
   }
 }
 
@@ -631,8 +839,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     return Standard_False;
   }
 
-  Handle(GeomAdaptor_Curve) c3d = new GeomAdaptor_Curve(theC3d, First, Last);
-
   //  Projection Analytique
   if (theC3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
   {
@@ -648,10 +854,42 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     return Standard_True;
   }
 
+  Handle(Geom_Curve) aCurve = theC3d;
+  Standard_Real      aFirst = First;
+  Standard_Real      aLast  = Last;
+  if (isBSplineCurveInvalid(aCurve, aFirst, aLast))
+  {
+    Handle(Geom_BSplineCurve) aBSpline;
+    if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
+    }
+    else
+    {
+      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
+    }
+    aBSpline->Segment(aFirst, aLast, myPreci);
+    Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline, aFirst, aLast, myPreci);
+    if (aNewBSpline.IsNull())
+    {
+      c2d = ProjectAnalytic(theC3d);
+      if (!c2d.IsNull())
+      {
+        return Status(ShapeExtend_DONE);
+      }
+    }
+    aCurve = aNewBSpline;
+    aFirst = aNewBSpline->FirstParameter();
+    aLast  = aNewBSpline->LastParameter();
+  }
+
+  Handle(GeomAdaptor_Curve) c3d = new GeomAdaptor_Curve(aCurve, aFirst, aLast);
+
   SequenceOfPnt  points(NCONTROL);
   SequenceOfReal params(NCONTROL);
 
-  generateCurvePoints(c3d, theC3d, First, Last, NCONTROL, points, params);
+  generateCurvePoints(c3d, aCurve, aFirst, aLast, NCONTROL, points, params);
 
   //  CALCUL par approximation
   SequenceOfPnt2d pnt2d;
@@ -669,9 +907,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   {
     theParams2d->SetValue(iPnt, getContainerValue(params, iPnt));
     thePnts2d->SetValue(iPnt, getContainerValue(pnt2d, iPnt));
-    Message::SendInfo() << "Point[" << iPnt << "] = " << thePnts2d->Value(iPnt).X() << ", "
-                        << thePnts2d->Value(iPnt).Y() << std::endl;
-    Message::SendInfo() << "Param[" << iPnt << "] = " << theParams2d->Value(iPnt) << std::endl;
   }
   c2d = InterpolatePCurve(nbPini, thePnts2d, theParams2d);
 
