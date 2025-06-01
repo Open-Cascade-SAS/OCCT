@@ -31,7 +31,6 @@
 // #1  svv 11.01.00  Porting on DEC
 
 #include <Approx_CurveOnSurface.hxx>
-#include <BSplCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
@@ -83,24 +82,6 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transi
 
 namespace
 {
-
-//=================================================================================================
-// Forward declarations for internal functions
-//=================================================================================================
-Standard_Integer generateGeneralPoints(const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
-                                       const Standard_Real                      theFirst,
-                                       const Standard_Real                      theLast,
-                                       const Standard_Integer                   theNbControlPoints,
-                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
-                                       NCollection_DynamicArray<Standard_Real>& theParams);
-
-Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&         theBSpline,
-                                       const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
-                                       const Standard_Real                      theFirst,
-                                       const Standard_Real                      theLast,
-                                       const Standard_Integer                   theNbControlPoints,
-                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
-                                       NCollection_DynamicArray<Standard_Real>& theParams);
 
 //=================================================================================================
 // function : adjustSecondToFirstPoint
@@ -184,218 +165,6 @@ void fillPointsAndParams(const Handle(GeomAdaptor_Curve)&               theCurve
 }
 
 //=================================================================================================
-// function : generateBSplinePoints
-// purpose  : Generate parameters for B-spline curves with uniform arc-length distribution
-//=================================================================================================
-Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&  theBSpline,
-                                       const Handle(GeomAdaptor_Curve)&  theCurveAdaptor,
-                                       const Standard_Real               theFirst,
-                                       const Standard_Real               theLast,
-                                       const Standard_Integer            theNbPointsPerKnotSpan,
-                                       NCollection_DynamicArray<gp_Pnt>& thePoints,
-                                       NCollection_DynamicArray<Standard_Real>& theParams)
-{
-  thePoints.Clear();
-  theParams.Clear();
-
-  if (theBSpline.IsNull() || theCurveAdaptor.IsNull()
-      || theFirst > theLast + Precision::PConfusion() || theNbPointsPerKnotSpan < 1)
-  {
-    return 0;
-  }
-
-  const Standard_Boolean isPeriodic = theBSpline->IsPeriodic();
-  const Standard_Integer aDegree    = theBSpline->Degree();
-
-  // Step 1: Collect critical parameters (knots)
-  std::vector<Standard_Real> criticalParams;
-
-  // Add boundary parameters
-  criticalParams.push_back(theFirst);
-  criticalParams.push_back(theLast);
-
-  // Add distinct knots within the range
-  const Standard_Integer aNbKnots = theBSpline->NbKnots();
-  for (Standard_Integer i = 1; i <= aNbKnots; ++i)
-  {
-    const Standard_Real aKnot = theBSpline->Knot(i);
-
-    if (isPeriodic)
-    {
-      // Handle periodic case - find all knot instances in the range
-      const Standard_Real aPeriod = theBSpline->LastParameter() - theBSpline->FirstParameter();
-      if (aPeriod > Precision::PConfusion())
-      {
-        // Find all periodic repetitions of this knot in the range
-        Standard_Real currentKnot = aKnot;
-
-        // Adjust to the range
-        while (currentKnot < theFirst - aPeriod)
-          currentKnot += aPeriod;
-        while (currentKnot > theLast + aPeriod)
-          currentKnot -= aPeriod;
-
-        // Add all instances in the range
-        while (currentKnot <= theLast + Precision::PConfusion())
-        {
-          if (currentKnot >= theFirst - Precision::PConfusion()
-              && currentKnot > theFirst + Precision::PConfusion()
-              && currentKnot < theLast - Precision::PConfusion())
-          {
-            criticalParams.push_back(currentKnot);
-          }
-          currentKnot += aPeriod;
-        }
-      }
-    }
-    else
-    {
-      // Non-periodic case
-      if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
-      {
-        criticalParams.push_back(aKnot);
-      }
-    }
-  }
-
-  // Sort and remove duplicates
-  std::sort(criticalParams.begin(), criticalParams.end());
-  criticalParams.erase(std::unique(criticalParams.begin(),
-                                   criticalParams.end(),
-                                   [](Standard_Real a, Standard_Real b) {
-                                     return Abs(a - b) < Precision::PConfusion();
-                                   }),
-                       criticalParams.end());
-
-  // Step 2: Generate uniformly spaced points between critical parameters
-  NCollection_DynamicArray<Standard_Real> finalParams;
-
-  for (size_t i = 0; i < criticalParams.size() - 1; ++i)
-  {
-    const Standard_Real u1 = criticalParams[i];
-    const Standard_Real u2 = criticalParams[i + 1];
-
-    if (u2 <= u1 + Precision::PConfusion())
-      continue;
-
-    // Add first point of the span
-    finalParams.Append(u1);
-
-    // Generate intermediate points using arc-length parameterization
-    if (theNbPointsPerKnotSpan > 1)
-    {
-      // Calculate approximate arc length of the span
-      const Standard_Integer numSamples  = 20; // For arc length estimation
-      Standard_Real          totalLength = 0.0;
-      gp_Pnt                 prevPnt;
-      theCurveAdaptor->D0(u1, prevPnt);
-
-      for (Standard_Integer j = 1; j <= numSamples; ++j)
-      {
-        const Standard_Real t = u1 + (u2 - u1) * j / numSamples;
-        gp_Pnt              currentPnt;
-        theCurveAdaptor->D0(t, currentPnt);
-        totalLength += prevPnt.Distance(currentPnt);
-        prevPnt = currentPnt;
-      }
-
-      // Generate points with uniform arc-length distribution
-      const Standard_Real targetSegmentLength = totalLength / theNbPointsPerKnotSpan;
-      Standard_Real       currentLength       = 0.0;
-      Standard_Real       currentParam        = u1;
-
-      theCurveAdaptor->D0(u1, prevPnt);
-
-      for (Standard_Integer segmentIdx = 1; segmentIdx < theNbPointsPerKnotSpan; ++segmentIdx)
-      {
-        const Standard_Real targetLength = segmentIdx * targetSegmentLength;
-
-        // Find parameter that gives the target arc length
-        Standard_Real paramStep = (u2 - u1) / (numSamples * 4); // Fine step for search
-        currentLength           = 0.0;
-        currentParam            = u1;
-        theCurveAdaptor->D0(u1, prevPnt);
-
-        while (currentParam < u2 && currentLength < targetLength)
-        {
-          const Standard_Real nextParam = Min(currentParam + paramStep, u2);
-          gp_Pnt              nextPnt;
-          theCurveAdaptor->D0(nextParam, nextPnt);
-
-          const Standard_Real segLength = prevPnt.Distance(nextPnt);
-
-          if (currentLength + segLength >= targetLength)
-          {
-            // Interpolate to find exact parameter
-            const Standard_Real ratio = (targetLength - currentLength) / segLength;
-            currentParam              = currentParam + ratio * paramStep;
-            break;
-          }
-
-          currentLength += segLength;
-          currentParam = nextParam;
-          prevPnt      = nextPnt;
-        }
-
-        if (currentParam > u1 + Precision::PConfusion()
-            && currentParam < u2 - Precision::PConfusion())
-        {
-          finalParams.Append(currentParam);
-        }
-      }
-    }
-  }
-
-  // Add the last critical parameter
-  if (!criticalParams.empty())
-  {
-    finalParams.Append(criticalParams.back());
-  }
-
-  // Step 3: Handle periodic normalization
-  if (isPeriodic)
-  {
-    for (Standard_Integer i = 0; i < finalParams.Size(); ++i)
-    {
-      Standard_Real param = finalParams.Value(i);
-      theBSpline->PeriodicNormalization(param);
-      finalParams.SetValue(i, param);
-    }
-  }
-
-  // Step 4: Final sorting and cleanup
-  std::vector<Standard_Real> tempParams;
-  for (Standard_Integer i = 0; i < finalParams.Size(); ++i)
-  {
-    tempParams.push_back(finalParams.Value(i));
-  }
-
-  std::sort(tempParams.begin(), tempParams.end());
-  tempParams.erase(std::unique(tempParams.begin(),
-                               tempParams.end(),
-                               [](Standard_Real a, Standard_Real b) {
-                                 return Abs(a - b) < Precision::PConfusion();
-                               }),
-                   tempParams.end());
-
-  // Convert back to NCollection_DynamicArray
-  NCollection_DynamicArray<Standard_Real> cleanParams;
-  for (const Standard_Real& param : tempParams)
-  {
-    if (param >= theFirst - Precision::PConfusion() && param <= theLast + Precision::PConfusion())
-    {
-      // if (Abs(1 - param) > 0.01)
-      cleanParams.Append(param);
-    }
-  }
-
-  // Step 5: Generate 3D points
-  fillPointsAndParams(theCurveAdaptor, cleanParams, thePoints, theParams);
-
-  return thePoints.Size();
-}
-
-//=================================================================================================
 // function : generateGeneralPoints
 // purpose  : Generate parameters and points for general curves using uniform distribution
 //=================================================================================================
@@ -427,6 +196,260 @@ Standard_Integer generateGeneralPoints(const Handle(GeomAdaptor_Curve)&         
   fillPointsAndParams(theCurveAdaptor, aFinalParams, thePoints, theParams);
 
   return theNbControlPoints;
+}
+
+//=================================================================================================
+// function : generateBSplinePoints
+// purpose  : Generate parameters for B-spline curves based on knot distribution
+//=================================================================================================
+Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&         theBSpline,
+                                       const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
+                                       const Standard_Real                      theFirst,
+                                       const Standard_Real                      theLast,
+                                       const Standard_Integer                   theNbControlPoints,
+                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
+                                       NCollection_DynamicArray<Standard_Real>& theParams)
+{
+  thePoints.Clear();
+  theParams.Clear();
+
+  if (theBSpline.IsNull() || theCurveAdaptor.IsNull()
+      || theFirst > theLast + Precision::PConfusion() || theNbControlPoints < 2)
+  {
+    return 0;
+  }
+
+  const Standard_Boolean isPeriodic = theBSpline->IsPeriodic();
+  const Standard_Integer aDegree    = theBSpline->Degree();
+
+  // Step 1: Collect knot spans within the range
+  NCollection_Sequence<std::pair<Standard_Real, Standard_Real>> aKnotSpans;
+
+  // Get all knots within the parameter range
+  NCollection_Sequence<Standard_Real> aRelevantKnots;
+  const Standard_Integer              aNbKnots = theBSpline->NbKnots();
+
+  // Always include the boundary parameters
+  aRelevantKnots.Append(theFirst);
+
+  for (Standard_Integer i = 1; i <= aNbKnots; ++i)
+  {
+    Standard_Real aKnot = theBSpline->Knot(i);
+
+    if (isPeriodic)
+    {
+      // Handle periodic case
+      const Standard_Real aPeriod = theBSpline->LastParameter() - theBSpline->FirstParameter();
+      if (aPeriod > Precision::PConfusion())
+      {
+        // Normalize knot to the working range
+        while (aKnot < theFirst - aPeriod)
+          aKnot += aPeriod;
+        while (aKnot > theLast + aPeriod)
+          aKnot -= aPeriod;
+
+        // Add all periodic instances in range
+        while (aKnot <= theLast + Precision::PConfusion())
+        {
+          if (aKnot >= theFirst - Precision::PConfusion()
+              && aKnot > theFirst + Precision::PConfusion()
+              && aKnot < theLast - Precision::PConfusion())
+          {
+            aRelevantKnots.Append(aKnot);
+          }
+          aKnot += aPeriod;
+        }
+      }
+    }
+    else
+    {
+      // Non-periodic case
+      if (aKnot > theFirst + Precision::PConfusion() && aKnot < theLast - Precision::PConfusion())
+      {
+        aRelevantKnots.Append(aKnot);
+      }
+    }
+  }
+
+  // Always include the end parameter
+  aRelevantKnots.Append(theLast);
+
+  // Sort and remove duplicates using OCCT approach
+  TColStd_Array1OfReal aKnotArray(1, aRelevantKnots.Length());
+  for (Standard_Integer i = 1; i <= aRelevantKnots.Length(); i++)
+  {
+    aKnotArray(i) = aRelevantKnots(i);
+  }
+
+  // Sort using OCCT sorting
+  std::sort(aKnotArray.begin(), aKnotArray.end());
+
+  // Remove duplicates
+  Standard_Integer aWritePos = 1;
+  for (Standard_Integer i = 2; i <= aKnotArray.Length(); i++)
+  {
+    if (Abs(aKnotArray(i) - aKnotArray(aWritePos)) > Precision::PConfusion())
+    {
+      aWritePos++;
+      aKnotArray(aWritePos) = aKnotArray(i);
+    }
+  }
+
+  // Rebuild sequence without duplicates
+  aRelevantKnots.Clear();
+  for (Standard_Integer i = 1; i <= aWritePos; i++)
+  {
+    aRelevantKnots.Append(aKnotArray(i));
+  }
+
+  // Step 2: Create knot spans
+  for (Standard_Integer i = 1; i < aRelevantKnots.Length(); ++i)
+  {
+    const Standard_Real aU1 = aRelevantKnots(i);
+    const Standard_Real aU2 = aRelevantKnots(i + 1);
+
+    if (aU2 > aU1 + Precision::PConfusion())
+    {
+      aKnotSpans.Append(std::make_pair(aU1, aU2));
+    }
+  }
+
+  if (aKnotSpans.IsEmpty())
+  {
+    // Fallback: create single span
+    aKnotSpans.Append(std::make_pair(theFirst, theLast));
+  }
+
+  // Step 3: Calculate points distribution based on your target formula
+  const Standard_Integer aNbIntervals = aKnotSpans.Length();
+  Standard_Integer       aMinPnt      = aNbIntervals * (aDegree + 1);
+  Standard_Integer       aNbPini      = theNbControlPoints;
+
+  while (aNbPini < aMinPnt)
+  {
+    aNbPini += theNbControlPoints - 1;
+  }
+
+  // Step 4: Distribute points among knot spans
+  TColStd_Array1OfInteger aPointsPerSpan(1, aNbIntervals);
+  Standard_Real           aTotalLength = 0.0;
+  TColStd_Array1OfReal    aSpanLengths(1, aNbIntervals);
+
+  // Calculate relative span lengths (parameter-based approximation)
+  for (Standard_Integer i = 1; i <= aNbIntervals; ++i)
+  {
+    const auto& aSpan = aKnotSpans(i);
+    aSpanLengths(i)   = aSpan.second - aSpan.first;
+    aTotalLength += aSpanLengths(i);
+  }
+
+  // Distribute points proportionally to span lengths
+  Standard_Integer       aTotalPointsAssigned = 0;
+  const Standard_Integer aMinPointsPerSpan    = Max(1, aDegree); // At least degree points per span
+
+  for (Standard_Integer i = 1; i <= aNbIntervals; ++i)
+  {
+    if (i == aNbIntervals)
+    {
+      // Last span gets remaining points
+      aPointsPerSpan(i) = aNbPini - aTotalPointsAssigned;
+    }
+    else
+    {
+      // Proportional distribution
+      const Standard_Real aProportion = aSpanLengths(i) / aTotalLength;
+      aPointsPerSpan(i) = Max(aMinPointsPerSpan, Standard_Integer(aProportion * aNbPini + 0.5));
+      aTotalPointsAssigned += aPointsPerSpan(i);
+    }
+
+    // Ensure we don't exceed total points
+    if (aTotalPointsAssigned >= aNbPini && i < aNbIntervals)
+    {
+      aPointsPerSpan(i)    = aNbPini - (aTotalPointsAssigned - aPointsPerSpan(i));
+      aTotalPointsAssigned = aNbPini;
+    }
+  }
+
+  // Step 5: Generate parameters for each span
+  NCollection_DynamicArray<Standard_Real> aFinalParams;
+
+  for (Standard_Integer aSpanIdx = 1; aSpanIdx <= aNbIntervals; ++aSpanIdx)
+  {
+    const auto&            aSpan     = aKnotSpans(aSpanIdx);
+    const Standard_Real    aU1       = aSpan.first;
+    const Standard_Real    aU2       = aSpan.second;
+    const Standard_Integer aNbPoints = aPointsPerSpan(aSpanIdx);
+
+    if (aNbPoints <= 0)
+      continue;
+
+    if (aSpanIdx == 1)
+    {
+      // First span: include start point
+      aFinalParams.Append(aU1);
+
+      // Generate intermediate points
+      for (Standard_Integer j = 1; j < aNbPoints; ++j)
+      {
+        const Standard_Real t      = Standard_Real(j) / Standard_Real(aNbPoints);
+        const Standard_Real aParam = aU1 + t * (aU2 - aU1);
+        aFinalParams.Append(aParam);
+      }
+    }
+    else
+    {
+      // Other spans: exclude start point (already included from previous span)
+      for (Standard_Integer j = 1; j <= aNbPoints; ++j)
+      {
+        const Standard_Real t      = Standard_Real(j) / Standard_Real(aNbPoints);
+        const Standard_Real aParam = aU1 + t * (aU2 - aU1);
+        aFinalParams.Append(aParam);
+      }
+    }
+  }
+
+  // Step 6: Handle periodic normalization
+  if (isPeriodic)
+  {
+    for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
+    {
+      Standard_Real aParam = aFinalParams.Value(i);
+      theBSpline->PeriodicNormalization(aParam);
+      aFinalParams.SetValue(i, aParam);
+    }
+  }
+
+  // Step 7: Final cleanup and sorting using OCCT containers
+  TColStd_Array1OfReal aTempParams(1, aFinalParams.Size());
+  for (Standard_Integer i = 0; i < aFinalParams.Size(); ++i)
+  {
+    const Standard_Real aParam = aFinalParams.Value(i);
+    if (aParam >= theFirst - Precision::PConfusion() && aParam <= theLast + Precision::PConfusion())
+    {
+      aTempParams(i + 1) = aParam;
+    }
+  }
+
+  std::sort(aTempParams.begin(), aTempParams.end());
+
+  // Remove duplicates and build final parameters
+  NCollection_DynamicArray<Standard_Real> aCleanParams;
+  Standard_Real aPrevParam = aTempParams(1) - 1.0; // Initialize to different value
+
+  for (Standard_Integer i = 1; i <= aTempParams.Length(); ++i)
+  {
+    const Standard_Real aParam = aTempParams(i);
+    if (Abs(aParam - aPrevParam) > Precision::PConfusion())
+    {
+      aCleanParams.Append(aParam);
+      aPrevParam = aParam;
+    }
+  }
+
+  // Step 8: Generate 3D points only once at the end
+  fillPointsAndParams(theCurveAdaptor, aCleanParams, thePoints, theParams);
+
+  return thePoints.Size();
 }
 
 //=================================================================================================
@@ -578,14 +601,8 @@ bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
 
     return Standard_False; // No problems detected
   }
-  catch (Standard_Failure const& anException)
+  catch (Standard_Failure const&)
   {
-#ifdef OCCT_DEBUG
-    std::cout << "Warning: isBSplineCurveInvalid(): Exception: ";
-    anException.Print(std::cout);
-    std::cout << std::endl;
-#endif
-    (void)anException;
     return Standard_True; // If we can't analyze it, assume it's problematic
   }
 }
@@ -911,14 +928,8 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d,
 
     return aNewBSpline;
   }
-  catch (Standard_Failure const& anException)
+  catch (Standard_Failure const&)
   {
-#ifdef OCCT_DEBUG
-    std::cout << "Warning: RebuildBSpline(): Exception: ";
-    anException.Print(std::cout);
-    std::cout << std::endl;
-#endif
-    (void)anException;
     // If rebuilding fails, return original curve
     return nullptr;
   }
@@ -2434,38 +2445,6 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(
     C2d.Nullify();
   }
   return C2d;
-}
-
-//=================================================================================================
-
-Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(
-  const Standard_Integer,
-  Handle(TColgp_HArray1OfPnt)&   points,
-  Handle(TColStd_HArray1OfReal)& params) const
-{
-  Handle(Geom_Curve) C3d; // NULL si echec
-  try
-  {
-    OCC_CATCH_SIGNALS
-    Standard_Real Tol = myPreci;
-    CheckPoints(points, params, Tol);
-    GeomAPI_Interpolate myInterPol(points, params, Standard_False, Tol);
-    myInterPol.Perform();
-    if (myInterPol.IsDone())
-      C3d = myInterPol.Curve();
-  }
-  catch (Standard_Failure const& anException)
-  {
-#ifdef OCCT_DEBUG
-    //: s5
-    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(): Exception: ";
-    anException.Print(std::cout);
-    std::cout << std::endl;
-#endif
-    (void)anException;
-    C3d.Nullify();
-  }
-  return C3d;
 }
 
 //============================================================================================
