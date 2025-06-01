@@ -134,7 +134,7 @@ protected:
                                                SequenceOfPnt2d&       points2d,
                                                const Standard_Real           theTol,
                                                Standard_Boolean&             IsRecompute,
-                                               Standard_Boolean&             isFromCashe) const;
+                                               Standard_Boolean&             isFromCache) const;
 
   //! Computes the projection of 3d curve onto a surface using the
   //! standard algorithm from ProjLib. Returns False if standard
@@ -148,9 +148,9 @@ protected:
   Standard_Real                 myPreci;
   Standard_Integer              myStatus;
   Standard_Integer              myAdjustOverDegen;
-  Standard_Integer              myNbCashe;
-  gp_Pnt                        myCashe3d[2];
-  gp_Pnt2d                      myCashe2d[2];
+  Standard_Integer              myNbCache;
+  gp_Pnt                        myCache3d[2];
+  gp_Pnt2d                      myCache2d[2];
 
 private:
   Standard_EXPORT Handle(Geom2d_Curve) ProjectAnalytic(const Handle(Geom_Curve)& c3d) const;
