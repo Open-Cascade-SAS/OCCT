@@ -128,7 +128,7 @@ void setContainerValue(T&                            theSeq,
                        const Standard_Integer        theIndex,
                        const typename T::value_type& theValue)
 {
-  theSeq.SetValue(theIndex - 1, theValue);     // TSeq is 0-based, but we use 1-based index
+  theSeq.SetValue(theIndex - 1, theValue); // TSeq is 0-based, but we use 1-based index
 }
 
 } // namespace
@@ -1319,7 +1319,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
       || mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
     // Premier point dans le domain [vf, vl]
-    Standard_Real prevY, firstY = getContainerValue(pnt2d, 1).Y();
+    Standard_Real prevY, firstY = pnt2d.First().Y();
     if (!isFromCache)
     {
       // do not shift 2dcurve, if it connects to previous
@@ -1996,9 +1996,9 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
       if (Success)
       {
         // Insert operations using lambda
-        insertAt(points, theIndex, MidP3d);
-        insertAt(params, theIndex, MidPar);
-        insertAt(pnt2d, theIndex, MidP2d);
+        insertAt(points, theIndex - 1, MidP3d);
+        insertAt(params, theIndex - 1, MidPar);
+        insertAt(pnt2d, theIndex - 1, MidP2d);
         theIndex++;
       }
       else
@@ -2461,8 +2461,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
                             Cl,
                             //: j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
                             Standard_False);
-          prevParam                     = t;
-          changeContainerValue(pout, i) = t;
+          prevParam = t;
+          pout(i)   = t;
           if ((dist > prec) || (t < Cf) || (t > Cl))
             isoByDistance = Standard_False;
         }
