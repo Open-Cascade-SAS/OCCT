@@ -306,7 +306,7 @@ bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
 
     const TColStd_Array1OfReal& aKnots = aBSpline->Knots();
 
-    if (aKnots.Length() < 2)
+    if (aKnots.Length() < 10)
       return Standard_False; // Too few knots to have problems
 
     // Calculate automatic tolerance based on knot distribution
@@ -908,16 +908,18 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline);
     if (aNewBSpline.IsNull())
     {
-      c2d = ProjectAnalytic(theC3d);
-      if (!c2d.IsNull())
+      if (PerformByProjLib(new GeomAdaptor_Curve(aBSpline, aFirst, aLast), c2d))
       {
         return Status(ShapeExtend_DONE);
       }
       aNewBSpline = aCopy;
     }
+    else
+    {
+      aFirst = aNewBSpline->FirstParameter();
+      aLast  = aNewBSpline->LastParameter();
+    }
     aCurve = aNewBSpline;
-    aFirst = aNewBSpline->FirstParameter();
-    aLast  = aNewBSpline->LastParameter();
   }
 
   Handle(GeomAdaptor_Curve) c3d = new GeomAdaptor_Curve(aCurve, aFirst, aLast);
