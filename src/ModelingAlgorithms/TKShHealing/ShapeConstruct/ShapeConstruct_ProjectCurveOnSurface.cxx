@@ -386,7 +386,7 @@ bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
 // function : RebuildBSpline
 // purpose  : Rebuild B-spline curve with fixed knot spacing while preserving geometry
 //=================================================================================================
-Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
+Handle(Geom_BSplineCurve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
 {
   // Extract B-spline curve
   Handle(Geom_BSplineCurve) aBSpline = theC3d;
@@ -404,7 +404,7 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
 
     if (aNbKnots < 2)
     {
-      return theC3d; // Nothing to fix
+      return nullptr; // Nothing to fix
     }
 
     // Calculate tolerance for detecting problematic knots
@@ -419,7 +419,9 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
     }
 
     if (anIntervals.empty())
+    {
       return nullptr; // No valid intervals, return original
+    }
 
     // Sort intervals to find median and calculate statistics
     std::sort(anIntervals.begin(), anIntervals.end());
@@ -465,7 +467,9 @@ Handle(Geom_Curve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
     }
 
     if (!hasProblematicKnots)
-      return theC3d; // No problems found
+    {
+      return aBSpline; // No problems found
+    }
 
     // Strategy: Use much more aggressive spacing adjustments
     // Minimum spacing should be a significant fraction of normal intervals
@@ -825,7 +829,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     {
       aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
     }
-    aBSpline->Segment(aFirst, aLast, myPreci);
+    Handle(Geom_Curve) aCopy = Handle(Geom_Curve)::DownCast(aBSpline->Copy());
+    aBSpline->Segment(aFirst, aLast, Precision::PConfusion());
     Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline);
     if (aNewBSpline.IsNull())
     {
@@ -834,6 +839,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
       {
         return Status(ShapeExtend_DONE);
       }
+      aNewBSpline = aCopy;
     }
     aCurve = aNewBSpline;
     aFirst = aNewBSpline->FirstParameter();
