@@ -713,65 +713,10 @@ Handle(Geom_BSplineCurve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d
 
 //=================================================================================================
 
-gp_Pnt2d GetUVParametersForPole(const Handle(Geom_BSplineSurface)& theSurface,
-                                const Standard_Integer             thePoleUIndex,
-                                const Standard_Integer             thePoleVIndex)
-{
-  // Calculate the parameter values corresponding to a pole using Greville abscissa formula
-  Standard_Real uParam = 0.0;
-  Standard_Real vParam = 0.0;
-
-  Standard_Integer uDegree = theSurface->UDegree();
-  Standard_Integer vDegree = theSurface->VDegree();
-
-  // For U parameter (Greville abscissa)
-  for (Standard_Integer i = 0; i < uDegree; i++)
-  {
-    Standard_Integer knotIdx = thePoleUIndex + i;
-    if (knotIdx >= 1 && knotIdx <= theSurface->NbUKnots())
-    {
-      uParam += theSurface->UKnot(knotIdx);
-    }
-  }
-  uParam /= uDegree;
-
-  // For V parameter (Greville abscissa)
-  for (Standard_Integer i = 0; i < vDegree; i++)
-  {
-    Standard_Integer knotIdx = thePoleVIndex + i;
-    if (knotIdx >= 1 && knotIdx <= theSurface->NbVKnots())
-    {
-      vParam += theSurface->VKnot(knotIdx);
-    }
-  }
-  vParam /= vDegree;
-
-  return gp_Pnt2d(uParam, vParam);
-}
-
-//=================================================================================================
-
 gp_Pnt2d ProjectPointOnSurface(const gp_Pnt&                        thePnt,
                                const Handle(ShapeAnalysis_Surface)& theSurf,
                                const Standard_Real                  thePrecision)
 {
-  if (theSurf->Adaptor3d()->GetType() != GeomAbs_BSplineSurface)
-  {
-    return theSurf->ValueOfUV(thePnt, thePrecision);
-  }
-  // For BSpline check that the equal pole instead of getting the point by ValueOfUV
-  Handle(Geom_BSplineSurface) aBsplineSurf =
-    Handle(Geom_BSplineSurface)::DownCast(theSurf->Surface());
-  for (Standard_Integer i = 1; i <= aBsplineSurf->NbUPoles(); ++i)
-  {
-    for (Standard_Integer j = 1; j <= aBsplineSurf->NbVPoles(); ++j)
-    {
-      if (aBsplineSurf->Pole(i, j).IsEqual(thePnt, Min(thePrecision, Precision::SquareConfusion())))
-      {
-        return GetUVParametersForPole(aBsplineSurf, i, j);
-      }
-    }
-  }
   return theSurf->ValueOfUV(thePnt, thePrecision);
 }
 
@@ -782,10 +727,10 @@ static gp_Pnt2d ProjectPointWithCache(const gp_Pnt&                        thePo
                                       const Handle(ShapeAnalysis_Surface)& theSurf,
                                       const Standard_Real                  theTol,
                                       Standard_Real&                       theTol2,
-                                      const gp_Pnt*                        theCashe3d,
-                                      const gp_Pnt2d*                      theCashe2d,
-                                      const Standard_Integer               theNbCashe,
-                                      Standard_Boolean&                    theIsFromCashe,
+                                      const gp_Pnt*                        theCache3d,
+                                      const gp_Pnt2d*                      theCache2d,
+                                      const Standard_Integer               theNbCache,
+                                      Standard_Boolean&                    theIsFromCache,
                                       Standard_Integer&                    theSavedPointNum,
                                       gp_Pnt2d&                            theSavedPoint,
                                       const Standard_Integer               thePointIndex,
@@ -795,29 +740,29 @@ static gp_Pnt2d ProjectPointWithCache(const gp_Pnt&                        thePo
   theIsFound = Standard_False;
 
   // First try with stricter tolerance if requested
-  for (Standard_Integer j = 0; j < theNbCashe; j++)
+  for (Standard_Integer j = 0; j < theNbCache; j++)
   {
-    if (theCashe3d[j].SquareDistance(thePoint) < Min(Precision::SquareConfusion(), theTol2))
+    if (theCache3d[j].SquareDistance(thePoint) < Min(Precision::SquareConfusion(), theTol2))
     {
       // If found with strict tolerance, use cached point directly
-      aResult    = theCashe2d[j];
+      aResult    = theCache2d[j];
       theIsFound = Standard_True;
       return aResult;
     }
   }
 
   // Try to find the point in cache with normal tolerance
-  for (Standard_Integer j = 0; j < theNbCashe; j++)
+  for (Standard_Integer j = 0; j < theNbCache; j++)
   {
-    if (theCashe3d[j].SquareDistance(thePoint) < theTol2)
+    if (theCache3d[j].SquareDistance(thePoint) < theTol2)
     {
       // Use NextValueOfUV for refinement
-      aResult          = theSurf->NextValueOfUV(theCashe2d[j], thePoint, theTol, theTol);
+      aResult          = theSurf->NextValueOfUV(theCache2d[j], thePoint, theTol, theTol);
       theSavedPointNum = thePointIndex;
-      theSavedPoint    = theCashe2d[j];
+      theSavedPoint    = theCache2d[j];
 
       if (thePointIndex == 0)
-        theIsFromCashe = Standard_True;
+        theIsFromCache = Standard_True;
 
       theIsFound = Standard_True;
       break;
@@ -826,7 +771,9 @@ static gp_Pnt2d ProjectPointWithCache(const gp_Pnt&                        thePo
 
   // If point not found in cache, project it
   if (!theIsFound)
+  {
     aResult = ProjectPointOnSurface(thePoint, theSurf, theTol);
+  }
 
   // Update tolerance based on gap
   Standard_Real aDist    = theSurf->Gap();
