@@ -24,6 +24,7 @@
 #include <Bnd_Box.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
+#include <NCollection_Vector.hxx>
 
 class Geom_Surface;
 class Geom_Curve;
@@ -184,6 +185,17 @@ public:
                                                       TColgp_SequenceOfPnt2d&     pnt2d,
                                                       const Standard_Real         preci,
                                                       const Standard_Boolean      direct);
+
+  //! Checks points at the beginning (direct is True) or end
+  //! (direct is False) of array <points> to lie in singularity of
+  //! surface, and if yes, adjusts the indeterminate 2d coordinate
+  //! of these points by nearest point which is not in singularity.
+  //! Returns True if some points were adjusted.
+  Standard_EXPORT Standard_Boolean ProjectDegenerated(const Standard_Integer            theNbrPnt,
+                                                      const NCollection_Vector<gp_Pnt>& thePoints,
+                                                      NCollection_Vector<gp_Pnt2d>&     thePnt2d,
+                                                      const Standard_Real    thePrecision,
+                                                      const Standard_Boolean theDirect);
 
   //! Returns True if straight pcurve going from point p2d1 to p2d2
   //! is degenerate, i.e. lies in the singularity of the surface.
@@ -369,6 +381,15 @@ private:
                                                  gp_Pnt2d&           sol);
 
   Standard_EXPORT void SortSingularities();
+
+  //! Template helper function for ProjectDegenerated methods
+  template <typename PointContainer, typename Point2dContainer>
+  Standard_Boolean ProjectDegeneratedTemplate(const Standard_Integer theNbrPnt,
+                                              const PointContainer&  thePoints,
+                                              Point2dContainer&      thePnt2d,
+                                              const Standard_Real    thePrecision,
+                                              const Standard_Boolean theDirect,
+                                              const Standard_Boolean theIsOneBased);
 };
 
 #include <ShapeAnalysis_Surface.lxx>
