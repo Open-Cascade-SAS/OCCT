@@ -30,19 +30,20 @@ class RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse();
+  inline RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse();
 
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          theData,
     const Standard_Integer                                          theNum,
     Handle(Interface_Check)&                                        theAch,
     const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                            theSW,
     const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt,
+  inline void Share(const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt,
                              Interface_EntityIterator& theIter) const;
 };
+#include "RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse_impl.pxx"
 #endif // _RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse_HeaderFile_

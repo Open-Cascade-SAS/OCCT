@@ -34,21 +34,22 @@ class RWStepVisual_RWOverRidingStyledItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWOverRidingStyledItem();
+  inline RWStepVisual_RWOverRidingStyledItem();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&         data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                                 const Standard_Integer                         num,
                                 Handle(Interface_Check)&                       ach,
                                 const Handle(StepVisual_OverRidingStyledItem)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                           SW,
+  inline void WriteStep(StepData_StepWriter&                           SW,
                                  const Handle(StepVisual_OverRidingStyledItem)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_OverRidingStyledItem)& ent,
+  inline void Share(const Handle(StepVisual_OverRidingStyledItem)& ent,
                              Interface_EntityIterator&                      iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepVisual_RWOverRidingStyledItem_impl.pxx"
 #endif // _RWStepVisual_RWOverRidingStyledItem_HeaderFile

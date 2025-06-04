@@ -1,0 +1,70 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepShape_RWBooleanOperator_HeaderFile
+#define _RWStepShape_RWBooleanOperator_HeaderFile
+
+#include <StepShape_BooleanOperator.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepShape_RWBooleanOperator
+{
+static constexpr char boDifference[]   = ".DIFFERENCE.";
+static constexpr char boIntersection[] = ".INTERSECTION.";
+static constexpr char boUnion[]        = ".UNION.";
+
+//! Convert StepShape_BooleanOperator to string
+//! @param theSourceEnum The StepShape_BooleanOperator value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepShape_boDifference:
+      return boDifference;
+    case StepShape_boIntersection:
+      return boIntersection;
+    case StepShape_boUnion:
+      return boUnion;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepShape_BooleanOperator
+//! @param theOperatorStr The string to convert
+//! @param theResultEnum The corresponding StepShape_BooleanOperator value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString     theOperatorStr,
+                          StepShape_BooleanOperator& theResultEnum)
+{
+  if (IsEqual(theOperatorStr, boDifference))
+  {
+    theResultEnum = StepShape_boDifference;
+  }
+  else if (IsEqual(theOperatorStr, boIntersection))
+  {
+    theResultEnum = StepShape_boIntersection;
+  }
+  else if (IsEqual(theOperatorStr, boUnion))
+  {
+    theResultEnum = StepShape_boUnion;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepShape_RWBooleanOperator
+
+#endif // _RWStepShape_RWBooleanOperator_HeaderFile

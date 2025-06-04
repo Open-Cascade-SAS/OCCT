@@ -35,24 +35,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepBasic_RWContractType();
+  inline RWStepBasic_RWContractType();
 
   //! Reads ContractType
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(StepBasic_ContractType)&  ent) const;
 
   //! Writes ContractType
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                  SW,
+  inline void WriteStep(StepData_StepWriter&                  SW,
                                  const Handle(StepBasic_ContractType)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepBasic_ContractType)& ent,
+  inline void Share(const Handle(StepBasic_ContractType)& ent,
                              Interface_EntityIterator&             iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepBasic_RWContractType_impl.pxx"
 #endif // _RWStepBasic_RWContractType_HeaderFile

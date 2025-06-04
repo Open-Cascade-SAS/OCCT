@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWPropertyDefinitionRelationship();
+  inline RWStepRepr_RWPropertyDefinitionRelationship();
 
   //! Reads PropertyDefinitionRelationship
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                 data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
                                 const Standard_Integer                                 num,
                                 Handle(Interface_Check)&                               ach,
                                 const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const;
 
   //! Writes PropertyDefinitionRelationship
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                   SW,
+  inline void WriteStep(StepData_StepWriter&                                   SW,
                                  const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_PropertyDefinitionRelationship)& ent,
+  inline void Share(const Handle(StepRepr_PropertyDefinitionRelationship)& ent,
                              Interface_EntityIterator&                              iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWPropertyDefinitionRelationship_impl.pxx"
 #endif // _RWStepRepr_RWPropertyDefinitionRelationship_HeaderFile
