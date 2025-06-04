@@ -20,9 +20,7 @@
 #include <StepVisual_ViewVolume.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : CentralOrParallel ---
-static TCollection_AsciiString copCentral(".CENTRAL.");
-static TCollection_AsciiString copParallel(".PARALLEL.");
+#include "RWStepVisual_RWCentralOrParallel.pxx"
 
 RWStepVisual_RWViewVolume::RWStepVisual_RWViewVolume() {}
 
@@ -43,12 +41,10 @@ void RWStepVisual_RWViewVolume::ReadStep(const Handle(StepData_StepReaderData)& 
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 1);
-    if (copCentral.IsEqual(text))
-      aProjectionType = StepVisual_copCentral;
-    else if (copParallel.IsEqual(text))
-      aProjectionType = StepVisual_copParallel;
-    else
+    if (!RWStepVisual_RWCentralOrParallel::ConvertToEnum(text, aProjectionType))
+    {
       ach->AddFail("Enumeration central_or_parallel has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #1 (projection_type) is not an enumeration");
@@ -125,15 +121,7 @@ void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                 S
 
   // --- own field : projectionType ---
 
-  switch (ent->ProjectionType())
-  {
-    case StepVisual_copCentral:
-      SW.SendEnum(copCentral);
-      break;
-    case StepVisual_copParallel:
-      SW.SendEnum(copParallel);
-      break;
-  }
+  SW.SendEnum(RWStepVisual_RWCentralOrParallel::ConvertToString(ent->ProjectionType()));
 
   // --- own field : projectionPoint ---
 

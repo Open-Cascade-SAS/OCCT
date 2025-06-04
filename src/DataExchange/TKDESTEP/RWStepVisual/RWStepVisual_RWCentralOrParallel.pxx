@@ -1,0 +1,63 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepVisual_RWCentralOrParallel_HeaderFile
+#define _RWStepVisual_RWCentralOrParallel_HeaderFile
+
+#include <StepVisual_CentralOrParallel.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepVisual_RWCentralOrParallel
+{
+static constexpr char copCentral[]  = ".CENTRAL.";
+static constexpr char copParallel[] = ".PARALLEL.";
+
+//! Convert StepVisual_CentralOrParallel to string
+//! @param theSourceEnum The StepVisual_CentralOrParallel value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepVisual_CentralOrParallel theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepVisual_copCentral:
+      return copCentral;
+    case StepVisual_copParallel:
+      return copParallel;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepVisual_CentralOrParallel
+//! @param theCentralOrParallelStr The string to convert
+//! @param theResultEnum The corresponding StepVisual_CentralOrParallel value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString        theCentralOrParallelStr,
+                          StepVisual_CentralOrParallel& theResultEnum)
+{
+  if (IsEqual(theCentralOrParallelStr, copCentral))
+  {
+    theResultEnum = StepVisual_copCentral;
+  }
+  else if (IsEqual(theCentralOrParallelStr, copParallel))
+  {
+    theResultEnum = StepVisual_copParallel;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepVisual_RWCentralOrParallel
+
+#endif // _RWStepVisual_RWCentralOrParallel_HeaderFile
