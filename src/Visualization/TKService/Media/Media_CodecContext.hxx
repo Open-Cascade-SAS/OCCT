@@ -88,7 +88,7 @@ public:
 
 protected:
   AVCodecContext* myCodecCtx;         //!< codec context
-  AVCodec*        myCodec;            //!< opened codec
+  const AVCodec*  myCodec;            //!< opened codec
   double          myPtsStartBase;     //!< starting PTS in context
   double          myPtsStartStream;   //!< starting PTS in the stream
   double          myTimeBase;         //!< stream timebase
