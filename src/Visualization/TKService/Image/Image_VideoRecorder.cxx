@@ -66,7 +66,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_VideoRecorder, Standard_Transient)
 Image_VideoRecorder::Image_VideoRecorder()
     : myAVContext(NULL),
       myVideoStream(NULL),
-      myVideoCodec(NULL),
+      myVideoCodec(nullptr),
+      myVideoCodecCtx(nullptr),
       myFrame(NULL),
       myScaleCtx(NULL),
       myFrameCount(0)
@@ -74,10 +75,10 @@ Image_VideoRecorder::Image_VideoRecorder()
   myFrameRate.num = 1;
   myFrameRate.den = 30;
 
-#ifdef HAVE_FFMPEG
+  // #ifdef HAVE_FFMPEG
   // initialize libavcodec, and register all codecs and formats, should be done once
-  av_register_all();
-#endif
+  //   av_register_all();
+  // #endif
 }
 
 //=================================================================================================
@@ -129,7 +130,8 @@ void Image_VideoRecorder::Close()
   // close each codec
   if (myVideoStream != NULL)
   {
-    avcodec_close(myVideoStream->codec);
+    // avcodec_close(myVideoStream->codec);
+    avcodec_free_context(&myVideoCodecCtx);
     myVideoStream = NULL;
   }
   if (myFrame != NULL)
@@ -258,23 +260,48 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
   }
   myVideoStream->id = myAVContext->nb_streams - 1;
 
-  AVCodecContext* aCodecCtx = myVideoStream->codec;
-  aCodecCtx->codec_id       = aCodecId;
-  // resolution must be a multiple of two
-  aCodecCtx->width  = theParams.Width;
-  aCodecCtx->height = theParams.Height;
-  // Timebase is the fundamental unit of time (in seconds) in terms of which frame timestamps are
-  // represented. For fixed-fps content, timebase should be 1/framerate and timestamp increments
-  // should be identical to 1.
-  aCodecCtx->time_base.den = myFrameRate.num;
-  aCodecCtx->time_base.num = myFrameRate.den;
-  aCodecCtx->gop_size      = 12; // emit one intra frame every twelve frames at most
+  // -------- 新建 codec context，并设置参数 --------
+  myVideoCodecCtx = avcodec_alloc_context3(myVideoCodec);
+  if (!myVideoCodecCtx)
+  {
+    ::Message::SendFail("Error: can not allocate AVCodecContext");
+    return Standard_False;
+  }
+  myVideoCodecCtx->codec_id      = aCodecId;
+  myVideoCodecCtx->width         = theParams.Width;
+  myVideoCodecCtx->height        = theParams.Height;
+  myVideoCodecCtx->time_base.den = myFrameRate.num;
+  myVideoCodecCtx->time_base.num = myFrameRate.den;
+  myVideoCodecCtx->gop_size      = 12; // emit one intra frame every twelve frames at most
 
   // some formats want stream headers to be separate
   if (myAVContext->oformat->flags & AVFMT_GLOBALHEADER)
   {
-    aCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    myVideoCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
+
+  // -------- 打开 codec --------
+  int res = avcodec_open2(myVideoCodecCtx, myVideoCodec, NULL);
+  if (res < 0)
+  {
+    ::Message::SendFail(TCollection_AsciiString("Error: can not open codec: ")
+                        + formatAvError(res));
+    avcodec_free_context(&myVideoCodecCtx);
+    return Standard_False;
+  }
+
+  // -------- 把 context 参数写回 AVStream（FFmpeg 7.x 必须手动做这步） --------
+  res = avcodec_parameters_from_context(myVideoStream->codecpar, myVideoCodecCtx);
+  if (res < 0)
+  {
+    ::Message::SendFail(TCollection_AsciiString("Error: can not copy codec parameters: ")
+                        + formatAvError(res));
+    avcodec_free_context(&myVideoCodecCtx);
+    return Standard_False;
+  }
+
+  myVideoStream->time_base = myVideoCodecCtx->time_base;
+
   return Standard_True;
 #else
   (void)theParams;
@@ -288,8 +315,9 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
 Standard_Boolean Image_VideoRecorder::openVideoCodec(const Image_VideoParams& theParams)
 {
 #ifdef HAVE_FFMPEG
-  AVDictionary*   anOptions = NULL;
-  AVCodecContext* aCodecCtx = myVideoStream->codec;
+  AVDictionary* anOptions = NULL;
+  // AVCodecContext* aCodecCtx = myVideoStream->codec;
+  AVCodecContext* aCodecCtx = myVideoCodecCtx;
 
   // setup default values
   aCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -444,8 +472,10 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
     throw Standard_ProgramError("Image_VideoRecorder, unsupported image format");
   }
 
-  int             aResAv    = 0;
-  AVCodecContext* aCodecCtx = myVideoStream->codec;
+  int aResAv = 0;
+  // ======= 必须自己保存 AVCodecContext 指针，不要用 myVideoStream->codec =======
+  AVCodecContext* aCodecCtx =
+    myVideoCodecCtx; // 你要在类成员声明 const AVCodecContext* myVideoCodecCtx;
   if (!theToFlush)
   {
     uint8_t* aSrcData[4]     = {(uint8_t*)myImgSrcRgba.ChangeData(), NULL, NULL, NULL};
@@ -460,53 +490,63 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
   }
 
   AVPacket aPacket;
-  memset(&aPacket, 0, sizeof(aPacket));
-  av_init_packet(&aPacket);
-  {
-    // encode the image
-    myFrame->pts    = myFrameCount;
-    int isGotPacket = 0;
-    aResAv = avcodec_encode_video2(aCodecCtx, &aPacket, theToFlush ? NULL : myFrame, &isGotPacket);
-    if (aResAv < 0)
-    {
-      ::Message::SendFail(TCollection_AsciiString("Error: can not encode video frame, ")
-                          + formatAvError(aResAv));
-      return Standard_False;
-    }
+  av_init_packet(&aPacket); // av_init_packet is deprecated, but still available for now.
+  // ------- 发送帧（theToFlush==true 时 frame=NULL，等效flush） -------
+  myFrame->pts    = myFrameCount;
+  int isGotPacket = 0;
 
-    // if size is zero, it means the image was buffered
-    if (isGotPacket)
-    {
-      const AVRational& aTimeBase = aCodecCtx->time_base;
-
-      // rescale output packet timestamp values from codec to stream timebase
-      aPacket.pts          = av_rescale_q_rnd(aPacket.pts,
-                                     aTimeBase,
-                                     myVideoStream->time_base,
-                                     AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-      aPacket.dts          = av_rescale_q_rnd(aPacket.dts,
-                                     aTimeBase,
-                                     myVideoStream->time_base,
-                                     AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-      aPacket.duration     = av_rescale_q(aPacket.duration, aTimeBase, myVideoStream->time_base);
-      aPacket.stream_index = myVideoStream->index;
-
-      // write the compressed frame to the media file
-      aResAv = av_interleaved_write_frame(myAVContext, &aPacket);
-    }
-    else
-    {
-      aResAv = 0;
-    }
-  }
-
+  aResAv = avcodec_send_frame(aCodecCtx, theToFlush ? NULL : myFrame);
   if (aResAv < 0)
   {
-    ::Message::SendFail(TCollection_AsciiString("Error: can not write video frame, ")
+    ::Message::SendFail(TCollection_AsciiString("Error: can not send video frame for encoding, ")
                         + formatAvError(aResAv));
     return Standard_False;
   }
 
+  isGotPacket = 0;
+  while (true)
+  {
+    aResAv = avcodec_receive_packet(aCodecCtx, &aPacket);
+    if (aResAv == AVERROR(EAGAIN) || aResAv == AVERROR_EOF)
+    {
+      break; // 没有更多包
+    }
+    else if (aResAv < 0)
+    {
+      ::Message::SendFail(TCollection_AsciiString("Error: can not receive encoded video packet, ")
+                          + formatAvError(aResAv));
+      return Standard_False;
+    }
+
+    isGotPacket = 1; // 只要收到至少1个包就算成功
+
+    const AVRational& aTimeBase = aCodecCtx->time_base;
+
+    // ------- 时间戳/时基转换 -------
+    aPacket.pts          = av_rescale_q_rnd(aPacket.pts,
+                                   aTimeBase,
+                                   myVideoStream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket.dts          = av_rescale_q_rnd(aPacket.dts,
+                                   aTimeBase,
+                                   myVideoStream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket.duration     = av_rescale_q(aPacket.duration, aTimeBase, myVideoStream->time_base);
+    aPacket.stream_index = myVideoStream->index;
+
+    // ------- 写入输出文件 -------
+    int writeRes = av_interleaved_write_frame(myAVContext, &aPacket);
+    av_packet_unref(&aPacket); // 必须清理
+
+    if (writeRes < 0)
+    {
+      ::Message::SendFail(TCollection_AsciiString("Error: can not write video frame, ")
+                          + formatAvError(writeRes));
+      return Standard_False;
+    }
+  }
+
+  // 允许没拿到包的情况，不再报错
   ++myFrameCount;
   return Standard_True;
 #else
@@ -514,3 +554,82 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
   return Standard_False;
 #endif
 }
+
+// Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean theToFlush)
+// {
+// #ifdef HAVE_FFMPEG
+//   if (myImgSrcRgba.Format() != Image_Format_RGBA)
+//   {
+//     throw Standard_ProgramError("Image_VideoRecorder, unsupported image format");
+//   }
+
+//   int             aResAv    = 0;
+//   AVCodecContext* aCodecCtx = myVideoStream->codec;
+//   if (!theToFlush)
+//   {
+//     uint8_t* aSrcData[4]     = {(uint8_t*)myImgSrcRgba.ChangeData(), NULL, NULL, NULL};
+//     int      aSrcLinesize[4] = {(int)myImgSrcRgba.SizeRowBytes(), 0, 0, 0};
+//     sws_scale(myScaleCtx,
+//               aSrcData,
+//               aSrcLinesize,
+//               0,
+//               aCodecCtx->height,
+//               myFrame->data,
+//               myFrame->linesize);
+//   }
+
+//   AVPacket aPacket;
+//   memset(&aPacket, 0, sizeof(aPacket));
+//   av_init_packet(&aPacket);
+//   {
+//     // encode the image
+//     myFrame->pts    = myFrameCount;
+//     int isGotPacket = 0;
+//     aResAv = avcodec_encode_video2(aCodecCtx, &aPacket, theToFlush ? NULL : myFrame,
+//     &isGotPacket); if (aResAv < 0)
+//     {
+//       ::Message::SendFail(TCollection_AsciiString("Error: can not encode video frame, ")
+//                           + formatAvError(aResAv));
+//       return Standard_False;
+//     }
+
+//     // if size is zero, it means the image was buffered
+//     if (isGotPacket)
+//     {
+//       const AVRational& aTimeBase = aCodecCtx->time_base;
+
+//       // rescale output packet timestamp values from codec to stream timebase
+//       aPacket.pts          = av_rescale_q_rnd(aPacket.pts,
+//                                      aTimeBase,
+//                                      myVideoStream->time_base,
+//                                      AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+//       aPacket.dts          = av_rescale_q_rnd(aPacket.dts,
+//                                      aTimeBase,
+//                                      myVideoStream->time_base,
+//                                      AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+//       aPacket.duration     = av_rescale_q(aPacket.duration, aTimeBase, myVideoStream->time_base);
+//       aPacket.stream_index = myVideoStream->index;
+
+//       // write the compressed frame to the media file
+//       aResAv = av_interleaved_write_frame(myAVContext, &aPacket);
+//     }
+//     else
+//     {
+//       aResAv = 0;
+//     }
+//   }
+
+//   if (aResAv < 0)
+//   {
+//     ::Message::SendFail(TCollection_AsciiString("Error: can not write video frame, ")
+//                         + formatAvError(aResAv));
+//     return Standard_False;
+//   }
+
+//   ++myFrameCount;
+//   return Standard_True;
+// #else
+//   (void)theToFlush;
+//   return Standard_False;
+// #endif
+// }

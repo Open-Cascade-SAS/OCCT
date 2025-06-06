@@ -27,6 +27,7 @@
 extern "C"
 {
   #include <libavformat/avformat.h>
+  #include <libavcodec/avcodec.h>
 };
   #include <Standard_WarningsRestore.hxx>
 #endif
@@ -372,10 +373,20 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
   const AVStream& aStream = *myFormatCtx->streams[theIndex];
 
   AVCodecContext* aCodecCtx = theCodecCtx;
+  // if (aCodecCtx == NULL)
+  // {
+  //   Standard_DISABLE_DEPRECATION_WARNINGS aCodecCtx = aStream.codec;
+  //   Standard_ENABLE_DEPRECATION_WARNINGS
+  // }
+  bool isTempCodecCtx = false;
   if (aCodecCtx == NULL)
   {
-    Standard_DISABLE_DEPRECATION_WARNINGS aCodecCtx = aStream.codec;
-    Standard_ENABLE_DEPRECATION_WARNINGS
+    aCodecCtx = avcodec_alloc_context3(NULL);
+    if (aCodecCtx)
+    {
+      avcodec_parameters_to_context(aCodecCtx, aStream.codecpar);
+      isTempCodecCtx = true;
+    }
   }
 
   char aFrmtBuff[4096] = {};
@@ -418,6 +429,10 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
       aStreamInfo +=
         TCollection_AsciiString(", ") + formatFps(1 / av_q2d(aCodecCtx->time_base)) + " tbc";
     }
+  }
+  if (isTempCodecCtx && aCodecCtx)
+  {
+    avcodec_free_context(&aCodecCtx);
   }
   if (myDuration > 0.0)
   {
@@ -467,13 +482,15 @@ bool Media_FormatContext::SeekStream(unsigned int theStreamId,
 
   // try 10 more times in backward direction to work-around huge duration between key frames
   // will not work for some streams with undefined cur_dts (AV_NOPTS_VALUE)!!!
-  for (int aTries = 10;
-       isSeekDone && theToSeekBack && aTries > 0 && (aStream.cur_dts > aSeekTarget);
-       --aTries)
+  // for (int aTries = 10;
+  //      isSeekDone && theToSeekBack && aTries > 0 && (aStream.cur_dts > aSeekTarget);
+  //      --aTries)
+  for (int aTries = 10; isSeekDone && theToSeekBack && aTries > 0; --aTries)
   {
     aSeekTarget -= StreamSecondsToUnits(aStream, 1.0);
     isSeekDone = av_seek_frame(myFormatCtx, theStreamId, aSeekTarget, aFlags) >= 0;
   }
+
   if (isSeekDone)
   {
     return true;

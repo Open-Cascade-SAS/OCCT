@@ -25,6 +25,7 @@
 struct AVFormatContext;
 struct AVStream;
 struct AVCodec;
+struct AVCodecContext;
 struct AVFrame;
 struct SwsContext;
 
@@ -134,9 +135,10 @@ protected:
 protected:
   AVFormatContext* myAVContext;   //!< video context
   AVStream*        myVideoStream; //!< video stream
-  AVCodec*         myVideoCodec;  //!< video codec
-  AVFrame*         myFrame;       //!< frame to record
-  SwsContext*      myScaleCtx;    //!< scale context for conversion from RGBA to YUV
+  const AVCodec*   myVideoCodec;  //!< video codec
+  AVCodecContext*  myVideoCodecCtx;
+  AVFrame*         myFrame;    //!< frame to record
+  SwsContext*      myScaleCtx; //!< scale context for conversion from RGBA to YUV
 
   Image_PixMap  myImgSrcRgba; //!< input RGBA image
   VideoRational myFrameRate;  //!< video framerate
