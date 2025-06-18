@@ -8,7 +8,16 @@ pload OCAF
 Close D1 -silent
 Close D2 -silent
 
-ReadGltf D1 [locate_data_file bug_ocp1948_PSU_Cartoning_subunit__right-01.01.01.03-CART-03_green_bottom.glb]
+# Create simple mesh
+box b 1 1 1
+incmesh b 1
+writestl b "$imagedir/${casename}.stl"
+readstl b "$imagedir/${casename}.stl"
+
+# Create document with meters as internal units
+XNewDoc D1
+XSetLengthUnit D1 m
+XAddShape D1 b
 
 # apply parameters for tessellation export
 set conf "
@@ -22,23 +31,18 @@ ReadFile D2 "$imagedir/${casename}.stp"
 XGetOneShape a1 D1
 XGetOneShape a2 D2
 
-# check center of gravity
-set pos1 [vprops a1]
-set pos2 [vprops a2]
+# check sizes
+set m_diag [eval distpp [bounding a1]]
+set mm_diag [eval distpp [bounding a2]]
+set tol 0.1
 
-set REF_X [lindex $pos1  9]
-set REF_Y [lindex $pos1 12]
-set REF_Z [lindex $pos1 15]
-set tol 1e-4
-
-if {([expr abs($REF_X - [lindex $pos2  9])] > $tol) || 
-    ([expr abs($REF_Y - [lindex $pos2 12])] > $tol) ||
-    ([expr abs($REF_Z - [lindex $pos2 15])] > $tol)} {
-  puts "Error: wrong position of the imported model."
+if {([expr abs($m_diag * 1000 - $mm_diag)] > $tol)} {
+  puts "Error: wrong size of models."
   }
 
 # cleaning
 Close D1
 Close D2
 file delete "$imagedir/${casename}.stp"
+file delete "$imagedir/${casename}.stl"
 
