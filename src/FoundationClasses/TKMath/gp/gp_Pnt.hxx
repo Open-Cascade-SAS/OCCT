@@ -268,7 +268,7 @@ inline Standard_Real gp_Pnt::Distance(const gp_Pnt& theOther) const
 //=======================================================================
 inline Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const
 {
-  const gp_XYZ& aXYZ = theOther.coord;
+  const gp_XYZ&       aXYZ = theOther.coord;
   const Standard_Real aDx  = coord.X() - aXYZ.X();
   const Standard_Real aDy  = coord.Y() - aXYZ.Y();
   const Standard_Real aDz  = coord.Z() - aXYZ.Z();
