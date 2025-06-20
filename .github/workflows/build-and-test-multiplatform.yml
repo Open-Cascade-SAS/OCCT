@@ -22,7 +22,7 @@ concurrency:
 jobs:
   clang-format:
     name: Check code formatting
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -37,7 +37,7 @@ jobs:
 
   documentation:
     name: Build Documentation
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -48,7 +48,7 @@ jobs:
 
   prepare-and-build-windows-x64:
     name: Prepare and Build on Windows with MSVC (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -63,7 +63,7 @@ jobs:
 
   prepare-and-build-windows-clang-x64:
     name: Prepare and Build on Windows with Clang (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -159,7 +159,7 @@ jobs:
   build-inspector-windows:
     name: Build TInspector on Windows
     needs: prepare-and-build-windows-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -189,7 +189,7 @@ jobs:
   build-csharp-windows:
     name: Build CSharp Sample on Windows
     needs: prepare-and-build-windows-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -204,7 +204,7 @@ jobs:
   build-mfc-windows:
     name: Build MFC Sample on Windows
     needs: prepare-and-build-windows-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -219,7 +219,7 @@ jobs:
   build-qt-windows:
     name: Build Qt Sample on Windows
     needs: prepare-and-build-windows-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -248,7 +248,7 @@ jobs:
 
   test-windows-x64:
     name: Test on Windows (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: prepare-and-build-windows-x64
 
     steps:
@@ -266,7 +266,7 @@ jobs:
 
   retest-windows-x64:
     name: Regression Test on Windows (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: test-windows-x64
 
     steps:
@@ -284,7 +284,7 @@ jobs:
 
   test-windows-clang-x64:
     name: Test on Windows with Clang (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: prepare-and-build-windows-clang-x64
 
     steps:
@@ -302,7 +302,7 @@ jobs:
 
   retest-windows-clang-x64:
     name: Regression Test on Windows with Clang (x64)
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: test-windows-clang-x64
 
     steps:
@@ -465,7 +465,7 @@ jobs:
   run-gtest-windows-x64:
     name: Run GTest on Windows with MSVC (x64)
     needs: prepare-and-build-windows-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
@@ -482,7 +482,7 @@ jobs:
   run-gtest-windows-clang-x64:
     name: Run GTest on Windows with Clang (x64)
     needs: prepare-and-build-windows-clang-x64
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository

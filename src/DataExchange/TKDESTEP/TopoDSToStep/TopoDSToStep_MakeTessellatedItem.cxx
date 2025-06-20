@@ -15,6 +15,7 @@
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <Poly.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepVisual_FaceOrSurface.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepVisual_TessellatedShell.hxx>
@@ -40,11 +41,13 @@ static void InitTriangulation(const Handle(Poly_Triangulation)&       theMesh,
                               Handle(TColgp_HArray1OfXYZ)&            thePoints,
                               Handle(TColStd_HArray2OfReal)&          theNormals,
                               Handle(TColStd_HArray1OfInteger)&       theIndices,
-                              Handle(TColStd_HArray2OfInteger)&       theTrias)
+                              Handle(TColStd_HArray2OfInteger)&       theTrias,
+                              const StepData_Factors&                 theLocalFactors)
 {
+  Standard_Real aFactor = theLocalFactors.LengthFactor();
   for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theMesh->NbNodes(); ++aNodeIndex)
   {
-    thePoints->SetValue(aNodeIndex, theMesh->Node(aNodeIndex).XYZ());
+    thePoints->SetValue(aNodeIndex, theMesh->Node(aNodeIndex).XYZ() / aFactor);
   }
   theCoordinates->Init(theName, thePoints);
   if (!theMesh->HasNormals())
@@ -86,10 +89,11 @@ TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
   TopoDSToStep_Tool&                    theTool,
   const Handle(Transfer_FinderProcess)& theFP,
   const Standard_Boolean                theToPreferSurfaceSet,
+  const StepData_Factors&               theLocalFactors,
   const Message_ProgressRange&          theProgress)
     : TopoDSToStep_Root()
 {
-  Init(theFace, theTool, theFP, theToPreferSurfaceSet, theProgress);
+  Init(theFace, theTool, theFP, theToPreferSurfaceSet, theLocalFactors, theProgress);
 }
 
 //=================================================================================================
@@ -98,10 +102,11 @@ TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
   const TopoDS_Shell&                   theShell,
   TopoDSToStep_Tool&                    theTool,
   const Handle(Transfer_FinderProcess)& theFP,
+  const StepData_Factors&               theLocalFactors,
   const Message_ProgressRange&          theProgress)
     : TopoDSToStep_Root()
 {
-  Init(theShell, theTool, theFP, theProgress);
+  Init(theShell, theTool, theFP, theLocalFactors, theProgress);
 }
 
 //=============================================================================
@@ -113,6 +118,7 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face&                  
                                             TopoDSToStep_Tool&                    theTool,
                                             const Handle(Transfer_FinderProcess)& theFP,
                                             const Standard_Boolean       theToPreferSurfaceSet,
+                                            const StepData_Factors&      theLocalFactors,
                                             const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
@@ -133,7 +139,14 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face&                  
   Handle(TColStd_HArray1OfInteger) anIndices = new TColStd_HArray1OfInteger(1, aMesh->NbNodes());
   Handle(TColStd_HArray2OfInteger) aTrias =
     new TColStd_HArray2OfInteger(1, aMesh->NbTriangles(), 1, 3);
-  InitTriangulation(aMesh, aName, aCoordinates, aPoints, aNormals, anIndices, aTrias);
+  InitTriangulation(aMesh,
+                    aName,
+                    aCoordinates,
+                    aPoints,
+                    aNormals,
+                    anIndices,
+                    aTrias,
+                    theLocalFactors);
 
   const Standard_Boolean   aHasGeomLink = theTool.IsBound(theFace);
   StepVisual_FaceOrSurface aGeomLink;
@@ -182,6 +195,7 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face&                  
 void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                   theShell,
                                             TopoDSToStep_Tool&                    theTool,
                                             const Handle(Transfer_FinderProcess)& theFP,
+                                            const StepData_Factors&               theLocalFactors,
                                             const Message_ProgressRange&          theProgress)
 {
   done = Standard_False;
@@ -202,7 +216,12 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                 
   for (anExp.Init(theShell, TopAbs_FACE); anExp.More() && aPS.More(); anExp.Next(), aPS.Next())
   {
     const TopoDS_Face                aFace = TopoDS::Face(anExp.Current());
-    TopoDSToStep_MakeTessellatedItem aMakeFace(aFace, theTool, theFP, Standard_False, aPS.Next());
+    TopoDSToStep_MakeTessellatedItem aMakeFace(aFace,
+                                               theTool,
+                                               theFP,
+                                               Standard_False,
+                                               theLocalFactors,
+                                               aPS.Next());
     if (aMakeFace.IsDone())
     {
       aTessFaces.Append(Handle(StepVisual_TessellatedStructuredItem)::DownCast(aMakeFace.Value()));

@@ -21,6 +21,7 @@
 #include <TopoDSToStep_Root.hxx>
 #include <Message_ProgressRange.hxx>
 
+class StepData_Factors;
 class StepVisual_TessellatedItem;
 class TopoDS_Face;
 class TopoDS_Shell;
@@ -40,23 +41,27 @@ public:
     TopoDSToStep_Tool&                    theTool,
     const Handle(Transfer_FinderProcess)& theFP,
     const Standard_Boolean                theToPreferSurfaceSet,
+    const StepData_Factors&               theLocalFactors,
     const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem(
     const TopoDS_Shell&                   theShell,
     TopoDSToStep_Tool&                    theTool,
     const Handle(Transfer_FinderProcess)& theFP,
+    const StepData_Factors&               theLocalFactors,
     const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
   Standard_EXPORT void Init(const TopoDS_Face&                    theFace,
                             TopoDSToStep_Tool&                    theTool,
                             const Handle(Transfer_FinderProcess)& theFP,
                             const Standard_Boolean                theToPreferSurfaceSet,
+                            const StepData_Factors&               theLocalFactors,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT void Init(const TopoDS_Shell&                   theShell,
                             TopoDSToStep_Tool&                    theTool,
                             const Handle(Transfer_FinderProcess)& theFP,
+                            const StepData_Factors&               theLocalFactors,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT const Handle(StepVisual_TessellatedItem)& Value() const;

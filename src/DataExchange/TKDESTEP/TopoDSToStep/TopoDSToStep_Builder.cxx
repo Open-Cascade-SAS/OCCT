@@ -173,7 +173,11 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
 
       if (theTessellatedGeomParam == 1 || (theTessellatedGeomParam == 2 && myResult.IsNull()))
       {
-        TopoDSToStep_MakeTessellatedItem MkTessShell(myShell, myTool, FP, aPS.Next());
+        TopoDSToStep_MakeTessellatedItem MkTessShell(myShell,
+                                                     myTool,
+                                                     FP,
+                                                     theLocalFactors,
+                                                     aPS.Next());
         if (MkTessShell.IsDone())
         {
           myTessellatedResult = MkTessShell.Value();
@@ -199,7 +203,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
         Message_ProgressScope aPS(theProgress, NULL, 1);
         // fourth parameter is true in order to create a tessellated_surface_set entity
         // or put false to create a triangulated_face instead
-        MkTessFace.Init(Face, myTool, FP, Standard_True, aPS.Next());
+        MkTessFace.Init(Face, myTool, FP, Standard_True, theLocalFactors, aPS.Next());
       }
 
       if (MkFace.IsDone() || MkTessFace.IsDone())

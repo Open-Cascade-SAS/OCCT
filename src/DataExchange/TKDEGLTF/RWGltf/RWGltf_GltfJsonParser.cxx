@@ -1808,7 +1808,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
     }
   }
   if (aMode != RWGltf_GltfPrimitiveMode_Triangles && aMode != RWGltf_GltfPrimitiveMode_Lines
-      && aMode != RWGltf_GltfPrimitiveMode_LineStrip && aMode != RWGltf_GltfPrimitiveMode_Points)
+      && aMode != RWGltf_GltfPrimitiveMode_Points)
   {
     Message::SendWarning(TCollection_AsciiString() + "Primitive array within Mesh '" + theMeshId
                          + "' skipped due to unsupported mode");
@@ -1976,8 +1976,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
         aShape = aVertices;
         break;
       }
-      case RWGltf_GltfPrimitiveMode_Lines:
-      case RWGltf_GltfPrimitiveMode_LineStrip: {
+      case RWGltf_GltfPrimitiveMode_Lines: {
         TColgp_Array1OfPnt aNodes(1, aMeshData->NbEdges());
         for (Standard_Integer anEdgeIdx = 1; anEdgeIdx <= aMeshData->NbEdges(); ++anEdgeIdx)
         {
@@ -2012,7 +2011,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
       aShapeAttribs.RawName = theMeshName;
 
       // assign material and not color
-      if (aMode == RWGltf_GltfPrimitiveMode_Lines || aMode == RWGltf_GltfPrimitiveMode_LineStrip)
+      if (aMode == RWGltf_GltfPrimitiveMode_Lines)
       {
         aShapeAttribs.Style.SetColorCurv(aMeshData->BaseColor().GetRGB());
       }
