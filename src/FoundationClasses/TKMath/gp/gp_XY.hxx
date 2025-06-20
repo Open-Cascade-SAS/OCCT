@@ -19,7 +19,6 @@
 #include <gp_Mat2d.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <cmath>
 
 //! This class describes a cartesian coordinate entity in 2D
 //! space {X,Y}. This class is non persistent. This entity used
@@ -100,7 +99,7 @@ public:
   Standard_Real Y() const { return y; }
 
   //! Computes Sqrt (X*X + Y*Y) where X and Y are the two coordinates of this number pair.
-  Standard_Real Modulus() const { return std::hypot(x, y); }
+  Standard_Real Modulus() const { return sqrt(SquareModulus()); }
 
   //! Computes X*X + Y*Y where X and Y are the two coordinates of this number pair.
   Standard_Real SquareModulus() const { return x * x + y * y; }
@@ -156,7 +155,7 @@ public:
   //! theRight. Returns || <me> ^ theRight ||
   inline Standard_Real CrossMagnitude(const gp_XY& theRight) const
   {
-    return std::abs(x * theRight.y - y * theRight.x);
+    return Abs(x * theRight.y - y * theRight.x);
   }
 
   //! computes the square magnitude of the cross product between <me> and

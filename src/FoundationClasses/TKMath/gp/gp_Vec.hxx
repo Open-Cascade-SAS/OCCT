@@ -18,7 +18,6 @@
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_DomainError.hxx>
-#include <cmath>
 
 class gp_Dir;
 class gp_Pnt;
@@ -386,26 +385,26 @@ public:
     coord.SetLinearForm(theV1.coord, theV2.coord);
   }
 
-  Standard_EXPORT void Mirror(const gp_Vec& theVec);
+  Standard_EXPORT void Mirror(const gp_Vec& theV);
 
   //! Performs the symmetrical transformation of a vector
-  //! with respect to the vector theVec which is the center of
+  //! with respect to the vector theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theVec) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theV) const;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theAxis);
+  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theAxis) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theA1) const;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theAxis);
+  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a vector
-  //! with respect to a plane. The axis placement theAxis locates
+  //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theAxis) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theA2) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
@@ -413,9 +412,9 @@ public:
   //! theAng is the angular value of the rotation in radians.
   Standard_NODISCARD gp_Vec Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
-    gp_Vec aResult = *this;
-    aResult.Rotate(theA1, theAng);
-    return aResult;
+    gp_Vec aVres = *this;
+    aVres.Rotate(theA1, theAng);
+    return aVres;
   }
 
   void Scale(const Standard_Real theS) { coord.Multiply(theS); }
@@ -428,15 +427,15 @@ public:
     return aV;
   }
 
-  //! Transforms a vector with the transformation theTransformation.
-  Standard_EXPORT void Transform(const gp_Trsf& theTransformation);
+  //! Transforms a vector with the transformation theT.
+  Standard_EXPORT void Transform(const gp_Trsf& theT);
 
-  //! Transforms a vector with the transformation theTransformation.
-  Standard_NODISCARD gp_Vec Transformed(const gp_Trsf& theTransformation) const
+  //! Transforms a vector with the transformation theT.
+  Standard_NODISCARD gp_Vec Transformed(const gp_Trsf& theT) const
   {
-    gp_Vec aResult = *this;
-    aResult.Transform(theTransformation);
-    return aResult;
+    gp_Vec aV = *this;
+    aV.Transform(theT);
+    return aV;
   }
 
   //! Dumps the content of me into the stream
@@ -524,9 +523,9 @@ inline gp_Vec gp_Vec::Normalized() const
 //=======================================================================
 inline void gp_Vec::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 {
-  gp_Trsf aTransformation;
-  aTransformation.SetRotation(theA1, theAng);
-  coord.Multiply(aTransformation.VectorialPart());
+  gp_Trsf aT;
+  aT.SetRotation(theA1, theAng);
+  coord.Multiply(aT.VectorialPart());
 }
 
 //=======================================================================

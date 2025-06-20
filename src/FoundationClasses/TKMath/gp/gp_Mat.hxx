@@ -15,7 +15,6 @@
 #ifndef _gp_Mat_HeaderFile
 #define _gp_Mat_HeaderFile
 
-#include <algorithm>
 #include <gp.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_OStream.hxx>
@@ -142,7 +141,6 @@ public:
   //! Computes the determinant of the matrix.
   Standard_Real Determinant() const
   {
-    // Optimized: cache frequently accessed elements to reduce array indexing overhead
     const Standard_Real a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
     const Standard_Real a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
     const Standard_Real a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];

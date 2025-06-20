@@ -122,7 +122,6 @@ void gp_Mat::SetDot(const gp_XYZ& theRef)
 void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
 {
   // Optimized Rodrigues' rotation formula: R = I + sin(θ)K + (1-cos(θ))K²
-  // Direct computation avoids temporary matrices and multiple operations
   const gp_XYZ aV = theAxis.Normalized();
 
   const Standard_Real A = aV.X();
@@ -231,8 +230,7 @@ gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
 
 void gp_Mat::Invert()
 {
-  // Optimized matrix inversion using cached elements and direct computation
-  // Cache matrix elements to reduce array access overhead
+  // Optimized matrix inversion using cached elements
   const Standard_Real a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
   const Standard_Real a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
   const Standard_Real a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];
@@ -257,7 +255,7 @@ void gp_Mat::Invert()
   // Compute inverse: inv(A) = adj(A) / det(A)
   const Standard_Real aInvDet = 1.0 / aDet;
 
-  // Direct assignment with scaling - avoid temporary array and Multiply call
+  // Direct assignment with scaling
   myMat[0][0] = adj00 * aInvDet;
   myMat[1][0] = adj10 * aInvDet;
   myMat[2][0] = adj20 * aInvDet;
