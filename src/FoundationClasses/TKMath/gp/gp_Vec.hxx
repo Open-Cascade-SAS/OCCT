@@ -129,7 +129,7 @@ public:
   //! Other.Magnitude() <= Resolution from gp
   Standard_Boolean IsOpposite(const gp_Vec& theOther, const Standard_Real theAngularTolerance) const
   {
-    Standard_Real anAng = M_PI - Angle(theOther);
+    const Standard_Real anAng = M_PI - Angle(theOther);
     return anAng <= theAngularTolerance;
   }
 
@@ -141,7 +141,7 @@ public:
   //! Other.Magnitude() <= Resolution from gp
   Standard_Boolean IsParallel(const gp_Vec& theOther, const Standard_Real theAngularTolerance) const
   {
-    Standard_Real anAng = Angle(theOther);
+    const Standard_Real anAng = Angle(theOther);
     return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
   }
 
@@ -303,7 +303,7 @@ public:
   //! lower or equal to Resolution from gp.
   void Normalize()
   {
-    Standard_Real aD = coord.Modulus();
+    const Standard_Real aD = coord.Modulus();
     Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
                                         "gp_Vec::Normalize() - vector has zero norm");
     coord.Divide(aD);
@@ -474,11 +474,7 @@ inline gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
 inline Standard_Boolean gp_Vec::IsNormal(const gp_Vec&       theOther,
                                          const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = M_PI / 2.0 - Angle(theOther);
-  if (anAng < 0)
-  {
-    anAng = -anAng;
-  }
+  const Standard_Real anAng = Abs(M_PI_2 - Angle(theOther));
   return anAng <= theAngularTolerance;
 }
 
@@ -513,7 +509,7 @@ inline Standard_Real gp_Vec::AngleWithRef(const gp_Vec& theOther, const gp_Vec& 
 //=======================================================================
 inline gp_Vec gp_Vec::Normalized() const
 {
-  Standard_Real aD = coord.Modulus();
+  const Standard_Real aD = coord.Modulus();
   Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
                                       "gp_Vec::Normalized() - vector has zero norm");
   gp_Vec aV = *this;
