@@ -15,6 +15,7 @@
 #ifndef _gp_Mat_HeaderFile
 #define _gp_Mat_HeaderFile
 
+#include <algorithm>
 #include <gp.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_OStream.hxx>
@@ -141,9 +142,15 @@ public:
   //! Computes the determinant of the matrix.
   Standard_Real Determinant() const
   {
-    return myMat[0][0] * (myMat[1][1] * myMat[2][2] - myMat[2][1] * myMat[1][2])
-           - myMat[0][1] * (myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2])
-           + myMat[0][2] * (myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1]);
+    // Optimized: cache frequently accessed elements to reduce array indexing overhead
+    const Standard_Real a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
+    const Standard_Real a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
+    const Standard_Real a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];
+    // clang-format off
+    return a00 * (a11 * a22 - a21 * a12)
+         - a01 * (a10 * a22 - a20 * a12)
+         + a02 * (a10 * a21 - a20 * a11);
+    // clang-format on
   }
 
   //! Returns the main diagonal of the matrix.
@@ -353,16 +360,8 @@ inline void gp_Mat::Add(const gp_Mat& theOther)
 //=======================================================================
 inline gp_Mat gp_Mat::Added(const gp_Mat& theOther) const
 {
-  gp_Mat aNewMat;
-  aNewMat.myMat[0][0] = myMat[0][0] + theOther.myMat[0][0];
-  aNewMat.myMat[0][1] = myMat[0][1] + theOther.myMat[0][1];
-  aNewMat.myMat[0][2] = myMat[0][2] + theOther.myMat[0][2];
-  aNewMat.myMat[1][0] = myMat[1][0] + theOther.myMat[1][0];
-  aNewMat.myMat[1][1] = myMat[1][1] + theOther.myMat[1][1];
-  aNewMat.myMat[1][2] = myMat[1][2] + theOther.myMat[1][2];
-  aNewMat.myMat[2][0] = myMat[2][0] + theOther.myMat[2][0];
-  aNewMat.myMat[2][1] = myMat[2][1] + theOther.myMat[2][1];
-  aNewMat.myMat[2][2] = myMat[2][2] + theOther.myMat[2][2];
+  gp_Mat aNewMat(*this);
+  aNewMat.Add(theOther);
   return aNewMat;
 }
 
@@ -396,23 +395,8 @@ inline void gp_Mat::Divide(const Standard_Real theScalar)
 //=======================================================================
 inline gp_Mat gp_Mat::Divided(const Standard_Real theScalar) const
 {
-  Standard_Real aVal = theScalar;
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  Standard_ConstructionError_Raise_if(aVal <= gp::Resolution(), "gp_Mat : Divide by 0");
-  gp_Mat              aNewMat;
-  const Standard_Real anUnSurScalar = 1.0 / theScalar;
-  aNewMat.myMat[0][0]               = myMat[0][0] * anUnSurScalar;
-  aNewMat.myMat[0][1]               = myMat[0][1] * anUnSurScalar;
-  aNewMat.myMat[0][2]               = myMat[0][2] * anUnSurScalar;
-  aNewMat.myMat[1][0]               = myMat[1][0] * anUnSurScalar;
-  aNewMat.myMat[1][1]               = myMat[1][1] * anUnSurScalar;
-  aNewMat.myMat[1][2]               = myMat[1][2] * anUnSurScalar;
-  aNewMat.myMat[2][0]               = myMat[2][0] * anUnSurScalar;
-  aNewMat.myMat[2][1]               = myMat[2][1] * anUnSurScalar;
-  aNewMat.myMat[2][2]               = myMat[2][2] * anUnSurScalar;
+  gp_Mat aNewMat(*this);
+  aNewMat.Divide(theScalar);
   return aNewMat;
 }
 
@@ -492,16 +476,8 @@ inline void gp_Mat::PreMultiply(const gp_Mat& theOther)
 //=======================================================================
 inline gp_Mat gp_Mat::Multiplied(const Standard_Real theScalar) const
 {
-  gp_Mat aNewMat;
-  aNewMat.myMat[0][0] = theScalar * myMat[0][0];
-  aNewMat.myMat[0][1] = theScalar * myMat[0][1];
-  aNewMat.myMat[0][2] = theScalar * myMat[0][2];
-  aNewMat.myMat[1][0] = theScalar * myMat[1][0];
-  aNewMat.myMat[1][1] = theScalar * myMat[1][1];
-  aNewMat.myMat[1][2] = theScalar * myMat[1][2];
-  aNewMat.myMat[2][0] = theScalar * myMat[2][0];
-  aNewMat.myMat[2][1] = theScalar * myMat[2][1];
-  aNewMat.myMat[2][2] = theScalar * myMat[2][2];
+  gp_Mat aNewMat(*this);
+  aNewMat.Multiply(theScalar);
   return aNewMat;
 }
 
@@ -545,16 +521,8 @@ inline void gp_Mat::Subtract(const gp_Mat& theOther)
 //=======================================================================
 inline gp_Mat gp_Mat::Subtracted(const gp_Mat& theOther) const
 {
-  gp_Mat aNewMat;
-  aNewMat.myMat[0][0] = myMat[0][0] - theOther.myMat[0][0];
-  aNewMat.myMat[0][1] = myMat[0][1] - theOther.myMat[0][1];
-  aNewMat.myMat[0][2] = myMat[0][2] - theOther.myMat[0][2];
-  aNewMat.myMat[1][0] = myMat[1][0] - theOther.myMat[1][0];
-  aNewMat.myMat[1][1] = myMat[1][1] - theOther.myMat[1][1];
-  aNewMat.myMat[1][2] = myMat[1][2] - theOther.myMat[1][2];
-  aNewMat.myMat[2][0] = myMat[2][0] - theOther.myMat[2][0];
-  aNewMat.myMat[2][1] = myMat[2][1] - theOther.myMat[2][1];
-  aNewMat.myMat[2][2] = myMat[2][2] - theOther.myMat[2][2];
+  gp_Mat aNewMat(*this);
+  aNewMat.Subtract(theOther);
   return aNewMat;
 }
 
@@ -573,16 +541,9 @@ __attribute__((optnone))
 inline void
   gp_Mat::Transpose()
 {
-  Standard_Real aTemp;
-  aTemp       = myMat[0][1];
-  myMat[0][1] = myMat[1][0];
-  myMat[1][0] = aTemp;
-  aTemp       = myMat[0][2];
-  myMat[0][2] = myMat[2][0];
-  myMat[2][0] = aTemp;
-  aTemp       = myMat[1][2];
-  myMat[1][2] = myMat[2][1];
-  myMat[2][1] = aTemp;
+  std::swap(myMat[0][1], myMat[1][0]);
+  std::swap(myMat[0][2], myMat[2][0]);
+  std::swap(myMat[1][2], myMat[2][1]);
 }
 
 //=======================================================================
