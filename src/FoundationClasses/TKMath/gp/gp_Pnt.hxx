@@ -259,21 +259,11 @@ struct equal_to<gp_Pnt>
 //=======================================================================
 inline Standard_Real gp_Pnt::Distance(const gp_Pnt& theOther) const
 {
-  Standard_Real aD   = 0, aDD;
   const gp_XYZ& aXYZ = theOther.coord;
-  aDD                = coord.X();
-  aDD -= aXYZ.X();
-  aDD *= aDD;
-  aD += aDD;
-  aDD = coord.Y();
-  aDD -= aXYZ.Y();
-  aDD *= aDD;
-  aD += aDD;
-  aDD = coord.Z();
-  aDD -= aXYZ.Z();
-  aDD *= aDD;
-  aD += aDD;
-  return sqrt(aD);
+  Standard_Real aDx  = coord.X() - aXYZ.X();
+  Standard_Real aDy  = coord.Y() - aXYZ.Y();
+  Standard_Real aDz  = coord.Z() - aXYZ.Z();
+  return std::hypot(aDx, aDy, aDz);
 }
 
 //=======================================================================
@@ -282,21 +272,11 @@ inline Standard_Real gp_Pnt::Distance(const gp_Pnt& theOther) const
 //=======================================================================
 inline Standard_Real gp_Pnt::SquareDistance(const gp_Pnt& theOther) const
 {
-  Standard_Real aD  = 0, aDD;
-  const gp_XYZ& XYZ = theOther.coord;
-  aDD               = coord.X();
-  aDD -= XYZ.X();
-  aDD *= aDD;
-  aD += aDD;
-  aDD = coord.Y();
-  aDD -= XYZ.Y();
-  aDD *= aDD;
-  aD += aDD;
-  aDD = coord.Z();
-  aDD -= XYZ.Z();
-  aDD *= aDD;
-  aD += aDD;
-  return aD;
+  const gp_XYZ& aXYZ = theOther.coord;
+  Standard_Real aDx  = coord.X() - aXYZ.X();
+  Standard_Real aDy  = coord.Y() - aXYZ.Y();
+  Standard_Real aDz  = coord.Z() - aXYZ.Z();
+  return aDx * aDx + aDy * aDy + aDz * aDz;
 }
 
 //=======================================================================

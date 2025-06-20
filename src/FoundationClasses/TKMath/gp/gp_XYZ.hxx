@@ -123,7 +123,7 @@ public:
   Standard_Real Z() const { return z; }
 
   //! computes Sqrt (X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ object.
-  Standard_Real Modulus() const { return sqrt(x * x + y * y + z * z); }
+  Standard_Real Modulus() const { return std::hypot(x, y, z); }
 
   //! Computes X*X + Y*Y + Z*Z where X, Y and Z are the three coordinates of this XYZ object.
   Standard_Real SquareModulus() const { return (x * x + y * y + z * z); }
@@ -300,10 +300,11 @@ public:
   //! New = theMatrix * <me>
   Standard_NODISCARD gp_XYZ Multiplied(const gp_Mat& theMatrix) const
   {
-    return gp_XYZ(theMatrix.Value(1, 1) * x + theMatrix.Value(1, 2) * y + theMatrix.Value(1, 3) * z,
-                  theMatrix.Value(2, 1) * x + theMatrix.Value(2, 2) * y + theMatrix.Value(2, 3) * z,
-                  theMatrix.Value(3, 1) * x + theMatrix.Value(3, 2) * y
-                    + theMatrix.Value(3, 3) * z);
+    // Direct access to matrix data for optimal performance (gp_XYZ is friend of gp_Mat)
+    return gp_XYZ(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y + theMatrix.myMat[0][2] * z,
+                  theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y + theMatrix.myMat[1][2] * z,
+                  theMatrix.myMat[2][0] * x + theMatrix.myMat[2][1] * y
+                    + theMatrix.myMat[2][2] * z);
   }
 
   Standard_NODISCARD gp_XYZ operator*(const gp_Mat& theMatrix) const
@@ -327,7 +328,7 @@ public:
   //! Raised if <me>.Modulus() <= Resolution from gp
   Standard_NODISCARD gp_XYZ Normalized() const
   {
-    Standard_Real aD = Modulus();
+    const Standard_Real aD = Modulus();
     Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
                                         "gp_XYZ::Normalized() - vector has zero norm");
     return gp_XYZ(x / aD, y / aD, z / aD);
@@ -390,9 +391,16 @@ public:
                      const gp_XYZ&       theXYZ3,
                      const gp_XYZ&       theXYZ4)
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x + theXYZ4.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y + theXYZ4.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theA3 * theXYZ3.z + theXYZ4.z;
+    const Standard_Real* aPtr1   = theXYZ1.GetData();
+    const Standard_Real* aPtr2   = theXYZ2.GetData();
+    const Standard_Real* aPtr3   = theXYZ3.GetData();
+    const Standard_Real* aPtr4   = theXYZ4.GetData();
+    Standard_Real*       aResult = ChangeData();
+
+    for (int i = 0; i < 3; ++i)
+    {
+      aResult[i] = theA1 * aPtr1[i] + theA2 * aPtr2[i] + theA3 * aPtr3[i] + aPtr4[i];
+    }
   }
 
   //! <me> is set to the following linear form :
@@ -406,9 +414,15 @@ public:
                      const Standard_Real theA3,
                      const gp_XYZ&       theXYZ3)
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theA3 * theXYZ3.z;
+    const Standard_Real* aPtr1   = theXYZ1.GetData();
+    const Standard_Real* aPtr2   = theXYZ2.GetData();
+    const Standard_Real* aPtr3   = theXYZ3.GetData();
+    Standard_Real*       aResult = ChangeData();
+
+    for (int i = 0; i < 3; ++i)
+    {
+      aResult[i] = theA1 * aPtr1[i] + theA2 * aPtr2[i] + theA3 * aPtr3[i];
+    }
   }
 
   //! <me> is set to the following linear form :
@@ -421,9 +435,15 @@ public:
                      const gp_XYZ&       theXYZ2,
                      const gp_XYZ&       theXYZ3)
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theXYZ3.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theXYZ3.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theXYZ3.z;
+    const Standard_Real* aPtr1   = theXYZ1.GetData();
+    const Standard_Real* aPtr2   = theXYZ2.GetData();
+    const Standard_Real* aPtr3   = theXYZ3.GetData();
+    Standard_Real*       aResult = ChangeData();
+
+    for (int i = 0; i < 3; ++i)
+    {
+      aResult[i] = theA1 * aPtr1[i] + theA2 * aPtr2[i] + aPtr3[i];
+    }
   }
 
   //! <me> is set to the following linear form :
@@ -481,11 +501,11 @@ private:
 //=======================================================================
 inline void gp_XYZ::Cross(const gp_XYZ& theRight)
 {
-  Standard_Real aXresult = y * theRight.z - z * theRight.y;
-  Standard_Real aYresult = z * theRight.x - x * theRight.z;
-  z                      = x * theRight.y - y * theRight.x;
-  x                      = aXresult;
-  y                      = aYresult;
+  const Standard_Real aXresult = y * theRight.z - z * theRight.y;
+  const Standard_Real aYresult = z * theRight.x - x * theRight.z;
+  z                            = x * theRight.y - y * theRight.x;
+  x                            = aXresult;
+  y                            = aYresult;
 }
 
 //=======================================================================
@@ -494,10 +514,10 @@ inline void gp_XYZ::Cross(const gp_XYZ& theRight)
 //=======================================================================
 inline Standard_Real gp_XYZ::CrossMagnitude(const gp_XYZ& theRight) const
 {
-  Standard_Real aXresult = y * theRight.z - z * theRight.y;
-  Standard_Real aYresult = z * theRight.x - x * theRight.z;
-  Standard_Real aZresult = x * theRight.y - y * theRight.x;
-  return sqrt(aXresult * aXresult + aYresult * aYresult + aZresult * aZresult);
+  const Standard_Real aXresult = y * theRight.z - z * theRight.y;
+  const Standard_Real aYresult = z * theRight.x - x * theRight.z;
+  const Standard_Real aZresult = x * theRight.y - y * theRight.x;
+  return std::hypot(aXresult, aYresult, aZresult);
 }
 
 //=======================================================================
@@ -506,9 +526,9 @@ inline Standard_Real gp_XYZ::CrossMagnitude(const gp_XYZ& theRight) const
 //=======================================================================
 inline Standard_Real gp_XYZ::CrossSquareMagnitude(const gp_XYZ& theRight) const
 {
-  Standard_Real aXresult = y * theRight.z - z * theRight.y;
-  Standard_Real aYresult = z * theRight.x - x * theRight.z;
-  Standard_Real aZresult = x * theRight.y - y * theRight.x;
+  const Standard_Real aXresult = y * theRight.z - z * theRight.y;
+  const Standard_Real aYresult = z * theRight.x - x * theRight.z;
+  const Standard_Real aZresult = x * theRight.y - y * theRight.x;
   return aXresult * aXresult + aYresult * aYresult + aZresult * aZresult;
 }
 
@@ -518,14 +538,18 @@ inline Standard_Real gp_XYZ::CrossSquareMagnitude(const gp_XYZ& theRight) const
 //=======================================================================
 inline void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2)
 {
-  Standard_Real aXresult = y * (theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x)
-                           - z * (theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z);
-  Standard_Real anYresult = z * (theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y)
-                            - x * (theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x);
-  z = x * (theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z)
-      - y * (theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y);
+  // First compute theCoord1 × theCoord2
+  const Standard_Real aCrossX = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
+  const Standard_Real aCrossY = theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z;
+  const Standard_Real aCrossZ = theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x;
+
+  // Then compute this × (theCoord1 × theCoord2)
+  const Standard_Real aXresult = y * aCrossZ - z * aCrossY;
+  const Standard_Real aYresult = z * aCrossX - x * aCrossZ;
+
+  z = x * aCrossY - y * aCrossX;
   x = aXresult;
-  y = anYresult;
+  y = aYresult;
 }
 
 //=======================================================================
@@ -534,9 +558,9 @@ inline void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2)
 //=======================================================================
 inline Standard_Real gp_XYZ::DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const
 {
-  Standard_Real aXresult  = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
-  Standard_Real anYresult = theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z;
-  Standard_Real aZresult  = theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x;
+  const Standard_Real aXresult  = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
+  const Standard_Real anYresult = theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z;
+  const Standard_Real aZresult  = theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x;
   return (x * aXresult + y * anYresult + z * aZresult);
 }
 
@@ -546,13 +570,19 @@ inline Standard_Real gp_XYZ::DotCross(const gp_XYZ& theCoord1, const gp_XYZ& the
 //=======================================================================
 inline void gp_XYZ::Multiply(const gp_Mat& theMatrix)
 {
-  Standard_Real aXresult =
-    theMatrix.Value(1, 1) * x + theMatrix.Value(1, 2) * y + theMatrix.Value(1, 3) * z;
-  Standard_Real anYresult =
-    theMatrix.Value(2, 1) * x + theMatrix.Value(2, 2) * y + theMatrix.Value(2, 3) * z;
-  z = theMatrix.Value(3, 1) * x + theMatrix.Value(3, 2) * y + theMatrix.Value(3, 3) * z;
-  x = aXresult;
-  y = anYresult;
+  // Cache original coordinates to avoid aliasing issues
+  const Standard_Real aOrigX = x;
+  const Standard_Real aOrigY = y;
+  const Standard_Real aOrigZ = z;
+
+  // Matrix-vector multiplication: this = theMatrix * this
+  // Direct access to matrix data for optimal performance (gp_XYZ is friend of gp_Mat)
+  x = theMatrix.myMat[0][0] * aOrigX + theMatrix.myMat[0][1] * aOrigY
+      + theMatrix.myMat[0][2] * aOrigZ;
+  y = theMatrix.myMat[1][0] * aOrigX + theMatrix.myMat[1][1] * aOrigY
+      + theMatrix.myMat[1][2] * aOrigZ;
+  z = theMatrix.myMat[2][0] * aOrigX + theMatrix.myMat[2][1] * aOrigY
+      + theMatrix.myMat[2][2] * aOrigZ;
 }
 
 //=======================================================================

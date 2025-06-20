@@ -18,6 +18,7 @@
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_DomainError.hxx>
+#include <cmath>
 
 class gp_Dir;
 class gp_Pnt;
@@ -129,7 +130,7 @@ public:
   //! Other.Magnitude() <= Resolution from gp
   Standard_Boolean IsOpposite(const gp_Vec& theOther, const Standard_Real theAngularTolerance) const
   {
-    Standard_Real anAng = M_PI - Angle(theOther);
+    const Standard_Real anAng = M_PI - Angle(theOther);
     return anAng <= theAngularTolerance;
   }
 
@@ -141,7 +142,7 @@ public:
   //! Other.Magnitude() <= Resolution from gp
   Standard_Boolean IsParallel(const gp_Vec& theOther, const Standard_Real theAngularTolerance) const
   {
-    Standard_Real anAng = Angle(theOther);
+    const Standard_Real anAng = Angle(theOther);
     return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
   }
 
@@ -303,7 +304,7 @@ public:
   //! lower or equal to Resolution from gp.
   void Normalize()
   {
-    Standard_Real aD = coord.Modulus();
+    const Standard_Real aD = coord.Modulus();
     Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
                                         "gp_Vec::Normalize() - vector has zero norm");
     coord.Divide(aD);
@@ -385,26 +386,26 @@ public:
     coord.SetLinearForm(theV1.coord, theV2.coord);
   }
 
-  Standard_EXPORT void Mirror(const gp_Vec& theV);
+  Standard_EXPORT void Mirror(const gp_Vec& theVec);
 
   //! Performs the symmetrical transformation of a vector
-  //! with respect to the vector theV which is the center of
+  //! with respect to the vector theVec which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theV) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Vec& theVec) const;
 
-  Standard_EXPORT void Mirror(const gp_Ax1& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax1& theAxis);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax1& theAxis) const;
 
-  Standard_EXPORT void Mirror(const gp_Ax2& theA2);
+  Standard_EXPORT void Mirror(const gp_Ax2& theAxis);
 
   //! Performs the symmetrical transformation of a vector
-  //! with respect to a plane. The axis placement theA2 locates
+  //! with respect to a plane. The axis placement theAxis locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theA2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec Mirrored(const gp_Ax2& theAxis) const;
 
   void Rotate(const gp_Ax1& theA1, const Standard_Real theAng);
 
@@ -412,9 +413,9 @@ public:
   //! theAng is the angular value of the rotation in radians.
   Standard_NODISCARD gp_Vec Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
   {
-    gp_Vec aVres = *this;
-    aVres.Rotate(theA1, theAng);
-    return aVres;
+    gp_Vec aResult = *this;
+    aResult.Rotate(theA1, theAng);
+    return aResult;
   }
 
   void Scale(const Standard_Real theS) { coord.Multiply(theS); }
@@ -427,15 +428,15 @@ public:
     return aV;
   }
 
-  //! Transforms a vector with the transformation theT.
-  Standard_EXPORT void Transform(const gp_Trsf& theT);
+  //! Transforms a vector with the transformation theTransformation.
+  Standard_EXPORT void Transform(const gp_Trsf& theTransformation);
 
-  //! Transforms a vector with the transformation theT.
-  Standard_NODISCARD gp_Vec Transformed(const gp_Trsf& theT) const
+  //! Transforms a vector with the transformation theTransformation.
+  Standard_NODISCARD gp_Vec Transformed(const gp_Trsf& theTransformation) const
   {
-    gp_Vec aV = *this;
-    aV.Transform(theT);
-    return aV;
+    gp_Vec aResult = *this;
+    aResult.Transform(theTransformation);
+    return aResult;
   }
 
   //! Dumps the content of me into the stream
@@ -474,11 +475,7 @@ inline gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
 inline Standard_Boolean gp_Vec::IsNormal(const gp_Vec&       theOther,
                                          const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = M_PI / 2.0 - Angle(theOther);
-  if (anAng < 0)
-  {
-    anAng = -anAng;
-  }
+  const Standard_Real anAng = Abs(M_PI_2 - Angle(theOther));
   return anAng <= theAngularTolerance;
 }
 
@@ -513,7 +510,7 @@ inline Standard_Real gp_Vec::AngleWithRef(const gp_Vec& theOther, const gp_Vec& 
 //=======================================================================
 inline gp_Vec gp_Vec::Normalized() const
 {
-  Standard_Real aD = coord.Modulus();
+  const Standard_Real aD = coord.Modulus();
   Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
                                       "gp_Vec::Normalized() - vector has zero norm");
   gp_Vec aV = *this;
@@ -527,9 +524,9 @@ inline gp_Vec gp_Vec::Normalized() const
 //=======================================================================
 inline void gp_Vec::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 {
-  gp_Trsf aT;
-  aT.SetRotation(theA1, theAng);
-  coord.Multiply(aT.VectorialPart());
+  gp_Trsf aTransformation;
+  aTransformation.SetRotation(theA1, theAng);
+  coord.Multiply(aTransformation.VectorialPart());
 }
 
 //=======================================================================
