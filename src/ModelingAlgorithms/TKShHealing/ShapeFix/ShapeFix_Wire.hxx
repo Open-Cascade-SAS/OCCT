@@ -130,7 +130,7 @@ public:
   void SetFace(const TopoDS_Face& theFace, const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
 
   //! Set surface analysis for the wire
-  Standard_EXPORT void SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
+  void SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
 
   //! Set surface for the wire
   void SetSurface(const Handle(Geom_Surface)& surf);
