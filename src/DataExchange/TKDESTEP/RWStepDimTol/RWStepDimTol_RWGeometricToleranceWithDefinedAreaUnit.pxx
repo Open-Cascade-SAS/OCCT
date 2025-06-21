@@ -35,22 +35,23 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit();
+  inline RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit();
 
   //! Reads GeometricToleranceWithDefinedAreaUnit
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          data,
     const Standard_Integer                                          num,
     Handle(Interface_Check)&                                        ach,
     const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const;
 
   //! Writes GeometricToleranceWithDefinedAreaUnit
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                            SW,
     const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent,
+  inline void Share(const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent,
                              Interface_EntityIterator& iter) const;
 };
+#include "RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit_impl.pxx"
 #endif // _RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit_HeaderFile

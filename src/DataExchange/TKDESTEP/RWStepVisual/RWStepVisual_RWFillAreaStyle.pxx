@@ -34,21 +34,22 @@ class RWStepVisual_RWFillAreaStyle
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWFillAreaStyle();
+  inline RWStepVisual_RWFillAreaStyle();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&  data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
                                 const Standard_Integer                  num,
                                 Handle(Interface_Check)&                ach,
                                 const Handle(StepVisual_FillAreaStyle)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                    SW,
+  inline void WriteStep(StepData_StepWriter&                    SW,
                                  const Handle(StepVisual_FillAreaStyle)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_FillAreaStyle)& ent,
+  inline void Share(const Handle(StepVisual_FillAreaStyle)& ent,
                              Interface_EntityIterator&               iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepVisual_RWFillAreaStyle_impl.pxx"
 #endif // _RWStepVisual_RWFillAreaStyle_HeaderFile

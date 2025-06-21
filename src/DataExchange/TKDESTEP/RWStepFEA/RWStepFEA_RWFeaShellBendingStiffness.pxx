@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWFeaShellBendingStiffness();
+  inline RWStepFEA_RWFeaShellBendingStiffness();
 
   //! Reads FeaShellBendingStiffness
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&          data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&          data,
                                 const Standard_Integer                          num,
                                 Handle(Interface_Check)&                        ach,
                                 const Handle(StepFEA_FeaShellBendingStiffness)& ent) const;
 
   //! Writes FeaShellBendingStiffness
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                            SW,
+  inline void WriteStep(StepData_StepWriter&                            SW,
                                  const Handle(StepFEA_FeaShellBendingStiffness)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_FeaShellBendingStiffness)& ent,
+  inline void Share(const Handle(StepFEA_FeaShellBendingStiffness)& ent,
                              Interface_EntityIterator&                       iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWFeaShellBendingStiffness_impl.pxx"
 #endif // _RWStepFEA_RWFeaShellBendingStiffness_HeaderFile

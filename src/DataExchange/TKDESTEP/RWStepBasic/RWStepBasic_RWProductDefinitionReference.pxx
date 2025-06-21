@@ -33,17 +33,18 @@ class RWStepBasic_RWProductDefinitionReference
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepBasic_RWProductDefinitionReference();
+  inline RWStepBasic_RWProductDefinitionReference();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&              data,
+  inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                                 const Standard_Integer                              num,
                                 Handle(Interface_Check)&                            ach,
                                 const Handle(StepBasic_ProductDefinitionReference)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                SW,
+  inline void WriteStep(StepData_StepWriter&                                SW,
                                  const Handle(StepBasic_ProductDefinitionReference)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepBasic_ProductDefinitionReference)& ent,
+  inline void Share(const Handle(StepBasic_ProductDefinitionReference)& ent,
                              Interface_EntityIterator&                           iter) const;
 };
+#include "RWStepBasic_RWProductDefinitionReference_impl.pxx"
 #endif // _RWStepBasic_RWProductDefinitionReference_HeaderFile

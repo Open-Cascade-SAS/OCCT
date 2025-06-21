@@ -34,20 +34,21 @@ class RWStepVisual_RWComplexTriangulatedSurfaceSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWComplexTriangulatedSurfaceSet();
+  inline RWStepVisual_RWComplexTriangulatedSurfaceSet();
 
-  Standard_HIDDEN void ReadStep(
+  inline void ReadStep(
     const Handle(StepData_StepReaderData)&                  theData,
     const Standard_Integer                                  theNum,
     Handle(Interface_Check)&                                theCheck,
     const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  inline void WriteStep(
     StepData_StepWriter&                                    theSW,
     const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt,
+  inline void Share(const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt,
                              Interface_EntityIterator&                               theIter) const;
 };
 
+#include "RWStepVisual_RWComplexTriangulatedSurfaceSet_impl.pxx"
 #endif // _RWStepVisual_RWComplexTriangulatedSurfaceSet_HeaderFile_

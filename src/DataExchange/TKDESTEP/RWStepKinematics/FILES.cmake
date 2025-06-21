@@ -2,152 +2,152 @@
 set(OCCT_RWStepKinematics_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepKinematics_FILES
-  RWStepKinematics_RWActuatedKinematicPair.cxx
+  RWStepKinematics_RWActuatedKinematicPair_impl.pxx
   RWStepKinematics_RWActuatedKinematicPair.pxx
-  RWStepKinematics_RWContextDependentKinematicLinkRepresentation.cxx
+  RWStepKinematics_RWContextDependentKinematicLinkRepresentation_impl.pxx
   RWStepKinematics_RWContextDependentKinematicLinkRepresentation.pxx
-  RWStepKinematics_RWCylindricalPair.cxx
+  RWStepKinematics_RWCylindricalPair_impl.pxx
   RWStepKinematics_RWCylindricalPair.pxx
-  RWStepKinematics_RWCylindricalPairValue.cxx
+  RWStepKinematics_RWCylindricalPairValue_impl.pxx
   RWStepKinematics_RWCylindricalPairValue.pxx
-  RWStepKinematics_RWCylindricalPairWithRange.cxx
+  RWStepKinematics_RWCylindricalPairWithRange_impl.pxx
   RWStepKinematics_RWCylindricalPairWithRange.pxx
-  RWStepKinematics_RWFullyConstrainedPair.cxx
+  RWStepKinematics_RWFullyConstrainedPair_impl.pxx
   RWStepKinematics_RWFullyConstrainedPair.pxx
-  RWStepKinematics_RWGearPair.cxx
+  RWStepKinematics_RWGearPair_impl.pxx
   RWStepKinematics_RWGearPair.pxx
-  RWStepKinematics_RWGearPairValue.cxx
+  RWStepKinematics_RWGearPairValue_impl.pxx
   RWStepKinematics_RWGearPairValue.pxx
-  RWStepKinematics_RWGearPairWithRange.cxx
+  RWStepKinematics_RWGearPairWithRange_impl.pxx
   RWStepKinematics_RWGearPairWithRange.pxx
-  RWStepKinematics_RWHomokineticPair.cxx
+  RWStepKinematics_RWHomokineticPair_impl.pxx
   RWStepKinematics_RWHomokineticPair.pxx
-  RWStepKinematics_RWActuatedKinPairAndOrderKinPair.cxx
+  RWStepKinematics_RWActuatedKinPairAndOrderKinPair_impl.pxx
   RWStepKinematics_RWActuatedKinPairAndOrderKinPair.pxx
-  RWStepKinematics_RWKinematicJoint.cxx
+  RWStepKinematics_RWKinematicJoint_impl.pxx
   RWStepKinematics_RWKinematicJoint.pxx
-  RWStepKinematics_RWKinematicLink.cxx
+  RWStepKinematics_RWKinematicLink_impl.pxx
   RWStepKinematics_RWKinematicLink.pxx
-  RWStepKinematics_RWKinematicLinkRepresentationAssociation.cxx
+  RWStepKinematics_RWKinematicLinkRepresentationAssociation_impl.pxx
   RWStepKinematics_RWKinematicLinkRepresentationAssociation.pxx
-  RWStepKinematics_RWKinematicPropertyMechanismRepresentation.cxx
+  RWStepKinematics_RWKinematicPropertyMechanismRepresentation_impl.pxx
   RWStepKinematics_RWKinematicPropertyMechanismRepresentation.pxx
-  RWStepKinematics_RWKinematicTopologyStructure.cxx
+  RWStepKinematics_RWKinematicTopologyStructure_impl.pxx
   RWStepKinematics_RWKinematicTopologyStructure.pxx
-  RWStepKinematics_RWLinearFlexibleAndPinionPair.cxx
+  RWStepKinematics_RWLinearFlexibleAndPinionPair_impl.pxx
   RWStepKinematics_RWLinearFlexibleAndPinionPair.pxx
-  RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair.cxx
+  RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair_impl.pxx
   RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair.pxx
-  RWStepKinematics_RWLinearFlexibleLinkRepresentation.cxx
+  RWStepKinematics_RWLinearFlexibleLinkRepresentation_impl.pxx
   RWStepKinematics_RWLinearFlexibleLinkRepresentation.pxx
-  RWStepKinematics_RWLowOrderKinematicPair.cxx
+  RWStepKinematics_RWLowOrderKinematicPair_impl.pxx
   RWStepKinematics_RWLowOrderKinematicPair.pxx
-  RWStepKinematics_RWLowOrderKinematicPairValue.cxx
+  RWStepKinematics_RWLowOrderKinematicPairValue_impl.pxx
   RWStepKinematics_RWLowOrderKinematicPairValue.pxx
-  RWStepKinematics_RWLowOrderKinematicPairWithRange.cxx
+  RWStepKinematics_RWLowOrderKinematicPairWithRange_impl.pxx
   RWStepKinematics_RWLowOrderKinematicPairWithRange.pxx
-  RWStepKinematics_RWMechanismRepresentation.cxx
+  RWStepKinematics_RWMechanismRepresentation_impl.pxx
   RWStepKinematics_RWMechanismRepresentation.pxx
-  RWStepKinematics_RWMechanismStateRepresentation.cxx
+  RWStepKinematics_RWMechanismStateRepresentation_impl.pxx
   RWStepKinematics_RWMechanismStateRepresentation.pxx
-  RWStepKinematics_RWOrientedJoint.cxx
+  RWStepKinematics_RWOrientedJoint_impl.pxx
   RWStepKinematics_RWOrientedJoint.pxx
-  RWStepKinematics_RWPairRepresentationRelationship.cxx
+  RWStepKinematics_RWPairRepresentationRelationship_impl.pxx
   RWStepKinematics_RWPairRepresentationRelationship.pxx
-  RWStepKinematics_RWPlanarCurvePair.cxx
+  RWStepKinematics_RWPlanarCurvePair_impl.pxx
   RWStepKinematics_RWPlanarCurvePair.pxx
-  RWStepKinematics_RWPlanarCurvePairRange.cxx
+  RWStepKinematics_RWPlanarCurvePairRange_impl.pxx
   RWStepKinematics_RWPlanarCurvePairRange.pxx
-  RWStepKinematics_RWPlanarPair.cxx
+  RWStepKinematics_RWPlanarPair_impl.pxx
   RWStepKinematics_RWPlanarPair.pxx
-  RWStepKinematics_RWPlanarPairValue.cxx
+  RWStepKinematics_RWPlanarPairValue_impl.pxx
   RWStepKinematics_RWPlanarPairValue.pxx
-  RWStepKinematics_RWPlanarPairWithRange.cxx
+  RWStepKinematics_RWPlanarPairWithRange_impl.pxx
   RWStepKinematics_RWPlanarPairWithRange.pxx
-  RWStepKinematics_RWPointOnPlanarCurvePair.cxx
+  RWStepKinematics_RWPointOnPlanarCurvePair_impl.pxx
   RWStepKinematics_RWPointOnPlanarCurvePair.pxx
-  RWStepKinematics_RWPointOnPlanarCurvePairValue.cxx
+  RWStepKinematics_RWPointOnPlanarCurvePairValue_impl.pxx
   RWStepKinematics_RWPointOnPlanarCurvePairValue.pxx
-  RWStepKinematics_RWPointOnPlanarCurvePairWithRange.cxx
+  RWStepKinematics_RWPointOnPlanarCurvePairWithRange_impl.pxx
   RWStepKinematics_RWPointOnPlanarCurvePairWithRange.pxx
-  RWStepKinematics_RWPointOnSurfacePair.cxx
+  RWStepKinematics_RWPointOnSurfacePair_impl.pxx
   RWStepKinematics_RWPointOnSurfacePair.pxx
-  RWStepKinematics_RWPointOnSurfacePairValue.cxx
+  RWStepKinematics_RWPointOnSurfacePairValue_impl.pxx
   RWStepKinematics_RWPointOnSurfacePairValue.pxx
-  RWStepKinematics_RWPointOnSurfacePairWithRange.cxx
+  RWStepKinematics_RWPointOnSurfacePairWithRange_impl.pxx
   RWStepKinematics_RWPointOnSurfacePairWithRange.pxx
-  RWStepKinematics_RWPrismaticPair.cxx
+  RWStepKinematics_RWPrismaticPair_impl.pxx
   RWStepKinematics_RWPrismaticPair.pxx
-  RWStepKinematics_RWPrismaticPairValue.cxx
+  RWStepKinematics_RWPrismaticPairValue_impl.pxx
   RWStepKinematics_RWPrismaticPairValue.pxx
-  RWStepKinematics_RWPrismaticPairWithRange.cxx
+  RWStepKinematics_RWPrismaticPairWithRange_impl.pxx
   RWStepKinematics_RWPrismaticPairWithRange.pxx
-  RWStepKinematics_RWProductDefinitionKinematics.cxx
+  RWStepKinematics_RWProductDefinitionKinematics_impl.pxx
   RWStepKinematics_RWProductDefinitionKinematics.pxx
-  RWStepKinematics_RWProductDefinitionRelationshipKinematics.cxx
+  RWStepKinematics_RWProductDefinitionRelationshipKinematics_impl.pxx
   RWStepKinematics_RWProductDefinitionRelationshipKinematics.pxx
-  RWStepKinematics_RWRackAndPinionPair.cxx
+  RWStepKinematics_RWRackAndPinionPair_impl.pxx
   RWStepKinematics_RWRackAndPinionPair.pxx
-  RWStepKinematics_RWRackAndPinionPairValue.cxx
+  RWStepKinematics_RWRackAndPinionPairValue_impl.pxx
   RWStepKinematics_RWRackAndPinionPairValue.pxx
-  RWStepKinematics_RWRackAndPinionPairWithRange.cxx
+  RWStepKinematics_RWRackAndPinionPairWithRange_impl.pxx
   RWStepKinematics_RWRackAndPinionPairWithRange.pxx
-  RWStepKinematics_RWRevolutePair.cxx
+  RWStepKinematics_RWRevolutePair_impl.pxx
   RWStepKinematics_RWRevolutePair.pxx
-  RWStepKinematics_RWRevolutePairValue.cxx
+  RWStepKinematics_RWRevolutePairValue_impl.pxx
   RWStepKinematics_RWRevolutePairValue.pxx
-  RWStepKinematics_RWRevolutePairWithRange.cxx
+  RWStepKinematics_RWRevolutePairWithRange_impl.pxx
   RWStepKinematics_RWRevolutePairWithRange.pxx
-  RWStepKinematics_RWRigidLinkRepresentation.cxx
+  RWStepKinematics_RWRigidLinkRepresentation_impl.pxx
   RWStepKinematics_RWRigidLinkRepresentation.pxx
-  RWStepKinematics_RWRollingCurvePair.cxx
+  RWStepKinematics_RWRollingCurvePair_impl.pxx
   RWStepKinematics_RWRollingCurvePair.pxx
-  RWStepKinematics_RWRollingCurvePairValue.cxx
+  RWStepKinematics_RWRollingCurvePairValue_impl.pxx
   RWStepKinematics_RWRollingCurvePairValue.pxx
-  RWStepKinematics_RWRollingSurfacePair.cxx
+  RWStepKinematics_RWRollingSurfacePair_impl.pxx
   RWStepKinematics_RWRollingSurfacePair.pxx
-  RWStepKinematics_RWRollingSurfacePairValue.cxx
+  RWStepKinematics_RWRollingSurfacePairValue_impl.pxx
   RWStepKinematics_RWRollingSurfacePairValue.pxx
-  RWStepKinematics_RWRotationAboutDirection.cxx
+  RWStepKinematics_RWRotationAboutDirection_impl.pxx
   RWStepKinematics_RWRotationAboutDirection.pxx
-  RWStepKinematics_RWScrewPair.cxx
+  RWStepKinematics_RWScrewPair_impl.pxx
   RWStepKinematics_RWScrewPair.pxx
-  RWStepKinematics_RWScrewPairValue.cxx
+  RWStepKinematics_RWScrewPairValue_impl.pxx
   RWStepKinematics_RWScrewPairValue.pxx
-  RWStepKinematics_RWScrewPairWithRange.cxx
+  RWStepKinematics_RWScrewPairWithRange_impl.pxx
   RWStepKinematics_RWScrewPairWithRange.pxx
-  RWStepKinematics_RWSlidingCurvePair.cxx
+  RWStepKinematics_RWSlidingCurvePair_impl.pxx
   RWStepKinematics_RWSlidingCurvePair.pxx
-  RWStepKinematics_RWSlidingCurvePairValue.cxx
+  RWStepKinematics_RWSlidingCurvePairValue_impl.pxx
   RWStepKinematics_RWSlidingCurvePairValue.pxx
-  RWStepKinematics_RWSlidingSurfacePair.cxx
+  RWStepKinematics_RWSlidingSurfacePair_impl.pxx
   RWStepKinematics_RWSlidingSurfacePair.pxx
-  RWStepKinematics_RWSlidingSurfacePairValue.cxx
+  RWStepKinematics_RWSlidingSurfacePairValue_impl.pxx
   RWStepKinematics_RWSlidingSurfacePairValue.pxx
-  RWStepKinematics_RWSphericalPair.cxx
+  RWStepKinematics_RWSphericalPair_impl.pxx
   RWStepKinematics_RWSphericalPair.pxx
-  RWStepKinematics_RWSphericalPairValue.cxx
+  RWStepKinematics_RWSphericalPairValue_impl.pxx
   RWStepKinematics_RWSphericalPairValue.pxx
-  RWStepKinematics_RWSphericalPairWithPin.cxx
+  RWStepKinematics_RWSphericalPairWithPin_impl.pxx
   RWStepKinematics_RWSphericalPairWithPin.pxx
-  RWStepKinematics_RWSphericalPairWithPinAndRange.cxx
+  RWStepKinematics_RWSphericalPairWithPinAndRange_impl.pxx
   RWStepKinematics_RWSphericalPairWithPinAndRange.pxx
-  RWStepKinematics_RWSphericalPairWithRange.cxx
+  RWStepKinematics_RWSphericalPairWithRange_impl.pxx
   RWStepKinematics_RWSphericalPairWithRange.pxx
-  RWStepKinematics_RWSurfacePairWithRange.cxx
+  RWStepKinematics_RWSurfacePairWithRange_impl.pxx
   RWStepKinematics_RWSurfacePairWithRange.pxx
-  RWStepKinematics_RWKinematicTopologyDirectedStructure.cxx
+  RWStepKinematics_RWKinematicTopologyDirectedStructure_impl.pxx
   RWStepKinematics_RWKinematicTopologyDirectedStructure.pxx
-  RWStepKinematics_RWKinematicTopologyNetworkStructure.cxx
+  RWStepKinematics_RWKinematicTopologyNetworkStructure_impl.pxx
   RWStepKinematics_RWKinematicTopologyNetworkStructure.pxx
-  RWStepKinematics_RWUnconstrainedPair.cxx
+  RWStepKinematics_RWUnconstrainedPair_impl.pxx
   RWStepKinematics_RWUnconstrainedPair.pxx
-  RWStepKinematics_RWUnconstrainedPairValue.cxx
+  RWStepKinematics_RWUnconstrainedPairValue_impl.pxx
   RWStepKinematics_RWUnconstrainedPairValue.pxx
-  RWStepKinematics_RWUniversalPair.cxx
+  RWStepKinematics_RWUniversalPair_impl.pxx
   RWStepKinematics_RWUniversalPair.pxx
-  RWStepKinematics_RWUniversalPairValue.cxx
+  RWStepKinematics_RWUniversalPairValue_impl.pxx
   RWStepKinematics_RWUniversalPairValue.pxx
-  RWStepKinematics_RWUniversalPairWithRange.cxx
+  RWStepKinematics_RWUniversalPairWithRange_impl.pxx
   RWStepKinematics_RWUniversalPairWithRange.pxx
 )
