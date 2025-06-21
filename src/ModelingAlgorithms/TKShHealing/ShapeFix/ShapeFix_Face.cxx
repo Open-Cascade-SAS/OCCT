@@ -346,7 +346,7 @@ Standard_Boolean ShapeFix_Face::Perform()
   Standard_Real aSavPreci = Precision();
   if (NeedFix(myFixWireMode))
   {
-    theAdvFixWire->SetFace(myFace);
+    theAdvFixWire->SetFace(myFace, mySurf);
 
     Standard_Integer usFixLackingMode = theAdvFixWire->FixLackingMode();
     // Standard_Integer usFixNotchedEdgesMode = theAdvFixWire->FixNotchedEdgesMode(); // CR0024983
@@ -508,7 +508,7 @@ Standard_Boolean ShapeFix_Face::Perform()
     // perform second part of fixes on wires
     if (NeedFix(myFixWireMode))
     {
-      theAdvFixWire->SetFace(myFace);
+      theAdvFixWire->SetFace(myFace, mySurf);
 
       Standard_Integer usFixSmallMode       = theAdvFixWire->FixSmallMode();
       Standard_Integer usFixConnectedMode   = theAdvFixWire->FixConnectedMode();
@@ -1014,7 +1014,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
         bnd->Add(sbwd, k + 1);
         ws.Remove(i--);
         nb--;
-        myFixWire->SetFace(myFace);
+        myFixWire->SetFace(myFace, mySurf);
         myFixWire->Load(bnd);
         myFixWire->FixConnected();
         myFixWire->FixDegenerated();
@@ -1901,7 +1901,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
 
   // sort original wires
   Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
-  sfw->SetFace(myFace);
+  sfw->SetFace(myFace, mySurf);
   sfw->SetPrecision(Precision());
   Handle(ShapeExtend_WireData) wd1 = new ShapeExtend_WireData(w1);
   Handle(ShapeExtend_WireData) wd2 = new ShapeExtend_WireData(w2);
