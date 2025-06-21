@@ -156,6 +156,22 @@ void ShapeAnalysis_Wire::SetFace(const TopoDS_Face& face)
 
 //=================================================================================================
 
+void ShapeAnalysis_Wire::SetFace(const TopoDS_Face&                   theFace,
+                                 const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis)
+{
+  myFace = theFace;
+  mySurf = theSurfaceAnalysis;
+}
+
+//=================================================================================================
+
+void ShapeAnalysis_Wire::SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis)
+{
+  mySurf = theSurfaceAnalysis;
+}
+
+//=================================================================================================
+
 void ShapeAnalysis_Wire::SetSurface(const Handle(Geom_Surface)& surface)
 {
   SetSurface(surface, TopLoc_Location());
