@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepBasic_RWSiUnit.pxx"
 #include "RWStepBasic_RWSiUnitAndMassUnit.pxx"
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiPrefix.hxx>
@@ -19,6 +18,9 @@
 #include <StepBasic_SiUnitName.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
+
+#include "RWStepBasic_RWSiUnitName.pxx"
+#include "RWStepBasic_RWSiPrefix.pxx"
 
 //=================================================================================================
 
@@ -60,15 +62,14 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderD
     return;
 
   // --- field : prefix ---
-  RWStepBasic_RWSiUnit reader;
-  StepBasic_SiPrefix   aPrefix    = StepBasic_spExa;
-  Standard_Boolean     hasAprefix = Standard_False;
+  StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
+  Standard_Boolean   hasAprefix = Standard_False;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
     {
       Standard_CString text = data->ParamCValue(num, 1);
-      hasAprefix            = reader.DecodePrefix(aPrefix, text);
+      hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
         ach->AddFail("Enumeration si_prefix has not an allowed value");
@@ -87,7 +88,7 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderD
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 2);
-    if (!reader.DecodeName(aName, text))
+    if (!RWStepBasic_RWSiUnitName::ConvertToEnum(text, aName))
     {
       ach->AddFail("Enumeration si_unit_name has not an allowed value");
       return;
@@ -122,13 +123,12 @@ void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(
   SW.StartEntity("SI_UNIT");
 
   // --- field : prefix ---
-  RWStepBasic_RWSiUnit writer;
-  Standard_Boolean     hasAprefix = ent->HasPrefix();
+  Standard_Boolean hasAprefix = ent->HasPrefix();
   if (hasAprefix)
-    SW.SendEnum(writer.EncodePrefix(ent->Prefix()));
+    SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else
     SW.SendUndef();
 
   // --- field : name ---
-  SW.SendEnum(writer.EncodeName(ent->Name()));
+  SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));
 }

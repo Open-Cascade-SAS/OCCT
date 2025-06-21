@@ -19,10 +19,7 @@
 #include <StepShape_SolidModel.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : BooleanOperator ---
-static TCollection_AsciiString boDifference(".DIFFERENCE.");
-static TCollection_AsciiString boIntersection(".INTERSECTION.");
-static TCollection_AsciiString boUnion(".UNION.");
+#include "RWStepShape_RWBooleanOperator.pxx"
 
 RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
 
@@ -49,14 +46,10 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
   if (data->ParamType(num, 2) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 2);
-    if (boDifference.IsEqual(text))
-      aOperator = StepShape_boDifference;
-    else if (boIntersection.IsEqual(text))
-      aOperator = StepShape_boIntersection;
-    else if (boUnion.IsEqual(text))
-      aOperator = StepShape_boUnion;
-    else
+    if (!RWStepShape_RWBooleanOperator::ConvertToEnum(text, aOperator))
+    {
       ach->AddFail("Enumeration boolean_operator has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #2 (operator) is not an enumeration");
@@ -117,18 +110,7 @@ void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                
 
   // --- own field : operator ---
 
-  switch (ent->Operator())
-  {
-    case StepShape_boDifference:
-      SW.SendEnum(boDifference);
-      break;
-    case StepShape_boIntersection:
-      SW.SendEnum(boIntersection);
-      break;
-    case StepShape_boUnion:
-      SW.SendEnum(boUnion);
-      break;
-  }
+  SW.SendEnum(RWStepShape_RWBooleanOperator::ConvertToString(ent->Operator()));
 
   // --- own field : firstOperand ---
   // --- idem au ReadStep : il faut envoyer le bon type :
