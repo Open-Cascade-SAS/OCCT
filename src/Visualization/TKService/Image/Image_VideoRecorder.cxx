@@ -38,11 +38,11 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
 #endif
 
-IMPLEMENT_STANDARD_RTTIEXT(Image_VideoRecorder, Standard_Transient)
+  IMPLEMENT_STANDARD_RTTIEXT(Image_VideoRecorder, Standard_Transient)
 
-//=================================================================================================
+  //=================================================================================================
 
-Image_VideoRecorder::Image_VideoRecorder()
+  Image_VideoRecorder::Image_VideoRecorder()
     : myAVContext(NULL),
       myVideoStream(NULL),
       myVideoCodec(NULL),
@@ -86,9 +86,9 @@ AVCodecContext* Image_VideoRecorder::getCodecContext() const
 {
 #ifdef HAVE_FFMPEG
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
-    return myCodecCtx;
+  return myCodecCtx;
   #else
-    return myVideoStream != NULL ? myVideoStream->codec : NULL;
+  return myVideoStream != NULL ? myVideoStream->codec : NULL;
   #endif
 #else
   return NULL;
@@ -124,15 +124,15 @@ void Image_VideoRecorder::Close()
   // close each codec
   if (myVideoStream != NULL)
   {
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
     if (myCodecCtx != NULL)
     {
       avcodec_free_context(&myCodecCtx);
       myCodecCtx = NULL;
     }
-#else
+  #else
     avcodec_close(myVideoStream->codec);
-#endif
+  #endif
     myVideoStream = NULL;
   }
   if (myFrame != NULL)
@@ -261,7 +261,7 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
   }
   myVideoStream->id = myAVContext->nb_streams - 1;
 
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   // For FFmpeg 5.0+, allocate and use separate codec context
   myCodecCtx = avcodec_alloc_context3(myVideoCodec);
   if (myCodecCtx == NULL)
@@ -270,12 +270,12 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
     return Standard_False;
   }
   AVCodecContext* aCodecCtx = myCodecCtx;
-#else
+  #else
   // For FFmpeg 4.x, use stream's codec context
   AVCodecContext* aCodecCtx = myVideoStream->codec;
-#endif
+  #endif
 
-  aCodecCtx->codec_id       = aCodecId;
+  aCodecCtx->codec_id = aCodecId;
   // resolution must be a multiple of two
   aCodecCtx->width  = theParams.Width;
   aCodecCtx->height = theParams.Height;
@@ -292,14 +292,14 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
     aCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   // Copy codec context parameters to stream
   if (avcodec_parameters_from_context(myVideoStream->codecpar, aCodecCtx) < 0)
   {
     ::Message::SendFail("Error: can not copy codec parameters to stream");
     return Standard_False;
   }
-#endif
+  #endif
   return Standard_True;
 #else
   (void)theParams;
@@ -490,18 +490,18 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
               myFrame->linesize);
   }
 
-#if FFMPEG_HAVE_NEW_DECODE_API
+  #if FFMPEG_HAVE_NEW_DECODE_API
   // New API: use avcodec_send_frame/avcodec_receive_packet
   if (!theToFlush)
   {
     myFrame->pts = myFrameCount;
-    aResAv = avcodec_send_frame(aCodecCtx, myFrame);
+    aResAv       = avcodec_send_frame(aCodecCtx, myFrame);
   }
   else
   {
     aResAv = avcodec_send_frame(aCodecCtx, NULL); // flush
   }
-  
+
   if (aResAv < 0)
   {
     ::Message::SendFail(TCollection_AsciiString("Error: can not send frame to encoder, ")
@@ -512,7 +512,7 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
   while (aResAv >= 0)
   {
     AVPacket* aPacket = av_packet_alloc();
-    aResAv = avcodec_receive_packet(aCodecCtx, aPacket);
+    aResAv            = avcodec_receive_packet(aCodecCtx, aPacket);
     if (aResAv == AVERROR(EAGAIN) || aResAv == AVERROR_EOF)
     {
       av_packet_free(&aPacket);
@@ -527,21 +527,22 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
     }
 
     // rescale output packet timestamp values from codec to stream timebase
-    aPacket->pts          = av_rescale_q_rnd(aPacket->pts,
-                                   aCodecCtx->time_base,
-                                   myVideoStream->time_base,
-                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-    aPacket->dts          = av_rescale_q_rnd(aPacket->dts,
-                                   aCodecCtx->time_base,
-                                   myVideoStream->time_base,
-                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-    aPacket->duration     = av_rescale_q(aPacket->duration, aCodecCtx->time_base, myVideoStream->time_base);
+    aPacket->pts = av_rescale_q_rnd(aPacket->pts,
+                                    aCodecCtx->time_base,
+                                    myVideoStream->time_base,
+                                    AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket->dts = av_rescale_q_rnd(aPacket->dts,
+                                    aCodecCtx->time_base,
+                                    myVideoStream->time_base,
+                                    AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket->duration =
+      av_rescale_q(aPacket->duration, aCodecCtx->time_base, myVideoStream->time_base);
     aPacket->stream_index = myVideoStream->index;
 
     // write the compressed frame to the media file
     aResAv = av_interleaved_write_frame(myAVContext, aPacket);
     av_packet_free(&aPacket);
-    
+
     if (aResAv < 0)
     {
       ::Message::SendFail(TCollection_AsciiString("Error: can not write video frame, ")
@@ -549,7 +550,7 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
       return Standard_False;
     }
   }
-#else
+  #else
   // Old API: use avcodec_encode_video2
   AVPacket aPacket;
   memset(&aPacket, 0, sizeof(aPacket));
@@ -601,7 +602,7 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
                         + formatAvError(aResAv));
     return Standard_False;
   }
-#endif
+  #endif
 
   ++myFrameCount;
   return Standard_True;

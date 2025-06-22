@@ -366,7 +366,7 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
   AVCodecContext* aCodecCtx = theCodecCtx;
   if (aCodecCtx == NULL)
   {
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
     // For new API, need to allocate context and copy parameters
     aCodecCtx = avcodec_alloc_context3(NULL);
     if (aCodecCtx != NULL && avcodec_parameters_to_context(aCodecCtx, aStream.codecpar) < 0)
@@ -374,42 +374,45 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
       avcodec_free_context(&aCodecCtx);
       aCodecCtx = NULL;
     }
-#else
+  #else
     Standard_DISABLE_DEPRECATION_WARNINGS aCodecCtx = aStream.codec;
     Standard_ENABLE_DEPRECATION_WARNINGS
-#endif
+  #endif
   }
 
   char aFrmtBuff[4096] = {};
-#if FFMPEG_NEW_API
+  #if FFMPEG_NEW_API
   // avcodec_string was removed in newer FFmpeg versions
   if (aCodecCtx != NULL)
   {
-    Sprintf(aFrmtBuff, "Stream #%d: %s", theIndex, aCodecCtx->codec ? aCodecCtx->codec->long_name : "Unknown");
+    Sprintf(aFrmtBuff,
+            "Stream #%d: %s",
+            theIndex,
+            aCodecCtx->codec ? aCodecCtx->codec->long_name : "Unknown");
   }
   else
   {
     Sprintf(aFrmtBuff, "Stream #%d: Unknown", theIndex);
   }
-#else
+  #else
   avcodec_string(aFrmtBuff, sizeof(aFrmtBuff), aCodecCtx, 0);
-#endif
+  #endif
   TCollection_AsciiString aStreamInfo(aFrmtBuff);
 
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   // Clean up allocated context if we created it
   if (theCodecCtx == NULL && aCodecCtx != NULL)
   {
     avcodec_free_context(&aCodecCtx);
   }
-#endif
+  #endif
 
   if (aStream.sample_aspect_ratio.num
-#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
       && av_cmp_q(aStream.sample_aspect_ratio, aStream.codecpar->sample_aspect_ratio) != 0)
-#else
+  #else
       && av_cmp_q(aStream.sample_aspect_ratio, aStream.codec->sample_aspect_ratio) != 0)
-#endif
+  #endif
   {
     AVRational aDispAspectRatio;
     av_reduce(&aDispAspectRatio.num,
@@ -494,11 +497,11 @@ bool Media_FormatContext::SeekStream(unsigned int theStreamId,
   // try 10 more times in backward direction to work-around huge duration between key frames
   // will not work for some streams with undefined cur_dts (AV_NOPTS_VALUE)!!!
   for (int aTries = 10;
-#if FFMPEG_NEW_API
+  #if FFMPEG_NEW_API
        isSeekDone && theToSeekBack && aTries > 0; // cur_dts removed in newer FFmpeg
-#else
+  #else
        isSeekDone && theToSeekBack && aTries > 0 && (aStream.cur_dts > aSeekTarget);
-#endif
+  #endif
        --aTries)
   {
     aSeekTarget -= StreamSecondsToUnits(aStream, 1.0);
