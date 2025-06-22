@@ -1,0 +1,558 @@
+// Created on: 2025-06-22
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//! FFmpeg compatibility layer for OCCT
+//!
+//! Provides compatibility between FFmpeg 4.4.x and 7.1.x by wrapping
+//! deprecated/removed functions and handling API changes automatically.
+
+#ifndef _FFmpeg_Compatibility_HeaderFile
+#define _FFmpeg_Compatibility_HeaderFile
+
+#ifdef HAVE_FFMPEG
+
+  // activate some C99 macros like UINT64_C in "stdint.h" which used by FFmpeg
+  #ifndef __STDC_CONSTANT_MACROS
+    #define __STDC_CONSTANT_MACROS
+  #endif
+
+  // Standard C headers needed for compilation
+  #include <stdint.h>
+
+  #include <Standard_WarningsDisable.hxx>
+extern "C"
+{
+  #include <libavcodec/avcodec.h>
+  #include <libavformat/avformat.h>
+  #include <libavutil/imgutils.h>
+  #include <libswscale/swscale.h>
+};
+  #include <Standard_WarningsRestore.hxx>
+
+  // Version detection macros
+  #define FFMPEG_VERSION_4_4 AV_VERSION_INT(58, 0, 0)
+  #define FFMPEG_VERSION_5_0 AV_VERSION_INT(59, 0, 0)
+  #define FFMPEG_VERSION_6_0 AV_VERSION_INT(60, 0, 0)
+  #define FFMPEG_VERSION_7_0 AV_VERSION_INT(61, 0, 0)
+
+  // Check if we're using FFmpeg 5.0+ (major API change point)
+  #if LIBAVCODEC_VERSION_INT >= FFMPEG_VERSION_5_0
+    #define FFMPEG_NEW_API 1
+  #else
+    #define FFMPEG_NEW_API 0
+  #endif
+
+  // Additional version checks for specific functions
+  #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 37, 100)
+    #define FFMPEG_HAVE_NEW_DECODE_API 1
+  #else
+    #define FFMPEG_HAVE_NEW_DECODE_API 0
+  #endif
+
+  #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(58, 0, 0)
+    #define FFMPEG_HAVE_AVCODEC_PARAMETERS 1
+  #else
+    #define FFMPEG_HAVE_AVCODEC_PARAMETERS 0
+  #endif
+
+  // Constant compatibility for different FFmpeg versions
+
+  // Error buffer size might be different
+  #ifndef AV_ERROR_MAX_STRING_SIZE
+    #define AV_ERROR_MAX_STRING_SIZE 64
+  #endif
+
+  // Codec flags compatibility
+  #ifndef AV_CODEC_FLAG_GLOBAL_HEADER
+    #define AV_CODEC_FLAG_GLOBAL_HEADER CODEC_FLAG_GLOBAL_HEADER
+  #endif
+
+  // Pixel format compatibility - old names to new names
+  #ifndef AV_PIX_FMT_YUV420P
+    #define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
+  #endif
+  #ifndef AV_PIX_FMT_RGBA
+    #define AV_PIX_FMT_RGBA PIX_FMT_RGBA
+  #endif
+  #ifndef AV_PIX_FMT_RGB24
+    #define AV_PIX_FMT_RGB24 PIX_FMT_RGB24
+  #endif
+  #ifndef AV_PIX_FMT_NONE
+    #define AV_PIX_FMT_NONE PIX_FMT_NONE
+  #endif
+  #ifndef AV_PIX_FMT_YUVJ420P
+    #define AV_PIX_FMT_YUVJ420P PIX_FMT_YUVJ420P
+  #endif
+
+  // For old FFmpeg versions that don't have AV_PIX_FMT_* constants
+  #ifndef PIX_FMT_YUV420P
+    #define PIX_FMT_YUV420P AV_PIX_FMT_YUV420P
+  #endif
+  #ifndef PIX_FMT_RGBA
+    #define PIX_FMT_RGBA AV_PIX_FMT_RGBA
+  #endif
+  #ifndef PIX_FMT_RGB24
+    #define PIX_FMT_RGB24 AV_PIX_FMT_RGB24
+  #endif
+  #ifndef PIX_FMT_NONE
+    #define PIX_FMT_NONE AV_PIX_FMT_NONE
+  #endif
+  #ifndef PIX_FMT_YUVJ420P
+    #define PIX_FMT_YUVJ420P AV_PIX_FMT_YUVJ420P
+  #endif
+
+  // AVRounding compatibility - handle missing AV_ prefix
+  #ifndef AV_ROUND_NEAR_INF
+    #ifdef AVROUND_NEAR_INF
+      #define AV_ROUND_NEAR_INF AVROUND_NEAR_INF
+    #else
+      #define AV_ROUND_NEAR_INF 5
+    #endif
+  #endif
+  #ifndef AV_ROUND_PASS_MINMAX
+    #ifdef AVROUND_PASS_MINMAX
+      #define AV_ROUND_PASS_MINMAX AVROUND_PASS_MINMAX
+    #else
+      #define AV_ROUND_PASS_MINMAX 8192
+    #endif
+  #endif
+
+  // Also define the old names for compatibility
+  #ifndef AVROUND_NEAR_INF
+    #define AVROUND_NEAR_INF AV_ROUND_NEAR_INF
+  #endif
+  #ifndef AVROUND_PASS_MINMAX
+    #define AVROUND_PASS_MINMAX AV_ROUND_PASS_MINMAX
+  #endif
+
+// Compatibility functions and macros
+
+// av_register_all() - deprecated/removed in FFmpeg 4.0+
+inline void ffmpeg_register_all()
+{
+  #if !FFMPEG_NEW_API
+  av_register_all();
+  #endif
+}
+
+// AVStream->codec - deprecated/removed in FFmpeg 5.0+
+inline AVCodecContext* ffmpeg_alloc_codec_context(const AVCodec* codec, AVStream* stream = nullptr)
+{
+  #if FFMPEG_NEW_API
+  AVCodecContext* context = avcodec_alloc_context3(codec);
+  if (stream && context)
+  {
+    avcodec_parameters_to_context(context, stream->codecpar);
+  }
+  return context;
+  #else
+  (void)codec;
+  return stream ? stream->codec : nullptr;
+  #endif
+}
+
+// Get codec context from stream (compatibility function)
+inline AVCodecContext* ffmpeg_stream_codec_context(AVStream* stream)
+{
+  #if FFMPEG_NEW_API
+  (void)stream;
+  return nullptr;
+  #else
+  return stream->codec;
+  #endif
+}
+
+// AVCodec constness changes
+inline AVCodec* ffmpeg_find_encoder(enum AVCodecID id)
+{
+  #if FFMPEG_NEW_API
+  return const_cast<AVCodec*>(avcodec_find_encoder(id));
+  #else
+  return avcodec_find_encoder(id);
+  #endif
+}
+
+inline AVCodec* ffmpeg_find_encoder_by_name(const char* name)
+{
+  #if FFMPEG_NEW_API
+  return const_cast<AVCodec*>(avcodec_find_encoder_by_name(name));
+  #else
+  return avcodec_find_encoder_by_name(name);
+  #endif
+}
+
+inline AVCodec* ffmpeg_find_decoder(enum AVCodecID id)
+{
+  #if FFMPEG_NEW_API
+  return const_cast<AVCodec*>(avcodec_find_decoder(id));
+  #else
+  return avcodec_find_decoder(id);
+  #endif
+}
+
+// Encoding API: avcodec_encode_video2 -> avcodec_send_frame/avcodec_receive_packet
+inline int ffmpeg_encode_video_frame(AVCodecContext* codec_ctx,
+                                     AVPacket**      packet,
+                                     AVFrame*        frame,
+                                     int*            got_packet)
+{
+  #if FFMPEG_NEW_API
+  *got_packet = 0;
+
+  int ret = avcodec_send_frame(codec_ctx, frame);
+  if (ret < 0)
+  {
+    return ret;
+  }
+
+  if (!*packet)
+  {
+    *packet = av_packet_alloc();
+  }
+
+  ret = avcodec_receive_packet(codec_ctx, *packet);
+  if (ret == 0)
+  {
+    *got_packet = 1;
+  }
+  else if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+  {
+    *got_packet = 0;
+    ret         = 0;
+  }
+
+  return ret;
+  #else
+  return avcodec_encode_video2(codec_ctx, *packet, frame, got_packet);
+  #endif
+}
+
+// Complete encoding wrapper that handles both APIs transparently
+inline int ffmpeg_encode_frame(AVCodecContext*  codec_ctx,
+                               AVStream*        stream,
+                               AVFormatContext* fmt_ctx,
+                               AVFrame*         frame,
+                               bool             flush = false)
+{
+  #if FFMPEG_NEW_API
+  int ret = avcodec_send_frame(codec_ctx, flush ? nullptr : frame);
+  if (ret < 0 && ret != AVERROR_EOF)
+  {
+    return ret;
+  }
+
+  while (ret >= 0)
+  {
+    AVPacket* packet = av_packet_alloc();
+    if (!packet)
+    {
+      return AVERROR(ENOMEM);
+    }
+
+    ret = avcodec_receive_packet(codec_ctx, packet);
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+    {
+      av_packet_free(&packet);
+      break;
+    }
+    else if (ret < 0)
+    {
+      av_packet_free(&packet);
+      return ret;
+    }
+
+    // Rescale timestamps
+    packet->pts          = av_rescale_q_rnd(packet->pts,
+                                   codec_ctx->time_base,
+                                   stream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    packet->dts          = av_rescale_q_rnd(packet->dts,
+                                   codec_ctx->time_base,
+                                   stream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    packet->duration     = av_rescale_q(packet->duration, codec_ctx->time_base, stream->time_base);
+    packet->stream_index = stream->index;
+
+    ret = av_interleaved_write_frame(fmt_ctx, packet);
+    av_packet_free(&packet);
+
+    if (ret < 0)
+    {
+      return ret;
+    }
+  }
+
+  return 0;
+  #else
+  AVPacket packet;
+  ffmpeg_init_packet(&packet);
+
+  int got_packet = 0;
+  int ret        = avcodec_encode_video2(codec_ctx, &packet, flush ? nullptr : frame, &got_packet);
+
+  if (ret < 0)
+  {
+    return ret;
+  }
+
+  if (got_packet)
+  {
+    packet.pts          = av_rescale_q_rnd(packet.pts,
+                                  codec_ctx->time_base,
+                                  stream->time_base,
+                                  AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    packet.dts          = av_rescale_q_rnd(packet.dts,
+                                  codec_ctx->time_base,
+                                  stream->time_base,
+                                  AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    packet.duration     = av_rescale_q(packet.duration, codec_ctx->time_base, stream->time_base);
+    packet.stream_index = stream->index;
+
+    ret = av_interleaved_write_frame(fmt_ctx, &packet);
+    av_packet_unref(&packet);
+  }
+
+  return ret;
+  #endif
+}
+
+// Packet allocation helper
+inline AVPacket* ffmpeg_packet_alloc()
+{
+  #if FFMPEG_NEW_API
+  return av_packet_alloc();
+  #else
+  AVPacket* pkt = (AVPacket*)av_malloc(sizeof(AVPacket));
+  if (pkt)
+  {
+    av_init_packet(pkt);
+    pkt->data = nullptr;
+    pkt->size = 0;
+  }
+  return pkt;
+  #endif
+}
+
+// Packet free helper
+inline void ffmpeg_packet_free(AVPacket** packet)
+{
+  #if FFMPEG_NEW_API
+  av_packet_free(packet);
+  #else
+  if (packet && *packet)
+  {
+    av_packet_unref(*packet);
+    av_freep(packet);
+  }
+  #endif
+}
+
+struct FFmpegEncodingContext
+{
+  #if FFMPEG_NEW_API
+  AVPacket* packet;
+
+  FFmpegEncodingContext() { packet = av_packet_alloc(); }
+
+  ~FFmpegEncodingContext()
+  {
+    if (packet)
+    {
+      av_packet_free(&packet);
+    }
+  }
+  #endif
+};
+
+// Handle filename vs url field changes
+inline const char* ffmpeg_format_context_filename(AVFormatContext* ctx)
+{
+  #if (LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(58, 7, 100))
+  return ctx->url;
+  #else
+  return ctx->filename;
+  #endif
+}
+
+// Handle cur_dts removal
+inline int64_t ffmpeg_stream_cur_dts(AVStream* stream)
+{
+  #if FFMPEG_NEW_API
+  (void)stream;
+  return AV_NOPTS_VALUE;
+  #else
+  return stream->cur_dts;
+  #endif
+}
+
+// Codec parameter compatibility
+inline int ffmpeg_parameters_from_context(AVStream* stream, AVCodecContext* codec_ctx)
+{
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  return avcodec_parameters_from_context(stream->codecpar, codec_ctx);
+  #else
+  // In old API, the codec context IS the stream's codec, so nothing to copy
+  (void)stream;
+  (void)codec_ctx;
+  return 0;
+  #endif
+}
+
+inline int ffmpeg_parameters_to_context(AVCodecContext* codec_ctx, AVStream* stream)
+{
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  return avcodec_parameters_to_context(codec_ctx, stream->codecpar);
+  #else
+  // In old API, the codec context IS the stream's codec
+  (void)codec_ctx;
+  (void)stream;
+  return 0;
+  #endif
+}
+
+// Codec opening compatibility
+inline int ffmpeg_open_codec(AVCodecContext* codec_ctx,
+                             const AVCodec*  codec,
+                             AVDictionary**  options)
+{
+  return avcodec_open2(codec_ctx, codec, options);
+}
+
+// Additional deprecated function wrappers
+
+// av_init_packet - deprecated/removed in FFmpeg 5.0+
+inline void ffmpeg_init_packet(AVPacket* pkt)
+{
+  #if FFMPEG_NEW_API
+  if (pkt)
+  {
+    // Initialize packet manually without memset
+    pkt->buf             = NULL;
+    pkt->data            = NULL;
+    pkt->size            = 0;
+    pkt->pts             = AV_NOPTS_VALUE;
+    pkt->dts             = AV_NOPTS_VALUE;
+    pkt->stream_index    = -1;
+    pkt->flags           = 0;
+    pkt->side_data       = NULL;
+    pkt->side_data_elems = 0;
+    pkt->duration        = 0;
+    pkt->pos             = -1;
+  }
+  #else
+  av_init_packet(pkt);
+  #endif
+}
+
+// avcodec_close - deprecated in favor of avcodec_free_context
+inline void ffmpeg_close_codec(AVCodecContext* codec_ctx)
+{
+  #if FFMPEG_NEW_API
+  if (codec_ctx)
+  {
+    avcodec_free_context(&codec_ctx);
+  }
+  #else
+  if (codec_ctx)
+  {
+    avcodec_close(codec_ctx);
+  }
+  #endif
+}
+
+// avcodec_get_name compatibility
+inline const char* ffmpeg_get_codec_name(AVCodecID id)
+{
+  #if FFMPEG_NEW_API
+  const AVCodec* codec = avcodec_find_encoder(id);
+  if (!codec)
+  {
+    codec = avcodec_find_decoder(id);
+  }
+  return codec ? codec->name : "unknown";
+  #else
+  return avcodec_get_name(id);
+  #endif
+}
+
+// Frame allocation compatibility
+inline AVFrame* ffmpeg_frame_alloc()
+{
+  #if FFMPEG_NEW_API
+  return av_frame_alloc();
+  #else
+  return avcodec_alloc_frame();
+  #endif
+}
+
+// Frame free compatibility
+inline void ffmpeg_frame_free(AVFrame** frame)
+{
+  #if FFMPEG_NEW_API
+  av_frame_free(frame);
+  #else
+  if (frame && *frame)
+  {
+    av_frame_unref(*frame);
+    av_freep(frame);
+  }
+  #endif
+}
+
+// Additional functions that may have compatibility issues
+
+// av_rescale_q_rnd might have different signatures
+inline int64_t ffmpeg_rescale_q_rnd(int64_t a, AVRational bq, AVRational cq, AVRounding rnd)
+{
+  return av_rescale_q_rnd(a, bq, cq, rnd);
+}
+
+// av_rescale_q standard function
+inline int64_t ffmpeg_rescale_q(int64_t a, AVRational bq, AVRational cq)
+{
+  return av_rescale_q(a, bq, cq);
+}
+
+// Error handling compatibility
+inline int ffmpeg_strerror(int errnum, char* errbuf, size_t errbuf_size)
+{
+  return av_strerror(errnum, errbuf, errbuf_size);
+}
+
+// Format context functions
+inline int ffmpeg_write_header(AVFormatContext* s, AVDictionary** options)
+{
+  return avformat_write_header(s, options);
+}
+
+inline int ffmpeg_write_trailer(AVFormatContext* s)
+{
+  return av_write_trailer(s);
+}
+
+inline int ffmpeg_interleaved_write_frame(AVFormatContext* s, AVPacket* pkt)
+{
+  return av_interleaved_write_frame(s, pkt);
+}
+
+// Memory management compatibility
+inline void ffmpeg_free_context(AVFormatContext** s)
+{
+  avformat_free_context(*s);
+  *s = nullptr;
+}
+
+#endif // HAVE_FFMPEG
+
+#endif // _FFmpeg_Compatibility_HeaderFile

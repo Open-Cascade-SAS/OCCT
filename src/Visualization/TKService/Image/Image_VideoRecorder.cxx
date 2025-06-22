@@ -13,18 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// activate some C99 macros like UINT64_C in "stdint.h" which used by FFmpeg
-#ifndef __STDC_CONSTANT_MACROS
-  #define __STDC_CONSTANT_MACROS
-#endif
-
 #include <Image_VideoRecorder.hxx>
+#include "../Media/Media_FFmpegCompatibility.pxx"
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
 #ifdef HAVE_FFMPEG
-
   // Suppress deprecation warnings - it is difficult to provide compatibility with old and new API
   // at once since new APIs are introduced too often. Should be disabled from time to time to clean
   // up usage of old APIs.
@@ -33,22 +28,6 @@ _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
   #else
 Standard_DISABLE_DEPRECATION_WARNINGS
   #endif
-
-  extern "C" {
-  #ifdef _MSC_VER
-    // suppress some common warnings in FFmpeg headers
-    #pragma warning(disable : 4244)
-  #endif
-
-  #include <libavcodec/avcodec.h>
-  #include <libavformat/avformat.h>
-  #include <libswscale/swscale.h>
-  #include <libavutil/imgutils.h>
-
-  #ifdef _MSC_VER
-    #pragma warning(default : 4244)
-  #endif
-  };
 
   // Undefine macro that clashes with name used by field of Image_VideoParams;
   // this macro is defined in headers of older versions of libavutil
@@ -67,6 +46,7 @@ Image_VideoRecorder::Image_VideoRecorder()
     : myAVContext(NULL),
       myVideoStream(NULL),
       myVideoCodec(NULL),
+      myCodecCtx(NULL),
       myFrame(NULL),
       myScaleCtx(NULL),
       myFrameCount(0)
@@ -76,7 +56,7 @@ Image_VideoRecorder::Image_VideoRecorder()
 
 #ifdef HAVE_FFMPEG
   // initialize libavcodec, and register all codecs and formats, should be done once
-  av_register_all();
+  ffmpeg_register_all();
 #endif
 }
 
@@ -97,6 +77,21 @@ TCollection_AsciiString Image_VideoRecorder::formatAvError(const int theError) c
   return anErrBuf;
 #else
   return TCollection_AsciiString(theError);
+#endif
+}
+
+//=================================================================================================
+
+AVCodecContext* Image_VideoRecorder::getCodecContext() const
+{
+#ifdef HAVE_FFMPEG
+  #if FFMPEG_HAVE_AVCODEC_PARAMETERS
+    return myCodecCtx;
+  #else
+    return myVideoStream != NULL ? myVideoStream->codec : NULL;
+  #endif
+#else
+  return NULL;
 #endif
 }
 
@@ -129,7 +124,15 @@ void Image_VideoRecorder::Close()
   // close each codec
   if (myVideoStream != NULL)
   {
+#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+    if (myCodecCtx != NULL)
+    {
+      avcodec_free_context(&myCodecCtx);
+      myCodecCtx = NULL;
+    }
+#else
     avcodec_close(myVideoStream->codec);
+#endif
     myVideoStream = NULL;
   }
   if (myFrame != NULL)
@@ -235,12 +238,12 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
   TCollection_AsciiString aCodecName;
   if (!theParams.VideoCodec.IsEmpty())
   {
-    myVideoCodec = avcodec_find_encoder_by_name(theParams.VideoCodec.ToCString());
+    myVideoCodec = ffmpeg_find_encoder_by_name(theParams.VideoCodec.ToCString());
     aCodecName   = theParams.VideoCodec;
   }
   else
   {
-    myVideoCodec = avcodec_find_encoder((AVCodecID)theDefCodecId);
+    myVideoCodec = ffmpeg_find_encoder((AVCodecID)theDefCodecId);
     aCodecName   = avcodec_get_name((AVCodecID)theDefCodecId);
   }
   if (myVideoCodec == NULL)
@@ -258,7 +261,20 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
   }
   myVideoStream->id = myAVContext->nb_streams - 1;
 
+#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  // For FFmpeg 5.0+, allocate and use separate codec context
+  myCodecCtx = avcodec_alloc_context3(myVideoCodec);
+  if (myCodecCtx == NULL)
+  {
+    ::Message::SendFail("Error: can not allocate codec context");
+    return Standard_False;
+  }
+  AVCodecContext* aCodecCtx = myCodecCtx;
+#else
+  // For FFmpeg 4.x, use stream's codec context
   AVCodecContext* aCodecCtx = myVideoStream->codec;
+#endif
+
   aCodecCtx->codec_id       = aCodecId;
   // resolution must be a multiple of two
   aCodecCtx->width  = theParams.Width;
@@ -275,6 +291,15 @@ Standard_Boolean Image_VideoRecorder::addVideoStream(const Image_VideoParams& th
   {
     aCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
+
+#if FFMPEG_HAVE_AVCODEC_PARAMETERS
+  // Copy codec context parameters to stream
+  if (avcodec_parameters_from_context(myVideoStream->codecpar, aCodecCtx) < 0)
+  {
+    ::Message::SendFail("Error: can not copy codec parameters to stream");
+    return Standard_False;
+  }
+#endif
   return Standard_True;
 #else
   (void)theParams;
@@ -289,37 +314,43 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec(const Image_VideoParams& th
 {
 #ifdef HAVE_FFMPEG
   AVDictionary*   anOptions = NULL;
-  AVCodecContext* aCodecCtx = myVideoStream->codec;
+  AVCodecContext* aCodecCtx = getCodecContext();
+
+  if (aCodecCtx == NULL)
+  {
+    ::Message::SendFail("Error: codec context is not available");
+    return Standard_False;
+  }
 
   // setup default values
   aCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
   // av_dict_set (&anOptions, "threads", "auto", 0);
-  if (aCodecCtx->codec == avcodec_find_encoder_by_name("mpeg2video"))
+  if (myVideoCodec == ffmpeg_find_encoder_by_name("mpeg2video"))
   {
     // just for testing, we also add B frames
     aCodecCtx->max_b_frames = 2;
     aCodecCtx->bit_rate     = 6000000;
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("mpeg4"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("mpeg4"))
   {
     //
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("mjpeg"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("mjpeg"))
   {
     aCodecCtx->pix_fmt = AV_PIX_FMT_YUVJ420P;
     aCodecCtx->qmin = aCodecCtx->qmax = 5;
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("huffyuv"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("huffyuv"))
   {
     aCodecCtx->pix_fmt = AV_PIX_FMT_RGB24;
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("png"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("png"))
   {
     aCodecCtx->pix_fmt           = AV_PIX_FMT_RGB24;
     aCodecCtx->compression_level = 9; // 0..9
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("h264")
-           || aCodecCtx->codec == avcodec_find_encoder_by_name("libx264"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("h264")
+           || myVideoCodec == ffmpeg_find_encoder_by_name("libx264"))
   {
     // use CRF (Constant Rate Factor) as best single-pass compressing method
     // clang-format off
@@ -335,8 +366,8 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec(const Image_VideoParams& th
     // av_dict_set (&anOptions, "profile", "baseline",  0);
     // av_dict_set (&anOptions, "level",   "3.0",       0);
   }
-  else if (aCodecCtx->codec == avcodec_find_encoder_by_name("vp8")
-           || aCodecCtx->codec == avcodec_find_encoder_by_name("vp9"))
+  else if (myVideoCodec == ffmpeg_find_encoder_by_name("vp8")
+           || myVideoCodec == ffmpeg_find_encoder_by_name("vp9"))
   {
     av_dict_set(&anOptions, "crf", "20", 0); // quality 4-63, 10 is normal
   }
@@ -445,7 +476,7 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
   }
 
   int             aResAv    = 0;
-  AVCodecContext* aCodecCtx = myVideoStream->codec;
+  AVCodecContext* aCodecCtx = getCodecContext();
   if (!theToFlush)
   {
     uint8_t* aSrcData[4]     = {(uint8_t*)myImgSrcRgba.ChangeData(), NULL, NULL, NULL};
@@ -459,12 +490,76 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
               myFrame->linesize);
   }
 
+#if FFMPEG_HAVE_NEW_DECODE_API
+  // New API: use avcodec_send_frame/avcodec_receive_packet
+  if (!theToFlush)
+  {
+    myFrame->pts = myFrameCount;
+    aResAv = avcodec_send_frame(aCodecCtx, myFrame);
+  }
+  else
+  {
+    aResAv = avcodec_send_frame(aCodecCtx, NULL); // flush
+  }
+  
+  if (aResAv < 0)
+  {
+    ::Message::SendFail(TCollection_AsciiString("Error: can not send frame to encoder, ")
+                        + formatAvError(aResAv));
+    return Standard_False;
+  }
+
+  while (aResAv >= 0)
+  {
+    AVPacket* aPacket = av_packet_alloc();
+    aResAv = avcodec_receive_packet(aCodecCtx, aPacket);
+    if (aResAv == AVERROR(EAGAIN) || aResAv == AVERROR_EOF)
+    {
+      av_packet_free(&aPacket);
+      break; // need more input or end of stream
+    }
+    else if (aResAv < 0)
+    {
+      av_packet_free(&aPacket);
+      ::Message::SendFail(TCollection_AsciiString("Error: can not encode video frame, ")
+                          + formatAvError(aResAv));
+      return Standard_False;
+    }
+
+    // rescale output packet timestamp values from codec to stream timebase
+    aPacket->pts          = av_rescale_q_rnd(aPacket->pts,
+                                   aCodecCtx->time_base,
+                                   myVideoStream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket->dts          = av_rescale_q_rnd(aPacket->dts,
+                                   aCodecCtx->time_base,
+                                   myVideoStream->time_base,
+                                   AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    aPacket->duration     = av_rescale_q(aPacket->duration, aCodecCtx->time_base, myVideoStream->time_base);
+    aPacket->stream_index = myVideoStream->index;
+
+    // write the compressed frame to the media file
+    aResAv = av_interleaved_write_frame(myAVContext, aPacket);
+    av_packet_free(&aPacket);
+    
+    if (aResAv < 0)
+    {
+      ::Message::SendFail(TCollection_AsciiString("Error: can not write video frame, ")
+                          + formatAvError(aResAv));
+      return Standard_False;
+    }
+  }
+#else
+  // Old API: use avcodec_encode_video2
   AVPacket aPacket;
   memset(&aPacket, 0, sizeof(aPacket));
   av_init_packet(&aPacket);
   {
     // encode the image
-    myFrame->pts    = myFrameCount;
+    if (!theToFlush)
+    {
+      myFrame->pts = myFrameCount;
+    }
     int isGotPacket = 0;
     aResAv = avcodec_encode_video2(aCodecCtx, &aPacket, theToFlush ? NULL : myFrame, &isGotPacket);
     if (aResAv < 0)
@@ -506,6 +601,7 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame(const Standard_Boolean the
                         + formatAvError(aResAv));
     return Standard_False;
   }
+#endif
 
   ++myFrameCount;
   return Standard_True;
