@@ -102,12 +102,11 @@ else()
     if (VCPKG_TARGET_IS_MINGW)
         set (TCL_PROJECT_SUBPATH win)
     endif()
+    file(REMOVE "${SOURCE_PATH}/${TCL_PROJECT_SUBPATH}/configure")
     # For MinGW and other Unix-like environments on Windows, use unix build path
     # MinGW can use either win/ (with MinGW-compatible Makefiles) or unix/ (with autotools)
-    # We choose unix/ for better cross-platform consistency and to leverage autotools
     vcpkg_configure_make(
         SOURCE_PATH "${SOURCE_PATH}"
-        AUTOCONFIG
         PROJECT_SUBPATH ${TCL_PROJECT_SUBPATH}
         OPTIONS
             TKDIR=${SOURCE_PATH}/extra/tk.8.6.16-src
