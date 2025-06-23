@@ -112,7 +112,8 @@ math_Matrix math_Matrix::Divided(const Standard_Real Right) const
 {
   Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
                                  "math_Matrix::Divided() - zero divisor");
-  return Multiplied(1.0 / Right);
+  math_Matrix temp = Multiplied(1. / Right);
+  return temp;
 }
 
 Standard_Real math_Matrix::Determinant() const
@@ -215,8 +216,15 @@ math_Matrix math_Matrix::Multiplied(const Standard_Real Right) const
 
 math_Matrix math_Matrix::TMultiplied(const Standard_Real Right) const
 {
-  // Reuse Multiplied since scalar multiplication is the same for both
-  return Multiplied(Right);
+  math_Matrix Result(LowerRowIndex, UpperRowIndex, LowerColIndex, UpperColIndex);
+  for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
+  {
+    for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
+    {
+      Result.Array(I, J) = Array(I, J) * Right;
+    }
+  }
+  return Result;
 }
 
 void math_Matrix::Divide(const Standard_Real Right)
@@ -224,9 +232,13 @@ void math_Matrix::Divide(const Standard_Real Right)
   Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(),
                                  "math_Matrix::Divide() - zero divisor");
 
-  // Use multiplication by reciprocal instead of division for better performance
-  Standard_Real invRight = 1.0 / Right;
-  Multiply(invRight);
+  for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
+  {
+    for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
+    {
+      Array(I, J) = Array(I, J) / Right;
+    }
+  }
 }
 
 void math_Matrix::Add(const math_Matrix& Right)
@@ -459,8 +471,17 @@ math_Matrix math_Matrix::Added(const math_Matrix& Right) const
 
 math_Matrix math_Matrix::Opposite()
 {
-  // Reuse Multiplied with -1.0 for code reuse
-  return Multiplied(-1.0);
+
+  math_Matrix Result(LowerRowIndex, UpperRowIndex, LowerColIndex, UpperColIndex);
+
+  for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
+  {
+    for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
+    {
+      Result.Array(I, J) = -Array(I, J);
+    }
+  }
+  return Result;
 }
 
 math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
@@ -506,15 +527,6 @@ void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Right)
     (Left.ColNumber() != Right.RowNumber()) || (RowNumber() != Left.RowNumber())
       || (ColNumber() != Right.ColNumber()),
     "math_Matrix::Multiply() - matrices have incompatible dimensions");
-
-  // Check for aliasing - if this matrix is the same as Left or Right
-  if (this == &Left || this == &Right)
-  {
-    math_Matrix aTemp(LowerRowIndex, UpperRowIndex, LowerColIndex, UpperColIndex);
-    aTemp.Multiply(Left, Right);
-    *this = aTemp;
-    return;
-  }
 
   Standard_Real    Som;
   Standard_Integer I1 = Left.LowerRowIndex;
@@ -623,17 +635,8 @@ void math_Matrix::Multiply(const math_Matrix& Right)
     ColNumber() != Right.RowNumber(),
     "math_Matrix::Multiply() - input matrix has incompatible dimensions");
 
-  // Check for aliasing - if this matrix is the same as Left or Right
-  if (this == &Right)
-  {
-    math_Matrix aTemp(LowerRowIndex, UpperRowIndex, LowerColIndex, UpperColIndex);
-    aTemp.Multiply(*this, Right);
-    *this = aTemp;
-    return;
-  }
-
   // Create a temporary copy to avoid corrupting our own data during calculation
-  math_Matrix Temp = *this;
+  math_Matrix aTemp = *this;
 
   Standard_Real Som;
   for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
@@ -644,7 +647,7 @@ void math_Matrix::Multiply(const math_Matrix& Right)
       Standard_Integer I2 = Right.LowerRowIndex;
       for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
       {
-        Som += Temp.Array(I, J) * Right.Array(I2, J2);
+        Som += aTemp.Array(I, J) * Right.Array(I2, J2);
         I2++;
       }
       Array(I, J2) = Som;
@@ -658,20 +661,18 @@ math_Vector math_Matrix::Multiplied(const math_Vector& Right) const
     ColNumber() != Right.Length(),
     "math_Matrix::Multiplied() - input vector has incompatible dimensions");
 
-  math_Vector Result(LowerRowIndex, UpperRowIndex, 0.0);
+  math_Vector Result(LowerRowIndex, UpperRowIndex);
 
-  // Process by columns for better cache utilization
-  Standard_Integer II = Right.Lower();
-  for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
+  for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
   {
-    Standard_Real RightVal = Right.Array(II);
-    for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
+    Result.Array(I)     = 0.0;
+    Standard_Integer II = Right.Lower();
+    for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
     {
-      Result.Array(I) += Array(I, J) * RightVal;
+      Result.Array(I) = Result.Array(I) + Array(I, J) * Right.Array(II);
+      II++;
     }
-    II++;
   }
-
   return Result;
 }
 
