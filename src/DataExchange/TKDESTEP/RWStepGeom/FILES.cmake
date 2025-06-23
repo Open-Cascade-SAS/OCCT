@@ -90,7 +90,6 @@ set(OCCT_RWStepGeom_FILES
   RWStepGeom_RWIntersectionCurve.pxx
   RWStepGeom_RWKnotType.pxx
   RWStepGeom_RWLine.cxx
-  RWStepGeom_RWKnotType.pxx
   RWStepGeom_RWLine.pxx
   RWStepGeom_RWOffsetCurve3d.cxx
   RWStepGeom_RWOffsetCurve3d.pxx
