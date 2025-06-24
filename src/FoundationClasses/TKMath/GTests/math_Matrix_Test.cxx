@@ -14,9 +14,11 @@
 #include <math_Matrix.hxx>
 
 #include <gtest/gtest.h>
+
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
+#include <Precision.hxx>
 
 namespace
 {
