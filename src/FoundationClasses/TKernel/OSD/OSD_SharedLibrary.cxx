@@ -136,11 +136,11 @@ Standard_Boolean OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 {
   if (aMode == OSD_RTLD_LAZY)
   {
-    myHandle = dlopen(myName, RTLD_LAZY);
+    myHandle = dlopen(myName, RTLD_LAZY | RTLD_GLOBAL);
   }
   else if (aMode == OSD_RTLD_NOW)
   {
-    myHandle = dlopen(myName, RTLD_NOW);
+    myHandle = dlopen(myName, RTLD_NOW | RTLD_GLOBAL);
   }
 
   if (!BAD(myHandle))
