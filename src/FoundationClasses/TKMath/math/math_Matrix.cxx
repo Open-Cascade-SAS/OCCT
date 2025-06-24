@@ -635,6 +635,14 @@ void math_Matrix::Multiply(const math_Matrix& Right)
     ColNumber() != Right.RowNumber(),
     "math_Matrix::Multiply() - input matrix has incompatible dimensions");
 
+  // Create a temporary copy to avoid corrupting our own data during calculation
+  math_Matrix aTemp = *this;
+  if (this == &Right)
+  {
+    Multiply(aTemp, aTemp);
+    return;
+  }
+
   Standard_Real Som;
   for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
   {
@@ -644,7 +652,7 @@ void math_Matrix::Multiply(const math_Matrix& Right)
       Standard_Integer I2 = Right.LowerRowIndex;
       for (Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++)
       {
-        Som = Som + Array(I, J) * Right.Array(I2, J2);
+        Som += aTemp.Array(I, J) * Right.Array(I2, J2);
         I2++;
       }
       Array(I, J2) = Som;
