@@ -637,6 +637,11 @@ void math_Matrix::Multiply(const math_Matrix& Right)
 
   // Create a temporary copy to avoid corrupting our own data during calculation
   math_Matrix aTemp = *this;
+  if (this == &Right)
+  {
+    Multiply(aTemp, aTemp);
+    return;
+  }
 
   Standard_Real Som;
   for (Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++)
