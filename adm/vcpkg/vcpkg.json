@@ -26,7 +26,7 @@
     },
     {
       "name": "angle",
-       "platform": "uwp"
+      "platform": "uwp"
     },
     {
       "name": "opengl",
@@ -50,6 +50,17 @@
       "description": "Enables optional usage of Tcl. Part of the module-foundation-classes.",
       "dependencies": [
         "tcl"
+      ]
+    },
+    "tcltk": {
+      "description": "Enables optional usage of TclTk. Part of the module-foundation-classes.",
+      "dependencies": [
+        {
+          "name": "tcl",
+          "features": [
+            "tk"
+          ]
+        }
       ]
     },
     "freeimage": {
