@@ -198,6 +198,9 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
   Standard_Boolean         isMultiConnex = !aMapMultiConnectEdges.IsEmpty();
   Standard_Integer         i = 1, j = 1;
   TopTools_SequenceOfShape aSeqUnconnectFaces;
+
+  // Using STL containers because number of faces or edges can be too high
+  // to keep them on flat backet OCCT map
   using EdgeMapAllocator =
     NCollection_Allocator<std::pair<const TopoDS_Edge, std::pair<bool, bool>>>;
   using EdgeOrientedMap = std::unordered_map<TopoDS_Edge,
@@ -205,9 +208,16 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
                                              TopTools_ShapeMapHasher,
                                              TopTools_ShapeMapHasher,
                                              EdgeMapAllocator>;
+  using FaceEdgesAllocator =
+    NCollection_Allocator<std::pair<const TopoDS_Face, NCollection_Array1<TopoDS_Edge>>>;
+  using FaceEdgesMap = std::unordered_map<TopoDS_Face,
+                                          NCollection_Array1<TopoDS_Edge>,
+                                          TopTools_ShapeMapHasher,
+                                          TopTools_ShapeMapHasher,
+                                          FaceEdgesAllocator>;
 
-  std::unordered_map<TopoDS_Face, NCollection_Array1<TopoDS_Edge>> aFaceEdges;
-  aFaceEdges.reserve(Lface.Length() * 3);
+  FaceEdgesMap aFaceEdges;
+  aFaceEdges.reserve(Lface.Length());
 
   std::vector<TopoDS_Edge> aTempEdges;
   size_t                   aNumberOfEdges = 0;
@@ -225,8 +235,9 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
     std::copy(aTempEdges.begin(), aTempEdges.end(), &aFaceEdgesArray.ChangeFirst());
     aFaceEdges[aFace] = std::move(aFaceEdgesArray);
   }
-  aNumberOfEdges =
-    static_cast<size_t>((aNumberOfEdges / 2) + 1); // each edge can be in two orientations
+
+  // Some assumption that each edge can be in two orientations
+  aNumberOfEdges = static_cast<size_t>((aNumberOfEdges / 2) + 1);
 
   EdgeOrientedMap aProcessedEdges, aTempProcessedEdges;
   aTempProcessedEdges.reserve(aNumberOfEdges);
