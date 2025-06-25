@@ -1,0 +1,117 @@
+From bf55f8558b8ca6603f6539c6421391f26ab6139a Mon Sep 17 00:00:00 2001
+From: dpasukhi <dpasukhi@opencascade.com>
+Date: Sun, 22 Jun 2025 15:20:03 +0100
+Subject: [PATCH] Add Tk build and install automation to Makefile; include
+ clean and distclean targets
+
+---
+ win/Makefile.in | 68 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+
+diff --git a/win/Makefile.in b/win/Makefile.in
+index 8dd107670f..f0cf267329 100644
+--- a/win/Makefile.in
++++ b/win/Makefile.in
+@@ -129,6 +129,11 @@ ROOT_DIR_WIN_NATIVE	= $(shell cd '$(ROOT_DIR)' ; pwd -W 2>/dev/null || pwd -P)
+ ZLIB_DIR_NATIVE		= $(shell $(CYGPATH) '$(ZLIB_DIR)')
+ TOMMATH_DIR_NATIVE	= $(shell $(CYGPATH) '$(TOMMATH_DIR)')
+ 
++# Tk-related directories (TKDIR can be set by user)
++TK_SRC_DIR		= $(TKDIR)
++TK_BUILD_TOP		= $(TKDIR)/win
++CONFIG_INSTALL_DIR	= $(LIB_INSTALL_DIR)
++
+ # Fully qualify library path so that `make test`
+ # does not depend on the current directory.
+ LIBRARY_DIR1		= $(shell cd '$(ROOT_DIR_NATIVE)/library' ; pwd -P)
+@@ -432,6 +437,34 @@ TCL_OBJS = ${GENERIC_OBJS} ${WIN_OBJS} @ZLIB_OBJS@ $(TOMMATH_OBJS)
+ TCL_DOCS = "$(ROOT_DIR_NATIVE)"/doc/*.[13n]
+ 
+ all: binaries libraries doc packages
++	@if test -n "$(TKDIR)" && test -d "$(TKDIR)"; then \
++	    echo "TKDIR detected - automatically building Tk..."; \
++	    echo "========== TK BUILD PARAMETERS =========="; \
++	    echo "TKDIR=$(TKDIR)"; \
++	    echo "TCLDIR=$(TOP_DIR)"; \
++	    echo "prefix=$(prefix)"; \
++	    echo "exec_prefix=$(exec_prefix)"; \
++	    echo "TCL_TCLSH=$(BIN_INSTALL_DIR)/tclsh$(VER)${EXESUFFIX}"; \
++	    echo "=========================================="; \
++	    if test -f "$(TK_BUILD_TOP)/Makefile"; then \
++		echo "Building Tk using existing Makefile..."; \
++		(cd "$(TK_BUILD_TOP)" && $(MAKE)) || exit $$?; \
++	    elif test -f "$(TK_SRC_DIR)/win/configure"; then \
++		echo "Configuring and building Tk..."; \
++		mkdir -p "$(TK_BUILD_TOP)"; \
++		(cd "$(TK_BUILD_TOP)" && \
++		 "$(TK_SRC_DIR)/win/configure" \
++		    --prefix="$(prefix)" \
++		    --exec-prefix="$(exec_prefix)" \
++		    --with-tcl="$(CONFIG_INSTALL_DIR)" && \
++		 $(MAKE)) || exit $$?; \
++	    else \
++		echo "ERROR: Tk configure script not found at $(TK_SRC_DIR)/win/configure"; \
++		exit 1; \
++	    fi; \
++	else \
++	    echo "TKDIR not set or directory does not exist - skipping Tk build"; \
++	fi
+ 
+ # Test-suite helper (can be used to test Tcl from build directory with all expected modules).
+ # To start from windows shell use:
+@@ -648,6 +681,27 @@ gentommath_h:
+ 		> "$(GENERIC_DIR_NATIVE)/tclTomMath.h"
+ 
+ install: all install-binaries install-libraries install-doc install-packages
++	@if test -n "$(TKDIR)" && test -d "$(TKDIR)"; then \
++	    echo "TKDIR detected - automatically installing Tk..."; \
++	    echo "========== TK INSTALL PARAMETERS =========="; \
++	    echo "TKDIR=$(TKDIR)"; \
++	    echo "TCLDIR=$(TOP_DIR)"; \
++	    echo "prefix=$(prefix)"; \
++	    echo "exec_prefix=$(exec_prefix)"; \
++	    echo "DESTDIR=$(INSTALL_ROOT)"; \
++	    echo "TCL_TCLSH=$(BIN_INSTALL_DIR)/tclsh$(VER)${EXESUFFIX}"; \
++	    echo "==========================================="; \
++	    if test -f "$(TK_BUILD_TOP)/Makefile"; then \
++		echo "Installing Tk..."; \
++		(cd "$(TK_BUILD_TOP)" && $(MAKE) install DESTDIR="$(INSTALL_ROOT)") || exit $$?; \
++	    else \
++		echo "ERROR: Tk Makefile not found at $(TK_BUILD_TOP)/Makefile"; \
++		echo "Please run 'make all' first to build Tk"; \
++		exit 1; \
++	    fi; \
++	else \
++	    echo "TKDIR not set or directory does not exist - skipping Tk install"; \
++	fi
+ 
+ install-binaries: binaries
+ 	@for i in "$(LIB_INSTALL_DIR)" "$(BIN_INSTALL_DIR)"; \
+@@ -848,10 +902,24 @@ clean: cleanhelp clean-packages
+ 	$(RM) $(TCLSH) $(CAT32) $(TEST_EXE_FILE) $(TEST_DLL_FILE) tcltest.cmd tcltest.sh
+ 	$(RM) *.pch *.ilk *.pdb *.zip
+ 	$(RMDIR) *.vfs
++	@if test -n "$(TKDIR)" && test -d "$(TKDIR)" && test -f "$(TK_BUILD_TOP)/Makefile"; then \
++	    echo "TKDIR detected - automatically cleaning Tk..."; \
++	    echo "Cleaning Tk build..."; \
++	    (cd "$(TK_BUILD_TOP)" && $(MAKE) clean) || exit $$?; \
++	else \
++	    echo "TKDIR not set, directory does not exist, or no Tk build to clean"; \
++	fi
+ 
+ distclean: distclean-packages clean
+ 	$(RM) Makefile config.status config.cache config.log tclConfig.sh \
+ 		tcl.hpj config.status.lineno tclsh.exe.manifest tclUuid.h
++	@if test -n "$(TKDIR)" && test -d "$(TKDIR)" && test -f "$(TK_BUILD_TOP)/Makefile"; then \
++	    echo "TKDIR detected - automatically distcleaning Tk..."; \
++	    echo "Distcleaning Tk build..."; \
++	    (cd "$(TK_BUILD_TOP)" && $(MAKE) distclean) || exit $$?; \
++	else \
++	    echo "TKDIR not set, directory does not exist, or no Tk build to distclean"; \
++	fi
+ 
+ #
+ # Bundled package targets
+-- 
+2.47.1.windows.2
+

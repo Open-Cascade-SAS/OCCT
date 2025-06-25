@@ -1,0 +1,48 @@
+diff --git a/win/makefile.vc b/win/makefile.vc
+index c88c0ec3dc..6c9dd624d7 100644
+--- a/win/makefile.vc
++++ b/win/makefile.vc
+@@ -466,13 +466,13 @@ TESTFLAGS = $(TESTFLAGS) -file $(TESTPAT)
+ # release   - Everything that builds as part of a release
+ #---------------------------------------------------------------------
+ 
+-release:    setup $(TCLSH) $(TCLSTUBLIB) dlls pkgs
++release:    setup $(TCLSH) $(TCLSTUBLIB) dlls pkgs tk-build
+ all:	    setup $(TCLSH) $(TCLSTUBLIB) dlls $(CAT32) pkgs
+ core:	    setup $(TCLLIB) $(TCLSTUBLIB)
+ shell:	    setup $(TCLSH)
+ dlls:	    setup $(TCLREGLIB) $(TCLDDELIB) $(OUT_DIR)\zlib1.dll
+ tcltest:    setup $(TCLTEST) dlls $(CAT32)
+-install:    install-binaries install-libraries install-docs install-pkgs
++install:    install-binaries install-libraries install-docs install-pkgs tk-build tk-install
+ !if $(SYMBOLS)
+ install:    install-pdbs
+ !endif
+@@ -569,6 +569,24 @@ pkgs:
+ 	    popd \
+ 	  )
+ 
++tk-build:
++!if defined(TKDIR) && defined(INSTALLDIR)
++	@if exist "$(TKDIR)\win\makefile.vc" ( \
++	    pushd "$(TKDIR)\win" & \
++	    $(MAKE) -$(MAKEFLAGS) -f makefile.vc TCLDIR=$(ROOT) INSTALLDIR=$(INSTALLDIR) OPTS=$(OPTS) STATS=$(STATS) CHECKS=$(CHECKS) MACHINE=$(MACHINE) &\
++	    popd \
++	  )
++!endif
++
++tk-install:
++!if defined(TKDIR) && defined(INSTALLDIR)
++	@if exist "$(TKDIR)\win\makefile.vc" ( \
++	    pushd "$(TKDIR)\win" & \
++	    $(MAKE) -$(MAKEFLAGS) -f makefile.vc TCLDIR=$(ROOT) INSTALLDIR=$(INSTALLDIR) OPTS=$(OPTS) STATS=$(STATS) CHECKS=$(CHECKS) MACHINE=$(MACHINE) install &\
++	    popd \
++	  )
++!endif
++
+ test-pkgs:
+ 	@for /d %d in ($(PKGSDIR)\*) do \
+ 	  @if exist "%~fd\win\makefile.vc" ( \
+-- 
+2.47.1.windows.2
+
