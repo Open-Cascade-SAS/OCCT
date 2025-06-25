@@ -407,28 +407,68 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const gp_Pnt&       P
   return Standard_True;
 }
 
-// pdn %12 11.02.99 PRO9234 entity 15402
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Integer      nbrPnt,
-                                                           const TColgp_SequenceOfPnt& points,
-                                                           TColgp_SequenceOfPnt2d&     pnt2d,
-                                                           const Standard_Real         preci,
-                                                           const Standard_Boolean      direct)
+// Template helper function for ProjectDegenerated methods
+template <typename PointContainer, typename Point2dContainer>
+Standard_Boolean ShapeAnalysis_Surface::ProjectDegeneratedTemplate(
+  const Standard_Integer theNbrPnt,
+  const PointContainer&  thePoints,
+  Point2dContainer&      thePnt2d,
+  const Standard_Real    thePrecision,
+  const Standard_Boolean theDirect,
+  const Standard_Boolean theIsOneBased)
 {
   if (myNbDeg < 0)
     ComputeSingularities();
 
-  Standard_Integer step = (direct ? 1 : -1);
+  Standard_Integer step = (theDirect ? 1 : -1);
   // #77 rln S4135
   Standard_Integer indMin = -1;
-  Standard_Real    gapMin = RealLast(), prec2 = preci * preci;
-  Standard_Integer j = (direct ? 1 : nbrPnt);
-  for (Standard_Integer i = 0; i < myNbDeg && myPreci[i] <= preci; i++)
+  Standard_Real    gapMin = RealLast(), prec2 = thePrecision * thePrecision;
+  Standard_Integer j = (theDirect ? 1 : theNbrPnt);
+
+  // Helper lambda to access points
+  auto getPoint = [&](const PointContainer& container, Standard_Integer index) -> const gp_Pnt& {
+    if (theIsOneBased)
+    {
+      return container(index); // 1-based indexing for sequences
+    }
+    else
+    {
+      return container(index - 1); // Convert to 0-based indexing for vectors
+    }
+  };
+
+  auto getPoint2d = [&](const Point2dContainer& container,
+                        Standard_Integer        index) -> const gp_Pnt2d& {
+    if (theIsOneBased)
+    {
+      return container(index); // 1-based indexing for sequences
+    }
+    else
+    {
+      return container(index - 1); // Convert to 0-based indexing for vectors
+    }
+  };
+
+  auto setPoint2d =
+    [&](Point2dContainer& container, Standard_Integer index, const gp_Pnt2d& point) {
+      if (theIsOneBased)
+      {
+        container(index) = point; // 1-based indexing for sequences
+      }
+      else
+      {
+        container(index - 1) = point; // Convert to 0-based indexing for vectors
+      }
+    };
+
+  for (Standard_Integer i = 0; i < myNbDeg && myPreci[i] <= thePrecision; i++)
   {
-    Standard_Real gap2 = myP3d[i].SquareDistance(points(j));
+    Standard_Real gap2 = myP3d[i].SquareDistance(getPoint(thePoints, j));
     if (gap2 > prec2)
-      gap2 = Min(gap2, myP3d[i].SquareDistance(Value(pnt2d(j))));
+      gap2 = Min(gap2, myP3d[i].SquareDistance(Value(getPoint2d(thePnt2d, j))));
     if (gap2 <= prec2 && gapMin > gap2)
     {
       gapMin = gap2;
@@ -442,39 +482,79 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Intege
   gp_Pnt2d pk;
 
   Standard_Integer k; // svv Jan11 2000 : porting on DEC
-  for (k = j + step; k <= nbrPnt && k >= 1; k += step)
+  for (k = j + step; k <= theNbrPnt && k >= 1; k += step)
   {
-    pk        = pnt2d(k);
-    gp_Pnt P1 = points(k);
+    pk        = getPoint2d(thePnt2d, k);
+    gp_Pnt P1 = getPoint(thePoints, k);
     if (myP3d[indMin].SquareDistance(P1) > prec2 && myP3d[indMin].SquareDistance(Value(pk)) > prec2)
       break;
   }
 
   //: p8 abv 11 Mar 99: PRO7226 #489490: if whole pcurve is degenerate, distribute evenly
-  if (k < 1 || k > nbrPnt)
+  if (k < 1 || k > theNbrPnt)
   {
-    Standard_Real x1 = (myUIsoDeg[indMin] ? pnt2d(1).Y() : pnt2d(1).X());
-    Standard_Real x2 = (myUIsoDeg[indMin] ? pnt2d(nbrPnt).Y() : pnt2d(nbrPnt).X());
-    for (j = 1; j <= nbrPnt; j++)
+    Standard_Real x1 =
+      (myUIsoDeg[indMin] ? getPoint2d(thePnt2d, 1).Y() : getPoint2d(thePnt2d, 1).X());
+    Standard_Real x2 = (myUIsoDeg[indMin] ? getPoint2d(thePnt2d, theNbrPnt).Y()
+                                          : getPoint2d(thePnt2d, theNbrPnt).X());
+    for (j = 1; j <= theNbrPnt; j++)
     {
       // szv#4:S4163:12Mar99 warning - possible div by zero
-      Standard_Real x = (x1 * (nbrPnt - j) + x2 * (j - 1)) / (nbrPnt - 1);
+      Standard_Real x            = (x1 * (theNbrPnt - j) + x2 * (j - 1)) / (theNbrPnt - 1);
+      gp_Pnt2d      currentPnt2d = getPoint2d(thePnt2d, j);
       if (!myUIsoDeg[indMin])
-        pnt2d(j).SetX(x);
+        currentPnt2d.SetX(x);
       else
-        pnt2d(j).SetY(x);
+        currentPnt2d.SetY(x);
+      setPoint2d(thePnt2d, j, currentPnt2d);
     }
     return Standard_True;
   }
 
-  for (j = k - step; j <= nbrPnt && j >= 1; j -= step)
+  for (j = k - step; j <= theNbrPnt && j >= 1; j -= step)
   {
+    gp_Pnt2d currentPnt2d = getPoint2d(thePnt2d, j);
     if (!myUIsoDeg[indMin])
-      pnt2d(j).SetX(pk.X());
+      currentPnt2d.SetX(pk.X());
     else
-      pnt2d(j).SetY(pk.Y());
+      currentPnt2d.SetY(pk.Y());
+    setPoint2d(thePnt2d, j, currentPnt2d);
   }
   return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Integer      theNbrPnt,
+                                                           const TColgp_SequenceOfPnt& thePoints,
+                                                           TColgp_SequenceOfPnt2d&     thePnt2d,
+                                                           const Standard_Real         thePrecision,
+                                                           const Standard_Boolean      theDirect)
+{
+  return ProjectDegeneratedTemplate(theNbrPnt,
+                                    thePoints,
+                                    thePnt2d,
+                                    thePrecision,
+                                    theDirect,
+                                    Standard_True);
+}
+
+//=================================================================================================
+
+Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(
+  const Standard_Integer            theNbrPnt,
+  const NCollection_Vector<gp_Pnt>& thePoints,
+  NCollection_Vector<gp_Pnt2d>&     thePnt2d,
+  const Standard_Real               thePrecision,
+  const Standard_Boolean            theDirect)
+
+{
+  return ProjectDegeneratedTemplate(theNbrPnt,
+                                    thePoints,
+                                    thePnt2d,
+                                    thePrecision,
+                                    theDirect,
+                                    Standard_False);
 }
 
 //=======================================================================
