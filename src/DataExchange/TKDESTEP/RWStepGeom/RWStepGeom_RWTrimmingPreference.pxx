@@ -1,0 +1,70 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWTrimmingPreference_HeaderFile
+#define _RWStepGeom_RWTrimmingPreference_HeaderFile
+
+#include <StepGeom_TrimmingPreference.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWTrimmingPreference
+{
+static constexpr char tpParameter[]   = ".PARAMETER.";
+static constexpr char tpUnspecified[] = ".UNSPECIFIED.";
+static constexpr char tpCartesian[]   = ".CARTESIAN.";
+
+//! Convert StepGeom_TrimmingPreference to string
+//! @param theSourceEnum The StepGeom_TrimmingPreference value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepGeom_TrimmingPreference theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepGeom_tpParameter:
+      return tpParameter;
+    case StepGeom_tpUnspecified:
+      return tpUnspecified;
+    case StepGeom_tpCartesian:
+      return tpCartesian;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_TrimmingPreference
+//! @param thePreferenceStr The string to convert
+//! @param theResultEnum The corresponding StepGeom_TrimmingPreference value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString       thePreferenceStr,
+                          StepGeom_TrimmingPreference& theResultEnum)
+{
+  if (IsEqual(thePreferenceStr, tpParameter))
+  {
+    theResultEnum = StepGeom_tpParameter;
+  }
+  else if (IsEqual(thePreferenceStr, tpUnspecified))
+  {
+    theResultEnum = StepGeom_tpUnspecified;
+  }
+  else if (IsEqual(thePreferenceStr, tpCartesian))
+  {
+    theResultEnum = StepGeom_tpCartesian;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWTrimmingPreference
+
+#endif // _RWStepGeom_RWTrimmingPreference_HeaderFile

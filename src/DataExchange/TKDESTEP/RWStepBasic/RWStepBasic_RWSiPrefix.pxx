@@ -1,0 +1,161 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepBasic_RWSiPrefix_HeaderFile
+#define _RWStepBasic_RWSiPrefix_HeaderFile
+
+#include <StepBasic_SiPrefix.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepBasic_RWSiPrefix
+{
+static constexpr char spExa[]   = ".EXA.";
+static constexpr char spPico[]  = ".PICO.";
+static constexpr char spMega[]  = ".MEGA.";
+static constexpr char spFemto[] = ".FEMTO.";
+static constexpr char spAtto[]  = ".ATTO.";
+static constexpr char spCenti[] = ".CENTI.";
+static constexpr char spNano[]  = ".NANO.";
+static constexpr char spHecto[] = ".HECTO.";
+static constexpr char spMicro[] = ".MICRO.";
+static constexpr char spTera[]  = ".TERA.";
+static constexpr char spGiga[]  = ".GIGA.";
+static constexpr char spMilli[] = ".MILLI.";
+static constexpr char spPeta[]  = ".PETA.";
+static constexpr char spDeci[]  = ".DECI.";
+static constexpr char spKilo[]  = ".KILO.";
+static constexpr char spDeca[]  = ".DECA.";
+
+//! Convert StepBasic_SiPrefix to string
+//! @param theSourceEnum The StepBasic_SiPrefix value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepBasic_spExa:
+      return spExa;
+    case StepBasic_spPico:
+      return spPico;
+    case StepBasic_spMega:
+      return spMega;
+    case StepBasic_spFemto:
+      return spFemto;
+    case StepBasic_spAtto:
+      return spAtto;
+    case StepBasic_spCenti:
+      return spCenti;
+    case StepBasic_spNano:
+      return spNano;
+    case StepBasic_spHecto:
+      return spHecto;
+    case StepBasic_spMicro:
+      return spMicro;
+    case StepBasic_spTera:
+      return spTera;
+    case StepBasic_spGiga:
+      return spGiga;
+    case StepBasic_spMilli:
+      return spMilli;
+    case StepBasic_spPeta:
+      return spPeta;
+    case StepBasic_spDeci:
+      return spDeci;
+    case StepBasic_spKilo:
+      return spKilo;
+    case StepBasic_spDeca:
+      return spDeca;
+  }
+  return nullptr; // Default value
+}
+
+//! Convert string to StepBasic_SiPrefix
+//! @param thePrefixStr The string to convert
+//! @param theResultEnum The corresponding StepBasic_SiPrefix value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString thePrefixStr, StepBasic_SiPrefix& theResultEnum)
+{
+  if (IsEqual(thePrefixStr, spExa))
+  {
+    theResultEnum = StepBasic_spExa;
+  }
+  else if (IsEqual(thePrefixStr, spPico))
+  {
+    theResultEnum = StepBasic_spPico;
+  }
+  else if (IsEqual(thePrefixStr, spMega))
+  {
+    theResultEnum = StepBasic_spMega;
+  }
+  else if (IsEqual(thePrefixStr, spFemto))
+  {
+    theResultEnum = StepBasic_spFemto;
+  }
+  else if (IsEqual(thePrefixStr, spAtto))
+  {
+    theResultEnum = StepBasic_spAtto;
+  }
+  else if (IsEqual(thePrefixStr, spCenti))
+  {
+    theResultEnum = StepBasic_spCenti;
+  }
+  else if (IsEqual(thePrefixStr, spNano))
+  {
+    theResultEnum = StepBasic_spNano;
+  }
+  else if (IsEqual(thePrefixStr, spHecto))
+  {
+    theResultEnum = StepBasic_spHecto;
+  }
+  else if (IsEqual(thePrefixStr, spMicro))
+  {
+    theResultEnum = StepBasic_spMicro;
+  }
+  else if (IsEqual(thePrefixStr, spTera))
+  {
+    theResultEnum = StepBasic_spTera;
+  }
+  else if (IsEqual(thePrefixStr, spGiga))
+  {
+    theResultEnum = StepBasic_spGiga;
+  }
+  else if (IsEqual(thePrefixStr, spMilli))
+  {
+    theResultEnum = StepBasic_spMilli;
+  }
+  else if (IsEqual(thePrefixStr, spPeta))
+  {
+    theResultEnum = StepBasic_spPeta;
+  }
+  else if (IsEqual(thePrefixStr, spDeci))
+  {
+    theResultEnum = StepBasic_spDeci;
+  }
+  else if (IsEqual(thePrefixStr, spKilo))
+  {
+    theResultEnum = StepBasic_spKilo;
+  }
+  else if (IsEqual(thePrefixStr, spDeca))
+  {
+    theResultEnum = StepBasic_spDeca;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+} // namespace RWStepBasic_RWSiPrefix
+
+#endif // _RWStepBasic_RWSiPrefix_HeaderFile

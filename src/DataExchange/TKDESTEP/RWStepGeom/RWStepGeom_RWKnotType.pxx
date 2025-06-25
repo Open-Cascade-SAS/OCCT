@@ -1,0 +1,78 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWKnotType_HeaderFile
+#define _RWStepGeom_RWKnotType_HeaderFile
+
+#include <StepGeom_KnotType.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWKnotType
+{
+
+static constexpr char ktUniformKnots[]         = (".UNIFORM_KNOTS.");
+static constexpr char ktQuasiUniformKnots[]    = (".QUASI_UNIFORM_KNOTS.");
+static constexpr char ktPiecewiseBezierKnots[] = (".PIECEWISE_BEZIER_KNOTS.");
+static constexpr char ktUnspecified[]          = (".UNSPECIFIED.");
+
+//! Convert StepGeom_KnotType to string
+//! @param theSourceEnum The StepGeom_KnotType value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepGeom_ktUniformKnots:
+      return ktUniformKnots;
+    case StepGeom_ktQuasiUniformKnots:
+      return ktQuasiUniformKnots;
+    case StepGeom_ktPiecewiseBezierKnots:
+      return ktPiecewiseBezierKnots;
+    case StepGeom_ktUnspecified:
+      return ktUnspecified;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_KnotType
+//! @param theKnotTypeString The string to convert
+//! @param theResultEnum The corresponding StepGeom_KnotType value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString theKnotTypeString,
+                          StepGeom_KnotType&     theResultEnum)
+{
+  if (IsEqual(theKnotTypeString, ktUniformKnots))
+  {
+    theResultEnum = StepGeom_ktUniformKnots;
+  }
+  else if (IsEqual(theKnotTypeString, ktQuasiUniformKnots))
+  {
+    theResultEnum = StepGeom_ktQuasiUniformKnots;
+  }
+  else if (IsEqual(theKnotTypeString, ktPiecewiseBezierKnots))
+  {
+    theResultEnum = StepGeom_ktPiecewiseBezierKnots;
+  }
+  else if (IsEqual(theKnotTypeString, ktUnspecified))
+  {
+    theResultEnum = StepGeom_ktUnspecified;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWKnotType
+
+#endif // _RWStepGeom_RWKnotType_HeaderFile
