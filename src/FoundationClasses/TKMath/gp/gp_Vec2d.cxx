@@ -105,15 +105,23 @@ gp_Vec2d gp_Vec2d::Mirrored(const gp_Ax2d& theA1) const
 
 void gp_Vec2d::Transform(const gp_Trsf2d& theT)
 {
-  if (theT.Form() == gp_Identity || theT.Form() == gp_Translation)
+  switch (theT.Form())
   {
+    case gp_Identity:
+    case gp_Translation:
+      break;
+
+    case gp_PntMirror:
+      coord.Reverse();
+      break;
+
+    case gp_Scale:
+      coord.Multiply(theT.ScaleFactor());
+      break;
+
+    default:
+      coord.Multiply(theT.VectorialPart());
   }
-  else if (theT.Form() == gp_PntMirror)
-    coord.Reverse();
-  else if (theT.Form() == gp_Scale)
-    coord.Multiply(theT.ScaleFactor());
-  else
-    coord.Multiply(theT.VectorialPart());
 }
 
 void gp_Vec2d::Mirror(const gp_Vec2d& theV)

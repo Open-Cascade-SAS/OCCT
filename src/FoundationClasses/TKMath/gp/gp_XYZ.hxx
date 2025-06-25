@@ -130,12 +130,13 @@ public:
 
   //! Returns True if he coordinates of this XYZ object are
   //! equal to the respective coordinates Other,
-  //! within the specified tolerance theTolerance. I.e.:
-  //! abs(<me>.X() - theOther.X()) <= theTolerance and
-  //! abs(<me>.Y() - theOther.Y()) <= theTolerance and
-  //! abs(<me>.Z() - theOther.Z()) <= theTolerance.
-  Standard_EXPORT Standard_Boolean IsEqual(const gp_XYZ&       theOther,
-                                           const Standard_Real theTolerance) const;
+  //! within the specified tolerance theTolerance.
+  Standard_Boolean IsEqual(const gp_XYZ& theOther, const Standard_Real theTolerance) const
+
+  {
+    return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance)
+           && (Abs(z - theOther.z) < theTolerance);
+  }
 
   //! @code
   //! <me>.X() = <me>.X() + theOther.X()

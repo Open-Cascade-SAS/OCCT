@@ -106,12 +106,11 @@ public:
 
   //! Returns true if the coordinates of this number pair are
   //! equal to the respective coordinates of the number pair
-  //! theOther, within the specified tolerance theTolerance. I.e.:
-  //! abs(<me>.X() - theOther.X()) <= theTolerance and
-  //! abs(<me>.Y() - theOther.Y()) <= theTolerance and
-  //! computations
-  Standard_EXPORT Standard_Boolean IsEqual(const gp_XY&        theOther,
-                                           const Standard_Real theTolerance) const;
+  //! theOther, within the specified tolerance theTolerance.
+  Standard_Boolean IsEqual(const gp_XY& theOther, const Standard_Real theTolerance) const
+  {
+    return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance);
+  }
 
   //! Computes the sum of this number pair and number pair theOther
   //! @code
