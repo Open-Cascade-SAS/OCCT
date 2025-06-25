@@ -367,7 +367,6 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
             aPair.second = anEdgeOrientationPair.second;
           }
         }
-        done = Standard_True;
       }
       j++;
       B.Add(nshell, F1);
@@ -1143,10 +1142,6 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
     isGetShells = !aTmpSeqShells.IsEmpty();
     if (isGetShells)
       aSeqShells.Append(aTmpSeqShells);
-    if (isGetShells && Lface.Length())
-    {
-      std::cout << "I'm still working" << std::endl;
-    }
   }
   if (!done)
     done = (aSeqShells.Length() > 1);
