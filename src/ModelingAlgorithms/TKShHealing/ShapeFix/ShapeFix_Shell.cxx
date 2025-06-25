@@ -52,6 +52,9 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+#include <unordered_set>
+#include <unordered_map>
+
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 
 //=================================================================================================
@@ -189,50 +192,120 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
   Standard_Boolean done = Standard_False;
   if (!Lface.Length())
     return Standard_False;
-  TopoDS_Shell        nshell;
-  TopTools_MapOfShape dire, reve;
-  BRep_Builder        B;
+  TopoDS_Shell nshell;
+  BRep_Builder B;
   B.MakeShell(nshell);
-  Standard_Boolean                 isMultiConnex = !aMapMultiConnectEdges.IsEmpty();
-  Standard_Integer                 i = 1, j = 1;
-  Handle(NCollection_IncAllocator) anIncAllocator =
-    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
+  Standard_Boolean         isMultiConnex = !aMapMultiConnectEdges.IsEmpty();
+  Standard_Integer         i = 1, j = 1;
   TopTools_SequenceOfShape aSeqUnconnectFaces;
+  using EdgeMapAllocator =
+    NCollection_Allocator<std::pair<const TopoDS_Edge, std::pair<bool, bool>>>;
+  using EdgeOrientedMap = std::unordered_map<TopoDS_Edge,
+                                             std::pair<bool, bool>,
+                                             TopTools_ShapeMapHasher,
+                                             TopTools_ShapeMapHasher,
+                                             EdgeMapAllocator>;
+
+  std::unordered_map<TopoDS_Face, NCollection_Array1<TopoDS_Edge>> aFaceEdges;
+  aFaceEdges.reserve(Lface.Length() * 3);
+
+  std::vector<TopoDS_Edge> aTempEdges;
+  size_t                   aNumberOfEdges = 0;
+  for (TopTools_SequenceOfShape::Iterator anFaceIter(Lface); anFaceIter.More(); anFaceIter.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(anFaceIter.Value());
+    aTempEdges.clear();
+    for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+    {
+      TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExp.Current());
+      aTempEdges.push_back(anEdge);
+      aNumberOfEdges++;
+    }
+    NCollection_Array1<TopoDS_Edge> aFaceEdgesArray(1, static_cast<int>(aTempEdges.size()));
+    std::copy(aTempEdges.begin(), aTempEdges.end(), &aFaceEdgesArray.ChangeFirst());
+    aFaceEdges[aFace] = std::move(aFaceEdgesArray);
+  }
+  aNumberOfEdges =
+    static_cast<size_t>((aNumberOfEdges / 2) + 1); // each edge can be in two orientations
+
+  EdgeOrientedMap aProcessedEdges, aTempProcessedEdges;
+  aTempProcessedEdges.reserve(aNumberOfEdges);
+  aProcessedEdges.reserve(aNumberOfEdges);
+
   for (; i <= Lface.Length(); i++)
   {
-    anIncAllocator->Reset();
-    TopTools_MapOfShape dtemp(1, anIncAllocator), rtemp(1, anIncAllocator);
-    Standard_Integer    nbbe = 0, nbe = 0;
-    TopoDS_Face         F1 = TopoDS::Face(Lface.Value(i));
-    for (TopExp_Explorer expe(F1, TopAbs_EDGE); expe.More(); expe.Next())
+    aTempProcessedEdges.clear();
+
+    Standard_Integer nbbe = 0, nbe = 0;
+    TopoDS_Face      F1 = TopoDS::Face(Lface.Value(i));
+    // Get edges of the face
+    const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges[F1];
+
+    for (Standard_Integer anEdgeInd = aFaceEdgesArray.Lower(); anEdgeInd <= aFaceEdgesArray.Upper();
+         ++anEdgeInd)
     {
-      TopoDS_Edge edge = TopoDS::Edge(expe.Current());
+      const TopoDS_Edge& edge = aFaceEdgesArray.Value(anEdgeInd);
 
       // if multiconnexity mode is equal to Standard_True faces contains
       // the same multiconnexity edges are not added to one shell.
       if (isMultiConnex && aMapMultiConnectEdges.Contains(edge))
         continue;
 
-      if ((edge.Orientation() == TopAbs_FORWARD && dire.Contains(edge))
-          || (edge.Orientation() == TopAbs_REVERSED && reve.Contains(edge)))
-        nbbe++;
-      else if ((edge.Orientation() == TopAbs_FORWARD && reve.Contains(edge))
-               || (edge.Orientation() == TopAbs_REVERSED && dire.Contains(edge)))
-        nbe++;
+      auto aProcessedEdgeIt = aProcessedEdges.find(edge);
 
-      if (dire.Contains(edge))
-        dire.Remove(edge);
-      else if (reve.Contains(edge))
-        reve.Remove(edge);
-      else
+      if (aProcessedEdgeIt == aProcessedEdges.end())
       {
-        if (edge.Orientation() == TopAbs_FORWARD)
-          dtemp.Add(edge);
-        if (edge.Orientation() == TopAbs_REVERSED)
-          rtemp.Add(edge);
+        auto aTempProcessedEdgeIt = aTempProcessedEdges.find(edge);
+        if (aTempProcessedEdgeIt == aTempProcessedEdges.end())
+        {
+          std::pair<bool, bool> anEdgeOrientationPair{(edge.Orientation() == TopAbs_FORWARD),
+                                                      (edge.Orientation() == TopAbs_REVERSED)};
+
+          aTempProcessedEdges.emplace(edge, anEdgeOrientationPair);
+        }
+        else
+        {
+          aTempProcessedEdgeIt->second.first =
+            aTempProcessedEdgeIt->second.first || (edge.Orientation() == TopAbs_FORWARD);
+          aTempProcessedEdgeIt->second.second =
+            aTempProcessedEdgeIt->second.second || (edge.Orientation() == TopAbs_REVERSED);
+        }
+        continue;
+      }
+
+      auto& aPair = aProcessedEdgeIt->second;
+
+      const bool isDirect   = aPair.first;
+      const bool isReversed = aPair.second;
+
+      if ((edge.Orientation() == TopAbs_FORWARD && isDirect)
+          || (edge.Orientation() == TopAbs_REVERSED && isReversed))
+      {
+        nbbe++;
+      }
+      else if ((edge.Orientation() == TopAbs_FORWARD && isReversed)
+               || (edge.Orientation() == TopAbs_REVERSED && isDirect))
+      {
+        nbe++;
+      }
+
+      if (isDirect)
+      {
+        aPair.first = false;
+      }
+      else if (isReversed)
+      {
+        aPair.second = false;
+      }
+
+      if (!aPair.first && !aPair.second)
+      {
+        // if edge is processed in this face it is removed from map of processed edges
+        aProcessedEdges.erase(aProcessedEdgeIt);
       }
     }
-    if (!nbbe && !nbe && dtemp.IsEmpty() && rtemp.IsEmpty())
+
+    if (!nbbe && !nbe && aTempProcessedEdges.empty())
       continue;
 
     // if face can not be added to shell it added to sequence of error faces.
@@ -253,18 +326,48 @@ static Standard_Boolean GetShells(TopTools_SequenceOfShape&     Lface,
       if (nbbe != 0)
       {
         F1.Reverse();
-        for (TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next())
-          reve.Add(ite.Key());
-        for (TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-          dire.Add(ite1.Key());
+
+        for (const auto& aTempEdgePair : aTempProcessedEdges)
+        {
+          const TopoDS_Edge& edge                  = aTempEdgePair.first;
+          const auto&        anEdgeOrientationPair = aTempEdgePair.second;
+
+          std::pair<bool, bool> aRevertedPair{!anEdgeOrientationPair.first,
+                                              !anEdgeOrientationPair.second};
+
+          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
+          if (aProcessedEdgeIt == aProcessedEdges.end())
+          {
+            aProcessedEdges.emplace(edge, aRevertedPair);
+          }
+          else
+          {
+            auto& aPair = aProcessedEdgeIt->second;
+            aPair       = aRevertedPair;
+          }
+        }
         done = Standard_True;
       }
       else
       {
-        for (TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next())
-          dire.Add(ite.Key());
-        for (TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-          reve.Add(ite1.Key());
+        for (const auto& aTempEdgePair : aTempProcessedEdges)
+        {
+          const TopoDS_Edge& edge                  = aTempEdgePair.first;
+          const auto&        anEdgeOrientationPair = aTempEdgePair.second;
+
+          auto aProcessedEdgeIt = aProcessedEdges.find(edge);
+          if (aProcessedEdgeIt == aProcessedEdges.end())
+          {
+            aProcessedEdges.emplace(edge, anEdgeOrientationPair);
+          }
+          else
+          {
+            auto& aPair  = aProcessedEdgeIt->second;
+            aPair.first  = anEdgeOrientationPair.first;
+            aPair.second = anEdgeOrientationPair.second;
+          }
+        }
+        done = Standard_True;
       }
       j++;
       B.Add(nshell, F1);
@@ -1040,6 +1143,10 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell&    shell
     isGetShells = !aTmpSeqShells.IsEmpty();
     if (isGetShells)
       aSeqShells.Append(aTmpSeqShells);
+    if (isGetShells && Lface.Length())
+    {
+      std::cout << "I'm still working" << std::endl;
+    }
   }
   if (!done)
     done = (aSeqShells.Length() > 1);
