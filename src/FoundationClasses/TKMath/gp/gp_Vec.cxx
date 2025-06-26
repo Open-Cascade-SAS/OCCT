@@ -29,117 +29,132 @@
 #include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
-Standard_Boolean gp_Vec::IsEqual(const gp_Vec&       Other,
-                                 const Standard_Real LinearTolerance,
-                                 const Standard_Real AngularTolerance) const
+Standard_Boolean gp_Vec::IsEqual(const gp_Vec&       theOther,
+                                 const Standard_Real theLinearTolerance,
+                                 const Standard_Real theAngularTolerance) const
 {
-  if (Magnitude() <= LinearTolerance || Other.Magnitude() <= LinearTolerance)
+  const Standard_Real aMagnitude       = Magnitude();
+  const Standard_Real anOtherMagnitude = theOther.Magnitude();
+
+  if (aMagnitude <= theLinearTolerance || anOtherMagnitude <= theLinearTolerance)
   {
-    Standard_Real val = Magnitude() - Other.Magnitude();
-    if (val < 0)
-      val = -val;
-    return val <= LinearTolerance;
+    const Standard_Real aVal = Abs(aMagnitude - anOtherMagnitude);
+    return aVal <= theLinearTolerance;
   }
   else
   {
-    Standard_Real val = Magnitude() - Other.Magnitude();
-    if (val < 0)
-      val = -val;
-    return val <= LinearTolerance && Angle(Other) <= AngularTolerance;
+    const Standard_Real aVal = Abs(aMagnitude - anOtherMagnitude);
+    return aVal <= theLinearTolerance && Angle(theOther) <= theAngularTolerance;
   }
 }
 
-void gp_Vec::Mirror(const gp_Vec& V)
+void gp_Vec::Mirror(const gp_Vec& theVec)
 {
-  Standard_Real D = V.coord.Modulus();
-  if (D > gp::Resolution())
+  const Standard_Real aMagnitude = theVec.coord.Modulus();
+  if (aMagnitude > gp::Resolution())
   {
-    const gp_XYZ& XYZ = V.coord;
-    Standard_Real A   = XYZ.X() / D;
-    Standard_Real B   = XYZ.Y() / D;
-    Standard_Real C   = XYZ.Z() / D;
-    Standard_Real M1  = 2.0 * A * B;
-    Standard_Real M2  = 2.0 * A * C;
-    Standard_Real M3  = 2.0 * B * C;
-    Standard_Real X   = coord.X();
-    Standard_Real Y   = coord.Y();
-    Standard_Real Z   = coord.Z();
-    coord.SetX(((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z);
-    coord.SetY(M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z);
-    coord.SetZ(M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z);
+    const gp_XYZ&       aMirrorVecXYZ = theVec.coord;
+    const Standard_Real aOrigX        = coord.X();
+    const Standard_Real aOrigY        = coord.Y();
+    const Standard_Real aOrigZ        = coord.Z();
+
+    // Normalize the mirror vector components
+    const Standard_Real aNormDirX = aMirrorVecXYZ.X() / aMagnitude;
+    const Standard_Real aNormDirY = aMirrorVecXYZ.Y() / aMagnitude;
+    const Standard_Real aNormDirZ = aMirrorVecXYZ.Z() / aMagnitude;
+
+    // Precompute common terms for 3D reflection matrix
+    const Standard_Real aCrossTermXY = 2.0 * aNormDirX * aNormDirY;
+    const Standard_Real aCrossTermXZ = 2.0 * aNormDirX * aNormDirZ;
+    const Standard_Real aCrossTermYZ = 2.0 * aNormDirY * aNormDirZ;
+    const Standard_Real aXXTerm      = 2.0 * aNormDirX * aNormDirX - 1.0;
+    const Standard_Real aYYTerm      = 2.0 * aNormDirY * aNormDirY - 1.0;
+    const Standard_Real aZZTerm      = 2.0 * aNormDirZ * aNormDirZ - 1.0;
+
+    coord.SetX(aXXTerm * aOrigX + aCrossTermXY * aOrigY + aCrossTermXZ * aOrigZ);
+    coord.SetY(aCrossTermXY * aOrigX + aYYTerm * aOrigY + aCrossTermYZ * aOrigZ);
+    coord.SetZ(aCrossTermXZ * aOrigX + aCrossTermYZ * aOrigY + aZZTerm * aOrigZ);
   }
 }
 
-void gp_Vec::Mirror(const gp_Ax1& A1)
+void gp_Vec::Mirror(const gp_Ax1& theAxis)
 {
-  const gp_XYZ& V  = A1.Direction().XYZ();
-  Standard_Real A  = V.X();
-  Standard_Real B  = V.Y();
-  Standard_Real C  = V.Z();
-  Standard_Real X  = coord.X();
-  Standard_Real Y  = coord.Y();
-  Standard_Real Z  = coord.Z();
-  Standard_Real M1 = 2.0 * A * B;
-  Standard_Real M2 = 2.0 * A * C;
-  Standard_Real M3 = 2.0 * B * C;
-  coord.SetX(((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z);
-  coord.SetY(M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z);
-  coord.SetZ(M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z);
+  const gp_XYZ&       aDirectionXYZ = theAxis.Direction().XYZ();
+  const Standard_Real aOrigX        = coord.X();
+  const Standard_Real aOrigY        = coord.Y();
+  const Standard_Real aOrigZ        = coord.Z();
+  const Standard_Real aDirX         = aDirectionXYZ.X();
+  const Standard_Real aDirY         = aDirectionXYZ.Y();
+  const Standard_Real aDirZ         = aDirectionXYZ.Z();
+
+  // Precompute common terms for 3D reflection matrix
+  const Standard_Real aCrossTermXY = 2.0 * aDirX * aDirY;
+  const Standard_Real aCrossTermXZ = 2.0 * aDirX * aDirZ;
+  const Standard_Real aCrossTermYZ = 2.0 * aDirY * aDirZ;
+  const Standard_Real aXXTerm      = 2.0 * aDirX * aDirX - 1.0;
+  const Standard_Real aYYTerm      = 2.0 * aDirY * aDirY - 1.0;
+  const Standard_Real aZZTerm      = 2.0 * aDirZ * aDirZ - 1.0;
+
+  coord.SetX(aXXTerm * aOrigX + aCrossTermXY * aOrigY + aCrossTermXZ * aOrigZ);
+  coord.SetY(aCrossTermXY * aOrigX + aYYTerm * aOrigY + aCrossTermYZ * aOrigZ);
+  coord.SetZ(aCrossTermXZ * aOrigX + aCrossTermYZ * aOrigY + aZZTerm * aOrigZ);
 }
 
-void gp_Vec::Mirror(const gp_Ax2& A2)
+void gp_Vec::Mirror(const gp_Ax2& theAxis)
 {
-  gp_XYZ Z      = A2.Direction().XYZ();
-  gp_XYZ MirXYZ = Z.Crossed(coord);
-  if (MirXYZ.Modulus() <= gp::Resolution())
+  const gp_XYZ& aZDir   = theAxis.Direction().XYZ();
+  const gp_XYZ  aMirXYZ = aZDir.Crossed(coord);
+
+  if (aMirXYZ.Modulus() <= gp::Resolution())
   {
     coord.Reverse();
   }
   else
   {
-    Z.Cross(MirXYZ);
-    Mirror(Z);
+    gp_XYZ aNewZ = aZDir;
+    aNewZ.Cross(aMirXYZ);
+    Mirror(gp_Vec(aNewZ));
   }
 }
 
-void gp_Vec::Transform(const gp_Trsf& T)
+void gp_Vec::Transform(const gp_Trsf& theTransformation)
 {
-  if (T.Form() == gp_Identity || T.Form() == gp_Translation)
+  if (theTransformation.Form() == gp_Identity || theTransformation.Form() == gp_Translation)
   {
   }
-  else if (T.Form() == gp_PntMirror)
+  else if (theTransformation.Form() == gp_PntMirror)
   {
     coord.Reverse();
   }
-  else if (T.Form() == gp_Scale)
+  else if (theTransformation.Form() == gp_Scale)
   {
-    coord.Multiply(T.ScaleFactor());
+    coord.Multiply(theTransformation.ScaleFactor());
   }
   else
   {
-    coord.Multiply(T.VectorialPart());
+    coord.Multiply(theTransformation.VectorialPart());
   }
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Vec& V) const
+gp_Vec gp_Vec::Mirrored(const gp_Vec& theVec) const
 {
-  gp_Vec Vres = *this;
-  Vres.Mirror(V);
-  return Vres;
+  gp_Vec aResult = *this;
+  aResult.Mirror(theVec);
+  return aResult;
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Ax1& A1) const
+gp_Vec gp_Vec::Mirrored(const gp_Ax1& theAxis) const
 {
-  gp_Vec Vres = *this;
-  Vres.Mirror(A1);
-  return Vres;
+  gp_Vec aResult = *this;
+  aResult.Mirror(theAxis);
+  return aResult;
 }
 
-gp_Vec gp_Vec::Mirrored(const gp_Ax2& A2) const
+gp_Vec gp_Vec::Mirrored(const gp_Ax2& theAxis) const
 {
-  gp_Vec Vres = *this;
-  Vres.Mirror(A2);
-  return Vres;
+  gp_Vec aResult = *this;
+  aResult.Mirror(theAxis);
+  return aResult;
 }
 
 //=================================================================================================
