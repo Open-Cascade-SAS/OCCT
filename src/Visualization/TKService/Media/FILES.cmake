@@ -6,6 +6,7 @@ set(OCCT_Media_FILES
   Media_BufferPool.hxx
   Media_CodecContext.cxx
   Media_CodecContext.hxx
+  Media_FFmpegCompatibility.pxx
   Media_FormatContext.cxx
   Media_FormatContext.hxx
   Media_Frame.cxx

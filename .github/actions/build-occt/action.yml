@@ -191,7 +191,7 @@ runs:
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
-              -D USE_FFMPEG=OFF \
+              -D USE_FFMPEG=ON \
               -D USE_FREEIMAGE=ON \
               -D USE_GLES2=ON \
               -D USE_OPENVR=ON \
