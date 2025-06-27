@@ -41,11 +41,7 @@ Media_CodecContext::Media_CodecContext()
       myPixelAspectRatio(1.0f)
 {
 #ifdef HAVE_FFMPEG
-  #if FFMPEG_NEW_API
   myCodecCtx = avcodec_alloc_context3(NULL);
-  #else
-  myCodecCtx = avcodec_alloc_context3(NULL);
-  #endif
 #endif
 }
 
@@ -201,11 +197,7 @@ void Media_CodecContext::Flush()
   if (myCodecCtx != NULL)
   {
 #ifdef HAVE_FFMPEG
-  #if FFMPEG_NEW_API
     avcodec_flush_buffers(myCodecCtx);
-  #else
-    avcodec_flush_buffers(myCodecCtx);
-  #endif
 #endif
   }
 }
