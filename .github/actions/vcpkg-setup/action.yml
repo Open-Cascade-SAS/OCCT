@@ -1,0 +1,98 @@
+name: 'Setup vcpkg'
+description: 'Setup vcpkg dependencies for OCCT build on a specific platform'
+
+inputs:
+  vcpkg-tag:
+    description: 'vcpkg tag to checkout'
+    required: false
+    default: '2025.06.13'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set environment variables
+      run: |
+        echo "USERNAME=Open-Cascade-SAS" >> $GITHUB_ENV
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
+        echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $GITHUB_ENV
+        echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $GITHUB_ENV
+        echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $GITHUB_ENV
+      shell: bash
+      if: runner.os != 'Windows'
+
+    - name: Set environment variables (Windows)
+      run: |
+        echo "USERNAME=Open-Cascade-SAS" >> $env:GITHUB_ENV
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
+        echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $env:GITHUB_ENV
+        echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $env:GITHUB_ENV
+        echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $env:GITHUB_ENV
+      shell: pwsh
+      if: runner.os == 'Windows'
+
+    - name: Install required packages (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete
+      shell: bash
+
+    - name: Install required packages (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew update || true
+        brew install cmake ninja nasm autoconf mono || true
+        # temporary workaround for missing tcl-tk
+        brew install tcl-tk || true
+        # Force link any conflicting packages
+        brew link --overwrite python@3.12 || true
+        brew link --overwrite python@3.13 || true
+      shell: bash
+
+    - name: Set up vcpkg (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        git checkout ${{ inputs.vcpkg-tag }}
+        ./bootstrap-vcpkg.sh
+      shell: bash
+
+    - name: Set up vcpkg (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        git checkout ${{ inputs.vcpkg-tag }}
+        .\bootstrap-vcpkg.bat
+      shell: cmd
+
+    - name: Add NuGet sources
+      if: runner.os == 'Windows'
+      run: |
+        .$(${{ env.VCPKG_EXE }} fetch nuget) `
+          sources add `
+          -Source "${{ env.FEED_URL }}" `
+          -StorePasswordInClearText `
+          -Name GitHubPackages `
+          -UserName "${{ env.USERNAME }}" `
+          -Password "${{ secrets.GITHUB_TOKEN }}"
+        .$(${{ env.VCPKG_EXE }} fetch nuget) `
+          setapikey "${{ secrets.GITHUB_TOKEN }}" `
+          -Source "${{ env.FEED_URL }}"
+      shell: pwsh
+
+    - name: Add NuGet sources
+      if: runner.os != 'Windows'
+      run: |
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          sources add \
+          -Source "${{ env.FEED_URL }}" \
+          -StorePasswordInClearText \
+          -Name GitHubPackages \
+          -UserName "${{ env.USERNAME }}" \
+          -Password "${{ secrets.GITHUB_TOKEN }}"
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -Source "${{ env.FEED_URL }}"
+      shell: bash

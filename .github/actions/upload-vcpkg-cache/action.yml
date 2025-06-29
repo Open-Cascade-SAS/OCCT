@@ -1,0 +1,61 @@
+name: 'Upload vcpkg Cache'
+description: 'Upload vcpkg installed packages and cache for reuse'
+
+inputs:
+  artifact-name:
+    description: 'Name of the artifact to store vcpkg cache'
+    required: true
+  build-directory:
+    description: 'Build directory containing vcpkg_installed'
+    required: false
+    default: 'build'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check if vcpkg_installed exists
+      id: check-vcpkg
+      run: |
+        if [ -d "${{ inputs.build-directory }}/vcpkg_installed" ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "Found vcpkg_installed directory"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "vcpkg_installed directory not found"
+        fi
+      shell: bash
+
+    - name: Check if vcpkg_installed exists (Windows)
+      if: runner.os == 'Windows'
+      id: check-vcpkg-win
+      run: |
+        if (Test-Path "${{ inputs.build-directory }}/vcpkg_installed") {
+          echo "exists=true" >> $env:GITHUB_OUTPUT
+          echo "Found vcpkg_installed directory"
+        } else {
+          echo "exists=false" >> $env:GITHUB_OUTPUT
+          echo "vcpkg_installed directory not found"
+        }
+      shell: pwsh
+
+    - name: Upload vcpkg cache (Unix)
+      if: (runner.os != 'Windows' && steps.check-vcpkg.outputs.exists == 'true')
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          ${{ inputs.build-directory }}/vcpkg_installed/
+          ${{ inputs.build-directory }}/vcpkg-manifest-install.log
+        retention-days: 7
+        compression-level: 6
+
+    - name: Upload vcpkg cache (Windows)
+      if: (runner.os == 'Windows' && steps.check-vcpkg-win.outputs.exists == 'true')
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          ${{ inputs.build-directory }}/vcpkg_installed/
+          ${{ inputs.build-directory }}/vcpkg-manifest-install.log
+        retention-days: 7
+        compression-level: 6

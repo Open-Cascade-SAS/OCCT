@@ -35,13 +35,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download and extract 3rdparty dependencies (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-          Remove-Item 3rdparty-vc14-64.zip
-      shell: pwsh
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
 
     - name: Download and extract Mesa3D (Windows)
       if: ${{ inputs.platform == 'windows' }}
@@ -58,32 +53,9 @@ runs:
         .\systemwidedeploy.cmd 5
       shell: cmd
 
-    - name: Install Ninja (Windows Clang)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
-      run: |
-        choco install ninja -y
-        ninja --version
-      shell: pwsh
-
-    - name: Install dependencies (macOS)
-      if: ${{ inputs.platform == 'macos' }}
-      run: |
-        brew update
-        brew install tcl-tk tbb gl2ps xerces-c \
-                     libxmu libxi libxft libxpm \
-                     glew freeimage draco glfw
-      shell: bash
-
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
-      shell: bash
-
-    - name: Install rapidjson (macOS/Linux)
-      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
-      run: |
-        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
-        unzip rapidjson.zip
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libx11-dev libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Configure OCCT (Windows MSVC)
@@ -98,8 +70,8 @@ runs:
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D BUILD_USE_VCPKG=ON `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -130,8 +102,8 @@ runs:
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D BUILD_USE_VCPKG=ON `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -161,7 +133,7 @@ runs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D BUILD_USE_VCPKG=ON \
               -D USE_RAPIDJSON=ON \
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
@@ -188,7 +160,7 @@ runs:
               -D USE_TK=OFF \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D BUILD_USE_VCPKG=ON \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=ON \
@@ -204,6 +176,12 @@ runs:
               -D INSTALL_GTEST=ON \
               ${{ inputs.additional-cmake-flags }} ..
       shell: bash
+
+    - name: Upload vcpkg cache
+      uses: ./.github/actions/upload-vcpkg-cache
+      with:
+        artifact-name: vcpkg-cache-${{ inputs.platform }}-${{ inputs.compiler }}
+        build-directory: build
 
     - name: Build OCCT (Windows)
       if: ${{ inputs.platform == 'windows' }}
