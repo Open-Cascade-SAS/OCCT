@@ -115,7 +115,7 @@ if (WIN32)
 else()
   if (APPLE)
    # Will be called later
-  if (EMSCRIPTEN)
+  elseif (EMSCRIPTEN)
     set (CSF_ThreadLibs   "pthread rt stdc++")
     set (CSF_OpenGlesLibs "EGL GLESv2")
     set (CSF_dl           "dl")
