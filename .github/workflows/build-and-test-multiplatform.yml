@@ -115,7 +115,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-     - name: Setup vcpkg
+    - name: Setup vcpkg
       uses: ./.github/actions/vcpkg-setup
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -155,7 +155,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-     - name: Setup vcpkg
+    - name: Setup vcpkg
       uses: ./.github/actions/vcpkg-setup
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
