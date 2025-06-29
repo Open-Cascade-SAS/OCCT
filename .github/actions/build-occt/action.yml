@@ -174,7 +174,6 @@ runs:
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
-              -D BUILD_LIBRARY_TYPE=Static \
               -D USE_TK=OFF \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
