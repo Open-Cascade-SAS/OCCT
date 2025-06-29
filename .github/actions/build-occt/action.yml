@@ -88,6 +88,7 @@ runs:
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D BUILD_USE_VCPKG=ON `
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -118,6 +119,7 @@ runs:
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D BUILD_USE_VCPKG=ON `
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -148,6 +150,7 @@ runs:
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D BUILD_USE_VCPKG=ON \
+              -D VCPKG_TARGET_TRIPLET=arm64-osx-release \
               -D USE_RAPIDJSON=ON \
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
@@ -176,6 +179,7 @@ runs:
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D BUILD_USE_VCPKG=ON \
+              -D VCPKG_TARGET_TRIPLET=x64-linux-dynamic-release \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=ON \
