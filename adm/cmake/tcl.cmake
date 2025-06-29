@@ -14,7 +14,7 @@ if (NOT DEFINED 3RDPARTY_TCL_INCLUDE_DIR)
   set (3RDPARTY_TCL_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of tcl")
 endif()
 
-if (BUILD_USE_VCPKG)
+if (BUILD_USE_VCPKG AND WIN32)
   set (3RDPARTY_TCL_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tcl" FORCE)
   set (3RDPARTY_TCL_INCLUDE_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include" CACHE FILEPATH "The directory containing headers of tcl" FORCE)
 endif()

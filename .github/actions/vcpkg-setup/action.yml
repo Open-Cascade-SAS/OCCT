@@ -49,8 +49,6 @@ runs:
       run: |
         brew update || true
         brew install cmake ninja nasm autoconf mono || true
-        # temporary workaround for missing tcl-tk
-        brew install tcl-tk || true
         # Force link any conflicting packages
         brew link --overwrite python@3.12 || true
         brew link --overwrite python@3.13 || true

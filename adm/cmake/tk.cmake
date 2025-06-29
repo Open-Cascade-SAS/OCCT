@@ -18,7 +18,7 @@ if (NOT DEFINED 3RDPARTY_TK_INCLUDE_DIR)
   set (3RDPARTY_TK_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of tk")
 endif()
 
-if (BUILD_USE_VCPKG)
+if (BUILD_USE_VCPKG AND WIN32)
   set (3RDPARTY_TK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tk" FORCE)
   set (3RDPARTY_TCLTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tcltk" FORCE)
   set (3RDPARTY_TK_INCLUDE_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include" CACHE FILEPATH "The directory containing headers of tk" FORCE)

@@ -60,7 +60,18 @@ runs:
 
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libx11-dev libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libx11-dev libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev tcl-dev tk-dev tcllib tcl-thread tcl
+      shell: bash
+
+    - name: Install required packages (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew update || true
+        # temporary workaround for missing tcl-tk
+        brew install tcl-tk || true
+        # Force link any conflicting packages
+        brew link --overwrite python@3.12 || true
+        brew link --overwrite python@3.13 || true
       shell: bash
 
     - name: Configure OCCT (Windows MSVC)
