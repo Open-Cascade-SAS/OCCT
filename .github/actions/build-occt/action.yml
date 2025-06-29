@@ -178,7 +178,8 @@ runs:
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D BUILD_USE_VCPKG=ON \
-              -D VCPKG_TARGET_TRIPLET=x64-linux-dynamic-release \
+              -D BUILD_LIBRARY_TYPE=Static \
+              -D VCPKG_TARGET_TRIPLET=x64-linux-release \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=ON \
