@@ -6,6 +6,9 @@ inputs:
     description: 'vcpkg tag to checkout'
     required: false
     default: '2025.06.13'
+  github-token:
+    description: 'GitHub token for NuGet package access'
+    required: true
 
 runs:
   using: "composite"
@@ -76,9 +79,9 @@ runs:
           -StorePasswordInClearText `
           -Name GitHubPackages `
           -UserName "${{ env.USERNAME }}" `
-          -Password "${{ secrets.GITHUB_TOKEN }}"
+          -Password "${{ inputs.github-token }}"
         .$(${{ env.VCPKG_EXE }} fetch nuget) `
-          setapikey "${{ secrets.GITHUB_TOKEN }}" `
+          setapikey "${{ inputs.github-token }}" `
           -Source "${{ env.FEED_URL }}"
       shell: pwsh
 
@@ -91,8 +94,8 @@ runs:
           -StorePasswordInClearText \
           -Name GitHubPackages \
           -UserName "${{ env.USERNAME }}" \
-          -Password "${{ secrets.GITHUB_TOKEN }}"
+          -Password "${{ inputs.github-token }}"
         mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          setapikey "${{ inputs.github-token }}" \
           -Source "${{ env.FEED_URL }}"
       shell: bash

@@ -37,6 +37,8 @@ runs:
   steps:
     - name: Setup vcpkg
       uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Download and extract Mesa3D (Windows)
       if: ${{ inputs.platform == 'windows' }}
