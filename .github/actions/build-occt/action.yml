@@ -31,10 +31,17 @@ inputs:
     description: 'CMake build type (Release, Debug, etc)'
     required: false
     default: 'Release'
+  github-token:
+    description: 'GitHub token for vcpkg NuGet package access'
+    required: true
 
 runs:
   using: "composite"
   steps:
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ inputs.github-token }}
 
     - name: Download and extract Mesa3D (Windows)
       if: ${{ inputs.platform == 'windows' }}
