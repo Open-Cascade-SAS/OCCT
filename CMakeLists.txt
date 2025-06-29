@@ -778,7 +778,7 @@ if (BUILD_USE_VCPKG)
   project (OCCT)
   if (APPLE)
     # set Apple specific variables
-    occt_set_apple_vars()
+    occt_set_apple_csf_vars()
   endif()
 endif()
 
