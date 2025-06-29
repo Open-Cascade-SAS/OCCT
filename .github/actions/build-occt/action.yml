@@ -109,9 +109,7 @@ runs:
       run: |
           mkdir build
           cd build
-          cmake -G "Ninja" `
-                -D CMAKE_C_COMPILER=clang `
-                -D CMAKE_CXX_COMPILER=clang++ `
+          cmake -T ClangCL `
                 -D USE_FREETYPE=ON `
                 -D USE_TK=OFF `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
