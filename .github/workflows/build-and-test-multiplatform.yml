@@ -54,6 +54,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build OCCT
       uses: ./.github/actions/build-occt
       with:
@@ -68,6 +73,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
+
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -85,6 +95,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build OCCT
       uses: ./.github/actions/build-occt
       with:
@@ -99,6 +114,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
+
+     - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -115,6 +135,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build OCCT
       uses: ./.github/actions/build-occt
       with:
@@ -129,6 +154,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
+
+     - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -148,6 +178,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
+
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
