@@ -113,8 +113,8 @@ if (WIN32)
   set (CSF_OpenGlLibs    "opengl32.lib")
   set (CSF_OpenGlesLibs  "libEGL libGLESv2")
 else()
-
-
+  if (APPLE)
+   # Will be called later
   if (EMSCRIPTEN)
     set (CSF_ThreadLibs   "pthread rt stdc++")
     set (CSF_OpenGlesLibs "EGL GLESv2")
