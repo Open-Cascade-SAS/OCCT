@@ -64,7 +64,7 @@ runs:
       shell: bash
 
     - name: Install required packages (macOS)
-      if: runner.os == 'macOS'
+      if: ${{ inputs.platform == 'macos' }}
       run: |
         brew update || true
         # temporary workaround for missing tcl-tk
