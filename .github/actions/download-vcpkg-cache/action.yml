@@ -27,7 +27,28 @@ runs:
         rm vcpkg-dependencies.tar.gz
       shell: bash
 
-    - name: Extend lib search path for macOS
+    - name: Set library search paths for Windows
+      if: runner.os == 'Windows'
+      run: |
+        $vcpkg_bin = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/bin"
+        $vcpkg_lib = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/lib"
+        $vcpkg_manual = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/lib/manual-link"
+        $current_path = $env:PATH
+        echo "PATH=$vcpkg_bin;$vcpkg_lib;$vcpkg_manual;$current_path" >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - name: Set library search paths for Linux
+      if: runner.os == 'Linux'
+      run: |
+        vcpkg_lib="${{ inputs.build-directory }}/vcpkg_installed/x64-linux-dynamic/lib"
+        vcpkg_manual="${{ inputs.build-directory }}/vcpkg_installed/x64-linux-dynamic/lib/manual-link"
+        echo "LD_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set library search paths for macOS
       if: runner.os == 'macOS'
       run: |
-        echo "DYLD_FALLBACK_LIBRARY_PATH=${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib/manual-link:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
+        vcpkg_lib="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib"
+        vcpkg_manual="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib/manual-link"
+        echo "DYLD_FALLBACK_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
+      shell: bash
