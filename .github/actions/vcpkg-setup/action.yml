@@ -20,6 +20,8 @@ runs:
         echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $GITHUB_ENV
         echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $GITHUB_ENV
         echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $GITHUB_ENV
+        echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $GITHUB_ENV
+        echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $GITHUB_ENV
       shell: bash
       if: runner.os != 'Windows'
 
@@ -30,6 +32,8 @@ runs:
         echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $env:GITHUB_ENV
         echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $env:GITHUB_ENV
         echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $env:GITHUB_ENV
+        echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $env:GITHUB_ENV
+        echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $env:GITHUB_ENV
       shell: pwsh
       if: runner.os == 'Windows'
 
