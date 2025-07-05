@@ -39,7 +39,7 @@
       "dependencies": [
         {
           "name": "angle",
-          "platform": "!(linux & static)"
+          "platform": "!(linux & !static)"
         }
       ]
     },
