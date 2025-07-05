@@ -97,7 +97,7 @@ index bc743b3892..dfdcf35acd 100644
 +		     $(MAKE) \
 +			TCL_LIBRARY=$(TCL_LIBRARY) \
 +			CFLAGS="$(CFLAGS)" \
-++			CPPFLAGS="$(CPPFLAGS)" \
++			CPPFLAGS="$(CPPFLAGS)" \
 +			LDFLAGS="$(LDFLAGS)" \
 +			CC="$(CC)") || exit $$?; \
 +		fi; \
@@ -119,7 +119,7 @@ index bc743b3892..dfdcf35acd 100644
 +			    exec_prefix="$(exec_prefix)" \
 +			    TCL_LIBRARY=$(TCL_LIBRARY) \
 +			    CFLAGS="$(CFLAGS)" \
-++			    CPPFLAGS="$(CPPFLAGS)" \
++			    CPPFLAGS="$(CPPFLAGS)" \
 +			    LDFLAGS="$(LDFLAGS)" \
 +			    CC="$(CC)") || exit $$?; \
 +		    fi; \
