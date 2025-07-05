@@ -38,16 +38,8 @@
       "description": "Enables optional usage of OpenGL ES 2.0. Part of the module-visualization.",
       "dependencies": [
         {
-          "name": "mesa",
-          "features": [
-            "gles2",
-            "offscreen"
-          ],
-          "platform": "linux"
-        },
-        {
           "name": "angle",
-          "platform": "!linux"
+          "platform": "!(linux & static)"
         }
       ]
     },

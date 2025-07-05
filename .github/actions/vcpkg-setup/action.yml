@@ -42,18 +42,13 @@ runs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete \
-              glslang-tools \
-              libvulkan-dev \
-              libdrm-dev \
-              libdrm-intel1 \
-              libudev-dev \
-              llvm-dev \
               libx11-dev \
               libxi-dev \
               libxext-dev \
-              libxnvctrl-dev \
-              libxnvctrl0 \
-              nvidia-settings
+              mesa-common-dev \
+              libglu1-mesa-dev \
+              libegl1-mesa-dev \
+              libgles2-mesa-dev
       shell: bash
 
     - name: Install required packages (macOS)
