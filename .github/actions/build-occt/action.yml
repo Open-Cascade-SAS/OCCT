@@ -74,12 +74,12 @@ runs:
         brew link --overwrite python@3.13 || true
       shell: bash
 
-    - name: Configure OCCT (Windows MSVC)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'msvc' }}
+    - name: Configure OCCT (Windows)
+      if: ${{ inputs.platform == 'windows' }}
       run: |
           mkdir build
           cd build
-          cmake -T host=x64 `
+          cmake -T ${{ inputs.compiler == 'msvc' && 'host=x64' || 'ClangCL' }} `
                 -D USE_FREETYPE=ON `
                 -D USE_TK=ON `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
@@ -88,38 +88,7 @@ runs:
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
                 -D BUILD_USE_VCPKG=ON `
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=${{ inputs.use-vtk }} `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
-                -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON `
-                ${{ inputs.additional-cmake-flags }} ..
-      shell: pwsh
-
-    - name: Configure OCCT (Windows Clang)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
-      run: |
-          mkdir build
-          cd build
-          cmake -T ClangCL `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=ON `
-                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
-                -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D BUILD_USE_VCPKG=ON `
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release `
+                -D VCPKG_TARGET_TRIPLET=x64-windows `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -150,7 +119,7 @@ runs:
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D BUILD_USE_VCPKG=ON \
-              -D VCPKG_TARGET_TRIPLET=arm64-osx-release \
+              -D VCPKG_TARGET_TRIPLET=arm64-osx-dynamic \
               -D USE_RAPIDJSON=ON \
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
@@ -174,12 +143,12 @@ runs:
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
-              -D USE_TK=OFF \
+              -D USE_TK=ON \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D BUILD_USE_VCPKG=ON \
-              -D BUILD_LIBRARY_TYPE=Static \
-              -D VCPKG_TARGET_TRIPLET=x64-linux-release \
+              -D BUILD_LIBRARY_TYPE=Shared \
+              -D VCPKG_TARGET_TRIPLET=x64-linux-dynamic \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=ON \
@@ -187,7 +156,7 @@ runs:
               -D USE_GLES2=ON \
               -D USE_OPENVR=ON \
               -D USE_VTK=${{ inputs.use-vtk }} \
-              -D USE_TBB=OFF \
+              -D USE_TBB=ON \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               -D BUILD_GTEST=ON \
