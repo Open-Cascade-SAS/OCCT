@@ -35,9 +35,20 @@
   ],
   "features": {
     "angle": {
-      "description": "Enables optional usage of ANGLE. Part of the module-visualization.",
+      "description": "Enables optional usage of OpenGL ES 2.0. Part of the module-visualization.",
       "dependencies": [
-        "angle"
+        {
+          "name": "mesa",
+          "features": [
+            "gles2",
+            "egl"
+          ],
+          "platform": "linux"
+        },
+        {
+          "name": "angle",
+          "platform": "!linux"
+        }
       ]
     },
     "opengl": {
