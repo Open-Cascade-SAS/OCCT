@@ -41,7 +41,14 @@ runs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete \
+              glslang-tools \
+              libvulkan-dev \
+              libx11-dev \
+              libxi-dev \
+              libxext-dev \
+              libxnvctrl-dev \
+              libxnvctrl0 \
       shell: bash
 
     - name: Install required packages (macOS)
