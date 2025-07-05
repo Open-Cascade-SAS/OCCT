@@ -14,8 +14,20 @@ runs:
   using: "composite"
   steps:
 
-    - name: Download vcpkg cache
+    - name: Download vcpkg tar archive
       uses: actions/download-artifact@v4.1.8
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ inputs.build-directory }}/vcpkg_installed
+        path: ${{ inputs.build-directory }}
+
+    - name: Extract vcpkg dependencies
+      run: |
+        cd ${{ inputs.build-directory }}
+        tar -xzf vcpkg-dependencies.tar.gz
+        rm vcpkg-dependencies.tar.gz
+      shell: bash
+
+    - name: Extend lib search path for macOS
+      if: runner.os == 'macOS'
+      run: |
+        echo "DYLD_FALLBACK_LIBRARY_PATH=${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib/manual-link:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
