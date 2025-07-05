@@ -46,6 +46,8 @@ runs:
               libvulkan-dev \
               libdrm-dev \
               libdrm-intel1 \
+              libudev-dev \
+              llvm-dev \
               libx11-dev \
               libxi-dev \
               libxext-dev \
