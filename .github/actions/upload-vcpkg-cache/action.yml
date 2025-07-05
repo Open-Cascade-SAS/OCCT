@@ -38,22 +38,35 @@ runs:
         }
       shell: pwsh
 
-    - name: Upload vcpkg cache (Unix)
+    - name: Upload vcpkg runtime files (Unix)
       if: (runner.os != 'Windows' && steps.check-vcpkg.outputs.exists == 'true')
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.artifact-name }}
         path: |
-          ${{ inputs.build-directory }}/vcpkg_installed/
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.so
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.dylib
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.tcl
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.sh
+          ${{ inputs.build-directory }}/vcpkg_installed/**/lib/**/*.so
+          ${{ inputs.build-directory }}/vcpkg_installed/**/lib/**/*.so.*
+          ${{ inputs.build-directory }}/vcpkg_installed/**/lib/**/*.dylib
+          ${{ inputs.build-directory }}/vcpkg_installed/**/lib/**/*.tcl
+          ${{ inputs.build-directory }}/vcpkg_installed/**/share/**/*.tcl
         retention-days: 7
         compression-level: 6
 
-    - name: Upload vcpkg cache (Windows)
+    - name: Upload vcpkg runtime files (Windows)
       if: (runner.os == 'Windows' && steps.check-vcpkg-win.outputs.exists == 'true')
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.artifact-name }}
         path: |
-          ${{ inputs.build-directory }}/vcpkg_installed/
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.dll
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.tcl
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.bat
+          ${{ inputs.build-directory }}/vcpkg_installed/**/bin/**/*.exe
+          ${{ inputs.build-directory }}/vcpkg_installed/**/lib/**/*.dll
+          ${{ inputs.build-directory }}/vcpkg_installed/**/share/**/*.tcl
         retention-days: 7
         compression-level: 6
