@@ -1,0 +1,39 @@
+From 3f4a50235669f0e0ac108ee7d046340c544fc1a2 Mon Sep 17 00:00:00 2001
+From: dpasukhi <dpasukhi@opencascade.com>
+Date: Sat, 5 Jul 2025 12:03:30 +0100
+Subject: [PATCH] Fix shell variable assignment syntax in Makefile for extra
+ package handling
+
+---
+ unix/Makefile.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/unix/Makefile.in b/unix/Makefile.in
+index 7a487e1b3c..b6be4a01ef 100644
+--- a/unix/Makefile.in
++++ b/unix/Makefile.in
+@@ -2161,10 +2161,10 @@ extra:
+ 	@if test -d "$(EXTRADIR)"; then \
+ 	    for extradir in $(EXTRADIR)/*; do \
+ 		if test -d "$$extradir/unix" && test -f "$$extradir/unix/configure"; then \
+-		    extrapkg=`basename $$extradir`; \
++		    extrapkg=$$(basename $$extradir); \
+ 		    echo "Building extra package '$$extrapkg'"; \
+ 		    mkdir -p "$(EXTRA_BUILD_DIR)/$$extrapkg"; \
+-		    TCL_BUILD_DIR="`pwd`"; \
++		    TCL_BUILD_DIR=$$(pwd); \
+ 		    if test ! -f "$(EXTRA_BUILD_DIR)/$$extrapkg/Makefile"; then \
+ 			echo "Configuring extra package '$$extrapkg'"; \
+ 			(cd "$(EXTRA_BUILD_DIR)/$$extrapkg" && \
+@@ -2193,7 +2193,7 @@ install-extra:
+ 	@if test -d "$(EXTRADIR)"; then \
+ 	    for extradir in $(EXTRADIR)/*; do \
+ 		if test -d "$$extradir/unix" && test -f "$$extradir/unix/configure"; then \
+-		    extrapkg=`basename $$extradir`; \
++		    extrapkg=$$(basename $$extradir); \
+ 		    if test -f "$(EXTRA_BUILD_DIR)/$$extrapkg/Makefile"; then \
+ 			echo "Installing extra package '$$extrapkg'"; \
+ 			(cd "$(EXTRA_BUILD_DIR)/$$extrapkg" && $(MAKE) install \
+-- 
+2.43.0
+
