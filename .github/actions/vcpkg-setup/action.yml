@@ -41,17 +41,7 @@ runs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete \
-              libx11-dev \
-              mesa-common-dev \
-              libxi-dev \
-              libxext-dev \
-              libxnvctrl-dev \
-              libxnvctrl0 \
-              nvidia-settings \
-              libglu1-mesa-dev \
-              libegl1-mesa-dev \
-              libgles2-mesa-dev
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete
       shell: bash
 
     - name: Install required packages (macOS)

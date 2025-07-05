@@ -41,7 +41,8 @@
           "name": "mesa",
           "features": [
             "gles2",
-            "egl"
+            "egl",
+            "offscreen"
           ],
           "platform": "linux"
         },
