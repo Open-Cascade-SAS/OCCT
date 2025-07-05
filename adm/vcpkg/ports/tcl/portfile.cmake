@@ -110,7 +110,21 @@ else()
         AUTOCONFIG
     )
 
-    vcpkg_install_make()
+    # Build with explicit X11 paths for Tk when needed
+    if(USE_TCL_TK AND NOT VCPKG_TARGET_IS_WINDOWS)
+        vcpkg_build_make(
+            ENVIRONMENT 
+                "CPPFLAGS=-I${CURRENT_INSTALLED_DIR}/include"
+                "LDFLAGS=-L${CURRENT_INSTALLED_DIR}/lib"
+        )
+        vcpkg_install_make(
+            ENVIRONMENT 
+                "CPPFLAGS=-I${CURRENT_INSTALLED_DIR}/include" 
+                "LDFLAGS=-L${CURRENT_INSTALLED_DIR}/lib"
+        )
+    else()
+        vcpkg_install_make()
+    endif()
 
     vcpkg_fixup_pkgconfig()
 
