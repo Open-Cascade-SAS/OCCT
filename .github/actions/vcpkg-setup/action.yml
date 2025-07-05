@@ -48,6 +48,7 @@ runs:
               libxext-dev \
               libxnvctrl-dev \
               libxnvctrl0 \
+              nvidia-settings \
               libglu1-mesa-dev \
               libegl1-mesa-dev \
               libgles2-mesa-dev

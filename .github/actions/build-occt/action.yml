@@ -137,6 +137,9 @@ runs:
       run: |
         mkdir -p build
         cd build
+        # Set environment to help vcpkg find system libraries
+        export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:$PKG_CONFIG_PATH"
+        export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
