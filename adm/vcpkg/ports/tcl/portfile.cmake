@@ -6,7 +6,6 @@ vcpkg_from_sourceforge(
     SHA512 434c92f8181fb8dca6bc065b0f1f5078779086f19adf008818c90a3108596c63465ef43e9f3c1cfb3d4151a9de244d0bf0e6ee5b40e714b1ddca4a78eb43050b
     PATCHES
         0001-Support-Tk.patch
-        0002-MacOS-shell.patch
 )
 
 set(USE_TCL_TK OFF)
