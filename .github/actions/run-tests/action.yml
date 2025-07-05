@@ -21,6 +21,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
+
     - name: Download and extract 3rdparty dependencies (Windows)
       if: ${{ inputs.platform == 'windows' }}
       run: |

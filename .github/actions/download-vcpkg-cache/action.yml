@@ -1,0 +1,52 @@
+name: 'Download vcpkg Cache'
+description: 'Download and restore vcpkg installed packages and cache'
+
+inputs:
+  artifact-name:
+    description: 'Name of the artifact containing vcpkg cache'
+    required: true
+  build-directory:
+    description: 'Build directory where vcpkg_installed should be restored'
+    required: false
+    default: 'build'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create build directory
+      run: mkdir -p "${{ inputs.build-directory }}"
+      shell: bash
+
+    - name: Create build directory (Windows)
+      if: runner.os == 'Windows'
+      run: New-Item -ItemType Directory -Path "${{ inputs.build-directory }}" -Force
+      shell: pwsh
+
+    - name: Download vcpkg cache
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.build-directory }}/
+
+    - name: Verify vcpkg cache restored
+      run: |
+        if [ -d "${{ inputs.build-directory }}/vcpkg_installed" ]; then
+          echo "✓ vcpkg cache successfully restored"
+          ls -la "${{ inputs.build-directory }}/vcpkg_installed"
+        else
+          echo "✗ vcpkg cache restoration failed"
+          exit 1
+        fi
+      shell: bash
+
+    - name: Verify vcpkg cache restored (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        if (Test-Path "${{ inputs.build-directory }}/vcpkg_installed") {
+          echo "✓ vcpkg cache successfully restored"
+          Get-ChildItem "${{ inputs.build-directory }}/vcpkg_installed"
+        } else {
+          echo "✗ vcpkg cache restoration failed"
+          exit 1
+        }
+      shell: pwsh

@@ -30,6 +30,11 @@ runs:
         name: ${{ inputs.install-artifact-name }}
         path: install
 
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
+
     - name: Download and extract 3rdparty dependencies for Windows
       if: inputs.platform == 'windows'
       shell: pwsh

@@ -84,6 +84,12 @@ runs:
         echo "failed_count={0}" >> $GITHUB_OUTPUT
         ', steps.check_failures_unix.outputs.failed_count) }}
 
+    - name: Download vcpkg cache
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
+
     - name: Download and extract 3rdparty dependencies (Windows)
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       shell: pwsh
