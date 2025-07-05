@@ -46,7 +46,11 @@ runs:
               mesa-common-dev \
               libxi-dev \
               libxext-dev \
-              libxnvctrl-dev
+              libxnvctrl-dev \
+              libxnvctrl0 \
+              libglu1-mesa-dev \
+              libegl1-mesa-dev \
+              libgles2-mesa-dev
       shell: bash
 
     - name: Install required packages (macOS)
