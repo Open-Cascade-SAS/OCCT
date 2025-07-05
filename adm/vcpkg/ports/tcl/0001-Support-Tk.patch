@@ -1,17 +1,17 @@
-From 7ad90fcc13a5780490c7a050ce8335b67c6a29a6 Mon Sep 17 00:00:00 2001
+From da6b5b83ef997f550155d9087c5e7b289168fb1b Mon Sep 17 00:00:00 2001
 From: dpasukhi <dpasukhi@opencascade.com>
 Date: Sat, 5 Jul 2025 11:36:01 +0100
 Subject: [PATCH] Add support for building and installing Tk in Makefiles for
  Unix and Windows
 
 ---
- unix/Makefile.in | 91 +++++++++++++++++++++++++++++++++++++++++++--
+ unix/Makefile.in | 94 +++++++++++++++++++++++++++++++++++++++++++++--
  win/Makefile.in  | 68 ++++++++++++++++++++++++++++++++++
  win/makefile.vc  | 96 +++++++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 246 insertions(+), 9 deletions(-)
+ 3 files changed, 249 insertions(+), 9 deletions(-)
 
 diff --git a/unix/Makefile.in b/unix/Makefile.in
-index bc743b3892..7a487e1b3c 100644
+index bc743b3892..dfdcf35acd 100644
 --- a/unix/Makefile.in
 +++ b/unix/Makefile.in
 @@ -232,6 +232,7 @@ TOOL_DIR		= $(TOP_DIR)/tools
@@ -64,7 +64,7 @@ index bc743b3892..7a487e1b3c 100644
  
  configure-packages:
  	@for i in $(PKGS_DIR)/*; do \
-@@ -2151,6 +2153,86 @@ BUILD_HTML = \
+@@ -2151,6 +2153,89 @@ BUILD_HTML = \
  		--useversion=$(HTML_VERSION) --htmldir="$(HTML_INSTALL_DIR)" \
  		--srcdir=$(TOP_DIR)/.. $(BUILD_HTML_FLAGS)
  
@@ -88,6 +88,7 @@ index bc743b3892..7a487e1b3c 100644
 +			     --exec-prefix="$(exec_prefix)" \
 +			     --with-tcl="$$TCL_BUILD_DIR" \
 +			     CFLAGS="$(CFLAGS)" \
++			     CPPFLAGS="$(CPPFLAGS)" \
 +			     LDFLAGS="$(LDFLAGS)" \
 +			     CC="$(CC)") || exit $$?; \
 +		    fi; \
@@ -96,6 +97,7 @@ index bc743b3892..7a487e1b3c 100644
 +		     $(MAKE) \
 +			TCL_LIBRARY=$(TCL_LIBRARY) \
 +			CFLAGS="$(CFLAGS)" \
+++			CPPFLAGS="$(CPPFLAGS)" \
 +			LDFLAGS="$(LDFLAGS)" \
 +			CC="$(CC)") || exit $$?; \
 +		fi; \
@@ -117,6 +119,7 @@ index bc743b3892..7a487e1b3c 100644
 +			    exec_prefix="$(exec_prefix)" \
 +			    TCL_LIBRARY=$(TCL_LIBRARY) \
 +			    CFLAGS="$(CFLAGS)" \
+++			    CPPFLAGS="$(CPPFLAGS)" \
 +			    LDFLAGS="$(LDFLAGS)" \
 +			    CC="$(CC)") || exit $$?; \
 +		    fi; \
@@ -151,7 +154,7 @@ index bc743b3892..7a487e1b3c 100644
  #--------------------------------------------------------------------------
  # The list of all the targets that do not correspond to real files. This stops
  # 'make' from getting confused when someone makes an error in a rule.
-@@ -2166,6 +2248,7 @@ BUILD_HTML = \
+@@ -2166,6 +2251,7 @@ BUILD_HTML = \
  .PHONY: install-tzdata install-msgs
  .PHONY: packages configure-packages test-packages clean-packages
  .PHONY: dist-packages distclean-packages install-packages
