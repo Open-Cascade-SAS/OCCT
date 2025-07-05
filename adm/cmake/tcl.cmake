@@ -274,6 +274,12 @@ if (TK_FOUND AND 3RDPARTY_TCL_DIR)
   endif()
 endif()
 
+if (BUILD_USE_VCPKG)
+  set (3RDPARTY_TCL_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tcl" FORCE)
+  set (3RDPARTY_TCL_INCLUDE_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include" CACHE FILEPATH "The directory containing headers of tcl" FORCE)
+  set (3RDPARTY_TCL_LIBRARY_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib" CACHE FILEPATH "The directory containing tcl library" FORCE)
+endif()
+
 # hide all redundant variables
 # TCL
 mark_as_advanced (TCL_LIBRARY)
