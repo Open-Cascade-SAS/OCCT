@@ -48,7 +48,7 @@ runs:
       if: runner.os == 'macOS'
       run: |
         brew update || true
-        brew install cmake ninja nasm autoconf mono || true
+        brew install cmake ninja nasm autoconf automake mono || true
         # Force link any conflicting packages
         brew link --overwrite python@3.12 || true
         brew link --overwrite python@3.13 || true
