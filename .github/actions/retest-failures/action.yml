@@ -156,7 +156,7 @@ runs:
       shell: cmd
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        call env.bat vc14 win64 release
         DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }} -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -182,7 +182,7 @@ runs:
       shell: cmd
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        call env.bat vc14 win64 release
         # Repeat failed tests for 10 times
         for /l %%i in (1,1,10) do (
           DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }}-retest -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0 -overwrite
@@ -228,7 +228,7 @@ runs:
         if exist "*" (
           xcopy /s /y /i . "..\${{ inputs.test-directory-name }}"
           cd ..\..
-          call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+          call env.bat vc14 win64 release
           DRAWEXE.exe -v -c "testsummarize results/${{ inputs.test-directory-name }}"
         ) else (
           echo No retest results to copy - directory is empty

@@ -57,7 +57,7 @@ runs:
       shell: cmd
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
+        call env.bat vc14 win64 release
         cd bin
         set GTEST_OUTPUT=""
         OpenCascadeGTest.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1

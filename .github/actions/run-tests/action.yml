@@ -95,7 +95,7 @@ runs:
       if: ${{ inputs.platform == 'windows' }}
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
+        call env.bat vc14 win64 release
         DRAWEXE.exe -v -f ${{ github.workspace }}/${{ inputs.test-script }}
       shell: cmd
       env:
@@ -121,7 +121,7 @@ runs:
       if: ${{ inputs.platform == 'windows' }}
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'msvc' && 'vc14' || 'clang' }} win64 release
+        call env.bat vc14 win64 release
         DRAWEXE.exe -v -c cleanuptest results/${{ inputs.test-directory-name }}
       shell: cmd
       env:
