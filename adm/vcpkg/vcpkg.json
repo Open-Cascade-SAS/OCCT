@@ -41,8 +41,7 @@
           "name": "mesa",
           "default-features": false,
           "features": [
-            "gles2",
-            "egl"
+            "gles2"
           ],
           "platform": "linux"
         },
