@@ -39,9 +39,9 @@
       "dependencies": [
         {
           "name": "mesa",
-          "default-features": false,
           "features": [
-            "gles2"
+            "gles2",
+            "offscreen"
           ],
           "platform": "linux"
         },
