@@ -35,23 +35,6 @@ runs:
       with:
         artifact-name: ${{ inputs.install-artifact-name }}-cache
 
-    - name: Download and extract 3rdparty dependencies for Windows
-      if: inputs.platform == 'windows'
-      shell: pwsh
-      run: |
-        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-        Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-        Remove-Item 3rdparty-vc14-64.zip
-
-    - name: Install macOS dependencies
-      if: inputs.platform == 'macos'
-      shell: bash
-      run: |
-        brew update
-        brew install tcl-tk tbb gl2ps xerces-c \
-                     libxmu libxi libxft libxpm \
-                     glew freeimage draco glfw
-
     - name: Install Linux dependencies
       if: inputs.platform == 'linux'
       shell: bash

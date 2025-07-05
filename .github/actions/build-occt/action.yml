@@ -60,7 +60,7 @@ runs:
 
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libx11-dev libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev tcl-dev tk-dev tcllib tcl-thread tcl
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Install required packages (macOS)

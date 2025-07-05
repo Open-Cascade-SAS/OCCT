@@ -26,26 +26,9 @@ runs:
       with:
         artifact-name: ${{ inputs.install-artifact-name }}-cache
 
-    - name: Download and extract 3rdparty dependencies (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-          Remove-Item 3rdparty-vc14-64.zip
-      shell: pwsh
-
-    - name: Install dependencies (macOS)
-      if: ${{ inputs.platform == 'macos' }}
-      run: |
-        brew update
-        brew install tcl-tk tbb gl2ps xerces-c \
-                     libxmu libxi libxft libxpm \
-                     glew freeimage draco glfw
-      shell: bash
-
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'gcc' && 'gcc g++' || 'clang' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'gcc' && 'gcc g++' || 'clang' }} make libglu1-mesa-dev libegl1-mesa-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
       shell: bash
 
     - name: Setup Xvfb and Mesa (Linux)
