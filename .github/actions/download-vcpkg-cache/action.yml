@@ -27,28 +27,53 @@ runs:
         rm vcpkg-dependencies.tar.gz
       shell: bash
 
-    - name: Set library search paths for Windows
+    - name: Copy manual-link libraries and set paths for Windows
       if: runner.os == 'Windows'
       run: |
         $vcpkg_bin = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/bin"
         $vcpkg_lib = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/lib"
         $vcpkg_manual = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/lib/manual-link"
+        
+        # Copy manual-link DLLs to bin directory for runtime access
+        if (Test-Path $vcpkg_manual) {
+          Write-Host "Copying manual-link libraries to bin directory"
+          Copy-Item "$vcpkg_manual\*" "$vcpkg_bin\" -Force -ErrorAction SilentlyContinue
+        }
+        
+        # Set library search paths
         $current_path = $env:PATH
         echo "PATH=$vcpkg_bin;$vcpkg_lib;$vcpkg_manual;$current_path" >> $env:GITHUB_ENV
       shell: pwsh
 
-    - name: Set library search paths for Linux
+    - name: Copy manual-link libraries and set paths for Linux
       if: runner.os == 'Linux'
       run: |
         vcpkg_lib="${{ inputs.build-directory }}/vcpkg_installed/x64-linux-dynamic/lib"
         vcpkg_manual="${{ inputs.build-directory }}/vcpkg_installed/x64-linux-dynamic/lib/manual-link"
+        
+        # Copy manual-link libraries to main lib directory for runtime access
+        if [ -d "$vcpkg_manual" ]; then
+          echo "Copying manual-link libraries to main lib directory"
+          cp -f "$vcpkg_manual"/* "$vcpkg_lib/" 2>/dev/null || true
+        fi
+        
+        # Set library search paths
         echo "LD_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$LD_LIBRARY_PATH" >> $GITHUB_ENV
       shell: bash
 
-    - name: Set library search paths for macOS
+    - name: Copy manual-link libraries and set paths for macOS
       if: runner.os == 'macOS'
       run: |
         vcpkg_lib="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib"
         vcpkg_manual="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib/manual-link"
+        
+        # Copy manual-link libraries to main lib directory for runtime access
+        if [ -d "$vcpkg_manual" ]; then
+          echo "Copying manual-link libraries to main lib directory"
+          cp -f "$vcpkg_manual"/* "$vcpkg_lib/" 2>/dev/null || true
+        fi
+        
+        # Set library search paths
         echo "DYLD_FALLBACK_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "DYLD_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
       shell: bash
