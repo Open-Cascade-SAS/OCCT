@@ -28,25 +28,71 @@ runs:
         name: ${{ inputs.artifact-name }}
         path: ${{ inputs.build-directory }}/
 
-    - name: Verify vcpkg cache restored
+    - name: Move vcpkg cache to correct location
       run: |
-        if [ -d "${{ inputs.build-directory }}/vcpkg_installed" ]; then
-          echo "✓ vcpkg cache successfully restored"
+        echo "Checking download directory structure:"
+        ls -la "${{ inputs.build-directory }}/"
+        
+        # The artifact is downloaded to a subfolder with the artifact name
+        ARTIFACT_DIR="${{ inputs.build-directory }}/${{ inputs.artifact-name }}"
+        
+        echo "Checking artifact directory contents:"
+        if [ -d "$ARTIFACT_DIR" ]; then
+          ls -la "$ARTIFACT_DIR/"
+        else
+          echo "Artifact directory not found at: $ARTIFACT_DIR"
+          exit 1
+        fi
+        
+        if [ -d "$ARTIFACT_DIR/vcpkg_installed" ]; then
+          echo "Found vcpkg_installed in artifact subfolder, moving to build directory..."
+          # Move the entire vcpkg_installed directory and its contents
+          mv "$ARTIFACT_DIR/vcpkg_installed" "${{ inputs.build-directory }}/"
+          # Clean up the now-empty artifact directory
+          rmdir "$ARTIFACT_DIR" 2>/dev/null || true
+          echo "✓ vcpkg cache successfully restored and moved"
           ls -la "${{ inputs.build-directory }}/vcpkg_installed"
         else
-          echo "✗ vcpkg cache restoration failed"
+          echo "⚠ vcpkg_installed not found in artifact subfolder"
+          echo "Looking for vcpkg_installed anywhere in download:"
+          find "${{ inputs.build-directory }}" -name "vcpkg_installed" -type d 2>/dev/null || echo "No vcpkg_installed directory found"
+          
+          echo "✗ vcpkg cache restoration failed - vcpkg_installed not found"
           exit 1
         fi
       shell: bash
 
-    - name: Verify vcpkg cache restored (Windows)
+    - name: Move vcpkg cache to correct location (Windows)
       if: runner.os == 'Windows'
       run: |
-        if (Test-Path "${{ inputs.build-directory }}/vcpkg_installed") {
-          echo "✓ vcpkg cache successfully restored"
+        echo "Checking download directory structure:"
+        Get-ChildItem "${{ inputs.build-directory }}/" -Force
+        
+        # The artifact is downloaded to a subfolder with the artifact name
+        $ArtifactDir = "${{ inputs.build-directory }}/${{ inputs.artifact-name }}"
+        
+        echo "Checking artifact directory contents:"
+        if (Test-Path "$ArtifactDir") {
+          Get-ChildItem "$ArtifactDir/" -Force
+        } else {
+          echo "Artifact directory not found at: $ArtifactDir"
+          exit 1
+        }
+        
+        if (Test-Path "$ArtifactDir/vcpkg_installed") {
+          echo "Found vcpkg_installed in artifact subfolder, moving to build directory..."
+          # Move the entire vcpkg_installed directory and its contents
+          Move-Item "$ArtifactDir/vcpkg_installed" "${{ inputs.build-directory }}/"
+          # Clean up the now-empty artifact directory
+          Remove-Item "$ArtifactDir" -Force -ErrorAction SilentlyContinue
+          echo "✓ vcpkg cache successfully restored and moved"
           Get-ChildItem "${{ inputs.build-directory }}/vcpkg_installed"
         } else {
-          echo "✗ vcpkg cache restoration failed"
+          echo "⚠ vcpkg_installed not found in artifact subfolder"
+          echo "Looking for vcpkg_installed anywhere in download:"
+          Get-ChildItem "${{ inputs.build-directory }}" -Recurse -Directory -Name "vcpkg_installed" -ErrorAction SilentlyContinue
+          
+          echo "✗ vcpkg cache restoration failed - vcpkg_installed not found"
           exit 1
         }
       shell: pwsh
