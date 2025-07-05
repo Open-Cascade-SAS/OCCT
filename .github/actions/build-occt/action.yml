@@ -31,17 +31,17 @@ inputs:
     description: 'CMake build type (Release, Debug, etc)'
     required: false
     default: 'Release'
+  github-token:
+    description: 'GitHub token for vcpkg NuGet package access'
+    required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Download and extract 3rdparty dependencies (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-          Remove-Item 3rdparty-vc14-64.zip
-      shell: pwsh
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ inputs.github-token }}
 
     - name: Download and extract Mesa3D (Windows)
       if: ${{ inputs.platform == 'windows' }}
@@ -58,80 +58,37 @@ runs:
         .\systemwidedeploy.cmd 5
       shell: cmd
 
-    - name: Install Ninja (Windows Clang)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
-      run: |
-        choco install ninja -y
-        ninja --version
-      shell: pwsh
-
-    - name: Install dependencies (macOS)
-      if: ${{ inputs.platform == 'macos' }}
-      run: |
-        brew update
-        brew install tcl-tk tbb gl2ps xerces-c \
-                     libxmu libxi libxft libxpm \
-                     glew freeimage draco glfw
-      shell: bash
-
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
-    - name: Install rapidjson (macOS/Linux)
-      if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
+    - name: Install required packages (macOS)
+      if: ${{ inputs.platform == 'macos' }}
       run: |
-        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
-        unzip rapidjson.zip
+        brew update || true
+        # temporary workaround for missing tcl-tk
+        brew install tcl-tk || true
+        # Force link any conflicting packages
+        brew link --overwrite python@3.12 || true
+        brew link --overwrite python@3.13 || true
       shell: bash
 
-    - name: Configure OCCT (Windows MSVC)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'msvc' }}
+    - name: Configure OCCT (Windows)
+      if: ${{ inputs.platform == 'windows' }}
       run: |
           mkdir build
           cd build
-          cmake -T host=x64 `
+          cmake -T ${{ inputs.compiler == 'msvc' && 'host=x64' || 'ClangCL' }} `
                 -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
+                -D USE_TK=ON `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=${{ inputs.use-vtk }} `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
-                -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON `
-                ${{ inputs.additional-cmake-flags }} ..
-      shell: pwsh
-
-    - name: Configure OCCT (Windows Clang)
-      if: ${{ inputs.platform == 'windows' && inputs.compiler == 'clang' }}
-      run: |
-          mkdir build
-          cd build
-          cmake -G "Ninja" `
-                -D CMAKE_C_COMPILER=clang `
-                -D CMAKE_CXX_COMPILER=clang++ `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
-                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
-                -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D BUILD_USE_VCPKG=ON `
+                -D VCPKG_TARGET_TRIPLET=x64-windows `
                 -D USE_D3D=ON `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
@@ -161,7 +118,8 @@ runs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D BUILD_USE_VCPKG=ON \
+              -D VCPKG_TARGET_TRIPLET=arm64-osx-dynamic \
               -D USE_RAPIDJSON=ON \
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
@@ -179,16 +137,21 @@ runs:
       run: |
         mkdir -p build
         cd build
+        # Set environment to help vcpkg find system libraries
+        export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:$PKG_CONFIG_PATH"
+        export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
-              -D USE_TK=OFF \
+              -D USE_TK=ON \
               -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
               -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D BUILD_USE_VCPKG=ON \
+              -D BUILD_LIBRARY_TYPE=Shared \
+              -D VCPKG_TARGET_TRIPLET=x64-linux-dynamic \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=ON \
@@ -196,7 +159,7 @@ runs:
               -D USE_GLES2=ON \
               -D USE_OPENVR=ON \
               -D USE_VTK=${{ inputs.use-vtk }} \
-              -D USE_TBB=OFF \
+              -D USE_TBB=ON \
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               -D BUILD_GTEST=ON \
@@ -204,6 +167,12 @@ runs:
               -D INSTALL_GTEST=ON \
               ${{ inputs.additional-cmake-flags }} ..
       shell: bash
+
+    - name: Upload vcpkg cache
+      uses: ./.github/actions/upload-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.artifact-name }}-cache
+        build-directory: build
 
     - name: Build OCCT (Windows)
       if: ${{ inputs.platform == 'windows' }}

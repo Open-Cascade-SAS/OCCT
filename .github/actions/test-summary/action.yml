@@ -4,8 +4,13 @@ description: 'Compare test results between current branch and master'
 runs:
   using: "composite"
   steps:
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: install-linux-gcc-x64-cache
+
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake gcc g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Setup Xvfb and Mesa

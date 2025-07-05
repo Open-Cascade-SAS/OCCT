@@ -10,38 +10,31 @@ runs:
         choco install -y doxygen.install
       shell: pwsh
 
-    - name: Download and extract 3rdparty dependencies
-      run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-          Remove-Item 3rdparty-vc14-64.zip
-      shell: pwsh
-
     - name: Configure OCCT
       run: |
           mkdir build
           cd build
           cmake -T host=x64 `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
                 -D BUILD_USE_PCH=ON `
                 -D BUILD_OPT_PROFILE=Production `
                 -D BUILD_INCLUDE_SYMLINK=ON `
                 -D CMAKE_BUILD_TYPE=Release `
                 -D BUILD_DOC_Overview=ON `
                 -D BUILD_DOC_RefMan=ON `
-                -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=ON `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
+                -D BUILD_MODULE_Draw=OFF `
+                -D USE_D3D=OFF `
+                -D USE_DRACO=OFF `
+                -D USE_FFMPEG=OFF `
+                -D USE_FREEIMAGE=OFF `
+                -D USE_GLES2=OFF `
+                -D USE_OPENVR=OFF `
+                -D USE_VTK=OFF `
+                -D USE_TBB=OFF `
+                -D USE_RAPIDJSON=OFF `
+                -D USE_OPENGL=OFF `
+                -D USE_FREETYPE=OFF `
+                -D USE_TK=OFF `
+                -D USE_TCL=OFF `
                 -D CMAKE_CXX_FLAGS="/W4 /WX" `
                 -D CMAKE_C_FLAGS="/W4 /WX" ..
       shell: pwsh

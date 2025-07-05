@@ -5,15 +5,14 @@ vcpkg_from_sourceforge(
     FILENAME tcl8.6.16-src.tar.gz
     SHA512 434c92f8181fb8dca6bc065b0f1f5078779086f19adf008818c90a3108596c63465ef43e9f3c1cfb3d4151a9de244d0bf0e6ee5b40e714b1ddca4a78eb43050b
     PATCHES
-        0001-Add-tk-build.patch
-        0002-Add-setpath-target.patch
-        0003-Update-unix-build.patch
-        0004-Update-mingw-build.patch
+        0001-Support-Tk.patch
 )
 
 set(USE_TCL_TK OFF)
 
+set (TKDIR_WIN "")
 if ("tk" IN_LIST FEATURES)
+  set (TKDIR_WIN "TKDIR=../extra/tk.8.6.16-src")
   vcpkg_from_sourceforge(
       OUT_SOURCE_PATH TK_SOURCE_PATH
       REPO tcl/Tcl
@@ -81,7 +80,7 @@ if (VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
             ${TCL_BUILD_ARCH_STR}
             ${TCL_BUILD_STATS}
             ${TCL_BUILD_CHECKS}
-            TKDIR=../extra/tk.8.6.16-src
+            ${TKDIR_WIN}
         OPTIONS_DEBUG
             ${TCL_BUILD_OPTS},symbols,pdbs
             INSTALLDIR=${CURRENT_PACKAGES_DIR}/debug
@@ -102,20 +101,30 @@ else()
     if (VCPKG_TARGET_IS_MINGW)
         set (TCL_PROJECT_SUBPATH win)
     endif()
-    file(REMOVE "${SOURCE_PATH}/${TCL_PROJECT_SUBPATH}/configure")
+    # file(REMOVE "${SOURCE_PATH}/${TCL_PROJECT_SUBPATH}/configure")
     # For MinGW and other Unix-like environments on Windows, use unix build path
     # MinGW can use either win/ (with MinGW-compatible Makefiles) or unix/ (with autotools)
     vcpkg_configure_make(
         SOURCE_PATH "${SOURCE_PATH}"
         PROJECT_SUBPATH ${TCL_PROJECT_SUBPATH}
-        OPTIONS
-            TKDIR=${SOURCE_PATH}/extra/tk.8.6.16-src
+        AUTOCONFIG
     )
 
-    vcpkg_install_make(
-        OPTIONS
-            TKDIR=${SOURCE_PATH}/extra/tk.8.6.16-src
-    )
+    # Build with explicit X11 paths for Tk when needed
+    if(USE_TCL_TK AND NOT VCPKG_TARGET_IS_WINDOWS)
+        vcpkg_build_make(
+            ENVIRONMENT 
+                "CPPFLAGS=-I${CURRENT_INSTALLED_DIR}/include"
+                "LDFLAGS=-L${CURRENT_INSTALLED_DIR}/lib"
+        )
+        vcpkg_install_make(
+            ENVIRONMENT 
+                "CPPFLAGS=-I${CURRENT_INSTALLED_DIR}/include" 
+                "LDFLAGS=-L${CURRENT_INSTALLED_DIR}/lib"
+        )
+    else()
+        vcpkg_install_make()
+    endif()
 
     vcpkg_fixup_pkgconfig()
 
