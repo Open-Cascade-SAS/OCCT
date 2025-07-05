@@ -183,7 +183,7 @@ endif()
 
 if (3RDPARTY_TCL_LIBRARY AND EXISTS "${3RDPARTY_TCL_LIBRARY}")
   list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_TCL_LIBRARY_DIR}")
-else()
+elseif(NOT BUILD_USE_VCPKG)
   list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_TCL_LIBRARY_DIR)
 endif()
 
@@ -272,12 +272,6 @@ if (TK_FOUND AND 3RDPARTY_TCL_DIR)
     set (3RDPARTY_TCLTK_DIR "${3RDPARTY_TCL_DIR}")
     message (STATUS "Info: TK is used from TCL folder: ${3RDPARTY_TCLTK_DIR}")
   endif()
-endif()
-
-if (BUILD_USE_VCPKG)
-  set (3RDPARTY_TCL_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tcl" FORCE)
-  set (3RDPARTY_TCL_INCLUDE_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include" CACHE FILEPATH "The directory containing headers of tcl" FORCE)
-  set (3RDPARTY_TCL_LIBRARY_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib" CACHE FILEPATH "The directory containing tcl library" FORCE)
 endif()
 
 # hide all redundant variables
