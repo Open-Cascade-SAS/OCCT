@@ -81,7 +81,7 @@ runs:
           cd build
           cmake -T host=x64 `
                 -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
+                -D USE_TK=ON `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `
@@ -112,7 +112,7 @@ runs:
           cd build
           cmake -T ClangCL `
                 -D USE_FREETYPE=ON `
-                -D USE_TK=OFF `
+                -D USE_TK=ON `
                 -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
                 -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
                 -D BUILD_INCLUDE_SYMLINK=ON `

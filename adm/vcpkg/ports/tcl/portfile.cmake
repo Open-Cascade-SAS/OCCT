@@ -10,7 +10,9 @@ vcpkg_from_sourceforge(
 
 set(USE_TCL_TK OFF)
 
+set (TKDIR_WIN "")
 if ("tk" IN_LIST FEATURES)
+  set (TKDIR_WIN "TKDIR=../extra/tk.8.6.16-src")
   vcpkg_from_sourceforge(
       OUT_SOURCE_PATH TK_SOURCE_PATH
       REPO tcl/Tcl
@@ -78,7 +80,7 @@ if (VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
             ${TCL_BUILD_ARCH_STR}
             ${TCL_BUILD_STATS}
             ${TCL_BUILD_CHECKS}
-            TKDIR=../extra/tk.8.6.16-src
+            ${TKDIR_WIN}
         OPTIONS_DEBUG
             ${TCL_BUILD_OPTS},symbols,pdbs
             INSTALLDIR=${CURRENT_PACKAGES_DIR}/debug
@@ -106,12 +108,9 @@ else()
         SOURCE_PATH "${SOURCE_PATH}"
         PROJECT_SUBPATH ${TCL_PROJECT_SUBPATH}
         AUTOCONFIG
-        OPTIONS
-            TKDIR=${SOURCE_PATH}/extra/tk.8.6.16-src
     )
 
-    vcpkg_install_make(
-    )
+    vcpkg_install_make()
 
     vcpkg_fixup_pkgconfig()
 

@@ -61,7 +61,10 @@
             "tk"
           ]
         },
-        "libx11"
+        {
+          "name": "libx11",
+          "platform": "!windows"
+        }
       ]
     },
     "freeimage": {
