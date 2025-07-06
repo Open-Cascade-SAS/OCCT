@@ -65,12 +65,16 @@ runs:
         cd inspector
         mkdir build
         cd build
+        export PKG_CONFIG_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib/pkgconfig:$PKG_CONFIG_PATH"
         cmake -G "Unix Makefiles" \
               -D CMAKE_BUILD_TYPE=Release \
               -D BUILD_SHARED_LIBS=ON \
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
               -D INSTALL_DIR=${{ github.workspace }}/inspector/install \
               -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+              -D CMAKE_PREFIX_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic" \
+              -D CMAKE_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
+              -D CMAKE_INCLUDE_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/include" \
               ..
 
     - name: Build TInspector - Windows
@@ -85,6 +89,9 @@ runs:
       shell: bash
       run: |
         cd inspector/build
+        # Set library paths for build and runtime
+        export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
+        export PKG_CONFIG_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib/pkgconfig:$PKG_CONFIG_PATH"
         make install -j$(nproc)
 
     - name: Upload TInspector installation
