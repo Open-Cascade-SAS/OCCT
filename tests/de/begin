@@ -48,8 +48,13 @@ proc parse_resource_file {theFileName} {
 
 # Creates new resource file with options as key-value dict
 proc create_resource_file {theFileName theOptions} {
-   # Open a resource file
-   set aFD [open "${theFileName}" "wb"]
+   # Ensure the parent directory exists
+   set parentDir [file dirname $theFileName]
+   if { ![file exists $parentDir] } {
+       file mkdir $parentDir
+   }
+   # Open the file for writing
+   set aFD [open $theFileName "wb"]
    set aLineNo 0
    # Write line by line
    dict for {aKey aValue} $theOptions {
