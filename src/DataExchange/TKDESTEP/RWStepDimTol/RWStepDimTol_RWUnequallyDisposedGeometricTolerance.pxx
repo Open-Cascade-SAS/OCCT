@@ -35,22 +35,22 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWUnequallyDisposedGeometricTolerance();
+  inline RWStepDimTol_RWUnequallyDisposedGeometricTolerance();
 
   //! Reads UnequallyDisposedGeometricTolerance
-  Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                        data,
-    const Standard_Integer                                        num,
-    Handle(Interface_Check)&                                      ach,
-    const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                        data,
+                              const Standard_Integer                                        num,
+                              Handle(Interface_Check)&                                      ach,
+                              const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent);
 
   //! Writes UnequallyDisposedGeometricTolerance
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                          SW,
-    const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                          SW,
+                               const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent);
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent,
-                             Interface_EntityIterator& iter) const;
+  static inline void Share(const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent,
+                           Interface_EntityIterator&                                     iter);
 };
+
+#include "RWStepDimTol_RWUnequallyDisposedGeometricTolerance_impl.pxx"
 #endif // _RWStepDimTol_RWUnequallyDisposedGeometricTolerance_HeaderFile

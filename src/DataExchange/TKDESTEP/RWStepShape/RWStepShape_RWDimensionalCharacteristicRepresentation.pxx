@@ -34,26 +34,26 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepShape_RWDimensionalCharacteristicRepresentation();
+  inline RWStepShape_RWDimensionalCharacteristicRepresentation();
 
   //! Reads DimensionalCharacteristicRepresentation
-  Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                           data,
-    const Standard_Integer                                           num,
-    Handle(Interface_Check)&                                         ach,
-    const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                           data,
+                              const Standard_Integer                                           num,
+                              Handle(Interface_Check)&                                         ach,
+                              const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent);
 
   //! Writes DimensionalCharacteristicRepresentation
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                             SW,
-    const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent) const;
+    const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent);
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent,
-                             Interface_EntityIterator& iter) const;
+  static inline void Share(const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent,
+                           Interface_EntityIterator&                                        iter);
 
 protected:
 private:
 };
 
+#include "RWStepShape_RWDimensionalCharacteristicRepresentation_impl.pxx"
 #endif // _RWStepShape_RWDimensionalCharacteristicRepresentation_HeaderFile

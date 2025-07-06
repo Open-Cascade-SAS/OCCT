@@ -34,27 +34,28 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion();
+  inline RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion();
 
   //! Reads FeaTangentialCoefficientOfLinearThermalExpansion
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                  data,
     const Standard_Integer                                                  num,
     Handle(Interface_Check)&                                                ach,
-    const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const;
+    const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent);
 
   //! Writes FeaTangentialCoefficientOfLinearThermalExpansion
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                                    SW,
-    const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const;
+    const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent);
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(
+  static inline void Share(
     const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent,
-    Interface_EntityIterator&                                               iter) const;
+    Interface_EntityIterator&                                               iter);
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion_impl.pxx"
 #endif // _RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion_HeaderFile

@@ -36,25 +36,26 @@ class RWStepGeom_RWBSplineCurveWithKnots
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepGeom_RWBSplineCurveWithKnots();
+  inline RWStepGeom_RWBSplineCurveWithKnots();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&        data,
-                                const Standard_Integer                        num,
-                                Handle(Interface_Check)&                      ach,
-                                const Handle(StepGeom_BSplineCurveWithKnots)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
+                              const Standard_Integer                        num,
+                              Handle(Interface_Check)&                      ach,
+                              const Handle(StepGeom_BSplineCurveWithKnots)& ent);
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                          SW,
-                                 const Handle(StepGeom_BSplineCurveWithKnots)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                          SW,
+                               const Handle(StepGeom_BSplineCurveWithKnots)& ent);
 
-  Standard_HIDDEN void Share(const Handle(StepGeom_BSplineCurveWithKnots)& ent,
-                             Interface_EntityIterator&                     iter) const;
+  static inline void Share(const Handle(StepGeom_BSplineCurveWithKnots)& ent,
+                           Interface_EntityIterator&                     iter);
 
-  Standard_HIDDEN void Check(const Handle(StepGeom_BSplineCurveWithKnots)& ent,
-                             const Interface_ShareTool&                    shares,
-                             Handle(Interface_Check)&                      ach) const;
+  static inline void Check(const Handle(StepGeom_BSplineCurveWithKnots)& ent,
+                           const Interface_ShareTool&                    shares,
+                           Handle(Interface_Check)&                      ach);
 
 protected:
 private:
 };
 
+#include "RWStepGeom_RWBSplineCurveWithKnots_impl.pxx"
 #endif // _RWStepGeom_RWBSplineCurveWithKnots_HeaderFile

@@ -2,187 +2,187 @@
 set(OCCT_RWStepShape_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepShape_FILES
-  RWStepShape_RWAdvancedBrepShapeRepresentation.cxx
+  RWStepShape_RWAdvancedBrepShapeRepresentation_impl.pxx
   RWStepShape_RWAdvancedBrepShapeRepresentation.pxx
-  RWStepShape_RWAdvancedFace.cxx
+  RWStepShape_RWAdvancedFace_impl.pxx
   RWStepShape_RWAdvancedFace.pxx
-  RWStepShape_RWAngularLocation.cxx
+  RWStepShape_RWAngularLocation_impl.pxx
   RWStepShape_RWAngularLocation.pxx
-  RWStepShape_RWAngularSize.cxx
+  RWStepShape_RWAngularSize_impl.pxx
   RWStepShape_RWAngularSize.pxx
-  RWStepShape_RWBlock.cxx
+  RWStepShape_RWBlock_impl.pxx
   RWStepShape_RWBlock.pxx
   RWStepShape_RWBooleanOperator.pxx
-  RWStepShape_RWBooleanResult.cxx
+  RWStepShape_RWBooleanResult_impl.pxx
   RWStepShape_RWBooleanResult.pxx
-  RWStepShape_RWBoxDomain.cxx
+  RWStepShape_RWBoxDomain_impl.pxx
   RWStepShape_RWBoxDomain.pxx
-  RWStepShape_RWBoxedHalfSpace.cxx
+  RWStepShape_RWBoxedHalfSpace_impl.pxx
   RWStepShape_RWBoxedHalfSpace.pxx
-  RWStepShape_RWBrepWithVoids.cxx
+  RWStepShape_RWBrepWithVoids_impl.pxx
   RWStepShape_RWBrepWithVoids.pxx
-  RWStepShape_RWClosedShell.cxx
+  RWStepShape_RWClosedShell_impl.pxx
   RWStepShape_RWClosedShell.pxx
-  RWStepShape_RWCompoundShapeRepresentation.cxx
+  RWStepShape_RWCompoundShapeRepresentation_impl.pxx
   RWStepShape_RWCompoundShapeRepresentation.pxx
-  RWStepShape_RWConnectedEdgeSet.cxx
+  RWStepShape_RWConnectedEdgeSet_impl.pxx
   RWStepShape_RWConnectedEdgeSet.pxx
-  RWStepShape_RWConnectedFaceSet.cxx
+  RWStepShape_RWConnectedFaceSet_impl.pxx
   RWStepShape_RWConnectedFaceSet.pxx
-  RWStepShape_RWConnectedFaceShapeRepresentation.cxx
+  RWStepShape_RWConnectedFaceShapeRepresentation_impl.pxx
   RWStepShape_RWConnectedFaceShapeRepresentation.pxx
-  RWStepShape_RWConnectedFaceSubSet.cxx
+  RWStepShape_RWConnectedFaceSubSet_impl.pxx
   RWStepShape_RWConnectedFaceSubSet.pxx
-  RWStepShape_RWContextDependentShapeRepresentation.cxx
+  RWStepShape_RWContextDependentShapeRepresentation_impl.pxx
   RWStepShape_RWContextDependentShapeRepresentation.pxx
-  RWStepShape_RWCsgShapeRepresentation.cxx
+  RWStepShape_RWCsgShapeRepresentation_impl.pxx
   RWStepShape_RWCsgShapeRepresentation.pxx
-  RWStepShape_RWCsgSolid.cxx
+  RWStepShape_RWCsgSolid_impl.pxx
   RWStepShape_RWCsgSolid.pxx
-  RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation.cxx
+  RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation_impl.pxx
   RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation.pxx
-  RWStepShape_RWDimensionalCharacteristicRepresentation.cxx
+  RWStepShape_RWDimensionalCharacteristicRepresentation_impl.pxx
   RWStepShape_RWDimensionalCharacteristicRepresentation.pxx
-  RWStepShape_RWDimensionalLocation.cxx
+  RWStepShape_RWDimensionalLocation_impl.pxx
   RWStepShape_RWDimensionalLocation.pxx
-  RWStepShape_RWDimensionalLocationWithPath.cxx
+  RWStepShape_RWDimensionalLocationWithPath_impl.pxx
   RWStepShape_RWDimensionalLocationWithPath.pxx
-  RWStepShape_RWDimensionalSize.cxx
+  RWStepShape_RWDimensionalSize_impl.pxx
   RWStepShape_RWDimensionalSize.pxx
-  RWStepShape_RWDimensionalSizeWithPath.cxx
+  RWStepShape_RWDimensionalSizeWithPath_impl.pxx
   RWStepShape_RWDimensionalSizeWithPath.pxx
-  RWStepShape_RWEdge.cxx
+  RWStepShape_RWEdge_impl.pxx
   RWStepShape_RWEdge.pxx
-  RWStepShape_RWEdgeBasedWireframeModel.cxx
+  RWStepShape_RWEdgeBasedWireframeModel_impl.pxx
   RWStepShape_RWEdgeBasedWireframeModel.pxx
-  RWStepShape_RWEdgeBasedWireframeShapeRepresentation.cxx
+  RWStepShape_RWEdgeBasedWireframeShapeRepresentation_impl.pxx
   RWStepShape_RWEdgeBasedWireframeShapeRepresentation.pxx
-  RWStepShape_RWEdgeCurve.cxx
+  RWStepShape_RWEdgeCurve_impl.pxx
   RWStepShape_RWEdgeCurve.pxx
-  RWStepShape_RWEdgeLoop.cxx
+  RWStepShape_RWEdgeLoop_impl.pxx
   RWStepShape_RWEdgeLoop.pxx
-  RWStepShape_RWExtrudedAreaSolid.cxx
+  RWStepShape_RWExtrudedAreaSolid_impl.pxx
   RWStepShape_RWExtrudedAreaSolid.pxx
-  RWStepShape_RWExtrudedFaceSolid.cxx
+  RWStepShape_RWExtrudedFaceSolid_impl.pxx
   RWStepShape_RWExtrudedFaceSolid.pxx
-  RWStepShape_RWFace.cxx
+  RWStepShape_RWFace_impl.pxx
   RWStepShape_RWFace.pxx
-  RWStepShape_RWFaceBasedSurfaceModel.cxx
+  RWStepShape_RWFaceBasedSurfaceModel_impl.pxx
   RWStepShape_RWFaceBasedSurfaceModel.pxx
-  RWStepShape_RWFaceBound.cxx
+  RWStepShape_RWFaceBound_impl.pxx
   RWStepShape_RWFaceBound.pxx
-  RWStepShape_RWFaceOuterBound.cxx
+  RWStepShape_RWFaceOuterBound_impl.pxx
   RWStepShape_RWFaceOuterBound.pxx
-  RWStepShape_RWFaceSurface.cxx
+  RWStepShape_RWFaceSurface_impl.pxx
   RWStepShape_RWFaceSurface.pxx
-  RWStepShape_RWFacetedBrep.cxx
+  RWStepShape_RWFacetedBrep_impl.pxx
   RWStepShape_RWFacetedBrep.pxx
-  RWStepShape_RWFacetedBrepAndBrepWithVoids.cxx
+  RWStepShape_RWFacetedBrepAndBrepWithVoids_impl.pxx
   RWStepShape_RWFacetedBrepAndBrepWithVoids.pxx
-  RWStepShape_RWFacetedBrepShapeRepresentation.cxx
+  RWStepShape_RWFacetedBrepShapeRepresentation_impl.pxx
   RWStepShape_RWFacetedBrepShapeRepresentation.pxx
-  RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation.cxx
+  RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation_impl.pxx
   RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation.pxx
-  RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation.cxx
+  RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation_impl.pxx
   RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation.pxx
-  RWStepShape_RWGeometricCurveSet.cxx
+  RWStepShape_RWGeometricCurveSet_impl.pxx
   RWStepShape_RWGeometricCurveSet.pxx
-  RWStepShape_RWGeometricSet.cxx
+  RWStepShape_RWGeometricSet_impl.pxx
   RWStepShape_RWGeometricSet.pxx
-  RWStepShape_RWHalfSpaceSolid.cxx
+  RWStepShape_RWHalfSpaceSolid_impl.pxx
   RWStepShape_RWHalfSpaceSolid.pxx
-  RWStepShape_RWLimitsAndFits.cxx
+  RWStepShape_RWLimitsAndFits_impl.pxx
   RWStepShape_RWLimitsAndFits.pxx
-  RWStepShape_RWLoop.cxx
+  RWStepShape_RWLoop_impl.pxx
   RWStepShape_RWLoop.pxx
-  RWStepShape_RWLoopAndPath.cxx
+  RWStepShape_RWLoopAndPath_impl.pxx
   RWStepShape_RWLoopAndPath.pxx
-  RWStepShape_RWManifoldSolidBrep.cxx
+  RWStepShape_RWManifoldSolidBrep_impl.pxx
   RWStepShape_RWManifoldSolidBrep.pxx
-  RWStepShape_RWManifoldSurfaceShapeRepresentation.cxx
+  RWStepShape_RWManifoldSurfaceShapeRepresentation_impl.pxx
   RWStepShape_RWManifoldSurfaceShapeRepresentation.pxx
-  RWStepShape_RWMeasureQualification.cxx
+  RWStepShape_RWMeasureQualification_impl.pxx
   RWStepShape_RWMeasureQualification.pxx
-  RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem.cxx
+  RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem_impl.pxx
   RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem.pxx
-  RWStepShape_RWNonManifoldSurfaceShapeRepresentation.cxx
+  RWStepShape_RWNonManifoldSurfaceShapeRepresentation_impl.pxx
   RWStepShape_RWNonManifoldSurfaceShapeRepresentation.pxx
-  RWStepShape_RWOpenShell.cxx
+  RWStepShape_RWOpenShell_impl.pxx
   RWStepShape_RWOpenShell.pxx
-  RWStepShape_RWOrientedClosedShell.cxx
+  RWStepShape_RWOrientedClosedShell_impl.pxx
   RWStepShape_RWOrientedClosedShell.pxx
-  RWStepShape_RWOrientedEdge.cxx
+  RWStepShape_RWOrientedEdge_impl.pxx
   RWStepShape_RWOrientedEdge.pxx
-  RWStepShape_RWOrientedFace.cxx
+  RWStepShape_RWOrientedFace_impl.pxx
   RWStepShape_RWOrientedFace.pxx
-  RWStepShape_RWOrientedOpenShell.cxx
+  RWStepShape_RWOrientedOpenShell_impl.pxx
   RWStepShape_RWOrientedOpenShell.pxx
-  RWStepShape_RWOrientedPath.cxx
+  RWStepShape_RWOrientedPath_impl.pxx
   RWStepShape_RWOrientedPath.pxx
-  RWStepShape_RWPath.cxx
+  RWStepShape_RWPath_impl.pxx
   RWStepShape_RWPath.pxx
-  RWStepShape_RWPlusMinusTolerance.cxx
+  RWStepShape_RWPlusMinusTolerance_impl.pxx
   RWStepShape_RWPlusMinusTolerance.pxx
-  RWStepShape_RWPointRepresentation.cxx
+  RWStepShape_RWPointRepresentation_impl.pxx
   RWStepShape_RWPointRepresentation.pxx
-  RWStepShape_RWPolyLoop.cxx
+  RWStepShape_RWPolyLoop_impl.pxx
   RWStepShape_RWPolyLoop.pxx
-  RWStepShape_RWPrecisionQualifier.cxx
+  RWStepShape_RWPrecisionQualifier_impl.pxx
   RWStepShape_RWPrecisionQualifier.pxx
-  RWStepShape_RWQualifiedRepresentationItem.cxx
+  RWStepShape_RWQualifiedRepresentationItem_impl.pxx
   RWStepShape_RWQualifiedRepresentationItem.pxx
-  RWStepShape_RWRevolvedAreaSolid.cxx
+  RWStepShape_RWRevolvedAreaSolid_impl.pxx
   RWStepShape_RWRevolvedAreaSolid.pxx
-  RWStepShape_RWRevolvedFaceSolid.cxx
+  RWStepShape_RWRevolvedFaceSolid_impl.pxx
   RWStepShape_RWRevolvedFaceSolid.pxx
-  RWStepShape_RWRightAngularWedge.cxx
+  RWStepShape_RWRightAngularWedge_impl.pxx
   RWStepShape_RWRightAngularWedge.pxx
-  RWStepShape_RWRightCircularCone.cxx
+  RWStepShape_RWRightCircularCone_impl.pxx
   RWStepShape_RWRightCircularCone.pxx
-  RWStepShape_RWRightCircularCylinder.cxx
+  RWStepShape_RWRightCircularCylinder_impl.pxx
   RWStepShape_RWRightCircularCylinder.pxx
-  RWStepShape_RWSeamEdge.cxx
+  RWStepShape_RWSeamEdge_impl.pxx
   RWStepShape_RWSeamEdge.pxx
-  RWStepShape_RWShapeDefinitionRepresentation.cxx
+  RWStepShape_RWShapeDefinitionRepresentation_impl.pxx
   RWStepShape_RWShapeDefinitionRepresentation.pxx
-  RWStepShape_RWShapeDimensionRepresentation.cxx
+  RWStepShape_RWShapeDimensionRepresentation_impl.pxx
   RWStepShape_RWShapeDimensionRepresentation.pxx
-  RWStepShape_RWShapeRepresentation.cxx
+  RWStepShape_RWShapeRepresentation_impl.pxx
   RWStepShape_RWShapeRepresentation.pxx
-  RWStepShape_RWShapeRepresentationWithParameters.cxx
+  RWStepShape_RWShapeRepresentationWithParameters_impl.pxx
   RWStepShape_RWShapeRepresentationWithParameters.pxx
-  RWStepShape_RWShellBasedSurfaceModel.cxx
+  RWStepShape_RWShellBasedSurfaceModel_impl.pxx
   RWStepShape_RWShellBasedSurfaceModel.pxx
-  RWStepShape_RWSolidModel.cxx
+  RWStepShape_RWSolidModel_impl.pxx
   RWStepShape_RWSolidModel.pxx
-  RWStepShape_RWSolidReplica.cxx
+  RWStepShape_RWSolidReplica_impl.pxx
   RWStepShape_RWSolidReplica.pxx
-  RWStepShape_RWSphere.cxx
+  RWStepShape_RWSphere_impl.pxx
   RWStepShape_RWSphere.pxx
-  RWStepShape_RWSubedge.cxx
+  RWStepShape_RWSubedge_impl.pxx
   RWStepShape_RWSubedge.pxx
-  RWStepShape_RWSubface.cxx
+  RWStepShape_RWSubface_impl.pxx
   RWStepShape_RWSubface.pxx
-  RWStepShape_RWSweptAreaSolid.cxx
+  RWStepShape_RWSweptAreaSolid_impl.pxx
   RWStepShape_RWSweptAreaSolid.pxx
-  RWStepShape_RWSweptFaceSolid.cxx
+  RWStepShape_RWSweptFaceSolid_impl.pxx
   RWStepShape_RWSweptFaceSolid.pxx
-  RWStepShape_RWToleranceValue.cxx
+  RWStepShape_RWToleranceValue_impl.pxx
   RWStepShape_RWToleranceValue.pxx
-  RWStepShape_RWTopologicalRepresentationItem.cxx
+  RWStepShape_RWTopologicalRepresentationItem_impl.pxx
   RWStepShape_RWTopologicalRepresentationItem.pxx
-  RWStepShape_RWTorus.cxx
+  RWStepShape_RWTorus_impl.pxx
   RWStepShape_RWTorus.pxx
-  RWStepShape_RWTransitionalShapeRepresentation.cxx
+  RWStepShape_RWTransitionalShapeRepresentation_impl.pxx
   RWStepShape_RWTransitionalShapeRepresentation.pxx
-  RWStepShape_RWTypeQualifier.cxx
+  RWStepShape_RWTypeQualifier_impl.pxx
   RWStepShape_RWTypeQualifier.pxx
-  RWStepShape_RWValueFormatTypeQualifier.cxx
+  RWStepShape_RWValueFormatTypeQualifier_impl.pxx
   RWStepShape_RWValueFormatTypeQualifier.pxx
-  RWStepShape_RWVertex.cxx
+  RWStepShape_RWVertex_impl.pxx
   RWStepShape_RWVertex.pxx
-  RWStepShape_RWVertexLoop.cxx
+  RWStepShape_RWVertexLoop_impl.pxx
   RWStepShape_RWVertexLoop.pxx
-  RWStepShape_RWVertexPoint.cxx
+  RWStepShape_RWVertexPoint_impl.pxx
   RWStepShape_RWVertexPoint.pxx
 )

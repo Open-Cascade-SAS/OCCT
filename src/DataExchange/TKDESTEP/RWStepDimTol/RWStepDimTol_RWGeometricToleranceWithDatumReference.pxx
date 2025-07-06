@@ -34,26 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWGeometricToleranceWithDatumReference();
+  inline RWStepDimTol_RWGeometricToleranceWithDatumReference();
 
   //! Reads GeometricToleranceWithDatumReference
-  Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                         data,
-    const Standard_Integer                                         num,
-    Handle(Interface_Check)&                                       ach,
-    const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                         data,
+                              const Standard_Integer                                         num,
+                              Handle(Interface_Check)&                                       ach,
+                              const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent);
 
   //! Writes GeometricToleranceWithDatumReference
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                           SW,
-    const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                           SW,
+                               const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent);
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent,
-                             Interface_EntityIterator& iter) const;
+  static inline void Share(const Handle(StepDimTol_GeometricToleranceWithDatumReference)& ent,
+                           Interface_EntityIterator&                                      iter);
 
 protected:
 private:
 };
 
+#include "RWStepDimTol_RWGeometricToleranceWithDatumReference_impl.pxx"
 #endif // _RWStepDimTol_RWGeometricToleranceWithDatumReference_HeaderFile

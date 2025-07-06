@@ -15,6 +15,8 @@
 //: n5 abv 15 Feb 99: S4132 complex type bounded_curve + surface_curve
 //: j4 gka 16.03.99 S4134
 
+#include <RWStepAP214_GeneralModule.hxx>
+
 #include <Interface_Category.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
@@ -32,7 +34,6 @@
 #include "../RWStepAP203/RWStepAP203_RWChangeRequest.pxx"
 #include "../RWStepAP203/RWStepAP203_RWStartRequest.pxx"
 #include "../RWStepAP203/RWStepAP203_RWStartWork.pxx"
-#include "RWStepAP214_GeneralModule.pxx"
 #include "RWStepAP214_RWAppliedApprovalAssignment.pxx"
 #include "RWStepAP214_RWAppliedDateAndTimeAssignment.pxx"
 #include "RWStepAP214_RWAppliedDateAssignment.pxx"

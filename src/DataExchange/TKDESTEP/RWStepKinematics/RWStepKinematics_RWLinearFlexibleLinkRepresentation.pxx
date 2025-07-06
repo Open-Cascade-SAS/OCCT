@@ -33,19 +33,21 @@ class RWStepKinematics_RWLinearFlexibleLinkRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWLinearFlexibleLinkRepresentation();
+  inline RWStepKinematics_RWLinearFlexibleLinkRepresentation();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                         theData,
     const Standard_Integer                                         theNum,
     Handle(Interface_Check)&                                       theArch,
-    const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt) const;
+    const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt);
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                           theSW,
-    const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt) const;
+    const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt);
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt,
-                             Interface_EntityIterator& iter) const;
+  static inline void Share(const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt,
+                           Interface_EntityIterator&                                      iter);
 };
+
+#include "RWStepKinematics_RWLinearFlexibleLinkRepresentation_impl.pxx"
 #endif // _RWStepKinematics_RWLinearFlexibleLinkRepresentation_HeaderFile_
