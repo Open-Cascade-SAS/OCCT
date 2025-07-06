@@ -1,4 +1,4 @@
-﻿// Created on: 1997-01-17
+// Created on: 1997-01-17
 // Created by: Robert COUBLANC
 // Copyright (c) 1997-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS

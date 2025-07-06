@@ -1,4 +1,4 @@
-﻿// Created on: 2022-08-08
+// Created on: 2022-08-08
 // Created by: Kseniya NOSULKO
 // Copyright (c) 2022 OPEN CASCADE SAS
 //
@@ -271,11 +271,11 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
 //=======================================================================
 // function : doRecurTrgSplit
 // purpose  : Splits the triangle into two ones recursively, halving the longest side
-//           until the area of ​​the current triangle > input step
+//           until the area of the current triangle > input step
 //! @param theTrg points of the triangle to be split
 //! @param theEdgesStatus status of triangle edges - on the border or middle of the face
 //! @param theTol telerance used in search of coincidence points
-//! @param theStep minimum area of ​​the resulting triangle
+//! @param theStep minimum area of the resulting triangle
 //! @param theAddVertices vertices obtained halving sides
 //! @param theAddStatuses status of obtained vertices - on the border or middle of the face,
 //! from triangulation of which the input triangle is

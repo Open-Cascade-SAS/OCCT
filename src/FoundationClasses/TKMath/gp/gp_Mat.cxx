@@ -121,7 +121,7 @@ void gp_Mat::SetDot(const gp_XYZ& theRef)
 
 void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
 {
-  // Rodrigues' rotation formula: R = I + sin(θ)K + (1-cos(θ))K²
+  // Rodrigues' rotation formula: R = I + sin(theta)K + (1-cos(theta))K^2
   // Where K is the skew-symmetric matrix of the normalized axis
   const gp_XYZ aV = theAxis.Normalized();
 
@@ -142,9 +142,9 @@ void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
   const Standard_Real AC = A * C;
   const Standard_Real BC = B * C;
 
-  // Direct matrix computation: R = I + sin(θ)K + (1-cos(θ))K²
-  // K² diagonal terms are -(sum of other two squared components)
-  // K² off-diagonal terms are products of components
+  // Direct matrix computation: R = I + sin(theta)K + (1-cos(theta))K^2
+  // K^2 diagonal terms are -(sum of other two squared components)
+  // K^2 off-diagonal terms are products of components
   myMat[0][0] = 1.0 + aOmCos * (-(B2 + C2));
   myMat[0][1] = aOmCos * AB - aSin * C;
   myMat[0][2] = aOmCos * AC + aSin * B;

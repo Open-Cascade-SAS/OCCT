@@ -126,14 +126,14 @@ TEST(TCollection_ExtendedStringTest, Comparison)
 TEST(TCollection_ExtendedStringTest, UnicodeSupport)
 {
   // Test with unicode characters
-  const Standard_ExtCharacter unicodeChars[] = {0x0041, 0x00A9, 0x2122, 0x20AC, 0}; // A, ©, ™, €
+  const Standard_ExtCharacter unicodeChars[] = {0x0041, 0x00A9, 0x2122, 0x20AC, 0}; // A, copyright, trademark, euro
   TCollection_ExtendedString unicodeString(unicodeChars);
 
   EXPECT_EQ(4, unicodeString.Length());
   EXPECT_EQ(0x0041, unicodeString.Value(1)); // A
-  EXPECT_EQ(0x00A9, unicodeString.Value(2)); // ©
-  EXPECT_EQ(0x2122, unicodeString.Value(3)); // ™
-  EXPECT_EQ(0x20AC, unicodeString.Value(4)); // €
+  EXPECT_EQ(0x00A9, unicodeString.Value(2)); // copyright
+  EXPECT_EQ(0x2122, unicodeString.Value(3)); // trademark
+  EXPECT_EQ(0x20AC, unicodeString.Value(4)); // euro
 }
 
 TEST(TCollection_ExtendedStringTest, HashCode)
@@ -173,7 +173,7 @@ TEST(TCollection_ExtendedStringTest, IsAscii)
   EXPECT_TRUE(asciiString.IsAscii());
 
   // Create a string with non-ASCII character
-  Standard_ExtCharacter      unicodeChars[] = {'A', 0x20AC, 0}; // A, €
+  Standard_ExtCharacter      unicodeChars[] = {'A', 0x20AC, 0}; // A, euro
   TCollection_ExtendedString unicodeString(unicodeChars);
   EXPECT_FALSE(unicodeString.IsAscii());
 }

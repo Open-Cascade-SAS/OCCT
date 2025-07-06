@@ -1,4 +1,4 @@
-﻿// Created on: 2022-08-08
+// Created on: 2022-08-08
 // Created by: Kseniya NOSULKO
 // Copyright (c) 2022 OPEN CASCADE SAS
 //
@@ -166,7 +166,7 @@ private:
                                              NCollection_Vector<ProxPnt_Status>& theAddStatuses);
 
   //! Splits the triangle recursively, halving the longest side
-  //! to the area of ​​the current triangle > input step
+  //! to the area of the current triangle > input step
   void doRecurTrgSplit(const gp_Pnt (&theTrg)[3],
                        const ProxPnt_Status (&theEdgesStatus)[3],
                        const Standard_Real                 theTol,
