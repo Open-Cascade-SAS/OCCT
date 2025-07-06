@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWHeaderSection_RWFileSchema.gxx"
+#include "RWHeaderSection_RWFileSchema.pxx"
 
 #include <HeaderSection_FileSchema.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>

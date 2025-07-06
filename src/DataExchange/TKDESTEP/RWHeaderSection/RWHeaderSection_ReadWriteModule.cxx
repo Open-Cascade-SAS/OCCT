@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWHeaderSection_ReadWriteModule.gxx"
+#include "RWHeaderSection_ReadWriteModule.pxx"
 
 #include <HeaderSection_FileDescription.hxx>
 #include <HeaderSection_FileName.hxx>
@@ -27,9 +27,9 @@
 #include <StepData_WriterLib.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include "RWHeaderSection_RWFileDescription.gxx"
-#include "RWHeaderSection_RWFileName.gxx"
-#include "RWHeaderSection_RWFileSchema.gxx"
+#include "RWHeaderSection_RWFileDescription.pxx"
+#include "RWHeaderSection_RWFileName.pxx"
+#include "RWHeaderSection_RWFileSchema.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 

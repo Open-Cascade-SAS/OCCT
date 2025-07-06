@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWHeaderSection_GeneralModule.gxx"
+#include "RWHeaderSection_GeneralModule.pxx"
 
 #include <HeaderSection.hxx>
 #include <HeaderSection_FileDescription.hxx>

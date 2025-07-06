@@ -5,13 +5,13 @@ set(OCCT_RWHeaderSection_FILES
   RWHeaderSection.cxx
   RWHeaderSection.hxx
   RWHeaderSection_GeneralModule.cxx
-  RWHeaderSection_GeneralModule.gxx
+  RWHeaderSection_GeneralModule.pxx
   RWHeaderSection_ReadWriteModule.cxx
-  RWHeaderSection_ReadWriteModule.gxx
+  RWHeaderSection_ReadWriteModule.pxx
   RWHeaderSection_RWFileDescription.cxx
-  RWHeaderSection_RWFileDescription.gxx
+  RWHeaderSection_RWFileDescription.pxx
   RWHeaderSection_RWFileName.cxx
-  RWHeaderSection_RWFileName.gxx
+  RWHeaderSection_RWFileName.pxx
   RWHeaderSection_RWFileSchema.cxx
-  RWHeaderSection_RWFileSchema.gxx
+  RWHeaderSection_RWFileSchema.pxx
 )

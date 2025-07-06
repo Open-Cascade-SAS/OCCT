@@ -17,8 +17,8 @@
 #include <HeaderSection_Protocol.hxx>
 #include <StepData.hxx>
 
-#include "RWHeaderSection_GeneralModule.gxx"
-#include "RWHeaderSection_ReadWriteModule.gxx"
+#include "RWHeaderSection_GeneralModule.pxx"
+#include "RWHeaderSection_ReadWriteModule.pxx"
 
 /// #include <EuclidStandard.hxx>
 static Handle(RWHeaderSection_ReadWriteModule) rwm;
