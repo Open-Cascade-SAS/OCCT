@@ -54,8 +54,7 @@ void RWStepShape_RWSphere::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aRadius, aCentre);
 }
 
-void RWStepShape_RWSphere::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepShape_Sphere)& ent)
+void RWStepShape_RWSphere::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Sphere)& ent)
 {
 
   // --- inherited field name ---

@@ -43,11 +43,9 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepShape_FaceBound)&     ent);
 
-  static inline void WriteStep(StepData_StepWriter&               SW,
-                               const Handle(StepShape_FaceBound)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepShape_FaceBound)& ent);
 
-  static inline void Share(const Handle(StepShape_FaceBound)& ent,
-                           Interface_EntityIterator&          iter);
+  static inline void Share(const Handle(StepShape_FaceBound)& ent, Interface_EntityIterator& iter);
 
   static inline void Check(const Handle(StepShape_FaceBound)& ent,
                            const Interface_ShareTool&         shares,

@@ -59,8 +59,7 @@ void RWStepGeom_RWConic::WriteStep(StepData_StepWriter& SW, const Handle(StepGeo
   SW.Send(ent->Position().Value());
 }
 
-void RWStepGeom_RWConic::Share(const Handle(StepGeom_Conic)& ent,
-                               Interface_EntityIterator&     iter)
+void RWStepGeom_RWConic::Share(const Handle(StepGeom_Conic)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position().Value());

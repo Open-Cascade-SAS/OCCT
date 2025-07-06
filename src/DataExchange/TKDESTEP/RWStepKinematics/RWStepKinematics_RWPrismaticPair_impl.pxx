@@ -31,11 +31,10 @@ RWStepKinematics_RWPrismaticPair::RWStepKinematics_RWPrismaticPair() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWPrismaticPair::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_PrismaticPair)& theEnt)
+void RWStepKinematics_RWPrismaticPair::ReadStep(const Handle(StepData_StepReaderData)&      theData,
+                                                const Standard_Integer                      theNum,
+                                                Handle(Interface_Check)&                    theArch,
+                                                const Handle(StepKinematics_PrismaticPair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "prismatic_pair"))
@@ -159,9 +158,8 @@ void RWStepKinematics_RWPrismaticPair::ReadStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWPrismaticPair::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_PrismaticPair)& theEnt)
+void RWStepKinematics_RWPrismaticPair::WriteStep(StepData_StepWriter&                        theSW,
+                                                 const Handle(StepKinematics_PrismaticPair)& theEnt)
 {
 
   // Own fields of RepresentationItem

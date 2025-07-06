@@ -64,9 +64,8 @@ void RWStepVisual_RWTemplateInstance::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aMappingSource, aMappingTarget);
 }
 
-void RWStepVisual_RWTemplateInstance::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_TemplateInstance)& ent)
+void RWStepVisual_RWTemplateInstance::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_TemplateInstance)& ent)
 {
 
   // --- inherited field name ---

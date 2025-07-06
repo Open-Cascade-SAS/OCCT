@@ -46,8 +46,7 @@ public:
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_FeaModel)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepFEA_FeaModel)& ent,
-                           Interface_EntityIterator&       iter);
+  static inline void Share(const Handle(StepFEA_FeaModel)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

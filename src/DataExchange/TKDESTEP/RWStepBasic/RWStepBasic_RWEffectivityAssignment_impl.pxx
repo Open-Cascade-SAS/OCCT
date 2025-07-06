@@ -67,7 +67,7 @@ void RWStepBasic_RWEffectivityAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWEffectivityAssignment::Share(const Handle(StepBasic_EffectivityAssignment)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Own fields of EffectivityAssignment

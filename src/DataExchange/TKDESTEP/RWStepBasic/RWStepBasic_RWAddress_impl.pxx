@@ -236,8 +236,7 @@ void RWStepBasic_RWAddress::ReadStep(const Handle(StepData_StepReaderData)& data
             aTelexNumber);
 }
 
-void RWStepBasic_RWAddress::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepBasic_Address)& ent)
+void RWStepBasic_RWAddress::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Address)& ent)
 {
 
   // --- own field : internalLocation ---

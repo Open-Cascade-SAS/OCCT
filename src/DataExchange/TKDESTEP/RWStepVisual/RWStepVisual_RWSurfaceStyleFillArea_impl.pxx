@@ -54,7 +54,7 @@ void RWStepVisual_RWSurfaceStyleFillArea::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleFillArea::Share(const Handle(StepVisual_SurfaceStyleFillArea)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->FillArea());

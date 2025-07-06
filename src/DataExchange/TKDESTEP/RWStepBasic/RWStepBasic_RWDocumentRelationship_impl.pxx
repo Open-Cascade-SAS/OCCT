@@ -23,11 +23,10 @@
 
 RWStepBasic_RWDocumentRelationship::RWStepBasic_RWDocumentRelationship() {}
 
-void RWStepBasic_RWDocumentRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_DocumentRelationship)& ent)
+void RWStepBasic_RWDocumentRelationship::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepBasic_DocumentRelationship)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -86,7 +85,7 @@ void RWStepBasic_RWDocumentRelationship::WriteStep(
 }
 
 void RWStepBasic_RWDocumentRelationship::Share(const Handle(StepBasic_DocumentRelationship)& ent,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   iter.AddItem(ent->RelatingDocument());

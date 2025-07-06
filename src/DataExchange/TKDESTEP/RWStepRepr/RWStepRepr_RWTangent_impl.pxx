@@ -71,8 +71,7 @@ void RWStepRepr_RWTangent::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepRepr_RWTangent::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepRepr_Tangent)& ent)
+void RWStepRepr_RWTangent::WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Tangent)& ent)
 {
 
   // Inherited fields of ShapeAspect

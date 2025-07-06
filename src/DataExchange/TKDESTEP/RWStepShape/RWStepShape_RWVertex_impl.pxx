@@ -40,8 +40,7 @@ void RWStepShape_RWVertex::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName);
 }
 
-void RWStepShape_RWVertex::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepShape_Vertex)& ent)
+void RWStepShape_RWVertex::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Vertex)& ent)
 {
 
   // --- inherited field name ---

@@ -68,8 +68,7 @@ void RWStepBasic_RWAction::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepBasic_Action)& ent)
+void RWStepBasic_RWAction::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Action)& ent)
 {
 
   // Own fields of Action

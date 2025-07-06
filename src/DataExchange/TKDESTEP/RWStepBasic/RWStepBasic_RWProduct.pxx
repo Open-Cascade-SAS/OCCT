@@ -43,8 +43,7 @@ public:
 
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Product)& ent);
 
-  static inline void Share(const Handle(StepBasic_Product)& ent,
-                           Interface_EntityIterator&        iter);
+  static inline void Share(const Handle(StepBasic_Product)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

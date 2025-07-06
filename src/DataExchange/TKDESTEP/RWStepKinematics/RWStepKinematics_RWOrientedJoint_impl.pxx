@@ -30,11 +30,10 @@ RWStepKinematics_RWOrientedJoint::RWStepKinematics_RWOrientedJoint() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWOrientedJoint::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_OrientedJoint)& theEnt)
+void RWStepKinematics_RWOrientedJoint::ReadStep(const Handle(StepData_StepReaderData)&      theData,
+                                                const Standard_Integer                      theNum,
+                                                Handle(Interface_Check)&                    theArch,
+                                                const Handle(StepKinematics_OrientedJoint)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 5, theArch, "oriented_joint"))
@@ -82,9 +81,8 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWOrientedJoint::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_OrientedJoint)& theEnt)
+void RWStepKinematics_RWOrientedJoint::WriteStep(StepData_StepWriter&                        theSW,
+                                                 const Handle(StepKinematics_OrientedJoint)& theEnt)
 {
 
   // Own fields of RepresentationItem

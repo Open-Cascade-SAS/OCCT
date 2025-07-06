@@ -87,8 +87,7 @@ void RWStepRepr_RWApex::WriteStep(StepData_StepWriter& SW, const Handle(StepRepr
 
 //=================================================================================================
 
-void RWStepRepr_RWApex::Share(const Handle(StepRepr_Apex)& ent,
-                              Interface_EntityIterator&    iter)
+void RWStepRepr_RWApex::Share(const Handle(StepRepr_Apex)& ent, Interface_EntityIterator& iter)
 {
 
   // Inherited fields of ShapeAspect

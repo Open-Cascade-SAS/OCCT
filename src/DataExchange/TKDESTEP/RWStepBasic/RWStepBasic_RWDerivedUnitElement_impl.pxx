@@ -20,11 +20,10 @@
 
 RWStepBasic_RWDerivedUnitElement::RWStepBasic_RWDerivedUnitElement() {}
 
-void RWStepBasic_RWDerivedUnitElement::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_DerivedUnitElement)& ent)
+void RWStepBasic_RWDerivedUnitElement::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepBasic_DerivedUnitElement)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -46,9 +45,8 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
   ent->Init(nu, expo);
 }
 
-void RWStepBasic_RWDerivedUnitElement::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepBasic_DerivedUnitElement)& ent)
+void RWStepBasic_RWDerivedUnitElement::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepBasic_DerivedUnitElement)& ent)
 {
 
   // --- own field : dimensions ---

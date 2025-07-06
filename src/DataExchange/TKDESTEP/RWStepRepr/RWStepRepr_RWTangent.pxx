@@ -47,8 +47,7 @@ public:
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Tangent)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepRepr_Tangent)& ent,
-                           Interface_EntityIterator&       iter);
+  static inline void Share(const Handle(StepRepr_Tangent)& ent, Interface_EntityIterator& iter);
 };
 
 #include "RWStepRepr_RWTangent_impl.pxx"

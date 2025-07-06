@@ -87,7 +87,7 @@ void RWStepKinematics_RWKinematicJoint::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicJoint::Share(const Handle(StepKinematics_KinematicJoint)& theEnt,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   // Inherited fields of RepresentationItem

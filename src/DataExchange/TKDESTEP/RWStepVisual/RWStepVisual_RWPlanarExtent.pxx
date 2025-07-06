@@ -40,8 +40,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepVisual_PlanarExtent)& ent);
 
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepVisual_PlanarExtent)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepVisual_PlanarExtent)& ent);
 
 protected:
 private:

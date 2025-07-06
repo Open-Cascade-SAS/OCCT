@@ -43,8 +43,7 @@ public:
                               const Handle(StepFEA_GeometricNode)&   ent);
 
   //! Writes GeometricNode
-  static inline void WriteStep(StepData_StepWriter&                 SW,
-                               const Handle(StepFEA_GeometricNode)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_GeometricNode)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_GeometricNode)& ent,

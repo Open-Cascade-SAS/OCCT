@@ -41,9 +41,8 @@ public:
                               Handle(Interface_Check)&                                   ach,
                               const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                       SW,
-    const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                       SW,
+                               const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent);
 
   static inline void Share(const Handle(StepGeom_BezierCurveAndRationalBSplineCurve)& ent,
                            Interface_EntityIterator&                                  iter);

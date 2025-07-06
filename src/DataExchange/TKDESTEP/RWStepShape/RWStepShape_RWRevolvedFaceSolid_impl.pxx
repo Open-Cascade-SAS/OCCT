@@ -61,9 +61,8 @@ void RWStepShape_RWRevolvedFaceSolid::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aSweptFace, aAxis, aAngle);
 }
 
-void RWStepShape_RWRevolvedFaceSolid::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_RevolvedFaceSolid)& ent)
+void RWStepShape_RWRevolvedFaceSolid::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_RevolvedFaceSolid)& ent)
 {
 
   // --- inherited field name ---

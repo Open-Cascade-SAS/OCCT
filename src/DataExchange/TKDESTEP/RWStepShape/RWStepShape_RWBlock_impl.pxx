@@ -66,8 +66,7 @@ void RWStepShape_RWBlock::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aPosition, aX, aY, aZ);
 }
 
-void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepShape_Block)& ent)
+void RWStepShape_RWBlock::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Block)& ent)
 {
 
   // --- inherited field name ---
@@ -91,8 +90,7 @@ void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->Z());
 }
 
-void RWStepShape_RWBlock::Share(const Handle(StepShape_Block)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepShape_RWBlock::Share(const Handle(StepShape_Block)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position());

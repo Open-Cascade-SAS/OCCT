@@ -439,7 +439,7 @@ void RWStepBasic_RWOrganizationalAddress::WriteStep(
 }
 
 void RWStepBasic_RWOrganizationalAddress::Share(const Handle(StepBasic_OrganizationalAddress)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   Standard_Integer nbElem1 = ent->NbOrganizations();

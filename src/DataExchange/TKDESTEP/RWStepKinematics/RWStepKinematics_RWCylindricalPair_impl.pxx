@@ -205,7 +205,7 @@ void RWStepKinematics_RWCylindricalPair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWCylindricalPair::Share(const Handle(StepKinematics_CylindricalPair)& theEnt,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   // Inherited fields of RepresentationItem

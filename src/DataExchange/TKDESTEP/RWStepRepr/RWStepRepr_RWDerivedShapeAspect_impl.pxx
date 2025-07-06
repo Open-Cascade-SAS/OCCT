@@ -72,9 +72,8 @@ void RWStepRepr_RWDerivedShapeAspect::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepRepr_RWDerivedShapeAspect::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepRepr_DerivedShapeAspect)& ent)
+void RWStepRepr_RWDerivedShapeAspect::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepRepr_DerivedShapeAspect)& ent)
 {
 
   // Inherited fields of ShapeAspect

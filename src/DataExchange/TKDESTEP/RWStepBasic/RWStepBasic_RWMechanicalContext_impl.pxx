@@ -62,9 +62,8 @@ void RWStepBasic_RWMechanicalContext::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aFrameOfReference, aDisciplineType);
 }
 
-void RWStepBasic_RWMechanicalContext::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_MechanicalContext)& ent)
+void RWStepBasic_RWMechanicalContext::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_MechanicalContext)& ent)
 {
 
   // --- inherited field name ---

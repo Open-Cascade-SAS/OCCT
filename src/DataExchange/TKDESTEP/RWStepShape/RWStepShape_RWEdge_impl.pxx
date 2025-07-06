@@ -70,8 +70,7 @@ void RWStepShape_RWEdge::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
   SW.Send(ent->EdgeEnd());
 }
 
-void RWStepShape_RWEdge::Share(const Handle(StepShape_Edge)& ent,
-                               Interface_EntityIterator&     iter)
+void RWStepShape_RWEdge::Share(const Handle(StepShape_Edge)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->EdgeStart());

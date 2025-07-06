@@ -27,7 +27,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
   const Standard_Integer                                                                   num0,
   Handle(Interface_Check)&                                                                 ach,
   const Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)& ent)
- 
+
 {
 
   Standard_Integer num = num0;
@@ -76,7 +76,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::WriteStep(
   StepData_StepWriter&                                                                     SW,
   const Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)& ent)
- 
+
 {
 
   // --- Instance of plex component GeometricRepresentationContext ---

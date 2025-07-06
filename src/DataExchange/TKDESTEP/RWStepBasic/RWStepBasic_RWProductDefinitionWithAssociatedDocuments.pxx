@@ -47,7 +47,7 @@ public:
     const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent);
 
   static inline void Share(const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                         iter);
 
 protected:
 private:

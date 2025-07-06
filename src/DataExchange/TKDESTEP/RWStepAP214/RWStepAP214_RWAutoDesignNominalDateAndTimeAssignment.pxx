@@ -36,18 +36,16 @@ public:
 
   static inline RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment();
 
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                          data,
-    const Standard_Integer                                          num,
-    Handle(Interface_Check)&                                        ach,
-    const Handle(StepAP214_AutoDesignNominalDateAndTimeAssignment)& ent);
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                          data,
+                              const Standard_Integer                                          num,
+                              Handle(Interface_Check)&                                        ach,
+                              const Handle(StepAP214_AutoDesignNominalDateAndTimeAssignment)& ent);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                            SW,
-    const Handle(StepAP214_AutoDesignNominalDateAndTimeAssignment)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                            SW,
+                               const Handle(StepAP214_AutoDesignNominalDateAndTimeAssignment)& ent);
 
   static inline void Share(const Handle(StepAP214_AutoDesignNominalDateAndTimeAssignment)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                       iter);
 
 protected:
 private:

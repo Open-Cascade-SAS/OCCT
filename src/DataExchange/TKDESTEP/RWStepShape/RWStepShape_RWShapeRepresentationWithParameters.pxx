@@ -43,9 +43,8 @@ public:
                               const Handle(StepShape_ShapeRepresentationWithParameters)& ent);
 
   //! Writes ShapeRepresentationWithParameters
-  static inline void WriteStep(
-    StepData_StepWriter&                                       SW,
-    const Handle(StepShape_ShapeRepresentationWithParameters)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                       SW,
+                               const Handle(StepShape_ShapeRepresentationWithParameters)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepShape_ShapeRepresentationWithParameters)& ent,

@@ -221,7 +221,7 @@ void RWStepGeom_RWRationalBSplineSurface::WriteStep(
 }
 
 void RWStepGeom_RWRationalBSplineSurface::Share(const Handle(StepGeom_RationalBSplineSurface)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();

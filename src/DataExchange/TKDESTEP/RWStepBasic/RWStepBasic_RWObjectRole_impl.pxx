@@ -76,8 +76,7 @@ void RWStepBasic_RWObjectRole::WriteStep(StepData_StepWriter&                SW,
 
 //=================================================================================================
 
-void RWStepBasic_RWObjectRole::Share(const Handle(StepBasic_ObjectRole)&,
-                                     Interface_EntityIterator&)
+void RWStepBasic_RWObjectRole::Share(const Handle(StepBasic_ObjectRole)&, Interface_EntityIterator&)
 {
 
   // Own fields of ObjectRole

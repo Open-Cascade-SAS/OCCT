@@ -65,7 +65,7 @@ void RWStepBasic_RWLengthMeasureWithUnit::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWLengthMeasureWithUnit::Share(const Handle(StepBasic_LengthMeasureWithUnit)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->UnitComponent().Value());

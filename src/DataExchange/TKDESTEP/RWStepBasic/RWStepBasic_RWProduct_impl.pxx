@@ -81,8 +81,7 @@ void RWStepBasic_RWProduct::ReadStep(const Handle(StepData_StepReaderData)& data
   ent->Init(aId, aName, aDescription, aFrameOfReference);
 }
 
-void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepBasic_Product)& ent)
+void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Product)& ent)
 {
 
   // --- own field : id ---

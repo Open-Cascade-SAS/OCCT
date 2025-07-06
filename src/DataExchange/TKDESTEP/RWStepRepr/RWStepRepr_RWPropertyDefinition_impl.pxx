@@ -61,9 +61,8 @@ void RWStepRepr_RWPropertyDefinition::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepRepr_RWPropertyDefinition::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepRepr_PropertyDefinition)& ent)
+void RWStepRepr_RWPropertyDefinition::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepRepr_PropertyDefinition)& ent)
 {
 
   // Own fields of PropertyDefinition

@@ -28,11 +28,10 @@ RWStepFEA_RWCurveElementLocation::RWStepFEA_RWCurveElementLocation() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWCurveElementLocation::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepFEA_CurveElementLocation)& ent)
+void RWStepFEA_RWCurveElementLocation::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepFEA_CurveElementLocation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "curve_element_location"))
@@ -50,9 +49,8 @@ void RWStepFEA_RWCurveElementLocation::ReadStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWCurveElementLocation::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepFEA_CurveElementLocation)& ent)
+void RWStepFEA_RWCurveElementLocation::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepFEA_CurveElementLocation)& ent)
 {
 
   // Own fields of CurveElementLocation

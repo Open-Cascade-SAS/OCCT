@@ -55,8 +55,7 @@ void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aOrientation, aMagnitude);
 }
 
-void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Vector)& ent)
+void RWStepGeom_RWVector::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Vector)& ent)
 {
 
   // --- inherited field name ---
@@ -72,8 +71,7 @@ void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->Magnitude());
 }
 
-void RWStepGeom_RWVector::Share(const Handle(StepGeom_Vector)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepGeom_RWVector::Share(const Handle(StepGeom_Vector)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Orientation());

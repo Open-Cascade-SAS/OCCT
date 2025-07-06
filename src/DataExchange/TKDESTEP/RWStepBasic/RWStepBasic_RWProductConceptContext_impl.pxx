@@ -88,7 +88,7 @@ void RWStepBasic_RWProductConceptContext::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductConceptContext::Share(const Handle(StepBasic_ProductConceptContext)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of ApplicationContextElement

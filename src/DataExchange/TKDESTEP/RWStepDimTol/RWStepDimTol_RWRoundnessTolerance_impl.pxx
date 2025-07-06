@@ -28,11 +28,10 @@ RWStepDimTol_RWRoundnessTolerance::RWStepDimTol_RWRoundnessTolerance() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWRoundnessTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepDimTol_RoundnessTolerance)& ent)
+void RWStepDimTol_RWRoundnessTolerance::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepDimTol_RoundnessTolerance)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "roundness_tolerance"))
@@ -70,9 +69,8 @@ void RWStepDimTol_RWRoundnessTolerance::ReadStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWRoundnessTolerance::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepDimTol_RoundnessTolerance)& ent)
+void RWStepDimTol_RWRoundnessTolerance::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepDimTol_RoundnessTolerance)& ent)
 {
 
   // Inherited fields of GeometricTolerance
@@ -89,7 +87,7 @@ void RWStepDimTol_RWRoundnessTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWRoundnessTolerance::Share(const Handle(StepDimTol_RoundnessTolerance)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   // Inherited fields of GeometricTolerance

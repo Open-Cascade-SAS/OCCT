@@ -89,7 +89,7 @@ void RWStepDimTol_RWLineProfileTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWLineProfileTolerance::Share(const Handle(StepDimTol_LineProfileTolerance)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of GeometricTolerance

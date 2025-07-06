@@ -42,8 +42,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepGeom_Direction)&      ent);
 
-  static inline void WriteStep(StepData_StepWriter&              SW,
-                               const Handle(StepGeom_Direction)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Direction)& ent);
 
   static inline void Check(const Handle(StepGeom_Direction)& ent,
                            const Interface_ShareTool&        shares,

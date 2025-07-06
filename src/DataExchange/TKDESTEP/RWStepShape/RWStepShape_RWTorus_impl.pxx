@@ -60,8 +60,7 @@ void RWStepShape_RWTorus::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aPosition, aMajorRadius, aMinorRadius);
 }
 
-void RWStepShape_RWTorus::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepShape_Torus)& ent)
+void RWStepShape_RWTorus::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Torus)& ent)
 {
 
   // --- inherited field name ---
@@ -81,8 +80,7 @@ void RWStepShape_RWTorus::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->MinorRadius());
 }
 
-void RWStepShape_RWTorus::Share(const Handle(StepShape_Torus)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepShape_RWTorus::Share(const Handle(StepShape_Torus)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position());

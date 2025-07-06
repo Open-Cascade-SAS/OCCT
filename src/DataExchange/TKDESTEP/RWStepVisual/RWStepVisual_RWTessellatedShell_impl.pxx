@@ -30,11 +30,10 @@ RWStepVisual_RWTessellatedShell::RWStepVisual_RWTessellatedShell() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedShell::ReadStep(
-  const Handle(StepData_StepReaderData)&     theData,
-  const Standard_Integer                     theNum,
-  Handle(Interface_Check)&                   theCheck,
-  const Handle(StepVisual_TessellatedShell)& theEnt)
+void RWStepVisual_RWTessellatedShell::ReadStep(const Handle(StepData_StepReaderData)&     theData,
+                                               const Standard_Integer                     theNum,
+                                               Handle(Interface_Check)&                   theCheck,
+                                               const Handle(StepVisual_TessellatedShell)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_shell"))
@@ -92,9 +91,8 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedShell::WriteStep(
-  StepData_StepWriter&                       theSW,
-  const Handle(StepVisual_TessellatedShell)& theEnt)
+void RWStepVisual_RWTessellatedShell::WriteStep(StepData_StepWriter&                       theSW,
+                                                const Handle(StepVisual_TessellatedShell)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -124,7 +122,7 @@ void RWStepVisual_RWTessellatedShell::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedShell::Share(const Handle(StepVisual_TessellatedShell)& theEnt,
-                                            Interface_EntityIterator& theIter)
+                                            Interface_EntityIterator&                  theIter)
 {
 
   // Inherited fields of RepresentationItem

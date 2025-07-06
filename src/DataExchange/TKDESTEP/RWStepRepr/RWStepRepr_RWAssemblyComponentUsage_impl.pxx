@@ -175,7 +175,7 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWAssemblyComponentUsage::Share(const Handle(StepRepr_AssemblyComponentUsage)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of ProductDefinitionRelationship

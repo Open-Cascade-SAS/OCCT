@@ -67,7 +67,7 @@ void RWStepBasic_RWExternallyDefinedItem::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWExternallyDefinedItem::Share(const Handle(StepBasic_ExternallyDefinedItem)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Own fields of ExternallyDefinedItem

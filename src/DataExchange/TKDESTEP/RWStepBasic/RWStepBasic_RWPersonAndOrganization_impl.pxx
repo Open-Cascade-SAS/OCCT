@@ -70,7 +70,7 @@ void RWStepBasic_RWPersonAndOrganization::WriteStep(
 }
 
 void RWStepBasic_RWPersonAndOrganization::Share(const Handle(StepBasic_PersonAndOrganization)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->ThePerson());

@@ -41,8 +41,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepVisual_CurveStyle)&   ent);
 
-  static inline void WriteStep(StepData_StepWriter&                 SW,
-                               const Handle(StepVisual_CurveStyle)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepVisual_CurveStyle)& ent);
 
   static inline void Share(const Handle(StepVisual_CurveStyle)& ent,
                            Interface_EntityIterator&            iter);

@@ -43,12 +43,10 @@ public:
                               const Handle(StepFEA_ElementGroup)&    ent);
 
   //! Writes ElementGroup
-  static inline void WriteStep(StepData_StepWriter&                SW,
-                               const Handle(StepFEA_ElementGroup)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_ElementGroup)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepFEA_ElementGroup)& ent,
-                           Interface_EntityIterator&           iter);
+  static inline void Share(const Handle(StepFEA_ElementGroup)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

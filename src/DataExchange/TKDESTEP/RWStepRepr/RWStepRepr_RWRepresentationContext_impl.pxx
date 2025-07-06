@@ -18,11 +18,10 @@
 
 RWStepRepr_RWRepresentationContext::RWStepRepr_RWRepresentationContext() {}
 
-void RWStepRepr_RWRepresentationContext::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepRepr_RepresentationContext)& ent)
+void RWStepRepr_RWRepresentationContext::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepRepr_RepresentationContext)& ent)
 {
 
   // --- Number of Parameter Control ---

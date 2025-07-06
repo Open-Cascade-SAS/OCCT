@@ -65,9 +65,8 @@ void RWStepBasic_RWGroupRelationship::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupRelationship::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_GroupRelationship)& ent)
+void RWStepBasic_RWGroupRelationship::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_GroupRelationship)& ent)
 {
 
   // Own fields of GroupRelationship

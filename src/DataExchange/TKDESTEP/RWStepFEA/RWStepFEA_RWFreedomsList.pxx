@@ -43,12 +43,10 @@ public:
                               const Handle(StepFEA_FreedomsList)&    ent);
 
   //! Writes FreedomsList
-  static inline void WriteStep(StepData_StepWriter&                SW,
-                               const Handle(StepFEA_FreedomsList)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_FreedomsList)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepFEA_FreedomsList)& ent,
-                           Interface_EntityIterator&           iter);
+  static inline void Share(const Handle(StepFEA_FreedomsList)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

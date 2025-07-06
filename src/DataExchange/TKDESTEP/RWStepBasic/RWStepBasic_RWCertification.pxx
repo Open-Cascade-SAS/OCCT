@@ -44,8 +44,7 @@ public:
                               const Handle(StepBasic_Certification)& ent);
 
   //! Writes Certification
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepBasic_Certification)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Certification)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_Certification)& ent,

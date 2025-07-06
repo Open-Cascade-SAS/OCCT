@@ -99,9 +99,8 @@ void RWStepBasic_RWSiUnitAndTimeUnit::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndTimeUnit)& ent)
+void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_SiUnitAndTimeUnit)& ent)
 {
 
   // --- Instance of plex component TimeUnit ---

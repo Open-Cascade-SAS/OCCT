@@ -41,9 +41,8 @@ void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aPresentation);
 }
 
-void RWStepVisual_RWBackgroundColour::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_BackgroundColour)& ent)
+void RWStepVisual_RWBackgroundColour::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_BackgroundColour)& ent)
 {
 
   // --- own field : presentation ---

@@ -56,8 +56,7 @@ void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepFEA_FeaGroup)& ent)
+void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_FeaGroup)& ent)
 {
 
   // Inherited fields of Group

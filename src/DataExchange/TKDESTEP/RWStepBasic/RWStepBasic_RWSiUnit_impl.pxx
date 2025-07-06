@@ -74,8 +74,7 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(hasAprefix, aPrefix, aName);
 }
 
-void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepBasic_SiUnit)& ent)
+void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_SiUnit)& ent)
 {
 
   // --- inherited field dimensions ---

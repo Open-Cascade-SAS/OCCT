@@ -36,15 +36,13 @@ public:
 
   static inline RWStepVisual_RWTessellatedShapeRepresentation();
 
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                   theData,
-    const Standard_Integer                                   theNum,
-    Handle(Interface_Check)&                                 theCheck,
-    const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt);
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                   theData,
+                              const Standard_Integer                                   theNum,
+                              Handle(Interface_Check)&                                 theCheck,
+                              const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                     theSW,
-    const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt);
+  static inline void WriteStep(StepData_StepWriter&                                     theSW,
+                               const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt);
 
   static inline void Share(const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
                            Interface_EntityIterator&                                theIter);

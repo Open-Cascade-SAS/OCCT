@@ -97,7 +97,7 @@ void RWStepDimTol_RWRunoutZoneDefinition::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWRunoutZoneDefinition::Share(const Handle(StepDimTol_RunoutZoneDefinition)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields from ToleranceZoneDefinition

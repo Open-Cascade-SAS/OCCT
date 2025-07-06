@@ -40,8 +40,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepBasic_DateTimeRole)&  ent);
 
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepBasic_DateTimeRole)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_DateTimeRole)& ent);
 
 protected:
 private:

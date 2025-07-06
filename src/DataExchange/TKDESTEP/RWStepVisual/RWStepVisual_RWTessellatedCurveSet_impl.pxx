@@ -28,11 +28,10 @@ RWStepVisual_RWTessellatedCurveSet::RWStepVisual_RWTessellatedCurveSet() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedCurveSet::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_TessellatedCurveSet)& ent)
+void RWStepVisual_RWTessellatedCurveSet::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepVisual_TessellatedCurveSet)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "tessellated_curve_set"))
@@ -103,7 +102,7 @@ void RWStepVisual_RWTessellatedCurveSet::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedCurveSet::Share(const Handle(StepVisual_TessellatedCurveSet)& ent,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
   // Own filed : coordinates
   iter.AddItem(ent->CoordList());

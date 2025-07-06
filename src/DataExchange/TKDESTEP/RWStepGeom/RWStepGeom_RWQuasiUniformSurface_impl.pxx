@@ -22,11 +22,10 @@
 
 RWStepGeom_RWQuasiUniformSurface::RWStepGeom_RWQuasiUniformSurface() {}
 
-void RWStepGeom_RWQuasiUniformSurface::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepGeom_QuasiUniformSurface)& ent)
+void RWStepGeom_RWQuasiUniformSurface::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepGeom_QuasiUniformSurface)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -126,9 +125,8 @@ void RWStepGeom_RWQuasiUniformSurface::ReadStep(
             aSelfIntersect);
 }
 
-void RWStepGeom_RWQuasiUniformSurface::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepGeom_QuasiUniformSurface)& ent)
+void RWStepGeom_RWQuasiUniformSurface::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepGeom_QuasiUniformSurface)& ent)
 {
 
   // --- inherited field name ---

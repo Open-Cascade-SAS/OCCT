@@ -73,9 +73,8 @@ void RWStepElement_RWElementMaterial::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepElement_RWElementMaterial::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepElement_ElementMaterial)& ent)
+void RWStepElement_RWElementMaterial::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepElement_ElementMaterial)& ent)
 {
 
   // Own fields of ElementMaterial

@@ -91,9 +91,8 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const Handle(StepData_StepReaderD
   ent->SetDimensions(aDimensions);
 }
 
-void RWStepBasic_RWSiUnitAndAreaUnit::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndAreaUnit)& ent)
+void RWStepBasic_RWSiUnitAndAreaUnit::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_SiUnitAndAreaUnit)& ent)
 {
   SW.StartEntity("AREA_UNIT");
   SW.StartEntity("NAMED_UNIT");

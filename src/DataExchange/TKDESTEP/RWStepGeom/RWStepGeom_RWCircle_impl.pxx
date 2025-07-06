@@ -53,8 +53,7 @@ void RWStepGeom_RWCircle::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aPosition, aRadius);
 }
 
-void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Circle)& ent)
+void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Circle)& ent)
 {
 
   // --- inherited field name ---
@@ -70,8 +69,7 @@ void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->Radius());
 }
 
-void RWStepGeom_RWCircle::Share(const Handle(StepGeom_Circle)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepGeom_RWCircle::Share(const Handle(StepGeom_Circle)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position().Value());

@@ -64,8 +64,7 @@ void RWStepGeom_RWPolyline::ReadStep(const Handle(StepData_StepReaderData)& data
   ent->Init(aName, aPoints);
 }
 
-void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepGeom_Polyline)& ent)
+void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Polyline)& ent)
 {
 
   // --- inherited field name ---

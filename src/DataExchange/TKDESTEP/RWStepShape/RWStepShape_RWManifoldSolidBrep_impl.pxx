@@ -48,9 +48,8 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aOuter);
 }
 
-void RWStepShape_RWManifoldSolidBrep::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_ManifoldSolidBrep)& ent)
+void RWStepShape_RWManifoldSolidBrep::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_ManifoldSolidBrep)& ent)
 {
 
   // --- inherited field name ---

@@ -40,8 +40,7 @@ void RWStepGeom_RWSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName);
 }
 
-void RWStepGeom_RWSurface::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepGeom_Surface)& ent)
+void RWStepGeom_RWSurface::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Surface)& ent)
 {
 
   // --- inherited field name ---

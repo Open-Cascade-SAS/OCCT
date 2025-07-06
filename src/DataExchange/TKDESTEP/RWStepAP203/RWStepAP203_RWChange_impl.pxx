@@ -74,8 +74,7 @@ void RWStepAP203_RWChange::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepAP203_RWChange::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepAP203_Change)& ent)
+void RWStepAP203_RWChange::WriteStep(StepData_StepWriter& SW, const Handle(StepAP203_Change)& ent)
 {
 
   // Inherited fields of ActionAssignment

@@ -87,7 +87,7 @@ void RWStepKinematics_RWScrewPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairValue::Share(const Handle(StepKinematics_ScrewPairValue)& theEnt,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   // Inherited fields of RepresentationItem

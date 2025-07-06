@@ -30,11 +30,10 @@ RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theCheck,
-  const Handle(StepVisual_TessellatedVertex)& theEnt)
+void RWStepVisual_RWTessellatedVertex::ReadStep(const Handle(StepData_StepReaderData)& theData,
+                                                const Standard_Integer                 theNum,
+                                                Handle(Interface_Check)&               theCheck,
+                                                const Handle(StepVisual_TessellatedVertex)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_vertex"))
@@ -87,9 +86,8 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepVisual_TessellatedVertex)& theEnt)
+void RWStepVisual_RWTessellatedVertex::WriteStep(StepData_StepWriter&                        theSW,
+                                                 const Handle(StepVisual_TessellatedVertex)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -115,7 +113,7 @@ void RWStepVisual_RWTessellatedVertex::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedVertex::Share(const Handle(StepVisual_TessellatedVertex)& theEnt,
-                                             Interface_EntityIterator& theIter)
+                                             Interface_EntityIterator&                   theIter)
 {
 
   // Inherited fields of RepresentationItem

@@ -66,9 +66,8 @@ void RWStepShape_RWRightCircularCone::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aPosition, aHeight, aRadius, aSemiAngle);
 }
 
-void RWStepShape_RWRightCircularCone::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_RightCircularCone)& ent)
+void RWStepShape_RWRightCircularCone::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_RightCircularCone)& ent)
 {
 
   // --- inherited field name ---

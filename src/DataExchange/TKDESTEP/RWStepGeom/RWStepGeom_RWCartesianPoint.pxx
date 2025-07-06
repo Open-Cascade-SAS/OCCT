@@ -40,8 +40,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepGeom_CartesianPoint)& ent);
 
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepGeom_CartesianPoint)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_CartesianPoint)& ent);
 
 protected:
 private:

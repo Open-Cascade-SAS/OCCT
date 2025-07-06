@@ -30,11 +30,10 @@ RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedWire::ReadStep(
-  const Handle(StepData_StepReaderData)&    theData,
-  const Standard_Integer                    theNum,
-  Handle(Interface_Check)&                  theCheck,
-  const Handle(StepVisual_TessellatedWire)& theEnt)
+void RWStepVisual_RWTessellatedWire::ReadStep(const Handle(StepData_StepReaderData)&    theData,
+                                              const Standard_Integer                    theNum,
+                                              Handle(Interface_Check)&                  theCheck,
+                                              const Handle(StepVisual_TessellatedWire)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_wire"))
@@ -82,9 +81,8 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedWire::WriteStep(
-  StepData_StepWriter&                      theSW,
-  const Handle(StepVisual_TessellatedWire)& theEnt)
+void RWStepVisual_RWTessellatedWire::WriteStep(StepData_StepWriter&                      theSW,
+                                               const Handle(StepVisual_TessellatedWire)& theEnt)
 {
 
   // Own fields of RepresentationItem

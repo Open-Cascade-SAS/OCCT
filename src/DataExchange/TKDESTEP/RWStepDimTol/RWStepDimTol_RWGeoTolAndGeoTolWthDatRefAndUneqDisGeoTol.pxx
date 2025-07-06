@@ -46,7 +46,7 @@ public:
     const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent);
 
   static inline void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                          iter);
 };
 
 #include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol_impl.pxx"

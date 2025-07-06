@@ -44,8 +44,7 @@ public:
                               const Handle(StepDimTol_DatumSystem)&  ent);
 
   //! Writes DatumSystem
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepDimTol_DatumSystem)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepDimTol_DatumSystem)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_DatumSystem)& ent,

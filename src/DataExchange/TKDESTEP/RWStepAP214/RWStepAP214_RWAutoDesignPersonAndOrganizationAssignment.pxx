@@ -47,7 +47,7 @@ public:
     const Handle(StepAP214_AutoDesignPersonAndOrganizationAssignment)& ent);
 
   static inline void Share(const Handle(StepAP214_AutoDesignPersonAndOrganizationAssignment)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                          iter);
 
 protected:
 private:

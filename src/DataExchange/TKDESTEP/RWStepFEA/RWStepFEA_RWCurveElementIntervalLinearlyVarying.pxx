@@ -43,9 +43,8 @@ public:
                               const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent);
 
   //! Writes CurveElementIntervalLinearlyVarying
-  static inline void WriteStep(
-    StepData_StepWriter&                                       SW,
-    const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                       SW,
+                               const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent,

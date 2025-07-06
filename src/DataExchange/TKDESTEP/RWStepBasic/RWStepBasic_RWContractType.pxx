@@ -44,8 +44,7 @@ public:
                               const Handle(StepBasic_ContractType)&  ent);
 
   //! Writes ContractType
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepBasic_ContractType)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_ContractType)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_ContractType)& ent,

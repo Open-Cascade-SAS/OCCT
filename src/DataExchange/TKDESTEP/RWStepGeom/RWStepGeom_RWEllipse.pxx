@@ -45,8 +45,7 @@ public:
 
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Ellipse)& ent);
 
-  static inline void Share(const Handle(StepGeom_Ellipse)& ent,
-                           Interface_EntityIterator&       iter);
+  static inline void Share(const Handle(StepGeom_Ellipse)& ent, Interface_EntityIterator& iter);
 
   static inline void Check(const Handle(StepGeom_Ellipse)& ent,
                            const Interface_ShareTool&      shares,

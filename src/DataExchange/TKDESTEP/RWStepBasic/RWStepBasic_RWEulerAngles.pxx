@@ -43,8 +43,7 @@ public:
                               const Handle(StepBasic_EulerAngles)&   ent);
 
   //! Writes EulerAngles
-  static inline void WriteStep(StepData_StepWriter&                 SW,
-                               const Handle(StepBasic_EulerAngles)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_EulerAngles)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_EulerAngles)& ent,

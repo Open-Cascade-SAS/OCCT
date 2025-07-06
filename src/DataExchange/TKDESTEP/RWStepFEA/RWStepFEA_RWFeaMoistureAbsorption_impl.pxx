@@ -27,11 +27,10 @@ RWStepFEA_RWFeaMoistureAbsorption::RWStepFEA_RWFeaMoistureAbsorption() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepFEA_FeaMoistureAbsorption)& ent)
+void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepFEA_FeaMoistureAbsorption)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_moisture_absorption"))
@@ -53,9 +52,8 @@ void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaMoistureAbsorption::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepFEA_FeaMoistureAbsorption)& ent)
+void RWStepFEA_RWFeaMoistureAbsorption::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepFEA_FeaMoistureAbsorption)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -70,7 +68,7 @@ void RWStepFEA_RWFeaMoistureAbsorption::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaMoistureAbsorption::Share(const Handle(StepFEA_FeaMoistureAbsorption)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   // Inherited fields of RepresentationItem

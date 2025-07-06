@@ -43,8 +43,7 @@ public:
 
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Circle)& ent);
 
-  static inline void Share(const Handle(StepGeom_Circle)& ent,
-                           Interface_EntityIterator&      iter);
+  static inline void Share(const Handle(StepGeom_Circle)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

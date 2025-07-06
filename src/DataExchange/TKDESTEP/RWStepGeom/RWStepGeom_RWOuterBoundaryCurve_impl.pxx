@@ -70,9 +70,8 @@ void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aSegments, aSelfIntersect);
 }
 
-void RWStepGeom_RWOuterBoundaryCurve::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepGeom_OuterBoundaryCurve)& ent)
+void RWStepGeom_RWOuterBoundaryCurve::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepGeom_OuterBoundaryCurve)& ent)
 {
 
   // --- inherited field name ---

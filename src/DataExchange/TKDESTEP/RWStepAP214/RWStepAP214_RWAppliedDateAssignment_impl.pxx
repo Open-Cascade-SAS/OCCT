@@ -92,7 +92,7 @@ void RWStepAP214_RWAppliedDateAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAppliedDateAssignment::Share(const Handle(StepAP214_AppliedDateAssignment)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->AssignedDate());

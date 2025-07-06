@@ -29,11 +29,10 @@ RWStepDimTol_RWGeometricTolerance::RWStepDimTol_RWGeometricTolerance() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeometricTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepDimTol_GeometricTolerance)& ent)
+void RWStepDimTol_RWGeometricTolerance::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepDimTol_GeometricTolerance)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
@@ -59,9 +58,8 @@ void RWStepDimTol_RWGeometricTolerance::ReadStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeometricTolerance::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepDimTol_GeometricTolerance)& ent)
+void RWStepDimTol_RWGeometricTolerance::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepDimTol_GeometricTolerance)& ent)
 {
 
   // Own fields of GeometricTolerance
@@ -78,7 +76,7 @@ void RWStepDimTol_RWGeometricTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricTolerance::Share(const Handle(StepDimTol_GeometricTolerance)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   // Own fields of GeometricTolerance

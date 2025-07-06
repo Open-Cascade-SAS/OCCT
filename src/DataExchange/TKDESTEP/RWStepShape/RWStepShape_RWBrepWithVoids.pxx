@@ -42,8 +42,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepShape_BrepWithVoids)& ent);
 
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepShape_BrepWithVoids)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepShape_BrepWithVoids)& ent);
 
   static inline void Share(const Handle(StepShape_BrepWithVoids)& ent,
                            Interface_EntityIterator&              iter);

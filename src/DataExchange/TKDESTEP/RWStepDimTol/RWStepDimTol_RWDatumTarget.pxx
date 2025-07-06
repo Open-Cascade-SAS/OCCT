@@ -43,8 +43,7 @@ public:
                               const Handle(StepDimTol_DatumTarget)&  ent);
 
   //! Writes DatumTarget
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepDimTol_DatumTarget)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepDimTol_DatumTarget)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_DatumTarget)& ent,

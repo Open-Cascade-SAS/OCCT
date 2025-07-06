@@ -40,9 +40,8 @@ void RWStepRepr_RWRepresentationItem::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName);
 }
 
-void RWStepRepr_RWRepresentationItem::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepRepr_RepresentationItem)& ent)
+void RWStepRepr_RWRepresentationItem::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepRepr_RepresentationItem)& ent)
 {
 
   // --- own field : name ---

@@ -41,9 +41,8 @@ public:
                               Handle(Interface_Check)&                                   ach,
                               const Handle(StepRepr_ConstructiveGeometryRepresentation)& ent);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                       SW,
-    const Handle(StepRepr_ConstructiveGeometryRepresentation)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                       SW,
+                               const Handle(StepRepr_ConstructiveGeometryRepresentation)& ent);
 
   static inline void Share(const Handle(StepRepr_ConstructiveGeometryRepresentation)& ent,
                            Interface_EntityIterator&                                  iter);

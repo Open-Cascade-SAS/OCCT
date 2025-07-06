@@ -84,7 +84,7 @@ void RWStepShape_RWRightCircularCylinder::WriteStep(
 }
 
 void RWStepShape_RWRightCircularCylinder::Share(const Handle(StepShape_RightCircularCylinder)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->Position());

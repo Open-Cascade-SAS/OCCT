@@ -91,7 +91,7 @@ void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
 //=================================================================================================
 
 void RWStepShape_RWFaceBasedSurfaceModel::Share(const Handle(StepShape_FaceBasedSurfaceModel)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of RepresentationItem

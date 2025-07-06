@@ -70,7 +70,7 @@ void RWStepBasic_RWActionRequestSolution::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionRequestSolution::Share(const Handle(StepBasic_ActionRequestSolution)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Own fields of ActionRequestSolution

@@ -28,11 +28,10 @@ RWStepDimTol_RWPositionTolerance::RWStepDimTol_RWPositionTolerance() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWPositionTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepDimTol_PositionTolerance)& ent)
+void RWStepDimTol_RWPositionTolerance::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepDimTol_PositionTolerance)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "position_tolerance"))
@@ -70,9 +69,8 @@ void RWStepDimTol_RWPositionTolerance::ReadStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWPositionTolerance::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepDimTol_PositionTolerance)& ent)
+void RWStepDimTol_RWPositionTolerance::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepDimTol_PositionTolerance)& ent)
 {
 
   // Inherited fields of GeometricTolerance

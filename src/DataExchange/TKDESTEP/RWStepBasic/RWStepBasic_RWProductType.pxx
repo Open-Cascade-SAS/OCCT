@@ -41,8 +41,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepBasic_ProductType)&   ent);
 
-  static inline void WriteStep(StepData_StepWriter&                 SW,
-                               const Handle(StepBasic_ProductType)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_ProductType)& ent);
 
   static inline void Share(const Handle(StepBasic_ProductType)& ent,
                            Interface_EntityIterator&            iter);

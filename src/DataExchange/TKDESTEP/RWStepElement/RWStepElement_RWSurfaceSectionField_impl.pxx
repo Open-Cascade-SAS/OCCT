@@ -43,9 +43,8 @@ void RWStepElement_RWSurfaceSectionField::ReadStep(
 
 //=================================================================================================
 
-void RWStepElement_RWSurfaceSectionField::WriteStep(
-  StepData_StepWriter&,
-  const Handle(StepElement_SurfaceSectionField)&)
+void RWStepElement_RWSurfaceSectionField::WriteStep(StepData_StepWriter&,
+                                                    const Handle(StepElement_SurfaceSectionField)&)
 {
 }
 

@@ -61,9 +61,8 @@ void RWStepShape_RWGeometricCurveSet::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aElements);
 }
 
-void RWStepShape_RWGeometricCurveSet::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_GeometricCurveSet)& ent)
+void RWStepShape_RWGeometricCurveSet::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_GeometricCurveSet)& ent)
 {
 
   // --- inherited field name ---

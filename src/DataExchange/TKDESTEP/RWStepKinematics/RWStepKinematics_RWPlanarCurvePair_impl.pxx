@@ -164,7 +164,7 @@ void RWStepKinematics_RWPlanarCurvePair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPlanarCurvePair::Share(const Handle(StepKinematics_PlanarCurvePair)& theEnt,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   // Inherited fields of RepresentationItem

@@ -32,11 +32,10 @@ RWStepKinematics_RWUniversalPair::RWStepKinematics_RWUniversalPair() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWUniversalPair::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_UniversalPair)& theEnt)
+void RWStepKinematics_RWUniversalPair::ReadStep(const Handle(StepData_StepReaderData)&      theData,
+                                                const Standard_Integer                      theNum,
+                                                Handle(Interface_Check)&                    theArch,
+                                                const Handle(StepKinematics_UniversalPair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "universal_pair"))
@@ -176,9 +175,8 @@ void RWStepKinematics_RWUniversalPair::ReadStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWUniversalPair::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_UniversalPair)& theEnt)
+void RWStepKinematics_RWUniversalPair::WriteStep(StepData_StepWriter&                        theSW,
+                                                 const Handle(StepKinematics_UniversalPair)& theEnt)
 {
 
   // Own fields of RepresentationItem

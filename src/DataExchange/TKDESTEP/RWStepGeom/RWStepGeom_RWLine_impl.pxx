@@ -71,8 +71,7 @@ void RWStepGeom_RWLine::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom
   SW.Send(ent->Dir());
 }
 
-void RWStepGeom_RWLine::Share(const Handle(StepGeom_Line)& ent,
-                              Interface_EntityIterator&    iter)
+void RWStepGeom_RWLine::Share(const Handle(StepGeom_Line)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Pnt());

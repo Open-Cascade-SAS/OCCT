@@ -60,8 +60,7 @@ void RWStepGeom_RWEllipse::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aPosition, aSemiAxis1, aSemiAxis2);
 }
 
-void RWStepGeom_RWEllipse::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepGeom_Ellipse)& ent)
+void RWStepGeom_RWEllipse::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Ellipse)& ent)
 {
 
   // --- inherited field name ---

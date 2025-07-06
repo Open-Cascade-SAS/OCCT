@@ -37,16 +37,14 @@ public:
   static inline RWStepFEA_RWFeaCurveSectionGeometricRelationship();
 
   //! Reads FeaCurveSectionGeometricRelationship
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                      data,
-    const Standard_Integer                                      num,
-    Handle(Interface_Check)&                                    ach,
-    const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent);
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                      data,
+                              const Standard_Integer                                      num,
+                              Handle(Interface_Check)&                                    ach,
+                              const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent);
 
   //! Writes FeaCurveSectionGeometricRelationship
-  static inline void WriteStep(
-    StepData_StepWriter&                                        SW,
-    const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                        SW,
+                               const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent,

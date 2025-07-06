@@ -40,8 +40,7 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepShape_LimitsAndFits)& ent);
 
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepShape_LimitsAndFits)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepShape_LimitsAndFits)& ent);
 
 protected:
 private:

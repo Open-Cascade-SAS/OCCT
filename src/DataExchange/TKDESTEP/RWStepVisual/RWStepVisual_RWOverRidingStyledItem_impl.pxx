@@ -111,7 +111,7 @@ void RWStepVisual_RWOverRidingStyledItem::WriteStep(
 }
 
 void RWStepVisual_RWOverRidingStyledItem::Share(const Handle(StepVisual_OverRidingStyledItem)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   Standard_Integer nbElem1 = ent->NbStyles();

@@ -43,9 +43,8 @@ void RWStepVisual_RWPreDefinedColour::ReadStep(const Handle(StepData_StepReaderD
   ent->GetPreDefinedItem()->Init(aName);
 }
 
-void RWStepVisual_RWPreDefinedColour::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_PreDefinedColour)& ent)
+void RWStepVisual_RWPreDefinedColour::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_PreDefinedColour)& ent)
 {
 
   // --- inherited field name ---

@@ -63,9 +63,8 @@ void RWStepShape_RWOrientedOpenShell::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aOpenShellElement, aOrientation);
 }
 
-void RWStepShape_RWOrientedOpenShell::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_OrientedOpenShell)& ent)
+void RWStepShape_RWOrientedOpenShell::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_OrientedOpenShell)& ent)
 {
 
   // --- inherited field name ---

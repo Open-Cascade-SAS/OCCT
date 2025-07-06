@@ -41,11 +41,9 @@ public:
                               Handle(Interface_Check)&               ach,
                               const Handle(StepBasic_LocalTime)&     ent);
 
-  static inline void WriteStep(StepData_StepWriter&               SW,
-                               const Handle(StepBasic_LocalTime)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_LocalTime)& ent);
 
-  static inline void Share(const Handle(StepBasic_LocalTime)& ent,
-                           Interface_EntityIterator&          iter);
+  static inline void Share(const Handle(StepBasic_LocalTime)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

@@ -60,8 +60,7 @@ void RWStepGeom_RWPlane::WriteStep(StepData_StepWriter& SW, const Handle(StepGeo
   SW.Send(ent->Position());
 }
 
-void RWStepGeom_RWPlane::Share(const Handle(StepGeom_Plane)& ent,
-                               Interface_EntityIterator&     iter)
+void RWStepGeom_RWPlane::Share(const Handle(StepGeom_Plane)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position());

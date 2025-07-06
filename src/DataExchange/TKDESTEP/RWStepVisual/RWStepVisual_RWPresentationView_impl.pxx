@@ -76,9 +76,8 @@ void RWStepVisual_RWPresentationView::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aItems, aContextOfItems);
 }
 
-void RWStepVisual_RWPresentationView::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_PresentationView)& ent)
+void RWStepVisual_RWPresentationView::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_PresentationView)& ent)
 {
 
   // --- inherited field name ---

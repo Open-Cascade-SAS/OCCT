@@ -43,8 +43,7 @@ public:
                               const Handle(StepShape_AngularSize)&   ent);
 
   //! Writes AngularSize
-  static inline void WriteStep(StepData_StepWriter&                 SW,
-                               const Handle(StepShape_AngularSize)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepShape_AngularSize)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepShape_AngularSize)& ent,

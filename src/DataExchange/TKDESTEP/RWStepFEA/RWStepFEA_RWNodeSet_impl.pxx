@@ -71,8 +71,7 @@ void RWStepFEA_RWNodeSet::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepFEA_NodeSet)& ent)
+void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_NodeSet)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -92,8 +91,7 @@ void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter&           SW,
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeSet::Share(const Handle(StepFEA_NodeSet)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepFEA_RWNodeSet::Share(const Handle(StepFEA_NodeSet)& ent, Interface_EntityIterator& iter)
 {
 
   // Inherited fields of RepresentationItem

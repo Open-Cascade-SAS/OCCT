@@ -72,8 +72,7 @@ void RWStepShape_RWSubface::ReadStep(const Handle(StepData_StepReaderData)& data
 
 //=================================================================================================
 
-void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepShape_Subface)& ent)
+void RWStepShape_RWSubface::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Subface)& ent)
 {
 
   // Inherited fields of RepresentationItem

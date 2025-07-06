@@ -44,8 +44,7 @@ public:
                               const Handle(StepRepr_ParallelOffset)& ent);
 
   //! Writes ParallelOffset
-  static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepRepr_ParallelOffset)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_ParallelOffset)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepRepr_ParallelOffset)& ent,

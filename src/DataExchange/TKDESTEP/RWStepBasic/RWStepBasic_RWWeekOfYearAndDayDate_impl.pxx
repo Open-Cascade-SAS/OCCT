@@ -18,11 +18,10 @@
 
 RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate() {}
 
-void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_WeekOfYearAndDayDate)& ent)
+void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepBasic_WeekOfYearAndDayDate)& ent)
 {
 
   // --- Number of Parameter Control ---

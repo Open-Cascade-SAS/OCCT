@@ -60,8 +60,7 @@ void RWStepGeom_RWPcurve::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aBasisSurface, aReferenceToCurve);
 }
 
-void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Pcurve)& ent)
+void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Pcurve)& ent)
 {
 
   // --- inherited field name ---
@@ -77,8 +76,7 @@ void RWStepGeom_RWPcurve::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->ReferenceToCurve());
 }
 
-void RWStepGeom_RWPcurve::Share(const Handle(StepGeom_Pcurve)& ent,
-                                Interface_EntityIterator&      iter)
+void RWStepGeom_RWPcurve::Share(const Handle(StepGeom_Pcurve)& ent, Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->BasisSurface());

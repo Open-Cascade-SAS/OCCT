@@ -72,9 +72,8 @@ void RWStepShape_RWRightAngularWedge::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aPosition, aX, aY, aZ, aLtx);
 }
 
-void RWStepShape_RWRightAngularWedge::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_RightAngularWedge)& ent)
+void RWStepShape_RWRightAngularWedge::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_RightAngularWedge)& ent)
 {
 
   // --- inherited field name ---

@@ -93,8 +93,7 @@ void RWStepFEA_RWDummyNode::ReadStep(const Handle(StepData_StepReaderData)& data
 
 //=================================================================================================
 
-void RWStepFEA_RWDummyNode::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepFEA_DummyNode)& ent)
+void RWStepFEA_RWDummyNode::WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_DummyNode)& ent)
 {
 
   // Inherited fields of Representation

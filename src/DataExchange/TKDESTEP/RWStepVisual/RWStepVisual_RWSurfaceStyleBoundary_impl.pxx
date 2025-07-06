@@ -59,7 +59,7 @@ void RWStepVisual_RWSurfaceStyleBoundary::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleBoundary::Share(const Handle(StepVisual_SurfaceStyleBoundary)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   iter.GetOneItem(ent->StyleOfBoundary());

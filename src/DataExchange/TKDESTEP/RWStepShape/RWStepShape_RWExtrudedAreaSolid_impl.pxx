@@ -71,9 +71,8 @@ void RWStepShape_RWExtrudedAreaSolid::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aSweptArea, aExtrudedDirection, aDepth);
 }
 
-void RWStepShape_RWExtrudedAreaSolid::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepShape_ExtrudedAreaSolid)& ent)
+void RWStepShape_RWExtrudedAreaSolid::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepShape_ExtrudedAreaSolid)& ent)
 {
 
   // --- inherited field name ---

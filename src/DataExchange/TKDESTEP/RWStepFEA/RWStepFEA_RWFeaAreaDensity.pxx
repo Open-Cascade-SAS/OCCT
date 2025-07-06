@@ -43,8 +43,7 @@ public:
                               const Handle(StepFEA_FeaAreaDensity)&  ent);
 
   //! Writes FeaAreaDensity
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepFEA_FeaAreaDensity)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_FeaAreaDensity)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_FeaAreaDensity)& ent,

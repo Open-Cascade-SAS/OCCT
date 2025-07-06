@@ -28,11 +28,10 @@ RWStepKinematics_RWKinematicLink::RWStepKinematics_RWKinematicLink() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWKinematicLink::ReadStep(
-  const Handle(StepData_StepReaderData)&      theData,
-  const Standard_Integer                      theNum,
-  Handle(Interface_Check)&                    theArch,
-  const Handle(StepKinematics_KinematicLink)& theEnt)
+void RWStepKinematics_RWKinematicLink::ReadStep(const Handle(StepData_StepReaderData)&      theData,
+                                                const Standard_Integer                      theNum,
+                                                Handle(Interface_Check)&                    theArch,
+                                                const Handle(StepKinematics_KinematicLink)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 1, theArch, "kinematic_link"))
@@ -49,9 +48,8 @@ void RWStepKinematics_RWKinematicLink::ReadStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWKinematicLink::WriteStep(
-  StepData_StepWriter&                        theSW,
-  const Handle(StepKinematics_KinematicLink)& theEnt)
+void RWStepKinematics_RWKinematicLink::WriteStep(StepData_StepWriter&                        theSW,
+                                                 const Handle(StepKinematics_KinematicLink)& theEnt)
 {
 
   // Own fields of RepresentationItem

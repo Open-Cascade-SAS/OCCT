@@ -31,11 +31,10 @@ RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedEdge::ReadStep(
-  const Handle(StepData_StepReaderData)&    theData,
-  const Standard_Integer                    theNum,
-  Handle(Interface_Check)&                  theCheck,
-  const Handle(StepVisual_TessellatedEdge)& theEnt)
+void RWStepVisual_RWTessellatedEdge::ReadStep(const Handle(StepData_StepReaderData)&    theData,
+                                              const Standard_Integer                    theNum,
+                                              Handle(Interface_Check)&                  theCheck,
+                                              const Handle(StepVisual_TessellatedEdge)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_edge"))
@@ -95,9 +94,8 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedEdge::WriteStep(
-  StepData_StepWriter&                      theSW,
-  const Handle(StepVisual_TessellatedEdge)& theEnt)
+void RWStepVisual_RWTessellatedEdge::WriteStep(StepData_StepWriter&                      theSW,
+                                               const Handle(StepVisual_TessellatedEdge)& theEnt)
 {
 
   // Own fields of RepresentationItem

@@ -43,8 +43,7 @@ public:
                               const Handle(StepDimTol_CommonDatum)&  ent);
 
   //! Writes CommonDatum
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepDimTol_CommonDatum)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepDimTol_CommonDatum)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_CommonDatum)& ent,

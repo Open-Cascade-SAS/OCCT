@@ -37,11 +37,10 @@ public:
   static inline RWStepShape_RWDimensionalCharacteristicRepresentation();
 
   //! Reads DimensionalCharacteristicRepresentation
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                           data,
-    const Standard_Integer                                           num,
-    Handle(Interface_Check)&                                         ach,
-    const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent);
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                           data,
+                              const Standard_Integer                                           num,
+                              Handle(Interface_Check)&                                         ach,
+                              const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent);
 
   //! Writes DimensionalCharacteristicRepresentation
   static inline void WriteStep(
@@ -50,7 +49,7 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                        iter);
 
 protected:
 private:

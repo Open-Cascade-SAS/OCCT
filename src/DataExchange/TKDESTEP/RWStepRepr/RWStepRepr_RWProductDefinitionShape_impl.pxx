@@ -91,7 +91,7 @@ void RWStepRepr_RWProductDefinitionShape::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWProductDefinitionShape::Share(const Handle(StepRepr_ProductDefinitionShape)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of PropertyDefinition

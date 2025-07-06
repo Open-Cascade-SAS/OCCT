@@ -44,8 +44,7 @@ public:
                               const Handle(StepAP203_StartRequest)&  ent);
 
   //! Writes StartRequest
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepAP203_StartRequest)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepAP203_StartRequest)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP203_StartRequest)& ent,

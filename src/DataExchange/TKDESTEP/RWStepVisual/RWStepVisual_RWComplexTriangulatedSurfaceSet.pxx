@@ -41,9 +41,8 @@ public:
                               Handle(Interface_Check)&                                theCheck,
                               const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                    theSW,
-    const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt);
+  static inline void WriteStep(StepData_StepWriter&                                    theSW,
+                               const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt);
 
   static inline void Share(const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theEnt,
                            Interface_EntityIterator&                               theIter);

@@ -78,8 +78,7 @@ void RWStepDimTol_RWDatum::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatum::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepDimTol_Datum)& ent)
+void RWStepDimTol_RWDatum::WriteStep(StepData_StepWriter& SW, const Handle(StepDimTol_Datum)& ent)
 {
 
   // Inherited fields of ShapeAspect

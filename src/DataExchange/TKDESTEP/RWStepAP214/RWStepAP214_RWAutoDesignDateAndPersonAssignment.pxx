@@ -41,9 +41,8 @@ public:
                               Handle(Interface_Check)&                                   ach,
                               const Handle(StepAP214_AutoDesignDateAndPersonAssignment)& ent);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                       SW,
-    const Handle(StepAP214_AutoDesignDateAndPersonAssignment)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                       SW,
+                               const Handle(StepAP214_AutoDesignDateAndPersonAssignment)& ent);
 
   static inline void Share(const Handle(StepAP214_AutoDesignDateAndPersonAssignment)& ent,
                            Interface_EntityIterator&                                  iter);

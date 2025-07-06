@@ -79,8 +79,7 @@ void RWStepShape_RWFace::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
   SW.CloseSub();
 }
 
-void RWStepShape_RWFace::Share(const Handle(StepShape_Face)& ent,
-                               Interface_EntityIterator&     iter)
+void RWStepShape_RWFace::Share(const Handle(StepShape_Face)& ent, Interface_EntityIterator& iter)
 {
 
   Standard_Integer nbElem1 = ent->NbBounds();

@@ -104,9 +104,8 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(hasAprefix, aPrefix, aName);
 }
 
-void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndMassUnit)& ent)
+void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_SiUnitAndMassUnit)& ent)
 {
 
   // --- Instance of plex component LengthUnit ---

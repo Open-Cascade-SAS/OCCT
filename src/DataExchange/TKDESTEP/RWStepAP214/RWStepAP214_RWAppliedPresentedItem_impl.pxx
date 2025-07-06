@@ -22,11 +22,10 @@
 
 RWStepAP214_RWAppliedPresentedItem::RWStepAP214_RWAppliedPresentedItem() {}
 
-void RWStepAP214_RWAppliedPresentedItem::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepAP214_AppliedPresentedItem)& ent)
+void RWStepAP214_RWAppliedPresentedItem::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepAP214_AppliedPresentedItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -72,7 +71,7 @@ void RWStepAP214_RWAppliedPresentedItem::WriteStep(
 }
 
 void RWStepAP214_RWAppliedPresentedItem::Share(const Handle(StepAP214_AppliedPresentedItem)& ent,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

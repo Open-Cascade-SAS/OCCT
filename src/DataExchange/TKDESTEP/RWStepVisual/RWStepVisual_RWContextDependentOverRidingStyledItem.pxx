@@ -36,18 +36,16 @@ public:
 
   static inline RWStepVisual_RWContextDependentOverRidingStyledItem();
 
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                         data,
-    const Standard_Integer                                         num,
-    Handle(Interface_Check)&                                       ach,
-    const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent);
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                         data,
+                              const Standard_Integer                                         num,
+                              Handle(Interface_Check)&                                       ach,
+                              const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent);
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                           SW,
-    const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent);
+  static inline void WriteStep(StepData_StepWriter&                                           SW,
+                               const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent);
 
   static inline void Share(const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                      iter);
 
 protected:
 private:

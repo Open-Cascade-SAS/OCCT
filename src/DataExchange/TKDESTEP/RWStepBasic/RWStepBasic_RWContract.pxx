@@ -44,12 +44,10 @@ public:
                               const Handle(StepBasic_Contract)&      ent);
 
   //! Writes Contract
-  static inline void WriteStep(StepData_StepWriter&              SW,
-                               const Handle(StepBasic_Contract)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Contract)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepBasic_Contract)& ent,
-                           Interface_EntityIterator&         iter);
+  static inline void Share(const Handle(StepBasic_Contract)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

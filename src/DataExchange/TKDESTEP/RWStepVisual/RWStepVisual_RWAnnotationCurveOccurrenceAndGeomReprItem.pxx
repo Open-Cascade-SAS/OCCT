@@ -46,7 +46,7 @@ public:
     const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent);
 
   static inline void Share(const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                          iter);
 };
 
 #include "RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem_impl.pxx"

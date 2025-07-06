@@ -123,7 +123,7 @@ void RWStepDimTol_RWParallelismTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWParallelismTolerance::Share(const Handle(StepDimTol_ParallelismTolerance)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of GeometricTolerance

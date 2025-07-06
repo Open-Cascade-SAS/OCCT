@@ -54,9 +54,8 @@ void RWStepGeom_RWCylindricalSurface::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aPosition, aRadius);
 }
 
-void RWStepGeom_RWCylindricalSurface::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepGeom_CylindricalSurface)& ent)
+void RWStepGeom_RWCylindricalSurface::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepGeom_CylindricalSurface)& ent)
 {
 
   // --- inherited field name ---

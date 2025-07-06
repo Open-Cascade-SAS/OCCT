@@ -46,7 +46,7 @@ public:
     const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt);
 
   static inline void Share(const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                      iter);
 };
 
 #include "RWStepKinematics_RWLinearFlexibleLinkRepresentation_impl.pxx"

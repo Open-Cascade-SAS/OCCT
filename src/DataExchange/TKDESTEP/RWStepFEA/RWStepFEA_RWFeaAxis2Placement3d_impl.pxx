@@ -121,9 +121,8 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaAxis2Placement3d::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepFEA_FeaAxis2Placement3d)& ent)
+void RWStepFEA_RWFeaAxis2Placement3d::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepFEA_FeaAxis2Placement3d)& ent)
 {
 
   // Inherited fields of RepresentationItem

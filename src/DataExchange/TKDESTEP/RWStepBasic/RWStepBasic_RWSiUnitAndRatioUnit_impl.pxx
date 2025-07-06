@@ -24,11 +24,10 @@
 
 RWStepBasic_RWSiUnitAndRatioUnit::RWStepBasic_RWSiUnitAndRatioUnit() {}
 
-void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num0,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_SiUnitAndRatioUnit)& ent)
+void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num0,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepBasic_SiUnitAndRatioUnit)& ent)
 {
 
   Standard_Integer num = num0;
@@ -95,9 +94,8 @@ void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep(
   ent->Init(hasAprefix, aPrefix, aName);
 }
 
-void RWStepBasic_RWSiUnitAndRatioUnit::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepBasic_SiUnitAndRatioUnit)& ent)
+void RWStepBasic_RWSiUnitAndRatioUnit::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepBasic_SiUnitAndRatioUnit)& ent)
 {
 
   // --- Instance of plex component RatioUnit ---

@@ -58,8 +58,7 @@ void RWStepBasic_RWGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepBasic_Group)& ent)
+void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Group)& ent)
 {
 
   // Own fields of Group

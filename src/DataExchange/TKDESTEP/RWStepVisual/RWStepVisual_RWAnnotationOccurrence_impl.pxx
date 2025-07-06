@@ -94,7 +94,7 @@ void RWStepVisual_RWAnnotationOccurrence::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationOccurrence::Share(const Handle(StepVisual_AnnotationOccurrence)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
   Standard_Integer nbElem1 = ent->NbStyles();
   for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)

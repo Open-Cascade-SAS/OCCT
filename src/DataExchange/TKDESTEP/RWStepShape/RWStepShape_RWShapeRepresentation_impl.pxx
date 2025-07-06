@@ -22,11 +22,10 @@
 
 RWStepShape_RWShapeRepresentation::RWStepShape_RWShapeRepresentation() {}
 
-void RWStepShape_RWShapeRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepShape_ShapeRepresentation)& ent)
+void RWStepShape_RWShapeRepresentation::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepShape_ShapeRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -78,9 +77,8 @@ void RWStepShape_RWShapeRepresentation::ReadStep(
   ent->Init(aName, aItems, aContextOfItems);
 }
 
-void RWStepShape_RWShapeRepresentation::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepShape_ShapeRepresentation)& ent)
+void RWStepShape_RWShapeRepresentation::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepShape_ShapeRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -102,7 +100,7 @@ void RWStepShape_RWShapeRepresentation::WriteStep(
 }
 
 void RWStepShape_RWShapeRepresentation::Share(const Handle(StepShape_ShapeRepresentation)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

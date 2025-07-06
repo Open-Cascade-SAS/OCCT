@@ -50,7 +50,7 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)& ent,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                          iter);
 
 protected:
 private:

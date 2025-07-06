@@ -98,7 +98,7 @@ void RWStepAP203_RWCcDesignCertification::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignCertification::Share(const Handle(StepAP203_CcDesignCertification)& ent,
-                                                Interface_EntityIterator& iter)
+                                                Interface_EntityIterator&                      iter)
 {
 
   // Inherited fields of CertificationAssignment

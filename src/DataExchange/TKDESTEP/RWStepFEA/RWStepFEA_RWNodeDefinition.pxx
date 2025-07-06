@@ -43,8 +43,7 @@ public:
                               const Handle(StepFEA_NodeDefinition)&  ent);
 
   //! Writes NodeDefinition
-  static inline void WriteStep(StepData_StepWriter&                  SW,
-                               const Handle(StepFEA_NodeDefinition)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_NodeDefinition)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_NodeDefinition)& ent,

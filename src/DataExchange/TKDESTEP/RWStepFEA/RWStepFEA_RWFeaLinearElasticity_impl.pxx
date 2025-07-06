@@ -52,9 +52,8 @@ void RWStepFEA_RWFeaLinearElasticity::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaLinearElasticity::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepFEA_FeaLinearElasticity)& ent)
+void RWStepFEA_RWFeaLinearElasticity::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepFEA_FeaLinearElasticity)& ent)
 {
 
   // Inherited fields of RepresentationItem

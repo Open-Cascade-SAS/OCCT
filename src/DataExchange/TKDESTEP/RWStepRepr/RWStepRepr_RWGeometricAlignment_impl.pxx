@@ -72,9 +72,8 @@ void RWStepRepr_RWGeometricAlignment::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepRepr_RWGeometricAlignment::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepRepr_GeometricAlignment)& ent)
+void RWStepRepr_RWGeometricAlignment::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepRepr_GeometricAlignment)& ent)
 {
 
   // Inherited fields of ShapeAspect

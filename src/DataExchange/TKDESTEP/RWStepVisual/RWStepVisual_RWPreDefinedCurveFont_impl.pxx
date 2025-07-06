@@ -18,11 +18,10 @@
 
 RWStepVisual_RWPreDefinedCurveFont::RWStepVisual_RWPreDefinedCurveFont() {}
 
-void RWStepVisual_RWPreDefinedCurveFont::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_PreDefinedCurveFont)& ent)
+void RWStepVisual_RWPreDefinedCurveFont::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepVisual_PreDefinedCurveFont)& ent)
 {
 
   // --- Number of Parameter Control ---

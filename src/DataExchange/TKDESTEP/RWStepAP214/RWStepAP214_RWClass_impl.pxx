@@ -58,8 +58,7 @@ void RWStepAP214_RWClass::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepAP214_RWClass::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepAP214_Class)& ent)
+void RWStepAP214_RWClass::WriteStep(StepData_StepWriter& SW, const Handle(StepAP214_Class)& ent)
 {
 
   // Inherited fields of Group

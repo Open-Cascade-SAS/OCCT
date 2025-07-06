@@ -235,7 +235,7 @@ void RWStepKinematics_RWHomokineticPair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWHomokineticPair::Share(const Handle(StepKinematics_HomokineticPair)& theEnt,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   // Inherited fields of RepresentationItem

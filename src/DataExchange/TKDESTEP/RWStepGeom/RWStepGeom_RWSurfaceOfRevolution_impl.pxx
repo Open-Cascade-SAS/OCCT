@@ -21,11 +21,10 @@
 
 RWStepGeom_RWSurfaceOfRevolution::RWStepGeom_RWSurfaceOfRevolution() {}
 
-void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepGeom_SurfaceOfRevolution)& ent)
+void RWStepGeom_RWSurfaceOfRevolution::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepGeom_SurfaceOfRevolution)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -61,9 +60,8 @@ void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
   ent->Init(aName, aSweptCurve, aAxisPosition);
 }
 
-void RWStepGeom_RWSurfaceOfRevolution::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepGeom_SurfaceOfRevolution)& ent)
+void RWStepGeom_RWSurfaceOfRevolution::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepGeom_SurfaceOfRevolution)& ent)
 {
 
   // --- inherited field name ---

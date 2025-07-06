@@ -18,11 +18,10 @@
 
 RWStepBasic_RWDimensionalExponents::RWStepBasic_RWDimensionalExponents() {}
 
-void RWStepBasic_RWDimensionalExponents::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_DimensionalExponents)& ent)
+void RWStepBasic_RWDimensionalExponents::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepBasic_DimensionalExponents)& ent)
 {
 
   // --- Number of Parameter Control ---

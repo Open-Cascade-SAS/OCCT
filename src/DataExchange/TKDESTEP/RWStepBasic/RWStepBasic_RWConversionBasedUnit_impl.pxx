@@ -21,11 +21,10 @@
 
 RWStepBasic_RWConversionBasedUnit::RWStepBasic_RWConversionBasedUnit() {}
 
-void RWStepBasic_RWConversionBasedUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepBasic_ConversionBasedUnit)& ent)
+void RWStepBasic_RWConversionBasedUnit::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepBasic_ConversionBasedUnit)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -66,9 +65,8 @@ void RWStepBasic_RWConversionBasedUnit::ReadStep(
   ent->Init(aDimensions, aName, aConversionFactor);
 }
 
-void RWStepBasic_RWConversionBasedUnit::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepBasic_ConversionBasedUnit)& ent)
+void RWStepBasic_RWConversionBasedUnit::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepBasic_ConversionBasedUnit)& ent)
 {
 
   // --- inherited field dimensions ---
@@ -85,7 +83,7 @@ void RWStepBasic_RWConversionBasedUnit::WriteStep(
 }
 
 void RWStepBasic_RWConversionBasedUnit::Share(const Handle(StepBasic_ConversionBasedUnit)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

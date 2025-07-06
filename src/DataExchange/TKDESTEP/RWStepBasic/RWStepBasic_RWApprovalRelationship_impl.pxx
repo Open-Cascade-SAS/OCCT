@@ -22,11 +22,10 @@
 
 RWStepBasic_RWApprovalRelationship::RWStepBasic_RWApprovalRelationship() {}
 
-void RWStepBasic_RWApprovalRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_ApprovalRelationship)& ent)
+void RWStepBasic_RWApprovalRelationship::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                                  const Standard_Integer                 num,
+                                                  Handle(Interface_Check)&               ach,
+                                                  const Handle(StepBasic_ApprovalRelationship)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -98,7 +97,7 @@ void RWStepBasic_RWApprovalRelationship::WriteStep(
 }
 
 void RWStepBasic_RWApprovalRelationship::Share(const Handle(StepBasic_ApprovalRelationship)& ent,
-                                               Interface_EntityIterator& iter)
+                                               Interface_EntityIterator&                     iter)
 {
 
   iter.GetOneItem(ent->RelatingApproval());

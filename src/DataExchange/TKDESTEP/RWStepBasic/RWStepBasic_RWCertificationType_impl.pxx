@@ -48,9 +48,8 @@ void RWStepBasic_RWCertificationType::ReadStep(const Handle(StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepBasic_RWCertificationType::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepBasic_CertificationType)& ent)
+void RWStepBasic_RWCertificationType::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepBasic_CertificationType)& ent)
 {
 
   // Own fields of CertificationType

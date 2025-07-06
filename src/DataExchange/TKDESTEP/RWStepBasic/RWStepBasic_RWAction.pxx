@@ -47,8 +47,7 @@ public:
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Action)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepBasic_Action)& ent,
-                           Interface_EntityIterator&       iter);
+  static inline void Share(const Handle(StepBasic_Action)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

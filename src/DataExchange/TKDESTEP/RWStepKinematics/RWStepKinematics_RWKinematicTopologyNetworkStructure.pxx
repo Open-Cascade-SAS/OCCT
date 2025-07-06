@@ -46,7 +46,7 @@ public:
     const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt);
 
   static inline void Share(const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
-                           Interface_EntityIterator& iter);
+                           Interface_EntityIterator&                                       iter);
 };
 
 #include "RWStepKinematics_RWKinematicTopologyNetworkStructure_impl.pxx"

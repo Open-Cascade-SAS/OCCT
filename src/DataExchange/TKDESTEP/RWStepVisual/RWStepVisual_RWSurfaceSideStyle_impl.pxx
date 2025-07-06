@@ -60,9 +60,8 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aName, aStyles);
 }
 
-void RWStepVisual_RWSurfaceSideStyle::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_SurfaceSideStyle)& ent)
+void RWStepVisual_RWSurfaceSideStyle::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_SurfaceSideStyle)& ent)
 {
 
   // --- own field : name ---

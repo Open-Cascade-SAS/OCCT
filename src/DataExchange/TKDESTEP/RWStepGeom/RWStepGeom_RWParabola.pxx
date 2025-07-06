@@ -43,8 +43,7 @@ public:
 
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Parabola)& ent);
 
-  static inline void Share(const Handle(StepGeom_Parabola)& ent,
-                           Interface_EntityIterator&        iter);
+  static inline void Share(const Handle(StepGeom_Parabola)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

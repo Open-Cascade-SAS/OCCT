@@ -26,11 +26,10 @@ RWStepVisual_RWDraughtingCallout::RWStepVisual_RWDraughtingCallout() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWDraughtingCallout::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepVisual_DraughtingCallout)& ent)
+void RWStepVisual_RWDraughtingCallout::ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                                const Standard_Integer                      num,
+                                                Handle(Interface_Check)&                    ach,
+                                                const Handle(StepVisual_DraughtingCallout)& ent)
 {
   if (!data->CheckNbParams(num, 2, ach, "draughting_callout"))
     return;
@@ -60,9 +59,8 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWDraughtingCallout::WriteStep(
-  StepData_StepWriter&                        SW,
-  const Handle(StepVisual_DraughtingCallout)& ent)
+void RWStepVisual_RWDraughtingCallout::WriteStep(StepData_StepWriter&                        SW,
+                                                 const Handle(StepVisual_DraughtingCallout)& ent)
 {
   // Inherited field: name
   SW.Send(ent->Name());

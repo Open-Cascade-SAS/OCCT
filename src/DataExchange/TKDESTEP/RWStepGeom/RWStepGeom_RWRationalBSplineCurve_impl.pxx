@@ -24,11 +24,10 @@
 
 RWStepGeom_RWRationalBSplineCurve::RWStepGeom_RWRationalBSplineCurve() {}
 
-void RWStepGeom_RWRationalBSplineCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepGeom_RationalBSplineCurve)& ent)
+void RWStepGeom_RWRationalBSplineCurve::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(StepGeom_RationalBSplineCurve)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -124,9 +123,8 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
             aWeightsData);
 }
 
-void RWStepGeom_RWRationalBSplineCurve::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(StepGeom_RationalBSplineCurve)& ent)
+void RWStepGeom_RWRationalBSplineCurve::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(StepGeom_RationalBSplineCurve)& ent)
 {
 
   // --- inherited field name ---
@@ -169,7 +167,7 @@ void RWStepGeom_RWRationalBSplineCurve::WriteStep(
 }
 
 void RWStepGeom_RWRationalBSplineCurve::Share(const Handle(StepGeom_RationalBSplineCurve)& ent,
-                                              Interface_EntityIterator& iter)
+                                              Interface_EntityIterator&                    iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();

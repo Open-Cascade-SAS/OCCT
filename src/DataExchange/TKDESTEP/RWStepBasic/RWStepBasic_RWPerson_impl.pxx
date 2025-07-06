@@ -159,8 +159,7 @@ void RWStepBasic_RWPerson::ReadStep(const Handle(StepData_StepReaderData)& data,
             aSuffixTitles);
 }
 
-void RWStepBasic_RWPerson::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepBasic_Person)& ent)
+void RWStepBasic_RWPerson::WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_Person)& ent)
 {
 
   // --- own field : id ---

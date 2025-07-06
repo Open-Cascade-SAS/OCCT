@@ -20,11 +20,10 @@
 
 RWHeaderSection_RWFileDescription::RWHeaderSection_RWFileDescription() {}
 
-void RWHeaderSection_RWFileDescription::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(HeaderSection_FileDescription)& ent)
+void RWHeaderSection_RWFileDescription::ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                                 const Standard_Integer                       num,
+                                                 Handle(Interface_Check)&                     ach,
+                                                 const Handle(HeaderSection_FileDescription)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -67,9 +66,8 @@ void RWHeaderSection_RWFileDescription::ReadStep(
     ent->Init(aDescription, aImplementationLevel);
 }
 
-void RWHeaderSection_RWFileDescription::WriteStep(
-  StepData_StepWriter&                         SW,
-  const Handle(HeaderSection_FileDescription)& ent)
+void RWHeaderSection_RWFileDescription::WriteStep(StepData_StepWriter&                         SW,
+                                                  const Handle(HeaderSection_FileDescription)& ent)
 {
 
   // --- own field : description ---

@@ -43,12 +43,10 @@ public:
                               const Handle(StepRepr_Extension)&      ent);
 
   //! Writes Extension
-  static inline void WriteStep(StepData_StepWriter&              SW,
-                               const Handle(StepRepr_Extension)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Extension)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepRepr_Extension)& ent,
-                           Interface_EntityIterator&         iter);
+  static inline void Share(const Handle(StepRepr_Extension)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

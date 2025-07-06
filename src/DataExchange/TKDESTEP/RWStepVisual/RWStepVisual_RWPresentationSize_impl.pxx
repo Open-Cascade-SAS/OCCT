@@ -49,9 +49,8 @@ void RWStepVisual_RWPresentationSize::ReadStep(const Handle(StepData_StepReaderD
   ent->Init(aUnit, aSize);
 }
 
-void RWStepVisual_RWPresentationSize::WriteStep(
-  StepData_StepWriter&                       SW,
-  const Handle(StepVisual_PresentationSize)& ent)
+void RWStepVisual_RWPresentationSize::WriteStep(StepData_StepWriter&                       SW,
+                                                const Handle(StepVisual_PresentationSize)& ent)
 {
 
   // --- own field : unit ---

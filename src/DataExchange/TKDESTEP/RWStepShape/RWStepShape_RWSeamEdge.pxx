@@ -43,12 +43,10 @@ public:
                               const Handle(StepShape_SeamEdge)&      ent);
 
   //! Writes SeamEdge
-  static inline void WriteStep(StepData_StepWriter&              SW,
-                               const Handle(StepShape_SeamEdge)& ent);
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepShape_SeamEdge)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepShape_SeamEdge)& ent,
-                           Interface_EntityIterator&         iter);
+  static inline void Share(const Handle(StepShape_SeamEdge)& ent, Interface_EntityIterator& iter);
 
 protected:
 private:

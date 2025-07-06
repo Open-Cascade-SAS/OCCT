@@ -113,8 +113,7 @@ void RWStepFEA_RWFeaModel::ReadStep(const Handle(StepData_StepReaderData)& data,
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaModel::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepFEA_FeaModel)& ent)
+void RWStepFEA_RWFeaModel::WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_FeaModel)& ent)
 {
 
   // Inherited fields of Representation
