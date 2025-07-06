@@ -56,3 +56,18 @@ win64
 /build*
 /install*
 /tools/build*
+
+# Coding agents instructions (keep .github/copilot-instructions.md)
+/.CLAUDE.md
+/.AGENT.md
+/.GEMINI.md
+/.COPILOT.md
+/.CURSOR.md
+/.CODEIUM.md
+/.TABNINE.md
+/.CHATGPT.md
+/.BARD.md
+/.PERPLEXITY.md
+/.CONTINUE.md
+/.AIDER.md
+/.WINDSURF.md
