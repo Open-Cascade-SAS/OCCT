@@ -7,10 +7,10 @@ runs:
     - name: Download vcpkg cache
       uses: ./.github/actions/download-vcpkg-cache
       with:
-        artifact-name: install-linux-gcc-x64-cache
+        artifact-name: install-linux-clang-x64-cache
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y cmake gcc g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake clang g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Setup Xvfb and Mesa
@@ -25,7 +25,7 @@ runs:
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
-        name: install-linux-gcc-x64
+        name: install-linux-clang-x64
         path: install
 
     - name: Set execute permissions on DRAWEXE
@@ -48,7 +48,7 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
           gh run download ${{ env.latest_run_id }} -n "results-$platform" -D "install/bin/results/master/"
         done
@@ -58,7 +58,7 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
           gh run download -n "results-$platform" -D "install/bin/results/current/"
         done
@@ -69,7 +69,7 @@ runs:
         echo "Comparing test results..."
         cd install/bin
         source env.sh
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" &
         done
         wait
