@@ -7,10 +7,10 @@ runs:
     - name: Download vcpkg cache
       uses: ./.github/actions/download-vcpkg-cache
       with:
-        artifact-name: install-linux-gcc-x64-cache
+        artifact-name: install-linux-clang-x64-cache
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y cmake gcc g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake clang g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Setup Xvfb and Mesa
@@ -25,7 +25,7 @@ runs:
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
-        name: install-linux-gcc-x64
+        name: install-linux-clang-x64
         path: install
 
     - name: Set execute permissions on DRAWEXE
