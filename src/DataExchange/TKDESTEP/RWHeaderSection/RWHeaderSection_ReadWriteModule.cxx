@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWHeaderSection_ReadWriteModule.pxx"
+#include <RWHeaderSection_ReadWriteModule.hxx>
 
 #include <HeaderSection_FileDescription.hxx>
 #include <HeaderSection_FileName.hxx>
@@ -50,7 +50,7 @@ RWHeaderSection_ReadWriteModule::RWHeaderSection_ReadWriteModule()
 
 // --- Case Recognition ---
 
-Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(const TCollection_AsciiString& key)
+Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(const TCollection_AsciiString& key) const
 {
   if (key.IsEqual(Reco_FileName))
     return 1;
@@ -64,7 +64,7 @@ Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(const TCollection_Asc
 // --- External Mapping Case Recognition ---
 #ifdef OCCT_DEBUG
 Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(
-  const TColStd_SequenceOfAsciiString& types)
+  const TColStd_SequenceOfAsciiString& types) const
 {
   Standard_Integer NbComp = types.Length();
   if (NbComp < 2)
@@ -75,7 +75,7 @@ Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(
 }
 #else
 Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(
-  const TColStd_SequenceOfAsciiString&)
+  const TColStd_SequenceOfAsciiString&) const
 {
   return 0;
 }
@@ -83,13 +83,13 @@ Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep(
 
 // --- External Mapping Recognition ---
 
-Standard_Boolean RWHeaderSection_ReadWriteModule::IsComplex(const Standard_Integer /*CN*/)
+Standard_Boolean RWHeaderSection_ReadWriteModule::IsComplex(const Standard_Integer /*CN*/) const
 {
   return Standard_False;
 }
 
 const TCollection_AsciiString& RWHeaderSection_ReadWriteModule::StepType(
-  const Standard_Integer CN)
+  const Standard_Integer CN) const
 {
   switch (CN)
   {
@@ -110,7 +110,7 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const Standard_Integer           
                                                const Handle(StepData_StepReaderData)& data,
                                                const Standard_Integer                 num,
                                                Handle(Interface_Check)&               ach,
-                                               const Handle(Standard_Transient)&      ent)
+                                               const Handle(Standard_Transient)&      ent) const
 {
   if (CN == 0)
     return;
@@ -166,7 +166,7 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const Standard_Integer           
 
 void RWHeaderSection_ReadWriteModule::WriteStep(const Standard_Integer            CN,
                                                 StepData_StepWriter&              SW,
-                                                const Handle(Standard_Transient)& ent)
+                                                const Handle(Standard_Transient)& ent) const
 {
   if (CN == 0)
     return;

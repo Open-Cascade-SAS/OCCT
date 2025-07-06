@@ -39,31 +39,31 @@ class RWHeaderSection_GeneralModule : public StepData_GeneralModule
 
 public:
   //! Creates a GeneralModule
-  static inline RWHeaderSection_GeneralModule();
+  Standard_EXPORT RWHeaderSection_GeneralModule();
 
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, according to a Case Number <CN> (provided by HeaderSection
   //! Protocol).
-  static inline void FillSharedCase(const Standard_Integer            CN,
-                                    const Handle(Standard_Transient)& ent,
-                                    Interface_EntityIterator&         iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillSharedCase(const Standard_Integer            CN,
+                                      const Handle(Standard_Transient)& ent,
+                                      Interface_EntityIterator& iter) const Standard_OVERRIDE;
 
   //! Specific Checking of an Entity <ent>
-  static inline void CheckCase(const Standard_Integer            CN,
-                               const Handle(Standard_Transient)& ent,
-                               const Interface_ShareTool&        shares,
-                               Handle(Interface_Check)&          ach) const Standard_OVERRIDE;
+  Standard_EXPORT void CheckCase(const Standard_Integer            CN,
+                                 const Handle(Standard_Transient)& ent,
+                                 const Interface_ShareTool&        shares,
+                                 Handle(Interface_Check)&          ach) const Standard_OVERRIDE;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! Use method Transferred from CopyTool to work
-  static inline void CopyCase(const Standard_Integer            CN,
-                              const Handle(Standard_Transient)& entfrom,
-                              const Handle(Standard_Transient)& entto,
-                              Interface_CopyTool&               TC) const Standard_OVERRIDE;
+  Standard_EXPORT void CopyCase(const Standard_Integer            CN,
+                                const Handle(Standard_Transient)& entfrom,
+                                const Handle(Standard_Transient)& entto,
+                                Interface_CopyTool&               TC) const Standard_OVERRIDE;
 
-  static inline Standard_Boolean NewVoid(const Standard_Integer      CN,
-                                         Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean NewVoid(const Standard_Integer      CN,
+                                           Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule, StepData_GeneralModule)
 
@@ -71,5 +71,4 @@ protected:
 private:
 };
 
-#include "RWHeaderSection_GeneralModule_impl.pxx"
 #endif // _RWHeaderSection_GeneralModule_HeaderFile

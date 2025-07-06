@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWHeaderSection_GeneralModule.pxx"
+#include <RWHeaderSection_GeneralModule.hxx>
 
 #include <HeaderSection.hxx>
 #include <HeaderSection_FileDescription.hxx>
@@ -39,7 +39,7 @@ RWHeaderSection_GeneralModule::RWHeaderSection_GeneralModule()
 
 void RWHeaderSection_GeneralModule::FillSharedCase(const Standard_Integer            CN,
                                                    const Handle(Standard_Transient)& ent,
-                                                   Interface_EntityIterator&         iter)
+                                                   Interface_EntityIterator&         iter) const
 {
   if (CN != 4)
     return;
@@ -51,14 +51,14 @@ void RWHeaderSection_GeneralModule::FillSharedCase(const Standard_Integer       
 void RWHeaderSection_GeneralModule::CheckCase(const Standard_Integer,
                                               const Handle(Standard_Transient)&,
                                               const Interface_ShareTool&,
-                                              Handle(Interface_Check)&)
+                                              Handle(Interface_Check)&) const
 {
 }
 
 void RWHeaderSection_GeneralModule::CopyCase(const Standard_Integer            CN,
                                              const Handle(Standard_Transient)& entfrom,
                                              const Handle(Standard_Transient)& entto,
-                                             Interface_CopyTool&               TC)
+                                             Interface_CopyTool&               TC) const
 {
   //   ajout manuel
   switch (CN)
@@ -128,7 +128,7 @@ void RWHeaderSection_GeneralModule::CopyCase(const Standard_Integer            C
 // --- Construction of empty class ---
 
 Standard_Boolean RWHeaderSection_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                        Handle(Standard_Transient)& ent)
+                                                        Handle(Standard_Transient)& ent) const
 {
   if (CN == 0)
     return Standard_False;
