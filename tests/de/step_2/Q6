@@ -31,7 +31,8 @@ proc de_before_script {TheFileName} {
     # turn off the adding of natural bound
     dict set anOptions "FromSTEP.FixShape.FixAddNaturalBoundMode" "0"
     # path to new resource file
-    set new_resource_path "${imagedir}/$TheFileName"
+    global imagedir
+    set new_resource_path "${imagedir}[file rootname $TheFileName]"
     # creating resource file
     create_resource_file "${new_resource_path}/STEP" $anOptions
     # changing the path to the resource file
