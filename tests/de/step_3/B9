@@ -37,7 +37,7 @@ proc de_before_script {TheFileName} {
     # activation of ignoring the adding of natural bound
     dict set anOptions "FromSTEP.FixShape.FixAddNaturalBoundMode" "0"
     # path to new resource file
-    global imagedir
+    global imagedir new_resource_path
     set new_resource_path "${imagedir}[file rootname $TheFileName]"
     # creating resource file
     create_resource_file "${new_resource_path}/STEP" $anOptions
@@ -53,6 +53,7 @@ proc de_after_script {old_resource_path} {
    set ::env(CSF_STEPDefaults) ${old_resource_path}
    puts "Restore path to STEP resource file: \"${old_resource_path}\""
    # Remove the newly created resource directory and its contents
+   global new_resource_path
    if {[info exists new_resource_path] && [file exists ${new_resource_path}]} {
        file delete -force ${new_resource_path}
        puts "Deleted temporary directory: \"${new_resource_path}\""
