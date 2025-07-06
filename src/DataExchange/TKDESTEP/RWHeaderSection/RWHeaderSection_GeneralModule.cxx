@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include "RWHeaderSection_GeneralModule.gxx"
+
 #include <HeaderSection.hxx>
 #include <HeaderSection_FileDescription.hxx>
 #include <HeaderSection_FileName.hxx>
@@ -23,7 +25,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWHeaderSection_GeneralModule.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_UndefinedEntity.hxx>
