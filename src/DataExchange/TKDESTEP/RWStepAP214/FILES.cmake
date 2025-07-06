@@ -2,12 +2,12 @@
 set(OCCT_RWStepAP214_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepAP214_FILES
-  RWStepAP214_impl.pxx
-  RWStepAP214.pxx
-  RWStepAP214_GeneralModule_impl.pxx
-  RWStepAP214_GeneralModule.pxx
-  RWStepAP214_ReadWriteModule_impl.pxx
-  RWStepAP214_ReadWriteModule.pxx
+  RWStepAP214.cxx
+  RWStepAP214.hxx
+  RWStepAP214_GeneralModule.cxx
+  RWStepAP214_GeneralModule.hxx
+  RWStepAP214_ReadWriteModule.cxx
+  RWStepAP214_ReadWriteModule.hxx
   RWStepAP214_RWAppliedApprovalAssignment_impl.pxx
   RWStepAP214_RWAppliedApprovalAssignment.pxx
   RWStepAP214_RWAppliedDateAndTimeAssignment_impl.pxx
