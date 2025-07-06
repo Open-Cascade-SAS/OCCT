@@ -35,6 +35,21 @@ jobs:
       with:
         base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
 
+  ascii-check:
+    name: Check for non-ASCII characters
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+      with:
+        fetch-depth: 0
+
+    - name: Check for non-ASCII characters
+      uses: ./.github/actions/ascii-check
+      with:
+        base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
+
   documentation:
     name: Build Documentation
     runs-on: windows-2025
