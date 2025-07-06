@@ -1,6 +1,6 @@
-// Created on: 1994-06-16
+// Created on: 1995-12-07
 // Created by: EXPRESS->CDL V0.2 Translator
-// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1995-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _RWHeaderSection_GeneralModule_HeaderFile
-#define _RWHeaderSection_GeneralModule_HeaderFile
+#ifndef _RWStepAP214_GeneralModule_HeaderFile
+#define _RWStepAP214_GeneralModule_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -27,22 +27,23 @@ class Interface_EntityIterator;
 class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
+class TCollection_HAsciiString;
 
-class RWHeaderSection_GeneralModule;
-DEFINE_STANDARD_HANDLE(RWHeaderSection_GeneralModule, StepData_GeneralModule)
+class RWStepAP214_GeneralModule;
+DEFINE_STANDARD_HANDLE(RWStepAP214_GeneralModule, StepData_GeneralModule)
 
-//! Defines General Services for HeaderSection Entities
+//! Defines General Services for StepAP214 Entities
 //! (Share,Check,Copy; Trace already inherited)
-//! Depends (for case numbers) of Protocol from HeaderSection
-class RWHeaderSection_GeneralModule : public StepData_GeneralModule
+//! Depends (for case numbers) of Protocol from StepAP214
+class RWStepAP214_GeneralModule : public StepData_GeneralModule
 {
 
 public:
   //! Creates a GeneralModule
-  Standard_EXPORT RWHeaderSection_GeneralModule();
+  Standard_EXPORT RWStepAP214_GeneralModule();
 
   //! Specific filling of the list of Entities shared by an Entity
-  //! <ent>, according to a Case Number <CN> (provided by HeaderSection
+  //! <ent>, according to a Case Number <CN> (provided by StepAP214
   //! Protocol).
   Standard_EXPORT void FillSharedCase(const Standard_Integer            CN,
                                       const Handle(Standard_Transient)& ent,
@@ -65,10 +66,21 @@ public:
   Standard_EXPORT Standard_Boolean NewVoid(const Standard_Integer      CN,
                                            Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule, StepData_GeneralModule)
+  Standard_EXPORT virtual Standard_Integer CategoryNumber(const Standard_Integer            CN,
+                                                          const Handle(Standard_Transient)& ent,
+                                                          const Interface_ShareTool& shares) const
+    Standard_OVERRIDE;
+
+  //! Returns the name of a STEP Entity according to its type
+  Standard_EXPORT virtual Handle(TCollection_HAsciiString) Name(
+    const Standard_Integer            CN,
+    const Handle(Standard_Transient)& ent,
+    const Interface_ShareTool&        shares) const Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 
 protected:
 private:
 };
 
-#endif // _RWHeaderSection_GeneralModule_HeaderFile
+#endif // _RWStepAP214_GeneralModule_HeaderFile

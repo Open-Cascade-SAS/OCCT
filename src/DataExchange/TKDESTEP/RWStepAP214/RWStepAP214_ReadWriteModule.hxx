@@ -36,38 +36,38 @@ class RWStepAP214_ReadWriteModule : public StepData_ReadWriteModule
 {
 
 public:
-  Standard_HIDDEN RWStepAP214_ReadWriteModule();
+  Standard_EXPORT RWStepAP214_ReadWriteModule();
 
   //! associates a positive Case Number to each type of StepAP214 entity,
   //! given as a String defined in the EXPRESS form
-  Standard_HIDDEN Standard_Integer
+  Standard_EXPORT Standard_Integer
     CaseStep(const TCollection_AsciiString& atype) const Standard_OVERRIDE;
 
   //! associates a positive Case Number to each type of StepAP214 Complex entity,
   //! given as a String defined in the EXPRESS form
-  Standard_HIDDEN virtual Standard_Integer CaseStep(
+  Standard_EXPORT virtual Standard_Integer CaseStep(
     const TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
 
   //! returns True if the Case Number corresponds to a Complex Type
-  Standard_HIDDEN virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
+  Standard_EXPORT virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
     Standard_OVERRIDE;
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
-  Standard_HIDDEN const TCollection_AsciiString& StepType(const Standard_Integer CN) const
+  Standard_EXPORT const TCollection_AsciiString& StepType(const Standard_Integer CN) const
     Standard_OVERRIDE;
 
-  Standard_HIDDEN virtual Standard_Boolean ComplexType(const Standard_Integer         CN,
+  Standard_EXPORT virtual Standard_Boolean ComplexType(const Standard_Integer         CN,
                                                        TColStd_SequenceOfAsciiString& types) const
     Standard_OVERRIDE;
 
-  Standard_HIDDEN void ReadStep(const Standard_Integer                 CN,
+  Standard_EXPORT void ReadStep(const Standard_Integer                 CN,
                                 const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(Standard_Transient)&      ent) const Standard_OVERRIDE;
 
-  Standard_HIDDEN void WriteStep(const Standard_Integer            CN,
+  Standard_EXPORT void WriteStep(const Standard_Integer            CN,
                                  StepData_StepWriter&              SW,
                                  const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 

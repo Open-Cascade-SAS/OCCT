@@ -27,7 +27,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! enforced the initialisation of the  libraries
-  Standard_HIDDEN static void Init();
+  Standard_EXPORT static void Init();
 };
 
 #endif // _RWStepAP214_HeaderFile

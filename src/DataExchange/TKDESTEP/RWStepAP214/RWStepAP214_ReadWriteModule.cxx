@@ -16,10 +16,11 @@
 // :j4 gka 15.03.99 S4134
 // sln 03.10.2001. BUC61003. Correction of alphabetic order of complex entity's items
 
+#include <RWStepAP214_ReadWriteModule.hxx>
+
 #include <Interface_Check.hxx>
 #include <Interface_ParamType.hxx>
 #include <Interface_ReaderLib.hxx>
-#include "RWStepAP214_ReadWriteModule.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_StepReaderData.hxx>

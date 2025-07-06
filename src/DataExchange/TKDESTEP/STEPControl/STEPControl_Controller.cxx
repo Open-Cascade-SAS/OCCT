@@ -24,7 +24,7 @@
 #include <Interface_Static.hxx>
 #include <MoniTool_Macros.hxx>
 #include <RWHeaderSection.hxx>
-#include "../RWStepAP214/RWStepAP214.pxx"
+#include <RWStepAP214.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Version.hxx>
 #include <STEPControl_ActorRead.hxx>
