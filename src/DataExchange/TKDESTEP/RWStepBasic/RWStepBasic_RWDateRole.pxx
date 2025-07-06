@@ -33,7 +33,7 @@ class RWStepBasic_RWDateRole
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWDateRole();
+  inline RWStepBasic_RWDateRole();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

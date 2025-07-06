@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWParametricSurface3dElementCoordinateSystem();
+  inline RWStepFEA_RWParametricSurface3dElementCoordinateSystem();
 
   //! Reads ParametricSurface3dElementCoordinateSystem
   static inline void ReadStep(

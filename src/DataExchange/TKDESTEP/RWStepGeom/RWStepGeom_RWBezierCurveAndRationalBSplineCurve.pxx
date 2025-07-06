@@ -34,7 +34,7 @@ class RWStepGeom_RWBezierCurveAndRationalBSplineCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBezierCurveAndRationalBSplineCurve();
+  inline RWStepGeom_RWBezierCurveAndRationalBSplineCurve();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
                               const Standard_Integer                                     num,

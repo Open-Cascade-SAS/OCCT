@@ -33,7 +33,7 @@ class RWStepShape_RWRevolvedFaceSolid
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWRevolvedFaceSolid();
+  inline RWStepShape_RWRevolvedFaceSolid();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,
                               const Standard_Integer                     num,

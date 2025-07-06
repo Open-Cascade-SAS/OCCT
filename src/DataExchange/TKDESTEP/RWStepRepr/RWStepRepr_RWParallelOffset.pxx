@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWParallelOffset();
+  inline RWStepRepr_RWParallelOffset();
 
   //! Reads ParallelOffset
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,

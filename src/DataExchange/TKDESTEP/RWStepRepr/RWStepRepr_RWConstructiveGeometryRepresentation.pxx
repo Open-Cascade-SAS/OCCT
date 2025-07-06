@@ -34,7 +34,7 @@ class RWStepRepr_RWConstructiveGeometryRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWConstructiveGeometryRepresentation();
+  inline RWStepRepr_RWConstructiveGeometryRepresentation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
                               const Standard_Integer                                     num,

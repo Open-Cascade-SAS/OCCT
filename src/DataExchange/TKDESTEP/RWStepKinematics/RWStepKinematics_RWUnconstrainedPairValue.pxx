@@ -33,7 +33,7 @@ class RWStepKinematics_RWUnconstrainedPairValue
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWUnconstrainedPairValue();
+  inline RWStepKinematics_RWUnconstrainedPairValue();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               theData,
                               const Standard_Integer                               theNum,

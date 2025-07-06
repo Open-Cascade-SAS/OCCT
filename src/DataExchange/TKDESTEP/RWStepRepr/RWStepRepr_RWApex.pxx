@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWApex();
+  inline RWStepRepr_RWApex();
 
   //! Reads Apex
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,

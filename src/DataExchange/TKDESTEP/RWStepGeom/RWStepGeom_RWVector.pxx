@@ -36,7 +36,7 @@ class RWStepGeom_RWVector
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWVector();
+  inline RWStepGeom_RWVector();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

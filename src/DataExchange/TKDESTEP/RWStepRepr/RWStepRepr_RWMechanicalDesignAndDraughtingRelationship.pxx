@@ -31,7 +31,7 @@ class RWStepRepr_RWMechanicalDesignAndDraughtingRelationship
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWMechanicalDesignAndDraughtingRelationship();
+  inline RWStepRepr_RWMechanicalDesignAndDraughtingRelationship();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                            theData,

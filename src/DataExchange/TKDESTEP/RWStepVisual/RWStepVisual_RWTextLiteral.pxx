@@ -34,7 +34,7 @@ class RWStepVisual_RWTextLiteral
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTextLiteral();
+  inline RWStepVisual_RWTextLiteral();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

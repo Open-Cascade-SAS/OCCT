@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation();
+  inline RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation();
 
   //! Reads StructuralResponsePropertyDefinitionRepresentation
   static inline void ReadStep(

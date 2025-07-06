@@ -34,7 +34,7 @@ class RWStepRepr_RWShapeRepresentationRelationshipWithTransformation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWShapeRepresentationRelationshipWithTransformation();
+  inline RWStepRepr_RWShapeRepresentationRelationshipWithTransformation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                    data,

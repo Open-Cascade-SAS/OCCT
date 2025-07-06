@@ -33,7 +33,7 @@ class RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem();
+  inline RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                             data,

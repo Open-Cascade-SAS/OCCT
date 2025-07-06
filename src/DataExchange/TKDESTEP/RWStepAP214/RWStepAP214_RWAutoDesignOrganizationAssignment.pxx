@@ -34,7 +34,7 @@ class RWStepAP214_RWAutoDesignOrganizationAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAutoDesignOrganizationAssignment();
+  inline RWStepAP214_RWAutoDesignOrganizationAssignment();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
                               const Standard_Integer                                    num,

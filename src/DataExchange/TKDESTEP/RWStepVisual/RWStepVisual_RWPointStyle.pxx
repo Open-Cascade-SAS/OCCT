@@ -34,7 +34,7 @@ class RWStepVisual_RWPointStyle
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWPointStyle();
+  inline RWStepVisual_RWPointStyle();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

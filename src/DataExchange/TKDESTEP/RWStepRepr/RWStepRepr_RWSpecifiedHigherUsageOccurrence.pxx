@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWSpecifiedHigherUsageOccurrence();
+  inline RWStepRepr_RWSpecifiedHigherUsageOccurrence();
 
   //! Reads SpecifiedHigherUsageOccurrence
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,

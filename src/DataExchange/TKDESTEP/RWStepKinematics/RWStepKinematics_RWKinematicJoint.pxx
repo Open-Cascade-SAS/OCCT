@@ -33,7 +33,7 @@ class RWStepKinematics_RWKinematicJoint
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWKinematicJoint();
+  inline RWStepKinematics_RWKinematicJoint();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       theData,
                               const Standard_Integer                       theNum,

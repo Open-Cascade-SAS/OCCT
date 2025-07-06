@@ -34,7 +34,7 @@ class RWStepRepr_RWRepresentationRelationship
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWRepresentationRelationship();
+  inline RWStepRepr_RWRepresentationRelationship();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,

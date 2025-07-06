@@ -34,7 +34,7 @@ class RWStepVisual_RWCameraModelD3
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCameraModelD3();
+  inline RWStepVisual_RWCameraModelD3();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
                               const Standard_Integer                  num,

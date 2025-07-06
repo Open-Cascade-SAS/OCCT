@@ -34,7 +34,7 @@ class RWStepAP214_RWAutoDesignSecurityClassificationAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAutoDesignSecurityClassificationAssignment();
+  inline RWStepAP214_RWAutoDesignSecurityClassificationAssignment();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                              data,

@@ -33,7 +33,7 @@ class RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation();
+  inline RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                    data,

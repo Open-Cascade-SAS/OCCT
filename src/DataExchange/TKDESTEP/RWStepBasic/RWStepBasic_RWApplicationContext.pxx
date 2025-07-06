@@ -33,7 +33,7 @@ class RWStepBasic_RWApplicationContext
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWApplicationContext();
+  inline RWStepBasic_RWApplicationContext();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                               const Standard_Integer                      num,

@@ -33,7 +33,7 @@ class RWStepGeom_RWGeometricRepresentationContext
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWGeometricRepresentationContext();
+  inline RWStepGeom_RWGeometricRepresentationContext();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
                               const Standard_Integer                                 num,

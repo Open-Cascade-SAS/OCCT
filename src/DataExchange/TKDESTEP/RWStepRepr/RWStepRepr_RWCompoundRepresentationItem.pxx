@@ -34,7 +34,7 @@ class RWStepRepr_RWCompoundRepresentationItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWCompoundRepresentationItem();
+  inline RWStepRepr_RWCompoundRepresentationItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,

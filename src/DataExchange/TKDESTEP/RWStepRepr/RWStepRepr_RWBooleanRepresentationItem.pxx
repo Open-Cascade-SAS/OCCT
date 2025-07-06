@@ -30,7 +30,7 @@ class RWStepRepr_RWBooleanRepresentationItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWBooleanRepresentationItem();
+  inline RWStepRepr_RWBooleanRepresentationItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            theData,
                               const Standard_Integer                            theNum,

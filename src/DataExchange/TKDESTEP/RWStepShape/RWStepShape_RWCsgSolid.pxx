@@ -34,7 +34,7 @@ class RWStepShape_RWCsgSolid
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWCsgSolid();
+  inline RWStepShape_RWCsgSolid();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

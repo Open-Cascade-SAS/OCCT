@@ -36,7 +36,7 @@ class RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve();
+  inline RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                               data,

@@ -33,7 +33,7 @@ class RWStepBasic_RWAddress
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWAddress();
+  inline RWStepBasic_RWAddress();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

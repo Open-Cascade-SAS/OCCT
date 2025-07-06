@@ -34,7 +34,7 @@ class RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation();
+  inline RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                  data,

@@ -34,7 +34,7 @@ class RWStepShape_RWHalfSpaceSolid
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWHalfSpaceSolid();
+  inline RWStepShape_RWHalfSpaceSolid();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
                               const Standard_Integer                  num,

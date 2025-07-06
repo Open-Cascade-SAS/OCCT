@@ -34,7 +34,7 @@ class RWStepVisual_RWCompositeTextWithExtent
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCompositeTextWithExtent();
+  inline RWStepVisual_RWCompositeTextWithExtent();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                               const Standard_Integer                            num,

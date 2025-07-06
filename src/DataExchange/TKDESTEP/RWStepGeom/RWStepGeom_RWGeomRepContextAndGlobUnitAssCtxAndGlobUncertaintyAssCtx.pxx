@@ -35,7 +35,7 @@ class RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx();
+  inline RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                          data,

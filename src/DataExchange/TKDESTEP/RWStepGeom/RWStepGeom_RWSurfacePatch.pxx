@@ -34,7 +34,7 @@ class RWStepGeom_RWSurfacePatch
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWSurfacePatch();
+  inline RWStepGeom_RWSurfacePatch();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

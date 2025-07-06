@@ -33,7 +33,7 @@ class RWStepVisual_RWCurveStyleFontPattern
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCurveStyleFontPattern();
+  inline RWStepVisual_RWCurveStyleFontPattern();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          data,
                               const Standard_Integer                          num,

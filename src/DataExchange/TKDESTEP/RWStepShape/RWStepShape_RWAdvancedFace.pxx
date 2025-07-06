@@ -34,7 +34,7 @@ class RWStepShape_RWAdvancedFace
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWAdvancedFace();
+  inline RWStepShape_RWAdvancedFace();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

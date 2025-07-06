@@ -33,7 +33,7 @@ class RWStepBasic_RWWeekOfYearAndDayDate
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWWeekOfYearAndDayDate();
+  inline RWStepBasic_RWWeekOfYearAndDayDate();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
                               const Standard_Integer                        num,

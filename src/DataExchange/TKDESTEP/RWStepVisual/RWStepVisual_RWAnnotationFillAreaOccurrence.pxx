@@ -33,7 +33,7 @@ class RWStepVisual_RWAnnotationFillAreaOccurrence
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWAnnotationFillAreaOccurrence();
+  inline RWStepVisual_RWAnnotationFillAreaOccurrence();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
                               const Standard_Integer                                 num,

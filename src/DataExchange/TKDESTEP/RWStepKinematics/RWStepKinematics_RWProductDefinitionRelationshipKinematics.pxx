@@ -33,7 +33,7 @@ class RWStepKinematics_RWProductDefinitionRelationshipKinematics
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWProductDefinitionRelationshipKinematics();
+  inline RWStepKinematics_RWProductDefinitionRelationshipKinematics();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                theData,

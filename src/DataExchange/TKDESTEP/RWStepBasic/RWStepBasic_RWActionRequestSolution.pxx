@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWActionRequestSolution();
+  inline RWStepBasic_RWActionRequestSolution();
 
   //! Reads ActionRequestSolution
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,

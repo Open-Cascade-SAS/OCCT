@@ -34,7 +34,7 @@ class RWStepBasic_RWConversionBasedUnitAndVolumeUnit
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWConversionBasedUnitAndVolumeUnit();
+  inline RWStepBasic_RWConversionBasedUnitAndVolumeUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
                               const Standard_Integer                                    num,

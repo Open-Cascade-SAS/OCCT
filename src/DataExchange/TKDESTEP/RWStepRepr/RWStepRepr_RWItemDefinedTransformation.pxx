@@ -34,7 +34,7 @@ class RWStepRepr_RWItemDefinedTransformation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWItemDefinedTransformation();
+  inline RWStepRepr_RWItemDefinedTransformation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                               const Standard_Integer                            num,

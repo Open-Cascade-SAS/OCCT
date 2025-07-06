@@ -34,7 +34,7 @@ class RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve();
+  inline RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                           data,
                               const Standard_Integer                                           num,

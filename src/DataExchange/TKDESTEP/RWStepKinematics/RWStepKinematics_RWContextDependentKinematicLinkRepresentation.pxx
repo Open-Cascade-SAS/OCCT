@@ -33,7 +33,7 @@ class RWStepKinematics_RWContextDependentKinematicLinkRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWContextDependentKinematicLinkRepresentation();
+  inline RWStepKinematics_RWContextDependentKinematicLinkRepresentation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                    theData,

@@ -33,7 +33,7 @@ class RWStepKinematics_RWPrismaticPairValue
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWPrismaticPairValue();
+  inline RWStepKinematics_RWPrismaticPairValue();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
                               const Standard_Integer                           theNum,

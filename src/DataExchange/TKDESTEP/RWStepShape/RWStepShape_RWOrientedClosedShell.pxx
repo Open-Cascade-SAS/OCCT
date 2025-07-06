@@ -34,7 +34,7 @@ class RWStepShape_RWOrientedClosedShell
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWOrientedClosedShell();
+  inline RWStepShape_RWOrientedClosedShell();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,
                               const Standard_Integer                       num,

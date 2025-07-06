@@ -33,7 +33,7 @@ class RWStepBasic_RWSiUnitAndRatioUnit
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWSiUnitAndRatioUnit();
+  inline RWStepBasic_RWSiUnitAndRatioUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                               const Standard_Integer                      num,

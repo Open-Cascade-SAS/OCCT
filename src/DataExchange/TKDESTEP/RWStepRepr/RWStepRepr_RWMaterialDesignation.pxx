@@ -34,7 +34,7 @@ class RWStepRepr_RWMaterialDesignation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWMaterialDesignation();
+  inline RWStepRepr_RWMaterialDesignation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                               const Standard_Integer                      num,

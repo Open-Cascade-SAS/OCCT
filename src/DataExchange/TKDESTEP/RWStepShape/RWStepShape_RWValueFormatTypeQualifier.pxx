@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepShape_RWValueFormatTypeQualifier();
+  inline RWStepShape_RWValueFormatTypeQualifier();
 
   //! Reads ValueFormatTypeQualifier
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,

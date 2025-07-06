@@ -34,7 +34,7 @@ class RWStepGeom_RWCartesianTransformationOperator
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWCartesianTransformationOperator();
+  inline RWStepGeom_RWCartesianTransformationOperator();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,
                               const Standard_Integer                                  num,

@@ -33,7 +33,7 @@ class RWStepVisual_RWCameraModelD3MultiClippingUnion
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCameraModelD3MultiClippingUnion();
+  inline RWStepVisual_RWCameraModelD3MultiClippingUnion();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
                               const Standard_Integer                                    num,

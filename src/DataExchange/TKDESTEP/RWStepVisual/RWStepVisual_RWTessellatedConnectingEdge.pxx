@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedConnectingEdge
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedConnectingEdge();
+  inline RWStepVisual_RWTessellatedConnectingEdge();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              theData,
                               const Standard_Integer                              theNum,

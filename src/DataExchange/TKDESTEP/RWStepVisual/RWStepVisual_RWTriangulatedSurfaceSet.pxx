@@ -31,7 +31,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! default constructor
-  static inline RWStepVisual_RWTriangulatedSurfaceSet();
+  inline RWStepVisual_RWTriangulatedSurfaceSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
                               const Standard_Integer                           theNum,

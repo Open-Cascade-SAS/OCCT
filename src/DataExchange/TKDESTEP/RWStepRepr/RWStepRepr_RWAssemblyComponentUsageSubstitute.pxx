@@ -34,7 +34,7 @@ class RWStepRepr_RWAssemblyComponentUsageSubstitute
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWAssemblyComponentUsageSubstitute();
+  inline RWStepRepr_RWAssemblyComponentUsageSubstitute();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                   data,
                               const Standard_Integer                                   num,

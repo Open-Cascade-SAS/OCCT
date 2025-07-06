@@ -34,7 +34,7 @@ class RWStepVisual_RWTextStyle
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTextStyle();
+  inline RWStepVisual_RWTextStyle();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

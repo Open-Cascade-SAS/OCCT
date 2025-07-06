@@ -34,7 +34,7 @@ class RWStepShape_RWFacetedBrep
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWFacetedBrep();
+  inline RWStepShape_RWFacetedBrep();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

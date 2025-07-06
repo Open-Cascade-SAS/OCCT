@@ -33,7 +33,7 @@ class RWStepBasic_RWApprovalStatus
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWApprovalStatus();
+  inline RWStepBasic_RWApprovalStatus();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
                               const Standard_Integer                  num,

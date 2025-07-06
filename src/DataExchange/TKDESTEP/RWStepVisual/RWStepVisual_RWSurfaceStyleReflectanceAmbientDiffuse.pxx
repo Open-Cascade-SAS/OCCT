@@ -30,7 +30,7 @@ class RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse();
+  inline RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          theData,

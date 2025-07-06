@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepAP203_RWCcDesignSecurityClassification();
+  inline RWStepAP203_RWCcDesignSecurityClassification();
 
   //! Reads CcDesignSecurityClassification
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,

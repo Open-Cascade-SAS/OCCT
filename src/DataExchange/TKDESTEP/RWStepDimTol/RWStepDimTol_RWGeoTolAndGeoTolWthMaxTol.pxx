@@ -33,7 +33,7 @@ class RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol();
+  inline RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,

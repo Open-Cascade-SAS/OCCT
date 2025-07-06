@@ -34,7 +34,7 @@ class RWStepVisual_RWPresentationArea
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWPresentationArea();
+  inline RWStepVisual_RWPresentationArea();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,
                               const Standard_Integer                     num,

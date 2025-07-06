@@ -34,7 +34,7 @@ class RWStepGeom_RWSurfaceOfLinearExtrusion
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWSurfaceOfLinearExtrusion();
+  inline RWStepGeom_RWSurfaceOfLinearExtrusion();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           data,
                               const Standard_Integer                           num,

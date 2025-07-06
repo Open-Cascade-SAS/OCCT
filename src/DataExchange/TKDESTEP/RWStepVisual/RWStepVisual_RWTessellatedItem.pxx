@@ -32,7 +32,7 @@ class RWStepVisual_RWTessellatedItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedItem();
+  inline RWStepVisual_RWTessellatedItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,
                               const Standard_Integer                    num,

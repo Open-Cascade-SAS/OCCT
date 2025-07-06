@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWContract();
+  inline RWStepBasic_RWContract();
 
   //! Reads Contract
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,

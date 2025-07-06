@@ -34,7 +34,7 @@ class RWStepBasic_RWPersonalAddress
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWPersonalAddress();
+  inline RWStepBasic_RWPersonalAddress();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
                               const Standard_Integer                   num,

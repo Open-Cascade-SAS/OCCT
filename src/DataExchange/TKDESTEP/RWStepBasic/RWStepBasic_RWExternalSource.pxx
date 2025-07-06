@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWExternalSource();
+  inline RWStepBasic_RWExternalSource();
 
   //! Reads ExternalSource
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,

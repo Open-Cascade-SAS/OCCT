@@ -34,7 +34,7 @@ class RWStepShape_RWTorus
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWTorus();
+  inline RWStepShape_RWTorus();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

@@ -33,7 +33,7 @@ class RWStepKinematics_RWKinematicPropertyMechanismRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWKinematicPropertyMechanismRepresentation();
+  inline RWStepKinematics_RWKinematicPropertyMechanismRepresentation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                 theData,

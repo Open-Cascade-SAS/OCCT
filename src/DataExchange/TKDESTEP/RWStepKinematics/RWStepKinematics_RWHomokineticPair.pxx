@@ -33,7 +33,7 @@ class RWStepKinematics_RWHomokineticPair
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWHomokineticPair();
+  inline RWStepKinematics_RWHomokineticPair();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        theData,
                               const Standard_Integer                        theNum,

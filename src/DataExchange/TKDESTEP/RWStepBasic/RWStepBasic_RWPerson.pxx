@@ -33,7 +33,7 @@ class RWStepBasic_RWPerson
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWPerson();
+  inline RWStepBasic_RWPerson();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

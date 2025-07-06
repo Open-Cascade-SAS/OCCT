@@ -33,7 +33,7 @@ class RWStepVisual_RWAnnotationOccurrence
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWAnnotationOccurrence();
+  inline RWStepVisual_RWAnnotationOccurrence();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                               const Standard_Integer                         num,

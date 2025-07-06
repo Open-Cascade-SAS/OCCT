@@ -34,7 +34,7 @@ class RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext();
+  inline RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                             data,

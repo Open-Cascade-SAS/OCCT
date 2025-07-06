@@ -33,7 +33,7 @@ class RWStepBasic_RWCoordinatedUniversalTimeOffset
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWCoordinatedUniversalTimeOffset();
+  inline RWStepBasic_RWCoordinatedUniversalTimeOffset();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,
                               const Standard_Integer                                  num,

@@ -32,7 +32,7 @@ class RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI();
+  inline RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                         data,
                               const Standard_Integer                                         num,

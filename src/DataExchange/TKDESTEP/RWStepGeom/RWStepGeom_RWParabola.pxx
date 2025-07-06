@@ -34,7 +34,7 @@ class RWStepGeom_RWParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWParabola();
+  inline RWStepGeom_RWParabola();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

@@ -33,7 +33,7 @@ class RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation();
+  inline RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                     data,

@@ -34,7 +34,7 @@ class RWStepGeom_RWBoundaryCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBoundaryCurve();
+  inline RWStepGeom_RWBoundaryCurve();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

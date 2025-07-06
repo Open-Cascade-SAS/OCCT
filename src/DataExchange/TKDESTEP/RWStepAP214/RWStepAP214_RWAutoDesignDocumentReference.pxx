@@ -34,7 +34,7 @@ class RWStepAP214_RWAutoDesignDocumentReference
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAutoDesignDocumentReference();
+  inline RWStepAP214_RWAutoDesignDocumentReference();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,
                               const Standard_Integer                               num,

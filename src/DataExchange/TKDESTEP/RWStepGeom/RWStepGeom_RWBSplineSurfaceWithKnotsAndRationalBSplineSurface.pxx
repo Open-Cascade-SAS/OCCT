@@ -36,7 +36,7 @@ class RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface();
+  inline RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                   data,

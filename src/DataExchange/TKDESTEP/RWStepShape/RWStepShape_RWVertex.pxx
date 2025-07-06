@@ -33,7 +33,7 @@ class RWStepShape_RWVertex
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWVertex();
+  inline RWStepShape_RWVertex();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

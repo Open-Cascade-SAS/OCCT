@@ -33,7 +33,7 @@ class RWStepRepr_RWCharacterizedRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWCharacterizedRepresentation();
+  inline RWStepRepr_RWCharacterizedRepresentation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,

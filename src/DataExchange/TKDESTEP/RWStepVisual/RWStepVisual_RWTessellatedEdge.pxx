@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedEdge
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedEdge();
+  inline RWStepVisual_RWTessellatedEdge();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    theData,
                               const Standard_Integer                    theNum,

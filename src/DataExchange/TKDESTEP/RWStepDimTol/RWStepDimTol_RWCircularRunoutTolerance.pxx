@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepDimTol_RWCircularRunoutTolerance();
+  inline RWStepDimTol_RWCircularRunoutTolerance();
 
   //! Reads CircularRunoutTolerance
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,

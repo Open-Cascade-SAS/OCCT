@@ -34,7 +34,7 @@ class RWStepAP242_RWItemIdentifiedRepresentationUsage
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP242_RWItemIdentifiedRepresentationUsage();
+  inline RWStepAP242_RWItemIdentifiedRepresentationUsage();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
                               const Standard_Integer                                     num,

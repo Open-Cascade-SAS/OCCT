@@ -33,7 +33,7 @@ class RWStepShape_RWTopologicalRepresentationItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWTopologicalRepresentationItem();
+  inline RWStepShape_RWTopologicalRepresentationItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
                               const Standard_Integer                                 num,

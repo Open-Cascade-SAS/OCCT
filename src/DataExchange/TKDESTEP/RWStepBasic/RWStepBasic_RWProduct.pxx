@@ -34,7 +34,7 @@ class RWStepBasic_RWProduct
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWProduct();
+  inline RWStepBasic_RWProduct();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

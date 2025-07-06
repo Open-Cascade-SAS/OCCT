@@ -34,7 +34,7 @@ class RWStepVisual_RWCubicBezierTriangulatedFace
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCubicBezierTriangulatedFace();
+  inline RWStepVisual_RWCubicBezierTriangulatedFace();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                theData,
                               const Standard_Integer                                theNum,

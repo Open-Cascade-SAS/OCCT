@@ -34,7 +34,7 @@ class RWStepAP214_RWAppliedDateAndTimeAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAppliedDateAndTimeAssignment();
+  inline RWStepAP214_RWAppliedDateAndTimeAssignment();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                data,
                               const Standard_Integer                                num,

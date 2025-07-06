@@ -34,7 +34,7 @@ class RWStepGeom_RWBezierSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBezierSurface();
+  inline RWStepGeom_RWBezierSurface();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

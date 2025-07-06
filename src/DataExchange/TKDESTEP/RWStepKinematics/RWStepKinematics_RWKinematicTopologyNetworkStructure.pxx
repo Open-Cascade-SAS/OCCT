@@ -33,7 +33,7 @@ class RWStepKinematics_RWKinematicTopologyNetworkStructure
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWKinematicTopologyNetworkStructure();
+  inline RWStepKinematics_RWKinematicTopologyNetworkStructure();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                          theData,

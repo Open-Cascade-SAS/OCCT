@@ -34,7 +34,7 @@ class RWStepBasic_RWPersonAndOrganization
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWPersonAndOrganization();
+  inline RWStepBasic_RWPersonAndOrganization();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                               const Standard_Integer                         num,

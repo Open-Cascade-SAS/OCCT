@@ -34,7 +34,7 @@ class RWStepAP242_RWGeometricItemSpecificUsage
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP242_RWGeometricItemSpecificUsage();
+  inline RWStepAP242_RWGeometricItemSpecificUsage();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,

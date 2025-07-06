@@ -34,7 +34,7 @@ class RWStepBasic_RWApprovalRelationship
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWApprovalRelationship();
+  inline RWStepBasic_RWApprovalRelationship();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
                               const Standard_Integer                        num,

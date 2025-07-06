@@ -33,7 +33,7 @@ class RWStepKinematics_RWPointOnSurfacePair
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWPointOnSurfacePair();
+  inline RWStepKinematics_RWPointOnSurfacePair();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
                               const Standard_Integer                           theNum,

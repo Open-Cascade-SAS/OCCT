@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedPointSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedPointSet();
+  inline RWStepVisual_RWTessellatedPointSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        theData,
                               const Standard_Integer                        theNum,

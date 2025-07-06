@@ -33,7 +33,7 @@ class RWStepVisual_RWPlanarExtent
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWPlanarExtent();
+  inline RWStepVisual_RWPlanarExtent();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

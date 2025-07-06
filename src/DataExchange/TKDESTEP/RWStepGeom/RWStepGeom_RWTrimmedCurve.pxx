@@ -34,7 +34,7 @@ class RWStepGeom_RWTrimmedCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWTrimmedCurve();
+  inline RWStepGeom_RWTrimmedCurve();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

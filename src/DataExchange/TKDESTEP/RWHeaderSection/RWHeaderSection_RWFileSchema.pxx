@@ -33,7 +33,7 @@ class RWHeaderSection_RWFileSchema
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWHeaderSection_RWFileSchema();
+  inline RWHeaderSection_RWFileSchema();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
                               const Standard_Integer                  num,

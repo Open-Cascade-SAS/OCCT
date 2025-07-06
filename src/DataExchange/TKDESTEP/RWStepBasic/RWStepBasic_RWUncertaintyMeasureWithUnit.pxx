@@ -34,7 +34,7 @@ class RWStepBasic_RWUncertaintyMeasureWithUnit
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWUncertaintyMeasureWithUnit();
+  inline RWStepBasic_RWUncertaintyMeasureWithUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,

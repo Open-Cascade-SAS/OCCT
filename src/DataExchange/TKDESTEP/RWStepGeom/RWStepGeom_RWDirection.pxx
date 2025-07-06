@@ -35,7 +35,7 @@ class RWStepGeom_RWDirection
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWDirection();
+  inline RWStepGeom_RWDirection();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

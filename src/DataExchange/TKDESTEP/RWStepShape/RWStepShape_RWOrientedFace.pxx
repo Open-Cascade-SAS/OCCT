@@ -34,7 +34,7 @@ class RWStepShape_RWOrientedFace
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWOrientedFace();
+  inline RWStepShape_RWOrientedFace();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

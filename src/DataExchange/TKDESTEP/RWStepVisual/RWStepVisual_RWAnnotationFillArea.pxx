@@ -33,7 +33,7 @@ class RWStepVisual_RWAnnotationFillArea
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWAnnotationFillArea();
+  inline RWStepVisual_RWAnnotationFillArea();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,
                               const Standard_Integer                       num,

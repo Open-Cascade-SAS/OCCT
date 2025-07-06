@@ -34,7 +34,7 @@ class RWStepShape_RWVertexPoint
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWVertexPoint();
+  inline RWStepShape_RWVertexPoint();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

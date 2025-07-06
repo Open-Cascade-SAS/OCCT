@@ -33,7 +33,7 @@ class RWStepBasic_RWSiUnitAndPlaneAngleUnit
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWSiUnitAndPlaneAngleUnit();
+  inline RWStepBasic_RWSiUnitAndPlaneAngleUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           data,
                               const Standard_Integer                           num,

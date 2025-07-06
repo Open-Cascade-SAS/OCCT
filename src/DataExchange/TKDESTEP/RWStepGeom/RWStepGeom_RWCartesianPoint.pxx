@@ -33,7 +33,7 @@ class RWStepGeom_RWCartesianPoint
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWCartesianPoint();
+  inline RWStepGeom_RWCartesianPoint();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

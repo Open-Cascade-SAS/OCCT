@@ -33,7 +33,7 @@ class RWStepVisual_RWColourSpecification
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWColourSpecification();
+  inline RWStepVisual_RWColourSpecification();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
                               const Standard_Integer                        num,

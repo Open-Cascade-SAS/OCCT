@@ -33,7 +33,7 @@ class RWStepShape_RWLoop
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWLoop();
+  inline RWStepShape_RWLoop();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

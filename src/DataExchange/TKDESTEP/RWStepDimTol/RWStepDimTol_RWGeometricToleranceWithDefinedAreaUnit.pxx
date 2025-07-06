@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit();
+  inline RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit();
 
   //! Reads GeometricToleranceWithDefinedAreaUnit
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                          data,

@@ -32,7 +32,7 @@ class RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI();
+  inline RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                             data,

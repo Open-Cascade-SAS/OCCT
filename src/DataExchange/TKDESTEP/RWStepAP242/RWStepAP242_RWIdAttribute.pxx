@@ -34,7 +34,7 @@ class RWStepAP242_RWIdAttribute
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP242_RWIdAttribute();
+  inline RWStepAP242_RWIdAttribute();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

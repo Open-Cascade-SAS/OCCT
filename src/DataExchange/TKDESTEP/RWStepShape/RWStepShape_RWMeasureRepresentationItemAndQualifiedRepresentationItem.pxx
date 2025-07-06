@@ -34,7 +34,7 @@ class RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem();
+  inline RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                           data,

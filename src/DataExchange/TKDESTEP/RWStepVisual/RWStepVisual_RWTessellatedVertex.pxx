@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedVertex
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedVertex();
+  inline RWStepVisual_RWTessellatedVertex();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      theData,
                               const Standard_Integer                      theNum,

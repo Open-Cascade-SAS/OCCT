@@ -33,7 +33,7 @@ class RWStepDimTol_RWGeoTolAndGeoTolWthDatRef
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepDimTol_RWGeoTolAndGeoTolWthDatRef();
+  inline RWStepDimTol_RWGeoTolAndGeoTolWthDatRef();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,

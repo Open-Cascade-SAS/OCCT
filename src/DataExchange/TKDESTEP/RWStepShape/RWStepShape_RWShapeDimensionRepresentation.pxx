@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepShape_RWShapeDimensionRepresentation();
+  inline RWStepShape_RWShapeDimensionRepresentation();
 
   //! Reads ShapeDimensionRepresentation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                data,

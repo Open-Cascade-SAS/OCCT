@@ -34,7 +34,7 @@ class RWStepVisual_RWSurfaceStyleParameterLine
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWSurfaceStyleParameterLine();
+  inline RWStepVisual_RWSurfaceStyleParameterLine();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,

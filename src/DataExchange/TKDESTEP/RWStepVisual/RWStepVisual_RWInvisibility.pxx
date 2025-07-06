@@ -34,7 +34,7 @@ class RWStepVisual_RWInvisibility
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWInvisibility();
+  inline RWStepVisual_RWInvisibility();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

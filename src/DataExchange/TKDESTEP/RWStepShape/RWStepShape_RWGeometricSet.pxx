@@ -34,7 +34,7 @@ class RWStepShape_RWGeometricSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWGeometricSet();
+  inline RWStepShape_RWGeometricSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

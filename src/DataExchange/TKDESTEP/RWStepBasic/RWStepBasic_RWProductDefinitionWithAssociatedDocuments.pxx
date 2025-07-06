@@ -34,7 +34,7 @@ class RWStepBasic_RWProductDefinitionWithAssociatedDocuments
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWProductDefinitionWithAssociatedDocuments();
+  inline RWStepBasic_RWProductDefinitionWithAssociatedDocuments();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                            data,

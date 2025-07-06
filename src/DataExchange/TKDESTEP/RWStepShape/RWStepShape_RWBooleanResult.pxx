@@ -34,7 +34,7 @@ class RWStepShape_RWBooleanResult
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWBooleanResult();
+  inline RWStepShape_RWBooleanResult();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

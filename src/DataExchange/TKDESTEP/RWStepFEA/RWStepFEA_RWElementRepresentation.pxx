@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWElementRepresentation();
+  inline RWStepFEA_RWElementRepresentation();
 
   //! Reads ElementRepresentation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,

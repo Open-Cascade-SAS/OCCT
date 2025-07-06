@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters();
+  inline RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                         theData,

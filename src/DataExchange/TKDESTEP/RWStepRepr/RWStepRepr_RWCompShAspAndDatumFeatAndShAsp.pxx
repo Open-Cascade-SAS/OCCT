@@ -33,7 +33,7 @@ class RWStepRepr_RWCompShAspAndDatumFeatAndShAsp
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWCompShAspAndDatumFeatAndShAsp();
+  inline RWStepRepr_RWCompShAspAndDatumFeatAndShAsp();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                data,
                               const Standard_Integer                                num,

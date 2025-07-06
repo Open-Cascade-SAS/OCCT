@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWGeneralPropertyRelationship();
+  inline RWStepBasic_RWGeneralPropertyRelationship();
 
   //! Reads GeneralPropertyAssociation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               theData,

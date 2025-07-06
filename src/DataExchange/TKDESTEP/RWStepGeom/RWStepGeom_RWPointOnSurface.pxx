@@ -34,7 +34,7 @@ class RWStepGeom_RWPointOnSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWPointOnSurface();
+  inline RWStepGeom_RWPointOnSurface();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

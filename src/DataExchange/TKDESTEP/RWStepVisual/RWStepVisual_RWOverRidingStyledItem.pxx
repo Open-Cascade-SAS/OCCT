@@ -34,7 +34,7 @@ class RWStepVisual_RWOverRidingStyledItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWOverRidingStyledItem();
+  inline RWStepVisual_RWOverRidingStyledItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                               const Standard_Integer                         num,

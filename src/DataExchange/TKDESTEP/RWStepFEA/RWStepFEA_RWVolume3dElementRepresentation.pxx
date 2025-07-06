@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWVolume3dElementRepresentation();
+  inline RWStepFEA_RWVolume3dElementRepresentation();
 
   //! Reads Volume3dElementRepresentation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,

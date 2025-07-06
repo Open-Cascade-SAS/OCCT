@@ -34,7 +34,7 @@ class RWStepRepr_RWShapeAspect
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWShapeAspect();
+  inline RWStepRepr_RWShapeAspect();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

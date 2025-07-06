@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWNodeWithSolutionCoordinateSystem();
+  inline RWStepFEA_RWNodeWithSolutionCoordinateSystem();
 
   //! Reads NodeWithSolutionCoordinateSystem
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,

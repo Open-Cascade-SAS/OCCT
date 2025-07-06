@@ -34,7 +34,7 @@ class RWStepGeom_RWHyperbola
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWHyperbola();
+  inline RWStepGeom_RWHyperbola();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

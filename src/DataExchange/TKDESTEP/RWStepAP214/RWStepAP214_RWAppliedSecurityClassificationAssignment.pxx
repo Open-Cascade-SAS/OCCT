@@ -33,7 +33,7 @@ class RWStepAP214_RWAppliedSecurityClassificationAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAppliedSecurityClassificationAssignment();
+  inline RWStepAP214_RWAppliedSecurityClassificationAssignment();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                           data,
                               const Standard_Integer                                           num,

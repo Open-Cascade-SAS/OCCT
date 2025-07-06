@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWDocumentRepresentationType();
+  inline RWStepBasic_RWDocumentRepresentationType();
 
   //! Reads DocumentRepresentationType
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,

@@ -33,7 +33,7 @@ class RWStepVisual_RWSurfaceStyleReflectanceAmbient
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWSurfaceStyleReflectanceAmbient();
+  inline RWStepVisual_RWSurfaceStyleReflectanceAmbient();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                   data,
                               const Standard_Integer                                   num,

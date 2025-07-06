@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepDimTol_RWFlatnessTolerance();
+  inline RWStepDimTol_RWFlatnessTolerance();
 
   //! Reads FlatnessTolerance
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,

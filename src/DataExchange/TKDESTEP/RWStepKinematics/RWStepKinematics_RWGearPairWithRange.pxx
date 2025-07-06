@@ -33,7 +33,7 @@ class RWStepKinematics_RWGearPairWithRange
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWGearPairWithRange();
+  inline RWStepKinematics_RWGearPairWithRange();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          theData,
                               const Standard_Integer                          theNum,

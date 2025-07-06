@@ -34,7 +34,7 @@ class RWStepShape_RWRightCircularCylinder
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWRightCircularCylinder();
+  inline RWStepShape_RWRightCircularCylinder();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                               const Standard_Integer                         num,

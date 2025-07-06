@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedCurveSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedCurveSet();
+  inline RWStepVisual_RWTessellatedCurveSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
                               const Standard_Integer                        num,

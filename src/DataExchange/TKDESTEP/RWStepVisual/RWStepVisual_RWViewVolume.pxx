@@ -34,7 +34,7 @@ class RWStepVisual_RWViewVolume
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWViewVolume();
+  inline RWStepVisual_RWViewVolume();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

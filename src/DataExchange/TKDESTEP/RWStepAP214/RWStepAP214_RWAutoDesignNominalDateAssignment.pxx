@@ -34,7 +34,7 @@ class RWStepAP214_RWAutoDesignNominalDateAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAutoDesignNominalDateAssignment();
+  inline RWStepAP214_RWAutoDesignNominalDateAssignment();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                   data,
                               const Standard_Integer                                   num,

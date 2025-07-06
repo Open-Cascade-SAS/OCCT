@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepAP214_RWAppliedGroupAssignment();
+  inline RWStepAP214_RWAppliedGroupAssignment();
 
   //! Reads AppliedGroupAssignment
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          data,

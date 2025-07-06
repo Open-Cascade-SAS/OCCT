@@ -34,7 +34,7 @@ class RWStepGeom_RWIntersectionCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWIntersectionCurve();
+  inline RWStepGeom_RWIntersectionCurve();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,
                               const Standard_Integer                    num,

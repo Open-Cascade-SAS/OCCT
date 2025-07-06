@@ -34,7 +34,7 @@ class RWStepBasic_RWOrganizationalAddress
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWOrganizationalAddress();
+  inline RWStepBasic_RWOrganizationalAddress();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                               const Standard_Integer                         num,

@@ -34,7 +34,7 @@ class RWStepVisual_RWSurfaceStyleSilhouette
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWSurfaceStyleSilhouette();
+  inline RWStepVisual_RWSurfaceStyleSilhouette();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           data,
                               const Standard_Integer                           num,

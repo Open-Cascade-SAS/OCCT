@@ -34,7 +34,7 @@ class RWStepBasic_RWProductDefinitionEffectivity
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWProductDefinitionEffectivity();
+  inline RWStepBasic_RWProductDefinitionEffectivity();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                data,
                               const Standard_Integer                                num,

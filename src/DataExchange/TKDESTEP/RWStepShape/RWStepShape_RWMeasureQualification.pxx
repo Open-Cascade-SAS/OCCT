@@ -34,7 +34,7 @@ class RWStepShape_RWMeasureQualification
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWMeasureQualification();
+  inline RWStepShape_RWMeasureQualification();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&        data,
                               const Standard_Integer                        num,

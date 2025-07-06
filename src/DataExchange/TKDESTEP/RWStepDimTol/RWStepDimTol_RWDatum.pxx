@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepDimTol_RWDatum();
+  inline RWStepDimTol_RWDatum();
 
   //! Reads Datum
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,

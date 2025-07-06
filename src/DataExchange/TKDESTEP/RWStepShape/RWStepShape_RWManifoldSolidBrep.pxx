@@ -34,7 +34,7 @@ class RWStepShape_RWManifoldSolidBrep
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWManifoldSolidBrep();
+  inline RWStepShape_RWManifoldSolidBrep();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,
                               const Standard_Integer                     num,

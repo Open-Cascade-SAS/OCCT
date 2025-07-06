@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepBasic_RWGroupRelationship();
+  inline RWStepBasic_RWGroupRelationship();
 
   //! Reads GroupRelationship
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,

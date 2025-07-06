@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepAP203_RWCcDesignSpecificationReference();
+  inline RWStepAP203_RWCcDesignSpecificationReference();
 
   //! Reads CcDesignSpecificationReference
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,

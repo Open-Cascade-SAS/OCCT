@@ -33,7 +33,7 @@ class RWStepKinematics_RWRackAndPinionPairValue
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWRackAndPinionPairValue();
+  inline RWStepKinematics_RWRackAndPinionPairValue();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               theData,
                               const Standard_Integer                               theNum,

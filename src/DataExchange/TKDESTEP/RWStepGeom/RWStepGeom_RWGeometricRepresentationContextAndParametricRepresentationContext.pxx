@@ -34,7 +34,7 @@ class RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationCont
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext();
+  inline RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                                   data,

@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWAlignedCurve3dElementCoordinateSystem();
+  inline RWStepFEA_RWAlignedCurve3dElementCoordinateSystem();
 
   //! Reads AlignedCurve3dElementCoordinateSystem
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                       data,

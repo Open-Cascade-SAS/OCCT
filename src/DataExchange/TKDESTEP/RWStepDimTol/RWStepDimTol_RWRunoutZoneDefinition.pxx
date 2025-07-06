@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepDimTol_RWRunoutZoneDefinition();
+  inline RWStepDimTol_RWRunoutZoneDefinition();
 
   //! Reads RunoutZoneDefinition
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,

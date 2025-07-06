@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWConfigurationItem();
+  inline RWStepRepr_RWConfigurationItem();
 
   //! Reads ConfigurationItem
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,

@@ -34,7 +34,7 @@ class RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource();
+  inline RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                 data,

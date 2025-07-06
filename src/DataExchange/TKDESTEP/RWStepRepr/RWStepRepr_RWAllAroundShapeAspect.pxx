@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepRepr_RWAllAroundShapeAspect();
+  inline RWStepRepr_RWAllAroundShapeAspect();
 
   //! Reads AllAroundShapeAspect
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,

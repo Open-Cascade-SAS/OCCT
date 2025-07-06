@@ -34,7 +34,7 @@ class RWStepGeom_RWBSplineSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWBSplineSurface();
+  inline RWStepGeom_RWBSplineSurface();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

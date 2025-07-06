@@ -33,7 +33,7 @@ class RWStepShape_RWTypeQualifier
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWTypeQualifier();
+  inline RWStepShape_RWTypeQualifier();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

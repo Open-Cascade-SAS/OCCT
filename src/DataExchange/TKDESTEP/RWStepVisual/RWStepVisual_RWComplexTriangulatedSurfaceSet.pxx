@@ -34,7 +34,7 @@ class RWStepVisual_RWComplexTriangulatedSurfaceSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWComplexTriangulatedSurfaceSet();
+  inline RWStepVisual_RWComplexTriangulatedSurfaceSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  theData,
                               const Standard_Integer                                  theNum,

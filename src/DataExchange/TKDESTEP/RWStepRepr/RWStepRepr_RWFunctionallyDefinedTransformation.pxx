@@ -33,7 +33,7 @@ class RWStepRepr_RWFunctionallyDefinedTransformation
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWFunctionallyDefinedTransformation();
+  inline RWStepRepr_RWFunctionallyDefinedTransformation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
                               const Standard_Integer                                    num,

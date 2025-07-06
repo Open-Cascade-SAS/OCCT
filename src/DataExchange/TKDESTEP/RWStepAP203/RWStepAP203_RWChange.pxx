@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepAP203_RWChange();
+  inline RWStepAP203_RWChange();
 
   //! Reads Change
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,

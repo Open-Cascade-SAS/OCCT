@@ -34,7 +34,7 @@ class RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel();
+  inline RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                        data,

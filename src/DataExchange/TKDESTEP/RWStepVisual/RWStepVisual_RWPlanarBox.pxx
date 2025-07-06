@@ -34,7 +34,7 @@ class RWStepVisual_RWPlanarBox
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWPlanarBox();
+  inline RWStepVisual_RWPlanarBox();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

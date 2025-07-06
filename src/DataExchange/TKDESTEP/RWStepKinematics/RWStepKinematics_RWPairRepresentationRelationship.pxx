@@ -33,7 +33,7 @@ class RWStepKinematics_RWPairRepresentationRelationship
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepKinematics_RWPairRepresentationRelationship();
+  inline RWStepKinematics_RWPairRepresentationRelationship();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                       theData,
                               const Standard_Integer                                       theNum,

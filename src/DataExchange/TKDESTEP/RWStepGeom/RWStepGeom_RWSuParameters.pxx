@@ -33,7 +33,7 @@ class RWStepGeom_RWSuParameters
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWSuParameters();
+  inline RWStepGeom_RWSuParameters();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& theData,
                               const Standard_Integer                 theNum,

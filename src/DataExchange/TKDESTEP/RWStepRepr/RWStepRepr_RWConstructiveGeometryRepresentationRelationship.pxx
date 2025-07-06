@@ -33,7 +33,7 @@ class RWStepRepr_RWConstructiveGeometryRepresentationRelationship
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepRepr_RWConstructiveGeometryRepresentationRelationship();
+  inline RWStepRepr_RWConstructiveGeometryRepresentationRelationship();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                 data,

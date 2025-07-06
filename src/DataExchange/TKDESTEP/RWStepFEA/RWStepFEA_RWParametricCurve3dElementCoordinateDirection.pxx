@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWParametricCurve3dElementCoordinateDirection();
+  inline RWStepFEA_RWParametricCurve3dElementCoordinateDirection();
 
   //! Reads ParametricCurve3dElementCoordinateDirection
   static inline void ReadStep(

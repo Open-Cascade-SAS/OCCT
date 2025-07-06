@@ -33,7 +33,7 @@ class RWStepVisual_RWCameraModelD3MultiClippingIntersection
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWCameraModelD3MultiClippingIntersection();
+  inline RWStepVisual_RWCameraModelD3MultiClippingIntersection();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                           data,
                               const Standard_Integer                                           num,

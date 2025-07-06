@@ -33,7 +33,7 @@ class RWStepBasic_RWSecurityClassificationLevel
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepBasic_RWSecurityClassificationLevel();
+  inline RWStepBasic_RWSecurityClassificationLevel();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,
                               const Standard_Integer                               num,

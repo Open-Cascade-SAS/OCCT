@@ -34,7 +34,7 @@ class RWStepGeom_RWAxis2Placement3d
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepGeom_RWAxis2Placement3d();
+  inline RWStepGeom_RWAxis2Placement3d();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
                               const Standard_Integer                   num,

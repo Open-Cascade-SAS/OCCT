@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWFreedomAndCoefficient();
+  inline RWStepFEA_RWFreedomAndCoefficient();
 
   //! Reads FreedomAndCoefficient
   static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,

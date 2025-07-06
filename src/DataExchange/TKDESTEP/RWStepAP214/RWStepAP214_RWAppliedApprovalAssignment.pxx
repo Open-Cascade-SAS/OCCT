@@ -34,7 +34,7 @@ class RWStepAP214_RWAppliedApprovalAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAppliedApprovalAssignment();
+  inline RWStepAP214_RWAppliedApprovalAssignment();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,

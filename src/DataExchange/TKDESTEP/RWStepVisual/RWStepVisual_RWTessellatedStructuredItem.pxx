@@ -34,7 +34,7 @@ class RWStepVisual_RWTessellatedStructuredItem
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWTessellatedStructuredItem();
+  inline RWStepVisual_RWTessellatedStructuredItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              theData,
                               const Standard_Integer                              theNum,

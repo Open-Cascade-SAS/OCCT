@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion();
+  inline RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion();
 
   //! Reads FeaSecantCoefficientOfLinearThermalExpansion
   static inline void ReadStep(

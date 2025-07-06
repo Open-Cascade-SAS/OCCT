@@ -34,7 +34,7 @@ class RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment();
+  inline RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                             data,

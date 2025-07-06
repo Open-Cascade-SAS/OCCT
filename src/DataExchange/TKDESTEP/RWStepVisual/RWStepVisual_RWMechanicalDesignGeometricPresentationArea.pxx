@@ -34,7 +34,7 @@ class RWStepVisual_RWMechanicalDesignGeometricPresentationArea
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepVisual_RWMechanicalDesignGeometricPresentationArea();
+  inline RWStepVisual_RWMechanicalDesignGeometricPresentationArea();
 
   static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                              data,

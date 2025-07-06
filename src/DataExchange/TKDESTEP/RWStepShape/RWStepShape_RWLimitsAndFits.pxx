@@ -33,7 +33,7 @@ class RWStepShape_RWLimitsAndFits
 public:
   DEFINE_STANDARD_ALLOC
 
-  static inline RWStepShape_RWLimitsAndFits();
+  inline RWStepShape_RWLimitsAndFits();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,

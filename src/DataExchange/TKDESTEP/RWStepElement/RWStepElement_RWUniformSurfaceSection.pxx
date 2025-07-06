@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  static inline RWStepElement_RWUniformSurfaceSection();
+  inline RWStepElement_RWUniformSurfaceSection();
 
   //! Reads UniformSurfaceSection
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           data,
