@@ -1,6 +1,6 @@
 # OCCT Copilot Instructions
 
-This file provides comprehensive guidance for AI assistants working with the Open CASCADE Technology (OCCT) C++17+ 3D CAD/CAM/CAE library.
+This file provides the comprehensive guidance for AI assistants working with the Open CASCADE Technology (OCCT) C++17+ 3D CAD/CAM/CAE library.
 
 ---
 
@@ -15,7 +15,7 @@ This file provides comprehensive guidance for AI assistants working with the Ope
     - **Wrong:** `Geom_Circle* aCircle = new Geom_Circle(...);`
 
 2.  **Check Operation Status:**
-    - After using an API that performs a geometric operation (e.g., `BRepAlgoAPI_Fuse`, `BRepBuilderAPI_MakeShape`), **ALWAYS** check if the operation was successful using the `IsDone()` method before accessing the result.
+    - After using an API that performs a geometric operation (e.g., `BRepAlgoAPI_Fuse`, `BRepBuilderAPI_MakeEdge`), **ALWAYS** check if the operation was successful using the `IsDone()` method before accessing the result.
     - **Correct:**
       ```cpp
       BRepAlgoAPI_Fuse aFuser(theShape1, theShape2);
