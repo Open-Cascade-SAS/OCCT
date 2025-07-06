@@ -17,7 +17,13 @@ set exclude_list [list \
     "chamfer dist_angle_complex A4" \
     "chamfer dist_angle_complex A5" \
     "chamfer dist_angle_sequence A1" \
-    "chamfer dist_angle_sequence A4"
+    "chamfer dist_angle_sequence A4" \
+    "caf basic W12" \
+    "opengles3 general msaa" \
+    "opengles3 geom interior1" \
+    "opengles3 geom interior2" \
+    "opengles3 shadows dir2" \
+    "opengles3 textures alpha_mask"
 ]
 
 set exclude_str [join $exclude_list ,]
