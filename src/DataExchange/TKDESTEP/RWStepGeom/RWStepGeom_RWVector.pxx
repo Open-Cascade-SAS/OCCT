@@ -39,18 +39,18 @@ public:
   static inline RWStepGeom_RWVector();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepGeom_Vector)&         ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepGeom_Vector)&         ent) const;
 
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Vector)& ent) const;
 
   static inline void Share(const Handle(StepGeom_Vector)& ent,
-                             Interface_EntityIterator&      iter) const;
+                           Interface_EntityIterator&      iter) const;
 
   static inline void Check(const Handle(StepGeom_Vector)& ent,
-                             const Interface_ShareTool&     shares,
-                             Handle(Interface_Check)&       ach) const;
+                           const Interface_ShareTool&     shares,
+                           Handle(Interface_Check)&       ach) const;
 
 protected:
 private:

@@ -38,20 +38,19 @@ public:
   static inline RWStepDimTol_RWGeometricToleranceWithModifiers();
 
   //! Reads GeometricToleranceWithModifiers
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                    data,
-    const Standard_Integer                                    num,
-    Handle(Interface_Check)&                                  ach,
-    const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
+                              const Standard_Integer                                    num,
+                              Handle(Interface_Check)&                                  ach,
+                              const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const;
 
   //! Writes GeometricToleranceWithModifiers
-  static inline void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                      SW,
+                               const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent,
-                             Interface_EntityIterator&                                 iter) const;
+                           Interface_EntityIterator&                                 iter) const;
 };
+
 #include "RWStepDimTol_RWGeometricToleranceWithModifiers_impl.pxx"
 #endif // _RWStepDimTol_RWGeometricToleranceWithModifiers_HeaderFile

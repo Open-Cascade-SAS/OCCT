@@ -49,5 +49,6 @@ public:
     const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent,
     Interface_EntityIterator&                                              iter) const;
 };
+
 #include "RWStepRepr_RWConstructiveGeometryRepresentationRelationship_impl.pxx"
 #endif // _RWStepRepr_RWConstructiveGeometryRepresentationRelationship_HeaderFile

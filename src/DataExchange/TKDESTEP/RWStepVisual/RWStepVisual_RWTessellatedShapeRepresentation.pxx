@@ -47,7 +47,7 @@ public:
     const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
 
   static inline void Share(const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
-                             Interface_EntityIterator& theIter) const;
+                           Interface_EntityIterator&                                theIter) const;
 };
 
 #include "RWStepVisual_RWTessellatedShapeRepresentation_impl.pxx"

@@ -38,17 +38,17 @@ public:
 
   //! Reads ExternallyDefinedCurveFont
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,
-                                const Standard_Integer                               num,
-                                Handle(Interface_Check)&                             ach,
-                                const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const;
+                              const Standard_Integer                               num,
+                              Handle(Interface_Check)&                             ach,
+                              const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const;
 
   //! Writes ExternallyDefinedCurveFont
   static inline void WriteStep(StepData_StepWriter&                                 SW,
-                                 const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const;
+                               const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepVisual_ExternallyDefinedCurveFont)& ent,
-                             Interface_EntityIterator&                            iter) const;
+                           Interface_EntityIterator&                            iter) const;
 
 protected:
 private:

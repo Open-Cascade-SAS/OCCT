@@ -34,14 +34,14 @@ public:
 
   //! Reads RepositionedTessellatedItem
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                theData,
-                                const Standard_Integer                                theNum,
-                                Handle(Interface_Check)&                              theAch,
-                                const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
+                              const Standard_Integer                                theNum,
+                              Handle(Interface_Check)&                              theAch,
+                              const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
 
   //! Writes RepositionedTessellatedItem
-  static inline void WriteStep(
-    StepData_StepWriter&                                  theSW,
-    const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
+  static inline void WriteStep(StepData_StepWriter&                                  theSW,
+                               const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
 };
+
 #include "RWStepVisual_RWRepositionedTessellatedItem_impl.pxx"
 #endif // _RWStepVisual_RWRepositionedTessellatedItem_HeaderFile

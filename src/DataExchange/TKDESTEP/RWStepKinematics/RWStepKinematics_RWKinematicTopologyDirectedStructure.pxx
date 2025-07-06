@@ -45,9 +45,9 @@ public:
     StepData_StepWriter&                                             theSW,
     const Handle(StepKinematics_KinematicTopologyDirectedStructure)& theEnt) const;
 
-  static inline void Share(
-    const Handle(StepKinematics_KinematicTopologyDirectedStructure)& theEnt,
-    Interface_EntityIterator&                                        iter) const;
+  static inline void Share(const Handle(StepKinematics_KinematicTopologyDirectedStructure)& theEnt,
+                           Interface_EntityIterator& iter) const;
 };
+
 #include "RWStepKinematics_RWKinematicTopologyDirectedStructure_impl.pxx"
 #endif // _RWStepKinematics_RWKinematicTopologyDirectedStructure_HeaderFile_

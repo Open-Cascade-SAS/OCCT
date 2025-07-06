@@ -35,18 +35,17 @@ public:
 
   static inline RWStepVisual_RWTessellatedAnnotationOccurrence();
 
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                    data,
-    const Standard_Integer                                    num,
-    Handle(Interface_Check)&                                  ach,
-    const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
+                              const Standard_Integer                                    num,
+                              Handle(Interface_Check)&                                  ach,
+                              const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const;
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                      SW,
+                               const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const;
 
   static inline void Share(const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent,
-                             Interface_EntityIterator&                                 iter) const;
+                           Interface_EntityIterator&                                 iter) const;
 };
+
 #include "RWStepVisual_RWTessellatedAnnotationOccurrence_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedAnnotationOccurrence_HeaderFile

@@ -39,17 +39,17 @@ public:
 
   //! Reads ActionMethod
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepBasic_ActionMethod)&  ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepBasic_ActionMethod)&  ent) const;
 
   //! Writes ActionMethod
   static inline void WriteStep(StepData_StepWriter&                  SW,
-                                 const Handle(StepBasic_ActionMethod)& ent) const;
+                               const Handle(StepBasic_ActionMethod)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_ActionMethod)& ent,
-                             Interface_EntityIterator&             iter) const;
+                           Interface_EntityIterator&             iter) const;
 
 protected:
 private:

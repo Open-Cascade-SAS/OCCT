@@ -49,5 +49,6 @@ public:
     const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt,
     Interface_EntityIterator&                                                 iter) const;
 };
+
 #include "RWStepKinematics_RWContextDependentKinematicLinkRepresentation_impl.pxx"
 #endif // _RWStepKinematics_RWContextDependentKinematicLinkRepresentation_HeaderFile_

@@ -40,19 +40,19 @@ public:
   RWStepShape_RWEdgeCurve() = default;
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& theStepData,
-                                const Standard_Integer                 theRecordID,
-                                Handle(Interface_Check)&               theMessageTool,
-                                const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const;
+                              const Standard_Integer                 theRecordID,
+                              Handle(Interface_Check)&               theMessageTool,
+                              const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const;
 
   static inline void WriteStep(StepData_StepWriter&               theStepWriter,
-                                 const Handle(StepShape_EdgeCurve)& theEdgeCurve) const;
+                               const Handle(StepShape_EdgeCurve)& theEdgeCurve) const;
 
   static inline void Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                             Interface_EntityIterator&          theSharedEntitiesIt) const;
+                           Interface_EntityIterator&          theSharedEntitiesIt) const;
 
   static inline void Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                             const Interface_ShareTool&         theShareTool,
-                             Handle(Interface_Check)&           theMessageTool) const;
+                           const Interface_ShareTool&         theShareTool,
+                           Handle(Interface_Check)&           theMessageTool) const;
 };
 
 #include "RWStepShape_RWEdgeCurve_impl.pxx"

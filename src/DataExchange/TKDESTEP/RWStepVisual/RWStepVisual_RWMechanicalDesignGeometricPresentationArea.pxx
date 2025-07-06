@@ -46,9 +46,8 @@ public:
     StepData_StepWriter&                                                SW,
     const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent) const;
 
-  static inline void Share(
-    const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent,
-    Interface_EntityIterator&                                           iter) const;
+  static inline void Share(const Handle(StepVisual_MechanicalDesignGeometricPresentationArea)& ent,
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

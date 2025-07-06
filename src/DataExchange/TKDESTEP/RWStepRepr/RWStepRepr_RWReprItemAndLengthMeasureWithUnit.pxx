@@ -35,13 +35,12 @@ public:
   static inline RWStepRepr_RWReprItemAndLengthMeasureWithUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                   data,
-                                const Standard_Integer                                   num,
-                                Handle(Interface_Check)&                                 ach,
-                                const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const;
+                              const Standard_Integer                                   num,
+                              Handle(Interface_Check)&                                 ach,
+                              const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const;
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                     SW,
-    const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                     SW,
+                               const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const;
 
 protected:
 private:

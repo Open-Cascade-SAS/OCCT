@@ -36,15 +36,16 @@ public:
   static inline RWStepVisual_RWDraughtingCallout();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
-                                const Standard_Integer                      num,
-                                Handle(Interface_Check)&                    ach,
-                                const Handle(StepVisual_DraughtingCallout)& ent) const;
+                              const Standard_Integer                      num,
+                              Handle(Interface_Check)&                    ach,
+                              const Handle(StepVisual_DraughtingCallout)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                        SW,
-                                 const Handle(StepVisual_DraughtingCallout)& ent) const;
+                               const Handle(StepVisual_DraughtingCallout)& ent) const;
 
   static inline void Share(const Handle(StepVisual_DraughtingCallout)& ent,
-                             Interface_EntityIterator&                   iter) const;
+                           Interface_EntityIterator&                   iter) const;
 };
+
 #include "RWStepVisual_RWDraughtingCallout_impl.pxx"
 #endif // _RWStepVisual_RWDraughtingCallout_HeaderFile

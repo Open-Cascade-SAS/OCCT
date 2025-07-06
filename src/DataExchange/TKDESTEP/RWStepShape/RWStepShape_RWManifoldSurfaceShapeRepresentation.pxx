@@ -47,7 +47,7 @@ public:
     const Handle(StepShape_ManifoldSurfaceShapeRepresentation)& ent) const;
 
   static inline void Share(const Handle(StepShape_ManifoldSurfaceShapeRepresentation)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator&                                   iter) const;
 
 protected:
 private:

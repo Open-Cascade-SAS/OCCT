@@ -51,7 +51,7 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

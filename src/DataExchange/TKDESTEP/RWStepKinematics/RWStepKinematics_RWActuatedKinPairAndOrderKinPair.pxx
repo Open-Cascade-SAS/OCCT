@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator&                                    iter) const;
 };
+
 #include "RWStepKinematics_RWActuatedKinPairAndOrderKinPair_impl.pxx"
 #endif // _RWStepDimTol_RWGeoTolAndGeoTolWthMod_HeaderFile

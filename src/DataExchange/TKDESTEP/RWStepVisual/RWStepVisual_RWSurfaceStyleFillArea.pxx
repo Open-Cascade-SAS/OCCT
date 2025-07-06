@@ -37,15 +37,15 @@ public:
   static inline RWStepVisual_RWSurfaceStyleFillArea();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
-                                const Standard_Integer                         num,
-                                Handle(Interface_Check)&                       ach,
-                                const Handle(StepVisual_SurfaceStyleFillArea)& ent) const;
+                              const Standard_Integer                         num,
+                              Handle(Interface_Check)&                       ach,
+                              const Handle(StepVisual_SurfaceStyleFillArea)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                           SW,
-                                 const Handle(StepVisual_SurfaceStyleFillArea)& ent) const;
+                               const Handle(StepVisual_SurfaceStyleFillArea)& ent) const;
 
   static inline void Share(const Handle(StepVisual_SurfaceStyleFillArea)& ent,
-                             Interface_EntityIterator&                      iter) const;
+                           Interface_EntityIterator&                      iter) const;
 
 protected:
 private:

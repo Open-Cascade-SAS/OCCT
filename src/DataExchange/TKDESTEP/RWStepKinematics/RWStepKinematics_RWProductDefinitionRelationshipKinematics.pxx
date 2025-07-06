@@ -49,5 +49,6 @@ public:
     const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt,
     Interface_EntityIterator&                                             iter) const;
 };
+
 #include "RWStepKinematics_RWProductDefinitionRelationshipKinematics_impl.pxx"
 #endif // _RWStepKinematics_RWProductDefinitionRelationshipKinematics_HeaderFile_

@@ -39,17 +39,17 @@ public:
 
   //! Reads CcDesignDateAndTimeAssignment
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
-                                const Standard_Integer                                 num,
-                                Handle(Interface_Check)&                               ach,
-                                const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const;
+                              const Standard_Integer                                 num,
+                              Handle(Interface_Check)&                               ach,
+                              const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const;
 
   //! Writes CcDesignDateAndTimeAssignment
   static inline void WriteStep(StepData_StepWriter&                                   SW,
-                                 const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const;
+                               const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent,
-                             Interface_EntityIterator&                              iter) const;
+                           Interface_EntityIterator&                              iter) const;
 
 protected:
 private:

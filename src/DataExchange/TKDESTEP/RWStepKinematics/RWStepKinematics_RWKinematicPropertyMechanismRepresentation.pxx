@@ -49,5 +49,6 @@ public:
     const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt,
     Interface_EntityIterator&                                              iter) const;
 };
+
 #include "RWStepKinematics_RWKinematicPropertyMechanismRepresentation_impl.pxx"
 #endif // _RWStepKinematics_RWKinematicPropertyMechanismRepresentation_HeaderFile_

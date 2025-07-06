@@ -38,17 +38,17 @@ public:
 
   //! Reads DimensionalSize
   static inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                const Standard_Integer                   num,
-                                Handle(Interface_Check)&                 ach,
-                                const Handle(StepShape_DimensionalSize)& ent) const;
+                              const Standard_Integer                   num,
+                              Handle(Interface_Check)&                 ach,
+                              const Handle(StepShape_DimensionalSize)& ent) const;
 
   //! Writes DimensionalSize
   static inline void WriteStep(StepData_StepWriter&                     SW,
-                                 const Handle(StepShape_DimensionalSize)& ent) const;
+                               const Handle(StepShape_DimensionalSize)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepShape_DimensionalSize)& ent,
-                             Interface_EntityIterator&                iter) const;
+                           Interface_EntityIterator&                iter) const;
 
 protected:
 private:

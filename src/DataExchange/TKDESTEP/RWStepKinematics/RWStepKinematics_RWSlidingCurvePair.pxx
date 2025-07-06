@@ -36,15 +36,16 @@ public:
   static inline RWStepKinematics_RWSlidingCurvePair();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         theData,
-                                const Standard_Integer                         theNum,
-                                Handle(Interface_Check)&                       theArch,
-                                const Handle(StepKinematics_SlidingCurvePair)& theEnt) const;
+                              const Standard_Integer                         theNum,
+                              Handle(Interface_Check)&                       theArch,
+                              const Handle(StepKinematics_SlidingCurvePair)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                           theSW,
-                                 const Handle(StepKinematics_SlidingCurvePair)& theEnt) const;
+                               const Handle(StepKinematics_SlidingCurvePair)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_SlidingCurvePair)& theEnt,
-                             Interface_EntityIterator&                      iter) const;
+                           Interface_EntityIterator&                      iter) const;
 };
+
 #include "RWStepKinematics_RWSlidingCurvePair_impl.pxx"
 #endif // _RWStepKinematics_RWSlidingCurvePair_HeaderFile_

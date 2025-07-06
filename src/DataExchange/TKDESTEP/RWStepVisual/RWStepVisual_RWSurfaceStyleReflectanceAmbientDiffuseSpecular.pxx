@@ -46,5 +46,6 @@ public:
     const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt,
     Interface_EntityIterator&                                               theIter) const;
 };
+
 #include "RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular_impl.pxx"
 #endif // _RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular_HeaderFile_

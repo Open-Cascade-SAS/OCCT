@@ -38,17 +38,17 @@ public:
 
   //! Reads GeneralPropertyAssociation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               theData,
-                                const Standard_Integer                               theNum,
-                                Handle(Interface_Check)&                             theAch,
-                                const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
+                              const Standard_Integer                               theNum,
+                              Handle(Interface_Check)&                             theAch,
+                              const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
 
   //! Writes GeneralPropertyAssociation
   static inline void WriteStep(StepData_StepWriter&                                 theSW,
-                                 const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
+                               const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
-                             Interface_EntityIterator&                            theIter) const;
+                           Interface_EntityIterator&                            theIter) const;
 
 protected:
 private:

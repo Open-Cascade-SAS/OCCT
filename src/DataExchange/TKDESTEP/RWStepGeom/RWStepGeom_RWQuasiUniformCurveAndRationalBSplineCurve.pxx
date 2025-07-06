@@ -47,7 +47,7 @@ public:
     const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent) const;
 
   static inline void Share(const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

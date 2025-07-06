@@ -38,17 +38,17 @@ public:
 
   //! Reads IdentificationRole
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
-                                const Standard_Integer                      num,
-                                Handle(Interface_Check)&                    ach,
-                                const Handle(StepBasic_IdentificationRole)& ent) const;
+                              const Standard_Integer                      num,
+                              Handle(Interface_Check)&                    ach,
+                              const Handle(StepBasic_IdentificationRole)& ent) const;
 
   //! Writes IdentificationRole
   static inline void WriteStep(StepData_StepWriter&                        SW,
-                                 const Handle(StepBasic_IdentificationRole)& ent) const;
+                               const Handle(StepBasic_IdentificationRole)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_IdentificationRole)& ent,
-                             Interface_EntityIterator&                   iter) const;
+                           Interface_EntityIterator&                   iter) const;
 
 protected:
 private:

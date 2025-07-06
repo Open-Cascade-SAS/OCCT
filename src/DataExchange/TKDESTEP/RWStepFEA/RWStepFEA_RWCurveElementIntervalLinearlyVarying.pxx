@@ -37,11 +37,10 @@ public:
   static inline RWStepFEA_RWCurveElementIntervalLinearlyVarying();
 
   //! Reads CurveElementIntervalLinearlyVarying
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                     data,
-    const Standard_Integer                                     num,
-    Handle(Interface_Check)&                                   ach,
-    const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
+                              const Standard_Integer                                     num,
+                              Handle(Interface_Check)&                                   ach,
+                              const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const;
 
   //! Writes CurveElementIntervalLinearlyVarying
   static inline void WriteStep(
@@ -50,7 +49,7 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent,
-                             Interface_EntityIterator&                                  iter) const;
+                           Interface_EntityIterator&                                  iter) const;
 
 protected:
 private:

@@ -48,14 +48,12 @@ public:
     StepData_StepWriter&                                                 SW,
     const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const;
 
-  static inline void Share(
-    const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
-    Interface_EntityIterator&                                            iter) const;
+  static inline void Share(const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
+                           Interface_EntityIterator& iter) const;
 
-  static inline void Check(
-    const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
-    const Interface_ShareTool&                                           shares,
-    Handle(Interface_Check)&                                             ach) const;
+  static inline void Check(const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
+                           const Interface_ShareTool& shares,
+                           Handle(Interface_Check)&   ach) const;
 
 protected:
 private:

@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_PairRepresentationRelationship)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_PairRepresentationRelationship)& theEnt,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator&                                    iter) const;
 };
+
 #include "RWStepKinematics_RWPairRepresentationRelationship_impl.pxx"
 #endif // _RWStepKinematics_RWPairRepresentationRelationship_HeaderFile_

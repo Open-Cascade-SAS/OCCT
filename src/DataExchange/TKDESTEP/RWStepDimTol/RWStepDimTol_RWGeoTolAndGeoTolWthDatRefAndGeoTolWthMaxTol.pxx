@@ -45,9 +45,9 @@ public:
     StepData_StepWriter&                                                 SW,
     const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent) const;
 
-  static inline void Share(
-    const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent,
-    Interface_EntityIterator&                                            iter) const;
+  static inline void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent,
+                           Interface_EntityIterator& iter) const;
 };
+
 #include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol_impl.pxx"
 #endif // _RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol_HeaderFile

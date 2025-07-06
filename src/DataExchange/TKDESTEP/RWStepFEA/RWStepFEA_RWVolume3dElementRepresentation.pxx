@@ -38,17 +38,17 @@ public:
 
   //! Reads Volume3dElementRepresentation
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,
-                                const Standard_Integer                               num,
-                                Handle(Interface_Check)&                             ach,
-                                const Handle(StepFEA_Volume3dElementRepresentation)& ent) const;
+                              const Standard_Integer                               num,
+                              Handle(Interface_Check)&                             ach,
+                              const Handle(StepFEA_Volume3dElementRepresentation)& ent) const;
 
   //! Writes Volume3dElementRepresentation
   static inline void WriteStep(StepData_StepWriter&                                 SW,
-                                 const Handle(StepFEA_Volume3dElementRepresentation)& ent) const;
+                               const Handle(StepFEA_Volume3dElementRepresentation)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_Volume3dElementRepresentation)& ent,
-                             Interface_EntityIterator&                            iter) const;
+                           Interface_EntityIterator&                            iter) const;
 
 protected:
 private:

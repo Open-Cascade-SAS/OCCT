@@ -37,16 +37,15 @@ public:
   static inline RWStepDimTol_RWDatumReferenceModifierWithValue();
 
   //! Reads DatumReferenceModifierWithValue
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                    data,
-    const Standard_Integer                                    num,
-    Handle(Interface_Check)&                                  ach,
-    const Handle(StepDimTol_DatumReferenceModifierWithValue)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
+                              const Standard_Integer                                    num,
+                              Handle(Interface_Check)&                                  ach,
+                              const Handle(StepDimTol_DatumReferenceModifierWithValue)& ent) const;
 
   //! Writes DatumReferenceModifierWithValue
-  static inline void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const Handle(StepDimTol_DatumReferenceModifierWithValue)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                      SW,
+                               const Handle(StepDimTol_DatumReferenceModifierWithValue)& ent) const;
 };
+
 #include "RWStepDimTol_RWDatumReferenceModifierWithValue_impl.pxx"
 #endif // _RWStepDimTol_RWDatumReferenceModifierWithValue_HeaderFile

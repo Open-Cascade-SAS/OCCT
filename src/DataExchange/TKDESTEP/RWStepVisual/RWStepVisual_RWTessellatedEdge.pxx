@@ -37,15 +37,15 @@ public:
   static inline RWStepVisual_RWTessellatedEdge();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    theData,
-                                const Standard_Integer                    theNum,
-                                Handle(Interface_Check)&                  theCheck,
-                                const Handle(StepVisual_TessellatedEdge)& theEnt) const;
+                              const Standard_Integer                    theNum,
+                              Handle(Interface_Check)&                  theCheck,
+                              const Handle(StepVisual_TessellatedEdge)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                      theSW,
-                                 const Handle(StepVisual_TessellatedEdge)& theEnt) const;
+                               const Handle(StepVisual_TessellatedEdge)& theEnt) const;
 
   static inline void Share(const Handle(StepVisual_TessellatedEdge)& theEnt,
-                             Interface_EntityIterator&                 theIter) const;
+                           Interface_EntityIterator&                 theIter) const;
 };
 
 #include "RWStepVisual_RWTessellatedEdge_impl.pxx"

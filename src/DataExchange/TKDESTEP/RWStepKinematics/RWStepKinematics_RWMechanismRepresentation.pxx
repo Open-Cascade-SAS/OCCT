@@ -36,16 +36,16 @@ public:
   static inline RWStepKinematics_RWMechanismRepresentation();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                theData,
-                                const Standard_Integer                                theNum,
-                                Handle(Interface_Check)&                              theArch,
-                                const Handle(StepKinematics_MechanismRepresentation)& theEnt) const;
+                              const Standard_Integer                                theNum,
+                              Handle(Interface_Check)&                              theArch,
+                              const Handle(StepKinematics_MechanismRepresentation)& theEnt) const;
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                  theSW,
-    const Handle(StepKinematics_MechanismRepresentation)& theEnt) const;
+  static inline void WriteStep(StepData_StepWriter&                                  theSW,
+                               const Handle(StepKinematics_MechanismRepresentation)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_MechanismRepresentation)& theEnt,
-                             Interface_EntityIterator&                             iter) const;
+                           Interface_EntityIterator&                             iter) const;
 };
+
 #include "RWStepKinematics_RWMechanismRepresentation_impl.pxx"
 #endif // _RWStepKinematics_RWMechanismRepresentation_HeaderFile_

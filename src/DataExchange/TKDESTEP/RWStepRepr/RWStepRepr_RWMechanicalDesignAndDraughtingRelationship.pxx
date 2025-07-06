@@ -43,9 +43,9 @@ public:
     StepData_StepWriter&                                              theSW,
     const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const;
 
-  static inline void Share(
-    const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt,
-    Interface_EntityIterator&                                         theIter) const;
+  static inline void Share(const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt,
+                           Interface_EntityIterator& theIter) const;
 };
+
 #include "RWStepRepr_RWMechanicalDesignAndDraughtingRelationship_impl.pxx"
 #endif // _RWStepRepr_RWMechanicalDesignAndDraughtingRelationship_HeaderFile

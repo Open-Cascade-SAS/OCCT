@@ -49,9 +49,8 @@ public:
     const Handle(StepFEA_FeaSecantCoefficientOfLinearThermalExpansion)& ent) const;
 
   //! Fills data for graph (shared items)
-  static inline void Share(
-    const Handle(StepFEA_FeaSecantCoefficientOfLinearThermalExpansion)& ent,
-    Interface_EntityIterator&                                           iter) const;
+  static inline void Share(const Handle(StepFEA_FeaSecantCoefficientOfLinearThermalExpansion)& ent,
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

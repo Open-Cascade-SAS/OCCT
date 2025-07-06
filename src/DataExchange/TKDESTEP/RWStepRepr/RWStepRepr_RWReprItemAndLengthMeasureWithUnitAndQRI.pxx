@@ -44,5 +44,6 @@ public:
     StepData_StepWriter&                                           SW,
     const Handle(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)& ent) const;
 };
+
 #include "RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI_impl.pxx"
 #endif // _RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI_HeaderFile

@@ -36,15 +36,16 @@ public:
   static inline RWStepKinematics_RWGearPairValue();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      theData,
-                                const Standard_Integer                      theNum,
-                                Handle(Interface_Check)&                    theArch,
-                                const Handle(StepKinematics_GearPairValue)& theEnt) const;
+                              const Standard_Integer                      theNum,
+                              Handle(Interface_Check)&                    theArch,
+                              const Handle(StepKinematics_GearPairValue)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                        theSW,
-                                 const Handle(StepKinematics_GearPairValue)& theEnt) const;
+                               const Handle(StepKinematics_GearPairValue)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_GearPairValue)& theEnt,
-                             Interface_EntityIterator&                   iter) const;
+                           Interface_EntityIterator&                   iter) const;
 };
+
 #include "RWStepKinematics_RWGearPairValue_impl.pxx"
 #endif // _RWStepKinematics_RWGearPairValue_HeaderFile_

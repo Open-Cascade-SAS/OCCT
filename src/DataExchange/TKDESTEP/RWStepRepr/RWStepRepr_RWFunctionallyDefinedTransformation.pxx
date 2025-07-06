@@ -35,15 +35,13 @@ public:
 
   static inline RWStepRepr_RWFunctionallyDefinedTransformation();
 
-  static inline void ReadStep(
-    const Handle(StepData_StepReaderData)&                    data,
-    const Standard_Integer                                    num,
-    Handle(Interface_Check)&                                  ach,
-    const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const;
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                    data,
+                              const Standard_Integer                                    num,
+                              Handle(Interface_Check)&                                  ach,
+                              const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const;
 
-  static inline void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const;
+  static inline void WriteStep(StepData_StepWriter&                                      SW,
+                               const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const;
 
 protected:
 private:

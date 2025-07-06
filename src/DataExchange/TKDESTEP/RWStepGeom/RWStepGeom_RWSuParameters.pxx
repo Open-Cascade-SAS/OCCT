@@ -36,15 +36,16 @@ public:
   static inline RWStepGeom_RWSuParameters();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                const Standard_Integer                 theNum,
-                                Handle(Interface_Check)&               theAch,
-                                const Handle(StepGeom_SuParameters)&   theEnt) const;
+                              const Standard_Integer                 theNum,
+                              Handle(Interface_Check)&               theAch,
+                              const Handle(StepGeom_SuParameters)&   theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                 theSW,
-                                 const Handle(StepGeom_SuParameters)& theEnt) const;
+                               const Handle(StepGeom_SuParameters)& theEnt) const;
 
   static inline void Share(const Handle(StepGeom_SuParameters)& theEnt,
-                             Interface_EntityIterator&            iter) const;
+                           Interface_EntityIterator&            iter) const;
 };
+
 #include "RWStepGeom_RWSuParameters_impl.pxx"
 #endif // _RWStepGeom_RWSuParameters_HeaderFile_

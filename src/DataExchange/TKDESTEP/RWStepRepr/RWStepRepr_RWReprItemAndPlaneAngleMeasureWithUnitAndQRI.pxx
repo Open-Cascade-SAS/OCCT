@@ -44,5 +44,6 @@ public:
     StepData_StepWriter&                                               SW,
     const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)& ent) const;
 };
+
 #include "RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI_impl.pxx"
 #endif // _RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI_HeaderFile

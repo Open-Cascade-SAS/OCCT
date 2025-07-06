@@ -37,15 +37,15 @@ public:
   static inline RWStepShape_RWSolidReplica();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepShape_SolidReplica)&  ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepShape_SolidReplica)&  ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                  SW,
-                                 const Handle(StepShape_SolidReplica)& ent) const;
+                               const Handle(StepShape_SolidReplica)& ent) const;
 
   static inline void Share(const Handle(StepShape_SolidReplica)& ent,
-                             Interface_EntityIterator&             iter) const;
+                           Interface_EntityIterator&             iter) const;
 
 protected:
 private:

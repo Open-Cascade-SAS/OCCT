@@ -47,7 +47,7 @@ public:
     const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent) const;
 
   static inline void Share(const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

@@ -38,9 +38,9 @@ public:
 
   //! Reads Node
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepFEA_Node)&            ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepFEA_Node)&            ent) const;
 
   //! Writes Node
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_Node)& ent) const;

@@ -49,5 +49,6 @@ public:
     const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent,
     Interface_EntityIterator&                                                  iter) const;
 };
+
 #include "RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation_impl.pxx"
 #endif // _RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation_HeaderFile

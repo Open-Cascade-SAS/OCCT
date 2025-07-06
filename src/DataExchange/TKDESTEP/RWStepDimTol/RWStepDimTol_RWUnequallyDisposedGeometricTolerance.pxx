@@ -51,7 +51,8 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_UnequallyDisposedGeometricTolerance)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 };
+
 #include "RWStepDimTol_RWUnequallyDisposedGeometricTolerance_impl.pxx"
 #endif // _RWStepDimTol_RWUnequallyDisposedGeometricTolerance_HeaderFile

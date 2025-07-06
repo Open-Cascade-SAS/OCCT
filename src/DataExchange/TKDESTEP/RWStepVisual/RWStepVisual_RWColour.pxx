@@ -36,12 +36,11 @@ public:
   static inline RWStepVisual_RWColour();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepVisual_Colour)&       ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepVisual_Colour)&       ent) const;
 
-  static inline void WriteStep(StepData_StepWriter&             SW,
-                                 const Handle(StepVisual_Colour)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepVisual_Colour)& ent) const;
 
 protected:
 private:

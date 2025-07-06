@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 };
+
 #include "RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair_impl.pxx"
 #endif // _RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair_HeaderFile_

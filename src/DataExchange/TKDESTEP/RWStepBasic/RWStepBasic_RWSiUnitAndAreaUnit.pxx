@@ -36,12 +36,12 @@ public:
   static inline RWStepBasic_RWSiUnitAndAreaUnit();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                const Standard_Integer                     num,
-                                Handle(Interface_Check)&                   ach,
-                                const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const;
+                              const Standard_Integer                     num,
+                              Handle(Interface_Check)&                   ach,
+                              const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                       SW,
-                                 const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const;
+                               const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const;
 
 protected:
 private:

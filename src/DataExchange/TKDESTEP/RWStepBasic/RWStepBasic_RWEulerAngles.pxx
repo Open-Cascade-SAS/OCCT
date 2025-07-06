@@ -38,17 +38,17 @@ public:
 
   //! Reads EulerAngles
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepBasic_EulerAngles)&   ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepBasic_EulerAngles)&   ent) const;
 
   //! Writes EulerAngles
   static inline void WriteStep(StepData_StepWriter&                 SW,
-                                 const Handle(StepBasic_EulerAngles)& ent) const;
+                               const Handle(StepBasic_EulerAngles)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_EulerAngles)& ent,
-                             Interface_EntityIterator&            iter) const;
+                           Interface_EntityIterator&            iter) const;
 
 protected:
 private:

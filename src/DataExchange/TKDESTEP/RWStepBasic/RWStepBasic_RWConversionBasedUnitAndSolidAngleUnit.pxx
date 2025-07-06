@@ -47,7 +47,7 @@ public:
     const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent) const;
 
   static inline void Share(const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 
 protected:
 private:

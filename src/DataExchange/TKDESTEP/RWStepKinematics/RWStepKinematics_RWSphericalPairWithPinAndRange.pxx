@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_SphericalPairWithPinAndRange)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_SphericalPairWithPinAndRange)& theEnt,
-                             Interface_EntityIterator&                                  iter) const;
+                           Interface_EntityIterator&                                  iter) const;
 };
+
 #include "RWStepKinematics_RWSphericalPairWithPinAndRange_impl.pxx"
 #endif // _RWStepKinematics_RWSphericalPairWithPinAndRange_HeaderFile_

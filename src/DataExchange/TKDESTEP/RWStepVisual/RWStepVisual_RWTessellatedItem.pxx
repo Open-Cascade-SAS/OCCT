@@ -35,12 +35,13 @@ public:
   static inline RWStepVisual_RWTessellatedItem();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                const Standard_Integer                    num,
-                                Handle(Interface_Check)&                  ach,
-                                const Handle(StepVisual_TessellatedItem)& ent) const;
+                              const Standard_Integer                    num,
+                              Handle(Interface_Check)&                  ach,
+                              const Handle(StepVisual_TessellatedItem)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                      SW,
-                                 const Handle(StepVisual_TessellatedItem)& ent) const;
+                               const Handle(StepVisual_TessellatedItem)& ent) const;
 };
+
 #include "RWStepVisual_RWTessellatedItem_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedItem_HeaderFile

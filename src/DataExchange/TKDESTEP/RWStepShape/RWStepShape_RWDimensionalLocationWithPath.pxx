@@ -38,17 +38,17 @@ public:
 
   //! Reads DimensionalLocationWithPath
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               data,
-                                const Standard_Integer                               num,
-                                Handle(Interface_Check)&                             ach,
-                                const Handle(StepShape_DimensionalLocationWithPath)& ent) const;
+                              const Standard_Integer                               num,
+                              Handle(Interface_Check)&                             ach,
+                              const Handle(StepShape_DimensionalLocationWithPath)& ent) const;
 
   //! Writes DimensionalLocationWithPath
   static inline void WriteStep(StepData_StepWriter&                                 SW,
-                                 const Handle(StepShape_DimensionalLocationWithPath)& ent) const;
+                               const Handle(StepShape_DimensionalLocationWithPath)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepShape_DimensionalLocationWithPath)& ent,
-                             Interface_EntityIterator&                            iter) const;
+                           Interface_EntityIterator&                            iter) const;
 
 protected:
 private:

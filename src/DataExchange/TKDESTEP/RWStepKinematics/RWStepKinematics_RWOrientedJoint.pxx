@@ -36,15 +36,16 @@ public:
   static inline RWStepKinematics_RWOrientedJoint();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      theData,
-                                const Standard_Integer                      theNum,
-                                Handle(Interface_Check)&                    theArch,
-                                const Handle(StepKinematics_OrientedJoint)& theEnt) const;
+                              const Standard_Integer                      theNum,
+                              Handle(Interface_Check)&                    theArch,
+                              const Handle(StepKinematics_OrientedJoint)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                        theSW,
-                                 const Handle(StepKinematics_OrientedJoint)& theEnt) const;
+                               const Handle(StepKinematics_OrientedJoint)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_OrientedJoint)& theEnt,
-                             Interface_EntityIterator&                   iter) const;
+                           Interface_EntityIterator&                   iter) const;
 };
+
 #include "RWStepKinematics_RWOrientedJoint_impl.pxx"
 #endif // _RWStepKinematics_RWOrientedJoint_HeaderFile_

@@ -46,7 +46,8 @@ public:
     const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent) const;
 
   static inline void Share(const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent,
-                             Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter) const;
 };
+
 #include "RWStepVisual_RWSurfaceStyleRenderingWithProperties_impl.pxx"
 #endif // _RWStepVisual_RWSurfaceStyleRenderingWithProperties_HeaderFile_

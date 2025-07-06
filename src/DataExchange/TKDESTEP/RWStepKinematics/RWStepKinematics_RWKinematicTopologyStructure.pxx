@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_KinematicTopologyStructure)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_KinematicTopologyStructure)& theEnt,
-                             Interface_EntityIterator&                                iter) const;
+                           Interface_EntityIterator&                                iter) const;
 };
+
 #include "RWStepKinematics_RWKinematicTopologyStructure_impl.pxx"
 #endif // _RWStepKinematics_RWKinematicTopologyStructure_HeaderFile_

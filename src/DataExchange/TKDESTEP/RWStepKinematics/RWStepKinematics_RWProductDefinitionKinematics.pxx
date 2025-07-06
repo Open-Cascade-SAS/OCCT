@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt,
-                             Interface_EntityIterator&                                 iter) const;
+                           Interface_EntityIterator&                                 iter) const;
 };
+
 #include "RWStepKinematics_RWProductDefinitionKinematics_impl.pxx"
 #endif // _RWStepKinematics_RWProductDefinitionKinematics_HeaderFile_

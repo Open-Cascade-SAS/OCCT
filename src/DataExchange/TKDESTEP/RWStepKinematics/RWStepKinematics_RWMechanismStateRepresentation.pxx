@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_MechanismStateRepresentation)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_MechanismStateRepresentation)& theEnt,
-                             Interface_EntityIterator&                                  iter) const;
+                           Interface_EntityIterator&                                  iter) const;
 };
+
 #include "RWStepKinematics_RWMechanismStateRepresentation_impl.pxx"
 #endif // _RWStepKinematics_RWMechanismStateRepresentation_HeaderFile

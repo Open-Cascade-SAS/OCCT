@@ -49,5 +49,6 @@ public:
     const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent,
     Interface_EntityIterator&                                              iter) const;
 };
+
 #include "RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp_impl.pxx"
 #endif // _RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp_HeaderFile

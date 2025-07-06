@@ -38,17 +38,16 @@ public:
 
   //! Reads Datum
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepDimTol_Datum)&        ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepDimTol_Datum)&        ent) const;
 
   //! Writes Datum
-  static inline void WriteStep(StepData_StepWriter&            SW,
-                                 const Handle(StepDimTol_Datum)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepDimTol_Datum)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_Datum)& ent,
-                             Interface_EntityIterator&       iter) const;
+                           Interface_EntityIterator&       iter) const;
 
 protected:
 private:

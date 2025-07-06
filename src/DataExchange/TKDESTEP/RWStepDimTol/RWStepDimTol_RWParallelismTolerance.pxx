@@ -38,17 +38,17 @@ public:
 
   //! Reads ParallelismTolerance
   static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
-                                const Standard_Integer                         num,
-                                Handle(Interface_Check)&                       ach,
-                                const Handle(StepDimTol_ParallelismTolerance)& ent) const;
+                              const Standard_Integer                         num,
+                              Handle(Interface_Check)&                       ach,
+                              const Handle(StepDimTol_ParallelismTolerance)& ent) const;
 
   //! Writes ParallelismTolerance
   static inline void WriteStep(StepData_StepWriter&                           SW,
-                                 const Handle(StepDimTol_ParallelismTolerance)& ent) const;
+                               const Handle(StepDimTol_ParallelismTolerance)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_ParallelismTolerance)& ent,
-                             Interface_EntityIterator&                      iter) const;
+                           Interface_EntityIterator&                      iter) const;
 
 protected:
 private:

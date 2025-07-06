@@ -38,17 +38,17 @@ public:
 
   //! Reads MassUnit
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepBasic_MassUnit)&      ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepBasic_MassUnit)&      ent) const;
 
   //! Writes MassUnit
   static inline void WriteStep(StepData_StepWriter&              SW,
-                                 const Handle(StepBasic_MassUnit)& ent) const;
+                               const Handle(StepBasic_MassUnit)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepBasic_MassUnit)& ent,
-                             Interface_EntityIterator&         iter) const;
+                           Interface_EntityIterator&         iter) const;
 
 protected:
 private:

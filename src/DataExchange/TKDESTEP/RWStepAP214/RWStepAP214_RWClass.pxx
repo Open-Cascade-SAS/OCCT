@@ -38,16 +38,16 @@ public:
 
   //! Reads Class
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepAP214_Class)&         ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepAP214_Class)&         ent) const;
 
   //! Writes Class
   static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepAP214_Class)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP214_Class)& ent,
-                             Interface_EntityIterator&      iter) const;
+                           Interface_EntityIterator&      iter) const;
 
 protected:
 private:

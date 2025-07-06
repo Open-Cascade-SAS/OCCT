@@ -49,5 +49,6 @@ public:
     const Handle(StepKinematics_KinematicLinkRepresentationAssociation)& theEnt,
     Interface_EntityIterator&                                            iter) const;
 };
+
 #include "RWStepKinematics_RWKinematicLinkRepresentationAssociation_impl.pxx"
 #endif // _RWStepKinematics_RWKinematicLinkRepresentationAssociation_HeaderFile_

@@ -35,12 +35,13 @@ public:
   static inline RWStepVisual_RWCoordinatesList();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,
-                                const Standard_Integer                    num,
-                                Handle(Interface_Check)&                  ach,
-                                const Handle(StepVisual_CoordinatesList)& ent) const;
+                              const Standard_Integer                    num,
+                              Handle(Interface_Check)&                  ach,
+                              const Handle(StepVisual_CoordinatesList)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                      SW,
-                                 const Handle(StepVisual_CoordinatesList)& ent) const;
+                               const Handle(StepVisual_CoordinatesList)& ent) const;
 };
+
 #include "RWStepVisual_RWCoordinatesList_impl.pxx"
 #endif // _RWStepVisual_RWCoordinatesList_HeaderFile

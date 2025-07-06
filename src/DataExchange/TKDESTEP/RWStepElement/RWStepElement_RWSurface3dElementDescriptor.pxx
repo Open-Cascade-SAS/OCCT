@@ -38,17 +38,17 @@ public:
 
   //! Reads Surface3dElementDescriptor
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                data,
-                                const Standard_Integer                                num,
-                                Handle(Interface_Check)&                              ach,
-                                const Handle(StepElement_Surface3dElementDescriptor)& ent) const;
+                              const Standard_Integer                                num,
+                              Handle(Interface_Check)&                              ach,
+                              const Handle(StepElement_Surface3dElementDescriptor)& ent) const;
 
   //! Writes Surface3dElementDescriptor
   static inline void WriteStep(StepData_StepWriter&                                  SW,
-                                 const Handle(StepElement_Surface3dElementDescriptor)& ent) const;
+                               const Handle(StepElement_Surface3dElementDescriptor)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepElement_Surface3dElementDescriptor)& ent,
-                             Interface_EntityIterator&                             iter) const;
+                           Interface_EntityIterator&                             iter) const;
 
 protected:
 private:

@@ -36,15 +36,16 @@ public:
   static inline RWStepRepr_RWRepresentationReference();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          theData,
-                                const Standard_Integer                          theNum,
-                                Handle(Interface_Check)&                        theAch,
-                                const Handle(StepRepr_RepresentationReference)& theEnt) const;
+                              const Standard_Integer                          theNum,
+                              Handle(Interface_Check)&                        theAch,
+                              const Handle(StepRepr_RepresentationReference)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                            SW,
-                                 const Handle(StepRepr_RepresentationReference)& theEnt) const;
+                               const Handle(StepRepr_RepresentationReference)& theEnt) const;
 
   static inline void Share(const Handle(StepRepr_RepresentationReference)& theEnt,
-                             Interface_EntityIterator&                       iter) const;
+                           Interface_EntityIterator&                       iter) const;
 };
+
 #include "RWStepRepr_RWRepresentationReference_impl.pxx"
 #endif // _RWStepRepr_RWRepresentationReference_HeaderFile_

@@ -38,17 +38,17 @@ public:
 
   //! Reads AppliedGroupAssignment
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          data,
-                                const Standard_Integer                          num,
-                                Handle(Interface_Check)&                        ach,
-                                const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
+                              const Standard_Integer                          num,
+                              Handle(Interface_Check)&                        ach,
+                              const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
 
   //! Writes AppliedGroupAssignment
   static inline void WriteStep(StepData_StepWriter&                            SW,
-                                 const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
+                               const Handle(StepAP214_AppliedGroupAssignment)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP214_AppliedGroupAssignment)& ent,
-                             Interface_EntityIterator&                       iter) const;
+                           Interface_EntityIterator&                       iter) const;
 
 protected:
 private:

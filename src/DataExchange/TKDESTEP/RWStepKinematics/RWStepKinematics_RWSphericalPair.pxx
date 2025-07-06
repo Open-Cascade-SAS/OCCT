@@ -36,15 +36,16 @@ public:
   static inline RWStepKinematics_RWSphericalPair();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      theData,
-                                const Standard_Integer                      theNum,
-                                Handle(Interface_Check)&                    theArch,
-                                const Handle(StepKinematics_SphericalPair)& theEnt) const;
+                              const Standard_Integer                      theNum,
+                              Handle(Interface_Check)&                    theArch,
+                              const Handle(StepKinematics_SphericalPair)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                        theSW,
-                                 const Handle(StepKinematics_SphericalPair)& theEnt) const;
+                               const Handle(StepKinematics_SphericalPair)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_SphericalPair)& theEnt,
-                             Interface_EntityIterator&                   iter) const;
+                           Interface_EntityIterator&                   iter) const;
 };
+
 #include "RWStepKinematics_RWSphericalPair_impl.pxx"
 #endif // _RWStepKinematics_RWSphericalPair_HeaderFile_

@@ -36,15 +36,16 @@ public:
   static inline RWStepKinematics_RWUniversalPairWithRange();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&               theData,
-                                const Standard_Integer                               theNum,
-                                Handle(Interface_Check)&                             theArch,
-                                const Handle(StepKinematics_UniversalPairWithRange)& theEnt) const;
+                              const Standard_Integer                               theNum,
+                              Handle(Interface_Check)&                             theArch,
+                              const Handle(StepKinematics_UniversalPairWithRange)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                                 theSW,
-                                 const Handle(StepKinematics_UniversalPairWithRange)& theEnt) const;
+                               const Handle(StepKinematics_UniversalPairWithRange)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_UniversalPairWithRange)& theEnt,
-                             Interface_EntityIterator&                            iter) const;
+                           Interface_EntityIterator&                            iter) const;
 };
+
 #include "RWStepKinematics_RWUniversalPairWithRange_impl.pxx"
 #endif // _RWStepKinematics_RWUniversalPairWithRange_HeaderFile_

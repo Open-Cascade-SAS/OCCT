@@ -34,15 +34,15 @@ public:
   static inline RWStepVisual_RWTriangulatedSurfaceSet();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
-                                const Standard_Integer                           theNum,
-                                Handle(Interface_Check)&                         theCheck,
-                                const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
+                              const Standard_Integer                           theNum,
+                              Handle(Interface_Check)&                         theCheck,
+                              const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
   static inline void WriteStep(StepData_StepWriter&                             theSW,
-                                 const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
+                               const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
   static inline void Share(const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
-                             Interface_EntityIterator&                        theIter) const;
+                           Interface_EntityIterator&                        theIter) const;
 };
 
 #include "RWStepVisual_RWTriangulatedSurfaceSet_impl.pxx"

@@ -38,16 +38,16 @@ public:
   static inline RWStepGeom_RWDirection();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepGeom_Direction)&      ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepGeom_Direction)&      ent) const;
 
   static inline void WriteStep(StepData_StepWriter&              SW,
-                                 const Handle(StepGeom_Direction)& ent) const;
+                               const Handle(StepGeom_Direction)& ent) const;
 
   static inline void Check(const Handle(StepGeom_Direction)& ent,
-                             const Interface_ShareTool&        shares,
-                             Handle(Interface_Check)&          ach) const;
+                           const Interface_ShareTool&        shares,
+                           Handle(Interface_Check)&          ach) const;
 
 protected:
 private:

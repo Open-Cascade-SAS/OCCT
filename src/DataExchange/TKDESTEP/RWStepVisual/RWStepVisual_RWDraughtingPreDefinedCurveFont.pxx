@@ -36,12 +36,12 @@ public:
   static inline RWStepVisual_RWDraughtingPreDefinedCurveFont();
 
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,
-                                const Standard_Integer                                  num,
-                                Handle(Interface_Check)&                                ach,
-                                const Handle(StepVisual_DraughtingPreDefinedCurveFont)& ent) const;
+                              const Standard_Integer                                  num,
+                              Handle(Interface_Check)&                                ach,
+                              const Handle(StepVisual_DraughtingPreDefinedCurveFont)& ent) const;
 
   static inline void WriteStep(StepData_StepWriter&                                    SW,
-                                 const Handle(StepVisual_DraughtingPreDefinedCurveFont)& ent) const;
+                               const Handle(StepVisual_DraughtingPreDefinedCurveFont)& ent) const;
 
 protected:
 private:

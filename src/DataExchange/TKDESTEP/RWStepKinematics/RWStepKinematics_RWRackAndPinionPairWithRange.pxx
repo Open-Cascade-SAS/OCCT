@@ -46,7 +46,8 @@ public:
     const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const;
 
   static inline void Share(const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt,
-                             Interface_EntityIterator&                                iter) const;
+                           Interface_EntityIterator&                                iter) const;
 };
+
 #include "RWStepKinematics_RWRackAndPinionPairWithRange_impl.pxx"
 #endif // _RWStepKinematics_RWRackAndPinionPairWithRange_HeaderFile_

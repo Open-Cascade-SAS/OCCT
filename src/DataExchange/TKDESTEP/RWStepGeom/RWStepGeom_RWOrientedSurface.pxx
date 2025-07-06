@@ -38,17 +38,17 @@ public:
 
   //! Reads OrientedSurface
   static inline void ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                const Standard_Integer                  num,
-                                Handle(Interface_Check)&                ach,
-                                const Handle(StepGeom_OrientedSurface)& ent) const;
+                              const Standard_Integer                  num,
+                              Handle(Interface_Check)&                ach,
+                              const Handle(StepGeom_OrientedSurface)& ent) const;
 
   //! Writes OrientedSurface
   static inline void WriteStep(StepData_StepWriter&                    SW,
-                                 const Handle(StepGeom_OrientedSurface)& ent) const;
+                               const Handle(StepGeom_OrientedSurface)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepGeom_OrientedSurface)& ent,
-                             Interface_EntityIterator&               iter) const;
+                           Interface_EntityIterator&               iter) const;
 
 protected:
 private:

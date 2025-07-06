@@ -46,7 +46,8 @@ public:
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
-                             Interface_EntityIterator& theIter) const;
+                           Interface_EntityIterator& theIter) const;
 };
+
 #include "RWStepVisual_RWRepositionedTessellatedGeometricSet_impl.pxx"
 #endif // _RWStepVisual_RWRepositionedTessellatedGeometricSet_HeaderFile

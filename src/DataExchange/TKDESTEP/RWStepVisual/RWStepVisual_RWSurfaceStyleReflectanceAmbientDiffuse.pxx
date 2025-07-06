@@ -43,7 +43,8 @@ public:
     const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const;
 
   static inline void Share(const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt,
-                             Interface_EntityIterator& theIter) const;
+                           Interface_EntityIterator& theIter) const;
 };
+
 #include "RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse_impl.pxx"
 #endif // _RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse_HeaderFile_

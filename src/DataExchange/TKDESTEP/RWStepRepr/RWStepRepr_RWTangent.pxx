@@ -39,17 +39,17 @@ public:
 
   //! Reads Tangent
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepRepr_Tangent)&        ent) const;
+                              const Standard_Integer                 num,
+                              Handle(Interface_Check)&               ach,
+                              const Handle(StepRepr_Tangent)&        ent) const;
 
   //! Writes Tangent
-  static inline void WriteStep(StepData_StepWriter&            SW,
-                                 const Handle(StepRepr_Tangent)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Tangent)& ent) const;
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepRepr_Tangent)& ent,
-                             Interface_EntityIterator&       iter) const;
+                           Interface_EntityIterator&       iter) const;
 };
+
 #include "RWStepRepr_RWTangent_impl.pxx"
 #endif // _RWStepRepr_RWTangent_HeaderFile
