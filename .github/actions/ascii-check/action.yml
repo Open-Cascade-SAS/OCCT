@@ -58,7 +58,7 @@ runs:
                 $hexCode = "0x{0:X}" -f $charCode
                 $positionInLine = $match.Index + 1
                 
-                $message = "Non-ASCII character found in '$file' at line $lineNumber, position $positionInLine: '$($match.Value)' (Unicode: $hexCode)"
+                $message = "Non-ASCII character found in '$file' at line $lineNumber, position $($positionInLine): '$($match.Value)' (Unicode: $hexCode)"
                 $nonAsciiLogs += $message
                 Write-Output $message
               }

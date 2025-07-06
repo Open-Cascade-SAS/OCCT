@@ -126,8 +126,12 @@ TEST(TCollection_ExtendedStringTest, Comparison)
 TEST(TCollection_ExtendedStringTest, UnicodeSupport)
 {
   // Test with unicode characters
-  const Standard_ExtCharacter unicodeChars[] = {0x0041, 0x00A9, 0x2122, 0x20AC, 0}; // A, copyright, trademark, euro
-  TCollection_ExtendedString unicodeString(unicodeChars);
+  const Standard_ExtCharacter unicodeChars[] = {0x0041,
+                                                0x00A9,
+                                                0x2122,
+                                                0x20AC,
+                                                0}; // A, copyright, trademark, euro
+  TCollection_ExtendedString  unicodeString(unicodeChars);
 
   EXPECT_EQ(4, unicodeString.Length());
   EXPECT_EQ(0x0041, unicodeString.Value(1)); // A
