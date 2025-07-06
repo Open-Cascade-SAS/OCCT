@@ -25,7 +25,7 @@ RWStepVisual_RWCurveStyleFont::RWStepVisual_RWCurveStyleFont() {}
 void RWStepVisual_RWCurveStyleFont::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepVisual_CurveStyleFont)& ent) const
+                                             const Handle(StepVisual_CurveStyleFont)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -67,7 +67,7 @@ void RWStepVisual_RWCurveStyleFont::ReadStep(const Handle(StepData_StepReaderDat
 }
 
 void RWStepVisual_RWCurveStyleFont::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepVisual_CurveStyleFont)& ent) const
+                                              const Handle(StepVisual_CurveStyleFont)& ent)
 {
 
   // --- own field : name ---
@@ -85,7 +85,7 @@ void RWStepVisual_RWCurveStyleFont::WriteStep(StepData_StepWriter&              
 }
 
 void RWStepVisual_RWCurveStyleFont::Share(const Handle(StepVisual_CurveStyleFont)& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   Standard_Integer nbElem1 = ent->NbPatternList();

@@ -37,7 +37,7 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadSt
   const Handle(StepData_StepReaderData)&                                         theData,
   const Standard_Integer                                                         theNum,
   Handle(Interface_Check)&                                                       theCheck,
-  const Handle(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters)& theEnt) const
+  const Handle(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum,
@@ -109,7 +109,7 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::ReadSt
 
 void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::WriteStep(
   StepData_StepWriter&                                                           theSW,
-  const Handle(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters)& theEnt) const
+  const Handle(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters)& theEnt)
 {
 
   // Own fields of Representation
@@ -141,7 +141,7 @@ void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::WriteS
 
 void RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::Share(
   const Handle(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters)& theEnt,
-  Interface_EntityIterator&                                                      theIter) const
+  Interface_EntityIterator&                                                      theIter)
 {
 
   // Inherited fields of Representation

@@ -32,7 +32,7 @@ RWStepBasic_RWCertification::RWStepBasic_RWCertification() {}
 void RWStepBasic_RWCertification::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepBasic_Certification)& ent) const
+                                           const Handle(StepBasic_Certification)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "certification"))
@@ -56,7 +56,7 @@ void RWStepBasic_RWCertification::ReadStep(const Handle(StepData_StepReaderData)
 //=================================================================================================
 
 void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepBasic_Certification)& ent) const
+                                            const Handle(StepBasic_Certification)& ent)
 {
 
   // Own fields of Certification
@@ -71,7 +71,7 @@ void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                
 //=================================================================================================
 
 void RWStepBasic_RWCertification::Share(const Handle(StepBasic_Certification)& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&              iter)
 {
 
   // Own fields of Certification

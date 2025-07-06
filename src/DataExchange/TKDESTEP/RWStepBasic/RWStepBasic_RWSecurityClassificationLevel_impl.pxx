@@ -22,7 +22,7 @@ void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepBasic_SecurityClassificationLevel)& ent) const
+  const Handle(StepBasic_SecurityClassificationLevel)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -43,7 +43,7 @@ void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
 
 void RWStepBasic_RWSecurityClassificationLevel::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepBasic_SecurityClassificationLevel)& ent) const
+  const Handle(StepBasic_SecurityClassificationLevel)& ent)
 {
 
   // --- own field : name ---

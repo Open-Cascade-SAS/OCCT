@@ -34,7 +34,7 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
   const Handle(StepData_StepReaderData)&                                        data,
   const Standard_Integer                                                        num0,
   Handle(Interface_Check)&                                                      ach,
-  const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent) const
+  const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent)
 {
   Standard_Integer num = 0;
   data->NamedForComplex("REPRESENTATION", "RPRSNT", num0, num, ach);
@@ -82,7 +82,7 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
 
 void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::WriteStep(
   StepData_StepWriter&                                                          SW,
-  const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent) const
+  const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent)
 {
   SW.StartEntity("CHARACTERIZED_OBJECT");
   SW.SendDerived();
@@ -104,7 +104,7 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::WriteSt
 
 void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::Share(
   const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent,
-  Interface_EntityIterator&                                                     iter) const
+  Interface_EntityIterator&                                                     iter)
 {
   Standard_Integer nbElem = ent->NbItems();
   for (Standard_Integer i = 1; i <= nbElem; i++)

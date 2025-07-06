@@ -33,7 +33,7 @@ RWStepFEA_RWFeaParametricPoint::RWStepFEA_RWFeaParametricPoint() {}
 void RWStepFEA_RWFeaParametricPoint::ReadStep(const Handle(StepData_StepReaderData)&    data,
                                               const Standard_Integer                    num,
                                               Handle(Interface_Check)&                  ach,
-                                              const Handle(StepFEA_FeaParametricPoint)& ent) const
+                                              const Handle(StepFEA_FeaParametricPoint)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_parametric_point"))
@@ -68,7 +68,7 @@ void RWStepFEA_RWFeaParametricPoint::ReadStep(const Handle(StepData_StepReaderDa
 //=================================================================================================
 
 void RWStepFEA_RWFeaParametricPoint::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepFEA_FeaParametricPoint)& ent) const
+                                               const Handle(StepFEA_FeaParametricPoint)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -89,7 +89,7 @@ void RWStepFEA_RWFeaParametricPoint::WriteStep(StepData_StepWriter&             
 //=================================================================================================
 
 void RWStepFEA_RWFeaParametricPoint::Share(const Handle(StepFEA_FeaParametricPoint)&,
-                                           Interface_EntityIterator&) const
+                                           Interface_EntityIterator&)
 {
   // Inherited fields of RepresentationItem
   // Own fields of FeaParametricPoint

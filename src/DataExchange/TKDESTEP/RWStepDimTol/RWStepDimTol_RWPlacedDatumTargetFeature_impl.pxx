@@ -32,7 +32,7 @@ void RWStepDimTol_RWPlacedDatumTargetFeature::ReadStep(
   const Handle(StepData_StepReaderData)&             data,
   const Standard_Integer                             num,
   Handle(Interface_Check)&                           ach,
-  const Handle(StepDimTol_PlacedDatumTargetFeature)& ent) const
+  const Handle(StepDimTol_PlacedDatumTargetFeature)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "placed_datum_target_feature"))
@@ -81,7 +81,7 @@ void RWStepDimTol_RWPlacedDatumTargetFeature::ReadStep(
 
 void RWStepDimTol_RWPlacedDatumTargetFeature::WriteStep(
   StepData_StepWriter&                               SW,
-  const Handle(StepDimTol_PlacedDatumTargetFeature)& ent) const
+  const Handle(StepDimTol_PlacedDatumTargetFeature)& ent)
 {
 
   // Inherited fields of ShapeAspect
@@ -103,7 +103,7 @@ void RWStepDimTol_RWPlacedDatumTargetFeature::WriteStep(
 
 void RWStepDimTol_RWPlacedDatumTargetFeature::Share(
   const Handle(StepDimTol_PlacedDatumTargetFeature)& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                          iter)
 {
 
   // Inherited fields of ShapeAspect

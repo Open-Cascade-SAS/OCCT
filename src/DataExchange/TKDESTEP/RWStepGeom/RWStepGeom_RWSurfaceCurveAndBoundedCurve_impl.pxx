@@ -37,7 +37,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent) const
+  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent)
 {
 
   // BOUNDED_CURVE: skip
@@ -105,7 +105,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent) const
+  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent)
 {
 
   SW.StartEntity("BOUNDED_CURVE");
@@ -139,7 +139,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::Share(
   const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
   RWStepGeom_RWSurfaceCurve tool;
   tool.Share(ent, iter);

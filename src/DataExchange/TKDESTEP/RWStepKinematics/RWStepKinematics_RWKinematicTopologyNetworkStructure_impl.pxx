@@ -39,7 +39,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
   const Handle(StepData_StepReaderData)&                          theData,
   const Standard_Integer                                          theNum,
   Handle(Interface_Check)&                                        theArch,
-  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "kinematic_topology_network_structure"))
@@ -99,7 +99,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
 
 void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
   StepData_StepWriter&                                            theSW,
-  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt)
 {
 
   // Own fields of Representation
@@ -125,7 +125,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
 
 void RWStepKinematics_RWKinematicTopologyNetworkStructure::Share(
   const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                       iter)
 {
 
   // Inherited fields of Representation

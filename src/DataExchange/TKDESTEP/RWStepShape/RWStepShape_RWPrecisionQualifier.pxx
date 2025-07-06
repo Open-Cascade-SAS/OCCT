@@ -38,10 +38,10 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                               const Standard_Integer                      num,
                               Handle(Interface_Check)&                    ach,
-                              const Handle(StepShape_PrecisionQualifier)& ent) const;
+                              const Handle(StepShape_PrecisionQualifier)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                        SW,
-                               const Handle(StepShape_PrecisionQualifier)& ent) const;
+                               const Handle(StepShape_PrecisionQualifier)& ent);
 
 protected:
 private:

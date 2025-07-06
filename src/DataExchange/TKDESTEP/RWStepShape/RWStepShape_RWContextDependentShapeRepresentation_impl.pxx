@@ -33,7 +33,7 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                       data,
   const Standard_Integer                                       num,
   Handle(Interface_Check)&                                     ach,
-  const Handle(StepShape_ContextDependentShapeRepresentation)& ent) const
+  const Handle(StepShape_ContextDependentShapeRepresentation)& ent)
 {
   // --- Number of Parameter Control ---
 
@@ -69,7 +69,7 @@ void RWStepShape_RWContextDependentShapeRepresentation::ReadStep(
 
 void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
   StepData_StepWriter&                                         SW,
-  const Handle(StepShape_ContextDependentShapeRepresentation)& ent) const
+  const Handle(StepShape_ContextDependentShapeRepresentation)& ent)
 {
   SW.Send(ent->RepresentationRelation());
   SW.Send(ent->RepresentedProductRelation());
@@ -79,7 +79,7 @@ void RWStepShape_RWContextDependentShapeRepresentation::WriteStep(
 
 void RWStepShape_RWContextDependentShapeRepresentation::Share(
   const Handle(StepShape_ContextDependentShapeRepresentation)& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                    iter)
 {
   iter.AddItem(ent->RepresentationRelation());
   iter.AddItem(ent->RepresentedProductRelation());

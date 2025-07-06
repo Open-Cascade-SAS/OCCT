@@ -30,7 +30,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                   data,
   const Standard_Integer                                   num0,
   Handle(Interface_Check)&                                 ach,
-  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const
+  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent)
 {
   Standard_Integer num = 0; // num0;
   data->NamedForComplex("MEASURE_WITH_UNIT", "MSWTUN", num0, num, ach);
@@ -62,7 +62,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::WriteStep(
   StepData_StepWriter&                                     SW,
-  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent) const
+  const Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)& ent)
 {
   SW.StartEntity("LENGTH_MEASURE_WITH_UNIT");
   SW.StartEntity("MEASURE_REPRESENTATION_ITEM");

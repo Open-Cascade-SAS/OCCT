@@ -41,13 +41,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,
                               Handle(Interface_Check)&               ach,
-                              const Handle(StepRepr_Apex)&           ent) const;
+                              const Handle(StepRepr_Apex)&           ent);
 
   //! Writes Apex
-  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Apex)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Apex)& ent);
 
   //! Fills data for graph (shared items)
-  static inline void Share(const Handle(StepRepr_Apex)& ent, Interface_EntityIterator& iter) const;
+  static inline void Share(const Handle(StepRepr_Apex)& ent, Interface_EntityIterator& iter);
 };
 
 #include "RWStepRepr_RWApex_impl.pxx"

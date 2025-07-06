@@ -23,7 +23,7 @@ RWStepShape_RWFaceOuterBound::RWStepShape_RWFaceOuterBound() {}
 void RWStepShape_RWFaceOuterBound::ReadStep(const Handle(StepData_StepReaderData)&  data,
                                             const Standard_Integer                  num,
                                             Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_FaceOuterBound)& ent) const
+                                            const Handle(StepShape_FaceOuterBound)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepShape_RWFaceOuterBound::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepShape_RWFaceOuterBound::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_FaceOuterBound)& ent) const
+                                             const Handle(StepShape_FaceOuterBound)& ent)
 {
 
   // --- inherited field name ---
@@ -72,7 +72,7 @@ void RWStepShape_RWFaceOuterBound::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWFaceOuterBound::Share(const Handle(StepShape_FaceOuterBound)& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&               iter)
 {
 
   iter.GetOneItem(ent->Bound());

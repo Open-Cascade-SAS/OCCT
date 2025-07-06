@@ -31,7 +31,7 @@ RWStepShape_RWAngularLocation::RWStepShape_RWAngularLocation() {}
 void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepShape_AngularLocation)& ent) const
+                                             const Handle(StepShape_AngularLocation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "angular_location"))
@@ -106,7 +106,7 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepShape_RWAngularLocation::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepShape_AngularLocation)& ent) const
+                                              const Handle(StepShape_AngularLocation)& ent)
 {
 
   // Inherited fields of ShapeAspectRelationship
@@ -143,7 +143,7 @@ void RWStepShape_RWAngularLocation::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepShape_RWAngularLocation::Share(const Handle(StepShape_AngularLocation)& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   // Inherited fields of ShapeAspectRelationship

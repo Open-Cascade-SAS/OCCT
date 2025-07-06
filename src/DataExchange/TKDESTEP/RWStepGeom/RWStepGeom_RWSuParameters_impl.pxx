@@ -32,7 +32,7 @@ RWStepGeom_RWSuParameters::RWStepGeom_RWSuParameters() {}
 void RWStepGeom_RWSuParameters::ReadStep(const Handle(StepData_StepReaderData)& theData,
                                          const Standard_Integer                 theNum,
                                          Handle(Interface_Check)&               theAch,
-                                         const Handle(StepGeom_SuParameters)&   theEnt) const
+                                         const Handle(StepGeom_SuParameters)&   theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theAch, "su_parameters"))
@@ -70,7 +70,7 @@ void RWStepGeom_RWSuParameters::ReadStep(const Handle(StepData_StepReaderData)& 
 //=================================================================================================
 
 void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                 theSW,
-                                          const Handle(StepGeom_SuParameters)& theEnt) const
+                                          const Handle(StepGeom_SuParameters)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -95,7 +95,7 @@ void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                 t
 //=================================================================================================
 
 void RWStepGeom_RWSuParameters::Share(const Handle(StepGeom_SuParameters)& /*theEnt*/,
-                                      Interface_EntityIterator& /*iter*/) const
+                                      Interface_EntityIterator& /*iter*/)
 {
 
   // Inherited fields of RepresentationItem

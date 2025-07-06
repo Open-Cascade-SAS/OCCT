@@ -26,7 +26,7 @@ RWStepBasic_RWProduct::RWStepBasic_RWProduct() {}
 void RWStepBasic_RWProduct::ReadStep(const Handle(StepData_StepReaderData)& data,
                                      const Standard_Integer                 num,
                                      Handle(Interface_Check)&               ach,
-                                     const Handle(StepBasic_Product)&       ent) const
+                                     const Handle(StepBasic_Product)&       ent)
 {
 
   // --- Number of Parameter Control ---
@@ -82,7 +82,7 @@ void RWStepBasic_RWProduct::ReadStep(const Handle(StepData_StepReaderData)& data
 }
 
 void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepBasic_Product)& ent) const
+                                      const Handle(StepBasic_Product)& ent)
 {
 
   // --- own field : id ---
@@ -115,7 +115,7 @@ void RWStepBasic_RWProduct::WriteStep(StepData_StepWriter&             SW,
 }
 
 void RWStepBasic_RWProduct::Share(const Handle(StepBasic_Product)& ent,
-                                  Interface_EntityIterator&        iter) const
+                                  Interface_EntityIterator&        iter)
 {
 
   Standard_Integer nbElem1 = ent->NbFrameOfReference();

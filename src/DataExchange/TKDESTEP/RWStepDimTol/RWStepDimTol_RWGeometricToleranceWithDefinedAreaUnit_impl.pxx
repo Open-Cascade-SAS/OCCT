@@ -35,7 +35,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                          data,
   const Standard_Integer                                          num,
   Handle(Interface_Check)&                                        ach,
-  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const
+  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "geometric_tolerance_with_defined_area_unit"))
@@ -116,7 +116,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
   StepData_StepWriter&                                            SW,
-  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const
+  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent)
 {
 
   // inherited fields from GeometricTolerance
@@ -158,7 +158,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::Share(
   const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                       iter)
 {
 
   // inherited fields from GeometricTolerance

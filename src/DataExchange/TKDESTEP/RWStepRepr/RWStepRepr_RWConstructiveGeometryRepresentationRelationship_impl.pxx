@@ -29,7 +29,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                                 data,
   const Standard_Integer                                                 num,
   Handle(Interface_Check)&                                               ach,
-  const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent) const
+  const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "constructive_geometry_representation_relationship"))
@@ -59,7 +59,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::ReadStep(
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::WriteStep(
   StepData_StepWriter&                                                   SW,
-  const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent) const
+  const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent)
 {
   // Inherited field : name
   SW.Send(ent->Name());
@@ -76,7 +76,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::WriteStep(
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::Share(
   const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent,
-  Interface_EntityIterator&                                              iter) const
+  Interface_EntityIterator&                                              iter)
 {
   iter.GetOneItem(ent->Rep1());
   iter.GetOneItem(ent->Rep2());

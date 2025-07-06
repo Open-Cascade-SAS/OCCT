@@ -40,16 +40,16 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
                               const Standard_Integer                                     num,
                               Handle(Interface_Check)&                                   ach,
-                              const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const;
+                              const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent);
 
   //! Writes CurveElementIntervalLinearlyVarying
   static inline void WriteStep(
     StepData_StepWriter&                                       SW,
-    const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent) const;
+    const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepFEA_CurveElementIntervalLinearlyVarying)& ent,
-                           Interface_EntityIterator&                                  iter) const;
+                           Interface_EntityIterator&                                  iter);
 
 protected:
 private:

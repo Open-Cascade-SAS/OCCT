@@ -40,17 +40,17 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,
                               Handle(Interface_Check)&               ach,
-                              const Handle(StepShape_BrepWithVoids)& ent) const;
+                              const Handle(StepShape_BrepWithVoids)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                   SW,
-                               const Handle(StepShape_BrepWithVoids)& ent) const;
+                               const Handle(StepShape_BrepWithVoids)& ent);
 
   static inline void Share(const Handle(StepShape_BrepWithVoids)& ent,
-                           Interface_EntityIterator&              iter) const;
+                           Interface_EntityIterator&              iter);
 
   static inline void Check(const Handle(StepShape_BrepWithVoids)& ent,
                            const Interface_ShareTool&             shares,
-                           Handle(Interface_Check)&               ach) const;
+                           Handle(Interface_Check)&               ach);
 
 protected:
 private:

@@ -33,7 +33,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
   const Handle(StepData_StepReaderData)&                    data,
   const Standard_Integer                                    num,
   Handle(Interface_Check)&                                  ach,
-  const Handle(StepAP214_ExternallyDefinedGeneralProperty)& ent) const
+  const Handle(StepAP214_ExternallyDefinedGeneralProperty)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "externally_defined_general_property"))
@@ -84,7 +84,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
 
 void RWStepAP214_RWExternallyDefinedGeneralProperty::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepAP214_ExternallyDefinedGeneralProperty)& ent) const
+  const Handle(StepAP214_ExternallyDefinedGeneralProperty)& ent)
 {
 
   // Inherited fields of GeneralProperty
@@ -111,7 +111,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::WriteStep(
 
 void RWStepAP214_RWExternallyDefinedGeneralProperty::Share(
   const Handle(StepAP214_ExternallyDefinedGeneralProperty)& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   // Inherited fields of GeneralProperty

@@ -35,7 +35,7 @@ RWStepFEA_RWGeometricNode::RWStepFEA_RWGeometricNode() {}
 void RWStepFEA_RWGeometricNode::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepFEA_GeometricNode)&   ent) const
+                                         const Handle(StepFEA_GeometricNode)&   ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_node"))
@@ -94,7 +94,7 @@ void RWStepFEA_RWGeometricNode::ReadStep(const Handle(StepData_StepReaderData)& 
 //=================================================================================================
 
 void RWStepFEA_RWGeometricNode::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepFEA_GeometricNode)& ent) const
+                                          const Handle(StepFEA_GeometricNode)& ent)
 {
 
   // Inherited fields of Representation
@@ -119,7 +119,7 @@ void RWStepFEA_RWGeometricNode::WriteStep(StepData_StepWriter&                 S
 //=================================================================================================
 
 void RWStepFEA_RWGeometricNode::Share(const Handle(StepFEA_GeometricNode)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   // Inherited fields of Representation

@@ -36,11 +36,11 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                theData,
                               const Standard_Integer                                theNum,
                               Handle(Interface_Check)&                              theAch,
-                              const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
+                              const Handle(StepVisual_RepositionedTessellatedItem)& theEnt);
 
   //! Writes RepositionedTessellatedItem
   static inline void WriteStep(StepData_StepWriter&                                  theSW,
-                               const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const;
+                               const Handle(StepVisual_RepositionedTessellatedItem)& theEnt);
 };
 
 #include "RWStepVisual_RWRepositionedTessellatedItem_impl.pxx"

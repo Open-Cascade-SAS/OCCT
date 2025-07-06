@@ -35,7 +35,7 @@ RWStepFEA_RWNodeWithVector::RWStepFEA_RWNodeWithVector() {}
 void RWStepFEA_RWNodeWithVector::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepFEA_NodeWithVector)&  ent) const
+                                          const Handle(StepFEA_NodeWithVector)&  ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_with_vector"))
@@ -94,7 +94,7 @@ void RWStepFEA_RWNodeWithVector::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepFEA_RWNodeWithVector::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepFEA_NodeWithVector)& ent) const
+                                           const Handle(StepFEA_NodeWithVector)& ent)
 {
 
   // Inherited fields of Representation
@@ -119,7 +119,7 @@ void RWStepFEA_RWNodeWithVector::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepFEA_RWNodeWithVector::Share(const Handle(StepFEA_NodeWithVector)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   // Inherited fields of Representation

@@ -24,7 +24,7 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_DerivedUnitElement)& ent) const
+  const Handle(StepBasic_DerivedUnitElement)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -48,7 +48,7 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
 
 void RWStepBasic_RWDerivedUnitElement::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepBasic_DerivedUnitElement)& ent) const
+  const Handle(StepBasic_DerivedUnitElement)& ent)
 {
 
   // --- own field : dimensions ---
@@ -58,7 +58,7 @@ void RWStepBasic_RWDerivedUnitElement::WriteStep(
 }
 
 void RWStepBasic_RWDerivedUnitElement::Share(const Handle(StepBasic_DerivedUnitElement)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
 
   iter.GetOneItem(ent->Unit());

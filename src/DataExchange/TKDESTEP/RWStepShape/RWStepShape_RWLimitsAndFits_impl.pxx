@@ -21,7 +21,7 @@ RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() {}
 void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_LimitsAndFits)& ent) const
+                                           const Handle(StepShape_LimitsAndFits)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_LimitsAndFits)& ent) const
+                                            const Handle(StepShape_LimitsAndFits)& ent)
 {
   SW.Send(ent->FormVariance());
   SW.Send(ent->ZoneVariance());

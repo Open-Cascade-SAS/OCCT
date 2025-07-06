@@ -42,16 +42,16 @@ public:
     const Handle(StepData_StepReaderData)&                           data,
     const Standard_Integer                                           num,
     Handle(Interface_Check)&                                         ach,
-    const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent) const;
+    const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent);
 
   //! Writes GeometricToleranceWithMaximumTolerance
   static inline void WriteStep(
     StepData_StepWriter&                                             SW,
-    const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent) const;
+    const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent,
-                           Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter);
 };
 
 #include "RWStepDimTol_RWGeometricToleranceWithMaximumTolerance_impl.pxx"

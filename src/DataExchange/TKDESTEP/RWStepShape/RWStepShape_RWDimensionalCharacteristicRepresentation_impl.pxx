@@ -35,7 +35,7 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                           data,
   const Standard_Integer                                           num,
   Handle(Interface_Check)&                                         ach,
-  const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent) const
+  const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "dimensional_characteristic_representation"))
@@ -62,7 +62,7 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::ReadStep(
 
 void RWStepShape_RWDimensionalCharacteristicRepresentation::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent) const
+  const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent)
 {
 
   // Own fields of DimensionalCharacteristicRepresentation
@@ -76,7 +76,7 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::WriteStep(
 
 void RWStepShape_RWDimensionalCharacteristicRepresentation::Share(
   const Handle(StepShape_DimensionalCharacteristicRepresentation)& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                        iter)
 {
 
   // Own fields of DimensionalCharacteristicRepresentation

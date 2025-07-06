@@ -36,14 +36,14 @@ public:
     const Handle(StepData_StepReaderData)&                          theData,
     const Standard_Integer                                          theNum,
     Handle(Interface_Check)&                                        theAch,
-    const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const;
+    const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt);
 
   static inline void WriteStep(
     StepData_StepWriter&                                            theSW,
-    const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const;
+    const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt);
 
   static inline void Share(const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt,
-                           Interface_EntityIterator& theIter) const;
+                           Interface_EntityIterator& theIter);
 };
 
 #include "RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse_impl.pxx"

@@ -27,7 +27,7 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                data,
   const Standard_Integer                                num,
   Handle(Interface_Check)&                              ach,
-  const Handle(StepAP214_AutoDesignApprovalAssignment)& ent) const
+  const Handle(StepAP214_AutoDesignApprovalAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -69,7 +69,7 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::ReadStep(
 
 void RWStepAP214_RWAutoDesignApprovalAssignment::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepAP214_AutoDesignApprovalAssignment)& ent) const
+  const Handle(StepAP214_AutoDesignApprovalAssignment)& ent)
 {
 
   // --- inherited field assignedApproval ---
@@ -88,7 +88,7 @@ void RWStepAP214_RWAutoDesignApprovalAssignment::WriteStep(
 
 void RWStepAP214_RWAutoDesignApprovalAssignment::Share(
   const Handle(StepAP214_AutoDesignApprovalAssignment)& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                             iter)
 {
 
   iter.GetOneItem(ent->AssignedApproval());

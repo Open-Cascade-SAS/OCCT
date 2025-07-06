@@ -35,7 +35,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
   const Handle(StepData_StepReaderData)&             theData,
   const Standard_Integer                             theNum,
   Handle(Interface_Check)&                           theArch,
-  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+  const Handle(StepKinematics_SphericalPairWithPin)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "spherical_pair_with_pin"))
@@ -161,7 +161,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 
 void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
   StepData_StepWriter&                               theSW,
-  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+  const Handle(StepKinematics_SphericalPairWithPin)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -206,7 +206,7 @@ void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
 
 void RWStepKinematics_RWSphericalPairWithPin::Share(
   const Handle(StepKinematics_SphericalPairWithPin)& theEnt,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                          iter)
 {
 
   // Inherited fields of RepresentationItem

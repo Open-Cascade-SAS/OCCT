@@ -32,7 +32,7 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_DocumentProductEquivalence)& ent) const
+  const Handle(StepBasic_DocumentProductEquivalence)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document_product_equivalence"))
@@ -89,7 +89,7 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
 
 void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_DocumentProductEquivalence)& ent) const
+  const Handle(StepBasic_DocumentProductEquivalence)& ent)
 {
 
   // Inherited fields of DocumentProductAssociation
@@ -112,7 +112,7 @@ void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
 
 void RWStepBasic_RWDocumentProductEquivalence::Share(
   const Handle(StepBasic_DocumentProductEquivalence)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   // Inherited fields of DocumentProductAssociation

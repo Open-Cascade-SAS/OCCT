@@ -41,7 +41,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
   const Handle(StepData_StepReaderData)&                        theData,
   const Standard_Integer                                        theNum,
   Handle(Interface_Check)&                                      theArch,
-  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt) const
+  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 15, theArch, "point_on_planar_curve_pair_with_range"))
@@ -231,7 +231,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
   StepData_StepWriter&                                          theSW,
-  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt) const
+  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -314,7 +314,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::Share(
   const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt,
-  Interface_EntityIterator&                                     iter) const
+  Interface_EntityIterator&                                     iter)
 {
 
   // Inherited fields of RepresentationItem

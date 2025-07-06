@@ -39,14 +39,14 @@ public:
     const Handle(StepData_StepReaderData)&                        data,
     const Standard_Integer                                        num,
     Handle(Interface_Check)&                                      ach,
-    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent) const;
+    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent);
 
   static inline void WriteStep(
     StepData_StepWriter&                                          SW,
-    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent) const;
+    const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent);
 
   static inline void Share(const Handle(StepVisual_SurfaceStyleRenderingWithProperties)& ent,
-                           Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter);
 };
 
 #include "RWStepVisual_RWSurfaceStyleRenderingWithProperties_impl.pxx"

@@ -35,7 +35,7 @@ void RWStepFEA_RWFeaCurveSectionGeometricRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                      data,
   const Standard_Integer                                      num,
   Handle(Interface_Check)&                                    ach,
-  const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent) const
+  const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_curve_section_geometric_relationship"))
@@ -67,7 +67,7 @@ void RWStepFEA_RWFeaCurveSectionGeometricRelationship::ReadStep(
 
 void RWStepFEA_RWFeaCurveSectionGeometricRelationship::WriteStep(
   StepData_StepWriter&                                        SW,
-  const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent) const
+  const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent)
 {
 
   // Own fields of FeaCurveSectionGeometricRelationship
@@ -81,7 +81,7 @@ void RWStepFEA_RWFeaCurveSectionGeometricRelationship::WriteStep(
 
 void RWStepFEA_RWFeaCurveSectionGeometricRelationship::Share(
   const Handle(StepFEA_FeaCurveSectionGeometricRelationship)& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                                   iter)
 {
 
   // Own fields of FeaCurveSectionGeometricRelationship

@@ -23,7 +23,7 @@ RWStepShape_RWSphere::RWStepShape_RWSphere() {}
 void RWStepShape_RWSphere::ReadStep(const Handle(StepData_StepReaderData)& data,
                                     const Standard_Integer                 num,
                                     Handle(Interface_Check)&               ach,
-                                    const Handle(StepShape_Sphere)&        ent) const
+                                    const Handle(StepShape_Sphere)&        ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepShape_RWSphere::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepShape_RWSphere::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepShape_Sphere)& ent) const
+                                     const Handle(StepShape_Sphere)& ent)
 {
 
   // --- inherited field name ---
@@ -72,7 +72,7 @@ void RWStepShape_RWSphere::WriteStep(StepData_StepWriter&            SW,
 }
 
 void RWStepShape_RWSphere::Share(const Handle(StepShape_Sphere)& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&       iter)
 {
 
   iter.GetOneItem(ent->Centre());

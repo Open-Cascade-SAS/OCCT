@@ -23,7 +23,7 @@ RWStepShape_RWOpenShell::RWStepShape_RWOpenShell() {}
 void RWStepShape_RWOpenShell::ReadStep(const Handle(StepData_StepReaderData)& data,
                                        const Standard_Integer                 num,
                                        Handle(Interface_Check)&               ach,
-                                       const Handle(StepShape_OpenShell)&     ent) const
+                                       const Handle(StepShape_OpenShell)&     ent)
 {
 
   // --- Number of Parameter Control ---
@@ -60,7 +60,7 @@ void RWStepShape_RWOpenShell::ReadStep(const Handle(StepData_StepReaderData)& da
 }
 
 void RWStepShape_RWOpenShell::WriteStep(StepData_StepWriter&               SW,
-                                        const Handle(StepShape_OpenShell)& ent) const
+                                        const Handle(StepShape_OpenShell)& ent)
 {
 
   // --- inherited field name ---
@@ -78,7 +78,7 @@ void RWStepShape_RWOpenShell::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepShape_RWOpenShell::Share(const Handle(StepShape_OpenShell)& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&          iter)
 {
 
   Standard_Integer nbElem1 = ent->NbCfsFaces();

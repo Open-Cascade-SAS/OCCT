@@ -34,7 +34,7 @@ void RWStepKinematics_RWScrewPairValue::ReadStep(
   const Handle(StepData_StepReaderData)&       theData,
   const Standard_Integer                       theNum,
   Handle(Interface_Check)&                     theArch,
-  const Handle(StepKinematics_ScrewPairValue)& theEnt) const
+  const Handle(StepKinematics_ScrewPairValue)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "screw_pair_value"))
@@ -68,7 +68,7 @@ void RWStepKinematics_RWScrewPairValue::ReadStep(
 
 void RWStepKinematics_RWScrewPairValue::WriteStep(
   StepData_StepWriter&                         theSW,
-  const Handle(StepKinematics_ScrewPairValue)& theEnt) const
+  const Handle(StepKinematics_ScrewPairValue)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -87,7 +87,7 @@ void RWStepKinematics_RWScrewPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairValue::Share(const Handle(StepKinematics_ScrewPairValue)& theEnt,
-                                              Interface_EntityIterator& iter) const
+                                              Interface_EntityIterator& iter)
 {
 
   // Inherited fields of RepresentationItem

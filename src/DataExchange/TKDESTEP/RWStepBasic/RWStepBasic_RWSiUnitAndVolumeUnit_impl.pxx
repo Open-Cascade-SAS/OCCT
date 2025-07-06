@@ -29,7 +29,7 @@ void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(
   const Handle(StepData_StepReaderData)&       data,
   const Standard_Integer                       num0,
   Handle(Interface_Check)&                     ach,
-  const Handle(StepBasic_SiUnitAndVolumeUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndVolumeUnit)& ent)
 {
   Standard_Integer num = 0;
   data->NamedForComplex("NAMED_UNIT", "NMDUNT", num0, num, ach);
@@ -94,7 +94,7 @@ void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(
 
 void RWStepBasic_RWSiUnitAndVolumeUnit::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepBasic_SiUnitAndVolumeUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndVolumeUnit)& ent)
 {
   SW.StartEntity("NAMED_UNIT");
   SW.Send(ent->Dimensions());

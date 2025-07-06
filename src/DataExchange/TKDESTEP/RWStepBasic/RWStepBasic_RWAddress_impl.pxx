@@ -21,7 +21,7 @@ RWStepBasic_RWAddress::RWStepBasic_RWAddress() {}
 void RWStepBasic_RWAddress::ReadStep(const Handle(StepData_StepReaderData)& data,
                                      const Standard_Integer                 num,
                                      Handle(Interface_Check)&               ach,
-                                     const Handle(StepBasic_Address)&       ent) const
+                                     const Handle(StepBasic_Address)&       ent)
 {
 
   // --- Number of Parameter Control ---
@@ -237,7 +237,7 @@ void RWStepBasic_RWAddress::ReadStep(const Handle(StepData_StepReaderData)& data
 }
 
 void RWStepBasic_RWAddress::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepBasic_Address)& ent) const
+                                      const Handle(StepBasic_Address)& ent)
 {
 
   // --- own field : internalLocation ---

@@ -23,7 +23,7 @@ RWStepGeom_RWSphericalSurface::RWStepGeom_RWSphericalSurface() {}
 void RWStepGeom_RWSphericalSurface::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepGeom_SphericalSurface)& ent) const
+                                             const Handle(StepGeom_SphericalSurface)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepGeom_RWSphericalSurface::ReadStep(const Handle(StepData_StepReaderDat
 }
 
 void RWStepGeom_RWSphericalSurface::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepGeom_SphericalSurface)& ent) const
+                                              const Handle(StepGeom_SphericalSurface)& ent)
 {
 
   // --- inherited field name ---
@@ -72,7 +72,7 @@ void RWStepGeom_RWSphericalSurface::WriteStep(StepData_StepWriter&              
 }
 
 void RWStepGeom_RWSphericalSurface::Share(const Handle(StepGeom_SphericalSurface)& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   iter.GetOneItem(ent->Position());

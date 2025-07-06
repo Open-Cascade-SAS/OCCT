@@ -21,7 +21,7 @@ RWStepShape_RWLoop::RWStepShape_RWLoop() {}
 void RWStepShape_RWLoop::ReadStep(const Handle(StepData_StepReaderData)& data,
                                   const Standard_Integer                 num,
                                   Handle(Interface_Check)&               ach,
-                                  const Handle(StepShape_Loop)&          ent) const
+                                  const Handle(StepShape_Loop)&          ent)
 {
 
   // --- Number of Parameter Control ---
@@ -40,7 +40,7 @@ void RWStepShape_RWLoop::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName);
 }
 
-void RWStepShape_RWLoop::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Loop)& ent) const
+void RWStepShape_RWLoop::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Loop)& ent)
 {
 
   // --- inherited field name ---

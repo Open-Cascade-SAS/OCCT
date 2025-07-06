@@ -36,7 +36,7 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                                    theData,
   const Standard_Integer                                                    theNum,
   Handle(Interface_Check)&                                                  theArch,
-  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
+  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum,
@@ -71,7 +71,7 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
 
 void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep(
   StepData_StepWriter&                                                      theSW,
-  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
+  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt)
 {
 
   // Own fields of ContextDependentKinematicLinkRepresentation
@@ -85,7 +85,7 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep(
 
 void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::Share(
   const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt,
-  Interface_EntityIterator&                                                 iter) const
+  Interface_EntityIterator&                                                 iter)
 {
 
   // Own fields of ContextDependentKinematicLinkRepresentation

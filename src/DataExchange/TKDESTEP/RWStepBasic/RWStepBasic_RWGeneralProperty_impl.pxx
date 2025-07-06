@@ -30,7 +30,7 @@ RWStepBasic_RWGeneralProperty::RWStepBasic_RWGeneralProperty() {}
 void RWStepBasic_RWGeneralProperty::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_GeneralProperty)& ent) const
+                                             const Handle(StepBasic_GeneralProperty)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "general_property"))
@@ -62,7 +62,7 @@ void RWStepBasic_RWGeneralProperty::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepBasic_RWGeneralProperty::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_GeneralProperty)& ent) const
+                                              const Handle(StepBasic_GeneralProperty)& ent)
 {
 
   // Own fields of GeneralProperty
@@ -82,7 +82,7 @@ void RWStepBasic_RWGeneralProperty::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepBasic_RWGeneralProperty::Share(const Handle(StepBasic_GeneralProperty)&,
-                                          Interface_EntityIterator&) const
+                                          Interface_EntityIterator&)
 {
   // Own fields of GeneralProperty
 }

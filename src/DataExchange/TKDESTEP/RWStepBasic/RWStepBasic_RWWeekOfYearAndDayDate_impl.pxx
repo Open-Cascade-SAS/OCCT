@@ -22,7 +22,7 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_WeekOfYearAndDayDate)& ent) const
+  const Handle(StepBasic_WeekOfYearAndDayDate)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -64,7 +64,7 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
 
 void RWStepBasic_RWWeekOfYearAndDayDate::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepBasic_WeekOfYearAndDayDate)& ent) const
+  const Handle(StepBasic_WeekOfYearAndDayDate)& ent)
 {
 
   // --- inherited field yearComponent ---

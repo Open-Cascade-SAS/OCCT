@@ -39,7 +39,7 @@ void RWStepVisual_RWComplexTriangulatedFace::ReadStep(
   const Handle(StepData_StepReaderData)&            theData,
   const Standard_Integer                            theNum,
   Handle(Interface_Check)&                          theCheck,
-  const Handle(StepVisual_ComplexTriangulatedFace)& theEnt) const
+  const Handle(StepVisual_ComplexTriangulatedFace)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theCheck, "complex_triangulated_face"))
@@ -187,7 +187,7 @@ void RWStepVisual_RWComplexTriangulatedFace::ReadStep(
 
 void RWStepVisual_RWComplexTriangulatedFace::WriteStep(
   StepData_StepWriter&                              theSW,
-  const Handle(StepVisual_ComplexTriangulatedFace)& theEnt) const
+  const Handle(StepVisual_ComplexTriangulatedFace)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -270,7 +270,7 @@ void RWStepVisual_RWComplexTriangulatedFace::WriteStep(
 
 void RWStepVisual_RWComplexTriangulatedFace::Share(
   const Handle(StepVisual_ComplexTriangulatedFace)& theEnt,
-  Interface_EntityIterator&                         theIter) const
+  Interface_EntityIterator&                         theIter)
 {
 
   // Inherited fields of RepresentationItem

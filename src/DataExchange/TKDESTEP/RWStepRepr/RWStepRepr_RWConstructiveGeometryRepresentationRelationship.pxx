@@ -39,15 +39,15 @@ public:
     const Handle(StepData_StepReaderData)&                                 data,
     const Standard_Integer                                                 num,
     Handle(Interface_Check)&                                               ach,
-    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent) const;
+    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent);
 
   static inline void WriteStep(
     StepData_StepWriter&                                                   SW,
-    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent) const;
+    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent);
 
   static inline void Share(
     const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& ent,
-    Interface_EntityIterator&                                              iter) const;
+    Interface_EntityIterator&                                              iter);
 };
 
 #include "RWStepRepr_RWConstructiveGeometryRepresentationRelationship_impl.pxx"

@@ -41,15 +41,15 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,
                               Handle(Interface_Check)&                           ach,
-                              const Handle(StepDimTol_NonUniformZoneDefinition)& ent) const;
+                              const Handle(StepDimTol_NonUniformZoneDefinition)& ent);
 
   //! Writes NonUniformZoneDefinition
   static inline void WriteStep(StepData_StepWriter&                               SW,
-                               const Handle(StepDimTol_NonUniformZoneDefinition)& ent) const;
+                               const Handle(StepDimTol_NonUniformZoneDefinition)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepDimTol_NonUniformZoneDefinition)& ent,
-                           Interface_EntityIterator&                          iter) const;
+                           Interface_EntityIterator&                          iter);
 };
 
 #include "RWStepDimTol_RWNonUniformZoneDefinition_impl.pxx"

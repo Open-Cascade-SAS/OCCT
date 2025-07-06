@@ -23,7 +23,7 @@ RWStepShape_RWOrientedEdge::RWStepShape_RWOrientedEdge() {}
 void RWStepShape_RWOrientedEdge::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepShape_OrientedEdge)&  ent) const
+                                          const Handle(StepShape_OrientedEdge)&  ent)
 {
 
   // --- Number of Parameter Control ---
@@ -65,7 +65,7 @@ void RWStepShape_RWOrientedEdge::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepShape_RWOrientedEdge::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepShape_OrientedEdge)& ent) const
+                                           const Handle(StepShape_OrientedEdge)& ent)
 {
 
   // --- inherited field name ---
@@ -90,7 +90,7 @@ void RWStepShape_RWOrientedEdge::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWOrientedEdge::Share(const Handle(StepShape_OrientedEdge)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   iter.GetOneItem(ent->EdgeElement());

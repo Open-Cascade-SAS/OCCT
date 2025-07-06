@@ -33,7 +33,7 @@ void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::ReadStep(
   const Handle(StepData_StepReaderData)&                                 data,
   const Standard_Integer                                                 num0,
   Handle(Interface_Check)&                                               ach,
-  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
+  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent)
 {
   Standard_Integer num = 0;
   data->NamedForComplex("SHAPE_ASPECT", "SHPASP", num0, num, ach);
@@ -63,7 +63,7 @@ void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::ReadStep(
 
 void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::WriteStep(
   StepData_StepWriter&                                                   SW,
-  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
+  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent)
 {
   SW.StartEntity("COMPOSITE_GROUP_SHAPE_ASPECT");
   SW.StartEntity("COMPOSITE_SHAPE_ASPECT");
@@ -79,7 +79,7 @@ void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::WriteStep(
 
 void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::Share(
   const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent,
-  Interface_EntityIterator&                                              iter) const
+  Interface_EntityIterator&                                              iter)
 {
   iter.GetOneItem(ent->OfShape());
 }

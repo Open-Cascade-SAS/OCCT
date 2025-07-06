@@ -38,13 +38,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,
                               Handle(Interface_Check)&                            ach,
-                              const Handle(StepBasic_ProductDefinitionReference)& ent) const;
+                              const Handle(StepBasic_ProductDefinitionReference)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                                SW,
-                               const Handle(StepBasic_ProductDefinitionReference)& ent) const;
+                               const Handle(StepBasic_ProductDefinitionReference)& ent);
 
   static inline void Share(const Handle(StepBasic_ProductDefinitionReference)& ent,
-                           Interface_EntityIterator&                           iter) const;
+                           Interface_EntityIterator&                           iter);
 };
 
 #include "RWStepBasic_RWProductDefinitionReference_impl.pxx"

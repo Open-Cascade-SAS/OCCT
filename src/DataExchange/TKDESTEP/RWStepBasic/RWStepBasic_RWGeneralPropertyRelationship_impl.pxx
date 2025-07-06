@@ -29,7 +29,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&               theData,
   const Standard_Integer                               theNum,
   Handle(Interface_Check)&                             theAch,
-  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
+  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association"))
@@ -77,7 +77,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::ReadStep(
 
 void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(
   StepData_StepWriter&                                 theSW,
-  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt) const
+  const Handle(StepBasic_GeneralPropertyRelationship)& theEnt)
 {
   theSW.Send(theEnt->Name());
 
@@ -99,7 +99,7 @@ void RWStepBasic_RWGeneralPropertyRelationship::WriteStep(
 
 void RWStepBasic_RWGeneralPropertyRelationship::Share(
   const Handle(StepBasic_GeneralPropertyRelationship)& theEnt,
-  Interface_EntityIterator&                            theIter) const
+  Interface_EntityIterator&                            theIter)
 {
   theIter.AddItem(theEnt->RelatingGeneralProperty());
 

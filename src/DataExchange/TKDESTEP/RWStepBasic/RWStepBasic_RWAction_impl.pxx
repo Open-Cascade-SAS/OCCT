@@ -32,7 +32,7 @@ RWStepBasic_RWAction::RWStepBasic_RWAction() {}
 void RWStepBasic_RWAction::ReadStep(const Handle(StepData_StepReaderData)& data,
                                     const Standard_Integer                 num,
                                     Handle(Interface_Check)&               ach,
-                                    const Handle(StepBasic_Action)&        ent) const
+                                    const Handle(StepBasic_Action)&        ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "action"))
@@ -69,7 +69,7 @@ void RWStepBasic_RWAction::ReadStep(const Handle(StepData_StepReaderData)& data,
 //=================================================================================================
 
 void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepBasic_Action)& ent) const
+                                     const Handle(StepBasic_Action)& ent)
 {
 
   // Own fields of Action
@@ -89,7 +89,7 @@ void RWStepBasic_RWAction::WriteStep(StepData_StepWriter&            SW,
 //=================================================================================================
 
 void RWStepBasic_RWAction::Share(const Handle(StepBasic_Action)& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&       iter)
 {
 
   // Own fields of Action

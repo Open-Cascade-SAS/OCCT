@@ -38,13 +38,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
                               const Standard_Integer                           theNum,
                               Handle(Interface_Check)&                         theArch,
-                              const Handle(StepKinematics_PointOnSurfacePair)& theEnt) const;
+                              const Handle(StepKinematics_PointOnSurfacePair)& theEnt);
 
   static inline void WriteStep(StepData_StepWriter&                             theSW,
-                               const Handle(StepKinematics_PointOnSurfacePair)& theEnt) const;
+                               const Handle(StepKinematics_PointOnSurfacePair)& theEnt);
 
   static inline void Share(const Handle(StepKinematics_PointOnSurfacePair)& theEnt,
-                           Interface_EntityIterator&                        iter) const;
+                           Interface_EntityIterator&                        iter);
 };
 
 #include "RWStepKinematics_RWPointOnSurfacePair_impl.pxx"

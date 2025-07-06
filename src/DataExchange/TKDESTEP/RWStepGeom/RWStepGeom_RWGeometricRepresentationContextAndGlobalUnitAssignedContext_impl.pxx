@@ -27,7 +27,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
   const Handle(StepData_StepReaderData)&                                             data,
   const Standard_Integer                                                             num0,
   Handle(Interface_Check)&                                                           ach,
-  const Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)& ent) const
+  const Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)& ent)
 {
 
   Standard_Integer num = num0;
@@ -91,7 +91,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Re
 
 void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::WriteStep(
   StepData_StepWriter&                                                               SW,
-  const Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)& ent) const
+  const Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)& ent)
 {
 
   // --- Instance of plex component GeometricRepresentationContext ---
@@ -126,7 +126,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Wr
 
 void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::Share(
   const Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)& ent,
-  Interface_EntityIterator&                                                          iter) const
+  Interface_EntityIterator&                                                          iter)
 {
 
   Standard_Integer nbElem1 = ent->NbUnits();

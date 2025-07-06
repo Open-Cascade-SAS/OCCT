@@ -28,7 +28,7 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepGeom_RationalBSplineSurface)& ent) const
+  const Handle(StepGeom_RationalBSplineSurface)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -156,7 +156,7 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepGeom_RationalBSplineSurface)& ent) const
+  const Handle(StepGeom_RationalBSplineSurface)& ent)
 {
 
   // --- inherited field name ---
@@ -221,7 +221,7 @@ void RWStepGeom_RWRationalBSplineSurface::WriteStep(
 }
 
 void RWStepGeom_RWRationalBSplineSurface::Share(const Handle(StepGeom_RationalBSplineSurface)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();
@@ -237,7 +237,7 @@ void RWStepGeom_RWRationalBSplineSurface::Share(const Handle(StepGeom_RationalBS
 
 void RWStepGeom_RWRationalBSplineSurface::Check(const Handle(StepGeom_RationalBSplineSurface)& ent,
                                                 const Interface_ShareTool&,
-                                                Handle(Interface_Check)& ach) const
+                                                Handle(Interface_Check)& ach)
 {
   Standard_Integer nbWgtU = ent->NbWeightsDataI();
   Standard_Integer nbWgtV = ent->NbWeightsDataJ();

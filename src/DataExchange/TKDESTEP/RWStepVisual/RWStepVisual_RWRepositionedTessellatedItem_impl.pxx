@@ -25,7 +25,7 @@ void RWStepVisual_RWRepositionedTessellatedItem::ReadStep(
   const Handle(StepData_StepReaderData)&                theData,
   const Standard_Integer                                theNum,
   Handle(Interface_Check)&                              theAch,
-  const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const
+  const Handle(StepVisual_RepositionedTessellatedItem)& theEnt)
 {
   // --- Number of Parameter Control ---
   if (!theData->CheckNbParams(theNum, 2, theAch, "tessellated_item"))
@@ -51,7 +51,7 @@ void RWStepVisual_RWRepositionedTessellatedItem::ReadStep(
 
 void RWStepVisual_RWRepositionedTessellatedItem::WriteStep(
   StepData_StepWriter&                                  theSW,
-  const Handle(StepVisual_RepositionedTessellatedItem)& theEnt) const
+  const Handle(StepVisual_RepositionedTessellatedItem)& theEnt)
 {
   // --- inherited field name ---
   theSW.Send(theEnt->Name());

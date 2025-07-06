@@ -39,7 +39,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                       theData,
   const Standard_Integer                                       theNum,
   Handle(Interface_Check)&                                     theArch,
-  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt) const
+  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theArch, "pair_representation_relationship"))
@@ -112,7 +112,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
 
 void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
   StepData_StepWriter&                                         theSW,
-  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt) const
+  const Handle(StepKinematics_PairRepresentationRelationship)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -142,7 +142,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
 
 void RWStepKinematics_RWPairRepresentationRelationship::Share(
   const Handle(StepKinematics_PairRepresentationRelationship)& theEnt,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                    iter)
 {
 
   // Inherited fields of RepresentationItem

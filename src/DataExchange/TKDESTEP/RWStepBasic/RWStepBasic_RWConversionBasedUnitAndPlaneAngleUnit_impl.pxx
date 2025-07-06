@@ -32,7 +32,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                        data,
   const Standard_Integer                                        num0,
   Handle(Interface_Check)&                                      ach,
-  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent)
 {
   // sln 09.10.2001. BUC61003. Correction of looking for items of complex entity in case of them  do
   // not saticfy to alphabetical order CONVERSION_BASED_UNIT
@@ -74,7 +74,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
 
 void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep(
   StepData_StepWriter&                                          SW,
-  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent)
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -101,7 +101,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::Share(
   const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent,
-  Interface_EntityIterator&                                     iter) const
+  Interface_EntityIterator&                                     iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

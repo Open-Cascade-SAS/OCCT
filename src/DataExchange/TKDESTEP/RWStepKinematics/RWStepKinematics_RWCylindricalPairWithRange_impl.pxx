@@ -36,7 +36,7 @@ void RWStepKinematics_RWCylindricalPairWithRange::ReadStep(
   const Handle(StepData_StepReaderData)&                 theData,
   const Standard_Integer                                 theNum,
   Handle(Interface_Check)&                               theArch,
-  const Handle(StepKinematics_CylindricalPairWithRange)& theEnt) const
+  const Handle(StepKinematics_CylindricalPairWithRange)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 16, theArch, "cylindrical_pair_with_range"))
@@ -236,7 +236,7 @@ void RWStepKinematics_RWCylindricalPairWithRange::ReadStep(
 
 void RWStepKinematics_RWCylindricalPairWithRange::WriteStep(
   StepData_StepWriter&                                   theSW,
-  const Handle(StepKinematics_CylindricalPairWithRange)& theEnt) const
+  const Handle(StepKinematics_CylindricalPairWithRange)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -311,7 +311,7 @@ void RWStepKinematics_RWCylindricalPairWithRange::WriteStep(
 
 void RWStepKinematics_RWCylindricalPairWithRange::Share(
   const Handle(StepKinematics_CylindricalPairWithRange)& theEnt,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                              iter)
 {
 
   // Inherited fields of RepresentationItem

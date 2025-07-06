@@ -31,7 +31,7 @@ void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
   const Handle(StepData_StepReaderData)&            data,
   const Standard_Integer                            num,
   Handle(Interface_Check)&                          ach,
-  const Handle(StepVisual_SurfaceStyleTransparent)& ent) const
+  const Handle(StepVisual_SurfaceStyleTransparent)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "surface_style_transparent"))
@@ -50,7 +50,7 @@ void RWStepVisual_RWSurfaceStyleTransparent::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleTransparent::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepVisual_SurfaceStyleTransparent)& ent) const
+  const Handle(StepVisual_SurfaceStyleTransparent)& ent)
 {
 
   // Own fields of SurfaceStyleTransparent
@@ -62,6 +62,6 @@ void RWStepVisual_RWSurfaceStyleTransparent::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleTransparent::Share(
   const Handle(StepVisual_SurfaceStyleTransparent)&,
-  Interface_EntityIterator&) const
+  Interface_EntityIterator&)
 {
 }

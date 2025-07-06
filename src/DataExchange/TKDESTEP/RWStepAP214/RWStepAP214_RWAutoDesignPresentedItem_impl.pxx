@@ -26,7 +26,7 @@ void RWStepAP214_RWAutoDesignPresentedItem::ReadStep(
   const Handle(StepData_StepReaderData)&           data,
   const Standard_Integer                           num,
   Handle(Interface_Check)&                         ach,
-  const Handle(StepAP214_AutoDesignPresentedItem)& ent) const
+  const Handle(StepAP214_AutoDesignPresentedItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -59,7 +59,7 @@ void RWStepAP214_RWAutoDesignPresentedItem::ReadStep(
 
 void RWStepAP214_RWAutoDesignPresentedItem::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepAP214_AutoDesignPresentedItem)& ent) const
+  const Handle(StepAP214_AutoDesignPresentedItem)& ent)
 {
 
   // --- own field : items ---
@@ -74,7 +74,7 @@ void RWStepAP214_RWAutoDesignPresentedItem::WriteStep(
 
 void RWStepAP214_RWAutoDesignPresentedItem::Share(
   const Handle(StepAP214_AutoDesignPresentedItem)& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                        iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

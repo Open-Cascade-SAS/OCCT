@@ -32,7 +32,7 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepRepr_MakeFromUsageOption)& ent) const
+  const Handle(StepRepr_MakeFromUsageOption)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "make_from_usage_option"))
@@ -110,7 +110,7 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 
 void RWStepRepr_RWMakeFromUsageOption::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepRepr_MakeFromUsageOption)& ent) const
+  const Handle(StepRepr_MakeFromUsageOption)& ent)
 {
 
   // Inherited fields of ProductDefinitionRelationship
@@ -142,7 +142,7 @@ void RWStepRepr_RWMakeFromUsageOption::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWMakeFromUsageOption::Share(const Handle(StepRepr_MakeFromUsageOption)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
 
   // Inherited fields of ProductDefinitionRelationship

@@ -42,7 +42,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   const Handle(StepData_StepReaderData)&                               data,
   const Standard_Integer                                               num0,
   Handle(Interface_Check)&                                             ach,
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const
+  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent)
 {
 
   // sln 04.10.2001. BUC61003. Correction of looking for items of complex entity
@@ -236,7 +236,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
   StepData_StepWriter&                                                 SW,
-  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const
+  const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent)
 {
 
   // --- Instance of plex component BoundedCurve ---
@@ -321,7 +321,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep(
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Share(
   const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                            iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();
@@ -334,7 +334,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Share(
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Check(
   const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent,
   const Interface_ShareTool&                                           aShto,
-  Handle(Interface_Check)&                                             ach) const
+  Handle(Interface_Check)&                                             ach)
 {
   const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& aRationalBSC = ent;
   Handle(StepGeom_BSplineCurveWithKnots) aBSCWK = aRationalBSC->BSplineCurveWithKnots();

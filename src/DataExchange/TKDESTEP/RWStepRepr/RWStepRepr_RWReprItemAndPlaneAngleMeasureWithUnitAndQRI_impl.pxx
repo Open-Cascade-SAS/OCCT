@@ -37,7 +37,7 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI::ReadStep(
   const Handle(StepData_StepReaderData)&                             data,
   const Standard_Integer                                             num0,
   Handle(Interface_Check)&                                           ach,
-  const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)& ent) const
+  const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)& ent)
 {
   Standard_Integer num = 0; // num0;
   data->NamedForComplex("MEASURE_WITH_UNIT", "MSWTUN", num0, num, ach);
@@ -89,7 +89,7 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI::ReadStep(
 
 void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI::WriteStep(
   StepData_StepWriter&                                               SW,
-  const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)& ent) const
+  const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)& ent)
 {
   SW.StartEntity("MEASURE_REPRESENTATION_ITEM");
   SW.StartEntity("MEASURE_WITH_UNIT");

@@ -34,7 +34,7 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                     theData,
   const Standard_Integer                                     theNum,
   Handle(Interface_Check)&                                   theArch,
-  const Handle(StepKinematics_MechanismStateRepresentation)& theEnt) const
+  const Handle(StepKinematics_MechanismStateRepresentation)& theEnt)
 {
   // Number of Parameter Control
   if (!theData->CheckNbParams(theNum, 4, theArch, "mechanism_state_representation"))
@@ -90,7 +90,7 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
 
 void RWStepKinematics_RWMechanismStateRepresentation::WriteStep(
   StepData_StepWriter&                                       theSW,
-  const Handle(StepKinematics_MechanismStateRepresentation)& theEnt) const
+  const Handle(StepKinematics_MechanismStateRepresentation)& theEnt)
 {
   // Inherited field : name
   theSW.Send(theEnt->Name());
@@ -114,7 +114,7 @@ void RWStepKinematics_RWMechanismStateRepresentation::WriteStep(
 
 void RWStepKinematics_RWMechanismStateRepresentation::Share(
   const Handle(StepKinematics_MechanismStateRepresentation)& theEnt,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                                  iter)
 {
   Standard_Integer nbElem = theEnt->NbItems();
   for (Standard_Integer i = 1; i <= nbElem; i++)

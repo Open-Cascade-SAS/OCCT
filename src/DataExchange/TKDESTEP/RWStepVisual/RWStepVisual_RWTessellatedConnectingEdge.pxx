@@ -39,13 +39,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              theData,
                               const Standard_Integer                              theNum,
                               Handle(Interface_Check)&                            theCheck,
-                              const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const;
+                              const Handle(StepVisual_TessellatedConnectingEdge)& theEnt);
 
   static inline void WriteStep(StepData_StepWriter&                                theSW,
-                               const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const;
+                               const Handle(StepVisual_TessellatedConnectingEdge)& theEnt);
 
   static inline void Share(const Handle(StepVisual_TessellatedConnectingEdge)& theEnt,
-                           Interface_EntityIterator&                           theIter) const;
+                           Interface_EntityIterator&                           theIter);
 };
 
 #include "RWStepVisual_RWTessellatedConnectingEdge_impl.pxx"

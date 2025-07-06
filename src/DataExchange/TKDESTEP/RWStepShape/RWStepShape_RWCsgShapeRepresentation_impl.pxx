@@ -26,7 +26,7 @@ void RWStepShape_RWCsgShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&          data,
   const Standard_Integer                          num,
   Handle(Interface_Check)&                        ach,
-  const Handle(StepShape_CsgShapeRepresentation)& ent) const
+  const Handle(StepShape_CsgShapeRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -80,7 +80,7 @@ void RWStepShape_RWCsgShapeRepresentation::ReadStep(
 
 void RWStepShape_RWCsgShapeRepresentation::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepShape_CsgShapeRepresentation)& ent) const
+  const Handle(StepShape_CsgShapeRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -103,7 +103,7 @@ void RWStepShape_RWCsgShapeRepresentation::WriteStep(
 
 void RWStepShape_RWCsgShapeRepresentation::Share(
   const Handle(StepShape_CsgShapeRepresentation)& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                       iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

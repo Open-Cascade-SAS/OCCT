@@ -31,7 +31,7 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepBasic_ProductDefinitionRelationship)& ent) const
+  const Handle(StepBasic_ProductDefinitionRelationship)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "product_definition_relationship"))
@@ -75,7 +75,7 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
 
 void RWStepBasic_RWProductDefinitionRelationship::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepBasic_ProductDefinitionRelationship)& ent) const
+  const Handle(StepBasic_ProductDefinitionRelationship)& ent)
 {
 
   // Own fields of ProductDefinitionRelationship
@@ -100,7 +100,7 @@ void RWStepBasic_RWProductDefinitionRelationship::WriteStep(
 
 void RWStepBasic_RWProductDefinitionRelationship::Share(
   const Handle(StepBasic_ProductDefinitionRelationship)& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                              iter)
 {
 
   // Own fields of ProductDefinitionRelationship

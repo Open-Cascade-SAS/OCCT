@@ -31,7 +31,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepElement_CurveElementEndReleasePacket)& ent) const
+  const Handle(StepElement_CurveElementEndReleasePacket)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "curve_element_end_release_packet"))
@@ -53,7 +53,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
 
 void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepElement_CurveElementEndReleasePacket)& ent) const
+  const Handle(StepElement_CurveElementEndReleasePacket)& ent)
 {
 
   // Own fields of CurveElementEndReleasePacket
@@ -67,7 +67,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
 
 void RWStepElement_RWCurveElementEndReleasePacket::Share(
   const Handle(StepElement_CurveElementEndReleasePacket)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
 
   // Own fields of CurveElementEndReleasePacket

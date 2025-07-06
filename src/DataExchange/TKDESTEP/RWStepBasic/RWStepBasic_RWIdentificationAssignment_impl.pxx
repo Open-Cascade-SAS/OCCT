@@ -32,7 +32,7 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&            data,
   const Standard_Integer                            num,
   Handle(Interface_Check)&                          ach,
-  const Handle(StepBasic_IdentificationAssignment)& ent) const
+  const Handle(StepBasic_IdentificationAssignment)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "identification_assignment"))
@@ -54,7 +54,7 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
 
 void RWStepBasic_RWIdentificationAssignment::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepBasic_IdentificationAssignment)& ent) const
+  const Handle(StepBasic_IdentificationAssignment)& ent)
 {
 
   // Own fields of IdentificationAssignment
@@ -68,7 +68,7 @@ void RWStepBasic_RWIdentificationAssignment::WriteStep(
 
 void RWStepBasic_RWIdentificationAssignment::Share(
   const Handle(StepBasic_IdentificationAssignment)& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                         iter)
 {
 
   // Own fields of IdentificationAssignment

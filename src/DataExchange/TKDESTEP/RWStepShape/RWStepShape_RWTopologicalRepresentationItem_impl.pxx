@@ -22,7 +22,7 @@ void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepShape_TopologicalRepresentationItem)& ent) const
+  const Handle(StepShape_TopologicalRepresentationItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -43,7 +43,7 @@ void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
 
 void RWStepShape_RWTopologicalRepresentationItem::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepShape_TopologicalRepresentationItem)& ent) const
+  const Handle(StepShape_TopologicalRepresentationItem)& ent)
 {
 
   // --- inherited field name ---

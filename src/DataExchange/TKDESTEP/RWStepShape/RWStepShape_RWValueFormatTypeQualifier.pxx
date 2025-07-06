@@ -40,11 +40,11 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                               const Standard_Integer                            num,
                               Handle(Interface_Check)&                          ach,
-                              const Handle(StepShape_ValueFormatTypeQualifier)& ent) const;
+                              const Handle(StepShape_ValueFormatTypeQualifier)& ent);
 
   //! Writes ValueFormatTypeQualifier
   static inline void WriteStep(StepData_StepWriter&                              SW,
-                               const Handle(StepShape_ValueFormatTypeQualifier)& ent) const;
+                               const Handle(StepShape_ValueFormatTypeQualifier)& ent);
 };
 
 #include "RWStepShape_RWValueFormatTypeQualifier_impl.pxx"

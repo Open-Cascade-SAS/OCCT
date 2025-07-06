@@ -28,7 +28,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::ReadStep(
   const Handle(StepData_StepReaderData)&           data,
   const Standard_Integer                           num0,
   Handle(Interface_Check)&                         ach,
-  const Handle(StepBasic_SiUnitAndSolidAngleUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndSolidAngleUnit)& ent)
 {
   Standard_Integer num = num0;
 
@@ -96,7 +96,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::ReadStep(
 
 void RWStepBasic_RWSiUnitAndSolidAngleUnit::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepBasic_SiUnitAndSolidAngleUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndSolidAngleUnit)& ent)
 {
   // --- Instance of common supertype NamedUnit ---
   SW.StartEntity("NAMED_UNIT");

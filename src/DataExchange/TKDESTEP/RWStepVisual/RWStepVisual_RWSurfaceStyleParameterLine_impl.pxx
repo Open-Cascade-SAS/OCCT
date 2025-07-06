@@ -26,7 +26,7 @@ void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepVisual_SurfaceStyleParameterLine)& ent) const
+  const Handle(StepVisual_SurfaceStyleParameterLine)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -115,7 +115,7 @@ void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleParameterLine::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepVisual_SurfaceStyleParameterLine)& ent) const
+  const Handle(StepVisual_SurfaceStyleParameterLine)& ent)
 {
 
   // --- own field : styleOfParameterLines ---
@@ -130,7 +130,7 @@ void RWStepVisual_RWSurfaceStyleParameterLine::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleParameterLine::Share(
   const Handle(StepVisual_SurfaceStyleParameterLine)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   iter.GetOneItem(ent->StyleOfParameterLines());

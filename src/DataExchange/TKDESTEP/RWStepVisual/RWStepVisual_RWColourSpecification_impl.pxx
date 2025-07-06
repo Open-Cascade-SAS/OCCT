@@ -22,7 +22,7 @@ void RWStepVisual_RWColourSpecification::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_ColourSpecification)& ent) const
+  const Handle(StepVisual_ColourSpecification)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -43,7 +43,7 @@ void RWStepVisual_RWColourSpecification::ReadStep(
 
 void RWStepVisual_RWColourSpecification::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepVisual_ColourSpecification)& ent) const
+  const Handle(StepVisual_ColourSpecification)& ent)
 {
 
   // --- own field : name ---

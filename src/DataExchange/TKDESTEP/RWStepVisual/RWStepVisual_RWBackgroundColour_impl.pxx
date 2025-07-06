@@ -22,7 +22,7 @@ RWStepVisual_RWBackgroundColour::RWStepVisual_RWBackgroundColour() {}
 void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_BackgroundColour)& ent) const
+                                               const Handle(StepVisual_BackgroundColour)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -43,7 +43,7 @@ void RWStepVisual_RWBackgroundColour::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepVisual_RWBackgroundColour::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepVisual_BackgroundColour)& ent) const
+  const Handle(StepVisual_BackgroundColour)& ent)
 {
 
   // --- own field : presentation ---
@@ -52,7 +52,7 @@ void RWStepVisual_RWBackgroundColour::WriteStep(
 }
 
 void RWStepVisual_RWBackgroundColour::Share(const Handle(StepVisual_BackgroundColour)& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator&                  iter)
 {
 
   iter.GetOneItem(ent->Presentation().Value());

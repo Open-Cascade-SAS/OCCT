@@ -25,7 +25,7 @@ void RWStepBasic_RWPersonAndOrganization::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepBasic_PersonAndOrganization)& ent) const
+  const Handle(StepBasic_PersonAndOrganization)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -57,7 +57,7 @@ void RWStepBasic_RWPersonAndOrganization::ReadStep(
 
 void RWStepBasic_RWPersonAndOrganization::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepBasic_PersonAndOrganization)& ent) const
+  const Handle(StepBasic_PersonAndOrganization)& ent)
 {
 
   // --- own field : thePerson ---
@@ -70,7 +70,7 @@ void RWStepBasic_RWPersonAndOrganization::WriteStep(
 }
 
 void RWStepBasic_RWPersonAndOrganization::Share(const Handle(StepBasic_PersonAndOrganization)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->ThePerson());

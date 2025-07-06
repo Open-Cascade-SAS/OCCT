@@ -42,17 +42,17 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& theStepData,
                               const Standard_Integer                 theRecordID,
                               Handle(Interface_Check)&               theMessageTool,
-                              const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const;
+                              const Handle(StepShape_EdgeCurve)&     theEdgeCurve);
 
   static inline void WriteStep(StepData_StepWriter&               theStepWriter,
-                               const Handle(StepShape_EdgeCurve)& theEdgeCurve) const;
+                               const Handle(StepShape_EdgeCurve)& theEdgeCurve);
 
   static inline void Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                           Interface_EntityIterator&          theSharedEntitiesIt) const;
+                           Interface_EntityIterator&          theSharedEntitiesIt);
 
   static inline void Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
                            const Interface_ShareTool&         theShareTool,
-                           Handle(Interface_Check)&           theMessageTool) const;
+                           Handle(Interface_Check)&           theMessageTool);
 };
 
 #include "RWStepShape_RWEdgeCurve_impl.pxx"

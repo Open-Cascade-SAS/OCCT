@@ -53,7 +53,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   const Handle(StepData_StepReaderData)&                       theData,
   const Standard_Integer                                       num0,
   Handle(Interface_Check)&                                     theArch,
-  const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt) const
+  const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt)
 {
   Standard_Integer theNum = 0; // num0;
   theData->NamedForComplex("ACTUATED_KINEMATIC_PAIR", "ACKNPR", num0, theNum, theArch);
@@ -1995,7 +1995,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
 
 void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
   StepData_StepWriter&                                         theSW,
-  const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt) const
+  const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt)
 {
   // --- Instance of plex component BoundedCurve ---
 
@@ -2723,7 +2723,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
 
 void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::Share(
   const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                    iter)
 {
   iter.AddItem(theEnt->GetOrderKinematicPair());
   iter.AddItem(theEnt->GetOrderKinematicPair()->Joint());

@@ -34,7 +34,7 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
   const Handle(StepData_StepReaderData)&                                  data,
   const Standard_Integer                                                  num,
   Handle(Interface_Check)&                                                ach,
-  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const
+  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_tangential_coefficient_of_linear_thermal_expansion"))
@@ -58,7 +58,7 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
 
 void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::WriteStep(
   StepData_StepWriter&                                                    SW,
-  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent) const
+  const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -74,7 +74,7 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::WriteStep(
 
 void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::Share(
   const Handle(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion)& ent,
-  Interface_EntityIterator&                                               iter) const
+  Interface_EntityIterator&                                               iter)
 {
 
   // Inherited fields of RepresentationItem

@@ -38,7 +38,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::ReadStep(
   const Handle(StepData_StepReaderData)&                               data,
   const Standard_Integer                                               num0,
   Handle(Interface_Check)&                                             ach,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent) const
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent)
 {
   Standard_Integer num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
@@ -188,7 +188,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::ReadStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::WriteStep(
   StepData_StepWriter&                                                 SW,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent) const
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent)
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
@@ -304,7 +304,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::WriteStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::Share(
   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)& ent,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                            iter)
 {
   // Own fields of GeometricTolerance
   iter.AddItem(ent->Magnitude());

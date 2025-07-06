@@ -28,7 +28,7 @@ RWStepGeom_RWBezierCurve::RWStepGeom_RWBezierCurve() {}
 void RWStepGeom_RWBezierCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
                                         const Standard_Integer                 num,
                                         Handle(Interface_Check)&               ach,
-                                        const Handle(StepGeom_BezierCurve)&    ent) const
+                                        const Handle(StepGeom_BezierCurve)&    ent)
 {
 
   // --- Number of Parameter Control ---
@@ -102,7 +102,7 @@ void RWStepGeom_RWBezierCurve::ReadStep(const Handle(StepData_StepReaderData)& d
 }
 
 void RWStepGeom_RWBezierCurve::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepGeom_BezierCurve)& ent) const
+                                         const Handle(StepGeom_BezierCurve)& ent)
 {
 
   // --- inherited field name ---
@@ -136,7 +136,7 @@ void RWStepGeom_RWBezierCurve::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepGeom_RWBezierCurve::Share(const Handle(StepGeom_BezierCurve)& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&           iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();

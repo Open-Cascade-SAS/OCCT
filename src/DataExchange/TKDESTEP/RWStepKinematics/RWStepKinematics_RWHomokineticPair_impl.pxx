@@ -36,7 +36,7 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
   const Handle(StepData_StepReaderData)&        theData,
   const Standard_Integer                        theNum,
   Handle(Interface_Check)&                      theArch,
-  const Handle(StepKinematics_HomokineticPair)& theEnt) const
+  const Handle(StepKinematics_HomokineticPair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "homokinetic_pair"))
@@ -182,7 +182,7 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
 
 void RWStepKinematics_RWHomokineticPair::WriteStep(
   StepData_StepWriter&                          theSW,
-  const Handle(StepKinematics_HomokineticPair)& theEnt) const
+  const Handle(StepKinematics_HomokineticPair)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -235,7 +235,7 @@ void RWStepKinematics_RWHomokineticPair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWHomokineticPair::Share(const Handle(StepKinematics_HomokineticPair)& theEnt,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator& iter)
 {
 
   // Inherited fields of RepresentationItem

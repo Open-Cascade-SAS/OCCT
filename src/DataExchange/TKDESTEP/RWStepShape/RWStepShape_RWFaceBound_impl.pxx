@@ -26,7 +26,7 @@ RWStepShape_RWFaceBound::RWStepShape_RWFaceBound() {}
 void RWStepShape_RWFaceBound::ReadStep(const Handle(StepData_StepReaderData)& data,
                                        const Standard_Integer                 num,
                                        Handle(Interface_Check)&               ach,
-                                       const Handle(StepShape_FaceBound)&     ent) const
+                                       const Handle(StepShape_FaceBound)&     ent)
 {
 
   // --- Number of Parameter Control ---
@@ -58,7 +58,7 @@ void RWStepShape_RWFaceBound::ReadStep(const Handle(StepData_StepReaderData)& da
 }
 
 void RWStepShape_RWFaceBound::WriteStep(StepData_StepWriter&               SW,
-                                        const Handle(StepShape_FaceBound)& ent) const
+                                        const Handle(StepShape_FaceBound)& ent)
 {
 
   // --- inherited field name ---
@@ -75,7 +75,7 @@ void RWStepShape_RWFaceBound::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepShape_RWFaceBound::Share(const Handle(StepShape_FaceBound)& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&          iter)
 {
 
   iter.GetOneItem(ent->Bound());
@@ -83,7 +83,7 @@ void RWStepShape_RWFaceBound::Share(const Handle(StepShape_FaceBound)& ent,
 
 void RWStepShape_RWFaceBound::Check(const Handle(StepShape_FaceBound)& ent,
                                     const Interface_ShareTool&         aShto,
-                                    Handle(Interface_Check)&           ach) const
+                                    Handle(Interface_Check)&           ach)
 {
   Standard_Boolean           theFBOri2 = Standard_True;
   Standard_Boolean           theFBOri1 = ent->Orientation();

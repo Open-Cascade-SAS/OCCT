@@ -23,7 +23,7 @@ void RWStepRepr_RWRealRepresentationItem::ReadStep(
   const Handle(StepData_StepReaderData)&         theData,
   const Standard_Integer                         theNum,
   Handle(Interface_Check)&                       theAch,
-  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+  const Handle(StepRepr_RealRepresentationItem)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "real_representation_item"))
@@ -43,7 +43,7 @@ void RWStepRepr_RWRealRepresentationItem::ReadStep(
 
 void RWStepRepr_RWRealRepresentationItem::WriteStep(
   StepData_StepWriter&                           theSW,
-  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+  const Handle(StepRepr_RealRepresentationItem)& theEnt)
 {
   theSW.Send(theEnt->Name());
   theSW.Send(theEnt->Value());

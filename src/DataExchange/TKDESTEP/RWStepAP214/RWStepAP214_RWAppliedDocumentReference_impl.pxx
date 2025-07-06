@@ -28,7 +28,7 @@ void RWStepAP214_RWAppliedDocumentReference::ReadStep(
   const Handle(StepData_StepReaderData)&            data,
   const Standard_Integer                            num,
   Handle(Interface_Check)&                          ach,
-  const Handle(StepAP214_AppliedDocumentReference)& ent) const
+  const Handle(StepAP214_AppliedDocumentReference)& ent)
 {
   // --- Number of Parameter Control ---
 
@@ -69,7 +69,7 @@ void RWStepAP214_RWAppliedDocumentReference::ReadStep(
 
 void RWStepAP214_RWAppliedDocumentReference::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepAP214_AppliedDocumentReference)& ent) const
+  const Handle(StepAP214_AppliedDocumentReference)& ent)
 {
 
   // --- inherited field : assigned_document ---
@@ -92,7 +92,7 @@ void RWStepAP214_RWAppliedDocumentReference::WriteStep(
 
 void RWStepAP214_RWAppliedDocumentReference::Share(
   const Handle(StepAP214_AppliedDocumentReference)& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                         iter)
 {
   iter.AddItem(ent->AssignedDocument());
   for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)

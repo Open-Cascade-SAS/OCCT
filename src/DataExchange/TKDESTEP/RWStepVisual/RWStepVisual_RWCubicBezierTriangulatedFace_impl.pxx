@@ -39,7 +39,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
   const Handle(StepData_StepReaderData)&                theData,
   const Standard_Integer                                theNum,
   Handle(Interface_Check)&                              theCheck,
-  const Handle(StepVisual_CubicBezierTriangulatedFace)& theEnt) const
+  const Handle(StepVisual_CubicBezierTriangulatedFace)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theCheck, "cubic_bezier_triangulated_face"))
@@ -143,7 +143,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::ReadStep(
 
 void RWStepVisual_RWCubicBezierTriangulatedFace::WriteStep(
   StepData_StepWriter&                                  theSW,
-  const Handle(StepVisual_CubicBezierTriangulatedFace)& theEnt) const
+  const Handle(StepVisual_CubicBezierTriangulatedFace)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -200,7 +200,7 @@ void RWStepVisual_RWCubicBezierTriangulatedFace::WriteStep(
 
 void RWStepVisual_RWCubicBezierTriangulatedFace::Share(
   const Handle(StepVisual_CubicBezierTriangulatedFace)& theEnt,
-  Interface_EntityIterator&                             theIter) const
+  Interface_EntityIterator&                             theIter)
 {
 
   // Inherited fields of RepresentationItem

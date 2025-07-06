@@ -36,7 +36,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
   const Handle(StepData_StepReaderData)&          theData,
   const Standard_Integer                          theNum,
   Handle(Interface_Check)&                        theArch,
-  const Handle(StepKinematics_GearPairWithRange)& theEnt) const
+  const Handle(StepKinematics_GearPairWithRange)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "gear_pair_with_range"))
@@ -172,7 +172,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
 
 void RWStepKinematics_RWGearPairWithRange::WriteStep(
   StepData_StepWriter&                            theSW,
-  const Handle(StepKinematics_GearPairWithRange)& theEnt) const
+  const Handle(StepKinematics_GearPairWithRange)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -231,7 +231,7 @@ void RWStepKinematics_RWGearPairWithRange::WriteStep(
 
 void RWStepKinematics_RWGearPairWithRange::Share(
   const Handle(StepKinematics_GearPairWithRange)& theEnt,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                       iter)
 {
 
   // Inherited fields of RepresentationItem

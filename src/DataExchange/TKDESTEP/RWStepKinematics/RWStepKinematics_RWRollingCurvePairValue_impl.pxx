@@ -34,7 +34,7 @@ void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
   const Handle(StepData_StepReaderData)&              theData,
   const Standard_Integer                              theNum,
   Handle(Interface_Check)&                            theArch,
-  const Handle(StepKinematics_RollingCurvePairValue)& theEnt) const
+  const Handle(StepKinematics_RollingCurvePairValue)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "rolling_curve_pair_value"))
@@ -73,7 +73,7 @@ void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
 
 void RWStepKinematics_RWRollingCurvePairValue::WriteStep(
   StepData_StepWriter&                                theSW,
-  const Handle(StepKinematics_RollingCurvePairValue)& theEnt) const
+  const Handle(StepKinematics_RollingCurvePairValue)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -93,7 +93,7 @@ void RWStepKinematics_RWRollingCurvePairValue::WriteStep(
 
 void RWStepKinematics_RWRollingCurvePairValue::Share(
   const Handle(StepKinematics_RollingCurvePairValue)& theEnt,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   // Inherited fields of RepresentationItem

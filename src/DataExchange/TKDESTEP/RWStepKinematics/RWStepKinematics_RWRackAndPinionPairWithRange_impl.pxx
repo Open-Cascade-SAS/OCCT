@@ -36,7 +36,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
   const Handle(StepData_StepReaderData)&                   theData,
   const Standard_Integer                                   theNum,
   Handle(Interface_Check)&                                 theArch,
-  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "rack_and_pinion_pair_with_range"))
@@ -160,7 +160,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 
 void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
   StepData_StepWriter&                                     theSW,
-  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -211,7 +211,7 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
 
 void RWStepKinematics_RWRackAndPinionPairWithRange::Share(
   const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                iter)
 {
 
   // Inherited fields of RepresentationItem

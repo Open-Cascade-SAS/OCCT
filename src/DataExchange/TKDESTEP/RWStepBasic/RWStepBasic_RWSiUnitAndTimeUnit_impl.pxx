@@ -31,7 +31,7 @@ RWStepBasic_RWSiUnitAndTimeUnit::RWStepBasic_RWSiUnitAndTimeUnit() {}
 void RWStepBasic_RWSiUnitAndTimeUnit::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num0,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_SiUnitAndTimeUnit)& ent) const
+                                               const Handle(StepBasic_SiUnitAndTimeUnit)& ent)
 {
   Standard_Integer num = num0;
 
@@ -101,7 +101,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndTimeUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndTimeUnit)& ent)
 {
 
   // --- Instance of plex component TimeUnit ---

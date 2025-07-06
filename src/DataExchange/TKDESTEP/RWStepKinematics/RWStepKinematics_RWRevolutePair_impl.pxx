@@ -35,7 +35,7 @@ void RWStepKinematics_RWRevolutePair::ReadStep(
   const Handle(StepData_StepReaderData)&     theData,
   const Standard_Integer                     theNum,
   Handle(Interface_Check)&                   theArch,
-  const Handle(StepKinematics_RevolutePair)& theEnt) const
+  const Handle(StepKinematics_RevolutePair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "revolute_pair"))
@@ -161,7 +161,7 @@ void RWStepKinematics_RWRevolutePair::ReadStep(
 
 void RWStepKinematics_RWRevolutePair::WriteStep(
   StepData_StepWriter&                       theSW,
-  const Handle(StepKinematics_RevolutePair)& theEnt) const
+  const Handle(StepKinematics_RevolutePair)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -205,7 +205,7 @@ void RWStepKinematics_RWRevolutePair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePair::Share(const Handle(StepKinematics_RevolutePair)& theEnt,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator&                  iter)
 {
 
   // Inherited fields of RepresentationItem

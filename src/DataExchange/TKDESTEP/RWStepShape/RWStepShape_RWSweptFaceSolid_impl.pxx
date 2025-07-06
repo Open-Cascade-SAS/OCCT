@@ -23,7 +23,7 @@ RWStepShape_RWSweptFaceSolid::RWStepShape_RWSweptFaceSolid() {}
 void RWStepShape_RWSweptFaceSolid::ReadStep(const Handle(StepData_StepReaderData)&  data,
                                             const Standard_Integer                  num,
                                             Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_SweptFaceSolid)& ent) const
+                                            const Handle(StepShape_SweptFaceSolid)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -49,7 +49,7 @@ void RWStepShape_RWSweptFaceSolid::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepShape_RWSweptFaceSolid::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_SweptFaceSolid)& ent) const
+                                             const Handle(StepShape_SweptFaceSolid)& ent)
 {
 
   // --- inherited field name ---
@@ -62,7 +62,7 @@ void RWStepShape_RWSweptFaceSolid::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWSweptFaceSolid::Share(const Handle(StepShape_SweptFaceSolid)& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&               iter)
 {
 
   iter.GetOneItem(ent->SweptFace());

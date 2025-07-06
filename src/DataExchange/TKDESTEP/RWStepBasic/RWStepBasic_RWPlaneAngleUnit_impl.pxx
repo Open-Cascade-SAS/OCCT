@@ -23,7 +23,7 @@ RWStepBasic_RWPlaneAngleUnit::RWStepBasic_RWPlaneAngleUnit() {}
 void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData)&  data,
                                             const Standard_Integer                  num,
                                             Handle(Interface_Check)&                ach,
-                                            const Handle(StepBasic_PlaneAngleUnit)& ent) const
+                                            const Handle(StepBasic_PlaneAngleUnit)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -48,7 +48,7 @@ void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepBasic_RWPlaneAngleUnit::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepBasic_PlaneAngleUnit)& ent) const
+                                             const Handle(StepBasic_PlaneAngleUnit)& ent)
 {
 
   // --- inherited field dimensions ---
@@ -57,7 +57,7 @@ void RWStepBasic_RWPlaneAngleUnit::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepBasic_RWPlaneAngleUnit::Share(const Handle(StepBasic_PlaneAngleUnit)& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&               iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

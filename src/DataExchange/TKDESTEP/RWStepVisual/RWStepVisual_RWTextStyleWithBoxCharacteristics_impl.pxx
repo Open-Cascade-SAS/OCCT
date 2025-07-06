@@ -26,7 +26,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
   const Handle(StepData_StepReaderData)&                    data,
   const Standard_Integer                                    num,
   Handle(Interface_Check)&                                  ach,
-  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent) const
+  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -127,7 +127,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent) const
+  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent)
 {
 
   // --- inherited field name ---
@@ -146,7 +146,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::Share(
   const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   iter.GetOneItem(ent->CharacterAppearance());

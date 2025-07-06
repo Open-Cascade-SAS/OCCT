@@ -27,7 +27,7 @@ void RWStepBasic_RWDocumentRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepBasic_DocumentRelationship)& ent) const
+  const Handle(StepBasic_DocumentRelationship)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -68,7 +68,7 @@ void RWStepBasic_RWDocumentRelationship::ReadStep(
 
 void RWStepBasic_RWDocumentRelationship::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepBasic_DocumentRelationship)& ent) const
+  const Handle(StepBasic_DocumentRelationship)& ent)
 {
 
   // --- own field : name ---
@@ -86,7 +86,7 @@ void RWStepBasic_RWDocumentRelationship::WriteStep(
 }
 
 void RWStepBasic_RWDocumentRelationship::Share(const Handle(StepBasic_DocumentRelationship)& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator& iter)
 {
 
   iter.AddItem(ent->RelatingDocument());

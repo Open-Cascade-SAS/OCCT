@@ -40,11 +40,11 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                               const Standard_Integer                      num,
                               Handle(Interface_Check)&                    ach,
-                              const Handle(StepDimTol_ToleranceZoneForm)& ent) const;
+                              const Handle(StepDimTol_ToleranceZoneForm)& ent);
 
   //! Writes ToleranceZoneForm
   static inline void WriteStep(StepData_StepWriter&                        SW,
-                               const Handle(StepDimTol_ToleranceZoneForm)& ent) const;
+                               const Handle(StepDimTol_ToleranceZoneForm)& ent);
 };
 
 #include "RWStepDimTol_RWToleranceZoneForm_impl.pxx"

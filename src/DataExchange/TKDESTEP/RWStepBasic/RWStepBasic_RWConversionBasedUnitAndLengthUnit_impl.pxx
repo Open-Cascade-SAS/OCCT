@@ -26,7 +26,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                    data,
   const Standard_Integer                                    num0,
   Handle(Interface_Check)&                                  ach,
-  const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent)
 {
 
   Standard_Integer num = num0;
@@ -84,7 +84,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep(
 
 void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent)
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -111,7 +111,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndLengthUnit::Share(
   const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

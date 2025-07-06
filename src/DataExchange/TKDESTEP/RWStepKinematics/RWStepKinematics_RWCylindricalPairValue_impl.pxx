@@ -34,7 +34,7 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
   const Handle(StepData_StepReaderData)&             theData,
   const Standard_Integer                             theNum,
   Handle(Interface_Check)&                           theArch,
-  const Handle(StepKinematics_CylindricalPairValue)& theEnt) const
+  const Handle(StepKinematics_CylindricalPairValue)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "cylindrical_pair_value"))
@@ -74,7 +74,7 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
 
 void RWStepKinematics_RWCylindricalPairValue::WriteStep(
   StepData_StepWriter&                               theSW,
-  const Handle(StepKinematics_CylindricalPairValue)& theEnt) const
+  const Handle(StepKinematics_CylindricalPairValue)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -96,7 +96,7 @@ void RWStepKinematics_RWCylindricalPairValue::WriteStep(
 
 void RWStepKinematics_RWCylindricalPairValue::Share(
   const Handle(StepKinematics_CylindricalPairValue)& theEnt,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                          iter)
 {
 
   // Inherited fields of RepresentationItem

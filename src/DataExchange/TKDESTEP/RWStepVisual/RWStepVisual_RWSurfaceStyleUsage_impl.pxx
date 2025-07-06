@@ -27,7 +27,7 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepVisual_SurfaceStyleUsage)& ent) const
+  const Handle(StepVisual_SurfaceStyleUsage)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -62,7 +62,7 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepVisual_SurfaceStyleUsage)& ent) const
+  const Handle(StepVisual_SurfaceStyleUsage)& ent)
 {
 
   // --- own field : side ---
@@ -75,7 +75,7 @@ void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleUsage::Share(const Handle(StepVisual_SurfaceStyleUsage)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
 
   iter.GetOneItem(ent->Style());

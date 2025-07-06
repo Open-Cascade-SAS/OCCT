@@ -22,7 +22,7 @@ RWStepGeom_RWCircle::RWStepGeom_RWCircle() {}
 void RWStepGeom_RWCircle::ReadStep(const Handle(StepData_StepReaderData)& data,
                                    const Standard_Integer                 num,
                                    Handle(Interface_Check)&               ach,
-                                   const Handle(StepGeom_Circle)&         ent) const
+                                   const Handle(StepGeom_Circle)&         ent)
 {
 
   // --- Number of Parameter Control ---
@@ -54,7 +54,7 @@ void RWStepGeom_RWCircle::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Circle)& ent) const
+                                    const Handle(StepGeom_Circle)& ent)
 {
 
   // --- inherited field name ---
@@ -71,7 +71,7 @@ void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&           SW,
 }
 
 void RWStepGeom_RWCircle::Share(const Handle(StepGeom_Circle)& ent,
-                                Interface_EntityIterator&      iter) const
+                                Interface_EntityIterator&      iter)
 {
 
   iter.GetOneItem(ent->Position().Value());

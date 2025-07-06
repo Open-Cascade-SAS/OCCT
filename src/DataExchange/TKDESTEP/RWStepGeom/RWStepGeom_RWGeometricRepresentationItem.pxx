@@ -38,10 +38,10 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&              data,
                               const Standard_Integer                              num,
                               Handle(Interface_Check)&                            ach,
-                              const Handle(StepGeom_GeometricRepresentationItem)& ent) const;
+                              const Handle(StepGeom_GeometricRepresentationItem)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                                SW,
-                               const Handle(StepGeom_GeometricRepresentationItem)& ent) const;
+                               const Handle(StepGeom_GeometricRepresentationItem)& ent);
 
 protected:
 private:

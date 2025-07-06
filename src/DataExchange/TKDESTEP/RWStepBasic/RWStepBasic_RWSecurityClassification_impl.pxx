@@ -24,7 +24,7 @@ void RWStepBasic_RWSecurityClassification::ReadStep(
   const Handle(StepData_StepReaderData)&          data,
   const Standard_Integer                          num,
   Handle(Interface_Check)&                        ach,
-  const Handle(StepBasic_SecurityClassification)& ent) const
+  const Handle(StepBasic_SecurityClassification)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -62,7 +62,7 @@ void RWStepBasic_RWSecurityClassification::ReadStep(
 
 void RWStepBasic_RWSecurityClassification::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepBasic_SecurityClassification)& ent) const
+  const Handle(StepBasic_SecurityClassification)& ent)
 {
 
   // --- own field : name ---
@@ -80,7 +80,7 @@ void RWStepBasic_RWSecurityClassification::WriteStep(
 
 void RWStepBasic_RWSecurityClassification::Share(
   const Handle(StepBasic_SecurityClassification)& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                       iter)
 {
 
   iter.GetOneItem(ent->SecurityLevel());

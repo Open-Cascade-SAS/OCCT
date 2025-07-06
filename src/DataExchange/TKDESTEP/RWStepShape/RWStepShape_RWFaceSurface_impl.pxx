@@ -25,7 +25,7 @@ RWStepShape_RWFaceSurface::RWStepShape_RWFaceSurface() {}
 void RWStepShape_RWFaceSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_FaceSurface)&   ent) const
+                                         const Handle(StepShape_FaceSurface)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -75,7 +75,7 @@ void RWStepShape_RWFaceSurface::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepShape_RWFaceSurface::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_FaceSurface)& ent) const
+                                          const Handle(StepShape_FaceSurface)& ent)
 {
 
   // --- inherited field name ---
@@ -101,7 +101,7 @@ void RWStepShape_RWFaceSurface::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepShape_RWFaceSurface::Share(const Handle(StepShape_FaceSurface)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   Standard_Integer nbElem1 = ent->NbBounds();

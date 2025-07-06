@@ -34,7 +34,7 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep(
   const Handle(StepData_StepReaderData)&        theData,
   const Standard_Integer                        theNum,
   Handle(Interface_Check)&                      theCheck,
-  const Handle(StepVisual_TessellatedPointSet)& theEnt) const
+  const Handle(StepVisual_TessellatedPointSet)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_point_set"))
@@ -80,7 +80,7 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep(
 
 void RWStepVisual_RWTessellatedPointSet::WriteStep(
   StepData_StepWriter&                          theSW,
-  const Handle(StepVisual_TessellatedPointSet)& theEnt) const
+  const Handle(StepVisual_TessellatedPointSet)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -103,7 +103,7 @@ void RWStepVisual_RWTessellatedPointSet::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedPointSet::Share(const Handle(StepVisual_TessellatedPointSet)& theEnt,
-                                               Interface_EntityIterator& theIter) const
+                                               Interface_EntityIterator& theIter)
 {
 
   // Inherited fields of RepresentationItem

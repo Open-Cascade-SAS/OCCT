@@ -39,14 +39,14 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&                     data,
                               const Standard_Integer                                     num,
                               Handle(Interface_Check)&                                   ach,
-                              const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const;
+                              const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent);
 
   static inline void WriteStep(
     StepData_StepWriter&                                       SW,
-    const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const;
+    const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent);
 
   static inline void Share(const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent,
-                           Interface_EntityIterator&                                  iter) const;
+                           Interface_EntityIterator&                                  iter);
 };
 
 #include "RWStepAP242_RWItemIdentifiedRepresentationUsage_impl.pxx"

@@ -26,7 +26,7 @@ RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
 void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_BooleanResult)& ent) const
+                                           const Handle(StepShape_BooleanResult)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -101,7 +101,7 @@ void RWStepShape_RWBooleanResult::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_BooleanResult)& ent) const
+                                            const Handle(StepShape_BooleanResult)& ent)
 {
 
   // --- inherited field name ---
@@ -126,7 +126,7 @@ void RWStepShape_RWBooleanResult::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepShape_RWBooleanResult::Share(const Handle(StepShape_BooleanResult)& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&              iter)
 {
 
   // idem

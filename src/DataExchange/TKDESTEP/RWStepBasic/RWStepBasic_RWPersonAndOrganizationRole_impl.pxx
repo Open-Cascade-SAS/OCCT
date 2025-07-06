@@ -22,7 +22,7 @@ void RWStepBasic_RWPersonAndOrganizationRole::ReadStep(
   const Handle(StepData_StepReaderData)&             data,
   const Standard_Integer                             num,
   Handle(Interface_Check)&                           ach,
-  const Handle(StepBasic_PersonAndOrganizationRole)& ent) const
+  const Handle(StepBasic_PersonAndOrganizationRole)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -43,7 +43,7 @@ void RWStepBasic_RWPersonAndOrganizationRole::ReadStep(
 
 void RWStepBasic_RWPersonAndOrganizationRole::WriteStep(
   StepData_StepWriter&                               SW,
-  const Handle(StepBasic_PersonAndOrganizationRole)& ent) const
+  const Handle(StepBasic_PersonAndOrganizationRole)& ent)
 {
 
   // --- own field : name ---

@@ -26,7 +26,7 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_ApprovalPersonOrganization)& ent) const
+  const Handle(StepBasic_ApprovalPersonOrganization)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -64,7 +64,7 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
 
 void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_ApprovalPersonOrganization)& ent) const
+  const Handle(StepBasic_ApprovalPersonOrganization)& ent)
 {
 
   // --- own field : personOrganization ---
@@ -82,7 +82,7 @@ void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
 
 void RWStepBasic_RWApprovalPersonOrganization::Share(
   const Handle(StepBasic_ApprovalPersonOrganization)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   iter.GetOneItem(ent->PersonOrganization().Value());

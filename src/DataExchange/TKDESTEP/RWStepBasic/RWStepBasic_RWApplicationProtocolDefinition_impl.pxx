@@ -24,7 +24,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepBasic_ApplicationProtocolDefinition)& ent) const
+  const Handle(StepBasic_ApplicationProtocolDefinition)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -75,7 +75,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
 
 void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepBasic_ApplicationProtocolDefinition)& ent) const
+  const Handle(StepBasic_ApplicationProtocolDefinition)& ent)
 {
 
   // --- own field : status ---
@@ -97,7 +97,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
 
 void RWStepBasic_RWApplicationProtocolDefinition::Share(
   const Handle(StepBasic_ApplicationProtocolDefinition)& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                              iter)
 {
 
   iter.GetOneItem(ent->Application());

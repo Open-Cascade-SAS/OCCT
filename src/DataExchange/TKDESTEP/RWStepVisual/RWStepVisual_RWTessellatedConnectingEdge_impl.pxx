@@ -37,7 +37,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   const Handle(StepData_StepReaderData)&              theData,
   const Standard_Integer                              theNum,
   Handle(Interface_Check)&                            theCheck,
-  const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const
+  const Handle(StepVisual_TessellatedConnectingEdge)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theCheck, "tessellated_connecting_edge"))
@@ -151,7 +151,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
 
 void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
   StepData_StepWriter&                                theSW,
-  const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const
+  const Handle(StepVisual_TessellatedConnectingEdge)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -208,7 +208,7 @@ void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
 
 void RWStepVisual_RWTessellatedConnectingEdge::Share(
   const Handle(StepVisual_TessellatedConnectingEdge)& theEnt,
-  Interface_EntityIterator&                           theIter) const
+  Interface_EntityIterator&                           theIter)
 {
 
   // Inherited fields of RepresentationItem

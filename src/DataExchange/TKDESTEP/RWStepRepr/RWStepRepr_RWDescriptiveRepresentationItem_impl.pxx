@@ -24,7 +24,7 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
   const Handle(StepData_StepReaderData)&                data,
   const Standard_Integer                                num,
   Handle(Interface_Check)&                              ach,
-  const Handle(StepRepr_DescriptiveRepresentationItem)& ent) const
+  const Handle(StepRepr_DescriptiveRepresentationItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -60,7 +60,7 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
 
 void RWStepRepr_RWDescriptiveRepresentationItem::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepRepr_DescriptiveRepresentationItem)& ent) const
+  const Handle(StepRepr_DescriptiveRepresentationItem)& ent)
 {
 
   // --- inherited field name ---

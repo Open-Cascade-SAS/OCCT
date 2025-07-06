@@ -33,7 +33,7 @@ void RWStepDimTol_RWSymmetryTolerance::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepDimTol_SymmetryTolerance)& ent) const
+  const Handle(StepDimTol_SymmetryTolerance)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "symmetry_tolerance"))
@@ -93,7 +93,7 @@ void RWStepDimTol_RWSymmetryTolerance::ReadStep(
 
 void RWStepDimTol_RWSymmetryTolerance::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepDimTol_SymmetryTolerance)& ent) const
+  const Handle(StepDimTol_SymmetryTolerance)& ent)
 {
 
   // Inherited fields of GeometricTolerance
@@ -123,7 +123,7 @@ void RWStepDimTol_RWSymmetryTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWSymmetryTolerance::Share(const Handle(StepDimTol_SymmetryTolerance)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
 
   // Inherited fields of GeometricTolerance

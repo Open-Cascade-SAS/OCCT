@@ -25,7 +25,7 @@ RWStepGeom_RWSeamCurve::RWStepGeom_RWSeamCurve() {}
 void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
                                       const Standard_Integer                 num,
                                       Handle(Interface_Check)&               ach,
-                                      const Handle(StepGeom_SeamCurve)&      ent) const
+                                      const Handle(StepGeom_SeamCurve)&      ent)
 {
 
   // --- Number of Parameter Control ---
@@ -88,7 +88,7 @@ void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& dat
 }
 
 void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepGeom_SeamCurve)& ent) const
+                                       const Handle(StepGeom_SeamCurve)& ent)
 {
 
   // --- inherited field name ---
@@ -115,7 +115,7 @@ void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
 }
 
 void RWStepGeom_RWSeamCurve::Share(const Handle(StepGeom_SeamCurve)& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&         iter)
 {
 
   iter.GetOneItem(ent->Curve3d());

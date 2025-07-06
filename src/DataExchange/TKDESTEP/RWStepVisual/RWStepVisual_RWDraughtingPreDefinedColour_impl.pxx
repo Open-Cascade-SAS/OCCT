@@ -25,7 +25,7 @@ void RWStepVisual_RWDraughtingPreDefinedColour::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const
+  const Handle(StepVisual_DraughtingPreDefinedColour)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -46,7 +46,7 @@ void RWStepVisual_RWDraughtingPreDefinedColour::ReadStep(
 
 void RWStepVisual_RWDraughtingPreDefinedColour::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const
+  const Handle(StepVisual_DraughtingPreDefinedColour)& ent)
 {
 
   // --- inherited field name ---

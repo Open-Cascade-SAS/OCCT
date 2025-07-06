@@ -27,7 +27,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepBasic_OrganizationalAddress)& ent) const
+  const Handle(StepBasic_OrganizationalAddress)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -277,7 +277,7 @@ void RWStepBasic_RWOrganizationalAddress::ReadStep(
 
 void RWStepBasic_RWOrganizationalAddress::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepBasic_OrganizationalAddress)& ent) const
+  const Handle(StepBasic_OrganizationalAddress)& ent)
 {
 
   // --- inherited field internalLocation ---
@@ -439,7 +439,7 @@ void RWStepBasic_RWOrganizationalAddress::WriteStep(
 }
 
 void RWStepBasic_RWOrganizationalAddress::Share(const Handle(StepBasic_OrganizationalAddress)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   Standard_Integer nbElem1 = ent->NbOrganizations();

@@ -23,7 +23,7 @@ RWStepShape_RWBlock::RWStepShape_RWBlock() {}
 void RWStepShape_RWBlock::ReadStep(const Handle(StepData_StepReaderData)& data,
                                    const Standard_Integer                 num,
                                    Handle(Interface_Check)&               ach,
-                                   const Handle(StepShape_Block)&         ent) const
+                                   const Handle(StepShape_Block)&         ent)
 {
 
   // --- Number of Parameter Control ---
@@ -67,7 +67,7 @@ void RWStepShape_RWBlock::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepShape_Block)& ent) const
+                                    const Handle(StepShape_Block)& ent)
 {
 
   // --- inherited field name ---
@@ -92,7 +92,7 @@ void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
 }
 
 void RWStepShape_RWBlock::Share(const Handle(StepShape_Block)& ent,
-                                Interface_EntityIterator&      iter) const
+                                Interface_EntityIterator&      iter)
 {
 
   iter.GetOneItem(ent->Position());

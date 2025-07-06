@@ -23,7 +23,7 @@ RWStepBasic_RWLocalTime::RWStepBasic_RWLocalTime() {}
 void RWStepBasic_RWLocalTime::ReadStep(const Handle(StepData_StepReaderData)& data,
                                        const Standard_Integer                 num,
                                        Handle(Interface_Check)&               ach,
-                                       const Handle(StepBasic_LocalTime)&     ent) const
+                                       const Handle(StepBasic_LocalTime)&     ent)
 {
 
   // --- Number of Parameter Control ---
@@ -89,7 +89,7 @@ void RWStepBasic_RWLocalTime::ReadStep(const Handle(StepData_StepReaderData)& da
 }
 
 void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
-                                        const Handle(StepBasic_LocalTime)& ent) const
+                                        const Handle(StepBasic_LocalTime)& ent)
 {
 
   // --- own field : hourComponent ---
@@ -126,7 +126,7 @@ void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepBasic_RWLocalTime::Share(const Handle(StepBasic_LocalTime)& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&          iter)
 {
 
   iter.GetOneItem(ent->Zone());

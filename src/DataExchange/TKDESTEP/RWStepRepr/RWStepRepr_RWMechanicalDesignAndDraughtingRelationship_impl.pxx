@@ -28,7 +28,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                            theData,
   const Standard_Integer                                            theNum,
   Handle(Interface_Check)&                                          theAch,
-  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const
+  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt)
 {
   // Number of Parameter Control
   if (!theData->CheckNbParams(theNum, 4, theAch, "mechanical_design_and_draughting_relationship"))
@@ -58,7 +58,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
   StepData_StepWriter&                                              theSW,
-  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const
+  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt)
 {
   // Inherited field : name
   theSW.Send(theEnt->Name());
@@ -75,7 +75,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::Share(
   const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt,
-  Interface_EntityIterator&                                         theIter) const
+  Interface_EntityIterator&                                         theIter)
 {
   theIter.GetOneItem(theEnt->Rep1());
   theIter.GetOneItem(theEnt->Rep2());

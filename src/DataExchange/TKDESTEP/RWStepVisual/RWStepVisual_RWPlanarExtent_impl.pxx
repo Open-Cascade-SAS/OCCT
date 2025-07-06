@@ -21,7 +21,7 @@ RWStepVisual_RWPlanarExtent::RWStepVisual_RWPlanarExtent() {}
 void RWStepVisual_RWPlanarExtent::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepVisual_PlanarExtent)& ent) const
+                                           const Handle(StepVisual_PlanarExtent)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -53,7 +53,7 @@ void RWStepVisual_RWPlanarExtent::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepVisual_RWPlanarExtent::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepVisual_PlanarExtent)& ent) const
+                                            const Handle(StepVisual_PlanarExtent)& ent)
 {
 
   // --- inherited field name ---

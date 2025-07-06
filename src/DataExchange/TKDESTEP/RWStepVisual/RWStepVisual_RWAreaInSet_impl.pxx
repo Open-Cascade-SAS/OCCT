@@ -24,7 +24,7 @@ RWStepVisual_RWAreaInSet::RWStepVisual_RWAreaInSet() {}
 void RWStepVisual_RWAreaInSet::ReadStep(const Handle(StepData_StepReaderData)& data,
                                         const Standard_Integer                 num,
                                         Handle(Interface_Check)&               ach,
-                                        const Handle(StepVisual_AreaInSet)&    ent) const
+                                        const Handle(StepVisual_AreaInSet)&    ent)
 {
 
   // --- Number of Parameter Control ---
@@ -50,7 +50,7 @@ void RWStepVisual_RWAreaInSet::ReadStep(const Handle(StepData_StepReaderData)& d
 }
 
 void RWStepVisual_RWAreaInSet::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepVisual_AreaInSet)& ent) const
+                                         const Handle(StepVisual_AreaInSet)& ent)
 {
 
   // --- own field : area ---
@@ -63,7 +63,7 @@ void RWStepVisual_RWAreaInSet::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepVisual_RWAreaInSet::Share(const Handle(StepVisual_AreaInSet)& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&           iter)
 {
 
   iter.GetOneItem(ent->Area());

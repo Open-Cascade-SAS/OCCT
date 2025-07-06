@@ -31,7 +31,7 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                         data,
   const Standard_Integer                                         num,
   Handle(Interface_Check)&                                       ach,
-  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent) const
+  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -78,7 +78,7 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::WriteStep(
   StepData_StepWriter&                                           SW,
-  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent) const
+  const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent)
 {
 
   // --- inherited field assignedDateAndTime ---
@@ -101,7 +101,7 @@ void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::WriteStep(
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::Share(
   const Handle(StepAP214_AutoDesignActualDateAndTimeAssignment)& ent,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                      iter)
 {
 
   iter.GetOneItem(ent->AssignedDateAndTime());

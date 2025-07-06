@@ -29,7 +29,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
   const Handle(StepData_StepReaderData)&                        theData,
   const Standard_Integer                                        theNum,
   Handle(Interface_Check)&                                      theAch,
-  const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const
+  const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt)
 {
   Standard_Integer aNum = 0;
   theData->NamedForComplex("REPOSITIONED_TESSELLATED_ITEM", theNum, aNum, theAch);
@@ -71,7 +71,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
 
 void RWStepVisual_RWRepositionedTessellatedGeometricSet::WriteStep(
   StepData_StepWriter&                                          theSW,
-  const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const
+  const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt)
 {
   theSW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
   theSW.StartEntity("REPOSITIONED_TESSELLATED_ITEM");
@@ -93,7 +93,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::WriteStep(
 
 void RWStepVisual_RWRepositionedTessellatedGeometricSet::Share(
   const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
-  Interface_EntityIterator&                                     theIter) const
+  Interface_EntityIterator&                                     theIter)
 {
   // Own field : children
   for (Standard_Integer i = 1; i <= theEnt->Items()->Length(); i++)

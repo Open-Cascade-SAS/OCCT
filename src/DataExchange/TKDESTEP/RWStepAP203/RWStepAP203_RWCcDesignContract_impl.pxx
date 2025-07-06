@@ -35,7 +35,7 @@ RWStepAP203_RWCcDesignContract::RWStepAP203_RWCcDesignContract() {}
 void RWStepAP203_RWCcDesignContract::ReadStep(const Handle(StepData_StepReaderData)&    data,
                                               const Standard_Integer                    num,
                                               Handle(Interface_Check)&                  ach,
-                                              const Handle(StepAP203_CcDesignContract)& ent) const
+                                              const Handle(StepAP203_CcDesignContract)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_contract"))
@@ -75,7 +75,7 @@ void RWStepAP203_RWCcDesignContract::ReadStep(const Handle(StepData_StepReaderDa
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignContract::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepAP203_CcDesignContract)& ent) const
+                                               const Handle(StepAP203_CcDesignContract)& ent)
 {
 
   // Inherited fields of ContractAssignment
@@ -96,7 +96,7 @@ void RWStepAP203_RWCcDesignContract::WriteStep(StepData_StepWriter&             
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignContract::Share(const Handle(StepAP203_CcDesignContract)& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator&                 iter)
 {
 
   // Inherited fields of ContractAssignment

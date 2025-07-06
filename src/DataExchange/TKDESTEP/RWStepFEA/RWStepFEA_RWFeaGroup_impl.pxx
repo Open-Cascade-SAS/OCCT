@@ -31,7 +31,7 @@ RWStepFEA_RWFeaGroup::RWStepFEA_RWFeaGroup() {}
 void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
                                     const Standard_Integer                 num,
                                     Handle(Interface_Check)&               ach,
-                                    const Handle(StepFEA_FeaGroup)&        ent) const
+                                    const Handle(StepFEA_FeaGroup)&        ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "fea_group"))
@@ -57,7 +57,7 @@ void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 //=================================================================================================
 
 void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepFEA_FeaGroup)& ent) const
+                                     const Handle(StepFEA_FeaGroup)& ent)
 {
 
   // Inherited fields of Group
@@ -74,7 +74,7 @@ void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
 //=================================================================================================
 
 void RWStepFEA_RWFeaGroup::Share(const Handle(StepFEA_FeaGroup)& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&       iter)
 {
 
   // Inherited fields of Group

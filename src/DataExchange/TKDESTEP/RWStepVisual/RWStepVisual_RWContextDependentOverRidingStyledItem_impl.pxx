@@ -32,7 +32,7 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   const Handle(StepData_StepReaderData)&                         data,
   const Standard_Integer                                         num,
   Handle(Interface_Check)&                                       ach,
-  const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent) const
+  const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -112,7 +112,7 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::WriteStep(
   StepData_StepWriter&                                           SW,
-  const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent) const
+  const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent)
 {
 
   // --- inherited field name ---
@@ -148,7 +148,7 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::WriteStep(
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::Share(
   const Handle(StepVisual_ContextDependentOverRidingStyledItem)& ent,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                      iter)
 {
 
   Standard_Integer nbElem1 = ent->NbStyles();

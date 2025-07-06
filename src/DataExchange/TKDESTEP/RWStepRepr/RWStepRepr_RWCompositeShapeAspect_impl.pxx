@@ -32,7 +32,7 @@ void RWStepRepr_RWCompositeShapeAspect::ReadStep(
   const Handle(StepData_StepReaderData)&       data,
   const Standard_Integer                       num,
   Handle(Interface_Check)&                     ach,
-  const Handle(StepRepr_CompositeShapeAspect)& ent) const
+  const Handle(StepRepr_CompositeShapeAspect)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "composite_shape_aspect"))
@@ -75,7 +75,7 @@ void RWStepRepr_RWCompositeShapeAspect::ReadStep(
 
 void RWStepRepr_RWCompositeShapeAspect::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepRepr_CompositeShapeAspect)& ent) const
+  const Handle(StepRepr_CompositeShapeAspect)& ent)
 {
 
   // Inherited fields of ShapeAspect
@@ -92,7 +92,7 @@ void RWStepRepr_RWCompositeShapeAspect::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWCompositeShapeAspect::Share(const Handle(StepRepr_CompositeShapeAspect)& ent,
-                                              Interface_EntityIterator& iter) const
+                                              Interface_EntityIterator& iter)
 {
 
   // Inherited fields of ShapeAspect

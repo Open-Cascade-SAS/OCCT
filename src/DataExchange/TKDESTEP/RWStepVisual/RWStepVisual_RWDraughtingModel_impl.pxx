@@ -32,7 +32,7 @@ RWStepVisual_RWDraughtingModel::RWStepVisual_RWDraughtingModel() {}
 void RWStepVisual_RWDraughtingModel::ReadStep(const Handle(StepData_StepReaderData)&    data,
                                               const Standard_Integer                    num,
                                               Handle(Interface_Check)&                  ach,
-                                              const Handle(StepVisual_DraughtingModel)& ent) const
+                                              const Handle(StepVisual_DraughtingModel)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "draughting_model"))
@@ -81,7 +81,7 @@ void RWStepVisual_RWDraughtingModel::ReadStep(const Handle(StepData_StepReaderDa
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingModel::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepVisual_DraughtingModel)& ent) const
+                                               const Handle(StepVisual_DraughtingModel)& ent)
 {
 
   // Inherited fields of Representation
@@ -102,7 +102,7 @@ void RWStepVisual_RWDraughtingModel::WriteStep(StepData_StepWriter&             
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingModel::Share(const Handle(StepVisual_DraughtingModel)& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator&                 iter)
 {
 
   // Inherited fields of Representation

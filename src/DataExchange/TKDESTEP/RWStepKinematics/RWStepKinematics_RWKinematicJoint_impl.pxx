@@ -33,7 +33,7 @@ void RWStepKinematics_RWKinematicJoint::ReadStep(
   const Handle(StepData_StepReaderData)&       theData,
   const Standard_Integer                       theNum,
   Handle(Interface_Check)&                     theArch,
-  const Handle(StepKinematics_KinematicJoint)& theEnt) const
+  const Handle(StepKinematics_KinematicJoint)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_joint"))
@@ -70,7 +70,7 @@ void RWStepKinematics_RWKinematicJoint::ReadStep(
 
 void RWStepKinematics_RWKinematicJoint::WriteStep(
   StepData_StepWriter&                         theSW,
-  const Handle(StepKinematics_KinematicJoint)& theEnt) const
+  const Handle(StepKinematics_KinematicJoint)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -87,7 +87,7 @@ void RWStepKinematics_RWKinematicJoint::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicJoint::Share(const Handle(StepKinematics_KinematicJoint)& theEnt,
-                                              Interface_EntityIterator& iter) const
+                                              Interface_EntityIterator& iter)
 {
 
   // Inherited fields of RepresentationItem

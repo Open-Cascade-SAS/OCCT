@@ -36,7 +36,7 @@ void RWStepAP203_RWCcDesignSecurityClassification::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepAP203_CcDesignSecurityClassification)& ent) const
+  const Handle(StepAP203_CcDesignSecurityClassification)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_security_classification"))
@@ -78,7 +78,7 @@ void RWStepAP203_RWCcDesignSecurityClassification::ReadStep(
 
 void RWStepAP203_RWCcDesignSecurityClassification::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepAP203_CcDesignSecurityClassification)& ent) const
+  const Handle(StepAP203_CcDesignSecurityClassification)& ent)
 {
 
   // Inherited fields of SecurityClassificationAssignment
@@ -100,7 +100,7 @@ void RWStepAP203_RWCcDesignSecurityClassification::WriteStep(
 
 void RWStepAP203_RWCcDesignSecurityClassification::Share(
   const Handle(StepAP203_CcDesignSecurityClassification)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
 
   // Inherited fields of SecurityClassificationAssignment

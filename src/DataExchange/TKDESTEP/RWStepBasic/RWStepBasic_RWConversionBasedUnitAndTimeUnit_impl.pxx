@@ -26,7 +26,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num0,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent)
 {
 
   Standard_Integer num = num0;
@@ -84,7 +84,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
 
 void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent)
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -111,7 +111,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndTimeUnit::Share(
   const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

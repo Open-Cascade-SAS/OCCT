@@ -41,16 +41,16 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,
                               Handle(Interface_Check)&               ach,
-                              const Handle(StepGeom_Ellipse)&        ent) const;
+                              const Handle(StepGeom_Ellipse)&        ent);
 
-  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Ellipse)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepGeom_Ellipse)& ent);
 
   static inline void Share(const Handle(StepGeom_Ellipse)& ent,
-                           Interface_EntityIterator&       iter) const;
+                           Interface_EntityIterator&       iter);
 
   static inline void Check(const Handle(StepGeom_Ellipse)& ent,
                            const Interface_ShareTool&      shares,
-                           Handle(Interface_Check)&        ach) const;
+                           Handle(Interface_Check)&        ach);
 
 protected:
 private:

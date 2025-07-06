@@ -21,7 +21,7 @@ RWStepRepr_RWRepresentationItem::RWStepRepr_RWRepresentationItem() {}
 void RWStepRepr_RWRepresentationItem::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepRepr_RepresentationItem)& ent) const
+                                               const Handle(StepRepr_RepresentationItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -42,7 +42,7 @@ void RWStepRepr_RWRepresentationItem::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepRepr_RWRepresentationItem::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepRepr_RepresentationItem)& ent) const
+  const Handle(StepRepr_RepresentationItem)& ent)
 {
 
   // --- own field : name ---

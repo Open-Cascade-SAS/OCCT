@@ -32,7 +32,7 @@ RWStepRepr_RWProductConcept::RWStepRepr_RWProductConcept() {}
 void RWStepRepr_RWProductConcept::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepRepr_ProductConcept)& ent) const
+                                           const Handle(StepRepr_ProductConcept)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "product_concept"))
@@ -72,7 +72,7 @@ void RWStepRepr_RWProductConcept::ReadStep(const Handle(StepData_StepReaderData)
 //=================================================================================================
 
 void RWStepRepr_RWProductConcept::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepRepr_ProductConcept)& ent) const
+                                            const Handle(StepRepr_ProductConcept)& ent)
 {
 
   // Own fields of ProductConcept
@@ -94,7 +94,7 @@ void RWStepRepr_RWProductConcept::WriteStep(StepData_StepWriter&                
 //=================================================================================================
 
 void RWStepRepr_RWProductConcept::Share(const Handle(StepRepr_ProductConcept)& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&              iter)
 {
 
   // Own fields of ProductConcept

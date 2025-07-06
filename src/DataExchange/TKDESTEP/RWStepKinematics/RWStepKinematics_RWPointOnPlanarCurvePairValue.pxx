@@ -39,14 +39,14 @@ public:
     const Handle(StepData_StepReaderData)&                    theData,
     const Standard_Integer                                    theNum,
     Handle(Interface_Check)&                                  theArch,
-    const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt) const;
+    const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt);
 
   static inline void WriteStep(
     StepData_StepWriter&                                      theSW,
-    const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt) const;
+    const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt);
 
   static inline void Share(const Handle(StepKinematics_PointOnPlanarCurvePairValue)& theEnt,
-                           Interface_EntityIterator&                                 iter) const;
+                           Interface_EntityIterator&                                 iter);
 };
 
 #include "RWStepKinematics_RWPointOnPlanarCurvePairValue_impl.pxx"

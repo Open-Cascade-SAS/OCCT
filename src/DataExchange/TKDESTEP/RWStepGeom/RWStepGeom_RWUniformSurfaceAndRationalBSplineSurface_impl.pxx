@@ -32,7 +32,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
   const Handle(StepData_StepReaderData)&                          data,
   const Standard_Integer                                          num0,
   Handle(Interface_Check)&                                        ach,
-  const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent)
 {
 
   Standard_Integer num = num0;
@@ -198,7 +198,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                                            SW,
-  const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent)
 {
 
   // --- Instance of plex component BoundedSurface ---
@@ -284,7 +284,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::WriteStep(
 
 void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::Share(
   const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                       iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();

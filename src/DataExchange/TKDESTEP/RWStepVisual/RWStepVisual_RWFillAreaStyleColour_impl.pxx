@@ -24,7 +24,7 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepVisual_FillAreaStyleColour)& ent) const
+  const Handle(StepVisual_FillAreaStyleColour)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -51,7 +51,7 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
 
 void RWStepVisual_RWFillAreaStyleColour::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepVisual_FillAreaStyleColour)& ent) const
+  const Handle(StepVisual_FillAreaStyleColour)& ent)
 {
 
   // --- own field : name ---
@@ -64,7 +64,7 @@ void RWStepVisual_RWFillAreaStyleColour::WriteStep(
 }
 
 void RWStepVisual_RWFillAreaStyleColour::Share(const Handle(StepVisual_FillAreaStyleColour)& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->FillColour());

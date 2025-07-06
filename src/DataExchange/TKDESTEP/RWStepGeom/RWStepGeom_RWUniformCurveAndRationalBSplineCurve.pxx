@@ -40,14 +40,14 @@ public:
     const Handle(StepData_StepReaderData)&                      data,
     const Standard_Integer                                      num,
     Handle(Interface_Check)&                                    ach,
-    const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent) const;
+    const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent);
 
   static inline void WriteStep(
     StepData_StepWriter&                                        SW,
-    const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent) const;
+    const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent);
 
   static inline void Share(const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent,
-                           Interface_EntityIterator&                                   iter) const;
+                           Interface_EntityIterator&                                   iter);
 
 protected:
 private:

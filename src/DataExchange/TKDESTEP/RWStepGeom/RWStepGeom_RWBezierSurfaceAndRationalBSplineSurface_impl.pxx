@@ -33,7 +33,7 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
   const Handle(StepData_StepReaderData)&                         data,
   const Standard_Integer                                         num0,
   Handle(Interface_Check)&                                       ach,
-  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent)
 {
 
   Standard_Integer num = num0;
@@ -199,7 +199,7 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                                           SW,
-  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent)
 {
 
   // --- Instance of plex component BezierSurface ---
@@ -285,7 +285,7 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::Share(
   const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                      iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();

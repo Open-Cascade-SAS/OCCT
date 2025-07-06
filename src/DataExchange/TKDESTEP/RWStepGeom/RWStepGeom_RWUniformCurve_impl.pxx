@@ -25,7 +25,7 @@ RWStepGeom_RWUniformCurve::RWStepGeom_RWUniformCurve() {}
 void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_UniformCurve)&   ent) const
+                                         const Handle(StepGeom_UniformCurve)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -99,7 +99,7 @@ void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_UniformCurve)& ent) const
+                                          const Handle(StepGeom_UniformCurve)& ent)
 {
 
   // --- inherited field name ---
@@ -133,7 +133,7 @@ void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepGeom_RWUniformCurve::Share(const Handle(StepGeom_UniformCurve)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();

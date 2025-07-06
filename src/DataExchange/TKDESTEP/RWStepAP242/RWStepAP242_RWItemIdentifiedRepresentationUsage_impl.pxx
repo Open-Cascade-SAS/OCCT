@@ -30,7 +30,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
   const Handle(StepData_StepReaderData)&                     data,
   const Standard_Integer                                     num,
   Handle(Interface_Check)&                                   ach,
-  const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const
+  const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent)
 {
   // --- Number of Parameter Control ---
 
@@ -108,7 +108,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::WriteStep(
   StepData_StepWriter&                                       SW,
-  const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const
+  const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent)
 {
 
   // --- own field : name ---
@@ -144,7 +144,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::WriteStep(
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::Share(
   const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                                  iter)
 {
   iter.AddItem(ent->Definition().Value());
   Standard_Integer i, nb = ent->NbIdentifiedItem();

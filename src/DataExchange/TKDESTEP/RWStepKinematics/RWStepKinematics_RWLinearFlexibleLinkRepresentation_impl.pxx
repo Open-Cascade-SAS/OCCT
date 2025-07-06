@@ -39,7 +39,7 @@ void RWStepKinematics_RWLinearFlexibleLinkRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                         theData,
   const Standard_Integer                                         theNum,
   Handle(Interface_Check)&                                       theArch,
-  const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt) const
+  const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "linear_flexible_link_representation"))
@@ -99,7 +99,7 @@ void RWStepKinematics_RWLinearFlexibleLinkRepresentation::ReadStep(
 
 void RWStepKinematics_RWLinearFlexibleLinkRepresentation::WriteStep(
   StepData_StepWriter&                                           theSW,
-  const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt) const
+  const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt)
 {
 
   // Own fields of Representation
@@ -125,7 +125,7 @@ void RWStepKinematics_RWLinearFlexibleLinkRepresentation::WriteStep(
 
 void RWStepKinematics_RWLinearFlexibleLinkRepresentation::Share(
   const Handle(StepKinematics_LinearFlexibleLinkRepresentation)& theEnt,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                      iter)
 {
 
   // Inherited fields of Representation

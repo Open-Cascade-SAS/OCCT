@@ -31,7 +31,7 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepFEA_FeaShellShearStiffness)& ent) const
+  const Handle(StepFEA_FeaShellShearStiffness)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_shell_shear_stiffness"))
@@ -55,7 +55,7 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
 
 void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepFEA_FeaShellShearStiffness)& ent) const
+  const Handle(StepFEA_FeaShellShearStiffness)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -70,7 +70,7 @@ void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellShearStiffness::Share(const Handle(StepFEA_FeaShellShearStiffness)& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator& iter)
 {
 
   // Inherited fields of RepresentationItem

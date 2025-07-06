@@ -42,20 +42,20 @@ public:
     const Handle(StepData_StepReaderData)&                                   data,
     const Standard_Integer                                                   num,
     Handle(Interface_Check)&                                                 ach,
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const;
+    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent);
 
   static inline void WriteStep(
     StepData_StepWriter&                                                     SW,
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const;
+    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent);
 
   static inline void Share(
     const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
-    Interface_EntityIterator&                                                iter) const;
+    Interface_EntityIterator&                                                iter);
 
   static inline void Check(
     const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
     const Interface_ShareTool&                                               shares,
-    Handle(Interface_Check)&                                                 ach) const;
+    Handle(Interface_Check)&                                                 ach);
 
 protected:
 private:

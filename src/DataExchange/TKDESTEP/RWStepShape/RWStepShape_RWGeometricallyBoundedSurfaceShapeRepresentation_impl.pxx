@@ -29,7 +29,7 @@ void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                                  data,
   const Standard_Integer                                                  num,
   Handle(Interface_Check)&                                                ach,
-  const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent) const
+  const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -83,7 +83,7 @@ void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::ReadStep(
 
 void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::WriteStep(
   StepData_StepWriter&                                                    SW,
-  const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent) const
+  const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -106,7 +106,7 @@ void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::WriteStep(
 
 void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::Share(
   const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent,
-  Interface_EntityIterator&                                               iter) const
+  Interface_EntityIterator&                                               iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

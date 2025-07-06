@@ -23,7 +23,7 @@ void RWStepRepr_RWMaterialDesignation::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepRepr_MaterialDesignation)& ent) const
+  const Handle(StepRepr_MaterialDesignation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -49,7 +49,7 @@ void RWStepRepr_RWMaterialDesignation::ReadStep(
 
 void RWStepRepr_RWMaterialDesignation::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepRepr_MaterialDesignation)& ent) const
+  const Handle(StepRepr_MaterialDesignation)& ent)
 {
 
   // --- own field : name ---
@@ -62,7 +62,7 @@ void RWStepRepr_RWMaterialDesignation::WriteStep(
 }
 
 void RWStepRepr_RWMaterialDesignation::Share(const Handle(StepRepr_MaterialDesignation)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
   iter.AddItem(ent->OfDefinition().Value());
 }

@@ -36,7 +36,7 @@ RWStepFEA_RWFeaModel3d::RWStepFEA_RWFeaModel3d() {}
 void RWStepFEA_RWFeaModel3d::ReadStep(const Handle(StepData_StepReaderData)& data,
                                       const Standard_Integer                 num,
                                       Handle(Interface_Check)&               ach,
-                                      const Handle(StepFEA_FeaModel3d)&      ent) const
+                                      const Handle(StepFEA_FeaModel3d)&      ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "fea_model3d"))
@@ -114,7 +114,7 @@ void RWStepFEA_RWFeaModel3d::ReadStep(const Handle(StepData_StepReaderData)& dat
 //=================================================================================================
 
 void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepFEA_FeaModel3d)& ent) const
+                                       const Handle(StepFEA_FeaModel3d)& ent)
 {
 
   // Inherited fields of Representation
@@ -152,7 +152,7 @@ void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&              SW,
 //=================================================================================================
 
 void RWStepFEA_RWFeaModel3d::Share(const Handle(StepFEA_FeaModel3d)& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&         iter)
 {
 
   // Inherited fields of Representation

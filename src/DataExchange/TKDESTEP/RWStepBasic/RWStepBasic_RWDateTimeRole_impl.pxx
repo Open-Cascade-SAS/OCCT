@@ -21,7 +21,7 @@ RWStepBasic_RWDateTimeRole::RWStepBasic_RWDateTimeRole() {}
 void RWStepBasic_RWDateTimeRole::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_DateTimeRole)&  ent) const
+                                          const Handle(StepBasic_DateTimeRole)&  ent)
 {
 
   // --- Number of Parameter Control ---
@@ -41,7 +41,7 @@ void RWStepBasic_RWDateTimeRole::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepBasic_RWDateTimeRole::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_DateTimeRole)& ent) const
+                                           const Handle(StepBasic_DateTimeRole)& ent)
 {
 
   // --- own field : name ---

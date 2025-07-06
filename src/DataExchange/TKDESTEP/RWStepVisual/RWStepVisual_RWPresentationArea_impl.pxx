@@ -24,7 +24,7 @@ RWStepVisual_RWPresentationArea::RWStepVisual_RWPresentationArea() {}
 void RWStepVisual_RWPresentationArea::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_PresentationArea)& ent) const
+                                               const Handle(StepVisual_PresentationArea)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -78,7 +78,7 @@ void RWStepVisual_RWPresentationArea::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepVisual_RWPresentationArea::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepVisual_PresentationArea)& ent) const
+  const Handle(StepVisual_PresentationArea)& ent)
 {
 
   // --- inherited field name ---
@@ -100,7 +100,7 @@ void RWStepVisual_RWPresentationArea::WriteStep(
 }
 
 void RWStepVisual_RWPresentationArea::Share(const Handle(StepVisual_PresentationArea)& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator&                  iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

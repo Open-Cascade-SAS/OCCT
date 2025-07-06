@@ -24,7 +24,7 @@ void RWStepBasic_RWApplicationContextElement::ReadStep(
   const Handle(StepData_StepReaderData)&             data,
   const Standard_Integer                             num,
   Handle(Interface_Check)&                           ach,
-  const Handle(StepBasic_ApplicationContextElement)& ent) const
+  const Handle(StepBasic_ApplicationContextElement)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepBasic_RWApplicationContextElement::ReadStep(
 
 void RWStepBasic_RWApplicationContextElement::WriteStep(
   StepData_StepWriter&                               SW,
-  const Handle(StepBasic_ApplicationContextElement)& ent) const
+  const Handle(StepBasic_ApplicationContextElement)& ent)
 {
 
   // --- own field : name ---
@@ -69,7 +69,7 @@ void RWStepBasic_RWApplicationContextElement::WriteStep(
 
 void RWStepBasic_RWApplicationContextElement::Share(
   const Handle(StepBasic_ApplicationContextElement)& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                          iter)
 {
 
   iter.GetOneItem(ent->FrameOfReference());

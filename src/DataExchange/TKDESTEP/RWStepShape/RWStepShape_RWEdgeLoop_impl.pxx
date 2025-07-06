@@ -26,7 +26,7 @@ RWStepShape_RWEdgeLoop::RWStepShape_RWEdgeLoop() {}
 void RWStepShape_RWEdgeLoop::ReadStep(const Handle(StepData_StepReaderData)& data,
                                       const Standard_Integer                 num,
                                       Handle(Interface_Check)&               ach,
-                                      const Handle(StepShape_EdgeLoop)&      ent) const
+                                      const Handle(StepShape_EdgeLoop)&      ent)
 {
 
   // --- Number of Parameter Control ---
@@ -68,7 +68,7 @@ void RWStepShape_RWEdgeLoop::ReadStep(const Handle(StepData_StepReaderData)& dat
 }
 
 void RWStepShape_RWEdgeLoop::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepShape_EdgeLoop)& ent) const
+                                       const Handle(StepShape_EdgeLoop)& ent)
 {
 
   // --- inherited field name ---
@@ -90,7 +90,7 @@ void RWStepShape_RWEdgeLoop::WriteStep(StepData_StepWriter&              SW,
 // ============================================================================
 
 void RWStepShape_RWEdgeLoop::Share(const Handle(StepShape_EdgeLoop)& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&         iter)
 {
 
   Standard_Integer nbElem1 = ent->NbEdgeList();
@@ -102,7 +102,7 @@ void RWStepShape_RWEdgeLoop::Share(const Handle(StepShape_EdgeLoop)& ent,
 
 void RWStepShape_RWEdgeLoop::Check(const Handle(StepShape_EdgeLoop)& ent,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& ach) const
+                                   Handle(Interface_Check)& ach)
 {
   //  std::cout << "------ calling CheckEdgeLoop ------" << std::endl;
   Standard_Boolean headToTail = Standard_True;

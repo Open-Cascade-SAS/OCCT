@@ -34,7 +34,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
   const Handle(StepData_StepReaderData)&                           data,
   const Standard_Integer                                           num,
   Handle(Interface_Check)&                                         ach,
-  const Handle(StepVisual_CameraModelD3MultiClippingIntersection)& ent) const
+  const Handle(StepVisual_CameraModelD3MultiClippingIntersection)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "camera_model_d3_multi_clipping_intersection"))
@@ -68,7 +68,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::ReadStep(
 
 void RWStepVisual_RWCameraModelD3MultiClippingIntersection::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepVisual_CameraModelD3MultiClippingIntersection)& ent) const
+  const Handle(StepVisual_CameraModelD3MultiClippingIntersection)& ent)
 {
   // Inherited field name
   SW.Send(ent->Name());
@@ -86,7 +86,7 @@ void RWStepVisual_RWCameraModelD3MultiClippingIntersection::WriteStep(
 
 void RWStepVisual_RWCameraModelD3MultiClippingIntersection::Share(
   const Handle(StepVisual_CameraModelD3MultiClippingIntersection)& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                        iter)
 {
   // Own field: shape_clipping
   Standard_Integer i, nb = ent->ShapeClipping()->Length();

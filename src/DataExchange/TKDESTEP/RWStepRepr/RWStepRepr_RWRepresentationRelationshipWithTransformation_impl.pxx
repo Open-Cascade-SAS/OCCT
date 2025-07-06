@@ -28,7 +28,7 @@ void RWStepRepr_RWRepresentationRelationshipWithTransformation::ReadStep(
   const Handle(StepData_StepReaderData)&                               data,
   const Standard_Integer                                               num,
   Handle(Interface_Check)&                                             ach,
-  const Handle(StepRepr_RepresentationRelationshipWithTransformation)& ent) const
+  const Handle(StepRepr_RepresentationRelationshipWithTransformation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -73,7 +73,7 @@ void RWStepRepr_RWRepresentationRelationshipWithTransformation::ReadStep(
 
 void RWStepRepr_RWRepresentationRelationshipWithTransformation::WriteStep(
   StepData_StepWriter&                                                 SW,
-  const Handle(StepRepr_RepresentationRelationshipWithTransformation)& ent) const
+  const Handle(StepRepr_RepresentationRelationshipWithTransformation)& ent)
 {
 
   // --- inherited field : name ---
@@ -97,7 +97,7 @@ void RWStepRepr_RWRepresentationRelationshipWithTransformation::WriteStep(
 
 void RWStepRepr_RWRepresentationRelationshipWithTransformation::Share(
   const Handle(StepRepr_RepresentationRelationshipWithTransformation)& ent,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                            iter)
 {
 
   iter.GetOneItem(ent->Rep1());

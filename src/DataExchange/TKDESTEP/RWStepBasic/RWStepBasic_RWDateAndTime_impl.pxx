@@ -24,7 +24,7 @@ RWStepBasic_RWDateAndTime::RWStepBasic_RWDateAndTime() {}
 void RWStepBasic_RWDateAndTime::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepBasic_DateAndTime)&   ent) const
+                                         const Handle(StepBasic_DateAndTime)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -51,7 +51,7 @@ void RWStepBasic_RWDateAndTime::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepBasic_DateAndTime)& ent) const
+                                          const Handle(StepBasic_DateAndTime)& ent)
 {
 
   // --- own field : dateComponent ---
@@ -64,7 +64,7 @@ void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepBasic_RWDateAndTime::Share(const Handle(StepBasic_DateAndTime)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   iter.GetOneItem(ent->DateComponent());

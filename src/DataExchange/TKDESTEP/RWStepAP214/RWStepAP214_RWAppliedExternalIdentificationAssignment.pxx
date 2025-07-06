@@ -41,16 +41,16 @@ public:
     const Handle(StepData_StepReaderData)&                           data,
     const Standard_Integer                                           num,
     Handle(Interface_Check)&                                         ach,
-    const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent) const;
+    const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent);
 
   //! Writes AppliedExternalIdentificationAssignment
   static inline void WriteStep(
     StepData_StepWriter&                                             SW,
-    const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent) const;
+    const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent);
 
   //! Fills data for graph (shared items)
   static inline void Share(const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent,
-                           Interface_EntityIterator& iter) const;
+                           Interface_EntityIterator& iter);
 
 protected:
 private:

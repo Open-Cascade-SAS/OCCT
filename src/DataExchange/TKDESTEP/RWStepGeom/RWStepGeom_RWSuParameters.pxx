@@ -38,13 +38,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& theData,
                               const Standard_Integer                 theNum,
                               Handle(Interface_Check)&               theAch,
-                              const Handle(StepGeom_SuParameters)&   theEnt) const;
+                              const Handle(StepGeom_SuParameters)&   theEnt);
 
   static inline void WriteStep(StepData_StepWriter&                 theSW,
-                               const Handle(StepGeom_SuParameters)& theEnt) const;
+                               const Handle(StepGeom_SuParameters)& theEnt);
 
   static inline void Share(const Handle(StepGeom_SuParameters)& theEnt,
-                           Interface_EntityIterator&            iter) const;
+                           Interface_EntityIterator&            iter);
 };
 
 #include "RWStepGeom_RWSuParameters_impl.pxx"

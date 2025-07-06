@@ -34,7 +34,7 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
   const Handle(StepData_StepReaderData)&                   theData,
   const Standard_Integer                                   theNum,
   Handle(Interface_Check)&                                 theArch,
-  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt) const
+  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theArch, "low_order_kinematic_pair_value"))
@@ -90,7 +90,7 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::ReadStep(
 
 void RWStepKinematics_RWLowOrderKinematicPairValue::WriteStep(
   StepData_StepWriter&                                     theSW,
-  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt) const
+  const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -120,7 +120,7 @@ void RWStepKinematics_RWLowOrderKinematicPairValue::WriteStep(
 
 void RWStepKinematics_RWLowOrderKinematicPairValue::Share(
   const Handle(StepKinematics_LowOrderKinematicPairValue)& theEnt,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                iter)
 {
 
   // Inherited fields of RepresentationItem

@@ -31,7 +31,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepAP242_DraughtingModelItemAssociation)& ent) const
+  const Handle(StepAP242_DraughtingModelItemAssociation)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "geometric_item_specific_usage"))
@@ -101,7 +101,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
 
 void RWStepAP242_RWDraughtingModelItemAssociation::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepAP242_DraughtingModelItemAssociation)& ent) const
+  const Handle(StepAP242_DraughtingModelItemAssociation)& ent)
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
   SW.Send(ent->Name());
@@ -129,7 +129,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::WriteStep(
 
 void RWStepAP242_RWDraughtingModelItemAssociation::Share(
   const Handle(StepAP242_DraughtingModelItemAssociation)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
 

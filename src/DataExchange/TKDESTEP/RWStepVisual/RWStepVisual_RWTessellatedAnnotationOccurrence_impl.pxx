@@ -30,7 +30,7 @@ void RWStepVisual_RWTessellatedAnnotationOccurrence::ReadStep(
   const Handle(StepData_StepReaderData)&                    data,
   const Standard_Integer                                    num,
   Handle(Interface_Check)&                                  ach,
-  const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const
+  const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent)
 {
 
   // Number of Parameter Control
@@ -73,7 +73,7 @@ void RWStepVisual_RWTessellatedAnnotationOccurrence::ReadStep(
 
 void RWStepVisual_RWTessellatedAnnotationOccurrence::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent) const
+  const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent)
 {
   // Inherited field : name
   SW.Send(ent->Name());
@@ -95,7 +95,7 @@ void RWStepVisual_RWTessellatedAnnotationOccurrence::WriteStep(
 
 void RWStepVisual_RWTessellatedAnnotationOccurrence::Share(
   const Handle(StepVisual_TessellatedAnnotationOccurrence)& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   Standard_Integer nbElem1 = ent->NbStyles();

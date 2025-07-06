@@ -36,7 +36,7 @@ void RWStepKinematics_RWLinearFlexibleAndPinionPair::ReadStep(
   const Handle(StepData_StepReaderData)&                    theData,
   const Standard_Integer                                    theNum,
   Handle(Interface_Check)&                                  theArch,
-  const Handle(StepKinematics_LinearFlexibleAndPinionPair)& theEnt) const
+  const Handle(StepKinematics_LinearFlexibleAndPinionPair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theArch, "linear_flexible_and_pinion_pair"))
@@ -118,7 +118,7 @@ void RWStepKinematics_RWLinearFlexibleAndPinionPair::ReadStep(
 
 void RWStepKinematics_RWLinearFlexibleAndPinionPair::WriteStep(
   StepData_StepWriter&                                      theSW,
-  const Handle(StepKinematics_LinearFlexibleAndPinionPair)& theEnt) const
+  const Handle(StepKinematics_LinearFlexibleAndPinionPair)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -153,7 +153,7 @@ void RWStepKinematics_RWLinearFlexibleAndPinionPair::WriteStep(
 
 void RWStepKinematics_RWLinearFlexibleAndPinionPair::Share(
   const Handle(StepKinematics_LinearFlexibleAndPinionPair)& theEnt,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   // Inherited fields of RepresentationItem

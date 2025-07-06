@@ -27,7 +27,7 @@ RWStepGeom_RWSurfacePatch::RWStepGeom_RWSurfacePatch() {}
 void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_SurfacePatch)&   ent) const
+                                         const Handle(StepGeom_SurfacePatch)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -92,7 +92,7 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_SurfacePatch)& ent) const
+                                          const Handle(StepGeom_SurfacePatch)& ent)
 {
 
   // --- own field : parentSurface ---
@@ -117,7 +117,7 @@ void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepGeom_RWSurfacePatch::Share(const Handle(StepGeom_SurfacePatch)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   iter.GetOneItem(ent->ParentSurface());

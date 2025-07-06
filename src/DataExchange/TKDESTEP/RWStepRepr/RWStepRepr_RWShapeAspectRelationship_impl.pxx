@@ -32,7 +32,7 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&          data,
   const Standard_Integer                          num,
   Handle(Interface_Check)&                        ach,
-  const Handle(StepRepr_ShapeAspectRelationship)& ent) const
+  const Handle(StepRepr_ShapeAspectRelationship)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect_relationship"))
@@ -78,7 +78,7 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
 
 void RWStepRepr_RWShapeAspectRelationship::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepRepr_ShapeAspectRelationship)& ent) const
+  const Handle(StepRepr_ShapeAspectRelationship)& ent)
 {
 
   // Own fields of ShapeAspectRelationship
@@ -101,7 +101,7 @@ void RWStepRepr_RWShapeAspectRelationship::WriteStep(
 
 void RWStepRepr_RWShapeAspectRelationship::Share(
   const Handle(StepRepr_ShapeAspectRelationship)& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                       iter)
 {
 
   // Own fields of ShapeAspectRelationship

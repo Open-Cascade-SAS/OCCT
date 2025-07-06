@@ -24,7 +24,7 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                data,
   const Standard_Integer                                num,
   Handle(Interface_Check)&                              ach,
-  const Handle(StepVisual_PresentationLayerAssignment)& ent) const
+  const Handle(StepVisual_PresentationLayerAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -71,7 +71,7 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
 
 void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepVisual_PresentationLayerAssignment)& ent) const
+  const Handle(StepVisual_PresentationLayerAssignment)& ent)
 {
 
   // --- own field : name ---
@@ -94,7 +94,7 @@ void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
 
 void RWStepVisual_RWPresentationLayerAssignment::Share(
   const Handle(StepVisual_PresentationLayerAssignment)& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                             iter)
 {
 
   Standard_Integer nbElem1 = ent->NbAssignedItems();

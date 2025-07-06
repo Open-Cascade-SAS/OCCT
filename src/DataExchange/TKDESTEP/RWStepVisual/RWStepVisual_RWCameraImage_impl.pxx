@@ -23,7 +23,7 @@ RWStepVisual_RWCameraImage::RWStepVisual_RWCameraImage() {}
 void RWStepVisual_RWCameraImage::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepVisual_CameraImage)&  ent) const
+                                          const Handle(StepVisual_CameraImage)&  ent)
 {
 
   // --- Number of Parameter Control ---
@@ -65,7 +65,7 @@ void RWStepVisual_RWCameraImage::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepVisual_RWCameraImage::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepVisual_CameraImage)& ent) const
+                                           const Handle(StepVisual_CameraImage)& ent)
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepVisual_RWCameraImage::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepVisual_RWCameraImage::Share(const Handle(StepVisual_CameraImage)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   iter.GetOneItem(ent->MappingSource());

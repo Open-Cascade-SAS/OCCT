@@ -24,7 +24,7 @@ RWStepGeom_RWDegeneratePcurve::RWStepGeom_RWDegeneratePcurve() {}
 void RWStepGeom_RWDegeneratePcurve::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepGeom_DegeneratePcurve)& ent) const
+                                             const Handle(StepGeom_DegeneratePcurve)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -61,7 +61,7 @@ void RWStepGeom_RWDegeneratePcurve::ReadStep(const Handle(StepData_StepReaderDat
 }
 
 void RWStepGeom_RWDegeneratePcurve::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepGeom_DegeneratePcurve)& ent) const
+                                              const Handle(StepGeom_DegeneratePcurve)& ent)
 {
 
   // --- inherited field name ---
@@ -78,7 +78,7 @@ void RWStepGeom_RWDegeneratePcurve::WriteStep(StepData_StepWriter&              
 }
 
 void RWStepGeom_RWDegeneratePcurve::Share(const Handle(StepGeom_DegeneratePcurve)& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   iter.GetOneItem(ent->BasisSurface());

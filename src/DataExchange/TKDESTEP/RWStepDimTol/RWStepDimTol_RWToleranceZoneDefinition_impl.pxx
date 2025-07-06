@@ -31,7 +31,7 @@ void RWStepDimTol_RWToleranceZoneDefinition::ReadStep(
   const Handle(StepData_StepReaderData)&            data,
   const Standard_Integer                            num,
   Handle(Interface_Check)&                          ach,
-  const Handle(StepDimTol_ToleranceZoneDefinition)& ent) const
+  const Handle(StepDimTol_ToleranceZoneDefinition)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "tolerance_zone_definition"))
@@ -65,7 +65,7 @@ void RWStepDimTol_RWToleranceZoneDefinition::ReadStep(
 
 void RWStepDimTol_RWToleranceZoneDefinition::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepDimTol_ToleranceZoneDefinition)& ent) const
+  const Handle(StepDimTol_ToleranceZoneDefinition)& ent)
 {
   // Own fields of ToleranceZoneDefinition
 
@@ -83,7 +83,7 @@ void RWStepDimTol_RWToleranceZoneDefinition::WriteStep(
 
 void RWStepDimTol_RWToleranceZoneDefinition::Share(
   const Handle(StepDimTol_ToleranceZoneDefinition)& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                         iter)
 {
 
   // Own fields of ToleranceZoneDefinition

@@ -34,7 +34,7 @@ void RWStepKinematics_RWPrismaticPairValue::ReadStep(
   const Handle(StepData_StepReaderData)&           theData,
   const Standard_Integer                           theNum,
   Handle(Interface_Check)&                         theArch,
-  const Handle(StepKinematics_PrismaticPairValue)& theEnt) const
+  const Handle(StepKinematics_PrismaticPairValue)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "prismatic_pair_value"))
@@ -68,7 +68,7 @@ void RWStepKinematics_RWPrismaticPairValue::ReadStep(
 
 void RWStepKinematics_RWPrismaticPairValue::WriteStep(
   StepData_StepWriter&                             theSW,
-  const Handle(StepKinematics_PrismaticPairValue)& theEnt) const
+  const Handle(StepKinematics_PrismaticPairValue)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -88,7 +88,7 @@ void RWStepKinematics_RWPrismaticPairValue::WriteStep(
 
 void RWStepKinematics_RWPrismaticPairValue::Share(
   const Handle(StepKinematics_PrismaticPairValue)& theEnt,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                        iter)
 {
 
   // Inherited fields of RepresentationItem

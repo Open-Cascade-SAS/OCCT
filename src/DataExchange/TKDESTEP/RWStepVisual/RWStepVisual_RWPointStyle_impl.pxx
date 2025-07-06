@@ -23,7 +23,7 @@ RWStepVisual_RWPointStyle::RWStepVisual_RWPointStyle() {}
 void RWStepVisual_RWPointStyle::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepVisual_PointStyle)&   ent) const
+                                         const Handle(StepVisual_PointStyle)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -63,7 +63,7 @@ void RWStepVisual_RWPointStyle::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepVisual_RWPointStyle::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepVisual_PointStyle)& ent) const
+                                          const Handle(StepVisual_PointStyle)& ent)
 {
 
   // --- own field : name ---
@@ -80,7 +80,7 @@ void RWStepVisual_RWPointStyle::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepVisual_RWPointStyle::Share(const Handle(StepVisual_PointStyle)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   if (ent->Marker().CaseNumber() > 0)

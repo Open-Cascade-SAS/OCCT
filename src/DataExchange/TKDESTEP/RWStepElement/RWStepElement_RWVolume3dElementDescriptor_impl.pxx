@@ -33,7 +33,7 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepElement_Volume3dElementDescriptor)& ent) const
+  const Handle(StepElement_Volume3dElementDescriptor)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "volume3d_element_descriptor"))
@@ -106,7 +106,7 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
 
 void RWStepElement_RWVolume3dElementDescriptor::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepElement_Volume3dElementDescriptor)& ent) const
+  const Handle(StepElement_Volume3dElementDescriptor)& ent)
 {
 
   // Inherited fields of ElementDescriptor
@@ -157,7 +157,7 @@ void RWStepElement_RWVolume3dElementDescriptor::WriteStep(
 
 void RWStepElement_RWVolume3dElementDescriptor::Share(
   const Handle(StepElement_Volume3dElementDescriptor)&,
-  Interface_EntityIterator&) const
+  Interface_EntityIterator&)
 {
 
   // Inherited fields of ElementDescriptor

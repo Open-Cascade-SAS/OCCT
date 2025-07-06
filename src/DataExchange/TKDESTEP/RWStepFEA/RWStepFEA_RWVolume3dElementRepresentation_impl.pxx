@@ -39,7 +39,7 @@ void RWStepFEA_RWVolume3dElementRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepFEA_Volume3dElementRepresentation)& ent) const
+  const Handle(StepFEA_Volume3dElementRepresentation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "volume3d_element_representation"))
@@ -130,7 +130,7 @@ void RWStepFEA_RWVolume3dElementRepresentation::ReadStep(
 
 void RWStepFEA_RWVolume3dElementRepresentation::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepFEA_Volume3dElementRepresentation)& ent) const
+  const Handle(StepFEA_Volume3dElementRepresentation)& ent)
 {
 
   // Inherited fields of Representation
@@ -172,7 +172,7 @@ void RWStepFEA_RWVolume3dElementRepresentation::WriteStep(
 
 void RWStepFEA_RWVolume3dElementRepresentation::Share(
   const Handle(StepFEA_Volume3dElementRepresentation)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
 
   // Inherited fields of Representation

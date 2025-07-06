@@ -40,11 +40,11 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&          data,
                               const Standard_Integer                          num,
                               Handle(Interface_Check)&                        ach,
-                              const Handle(StepDimTol_RunoutZoneOrientation)& ent) const;
+                              const Handle(StepDimTol_RunoutZoneOrientation)& ent);
 
   //! Writes RunoutZoneOrientation
   static inline void WriteStep(StepData_StepWriter&                            SW,
-                               const Handle(StepDimTol_RunoutZoneOrientation)& ent) const;
+                               const Handle(StepDimTol_RunoutZoneOrientation)& ent);
 };
 
 #include "RWStepDimTol_RWRunoutZoneOrientation_impl.pxx"

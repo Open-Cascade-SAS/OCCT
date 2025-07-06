@@ -29,7 +29,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   const Handle(StepData_StepReaderData)&                            data,
   const Standard_Integer                                            num,
   Handle(Interface_Check)&                                          ach,
-  const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent) const
+  const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -101,7 +101,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::WriteStep(
   StepData_StepWriter&                                              SW,
-  const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent) const
+  const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent)
 {
 
   // --- inherited field : id ---
@@ -131,7 +131,7 @@ void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::WriteStep(
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::Share(
   const Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)& ent,
-  Interface_EntityIterator&                                         iter) const
+  Interface_EntityIterator&                                         iter)
 {
 
   iter.GetOneItem(ent->Formation());

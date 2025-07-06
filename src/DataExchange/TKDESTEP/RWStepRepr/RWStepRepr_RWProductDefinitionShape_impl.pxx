@@ -31,7 +31,7 @@ void RWStepRepr_RWProductDefinitionShape::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepRepr_ProductDefinitionShape)& ent) const
+  const Handle(StepRepr_ProductDefinitionShape)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "product_definition_shape"))
@@ -71,7 +71,7 @@ void RWStepRepr_RWProductDefinitionShape::ReadStep(
 
 void RWStepRepr_RWProductDefinitionShape::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepRepr_ProductDefinitionShape)& ent) const
+  const Handle(StepRepr_ProductDefinitionShape)& ent)
 {
 
   // Inherited fields of PropertyDefinition
@@ -91,7 +91,7 @@ void RWStepRepr_RWProductDefinitionShape::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWProductDefinitionShape::Share(const Handle(StepRepr_ProductDefinitionShape)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   // Inherited fields of PropertyDefinition

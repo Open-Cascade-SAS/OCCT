@@ -42,9 +42,9 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,
                               Handle(Interface_Check)&               ach,
-                              const Handle(StepBasic_SiUnit)&        ent) const;
+                              const Handle(StepBasic_SiUnit)&        ent);
 
-  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_SiUnit)& ent) const;
+  static inline void WriteStep(StepData_StepWriter& SW, const Handle(StepBasic_SiUnit)& ent);
 
 protected:
 private:

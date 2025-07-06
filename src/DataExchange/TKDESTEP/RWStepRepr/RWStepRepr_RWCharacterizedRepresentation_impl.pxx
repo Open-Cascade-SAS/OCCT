@@ -32,7 +32,7 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepRepr_CharacterizedRepresentation)& ent) const
+  const Handle(StepRepr_CharacterizedRepresentation)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "characterized_representation"))
@@ -83,7 +83,7 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
 
 void RWStepRepr_RWCharacterizedRepresentation::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepRepr_CharacterizedRepresentation)& ent) const
+  const Handle(StepRepr_CharacterizedRepresentation)& ent)
 {
   // name
   SW.Send(ent->Name());
@@ -110,7 +110,7 @@ void RWStepRepr_RWCharacterizedRepresentation::WriteStep(
 
 void RWStepRepr_RWCharacterizedRepresentation::Share(
   const Handle(StepRepr_CharacterizedRepresentation)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
   Standard_Integer nbElem = ent->NbItems();
   for (Standard_Integer i = 1; i <= nbElem; i++)

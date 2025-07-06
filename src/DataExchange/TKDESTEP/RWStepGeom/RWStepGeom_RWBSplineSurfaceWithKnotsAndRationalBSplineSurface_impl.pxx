@@ -41,7 +41,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   const Handle(StepData_StepReaderData)&                                   data,
   const Standard_Integer                                                   num0,
   Handle(Interface_Check)&                                                 ach,
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent)
 {
 
   Standard_Integer num = 0; // num0
@@ -293,7 +293,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                                                     SW,
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const
+  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent)
 {
 
   // --- Instance of plex component BoundedSurface ---
@@ -412,7 +412,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Share(
   const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
-  Interface_EntityIterator&                                                iter) const
+  Interface_EntityIterator&                                                iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();
@@ -429,7 +429,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Share(
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Check(
   const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
   const Interface_ShareTool&                                               aShto,
-  Handle(Interface_Check)&                                                 ach) const
+  Handle(Interface_Check)&                                                 ach)
 {
   const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& aRationalBSS = ent;
   Handle(StepGeom_BSplineSurfaceWithKnots) aBSSWK = aRationalBSS->BSplineSurfaceWithKnots();

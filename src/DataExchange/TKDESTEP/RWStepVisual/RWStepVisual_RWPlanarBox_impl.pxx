@@ -22,7 +22,7 @@ RWStepVisual_RWPlanarBox::RWStepVisual_RWPlanarBox() {}
 void RWStepVisual_RWPlanarBox::ReadStep(const Handle(StepData_StepReaderData)& data,
                                         const Standard_Integer                 num,
                                         Handle(Interface_Check)&               ach,
-                                        const Handle(StepVisual_PlanarBox)&    ent) const
+                                        const Handle(StepVisual_PlanarBox)&    ent)
 {
 
   // --- Number of Parameter Control ---
@@ -60,7 +60,7 @@ void RWStepVisual_RWPlanarBox::ReadStep(const Handle(StepData_StepReaderData)& d
 }
 
 void RWStepVisual_RWPlanarBox::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepVisual_PlanarBox)& ent) const
+                                         const Handle(StepVisual_PlanarBox)& ent)
 {
 
   // --- inherited field name ---
@@ -81,7 +81,7 @@ void RWStepVisual_RWPlanarBox::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepVisual_RWPlanarBox::Share(const Handle(StepVisual_PlanarBox)& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&           iter)
 {
 
   iter.GetOneItem(ent->Placement().Value());

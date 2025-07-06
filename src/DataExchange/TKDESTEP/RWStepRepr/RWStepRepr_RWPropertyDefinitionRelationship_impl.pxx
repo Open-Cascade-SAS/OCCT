@@ -32,7 +32,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const
+  const Handle(StepRepr_PropertyDefinitionRelationship)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "property_definition_relationship"))
@@ -70,7 +70,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
 
 void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const
+  const Handle(StepRepr_PropertyDefinitionRelationship)& ent)
 {
 
   // Own fields of PropertyDefinitionRelationship
@@ -88,7 +88,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
 
 void RWStepRepr_RWPropertyDefinitionRelationship::Share(
   const Handle(StepRepr_PropertyDefinitionRelationship)& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                              iter)
 {
 
   // Own fields of PropertyDefinitionRelationship

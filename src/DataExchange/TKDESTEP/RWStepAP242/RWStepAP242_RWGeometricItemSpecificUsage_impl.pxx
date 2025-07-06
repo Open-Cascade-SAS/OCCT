@@ -28,7 +28,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepAP242_GeometricItemSpecificUsage)& ent) const
+  const Handle(StepAP242_GeometricItemSpecificUsage)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -100,7 +100,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
 
 void RWStepAP242_RWGeometricItemSpecificUsage::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepAP242_GeometricItemSpecificUsage)& ent) const
+  const Handle(StepAP242_GeometricItemSpecificUsage)& ent)
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
 
@@ -127,7 +127,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::WriteStep(
 
 void RWStepAP242_RWGeometricItemSpecificUsage::Share(
   const Handle(StepAP242_GeometricItemSpecificUsage)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
 

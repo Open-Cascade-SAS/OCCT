@@ -30,7 +30,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
   const Handle(StepData_StepReaderData)&                           data,
   const Standard_Integer                                           num0,
   Handle(Interface_Check)&                                         ach,
-  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent) const
+  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent)
 {
 
   Standard_Integer num = num0;
@@ -168,7 +168,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
 
 void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent) const
+  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent)
 {
 
   // --- Instance of plex component BoundedCurve ---
@@ -233,7 +233,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
 
 void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::Share(
   const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                        iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();

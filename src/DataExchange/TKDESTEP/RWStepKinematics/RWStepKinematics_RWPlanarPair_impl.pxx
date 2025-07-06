@@ -34,7 +34,7 @@ RWStepKinematics_RWPlanarPair::RWStepKinematics_RWPlanarPair() {}
 void RWStepKinematics_RWPlanarPair::ReadStep(const Handle(StepData_StepReaderData)&   theData,
                                              const Standard_Integer                   theNum,
                                              Handle(Interface_Check)&                 theArch,
-                                             const Handle(StepKinematics_PlanarPair)& theEnt) const
+                                             const Handle(StepKinematics_PlanarPair)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "planar_pair"))
@@ -159,7 +159,7 @@ void RWStepKinematics_RWPlanarPair::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepKinematics_RWPlanarPair::WriteStep(StepData_StepWriter&                     theSW,
-                                              const Handle(StepKinematics_PlanarPair)& theEnt) const
+                                              const Handle(StepKinematics_PlanarPair)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -203,7 +203,7 @@ void RWStepKinematics_RWPlanarPair::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepKinematics_RWPlanarPair::Share(const Handle(StepKinematics_PlanarPair)& theEnt,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   // Inherited fields of RepresentationItem

@@ -26,7 +26,7 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepShape_QualifiedRepresentationItem)& ent) const
+  const Handle(StepShape_QualifiedRepresentationItem)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -62,7 +62,7 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
 
 void RWStepShape_RWQualifiedRepresentationItem::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepShape_QualifiedRepresentationItem)& ent) const
+  const Handle(StepShape_QualifiedRepresentationItem)& ent)
 {
   // --- inherited field name ---
 
@@ -78,7 +78,7 @@ void RWStepShape_RWQualifiedRepresentationItem::WriteStep(
 
 void RWStepShape_RWQualifiedRepresentationItem::Share(
   const Handle(StepShape_QualifiedRepresentationItem)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
   Standard_Integer i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)

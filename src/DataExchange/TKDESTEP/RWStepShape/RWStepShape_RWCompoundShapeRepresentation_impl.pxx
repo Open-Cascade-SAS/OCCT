@@ -34,7 +34,7 @@ void RWStepShape_RWCompoundShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepShape_CompoundShapeRepresentation)& ent) const
+  const Handle(StepShape_CompoundShapeRepresentation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "compound_shape_representation"))
@@ -81,7 +81,7 @@ void RWStepShape_RWCompoundShapeRepresentation::ReadStep(
 
 void RWStepShape_RWCompoundShapeRepresentation::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepShape_CompoundShapeRepresentation)& ent) const
+  const Handle(StepShape_CompoundShapeRepresentation)& ent)
 {
 
   // Inherited fields of Representation
@@ -103,7 +103,7 @@ void RWStepShape_RWCompoundShapeRepresentation::WriteStep(
 
 void RWStepShape_RWCompoundShapeRepresentation::Share(
   const Handle(StepShape_CompoundShapeRepresentation)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
 
   // Inherited fields of Representation

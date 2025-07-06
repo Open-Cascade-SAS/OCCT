@@ -23,7 +23,7 @@ RWStepShape_RWVertexLoop::RWStepShape_RWVertexLoop() {}
 void RWStepShape_RWVertexLoop::ReadStep(const Handle(StepData_StepReaderData)& data,
                                         const Standard_Integer                 num,
                                         Handle(Interface_Check)&               ach,
-                                        const Handle(StepShape_VertexLoop)&    ent) const
+                                        const Handle(StepShape_VertexLoop)&    ent)
 {
 
   // --- Number of Parameter Control ---
@@ -49,7 +49,7 @@ void RWStepShape_RWVertexLoop::ReadStep(const Handle(StepData_StepReaderData)& d
 }
 
 void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepShape_VertexLoop)& ent) const
+                                         const Handle(StepShape_VertexLoop)& ent)
 {
 
   // --- inherited field name ---
@@ -62,7 +62,7 @@ void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepShape_RWVertexLoop::Share(const Handle(StepShape_VertexLoop)& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&           iter)
 {
 
   iter.GetOneItem(ent->LoopVertex());

@@ -30,7 +30,7 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepVisual_DraughtingCallout)& ent) const
+  const Handle(StepVisual_DraughtingCallout)& ent)
 {
   if (!data->CheckNbParams(num, 2, ach, "draughting_callout"))
     return;
@@ -62,7 +62,7 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
 
 void RWStepVisual_RWDraughtingCallout::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepVisual_DraughtingCallout)& ent) const
+  const Handle(StepVisual_DraughtingCallout)& ent)
 {
   // Inherited field: name
   SW.Send(ent->Name());
@@ -79,7 +79,7 @@ void RWStepVisual_RWDraughtingCallout::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingCallout::Share(const Handle(StepVisual_DraughtingCallout)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
   // Own field: contents
   Standard_Integer i, nb = ent->NbContents();

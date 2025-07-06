@@ -32,7 +32,7 @@ void RWStepDimTol_RWGeometricToleranceRelationship::ReadStep(
   const Handle(StepData_StepReaderData)&                   data,
   const Standard_Integer                                   num,
   Handle(Interface_Check)&                                 ach,
-  const Handle(StepDimTol_GeometricToleranceRelationship)& ent) const
+  const Handle(StepDimTol_GeometricToleranceRelationship)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance_relationship"))
@@ -70,7 +70,7 @@ void RWStepDimTol_RWGeometricToleranceRelationship::ReadStep(
 
 void RWStepDimTol_RWGeometricToleranceRelationship::WriteStep(
   StepData_StepWriter&                                     SW,
-  const Handle(StepDimTol_GeometricToleranceRelationship)& ent) const
+  const Handle(StepDimTol_GeometricToleranceRelationship)& ent)
 {
 
   // Own fields of GeometricToleranceRelationship
@@ -88,7 +88,7 @@ void RWStepDimTol_RWGeometricToleranceRelationship::WriteStep(
 
 void RWStepDimTol_RWGeometricToleranceRelationship::Share(
   const Handle(StepDimTol_GeometricToleranceRelationship)& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                iter)
 {
 
   // Own fields of GeometricToleranceRelationship

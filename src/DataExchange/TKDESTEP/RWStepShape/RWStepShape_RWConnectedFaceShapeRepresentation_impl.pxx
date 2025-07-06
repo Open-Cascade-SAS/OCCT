@@ -34,7 +34,7 @@ void RWStepShape_RWConnectedFaceShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                    data,
   const Standard_Integer                                    num,
   Handle(Interface_Check)&                                  ach,
-  const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const
+  const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "connected_face_shape_representation"))
@@ -81,7 +81,7 @@ void RWStepShape_RWConnectedFaceShapeRepresentation::ReadStep(
 
 void RWStepShape_RWConnectedFaceShapeRepresentation::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const
+  const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent)
 {
 
   // Inherited fields of Representation
@@ -103,7 +103,7 @@ void RWStepShape_RWConnectedFaceShapeRepresentation::WriteStep(
 
 void RWStepShape_RWConnectedFaceShapeRepresentation::Share(
   const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                 iter)
 {
 
   // Inherited fields of Representation

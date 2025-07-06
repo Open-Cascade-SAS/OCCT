@@ -37,10 +37,10 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&     data,
                               const Standard_Integer                     num,
                               Handle(Interface_Check)&                   ach,
-                              const Handle(StepBasic_SiUnitAndMassUnit)& ent) const;
+                              const Handle(StepBasic_SiUnitAndMassUnit)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                       SW,
-                               const Handle(StepBasic_SiUnitAndMassUnit)& ent) const;
+                               const Handle(StepBasic_SiUnitAndMassUnit)& ent);
 
 protected:
 private:

@@ -26,7 +26,7 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                data,
   const Standard_Integer                                num,
   Handle(Interface_Check)&                              ach,
-  const Handle(StepVisual_PresentationStyleAssignment)& ent) const
+  const Handle(StepVisual_PresentationStyleAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -73,7 +73,7 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
 
 void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepVisual_PresentationStyleAssignment)& ent) const
+  const Handle(StepVisual_PresentationStyleAssignment)& ent)
 {
 
   // --- own field : styles ---
@@ -96,7 +96,7 @@ void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
 
 void RWStepVisual_RWPresentationStyleAssignment::Share(
   const Handle(StepVisual_PresentationStyleAssignment)& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                             iter)
 {
 
   Standard_Integer nbElem1 = ent->NbStyles();

@@ -30,7 +30,7 @@ void RWStepVisual_RWAnnotationCurveOccurrence::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepVisual_AnnotationCurveOccurrence)& ent) const
+  const Handle(StepVisual_AnnotationCurveOccurrence)& ent)
 {
 
   // Number of Parameter Control
@@ -73,7 +73,7 @@ void RWStepVisual_RWAnnotationCurveOccurrence::ReadStep(
 
 void RWStepVisual_RWAnnotationCurveOccurrence::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepVisual_AnnotationCurveOccurrence)& ent) const
+  const Handle(StepVisual_AnnotationCurveOccurrence)& ent)
 {
   // Inherited field : name
   SW.Send(ent->Name());
@@ -95,7 +95,7 @@ void RWStepVisual_RWAnnotationCurveOccurrence::WriteStep(
 
 void RWStepVisual_RWAnnotationCurveOccurrence::Share(
   const Handle(StepVisual_AnnotationCurveOccurrence)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   Standard_Integer nbElem1 = ent->NbStyles();

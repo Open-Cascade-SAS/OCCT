@@ -33,7 +33,7 @@ void RWStepVisual_RWCameraModelD3MultiClipping::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepVisual_CameraModelD3MultiClipping)& ent) const
+  const Handle(StepVisual_CameraModelD3MultiClipping)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "camera_model_d3_multi_clipping"))
@@ -85,7 +85,7 @@ void RWStepVisual_RWCameraModelD3MultiClipping::ReadStep(
 
 void RWStepVisual_RWCameraModelD3MultiClipping::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepVisual_CameraModelD3MultiClipping)& ent) const
+  const Handle(StepVisual_CameraModelD3MultiClipping)& ent)
 {
   // Inherited field name
   SW.Send(ent->Name());
@@ -109,7 +109,7 @@ void RWStepVisual_RWCameraModelD3MultiClipping::WriteStep(
 
 void RWStepVisual_RWCameraModelD3MultiClipping::Share(
   const Handle(StepVisual_CameraModelD3MultiClipping)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
   // Inherited field view_reference_system
   iter.GetOneItem(ent->ViewReferenceSystem());

@@ -29,7 +29,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                                    data,
   const Standard_Integer                                                    num0,
   Handle(Interface_Check)&                                                  ach,
-  const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent) const
+  const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent)
 {
 
   Standard_Integer num = num0;
@@ -88,7 +88,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep(
 
 void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::WriteStep(
   StepData_StepWriter&                                                      SW,
-  const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent) const
+  const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent)
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -121,7 +121,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::WriteStep(
 
 void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::Share(
   const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent,
-  Interface_EntityIterator&                                                 iter) const
+  Interface_EntityIterator&                                                 iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

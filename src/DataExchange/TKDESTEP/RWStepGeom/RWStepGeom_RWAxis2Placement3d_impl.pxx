@@ -24,7 +24,7 @@ RWStepGeom_RWAxis2Placement3d::RWStepGeom_RWAxis2Placement3d() {}
 void RWStepGeom_RWAxis2Placement3d::ReadStep(const Handle(StepData_StepReaderData)&   data,
                                              const Standard_Integer                   num,
                                              Handle(Interface_Check)&                 ach,
-                                             const Handle(StepGeom_Axis2Placement3d)& ent) const
+                                             const Handle(StepGeom_Axis2Placement3d)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -83,7 +83,7 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep(const Handle(StepData_StepReaderDat
 }
 
 void RWStepGeom_RWAxis2Placement3d::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepGeom_Axis2Placement3d)& ent) const
+                                              const Handle(StepGeom_Axis2Placement3d)& ent)
 {
 
   // --- inherited field name ---
@@ -120,7 +120,7 @@ void RWStepGeom_RWAxis2Placement3d::WriteStep(StepData_StepWriter&              
 }
 
 void RWStepGeom_RWAxis2Placement3d::Share(const Handle(StepGeom_Axis2Placement3d)& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                iter)
 {
 
   iter.GetOneItem(ent->Location());

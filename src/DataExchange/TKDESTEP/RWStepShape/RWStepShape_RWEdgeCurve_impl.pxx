@@ -114,7 +114,7 @@ Standard_Boolean AreEndsMatch(const Handle(StepShape_EdgeCurve)& theEdgeCurve)
 void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& theStepData,
                                        const Standard_Integer                 theRecordID,
                                        Handle(Interface_Check)&               theMessageTool,
-                                       const Handle(StepShape_EdgeCurve)&     theEdgeCurve) const
+                                       const Handle(StepShape_EdgeCurve)&     theEdgeCurve)
 {
   // --- Number of Parameter Control ---
   if (!theStepData->CheckNbParams(theRecordID, 5, theMessageTool, "edge_curve"))
@@ -164,7 +164,7 @@ void RWStepShape_RWEdgeCurve::ReadStep(const Handle(StepData_StepReaderData)& th
 //=================================================================================================
 
 void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theStepWriter,
-                                        const Handle(StepShape_EdgeCurve)& theEdgeCurve) const
+                                        const Handle(StepShape_EdgeCurve)& theEdgeCurve)
 {
   // --- inherited field name ---
   theStepWriter.Send(theEdgeCurve->Name());
@@ -185,7 +185,7 @@ void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theSt
 //=================================================================================================
 
 void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
-                                    Interface_EntityIterator&          theSharedEntitiesIt) const
+                                    Interface_EntityIterator&          theSharedEntitiesIt)
 {
   theSharedEntitiesIt.GetOneItem(theEdgeCurve->EdgeStart());
 
@@ -198,7 +198,7 @@ void RWStepShape_RWEdgeCurve::Share(const Handle(StepShape_EdgeCurve)& theEdgeCu
 
 void RWStepShape_RWEdgeCurve::Check(const Handle(StepShape_EdgeCurve)& theEdgeCurve,
                                     const Interface_ShareTool&         theShareTool,
-                                    Handle(Interface_Check)&           theMessageTool) const
+                                    Handle(Interface_Check)&           theMessageTool)
 {
   // 1- First Vertex != LastVertex but First VertexPoint == Last VertexPoint
   // Remark: time consuming process but useful.

@@ -29,7 +29,7 @@ RWStepVisual_RWCurveStyle::RWStepVisual_RWCurveStyle() {}
 void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepVisual_CurveStyle)&   ent) const
+                                         const Handle(StepVisual_CurveStyle)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -72,7 +72,7 @@ void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& 
 //=================================================================================================
 
 void RWStepVisual_RWCurveStyle::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepVisual_CurveStyle)& ent) const
+                                          const Handle(StepVisual_CurveStyle)& ent)
 {
 
   // --- own field : name ---
@@ -91,7 +91,7 @@ void RWStepVisual_RWCurveStyle::WriteStep(StepData_StepWriter&                 S
 //=================================================================================================
 
 void RWStepVisual_RWCurveStyle::Share(const Handle(StepVisual_CurveStyle)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
   iter.GetOneItem(ent->CurveFont().Value());
   iter.GetOneItem(ent->CurveColour());

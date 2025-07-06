@@ -38,13 +38,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&             data,
                               const Standard_Integer                             num,
                               Handle(Interface_Check)&                           ach,
-                              const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const;
+                              const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                               SW,
-                               const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent) const;
+                               const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent);
 
   static inline void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)& ent,
-                           Interface_EntityIterator&                          iter) const;
+                           Interface_EntityIterator&                          iter);
 };
 
 #include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRef_impl.pxx"

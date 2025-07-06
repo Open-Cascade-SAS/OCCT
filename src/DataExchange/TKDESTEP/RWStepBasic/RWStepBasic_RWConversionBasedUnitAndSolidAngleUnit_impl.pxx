@@ -29,7 +29,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::ReadStep(
   const Handle(StepData_StepReaderData)&                        data,
   const Standard_Integer                                        num0,
   Handle(Interface_Check)&                                      ach,
-  const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent)
 {
 
   Standard_Integer num = num0;
@@ -87,7 +87,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::ReadStep(
 
 void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::WriteStep(
   StepData_StepWriter&                                          SW,
-  const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent) const
+  const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent)
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -114,7 +114,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::Share(
   const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent,
-  Interface_EntityIterator&                                     iter) const
+  Interface_EntityIterator&                                     iter)
 {
 
   iter.GetOneItem(ent->Dimensions());

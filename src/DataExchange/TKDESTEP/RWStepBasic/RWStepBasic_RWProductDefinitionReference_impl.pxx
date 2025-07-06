@@ -32,7 +32,7 @@ void RWStepBasic_RWProductDefinitionReference::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_ProductDefinitionReference)& ent) const
+  const Handle(StepBasic_ProductDefinitionReference)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference"))
@@ -73,7 +73,7 @@ void RWStepBasic_RWProductDefinitionReference::ReadStep(
 
 void RWStepBasic_RWProductDefinitionReference::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_ProductDefinitionReference)& ent) const
+  const Handle(StepBasic_ProductDefinitionReference)& ent)
 {
 
   // Own field : source
@@ -99,7 +99,7 @@ void RWStepBasic_RWProductDefinitionReference::WriteStep(
 
 void RWStepBasic_RWProductDefinitionReference::Share(
   const Handle(StepBasic_ProductDefinitionReference)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
   iter.GetOneItem(ent->Source());
 }

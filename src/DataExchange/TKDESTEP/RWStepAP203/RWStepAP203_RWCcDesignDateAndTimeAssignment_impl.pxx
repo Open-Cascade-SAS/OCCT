@@ -37,7 +37,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const
+  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_date_and_time_assignment"))
@@ -86,7 +86,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
 
 void RWStepAP203_RWCcDesignDateAndTimeAssignment::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const
+  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent)
 {
 
   // Inherited fields of DateAndTimeAssignment
@@ -110,7 +110,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::WriteStep(
 
 void RWStepAP203_RWCcDesignDateAndTimeAssignment::Share(
   const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                              iter)
 {
 
   // Inherited fields of DateAndTimeAssignment

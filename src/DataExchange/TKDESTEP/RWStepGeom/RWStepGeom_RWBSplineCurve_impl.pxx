@@ -29,7 +29,7 @@ RWStepGeom_RWBSplineCurve::RWStepGeom_RWBSplineCurve() {}
 void RWStepGeom_RWBSplineCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_BSplineCurve)&   ent) const
+                                         const Handle(StepGeom_BSplineCurve)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -103,7 +103,7 @@ void RWStepGeom_RWBSplineCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepGeom_RWBSplineCurve::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_BSplineCurve)& ent) const
+                                          const Handle(StepGeom_BSplineCurve)& ent)
 {
 
   // --- inherited field name ---
@@ -137,7 +137,7 @@ void RWStepGeom_RWBSplineCurve::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepGeom_RWBSplineCurve::Share(const Handle(StepGeom_BSplineCurve)& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&            iter)
 {
 
   Standard_Integer nbElem1 = ent->NbControlPointsList();

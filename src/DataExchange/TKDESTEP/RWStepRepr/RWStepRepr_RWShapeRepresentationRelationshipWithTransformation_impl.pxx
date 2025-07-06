@@ -28,7 +28,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
   const Handle(StepData_StepReaderData)&                                    data,
   const Standard_Integer                                                    num0,
   Handle(Interface_Check)&                                                  ach,
-  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent) const
+  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent)
 {
 
   //  Complex entity
@@ -96,7 +96,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
   StepData_StepWriter&                                                      SW,
-  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent) const
+  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent)
 {
   // --- Instance of plex component RepresentationRelationship ---
 
@@ -130,7 +130,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::Share(
   const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent,
-  Interface_EntityIterator&                                                 iter) const
+  Interface_EntityIterator&                                                 iter)
 {
 
   iter.GetOneItem(ent->Rep1());

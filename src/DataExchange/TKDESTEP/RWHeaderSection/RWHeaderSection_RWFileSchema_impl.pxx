@@ -23,7 +23,7 @@ RWHeaderSection_RWFileSchema::RWHeaderSection_RWFileSchema() {}
 void RWHeaderSection_RWFileSchema::ReadStep(const Handle(StepData_StepReaderData)&  data,
                                             const Standard_Integer                  num,
                                             Handle(Interface_Check)&                ach,
-                                            const Handle(HeaderSection_FileSchema)& ent) const
+                                            const Handle(HeaderSection_FileSchema)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -61,7 +61,7 @@ void RWHeaderSection_RWFileSchema::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(HeaderSection_FileSchema)& ent) const
+                                             const Handle(HeaderSection_FileSchema)& ent)
 {
 
   // --- own field : schemaIdentifiers ---

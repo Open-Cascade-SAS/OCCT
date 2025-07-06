@@ -39,13 +39,13 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                               const Standard_Integer                 num,
                               Handle(Interface_Check)&               ach,
-                              const Handle(StepRepr_MappedItem)&     ent) const;
+                              const Handle(StepRepr_MappedItem)&     ent);
 
   static inline void WriteStep(StepData_StepWriter&               SW,
-                               const Handle(StepRepr_MappedItem)& ent) const;
+                               const Handle(StepRepr_MappedItem)& ent);
 
   static inline void Share(const Handle(StepRepr_MappedItem)& ent,
-                           Interface_EntityIterator&          iter) const;
+                           Interface_EntityIterator&          iter);
 
 protected:
 private:

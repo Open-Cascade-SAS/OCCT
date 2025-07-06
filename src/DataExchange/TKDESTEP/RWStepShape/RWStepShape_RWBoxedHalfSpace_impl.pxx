@@ -24,7 +24,7 @@ RWStepShape_RWBoxedHalfSpace::RWStepShape_RWBoxedHalfSpace() {}
 void RWStepShape_RWBoxedHalfSpace::ReadStep(const Handle(StepData_StepReaderData)&  data,
                                             const Standard_Integer                  num,
                                             Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_BoxedHalfSpace)& ent) const
+                                            const Handle(StepShape_BoxedHalfSpace)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -62,7 +62,7 @@ void RWStepShape_RWBoxedHalfSpace::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepShape_RWBoxedHalfSpace::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_BoxedHalfSpace)& ent) const
+                                             const Handle(StepShape_BoxedHalfSpace)& ent)
 {
 
   // --- inherited field name ---
@@ -83,7 +83,7 @@ void RWStepShape_RWBoxedHalfSpace::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWBoxedHalfSpace::Share(const Handle(StepShape_BoxedHalfSpace)& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&               iter)
 {
 
   iter.GetOneItem(ent->BaseSurface());

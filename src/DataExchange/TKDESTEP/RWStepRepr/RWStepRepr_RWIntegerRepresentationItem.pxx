@@ -37,10 +37,10 @@ public:
   static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                               const Standard_Integer                            num,
                               Handle(Interface_Check)&                          ach,
-                              const Handle(StepRepr_IntegerRepresentationItem)& ent) const;
+                              const Handle(StepRepr_IntegerRepresentationItem)& ent);
 
   static inline void WriteStep(StepData_StepWriter&                              SW,
-                               const Handle(StepRepr_IntegerRepresentationItem)& ent) const;
+                               const Handle(StepRepr_IntegerRepresentationItem)& ent);
 };
 
 #include "RWStepRepr_RWIntegerRepresentationItem_impl.pxx"

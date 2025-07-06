@@ -33,7 +33,7 @@ void RWStepShape_RWShapeDimensionRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                data,
   const Standard_Integer                                num,
   Handle(Interface_Check)&                              ach,
-  const Handle(StepShape_ShapeDimensionRepresentation)& ent) const
+  const Handle(StepShape_ShapeDimensionRepresentation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "shape_dimension_representation"))
@@ -106,7 +106,7 @@ void RWStepShape_RWShapeDimensionRepresentation::ReadStep(
 
 void RWStepShape_RWShapeDimensionRepresentation::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepShape_ShapeDimensionRepresentation)& ent) const
+  const Handle(StepShape_ShapeDimensionRepresentation)& ent)
 {
 
   // Inherited fields of Representation
@@ -139,7 +139,7 @@ void RWStepShape_RWShapeDimensionRepresentation::WriteStep(
 
 void RWStepShape_RWShapeDimensionRepresentation::Share(
   const Handle(StepShape_ShapeDimensionRepresentation)& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                             iter)
 {
 
   // Inherited fields of Representation

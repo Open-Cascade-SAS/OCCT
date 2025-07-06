@@ -36,7 +36,7 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent) const
+  const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node_with_solution_coordinate_system"))
@@ -96,7 +96,7 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::ReadStep(
 
 void RWStepFEA_RWNodeWithSolutionCoordinateSystem::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent) const
+  const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent)
 {
 
   // Inherited fields of Representation
@@ -122,7 +122,7 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::WriteStep(
 
 void RWStepFEA_RWNodeWithSolutionCoordinateSystem::Share(
   const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
 
   // Inherited fields of Representation

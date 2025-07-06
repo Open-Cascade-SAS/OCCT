@@ -31,7 +31,7 @@ void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&                          data,
   const Standard_Integer                                          num,
   Handle(Interface_Check)&                                        ach,
-  const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent) const
+  const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -78,7 +78,7 @@ void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::ReadStep(
 
 void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::WriteStep(
   StepData_StepWriter&                                            SW,
-  const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent) const
+  const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent)
 {
 
   // --- inherited field assignedPersonAndOrganization ---
@@ -101,7 +101,7 @@ void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::WriteStep(
 
 void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::Share(
   const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                       iter)
 {
 
   iter.GetOneItem(ent->AssignedPersonAndOrganization());

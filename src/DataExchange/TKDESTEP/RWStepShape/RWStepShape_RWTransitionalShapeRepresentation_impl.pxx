@@ -26,7 +26,7 @@ void RWStepShape_RWTransitionalShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                   data,
   const Standard_Integer                                   num,
   Handle(Interface_Check)&                                 ach,
-  const Handle(StepShape_TransitionalShapeRepresentation)& ent) const
+  const Handle(StepShape_TransitionalShapeRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -80,7 +80,7 @@ void RWStepShape_RWTransitionalShapeRepresentation::ReadStep(
 
 void RWStepShape_RWTransitionalShapeRepresentation::WriteStep(
   StepData_StepWriter&                                     SW,
-  const Handle(StepShape_TransitionalShapeRepresentation)& ent) const
+  const Handle(StepShape_TransitionalShapeRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -103,7 +103,7 @@ void RWStepShape_RWTransitionalShapeRepresentation::WriteStep(
 
 void RWStepShape_RWTransitionalShapeRepresentation::Share(
   const Handle(StepShape_TransitionalShapeRepresentation)& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

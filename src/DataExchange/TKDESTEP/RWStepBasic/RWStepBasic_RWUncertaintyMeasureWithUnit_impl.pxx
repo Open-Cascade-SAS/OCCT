@@ -32,7 +32,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent) const
+  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent)
 {
   if (data->IsComplex(num))
   {
@@ -119,7 +119,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent) const
+  const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent)
 {
 
   // --- inherited field valueComponent ---
@@ -158,7 +158,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::Share(
   const Handle(StepBasic_UncertaintyMeasureWithUnit)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   iter.GetOneItem(ent->UnitComponent().Value());

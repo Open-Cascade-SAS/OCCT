@@ -34,7 +34,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
   const Handle(StepData_StepReaderData)&              data,
   const Standard_Integer                              num,
   Handle(Interface_Check)&                            ach,
-  const Handle(StepFEA_CurveElementIntervalConstant)& ent) const
+  const Handle(StepFEA_CurveElementIntervalConstant)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "curve_element_interval_constant"))
@@ -76,7 +76,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 
 void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepFEA_CurveElementIntervalConstant)& ent) const
+  const Handle(StepFEA_CurveElementIntervalConstant)& ent)
 {
 
   // Inherited fields of CurveElementInterval
@@ -94,7 +94,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
 
 void RWStepFEA_RWCurveElementIntervalConstant::Share(
   const Handle(StepFEA_CurveElementIntervalConstant)& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                           iter)
 {
 
   // Inherited fields of CurveElementInterval

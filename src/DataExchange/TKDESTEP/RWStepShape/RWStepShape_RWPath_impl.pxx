@@ -24,7 +24,7 @@ RWStepShape_RWPath::RWStepShape_RWPath() {}
 void RWStepShape_RWPath::ReadStep(const Handle(StepData_StepReaderData)& data,
                                   const Standard_Integer                 num,
                                   Handle(Interface_Check)&               ach,
-                                  const Handle(StepShape_Path)&          ent) const
+                                  const Handle(StepShape_Path)&          ent)
 {
 
   // --- Number of Parameter Control ---
@@ -65,7 +65,7 @@ void RWStepShape_RWPath::ReadStep(const Handle(StepData_StepReaderData)& data,
   ent->Init(aName, aEdgeList);
 }
 
-void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Path)& ent) const
+void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const Handle(StepShape_Path)& ent)
 {
 
   // --- inherited field name ---
@@ -83,7 +83,7 @@ void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const Handle(StepSha
 }
 
 void RWStepShape_RWPath::Share(const Handle(StepShape_Path)& ent,
-                               Interface_EntityIterator&     iter) const
+                               Interface_EntityIterator&     iter)
 {
 
   Standard_Integer nbElem1 = ent->NbEdgeList();

@@ -26,7 +26,7 @@ void RWStepShape_RWFacetedBrepShapeRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                  data,
   const Standard_Integer                                  num,
   Handle(Interface_Check)&                                ach,
-  const Handle(StepShape_FacetedBrepShapeRepresentation)& ent) const
+  const Handle(StepShape_FacetedBrepShapeRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -80,7 +80,7 @@ void RWStepShape_RWFacetedBrepShapeRepresentation::ReadStep(
 
 void RWStepShape_RWFacetedBrepShapeRepresentation::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepShape_FacetedBrepShapeRepresentation)& ent) const
+  const Handle(StepShape_FacetedBrepShapeRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -103,7 +103,7 @@ void RWStepShape_RWFacetedBrepShapeRepresentation::WriteStep(
 
 void RWStepShape_RWFacetedBrepShapeRepresentation::Share(
   const Handle(StepShape_FacetedBrepShapeRepresentation)& ent,
-  Interface_EntityIterator&                               iter) const
+  Interface_EntityIterator&                               iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

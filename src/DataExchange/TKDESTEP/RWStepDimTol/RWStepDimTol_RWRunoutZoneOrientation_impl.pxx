@@ -29,7 +29,7 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
   const Handle(StepData_StepReaderData)&          data,
   const Standard_Integer                          num,
   Handle(Interface_Check)&                        ach,
-  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
+  const Handle(StepDimTol_RunoutZoneOrientation)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "runout_zone_orientation"))
@@ -49,7 +49,7 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
 
 void RWStepDimTol_RWRunoutZoneOrientation::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
+  const Handle(StepDimTol_RunoutZoneOrientation)& ent)
 {
   SW.Send(ent->Angle());
 }

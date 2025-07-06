@@ -25,7 +25,7 @@ void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
   const Handle(StepData_StepReaderData)&      data,
   const Standard_Integer                      num,
   Handle(Interface_Check)&                    ach,
-  const Handle(StepGeom_SurfaceOfRevolution)& ent) const
+  const Handle(StepGeom_SurfaceOfRevolution)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -63,7 +63,7 @@ void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
 
 void RWStepGeom_RWSurfaceOfRevolution::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepGeom_SurfaceOfRevolution)& ent) const
+  const Handle(StepGeom_SurfaceOfRevolution)& ent)
 {
 
   // --- inherited field name ---
@@ -80,7 +80,7 @@ void RWStepGeom_RWSurfaceOfRevolution::WriteStep(
 }
 
 void RWStepGeom_RWSurfaceOfRevolution::Share(const Handle(StepGeom_SurfaceOfRevolution)& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator&                   iter)
 {
 
   iter.GetOneItem(ent->SweptCurve());

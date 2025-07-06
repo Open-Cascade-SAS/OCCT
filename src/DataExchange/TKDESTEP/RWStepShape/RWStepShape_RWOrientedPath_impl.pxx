@@ -23,7 +23,7 @@ RWStepShape_RWOrientedPath::RWStepShape_RWOrientedPath() {}
 void RWStepShape_RWOrientedPath::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepShape_OrientedPath)&  ent) const
+                                          const Handle(StepShape_OrientedPath)&  ent)
 {
 
   // --- Number of Parameter Control ---
@@ -60,7 +60,7 @@ void RWStepShape_RWOrientedPath::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepShape_OrientedPath)& ent) const
+                                           const Handle(StepShape_OrientedPath)& ent)
 {
 
   // --- inherited field name ---
@@ -81,7 +81,7 @@ void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWOrientedPath::Share(const Handle(StepShape_OrientedPath)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   iter.GetOneItem(ent->PathElement());

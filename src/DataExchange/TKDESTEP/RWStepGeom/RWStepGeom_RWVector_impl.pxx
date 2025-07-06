@@ -24,7 +24,7 @@ RWStepGeom_RWVector::RWStepGeom_RWVector() {}
 void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
                                    const Standard_Integer                 num,
                                    Handle(Interface_Check)&               ach,
-                                   const Handle(StepGeom_Vector)&         ent) const
+                                   const Handle(StepGeom_Vector)&         ent)
 {
 
   // --- Number of Parameter Control ---
@@ -56,7 +56,7 @@ void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Vector)& ent) const
+                                    const Handle(StepGeom_Vector)& ent)
 {
 
   // --- inherited field name ---
@@ -73,7 +73,7 @@ void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
 }
 
 void RWStepGeom_RWVector::Share(const Handle(StepGeom_Vector)& ent,
-                                Interface_EntityIterator&      iter) const
+                                Interface_EntityIterator&      iter)
 {
 
   iter.GetOneItem(ent->Orientation());
@@ -81,7 +81,7 @@ void RWStepGeom_RWVector::Share(const Handle(StepGeom_Vector)& ent,
 
 void RWStepGeom_RWVector::Check(const Handle(StepGeom_Vector)& ent,
                                 const Interface_ShareTool&,
-                                Handle(Interface_Check)& ach) const
+                                Handle(Interface_Check)& ach)
 {
   if (Abs(ent->Magnitude()) < RealEpsilon())
   {

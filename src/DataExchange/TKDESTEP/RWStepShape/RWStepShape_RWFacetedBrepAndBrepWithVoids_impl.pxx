@@ -28,7 +28,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num0,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent) const
+  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent)
 {
 
   Standard_Integer num = num0;
@@ -113,7 +113,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent) const
+  const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent)
 {
 
   // --- Instance of plex component BrepWithVoids ---
@@ -157,7 +157,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::Share(
   const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
 
   iter.GetOneItem(ent->Outer());

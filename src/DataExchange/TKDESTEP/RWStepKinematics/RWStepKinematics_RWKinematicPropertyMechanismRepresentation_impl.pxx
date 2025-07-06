@@ -37,7 +37,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                                 theData,
   const Standard_Integer                                                 theNum,
   Handle(Interface_Check)&                                               theArch,
-  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt) const
+  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "kinematic_property_mechanism_representation"))
@@ -80,7 +80,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
   StepData_StepWriter&                                                   theSW,
-  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt) const
+  const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt)
 {
 
   // Own fields of PropertyDefinitionRepresentation
@@ -98,7 +98,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::Share(
   const Handle(StepKinematics_KinematicPropertyMechanismRepresentation)& theEnt,
-  Interface_EntityIterator&                                              iter) const
+  Interface_EntityIterator&                                              iter)
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

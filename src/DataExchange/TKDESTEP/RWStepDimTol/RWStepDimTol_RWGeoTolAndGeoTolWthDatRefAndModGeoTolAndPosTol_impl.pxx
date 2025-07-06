@@ -35,7 +35,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::ReadStep(
   const Handle(StepData_StepReaderData)&                                  data,
   const Standard_Integer                                                  num0,
   Handle(Interface_Check)&                                                ach,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)& ent) const
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)& ent)
 {
   Standard_Integer num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
@@ -100,7 +100,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::ReadStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::WriteStep(
   StepData_StepWriter&                                                    SW,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)& ent) const
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)& ent)
 {
   SW.StartEntity("GEOMETRIC_TOLERANCE");
   SW.Send(ent->Name());
@@ -138,7 +138,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::WriteStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::Share(
   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)& ent,
-  Interface_EntityIterator&                                               iter) const
+  Interface_EntityIterator&                                               iter)
 {
   // Own fields of GeometricTolerance
   iter.AddItem(ent->Magnitude());

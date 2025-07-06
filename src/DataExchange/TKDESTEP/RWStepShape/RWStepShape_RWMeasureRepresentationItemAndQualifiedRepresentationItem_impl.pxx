@@ -31,7 +31,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   const Handle(StepData_StepReaderData)&                                           data,
   const Standard_Integer                                                           num0,
   Handle(Interface_Check)&                                                         ach,
-  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const
+  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent)
 {
 
   //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
@@ -98,7 +98,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::WriteStep(
   StepData_StepWriter&                                                             SW,
-  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent) const
+  const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent)
 {
   //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
 
@@ -134,7 +134,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Share(
   const Handle(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem)& ent,
-  Interface_EntityIterator&                                                        iter) const
+  Interface_EntityIterator&                                                        iter)
 {
   iter.AddItem(ent->Measure()->UnitComponent().Value());
 

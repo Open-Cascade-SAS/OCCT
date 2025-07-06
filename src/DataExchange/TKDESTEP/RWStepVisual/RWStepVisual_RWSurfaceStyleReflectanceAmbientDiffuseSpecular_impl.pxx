@@ -32,7 +32,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::ReadStep(
   const Handle(StepData_StepReaderData)&                                  theData,
   const Standard_Integer                                                  theNum,
   Handle(Interface_Check)&                                                theAch,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt) const
+  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum,
@@ -76,7 +76,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::WriteStep(
   StepData_StepWriter&                                                    theSW,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt) const
+  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt)
 {
   // Inherited fields of SurfaceStyleReflectanceAmbient
   theSW.Send(theEnt->AmbientReflectance());
@@ -94,7 +94,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::Share(
   const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular)& theEnt,
-  Interface_EntityIterator&                                               theIter) const
+  Interface_EntityIterator&                                               theIter)
 {
   // Own fields of SurfaceStyleReflectanceAmbientDiffuseSpecular
   theIter.AddItem(theEnt->SpecularColour());

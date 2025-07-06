@@ -31,7 +31,7 @@ RWStepBasic_RWSiUnitAndMassUnit::RWStepBasic_RWSiUnitAndMassUnit() {}
 void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num0,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_SiUnitAndMassUnit)& ent) const
+                                               const Handle(StepBasic_SiUnitAndMassUnit)& ent)
 {
   Standard_Integer num    = 0; // num0;
   Standard_Boolean sorted = data->NamedForComplex("MASS_UNIT", "MSSUNT", num0, num, ach);
@@ -106,7 +106,7 @@ void RWStepBasic_RWSiUnitAndMassUnit::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepBasic_RWSiUnitAndMassUnit::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndMassUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndMassUnit)& ent)
 {
 
   // --- Instance of plex component LengthUnit ---

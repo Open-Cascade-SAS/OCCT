@@ -30,7 +30,7 @@ RWStepBasic_RWGroup::RWStepBasic_RWGroup() {}
 void RWStepBasic_RWGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
                                    const Standard_Integer                 num,
                                    Handle(Interface_Check)&               ach,
-                                   const Handle(StepBasic_Group)&         ent) const
+                                   const Handle(StepBasic_Group)&         ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "group"))
@@ -59,7 +59,7 @@ void RWStepBasic_RWGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 //=================================================================================================
 
 void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepBasic_Group)& ent) const
+                                    const Handle(StepBasic_Group)& ent)
 {
 
   // Own fields of Group
@@ -76,7 +76,7 @@ void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&           SW,
 
 //=================================================================================================
 
-void RWStepBasic_RWGroup::Share(const Handle(StepBasic_Group)&, Interface_EntityIterator&) const
+void RWStepBasic_RWGroup::Share(const Handle(StepBasic_Group)&, Interface_EntityIterator&)
 {
   // Own fields of Group
 }

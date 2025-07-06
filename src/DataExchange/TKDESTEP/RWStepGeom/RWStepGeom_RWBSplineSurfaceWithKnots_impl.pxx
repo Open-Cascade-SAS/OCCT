@@ -34,7 +34,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   const Handle(StepData_StepReaderData)&          data,
   const Standard_Integer                          num,
   Handle(Interface_Check)&                        ach,
-  const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const
+  const Handle(StepGeom_BSplineSurfaceWithKnots)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -223,7 +223,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepGeom_BSplineSurfaceWithKnots)& ent) const
+  const Handle(StepGeom_BSplineSurfaceWithKnots)& ent)
 {
 
   // --- inherited field name ---
@@ -313,7 +313,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::WriteStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::Share(
   const Handle(StepGeom_BSplineSurfaceWithKnots)& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                       iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();
@@ -330,7 +330,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Share(
 void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   const Handle(StepGeom_BSplineSurfaceWithKnots)& ent,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& ach) const
+  Handle(Interface_Check)& ach)
 {
   Standard_Integer nbCPLU  = ent->NbControlPointsListI();
   Standard_Integer nbCPLV  = ent->NbControlPointsListJ();

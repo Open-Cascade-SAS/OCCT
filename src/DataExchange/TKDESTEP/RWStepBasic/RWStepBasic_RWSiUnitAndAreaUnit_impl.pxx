@@ -28,7 +28,7 @@ RWStepBasic_RWSiUnitAndAreaUnit::RWStepBasic_RWSiUnitAndAreaUnit() {}
 void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const Handle(StepData_StepReaderData)&     data,
                                                const Standard_Integer                     num0,
                                                Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const
+                                               const Handle(StepBasic_SiUnitAndAreaUnit)& ent)
 {
   Standard_Integer num = 0;
   data->NamedForComplex("AREA_UNIT", "ARUNT", num0, num, ach);
@@ -93,7 +93,7 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepBasic_RWSiUnitAndAreaUnit::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const
+  const Handle(StepBasic_SiUnitAndAreaUnit)& ent)
 {
   SW.StartEntity("AREA_UNIT");
   SW.StartEntity("NAMED_UNIT");

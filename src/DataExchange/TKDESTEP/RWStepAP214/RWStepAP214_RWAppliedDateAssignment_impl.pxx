@@ -28,7 +28,7 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepAP214_AppliedDateAssignment)& ent) const
+  const Handle(StepAP214_AppliedDateAssignment)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -70,7 +70,7 @@ void RWStepAP214_RWAppliedDateAssignment::ReadStep(
 
 void RWStepAP214_RWAppliedDateAssignment::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepAP214_AppliedDateAssignment)& ent) const
+  const Handle(StepAP214_AppliedDateAssignment)& ent)
 {
 
   // --- inherited field assignedDate ---
@@ -92,7 +92,7 @@ void RWStepAP214_RWAppliedDateAssignment::WriteStep(
 }
 
 void RWStepAP214_RWAppliedDateAssignment::Share(const Handle(StepAP214_AppliedDateAssignment)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->AssignedDate());

@@ -30,7 +30,7 @@ RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() {}
 void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepFEA_FeaMassDensity)&  ent) const
+                                          const Handle(StepFEA_FeaMassDensity)&  ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_mass_density"))
@@ -53,7 +53,7 @@ void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepFEA_FeaMassDensity)& ent) const
+                                           const Handle(StepFEA_FeaMassDensity)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -68,7 +68,7 @@ void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepFEA_RWFeaMassDensity::Share(const Handle(StepFEA_FeaMassDensity)&,
-                                       Interface_EntityIterator&) const
+                                       Interface_EntityIterator&)
 {
   // Inherited fields of RepresentationItem
   // Own fields of FeaMassDensity

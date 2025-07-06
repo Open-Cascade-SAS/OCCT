@@ -35,7 +35,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
   const Handle(StepData_StepReaderData)&               theData,
   const Standard_Integer                               theNum,
   Handle(Interface_Check)&                             theCheck,
-  const Handle(StepVisual_CubicBezierTessellatedEdge)& theEnt) const
+  const Handle(StepVisual_CubicBezierTessellatedEdge)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "cubic_bezier_tessellated_edge"))
@@ -101,7 +101,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
 
 void RWStepVisual_RWCubicBezierTessellatedEdge::WriteStep(
   StepData_StepWriter&                                 theSW,
-  const Handle(StepVisual_CubicBezierTessellatedEdge)& theEnt) const
+  const Handle(StepVisual_CubicBezierTessellatedEdge)& theEnt)
 {
 
   // Own fields of RepresentationItem
@@ -134,7 +134,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::WriteStep(
 
 void RWStepVisual_RWCubicBezierTessellatedEdge::Share(
   const Handle(StepVisual_CubicBezierTessellatedEdge)& theEnt,
-  Interface_EntityIterator&                            theIter) const
+  Interface_EntityIterator&                            theIter)
 {
 
   // Inherited fields of RepresentationItem

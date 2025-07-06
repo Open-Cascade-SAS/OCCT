@@ -32,7 +32,7 @@ void RWStepShape_RWDimensionalLocationWithPath::ReadStep(
   const Handle(StepData_StepReaderData)&               data,
   const Standard_Integer                               num,
   Handle(Interface_Check)&                             ach,
-  const Handle(StepShape_DimensionalLocationWithPath)& ent) const
+  const Handle(StepShape_DimensionalLocationWithPath)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "dimensional_location_with_path"))
@@ -92,7 +92,7 @@ void RWStepShape_RWDimensionalLocationWithPath::ReadStep(
 
 void RWStepShape_RWDimensionalLocationWithPath::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepShape_DimensionalLocationWithPath)& ent) const
+  const Handle(StepShape_DimensionalLocationWithPath)& ent)
 {
 
   // Inherited fields of ShapeAspectRelationship
@@ -119,7 +119,7 @@ void RWStepShape_RWDimensionalLocationWithPath::WriteStep(
 
 void RWStepShape_RWDimensionalLocationWithPath::Share(
   const Handle(StepShape_DimensionalLocationWithPath)& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                            iter)
 {
 
   // Inherited fields of ShapeAspectRelationship

@@ -21,7 +21,7 @@ RWStepBasic_RWOrdinalDate::RWStepBasic_RWOrdinalDate() {}
 void RWStepBasic_RWOrdinalDate::ReadStep(const Handle(StepData_StepReaderData)& data,
                                          const Standard_Integer                 num,
                                          Handle(Interface_Check)&               ach,
-                                         const Handle(StepBasic_OrdinalDate)&   ent) const
+                                         const Handle(StepBasic_OrdinalDate)&   ent)
 {
 
   // --- Number of Parameter Control ---
@@ -47,7 +47,7 @@ void RWStepBasic_RWOrdinalDate::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepBasic_RWOrdinalDate::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepBasic_OrdinalDate)& ent) const
+                                          const Handle(StepBasic_OrdinalDate)& ent)
 {
 
   // --- inherited field yearComponent ---

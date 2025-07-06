@@ -32,7 +32,7 @@ RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum() {}
 void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepDimTol_CommonDatum)&  ent) const
+                                          const Handle(StepDimTol_CommonDatum)&  ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 9, ach, "common_datum"))
@@ -106,7 +106,7 @@ void RWStepDimTol_RWCommonDatum::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepDimTol_CommonDatum)& ent) const
+                                           const Handle(StepDimTol_CommonDatum)& ent)
 {
 
   // Inherited fields of ShapeAspect
@@ -137,7 +137,7 @@ void RWStepDimTol_RWCommonDatum::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepDimTol_RWCommonDatum::Share(const Handle(StepDimTol_CommonDatum)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   // Inherited fields of ShapeAspect

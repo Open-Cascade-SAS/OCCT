@@ -36,7 +36,7 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
   const Handle(StepData_StepReaderData)&           theData,
   const Standard_Integer                           theNum,
   Handle(Interface_Check)&                         theCheck,
-  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const
+  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 6, theCheck, "triangulated_surface_set"))
@@ -143,7 +143,7 @@ void RWStepVisual_RWTriangulatedSurfaceSet::ReadStep(
 
 void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
   StepData_StepWriter&                             theSW,
-  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const
+  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt)
 {
   // Own fields of RepresentationItem
   theSW.Send(theEnt->Name());
@@ -197,7 +197,7 @@ void RWStepVisual_RWTriangulatedSurfaceSet::WriteStep(
 
 void RWStepVisual_RWTriangulatedSurfaceSet::Share(
   const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
-  Interface_EntityIterator&                        theIter) const
+  Interface_EntityIterator&                        theIter)
 {
   // Inherited fields of TessellatedSurfaceSet
   theIter.AddItem(theEnt->StepVisual_TessellatedSurfaceSet::Coordinates());

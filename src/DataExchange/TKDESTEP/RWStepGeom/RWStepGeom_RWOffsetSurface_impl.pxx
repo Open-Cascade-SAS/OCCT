@@ -23,7 +23,7 @@ RWStepGeom_RWOffsetSurface::RWStepGeom_RWOffsetSurface() {}
 void RWStepGeom_RWOffsetSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
                                           const Standard_Integer                 num,
                                           Handle(Interface_Check)&               ach,
-                                          const Handle(StepGeom_OffsetSurface)&  ent) const
+                                          const Handle(StepGeom_OffsetSurface)&  ent)
 {
 
   // --- Number of Parameter Control ---
@@ -61,7 +61,7 @@ void RWStepGeom_RWOffsetSurface::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepGeom_OffsetSurface)& ent) const
+                                           const Handle(StepGeom_OffsetSurface)& ent)
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepGeom_RWOffsetSurface::Share(const Handle(StepGeom_OffsetSurface)& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&             iter)
 {
 
   iter.GetOneItem(ent->BasisSurface());

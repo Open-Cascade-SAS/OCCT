@@ -36,7 +36,7 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
   const Handle(StepData_StepReaderData)&                                theData,
   const Standard_Integer                                                theNum,
   Handle(Interface_Check)&                                              theArch,
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt) const
+  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt)
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "product_definition_relationship_kinematics"))
@@ -81,7 +81,7 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::ReadStep(
 
 void RWStepKinematics_RWProductDefinitionRelationshipKinematics::WriteStep(
   StepData_StepWriter&                                                  theSW,
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt) const
+  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt)
 {
 
   // Own fields of PropertyDefinition
@@ -102,7 +102,7 @@ void RWStepKinematics_RWProductDefinitionRelationshipKinematics::WriteStep(
 
 void RWStepKinematics_RWProductDefinitionRelationshipKinematics::Share(
   const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)& theEnt,
-  Interface_EntityIterator&                                             iter) const
+  Interface_EntityIterator&                                             iter)
 {
 
   // Inherited fields of PropertyDefinition

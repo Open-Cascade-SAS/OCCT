@@ -35,7 +35,7 @@ void RWStepDimTol_RWCoaxialityTolerance::ReadStep(
   const Handle(StepData_StepReaderData)&        data,
   const Standard_Integer                        num,
   Handle(Interface_Check)&                      ach,
-  const Handle(StepDimTol_CoaxialityTolerance)& ent) const
+  const Handle(StepDimTol_CoaxialityTolerance)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "coaxiality_tolerance"))
@@ -95,7 +95,7 @@ void RWStepDimTol_RWCoaxialityTolerance::ReadStep(
 
 void RWStepDimTol_RWCoaxialityTolerance::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepDimTol_CoaxialityTolerance)& ent) const
+  const Handle(StepDimTol_CoaxialityTolerance)& ent)
 {
 
   // Inherited fields of GeometricTolerance
@@ -125,7 +125,7 @@ void RWStepDimTol_RWCoaxialityTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWCoaxialityTolerance::Share(const Handle(StepDimTol_CoaxialityTolerance)& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator& iter)
 {
 
   // Inherited fields of GeometricTolerance

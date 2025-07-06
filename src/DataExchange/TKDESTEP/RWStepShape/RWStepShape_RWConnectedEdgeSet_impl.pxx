@@ -33,7 +33,7 @@ RWStepShape_RWConnectedEdgeSet::RWStepShape_RWConnectedEdgeSet() {}
 void RWStepShape_RWConnectedEdgeSet::ReadStep(const Handle(StepData_StepReaderData)&    data,
                                               const Standard_Integer                    num,
                                               Handle(Interface_Check)&                  ach,
-                                              const Handle(StepShape_ConnectedEdgeSet)& ent) const
+                                              const Handle(StepShape_ConnectedEdgeSet)& ent)
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "connected_edge_set"))
@@ -68,7 +68,7 @@ void RWStepShape_RWConnectedEdgeSet::ReadStep(const Handle(StepData_StepReaderDa
 //=================================================================================================
 
 void RWStepShape_RWConnectedEdgeSet::WriteStep(StepData_StepWriter&                      SW,
-                                               const Handle(StepShape_ConnectedEdgeSet)& ent) const
+                                               const Handle(StepShape_ConnectedEdgeSet)& ent)
 {
 
   // Inherited fields of RepresentationItem
@@ -89,7 +89,7 @@ void RWStepShape_RWConnectedEdgeSet::WriteStep(StepData_StepWriter&             
 //=================================================================================================
 
 void RWStepShape_RWConnectedEdgeSet::Share(const Handle(StepShape_ConnectedEdgeSet)& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator&                 iter)
 {
 
   // Inherited fields of RepresentationItem

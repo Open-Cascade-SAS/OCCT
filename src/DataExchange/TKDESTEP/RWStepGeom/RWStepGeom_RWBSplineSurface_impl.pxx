@@ -29,7 +29,7 @@ RWStepGeom_RWBSplineSurface::RWStepGeom_RWBSplineSurface() {}
 void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
                                            Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_BSplineSurface)& ent) const
+                                           const Handle(StepGeom_BSplineSurface)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -130,7 +130,7 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_BSplineSurface)& ent) const
+                                            const Handle(StepGeom_BSplineSurface)& ent)
 {
 
   // --- inherited field name ---
@@ -179,7 +179,7 @@ void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepGeom_RWBSplineSurface::Share(const Handle(StepGeom_BSplineSurface)& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&              iter)
 {
 
   Standard_Integer nbiElem1 = ent->NbControlPointsListI();

@@ -25,7 +25,7 @@ RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect() {}
 void RWStepRepr_RWShapeAspect::ReadStep(const Handle(StepData_StepReaderData)& data,
                                         const Standard_Integer                 num,
                                         Handle(Interface_Check)&               ach,
-                                        const Handle(StepRepr_ShapeAspect)&    ent) const
+                                        const Handle(StepRepr_ShapeAspect)&    ent)
 {
 
   // --- Number of Parameter Control ---
@@ -66,7 +66,7 @@ void RWStepRepr_RWShapeAspect::ReadStep(const Handle(StepData_StepReaderData)& d
 }
 
 void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
-                                         const Handle(StepRepr_ShapeAspect)& ent) const
+                                         const Handle(StepRepr_ShapeAspect)& ent)
 {
 
   // --- own field : name ---
@@ -87,7 +87,7 @@ void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepRepr_RWShapeAspect::Share(const Handle(StepRepr_ShapeAspect)& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&           iter)
 {
 
   iter.GetOneItem(ent->OfShape());

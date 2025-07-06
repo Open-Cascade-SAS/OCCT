@@ -22,7 +22,7 @@ void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
   const Handle(StepData_StepReaderData)&                 data,
   const Standard_Integer                                 num,
   Handle(Interface_Check)&                               ach,
-  const Handle(StepGeom_GeometricRepresentationContext)& ent) const
+  const Handle(StepGeom_GeometricRepresentationContext)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -55,7 +55,7 @@ void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
 
 void RWStepGeom_RWGeometricRepresentationContext::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepGeom_GeometricRepresentationContext)& ent) const
+  const Handle(StepGeom_GeometricRepresentationContext)& ent)
 {
 
   // --- inherited field contextIdentifier ---

@@ -24,7 +24,7 @@ void RWStepShape_RWRightCircularCylinder::ReadStep(
   const Handle(StepData_StepReaderData)&         data,
   const Standard_Integer                         num,
   Handle(Interface_Check)&                       ach,
-  const Handle(StepShape_RightCircularCylinder)& ent) const
+  const Handle(StepShape_RightCircularCylinder)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -63,7 +63,7 @@ void RWStepShape_RWRightCircularCylinder::ReadStep(
 
 void RWStepShape_RWRightCircularCylinder::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepShape_RightCircularCylinder)& ent) const
+  const Handle(StepShape_RightCircularCylinder)& ent)
 {
 
   // --- inherited field name ---
@@ -84,7 +84,7 @@ void RWStepShape_RWRightCircularCylinder::WriteStep(
 }
 
 void RWStepShape_RWRightCircularCylinder::Share(const Handle(StepShape_RightCircularCylinder)& ent,
-                                                Interface_EntityIterator& iter) const
+                                                Interface_EntityIterator& iter)
 {
 
   iter.GetOneItem(ent->Position());

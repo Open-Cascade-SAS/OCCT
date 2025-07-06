@@ -28,7 +28,7 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadSte
   const Handle(StepData_StepReaderData)&                                        data,
   const Standard_Integer                                                        num,
   Handle(Interface_Check)&                                                      ach,
-  const Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& ent) const
+  const Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& ent)
 {
 
   // --- Number of Parameter Control ---
@@ -83,7 +83,7 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadSte
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::WriteStep(
   StepData_StepWriter&                                                          SW,
-  const Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& ent) const
+  const Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& ent)
 {
 
   // --- inherited field name ---
@@ -106,7 +106,7 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::WriteSt
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::Share(
   const Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& ent,
-  Interface_EntityIterator&                                                     iter) const
+  Interface_EntityIterator&                                                     iter)
 {
 
   Standard_Integer nbElem1 = ent->NbItems();

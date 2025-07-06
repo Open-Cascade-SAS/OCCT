@@ -35,7 +35,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
   const Handle(StepData_StepReaderData)&                                     data,
   const Standard_Integer                                                     num,
   Handle(Interface_Check)&                                                   ach,
-  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent) const
+  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent)
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference_with_local_representation"))
@@ -82,7 +82,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::ReadStep(
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
   StepData_StepWriter&                                                       SW,
-  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent) const
+  const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent)
 {
   // Own field : source
   SW.Send(ent->Source());
@@ -104,7 +104,7 @@ void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::WriteStep(
 
 void RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::Share(
   const Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)& ent,
-  Interface_EntityIterator&                                                  iter) const
+  Interface_EntityIterator&                                                  iter)
 {
   iter.GetOneItem(ent->Source());
   iter.GetOneItem(ent->Formation());
