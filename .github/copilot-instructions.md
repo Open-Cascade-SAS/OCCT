@@ -55,13 +55,13 @@ This file provides comprehensive guidance for AI assistants working with the Ope
       Geom_Circle* circ = (Geom_Circle*)someHandle.Get();
       ```
 
-## 1.5. Validate Handles for Null Safety:
-- **ALWAYS** check that a `Handle(ClassName)` is not null before dereferencing it:
-  ```cpp
-  if (!theHandle.IsNull()) {
-      // use theHandle
-  }
-  ```
+7.  **Validate Handles for Null Safety:**
+    - **ALWAYS** check that a `Handle(ClassName)` is not null before dereferencing it:
+      ```cpp
+      if (!theHandle.IsNull()) {
+          // use theHandle
+      }
+      ```
 
 ---
 
