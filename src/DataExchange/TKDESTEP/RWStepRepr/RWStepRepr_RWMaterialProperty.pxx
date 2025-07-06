@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWMaterialProperty();
+  static inline RWStepRepr_RWMaterialProperty();
 
   //! Reads MaterialProperty
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&   data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
                                 const Standard_Integer                   num,
                                 Handle(Interface_Check)&                 ach,
                                 const Handle(StepRepr_MaterialProperty)& ent) const;
 
   //! Writes MaterialProperty
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                     SW,
+  static inline void WriteStep(StepData_StepWriter&                     SW,
                                  const Handle(StepRepr_MaterialProperty)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_MaterialProperty)& ent,
+  static inline void Share(const Handle(StepRepr_MaterialProperty)& ent,
                              Interface_EntityIterator&                iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWMaterialProperty_impl.pxx"
 #endif // _RWStepRepr_RWMaterialProperty_HeaderFile

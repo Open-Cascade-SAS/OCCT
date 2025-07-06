@@ -34,16 +34,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWToleranceZoneForm();
+  static inline RWStepDimTol_RWToleranceZoneForm();
 
   //! Reads ToleranceZoneForm
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                                 const Standard_Integer                      num,
                                 Handle(Interface_Check)&                    ach,
                                 const Handle(StepDimTol_ToleranceZoneForm)& ent) const;
 
   //! Writes ToleranceZoneForm
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
+  static inline void WriteStep(StepData_StepWriter&                        SW,
                                  const Handle(StepDimTol_ToleranceZoneForm)& ent) const;
 };
+#include "RWStepDimTol_RWToleranceZoneForm_impl.pxx"
 #endif // _RWStepDimTol_RWToleranceZoneForm_HeaderFile

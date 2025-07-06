@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWParallelismTolerance();
+  static inline RWStepDimTol_RWParallelismTolerance();
 
   //! Reads ParallelismTolerance
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&         data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&         data,
                                 const Standard_Integer                         num,
                                 Handle(Interface_Check)&                       ach,
                                 const Handle(StepDimTol_ParallelismTolerance)& ent) const;
 
   //! Writes ParallelismTolerance
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                           SW,
+  static inline void WriteStep(StepData_StepWriter&                           SW,
                                  const Handle(StepDimTol_ParallelismTolerance)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_ParallelismTolerance)& ent,
+  static inline void Share(const Handle(StepDimTol_ParallelismTolerance)& ent,
                              Interface_EntityIterator&                      iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepDimTol_RWParallelismTolerance_impl.pxx"
 #endif // _RWStepDimTol_RWParallelismTolerance_HeaderFile

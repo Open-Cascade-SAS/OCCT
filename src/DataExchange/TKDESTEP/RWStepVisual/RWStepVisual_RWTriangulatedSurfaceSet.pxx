@@ -31,18 +31,19 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! default constructor
-  Standard_HIDDEN RWStepVisual_RWTriangulatedSurfaceSet();
+  static inline RWStepVisual_RWTriangulatedSurfaceSet();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&           theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&           theData,
                                 const Standard_Integer                           theNum,
                                 Handle(Interface_Check)&                         theCheck,
                                 const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                             theSW,
+  static inline void WriteStep(StepData_StepWriter&                             theSW,
                                  const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
+  static inline void Share(const Handle(StepVisual_TriangulatedSurfaceSet)& theEnt,
                              Interface_EntityIterator&                        theIter) const;
 };
 
+#include "RWStepVisual_RWTriangulatedSurfaceSet_impl.pxx"
 #endif // _RWStepVisual_RWTriangulatedSurfaceSet_HeaderFile_

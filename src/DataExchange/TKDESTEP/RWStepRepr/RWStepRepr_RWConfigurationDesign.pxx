@@ -35,24 +35,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWConfigurationDesign();
+  static inline RWStepRepr_RWConfigurationDesign();
 
   //! Reads ConfigurationDesign
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&      data,
                                 const Standard_Integer                      num,
                                 Handle(Interface_Check)&                    ach,
                                 const Handle(StepRepr_ConfigurationDesign)& ent) const;
 
   //! Writes ConfigurationDesign
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
+  static inline void WriteStep(StepData_StepWriter&                        SW,
                                  const Handle(StepRepr_ConfigurationDesign)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_ConfigurationDesign)& ent,
+  static inline void Share(const Handle(StepRepr_ConfigurationDesign)& ent,
                              Interface_EntityIterator&                   iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWConfigurationDesign_impl.pxx"
 #endif // _RWStepRepr_RWConfigurationDesign_HeaderFile

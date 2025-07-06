@@ -33,19 +33,20 @@ class RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair();
+  static inline RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                         theData,
     const Standard_Integer                                         theNum,
     Handle(Interface_Check)&                                       theArch,
     const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                           theSW,
     const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt,
+  static inline void Share(const Handle(StepKinematics_LinearFlexibleAndPlanarCurvePair)& theEnt,
                              Interface_EntityIterator& iter) const;
 };
+#include "RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair_impl.pxx"
 #endif // _RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair_HeaderFile_

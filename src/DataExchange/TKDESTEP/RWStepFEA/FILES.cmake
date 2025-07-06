@@ -2,108 +2,108 @@
 set(OCCT_RWStepFEA_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepFEA_FILES
-  RWStepFEA_RWAlignedCurve3dElementCoordinateSystem.cxx
+  RWStepFEA_RWAlignedCurve3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWAlignedCurve3dElementCoordinateSystem.pxx
-  RWStepFEA_RWAlignedSurface3dElementCoordinateSystem.cxx
+  RWStepFEA_RWAlignedSurface3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWAlignedSurface3dElementCoordinateSystem.pxx
-  RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem.cxx
+  RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem.pxx
-  RWStepFEA_RWConstantSurface3dElementCoordinateSystem.cxx
+  RWStepFEA_RWConstantSurface3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWConstantSurface3dElementCoordinateSystem.pxx
-  RWStepFEA_RWCurve3dElementProperty.cxx
+  RWStepFEA_RWCurve3dElementProperty_impl.pxx
   RWStepFEA_RWCurve3dElementProperty.pxx
-  RWStepFEA_RWCurve3dElementRepresentation.cxx
+  RWStepFEA_RWCurve3dElementRepresentation_impl.pxx
   RWStepFEA_RWCurve3dElementRepresentation.pxx
-  RWStepFEA_RWCurveElementEndOffset.cxx
+  RWStepFEA_RWCurveElementEndOffset_impl.pxx
   RWStepFEA_RWCurveElementEndOffset.pxx
-  RWStepFEA_RWCurveElementEndRelease.cxx
+  RWStepFEA_RWCurveElementEndRelease_impl.pxx
   RWStepFEA_RWCurveElementEndRelease.pxx
-  RWStepFEA_RWCurveElementInterval.cxx
+  RWStepFEA_RWCurveElementInterval_impl.pxx
   RWStepFEA_RWCurveElementInterval.pxx
-  RWStepFEA_RWCurveElementIntervalConstant.cxx
+  RWStepFEA_RWCurveElementIntervalConstant_impl.pxx
   RWStepFEA_RWCurveElementIntervalConstant.pxx
-  RWStepFEA_RWCurveElementIntervalLinearlyVarying.cxx
+  RWStepFEA_RWCurveElementIntervalLinearlyVarying_impl.pxx
   RWStepFEA_RWCurveElementIntervalLinearlyVarying.pxx
-  RWStepFEA_RWCurveElementLocation.cxx
+  RWStepFEA_RWCurveElementLocation_impl.pxx
   RWStepFEA_RWCurveElementLocation.pxx
-  RWStepFEA_RWDummyNode.cxx
+  RWStepFEA_RWDummyNode_impl.pxx
   RWStepFEA_RWDummyNode.pxx
-  RWStepFEA_RWElementGeometricRelationship.cxx
+  RWStepFEA_RWElementGeometricRelationship_impl.pxx
   RWStepFEA_RWElementGeometricRelationship.pxx
-  RWStepFEA_RWElementGroup.cxx
+  RWStepFEA_RWElementGroup_impl.pxx
   RWStepFEA_RWElementGroup.pxx
-  RWStepFEA_RWElementRepresentation.cxx
+  RWStepFEA_RWElementRepresentation_impl.pxx
   RWStepFEA_RWElementRepresentation.pxx
-  RWStepFEA_RWFeaAreaDensity.cxx
+  RWStepFEA_RWFeaAreaDensity_impl.pxx
   RWStepFEA_RWFeaAreaDensity.pxx
-  RWStepFEA_RWFeaAxis2Placement3d.cxx
+  RWStepFEA_RWFeaAxis2Placement3d_impl.pxx
   RWStepFEA_RWFeaAxis2Placement3d.pxx
-  RWStepFEA_RWFeaCurveSectionGeometricRelationship.cxx
+  RWStepFEA_RWFeaCurveSectionGeometricRelationship_impl.pxx
   RWStepFEA_RWFeaCurveSectionGeometricRelationship.pxx
-  RWStepFEA_RWFeaGroup.cxx
+  RWStepFEA_RWFeaGroup_impl.pxx
   RWStepFEA_RWFeaGroup.pxx
-  RWStepFEA_RWFeaLinearElasticity.cxx
+  RWStepFEA_RWFeaLinearElasticity_impl.pxx
   RWStepFEA_RWFeaLinearElasticity.pxx
-  RWStepFEA_RWFeaMassDensity.cxx
+  RWStepFEA_RWFeaMassDensity_impl.pxx
   RWStepFEA_RWFeaMassDensity.pxx
-  RWStepFEA_RWFeaMaterialPropertyRepresentation.cxx
+  RWStepFEA_RWFeaMaterialPropertyRepresentation_impl.pxx
   RWStepFEA_RWFeaMaterialPropertyRepresentation.pxx
-  RWStepFEA_RWFeaMaterialPropertyRepresentationItem.cxx
+  RWStepFEA_RWFeaMaterialPropertyRepresentationItem_impl.pxx
   RWStepFEA_RWFeaMaterialPropertyRepresentationItem.pxx
-  RWStepFEA_RWFeaModel.cxx
+  RWStepFEA_RWFeaModel_impl.pxx
   RWStepFEA_RWFeaModel.pxx
-  RWStepFEA_RWFeaModel3d.cxx
+  RWStepFEA_RWFeaModel3d_impl.pxx
   RWStepFEA_RWFeaModel3d.pxx
-  RWStepFEA_RWFeaModelDefinition.cxx
+  RWStepFEA_RWFeaModelDefinition_impl.pxx
   RWStepFEA_RWFeaModelDefinition.pxx
-  RWStepFEA_RWFeaMoistureAbsorption.cxx
+  RWStepFEA_RWFeaMoistureAbsorption_impl.pxx
   RWStepFEA_RWFeaMoistureAbsorption.pxx
-  RWStepFEA_RWFeaParametricPoint.cxx
+  RWStepFEA_RWFeaParametricPoint_impl.pxx
   RWStepFEA_RWFeaParametricPoint.pxx
-  RWStepFEA_RWFeaRepresentationItem.cxx
+  RWStepFEA_RWFeaRepresentationItem_impl.pxx
   RWStepFEA_RWFeaRepresentationItem.pxx
-  RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion.cxx
+  RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion_impl.pxx
   RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion.pxx
-  RWStepFEA_RWFeaShellBendingStiffness.cxx
+  RWStepFEA_RWFeaShellBendingStiffness_impl.pxx
   RWStepFEA_RWFeaShellBendingStiffness.pxx
-  RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness.cxx
+  RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness_impl.pxx
   RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness.pxx
-  RWStepFEA_RWFeaShellMembraneStiffness.cxx
+  RWStepFEA_RWFeaShellMembraneStiffness_impl.pxx
   RWStepFEA_RWFeaShellMembraneStiffness.pxx
-  RWStepFEA_RWFeaShellShearStiffness.cxx
+  RWStepFEA_RWFeaShellShearStiffness_impl.pxx
   RWStepFEA_RWFeaShellShearStiffness.pxx
-  RWStepFEA_RWFeaSurfaceSectionGeometricRelationship.cxx
+  RWStepFEA_RWFeaSurfaceSectionGeometricRelationship_impl.pxx
   RWStepFEA_RWFeaSurfaceSectionGeometricRelationship.pxx
-  RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion.cxx
+  RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion_impl.pxx
   RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion.pxx
-  RWStepFEA_RWFreedomAndCoefficient.cxx
+  RWStepFEA_RWFreedomAndCoefficient_impl.pxx
   RWStepFEA_RWFreedomAndCoefficient.pxx
-  RWStepFEA_RWFreedomsList.cxx
+  RWStepFEA_RWFreedomsList_impl.pxx
   RWStepFEA_RWFreedomsList.pxx
-  RWStepFEA_RWGeometricNode.cxx
+  RWStepFEA_RWGeometricNode_impl.pxx
   RWStepFEA_RWGeometricNode.pxx
-  RWStepFEA_RWNode.cxx
+  RWStepFEA_RWNode_impl.pxx
   RWStepFEA_RWNode.pxx
-  RWStepFEA_RWNodeDefinition.cxx
+  RWStepFEA_RWNodeDefinition_impl.pxx
   RWStepFEA_RWNodeDefinition.pxx
-  RWStepFEA_RWNodeGroup.cxx
+  RWStepFEA_RWNodeGroup_impl.pxx
   RWStepFEA_RWNodeGroup.pxx
-  RWStepFEA_RWNodeRepresentation.cxx
+  RWStepFEA_RWNodeRepresentation_impl.pxx
   RWStepFEA_RWNodeRepresentation.pxx
-  RWStepFEA_RWNodeSet.cxx
+  RWStepFEA_RWNodeSet_impl.pxx
   RWStepFEA_RWNodeSet.pxx
-  RWStepFEA_RWNodeWithSolutionCoordinateSystem.cxx
+  RWStepFEA_RWNodeWithSolutionCoordinateSystem_impl.pxx
   RWStepFEA_RWNodeWithSolutionCoordinateSystem.pxx
-  RWStepFEA_RWNodeWithVector.cxx
+  RWStepFEA_RWNodeWithVector_impl.pxx
   RWStepFEA_RWNodeWithVector.pxx
-  RWStepFEA_RWParametricCurve3dElementCoordinateDirection.cxx
+  RWStepFEA_RWParametricCurve3dElementCoordinateDirection_impl.pxx
   RWStepFEA_RWParametricCurve3dElementCoordinateDirection.pxx
-  RWStepFEA_RWParametricCurve3dElementCoordinateSystem.cxx
+  RWStepFEA_RWParametricCurve3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWParametricCurve3dElementCoordinateSystem.pxx
-  RWStepFEA_RWParametricSurface3dElementCoordinateSystem.cxx
+  RWStepFEA_RWParametricSurface3dElementCoordinateSystem_impl.pxx
   RWStepFEA_RWParametricSurface3dElementCoordinateSystem.pxx
-  RWStepFEA_RWSurface3dElementRepresentation.cxx
+  RWStepFEA_RWSurface3dElementRepresentation_impl.pxx
   RWStepFEA_RWSurface3dElementRepresentation.pxx
-  RWStepFEA_RWVolume3dElementRepresentation.cxx
+  RWStepFEA_RWVolume3dElementRepresentation_impl.pxx
   RWStepFEA_RWVolume3dElementRepresentation.pxx
 )

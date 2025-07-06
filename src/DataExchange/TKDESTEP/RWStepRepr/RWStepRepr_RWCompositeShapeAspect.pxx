@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWCompositeShapeAspect();
+  static inline RWStepRepr_RWCompositeShapeAspect();
 
   //! Reads CompositeShapeAspect
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&       data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&       data,
                                 const Standard_Integer                       num,
                                 Handle(Interface_Check)&                     ach,
                                 const Handle(StepRepr_CompositeShapeAspect)& ent) const;
 
   //! Writes CompositeShapeAspect
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                         SW,
+  static inline void WriteStep(StepData_StepWriter&                         SW,
                                  const Handle(StepRepr_CompositeShapeAspect)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_CompositeShapeAspect)& ent,
+  static inline void Share(const Handle(StepRepr_CompositeShapeAspect)& ent,
                              Interface_EntityIterator&                    iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWCompositeShapeAspect_impl.pxx"
 #endif // _RWStepRepr_RWCompositeShapeAspect_HeaderFile

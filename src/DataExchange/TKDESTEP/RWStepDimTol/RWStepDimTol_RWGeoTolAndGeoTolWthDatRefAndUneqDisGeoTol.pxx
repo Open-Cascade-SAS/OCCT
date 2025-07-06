@@ -33,19 +33,20 @@ class RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol();
+  static inline RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                             data,
     const Standard_Integer                                             num,
     Handle(Interface_Check)&                                           ach,
     const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                               SW,
     const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent,
+  static inline void Share(const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent,
                              Interface_EntityIterator& iter) const;
 };
+#include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol_impl.pxx"
 #endif // _RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol_HeaderFile

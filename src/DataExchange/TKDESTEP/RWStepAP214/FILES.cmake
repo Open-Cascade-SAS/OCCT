@@ -2,62 +2,62 @@
 set(OCCT_RWStepAP214_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepAP214_FILES
-  RWStepAP214.cxx
-  RWStepAP214.hxx
-  RWStepAP214_GeneralModule.cxx
-  RWStepAP214_GeneralModule.hxx
-  RWStepAP214_ReadWriteModule.cxx
-  RWStepAP214_ReadWriteModule.hxx
-  RWStepAP214_RWAppliedApprovalAssignment.cxx
+  RWStepAP214_impl.pxx
+  RWStepAP214.pxx
+  RWStepAP214_GeneralModule_impl.pxx
+  RWStepAP214_GeneralModule.pxx
+  RWStepAP214_ReadWriteModule_impl.pxx
+  RWStepAP214_ReadWriteModule.pxx
+  RWStepAP214_RWAppliedApprovalAssignment_impl.pxx
   RWStepAP214_RWAppliedApprovalAssignment.pxx
-  RWStepAP214_RWAppliedDateAndTimeAssignment.cxx
+  RWStepAP214_RWAppliedDateAndTimeAssignment_impl.pxx
   RWStepAP214_RWAppliedDateAndTimeAssignment.pxx
-  RWStepAP214_RWAppliedDateAssignment.cxx
+  RWStepAP214_RWAppliedDateAssignment_impl.pxx
   RWStepAP214_RWAppliedDateAssignment.pxx
-  RWStepAP214_RWAppliedDocumentReference.cxx
+  RWStepAP214_RWAppliedDocumentReference_impl.pxx
   RWStepAP214_RWAppliedDocumentReference.pxx
-  RWStepAP214_RWAppliedExternalIdentificationAssignment.cxx
+  RWStepAP214_RWAppliedExternalIdentificationAssignment_impl.pxx
   RWStepAP214_RWAppliedExternalIdentificationAssignment.pxx
-  RWStepAP214_RWAppliedGroupAssignment.cxx
+  RWStepAP214_RWAppliedGroupAssignment_impl.pxx
   RWStepAP214_RWAppliedGroupAssignment.pxx
-  RWStepAP214_RWAppliedOrganizationAssignment.cxx
+  RWStepAP214_RWAppliedOrganizationAssignment_impl.pxx
   RWStepAP214_RWAppliedOrganizationAssignment.pxx
-  RWStepAP214_RWAppliedPersonAndOrganizationAssignment.cxx
+  RWStepAP214_RWAppliedPersonAndOrganizationAssignment_impl.pxx
   RWStepAP214_RWAppliedPersonAndOrganizationAssignment.pxx
-  RWStepAP214_RWAppliedPresentedItem.cxx
+  RWStepAP214_RWAppliedPresentedItem_impl.pxx
   RWStepAP214_RWAppliedPresentedItem.pxx
-  RWStepAP214_RWAppliedSecurityClassificationAssignment.cxx
+  RWStepAP214_RWAppliedSecurityClassificationAssignment_impl.pxx
   RWStepAP214_RWAppliedSecurityClassificationAssignment.pxx
-  RWStepAP214_RWAutoDesignActualDateAndTimeAssignment.cxx
+  RWStepAP214_RWAutoDesignActualDateAndTimeAssignment_impl.pxx
   RWStepAP214_RWAutoDesignActualDateAndTimeAssignment.pxx
-  RWStepAP214_RWAutoDesignActualDateAssignment.cxx
+  RWStepAP214_RWAutoDesignActualDateAssignment_impl.pxx
   RWStepAP214_RWAutoDesignActualDateAssignment.pxx
-  RWStepAP214_RWAutoDesignApprovalAssignment.cxx
+  RWStepAP214_RWAutoDesignApprovalAssignment_impl.pxx
   RWStepAP214_RWAutoDesignApprovalAssignment.pxx
-  RWStepAP214_RWAutoDesignDateAndPersonAssignment.cxx
+  RWStepAP214_RWAutoDesignDateAndPersonAssignment_impl.pxx
   RWStepAP214_RWAutoDesignDateAndPersonAssignment.pxx
-  RWStepAP214_RWAutoDesignDocumentReference.cxx
+  RWStepAP214_RWAutoDesignDocumentReference_impl.pxx
   RWStepAP214_RWAutoDesignDocumentReference.pxx
-  RWStepAP214_RWAutoDesignGroupAssignment.cxx
+  RWStepAP214_RWAutoDesignGroupAssignment_impl.pxx
   RWStepAP214_RWAutoDesignGroupAssignment.pxx
-  RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment.cxx
+  RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment_impl.pxx
   RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment.pxx
-  RWStepAP214_RWAutoDesignNominalDateAssignment.cxx
+  RWStepAP214_RWAutoDesignNominalDateAssignment_impl.pxx
   RWStepAP214_RWAutoDesignNominalDateAssignment.pxx
-  RWStepAP214_RWAutoDesignOrganizationAssignment.cxx
+  RWStepAP214_RWAutoDesignOrganizationAssignment_impl.pxx
   RWStepAP214_RWAutoDesignOrganizationAssignment.pxx
-  RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.cxx
+  RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment_impl.pxx
   RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.pxx
-  RWStepAP214_RWAutoDesignPresentedItem.cxx
+  RWStepAP214_RWAutoDesignPresentedItem_impl.pxx
   RWStepAP214_RWAutoDesignPresentedItem.pxx
-  RWStepAP214_RWAutoDesignSecurityClassificationAssignment.cxx
+  RWStepAP214_RWAutoDesignSecurityClassificationAssignment_impl.pxx
   RWStepAP214_RWAutoDesignSecurityClassificationAssignment.pxx
-  RWStepAP214_RWClass.cxx
+  RWStepAP214_RWClass_impl.pxx
   RWStepAP214_RWClass.pxx
-  RWStepAP214_RWExternallyDefinedClass.cxx
+  RWStepAP214_RWExternallyDefinedClass_impl.pxx
   RWStepAP214_RWExternallyDefinedClass.pxx
-  RWStepAP214_RWExternallyDefinedGeneralProperty.cxx
+  RWStepAP214_RWExternallyDefinedGeneralProperty_impl.pxx
   RWStepAP214_RWExternallyDefinedGeneralProperty.pxx
-  RWStepAP214_RWRepItemGroup.cxx
+  RWStepAP214_RWRepItemGroup_impl.pxx
   RWStepAP214_RWRepItemGroup.pxx
 )

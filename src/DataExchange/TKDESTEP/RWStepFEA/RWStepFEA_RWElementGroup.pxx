@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWElementGroup();
+  static inline RWStepFEA_RWElementGroup();
 
   //! Reads ElementGroup
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(StepFEA_ElementGroup)&    ent) const;
 
   //! Writes ElementGroup
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
+  static inline void WriteStep(StepData_StepWriter&                SW,
                                  const Handle(StepFEA_ElementGroup)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_ElementGroup)& ent,
+  static inline void Share(const Handle(StepFEA_ElementGroup)& ent,
                              Interface_EntityIterator&           iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWElementGroup_impl.pxx"
 #endif // _RWStepFEA_RWElementGroup_HeaderFile

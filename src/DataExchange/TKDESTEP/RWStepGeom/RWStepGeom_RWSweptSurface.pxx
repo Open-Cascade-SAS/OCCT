@@ -34,21 +34,22 @@ class RWStepGeom_RWSweptSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepGeom_RWSweptSurface();
+  static inline RWStepGeom_RWSweptSurface();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(StepGeom_SweptSurface)&   ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                 SW,
+  static inline void WriteStep(StepData_StepWriter&                 SW,
                                  const Handle(StepGeom_SweptSurface)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepGeom_SweptSurface)& ent,
+  static inline void Share(const Handle(StepGeom_SweptSurface)& ent,
                              Interface_EntityIterator&            iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepGeom_RWSweptSurface_impl.pxx"
 #endif // _RWStepGeom_RWSweptSurface_HeaderFile

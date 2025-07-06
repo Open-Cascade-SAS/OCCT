@@ -3,7 +3,7 @@ set(OCCT_RWHeaderSection_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWHeaderSection_FILES
   RWHeaderSection.cxx
-  RWHeaderSection.hxx
+  RWHeaderSection.pxx
   RWHeaderSection_GeneralModule.cxx
   RWHeaderSection_GeneralModule.pxx
   RWHeaderSection_ReadWriteModule.cxx

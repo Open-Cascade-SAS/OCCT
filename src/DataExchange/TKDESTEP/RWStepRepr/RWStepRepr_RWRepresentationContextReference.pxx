@@ -33,19 +33,20 @@ class RWStepRepr_RWRepresentationContextReference
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepRepr_RWRepresentationContextReference();
+  static inline RWStepRepr_RWRepresentationContextReference();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                 theData,
     const Standard_Integer                                 theNum,
     Handle(Interface_Check)&                               theAch,
     const Handle(StepRepr_RepresentationContextReference)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                   SW,
     const Handle(StepRepr_RepresentationContextReference)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepRepr_RepresentationContextReference)& theEnt,
+  static inline void Share(const Handle(StepRepr_RepresentationContextReference)& theEnt,
                              Interface_EntityIterator&                              iter) const;
 };
+#include "RWStepRepr_RWRepresentationContextReference_impl.pxx"
 #endif // _RWStepRepr_RWRepresentationContextReference_HeaderFile_

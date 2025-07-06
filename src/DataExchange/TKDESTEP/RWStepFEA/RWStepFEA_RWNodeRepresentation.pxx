@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWNodeRepresentation();
+  static inline RWStepFEA_RWNodeRepresentation();
 
   //! Reads NodeRepresentation
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&    data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&    data,
                                 const Standard_Integer                    num,
                                 Handle(Interface_Check)&                  ach,
                                 const Handle(StepFEA_NodeRepresentation)& ent) const;
 
   //! Writes NodeRepresentation
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                      SW,
+  static inline void WriteStep(StepData_StepWriter&                      SW,
                                  const Handle(StepFEA_NodeRepresentation)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_NodeRepresentation)& ent,
+  static inline void Share(const Handle(StepFEA_NodeRepresentation)& ent,
                              Interface_EntityIterator&                 iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWNodeRepresentation_impl.pxx"
 #endif // _RWStepFEA_RWNodeRepresentation_HeaderFile

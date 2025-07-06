@@ -34,18 +34,19 @@ class RWStepVisual_RWTessellatedWire
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWTessellatedWire();
+  static inline RWStepVisual_RWTessellatedWire();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&    theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&    theData,
                                 const Standard_Integer                    theNum,
                                 Handle(Interface_Check)&                  theCheck,
                                 const Handle(StepVisual_TessellatedWire)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                      theSW,
+  static inline void WriteStep(StepData_StepWriter&                      theSW,
                                  const Handle(StepVisual_TessellatedWire)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_TessellatedWire)& theEnt,
+  static inline void Share(const Handle(StepVisual_TessellatedWire)& theEnt,
                              Interface_EntityIterator&                 theIter) const;
 };
 
+#include "RWStepVisual_RWTessellatedWire_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedWire_HeaderFile_

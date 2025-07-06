@@ -33,19 +33,20 @@ class RWStepKinematics_RWProductDefinitionKinematics
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWProductDefinitionKinematics();
+  static inline RWStepKinematics_RWProductDefinitionKinematics();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                    theData,
     const Standard_Integer                                    theNum,
     Handle(Interface_Check)&                                  theArch,
     const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                      theSW,
     const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt,
+  static inline void Share(const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt,
                              Interface_EntityIterator&                                 iter) const;
 };
+#include "RWStepKinematics_RWProductDefinitionKinematics_impl.pxx"
 #endif // _RWStepKinematics_RWProductDefinitionKinematics_HeaderFile_

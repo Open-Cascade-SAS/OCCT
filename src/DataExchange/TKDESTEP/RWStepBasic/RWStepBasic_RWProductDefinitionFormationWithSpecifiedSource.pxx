@@ -34,19 +34,19 @@ class RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource();
+  static inline RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                                 data,
     const Standard_Integer                                                 num,
     Handle(Interface_Check)&                                               ach,
     const Handle(StepBasic_ProductDefinitionFormationWithSpecifiedSource)& ent) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                                   SW,
     const Handle(StepBasic_ProductDefinitionFormationWithSpecifiedSource)& ent) const;
 
-  Standard_HIDDEN void Share(
+  static inline void Share(
     const Handle(StepBasic_ProductDefinitionFormationWithSpecifiedSource)& ent,
     Interface_EntityIterator&                                              iter) const;
 
@@ -54,4 +54,5 @@ protected:
 private:
 };
 
+#include "RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource_impl.pxx"
 #endif // _RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource_HeaderFile

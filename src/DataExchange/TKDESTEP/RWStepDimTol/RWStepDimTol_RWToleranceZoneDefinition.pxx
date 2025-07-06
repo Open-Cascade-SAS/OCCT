@@ -35,20 +35,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepDimTol_RWToleranceZoneDefinition();
+  static inline RWStepDimTol_RWToleranceZoneDefinition();
 
   //! Reads ToleranceZoneDefinition
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&            data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&            data,
                                 const Standard_Integer                            num,
                                 Handle(Interface_Check)&                          ach,
                                 const Handle(StepDimTol_ToleranceZoneDefinition)& ent) const;
 
   //! Writes ToleranceZoneDefinition
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              SW,
+  static inline void WriteStep(StepData_StepWriter&                              SW,
                                  const Handle(StepDimTol_ToleranceZoneDefinition)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_ToleranceZoneDefinition)& ent,
+  static inline void Share(const Handle(StepDimTol_ToleranceZoneDefinition)& ent,
                              Interface_EntityIterator&                         iter) const;
 };
+#include "RWStepDimTol_RWToleranceZoneDefinition_impl.pxx"
 #endif // _RWStepDimTol_RWToleranceZoneDefinition_HeaderFile

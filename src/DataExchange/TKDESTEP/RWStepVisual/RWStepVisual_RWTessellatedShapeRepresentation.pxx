@@ -34,20 +34,21 @@ class RWStepVisual_RWTessellatedShapeRepresentation
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWTessellatedShapeRepresentation();
+  static inline RWStepVisual_RWTessellatedShapeRepresentation();
 
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                   theData,
     const Standard_Integer                                   theNum,
     Handle(Interface_Check)&                                 theCheck,
     const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                     theSW,
     const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
+  static inline void Share(const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
                              Interface_EntityIterator& theIter) const;
 };
 
+#include "RWStepVisual_RWTessellatedShapeRepresentation_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedShapeRepresentation_HeaderFile_

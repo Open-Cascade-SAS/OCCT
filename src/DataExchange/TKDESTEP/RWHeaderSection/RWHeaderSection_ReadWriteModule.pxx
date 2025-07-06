@@ -37,34 +37,34 @@ class RWHeaderSection_ReadWriteModule : public StepData_ReadWriteModule
 {
 
 public:
-  Standard_HIDDEN RWHeaderSection_ReadWriteModule();
+  static inline RWHeaderSection_ReadWriteModule();
 
   //! associates a positive Case Number to each type of HeaderSection entity,
   //! given as a String defined in the EXPRESS form
-  Standard_HIDDEN Standard_Integer
+  static inline Standard_Integer
     CaseStep(const TCollection_AsciiString& atype) const Standard_OVERRIDE;
 
   //! associates a positive Case Number to each type of HeaderSection Complex entity,
   //! given as a String defined in the EXPRESS form
-  Standard_HIDDEN virtual Standard_Integer CaseStep(
+  static inline virtual Standard_Integer CaseStep(
     const TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
 
   //! returns True if the Case Number corresponds to a Complex Type
-  Standard_HIDDEN virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
+  static inline virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
     Standard_OVERRIDE;
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
-  Standard_HIDDEN const TCollection_AsciiString& StepType(const Standard_Integer CN) const
+  static inline const TCollection_AsciiString& StepType(const Standard_Integer CN) const
     Standard_OVERRIDE;
 
-  Standard_HIDDEN void ReadStep(const Standard_Integer                 CN,
+  static inline void ReadStep(const Standard_Integer                 CN,
                                 const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer                 num,
                                 Handle(Interface_Check)&               ach,
                                 const Handle(Standard_Transient)&      ent) const Standard_OVERRIDE;
 
-  Standard_HIDDEN void WriteStep(const Standard_Integer            CN,
+  static inline void WriteStep(const Standard_Integer            CN,
                                  StepData_StepWriter&              SW,
                                  const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
@@ -74,4 +74,5 @@ protected:
 private:
 };
 
+#include "RWHeaderSection_ReadWriteModule_impl.pxx"
 #endif // _RWHeaderSection_ReadWriteModule_HeaderFile

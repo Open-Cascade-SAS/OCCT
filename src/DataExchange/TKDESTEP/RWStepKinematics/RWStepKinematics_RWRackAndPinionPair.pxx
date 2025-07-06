@@ -33,17 +33,18 @@ class RWStepKinematics_RWRackAndPinionPair
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWRackAndPinionPair();
+  static inline RWStepKinematics_RWRackAndPinionPair();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&          theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&          theData,
                                 const Standard_Integer                          theNum,
                                 Handle(Interface_Check)&                        theArch,
                                 const Handle(StepKinematics_RackAndPinionPair)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                            theSW,
+  static inline void WriteStep(StepData_StepWriter&                            theSW,
                                  const Handle(StepKinematics_RackAndPinionPair)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_RackAndPinionPair)& theEnt,
+  static inline void Share(const Handle(StepKinematics_RackAndPinionPair)& theEnt,
                              Interface_EntityIterator&                       iter) const;
 };
+#include "RWStepKinematics_RWRackAndPinionPair_impl.pxx"
 #endif // _RWStepKinematics_RWRackAndPinionPair_HeaderFile_

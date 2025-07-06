@@ -33,17 +33,18 @@ class RWStepKinematics_RWOrientedJoint
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWOrientedJoint();
+  static inline RWStepKinematics_RWOrientedJoint();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&      theData,
                                 const Standard_Integer                      theNum,
                                 Handle(Interface_Check)&                    theArch,
                                 const Handle(StepKinematics_OrientedJoint)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        theSW,
+  static inline void WriteStep(StepData_StepWriter&                        theSW,
                                  const Handle(StepKinematics_OrientedJoint)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_OrientedJoint)& theEnt,
+  static inline void Share(const Handle(StepKinematics_OrientedJoint)& theEnt,
                              Interface_EntityIterator&                   iter) const;
 };
+#include "RWStepKinematics_RWOrientedJoint_impl.pxx"
 #endif // _RWStepKinematics_RWOrientedJoint_HeaderFile_

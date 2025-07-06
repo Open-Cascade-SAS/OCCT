@@ -34,21 +34,22 @@ class RWStepAP214_RWAppliedOrganizationAssignment
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepAP214_RWAppliedOrganizationAssignment();
+  static inline RWStepAP214_RWAppliedOrganizationAssignment();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                 data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                 data,
                                 const Standard_Integer                                 num,
                                 Handle(Interface_Check)&                               ach,
                                 const Handle(StepAP214_AppliedOrganizationAssignment)& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                   SW,
+  static inline void WriteStep(StepData_StepWriter&                                   SW,
                                  const Handle(StepAP214_AppliedOrganizationAssignment)& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepAP214_AppliedOrganizationAssignment)& ent,
+  static inline void Share(const Handle(StepAP214_AppliedOrganizationAssignment)& ent,
                              Interface_EntityIterator&                              iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepAP214_RWAppliedOrganizationAssignment_impl.pxx"
 #endif // _RWStepAP214_RWAppliedOrganizationAssignment_HeaderFile

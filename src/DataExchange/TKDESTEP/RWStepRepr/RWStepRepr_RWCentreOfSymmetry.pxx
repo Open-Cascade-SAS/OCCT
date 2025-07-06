@@ -35,20 +35,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWCentreOfSymmetry();
+  static inline RWStepRepr_RWCentreOfSymmetry();
 
   //! Reads CentreOfSymmetry
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&   data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&   data,
                                 const Standard_Integer                   num,
                                 Handle(Interface_Check)&                 ach,
                                 const Handle(StepRepr_CentreOfSymmetry)& ent) const;
 
   //! Writes CentreOfSymmetry
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                     SW,
+  static inline void WriteStep(StepData_StepWriter&                     SW,
                                  const Handle(StepRepr_CentreOfSymmetry)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_CentreOfSymmetry)& ent,
+  static inline void Share(const Handle(StepRepr_CentreOfSymmetry)& ent,
                              Interface_EntityIterator&                iter) const;
 };
+#include "RWStepRepr_RWCentreOfSymmetry_impl.pxx"
 #endif // _RWStepRepr_RWCentreOfSymmetry_HeaderFile

@@ -33,17 +33,18 @@ class RWStepKinematics_RWLowOrderKinematicPair
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepKinematics_RWLowOrderKinematicPair();
+  static inline RWStepKinematics_RWLowOrderKinematicPair();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&              theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&              theData,
                                 const Standard_Integer                              theNum,
                                 Handle(Interface_Check)&                            theArch,
                                 const Handle(StepKinematics_LowOrderKinematicPair)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                theSW,
+  static inline void WriteStep(StepData_StepWriter&                                theSW,
                                  const Handle(StepKinematics_LowOrderKinematicPair)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_LowOrderKinematicPair)& theEnt,
+  static inline void Share(const Handle(StepKinematics_LowOrderKinematicPair)& theEnt,
                              Interface_EntityIterator&                           iter) const;
 };
+#include "RWStepKinematics_RWLowOrderKinematicPair_impl.pxx"
 #endif // _RWStepKinematics_RWLowOrderKinematicPair_HeaderFile_

@@ -34,26 +34,27 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepElement_RWCurveElementSectionDerivedDefinitions();
+  static inline RWStepElement_RWCurveElementSectionDerivedDefinitions();
 
   //! Reads CurveElementSectionDerivedDefinitions
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                           data,
     const Standard_Integer                                           num,
     Handle(Interface_Check)&                                         ach,
     const Handle(StepElement_CurveElementSectionDerivedDefinitions)& ent) const;
 
   //! Writes CurveElementSectionDerivedDefinitions
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                             SW,
     const Handle(StepElement_CurveElementSectionDerivedDefinitions)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepElement_CurveElementSectionDerivedDefinitions)& ent,
+  static inline void Share(const Handle(StepElement_CurveElementSectionDerivedDefinitions)& ent,
                              Interface_EntityIterator& iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepElement_RWCurveElementSectionDerivedDefinitions_impl.pxx"
 #endif // _RWStepElement_RWCurveElementSectionDerivedDefinitions_HeaderFile

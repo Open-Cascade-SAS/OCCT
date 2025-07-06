@@ -34,25 +34,26 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepRepr_RWQuantifiedAssemblyComponentUsage();
+  static inline RWStepRepr_RWQuantifiedAssemblyComponentUsage();
 
   //! Reads QuantifiedAssemblyComponentUsage
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                   data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                   data,
                                 const Standard_Integer                                   num,
                                 Handle(Interface_Check)&                                 ach,
                                 const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent) const;
 
   //! Writes QuantifiedAssemblyComponentUsage
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                     SW,
     const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent,
+  static inline void Share(const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent,
                              Interface_EntityIterator&                                iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepRepr_RWQuantifiedAssemblyComponentUsage_impl.pxx"
 #endif // _RWStepRepr_RWQuantifiedAssemblyComponentUsage_HeaderFile

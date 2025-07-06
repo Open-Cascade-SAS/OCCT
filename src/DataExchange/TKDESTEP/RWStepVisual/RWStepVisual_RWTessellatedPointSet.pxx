@@ -34,18 +34,19 @@ class RWStepVisual_RWTessellatedPointSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_HIDDEN RWStepVisual_RWTessellatedPointSet();
+  static inline RWStepVisual_RWTessellatedPointSet();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&        theData,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&        theData,
                                 const Standard_Integer                        theNum,
                                 Handle(Interface_Check)&                      theCheck,
                                 const Handle(StepVisual_TessellatedPointSet)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                          theSW,
+  static inline void WriteStep(StepData_StepWriter&                          theSW,
                                  const Handle(StepVisual_TessellatedPointSet)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepVisual_TessellatedPointSet)& theEnt,
+  static inline void Share(const Handle(StepVisual_TessellatedPointSet)& theEnt,
                              Interface_EntityIterator&                     theIter) const;
 };
 
+#include "RWStepVisual_RWTessellatedPointSet_impl.pxx"
 #endif // _RWStepVisual_RWTessellatedPointSet_HeaderFile_

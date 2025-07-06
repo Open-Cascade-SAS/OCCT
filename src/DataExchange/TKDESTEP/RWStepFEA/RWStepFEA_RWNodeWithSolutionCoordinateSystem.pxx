@@ -34,24 +34,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
-  Standard_HIDDEN RWStepFEA_RWNodeWithSolutionCoordinateSystem();
+  static inline RWStepFEA_RWNodeWithSolutionCoordinateSystem();
 
   //! Reads NodeWithSolutionCoordinateSystem
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                  data,
+  static inline void ReadStep(const Handle(StepData_StepReaderData)&                  data,
                                 const Standard_Integer                                  num,
                                 Handle(Interface_Check)&                                ach,
                                 const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent) const;
 
   //! Writes NodeWithSolutionCoordinateSystem
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                    SW,
+  static inline void WriteStep(StepData_StepWriter&                                    SW,
                                  const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent,
+  static inline void Share(const Handle(StepFEA_NodeWithSolutionCoordinateSystem)& ent,
                              Interface_EntityIterator&                               iter) const;
 
 protected:
 private:
 };
 
+#include "RWStepFEA_RWNodeWithSolutionCoordinateSystem_impl.pxx"
 #endif // _RWStepFEA_RWNodeWithSolutionCoordinateSystem_HeaderFile

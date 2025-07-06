@@ -33,19 +33,20 @@ public:
   RWStepVisual_RWRepositionedTessellatedGeometricSet() {};
 
   //! Reads RepositionedTessellatedGeometricSet
-  Standard_HIDDEN void ReadStep(
+  static inline void ReadStep(
     const Handle(StepData_StepReaderData)&                        theData,
     const Standard_Integer                                        theNum,
     Handle(Interface_Check)&                                      theAch,
     const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
 
   //! Writes RepositionedTessellatedGeometricSet
-  Standard_HIDDEN void WriteStep(
+  static inline void WriteStep(
     StepData_StepWriter&                                          theSW,
     const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
+  static inline void Share(const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
                              Interface_EntityIterator& theIter) const;
 };
+#include "RWStepVisual_RWRepositionedTessellatedGeometricSet_impl.pxx"
 #endif // _RWStepVisual_RWRepositionedTessellatedGeometricSet_HeaderFile
