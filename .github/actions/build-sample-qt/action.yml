@@ -87,6 +87,7 @@ runs:
         
         # Set library paths for vcpkg dependencies
         export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
+        export LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LIBRARY_PATH"
         export PKG_CONFIG_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib/pkgconfig:$PKG_CONFIG_PATH"
         
         cd ${{ github.workspace }}/samples/qt
@@ -98,11 +99,12 @@ runs:
           export STATION=$host
           export RES_DIR="${{ github.workspace }}/samples/qt/${sample}/result"
           
-          # Add vcpkg library paths to qmake
-          export LIBS="-L${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib"
-          export INCLUDEPATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/include"
+          # Configure qmake with vcpkg paths
+          qmake $sample.pro \
+            "LIBS += -L${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
+            "LIBS += -Wl,-rpath,${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
+            "INCLUDEPATH += ${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/include"
           
-          qmake $sample.pro
           aNbJobs="$(getconf _NPROCESSORS_ONLN)"
           make -j$aNbJobs release
           cd ..
