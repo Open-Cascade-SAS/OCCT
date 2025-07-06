@@ -22,6 +22,11 @@ runs:
         name: ${{ inputs.install-artifact-name }}
         path: occt-install
 
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
+
     - name: Install Windows dependencies
       if: inputs.platform == 'windows'
       shell: pwsh
