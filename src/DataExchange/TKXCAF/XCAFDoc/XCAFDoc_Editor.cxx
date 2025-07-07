@@ -132,7 +132,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
         if (aShapeTool->GetReferredShape(aPart, aPart))
         {
           TopoDS_Shape aPartShape = aShapeTool->GetShape(aPart);
-          if (!aPartShape.IsNull() && aPartShape.ShapeType() == TopAbs_COMPOUND)
+          if (!aPartShape.IsNull() && aPartShape.ShapeType() < TopAbs_FACE)
             Expand(theDoc, aPart, theRecursively);
         }
       }
@@ -163,7 +163,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
   {
     const TDF_Label    aLabel = anIter.Value();
     const TopoDS_Shape aS     = aShapeTool->GetShape(aLabel);
-    if (!aS.IsNull() && aS.ShapeType() == TopAbs_COMPOUND && !aShapeTool->IsAssembly(aLabel))
+    // if (!aS.IsNull() && aS.ShapeType() == TopAbs_COMPOUND && !aShapeTool->IsAssembly(aLabel))
     {
       if (Expand(theDoc, aLabel, theRecursively))
       {

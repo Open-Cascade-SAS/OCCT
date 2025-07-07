@@ -1836,9 +1836,10 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand(const TDF_Label& theShapeL)
   if (aShape.IsNull())
     return Standard_False;
 
-  TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
-  Standard_Boolean isExpandedType = aShapeType == TopAbs_COMPOUND || aShapeType == TopAbs_COMPSOLID
-                                    || aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
+  const TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
+  // Standard_Boolean isExpandedType = aShapeType == TopAbs_COMPOUND || aShapeType == TopAbs_COMPSOLID
+  //                                   || aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
+  const Standard_Boolean isExpandedType = aShapeType < TopAbs_FACE || aShapeType == TopAbs_WIRE;
   if (isExpandedType)
   {
     TopoDS_Iterator anIter(aShape);

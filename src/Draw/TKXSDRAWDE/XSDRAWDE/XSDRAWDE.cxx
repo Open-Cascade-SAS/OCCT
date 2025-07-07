@@ -13,6 +13,7 @@
 
 #include <XSDRAWDE.hxx>
 
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
@@ -38,6 +39,7 @@
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_Dimension.hxx>
+#include <XCAFDoc_Editor.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_ViewTool.hxx>
 #include <XCAFDoc_View.hxx>
@@ -107,7 +109,7 @@ private:
   // @param theLabels The sequence of labels from which to extract entries.
   // @return A string containing the entries of the labels, separated by spaces.
   //         If theLabels is empty or contains only empty labels, returns an empty string.
-  static TCollection_ExtendedString GetEntriesString(const TDF_LabelSequence& theLabels);
+  TCollection_ExtendedString GetEntriesString(const TDF_LabelSequence& theLabels);
 
   // Sets the label name attribute for a given label.
   // If the name attribute does not exist, it creates a new one.
@@ -131,6 +133,12 @@ private:
   // This function iterates through all views in the document and creates shape labels for them,
   // and sets source view data as named data attributes for new shape labels.
   bool SetViewsAsGeometry();
+
+  // Generates mesh for all the shape in the shape tool.
+  void GenerateMesh();
+
+  // Recursively expands source shapes in the document until faces are reached.
+  void ExpandSourceShapes(const TDF_Label& theRoot);
 
 private:
   Handle(TDocStd_Document)   myDoc;        //!< The document associated with this exporter.
@@ -191,8 +199,10 @@ bool DataAsGeomExporter::Perform()
     return false;
   }
 
-  bool isAnyDataExported = false;
+  // Set entries for all shapes in the document.
+  SetShapeEntriesAsData();
 
+  bool isAnyDataExported = false;
   if (!myDimTolTool.IsNull())
   {
     // Extract GT&D data from the document.
@@ -211,8 +221,6 @@ bool DataAsGeomExporter::Perform()
         MapLabels(aPresentations, aNewRoot);
       // Set source GT&D entries in the geometry labels.
       SetSourceGTDAttributes(aLabelMap);
-      // Set entries for all shapes in the document.
-      SetShapeEntriesAsData();
     }
   }
 
@@ -220,6 +228,14 @@ bool DataAsGeomExporter::Perform()
   {
     // Set views as geometry.
     isAnyDataExported |= SetViewsAsGeometry();
+  }
+
+  if (isAnyDataExported)
+  {
+    // Generate mesh for all shapes in the shape tool.
+    GenerateMesh();
+    // Expand source shapes to ensure they are fully represented in the document.
+    ExpandSourceShapes(myShapeTool->Label());
   }
 
   return isAnyDataExported;
@@ -445,10 +461,8 @@ void DataAsGeomExporter::SetShapeEntriesAsData()
       continue;
     }
 
-    // Get label entry.
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(aShapeLabel, anEntry);
-    // Create and set the named data attribute.
 
     // Get NamedData attribute from the label.
     Handle(TDataStd_NamedData) aNamedData = GetNamedDataAttribute(aShapeLabel);
@@ -582,6 +596,63 @@ bool DataAsGeomExporter::SetViewsAsGeometry()
   }
 
   return true;
+}
+
+//=================================================================================================
+
+void DataAsGeomExporter::GenerateMesh()
+{
+  TopoDS_Shape aShape = myShapeTool->GetOneShape();
+  if (aShape.IsNull())
+  {
+    return; // No shape to process.
+  }
+
+  BRepMesh_IncrementalMesh aMeshBuilder(aShape, 0.1, Standard_False, 0.5, Standard_True);
+  aMeshBuilder.Perform();
+}
+
+//=================================================================================================
+
+void DataAsGeomExporter::ExpandSourceShapes(const TDF_Label& theRoot)
+{
+  // Iterate through all shapes in the document and expand their source shapes.
+  for (TDF_ChildIterator aChildIt(theRoot); aChildIt.More(); aChildIt.Next())
+  {
+    const TDF_Label& aShapeLabel = aChildIt.Value();
+    if (aShapeLabel.IsNull())
+    {
+      continue; // Skip null labels
+    }
+
+    TCollection_ExtendedString aName;
+    if (Handle(TDataStd_Name) aNameAttr;
+        aShapeLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr))
+    {
+      aName = aNameAttr->Get();
+      if (aName == GTD_GEOM_NAME || aName == VIEW_GEOM_NAME)
+      {
+        continue; // Skip GT&D and view geometry labels
+      }
+    }
+
+    if (myShapeTool->IsAssembly(aShapeLabel))
+    {
+      // If the label is an assembly, recursively expand source shapes for all child labels.
+      ExpandSourceShapes(aShapeLabel);
+    }
+    else if (myShapeTool->IsSimpleShape(aShapeLabel))
+    {
+      // Shapes should only be expanded until faces, the rest should be skipped.
+      const TopoDS_Shape aShape = myShapeTool->GetShape(aShapeLabel);
+      if (aShape.IsNull() || aShape.ShapeType() >= TopAbs_FACE)
+      {
+        continue;
+      }
+      // Expand the source shapes for the current label.
+      XCAFDoc_Editor::Expand(aShapeLabel, aShapeLabel, true);
+    }
+  }
 }
 
 } // namespace
