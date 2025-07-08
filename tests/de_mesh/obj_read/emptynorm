@@ -1,0 +1,41 @@
+puts "========"
+puts "Data Exchange, RWObj_Reader - fix reading facets with empty normals like 'f 1// 2// 3//'"
+puts "Test reads small generated file."
+puts "========"
+
+set sample_obj {g Group1
+v 0 0 0
+v 2 0 0
+v 2 1 0
+v 1 2 0
+v 0 1 0
+v 0 0 2
+v 2 0 2
+v 2 1 2
+v 1 2 2
+v 0 1 2
+f 5// 4// 3// 2// 1//
+f 7// 8// 9// 10// 6//
+f 10// 9// 4// 5//
+f 9// 8// 3// 4//
+f 6// 10// 5// 1//
+f 2// 3// 8// 7//
+f 1// 2// 7// 6//}
+
+set fd [open ${imagedir}/${casename}.obj w]
+fconfigure $fd -translation lf
+puts $fd $sample_obj
+close $fd
+readobj mlf ${imagedir}/${casename}.obj -singleFace
+checknbshapes mlf -face 1
+checktrinfo   mlf -tri 16 -nod 10
+
+vclear
+vinit View1
+vdisplay -dispMode 1 mlf
+vaxo
+vfit
+vdump ${imagedir}/${casename}_raw.png
+
+# read OBJ into document
+ReadObj D ${imagedir}/${casename}.obj

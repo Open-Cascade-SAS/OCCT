@@ -1038,6 +1038,13 @@ void DBRep_DrawableShape::Dump(Standard_OStream& S) const
 
 //=================================================================================================
 
+void DBRep_DrawableShape::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  myShape.DumpJson(theOStream, theDepth);
+}
+
+//=================================================================================================
+
 void DBRep_DrawableShape::Save(Standard_OStream& theStream) const
 {
   BRep_Builder       aBuilder;

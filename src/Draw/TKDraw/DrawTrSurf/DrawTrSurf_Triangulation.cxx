@@ -193,3 +193,16 @@ void DrawTrSurf_Triangulation::Whatis(Draw_Interpretor& I) const
 {
   I << "triangulation";
 }
+
+//=======================================================================
+// function : DumpJson
+// purpose  :
+//=======================================================================
+void DrawTrSurf_Triangulation::DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth) const
+{
+  if (!myTriangulation.IsNull())
+  {
+    myTriangulation->DumpJson(theOStream, theDepth);
+  }
+}

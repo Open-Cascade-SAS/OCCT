@@ -23,6 +23,7 @@
 #include <Draw_Display.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -69,6 +70,16 @@ void DDataStd_TreeBrowser::Dump(Standard_OStream& S) const
 {
   S << "DDataStd_TreeBrowser on a label: " << std::endl;
   S << myRoot;
+}
+
+//=================================================================================================
+
+void DDataStd_TreeBrowser::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, TDF_Label)
+
+  Handle(TDF_Data) aData = !myRoot.IsNull() ? myRoot.Data() : Handle(TDF_Data)();
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aData.get())
 }
 
 //=================================================================================================
