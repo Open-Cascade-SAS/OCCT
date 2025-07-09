@@ -16,7 +16,8 @@
 #include <Select3D_SensitivePrimitiveArray.hxx>
 
 #include <OSD_Parallel.hxx>
-#include <Standard_Atomic.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePrimitiveArray, Select3D_SensitiveSet)
 
@@ -103,7 +104,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
                                   myToEvalMinMax,
                                   1))
         {
-          Standard_Atomic_Increment(&myNbFailures);
+          ++myNbFailures;
           return;
         }
         break;
@@ -117,13 +118,13 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
                                          myToEvalMinMax,
                                          1))
         {
-          Standard_Atomic_Increment(&myNbFailures);
+          ++myNbFailures;
           return;
         }
         break;
       }
       default: {
-        Standard_Atomic_Increment(&myNbFailures);
+        ++myNbFailures;
         return;
       }
     }
@@ -145,7 +146,7 @@ private:
   Standard_Integer                  myDivStep;
   Standard_Boolean                  myToEvalMinMax;
   Standard_Boolean                  myToComputeBvh;
-  mutable volatile Standard_Integer myNbFailures;
+  mutable std::atomic<Standard_Integer> myNbFailures;
 };
 
 //! Functor for computing BVH in parallel threads.

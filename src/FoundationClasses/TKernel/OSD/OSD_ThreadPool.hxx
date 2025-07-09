@@ -17,9 +17,10 @@
 
 #include <NCollection_Array1.hxx>
 #include <OSD_Thread.hxx>
-#include <Standard_Atomic.hxx>
 #include <Standard_Condition.hxx>
 #include <Standard_Mutex.hxx>
+
+#include <atomic>
 
 //! Class defining a thread pool for executing algorithms in multi-threaded mode.
 //! Thread pool allocates requested amount of threads and keep them alive
@@ -189,7 +190,7 @@ protected:
     Standard_Condition       myWakeEvent;
     Standard_Condition       myIdleEvent;
     int                      myThreadIndex;
-    volatile int             myUsageCounter;
+    std::atomic<int>         myUsageCounter;
     bool                     myIsStarted;
     bool                     myToCatchFpe;
     bool                     myIsSelfThread;
@@ -290,7 +291,7 @@ protected:
 
     //! Returns first non processed element or end.
     //! Thread-safe method.
-    int It() const { return Standard_Atomic_Increment(reinterpret_cast<volatile int*>(&myIt)) - 1; }
+    int It() const { return myIt.fetch_add(1); }
 
   private:
     JobRange(const JobRange& theCopy);
@@ -299,7 +300,7 @@ protected:
   private:
     const int&  myBegin; //!< First element of range
     const int&  myEnd;   //!< Last  element of range
-    mutable int myIt;    //!< First non processed element of range
+    mutable std::atomic<int> myIt; //!< First non processed element of range
   };
 
   //! Auxiliary wrapper class for thread function.
