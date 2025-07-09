@@ -298,9 +298,9 @@ protected:
     JobRange& operator=(const JobRange& theCopy);
 
   private:
-    const int&  myBegin; //!< First element of range
-    const int&  myEnd;   //!< Last  element of range
-    mutable std::atomic<int> myIt; //!< First non processed element of range
+    const int&               myBegin; //!< First element of range
+    const int&               myEnd;   //!< Last  element of range
+    mutable std::atomic<int> myIt;    //!< First non processed element of range
   };
 
   //! Auxiliary wrapper class for thread function.

@@ -142,10 +142,10 @@ private:
     Select3D_SensitivePrimitiveArray_InitFunctor&);
 
 private:
-  Select3D_SensitivePrimitiveArray& myPrimArray;
-  Standard_Integer                  myDivStep;
-  Standard_Boolean                  myToEvalMinMax;
-  Standard_Boolean                  myToComputeBvh;
+  Select3D_SensitivePrimitiveArray&     myPrimArray;
+  Standard_Integer                      myDivStep;
+  Standard_Boolean                      myToEvalMinMax;
+  Standard_Boolean                      myToComputeBvh;
   mutable std::atomic<Standard_Integer> myNbFailures;
 };
 
