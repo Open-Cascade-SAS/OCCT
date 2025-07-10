@@ -16,16 +16,17 @@
 #include <Graphic3d_MarkerImage.hxx>
 
 #include <Image_PixMap.hxx>
-#include <Standard_Atomic.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
 #include "Graphic3d_MarkerImage.pxx"
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MarkerImage, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_MARKER_IMAGE_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_MARKER_IMAGE_COUNTER(0);
 
 //! Names of built-in markers
 static const char* THE_MARKER_NAMES[Aspect_TOM_USERDEFINED] = {
@@ -180,7 +181,7 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(Image_PixMap)& theImag
       myHeight((Standard_Integer)theImage->Height())
 {
   myImageId = TCollection_AsciiString("Graphic3d_MarkerImage_")
-              + TCollection_AsciiString(Standard_Atomic_Increment(&THE_MARKER_IMAGE_COUNTER));
+              + TCollection_AsciiString(++THE_MARKER_IMAGE_COUNTER);
 
   myImageAlphaId = TCollection_AsciiString("Graphic3d_MarkerImageAlpha_")
                    + TCollection_AsciiString(THE_MARKER_IMAGE_COUNTER);
@@ -238,7 +239,7 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const Handle(TColStd_HArray1OfByte)
       myHeight(theHeight)
 {
   myImageId = TCollection_AsciiString("Graphic3d_MarkerImage_")
-              + TCollection_AsciiString(Standard_Atomic_Increment(&THE_MARKER_IMAGE_COUNTER));
+              + TCollection_AsciiString(++THE_MARKER_IMAGE_COUNTER);
 
   myImageAlphaId = TCollection_AsciiString("Graphic3d_MarkerImageAlpha_")
                    + TCollection_AsciiString(THE_MARKER_IMAGE_COUNTER);

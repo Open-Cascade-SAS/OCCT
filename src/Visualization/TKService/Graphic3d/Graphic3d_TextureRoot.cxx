@@ -25,13 +25,14 @@
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
-#include <Standard_Atomic.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_TEXTURE_COUNTER(0);
 }
 
 //=================================================================================================
@@ -123,7 +124,7 @@ Graphic3d_TextureRoot::~Graphic3d_TextureRoot()
 void Graphic3d_TextureRoot::generateId()
 {
   myTexId = TCollection_AsciiString("Graphic3d_TextureRoot_")
-            + TCollection_AsciiString(Standard_Atomic_Increment(&THE_TEXTURE_COUNTER));
+            + TCollection_AsciiString(++THE_TEXTURE_COUNTER);
 }
 
 //=================================================================================================

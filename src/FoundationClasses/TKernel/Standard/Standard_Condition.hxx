@@ -16,10 +16,12 @@
 #define _Standard_Condition_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_Macro.hxx>
 
-#ifndef _WIN32
-  #include <pthread.h>
-#endif
+#include <atomic>
+#include <condition_variable>
+#include <chrono>
+#include <mutex>
 
 //! This is boolean flag intended for communication between threads.
 //! One thread sets this flag to TRUE to indicate some event happened
@@ -31,38 +33,62 @@ class Standard_Condition
 public:
   //! Default constructor.
   //! @param theIsSet Initial flag state
-  Standard_EXPORT Standard_Condition(bool theIsSet);
+  Standard_Condition(bool theIsSet = false)
+      : myFlag(theIsSet)
+  {
+  }
 
   //! Destructor.
-  Standard_EXPORT ~Standard_Condition();
+  ~Standard_Condition() {}
 
   //! Set event into signaling state.
-  Standard_EXPORT void Set();
+  void Set()
+  {
+    {
+      std::lock_guard<std::mutex> aLock(myMutex);
+      myFlag = true;
+    }
+    myCondition.notify_all();
+  }
 
   //! Reset event (unset signaling state)
-  Standard_EXPORT void Reset();
+  void Reset()
+  {
+    std::lock_guard<std::mutex> aLock(myMutex);
+    myFlag = false;
+  }
 
   //! Wait for Event (infinity).
-  Standard_EXPORT void Wait();
+  void Wait()
+  {
+    std::unique_lock<std::mutex> aLock(myMutex);
+    myCondition.wait(aLock, [this] { return myFlag.load(); });
+  }
 
   //! Wait for signal requested time.
   //! @param theTimeMilliseconds wait limit in milliseconds
   //! @return true if get event
-  Standard_EXPORT bool Wait(int theTimeMilliseconds);
+  bool Wait(int theTimeMilliseconds)
+  {
+    std::unique_lock<std::mutex> aLock(myMutex);
+    auto                         aTimeout = std::chrono::milliseconds(theTimeMilliseconds);
+    return myCondition.wait_for(aLock, aTimeout, [this] { return myFlag.load(); });
+  }
 
   //! Do not wait for signal - just test it state.
   //! @return true if get event
-  Standard_EXPORT bool Check();
+  bool Check() { return myFlag.load(); }
 
   //! Method perform two steps at-once - reset the event object
   //! and returns true if it was in signaling state.
   //! @return true if event object was in signaling state.
-  Standard_EXPORT bool CheckReset();
-
-#ifdef _WIN32
-  //! Access native HANDLE to Event object.
-  void* getHandle() const { return myEvent; }
-#endif
+  bool CheckReset()
+  {
+    std::lock_guard<std::mutex> aLock(myMutex);
+    bool                        wasSignalled = myFlag.load();
+    myFlag                                   = false;
+    return wasSignalled;
+  }
 
 private:
   //! This method should not be called (prohibited).
@@ -71,13 +97,9 @@ private:
   Standard_Condition& operator=(const Standard_Condition& theCopy);
 
 private:
-#ifdef _WIN32
-  void* myEvent;
-#else
-  pthread_mutex_t myMutex;
-  pthread_cond_t  myCond;
-  bool            myFlag;
-#endif
+  std::mutex              myMutex;
+  std::condition_variable myCondition;
+  std::atomic<bool>       myFlag;
 };
 
 #endif // _Standard_Condition_HeaderFile
