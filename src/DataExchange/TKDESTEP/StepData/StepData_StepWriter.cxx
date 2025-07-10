@@ -828,122 +828,67 @@ void StepData_StepWriter::Send(const Standard_Real val)
 void StepData_StepWriter::Send(const TCollection_AsciiString& val)
 {
   AddParam();
-  TCollection_AsciiString aval(val); // on duplique pour trafiquer si besoin
-  Standard_Integer        nb = aval.Length();
-  Standard_Integer        nn = nb;
-  aval.AssignCat('\''); // comme cela, Insert(i+1) est OK
+  // Use helper function to clean text while preserving control directives
+  TCollection_AsciiString aVal = CleanTextForSend(val);
+  Standard_Integer        aNn  = aVal.Length();
 
-  //    Conversion des Caracteres speciaux
-  for (Standard_Integer i = nb; i > 0; i--)
-  {
-    char uncar = aval.Value(i);
-    if (uncar == '\'')
-    {
-      aval.Insert(i + 1, '\'');
-      nn++;
-      continue;
-    }
-    if (uncar == '\\')
-    {
-      aval.Insert(i + 1, '\\');
-      nn++;
-      continue;
-    }
-    if (uncar == '\n')
-    {
-      aval.SetValue(i, '\\');
-      aval.Insert(i + 1, '\\');
-      aval.Insert(i + 1, 'N');
-      nn += 2;
-      continue;
-    }
-    if (uncar == '\t')
-    {
-      aval.SetValue(i, '\\');
-      aval.Insert(i + 1, '\\');
-      aval.Insert(i + 1, 'T');
-      nn += 2;
-      continue;
-    }
-  }
+  // Add surrounding quotes
+  aVal.Insert(1, '\'');
+  aVal.AssignCat('\'');
+  aNn += 2;
+
   //: i2 abv 31 Aug 98: ProSTEP TR9: avoid wrapping text or do it at spaces
-  aval.Insert(1, '\'');
-  nn += 2;
-
-  //: i2  AddString ("\'",1); nn ++;
 
   //    Attention au depassement des 72 caracteres
-  if (thecurr.CanGet(nn))
-    AddString(aval, 0);
+  if (thecurr.CanGet(aNn))
+    AddString(aVal, 0);
   //: i2
   else
   {
     thefile->Append(thecurr.Moved());
-    Standard_Integer indst = thelevel * 2;
+    Standard_Integer anIndst = thelevel * 2;
     if (theindent)
-      indst += theindval;
-    if (indst + nn <= StepLong)
-      thecurr.SetInitial(indst);
+      anIndst += theindval;
+    if (anIndst + aNn <= StepLong)
+      thecurr.SetInitial(anIndst);
     else
       thecurr.SetInitial(0);
-    if (thecurr.CanGet(nn))
-      AddString(aval, 0);
+    if (thecurr.CanGet(aNn))
+      AddString(aVal, 0);
     else
     {
-      while (nn > 0)
+      while (aNn > 0)
       {
-        if (nn <= StepLong)
+        if (aNn <= StepLong)
         {
-          thecurr.Add(aval); // Ca yet, on a tout epuise
+          thecurr.Add(aVal); // Ca yet, on a tout epuise
           thecurr.FreezeInitial();
           break;
         }
-        Standard_Integer stop = StepLong; // position of last separator
-        for (; stop > 0 && aval.Value(stop) != ' '; stop--)
+        Standard_Integer aStop = StepLong; // position of last separator
+        for (; aStop > 0 && aVal.Value(aStop) != ' '; aStop--)
           ;
-        if (!stop)
+        if (!aStop)
         {
-          stop = StepLong;
-          for (; stop > 0 && aval.Value(stop) != '\\'; stop--)
+          aStop = StepLong;
+          for (; aStop > 0 && aVal.Value(aStop) != '\\'; aStop--)
             ;
-          if (!stop)
+          if (!aStop)
           {
-            stop = StepLong;
-            for (; stop > 0 && aval.Value(stop) != '_'; stop--)
+            aStop = StepLong;
+            for (; aStop > 0 && aVal.Value(aStop) != '_'; aStop--)
               ;
-            if (!stop)
-              stop = StepLong;
+            if (!aStop)
+              aStop = StepLong;
           }
         }
-        TCollection_AsciiString bval = aval.Split(stop);
-        thefile->Append(new TCollection_HAsciiString(aval));
-        aval = bval;
-        nn -= stop;
+        TCollection_AsciiString aBval = aVal.Split(aStop);
+        thefile->Append(new TCollection_HAsciiString(aVal));
+        aVal = aBval;
+        aNn -= aStop;
       }
     }
   }
-  /* //:i2
-    else {
-      //    Il faut tronconner ...  lignes limitees a 72 caracteres (StepLong)
-      Standard_Integer ncurr = thecurr.Length();
-      Standard_Integer nbuff = StepLong - ncurr;
-      thecurr.Add (aval.ToCString(),nbuff);
-      thefile->Append(thecurr.Moved());
-      aval.Remove(1,nbuff);
-      nn -= nbuff;
-      while (nn > 0) {
-        if (nn <= StepLong) {
-      thecurr.Add (aval);  // Ca yet, on a tout epuise
-      thecurr.FreezeInitial();
-      break;
-        }
-        TCollection_AsciiString bval = aval.Split(StepLong);
-        thefile->Append(new TCollection_HAsciiString(bval));
-        nn -= StepLong;
-      }
-    }
-  //:i2 */
-  //  thecurr.Add('\'');   deja mis dans aval au debut
 }
 
 //=================================================================================================
@@ -1213,4 +1158,127 @@ Standard_Boolean StepData_StepWriter::Print(Standard_OStream& S)
   isGood = (S && S.good());
 
   return isGood;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
+  const TCollection_AsciiString& theText)
+{
+  TCollection_AsciiString aResult;
+  Standard_Integer        aNb = theText.Length();
+
+  // Process characters from beginning to end
+  for (Standard_Integer anI = 1; anI <= aNb; anI++)
+  {
+    char anUncar = theText.Value(anI);
+
+    // Check if we're at the start of a control directive
+    Standard_Boolean anIsDirective    = Standard_False;
+    Standard_Integer aDirectiveLength = 0;
+
+    if (anUncar == '\\' && anI <= aNb)
+    {
+
+      // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
+      if (anI + 3 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 3) == '\\')
+      {
+        char aThirdChar = theText.Value(anI + 2);
+
+        // \X2, \X4, \X0 patterns - special control sequences
+        if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
+        {
+          anIsDirective    = Standard_True;
+          aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\
+
+          // For \X2 and \X4, find the terminating \X0 sequence
+          if (aThirdChar == '2' || aThirdChar == '4')
+          {
+            Standard_Integer aJ = anI + 4;
+            while (aJ <= aNb - 3)
+            {
+              if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
+                  && theText.Value(aJ + 2) == '0' && theText.Value(aJ + 3) == '\\')
+              {
+                aDirectiveLength = (aJ + 4) - anI; // Include the \X0 sequence
+                break;
+              }
+              aJ++;
+            }
+          }
+        }
+      }
+      // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
+      else if (anI + 4 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 4) == '\\')
+      {
+        char aThirdChar  = theText.Value(anI + 2);
+        char aFourthChar = theText.Value(anI + 3);
+
+        // Regular \X{HH}\ pattern - check for two hex characters
+        Standard_Boolean aThirdIsHex =
+          ((aThirdChar >= '0' && aThirdChar <= '9') || (aThirdChar >= 'A' && aThirdChar <= 'F')
+           || (aThirdChar >= 'a' && aThirdChar <= 'f'));
+        Standard_Boolean aFourthIsHex =
+          ((aFourthChar >= '0' && aFourthChar <= '9') || (aFourthChar >= 'A' && aFourthChar <= 'F')
+           || (aFourthChar >= 'a' && aFourthChar <= 'f'));
+        if (aThirdIsHex && aFourthIsHex)
+        {
+          anIsDirective    = Standard_True;
+          aDirectiveLength = 5; // Control directive with two hex chars
+        }
+      }
+      // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
+      else if (anI + 2 <= aNb && theText.Value(anI + 2) == '\\')
+      {
+        char aSecondChar = theText.Value(anI + 1);
+        if (aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T')
+        {
+          anIsDirective    = Standard_True;
+          aDirectiveLength = 3; // Simple directive pattern
+        }
+      }
+      // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
+      else if (anI + 3 <= aNb && theText.Value(anI + 1) == 'P' && theText.Value(anI + 3) == '\\')
+      {
+        anIsDirective    = Standard_True;
+        aDirectiveLength = 4; // P directive with parameter
+      }
+    }
+
+    if (anIsDirective)
+    {
+      // Copy the entire directive as-is
+      for (Standard_Integer aJ = 0; aJ < aDirectiveLength; aJ++)
+      {
+        aResult += theText.Value(anI + aJ);
+      }
+      anI += aDirectiveLength - 1; // Move past directive (loop will increment by 1)
+    }
+    else
+    {
+      // Process non-directive characters
+      if (anUncar == '\'')
+      {
+        aResult += "''"; // Double the quote
+      }
+      else if (anUncar == '\\')
+      {
+        aResult += "\\\\"; // Double the backslash
+      }
+      else if (anUncar == '\n')
+      {
+        aResult += "\\N\\"; // Convert to directive
+      }
+      else if (anUncar == '\t')
+      {
+        aResult += "\\T\\"; // Convert to directive
+      }
+      else
+      {
+        aResult += anUncar; // Copy as-is
+      }
+    }
+  }
+
+  return aResult;
 }
