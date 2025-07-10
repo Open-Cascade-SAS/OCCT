@@ -58,6 +58,8 @@
 #include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ShapeAnalysis.hxx>
@@ -78,36 +80,719 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transi
 
 #define NCONTROL 23
 
-static void AdjustSecondPointToFirstPoint(const gp_Pnt2d&             theFirstPoint,
-                                          gp_Pnt2d&                   theSecondPoint,
-                                          const Handle(Geom_Surface)& theSurf)
+namespace
 {
-  if (theSurf->IsUPeriodic())
+
+//=================================================================================================
+// function : adjustSecondToFirstPoint
+// purpose  : Adjust second point to first point considering surface periodicity
+//=================================================================================================
+void adjustSecondToFirstPoint(const gp_Pnt2d&             theFirstPoint,
+                              gp_Pnt2d&                   theSecondPoint,
+                              const Handle(Geom_Surface)& theSurface)
+{
+  if (theSurface->IsUPeriodic())
   {
-    Standard_Real UPeriod = theSurf->UPeriod();
-    Standard_Real NewU    = ElCLib::InPeriod(theSecondPoint.X(),
-                                          theFirstPoint.X() - UPeriod / 2,
-                                          theFirstPoint.X() + UPeriod / 2);
-    theSecondPoint.SetX(NewU);
+    const Standard_Real anUPeriod = theSurface->UPeriod();
+    const Standard_Real aNewU     = ElCLib::InPeriod(theSecondPoint.X(),
+                                                 theFirstPoint.X() - anUPeriod / 2,
+                                                 theFirstPoint.X() + anUPeriod / 2);
+    theSecondPoint.SetX(aNewU);
   }
-  if (theSurf->IsVPeriodic())
+  if (theSurface->IsVPeriodic())
   {
-    Standard_Real VPeriod = theSurf->VPeriod();
-    Standard_Real NewV    = ElCLib::InPeriod(theSecondPoint.Y(),
-                                          theFirstPoint.Y() - VPeriod / 2,
-                                          theFirstPoint.Y() + VPeriod / 2);
-    theSecondPoint.SetY(NewV);
+    const Standard_Real aVPeriod = theSurface->VPeriod();
+    const Standard_Real aNewV    = ElCLib::InPeriod(theSecondPoint.Y(),
+                                                 theFirstPoint.Y() - aVPeriod / 2,
+                                                 theFirstPoint.Y() + aVPeriod / 2);
+    theSecondPoint.SetY(aNewV);
   }
 }
+
+//=================================================================================================
+// function : getContainerValue
+// purpose  : Get value from container using 1-based indexing
+//=================================================================================================
+template <typename T>
+const typename T::value_type& getContainerValue(const T&               theSequence,
+                                                const Standard_Integer theIndex)
+{
+  return theSequence.Value(theIndex - 1); // Sequence is 0-based, but we use 1-based index
+}
+
+//=================================================================================================
+// function : changeContainerValue
+// purpose  : Change value in container using 1-based indexing
+//=================================================================================================
+template <typename T>
+typename T::value_type& changeContainerValue(T& theSequence, const Standard_Integer theIndex)
+{
+  return theSequence.ChangeValue(theIndex - 1); // Sequence is 0-based, but we use 1-based index
+}
+
+//=================================================================================================
+// function : setContainerValue
+// purpose  : Set value in container using 1-based indexing
+//=================================================================================================
+template <typename T>
+void setContainerValue(T&                            theSequence,
+                       const Standard_Integer        theIndex,
+                       const typename T::value_type& theValue)
+{
+  theSequence.SetValue(theIndex - 1, theValue); // Sequence is 0-based, but we use 1-based index
+}
+
+//=================================================================================================
+// function : fillPointsAndParams
+// purpose  : Fill points and parameters arrays from curve adapter
+//=================================================================================================
+void fillPointsAndParams(const Handle(GeomAdaptor_Curve)&               theCurveAdaptor,
+                         const NCollection_DynamicArray<Standard_Real>& theFinalParams,
+                         NCollection_DynamicArray<gp_Pnt>&              thePoints,
+                         NCollection_DynamicArray<Standard_Real>&       theParams)
+{
+  // Generate points at all final parameters
+  for (NCollection_DynamicArray<Standard_Real>::Iterator anIterator(theFinalParams);
+       anIterator.More();
+       anIterator.Next())
+  {
+    const Standard_Real aParam = anIterator.Value();
+    gp_Pnt              aPoint;
+    theCurveAdaptor->D0(aParam, aPoint);
+    thePoints.Append(aPoint);
+    theParams.Append(aParam);
+  }
+}
+
+//=================================================================================================
+// function : generateGeneralPoints
+// purpose  : Generate parameters and points for general curves using uniform distribution
+//=================================================================================================
+Standard_Integer generateGeneralPoints(const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
+                                       const Standard_Real                      theFirst,
+                                       const Standard_Real                      theLast,
+                                       const Standard_Integer                   theNbControlPoints,
+                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
+                                       NCollection_DynamicArray<Standard_Real>& theParams)
+{
+  // For non-B-spline curves, use uniform distribution
+  NCollection_DynamicArray<Standard_Real> aFinalParams;
+  const Standard_Real aDeltaParam = (theLast - theFirst) / (theNbControlPoints - 1);
+
+  for (Standard_Integer i = 1; i <= theNbControlPoints; ++i)
+  {
+    Standard_Real aParam;
+    if (i == 1)
+      aParam = theFirst;
+    else if (i == theNbControlPoints)
+      aParam = theLast;
+    else
+      aParam = theFirst + (i - 1) * aDeltaParam;
+
+    aFinalParams.Append(aParam);
+  }
+
+  // Fill points and parameters
+  fillPointsAndParams(theCurveAdaptor, aFinalParams, thePoints, theParams);
+
+  return theNbControlPoints;
+}
+
+//=================================================================================================
+// function : generateBSplinePoints
+// purpose  : Generate parameters for B-spline curves based on knot distribution
+//=================================================================================================
+Standard_Integer generateBSplinePoints(const Handle(Geom_BSplineCurve)&         theBSpline,
+                                       const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
+                                       const Standard_Real                      theFirst,
+                                       const Standard_Real                      theLast,
+                                       const Standard_Integer                   theNbControlPoints,
+                                       NCollection_DynamicArray<gp_Pnt>&        thePoints,
+                                       NCollection_DynamicArray<Standard_Real>& theParams)
+{
+  Standard_Integer aUsedKnots = 0;
+  for (Standard_Integer i = 1; i < theBSpline->NbKnots(); i++)
+  {
+    if (theBSpline->Knot(i + 1) > theFirst && theBSpline->Knot(i) < theLast)
+    {
+      aUsedKnots++;
+    }
+  }
+  Standard_Integer aMinPnt = aUsedKnots * (theBSpline->Degree() + 1);
+  Standard_Integer aNbPini = theNbControlPoints;
+  while (aNbPini < aMinPnt)
+  {
+    aNbPini += NCONTROL - 1;
+  }
+  return generateGeneralPoints(theCurveAdaptor, theFirst, theLast, aNbPini, thePoints, theParams);
+}
+
+//=================================================================================================
+// function : generateCurvePoints
+// purpose  : Main function to generate points and parameters for any curve type
+//=================================================================================================
+Standard_Integer generateCurvePoints(const Handle(GeomAdaptor_Curve)&         theCurveAdaptor,
+                                     const Handle(Geom_Curve)&                theCurve,
+                                     const Standard_Real                      theFirst,
+                                     const Standard_Real                      theLast,
+                                     const Standard_Integer                   theNbControlPoints,
+                                     NCollection_DynamicArray<gp_Pnt>&        thePoints,
+                                     NCollection_DynamicArray<Standard_Real>& theParams)
+{
+  // Check if it's a B-spline curve
+  Handle(Geom_BSplineCurve) aBSpline;
+  if (theCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
+    Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
+  }
+  else
+  {
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+  }
+
+  if (!aBSpline.IsNull())
+  {
+    // Use B-spline specialized function
+    return generateBSplinePoints(aBSpline,
+                                 theCurveAdaptor,
+                                 theFirst,
+                                 theLast,
+                                 theNbControlPoints,
+                                 thePoints,
+                                 theParams);
+  }
+  else
+  {
+    // Use general curve function
+    return generateGeneralPoints(theCurveAdaptor,
+                                 theFirst,
+                                 theLast,
+                                 theNbControlPoints,
+                                 thePoints,
+                                 theParams);
+  }
+}
+
+//=================================================================================================
+// function : isBSplineCurveInvalid
+// purpose  : Check if B-spline curve has problematic knot spacing that could cause issues
+//=================================================================================================
+bool isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
+                           const Standard_Real       theFirst,
+                           const Standard_Real       theLast)
+{
+  if (theCurve.IsNull())
+    return Standard_False;
+
+  // Check if it's a B-spline curve (directly or through trimmed curve)
+  Handle(Geom_BSplineCurve) aBSpline;
+  if (theCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
+    Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
+  }
+  else
+  {
+    aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+  }
+
+  if (aBSpline.IsNull())
+    return Standard_False; // Not a B-spline, so no knot issues
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    const TColStd_Array1OfReal& aKnots = aBSpline->Knots();
+
+    if (aKnots.Length() < 10)
+      return Standard_False; // Too few knots to have problems
+
+    // Calculate automatic tolerance based on knot distribution
+    std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
+    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+      if (anInterval > Precision::Confusion())
+      {
+        anIntervals.push_back(anInterval);
+      }
+    }
+
+    if (anIntervals.empty())
+      return Standard_True; // All intervals are zero - definitely problematic
+
+    // Sort intervals to find median
+    std::sort(anIntervals.begin(), anIntervals.end());
+
+    // Calculate median interval
+    Standard_Real aMedianInterval;
+    const size_t  aMid = anIntervals.size() / 2;
+    if (anIntervals.size() % 2 == 0)
+    {
+      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
+    }
+    else
+    {
+      aMedianInterval = anIntervals[aMid];
+    }
+
+    // Tolerance is a fraction of median interval
+    // If an interval is less than 1/1000 of median, it's considered problematic
+    Standard_Real aTolerance = aMedianInterval * 1e-3;
+    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+
+    // Check for problematic intervals
+    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+      {
+        return Standard_True; // Found problematic knot spacing
+      }
+    }
+
+    // Additional check: look for knots that are within the parameter range
+    // and check if any are too close relative to the working range
+    const Standard_Real aWorkingRange = theLast - theFirst;
+    if (aWorkingRange > Precision::Confusion())
+    {
+      const Standard_Real aRelativeTolerance = aWorkingRange * 1e-6; // 0.0001% of range
+
+      for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
+
+        // Check if knots are in working range and too close
+        if (aKnots(i - 1) >= theFirst - Precision::Confusion()
+            && aKnots(i) <= theLast + Precision::Confusion() && anInterval > Precision::Confusion()
+            && anInterval < aRelativeTolerance)
+        {
+          return Standard_True;
+        }
+      }
+    }
+
+    return Standard_False; // No problems detected
+  }
+  catch (Standard_Failure const&)
+  {
+    return Standard_True; // If we can't analyze it, assume it's problematic
+  }
+}
+
+//=================================================================================================
+// function : RebuildBSpline
+// purpose  : Rebuild B-spline curve with fixed knot spacing while preserving geometry
+//=================================================================================================
+Handle(Geom_BSplineCurve) RebuildBSpline(const Handle(Geom_BSplineCurve)& theC3d)
+{
+  // Extract B-spline curve
+  Handle(Geom_BSplineCurve) aBSpline = theC3d;
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    // Get original curve data
+    const Standard_Integer         aDegree         = aBSpline->Degree();
+    const TColgp_Array1OfPnt&      aPoles          = aBSpline->Poles();
+    const TColStd_Array1OfReal&    anOriginalKnots = aBSpline->Knots();
+    const TColStd_Array1OfInteger& aMults          = aBSpline->Multiplicities();
+    const Standard_Integer         aNbKnots        = anOriginalKnots.Length();
+
+    if (aNbKnots < 2)
+    {
+      return nullptr; // Nothing to fix
+    }
+
+    // Calculate tolerance for detecting problematic knots
+    std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+      if (anInterval > Precision::Confusion())
+      {
+        anIntervals.push_back(anInterval);
+      }
+    }
+
+    if (anIntervals.empty())
+    {
+      return nullptr; // No valid intervals, return original
+    }
+
+    // Sort intervals to find median and calculate statistics
+    std::sort(anIntervals.begin(), anIntervals.end());
+
+    // Calculate median interval for reference
+    Standard_Real aMedianInterval;
+    const size_t  aMid = anIntervals.size() / 2;
+    if (anIntervals.size() % 2 == 0)
+    {
+      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
+    }
+    else
+    {
+      aMedianInterval = anIntervals[aMid];
+    }
+
+    // Calculate average of "normal" intervals (exclude smallest 25%)
+    Standard_Real    aTotalNormalInterval = 0.0;
+    Standard_Integer aNormalCount         = 0;
+    const size_t     aQuarter             = anIntervals.size() / 4;
+    for (size_t i = aQuarter; i < anIntervals.size(); i++)
+    {
+      aTotalNormalInterval += anIntervals[i];
+      aNormalCount++;
+    }
+    Standard_Real anAverageNormalInterval =
+      (aNormalCount > 0) ? (aTotalNormalInterval / aNormalCount) : aMedianInterval;
+
+    // More aggressive tolerance - anything less than 10% of median is problematic
+    Standard_Real aTolerance = aMedianInterval * 0.1;
+    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
+
+    // Check if we actually have problematic knots
+    Standard_Boolean hasProblematicKnots = Standard_False;
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+      {
+        hasProblematicKnots = Standard_True;
+        break;
+      }
+    }
+
+    if (!hasProblematicKnots)
+    {
+      return aBSpline; // No problems found
+    }
+
+    // Strategy: Use much more aggressive spacing adjustments
+    // Minimum spacing should be a significant fraction of normal intervals
+    Standard_Real aMinSpacing = Max(anAverageNormalInterval * 0.5, aMedianInterval * 0.3);
+    aMinSpacing               = Max(aMinSpacing, Precision::Confusion() * 10000);
+
+    // Create new knot vector with aggressive redistribution
+    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
+
+    // Method 1: Try progressive adjustment with large minimum spacing
+    Standard_Boolean useProgressiveMethod = Standard_True;
+
+    // Always keep first knot
+    aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
+
+    // Process subsequent knots with aggressive spacing
+    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    {
+      const Standard_Real aPrevKnot          = aNewKnots(i - 1);
+      const Standard_Real aCurrKnot          = anOriginalKnots(i);
+      const Standard_Real anOriginalInterval = aCurrKnot - anOriginalKnots(i - 1);
+
+      if (anOriginalInterval > Precision::Confusion() && anOriginalInterval < aTolerance)
+      {
+        // This is a problematic knot - apply aggressive adjustment
+        // Use larger of: minimum spacing or double the original interval
+        Standard_Real aNewKnot = aPrevKnot + Max(aMinSpacing, anOriginalInterval * 2.0);
+        aNewKnots(i)           = aNewKnot;
+      }
+      else
+      {
+        // Good knot - but still ensure minimum spacing
+        Standard_Real aNewKnot = Max(aCurrKnot, aPrevKnot + aMinSpacing);
+        aNewKnots(i)           = aNewKnot;
+      }
+    }
+
+    // Check if the progressive method created a knot sequence that extends beyond original range
+    Standard_Real aOriginalRange =
+      anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
+    Standard_Real aNewRange = aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
+
+    if (aNewRange > aOriginalRange * 1.5)
+    {
+      // If we've extended too much, use scaling approach
+      useProgressiveMethod = Standard_False;
+    }
+    else
+    {
+      // Check if our progressive knot vector still has problematic spacing
+      for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = aNewKnots(i) - aNewKnots(i - 1);
+        if (anInterval < aMinSpacing * 0.8)
+        {
+          useProgressiveMethod = Standard_False;
+          break;
+        }
+      }
+    }
+
+    if (!useProgressiveMethod)
+    {
+      // Method 2: Intelligent redistribution that preserves overall range
+      // but ensures proper spacing
+
+      // Count problematic knots to determine redistribution strategy
+      Standard_Integer aProblematicCount = 0;
+      for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+        if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+        {
+          aProblematicCount++;
+        }
+      }
+
+      if (aProblematicCount < aNbKnots / 3)
+      {
+        // Method 2a: Selective redistribution - only fix problematic areas
+        aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
+
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real aPrevOrigKnot  = anOriginalKnots(i - 1);
+          const Standard_Real aCurrOrigKnot  = anOriginalKnots(i);
+          const Standard_Real anOrigInterval = aCurrOrigKnot - aPrevOrigKnot;
+
+          if (anOrigInterval > Precision::Confusion() && anOrigInterval < aTolerance)
+          {
+            // Problematic knot - use aggressive expansion
+            const Standard_Real aTargetInterval = Max(aMinSpacing, anAverageNormalInterval * 0.7);
+            aNewKnots(i)                        = aNewKnots(i - 1) + aTargetInterval;
+          }
+          else
+          {
+            // Good knot - try to preserve but ensure minimum spacing
+            Standard_Real aDesiredKnot = aCurrOrigKnot;
+
+            // Adjust if it violates minimum spacing
+            if (aDesiredKnot - aNewKnots(i - 1) < aMinSpacing * 0.8)
+            {
+              aDesiredKnot = aNewKnots(i - 1) + aMinSpacing;
+            }
+
+            aNewKnots(i) = aDesiredKnot;
+          }
+        }
+
+        // Scale to fit original range if needed
+        Standard_Real aCurrentNewRange =
+          aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
+        if (aCurrentNewRange > aOriginalRange * 1.2)
+        {
+          Standard_Real aScale     = aOriginalRange / aCurrentNewRange;
+          Standard_Real aFirstKnot = aNewKnots(aNewKnots.Lower());
+
+          for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
+          {
+            Standard_Real anOffset = aNewKnots(i) - aFirstKnot;
+            aNewKnots(i)           = aFirstKnot + anOffset * aScale;
+          }
+        }
+      }
+      else
+      {
+        // Method 2b: Many problematic knots - use smart uniform distribution
+        // Create zones: problematic areas get more spacing
+
+        const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
+        const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
+
+        // Calculate total "weight" - problematic intervals get higher weight
+        Standard_Real aTotalWeight = 0.0;
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+          if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+          {
+            aTotalWeight += 3.0; // Problematic intervals get triple weight
+          }
+          else
+          {
+            aTotalWeight += 1.0; // Normal intervals get unit weight
+          }
+        }
+
+        // Distribute range according to weights
+        aNewKnots(anOriginalKnots.Lower()) = aFirstKnot;
+        Standard_Real aCurrentPos          = aFirstKnot;
+        Standard_Real aUnitSpacing         = aOriginalRange / aTotalWeight;
+
+        for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+        {
+          const Standard_Real anOrigInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
+          Standard_Real       aStepSize;
+
+          if (anOrigInterval > Precision::Confusion() && anOrigInterval < aTolerance)
+          {
+            aStepSize = aUnitSpacing * 3.0; // Triple spacing for problematic areas
+          }
+          else
+          {
+            aStepSize = aUnitSpacing * 1.0; // Normal spacing
+          }
+
+          aCurrentPos += aStepSize;
+          aNewKnots(i) = aCurrentPos;
+        }
+
+        // Ensure last knot matches exactly
+        aNewKnots(aNewKnots.Upper()) = aLastKnot;
+      }
+    }
+
+    // Create the new curve with fixed knots
+    Handle(Geom_BSplineCurve) aNewBSpline;
+
+    if (aBSpline->IsRational())
+    {
+      const TColStd_Array1OfReal* aWeights = aBSpline->Weights();
+      aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
+    }
+    else
+    {
+      aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
+    }
+
+    // Validation: check that we actually improved the knot spacing
+    Standard_Boolean isImproved      = Standard_True;
+    Standard_Real    aMinNewInterval = RealLast();
+
+    for (Standard_Integer i = aNewKnots.Lower() + 1; i <= aNewKnots.Upper(); i++)
+    {
+      const Standard_Real anInterval = aNewKnots(i) - aNewKnots(i - 1);
+      if (anInterval < aMinNewInterval)
+      {
+        aMinNewInterval = anInterval;
+      }
+
+      // Check if we still have very small intervals
+      if (anInterval < aTolerance * 2.0)
+      {
+        isImproved = Standard_False;
+      }
+    }
+
+    if (!isImproved)
+    {
+      // Last resort: force uniform distribution
+      const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
+      const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
+
+      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+      {
+        const Standard_Real t =
+          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
+        aNewKnots(i) = aFirstKnot + t * (aLastKnot - aFirstKnot);
+      }
+
+      // Recreate curve with uniform knots
+      if (aBSpline->IsRational())
+      {
+        const TColStd_Array1OfReal* aWeights = aBSpline->Weights();
+        aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
+      }
+      else
+      {
+        aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
+      }
+    }
+
+    return aNewBSpline;
+  }
+  catch (Standard_Failure const&)
+  {
+    // If rebuilding fails, return original curve
+    return nullptr;
+  }
+}
+
+//=================================================================================================
+
+gp_Pnt2d ProjectPointOnSurface(const gp_Pnt&                        thePnt,
+                               const Handle(ShapeAnalysis_Surface)& theSurf,
+                               const Standard_Real                  thePrecision)
+{
+  return theSurf->ValueOfUV(thePnt, thePrecision);
+}
+
+//=================================================================================================
+
+// Helper function to project a point onto a surface using cache for optimization
+static gp_Pnt2d ProjectPointWithCache(const gp_Pnt&                        thePoint,
+                                      const Handle(ShapeAnalysis_Surface)& theSurf,
+                                      const Standard_Real                  theTol,
+                                      Standard_Real&                       theTol2,
+                                      const gp_Pnt*                        theCache3d,
+                                      const gp_Pnt2d*                      theCache2d,
+                                      const Standard_Integer               theNbCache,
+                                      Standard_Boolean&                    theIsFromCache,
+                                      Standard_Integer&                    theSavedPointNum,
+                                      gp_Pnt2d&                            theSavedPoint,
+                                      const Standard_Integer               thePointIndex,
+                                      Standard_Boolean&                    theIsFound)
+{
+  gp_Pnt2d aResult;
+  theIsFound = Standard_False;
+
+  // First try with stricter tolerance if requested
+  for (Standard_Integer j = 0; j < theNbCache; j++)
+  {
+    if (theCache3d[j].SquareDistance(thePoint) < Min(Precision::SquareConfusion(), theTol2))
+    {
+      // If found with strict tolerance, use cached point directly
+      aResult    = theCache2d[j];
+      theIsFound = Standard_True;
+      return aResult;
+    }
+  }
+
+  // Try to find the point in cache with normal tolerance
+  for (Standard_Integer j = 0; j < theNbCache; j++)
+  {
+    if (theCache3d[j].SquareDistance(thePoint) < theTol2)
+    {
+      // Use NextValueOfUV for refinement
+      aResult          = theSurf->NextValueOfUV(theCache2d[j], thePoint, theTol, theTol);
+      theSavedPointNum = thePointIndex;
+      theSavedPoint    = theCache2d[j];
+
+      if (thePointIndex == 0)
+        theIsFromCache = Standard_True;
+
+      theIsFound = Standard_True;
+      break;
+    }
+  }
+
+  // If point not found in cache, project it
+  if (!theIsFound)
+  {
+    aResult = ProjectPointOnSurface(thePoint, theSurf, theTol);
+  }
+
+  // Update tolerance based on gap
+  Standard_Real aDist    = theSurf->Gap();
+  Standard_Real aCurDist = aDist * aDist;
+  if (theTol2 < aCurDist)
+    theTol2 = aCurDist;
+
+  return aResult;
+}
+
+} // namespace
 
 //=================================================================================================
 
 ShapeConstruct_ProjectCurveOnSurface::ShapeConstruct_ProjectCurveOnSurface()
 {
   myPreci           = Precision::Confusion();
-  myBuild           = Standard_False;
   myAdjustOverDegen = 1; //: c0 //szv#4:S4163:12Mar99 was boolean
-  myNbCashe         = 0; //: q9
+  myNbCache         = 0; //: q9
   myStatus          = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 }
 
@@ -142,7 +827,7 @@ void ShapeConstruct_ProjectCurveOnSurface::SetSurface(const Handle(ShapeAnalysis
   if (mySurf == surf)
     return;
   mySurf    = surf;
-  myNbCashe = 0; //: q9
+  myNbCache = 0; //: q9
 }
 
 //=================================================================================================
@@ -150,13 +835,6 @@ void ShapeConstruct_ProjectCurveOnSurface::SetSurface(const Handle(ShapeAnalysis
 void ShapeConstruct_ProjectCurveOnSurface::SetPrecision(const Standard_Real preci)
 {
   myPreci = preci;
-}
-
-//=================================================================================================
-
-Standard_Boolean& ShapeConstruct_ProjectCurveOnSurface::BuildCurveMode()
-{
-  return myBuild;
 }
 
 //=================================================================================================
@@ -179,220 +857,96 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Status(
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(Handle(Geom_Curve)&   c3d,
-                                                               const Standard_Real   First,
-                                                               const Standard_Real   Last,
-                                                               Handle(Geom2d_Curve)& c2d,
-                                                               const Standard_Real   TolFirst,
-                                                               const Standard_Real   TolLast)
+Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom_Curve)& theC3d,
+                                                               const Standard_Real       First,
+                                                               const Standard_Real       Last,
+                                                               Handle(Geom2d_Curve)&     c2d,
+                                                               const Standard_Real       TolFirst,
+                                                               const Standard_Real       TolLast)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   // Standard_Boolean OK = Standard_True; //szv#4:S4163:12Mar99 not needed
 
-  if (mySurf.IsNull())
+  if (mySurf.IsNull() || theC3d.IsNull())
   {
-    c2d.Nullify();
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
     return Standard_False;
   }
+
   //  Projection Analytique
-  Handle(Geom_Curve) crv3dtrim = c3d;
-  if (!c3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
-    crv3dtrim = new Geom_TrimmedCurve(c3d, First, Last);
-  c2d = ProjectAnalytic(crv3dtrim);
+  if (theC3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
+  {
+    c2d = ProjectAnalytic(theC3d);
+  }
+  else
+  {
+    c2d = ProjectAnalytic(new Geom_TrimmedCurve(theC3d, First, Last));
+  }
   if (!c2d.IsNull())
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
     return Standard_True;
   }
 
-  //  Projection par approximation
-
-  // discretize the 3d curve
-
-  Standard_Integer nbrPnt;
-
-  //   $$$$    :92 abv 28 Jan 98   see PRO10107, big BSplineCurve C0
-  Standard_Integer nbPini = NCONTROL; // as in BRepCheck_Edge (RLN/Nijni)
-  // 20; // number of points for interpolation, should be "parametric dependent"
-
-  //: 92 abv 28 Jan 98: if curve is BSpline with many intervals,
-  // increase number of points to provide at least Degree()+1 points per interval
-  Handle(Geom_BSplineCurve) bspl;
-  if (c3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  Handle(Geom_Curve) aCurve = theC3d;
+  Standard_Real      aFirst = First;
+  Standard_Real      aLast  = Last;
+  if (isBSplineCurveInvalid(aCurve, aFirst, aLast))
   {
-    Handle(Geom_TrimmedCurve) ctrim = Handle(Geom_TrimmedCurve)::DownCast(c3d);
-    bspl                            = Handle(Geom_BSplineCurve)::DownCast(ctrim->BasisCurve());
-  }
-  else
-    bspl = Handle(Geom_BSplineCurve)::DownCast(c3d);
-  if (!bspl.IsNull())
-  {
-    Standard_Integer nint = 0;
-    for (Standard_Integer i = 1; i < bspl->NbKnots(); i++)
+    Handle(Geom_BSplineCurve) aBSpline;
+    if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      if (bspl->Knot(i + 1) > First && bspl->Knot(i) < Last)
-        nint++;
+      Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
     }
-    Standard_Integer minPnt = nint * (bspl->Degree() + 1);
-    while (nbPini < minPnt)
-      nbPini += NCONTROL - 1;
-#ifdef OCCT_DEBUG
-    if (nbPini > NCONTROL)
-      std::cout << "Warning: number of points for projecting is " << nbPini << std::endl;
-#endif
-  }
-
-  //    $$$$    end :92 (big BSplineCurve C0)
-
-  // this number should be "parametric dependent"
-  TColgp_SequenceOfPnt                points;
-  TColStd_SequenceOfReal              params;
-  NCollection_Sequence<Standard_Real> aKnotCoeffs;
-  gp_Pnt                              p3d;
-  Standard_Integer                    iPnt;
-
-  // In case of bspline compute parametrization speed on each
-  // knot interval inside [aFirstParam, aLastParam].
-  // If quotient = (MaxSpeed / MinSpeed) >= aMaxQuotientCoeff then
-  // use PerformByProjLib algorithm.
-  if (!bspl.IsNull())
-  {
-    Standard_Real aFirstParam = First; // First parameter of current interval.
-    Standard_Real aLastParam  = Last;  // Last parameter of current interval.
-
-    // First index computation.
-    Standard_Integer anIdx = 1;
-    for (; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
+    else
     {
-      if (bspl->Knot(anIdx) > First)
-      {
-        break;
-      }
+      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
     }
-
-    GeomAdaptor_Curve aC3DAdaptor(c3d);
-    Standard_Real     aMinParSpeed = Precision::Infinite(); // Minimal parameterization speed.
-    for (; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
+    Handle(Geom_Curve) aCopy = Handle(Geom_Curve)::DownCast(aBSpline->Copy());
+    aBSpline->Segment(aFirst, aLast, Precision::PConfusion());
+    Handle(Geom_Curve) aNewBSpline = RebuildBSpline(aBSpline);
+    if (aNewBSpline.IsNull())
     {
-      // Fill current knot interval.
-      aLastParam                  = Min(Last, bspl->Knot(anIdx));
-      Standard_Integer aNbIntPnts = NCONTROL;
-      // Number of inner points is adapted according to the length of the interval
-      // to avoid a lot of calculations on small range of parameters.
-      if (anIdx > 1)
-      {
-        const Standard_Real aLenThres = 1.e-2;
-        const Standard_Real aLenRatio =
-          (aLastParam - aFirstParam) / (bspl->Knot(anIdx) - bspl->Knot(anIdx - 1));
-        if (aLenRatio < aLenThres)
-        {
-          aNbIntPnts = Standard_Integer(aLenRatio / aLenThres * aNbIntPnts);
-          if (aNbIntPnts < 2)
-            aNbIntPnts = 2;
-        }
-      }
-      Standard_Real    aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
-      Standard_Integer anIntIdx;
-      gp_Pnt           p3d1, p3d2;
-      // Start filling from first point.
-      aC3DAdaptor.D0(aFirstParam, p3d1);
-
-      Standard_Real aLength3d = 0.0;
-      for (anIntIdx = 1; anIntIdx < aNbIntPnts; anIntIdx++)
-      {
-        Standard_Real aParam = aFirstParam + aStep * anIntIdx;
-        aC3DAdaptor.D0(aParam, p3d2);
-        const Standard_Real aDist = p3d2.Distance(p3d1);
-
-        aLength3d += aDist;
-        p3d1 = p3d2;
-
-        aMinParSpeed = Min(aMinParSpeed, aDist / aStep);
-      }
-      const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
-      if (Abs(aCoeff) > gp::Resolution())
-        aKnotCoeffs.Append(aCoeff);
-      aFirstParam = aLastParam;
-    }
-
-    Standard_Real anEvenlyCoeff = 0;
-    if (aKnotCoeffs.Size() > 0)
-    {
-      anEvenlyCoeff = *std::max_element(aKnotCoeffs.begin(), aKnotCoeffs.end())
-                      / *std::min_element(aKnotCoeffs.begin(), aKnotCoeffs.end());
-    }
-
-    const Standard_Real aMaxQuotientCoeff = 1500.0;
-    if (anEvenlyCoeff > aMaxQuotientCoeff && aMinParSpeed > Precision::Confusion())
-    {
-      PerformByProjLib(c3d, First, Last, c2d);
-      // PerformByProjLib fail detection:
-      if (!c2d.IsNull())
+      if (PerformByProjLib(new GeomAdaptor_Curve(aBSpline, aFirst, aLast), c2d))
       {
         return Status(ShapeExtend_DONE);
       }
+      aNewBSpline = aCopy;
     }
-  }
-
-  Standard_Real deltaT, t;
-  deltaT = (Last - First) / (nbPini - 1);
-  nbrPnt = nbPini;
-  for (iPnt = 1; iPnt <= nbPini; iPnt++)
-  {
-    if (iPnt == 1)
-      t = First;
-    else if (iPnt == nbPini)
-      t = Last;
     else
-      t = First + (iPnt - 1) * deltaT;
-
-    c3d->D0(t, p3d);
-    points.Append(p3d);
-    params.Append(t);
+    {
+      aFirst = aNewBSpline->FirstParameter();
+      aLast  = aNewBSpline->LastParameter();
+    }
+    aCurve = aNewBSpline;
   }
+
+  Handle(GeomAdaptor_Curve) c3d = new GeomAdaptor_Curve(aCurve, aFirst, aLast);
+
+  SequenceOfPnt  points(NCONTROL);
+  SequenceOfReal params(NCONTROL);
+
+  generateCurvePoints(c3d, aCurve, aFirst, aLast, NCONTROL, points, params);
 
   //  CALCUL par approximation
-  TColgp_SequenceOfPnt2d pnt2d;
-  ApproxPCurve(nbrPnt, c3d, TolFirst, TolLast, points, params, pnt2d, c2d); // szv#4:S4163:12Mar99
-                                                                            // OK not needed
-  nbPini = points.Length();
+  SequenceOfPnt2d pnt2d;
+  ApproxPCurve(points.Length(), c3d, TolFirst, TolLast, points, params, pnt2d, c2d);
+  const Standard_Integer nbPini = points.Length();
   if (!c2d.IsNull())
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
     return Standard_True;
   } // cas particulier d iso
 
-  //  INTERPOLATION du resultat
-
-  if (myBuild)
-  {
-    Handle(TColgp_HArray1OfPnt)   thePnts   = new TColgp_HArray1OfPnt(1, nbPini);
-    Handle(TColStd_HArray1OfReal) theParams = new TColStd_HArray1OfReal(1, nbPini);
-    for (iPnt = 1; iPnt <= nbPini; iPnt++)
-    {
-      thePnts->SetValue(iPnt, points(iPnt));
-      theParams->SetValue(iPnt, params(iPnt));
-    }
-
-    Handle(Geom_Curve) newc3d = InterpolateCurve3d(nbPini, thePnts, theParams, c3d);
-    if (newc3d.IsNull())
-      myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
-    else
-    {
-      myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-      c3d = newc3d;
-    }
-  }
-
   Handle(TColgp_HArray1OfPnt2d) thePnts2d   = new TColgp_HArray1OfPnt2d(1, nbPini);
   Handle(TColStd_HArray1OfReal) theParams2d = new TColStd_HArray1OfReal(1, nbPini);
-  for (iPnt = 1; iPnt <= nbPini; iPnt++)
+  for (Standard_Integer iPnt = 1; iPnt <= nbPini; iPnt++)
   {
-    theParams2d->SetValue(iPnt, params(iPnt));
-    thePnts2d->SetValue(iPnt, pnt2d(iPnt));
+    theParams2d->SetValue(iPnt, getContainerValue(params, iPnt));
+    thePnts2d->SetValue(iPnt, getContainerValue(pnt2d, iPnt));
   }
-  c2d = InterpolatePCurve(nbPini, thePnts2d, theParams2d, c3d);
+  c2d = InterpolatePCurve(nbPini, thePnts2d, theParams2d);
 
   // Faut-il aussi reprendre la C3D ?
   myStatus |= ShapeExtend::EncodeStatus(c2d.IsNull() ? ShapeExtend_FAIL1 : ShapeExtend_DONE2);
@@ -402,13 +956,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(Handle(Geom_Curve
 //=================================================================================================
 
 Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(
-  Handle(Geom_Curve)&   c3d,
-  const Standard_Real   First,
-  const Standard_Real   Last,
-  Handle(Geom2d_Curve)& c2d,
-  const GeomAbs_Shape /*continuity*/,
-  const Standard_Integer /*maxdeg */,
-  const Standard_Integer /*nbinterval */)
+  const Handle(GeomAdaptor_Curve)& c3d,
+  Handle(Geom2d_Curve)&            c2d)
 {
   // Standard_Boolean OK = Standard_True; //szv#4:S4163:12Mar99 unused
   c2d.Nullify();
@@ -422,7 +971,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(
   {
     OCC_CATCH_SIGNALS
     Handle(GeomAdaptor_Surface) GAS = mySurf->Adaptor3d();
-    Handle(GeomAdaptor_Curve)   GAC = new GeomAdaptor_Curve(c3d, First, Last);
+    Handle(GeomAdaptor_Curve)   GAC = c3d;
     ProjLib_ProjectedCurve      Projector(GAS, GAC);
 
     switch (Projector.GetType())
@@ -645,19 +1194,19 @@ static Standard_Boolean fixPeriodictyTroubles(
 //=================================================================================================
 
 Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
-  const TColgp_SequenceOfPnt&   thepoints,
-  const TColStd_SequenceOfReal& theparams,
-  TColgp_SequenceOfPnt2d&       thePnt2ds,
-  Standard_Real                 theTol,
-  Standard_Boolean&             isRecompute,
-  Standard_Boolean&             isFromCashe) const
+  const SequenceOfPnt&  thepoints,
+  const SequenceOfReal& theparams,
+  SequenceOfPnt2d&      thePnt2d,
+  Standard_Real         theTol,
+  Standard_Boolean&     isRecompute,
+  Standard_Boolean&     isFromCache) const
 {
   Standard_Integer nb = thepoints.Length();
   gp_Pnt           aP[4];
-  aP[0] = thepoints(1);
-  aP[1] = thepoints(2);
-  aP[2] = thepoints(nb - 1);
-  aP[3] = thepoints(nb);
+  aP[0] = thepoints.First();
+  aP[1] = getContainerValue(thepoints, 2);
+  aP[2] = getContainerValue(thepoints, nb - 1);
+  aP[3] = thepoints.Last();
   gp_Pnt2d         aP2d[4];
   Standard_Integer i = 0;
 
@@ -680,29 +1229,21 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   gp_Pnt2d         aSavedPoint;
 
   // project first and last points
-  for (; i < 4; i += 3)
+  for (i = 0; i < 4; i += 3)
   {
-    Standard_Integer j;
-    for (j = 0; j < myNbCashe; j++)
-    {
-      if (myCashe3d[j].SquareDistance(aP[i]) < aTol2)
-      {
-        aP2d[i]        = mySurf->NextValueOfUV(myCashe2d[j], aP[i], theTol, theTol);
-        aSavedPointNum = i;
-        aSavedPoint    = myCashe2d[j];
-        if (i == 0)
-          isFromCashe = Standard_True;
-        break;
-      }
-    }
-
-    if (j >= myNbCashe)
-      aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
-
-    Standard_Real aDist    = mySurf->Gap();
-    Standard_Real aCurDist = aDist * aDist;
-    if (aTol2 < aDist * aDist)
-      aTol2 = aCurDist;
+    Standard_Boolean isFound = Standard_False;
+    aP2d[i]                  = ProjectPointWithCache(aP[i],
+                                    mySurf,
+                                    theTol,
+                                    aTol2,
+                                    myCache3d,
+                                    myCache2d,
+                                    myNbCache,
+                                    isFromCache,
+                                    aSavedPointNum,
+                                    aSavedPoint,
+                                    i,
+                                    isFound);
   }
 
   if (isPeriodicU || isPeriodicV)
@@ -710,25 +1251,19 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
     // Compute second and last but one c2d points.
     for (i = 1; i < 3; i++)
     {
-      Standard_Integer j;
-      for (j = 0; j < myNbCashe; j++)
-      {
-        if (myCashe3d[j].SquareDistance(aP[i]) < aTol2)
-        {
-          aP2d[i]        = mySurf->NextValueOfUV(myCashe2d[j], aP[i], theTol, theTol);
-          aSavedPointNum = i;
-          aSavedPoint    = myCashe2d[j];
-          break;
-        }
-      }
-
-      if (j >= myNbCashe)
-        aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
-
-      Standard_Real aDist    = mySurf->Gap();
-      Standard_Real aCurDist = aDist * aDist;
-      if (aTol2 < aDist * aDist)
-        aTol2 = aCurDist;
+      Standard_Boolean isFound = Standard_False;
+      aP2d[i]                  = ProjectPointWithCache(aP[i],
+                                      mySurf,
+                                      theTol,
+                                      aTol2,
+                                      myCache3d,
+                                      myCache2d,
+                                      myNbCache,
+                                      isFromCache,
+                                      aSavedPointNum,
+                                      aSavedPoint,
+                                      i,
+                                      isFound);
     }
 
     if (isPeriodicU)
@@ -758,14 +1293,14 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
     return 0;
   }
 
-  thePnt2ds.SetValue(1, aP2d[0]);
-  thePnt2ds.SetValue(nb, aP2d[3]);
+  thePnt2d.ChangeFirst() = aP2d[0];
+  thePnt2d.ChangeLast()  = aP2d[3];
 
   // Restore old tolerance in 2d space to avoid big gap cases.
   aTol2 = anOldTol2;
-  // Check that straight line in 2d with parameterisation as in 3d will fit
+  // Check that straight line in 2d with parameterization as in 3d will fit
   // fit 3d curve at all points.
-  Standard_Real dPar = theparams(nb) - theparams(1);
+  const Standard_Real dPar = theparams.Last() - theparams.First();
   if (Abs(dPar) < Precision::PConfusion())
     return 0;
   gp_Vec2d             aVec0(aP2d[0], aP2d[3]);
@@ -776,7 +1311,8 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   {
     for (i = 1; i <= nb; i++)
     {
-      gp_XY  aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
+      gp_XY aCurPoint =
+        aP2d[0].XY() + aVec.XY() * (getContainerValue(theparams, i) - theparams.First());
       gp_Pnt aCurP;
       gp_Vec aNormalVec, aDu, aDv;
       aSurf->D1(aCurPoint.X(), aCurPoint.Y(), aCurP, aDu, aDv);
@@ -787,7 +1323,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
         break;
       }
       gp_Lin        aNormalLine(aCurP, gp_Dir(aNormalVec));
-      Standard_Real aDist = aNormalLine.Distance(thepoints(i));
+      Standard_Real aDist = aNormalLine.Distance(getContainerValue(thepoints, i));
       if (aDist > theTol)
         return 0;
     }
@@ -795,26 +1331,27 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   if (!isNormalCheck)
   {
     Standard_Real aFirstPointDist =
-      mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()).SquareDistance(thepoints(1));
+      mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()).SquareDistance(thepoints.First());
     aTol2 = Max(aTol2, aTol2 * 2 * aFirstPointDist);
     for (i = 2; i < nb; i++)
     {
-      gp_XY  aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
+      gp_XY aCurPoint =
+        aP2d[0].XY() + aVec.XY() * (getContainerValue(theparams, i) - theparams.First());
       gp_Pnt aCurP;
       aSurf->D0(aCurPoint.X(), aCurPoint.Y(), aCurP);
-      Standard_Real aDist1 = aCurP.SquareDistance(thepoints(i));
+      Standard_Real aDist1 = aCurP.SquareDistance(getContainerValue(thepoints, i));
 
       if (Abs(aFirstPointDist - aDist1) > aTol2)
         return 0;
     }
   }
 
-  // check if pcurve can be represented by Geom2d_Line (parameterised by length)
+  // check if pcurve can be represented by Geom2d_Line (parameterized by length)
   Standard_Real aLLength = aVec0.Magnitude();
   if (Abs(aLLength - dPar) <= Precision::PConfusion())
   {
     gp_XY    aDirL = aVec0.XY() / aLLength;
-    gp_Pnt2d aPL(aP2d[0].XY() - theparams(1) * aDirL);
+    gp_Pnt2d aPL(aP2d[0].XY() - theparams.First() * aDirL);
     return new Geom2d_Line(aPL, gp_Dir2d(aDirL));
   }
 
@@ -824,8 +1361,8 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   aPoles(2) = aP2d[3];
 
   TColStd_Array1OfReal aKnots(1, 2);
-  aKnots(1) = theparams(1);
-  aKnots(2) = theparams(theparams.Length());
+  aKnots(1) = theparams.First();
+  aKnots(2) = theparams.Last();
 
   TColStd_Array1OfInteger aMults(1, 2);
   aMults(1)                           = 2;
@@ -837,45 +1374,43 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standard_Integer nbrPnt,
-                                                                    const Handle(Geom_Curve)& c3d,
-                                                                    const Standard_Real   TolFirst,
-                                                                    const Standard_Real   TolLast,
-                                                                    TColgp_SequenceOfPnt& points,
-                                                                    TColStd_SequenceOfReal& params,
-                                                                    TColgp_SequenceOfPnt2d& pnt2d,
-                                                                    Handle(Geom2d_Curve)&   c2d)
+Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(
+  const Standard_Integer           nbrPnt,
+  const Handle(GeomAdaptor_Curve)& c3d,
+  const Standard_Real              TolFirst,
+  const Standard_Real              TolLast,
+  SequenceOfPnt&                   points,
+  SequenceOfReal&                  params,
+  SequenceOfPnt2d&                 pnt2d,
+  Handle(Geom2d_Curve)&            c2d)
 {
   // for performance, first try to handle typical case when pcurve is straight
   Standard_Boolean isRecompute     = Standard_False;
-  Standard_Boolean isFromCasheLine = Standard_False;
-  for (Standard_Integer iseq = 1; iseq <= nbrPnt; iseq++)
-  {
-    gp_Pnt2d aP2d(0., 0.);
-    pnt2d.Append(aP2d);
-  }
-  c2d = getLine(points, params, pnt2d, myPreci, isRecompute, isFromCasheLine);
+  Standard_Boolean isFromCacheLine = Standard_False;
+  setContainerValue(pnt2d, nbrPnt, gp_Pnt2d(0., 0.)); // init all by {0, 0}
+  c2d = getLine(points, params, pnt2d, myPreci, isRecompute, isFromCacheLine);
   if (!c2d.IsNull())
   {
     // fill cache
     Standard_Boolean ChangeCycle = Standard_False;
-    if (myNbCashe > 0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt))
-        && myCashe3d[0].Distance(points(nbrPnt)) < Precision::Confusion())
+    if (myNbCache > 0
+        && myCache3d[0].Distance(points.First()) > myCache3d[0].Distance(points.Last())
+        && myCache3d[0].Distance(points.Last()) < Precision::Confusion())
       ChangeCycle = Standard_True;
-    myNbCashe = 2;
+    myNbCache = 2;
     if (ChangeCycle)
     {
-      myCashe3d[0] = points(1);
-      myCashe3d[1] = points(nbrPnt);
-      myCashe2d[0] = pnt2d(1);
-      myCashe2d[1] = pnt2d(nbrPnt);
+      myCache3d[0] = points.First();
+      myCache3d[1] = points.Last();
+      myCache2d[0] = pnt2d.First();
+      myCache2d[1] = pnt2d.Last();
     }
     else
     {
-      myCashe3d[1] = points(1);
-      myCashe3d[0] = points(nbrPnt);
-      myCashe2d[1] = pnt2d(1);
-      myCashe2d[0] = pnt2d(nbrPnt);
+      myCache3d[1] = points.First();
+      myCache3d[0] = points.Last();
+      myCache2d[1] = pnt2d.First();
+      myCache2d[0] = pnt2d.Last();
     }
     return Standard_True;
   }
@@ -950,7 +1485,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         Cl = +1000;
       // pdn S4030 optimizing and fix isopar case on PRO41323
       tdeb = pout(2);
-      //    dist = ShapeAnalysis_Curve().Project (cIso,points(2),myPreci,pt,tdeb,Cf,Cl);
       //  Chacun des par1 ou par2 est-il sur un bord. Attention first/last : recaler
       if (isoclosed && (isoPar1 == parf || isoPar1 == parl))
       {
@@ -967,7 +1501,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       {
         // pdn S4030 optimizing and fix isopar case on PRO41323
         tfin = pout(nbrPnt - 1);
-        // dist =  ShapeAnalysis_Curve().Project (cIso,points(nbrPnt-1),myPreci,pt,tfin,Cf,Cl);
         if (Abs(tfin - parf) < Abs(tfin - parl))
           isoPar2 = parf;
         else
@@ -1010,26 +1543,18 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     }
   }
 
-  //  Si pas isoParam, on a quand meme du p1OnIso/p2OnIso possible ... !!!
-  //  (utile pour detromper bug de projection). Mais detromper aussi circularite
-  // else {
-  // if (p1OnIso) valueP1 =
-  // BestExtremum (valueP1,points(1),points(2));
-  // if (p2OnIso) valueP2 =
-  // BestExtremum (valueP2,points(nbrPnt),points(nbrPnt-1));
-  //}
-
   Standard_Real    Up          = ul - uf;
   Standard_Real    Vp          = vl - vf;
   Standard_Real    gap         = myPreci;        //: q1
   Standard_Boolean ChangeCycle = Standard_False; // skl for OCC3430
   // auxiliaruy variables to shift 2dcurve, according to previous
-  Standard_Boolean isFromCashe = Standard_False;
+  Standard_Boolean isFromCache = Standard_False;
   gp_Pnt2d         aSavedPoint;
-  if (myNbCashe > 0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt)))
-    // if(myCashe3d[0].Distance(points(nbrPnt))<myPreci)
-    if (myCashe3d[0].Distance(points(nbrPnt)) < Precision::Confusion())
-      ChangeCycle = Standard_True;
+  if (myNbCache > 0 && myCache3d[0].Distance(points.First()) > myCache3d[0].Distance(points.Last())
+      && myCache3d[0].Distance(points.Last()) < Precision::Confusion())
+  {
+    ChangeCycle = Standard_True;
+  }
   Standard_Boolean needResolveUJump = Standard_False;
   Standard_Boolean needResolveVJump = Standard_False;
   gp_Pnt           prevP3d;
@@ -1038,16 +1563,16 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
   for (Standard_Integer ii = 1; ii <= nbrPnt; ii++)
   {
     const Standard_Integer aPntIndex = ChangeCycle ? (nbrPnt - ii + 1) : ii;
-    p3d                              = points(aPntIndex);
+    p3d                              = getContainerValue(points, aPntIndex);
     if (isoParam)
     {
 
       if (isoPar2d3d)
       {
         if (isoPar2 > isoPar1)
-          tPar = params(aPntIndex);
+          tPar = getContainerValue(params, aPntIndex);
         else
-          tPar = t1 + t2 - params(aPntIndex);
+          tPar = t1 + t2 - getContainerValue(params, aPntIndex);
       }
       else if (!isAnalytic)
       {
@@ -1107,11 +1632,11 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         {
           if (!isRecompute)
           {
-            p2d = pnt2d(aPntIndex);
+            p2d = getContainerValue(pnt2d, aPntIndex);
             gap = mySurf->Gap();
             if (aPntIndex == 1)
             {
-              isFromCashe = isFromCasheLine;
+              isFromCache = isFromCacheLine;
               aSavedPoint = p2d;
             }
             continue;
@@ -1120,21 +1645,21 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
           {
             //: q9 abv 23 Mar 99: use cache as 1st approach
             Standard_Integer j; // svv #1
-            for (j = 0; j < myNbCashe; ++j)
+            for (j = 0; j < myNbCache; ++j)
             {
-              if (myCashe3d[j].SquareDistance(p3d) < myPreci * myPreci)
+              if (myCache3d[j].SquareDistance(p3d) < myPreci * myPreci)
               {
                 p2d =
-                  mySurf->NextValueOfUV(myCashe2d[j], p3d, myPreci, Precision::Confusion() + gap);
+                  mySurf->NextValueOfUV(myCache2d[j], p3d, myPreci, Precision::Confusion() + gap);
                 if (aPntIndex == 1)
                 {
-                  isFromCashe = Standard_True;
-                  aSavedPoint = myCashe2d[j];
+                  isFromCache = Standard_True;
+                  aSavedPoint = myCache2d[j];
                 }
                 break;
               }
             }
-            if (j >= myNbCashe)
+            if (j >= myNbCache)
             {
               p2d = mySurf->ValueOfUV(p3d, myPreci);
             }
@@ -1150,7 +1675,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         gap = mySurf->Gap();
       }
     }
-    pnt2d(aPntIndex) = p2d;
+    changeContainerValue(pnt2d, aPntIndex) = p2d;
+
     if (nbrPnt > 23 && ii > 2 && ii < nbrPnt)
     {
       // additional check for possible invalid jump by U or V parameter
@@ -1172,9 +1698,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     if (ii > 1)
     {
       if (ChangeCycle)
-        p2d.SetXY(2. * p2d.XY() - pnt2d(aPntIndex + 1).XY());
+        p2d.SetXY(2. * p2d.XY() - getContainerValue(pnt2d, aPntIndex + 1).XY());
       else
-        p2d.SetXY(2. * p2d.XY() - pnt2d(aPntIndex - 1).XY());
+        p2d.SetXY(2. * p2d.XY() - getContainerValue(pnt2d, aPntIndex - 1).XY());
     }
   }
 
@@ -1218,16 +1744,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     }
   }
 
-  //  attention aux singularites ... (hors cas iso qui les traite deja)
-  //  if (!isoParam) {
-  //    p2d = pnt2d (1);
-  //    if (mySurf->ProjectDegenerated (points(1),myPreci,pnt2d (2),p2d))
-  //      pnt2d (1) = p2d;
-  //    p2d = pnt2d (nbrPnt);
-  //    if (mySurf->ProjectDegenerated (points(nbrPnt),myPreci,pnt2d (nbrPnt-1),p2d))
-  //      pnt2d (nbrPnt) = p2d;
-  //  }
-
   // Si la surface est UCLosed et VClosed, on recadre les points
   // algo un peu complique, on retarde l implementation
   // Standard_Real Up = ul - uf;
@@ -1245,23 +1761,23 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
   if (mySurf->IsUClosed(myPreci) || needResolveUJump)
   { // #78 rln 12.03.99 S4135
     // Premier point dans le domain [uf, ul]
-    Standard_Real prevX, firstX = pnt2d(1).X();
-    if (!isFromCashe)
+    Standard_Real prevX, firstX = pnt2d.First().X();
+    if (!isFromCache)
     {
       // do not shift 2dcurve, if it connects to previous
       while (firstX < uf)
       {
         firstX += Up;
-        pnt2d(1).SetX(firstX);
+        pnt2d.ChangeFirst().SetX(firstX);
       }
       while (firstX > ul)
       {
         firstX -= Up;
-        pnt2d(1).SetX(firstX);
+        pnt2d.ChangeFirst().SetX(firstX);
       }
     }
     // shift first point, according to cache
-    if (mySurf->Surface()->IsUPeriodic() && isFromCashe)
+    if (mySurf->Surface()->IsUPeriodic() && isFromCache)
     {
       Standard_Real aMinParam = uf, aMaxParam = ul;
       while (aMinParam > aSavedPoint.X())
@@ -1276,7 +1792,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       }
       Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(firstX, aMinParam, aMaxParam);
       firstX += aShift;
-      pnt2d(1).SetX(firstX);
+      pnt2d.ChangeFirst().SetX(firstX);
     }
     prevX = firstX;
 
@@ -1288,7 +1804,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     for (Standard_Integer aPntIter = 2; aPntIter <= pnt2d.Length(); ++aPntIter)
     {
       //      dist2d = pnt2d (aPntIter - 1).Distance(pnt2d (aPntIter));
-      Standard_Real CurX = pnt2d(aPntIter).X();
+      Standard_Real CurX = getContainerValue(pnt2d, aPntIter).X();
       dist2d             = Abs(CurX - prevX);
       if (dist2d > (Up / 2))
       {
@@ -1312,7 +1828,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     }
 
     //: 97
-    if (!isFromCashe)
+    if (!isFromCache)
     {
       // do not shift 2dcurve, if it connects to previous
       Standard_Real midX   = 0.5 * (minX + maxX);
@@ -1323,7 +1839,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         shiftX = Up;
       if (shiftX != 0.)
         for (Standard_Integer aPntIter = 1; aPntIter <= pnt2d.Length(); ++aPntIter)
-          pnt2d(aPntIter).SetX(pnt2d(aPntIter).X() + shiftX);
+          changeContainerValue(pnt2d, aPntIter)
+            .SetX(getContainerValue(pnt2d, aPntIter).X() + shiftX);
     }
   }
   // Si la surface est VCLosed, on recadre les points
@@ -1337,23 +1854,23 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       || mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
     // Premier point dans le domain [vf, vl]
-    Standard_Real prevY, firstY = pnt2d(1).Y();
-    if (!isFromCashe)
+    Standard_Real prevY, firstY = pnt2d.First().Y();
+    if (!isFromCache)
     {
       // do not shift 2dcurve, if it connects to previous
       while (firstY < vf)
       {
         firstY += Vp;
-        pnt2d(1).SetY(firstY);
+        pnt2d.ChangeFirst().SetY(firstY);
       }
       while (firstY > vl)
       {
         firstY -= Vp;
-        pnt2d(1).SetY(firstY);
+        pnt2d.ChangeFirst().SetY(firstY);
       }
     }
     // shift first point, according to cache
-    if (mySurf->Surface()->IsVPeriodic() && isFromCashe)
+    if (mySurf->Surface()->IsVPeriodic() && isFromCache)
     {
       Standard_Real aMinParam = vf, aMaxParam = vl;
       while (aMinParam > aSavedPoint.Y())
@@ -1368,7 +1885,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
       }
       Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(firstY, aMinParam, aMaxParam);
       firstY += aShift;
-      pnt2d(1).SetY(firstY);
+      pnt2d.ChangeFirst().SetY(firstY);
     }
     prevY = firstY;
 
@@ -1380,7 +1897,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     for (Standard_Integer aPntIter = 2; aPntIter <= pnt2d.Length(); ++aPntIter)
     {
       //      dist2d = pnt2d (i-1).Distance(pnt2d (i));
-      Standard_Real CurY = pnt2d(aPntIter).Y();
+      Standard_Real CurY = getContainerValue(pnt2d, aPntIter).Y();
       dist2d             = Abs(CurY - prevY);
       if (dist2d > (Vp / 2))
       {
@@ -1404,7 +1921,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     }
 
     //: 97
-    if (!isFromCashe)
+    if (!isFromCache)
     {
       // do not shift 2dcurve, if it connects to previous
       Standard_Real midY   = 0.5 * (minY + maxY);
@@ -1415,7 +1932,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         shiftY = Vp;
       if (shiftY != 0.)
         for (Standard_Integer aPntIter = 1; aPntIter <= pnt2d.Length(); ++aPntIter)
-          pnt2d(aPntIter).SetY(pnt2d(aPntIter).Y() + shiftY);
+          changeContainerValue(pnt2d, aPntIter)
+            .SetY(getContainerValue(pnt2d, aPntIter).Y() + shiftY);
     }
   }
 
@@ -1426,7 +1944,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
     for (Standard_Integer aPntIter = 2; aPntIter <= pnt2d.Length(); ++aPntIter)
     {
       // #1 rln 11/02/98 ca_exhaust.stp entity #9869 dist2d = pnt2d (i-1).Distance(pnt2d (i));
-      dist2d = Abs(pnt2d(aPntIter).Y() - pnt2d(aPntIter - 1).Y());
+      dist2d =
+        Abs(getContainerValue(pnt2d, aPntIter).Y() - getContainerValue(pnt2d, aPntIter - 1).Y());
       if (dist2d > (Vp / 2))
       {
         // ATTENTION : il faut regarder ou le decalage se fait.
@@ -1443,10 +1962,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         Standard_Boolean currOnLast  = Standard_False;
 
         //  .X ?  plutot .Y ,  non ?
-        Standard_Real distPrevVF = Abs(pnt2d(aPntIter - 1).Y() - vf);
-        Standard_Real distPrevVL = Abs(pnt2d(aPntIter - 1).Y() - vl);
-        Standard_Real distCurrVF = Abs(pnt2d(aPntIter).Y() - vf);
-        Standard_Real distCurrVL = Abs(pnt2d(aPntIter).Y() - vl);
+        Standard_Real distPrevVF = Abs(getContainerValue(pnt2d, aPntIter - 1).Y() - vf);
+        Standard_Real distPrevVL = Abs(getContainerValue(pnt2d, aPntIter - 1).Y() - vl);
+        Standard_Real distCurrVF = Abs(getContainerValue(pnt2d, aPntIter).Y() - vf);
+        Standard_Real distCurrVL = Abs(getContainerValue(pnt2d, aPntIter).Y() - vl);
 
         Standard_Real theMin = distPrevVF;
         prevOnFirst          = Standard_True;
@@ -1475,30 +1994,33 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         if (prevOnFirst)
         {
           // on decalle le point (aPntIter - 1) en V Last
-          gp_Pnt2d newPrev(pnt2d(aPntIter - 1).X(), vf); // instead of  vl RLN/Nijni
-          pnt2d(aPntIter - 1) = newPrev;
+          gp_Pnt2d newPrev(getContainerValue(pnt2d, aPntIter - 1).X(),
+                           vf); // instead of  vl RLN/Nijni
+          changeContainerValue(pnt2d, aPntIter - 1) = newPrev;
         }
         else if (prevOnLast)
         {
           // on decalle le point (aPntIter - 1) en V first
-          gp_Pnt2d newPrev(pnt2d(aPntIter - 1).X(), vl); // instead of  vf RLN/Nijni
-          pnt2d(aPntIter - 1) = newPrev;
+          gp_Pnt2d newPrev(getContainerValue(pnt2d, aPntIter - 1).X(),
+                           vl); // instead of  vf RLN/Nijni
+          changeContainerValue(pnt2d, aPntIter - 1) = newPrev;
         }
         else if (currOnFirst)
         {
           // on decalle le point (aPntIter) en V Last
-          gp_Pnt2d newCurr(pnt2d(aPntIter).X(), vf); // instead of vl  RLN/Nijni
-          pnt2d(aPntIter) = newCurr;
+          gp_Pnt2d newCurr(getContainerValue(pnt2d, aPntIter).X(), vf); // instead of vl  RLN/Nijni
+          changeContainerValue(pnt2d, aPntIter) = newCurr;
         }
         else if (currOnLast)
         {
           // on decalle le point (aPntIter) en V First
-          gp_Pnt2d newCurr(pnt2d(aPntIter).X(), vl); // instead of vf  RLN/Nijni
-          pnt2d(aPntIter) = newCurr;
+          gp_Pnt2d newCurr(getContainerValue(pnt2d, aPntIter).X(), vl); // instead of vf  RLN/Nijni
+          changeContainerValue(pnt2d, aPntIter) = newCurr;
         }
         // on verifie
 #ifdef OCCT_DEBUG
-        dist2d = pnt2d(aPntIter - 1).Distance(pnt2d(aPntIter));
+        dist2d =
+          getContainerValue(pnt2d, aPntIter - 1).Distance(getContainerValue(pnt2d, aPntIter));
         if (dist2d > (Vp / 2))
         {
           std::cout << "Echec dans le recadrage" << std::endl;
@@ -1538,9 +2060,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         Standard_Boolean start = Standard_True;
         for (ind = 1; ind <= pnt2d.Length(); ind++)
         {
-          Standard_Real CurX = pnt2d(ind).X();
+          Standard_Real CurX = getContainerValue(pnt2d, ind).X();
           // abv 16 Mar 00: trj3_s1-ug.stp #697: ignore points in singularity
-          if (mySurf->IsDegenerated(points(ind), Precision::Confusion()))
+          if (mySurf->IsDegenerated(getContainerValue(points, ind), Precision::Confusion()))
             continue;
           OnBound = (Abs(Abs(CurX - 0.5 * (ul + uf)) - Up / 2) <= Precision::PConfusion());
           if (!start && Abs(Abs(CurX - PrevX) - Up / 2) <= 0.01 * Up)
@@ -1556,26 +2078,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
           Standard_Real dU = Up / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
-            pnt2d(ind - 1).SetX(PrevX);
+            changeContainerValue(pnt2d, ind - 1).SetX(PrevX);
             for (Standard_Integer j = ind - 2; j > 0; j--)
             {
-              Standard_Real CurX = pnt2d(j).X();
+              Standard_Real CurX = getContainerValue(pnt2d, j).X();
               while (CurX < PrevX - dU)
-                pnt2d(j).SetX(CurX += Up);
+                changeContainerValue(pnt2d, j).SetX(CurX += Up);
               while (CurX > PrevX + dU)
-                pnt2d(j).SetX(CurX -= Up);
+                changeContainerValue(pnt2d, j).SetX(CurX -= Up);
             }
           }
           else if (OnBound)
           {
-            pnt2d(ind).SetX(PrevX);
+            changeContainerValue(pnt2d, ind).SetX(PrevX);
             for (Standard_Integer j = ind + 1; j <= pnt2d.Length(); j++)
             {
-              Standard_Real CurX = pnt2d(j).X();
+              Standard_Real CurX = getContainerValue(pnt2d, j).X();
               while (CurX < PrevX - dU)
-                pnt2d(j).SetX(CurX += Up);
+                changeContainerValue(pnt2d, j).SetX(CurX += Up);
               while (CurX > PrevX + dU)
-                pnt2d(j).SetX(CurX -= Up);
+                changeContainerValue(pnt2d, j).SetX(CurX -= Up);
             }
           }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
@@ -1594,9 +2116,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
         Standard_Boolean start = Standard_True;
         for (ind = 1; ind <= pnt2d.Length(); ind++)
         {
-          Standard_Real CurY = pnt2d(ind).Y();
+          Standard_Real CurY = getContainerValue(pnt2d, ind).Y();
           // abv 16 Mar 00: trj3_s1-ug.stp #697: ignore points in singularity
-          if (mySurf->IsDegenerated(points(ind), Precision::Confusion()))
+          if (mySurf->IsDegenerated(getContainerValue(points, ind), Precision::Confusion()))
             continue;
           OnBound = (Abs(Abs(CurY - 0.5 * (vl + vf)) - Vp / 2) <= Precision::PConfusion());
           if (!start && Abs(Abs(CurY - PrevY) - Vp / 2) <= 0.01 * Vp)
@@ -1612,26 +2134,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
           Standard_Real dV = Vp / 2 + Precision::PConfusion();
           if (PrevOnBound)
           {
-            pnt2d(ind - 1).SetY(PrevY);
+            changeContainerValue(pnt2d, ind - 1).SetY(PrevY);
             for (Standard_Integer j = ind - 2; j > 0; j--)
             {
-              Standard_Real CurY = pnt2d(j).Y();
+              Standard_Real CurY = getContainerValue(pnt2d, j).Y();
               while (CurY < PrevY - dV)
-                pnt2d(j).SetY(CurY += Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY += Vp);
               while (CurY > PrevY + dV)
-                pnt2d(j).SetY(CurY -= Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY -= Vp);
             }
           }
           else if (OnBound)
           {
-            pnt2d(ind).SetY(PrevY);
+            changeContainerValue(pnt2d, ind).SetY(PrevY);
             for (Standard_Integer j = ind + 1; j <= pnt2d.Length(); j++)
             {
-              Standard_Real CurY = pnt2d(j).Y();
+              Standard_Real CurY = getContainerValue(pnt2d, j).Y();
               while (CurY < PrevY - dV)
-                pnt2d(j).SetY(CurY += Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY += Vp);
               while (CurY > PrevY + dV)
-                pnt2d(j).SetY(CurY -= Vp);
+                changeContainerValue(pnt2d, j).SetY(CurY -= Vp);
             }
           }
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
@@ -1641,22 +2163,20 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
   }
 
   //: q9: fill cache
-  myNbCashe = 2;
+  myNbCache = 2;
   if (ChangeCycle)
-  { // msv 10.08.04: avoid using of uninitialised field
-    // if(myCashe3d[0].Distance(points(1))>Precision::Confusion() &&
-    //    myCashe3d[1].Distance(points(1))>Precision::Confusion()) {
-    myCashe3d[0] = points(1);
-    myCashe3d[1] = points.Last();
-    myCashe2d[0] = pnt2d(1);
-    myCashe2d[1] = pnt2d.Last();
+  {
+    myCache3d[0] = points.First();
+    myCache3d[1] = points.Last();
+    myCache2d[0] = pnt2d.First();
+    myCache2d[1] = pnt2d.Last();
   }
   else
   {
-    myCashe3d[1] = points(1);
-    myCashe3d[0] = points.Last();
-    myCashe2d[1] = pnt2d(1);
-    myCashe2d[0] = pnt2d.Last();
+    myCache3d[1] = points.First();
+    myCache3d[0] = points.Last();
+    myCache2d[1] = pnt2d.First();
+    myCache2d[0] = pnt2d.Last();
   }
   return isDone;
 }
@@ -1664,10 +2184,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standa
 //=================================================================================================
 
 Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
-  const Standard_Integer /*nbrPnt*/,
   Handle(TColgp_HArray1OfPnt2d)& points2d,
-  Handle(TColStd_HArray1OfReal)& params,
-  const Handle(Geom_Curve)& /*orig*/) const
+  Handle(TColStd_HArray1OfReal)& params) const
 {
   //  Standard_Real resol = Min(mySurf->Adaptor3d()->VResolution(myPreci),
   //  mySurf->Adaptor3d()->UResolution(myPreci));
@@ -1726,14 +2244,6 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
     anException.Print(std::cout);
     std::cout << "Pb Geom2dAPI_Approximate, tol2d=" << theTolerance2d << " NbParams=" << nbp
               << " NbPnts=" << nb2 << std::endl;
-//     if (nb2 > nbp) nb2 = nbp;
-//     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
-//     //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
-//     dbl.AddReals (rb2,rbp);
-//     for (Standard_Integer i = 1; i <= nb2; i ++) {
-//       gp_XYZ quoi (points2d->Value(i).X(),points2d->Value(i).Y(),params->Value(i) );
-//       dbl.AddXYZ (quoi);
-//     }
 #endif
     (void)anException;
     C2d.Nullify();
@@ -1746,8 +2256,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(
 Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(
   const Standard_Integer         nbrPnt,
   Handle(TColgp_HArray1OfPnt2d)& points2d,
-  Handle(TColStd_HArray1OfReal)& params,
-  const Handle(Geom_Curve)& /*orig*/) const
+  Handle(TColStd_HArray1OfReal)& params) const
 {
   Handle(Geom2d_Curve) C2d; // NULL si echec
   Standard_Real        theTolerance2d = myPreci / (100 * nbrPnt);
@@ -1765,60 +2274,17 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(
   catch (Standard_Failure const& anException)
   {
 #ifdef OCCT_DEBUG
-    //: s5
-    // //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
     std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(): Exception: ";
     anException.Print(std::cout);
     std::cout << "Pb Geom2dAPI_Interpolate, tol2d=" << theTolerance2d << " NbParams=" << nbp
               << " NbPnts=" << nb2 << std::endl;
-//     if (nb2 > nbp) nb2 = nbp;
-//     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
-// //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
-//     dbl.AddReals (rb2,rbp);
-//     for (Standard_Integer i = 1; i <= nb2; i ++) {
-//       gp_XYZ quoi (points2d->Value(i).X(),points2d->Value(i).Y(),params->Value(i) );
-//       dbl.AddXYZ (quoi);
-//     }
 #endif
     (void)anException;
     C2d.Nullify();
   }
   return C2d;
-}
-
-//=================================================================================================
-
-Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(
-  const Standard_Integer,
-  Handle(TColgp_HArray1OfPnt)&   points,
-  Handle(TColStd_HArray1OfReal)& params,
-  const Handle(Geom_Curve)& /*orig*/) const
-{
-  Handle(Geom_Curve) C3d; // NULL si echec
-  try
-  {
-    OCC_CATCH_SIGNALS
-    Standard_Real Tol = myPreci;
-    CheckPoints(points, params, Tol);
-    GeomAPI_Interpolate myInterPol(points, params, Standard_False, Tol);
-    myInterPol.Perform();
-    if (myInterPol.IsDone())
-      C3d = myInterPol.Curve();
-  }
-  catch (Standard_Failure const& anException)
-  {
-#ifdef OCCT_DEBUG
-    //: s5
-    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(): Exception: ";
-    anException.Print(std::cout);
-    std::cout << std::endl;
-#endif
-    (void)anException;
-    C3d.Nullify();
-  }
-  return C3d;
 }
 
 //============================================================================================
@@ -1827,9 +2293,9 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(
 //           in the case when it coincids with a singularity of surface
 //============================================================================================
 
-void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Curve)&     theC3d,
-                                                            const TColStd_SequenceOfReal& theParams,
-                                                            TColgp_SequenceOfPnt2d&       thePnt2d,
+void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(GeomAdaptor_Curve)& theC3d,
+                                                            const SequenceOfReal&  theParams,
+                                                            SequenceOfPnt2d&       thePnt2d,
                                                             const Standard_Boolean theIsFirstPoint,
                                                             const gp_Pnt2d& thePointOnIsoLine,
                                                             const Standard_Boolean theIsUiso)
@@ -1837,7 +2303,7 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
   Standard_Integer NbPnt            = thePnt2d.Length();
   Standard_Integer IndCoord         = (theIsUiso) ? 2 : 1;
   Standard_Real    SingularityCoord = thePointOnIsoLine.Coord(3 - IndCoord);
-  gp_Pnt2d         EndPoint         = (theIsFirstPoint) ? thePnt2d(1) : thePnt2d(NbPnt);
+  gp_Pnt2d         EndPoint         = (theIsFirstPoint) ? thePnt2d.First() : thePnt2d.Last();
   Standard_Real    FinishCoord      = EndPoint.Coord(3 - IndCoord); // the constant coord of isoline
 
   gp_Dir2d        aDir = (theIsUiso) ? gp::DY2d() : gp::DX2d();
@@ -1852,19 +2318,19 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
 
   if (theIsFirstPoint)
   {
-    FirstPointOfLine  = thePnt2d(3);
-    SecondPointOfLine = thePnt2d(2);
-    FinishParam       = theParams(1);
-    FirstParam        = theParams(3);
-    SecondParam       = theParams(2);
+    FirstPointOfLine  = getContainerValue(thePnt2d, 3);
+    SecondPointOfLine = getContainerValue(thePnt2d, 2);
+    FinishParam       = getContainerValue(theParams, 1);
+    FirstParam        = getContainerValue(theParams, 3);
+    SecondParam       = getContainerValue(theParams, 2);
   }
   else // last point
   {
-    FirstPointOfLine  = thePnt2d(NbPnt - 2);
-    SecondPointOfLine = thePnt2d(NbPnt - 1);
-    FinishParam       = theParams(NbPnt);
-    FirstParam        = theParams(NbPnt - 2);
-    SecondParam       = theParams(NbPnt - 1);
+    FirstPointOfLine  = getContainerValue(thePnt2d, NbPnt - 2);
+    SecondPointOfLine = getContainerValue(thePnt2d, NbPnt - 1);
+    FinishParam       = getContainerValue(theParams, NbPnt);
+    FirstParam        = getContainerValue(theParams, NbPnt - 2);
+    SecondParam       = getContainerValue(theParams, NbPnt - 1);
   }
 
   if (SingularityCoord > FinishCoord && SecondPointOfLine.Coord(3 - IndCoord) > FinishCoord)
@@ -1919,7 +2385,7 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
     SecondPointOfLine =
       mySurf->NextValueOfUV(FirstPointOfLine, aP3d, myPreci, Precision::Confusion());
     if (IsPeriodic)
-      AdjustSecondPointToFirstPoint(FirstPointOfLine, SecondPointOfLine, mySurf->Surface());
+      adjustSecondToFirstPoint(FirstPointOfLine, SecondPointOfLine, mySurf->Surface());
 
     // Check <SecondPointOfLine> to be enough close to <FirstPointOfLine>
     // because when a projected point is too close to singularity,
@@ -1933,9 +2399,13 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
   }
 
   if (theIsFirstPoint)
-    thePnt2d(1) = FinishPoint;
+  {
+    thePnt2d.ChangeFirst() = FinishPoint;
+  }
   else
-    thePnt2d(NbPnt) = FinishPoint;
+  {
+    thePnt2d.ChangeLast() = FinishPoint;
+  }
 }
 
 //============================================================================================
@@ -1949,24 +2419,42 @@ void ShapeConstruct_ProjectCurveOnSurface::CorrectExtremity(const Handle(Geom_Cu
 //============================================================================================
 
 void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
-  Standard_Boolean&         ToAdjust,
-  const Standard_Integer    theIndCoord,
-  const Standard_Real       Period,
-  const Standard_Real       TolOnPeriod,
-  Standard_Real&            CurCoord,
-  const Standard_Real       prevCoord,
-  const Handle(Geom_Curve)& c3d,
-  Standard_Integer&         theIndex,
-  TColgp_SequenceOfPnt&     points,
-  TColStd_SequenceOfReal&   params,
-  TColgp_SequenceOfPnt2d&   pnt2d)
+  Standard_Boolean&                ToAdjust,
+  const Standard_Integer           theIndCoord,
+  const Standard_Real              Period,
+  const Standard_Real              TolOnPeriod,
+  Standard_Real&                   CurCoord,
+  const Standard_Real              prevCoord,
+  const Handle(GeomAdaptor_Curve)& c3d,
+  Standard_Integer&                theIndex,
+  SequenceOfPnt&                   points,
+  SequenceOfReal&                  params,
+  SequenceOfPnt2d&                 pnt2d)
 {
+
+  // Lambda for inserting element at specified index using SetValue
+  auto insertAt = [](auto& theArray, const Standard_Integer theIndex, const auto& theValue) {
+    const Standard_Integer aLength = theArray.Length();
+
+    // Extend array by setting a value at the new last position
+    theArray.SetValue(aLength, theArray.Value(aLength - 1));
+
+    // Move elements from the end towards the insertion point
+    for (Standard_Integer i = aLength; i > theIndex; i--)
+    {
+      theArray.SetValue(i, theArray.Value(i - 1));
+    }
+
+    // Set the new value at the insertion point
+    theArray.SetValue(theIndex, theValue);
+  };
+
   Standard_Real CorrectedCurCoord =
     ElCLib::InPeriod(CurCoord, prevCoord - Period / 2, prevCoord + Period / 2);
   if (!ToAdjust)
   {
-    Standard_Real CurPar  = params(theIndex);
-    Standard_Real PrevPar = params(theIndex - 1);
+    Standard_Real CurPar  = getContainerValue(params, theIndex);
+    Standard_Real PrevPar = getContainerValue(params, theIndex - 1);
     Standard_Real MidPar  = (PrevPar + CurPar) / 2;
     gp_Pnt        MidP3d;
     c3d->D0(MidPar, MidP3d);
@@ -1988,8 +2476,8 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
     {
       // Standard_Real RefU = prevX;
       Standard_Boolean Success = Standard_True;
-      Standard_Real    FirstT  = PrevPar; // params(i-1)
-      Standard_Real    LastT   = CurPar;  // params(i)
+      Standard_Real    FirstT  = PrevPar; // getContainerValue(params, i-1)
+      Standard_Real    LastT   = CurPar;  // getContainerValue(params, i)
       MidCoord                 = MidP2d.Coord(theIndCoord);
       while (Abs(MidCoord - prevCoord) >= Period / 2 - TolOnPeriod
              || Abs(CurCoord - MidCoord) >= Period / 2 - TolOnPeriod)
@@ -2010,9 +2498,10 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
       }
       if (Success)
       {
-        points.InsertBefore(theIndex, MidP3d);
-        params.InsertBefore(theIndex, MidPar);
-        pnt2d.InsertBefore(theIndex, MidP2d);
+        // Insert operations using lambda
+        insertAt(points, theIndex - 1, MidP3d);
+        insertAt(params, theIndex - 1, MidPar);
+        insertAt(pnt2d, theIndex - 1, MidP2d);
         theIndex++;
       }
       else
@@ -2022,7 +2511,7 @@ void ShapeConstruct_ProjectCurveOnSurface::InsertAdditionalPointOrAdjust(
   if (ToAdjust)
   {
     CurCoord = CorrectedCurCoord;
-    pnt2d(theIndex).SetCoord(theIndCoord, CurCoord);
+    changeContainerValue(pnt2d, theIndex).SetCoord(theIndCoord, CurCoord);
   }
 }
 
@@ -2067,9 +2556,10 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints(Handle(TColgp_HArray1OfPn
     }
   }
   if (DistMin2 < RealLast())
-    // clang-format off
-    preci = 0.9 * Sqrt (DistMin2); // preci est la distance min entre les points on la reduit un peu
-  // clang-format on
+  {
+    // preci est la distance min entre les points on la reduit un peu
+    preci = 0.9 * Sqrt(DistMin2);
+  }
   if (nbPntDropped == 0)
     return;
 
@@ -2201,19 +2691,19 @@ void ShapeConstruct_ProjectCurveOnSurface::CheckPoints2d(Handle(TColgp_HArray1Of
 //: p9 abv 11 Mar 99: PRO7226 #489490: find nearest boundary instead of first one
 
 Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
-  const Standard_Integer        nbrPnt,
-  const TColgp_SequenceOfPnt&   points,
-  const TColStd_SequenceOfReal& params,
-  Standard_Boolean&             isoTypeU,
-  Standard_Boolean&             p1OnIso,
-  gp_Pnt2d&                     valueP1,
-  Standard_Boolean&             p2OnIso,
-  gp_Pnt2d&                     valueP2,
-  Standard_Boolean&             isoPar2d3d,
-  Handle(Geom_Curve)&           cIso,
-  Standard_Real&                t1,
-  Standard_Real&                t2,
-  TColStd_Array1OfReal&         pout) const
+  const Standard_Integer nbrPnt,
+  const SequenceOfPnt&   points,
+  const SequenceOfReal&  params,
+  Standard_Boolean&      isoTypeU,
+  Standard_Boolean&      p1OnIso,
+  gp_Pnt2d&              valueP1,
+  Standard_Boolean&      p2OnIso,
+  gp_Pnt2d&              valueP2,
+  Standard_Boolean&      isoPar2d3d,
+  Handle(Geom_Curve)&    cIso,
+  Standard_Real&         t1,
+  Standard_Real&         t2,
+  TColStd_Array1OfReal&  pout) const
 {
   try
   { // RAJOUT
@@ -2325,7 +2815,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         Standard_Integer k = (i == 0 ? 1 : nbrPnt);
 
         // si ext1 == ext2 => valueP1 == valueP2 => vect null plus tard
-        currd2[i] = points(k).SquareDistance(ext1);
+        currd2[i] = getContainerValue(points, k).SquareDistance(ext1);
         if (currd2[i] <= prec * prec && !PtEQext1)
         {
           mp[i]    = 1;
@@ -2334,7 +2824,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           continue;
         }
 
-        currd2[i] = points(k).SquareDistance(ext2);
+        currd2[i] = getContainerValue(points, k).SquareDistance(ext2);
         if (currd2[i] <= prec * prec && !PtEQext2)
         {
           mp[i]    = 2;
@@ -2350,7 +2840,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           continue;
         }
 
-        if (aBox->IsOut(points(k)))
+        if (aBox->IsOut(getContainerValue(points, k)))
           continue;
 
         Standard_Real Cf = cI->FirstParameter();
@@ -2361,8 +2851,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           Cl = +1000;
 
         ShapeAnalysis_Curve sac;
-        Standard_Real       dist = sac.Project(cI, points(k), prec, pt, t, Cf, Cl);
-        currd2[i]                = dist * dist;
+        Standard_Real dist = sac.Project(cI, getContainerValue(points, k), prec, pt, t, Cf, Cl);
+        currd2[i]          = dist * dist;
         if ((dist <= prec) && (t >= Cf) && (t <= Cl))
         {
           mp[i] = 3;
@@ -2378,9 +2868,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
       if (mp[0] > 0 && (!p1OnIso || currd2[0] < mind2[0]))
       {
         p1OnIso = Standard_True;
-        // clang-format off
-      mind2[0] = currd2[0]; // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file
-        // clang-format on
+        // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file
+        mind2[0] = currd2[0];
         if (isoU)
           valueP1.SetCoord(isoVal, tp[0]);
         else
@@ -2438,11 +2927,11 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         for (Standard_Integer i = 2; i < nbrPnt && isoPar2d3d; i++)
         {
           if (tpar[1] > tpar[0])
-            t = params(i);
+            t = getContainerValue(params, i);
           else
-            t = t1 + t2 - params(i);
+            t = t1 + t2 - getContainerValue(params, i);
           cIso->D0(t, pt);
-          if (!points(i).IsEqual(pt, prec))
+          if (!getContainerValue(points, i).IsEqual(pt, prec))
             isoPar2d3d = Standard_False;
         }
       }
@@ -2464,18 +2953,17 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
         ShapeAnalysis_Curve sac;
         for (Standard_Integer i = 2; i < nbrPnt && isoByDistance; i++)
         {
-          Standard_Real dist = sac.NextProject(
-            prevParam,
-            cIso,
-            points(i),
-            prec,
-            pt,
-            t,
-            Cf,
-            Cl,
-            // clang-format off
-					      Standard_False); //:j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
-          // clang-format on
+          Standard_Real dist =
+            sac.NextProject(prevParam,
+                            cIso,
+                            getContainerValue(points, i),
+                            prec,
+                            pt,
+                            t,
+                            Cf,
+                            Cl,
+                            //: j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
+                            Standard_False);
           prevParam = t;
           pout(i)   = t;
           if ((dist > prec) || (t < Cf) || (t > Cl))
@@ -2485,10 +2973,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
           isoParam = Standard_True;
       }
     }
-    /*  if (!isoParam) {    CKY 29-mai-1997 : garder tout ce qu on peut ?
-        p1OnIso = Standard_False;
-        p2OnIso = Standard_False;
-      }  */
     return isoParam;
   } // RAJOUT
   catch (Standard_Failure const& anException)
@@ -2497,8 +2981,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
     //  pb : on affiche ce qu on peut
     for (Standard_Integer numpnt = 1; numpnt <= nbrPnt; numpnt++)
     {
-      std::cout << "[" << numpnt << "]param=" << params(numpnt) << " point=(" << points(numpnt).X()
-                << "  " << points(numpnt).Y() << "  " << points(numpnt).Z() << ")" << std::endl;
+      std::cout << "[" << numpnt << "]param=" << getContainerValue(params, numpnt) << " point=("
+                << getContainerValue(points, numpnt).X() << "  "
+                << getContainerValue(points, numpnt).Y() << "  "
+                << getContainerValue(points, numpnt).Z() << ")" << std::endl;
     }
     std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(): Exception: ";
     anException.Print(std::cout);
@@ -2508,36 +2994,3 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(
     return Standard_False;
   }
 }
-
-/* S4135 : BestExtremum is commented after IsAnIsoparametric works with Precision::Confusion()
-//=======================================================================
-//function : BestExtremum
-//purpose  : auxiliaire prenant le meilleur extremum si ISO car doute possible
-//=======================================================================
-
- gp_Pnt2d ShapeConstruct_ProjectCurveOnSurface::BestExtremum(const gp_Pnt2d& P2iso,const gp_Pnt&
-P3ext,const gp_Pnt& P3next) const
-{
-//  P2iso a ete calcule depuis P3ext sur une iso externe de la surface
-//  En principe bon mais circularite possible ... et IsU/VClosed faillible
-//    (si baillement 1e-4 ou 1e-5, on est dedans !). DONC
-//  1/ on privilegie l iso mais a tout hasard on verifie si Surf meilleur
-//  2/ si iso, attention a la circularite (cas limite)
-
-//  NB : si isoParam, on suppose que P2iso est bon (car il y en a 2). A voir...
-
-//  D abord, calcul p2ext depuis la surface. choix surface/iso
-  return P2iso;
-  Standard_Real prec = Precision::Confusion();//myPreci;
-  gp_Pnt2d P2cal = mySurf->ValueOfUV(P3ext, prec);
-  gp_Pnt   P3cal = mySurf->Value (P2cal);
-  Standard_Real dcal = P3ext.Distance (P3cal);
-  Standard_Real dnxt = P3ext.Distance (P3next);
-  if (dcal > dnxt) return P2iso;    // en fait protection sur BUG (PRO8468)
-
-//  On choisit entre P2iso et P2cal, le plus proche de P2next ... !!!
-  gp_Pnt2d P2next = mySurf->ValueOfUV(P3next, prec);
-  if (P2next.Distance(P2cal) < P2next.Distance(P2iso)) return P2cal;
-  return P2iso;
-}
-*/
