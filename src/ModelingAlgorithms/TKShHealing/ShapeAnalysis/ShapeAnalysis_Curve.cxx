@@ -438,56 +438,20 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
         // chosen to be 40, 20, 25, and 40 again. It is unknown why
         // these particular values were chosen, probably just because
         // they were found to be sufficient in practice.
-        ProjectOnSegments(theCurve,
-                          thePoint,
-                          40,
-                          uMin,
-                          uMax,
-                          aProjDistance,
-                          theProjPoint,
-                          theProjParam);
-        if (aProjDistance <= theTolerance)
+        for (const Standard_Integer aSegmentCount : {40, 20, 25, 40})
         {
-          return aProjDistance;
-        }
-
-        ProjectOnSegments(theCurve,
-                          thePoint,
-                          20,
-                          uMin,
-                          uMax,
-                          aProjDistance,
-                          theProjPoint,
-                          theProjParam);
-        if (aProjDistance <= theTolerance)
-        {
-          return aProjDistance;
-        }
-
-        ProjectOnSegments(theCurve,
-                          thePoint,
-                          25,
-                          uMin,
-                          uMax,
-                          aProjDistance,
-                          theProjPoint,
-                          theProjParam);
-        if (aProjDistance <= theTolerance)
-        {
-          return aProjDistance;
-        }
-
-        ProjectOnSegments(theCurve,
-                          thePoint,
-                          40,
-                          uMin,
-                          uMax,
-                          aProjDistance,
-                          theProjPoint,
-                          theProjParam);
-        if (aProjDistance <= theTolerance)
-        {
-          return aProjDistance;
+          ProjectOnSegments(theCurve,
+                            thePoint,
+                            aSegmentCount,
+                            uMin,
+                            uMax,
+                            aProjDistance,
+                            theProjPoint,
+                            theProjParam);
+          if (aProjDistance <= theTolerance)
+          {
+            return aProjDistance;
+          }
         }
 
         // Did not find a point on the curve
