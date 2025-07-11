@@ -276,7 +276,7 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
     Handle(TColStd_HArray1OfInteger) anArray = new TColStd_HArray1OfInteger(0, theValue.Size());
     for (size_t anIndex = 0; anIndex < theValue.Size(); ++anIndex)
     {
-      anArray->SetValue(static_cast<Standard_Integer>(anIndex), theValue[0].GetInt());
+      anArray->SetValue(static_cast<Standard_Integer>(anIndex), theValue[anIndex].GetInt());
     }
     getResult()->SetArrayOfIntegers(theValueName.c_str(), anArray);
     return true;
@@ -287,7 +287,7 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
     Handle(TColStd_HArray1OfReal) anArray = new TColStd_HArray1OfReal(0, theValue.Size());
     for (size_t anIndex = 0; anIndex < theValue.Size(); ++anIndex)
     {
-      anArray->SetValue(static_cast<Standard_Integer>(anIndex), theValue[0].GetDouble());
+      anArray->SetValue(static_cast<Standard_Integer>(anIndex), theValue[anIndex].GetDouble());
     }
     getResult()->SetArrayOfReals(theValueName.c_str(), anArray);
     return true;
@@ -302,7 +302,7 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
     const std::string aSeparator = ";";
     for (size_t i = 0; i < theValue.Size(); ++i)
     {
-      anArrayString = anArrayString + aSeparator + theValue[0].GetString();
+      anArrayString = anArrayString + aSeparator + theValue[i].GetString();
     }
     getResult()->SetString(theValueName.c_str(), anArrayString.c_str());
     return true;
