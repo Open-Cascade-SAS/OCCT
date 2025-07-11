@@ -13,6 +13,7 @@
 
 #include <XSDRAWDE.hxx>
 
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
@@ -493,10 +494,9 @@ TDF_Label DataAsGeomExporter::CreateShapeLabelForViews() const
     }
 
     // Get the shape associated with the view label.
-    TopoDS_Compound aSubCompound;
-    aBuilder.MakeCompound(aSubCompound);
+    TopoDS_Vertex aV = BRepBuilderAPI_MakeVertex(gp_Pnt());
     // Add the shape to the compound.
-    aBuilder.Add(aCompound, aSubCompound);
+    aBuilder.Add(aCompound, aV);
   }
 
   const TDF_Label aShapeLabel = myShapeTool->AddShape(aCompound, true, false);
