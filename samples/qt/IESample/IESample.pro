@@ -56,7 +56,7 @@ unix {
     !macx | equals(MACOSX_USE_GLX, true): LIBS += -L$$QMAKE_LIBDIR_X11 $$QMAKE_LIBS_X11 -L$$QMAKE_LIBDIR_OPENGL $$QMAKE_LIBS_OPENGL $$QMAKE_LIBS_THREAD
     LIBS += -lfreeimageplus
     LIBS += -ltbb -ltbbmalloc
-    QMAKE_CXXFLAGS += -std=gnu++11
+    QMAKE_CXXFLAGS += -std=c++17
 }
 
 win32 {
@@ -71,6 +71,7 @@ win32 {
         OBJECTS_DIR = ./win$$(ARCH)/$$(VCVER)/obj
         MOC_DIR = ./win$$(ARCH)/$$(VCVER)/moc
     }
+    QMAKE_CXXFLAGS += /std:c++17
     LIBS = -L$$(QTDIR)/lib;$$(CSF_OCCTLibPath)
     DEFINES += NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }

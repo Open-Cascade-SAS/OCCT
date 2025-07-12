@@ -699,4 +699,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <PropertyGroup>
+    <LanguageStandard>stdcpp17</LanguageStandard>
+  </PropertyGroup>
 </Project>
