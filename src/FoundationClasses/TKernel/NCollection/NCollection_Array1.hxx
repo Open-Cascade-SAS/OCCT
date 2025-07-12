@@ -396,15 +396,17 @@ protected:
 
 protected:
   template <typename U = TheItemType>
-  typename std::enable_if<std::is_trivially_default_constructible<U>::value, void>::type construct(const size_t,
-                                                                           const size_t)
+  typename std::enable_if<std::is_trivially_default_constructible<U>::value, void>::type construct(
+    const size_t,
+    const size_t)
   {
     // Do nothing
   }
 
   template <typename U = TheItemType>
-  typename std::enable_if<!std::is_trivially_default_constructible<U>::value, void>::type construct(const size_t theFrom,
-                                                                            const size_t theTo)
+  typename std::enable_if<!std::is_trivially_default_constructible<U>::value, void>::type construct(
+    const size_t theFrom,
+    const size_t theTo)
   {
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
@@ -413,17 +415,19 @@ protected:
   }
 
   template <typename U = TheItemType>
-  typename std::enable_if<std::is_trivially_destructible<U>::value, void>::type destroy(pointer,
-                                                                         const size_t,
-                                                                         const size_t)
+  typename std::enable_if<std::is_trivially_destructible<U>::value, void>::type destroy(
+    pointer,
+    const size_t,
+    const size_t)
   {
     // Do nothing
   }
 
   template <typename U = TheItemType>
-  typename std::enable_if<!std::is_trivially_destructible<U>::value, void>::type destroy(pointer      theWhat,
-                                                                          const size_t theFrom,
-                                                                          const size_t theTo)
+  typename std::enable_if<!std::is_trivially_destructible<U>::value, void>::type destroy(
+    pointer      theWhat,
+    const size_t theFrom,
+    const size_t theTo)
   {
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
