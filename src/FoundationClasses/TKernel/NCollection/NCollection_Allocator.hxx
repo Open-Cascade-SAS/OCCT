@@ -37,11 +37,9 @@ template <typename ItemType>
 class NCollection_Allocator
 {
 private:
-  //! Type traits for optimization decisions
-  static constexpr bool is_trivial      = std::is_trivial_v<ItemType>;
-  static constexpr bool is_small        = sizeof(ItemType) <= 64;
-  static constexpr bool is_large        = sizeof(ItemType) >= 4096;
-  static constexpr bool needs_alignment = alignof(ItemType) > alignof(std::max_align_t);
+  //! Type traits for allocation decisions
+  static constexpr Standard_Boolean THE_NEEDS_ALIGNMENT =
+    alignof(ItemType) >= alignof(std::max_align_t) || std::is_floating_point_v<ItemType>;
 
 public:
   typedef ItemType          value_type;
@@ -90,34 +88,24 @@ public:
   //! Allocates memory for theSize objects.
   pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
   {
-    if constexpr (needs_alignment)
+    const Standard_Size aTotalSize = theSize * sizeof(ItemType);
+    if constexpr (THE_NEEDS_ALIGNMENT)
     {
-      return allocate_aligned(theSize);
-    }
-    else if constexpr (is_large)
-    {
-      return allocate_large(theSize);
-    }
-    else if constexpr (is_small && is_trivial)
-    {
-      return allocate_small_trivial(theSize);
+      const Standard_Size anAlignment = alignof(ItemType);
+      return static_cast<pointer>(Standard::AllocateAligned(aTotalSize, anAlignment));
     }
     else
     {
-      return static_cast<pointer>(Standard::AllocateOptimal(theSize * sizeof(ItemType)));
+      return static_cast<pointer>(Standard::Allocate(aTotalSize));
     }
   }
 
   //! Frees previously allocated memory.
-  void deallocate(pointer thePnt, const size_type theSize) const
+  void deallocate(pointer thePnt, const size_type) const
   {
-    if constexpr (needs_alignment)
+    if constexpr (THE_NEEDS_ALIGNMENT)
     {
-      deallocate_aligned(thePnt);
-    }
-    else if constexpr (is_large)
-    {
-      deallocate_large(thePnt, theSize);
+      Standard::FreeAligned(static_cast<Standard_Address>(thePnt));
     }
     else
     {
@@ -126,17 +114,19 @@ public:
   }
 
   //! Reallocates memory for theSize objects.
-  pointer reallocate(pointer thePnt, const size_type theSize) const
+  pointer reallocate(pointer thePnt, const size_type theOldSize, const size_type theNewSize) const
   {
-    if constexpr (needs_alignment)
+    const Standard_Size aNewTotalSize = theNewSize * sizeof(ItemType);
+    if constexpr (THE_NEEDS_ALIGNMENT)
     {
-      const size_t total_size = theSize * sizeof(ItemType);
-      const size_t alignment = alignof(ItemType);
-      return static_cast<pointer>(Standard::ReallocateAligned(thePnt, total_size, alignment));
+      const Standard_Size anOldTotalSize = theOldSize * sizeof(ItemType);
+      const Standard_Size anAlignment    = alignof(ItemType);
+      return static_cast<pointer>(
+        Standard::ReallocateAligned(thePnt, anOldTotalSize, aNewTotalSize, anAlignment));
     }
     else
     {
-      return static_cast<pointer>(Standard::Reallocate(thePnt, theSize * sizeof(ItemType)));
+      return static_cast<pointer>(Standard::Reallocate(thePnt, aNewTotalSize));
     }
   }
 
@@ -170,49 +160,6 @@ public:
   bool operator!=(const NCollection_Allocator<U>&) const noexcept
   {
     return false;
-  }
-
-private:
-  //! Specialized allocation for aligned types
-  pointer allocate_aligned(const size_type theSize) const
-  {
-    const size_t total_size = theSize * sizeof(ItemType);
-    const size_t alignment  = alignof(ItemType);
-
-    return static_cast<pointer>(Standard::AllocateAligned(total_size, alignment));
-  }
-
-  //! Specialized allocation for large objects
-  pointer allocate_large(const size_type theSize) const
-  {
-    const size_t total_size = theSize * sizeof(ItemType);
-    return static_cast<pointer>(Standard::AllocateOptimal(total_size));
-  }
-
-  //! Specialized allocation for small trivial objects
-  pointer allocate_small_trivial(const size_type theSize) const
-  {
-    const size_t total_size = theSize * sizeof(ItemType);
-
-    if (total_size <= 32)
-    {
-      void* ptr = Standard::AllocateOptimal(64);
-      return static_cast<pointer>(ptr);
-    }
-
-    return static_cast<pointer>(Standard::AllocateOptimal(total_size));
-  }
-
-  //! Specialized deallocation for aligned types
-  void deallocate_aligned(pointer thePnt) const
-  {
-    Standard::FreeAligned(static_cast<Standard_Address>(thePnt));
-  }
-
-  //! Specialized deallocation for large objects
-  void deallocate_large(pointer thePnt, const size_type theSize) const
-  {
-    Standard::Free(static_cast<Standard_Address>(thePnt));
   }
 };
 

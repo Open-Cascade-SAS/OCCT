@@ -81,10 +81,12 @@ public:
 
   //! Reallocates aligned memory blocks
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
-  //! @param theSize new size in bytes
+  //! @param theOldSize previous size in bytes
+  //! @param theNewSize new size in bytes
   //! @param theAlign alignment in bytes
   Standard_EXPORT static Standard_Address ReallocateAligned(const Standard_Address thePtrAligned,
-                                                            const Standard_Size    theSize,
+                                                            const Standard_Size    theOldSize,
+                                                            const Standard_Size    theNewSize,
                                                             const Standard_Size    theAlign);
 
   //! Template version of function FreeAligned(), nullifies the argument pointer

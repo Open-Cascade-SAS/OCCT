@@ -18,13 +18,19 @@
 
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Real& math_DoubleTab::Value(const Standard_Integer RowIndex,
-                                            const Standard_Integer ColIndex) const
+inline void math_DoubleTab::Copy(math_DoubleTab& theOther) const
 {
-  return ((Standard_Real*)Addr)[(UppC - LowC + 1) * (RowIndex - LowR) + (ColIndex - LowC)];
+  theOther.myArray = myArray;
 }
 
-inline void math_DoubleTab::Copy(math_DoubleTab& Other) const
+inline void math_DoubleTab::SetLowerRow(const Standard_Integer theLowerRow)
 {
-  memmove(Other.Addr, Addr, (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Standard_Real)));
+  const Standard_Integer aRowSize = myArray.NbRows();
+  myArray.Resize(theLowerRow, theLowerRow + aRowSize - 1, myArray.LowerCol(), myArray.UpperCol(), Standard_True);
+}
+
+inline void math_DoubleTab::SetLowerCol(const Standard_Integer theLowerCol)
+{
+  const Standard_Integer aColSize = myArray.NbColumns();
+  myArray.Resize(myArray.LowerRow(), myArray.UpperRow(), theLowerCol, theLowerCol + aColSize - 1, Standard_True);
 }

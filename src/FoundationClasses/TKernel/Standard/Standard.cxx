@@ -512,28 +512,29 @@ void Standard::FreeAligned(Standard_Address thePtrAligned)
 //=================================================================================================
 
 Standard_Address Standard::ReallocateAligned(const Standard_Address thePtrAligned,
-                                             const Standard_Size    theSize,
+                                             const Standard_Size    theOldSize,
+                                             const Standard_Size    theNewSize,
                                              const Standard_Size    theAlign)
 {
 #if defined(_MSC_VER) && !defined(OCCT_MMGT_OPT_JEMALLOC) && !defined(OCCT_MMGT_OPT_TBB)
-  return _aligned_realloc(thePtrAligned, theSize, theAlign);
+  return _aligned_realloc(thePtrAligned, theNewSize, theAlign);
 #else
   // For platforms without native aligned realloc, use Standard methods
   if (!thePtrAligned)
   {
-    return Standard::AllocateAligned(theSize, theAlign);
+    return Standard::AllocateAligned(theNewSize, theAlign);
   }
-  if (theSize == 0)
+  if (theNewSize == 0)
   {
     Standard::FreeAligned(thePtrAligned);
     return NULL;
   }
 
-  Standard_Address aNewPtr = Standard::AllocateAligned(theSize, theAlign);
+  Standard_Address aNewPtr = Standard::AllocateAligned(theNewSize, theAlign);
   if (aNewPtr)
   {
     // Copy minimal data (we don't know the old size, so we assume single element)
-    memcpy(aNewPtr, thePtrAligned, theAlign < theSize ? theAlign : theSize);
+    memcpy(aNewPtr, thePtrAligned, std::min(theOldSize, theNewSize));
     Standard::FreeAligned(thePtrAligned);
   }
   return aNewPtr;
