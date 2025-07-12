@@ -39,7 +39,7 @@ class NCollection_Allocator
 private:
   //! Type traits for allocation decisions
   static constexpr Standard_Boolean THE_NEEDS_ALIGNMENT =
-    alignof(ItemType) >= alignof(std::max_align_t) || std::is_floating_point_v<ItemType>;
+    alignof(ItemType) >= alignof(std::max_align_t) || std::is_floating_point<ItemType>::value;
 
 public:
   typedef ItemType          value_type;
