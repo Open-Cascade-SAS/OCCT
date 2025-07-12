@@ -20,58 +20,94 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
+#include <array>
+
 class math_DoubleTab
 {
+  static const Standard_Integer THE_BUFFER_SIZE = 16;
+
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_ALLOC;
+  DEFINE_NCOLLECTION_ALLOC;
 
-  Standard_EXPORT math_DoubleTab(const Standard_Integer LowerRow,
-                                 const Standard_Integer UpperRow,
-                                 const Standard_Integer LowerCol,
-                                 const Standard_Integer UpperCol);
-
-  Standard_EXPORT math_DoubleTab(const Standard_Address Tab,
-                                 const Standard_Integer LowerRow,
-                                 const Standard_Integer UpperRow,
-                                 const Standard_Integer LowerCol,
-                                 const Standard_Integer UpperCol);
-
-  Standard_EXPORT void Init(const Standard_Real InitValue);
-
-  Standard_EXPORT math_DoubleTab(const math_DoubleTab& Other);
-
-  void Copy(math_DoubleTab& Other) const;
-
-  Standard_EXPORT void SetLowerRow(const Standard_Integer LowerRow);
-
-  Standard_EXPORT void SetLowerCol(const Standard_Integer LowerCol);
-
-  Standard_Real& Value(const Standard_Integer RowIndex, const Standard_Integer ColIndex) const;
-
-  Standard_Real& operator()(const Standard_Integer RowIndex, const Standard_Integer ColIndex) const
+public:
+  //! Constructor for ranges [theLowerRow..theUpperRow, theLowerCol..theUpperCol]
+  math_DoubleTab(const Standard_Integer theLowerRow,
+                 const Standard_Integer theUpperRow,
+                 const Standard_Integer theLowerCol,
+                 const Standard_Integer theUpperCol)
+      : myBuffer{},
+        myArray(
+          (theUpperRow - theLowerRow + 1) * (theUpperCol - theLowerCol + 1) <= THE_BUFFER_SIZE
+            ? NCollection_Array2<Standard_Real>(*myBuffer.data(),
+                                                theLowerRow,
+                                                theUpperRow,
+                                                theLowerCol,
+                                                theUpperCol)
+            : NCollection_Array2<Standard_Real>(theLowerRow, theUpperRow, theLowerCol, theUpperCol))
   {
-    return Value(RowIndex, ColIndex);
   }
 
-  Standard_EXPORT void Free();
+public:
+  //! Constructor from external data array
+  math_DoubleTab(const Standard_Address theTab,
+                 const Standard_Integer theLowerRow,
+                 const Standard_Integer theUpperRow,
+                 const Standard_Integer theLowerCol,
+                 const Standard_Integer theUpperCol)
+      : myArray(*static_cast<const Standard_Real*>(theTab),
+                theLowerRow,
+                theUpperRow,
+                theLowerCol,
+                theUpperCol)
+  {
+  }
 
-  ~math_DoubleTab() { Free(); }
+  //! Initialize all elements with theInitValue
+  void Init(const Standard_Real theInitValue) { myArray.Init(theInitValue); }
 
-protected:
+  //! Copy constructor
+  math_DoubleTab(const math_DoubleTab& theOther)
+      : myArray(theOther.myArray)
+  {
+  }
+
+  //! Copy data to theOther
+  void Copy(math_DoubleTab& theOther) const;
+
+  //! Set lower row index
+  void SetLowerRow(const Standard_Integer theLowerRow);
+
+  //! Set lower column index
+  void SetLowerCol(const Standard_Integer theLowerCol);
+
+  //! Access element at (theRowIndex, theColIndex)
+  Standard_Real& Value(const Standard_Integer theRowIndex, const Standard_Integer theColIndex) const
+  {
+    return const_cast<NCollection_Array2<Standard_Real>&>(myArray)(theRowIndex, theColIndex);
+  }
+
+  //! Operator() - alias to Value
+  Standard_Real& operator()(const Standard_Integer theRowIndex,
+                            const Standard_Integer theColIndex) const
+  {
+    return Value(theRowIndex, theColIndex);
+  }
+
+  //! Free resources (for compatibility)
+  void Free() {}
+
+  //! Destructor
+  ~math_DoubleTab() = default;
+
 private:
-  Standard_EXPORT void Allocate();
-
-  Standard_Address Addr;
-  Standard_Real    Buf[16]{};
-  Standard_Boolean isAllocated;
-  Standard_Integer LowR;
-  Standard_Integer UppR;
-  Standard_Integer LowC;
-  Standard_Integer UppC;
+  std::array<Standard_Real, THE_BUFFER_SIZE> myBuffer;
+  NCollection_Array2<Standard_Real>          myArray;
 };
 
 #include <math_DoubleTab.lxx>

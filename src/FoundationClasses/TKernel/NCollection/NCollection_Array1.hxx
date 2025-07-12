@@ -337,9 +337,8 @@ public:
   {
     Standard_RangeError_Raise_if(theUpper < theLower, "NCollection_Array1::Resize");
     const size_t aNewSize     = static_cast<size_t>(theUpper - theLower + 1);
-    const size_t anOldSize    = mySize;
     pointer      aPrevContPnt = myPointer;
-    if (aNewSize == anOldSize)
+    if (aNewSize == mySize)
     {
       myLowerBound = theLower;
       return;
@@ -352,10 +351,9 @@ public:
         destroy();
     }
     myLowerBound = theLower;
-    mySize       = aNewSize;
     if (theToCopyData)
     {
-      const size_t aMinSize = std::min<size_t>(aNewSize, anOldSize);
+      const size_t aMinSize = std::min<size_t>(aNewSize, mySize);
       if (myIsOwner)
       {
         myPointer = myAllocator.reallocate(myPointer, aNewSize);
@@ -365,7 +363,7 @@ public:
         myPointer = myAllocator.allocate(aNewSize);
         copyConstruct(aPrevContPnt, aMinSize);
       }
-      construct(anOldSize, aNewSize);
+      construct(mySize, aNewSize);
     }
     else
     {
@@ -374,6 +372,7 @@ public:
       myPointer = myAllocator.allocate(aNewSize);
       construct();
     }
+    mySize    = aNewSize;
     myIsOwner = true;
   }
 
