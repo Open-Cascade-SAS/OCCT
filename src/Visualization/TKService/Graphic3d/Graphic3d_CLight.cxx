@@ -13,15 +13,16 @@
 
 #include <Graphic3d_CLight.hxx>
 
-#include <Standard_Atomic.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CLight, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_LIGHT_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_LIGHT_COUNTER(0);
 }
 
 //=================================================================================================
@@ -46,7 +47,7 @@ void Graphic3d_CLight::makeId()
   }
 
   myId = TCollection_AsciiString("Graphic3d_CLight_") + aTypeSuffix
-         + TCollection_AsciiString(Standard_Atomic_Increment(&THE_LIGHT_COUNTER));
+         + TCollection_AsciiString(++THE_LIGHT_COUNTER);
 }
 
 //=================================================================================================

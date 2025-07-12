@@ -18,13 +18,14 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
-#include <Standard_Atomic.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderObject, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_SHADER_OBJECT_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_SHADER_OBJECT_COUNTER(0);
 }
 
 // =======================================================================
@@ -35,7 +36,7 @@ Graphic3d_ShaderObject::Graphic3d_ShaderObject(const Graphic3d_TypeOfShaderObjec
     : myType(theType)
 {
   myID = TCollection_AsciiString("Graphic3d_ShaderObject_")
-         + TCollection_AsciiString(Standard_Atomic_Increment(&THE_SHADER_OBJECT_COUNTER));
+         + TCollection_AsciiString(++THE_SHADER_OBJECT_COUNTER);
 }
 
 // =======================================================================

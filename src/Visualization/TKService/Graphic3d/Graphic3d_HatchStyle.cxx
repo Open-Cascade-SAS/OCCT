@@ -15,8 +15,9 @@
 
 #include <Graphic3d_HatchStyle.hxx>
 
-#include <Standard_Atomic.hxx>
 #include <Standard_ProgramError.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_HatchStyle, Standard_Transient)
 
@@ -89,7 +90,7 @@ static const unsigned int myPredefinedPatterns[Aspect_HS_NB][32] = {
 
 namespace
 {
-static volatile Standard_Integer THE_HATCH_STYLE_COUNTER = Aspect_HS_NB - 1;
+static std::atomic<Standard_Integer> THE_HATCH_STYLE_COUNTER(Aspect_HS_NB - 1);
 }
 
 //=================================================================================================
@@ -107,7 +108,7 @@ Graphic3d_HatchStyle::Graphic3d_HatchStyle(const Handle(Image_PixMap)& thePatter
   myPattern->Allocate(aByteSize);
   std::memcpy(myPattern->ChangeData(), thePattern->Data(), aByteSize);
 
-  myHatchType = Standard_Atomic_Increment(&THE_HATCH_STYLE_COUNTER);
+  myHatchType = ++THE_HATCH_STYLE_COUNTER;
 }
 
 //=================================================================================================

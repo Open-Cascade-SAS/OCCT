@@ -15,11 +15,12 @@ occt_lib_path      = $$_PRO_FILE_PWD_/occt/$$occt_lib_subpath
 
 android {
     QMAKE_CFLAGS   += -fexceptions -Wno-ignored-qualifiers
-    QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers
+    QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers -std=c++17
     LIBS += -L$$occt_lib_path -lEGL
 }
 win32 {
     QMAKE_CXXFLAGS_WARN_ON += -W4
+    QMAKE_CXXFLAGS += /std:c++17
     INCLUDEPATH += $$(CSF_OCCTIncludePath)
     LIBS += -L$(CSF_OCCTLibPath);$(CSF_PRODLibPath)
     LIBS += -lopengl32

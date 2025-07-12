@@ -3,6 +3,7 @@ set(OCCT_TKDESTEP_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDESTEP_GTests_FILES
     STEPConstruct_RenderingProperties_Test.cxx
+    StepData_StepWriter_Test.cxx
     StepTidy_BaseTestFixture.pxx
     StepTidy_Axis2Placement3dReducer_Test.cxx
     StepTidy_CartesianPointReducer_Test.cxx

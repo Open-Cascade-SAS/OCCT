@@ -94,6 +94,8 @@
 #include <StepData_StepModel.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <atomic>
+
 #if !defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
@@ -2595,7 +2597,7 @@ struct TestParallelFunctor
         OCC_CATCH_SIGNALS
         int* pint = NULL;
         *pint     = 4;
-        Standard_Atomic_Increment(&myNbNotRaised);
+        ++myNbNotRaised;
       }
 #ifdef _WIN32
       catch (OSD_Exception_ACCESS_VIOLATION const&)
@@ -2603,19 +2605,19 @@ struct TestParallelFunctor
       catch (OSD_SIGSEGV const&)
 #endif
       {
-        Standard_Atomic_Increment(&myNbSigSegv);
+        ++myNbSigSegv;
       }
       catch (Standard_Failure const&)
       {
-        Standard_Atomic_Increment(&myNbUnknown);
+        ++myNbUnknown;
       }
     }
   }
 
 private:
-  mutable volatile Standard_Integer myNbNotRaised;
-  mutable volatile Standard_Integer myNbSigSegv;
-  mutable volatile Standard_Integer myNbUnknown;
+  mutable std::atomic<Standard_Integer> myNbNotRaised;
+  mutable std::atomic<Standard_Integer> myNbSigSegv;
+  mutable std::atomic<Standard_Integer> myNbUnknown;
 };
 
 static Standard_Integer OCC30775(Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char**)

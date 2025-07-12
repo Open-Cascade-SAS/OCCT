@@ -17,13 +17,14 @@
 
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <gp_Pln.hxx>
-#include <Standard_Atomic.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ClipPlane, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_CLIP_PLANE_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_CLIP_PLANE_COUNTER(0);
 
 static Handle(Graphic3d_AspectFillArea3d) defaultAspect()
 {
@@ -267,7 +268,7 @@ void Graphic3d_ClipPlane::setCappingFlag(bool theToUse, int theFlag)
 void Graphic3d_ClipPlane::makeId()
 {
   myId = TCollection_AsciiString("Graphic3d_ClipPlane_") // DynamicType()->Name()
-         + TCollection_AsciiString(Standard_Atomic_Increment(&THE_CLIP_PLANE_COUNTER));
+         + TCollection_AsciiString(++THE_CLIP_PLANE_COUNTER);
 }
 
 //=================================================================================================

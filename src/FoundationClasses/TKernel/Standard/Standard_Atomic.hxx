@@ -27,12 +27,17 @@
 #ifndef _Standard_Atomic_HeaderFile
 #define _Standard_Atomic_HeaderFile
 
+#include <Standard_Macro.hxx>
+#include <atomic>
+
 //! Increments atomically integer variable pointed by theValue
 //! and returns resulting incremented value.
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
 inline int Standard_Atomic_Increment(volatile int* theValue);
 
 //! Decrements atomically integer variable pointed by theValue
 //! and returns resulting decremented value.
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
 inline int Standard_Atomic_Decrement(volatile int* theValue);
 
 //! Perform an atomic compare and swap.
@@ -42,6 +47,7 @@ inline int Standard_Atomic_Decrement(volatile int* theValue);
 //! @param theOldValue expected value to perform modification
 //! @param theNewValue new value to set in case if *theValue was equal to theOldValue
 //! @return TRUE if theNewValue has been set to *theValue
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 inline bool Standard_Atomic_CompareAndSwap(volatile int* theValue,
                                            int           theOldValue,
                                            int           theNewValue);
@@ -56,15 +62,21 @@ inline bool Standard_Atomic_CompareAndSwap(volatile int* theValue,
 // making -march mandatory, check for __GCC_HAVE_SYNC_COMPARE_AND_SWAP_* is
 // enforced.
 
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Increment(volatile int* theValue)
 {
   return __sync_add_and_fetch(theValue, 1);
 }
 
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Decrement(volatile int* theValue)
 {
   return __sync_sub_and_fetch(theValue, 1);
 }
+
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 
 bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int theNewValue)
 {
@@ -89,15 +101,21 @@ extern "C"
 // WinAPI function or MSVC intrinsic
 // Note that we safely cast int* to long*, as they have same size and endian-ness
 
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Increment(volatile int* theValue)
 {
   return _InterlockedIncrement(reinterpret_cast<volatile long*>(theValue));
 }
 
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Decrement(volatile int* theValue)
 {
   return _InterlockedDecrement(reinterpret_cast<volatile long*>(theValue));
 }
+
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 
 bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int theNewValue)
 {
@@ -112,15 +130,21 @@ bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int
 
   #include <libkern/OSAtomic.h>
 
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Increment(volatile int* theValue)
 {
   return OSAtomicIncrement32Barrier(theValue);
 }
 
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Decrement(volatile int* theValue)
 {
   return OSAtomicDecrement32Barrier(theValue);
 }
+
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 
 bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int theNewValue)
 {
@@ -136,15 +160,21 @@ bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int
   // It is strongly recommended to use newer versions of ndk.
   #include <sys/atomics.h>
 
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Increment(volatile int* theValue)
 {
   return __atomic_inc(theValue) + 1; // analog of __sync_fetch_and_add
 }
 
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Decrement(volatile int* theValue)
 {
   return __atomic_dec(theValue) - 1; // analog of __sync_fetch_and_sub
 }
+
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 
 bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int theNewValue)
 {
@@ -156,15 +186,21 @@ bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int
   #ifndef IGNORE_NO_ATOMICS
     #error "Atomic operation isn't implemented for current platform!"
   #endif
+Standard_DEPRECATED("Standard_Atomic_Increment will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Increment(volatile int* theValue)
 {
   return ++(*theValue);
 }
 
+Standard_DEPRECATED("Standard_Atomic_Decrement will be removed in OCCT 8.0.0")
+
 int Standard_Atomic_Decrement(volatile int* theValue)
 {
   return --(*theValue);
 }
+
+Standard_DEPRECATED("Standard_Atomic_CompareAndSwap will be removed in OCCT 8.0.0")
 
 bool Standard_Atomic_CompareAndSwap(volatile int* theValue, int theOldValue, int theNewValue)
 {

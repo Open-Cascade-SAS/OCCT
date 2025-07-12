@@ -22,8 +22,9 @@
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_ShortReal.hxx>
-#include <Standard_Atomic.hxx>
 #include <Standard_Assert.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
 
@@ -37,7 +38,7 @@ static const Standard_Real DEFAULT_ZNEAR = 0.001;
 static const Standard_Real DEFAULT_ZFAR  = 3000.0;
 
 // atomic state counter
-static volatile Standard_Integer THE_STATE_COUNTER = 0;
+static std::atomic<Standard_Size> THE_STATE_COUNTER(0);
 
 // z-range tolerance compatible with for floating point.
 static Standard_Real zEpsilon()
@@ -95,9 +96,7 @@ Graphic3d_Camera::Graphic3d_Camera()
       myIsCustomProjMatLR(false),
       myIsCustomFrustomLR(false)
 {
-  myWorldViewProjState.Initialize((Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER),
-                                  (Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER),
-                                  this);
+  myWorldViewProjState.Initialize(++THE_STATE_COUNTER, ++THE_STATE_COUNTER, this);
 }
 
 //=================================================================================================
@@ -1118,8 +1117,7 @@ void Graphic3d_Camera::InvalidateProjection()
 {
   myMatricesD.ResetProjection();
   myMatricesF.ResetProjection();
-  myWorldViewProjState.ProjectionState() =
-    (Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER);
+  myWorldViewProjState.ProjectionState() = ++THE_STATE_COUNTER;
 }
 
 //=================================================================================================
@@ -1128,8 +1126,7 @@ void Graphic3d_Camera::InvalidateOrientation()
 {
   myMatricesD.ResetOrientation();
   myMatricesF.ResetOrientation();
-  myWorldViewProjState.WorldViewState() =
-    (Standard_Size)Standard_Atomic_Increment(&THE_STATE_COUNTER);
+  myWorldViewProjState.WorldViewState() = ++THE_STATE_COUNTER;
 }
 
 //=================================================================================================

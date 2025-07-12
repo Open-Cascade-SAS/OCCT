@@ -14,7 +14,6 @@ set(OCCT_Standard_FILES
   Standard_Character.hxx
   Standard_CLocaleSentry.cxx
   Standard_CLocaleSentry.hxx
-  Standard_Condition.cxx
   Standard_Condition.hxx
   Standard_ConstructionError.hxx
   Standard_CString.cxx
