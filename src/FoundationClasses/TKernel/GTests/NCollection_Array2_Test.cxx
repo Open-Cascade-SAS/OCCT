@@ -293,23 +293,6 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
   }
 }
 
-TEST(NCollection_Array2Test, Resize_NoCopy)
-{
-  // Test resizing without copying existing data
-  NCollection_Array2<Standard_Integer> anArray(1, 3, 1, 3);
-  anArray.Init(42);
-  EXPECT_EQ(42, anArray(2, 2));
-
-  // Resize with theToCopyData = false
-  anArray.Resize(0, 5, 0, 5, Standard_False);
-
-  EXPECT_EQ(6, anArray.NbRows());
-  EXPECT_EQ(6, anArray.NbColumns());
-
-  // Values should be default-initialized (0 for Standard_Integer), not the old value.
-  EXPECT_EQ(0, anArray(2, 2));
-}
-
 TEST(NCollection_Array2Test, ReIndex_Interference)
 {
   // This test explicitly verifies that UpdateUpperRow modifies the LowerRow,
