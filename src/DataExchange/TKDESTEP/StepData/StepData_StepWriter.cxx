@@ -1166,12 +1166,12 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
   const TCollection_AsciiString& theText)
 {
   TCollection_AsciiString aResult;
-  Standard_Integer        aNb = theText.Length();
+  const Standard_Integer  aNb = theText.Length();
 
   // Process characters from beginning to end
   for (Standard_Integer anI = 1; anI <= aNb; anI++)
   {
-    char anUncar = theText.Value(anI);
+    const char anUncar = theText.Value(anI);
 
     // Check if we're at the start of a control directive
     Standard_Boolean anIsDirective    = Standard_False;
@@ -1183,7 +1183,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
       // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
       if (anI + 3 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 3) == '\\')
       {
-        char aThirdChar = theText.Value(anI + 2);
+        const char aThirdChar = theText.Value(anI + 2);
 
         // \X2, \X4, \X0 patterns - special control sequences
         if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
@@ -1211,17 +1211,11 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
       // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
       else if (anI + 4 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 4) == '\\')
       {
-        char aThirdChar  = theText.Value(anI + 2);
-        char aFourthChar = theText.Value(anI + 3);
+        const char aThirdChar  = theText.Value(anI + 2);
+        const char aFourthChar = theText.Value(anI + 3);
 
         // Regular \X{HH}\ pattern - check for two hex characters
-        Standard_Boolean aThirdIsHex =
-          ((aThirdChar >= '0' && aThirdChar <= '9') || (aThirdChar >= 'A' && aThirdChar <= 'F')
-           || (aThirdChar >= 'a' && aThirdChar <= 'f'));
-        Standard_Boolean aFourthIsHex =
-          ((aFourthChar >= '0' && aFourthChar <= '9') || (aFourthChar >= 'A' && aFourthChar <= 'F')
-           || (aFourthChar >= 'a' && aFourthChar <= 'f'));
-        if (aThirdIsHex && aFourthIsHex)
+        if (std::isxdigit(aThirdChar) && std::isxdigit(aFourthChar))
         {
           anIsDirective    = Standard_True;
           aDirectiveLength = 5; // Control directive with two hex chars
@@ -1230,7 +1224,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
       // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
       else if (anI + 2 <= aNb && theText.Value(anI + 2) == '\\')
       {
-        char aSecondChar = theText.Value(anI + 1);
+        const char aSecondChar = theText.Value(anI + 1);
         if (aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T')
         {
           anIsDirective    = Standard_True;
@@ -1240,8 +1234,12 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
       // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
       else if (anI + 3 <= aNb && theText.Value(anI + 1) == 'P' && theText.Value(anI + 3) == '\\')
       {
-        anIsDirective    = Standard_True;
-        aDirectiveLength = 4; // P directive with parameter
+        const char aSecondChar = theText.Value(anI + 2);
+        if (std::isalpha(aSecondChar))
+        {
+          anIsDirective    = Standard_True;
+          aDirectiveLength = 4; // P directive with parameter
+        }
       }
     }
 
