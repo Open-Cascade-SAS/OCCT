@@ -41,14 +41,19 @@ public:
                  const Standard_Integer theUpperRow,
                  const Standard_Integer theLowerCol,
                  const Standard_Integer theUpperCol)
-      : myArray(*myBuffer.data(),
-                theLowerRow,
-                theUpperRow,
-                theLowerCol,
-                theUpperCol)
+      : myBuffer{},
+        myArray(
+          (theUpperRow - theLowerRow + 1) * (theUpperCol - theLowerCol + 1) <= THE_BUFFER_SIZE
+            ? NCollection_Array2<Standard_Real>(*myBuffer.data(),
+                                                theLowerRow,
+                                                theUpperRow,
+                                                theLowerCol,
+                                                theUpperCol)
+            : NCollection_Array2<Standard_Real>(theLowerRow, theUpperRow, theLowerCol, theUpperCol))
   {
   }
 
+public:
   //! Constructor from external data array
   math_DoubleTab(const Standard_Address theTab,
                  const Standard_Integer theLowerRow,
@@ -88,7 +93,8 @@ public:
   }
 
   //! Operator() - alias to Value
-  Standard_Real& operator()(const Standard_Integer theRowIndex, const Standard_Integer theColIndex) const
+  Standard_Real& operator()(const Standard_Integer theRowIndex,
+                            const Standard_Integer theColIndex) const
   {
     return Value(theRowIndex, theColIndex);
   }
@@ -101,7 +107,7 @@ public:
 
 private:
   std::array<Standard_Real, THE_BUFFER_SIZE> myBuffer;
-  NCollection_Array2<Standard_Real> myArray;
+  NCollection_Array2<Standard_Real>          myArray;
 };
 
 #include <math_DoubleTab.lxx>

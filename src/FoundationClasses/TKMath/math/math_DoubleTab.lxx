@@ -26,11 +26,19 @@ inline void math_DoubleTab::Copy(math_DoubleTab& theOther) const
 inline void math_DoubleTab::SetLowerRow(const Standard_Integer theLowerRow)
 {
   const Standard_Integer aRowSize = myArray.NbRows();
-  myArray.Resize(theLowerRow, theLowerRow + aRowSize - 1, myArray.LowerCol(), myArray.UpperCol(), Standard_True);
+  myArray.Resize(theLowerRow,
+                 theLowerRow + aRowSize - 1,
+                 myArray.LowerCol(),
+                 myArray.UpperCol(),
+                 Standard_True);
 }
 
 inline void math_DoubleTab::SetLowerCol(const Standard_Integer theLowerCol)
 {
   const Standard_Integer aColSize = myArray.NbColumns();
-  myArray.Resize(myArray.LowerRow(), myArray.UpperRow(), theLowerCol, theLowerCol + aColSize - 1, Standard_True);
+  myArray.Resize(myArray.LowerRow(),
+                 myArray.UpperRow(),
+                 theLowerCol,
+                 theLowerCol + aColSize - 1,
+                 Standard_True);
 }
