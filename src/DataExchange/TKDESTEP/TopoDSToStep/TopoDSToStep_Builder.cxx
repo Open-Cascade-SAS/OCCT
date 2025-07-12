@@ -34,20 +34,16 @@
 #include <TopoDSToStep_Tool.hxx>
 #include <Transfer_FinderProcess.hxx>
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 TopoDSToStep_Builder::TopoDSToStep_Builder()
     : myError(TopoDSToStep_BuilderOther)
 {
   done = Standard_False;
 }
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                   aShape,
                                            TopoDSToStep_Tool&                    aTool,
                                            const Handle(Transfer_FinderProcess)& FP,
@@ -59,10 +55,8 @@ TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                  
   Init(aShape, aTool, FP, theTessellatedGeomParam, theLocalFactors, theProgress);
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
                                 TopoDSToStep_Tool&                    myTool,
                                 const Handle(Transfer_FinderProcess)& FP,

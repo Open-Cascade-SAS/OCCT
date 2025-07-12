@@ -23,10 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Poly_CoherentTriangulation, Standard_Transient)
 
-//=======================================================================
-// function : Poly_CoherentTriangulation
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
+
 
 Poly_CoherentTriangulation::Poly_CoherentTriangulation(
   const Handle(NCollection_BaseAllocator)& theAlloc)

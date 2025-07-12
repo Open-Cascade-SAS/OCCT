@@ -377,10 +377,8 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOMBasicString& 
   }
 }
 
-//=======================================================================
-// function : Write
-// purpose  : Stream out a char
-//=======================================================================
+//=================================================================================================
+
 void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const char theChar)
 {
   theOStream.write(&theChar, sizeof(char));

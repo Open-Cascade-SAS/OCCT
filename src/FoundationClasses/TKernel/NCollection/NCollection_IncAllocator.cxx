@@ -90,10 +90,8 @@ NCollection_IncAllocator::~NCollection_IncAllocator()
   delete myMutex;
 }
 
-//=======================================================================
-// function : AllocateOptimal
-// purpose  : allocate a memory
-//=======================================================================
+//=================================================================================================
+
 void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
 {
   Standard_Mutex::Sentry aLock(myMutex);
@@ -155,10 +153,8 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
   return aRes;
 }
 
-//=======================================================================
-// function : Allocate
-// purpose  : Allocate a memory
-//=======================================================================
+//=================================================================================================
+
 void* NCollection_IncAllocator::Allocate(const size_t theSize)
 {
   return AllocateOptimal(theSize);

@@ -73,10 +73,8 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label&       L,
   return SetAttr(L, V, theGuid);
 }
 
-//=======================================================================
-// function : TDataStd_Integer
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 
 TDataStd_Integer::TDataStd_Integer()
     : myValue(-1),
@@ -129,10 +127,8 @@ void TDataStd_Integer::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_Integer::SetID()
 {
   Backup();

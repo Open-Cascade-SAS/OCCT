@@ -240,10 +240,8 @@ void TDocStd_Document::AbortCommand()
   AbortTransaction();
 }
 
-//=======================================================================
-// function : CommitTransaction
-// purpose  : Private method.
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean TDocStd_Document::CommitTransaction()
 {
@@ -339,10 +337,8 @@ Standard_Boolean TDocStd_Document::CommitTransaction()
   return isDone;
 }
 
-//=======================================================================
-// function : AbortTransaction
-// purpose  : Private method.
-//=======================================================================
+//=================================================================================================
+
 
 void TDocStd_Document::AbortTransaction()
 {
@@ -376,10 +372,8 @@ void TDocStd_Document::AbortTransaction()
   }
 }
 
-//=======================================================================
-// function :OpenTransaction
-// purpose  : Private method.
-//=======================================================================
+//=================================================================================================
+
 
 void TDocStd_Document::OpenTransaction()
 {

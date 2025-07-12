@@ -201,10 +201,8 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : feature of Height
-//=======================================================================
+//=================================================================================================
+
 
 void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 {

@@ -1155,10 +1155,8 @@ static Standard_Integer OCCN1(Draw_Interpretor& di, Standard_Integer argc, const
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
-//=======================================================================
-// function : OCCN2
-// purpose  : BOOLEAN OPERATION
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer OCCN2(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc > 2)

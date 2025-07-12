@@ -289,10 +289,8 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const S
   SetDraft();
 }
 
-//=======================================================================
-// function :SetOptions
-// purpose  : Defines the style
-//======================================================================
+//=================================================================================================
+
 void BRepFill_Draft::SetOptions(const BRepFill_TransitionStyle Style,
                                 const Standard_Real            Min,
                                 const Standard_Real            Max)

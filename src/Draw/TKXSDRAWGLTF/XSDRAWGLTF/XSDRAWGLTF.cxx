@@ -101,10 +101,8 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
   return Standard_True;
 }
 
-//=============================================================================
-// function : ReadGltf
-// purpose  : Reads glTF file
-//=============================================================================
+//=================================================================================================
+
 static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
                                  Standard_Integer  theNbArgs,
                                  const char**      theArgVec)
@@ -286,10 +284,8 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=============================================================================
-// function : WriteGltf
-// purpose  : Writes glTF file
-//=============================================================================
+//=================================================================================================
+
 static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
                                   Standard_Integer  theNbArgs,
                                   const char**      theArgVec)

@@ -143,19 +143,15 @@ vtkStandardNewMacro(IVtkTools_ShapeObject)
 //============================================================================
 IVtkTools_ShapeObject::~IVtkTools_ShapeObject() {}
 
-//============================================================================
-//  Method: SetShapeSource
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapeObject::SetShapeSource(IVtkTools_ShapeDataSource* theDataSource)
 {
   myShapeSource = theDataSource;
 }
 
-//============================================================================
-//  Method: GetShapeSource
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkTools_ShapeDataSource* IVtkTools_ShapeObject::GetShapeSource() const
 {
   return myShapeSource;

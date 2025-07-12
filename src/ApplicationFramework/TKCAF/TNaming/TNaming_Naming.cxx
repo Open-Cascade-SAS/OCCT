@@ -2165,10 +2165,8 @@ TNaming_Name& TNaming_Naming::ChangeName()
   return myName;
 }
 
-//=======================================================================
-// function : Regenerate
-// purpose  : idem designer
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean TNaming_Naming::Regenerate(TDF_LabelMap& MDF)
 

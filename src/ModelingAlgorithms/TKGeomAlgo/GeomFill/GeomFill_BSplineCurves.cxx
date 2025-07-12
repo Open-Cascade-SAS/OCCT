@@ -129,10 +129,8 @@ static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
   return Standard_True;
 }
 
-//=======================================================================
-// function : SetSameDistribution
-// purpose  : Internal Use Only
-//=======================================================================
+//=================================================================================================
+
 
 static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
                                             Handle(Geom_BSplineCurve)& C2)

@@ -19,10 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
 
-//============================================================================
-// Method: Constructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&         theShape,
                              const Handle(Prs3d_Drawer)& theDrawerLink)
     : myTopoDSShape(theShape),
@@ -41,16 +39,12 @@ IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&         theShape,
   buildSubShapeIdMap();
 }
 
-//============================================================================
-// Method: Destructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_Shape::~IVtkOCC_Shape() {}
 
-//============================================================================
-// Method: GetSubShapeId
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
 {
   Standard_Integer anIndex =
@@ -62,10 +56,8 @@ IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
   return (IVtk_IdType)anIndex;
 }
 
-//============================================================================
-// Method: getSubIds
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
 {
   IVtk_ShapeIdList aRes;
@@ -106,10 +98,8 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds(const IVtk_IdType theId) const
   return aRes;
 }
 
-//============================================================================
-// Method: GetSubShape
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 const TopoDS_Shape& IVtkOCC_Shape::GetSubShape(const IVtk_IdType theId) const
 {
   return mySubShapeIds.FindKey((Standard_Integer)theId);

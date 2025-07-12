@@ -30,10 +30,8 @@ namespace
 static const Standard_Real PRCANG = Precision::Angular();
 }
 
-//=======================================================================
-// function : Intf_InterferencePolygon2d
-// purpose  : constructor empty
-//=======================================================================
+//=================================================================================================
+
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
     : Intf_Interference(Standard_False),

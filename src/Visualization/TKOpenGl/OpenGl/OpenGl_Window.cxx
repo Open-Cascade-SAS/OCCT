@@ -827,10 +827,8 @@ Standard_Boolean OpenGl_Window::Activate()
 
 #if !defined(__APPLE__) || defined(HAVE_XLIB)
 
-// =======================================================================
-// function : Resize
-// purpose  : call_subr_resize
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Window::Resize()
 {
   Graphic3d_Vec2i aWinSize;

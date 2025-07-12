@@ -697,10 +697,8 @@ Standard_OStream& TNaming::Print(const TNaming_NameType NAME, Standard_OStream& 
   return s;
 }
 
-//=======================================================================
-// function : Print
-// purpose  : Prints UsedShapes.
-//=======================================================================
+//=================================================================================================
+
 
 Standard_OStream& TNaming::Print(const TDF_Label& ACCESS, Standard_OStream& s)
 {

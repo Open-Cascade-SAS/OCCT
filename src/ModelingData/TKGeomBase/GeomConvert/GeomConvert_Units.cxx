@@ -33,10 +33,8 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 
-// ============================================================================
-// Method : RadianToDegree
-// Purpose:
-// ============================================================================
+//=================================================================================================
+
 Handle(Geom2d_Curve) GeomConvert_Units::RadianToDegree(const Handle(Geom2d_Curve)& theCurve2d,
                                                        const Handle(Geom_Surface)& theSurf,
                                                        const Standard_Real         theLengthFactor,
@@ -302,10 +300,8 @@ Handle(Geom2d_Curve) GeomConvert_Units::DegreeToRadian(const Handle(Geom2d_Curve
   return aPcurve;
 }
 
-// ============================================================================
-// Method : MirrorPCurve
-// Purpose:
-// ============================================================================
+//=================================================================================================
+
 Handle(Geom2d_Curve) GeomConvert_Units::MirrorPCurve(const Handle(Geom2d_Curve)& theCurve)
 {
   Handle(Geom2d_Curve) theMirrored = Handle(Geom2d_Curve)::DownCast(theCurve->Copy());

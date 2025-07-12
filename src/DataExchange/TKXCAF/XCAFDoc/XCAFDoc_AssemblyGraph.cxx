@@ -68,10 +68,8 @@ Standard_Boolean XCAFDoc_AssemblyGraph::IsDirectLink(const Standard_Integer theN
   return GetChildren(theNode1).Contains(theNode2);
 }
 
-// =======================================================================
-// function : GetNodeType
-// purpose  : Returns node type
-// =======================================================================
+//=================================================================================================
+
 
 XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(
   const Standard_Integer theNode) const

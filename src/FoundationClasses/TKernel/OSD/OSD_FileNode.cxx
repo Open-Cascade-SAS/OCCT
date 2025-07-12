@@ -421,10 +421,8 @@ void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
 static BOOL __fastcall _get_file_time(const wchar_t*, LPSYSTEMTIME, BOOL);
 static void __fastcall _test_raise(TCollection_AsciiString, Standard_CString);
 
-//=======================================================================
-// function : OSD_FileNode
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 
 OSD_FileNode::OSD_FileNode() {}
 

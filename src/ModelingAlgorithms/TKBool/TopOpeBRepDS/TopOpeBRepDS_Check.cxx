@@ -58,10 +58,8 @@ TopOpeBRepDS_Check::TopOpeBRepDS_Check()
   myMapShapeStatus.Clear();
 }
 
-//=======================================================================
-// function : ChkIntg
-// purpose  : Check Integrity
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean CheckEdgeParameter(const Handle(TopOpeBRepDS_HDataStructure)& myHDS);
 
 Standard_Boolean TopOpeBRepDS_Check::ChkIntg()

@@ -186,10 +186,8 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   BuildSection(Shape, CylSurf.Shape());
 }
 
-//=======================================================================
-// function : BRepProj_Projection
-// purpose  : Conical projection
-//=======================================================================
+//=================================================================================================
+
 
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,

@@ -2002,11 +2002,8 @@ Handle(TopOpeBRepDS_SurfaceCurveInterference) ChFi3d_FilCurveInDS(const Standard
   return SC1;
 }
 
-//=======================================================================
-// function : TrsfTrans
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 TopAbs_Orientation ChFi3d_TrsfTrans(const IntSurf_TypeTrans T1)
 {
   switch (T1)

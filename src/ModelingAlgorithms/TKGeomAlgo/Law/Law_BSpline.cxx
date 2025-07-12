@@ -75,10 +75,8 @@ static void GetPoles(const TColStd_Array1OfReal& FP,
   }
 }
 
-//=======================================================================
-// function : CheckCurveData
-// purpose  : Internal use only
-//=======================================================================
+//=================================================================================================
+
 
 static void CheckCurveData(const TColStd_Array1OfReal&    CPoles,
                            const TColStd_Array1OfReal&    CKnots,
@@ -108,10 +106,8 @@ static void CheckCurveData(const TColStd_Array1OfReal&    CPoles,
     throw Standard_ConstructionError();
 }
 
-//=======================================================================
-// function : KnotAnalysis
-// purpose  : Internal use only
-//=======================================================================
+//=================================================================================================
+
 
 static void KnotAnalysis(const Standard_Integer         Degree,
                          const Standard_Boolean         Periodic,

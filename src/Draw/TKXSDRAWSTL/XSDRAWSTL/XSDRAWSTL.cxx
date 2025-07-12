@@ -77,10 +77,8 @@ static Standard_Integer writestl(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-//=============================================================================
-// function : readstl
-// purpose  : Reads stl file
-//=============================================================================
+//=================================================================================================
+
 static Standard_Integer readstl(Draw_Interpretor& theDI,
                                 Standard_Integer  theArgc,
                                 const char**      theArgv)

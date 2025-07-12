@@ -470,11 +470,8 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
   return ChoixConge;
 }
 
-//=======================================================================
-// function : NextSide
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Integer ChFi3d::NextSide(TopAbs_Orientation&      Or1,
                                   TopAbs_Orientation&      Or2,
@@ -529,11 +526,8 @@ Standard_Integer ChFi3d::NextSide(TopAbs_Orientation&      Or1,
   return ChoixConge;
 }
 
-//=======================================================================
-// function : NextSide
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 
 void ChFi3d::NextSide(TopAbs_Orientation&      Or,
                       const TopAbs_Orientation OrSave,
@@ -549,11 +543,8 @@ void ChFi3d::NextSide(TopAbs_Orientation&      Or,
   }
 }
 
-//=======================================================================
-// function : SameSide
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean ChFi3d::SameSide(const TopAbs_Orientation Or,
                                   const TopAbs_Orientation OrSave1,

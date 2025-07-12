@@ -45,10 +45,8 @@ DrawTrSurf_Drawable::DrawTrSurf_Drawable(
 {
 }
 
-//=======================================================================
-// function : DrawCurve2dOn
-// purpose  : draw a 2D curve
-//=======================================================================
+//=================================================================================================
+
 
 void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDisplay) const
 {
@@ -128,10 +126,8 @@ static void PlotCurve(Draw_Display&          aDisplay,
   }
 }
 
-//=======================================================================
-// function : DrawCurveOn
-// purpose  : draw a 3D curve
-//=======================================================================
+//=================================================================================================
+
 
 void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay) const
 {

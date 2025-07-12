@@ -491,10 +491,8 @@ TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve)& theCurve,
 
 //  Modified by Sergey KHROMOV - Wed Mar  6 17:40:14 2002 End
 //
-//=======================================================================
-// function : GetCurveType
-// purpose  : Get curve type.
-//=======================================================================
+//=================================================================================================
+
 
 GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d)
 {

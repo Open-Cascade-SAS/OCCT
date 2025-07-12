@@ -232,11 +232,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
-//==========================================================================
-// function : DsgPrs_AnglePresentation::Add
-// purpose  :
-//
-//==========================================================================
+//=================================================================================================
+
 
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,
@@ -471,11 +468,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   }
 }
 
-//==========================================================================
-// function : DsgPrs_AnglePresentation::Add
-// purpose  :
-//
-//==========================================================================
+//=================================================================================================
+
 
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,
@@ -728,11 +722,8 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   DsgPrs::ComputeSymbol(aPresentation, LA, ptarr, ptarr1, dirarr, dirarr2, ArrowPrs);
 }
 
-//==========================================================================
-// function : DsgPrs_AnglePresentation::Add
-// purpose  :
-//
-//==========================================================================
+//=================================================================================================
+
 
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,

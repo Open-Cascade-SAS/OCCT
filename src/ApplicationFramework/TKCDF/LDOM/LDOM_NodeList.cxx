@@ -44,10 +44,8 @@ void LDOM_NodeList::Append(const LDOM_BasicNode& aNode) const
   mySeq->Append(&aNode);
 }
 
-//=======================================================================
-// function : LDOM_NodeList
-// purpose  : Copy constructor
-//=======================================================================
+//=================================================================================================
+
 
 LDOM_NodeList::LDOM_NodeList(const LDOM_NodeList& theOther)
 {

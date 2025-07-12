@@ -477,10 +477,8 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Intege
   return Standard_True;
 }
 
-//=======================================================================
-// method : IsDegenerated
-// purpose:
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d&     p2d1,
                                                       const gp_Pnt2d&     p2d2,

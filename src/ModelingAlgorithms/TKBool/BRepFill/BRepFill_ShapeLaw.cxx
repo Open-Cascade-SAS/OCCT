@@ -85,10 +85,8 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W, const Standard_Boolea
   myDone = Standard_True;
 }
 
-//=======================================================================
-// function : Create
-// purpose  : Evolutive Wire
-//=======================================================================
+//=================================================================================================
+
 
 BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire&          W,
                                      const Handle(Law_Function)& L,

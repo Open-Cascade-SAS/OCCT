@@ -339,10 +339,8 @@ Handle(TColStd_HSequenceOfHExtendedString) Message_Algorithm::GetMessageStrings(
   return Handle(TColStd_HSequenceOfHExtendedString)::DownCast(myReportStrings->Value(aFlagIndex));
 }
 
-//=======================================================================
-// function : PrepareReport
-// purpose  : static method
-//=======================================================================
+//=================================================================================================
+
 
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const Handle(TColStd_HPackedMapOfInteger)& theMapError,
@@ -367,10 +365,8 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   return aNewReport;
 }
 
-//=======================================================================
-// function : PrepareReport
-// purpose  : static method
-//=======================================================================
+//=================================================================================================
+
 
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const TColStd_SequenceOfHExtendedString& theReportSeq,

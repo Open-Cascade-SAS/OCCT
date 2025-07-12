@@ -62,10 +62,8 @@ static Handle(TDataStd_IntegerArray) SetAttr(const TDF_Label&       label,
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_IntegerArray
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 
 TDataStd_IntegerArray::TDataStd_IntegerArray()
     : myIsDelta(Standard_False),
@@ -219,10 +217,8 @@ void TDataStd_IntegerArray::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 
 void TDataStd_IntegerArray::SetID()
 {

@@ -354,10 +354,8 @@ void GeomFill_SectionPlacement::SetLocation(const Handle(GeomFill_LocationLaw)& 
   myLaw = L;
 }
 
-//===============================================================
-// Function : Perform
-// Purpose : Le plus simple
-//===============================================================
+//=================================================================================================
+
 void GeomFill_SectionPlacement::Perform(const Standard_Real Tol)
 {
   Handle(Adaptor3d_Curve) Path;

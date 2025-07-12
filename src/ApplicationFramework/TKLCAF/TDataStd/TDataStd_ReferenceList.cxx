@@ -50,10 +50,8 @@ static Handle(TDataStd_ReferenceList) SetAttr(const TDF_Label& label, const Stan
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_ReferenceList
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_ReferenceList::TDataStd_ReferenceList()
     : myID(GetID())
 {
@@ -269,10 +267,8 @@ void TDataStd_ReferenceList::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_ReferenceList::SetID()
 {
   Backup();

@@ -84,10 +84,8 @@ LDOMBasicString::LDOMBasicString(const char*                    aValue,
   }
 }
 
-//=======================================================================
-// function : LDOMBasicString
-// purpose  : Copy constructor
-//=======================================================================
+//=================================================================================================
+
 
 LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
     : myType(anOther.Type())

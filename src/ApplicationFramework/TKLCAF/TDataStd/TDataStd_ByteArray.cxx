@@ -35,10 +35,8 @@ const Standard_GUID& TDataStd_ByteArray::GetID()
   return TDataStd_ByteArrayID;
 }
 
-//=======================================================================
-// function : TDataStd_ByteArray
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_ByteArray::TDataStd_ByteArray()
     : myIsDelta(Standard_False),
       myID(GetID())
@@ -210,10 +208,8 @@ void TDataStd_ByteArray::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 
 void TDataStd_ByteArray::SetID()
 {

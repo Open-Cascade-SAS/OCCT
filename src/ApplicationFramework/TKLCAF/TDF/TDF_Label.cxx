@@ -343,10 +343,8 @@ TDF_LabelNode* TDF_Label::FindOrAddChild(const Standard_Integer aTag,
   return childLabelNode;
 }
 
-//=======================================================================
-// function : InternalDump
-// purpose  : Private method.
-//=======================================================================
+//=================================================================================================
+
 
 void TDF_Label::InternalDump(Standard_OStream&        anOS,
                              const TDF_IDFilter&      aFilter,

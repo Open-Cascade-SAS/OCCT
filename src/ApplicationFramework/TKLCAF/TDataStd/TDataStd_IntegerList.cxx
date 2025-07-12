@@ -49,10 +49,8 @@ static Handle(TDataStd_IntegerList) SetAttr(const TDF_Label& label, const Standa
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_IntegerList
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_IntegerList::TDataStd_IntegerList()
     : myID(GetID())
 {
@@ -268,10 +266,8 @@ void TDataStd_IntegerList::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 
 void TDataStd_IntegerList::SetID()
 {

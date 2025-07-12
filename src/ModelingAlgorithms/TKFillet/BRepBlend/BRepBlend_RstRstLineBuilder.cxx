@@ -1146,10 +1146,8 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
   }
 }
 
-//=======================================================================
-// function : Recadre1
-// purpose  : Contact lost on 1
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&      Func,
                                                        Blend_SurfCurvFuncInv&     Finv,

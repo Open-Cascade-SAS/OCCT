@@ -216,10 +216,8 @@ void NCollection_BaseList::PInsertAfter(NCollection_BaseList& theOther, Iterator
   }
 }
 
-//=======================================================================
-// function : PReverse
-// purpose  : reverse the list
-//=======================================================================
+//=================================================================================================
+
 
 void NCollection_BaseList::PReverse()
 {

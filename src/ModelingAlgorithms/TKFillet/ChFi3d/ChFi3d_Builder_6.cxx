@@ -146,11 +146,8 @@ static void drawline(const Handle(BRepBlend_Line)& lin, const Standard_Boolean i
   }
 }
 #endif
-//=======================================================================
-// function : SearchIndex
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer SearchIndex(const Standard_Real Value, Handle(BRepBlend_Line)& Lin)
 {
   Standard_Integer NbPnt = Lin->NbPoints(), Ind;
@@ -160,11 +157,8 @@ static Standard_Integer SearchIndex(const Standard_Real Value, Handle(BRepBlend_
   return Ind;
 }
 
-//=======================================================================
-// function : IsObst
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer nbedconnex(const TopTools_ListOfShape& L)
 {
   Standard_Integer                   nb = 0, i = 0;
@@ -249,11 +243,8 @@ static Standard_Boolean IsObst(const ChFiDS_CommonPoint& CP,
   return !IsVois(E, Vref, VEMap, DONE, 0, prof);
 }
 
-//=======================================================================
-// function : CompParam
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 
 static void CompParam(const Geom2dAdaptor_Curve& Carc,
                       Handle(Geom2d_Curve)       Ctg,

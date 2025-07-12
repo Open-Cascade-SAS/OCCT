@@ -184,10 +184,8 @@ void GeomFill_LocationDraft::Prepare()
   } // for_ii
 }
 
-//==================================================================
-// Function: GetCurve
-// Purpose : return the path
-//==================================================================
+//=================================================================================================
+
 const Handle(Adaptor3d_Curve)& GeomFill_LocationDraft::GetCurve() const
 {
   return myCurve;

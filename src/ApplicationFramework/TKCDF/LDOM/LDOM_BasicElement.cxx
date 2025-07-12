@@ -163,10 +163,8 @@ const LDOM_BasicAttribute& LDOM_BasicElement::GetAttribute(const LDOMBasicString
   return aNullAttribute;
 }
 
-//=======================================================================
-// function : GetFirstAttribute
-// purpose  : private method
-//=======================================================================
+//=================================================================================================
+
 
 const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
   const LDOM_BasicNode*&  theLastCh,

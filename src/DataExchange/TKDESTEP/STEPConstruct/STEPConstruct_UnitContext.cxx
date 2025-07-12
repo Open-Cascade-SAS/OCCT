@@ -246,10 +246,8 @@ Standard_Real STEPConstruct_UnitContext::ConvertSiPrefix(const StepBasic_SiPrefi
   return 1.;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::SiUnitNameFactor
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 
 Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(
   const Handle(StepBasic_SiUnit)& aSiUnit,
@@ -268,10 +266,8 @@ Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(
   }
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::ComputeFactors
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 
 Standard_Integer STEPConstruct_UnitContext::ComputeFactors(
   const Handle(StepRepr_GlobalUnitAssignedContext)& aContext,
@@ -488,10 +484,8 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
   return status;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::ComputeTolerance
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 
 Standard_Integer STEPConstruct_UnitContext::ComputeTolerance(
   const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aContext)
@@ -556,82 +550,64 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance(
   return status;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::LengthFactor
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Real STEPConstruct_UnitContext::LengthFactor() const
 {
   return lengthFactor;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::PlaneAngleFactor
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Real STEPConstruct_UnitContext::PlaneAngleFactor() const
 {
   return planeAngleFactor;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::SolidAngleFactor
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Real STEPConstruct_UnitContext::SolidAngleFactor() const
 {
   return solidAngleFactor;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::Uncertainty
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Real STEPConstruct_UnitContext::Uncertainty() const
 {
   return theUncertainty;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::HasUncertainty
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Boolean STEPConstruct_UnitContext::HasUncertainty() const
 {
   return hasUncertainty;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::LengthDone
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Boolean STEPConstruct_UnitContext::LengthDone() const
 {
   return lengthDone;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::PlaneAngleDone
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Boolean STEPConstruct_UnitContext::PlaneAngleDone() const
 {
   return planeAngleDone;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::SolidAngleDone
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_Boolean STEPConstruct_UnitContext::SolidAngleDone() const
 {
   return solidAngleDone;
 }
 
-// ==========================================================================
-// Method  : STEPConstruct_UnitContext::StatusMessage
-// Purpose :
-// ==========================================================================
+//=================================================================================================
+
 Standard_CString STEPConstruct_UnitContext::StatusMessage(const Standard_Integer status) const
 {
   switch (status)

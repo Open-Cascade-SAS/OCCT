@@ -83,10 +83,8 @@ static void Rational(const TColStd_Array2OfReal& Weights,
   }
 }
 
-//=======================================================================
-// function : AddPoleCol
-// purpose  : Internal use only.
-//=======================================================================
+//=================================================================================================
+
 
 static void AddPoleCol(const TColgp_Array2OfPnt& Poles,
                        const TColgp_Array1OfPnt& PoleCol,
@@ -126,10 +124,8 @@ static void AddPoleCol(const TColgp_Array2OfPnt& Poles,
   }
 }
 
-//=======================================================================
-// function : AddRatPoleCol
-// purpose  : Internal use only.
-//=======================================================================
+//=================================================================================================
+
 
 static void AddRatPoleCol(const TColgp_Array2OfPnt&   Poles,
                           const TColStd_Array2OfReal& Weights,
@@ -177,10 +173,8 @@ static void AddRatPoleCol(const TColgp_Array2OfPnt&   Poles,
   }
 }
 
-//=======================================================================
-// function : AddPoleRow
-// purpose  : Internal use only.
-//=======================================================================
+//=================================================================================================
+
 
 static void AddPoleRow(const TColgp_Array2OfPnt& Poles,
                        const TColgp_Array1OfPnt& PoleRow,

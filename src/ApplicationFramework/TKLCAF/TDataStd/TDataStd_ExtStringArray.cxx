@@ -219,10 +219,8 @@ void TDataStd_ExtStringArray::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 
 void TDataStd_ExtStringArray::SetID()
 {

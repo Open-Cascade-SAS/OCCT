@@ -75,19 +75,15 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 
-// ============================================================================
-// Method  : RemoveSinglePCurve
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 static void RemoveSinglePCurve(const TopoDS_Edge& aEdge, const TopoDS_Face& aFace)
 {
   ShapeBuild_Edge().RemovePCurve(aEdge, aFace);
 }
 
-// ============================================================================
-// Method  : RemovePCurves
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 
 static void RemovePCurves(const TopoDS_Wire& aWire, const TopoDS_Face& aFace)
 {
@@ -176,10 +172,8 @@ static void CheckPCurves(TopoDS_Wire&           aWire,
   }
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_TranslateEdgeLoop::StepToTopoDS_TranslateEdgeLoop
-// Purpose : Empty Constructor
-// ============================================================================
+//=================================================================================================
+
 
 StepToTopoDS_TranslateEdgeLoop::StepToTopoDS_TranslateEdgeLoop()
     : myError(StepToTopoDS_TranslateEdgeLoopOther)

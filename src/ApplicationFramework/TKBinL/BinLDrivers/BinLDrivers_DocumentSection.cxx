@@ -17,10 +17,8 @@
 #include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
-//=======================================================================
-// function : BinLDrivers_DocumentSection
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
+
 
 BinLDrivers_DocumentSection::BinLDrivers_DocumentSection()
     : myIsPostRead(Standard_False)

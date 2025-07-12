@@ -49,10 +49,8 @@ LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theO
   return *this;
 }
 
-//=======================================================================
-// function : setData
-// purpose  : replace the data
-//=======================================================================
+//=================================================================================================
+
 
 void LDOM_CharacterData::setData(const LDOMString& theValue)
 {

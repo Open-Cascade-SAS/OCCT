@@ -138,10 +138,8 @@ void XCAFDoc_GraphNode::UnSetFather(const Standard_Integer Findex)
   }
 }
 
-//=======================================================================
-// function : UnSetFatherlink
-// purpose  : Remove link finily
-//=======================================================================
+//=================================================================================================
+
 
 void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F)
 {
@@ -175,10 +173,8 @@ void XCAFDoc_GraphNode::UnSetChild(const Standard_Integer Chindex)
   }
 }
 
-//=======================================================================
-// function : UnSetChildlink
-// purpose  : Remove link finily
-//=======================================================================
+//=================================================================================================
+
 
 void XCAFDoc_GraphNode::UnSetChildlink(const Handle(XCAFDoc_GraphNode)& Ch)
 {
