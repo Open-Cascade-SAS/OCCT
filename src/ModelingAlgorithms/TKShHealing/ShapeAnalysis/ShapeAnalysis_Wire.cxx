@@ -1602,7 +1602,6 @@ Standard_Boolean ShapeAnalysis_Wire::CheckLacking(const Standard_Integer num,
 
 //=================================================================================================
 
-
 Standard_Boolean ShapeAnalysis_Wire::CheckLacking(const Standard_Integer num,
                                                   const Standard_Real    Tolerance)
 {

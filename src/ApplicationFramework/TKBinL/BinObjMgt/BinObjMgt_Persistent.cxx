@@ -41,7 +41,6 @@ typedef struct
 
 //=================================================================================================
 
-
 BinObjMgt_Persistent::BinObjMgt_Persistent()
     : myIndex(1),
       myOffset(BP_HEADSIZE),

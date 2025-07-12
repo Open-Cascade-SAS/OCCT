@@ -51,7 +51,6 @@ StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop()
 
 //=================================================================================================
 
-
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop(
   const Handle(StepShape_PolyLoop)& PL,
   StepToTopoDS_Tool&                T,
@@ -63,7 +62,6 @@ StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop(
 }
 
 //=================================================================================================
-
 
 void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
                                           StepToTopoDS_Tool&                aTool,
@@ -195,7 +193,6 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
 
 //=================================================================================================
 
-
 const TopoDS_Shape& StepToTopoDS_TranslatePolyLoop::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "StepToTopoDS_TranslatePolyLoop::Value() - no result");
@@ -203,7 +200,6 @@ const TopoDS_Shape& StepToTopoDS_TranslatePolyLoop::Value() const
 }
 
 //=================================================================================================
-
 
 StepToTopoDS_TranslatePolyLoopError StepToTopoDS_TranslatePolyLoop::Error() const
 {

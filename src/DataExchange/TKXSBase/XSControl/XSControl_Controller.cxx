@@ -237,7 +237,6 @@ Standard_Boolean XSControl_Controller::RecognizeWriteTransient(
 
 //=================================================================================================
 
-
 static IFSelect_ReturnStatus TransferFinder(const Handle(Transfer_ActorOfFinderProcess)& theActor,
                                             const Handle(Transfer_Finder)&               theMapper,
                                             const Handle(Transfer_FinderProcess)&        theFP,

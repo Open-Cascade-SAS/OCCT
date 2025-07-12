@@ -97,7 +97,6 @@ void TDataStd_Name::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_Name::SetID()
 {
   Backup();

@@ -36,7 +36,6 @@ static VrmlData_Scene MyDefaultScene;
 
 //=================================================================================================
 
-
 Standard_Boolean IsEqual(const Handle(VrmlData_Node)& theOne, const Handle(VrmlData_Node)& theTwo)
 {
   Standard_Boolean aResult(Standard_False);

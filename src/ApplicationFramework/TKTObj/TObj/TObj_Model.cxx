@@ -67,7 +67,6 @@ TObj_Model::~TObj_Model()
 
 //=================================================================================================
 
-
 void TObj_Model::CloseDocument(const Handle(TDocStd_Document)& theDoc)
 {
   // prevent Abort of the following modifs at document destruction if

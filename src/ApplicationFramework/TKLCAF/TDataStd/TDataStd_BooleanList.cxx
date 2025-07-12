@@ -219,7 +219,6 @@ void TDataStd_BooleanList::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_BooleanList::SetID()
 {
   Backup();

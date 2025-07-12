@@ -25,7 +25,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_CoherentTriangulation, Standard_Transient)
 
 //=================================================================================================
 
-
 Poly_CoherentTriangulation::Poly_CoherentTriangulation(
   const Handle(NCollection_BaseAllocator)& theAlloc)
     : myAlloc(theAlloc.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAlloc),

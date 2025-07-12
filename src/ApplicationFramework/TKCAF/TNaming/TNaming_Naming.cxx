@@ -2167,7 +2167,6 @@ TNaming_Name& TNaming_Naming::ChangeName()
 
 //=================================================================================================
 
-
 Standard_Boolean TNaming_Naming::Regenerate(TDF_LabelMap& MDF)
 
 {

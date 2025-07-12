@@ -25,7 +25,6 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_TIntSparseArray, TDF_Attribute)
 
 //=================================================================================================
 
-
 TObj_TIntSparseArray::TObj_TIntSparseArray()
     : myVector(100),
       myOldMap(100),

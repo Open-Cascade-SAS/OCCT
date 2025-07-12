@@ -185,7 +185,6 @@ void DDataStd_DrawPresentation::Paste(const Handle(TDF_Attribute)& Into,
 
 //=================================================================================================
 
-
 void DDataStd_DrawPresentation::AfterAddition()
 {
   // std::cout<< "DDataStd_DrawPresentation::AfterAddition" << std::endl;
@@ -194,7 +193,6 @@ void DDataStd_DrawPresentation::AfterAddition()
 
 //=================================================================================================
 
-
 void DDataStd_DrawPresentation::BeforeRemoval()
 {
   // std::cout<< "DDataStd_DrawPresentation::BeforeRemoval" << std::endl;
@@ -202,7 +200,6 @@ void DDataStd_DrawPresentation::BeforeRemoval()
 }
 
 //=================================================================================================
-
 
 void DDataStd_DrawPresentation::BeforeForget()
 {

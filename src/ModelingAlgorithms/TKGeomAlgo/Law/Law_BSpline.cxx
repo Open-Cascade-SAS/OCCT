@@ -77,7 +77,6 @@ static void GetPoles(const TColStd_Array1OfReal& FP,
 
 //=================================================================================================
 
-
 static void CheckCurveData(const TColStd_Array1OfReal&    CPoles,
                            const TColStd_Array1OfReal&    CKnots,
                            const TColStd_Array1OfInteger& CMults,
@@ -107,7 +106,6 @@ static void CheckCurveData(const TColStd_Array1OfReal&    CPoles,
 }
 
 //=================================================================================================
-
 
 static void KnotAnalysis(const Standard_Integer         Degree,
                          const Standard_Boolean         Periodic,

@@ -44,7 +44,6 @@ static Standard_Real HatcherConfusion3d   = 1.e-8;
 
 //=================================================================================================
 
-
 DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
                                    const Standard_Real    Infinite,
                                    const Standard_Integer NbIsos)

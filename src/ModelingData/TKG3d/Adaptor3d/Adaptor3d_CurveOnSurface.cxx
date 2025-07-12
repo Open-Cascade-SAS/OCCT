@@ -1816,7 +1816,6 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 
 //=================================================================================================
 
-
 Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                  UV,
                                                              const gp_Vec2d&                  DUV,
                                                              const Handle(Adaptor3d_Surface)& S,
@@ -1884,7 +1883,6 @@ Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&    
 }
 
 //=================================================================================================
-
 
 void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                  UV,
                                           const gp_Vec2d&                  DUV,

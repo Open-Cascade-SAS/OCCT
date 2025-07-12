@@ -25,7 +25,6 @@ TFunction_Driver::TFunction_Driver() {}
 
 //=================================================================================================
 
-
 void TFunction_Driver::Init(const TDF_Label& L)
 {
   myLabel = L;

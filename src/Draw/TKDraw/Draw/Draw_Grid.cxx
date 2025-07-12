@@ -57,7 +57,6 @@ void Draw_Grid::Steps(const Standard_Real StepX,
 
 //=================================================================================================
 
-
 void Draw_Grid::DrawOn(Draw_Display& Out) const
 {
   if (!myIsActive)

@@ -87,7 +87,6 @@ static void ContourProperties(const TopoDS_Wire& wire,
 
 //=================================================================================================
 
-
 ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties()
 {
   myClosedFreeBounds = new ShapeAnalysis_HSequenceOfFreeBounds();

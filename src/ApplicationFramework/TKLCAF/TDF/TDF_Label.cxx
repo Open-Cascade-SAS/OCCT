@@ -345,7 +345,6 @@ TDF_LabelNode* TDF_Label::FindOrAddChild(const Standard_Integer aTag,
 
 //=================================================================================================
 
-
 void TDF_Label::InternalDump(Standard_OStream&        anOS,
                              const TDF_IDFilter&      aFilter,
                              TDF_AttributeIndexedMap& aMap,

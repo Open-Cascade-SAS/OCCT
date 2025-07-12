@@ -229,7 +229,6 @@ void BRepFeat_MakePipe::Perform()
 
 //=================================================================================================
 
-
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG

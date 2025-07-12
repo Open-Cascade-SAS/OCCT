@@ -92,7 +92,6 @@ static void CheckSurfaceData(const TColgp_Array2OfPnt&      SPoles,
 
 //=================================================================================================
 
-
 static void Rational(const TColStd_Array2OfReal& Weights,
                      Standard_Boolean&           Urational,
                      Standard_Boolean&           Vrational)

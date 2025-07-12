@@ -32,7 +32,6 @@ static const Standard_Real PRCANG = Precision::Angular();
 
 //=================================================================================================
 
-
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
     : Intf_Interference(Standard_False),
       oClos(Standard_False),

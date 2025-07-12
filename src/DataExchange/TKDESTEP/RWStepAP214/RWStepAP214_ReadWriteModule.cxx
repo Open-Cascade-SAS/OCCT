@@ -6214,7 +6214,6 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(
 
 //=================================================================================================
 
-
 void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer                 CN,
                                            const Handle(StepData_StepReaderData)& data,
                                            const Standard_Integer                 num,
@@ -10837,7 +10836,6 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer               
 }
 
 //=================================================================================================
-
 
 void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer            CN,
                                             StepData_StepWriter&              SW,

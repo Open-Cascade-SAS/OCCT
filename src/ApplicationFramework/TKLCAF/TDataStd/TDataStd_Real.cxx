@@ -75,7 +75,6 @@ Handle(TDataStd_Real) TDataStd_Real::Set(const TDF_Label&     L,
 
 //=================================================================================================
 
-
 TDataStd_Real::TDataStd_Real()
     : myValue(RealFirst()),
       myDimension(TDataStd_SCALAR),

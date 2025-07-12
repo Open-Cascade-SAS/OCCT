@@ -203,7 +203,6 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-
 void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 {
 #ifdef OCCT_DEBUG

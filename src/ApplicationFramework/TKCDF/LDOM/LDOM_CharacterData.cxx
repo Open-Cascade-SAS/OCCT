@@ -51,7 +51,6 @@ LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theO
 
 //=================================================================================================
 
-
 void LDOM_CharacterData::setData(const LDOMString& theValue)
 {
   LDOM_BasicText& aText = (LDOM_BasicText&)Origin();

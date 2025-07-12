@@ -234,7 +234,6 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
 
 //=================================================================================================
 
-
 void StdLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& /*theIStream*/,
                                                const Handle(Storage_Data)& /*theStorageData*/,
                                                const Handle(CDM_Document)& /*theDoc*/,

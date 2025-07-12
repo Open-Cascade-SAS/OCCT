@@ -182,7 +182,6 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
 
 //=================================================================================================
 
-
 BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
                                  const gp_Ax2&           Axes,
                                  const Standard_Real     dx,

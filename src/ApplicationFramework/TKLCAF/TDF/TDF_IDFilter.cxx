@@ -78,7 +78,6 @@ void TDF_IDFilter::Keep(const TDF_IDList& anIDList)
 
 //=================================================================================================
 
-
 void TDF_IDFilter::Ignore(const Standard_GUID& anID)
 {
   if (myIgnore)

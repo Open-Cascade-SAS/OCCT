@@ -89,7 +89,6 @@ int LDOM_SBuffer::overflow(int c)
 
 //=================================================================================================
 
-
 int LDOM_SBuffer::underflow()
 {
   return EOF;

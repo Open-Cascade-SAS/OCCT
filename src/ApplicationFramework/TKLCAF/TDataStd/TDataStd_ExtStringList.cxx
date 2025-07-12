@@ -275,7 +275,6 @@ void TDataStd_ExtStringList::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_ExtStringList::SetID()
 {
   Backup();

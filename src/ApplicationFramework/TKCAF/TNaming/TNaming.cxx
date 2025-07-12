@@ -699,7 +699,6 @@ Standard_OStream& TNaming::Print(const TNaming_NameType NAME, Standard_OStream& 
 
 //=================================================================================================
 
-
 Standard_OStream& TNaming::Print(const TDF_Label& ACCESS, Standard_OStream& s)
 {
   Handle(TNaming_UsedShapes) US;

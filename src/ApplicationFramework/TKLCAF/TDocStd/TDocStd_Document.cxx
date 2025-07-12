@@ -242,7 +242,6 @@ void TDocStd_Document::AbortCommand()
 
 //=================================================================================================
 
-
 Standard_Boolean TDocStd_Document::CommitTransaction()
 {
   myData->AllowModification(Standard_True);
@@ -339,7 +338,6 @@ Standard_Boolean TDocStd_Document::CommitTransaction()
 
 //=================================================================================================
 
-
 void TDocStd_Document::AbortTransaction()
 {
   myData->AllowModification(Standard_True);
@@ -373,7 +371,6 @@ void TDocStd_Document::AbortTransaction()
 }
 
 //=================================================================================================
-
 
 void TDocStd_Document::OpenTransaction()
 {

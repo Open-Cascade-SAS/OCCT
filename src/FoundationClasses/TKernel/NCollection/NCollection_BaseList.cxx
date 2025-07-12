@@ -218,7 +218,6 @@ void NCollection_BaseList::PInsertAfter(NCollection_BaseList& theOther, Iterator
 
 //=================================================================================================
 
-
 void NCollection_BaseList::PReverse()
 {
   if (myLength > 1)

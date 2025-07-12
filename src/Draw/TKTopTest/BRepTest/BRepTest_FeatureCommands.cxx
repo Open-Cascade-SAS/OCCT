@@ -1722,7 +1722,6 @@ static Standard_Integer ROF(Draw_Interpretor& theCommands, Standard_Integer narg
 
 //=================================================================================================
 
-
 static Standard_Integer GLU(Draw_Interpretor&, Standard_Integer narg, const char** a)
 {
   if (narg < 6 || narg % 2 != 0)

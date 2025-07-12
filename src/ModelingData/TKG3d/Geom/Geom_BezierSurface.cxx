@@ -85,7 +85,6 @@ static void Rational(const TColStd_Array2OfReal& Weights,
 
 //=================================================================================================
 
-
 static void AddPoleCol(const TColgp_Array2OfPnt& Poles,
                        const TColgp_Array1OfPnt& PoleCol,
                        const Standard_Integer    AfterIndex,
@@ -125,7 +124,6 @@ static void AddPoleCol(const TColgp_Array2OfPnt& Poles,
 }
 
 //=================================================================================================
-
 
 static void AddRatPoleCol(const TColgp_Array2OfPnt&   Poles,
                           const TColStd_Array2OfReal& Weights,
@@ -174,7 +172,6 @@ static void AddRatPoleCol(const TColgp_Array2OfPnt&   Poles,
 }
 
 //=================================================================================================
-
 
 static void AddPoleRow(const TColgp_Array2OfPnt& Poles,
                        const TColgp_Array1OfPnt& PoleRow,

@@ -84,7 +84,6 @@ static void RemoveSinglePCurve(const TopoDS_Edge& aEdge, const TopoDS_Face& aFac
 
 //=================================================================================================
 
-
 static void RemovePCurves(const TopoDS_Wire& aWire, const TopoDS_Face& aFace)
 {
   TopExp_Explorer EdgeExp(aWire, TopAbs_EDGE);
@@ -173,7 +172,6 @@ static void CheckPCurves(TopoDS_Wire&           aWire,
 }
 
 //=================================================================================================
-
 
 StepToTopoDS_TranslateEdgeLoop::StepToTopoDS_TranslateEdgeLoop()
     : myError(StepToTopoDS_TranslateEdgeLoopOther)

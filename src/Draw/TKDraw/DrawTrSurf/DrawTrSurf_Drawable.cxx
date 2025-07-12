@@ -47,7 +47,6 @@ DrawTrSurf_Drawable::DrawTrSurf_Drawable(
 
 //=================================================================================================
 
-
 void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDisplay) const
 {
   gp_Pnt P;
@@ -127,7 +126,6 @@ static void PlotCurve(Draw_Display&          aDisplay,
 }
 
 //=================================================================================================
-
 
 void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay) const
 {

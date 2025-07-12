@@ -560,7 +560,6 @@ void TDF_Tool::DeductLabels(TDF_LabelList& aLabelList, TDF_LabelIntegerMap& aLab
 
 //=================================================================================================
 
-
 void TDF_Tool::DeepDump(Standard_OStream& anOS, const Handle(TDF_Data)& aDF)
 {
   anOS << aDF;
@@ -644,7 +643,6 @@ void TDF_Tool::ExtendedDeepDump(Standard_OStream&   anOS,
 }
 
 //=================================================================================================
-
 
 static void TDF_Tool_ExtendedDeepDump(Standard_OStream&        anOS,
                                       const TDF_Label&         aLabel,

@@ -493,7 +493,6 @@ TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve)& theCurve,
 //
 //=================================================================================================
 
-
 GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d)
 {
   GeomAbs_CurveType     aTypeCurve = GeomAbs_OtherCurve;

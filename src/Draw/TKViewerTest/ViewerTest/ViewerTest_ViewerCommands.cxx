@@ -3331,7 +3331,6 @@ static int VZBuffTrihedron(Draw_Interpretor& /*theDI*/,
 
 //=================================================================================================
 
-
 static int VRotate(Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgVec)
 {
   Handle(V3d_View) aView = ViewerTest::CurrentView();

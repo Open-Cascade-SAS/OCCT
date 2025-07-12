@@ -89,7 +89,6 @@ void TDataStd_Comment::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_Comment::SetID()
 {
   Backup();

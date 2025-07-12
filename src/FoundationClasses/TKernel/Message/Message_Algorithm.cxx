@@ -341,7 +341,6 @@ Handle(TColStd_HSequenceOfHExtendedString) Message_Algorithm::GetMessageStrings(
 
 //=================================================================================================
 
-
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const Handle(TColStd_HPackedMapOfInteger)& theMapError,
   const Standard_Integer                     theMaxCount)
@@ -366,7 +365,6 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
 }
 
 //=================================================================================================
-
 
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const TColStd_SequenceOfHExtendedString& theReportSeq,

@@ -1755,7 +1755,6 @@ const HatchGen_Domain& Geom2dHatch_Hatcher::Domain(const Standard_Integer IndH,
 
 //=================================================================================================
 
-
 void Geom2dHatch_Hatcher::Dump() const
 {
   std::cout << std::endl;

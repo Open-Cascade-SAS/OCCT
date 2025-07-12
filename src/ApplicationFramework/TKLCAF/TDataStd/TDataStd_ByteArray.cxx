@@ -210,7 +210,6 @@ void TDataStd_ByteArray::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_ByteArray::SetID()
 {
   Backup();

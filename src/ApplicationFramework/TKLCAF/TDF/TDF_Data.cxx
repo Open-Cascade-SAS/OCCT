@@ -90,7 +90,6 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
 
 //=================================================================================================
 
-
 TDF_Data::TDF_Data()
     : myTransaction(0),
       myNbTouchedAtt(0),

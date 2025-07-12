@@ -268,7 +268,6 @@ void TDataStd_IntegerList::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_IntegerList::SetID()
 {
   Backup();

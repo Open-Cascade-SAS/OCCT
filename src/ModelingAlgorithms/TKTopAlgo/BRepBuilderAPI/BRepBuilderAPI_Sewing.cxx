@@ -1362,7 +1362,6 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
 
 //=================================================================================================
 
-
 Standard_Boolean BRepBuilderAPI_Sewing::IsMergedClosed(const TopoDS_Edge& Edge1,
                                                        const TopoDS_Edge& Edge2,
                                                        const TopoDS_Face& face) const
@@ -4208,7 +4207,6 @@ void BRepBuilderAPI_Sewing::GetFreeWires(TopTools_IndexedMapOfShape& MapFreeEdge
 }
 
 //=================================================================================================
-
 
 static Standard_Boolean IsDegeneratedWire(const TopoDS_Shape& wire)
 {

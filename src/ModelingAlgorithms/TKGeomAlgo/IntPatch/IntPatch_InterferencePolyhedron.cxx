@@ -30,7 +30,6 @@ static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};
 
 //=================================================================================================
 
-
 IntPatch_InterferencePolyhedron::IntPatch_InterferencePolyhedron()
     : Intf_Interference(Standard_False),
       Incidence(0)

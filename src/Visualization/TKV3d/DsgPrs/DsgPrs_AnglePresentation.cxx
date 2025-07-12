@@ -234,7 +234,6 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 
 //=================================================================================================
 
-
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,
                                    const Standard_Real               theval,
@@ -469,7 +468,6 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 }
 
 //=================================================================================================
-
 
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,
@@ -723,7 +721,6 @@ void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 }
 
 //=================================================================================================
-
 
 void DsgPrs_AnglePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                    const Handle(Prs3d_Drawer)&       aDrawer,

@@ -31,7 +31,6 @@ TopLoc_Location::TopLoc_Location() {}
 
 //=================================================================================================
 
-
 TopLoc_Location::TopLoc_Location(const Handle(TopLoc_Datum3D)& D)
 {
   myItems.Construct(TopLoc_ItemLocation(D, 1));
@@ -62,7 +61,6 @@ TopLoc_Location::operator gp_Trsf() const
 }
 
 //=================================================================================================
-
 
 TopLoc_Location TopLoc_Location::Inverted() const
 {
@@ -135,7 +133,6 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 
 //=================================================================================================
 
-
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 {
   if (IsIdentity())
@@ -160,7 +157,6 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 }
 
 //=================================================================================================
-
 
 // two locations are Equal if the Items have the same LocalValues and Powers
 // this is a recursive function to test it

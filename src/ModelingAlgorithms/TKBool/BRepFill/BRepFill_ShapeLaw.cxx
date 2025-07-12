@@ -87,7 +87,6 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W, const Standard_Boolea
 
 //=================================================================================================
 
-
 BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire&          W,
                                      const Handle(Law_Function)& L,
                                      const Standard_Boolean      Build)

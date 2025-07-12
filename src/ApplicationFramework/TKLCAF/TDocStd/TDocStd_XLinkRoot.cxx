@@ -43,7 +43,6 @@ const Standard_GUID& TDocStd_XLinkRoot::GetID()
 
 //=================================================================================================
 
-
 Handle(TDocStd_XLinkRoot) TDocStd_XLinkRoot::Set(const Handle(TDF_Data)& aDF)
 {
   Handle(TDocStd_XLinkRoot) xRefRoot;

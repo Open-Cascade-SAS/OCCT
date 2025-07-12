@@ -245,7 +245,6 @@ static Standard_Boolean IsObst(const ChFiDS_CommonPoint& CP,
 
 //=================================================================================================
 
-
 static void CompParam(const Geom2dAdaptor_Curve& Carc,
                       Handle(Geom2d_Curve)       Ctg,
                       Standard_Real&             parc,

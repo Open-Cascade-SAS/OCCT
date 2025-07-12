@@ -62,7 +62,6 @@ TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder()
 
 //=================================================================================================
 
-
 TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder(
   const TopoDS_Shape&     aShape,
   TopoDSToStep_Tool&      aTool,
@@ -84,14 +83,12 @@ void TopoDSToStep_WireframeBuilder::Init(const TopoDS_Shape& aShape,
 
 //=================================================================================================
 
-
 TopoDSToStep_BuilderError TopoDSToStep_WireframeBuilder::Error() const
 {
   return myError;
 }
 
 //=================================================================================================
-
 
 const Handle(TColStd_HSequenceOfTransient)& TopoDSToStep_WireframeBuilder::Value() const
 {

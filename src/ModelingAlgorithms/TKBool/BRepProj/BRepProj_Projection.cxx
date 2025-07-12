@@ -188,7 +188,6 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
 
 //=================================================================================================
 
-
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,
                                          const gp_Pnt&       P)

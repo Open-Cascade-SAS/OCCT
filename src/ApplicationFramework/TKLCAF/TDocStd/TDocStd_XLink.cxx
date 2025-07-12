@@ -45,7 +45,6 @@ TDocStd_XLink::TDocStd_XLink()
 
 //=================================================================================================
 
-
 Handle(TDocStd_XLink) TDocStd_XLink::Set(const TDF_Label& atLabel)
 {
   Handle(TDocStd_XLink) xRef;

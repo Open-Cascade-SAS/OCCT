@@ -135,7 +135,6 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&           ME,
 
 //=================================================================================================
 
-
 static Handle(Geom_Curve) MakeCurve(const Handle(StepGeom_Curve)&            C1,
                                     const Handle(Transfer_TransientProcess)& TP,
                                     const StepData_Factors&                  theLocalFactors)

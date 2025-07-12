@@ -248,7 +248,6 @@ Standard_Real STEPConstruct_UnitContext::ConvertSiPrefix(const StepBasic_SiPrefi
 
 //=================================================================================================
 
-
 Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(
   const Handle(StepBasic_SiUnit)& aSiUnit,
   Standard_Real&                  theSIUNFactor) const
@@ -267,7 +266,6 @@ Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(
 }
 
 //=================================================================================================
-
 
 Standard_Integer STEPConstruct_UnitContext::ComputeFactors(
   const Handle(StepRepr_GlobalUnitAssignedContext)& aContext,
@@ -485,7 +483,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
 }
 
 //=================================================================================================
-
 
 Standard_Integer STEPConstruct_UnitContext::ComputeTolerance(
   const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aContext)

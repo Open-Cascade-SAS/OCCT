@@ -165,7 +165,6 @@ const LDOM_BasicAttribute& LDOM_BasicElement::GetAttribute(const LDOMBasicString
 
 //=================================================================================================
 
-
 const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
   const LDOM_BasicNode*&  theLastCh,
   const LDOM_BasicNode**& thePrevNode) const

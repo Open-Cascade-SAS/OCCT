@@ -1148,7 +1148,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
 //=================================================================================================
 
-
 Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&      Func,
                                                        Blend_SurfCurvFuncInv&     Finv,
                                                        math_Vector&               Solinv,

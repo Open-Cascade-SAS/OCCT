@@ -56,14 +56,12 @@ void BRepPrim_Builder::MakeShell(TopoDS_Shell& S) const
 
 //=================================================================================================
 
-
 void BRepPrim_Builder::MakeFace(TopoDS_Face& F, const gp_Pln& P) const
 {
   myBuilder.MakeFace(F, new Geom_Plane(P), Precision::Confusion());
 }
 
 //=================================================================================================
-
 
 void BRepPrim_Builder::MakeWire(TopoDS_Wire& W) const
 {
@@ -79,7 +77,6 @@ void BRepPrim_Builder::MakeDegeneratedEdge(TopoDS_Edge& E) const
 }
 
 //=================================================================================================
-
 
 void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Lin& L) const
 {
@@ -132,14 +129,12 @@ void BRepPrim_Builder::SetPCurve(TopoDS_Edge& E, const TopoDS_Face& F, const gp_
 
 //=================================================================================================
 
-
 void BRepPrim_Builder::MakeVertex(TopoDS_Vertex& V, const gp_Pnt& P) const
 {
   myBuilder.MakeVertex(V, P, Precision::Confusion());
 }
 
 //=================================================================================================
-
 
 void BRepPrim_Builder::ReverseFace(TopoDS_Face& F) const
 {

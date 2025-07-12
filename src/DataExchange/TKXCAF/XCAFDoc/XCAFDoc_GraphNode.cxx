@@ -140,7 +140,6 @@ void XCAFDoc_GraphNode::UnSetFather(const Standard_Integer Findex)
 
 //=================================================================================================
 
-
 void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F)
 {
   Backup();
@@ -174,7 +173,6 @@ void XCAFDoc_GraphNode::UnSetChild(const Standard_Integer Chindex)
 }
 
 //=================================================================================================
-
 
 void XCAFDoc_GraphNode::UnSetChildlink(const Handle(XCAFDoc_GraphNode)& Ch)
 {

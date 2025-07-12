@@ -46,7 +46,6 @@ void LDOM_NodeList::Append(const LDOM_BasicNode& aNode) const
 
 //=================================================================================================
 
-
 LDOM_NodeList::LDOM_NodeList(const LDOM_NodeList& theOther)
 {
   mySeq  = new LDOM_BasicNodeSequence;

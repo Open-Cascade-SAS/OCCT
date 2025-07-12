@@ -221,7 +221,6 @@ void TDataStd_ExtStringArray::SetID(const Standard_GUID& theGuid)
 
 //=================================================================================================
 
-
 void TDataStd_ExtStringArray::SetID()
 {
   Backup();

@@ -23,7 +23,6 @@
 
 //=================================================================================================
 
-
 TopTrans_CurveTransition::TopTrans_CurveTransition()
     : myCurv(0.0),
       Init(Standard_False),
@@ -395,7 +394,6 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
 }
 
 //=================================================================================================
-
 
 Standard_Integer TopTrans_CurveTransition::Compare(const Standard_Real Ang1,
                                                    const Standard_Real Ang2,

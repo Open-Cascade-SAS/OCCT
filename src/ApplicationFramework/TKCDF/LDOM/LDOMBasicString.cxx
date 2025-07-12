@@ -86,7 +86,6 @@ LDOMBasicString::LDOMBasicString(const char*                    aValue,
 
 //=================================================================================================
 
-
 LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
     : myType(anOther.Type())
 {

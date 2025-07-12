@@ -1128,7 +1128,6 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge&     E1,
 
 //=================================================================================================
 
-
 static TopoDS_Edge Glue(const TopoDS_Edge&     E1,
                         const TopoDS_Edge&     E2,
                         const TopoDS_Vertex&   Vfirst,

@@ -64,7 +64,6 @@ static Handle(TDataStd_RealArray) SetAttr(const TDF_Label&       label,
 
 //=================================================================================================
 
-
 TDataStd_RealArray::TDataStd_RealArray()
     : myIsDelta(Standard_False),
       myID(GetID())
@@ -217,7 +216,6 @@ void TDataStd_RealArray::SetID(const Standard_GUID& theGuid)
 }
 
 //=================================================================================================
-
 
 void TDataStd_RealArray::SetID()
 {

@@ -138,7 +138,6 @@ const gp_Vec2d& BlendFunc_Corde::Tangent2dOnS() const
 
 //=================================================================================================
 
-
 void BlendFunc_Corde::DerFguide(const math_Vector& Sol, gp_Vec2d& DerF)
 {
   gp_Vec d1u, d1v;

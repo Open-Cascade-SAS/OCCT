@@ -155,7 +155,6 @@ Standard_Boolean HatchGen_PointOnHatching::IsGreater(const HatchGen_PointOnHatch
 
 //=================================================================================================
 
-
 void HatchGen_PointOnHatching::Dump(const Standard_Integer Index) const
 {
   std::cout << "--- Point on hatching ";
