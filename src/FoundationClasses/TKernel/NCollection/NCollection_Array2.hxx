@@ -355,9 +355,8 @@ public:
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
-        SetValue(aRowIter + myLowerRow,
-                 aColIter + myLowerCol,
-                 std::move(anOldPointer[aOldInter++]));
+        NCollection_Array1<TheItemType>::at(aRowIter * aNewNbCols + aColIter) =
+          std::move(anOldPointer[aOldInter++]);
       }
     }
   }

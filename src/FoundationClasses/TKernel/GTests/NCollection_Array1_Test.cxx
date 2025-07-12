@@ -190,12 +190,9 @@ TEST(NCollection_Array1Test, Move)
   EXPECT_EQ(1, anArray2.Lower());
   EXPECT_EQ(5, anArray2.Upper());
 
-  // Original array is keep referecing the same data
-  EXPECT_EQ(anArray1.Lower(), anArray2.Lower());
-  EXPECT_EQ(anArray1.Upper(), anArray2.Upper());
-  EXPECT_EQ(anArray1(1), anArray2(1));
-  EXPECT_EQ(anArray1(2), anArray2(2));
-  EXPECT_EQ(5, anArray1.Length());
+  // Original array is not keep referecing the same data
+  EXPECT_EQ(anArray1.Length(), 0);
+  EXPECT_EQ(anArray1.Lower(), 1);
 }
 
 TEST(NCollection_Array1Test, Init)
