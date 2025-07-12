@@ -187,7 +187,7 @@ TEST(MathDoubleTabTest, CopyMethod)
 // Tests for buffer optimization
 TEST(MathDoubleTabTest, SmallArrayOptimization)
 {
-  // Test that small arrays (≤16 elements) use buffer optimization
+  // Test that small arrays (<=16 elements) use buffer optimization
   // 4x4 = 16 elements, should use buffer
   math_DoubleTab aSmallTab(1, 4, 1, 4);
   aSmallTab.Init(42.0);
