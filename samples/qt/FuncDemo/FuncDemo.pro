@@ -42,7 +42,7 @@ unix {
     equals(MACOSX_USE_GLX, true): DEFINES += MACOSX_USE_GLX
     DEFINES += OCC_CONVERT_SIGNALS QT_NO_STL
     !macx | equals(MACOSX_USE_GLX, true): LIBS += -L$$QMAKE_LIBDIR_X11 $$QMAKE_LIBS_X11 -L$$QMAKE_LIBDIR_OPENGL $$QMAKE_LIBS_OPENGL $$QMAKE_LIBS_THREAD
-    QMAKE_CXXFLAGS += -std=gnu++11
+    QMAKE_CXXFLAGS += -std=c++17
 }
 
 win32 {
@@ -57,6 +57,7 @@ win32 {
         OBJECTS_DIR = ./win$$(ARCH)/$$(VCVER)/obj
         MOC_DIR = ./src
     }
+    QMAKE_CXXFLAGS += /std:c++17
     LIBS = -L$$(QTDIR)/lib;$$(CSF_OCCTLibPath)
 }
 
