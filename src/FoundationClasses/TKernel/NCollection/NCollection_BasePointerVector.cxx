@@ -56,7 +56,7 @@ void NCollection_BasePointerVector::Append(const void* thePnt)
     {
       myCapacity <<= 1;
     }
-    myArray = myAllocator.reallocate(myArray, myCapacity);
+    myArray = myAllocator.reallocate(myArray, mySize, myCapacity);
   }
   myArray[mySize++] = (void*)thePnt;
 }
@@ -75,7 +75,7 @@ void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* th
     {
       myCapacity <<= 1;
     }
-    myArray = myAllocator.reallocate(myArray, myCapacity);
+    myArray = myAllocator.reallocate(myArray, mySize, myCapacity);
     memset(myArray + mySize, 0, (theInd - mySize) * sizeof(void**));
     mySize = theInd;
   }

@@ -31,7 +31,6 @@ set(OCCT_math_FILES
   math_DirectPolynomialRoots.cxx
   math_DirectPolynomialRoots.hxx
   math_DirectPolynomialRoots.lxx
-  math_DoubleTab.cxx
   math_DoubleTab.hxx
   math_DoubleTab.lxx
   math_EigenValuesSearcher.cxx
