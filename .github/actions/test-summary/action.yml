@@ -99,3 +99,28 @@ runs:
           install/bin/results/**/summary.html
           install/bin/results/**/tests.log
           install/bin/results/**/*.png
+
+    - name: Post performance summary to PR
+      if: github.repository == 'Open-Cascade-SAS/OCCT' && github.head_ref == 'IR' && github.base_ref == 'master'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        COMMENT_FILE=$(mktemp)
+        echo -e "**Performance Test Summary**\n" > "$COMMENT_FILE"
+        LOG_FILES=$(find install/bin/results/current -name "diff-*.log")
+        if [ -z "$LOG_FILES" ]; then
+          echo "No diff logs found." >> "$COMMENT_FILE"
+        else
+          for log_file in $LOG_FILES; do
+            PLATFORM=$(basename $(dirname "$log_file"))
+            echo "**Platform: ${PLATFORM}**" >> "$COMMENT_FILE"
+            echo '```' >> "$COMMENT_FILE"
+            grep -E "Total (MEMORY|CPU|IMAGE) difference:" "$log_file" >> "$COMMENT_FILE" || echo "No performance summary found." >> "$COMMENT_FILE"
+            echo '```' >> "$COMMENT_FILE"
+            echo "" >> "$COMMENT_FILE"
+          done
+        fi
+        gh pr comment ${PR_NUMBER} --body-file "$COMMENT_FILE"
+        rm "$COMMENT_FILE"
+      shell: bash
