@@ -221,7 +221,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>.\win64\objd/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
-      </HeaderFile>
+      </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
