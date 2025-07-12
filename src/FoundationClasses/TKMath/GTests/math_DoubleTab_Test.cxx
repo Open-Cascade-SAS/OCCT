@@ -19,25 +19,6 @@
 #include <Standard_Integer.hxx>
 #include <Precision.hxx>
 
-namespace
-{
-//! Helper function for comparing arrays with tolerance
-void checkArraysEqual(const math_DoubleTab& theTab1,
-                      const math_DoubleTab& theTab2,
-                      const Standard_Real   theTolerance = Precision::Confusion())
-{
-  // Note: math_DoubleTab doesn't expose size methods directly,
-  // so we use the underlying NCollection_Array2 through Value access
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
-  {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
-    {
-      EXPECT_NEAR(theTab1.Value(anI, aJ), theTab2.Value(anI, aJ), theTolerance);
-    }
-  }
-}
-} // namespace
-
 // Tests for constructors
 TEST(MathDoubleTabTest, DefaultConstructor)
 {
