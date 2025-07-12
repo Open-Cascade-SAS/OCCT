@@ -699,4 +699,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <PropertyGroup>
+    <QMAKE_CXXFLAGS += /std:c++17>stdcpp17</LanguageStandard>
+  </PropertyGroup>
 </Project>

@@ -86,3 +86,6 @@ include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (HLR mfcsample)
+
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)

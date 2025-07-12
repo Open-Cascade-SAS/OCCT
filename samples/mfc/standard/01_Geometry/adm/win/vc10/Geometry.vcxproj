@@ -221,7 +221,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>.\win64\objd/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
-      </HeaderFileName>
+      </HeaderFile>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -577,4 +577,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <PropertyGroup>
+    <LanguageStandard>stdcpp17</LanguageStandard>
+  </PropertyGroup>
 </Project>
