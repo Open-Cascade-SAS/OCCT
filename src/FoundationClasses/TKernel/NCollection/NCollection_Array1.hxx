@@ -111,7 +111,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct();
+    construct(0, mySize);
   }
 
   explicit NCollection_Array1(const allocator_type&  theAlloc,
@@ -129,7 +129,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct();
+    construct(0, mySize);
   }
 
   explicit NCollection_Array1(const_reference        theBegin,
@@ -147,7 +147,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct();
+    construct(0, mySize);
   }
 
   //! Copy constructor
@@ -180,7 +180,7 @@ public:
     {
       return;
     }
-    destroy();
+    destroy(myPointer, 0, mySize);
     myAllocator.deallocate(myPointer, mySize);
   }
 
@@ -238,7 +238,7 @@ public:
     }
     if (myIsOwner)
     {
-      destroy();
+      destroy(myPointer, 0, mySize);
       myAllocator.deallocate(myPointer, mySize);
     }
     myLowerBound       = theOther.myLowerBound;
@@ -348,7 +348,7 @@ public:
       if (theToCopyData)
         destroy(myPointer, aNewSize, mySize);
       else
-        destroy();
+        destroy(myPointer, 0, mySize);
     }
     myLowerBound = theLower;
     if (theToCopyData)
@@ -370,7 +370,7 @@ public:
       if (myIsOwner)
         myAllocator.deallocate(aPrevContPnt, mySize);
       myPointer = myAllocator.allocate(aNewSize);
-      construct();
+      construct(0, aNewSize);
     }
     mySize    = aNewSize;
     myIsOwner = true;
@@ -396,21 +396,6 @@ protected:
 
 protected:
   template <typename U = TheItemType>
-  typename std::enable_if<std::is_arithmetic<U>::value, void>::type construct()
-  {
-    // Do nothing
-  }
-
-  template <typename U = TheItemType>
-  typename std::enable_if<!std::is_arithmetic<U>::value, void>::type construct()
-  {
-    for (size_t anInd = 0; anInd < mySize; anInd++)
-    {
-      myAllocator.construct(myPointer + anInd);
-    }
-  }
-
-  template <typename U = TheItemType>
   typename std::enable_if<std::is_arithmetic<U>::value, void>::type construct(const size_t,
                                                                               const size_t)
   {
@@ -424,21 +409,6 @@ protected:
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
       myAllocator.construct(myPointer + anInd);
-    }
-  }
-
-  template <typename U = TheItemType>
-  typename std::enable_if<std::is_arithmetic<U>::value, void>::type destroy()
-  {
-    // Do nothing
-  }
-
-  template <typename U = TheItemType>
-  typename std::enable_if<!std::is_arithmetic<U>::value, void>::type destroy()
-  {
-    for (size_t anInd = 0; anInd < mySize; anInd++)
-    {
-      myAllocator.destroy(myPointer + anInd);
     }
   }
 
