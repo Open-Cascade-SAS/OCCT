@@ -38,135 +38,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup vcpkg
-      uses: ./.github/actions/vcpkg-setup
+    - name: Configure OCCT
+      uses: ./.github/actions/configure-occt
       with:
+        platform: ${{ inputs.platform }}
+        compiler: ${{ inputs.compiler }}
+        additional-cmake-flags: ${{ inputs.additional-cmake-flags }}
+        use-vtk: ${{ inputs.use-vtk }}
+        build-use-pch: ${{ inputs.build-use-pch }}
+        build-opt-profile: ${{ inputs.build-opt-profile }}
+        cmake-build-type: ${{ inputs.cmake-build-type }}
         github-token: ${{ inputs.github-token }}
-
-    - name: Download and extract Mesa3D (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
-        7z x mesa3d.7z -omesa3d
-      shell: pwsh
-
-    - name: Run system-wide deployment (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-        cd mesa3d
-        .\systemwidedeploy.cmd 1
-        .\systemwidedeploy.cmd 5
-      shell: cmd
-
-    - name: Install dependencies (Linux)
-      if: ${{ inputs.platform == 'linux' }}
-      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
-      shell: bash
-
-    - name: Install required packages (macOS)
-      if: ${{ inputs.platform == 'macos' }}
-      run: |
-        brew update || true
-        # temporary workaround for missing tcl-tk
-        brew install tcl-tk || true
-        # Force link any conflicting packages
-        brew link --overwrite python@3.12 || true
-        brew link --overwrite python@3.13 || true
-      shell: bash
-
-    - name: Configure OCCT (Windows)
-      if: ${{ inputs.platform == 'windows' }}
-      run: |
-          mkdir build
-          cd build
-          cmake -T ${{ inputs.compiler == 'msvc' && 'host=x64' || 'ClangCL' }} `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=ON `
-                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
-                -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D BUILD_USE_VCPKG=ON `
-                -D VCPKG_TARGET_TRIPLET=x64-windows `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=${{ inputs.use-vtk }} `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
-                -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON `
-                ${{ inputs.additional-cmake-flags }} ..
-      shell: pwsh
-
-    - name: Configure OCCT (macOS)
-      if: ${{ inputs.platform == 'macos' }}
-      run: |
-        mkdir -p build
-        cd build
-        cmake -G "Unix Makefiles" \
-              -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
-              -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
-              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
-              -D BUILD_INCLUDE_SYMLINK=ON \
-              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D BUILD_USE_VCPKG=ON \
-              -D VCPKG_TARGET_TRIPLET=arm64-osx-dynamic \
-              -D USE_RAPIDJSON=ON \
-              -D USE_DRACO=ON \
-              -D USE_FREETYPE=ON \
-              -D USE_OPENGL=ON \
-              -D USE_FREEIMAGE=ON \
-              -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
-              -D INSTALL_GTEST=ON \
-              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
-              ${{ inputs.additional-cmake-flags }} ..
-      shell: bash
-
-    - name: Configure OCCT (Linux)
-      if: ${{ inputs.platform == 'linux' }}
-      run: |
-        mkdir -p build
-        cd build
-        # Set environment to help vcpkg find system libraries
-        export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:$PKG_CONFIG_PATH"
-        export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
-        cmake -G "Unix Makefiles" \
-              -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
-              -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
-              -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
-              -D BUILD_INCLUDE_SYMLINK=ON \
-              -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
-              -D USE_TK=ON \
-              -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D BUILD_USE_VCPKG=ON \
-              -D BUILD_LIBRARY_TYPE=Shared \
-              -D VCPKG_TARGET_TRIPLET=x64-linux-dynamic \
-              -D USE_FREETYPE=ON \
-              -D USE_DRACO=ON \
-              -D USE_FFMPEG=ON \
-              -D USE_FREEIMAGE=ON \
-              -D USE_GLES2=ON \
-              -D USE_OPENVR=ON \
-              -D USE_VTK=${{ inputs.use-vtk }} \
-              -D USE_TBB=ON \
-              -D USE_RAPIDJSON=ON \
-              -D USE_OPENGL=ON \
-              -D BUILD_GTEST=ON \
-              -D BUILD_CPP_STANDARD=C++17 \
-              -D INSTALL_GTEST=ON \
-              ${{ inputs.additional-cmake-flags }} ..
-      shell: bash
 
     - name: Upload vcpkg cache
       uses: ./.github/actions/upload-vcpkg-cache
