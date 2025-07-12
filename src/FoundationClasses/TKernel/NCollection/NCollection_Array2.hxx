@@ -323,37 +323,41 @@ public:
   {
     Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
                                  "NCollection_Array2::Resize");
-    myLowerRow = theRowLower;
-    myLowerCol = theColLower;
     if (!theToCopyData)
     {
       NCollection_Array1<TheItemType>::Resize(
         BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
         LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
         false);
-      mySizeRow = theRowUpper - theRowLower + 1;
-      mySizeCol = theColUpper - theColLower + 1;
+      mySizeRow  = theRowUpper - theRowLower + 1;
+      mySizeCol  = theColUpper - theColLower + 1;
+      myLowerRow = theRowLower;
+      myLowerCol = theColLower;
       return;
     }
-    NCollection_Array1<TheItemType> aTmpMovedCopy(std::move(*this));
+    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
+    const size_t aNewNbCols    = theColUpper - theColLower + 1;
+    const size_t aNbRowsToCopy = std::min<size_t>(mySizeRow, aNewNbRows);
+    const size_t aNbColsToCopy = std::min<size_t>(mySizeCol, aNewNbCols);
+
+    NCollection_Array2<TheItemType> aTmpMovedCopy(std::move(*this));
     TheItemType*                    anOldPointer = &aTmpMovedCopy.ChangeFirst();
     NCollection_Array1<TheItemType>::Resize(
       BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       false);
-    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
-    const size_t aNewNbCols    = theColUpper - theColLower + 1;
-    const size_t aNbRowsToCopy = std::min<size_t>(mySizeRow, aNewNbRows);
-    const size_t aNbColsToCopy = std::min<size_t>(mySizeCol, aNewNbCols);
-    mySizeRow                  = aNewNbRows;
-    const size_t anOldNbCols   = mySizeCol;
-    mySizeCol                  = aNewNbCols;
+    mySizeRow        = aNewNbRows;
+    mySizeCol        = aNewNbCols;
+    myLowerRow       = theRowLower;
+    myLowerCol       = theColLower;
+    size_t aOldInter = 0;
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
-        NCollection_Array1<TheItemType>::at(aRowIter * aNewNbCols + aColIter) =
-          std::move(anOldPointer[aRowIter * anOldNbCols + aColIter]);
+        SetValue(aRowIter + myLowerRow,
+                 aColIter + myLowerCol,
+                 std::move(anOldPointer[aOldInter++]));
       }
     }
   }

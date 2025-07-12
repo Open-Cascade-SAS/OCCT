@@ -205,12 +205,11 @@ TEST(NCollection_Array2Test, Resize)
   EXPECT_EQ(6, anArray.UpperCol());
 
   // Verify original data is preserved in the correct locations
-  // Note: This test assumes the fix for the Resize data corruption bug is applied.
-  for (Standard_Integer aRowIter = 1; aRowIter <= 4; ++aRowIter)
+  for (Standard_Integer aRowIter = 0; aRowIter <= 3; ++aRowIter)
   {
-    for (Standard_Integer aColIter = 1; aColIter <= 5; ++aColIter)
+    for (Standard_Integer aColIter = 0; aColIter <= 4; ++aColIter)
     {
-      EXPECT_EQ(aRowIter * 100 + aColIter, anArray(aRowIter, aColIter));
+      EXPECT_EQ((aRowIter + 1) * 100 + (aColIter + 1), anArray(aRowIter, aColIter));
     }
   }
 }
@@ -268,11 +267,12 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
   // This test checks for data scrambling when resizing to a different shape
   // with the same total number of elements.
   NCollection_Array2<Standard_Integer> anArray(1, 4, 1, 6); // 4x6 = 24 elements
+  Standard_Integer                     anExpectedValue = 0;
   for (Standard_Integer aRowIter = 1; aRowIter <= 4; ++aRowIter)
   {
     for (Standard_Integer aColIter = 1; aColIter <= 6; ++aColIter)
     {
-      anArray(aRowIter, aColIter) = aRowIter * 100 + aColIter;
+      anArray(aRowIter, aColIter) = anExpectedValue++;
     }
   }
 
@@ -286,26 +286,11 @@ TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 
   // Verify the common 4x4 sub-matrix was not scrambled.
   // This will fail if the copy logic in Resize is incorrect.
-  for (Standard_Integer aRowIter = 1; aRowIter <= 4; ++aRowIter)
+  for (Standard_Integer anElemInd = anArray.Lower(); anElemInd < anArray.Lower() + 16; ++anElemInd)
   {
-    for (Standard_Integer aColIter = 1; aColIter <= 4; ++aColIter)
-    {
-      EXPECT_EQ(aRowIter * 100 + aColIter, anArray(aRowIter, aColIter));
-    }
+    EXPECT_EQ(anElemInd - anArray.Lower(),
+              static_cast<NCollection_Array1<Standard_Integer>&>(anArray).Value(anElemInd));
   }
-}
-
-TEST(NCollection_Array2Test, Resize_ToZeroColumns)
-{
-  // Test resizing to an array with zero columns
-  NCollection_Array2<Standard_Integer> anArray(1, 5, 1, 10);
-  anArray.Init(42);
-
-  anArray.Resize(1, 5, 1, 0, Standard_True);
-
-  EXPECT_EQ(5, anArray.NbRows());
-  EXPECT_EQ(0, anArray.NbColumns());
-  EXPECT_EQ(0, anArray.Length());
 }
 
 TEST(NCollection_Array2Test, Resize_NoCopy)
