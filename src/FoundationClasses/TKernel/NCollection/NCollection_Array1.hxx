@@ -111,7 +111,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct(0, mySize);
+    construct();
   }
 
   explicit NCollection_Array1(const allocator_type&  theAlloc,
@@ -129,7 +129,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct(0, mySize);
+    construct();
   }
 
   explicit NCollection_Array1(const_reference        theBegin,
@@ -147,7 +147,7 @@ public:
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
-    construct(0, mySize);
+    construct();
   }
 
   //! Copy constructor
@@ -180,7 +180,7 @@ public:
     {
       return;
     }
-    destroy(myPointer, 0, mySize);
+    destroy();
     myAllocator.deallocate(myPointer, mySize);
   }
 
@@ -238,7 +238,7 @@ public:
     }
     if (myIsOwner)
     {
-      destroy(myPointer, 0, mySize);
+      destroy();
       myAllocator.deallocate(myPointer, mySize);
     }
     myLowerBound       = theOther.myLowerBound;
@@ -337,8 +337,9 @@ public:
   {
     Standard_RangeError_Raise_if(theUpper < theLower, "NCollection_Array1::Resize");
     const size_t aNewSize     = static_cast<size_t>(theUpper - theLower + 1);
+    const size_t anOldSize    = mySize;
     pointer      aPrevContPnt = myPointer;
-    if (aNewSize == mySize)
+    if (aNewSize == anOldSize)
     {
       myLowerBound = theLower;
       return;
@@ -348,12 +349,13 @@ public:
       if (theToCopyData)
         destroy(myPointer, aNewSize, mySize);
       else
-        destroy(myPointer, 0, mySize);
+        destroy();
     }
     myLowerBound = theLower;
+    mySize       = aNewSize;
     if (theToCopyData)
     {
-      const size_t aMinSize = std::min<size_t>(aNewSize, mySize);
+      const size_t aMinSize = std::min<size_t>(aNewSize, anOldSize);
       if (myIsOwner)
       {
         myPointer = myAllocator.reallocate(myPointer, aNewSize);
@@ -363,16 +365,15 @@ public:
         myPointer = myAllocator.allocate(aNewSize);
         copyConstruct(aPrevContPnt, aMinSize);
       }
-      construct(mySize, aNewSize);
+      construct(anOldSize, aNewSize);
     }
     else
     {
       if (myIsOwner)
         myAllocator.deallocate(aPrevContPnt, mySize);
       myPointer = myAllocator.allocate(aNewSize);
-      construct(0, aNewSize);
+      construct();
     }
-    mySize    = aNewSize;
     myIsOwner = true;
   }
 
@@ -396,6 +397,21 @@ protected:
 
 protected:
   template <typename U = TheItemType>
+  typename std::enable_if<std::is_arithmetic<U>::value, void>::type construct()
+  {
+    // Do nothing
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<!std::is_arithmetic<U>::value, void>::type construct()
+  {
+    for (size_t anInd = 0; anInd < mySize; anInd++)
+    {
+      myAllocator.construct(myPointer + anInd);
+    }
+  }
+
+  template <typename U = TheItemType>
   typename std::enable_if<std::is_arithmetic<U>::value, void>::type construct(const size_t,
                                                                               const size_t)
   {
@@ -409,6 +425,21 @@ protected:
     for (size_t anInd = theFrom; anInd < theTo; anInd++)
     {
       myAllocator.construct(myPointer + anInd);
+    }
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<std::is_arithmetic<U>::value, void>::type destroy()
+  {
+    // Do nothing
+  }
+
+  template <typename U = TheItemType>
+  typename std::enable_if<!std::is_arithmetic<U>::value, void>::type destroy()
+  {
+    for (size_t anInd = 0; anInd < mySize; anInd++)
+    {
+      myAllocator.destroy(myPointer + anInd);
     }
   }
 
