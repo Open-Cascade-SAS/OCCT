@@ -776,10 +776,11 @@ endif()
 # the platform specific variables.
 if (BUILD_USE_VCPKG)
   project (OCCT)
-  if (APPLE)
-    # set Apple specific variables
-    occt_set_apple_csf_vars()
-  endif()
+endif()
+
+if (APPLE)
+  # set Apple specific variables
+  occt_set_apple_csf_vars()
 endif()
 
 # copying clang-format file to the root of the project
