@@ -78,29 +78,39 @@ public:
   }
 
   //! Copy data to theOther
-  void Copy(math_DoubleTab& theOther) const;
+  void Copy(math_DoubleTab& theOther) const { theOther.myArray.Assign(myArray); }
 
   //! Set lower row index
-  void SetLowerRow(const Standard_Integer theLowerRow);
+  void SetLowerRow(const Standard_Integer theLowerRow) { myArray.UpdateLowerRow(theLowerRow); }
 
   //! Set lower column index
-  void SetLowerCol(const Standard_Integer theLowerCol);
+  void SetLowerCol(const Standard_Integer theLowerCol) { myArray.UpdateLowerCol(theLowerCol); }
 
   //! Access element at (theRowIndex, theColIndex)
-  Standard_Real& Value(const Standard_Integer theRowIndex, const Standard_Integer theColIndex) const
+  const Standard_Real& Value(const Standard_Integer theRowIndex,
+                             const Standard_Integer theColIndex) const
   {
-    return const_cast<NCollection_Array2<Standard_Real>&>(myArray)(theRowIndex, theColIndex);
+    return myArray.Value(theRowIndex, theColIndex);
+  }
+
+  //! Change element at (theRowIndex, theColIndex)
+  Standard_Real& Value(const Standard_Integer theRowIndex, const Standard_Integer theColIndex)
+  {
+    return myArray.ChangeValue(theRowIndex, theColIndex);
   }
 
   //! Operator() - alias to Value
-  Standard_Real& operator()(const Standard_Integer theRowIndex,
-                            const Standard_Integer theColIndex) const
+  const Standard_Real& operator()(const Standard_Integer theRowIndex,
+                                  const Standard_Integer theColIndex) const
   {
     return Value(theRowIndex, theColIndex);
   }
 
-  //! Free resources (for compatibility)
-  void Free() {}
+  //! Operator() - alias to ChangeValue
+  Standard_Real& operator()(const Standard_Integer theRowIndex, const Standard_Integer theColIndex)
+  {
+    return Value(theRowIndex, theColIndex);
+  }
 
   //! Destructor
   ~math_DoubleTab() = default;
@@ -109,7 +119,5 @@ private:
   std::array<Standard_Real, THE_BUFFER_SIZE> myBuffer;
   NCollection_Array2<Standard_Real>          myArray;
 };
-
-#include <math_DoubleTab.lxx>
 
 #endif // _math_DoubleTab_HeaderFile

@@ -213,16 +213,3 @@ TEST(MathDoubleTabTest, NegativeIndices)
   EXPECT_DOUBLE_EQ(aNegTab.Value(-3, -2), -999.0);
   EXPECT_DOUBLE_EQ(aNegTab.Value(-5, -3), -1.0);
 }
-
-// Test Free method (for compatibility)
-TEST(MathDoubleTabTest, FreeMethod)
-{
-  math_DoubleTab aTab(1, 2, 1, 2);
-  aTab.Init(123.0);
-
-  // Free should not crash (it's empty now but should be safe to call)
-  aTab.Free();
-
-  // Array should still be accessible since Free() is now empty
-  EXPECT_DOUBLE_EQ(aTab.Value(1, 1), 123.0);
-}
