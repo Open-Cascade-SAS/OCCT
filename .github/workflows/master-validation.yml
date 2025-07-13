@@ -212,7 +212,7 @@ jobs:
       uses: ./.github/actions/build-occt
       with:
         platform: ${{ runner.os == 'Windows' && 'windows' || runner.os == 'macOS' && 'macos' || 'linux' }}
-        compiler: ${{ runner.os == 'Windows' && 'msvc' || 'gcc' }}
+        compiler: ${{ runner.os == 'Windows' && 'msvc' || 'clang' }}
         artifact-name: occt-${{ matrix.os }}-${{ matrix.build_type }}
         cmake-build-type: ${{ matrix.build_type }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
