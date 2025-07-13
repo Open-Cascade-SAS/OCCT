@@ -80,8 +80,15 @@ bool Media_CodecContext::Init(const AVStream& theStream,
     return false;
   }
   #else
-  // For older FFmpeg, copy from stream's codec context
+    // For older FFmpeg, copy from stream's codec context
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4996) // deprecated declaration
+    #endif
   if (avcodec_copy_context(myCodecCtx, theStream.codec) < 0)
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
   {
     Message::SendFail("Internal error: unable to copy codec context");
     Close();
@@ -97,7 +104,14 @@ bool Media_CodecContext::Init(const AVStream& theStream,
   const AVCodecID aCodecId =
     theCodecId != AV_CODEC_ID_NONE ? (AVCodecID)theCodecId : theStream.codecpar->codec_id;
   #else
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4996) // deprecated declaration
+    #endif
   const AVCodecID aCodecId = theCodecId != 0 ? (AVCodecID)theCodecId : theStream.codec->codec_id;
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
   #endif
 
   myCodec = ffmpeg_find_decoder(aCodecId);
@@ -115,7 +129,14 @@ bool Media_CodecContext::Init(const AVStream& theStream,
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   if (theStream.codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
   #else
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4996) // deprecated declaration
+    #endif
   if (theStream.codec->codec_type == AVMEDIA_TYPE_VIDEO)
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
   #endif
   {
     myCodecCtx->thread_count =
@@ -153,8 +174,15 @@ bool Media_CodecContext::Init(const AVStream& theStream,
   if (theStream.codecpar->codec_type == AVMEDIA_TYPE_VIDEO
       && (myCodecCtx->width <= 0 || myCodecCtx->height <= 0))
   #else
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4996) // deprecated declaration
+    #endif
   if (theStream.codec->codec_type == AVMEDIA_TYPE_VIDEO
       && (myCodecCtx->width <= 0 || myCodecCtx->height <= 0))
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
   #endif
   {
     Message::SendFail("FFmpeg: video stream has invalid dimensions");

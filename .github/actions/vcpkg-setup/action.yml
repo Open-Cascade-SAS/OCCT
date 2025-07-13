@@ -51,13 +51,15 @@ runs:
               libgles2-mesa-dev
       shell: bash
 
+
     - name: Install required packages (macOS)
       if: runner.os == 'macOS'
       run: |
         brew update || true
-        brew install cmake ninja nasm autoconf automake mono || true
+        brew install cmake ninja nasm autoconf automake mono openexr || true
         brew install --cask xquartz || true
       shell: bash
+
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
