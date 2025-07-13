@@ -164,7 +164,7 @@ Standard_Boolean OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 OSD_Function OSD_SharedLibrary::DlSymb(const Standard_CString aName) const
 {
   void (*fp)();
-  fp = reinterpret_cast<void (*)()>(reinterpret_cast<void*>(dlsym(myHandle, aName)));
+  fp = (void (*)())dlsym(myHandle, aName);
   if (!BAD(fp))
   {
     return (OSD_Function)fp;
@@ -317,8 +317,7 @@ Standard_Boolean OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
 OSD_Function OSD_SharedLibrary ::DlSymb(const Standard_CString Name) const
 {
 
-  OSD_Function func = reinterpret_cast<OSD_Function>(
-    reinterpret_cast<void*>(GetProcAddress((HMODULE)myHandle, Name)));
+  OSD_Function func = (OSD_Function)GetProcAddress((HMODULE)myHandle, Name);
 
   if (func == NULL)
 

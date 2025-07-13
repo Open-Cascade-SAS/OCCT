@@ -109,27 +109,27 @@ private:
       return;
     }
 
-    if ((SymInitialize = reinterpret_cast<SYMINITIALIZEPROC>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib, "SymInitialize")))) == NULL)
+    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymInitialize";
       unload();
       return;
     }
-    if ((SymCleanup = reinterpret_cast<SYMCLEANUPPROC>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib, "SymCleanup")))) == NULL)
+    if ((SymCleanup = (SYMCLEANUPPROC)GetProcAddress(myDbgHelpLib, "SymCleanup")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymCleanup";
       unload();
       return;
     }
-    if ((StackWalk64 = reinterpret_cast<STACKWALK64PROC>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib, "StackWalk64")))) == NULL)
+    if ((StackWalk64 = (STACKWALK64PROC)GetProcAddress(myDbgHelpLib, "StackWalk64")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: StackWalk64";
       unload();
       return;
     }
     if ((SymFunctionTableAccess64 =
-           reinterpret_cast<PFUNCTION_TABLE_ACCESS_ROUTINE64>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib,
-                                                            "SymFunctionTableAccess64"))))
+           (PFUNCTION_TABLE_ACCESS_ROUTINE64)GetProcAddress(myDbgHelpLib,
+                                                            "SymFunctionTableAccess64"))
         == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFunctionTableAccess64";
@@ -137,14 +137,14 @@ private:
       return;
     }
     if ((SymGetModuleBase64 =
-           reinterpret_cast<PGET_MODULE_BASE_ROUTINE64>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib, "SymGetModuleBase64"))))
+           (PGET_MODULE_BASE_ROUTINE64)GetProcAddress(myDbgHelpLib, "SymGetModuleBase64"))
         == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymGetModuleBase64";
       unload();
       return;
     }
-    if ((SymFromAddr = reinterpret_cast<SYMFROMADDRPROC>(reinterpret_cast<void*>(GetProcAddress(myDbgHelpLib, "SymFromAddr")))) == NULL)
+    if ((SymFromAddr = (SYMFROMADDRPROC)GetProcAddress(myDbgHelpLib, "SymFromAddr")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFromAddr";
       unload();
