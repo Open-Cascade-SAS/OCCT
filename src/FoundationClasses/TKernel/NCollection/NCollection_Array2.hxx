@@ -211,7 +211,7 @@ public:
     myLowerRow = myLowerRow - UpperRow() + theUpperRow;
   }
 
-  //! Update upper column
+  //! Updates upper column
   void UpdateUpperCol(const Standard_Integer theUpperCol)
   {
     myLowerCol = myLowerCol - UpperCol() + theUpperCol;
