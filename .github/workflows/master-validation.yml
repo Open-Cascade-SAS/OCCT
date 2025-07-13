@@ -42,8 +42,8 @@ jobs:
               cxx: "clang++",
               generator: "Ninja",
               toolset: "",
-              c_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option -Wno-cast-function-type-mismatch",
-              cxx_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option -Wno-cast-function-type-mismatch"
+              c_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option -Wno-error=cast-function-type-mismatch",
+              cxx_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option -Wno-error=cast-function-type-mismatch"
             }
 
     steps:
