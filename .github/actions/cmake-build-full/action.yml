@@ -1,0 +1,151 @@
+name: 'CMake Full Build'
+description: 'Configure and build OCCT with full configuration (shared/static)'
+
+inputs:
+  generator:
+    description: 'CMake generator'
+    required: true
+    default: 'Ninja'
+  cc:
+    description: 'C compiler'
+    required: true
+  cxx:
+    description: 'C++ compiler'
+    required: true
+  build-type:
+    description: 'Build type (Debug, Release)'
+    required: false
+    default: 'Release'
+  library-type:
+    description: 'Library type (Shared, Static)'
+    required: false
+    default: 'Shared'
+  opt-profile:
+    description: 'Optimization profile (Production, Default)'
+    required: false
+    default: 'Production'
+  compiler-flags:
+    description: 'Additional compiler flags'
+    required: false
+    default: ''
+  cmake-prefix-path:
+    description: 'CMake prefix path'
+    required: false
+    default: ''
+  thirdparty-dir:
+    description: '3rd party directory'
+    required: false
+    default: ''
+  rapidjson-dir:
+    description: 'RapidJSON directory'
+    required: false
+    default: ''
+  use-vtk:
+    description: 'Enable VTK'
+    required: false
+    default: 'ON'
+  use-tbb:
+    description: 'Enable TBB'
+    required: false
+    default: 'ON'
+  with-debug:
+    description: 'Enable BUILD_WITH_DEBUG'
+    required: false
+    default: 'OFF'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure full build (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "${{ inputs.generator }}" \
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} \
+              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} \
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} \
+              ${{ inputs.rapidjson-dir != '' && format('-D 3RDPARTY_RAPIDJSON_DIR={0}', inputs.rapidjson-dir) || '' }} \
+              -D BUILD_USE_PCH=OFF \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=${{ inputs.opt-profile }} \
+              -D BUILD_LIBRARY_TYPE=${{ inputs.library-type }} \
+              ${{ inputs.with-debug == 'ON' && '-D BUILD_WITH_DEBUG=ON' || '' }} \
+              -D USE_TK=ON \
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} \
+              -D USE_MMGR_TYPE=JEMALLOC \
+              -D INSTALL_DIR=${{ github.workspace }}/install-${{ inputs.build-type }} \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=${{ inputs.use-vtk }} \
+              -D USE_TBB=${{ inputs.use-tbb }} \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON \
+              ${{ inputs.compiler-flags }} ..
+      shell: bash
+
+    - name: Configure full build (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ inputs.generator }}" `
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} `
+              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} `
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} `
+              ${{ inputs.rapidjson-dir != '' && format('-D 3RDPARTY_RAPIDJSON_DIR={0}', inputs.rapidjson-dir) || '' }} `
+              -D BUILD_USE_PCH=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_OPT_PROFILE=${{ inputs.opt-profile }} `
+              -D BUILD_LIBRARY_TYPE=${{ inputs.library-type }} `
+              ${{ inputs.with-debug == 'ON' && '-D BUILD_WITH_DEBUG=ON' || '' }} `
+              -D USE_TK=ON `
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} `
+              -D USE_MMGR_TYPE=JEMALLOC `
+              -D INSTALL_DIR=${{ github.workspace }}/install-${{ inputs.build-type }} `
+              -D USE_FREETYPE=ON `
+              -D USE_DRACO=ON `
+              -D USE_FFMPEG=OFF `
+              -D USE_FREEIMAGE=ON `
+              -D USE_GLES2=ON `
+              -D USE_OPENVR=ON `
+              -D USE_VTK=${{ inputs.use-vtk }} `
+              -D USE_TBB=${{ inputs.use-tbb }} `
+              -D USE_RAPIDJSON=ON `
+              -D USE_OPENGL=ON `
+              ${{ inputs.compiler-flags }} ..
+      shell: pwsh
+
+    - name: Build full (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        cd build
+        cmake --build . --target install --config ${{ inputs.build-type }} -- -j 4
+      shell: bash
+
+    - name: Build full (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        cd build
+        cmake --build . --target install --config ${{ inputs.build-type }}
+      shell: pwsh
+
+    - name: Clean up build (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        rm -rf build
+        rm -rf ${{ github.workspace }}/install-${{ inputs.build-type }}
+      shell: bash
+
+    - name: Clean up build (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install-${{ inputs.build-type }}
+      shell: pwsh

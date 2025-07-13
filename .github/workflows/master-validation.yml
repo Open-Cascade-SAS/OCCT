@@ -1,0 +1,254 @@
+# Master validation workflow that combines multiple build configurations
+# This workflow is triggered only on pushes to the master branch of the main repository
+# It includes Windows (MSVC, MinGW), Ubuntu, vcpkg builds, and code analysis
+
+name: Master Validation
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  USERNAME: Open-Cascade-SAS
+  VCPKG_EXE: ${{ github.workspace }}/vcpkg/vcpkg
+  FEED_URL: https://nuget.pkg.github.com/Open-Cascade-SAS/index.json
+  VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite"
+
+jobs:
+  # Windows MSVC/Clang builds
+  windows-msvc:
+    name: Windows MSVC/Clang validation
+    runs-on: windows-2025
+    
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "MSVC",
+              cc: "cl",
+              cxx: "cl",
+              generator: "Visual Studio 17 2022",
+              toolset: "host=x64",
+              c_flags: "/W4 /WX",
+              cxx_flags: "/W4 /WX"
+            }
+          - {
+              name: "Clang",
+              cc: "clang",
+              cxx: "clang++",
+              generator: "Ninja",
+              toolset: "",
+              c_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option",
+              cxx_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option"
+            }
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Setup Windows MSVC dependencies
+      uses: ./.github/actions/setup-windows-msvc-deps
+
+    - name: Build basic configuration
+      uses: ./.github/actions/cmake-build-basic
+      with:
+        generator: ${{ matrix.config.generator }}
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: "Release"
+        thirdparty-dir: ${{ github.workspace }}/3rdparty-vc14-64
+        compiler-flags: "${{ matrix.config.toolset != '' && format('-T {0}', matrix.config.toolset) || '' }} -D CMAKE_CXX_FLAGS=\"${{ matrix.config.cxx_flags }}\" -D CMAKE_C_FLAGS=\"${{ matrix.config.c_flags }}\""
+
+    - name: Build full shared configuration
+      uses: ./.github/actions/cmake-build-full
+      with:
+        generator: ${{ matrix.config.generator }}
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: "Debug"
+        library-type: "Shared"
+        opt-profile: "Production"
+        thirdparty-dir: ${{ github.workspace }}/3rdparty-vc14-64
+        compiler-flags: "${{ matrix.config.toolset != '' && format('-T {0}', matrix.config.toolset) || '' }} -D CMAKE_CXX_FLAGS=\"${{ matrix.config.cxx_flags }}\" -D CMAKE_C_FLAGS=\"${{ matrix.config.c_flags }}\" -D USE_FFMPEG=ON"
+        use-vtk: ${{ matrix.config.name == 'MSVC' && 'ON' || 'OFF' }}
+        use-tbb: "ON"
+
+  # Windows MinGW builds
+  windows-mingw:
+    name: Windows MinGW validation
+    runs-on: windows-2025
+
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "GCC",
+              cc: "x86_64-w64-mingw32-gcc",
+              cxx: "x86_64-w64-mingw32-g++",
+              package: "mingw-w64-x86_64-toolchain",
+              msystem: "MINGW64",
+              compiler_flags: "",
+              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-llvm-openmp mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+            }
+          - {
+              name: "Clang",
+              cc: "clang",
+              cxx: "clang++",
+              package: "mingw-w64-clang-x86_64-toolchain",
+              msystem: "CLANG64",
+              compiler_flags: "-D CMAKE_CXX_FLAGS=\"-Wall -Wextra\" -D CMAKE_C_FLAGS=\"-Wall -Wextra\"",
+              dependencies: "mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja mingw-w64-clang-x86_64-rapidjson mingw-w64-clang-x86_64-freetype mingw-w64-clang-x86_64-draco mingw-w64-clang-x86_64-freeimage mingw-w64-clang-x86_64-tbb mingw-w64-clang-x86_64-tk mingw-w64-clang-x86_64-tcl mingw-w64-clang-x86_64-openvr mingw-w64-clang-x86_64-jemalloc mingw-w64-clang-x86_64-mesa mingw-w64-clang-x86_64-angleproject mingw-w64-clang-x86_64-llvm-openmp mingw-w64-clang-x86_64-winpthreads-git mingw-w64-clang-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+            }
+        build_type: [Debug, Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Setup MSYS2
+      uses: ./.github/actions/setup-msys2
+      with:
+        msystem: ${{ matrix.config.msystem }}
+        packages: ${{ matrix.config.package }}
+        dependencies: ${{ matrix.config.dependencies }}
+
+    - name: Build basic configuration
+      uses: ./.github/actions/cmake-build-basic
+      with:
+        generator: "Ninja"
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: ${{ matrix.build_type }}
+        compiler-flags: ${{ matrix.config.compiler_flags }}
+        cmake-prefix-path: $MSYSTEM_PREFIX
+
+    - name: Build full shared configuration
+      uses: ./.github/actions/cmake-build-full
+      with:
+        generator: "Ninja"
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: ${{ matrix.build_type }}
+        library-type: "Shared"
+        opt-profile: "Production"
+        compiler-flags: ${{ matrix.config.compiler_flags }}
+        cmake-prefix-path: $MSYSTEM_PREFIX
+        use-vtk: "OFF"
+        use-tbb: "OFF"
+
+  # Ubuntu builds
+  ubuntu:
+    name: Ubuntu validation
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "GCC",
+              cc: "gcc",
+              cxx: "g++",
+              compiler_flags: ""
+            }
+          - {
+              name: "Clang",
+              cc: "clang",
+              cxx: "clang++",
+              compiler_flags: "-D CMAKE_CXX_FLAGS=\"-Werror -Wall -Wextra\" -D CMAKE_C_FLAGS=\"-Werror -Wall -Wextra\""
+            }
+        build_type: [Debug, Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Setup Ubuntu dependencies
+      uses: ./.github/actions/setup-ubuntu-deps
+
+    - name: Build basic configuration
+      uses: ./.github/actions/cmake-build-basic
+      with:
+        generator: "Ninja"
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: ${{ matrix.build_type }}
+        compiler-flags: ${{ matrix.config.compiler_flags }}
+
+    - name: Build full shared configuration
+      uses: ./.github/actions/cmake-build-full
+      with:
+        generator: "Ninja"
+        cc: ${{ matrix.config.cc }}
+        cxx: ${{ matrix.config.cxx }}
+        build-type: ${{ matrix.build_type }}
+        library-type: "Shared"
+        opt-profile: "Production"
+        compiler-flags: ${{ matrix.config.compiler_flags }}
+        rapidjson-dir: ${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53
+        use-vtk: "ON"
+        use-tbb: "ON"
+
+  # vcpkg builds
+  vcpkg:
+    name: vcpkg validation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-22.04, windows-2022, windows-2025, macos-15, macos-14, macos-13, ubuntu-24.04-arm, ubuntu-22.04-arm]
+        build_type: [Debug, Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Build OCCT with vcpkg
+      uses: ./.github/actions/build-occt
+      with:
+        platform: ${{ runner.os == 'Windows' && 'windows' || runner.os == 'macOS' && 'macos' || 'linux' }}
+        compiler: ${{ runner.os == 'Windows' && 'msvc' || 'gcc' }}
+        artifact-name: occt-${{ matrix.os }}-${{ matrix.build_type }}
+        cmake-build-type: ${{ matrix.build_type }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Code analysis
+  code-analysis:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+      packages: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3.26.5
+      with:
+        languages: c-cpp
+        build-mode: manual
+
+    - name: Build project for analysis
+      uses: ./.github/actions/cmake-build-basic
+      with:
+        generator: "Unix Makefiles"
+        cc: "gcc"
+        cxx: "g++"
+        build-type: "Release"
+        compiler-flags: "-D USE_FREETYPE=OFF"
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3.26.5
+      with:
+        category: "/language:c-cpp"

@@ -1,0 +1,85 @@
+name: 'CMake Basic Build'
+description: 'Configure and build OCCT with basic configuration'
+
+inputs:
+  generator:
+    description: 'CMake generator'
+    required: true
+    default: 'Ninja'
+  cc:
+    description: 'C compiler'
+    required: true
+  cxx:
+    description: 'C++ compiler'
+    required: true
+  build-type:
+    description: 'Build type (Debug, Release)'
+    required: false
+    default: 'Release'
+  compiler-flags:
+    description: 'Additional compiler flags'
+    required: false
+    default: ''
+  cmake-prefix-path:
+    description: 'CMake prefix path'
+    required: false
+    default: ''
+  thirdparty-dir:
+    description: '3rd party directory'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure basic build (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "${{ inputs.generator }}" \
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} \
+              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} \
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} \
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} \
+              ${{ inputs.compiler-flags }} ..
+      shell: bash
+
+    - name: Configure basic build (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ inputs.generator }}" `
+              -D CMAKE_C_COMPILER=${{ inputs.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} `
+              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} `
+              ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} `
+              -D CMAKE_BUILD_TYPE=${{ inputs.build-type }} `
+              ${{ inputs.compiler-flags }} ..
+      shell: pwsh
+
+    - name: Build basic (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        cd build
+        cmake --build . --config ${{ inputs.build-type }} -- -j 4
+      shell: bash
+
+    - name: Build basic (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        cd build
+        cmake --build . --config ${{ inputs.build-type }}
+      shell: pwsh
+
+    - name: Clean up build (Unix)
+      if: runner.os != 'Windows'
+      run: rm -rf build
+      shell: bash
+
+    - name: Clean up build (Windows)
+      if: runner.os == 'Windows'
+      run: Remove-Item -Recurse -Force build
+      shell: pwsh

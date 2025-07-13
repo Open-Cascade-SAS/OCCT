@@ -1,0 +1,30 @@
+name: 'Setup MSYS2'
+description: 'Setup MSYS2 environment for MinGW builds'
+
+inputs:
+  msystem:
+    description: 'MSYS2 subsystem (MINGW64, CLANG64, UCRT64)'
+    required: true
+  packages:
+    description: 'Packages to install'
+    required: true
+  dependencies:
+    description: 'Additional dependencies to install'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ inputs.msystem }}
+        update: true
+        install: ${{ inputs.packages }} ${{ inputs.dependencies }}
+
+    - name: Setup environment
+      shell: msys2 {0}
+      run: |
+        echo "Setting up environment variables..."
+        echo "$MSYSTEM_PREFIX/bin" >> $GITHUB_PATH
+        echo "CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX" >> $GITHUB_ENV
