@@ -18,6 +18,7 @@
 #include <NCollection_BaseAllocator.hxx>
 
 #include <utility>
+#include <type_traits>
 
 //! Implements allocator requirements as defined in ISO C++ Standard 2003, section 20.1.5.
 /*! The allocator uses a standard OCCT mechanism for memory
@@ -35,6 +36,11 @@
 template <typename ItemType>
 class NCollection_Allocator
 {
+private:
+  //! Type traits for allocation decisions
+  static constexpr Standard_Boolean THE_NEEDS_ALIGNMENT =
+    alignof(ItemType) >= alignof(std::max_align_t) || std::is_floating_point<ItemType>::value;
+
 public:
   typedef ItemType          value_type;
   typedef value_type*       pointer;
@@ -82,19 +88,46 @@ public:
   //! Allocates memory for theSize objects.
   pointer allocate(const size_type theSize, const void* /*hint*/ = 0) const
   {
-    return static_cast<pointer>(Standard::AllocateOptimal(theSize * sizeof(ItemType)));
+    const Standard_Size aTotalSize = theSize * sizeof(ItemType);
+    if constexpr (THE_NEEDS_ALIGNMENT)
+    {
+      const Standard_Size anAlignment = alignof(ItemType);
+      return static_cast<pointer>(Standard::AllocateAligned(aTotalSize, anAlignment));
+    }
+    else
+    {
+      return static_cast<pointer>(Standard::Allocate(aTotalSize));
+    }
   }
 
   //! Frees previously allocated memory.
   void deallocate(pointer thePnt, const size_type) const
   {
-    Standard::Free(static_cast<Standard_Address>(thePnt));
+    if constexpr (THE_NEEDS_ALIGNMENT)
+    {
+      Standard::FreeAligned(static_cast<Standard_Address>(thePnt));
+    }
+    else
+    {
+      Standard::Free(static_cast<Standard_Address>(thePnt));
+    }
   }
 
   //! Reallocates memory for theSize objects.
-  pointer reallocate(pointer thePnt, const size_type theSize) const
+  pointer reallocate(pointer thePnt, const size_type theOldSize, const size_type theNewSize) const
   {
-    return static_cast<pointer>(Standard::Reallocate(thePnt, theSize * sizeof(ItemType)));
+    const Standard_Size aNewTotalSize = theNewSize * sizeof(ItemType);
+    if constexpr (THE_NEEDS_ALIGNMENT)
+    {
+      const Standard_Size anOldTotalSize = theOldSize * sizeof(ItemType);
+      const Standard_Size anAlignment    = alignof(ItemType);
+      return static_cast<pointer>(
+        Standard::ReallocateAligned(thePnt, anOldTotalSize, aNewTotalSize, anAlignment));
+    }
+    else
+    {
+      return static_cast<pointer>(Standard::Reallocate(thePnt, aNewTotalSize));
+    }
   }
 
   //! Constructs an object.

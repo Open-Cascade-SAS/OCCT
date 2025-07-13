@@ -362,7 +362,7 @@ public:
       const size_t aMinSize = std::min<size_t>(aNewSize, mySize);
       if (myIsOwner)
       {
-        myPointer = myAllocator.reallocate(myPointer, aNewSize);
+        myPointer = myAllocator.reallocate(myPointer, mySize, aNewSize);
       }
       else
       {

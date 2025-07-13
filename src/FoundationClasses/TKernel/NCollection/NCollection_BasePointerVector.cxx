@@ -48,6 +48,7 @@ void NCollection_BasePointerVector::Append(const void* thePnt)
 {
   if (mySize == myCapacity)
   {
+    const size_t anOldCapacity = myCapacity;
     if (myCapacity == 0)
     {
       myCapacity = 8; // the most optimal initial value
@@ -56,7 +57,7 @@ void NCollection_BasePointerVector::Append(const void* thePnt)
     {
       myCapacity <<= 1;
     }
-    myArray = myAllocator.reallocate(myArray, myCapacity);
+    myArray = myAllocator.reallocate(myArray, anOldCapacity, myCapacity);
   }
   myArray[mySize++] = (void*)thePnt;
 }
