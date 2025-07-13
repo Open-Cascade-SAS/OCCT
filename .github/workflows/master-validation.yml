@@ -124,7 +124,7 @@ jobs:
         cc: ${{ matrix.config.cc }}
         cxx: ${{ matrix.config.cxx }}
         build-type: ${{ matrix.build_type }}
-        cmake-prefix-path: ${{ matrix.config.msystem == 'CLANG64' && '/clang64' || '/mingw64' }}
+        shell-type: "msys2"
         compiler-flags: ${{ matrix.config.compiler_flags }}
 
     - name: Build full shared configuration
@@ -136,7 +136,7 @@ jobs:
         build-type: ${{ matrix.build_type }}
         library-type: "Shared"
         opt-profile: "Production"
-        cmake-prefix-path: ${{ matrix.config.msystem == 'CLANG64' && '/clang64' || '/mingw64' }}
+        shell-type: "msys2"
         compiler-flags: ${{ matrix.config.compiler_flags }}
         use-vtk: "OFF"
         use-tbb: "OFF"

@@ -28,10 +28,6 @@ inputs:
     description: 'Additional compiler flags'
     required: false
     default: ''
-  cmake-prefix-path:
-    description: 'CMake prefix path'
-    required: false
-    default: ''
   thirdparty-dir:
     description: '3rd party directory'
     required: false
@@ -52,19 +48,22 @@ inputs:
     description: 'Enable BUILD_WITH_DEBUG'
     required: false
     default: 'OFF'
+  shell-type:
+    description: 'Shell type to use (powershell, msys2, bash)'
+    required: false
+    default: 'auto'
 
 runs:
   using: "composite"
   steps:
-    - name: Configure full build (Unix)
-      if: runner.os != 'Windows'
+    - name: Configure full build (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
       run: |
         mkdir -p build
         cd build
         cmake -G "${{ inputs.generator }}" \
               -D CMAKE_C_COMPILER=${{ inputs.cc }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} \
-              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} \
               ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} \
               ${{ inputs.rapidjson-dir != '' && format('-D 3RDPARTY_RAPIDJSON_DIR={0}', inputs.rapidjson-dir) || '' }} \
               -D BUILD_USE_PCH=OFF \
@@ -87,17 +86,16 @@ runs:
               -D USE_RAPIDJSON=ON \
               -D USE_OPENGL=ON \
               ${{ inputs.compiler-flags }} ..
-      shell: bash
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
 
-    - name: Configure full build (Windows)
-      if: runner.os == 'Windows'
+    - name: Configure full build (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
       run: |
         mkdir build
         cd build
         cmake -G "${{ inputs.generator }}" `
               -D CMAKE_C_COMPILER=${{ inputs.cc }} `
               -D CMAKE_CXX_COMPILER=${{ inputs.cxx }} `
-              ${{ inputs.cmake-prefix-path != '' && format('-D CMAKE_PREFIX_PATH={0}', inputs.cmake-prefix-path) || '' }} `
               ${{ inputs.thirdparty-dir != '' && format('-D 3RDPARTY_DIR={0}', inputs.thirdparty-dir) || '' }} `
               ${{ inputs.rapidjson-dir != '' && format('-D 3RDPARTY_RAPIDJSON_DIR={0}', inputs.rapidjson-dir) || '' }} `
               -D BUILD_USE_PCH=OFF `
@@ -122,29 +120,29 @@ runs:
               ${{ inputs.compiler-flags }} ..
       shell: pwsh
 
-    - name: Build full (Unix)
-      if: runner.os != 'Windows'
+    - name: Build full (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
       run: |
         cd build
         cmake --build . --target install --config ${{ inputs.build-type }} -- -j 4
-      shell: bash
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
 
-    - name: Build full (Windows)
-      if: runner.os == 'Windows'
+    - name: Build full (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
       run: |
         cd build
         cmake --build . --target install --config ${{ inputs.build-type }}
       shell: pwsh
 
-    - name: Clean up build (Unix)
-      if: runner.os != 'Windows'
+    - name: Clean up build (Unix/MSYS2)
+      if: runner.os != 'Windows' || inputs.shell-type == 'msys2'
       run: |
         rm -rf build
         rm -rf ${{ github.workspace }}/install-${{ inputs.build-type }}
-      shell: bash
+      shell: ${{ inputs.shell-type == 'msys2' && 'msys2 {0}' || 'bash' }}
 
-    - name: Clean up build (Windows)
-      if: runner.os == 'Windows'
+    - name: Clean up build (Windows PowerShell)
+      if: runner.os == 'Windows' && inputs.shell-type != 'msys2'
       run: |
         Remove-Item -Recurse -Force build
         Remove-Item -Recurse -Force ${{ github.workspace }}/install-${{ inputs.build-type }}
