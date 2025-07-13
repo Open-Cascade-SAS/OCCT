@@ -33,10 +33,8 @@
 #include <Transfer_TransientProcess.hxx>
 
 // #include <BRepAPI.hxx>
-//  ============================================================================
-//  Method  : StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop
-//  Purpose : Empty Constructor
-//  ============================================================================
+//=================================================================================================
+
 StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop()
     : myError(StepToTopoDS_TranslateVertexLoopOther)
 {

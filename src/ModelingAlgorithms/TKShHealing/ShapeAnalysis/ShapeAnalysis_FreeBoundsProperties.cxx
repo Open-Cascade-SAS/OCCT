@@ -85,10 +85,7 @@ static void ContourProperties(const TopoDS_Wire& wire,
   countourLength = length;
 }
 
-//=======================================================================
-// function : ShapeAnalysis_FreeBoundsProperties
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
 
 ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties()
 {

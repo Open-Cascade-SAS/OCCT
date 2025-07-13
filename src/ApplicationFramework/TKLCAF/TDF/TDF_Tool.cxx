@@ -558,10 +558,7 @@ void TDF_Tool::DeductLabels(TDF_LabelList& aLabelList, TDF_LabelIntegerMap& aLab
   }
 }
 
-//=======================================================================
-// function : DeepDump
-// purpose  : Deep dump of a DF.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::DeepDump(Standard_OStream& anOS, const Handle(TDF_Data)& aDF)
 {
@@ -645,10 +642,7 @@ void TDF_Tool::ExtendedDeepDump(Standard_OStream&   anOS,
   anOS << " dumped between " << --i << std::endl;
 }
 
-//=======================================================================
-// function : ExtendedDeepDump
-// purpose  : Internal method.
-//=======================================================================
+//=================================================================================================
 
 static void TDF_Tool_ExtendedDeepDump(Standard_OStream&        anOS,
                                       const TDF_Label&         aLabel,

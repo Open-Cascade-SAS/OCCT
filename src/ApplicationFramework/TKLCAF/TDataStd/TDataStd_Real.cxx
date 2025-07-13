@@ -73,10 +73,7 @@ Handle(TDataStd_Real) TDataStd_Real::Set(const TDF_Label&     L,
   return SetAttr(L, V, theGuid);
 }
 
-//=======================================================================
-// function : TDataStd_Real
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
 
 TDataStd_Real::TDataStd_Real()
     : myValue(RealFirst()),
@@ -156,10 +153,8 @@ void TDataStd_Real::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_Real::SetID()
 {
   Backup();

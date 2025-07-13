@@ -104,10 +104,8 @@ static void ResetPreci(Handle(StepData_StepModel)& theStepModel,
   }
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Builder
-// Purpose : Empty constructor
-// ============================================================================
+//=================================================================================================
+
 StepToTopoDS_Builder::StepToTopoDS_Builder()
     : myError(StepToTopoDS_BuilderOther)
 {

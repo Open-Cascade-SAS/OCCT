@@ -48,10 +48,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
 
-//=======================================================================
-// function : CheckCurveData
-// purpose  : Internal use only
-//=======================================================================
+//=================================================================================================
+
 static void CheckCurveData(const TColgp_Array1OfPnt&      CPoles,
                            const TColStd_Array1OfReal&    CKnots,
                            const TColStd_Array1OfInteger& CMults,

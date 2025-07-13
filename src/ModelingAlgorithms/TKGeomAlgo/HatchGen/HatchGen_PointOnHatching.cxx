@@ -153,10 +153,7 @@ Standard_Boolean HatchGen_PointOnHatching::IsGreater(const HatchGen_PointOnHatch
   return (myParam - Point.myParam > Confusion);
 }
 
-//=======================================================================
-// Function : Dump
-// Purpose  : Dump of the point.
-//=======================================================================
+//=================================================================================================
 
 void HatchGen_PointOnHatching::Dump(const Standard_Integer Index) const
 {

@@ -40,10 +40,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_LocationLaw, Standard_Transient)
 
-//=======================================================================
-// function : Norm
-// purpose  : Norm of a Matrix
-//=======================================================================
+//=================================================================================================
+
 static Standard_Real Norm(const gp_Mat& M)
 {
   Standard_Real R, Norme;

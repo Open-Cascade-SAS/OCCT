@@ -37,10 +37,8 @@
 #include <Precision.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 
-//=======================================================================
-// function : MakeFillet
-// Purpose  : cas plan/plan.
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
                                       const Handle(ChFiDS_SurfData)& Data,
                                       const gp_Pln&                  Pl1,

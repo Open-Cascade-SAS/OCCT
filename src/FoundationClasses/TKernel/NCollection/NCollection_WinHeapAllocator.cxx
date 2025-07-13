@@ -22,10 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_WinHeapAllocator, NCollection_BaseAllocat
   #include <windows.h>
 #endif
 
-//=======================================================================
-// function : NCollection_WinHeapAllocator
-// purpose  : Main constructor
-//=======================================================================
+//=================================================================================================
+
 NCollection_WinHeapAllocator::NCollection_WinHeapAllocator(const size_t theInitSizeBytes)
     : NCollection_BaseAllocator(),
 #if (defined(_WIN32) || defined(__WIN32__))

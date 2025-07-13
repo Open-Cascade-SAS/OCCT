@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
-//=======================================================================
-// function : ShapeAnalysis_FreeBoundData
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
+
 ShapeAnalysis_FreeBoundData::ShapeAnalysis_FreeBoundData()
 {
   myNotches = new TopTools_HSequenceOfShape();

@@ -232,10 +232,7 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
   return aReadData.PersistentObject(aRootData.Roots()->First()->Reference());
 }
 
-//=======================================================================
-// function : Read
-// purpose  : not implemented
-//=======================================================================
+//=================================================================================================
 
 void StdLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& /*theIStream*/,
                                                const Handle(Storage_Data)& /*theStorageData*/,
@@ -301,10 +298,8 @@ void StdLDrivers_DocumentRetrievalDriver::raiseOnStorageError(Storage_Error theE
   }
 }
 
-//=======================================================================
-// function : bindTypes
-// purpose  : Register types
-//=======================================================================
+//=================================================================================================
+
 void StdLDrivers_DocumentRetrievalDriver::bindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
   StdLDrivers::BindTypes(theMap);

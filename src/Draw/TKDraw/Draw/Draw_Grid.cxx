@@ -55,10 +55,7 @@ void Draw_Grid::Steps(const Standard_Real StepX,
   myIsActive = myStepX > MinimumStep && myStepY > MinimumStep && myStepZ > MinimumStep;
 }
 
-//=======================================================================
-// Function : DrawOn
-// Purpose  : Displays the grid.
-//=======================================================================
+//=================================================================================================
 
 void Draw_Grid::DrawOn(Draw_Display& Out) const
 {

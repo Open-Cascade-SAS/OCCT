@@ -606,28 +606,22 @@ void TPrsStd_AISPresentation::Paste(const Handle(TDF_Attribute)& theInto,
   anInto->myAIS.Nullify();
 }
 
-//=======================================================================
-// function : AfterAddition
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
+
 void TPrsStd_AISPresentation::AfterAddition()
 {
   AfterResume();
 }
 
-//=======================================================================
-// function : BeforeRemoval
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
+
 void TPrsStd_AISPresentation::BeforeRemoval()
 {
   BeforeForget();
 }
 
-//=======================================================================
-// function : BeforeForget
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
+
 void TPrsStd_AISPresentation::BeforeForget()
 {
   if (!myAIS.IsNull())

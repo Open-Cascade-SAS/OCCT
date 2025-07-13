@@ -26,10 +26,8 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::StepToTopoDS_Tool
-// Purpose : Empty Constructor
-// ============================================================================
+//=================================================================================================
+
 StepToTopoDS_Tool::StepToTopoDS_Tool()
     : myComputePC(Standard_False),
       myNbC0Surf(0),
@@ -55,10 +53,7 @@ StepToTopoDS_Tool::StepToTopoDS_Tool(const StepToTopoDS_DataMapOfTRI&         Ma
   Init(Map, TP);
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a Map
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::Init(const StepToTopoDS_DataMapOfTRI&         Map,
                              const Handle(Transfer_TransientProcess)& TP)
@@ -112,70 +107,49 @@ const TopoDS_Shape& StepToTopoDS_Tool::Find(
   return myDataMap.Find(TRI);
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::ClearEdgeMap
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::ClearEdgeMap()
 {
   myEdgeMap.Clear();
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::IsEdgeBound
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 Standard_Boolean StepToTopoDS_Tool::IsEdgeBound(const StepToTopoDS_PointPair& PP)
 {
   return myEdgeMap.IsBound(PP);
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool_BindEdge
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::BindEdge(const StepToTopoDS_PointPair& PP, const TopoDS_Edge& E)
 {
   myEdgeMap.Bind(PP, E);
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::FindEdge
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Edge& StepToTopoDS_Tool::FindEdge(const StepToTopoDS_PointPair& PP)
 {
   return myEdgeMap.Find(PP);
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::ClearVertexMap
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::ClearVertexMap()
 {
   myVertexMap.Clear();
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::IsVertexBound
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 Standard_Boolean StepToTopoDS_Tool::IsVertexBound(const Handle(StepGeom_CartesianPoint)& PG)
 {
   return myVertexMap.IsBound(PG);
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::BindVertex
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::BindVertex(const Handle(StepGeom_CartesianPoint)& P, const TopoDS_Vertex& V)
 {
@@ -185,30 +159,21 @@ void StepToTopoDS_Tool::BindVertex(const Handle(StepGeom_CartesianPoint)& P, con
 #endif
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::FindVertex
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Vertex& StepToTopoDS_Tool::FindVertex(const Handle(StepGeom_CartesianPoint)& P)
 {
   return myVertexMap.Find(P);
 }
 
-// ============================================================================
-// Method  : ComputePCurve
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_Tool::ComputePCurve(const Standard_Boolean B)
 {
   myComputePC = B;
 }
 
-// ============================================================================
-// Method  : ComputePCurve
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 Standard_Boolean StepToTopoDS_Tool::ComputePCurve() const
 {

@@ -556,19 +556,15 @@ void Extrema_ExtElCS::Perform(const gp_Circ&, const gp_Cone&)
   throw Standard_NotImplemented();
 }
 
-//=======================================================================
-// function : Extrema_ExtElCS
-// purpose  : Circle/Sphere
-//=======================================================================
+//=================================================================================================
+
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C, const gp_Sphere& S)
 {
   Perform(C, S);
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Circle/Sphere
-//=======================================================================
+//=================================================================================================
+
 void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
 {
   myDone  = Standard_False;

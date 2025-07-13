@@ -23,10 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TObj_TIntSparseArray, TDF_Attribute)
 
-//=======================================================================
-// function : TObj_TIntSparseArray
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
 
 TObj_TIntSparseArray::TObj_TIntSparseArray()
     : myVector(100),

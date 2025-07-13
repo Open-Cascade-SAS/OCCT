@@ -35,10 +35,8 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 
-// ============================================================================
-// Method  : StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell
-// Purpose : Empty Constructor
-// ============================================================================
+//=================================================================================================
+
 StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
     : myError(StepToTopoDS_TranslateShellOther)
 {

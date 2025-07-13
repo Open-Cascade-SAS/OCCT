@@ -39,10 +39,7 @@ typedef struct
   unsigned char  Data4[8]; // 8-bytes long on all OS
 } BinObjMgt_UUID;
 
-//=======================================================================
-// function : BinObjMgt_Persistent
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
 
 BinObjMgt_Persistent::BinObjMgt_Persistent()
     : myIndex(1),

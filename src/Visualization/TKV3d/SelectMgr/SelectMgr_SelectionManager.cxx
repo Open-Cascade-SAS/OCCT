@@ -479,10 +479,8 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
   }
 }
 
-//==================================================
-// Function: loadMode
-// Purpose : Private Method
-//==================================================
+//=================================================================================================
+
 void SelectMgr_SelectionManager::loadMode(const Handle(SelectMgr_SelectableObject)& theObject,
                                           const Standard_Integer                    theMode)
 {
@@ -519,10 +517,8 @@ void SelectMgr_SelectionManager::loadMode(const Handle(SelectMgr_SelectableObjec
   buildBVH(aNewSel);
 }
 
-//==================================================
-// Function: buildBVH
-// Purpose : Private Method
-//==================================================
+//=================================================================================================
+
 void SelectMgr_SelectionManager::buildBVH(const Handle(SelectMgr_Selection)& theSelection)
 {
   if (mySelector->ToPrebuildBVH())

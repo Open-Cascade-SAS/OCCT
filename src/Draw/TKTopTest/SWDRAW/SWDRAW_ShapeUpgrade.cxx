@@ -990,11 +990,8 @@ static Standard_Integer DT_SplitSurface(Draw_Interpretor& di, Standard_Integer n
 }
 
 //---------------gka
-//=======================================================================
-// function : offset2dcurve
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer offset2dcurve(Draw_Interpretor& di,
                                       Standard_Integer  argc,
                                       const char**      argv)
@@ -1016,11 +1013,8 @@ static Standard_Integer offset2dcurve(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-// function : offsetcurve
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer offsetcurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 5)

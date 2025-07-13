@@ -38,10 +38,8 @@
 static void CutSketch(MAT2d_SequenceOfSequenceOfGeometry& Figure,
                       MAT2d_DataMapOfBiIntInteger&        NbSect);
 
-//=============================================================================
-// function : BRepMAT2d_BisectingLocus
-// purpose  : Constructeur vide.
-//=============================================================================
+//=================================================================================================
+
 BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
     : isDone(Standard_False),
       nbContours(0)

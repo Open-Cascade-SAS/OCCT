@@ -50,10 +50,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TNaming_TranslateTool, Standard_Transient)
 // myTriangleMode(aTriMode)
 //{
 //}
-//=======================================================================
-// function : Add
-// purpose  : Adds S2 in S1
-//=======================================================================
+//=================================================================================================
+
 void TNaming_TranslateTool::Add(TopoDS_Shape& S1, const TopoDS_Shape& S2) const
 {
   BRep_Builder B;

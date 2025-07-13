@@ -29,10 +29,7 @@
 
 TopLoc_Location::TopLoc_Location() {}
 
-//=======================================================================
-// function : TopLoc_Location
-// purpose  : constructor Datum
-//=======================================================================
+//=================================================================================================
 
 TopLoc_Location::TopLoc_Location(const Handle(TopLoc_Datum3D)& D)
 {
@@ -63,10 +60,7 @@ TopLoc_Location::operator gp_Trsf() const
   return Transformation();
 }
 
-//=======================================================================
-// function : Inverted
-// purpose  : return the inverse
-//=======================================================================
+//=================================================================================================
 
 TopLoc_Location TopLoc_Location::Inverted() const
 {
@@ -137,10 +131,7 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
   return Other.Inverted().Multiplied(*this);
 }
 
-//=======================================================================
-// function : Powered
-// purpose  : power elevation
-//=======================================================================
+//=================================================================================================
 
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 {
@@ -165,10 +156,7 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
     return Inverted().Powered(-pwr);
 }
 
-//=======================================================================
-// function : IsEqual
-// purpose  : operator ==
-//=======================================================================
+//=================================================================================================
 
 // two locations are Equal if the Items have the same LocalValues and Powers
 // this is a recursive function to test it

@@ -48,10 +48,7 @@ Handle(TDF_Reference) TDF_Reference::Set(const TDF_Label& L, const TDF_Label& Or
   return A;
 }
 
-//=======================================================================
-// function : TDF_Reference
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
 
 TDF_Reference::TDF_Reference() {}
 

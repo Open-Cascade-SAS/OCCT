@@ -88,10 +88,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
     aDelta->AddAttributeDelta(DELTACREATION);                                                      \
   }
 
-//=======================================================================
-// function : TDF_Data
-// purpose  : empty constructor
-//=======================================================================
+//=================================================================================================
 
 TDF_Data::TDF_Data()
     : myTransaction(0),

@@ -62,10 +62,8 @@ AIS_Plane::AIS_Plane(const Handle(Geom_Plane)& aComponent, const Standard_Boolea
   InitDrawerAttributes();
 }
 
-//=======================================================================
-// function : AIS_Plane
-// purpose  : avec une position
-//=======================================================================
+//=================================================================================================
+
 AIS_Plane::AIS_Plane(const Handle(Geom_Plane)& aComponent,
                      const gp_Pnt&             aCenter,
                      const Standard_Boolean    aCurrentMode)

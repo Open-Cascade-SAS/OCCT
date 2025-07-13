@@ -918,10 +918,8 @@ void StructuralDump(Draw_Interpretor&         theCommands,
   }
 }
 
-//=======================================================================
-// function : checkshape
-// purpose  : Checks a shape
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer checkshape(Draw_Interpretor& theCommands,
                                    Standard_Integer  narg,
                                    const char**      a)

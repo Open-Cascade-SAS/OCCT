@@ -19,10 +19,8 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 
-// =======================================================================
-// method  : Constructor
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_BackgroundArray::OpenGl_BackgroundArray(const Graphic3d_TypeOfBackground theType)
     : OpenGl_PrimitiveArray(NULL, Graphic3d_TOPA_TRIANGLES, NULL, NULL, NULL),
       myType(theType),
@@ -39,10 +37,8 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray(const Graphic3d_TypeOfBackground 
   myGradientParams.type   = Aspect_GradientFillMethod_None;
 }
 
-// =======================================================================
-// method  : SetTextureParameters
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::SetTextureParameters(const Aspect_FillMethod theFillMethod)
 {
   if (myType != Graphic3d_TOB_TEXTURE)
@@ -54,20 +50,16 @@ void OpenGl_BackgroundArray::SetTextureParameters(const Aspect_FillMethod theFil
   invalidateData();
 }
 
-// =======================================================================
-// method  : SetTextureFillMethod
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::SetTextureFillMethod(const Aspect_FillMethod theFillMethod)
 {
   myFillMethod = theFillMethod;
   invalidateData();
 }
 
-// =======================================================================
-// method  : SetGradientParameters
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::SetGradientParameters(const Quantity_Color&           theColor1,
                                                    const Quantity_Color&           theColor2,
                                                    const Aspect_GradientFillMethod theType)
@@ -88,10 +80,8 @@ void OpenGl_BackgroundArray::SetGradientParameters(const Quantity_Color&        
   invalidateData();
 }
 
-// =======================================================================
-// method  : SetGradientFillMethod
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::SetGradientFillMethod(const Aspect_GradientFillMethod theType)
 {
   if (myType != Graphic3d_TOB_GRADIENT)
@@ -103,10 +93,8 @@ void OpenGl_BackgroundArray::SetGradientFillMethod(const Aspect_GradientFillMeth
   invalidateData();
 }
 
-// =======================================================================
-// method  : IsDefined
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_BackgroundArray::IsDefined() const
 {
   switch (myType)
@@ -123,19 +111,15 @@ bool OpenGl_BackgroundArray::IsDefined() const
   return Standard_False;
 }
 
-// =======================================================================
-// method  : invalidateData
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::invalidateData()
 {
   myToUpdate = Standard_True;
 }
 
-// =======================================================================
-// method  : init
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_BackgroundArray::init(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
@@ -191,10 +175,8 @@ Standard_Boolean OpenGl_BackgroundArray::init(const Handle(OpenGl_Workspace)& th
   return Standard_True;
 }
 
-// =======================================================================
-// method  : createGradientArray
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
   const Handle(OpenGl_Context)& theCtx) const
 {
@@ -358,10 +340,8 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray(
   return Standard_True;
 }
 
-// =======================================================================
-// method  : createTextureArray
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
   const Handle(OpenGl_Workspace)& theWorkspace) const
 {
@@ -434,10 +414,8 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray(
   return Standard_True;
 }
 
-// =======================================================================
-// method  : createCubeMapArray
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
 {
   const Graphic3d_Attribute aCubeMapAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC3}};
@@ -481,10 +459,8 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
   return Standard_True;
 }
 
-// =======================================================================
-// method  : Render
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_BackgroundArray::Render(const Handle(OpenGl_Workspace)& theWorkspace,
                                     Graphic3d_Camera::Projection    theProjection) const
 {

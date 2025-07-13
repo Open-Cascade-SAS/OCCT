@@ -137,10 +137,8 @@ BRepGProp_Gauss::Inertia::Inertia()
 {
 }
 
-//=======================================================================
-// function : Inertia::Reset
-// purpose  : Zeroes all values.
-//=======================================================================
+//=================================================================================================
+
 void BRepGProp_Gauss::Inertia::Reset()
 {
   memset(reinterpret_cast<void*>(this), 0, sizeof(BRepGProp_Gauss::Inertia));
