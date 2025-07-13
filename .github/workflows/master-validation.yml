@@ -220,9 +220,9 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # Code analysis
-  code-analysis:
-    name: Code Analysis
-    runs-on: ubuntu-latest
+  codeql-analyze:
+    name: CodeQL Analyze (C/C++)
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -255,3 +255,41 @@ jobs:
       uses: github/codeql-action/analyze@v3.26.5
       with:
         category: "/language:c-cpp"
+
+  msvc-analyze:
+    name: Microsoft C++ Code Analysis
+    runs-on: windows-2025
+
+    permissions:
+      contents: read
+      security-events: write
+      packages: read
+
+    env:
+      build: '${{ github.workspace }}/build'
+      config: 'Debug'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Configure OCCT for analysis
+      uses: ./.github/actions/configure-occt
+      with:
+        platform: 'windows'
+        compiler: 'msvc'
+        cmake-build-type: ${{ env.config }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run MSVC Code Analysis
+      uses: microsoft/msvc-code-analysis-action@v0.1.1
+      id: run-analysis
+      with:
+        cmakeBuildDirectory: ${{ env.build }}
+        buildConfiguration: ${{ env.config }}
+        ruleset: NativeRecommendedRules.ruleset
+
+    - name: Upload SARIF to GitHub
+      uses: github/codeql-action/upload-sarif@v3.26.5
+      with:
+        sarif_file: ${{ steps.run-analysis.outputs.sarif }}
