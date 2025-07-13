@@ -101,6 +101,7 @@ runs:
           install/bin/results/**/*.png
 
     - name: Post performance summary to PR
+      if: github.repository == 'Open-Cascade-SAS/OCCT' && github.head_ref == 'IR' && github.base_ref == 'master'
       env:
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
