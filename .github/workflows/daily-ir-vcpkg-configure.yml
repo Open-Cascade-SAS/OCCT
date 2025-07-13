@@ -4,11 +4,9 @@
 name: Daily IR Branch vcpkg Configure
 
 on:
-  schedule:
-    # Run daily at 02:00 UTC
-    - cron: '0 2 * * *'
-  workflow_dispatch:
-    # Allow manual triggering
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   configure-windows:

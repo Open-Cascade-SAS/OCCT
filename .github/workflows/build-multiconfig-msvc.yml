@@ -5,9 +5,9 @@
 name: MSVC build validation
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'master'
+      - '**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
