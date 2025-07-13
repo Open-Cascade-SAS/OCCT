@@ -205,7 +205,7 @@ public:
   //! Updates lower column
   void UpdateLowerCol(const Standard_Integer theLowerCol) { myLowerCol = theLowerCol; }
 
-  //! Update upper row
+  //! Updates upper row
   void UpdateUpperRow(const Standard_Integer theUpperRow)
   {
     myLowerRow = myLowerRow - UpperRow() + theUpperRow;
