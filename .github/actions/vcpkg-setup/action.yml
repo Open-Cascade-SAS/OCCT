@@ -94,45 +94,17 @@ runs:
           -Source "${{ env.FEED_URL }}"
       shell: pwsh
 
-    - name: Install mono for NuGet (if needed)
-      if: runner.os != 'Windows' && runner.arch != 'ARM64'
-      run: |
-        if ! command -v mono &> /dev/null; then
-          sudo apt-get update
-          sudo apt-get install -y mono-complete
-        fi
-      shell: bash
-
-    - name: Add NuGet sources (Non-Windows)
+    - name: Add NuGet sources
       if: runner.os != 'Windows'
       run: |
-        NUGET_EXE=`${{ env.VCPKG_EXE }} fetch nuget | tail -n 1`
-        echo "NuGet executable path: $NUGET_EXE"
-        
-        # Check if it's in /usr/bin (system-wide) - don't try to chmod
-        if [[ "$NUGET_EXE" == /usr/bin/* ]]; then
-          echo "Using system-wide NuGet binary"
-          NUGET_CMD="$NUGET_EXE"
-        else
-          # It's a local binary, make it executable
-          chmod +x "$NUGET_EXE" 2>/dev/null || true
-          NUGET_CMD="$NUGET_EXE"
-        fi
-        
-        # Try to determine if we need mono
-        if file "$NUGET_EXE" 2>/dev/null | grep -q "PE32\|Mono/.Net"; then
-          echo "Using mono for .NET assembly"
-          NUGET_CMD="mono $NUGET_EXE"
-        fi
-        
-        # Execute NuGet commands
-        $NUGET_CMD sources add \
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          sources add \
           -Source "${{ env.FEED_URL }}" \
           -StorePasswordInClearText \
           -Name GitHubPackages \
           -UserName "${{ env.USERNAME }}" \
-          -Password "${{ inputs.github-token }}" || echo "NuGet source add failed, continuing..."
-          
-        $NUGET_CMD setapikey "${{ inputs.github-token }}" \
-          -Source "${{ env.FEED_URL }}" || echo "NuGet setapikey failed, continuing..."
+          -Password "${{ inputs.github-token }}"
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          setapikey "${{ inputs.github-token }}" \
+          -Source "${{ env.FEED_URL }}"
       shell: bash
