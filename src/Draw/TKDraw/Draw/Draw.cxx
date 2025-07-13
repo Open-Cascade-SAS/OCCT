@@ -280,11 +280,12 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     // This function available since Win XP SP1 #if (_WIN32_WINNT >= 0x0502).
     // We retrieve dynamically here (kernel32 should be always preloaded).
     typedef BOOL(WINAPI * SetDllDirectoryW_t)(const wchar_t* thePathName);
-    HMODULE            aKern32Module = GetModuleHandleW(L"kernel32");
-    SetDllDirectoryW_t aFunc =
-      (aKern32Module != NULL)
-        ? (SetDllDirectoryW_t)GetProcAddress(aKern32Module, "SetDllDirectoryW")
-        : NULL;
+    HMODULE aKern32Module = GetModuleHandleW(L"kernel32");
+
+    SetDllDirectoryW_t aFunc = (aKern32Module != NULL)
+                                 ? reinterpret_cast<SetDllDirectoryW_t>(reinterpret_cast<void*>(
+                                     GetProcAddress(aKern32Module, "SetDllDirectoryW")))
+                                 : NULL;
     if (aFunc != NULL)
     {
       aFunc(aUserDllPath.ToWideString());
