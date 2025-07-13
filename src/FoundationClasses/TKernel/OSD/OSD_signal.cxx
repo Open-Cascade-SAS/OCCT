@@ -315,7 +315,8 @@ static void SIGWntHandler(int signum, int sub_code)
   switch (signum)
   {
     case SIGFPE:
-      if (signal(signum, (void (*)(int))SIGWntHandler) == SIG_ERR)
+      if (signal(signum, reinterpret_cast<void (*)(int)>(reinterpret_cast<void*>(SIGWntHandler)))
+          == SIG_ERR)
         std::cout << "signal error" << std::endl;
       switch (sub_code)
       {
@@ -346,12 +347,14 @@ static void SIGWntHandler(int signum, int sub_code)
       }
       break;
     case SIGSEGV:
-      if (signal(signum, (void (*)(int))SIGWntHandler) == SIG_ERR)
+      if (signal(signum, reinterpret_cast<void (*)(int)>(reinterpret_cast<void*>(SIGWntHandler)))
+          == SIG_ERR)
         std::cout << "signal error" << std::endl;
       CallHandler(EXCEPTION_ACCESS_VIOLATION, NULL);
       break;
     case SIGILL:
-      if (signal(signum, (void (*)(int))SIGWntHandler) == SIG_ERR)
+      if (signal(signum, reinterpret_cast<void (*)(int)>(reinterpret_cast<void*>(SIGWntHandler)))
+          == SIG_ERR)
         std::cout << "signal error" << std::endl;
       CallHandler(EXCEPTION_ILLEGAL_INSTRUCTION, NULL);
       break;
@@ -490,7 +493,9 @@ void OSD::SetSignal(OSD_SignalMode theSignalMode, Standard_Boolean theFloatingSi
     SignalFuncType aPreviousFunc = SIG_DFL;
     if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
     {
-      aPreviousFunc = signal(aSignalTypes[i], (SignalFuncType)SIGWntHandler);
+      aPreviousFunc =
+        signal(aSignalTypes[i],
+               reinterpret_cast<SignalFuncType>(reinterpret_cast<void*>(SIGWntHandler)));
     }
     if (theSignalMode == OSD_SignalMode_Unset
         || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != SIG_DFL

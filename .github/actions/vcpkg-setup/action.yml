@@ -41,7 +41,7 @@ runs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete \
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf \
               libx11-dev \
               libxi-dev \
               libxext-dev \
@@ -51,13 +51,25 @@ runs:
               libgles2-mesa-dev
       shell: bash
 
+    - name: Setup .NET for NuGet (Linux)
+      if: runner.os == 'Linux'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
+
     - name: Install required packages (macOS)
       if: runner.os == 'macOS'
       run: |
         brew update || true
-        brew install cmake ninja nasm autoconf automake mono || true
+        brew install cmake ninja nasm autoconf automake || true
         brew install --cask xquartz || true
       shell: bash
+
+    - name: Setup .NET for NuGet (macOS)
+      if: runner.os == 'macOS'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
@@ -95,14 +107,15 @@ runs:
     - name: Add NuGet sources
       if: runner.os != 'Windows'
       run: |
-        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+        NUGET_EXE=`${{ env.VCPKG_EXE }} fetch nuget | tail -n 1`
+        dotnet "$NUGET_EXE" \
           sources add \
           -Source "${{ env.FEED_URL }}" \
           -StorePasswordInClearText \
           -Name GitHubPackages \
           -UserName "${{ env.USERNAME }}" \
           -Password "${{ inputs.github-token }}"
-        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+        dotnet "$NUGET_EXE" \
           setapikey "${{ inputs.github-token }}" \
           -Source "${{ env.FEED_URL }}"
       shell: bash
