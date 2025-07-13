@@ -106,7 +106,15 @@ runs:
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         COMMENT_FILE=$(mktemp)
+        
+        # Get commit ID and commit header
+        COMMIT_ID=$(git rev-parse HEAD)
+        COMMIT_HEADER=$(git log -1 --pretty=%s)
+        
         echo -e "**Performance Test Summary**\n" > "$COMMENT_FILE"
+        echo -e "**Commit**: \`${COMMIT_ID}\`\n" >> "$COMMENT_FILE"
+        echo -e "**Title**: ${COMMIT_HEADER}\n" >> "$COMMENT_FILE"
+        
         LOG_FILES=$(find install/bin/results/current -name "diff-*.log")
         if [ -z "$LOG_FILES" ]; then
           echo "No diff logs found." >> "$COMMENT_FILE"
