@@ -747,7 +747,7 @@ void Draw::Load(Draw_Interpretor&              theDI,
   }
 
   void (*fp)(Draw_Interpretor&) = NULL;
-  fp                            = (void (*)(Draw_Interpretor&))aFunc;
+  fp = reinterpret_cast<void (*)(Draw_Interpretor&)>(reinterpret_cast<void*>(aFunc));
   (*fp)(theDI);
 }
 
