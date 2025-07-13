@@ -46,7 +46,7 @@ static bool isWow64()
   HMODULE             aKern32Module = GetModuleHandleW(L"kernel32");
   LPFN_ISWOW64PROCESS aFunIsWow64 =
     (aKern32Module == NULL) ? (LPFN_ISWOW64PROCESS)NULL
-                            : (LPFN_ISWOW64PROCESS)GetProcAddress(aKern32Module, "IsWow64Process");
+                            : reinterpret_cast<LPFN_ISWOW64PROCESS>(reinterpret_cast<void*>(GetProcAddress(aKern32Module, "IsWow64Process")));
 
   return aFunIsWow64 != NULL && aFunIsWow64(GetCurrentProcess(), &bIsWow64) && bIsWow64 != FALSE;
 }
@@ -220,7 +220,7 @@ Standard_Integer OSD_Parallel::NbLogicalProcessors()
     typedef BOOL(WINAPI * LPFN_GSI)(LPSYSTEM_INFO);
 
     HMODULE  aKern32      = GetModuleHandleW(L"kernel32");
-    LPFN_GSI aFuncSysInfo = (LPFN_GSI)GetProcAddress(aKern32, "GetNativeSystemInfo");
+    LPFN_GSI aFuncSysInfo = reinterpret_cast<LPFN_GSI>(reinterpret_cast<void*>(GetProcAddress(aKern32, "GetNativeSystemInfo")));
 
     // So, they suggest 32-bit apps should call this instead of the other in WOW64
     if (aFuncSysInfo != NULL)

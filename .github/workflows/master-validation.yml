@@ -17,12 +17,6 @@ concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
-env:
-  USERNAME: Open-Cascade-SAS
-  VCPKG_EXE: ${{ github.workspace }}/vcpkg/vcpkg
-  FEED_URL: https://nuget.pkg.github.com/Open-Cascade-SAS/index.json
-  VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite"
-
 jobs:
   # Windows MSVC/Clang builds
   windows-msvc:
