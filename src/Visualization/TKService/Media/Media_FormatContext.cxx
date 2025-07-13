@@ -411,7 +411,14 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
       && av_cmp_q(aStream.sample_aspect_ratio, aStream.codecpar->sample_aspect_ratio) != 0)
   #else
+    #ifdef _MSC_VER
+      #pragma warning(push)
+      #pragma warning(disable : 4996) // deprecated declaration
+    #endif
       && av_cmp_q(aStream.sample_aspect_ratio, aStream.codec->sample_aspect_ratio) != 0)
+    #ifdef _MSC_VER
+      #pragma warning(pop)
+    #endif
   #endif
   {
     AVRational aDispAspectRatio;

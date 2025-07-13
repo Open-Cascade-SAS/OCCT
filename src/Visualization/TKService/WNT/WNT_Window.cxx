@@ -64,13 +64,14 @@ public:
     if (aUser32Module != NULL)
     {
       // User32 should be already loaded
-      myRegisterTouchWindow =
-        (RegisterTouchWindow_t)GetProcAddress(aUser32Module, "RegisterTouchWindow");
-      myUnregisterTouchWindow =
-        (UnregisterTouchWindow_t)GetProcAddress(aUser32Module, "UnregisterTouchWindow");
-      myGetTouchInputInfo = (GetTouchInputInfo_t)GetProcAddress(aUser32Module, "GetTouchInputInfo");
-      myCloseTouchInputHandle =
-        (CloseTouchInputHandle_t)GetProcAddress(aUser32Module, "CloseTouchInputHandle");
+      myRegisterTouchWindow = reinterpret_cast<RegisterTouchWindow_t>(
+        reinterpret_cast<void*>(GetProcAddress(aUser32Module, "RegisterTouchWindow")));
+      myUnregisterTouchWindow = reinterpret_cast<UnregisterTouchWindow_t>(
+        reinterpret_cast<void*>(GetProcAddress(aUser32Module, "UnregisterTouchWindow")));
+      myGetTouchInputInfo = reinterpret_cast<GetTouchInputInfo_t>(
+        reinterpret_cast<void*>(GetProcAddress(aUser32Module, "GetTouchInputInfo")));
+      myCloseTouchInputHandle = reinterpret_cast<CloseTouchInputHandle_t>(
+        reinterpret_cast<void*>(GetProcAddress(aUser32Module, "CloseTouchInputHandle")));
     }
   }
 
