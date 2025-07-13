@@ -68,6 +68,7 @@ void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* th
 {
   if (theInd >= myCapacity)
   {
+    const size_t anOldCapacity = myCapacity;
     if (myCapacity == 0)
     {
       myCapacity = 8; // the most optimal initial value
@@ -76,7 +77,7 @@ void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* th
     {
       myCapacity <<= 1;
     }
-    myArray = myAllocator.reallocate(myArray, myCapacity);
+    myArray = myAllocator.reallocate(myArray, anOldCapacity, myCapacity);
     memset(myArray + mySize, 0, (theInd - mySize) * sizeof(void**));
     mySize = theInd;
   }
