@@ -5,13 +5,10 @@
 name: Master Validation
 
 on:
-  # push:
-  #   branches:
-  #     - master
-  # workflow_dispatch:
-  pull_request:
+  push:
     branches:
-      - '**'
+      - master
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
@@ -20,6 +17,7 @@ concurrency:
 jobs:
   # Windows MSVC/Clang builds
   windows-msvc:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: Windows MSVC/Clang validation
     runs-on: windows-2025
     
@@ -79,6 +77,7 @@ jobs:
 
   # Windows MinGW builds
   windows-mingw:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: Windows MinGW validation
     runs-on: windows-2025
 
@@ -143,6 +142,7 @@ jobs:
 
   # Ubuntu builds
   ubuntu:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: Ubuntu validation
     runs-on: ubuntu-24.04
 
@@ -196,6 +196,7 @@ jobs:
 
   # vcpkg builds
   vcpkg:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: vcpkg validation
     runs-on: ${{ matrix.os }}
     strategy:
@@ -219,6 +220,7 @@ jobs:
 
   # Code analysis
   codeql-analyze:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: CodeQL Analyze (C/C++)
     runs-on: ubuntu-24.04
 
@@ -255,6 +257,7 @@ jobs:
         category: "/language:c-cpp"
 
   msvc-analyze:
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
     name: Microsoft C++ Code Analysis
     runs-on: windows-2025
 
