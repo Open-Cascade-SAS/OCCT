@@ -171,7 +171,10 @@ public:
         myPointer(theOther.myPointer),
         myIsOwner(theOther.myIsOwner)
   {
-    theOther.myIsOwner = false;
+    theOther.myIsOwner    = false;
+    theOther.myPointer    = nullptr;
+    theOther.mySize       = 0;
+    theOther.myLowerBound = 1;
   }
 
   virtual ~NCollection_Array1()
@@ -241,11 +244,14 @@ public:
       destroy(myPointer, 0, mySize);
       myAllocator.deallocate(myPointer, mySize);
     }
-    myLowerBound       = theOther.myLowerBound;
-    mySize             = theOther.mySize;
-    myPointer          = theOther.myPointer;
-    myIsOwner          = theOther.myIsOwner;
-    theOther.myIsOwner = false;
+    myLowerBound          = theOther.myLowerBound;
+    mySize                = theOther.mySize;
+    myPointer             = theOther.myPointer;
+    myIsOwner             = theOther.myIsOwner;
+    theOther.myIsOwner    = false;
+    theOther.myPointer    = nullptr;
+    theOther.mySize       = 0;
+    theOther.myLowerBound = 1;
     return *this;
   }
 

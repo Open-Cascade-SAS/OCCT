@@ -146,6 +146,10 @@ public:
         myLowerCol(theOther.LowerCol()),
         mySizeCol(theOther.NbColumns())
   {
+    theOther.myLowerRow = 1;
+    theOther.mySizeRow  = 0;
+    theOther.myLowerCol = 1;
+    theOther.mySizeCol  = 0;
   }
 
   //! C array-based constructor
@@ -195,6 +199,24 @@ public:
   //! UpperCol
   Standard_Integer UpperCol() const { return myLowerCol + static_cast<int>(mySizeCol) - 1; }
 
+  //! Updates lower row
+  void UpdateLowerRow(const Standard_Integer theLowerRow) { myLowerRow = theLowerRow; }
+
+  //! Updates lower column
+  void UpdateLowerCol(const Standard_Integer theLowerCol) { myLowerCol = theLowerCol; }
+
+  //! Updates upper row
+  void UpdateUpperRow(const Standard_Integer theUpperRow)
+  {
+    myLowerRow = myLowerRow - UpperRow() + theUpperRow;
+  }
+
+  //! Updates upper column
+  void UpdateUpperCol(const Standard_Integer theUpperCol)
+  {
+    myLowerCol = myLowerCol - UpperCol() + theUpperCol;
+  }
+
   //! Assignment
   NCollection_Array2& Assign(const NCollection_Array2& theOther)
   {
@@ -203,6 +225,7 @@ public:
       return *this;
     }
     NCollection_Array1<TheItemType>::Assign(theOther);
+    // Current implementation disable changing bounds by assigning
     return *this;
   }
 
@@ -216,10 +239,14 @@ public:
       return *this;
     }
     NCollection_Array1<TheItemType>::Move(theOther);
-    myLowerRow = theOther.myLowerRow;
-    mySizeRow  = theOther.mySizeRow;
-    myLowerCol = theOther.myLowerCol;
-    mySizeCol  = theOther.mySizeCol;
+    myLowerRow          = theOther.myLowerRow;
+    mySizeRow           = theOther.mySizeRow;
+    myLowerCol          = theOther.myLowerCol;
+    mySizeCol           = theOther.mySizeCol;
+    theOther.myLowerRow = 1;
+    theOther.mySizeRow  = 0;
+    theOther.myLowerCol = 1;
+    theOther.mySizeCol  = 0;
     return *this;
   }
 
@@ -296,31 +323,34 @@ public:
   {
     Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
                                  "NCollection_Array2::Resize");
-    myLowerRow = theRowLower;
-    myLowerCol = theColLower;
     if (!theToCopyData)
     {
       NCollection_Array1<TheItemType>::Resize(
         BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
         LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
         false);
-      mySizeRow = theRowUpper - theRowLower + 1;
-      mySizeCol = theColUpper - theColLower + 1;
+      mySizeRow  = theRowUpper - theRowLower + 1;
+      mySizeCol  = theColUpper - theColLower + 1;
+      myLowerRow = theRowLower;
+      myLowerCol = theColLower;
       return;
     }
-    NCollection_Array1<TheItemType> aTmpMovedCopy(std::move(*this));
+    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
+    const size_t aNewNbCols    = theColUpper - theColLower + 1;
+    const size_t aNbRowsToCopy = std::min<size_t>(mySizeRow, aNewNbRows);
+    const size_t aNbColsToCopy = std::min<size_t>(mySizeCol, aNewNbCols);
+
+    NCollection_Array2<TheItemType> aTmpMovedCopy(std::move(*this));
     TheItemType*                    anOldPointer = &aTmpMovedCopy.ChangeFirst();
     NCollection_Array1<TheItemType>::Resize(
       BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       false);
-    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
-    const size_t aNewNbCols    = theColUpper - theColLower + 1;
-    const size_t aNbRowsToCopy = std::min<size_t>(mySizeRow, aNewNbRows);
-    const size_t aNbColsToCopy = std::min<size_t>(mySizeCol, aNewNbCols);
-    mySizeRow                  = aNewNbRows;
-    mySizeCol                  = aNewNbCols;
-    size_t aOldInter           = 0;
+    mySizeRow        = aNewNbRows;
+    mySizeCol        = aNewNbCols;
+    myLowerRow       = theRowLower;
+    myLowerCol       = theColLower;
+    size_t aOldInter = 0;
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
