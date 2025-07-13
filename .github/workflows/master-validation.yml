@@ -276,6 +276,7 @@ jobs:
       with:
         platform: 'windows'
         compiler: 'msvc'
+        build-use-pch: 'false'
         cmake-build-type: ${{ env.config }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
 

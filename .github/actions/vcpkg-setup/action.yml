@@ -51,11 +51,6 @@ runs:
               libgles2-mesa-dev
       shell: bash
 
-    - name: Setup .NET for NuGet (Linux)
-      if: runner.os == 'Linux'
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0'
 
     - name: Install required packages (macOS)
       if: runner.os == 'macOS'
@@ -65,11 +60,6 @@ runs:
         brew install --cask xquartz || true
       shell: bash
 
-    - name: Setup .NET for NuGet (macOS)
-      if: runner.os == 'macOS'
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0'
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
@@ -108,14 +98,15 @@ runs:
       if: runner.os != 'Windows'
       run: |
         NUGET_EXE=`${{ env.VCPKG_EXE }} fetch nuget | tail -n 1`
-        dotnet "$NUGET_EXE" \
+        chmod +x "$NUGET_EXE"
+        "$NUGET_EXE" \
           sources add \
           -Source "${{ env.FEED_URL }}" \
           -StorePasswordInClearText \
           -Name GitHubPackages \
           -UserName "${{ env.USERNAME }}" \
           -Password "${{ inputs.github-token }}"
-        dotnet "$NUGET_EXE" \
+        "$NUGET_EXE" \
           setapikey "${{ inputs.github-token }}" \
           -Source "${{ env.FEED_URL }}"
       shell: bash
