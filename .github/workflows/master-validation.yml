@@ -24,6 +24,7 @@ jobs:
     runs-on: windows-2025
     
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {
@@ -82,6 +83,7 @@ jobs:
     runs-on: windows-2025
 
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {
@@ -145,6 +147,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {
@@ -196,6 +199,7 @@ jobs:
     name: vcpkg validation
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-24.04, ubuntu-22.04, windows-2022, windows-2025, macos-15, macos-14, macos-13, ubuntu-24.04-arm, ubuntu-22.04-arm]
         build_type: [Debug, Release]
