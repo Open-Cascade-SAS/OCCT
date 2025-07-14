@@ -58,7 +58,6 @@ runs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        cd bin
         set GTEST_OUTPUT=""
         OpenCascadeGTest.exe --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1
         type gtest_output.log
@@ -82,8 +81,8 @@ runs:
       with:
         name: gtest-results-${{ inputs.platform }}-${{ inputs.compiler }}-${{ inputs.artifact-suffix }}
         path: |
-          install/bin/gtest_results.xml
-          install/bin/gtest_output.log
+          install/**/gtest_results.xml
+          install/**/gtest_output.log
         retention-days: 15
 
     - name: Check for test failures on Windows
@@ -91,7 +90,7 @@ runs:
       id: check-failures-windows
       shell: pwsh
       run: |
-        cd install/bin
+        cd install
         $log = Get-Content "gtest_output.log" -Raw
         if ($log -match "\[\s+FAILED\s+\]") {
           Write-Error "GTest failures detected in the output."
