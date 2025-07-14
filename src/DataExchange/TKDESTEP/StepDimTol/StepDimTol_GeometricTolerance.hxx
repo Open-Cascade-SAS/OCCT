@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepRepr_ShapeAspect;
 
 class StepDimTol_GeometricTolerance;
@@ -37,15 +36,15 @@ public:
   Standard_EXPORT StepDimTol_GeometricTolerance();
 
   //! Initialize all fields (own and inherited) AP214
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  theName,
-                            const Handle(TCollection_HAsciiString)&  theDescription,
-                            const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
-                            const Handle(StepRepr_ShapeAspect)&      theTolerancedShapeAspect);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
+                            const Handle(TCollection_HAsciiString)& theDescription,
+                            const Handle(Standard_Transient)&       theMagnitude,
+                            const Handle(StepRepr_ShapeAspect)&     theTolerancedShapeAspect);
 
   //! Initialize all fields (own and inherited) AP242
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    theName,
                             const Handle(TCollection_HAsciiString)&    theDescription,
-                            const Handle(StepBasic_MeasureWithUnit)&   theMagnitude,
+                            const Handle(Standard_Transient)&          theMagnitude,
                             const StepDimTol_GeometricToleranceTarget& theTolerancedShapeAspect);
 
   //! Returns field Name
@@ -61,10 +60,10 @@ public:
   Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& theDescription);
 
   //! Returns field Magnitude
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Magnitude() const;
+  Standard_EXPORT Handle(Standard_Transient) Magnitude() const;
 
   //! Set field Magnitude
-  Standard_EXPORT void SetMagnitude(const Handle(StepBasic_MeasureWithUnit)& theMagnitude);
+  Standard_EXPORT void SetMagnitude(const Handle(Standard_Transient)& theMagnitude);
 
   //! Returns field TolerancedShapeAspect
   //! Note: in AP214(203) type of this attribute can be only StepRepr_ShapeAspect
@@ -84,7 +83,7 @@ protected:
 private:
   Handle(TCollection_HAsciiString)    myName;
   Handle(TCollection_HAsciiString)    myDescription;
-  Handle(StepBasic_MeasureWithUnit)   myMagnitude;
+  Handle(Standard_Transient)          myMagnitude;
   StepDimTol_GeometricToleranceTarget myTolerancedShapeAspect;
 };
 

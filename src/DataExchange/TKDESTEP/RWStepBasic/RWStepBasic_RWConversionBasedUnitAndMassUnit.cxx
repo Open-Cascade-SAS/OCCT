@@ -43,13 +43,13 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep(
   // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
   // --- field : conversionFactor ---
-  Handle(StepBasic_MeasureWithUnit) aConversionFactor;
+  Handle(Standard_Transient) aConversionFactor;
   // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
                    ach,
-                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   STANDARD_TYPE(Standard_Transient),
                    aConversionFactor);
 
   num = data->NextForComplex(num);

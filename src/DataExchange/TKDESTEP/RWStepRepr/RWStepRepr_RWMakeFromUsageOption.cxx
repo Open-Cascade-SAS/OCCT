@@ -91,8 +91,8 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
   Handle(TCollection_HAsciiString) aRankingRationale;
   data->ReadString(num, 7, "ranking_rationale", ach, aRankingRationale);
 
-  Handle(StepBasic_MeasureWithUnit) aQuantity;
-  data->ReadEntity(num, 8, "quantity", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aQuantity);
+  Handle(Standard_Transient) aQuantity;
+  data->ReadEntity(num, 8, "quantity", ach, STANDARD_TYPE(Standard_Transient), aQuantity);
 
   // Initialize entity
   ent->Init(aProductDefinitionRelationship_Id,

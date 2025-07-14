@@ -43,7 +43,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
                             const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+                            const Handle(Standard_Transient)&              theMagnitude,
                             const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
                             const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize,
                             const StepDimTol_AreaUnitType                  theAreaType,

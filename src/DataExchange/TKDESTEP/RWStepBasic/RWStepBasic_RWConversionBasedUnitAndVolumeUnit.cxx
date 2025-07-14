@@ -38,12 +38,12 @@ void RWStepBasic_RWConversionBasedUnitAndVolumeUnit::ReadStep(
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- field : conversionFactor ---
-  Handle(StepBasic_MeasureWithUnit) aConversionFactor;
+  Handle(Standard_Transient) aConversionFactor;
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
                    ach,
-                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   STANDARD_TYPE(Standard_Transient),
                    aConversionFactor);
 
   num = data->NextForComplex(num);

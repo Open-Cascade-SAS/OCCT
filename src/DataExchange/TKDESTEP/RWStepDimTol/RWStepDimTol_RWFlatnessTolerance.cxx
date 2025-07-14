@@ -47,12 +47,12 @@ void RWStepDimTol_RWFlatnessTolerance::ReadStep(
   Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
-  Handle(StepBasic_MeasureWithUnit) aGeometricTolerance_Magnitude;
+  Handle(Standard_Transient) aGeometricTolerance_Magnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
                    ach,
-                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   STANDARD_TYPE(Standard_Transient),
                    aGeometricTolerance_Magnitude);
 
   StepDimTol_GeometricToleranceTarget aGeometricTolerance_TolerancedShapeAspect;

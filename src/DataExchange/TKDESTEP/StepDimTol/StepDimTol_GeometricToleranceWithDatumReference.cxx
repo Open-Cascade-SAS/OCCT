@@ -35,7 +35,7 @@ StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWi
 void StepDimTol_GeometricToleranceWithDatumReference::Init(
   const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Name,
   const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Description,
-  const Handle(StepBasic_MeasureWithUnit)&          theGeometricTolerance_Magnitude,
+  const Handle(Standard_Transient)&                 theGeometricTolerance_Magnitude,
   const Handle(StepRepr_ShapeAspect)&               theGeometricTolerance_TolerancedShapeAspect,
   const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem)
 {
@@ -59,7 +59,7 @@ void StepDimTol_GeometricToleranceWithDatumReference::Init(
 void StepDimTol_GeometricToleranceWithDatumReference::Init(
   const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
   const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
-  const Handle(StepBasic_MeasureWithUnit)&   theGeometricTolerance_Magnitude,
+  const Handle(Standard_Transient)&          theGeometricTolerance_Magnitude,
   const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
   const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem)
 {

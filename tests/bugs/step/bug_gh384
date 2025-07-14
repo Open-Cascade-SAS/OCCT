@@ -1,0 +1,34 @@
+puts "===================================="
+puts "For some STEP files we fail for geometric tolerances to read the geometric_tolerance.magnitude"
+puts "===================================="
+pload OCAF
+
+Close D -silent
+
+ReadStep D [locate_data_file bug_gh384.stp]
+
+proc checkEqual {theActualValue theExpectedValue {theTolerance 1.0e-7}} {
+    # Calculate absolute difference
+    set aDifference [expr abs($theActualValue - $theExpectedValue)]
+    
+    # Check if difference is within tolerance
+    set isEqual [expr {$aDifference <= $theTolerance}]
+    
+    if {!$isEqual} {
+      puts "Error: Tolerance data is not correct"
+      puts "Expected: $theExpectedValue, actual: $anActualValue"
+    }
+}
+
+set aTolerance0 [XGetToleranceValue D "0:1:4:1"]
+checkEqual $aTolerance0 0.75
+
+set aTolerance1 [XGetToleranceValue D "0:1:4:5"]
+checkEqual $aTolerance1 0.75
+
+set aTolerance2 [XGetToleranceValue D "0:1:4:11"]
+checkEqual $aTolerance2 1.25
+
+set aTolerance3 [XGetToleranceValue D "0:1:4:15"]
+checkEqual $aTolerance3 0.5
+

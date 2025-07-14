@@ -26,7 +26,7 @@ StepBasic_ConversionBasedUnitAndPlaneAngleUnit::StepBasic_ConversionBasedUnitAnd
 void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::Init(
   const Handle(StepBasic_DimensionalExponents)& aDimensions,
   const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor)
+  const Handle(Standard_Transient)&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);

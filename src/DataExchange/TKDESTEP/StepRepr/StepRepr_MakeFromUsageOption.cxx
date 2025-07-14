@@ -36,10 +36,10 @@ void StepRepr_MakeFromUsageOption::Init(
   const Handle(StepBasic_ProductDefinition)&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const Handle(StepBasic_ProductDefinition)&
-                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Integer                   aRanking,
-  const Handle(TCollection_HAsciiString)&  aRankingRationale,
-  const Handle(StepBasic_MeasureWithUnit)& aQuantity)
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const Standard_Integer                  aRanking,
+  const Handle(TCollection_HAsciiString)& aRankingRationale,
+  const Handle(Standard_Transient)&       aQuantity)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -65,10 +65,10 @@ void StepRepr_MakeFromUsageOption::Init(
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
-                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Integer                   aRanking,
-  const Handle(TCollection_HAsciiString)&  aRankingRationale,
-  const Handle(StepBasic_MeasureWithUnit)& aQuantity)
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const Standard_Integer                  aRanking,
+  const Handle(TCollection_HAsciiString)& aRankingRationale,
+  const Handle(Standard_Transient)&       aQuantity)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -115,14 +115,14 @@ void StepRepr_MakeFromUsageOption::SetRankingRationale(
 
 //=================================================================================================
 
-Handle(StepBasic_MeasureWithUnit) StepRepr_MakeFromUsageOption::Quantity() const
+Handle(Standard_Transient) StepRepr_MakeFromUsageOption::Quantity() const
 {
   return theQuantity;
 }
 
 //=================================================================================================
 
-void StepRepr_MakeFromUsageOption::SetQuantity(const Handle(StepBasic_MeasureWithUnit)& aQuantity)
+void StepRepr_MakeFromUsageOption::SetQuantity(const Handle(Standard_Transient)& aQuantity)
 {
   theQuantity = aQuantity;
 }

@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
                             const Handle(TCollection_HAsciiString)&       aName,
-                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+                            const Handle(Standard_Transient)&             aConversionFactor);
 
   Standard_EXPORT void SetTimeUnit(const Handle(StepBasic_TimeUnit)& aTimeUnit);
 

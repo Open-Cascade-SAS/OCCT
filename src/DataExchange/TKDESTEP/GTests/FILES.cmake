@@ -13,4 +13,5 @@ set(OCCT_TKDESTEP_GTests_FILES
     StepTidy_PlaneReducer_Test.cxx
     StepTidy_Merger_Test.cxx
     StepTidy_VectorReducer_Test.cxx
+    StepTransientReplacements_Test.cxx
 )

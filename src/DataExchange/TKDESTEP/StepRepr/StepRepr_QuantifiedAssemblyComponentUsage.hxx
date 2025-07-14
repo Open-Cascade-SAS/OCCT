@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
-class StepBasic_MeasureWithUnit;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;
 
@@ -47,7 +46,7 @@ public:
                                             aProductDefinitionRelationship_RelatedProductDefinition,
     const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
     const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+    const Handle(Standard_Transient)&       aQuantity);
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
@@ -61,20 +60,20 @@ public:
                                             aProductDefinitionRelationship_RelatedProductDefinition,
     const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
     const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+    const Handle(Standard_Transient)&       aQuantity);
 
   //! Returns field Quantity
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Quantity() const;
+  Standard_EXPORT Handle(Standard_Transient) Quantity() const;
 
   //! Set field Quantity
-  Standard_EXPORT void SetQuantity(const Handle(StepBasic_MeasureWithUnit)& Quantity);
+  Standard_EXPORT void SetQuantity(const Handle(Standard_Transient)& Quantity);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,
                           StepRepr_AssemblyComponentUsage)
 
 protected:
 private:
-  Handle(StepBasic_MeasureWithUnit) theQuantity;
+  Handle(Standard_Transient) theQuantity;
 };
 
 #endif // _StepRepr_QuantifiedAssemblyComponentUsage_HeaderFile
