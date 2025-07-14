@@ -304,7 +304,8 @@ bool RWGltf_ExtrasParser::parseArray(const RWGltf_JsonValue& theValue,
     const std::string aSeparator = ";";
     for (size_t i = 0; i < theValue.Size(); ++i)
     {
-      anArrayString = anArrayString + aSeparator + theValue[static_cast<Standard_Integer>(i)].GetString();
+      anArrayString =
+        anArrayString + aSeparator + theValue[static_cast<Standard_Integer>(i)].GetString();
     }
     getResult()->SetString(theValueName.c_str(), anArrayString.c_str());
     return true;
