@@ -40,14 +40,14 @@ public:
   //! Initialize all fields (own and inherited) AP214
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
                             const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+                            const Handle(Standard_Transient)&              theMagnitude,
                             const Handle(StepRepr_ShapeAspect)&            theTolerancedShapeAspect,
                             const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize);
 
   //! Initialize all fields (own and inherited) AP242
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
                             const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+                            const Handle(Standard_Transient)&              theMagnitude,
                             const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
                             const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize);
 

@@ -23,7 +23,7 @@ StepShape_MeasureQualification::StepShape_MeasureQualification() {}
 void StepShape_MeasureQualification::Init(
   const Handle(TCollection_HAsciiString)&          name,
   const Handle(TCollection_HAsciiString)&          description,
-  const Handle(StepBasic_MeasureWithUnit)&         qualified_measure,
+  const Handle(Standard_Transient)&                qualified_measure,
   const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
 {
   theName             = name;
@@ -53,13 +53,13 @@ void StepShape_MeasureQualification::SetDescription(
   theDescription = description;
 }
 
-Handle(StepBasic_MeasureWithUnit) StepShape_MeasureQualification::QualifiedMeasure() const
+Handle(Standard_Transient) StepShape_MeasureQualification::QualifiedMeasure() const
 {
   return theQualifiedMeasure;
 }
 
 void StepShape_MeasureQualification::SetQualifiedMeasure(
-  const Handle(StepBasic_MeasureWithUnit)& qualified_measure)
+  const Handle(Standard_Transient)& qualified_measure)
 {
   theQualifiedMeasure = qualified_measure;
 }

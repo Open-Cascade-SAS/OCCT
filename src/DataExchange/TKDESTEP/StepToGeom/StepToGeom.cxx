@@ -132,6 +132,7 @@
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 
 //=============================================================================
@@ -2558,8 +2559,20 @@ Handle(TColStd_HArray1OfReal) StepToGeom::MakeYprRotation(
   {
     Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit) aConverUnit =
       Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)::DownCast(aPau);
-    anAngle = anAngle * aConverUnit->ConversionFactor()->ValueComponent();
-    aPau    = aConverUnit->ConversionFactor()->UnitComponent().NamedUnit();
+    Handle(StepBasic_MeasureWithUnit) aConversionFactor;
+    Handle(Standard_Transient)        aTransientFactor = aConverUnit->ConversionFactor();
+    if (aTransientFactor->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
+    {
+      aConversionFactor = Handle(StepBasic_MeasureWithUnit)::DownCast(aTransientFactor);
+    }
+    else if (aTransientFactor->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
+    {
+      Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
+        Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aTransientFactor);
+      aConversionFactor = aReprMeasureItem->GetMeasureWithUnit();
+    }
+    anAngle = anAngle * aConversionFactor->ValueComponent();
+    aPau    = aConversionFactor->UnitComponent().NamedUnit();
   }
   if (aPau.IsNull())
   {

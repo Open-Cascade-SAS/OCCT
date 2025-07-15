@@ -26,7 +26,7 @@ void StepRepr_ParallelOffset::Init(
   const Handle(TCollection_HAsciiString)&        theShapeAspect_Description,
   const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
   const StepData_Logical                         theShapeAspect_ProductDefinitional,
-  const Handle(StepBasic_MeasureWithUnit)&       theOffset)
+  const Handle(Standard_Transient)&              theOffset)
 {
   StepRepr_ShapeAspect::Init(theShapeAspect_Name,
                              theShapeAspect_Description,

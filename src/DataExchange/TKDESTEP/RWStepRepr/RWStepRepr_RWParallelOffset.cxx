@@ -65,8 +65,8 @@ void RWStepRepr_RWParallelOffset::ReadStep(const Handle(StepData_StepReaderData)
 
   // Own fields of ParallelOffset
 
-  Handle(StepBasic_MeasureWithUnit) anOffset;
-  data->ReadEntity(num, 5, "offset", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), anOffset);
+  Handle(Standard_Transient) anOffset;
+  data->ReadEntity(num, 5, "offset", ach, STANDARD_TYPE(Standard_Transient), anOffset);
 
   // Initialize entity
   ent->Init(aShapeAspect_Name,
