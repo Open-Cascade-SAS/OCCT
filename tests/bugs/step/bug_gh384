@@ -16,7 +16,7 @@ proc checkEqual {theActualValue theExpectedValue {theTolerance 1.0e-7}} {
     
     if {!$isEqual} {
       puts "Error: Tolerance data is not correct"
-      puts "Expected: $theExpectedValue, actual: $anActualValue"
+      puts "Expected: $theExpectedValue, actual: $theActualValue"
     }
 }
 

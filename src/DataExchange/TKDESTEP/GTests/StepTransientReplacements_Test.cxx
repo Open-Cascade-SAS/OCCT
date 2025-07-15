@@ -22,6 +22,8 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepShape_HArray1OfValueQualifier.hxx>
 
+#include <TCollection_HAsciiString.hxx>
+
 // Helper functions to create test objects
 namespace
 {
