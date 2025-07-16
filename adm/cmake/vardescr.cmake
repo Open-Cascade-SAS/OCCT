@@ -1,5 +1,9 @@
 # variable description
 
+set (OCCT_PROJECT_NAME_DESCR
+"Project name used in install directory paths for Unix and vcpkg layouts.
+Allows customization of directory structure for different package names.")
+
 set (BUILD_LIBRARY_TYPE_DESCR 
 "Specifies the type of library to be created. 'Shared' libraries
 are linked dynamically and loaded at runtime. 'Static' libraries
@@ -56,7 +60,7 @@ set (INSTALL_DIR_WITH_VERSION_DESCR
 
 set (INSTALL_DIR_LAYOUT_DESCR
 "Defines structure of OCCT files (binaries, resources, headers etc.) for the install directory.
-Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout).
+Three variants are predefined: for Windows (standard OCCT layout), for Unix operating systems (standard Linux layout), and for vcpkg (standard vcpkg layout without 'd' and 'i' suffixes).
 If needed, layout can be customized with INSTALL_DIR_* variables.")
 
 set (INSTALL_DIR_BIN_DESCR 
