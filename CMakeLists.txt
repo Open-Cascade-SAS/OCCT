@@ -829,8 +829,7 @@ if (NOT DEFINED INSTALL_DIR_BIN)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_BIN "bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
   elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
-    # vcpkg uses debug/ prefix for debug configurations: debug/bin for Debug, bin for Release
-    set (INSTALL_DIR_BIN "$<IF:$<CONFIG:Debug>,debug/bin,bin>" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
+    set (INSTALL_DIR_BIN "bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
   else()
     set (INSTALL_DIR_BIN "${OS_WITH_BIT}/${COMPILER}/bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
   endif()
@@ -841,7 +840,8 @@ if (NOT DEFINED INSTALL_DIR_SCRIPT)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
-    set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
+    # For vcpkg, scripts are always in bin directory, no generator expressions needed
+    set (INSTALL_DIR_SCRIPT "bin" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   else()
     set (INSTALL_DIR_SCRIPT "." CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   endif()
@@ -852,8 +852,7 @@ if (NOT DEFINED INSTALL_DIR_LIB)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_LIB "lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
   elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
-    # vcpkg uses debug/ prefix for debug configurations: debug/lib for Debug, lib for Release
-    set (INSTALL_DIR_LIB "$<IF:$<CONFIG:Debug>,debug/lib,lib>" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
+    set (INSTALL_DIR_LIB "lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
   else()
     set (INSTALL_DIR_LIB "${OS_WITH_BIT}/${COMPILER}/lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
   endif()
@@ -1211,6 +1210,38 @@ endforeach()
 
 # write current custom.bat/sh (for install directory)
 set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCRIPT_EXT}")
+
+# Set custom bin/lib paths variable for template
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  # For vcpkg, detect debug vs release at runtime
+  if (WIN32)
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "if exist \"%~dp0debug\\lib\" (
+      set \"CSF_OCCTBinPath=%~dp0debug\\bin\"
+      set \"CSF_OCCTLibPath=%~dp0debug\\lib\"
+    ) else (
+      set \"CSF_OCCTBinPath=%~dp0bin\"
+      set \"CSF_OCCTLibPath=%~dp0lib\"
+    )")
+  else()
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "if [ -d \"\$(dirname \"\$0\")/debug/lib\" ]; then
+      export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/debug/bin\"
+      export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/debug/lib\"
+    else
+      export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/bin\"
+      export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/lib\"
+    fi")
+  endif()
+else()
+  # For other layouts, use CASROOT with full paths
+  if (WIN32)
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%\\${INSTALL_DIR_BIN}%3\"
+    set \"CSF_OCCTLibPath=%CASROOT%\\${INSTALL_DIR_LIB}%3\"")
+  else()
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
+    export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
+  endif()
+endif()
+
 OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${SUB_CUSTOM_BUILD_NAME}" "${SUB_CUSTOM_NAME}" "${INSTALL_DIR_SCRIPT}")
 
 # write current custom.bat/sh (for build directory)
@@ -1232,6 +1263,16 @@ if (WIN32)
 else()
   set (SUB_ENV_NAME "env.${SCRIPT_EXT}")
   set (SUB_ENV_BUILD_NAME "env.install.${SCRIPT_EXT}")
+  # Set custom script path variable for template
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    # For vcpkg, scripts are in same directory so just use relative path
+    set (OCCT_CUSTOM_SCRIPT_PATH "./custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "")
+  else()
+    # For other layouts, use CASROOT with full path
+    set (OCCT_CUSTOM_SCRIPT_PATH "${INSTALL_DIR_SCRIPT}/custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "\${CASROOT}/")
+  endif()
   # install env script
   OCCT_CONFIGURE_AND_INSTALL ("adm/templates/env.install.${SCRIPT_EXT}.in" "${SUB_ENV_BUILD_NAME}" "${SUB_ENV_NAME}" "${INSTALL_DIR_SCRIPT}")
   # env script for draw in building environment
