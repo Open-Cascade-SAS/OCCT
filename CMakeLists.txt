@@ -1253,6 +1253,16 @@ if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
 endif()
 
 if (WIN32)
+  # Set custom script path variable for Windows template
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    # For vcpkg, scripts are in same directory - use existing SCRIPTROOT variable
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "%SCRIPTROOT%\\")
+  else()
+    # For other layouts, use CASROOT with full path
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "%CASROOT%\\")
+  endif()
   # env script for draw in building environment
   OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
   # install env script
@@ -1265,9 +1275,13 @@ else()
   set (SUB_ENV_BUILD_NAME "env.install.${SCRIPT_EXT}")
   # Set custom script path variable for template
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
-    # For vcpkg, scripts are in same directory so just use relative path
-    set (OCCT_CUSTOM_SCRIPT_PATH "./custom.${SCRIPT_EXT}")
-    set (OCCT_CUSTOM_SCRIPT_PREFIX "")
+    # For vcpkg, scripts are in same directory - use existing path variables
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    if (WIN32)
+      set (OCCT_CUSTOM_SCRIPT_PREFIX "%SCRIPTROOT%\\")
+    else()
+      set (OCCT_CUSTOM_SCRIPT_PREFIX "\${aScriptPath}/")
+    endif()
   else()
     # For other layouts, use CASROOT with full path
     set (OCCT_CUSTOM_SCRIPT_PATH "${INSTALL_DIR_SCRIPT}/custom.${SCRIPT_EXT}")
