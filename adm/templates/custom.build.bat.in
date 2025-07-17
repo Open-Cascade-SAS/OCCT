@@ -25,22 +25,7 @@ if /I "%VCVER%" == "@COMPILER@" (
 
     rem CSF_OCCTBinPath and CSF_OCCTLibPath are defined differently for 
     rem multiple and single configuration builds
-    set "CSF_OCCTBinPath=@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
-    if ["@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"] == [""] (
-      if "@INSTALL_DIR_LAYOUT@" == "vcpkg" (
-        set "CSF_OCCTBinPath=@CMAKE_BINARY_DIR@/bin"
-      ) else (
-        set "CSF_OCCTBinPath=@CMAKE_BINARY_DIR@/win%ARCH%/%VCVER%/bin%3"
-      )
-    )
-    set "CSF_OCCTLibPath=@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"
-    if ["@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"] == [""] (
-      if "@INSTALL_DIR_LAYOUT@" == "vcpkg" (
-        set "CSF_OCCTLibPath=@CMAKE_BINARY_DIR@/lib"
-      ) else (
-        set "CSF_OCCTLibPath=@CMAKE_BINARY_DIR@/win%ARCH%/%VCVER%/lib%3"
-      )
-    )
+    @OCCT_CUSTOM_BUILD_BIN_LIB_PATHS@
 
     set "CSF_OCCTIncludePath=@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     set "CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/resources"

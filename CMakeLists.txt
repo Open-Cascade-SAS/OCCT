@@ -1244,6 +1244,35 @@ endif()
 
 OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${SUB_CUSTOM_BUILD_NAME}" "${SUB_CUSTOM_NAME}" "${INSTALL_DIR_SCRIPT}")
 
+# Set build directory paths for custom.build script
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  # For vcpkg, use simple bin/lib paths
+  if (WIN32)
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    set \"CSF_OCCTLibPath=@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"
+    if [\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"] == [\"\"] (
+      set \"CSF_OCCTBinPath=@CMAKE_BINARY_DIR@\\bin\"
+      set \"CSF_OCCTLibPath=@CMAKE_BINARY_DIR@\\lib\"
+    )")
+  else()
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    export CSF_OCCTLibPath=\"@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"")
+  endif()
+else()
+  # For other layouts, use traditional paths with suffixes
+  if (WIN32)
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    set \"CSF_OCCTLibPath=@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"
+    if [\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"] == [\"\"] (
+      set \"CSF_OCCTBinPath=@CMAKE_BINARY_DIR@\\win%ARCH%\\%VCVER%\\bin%3\"
+      set \"CSF_OCCTLibPath=@CMAKE_BINARY_DIR@\\win%ARCH%\\%VCVER%\\lib%3\"
+    )")
+  else()
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    export CSF_OCCTLibPath=\"@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"")
+  endif()
+endif()
+
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
