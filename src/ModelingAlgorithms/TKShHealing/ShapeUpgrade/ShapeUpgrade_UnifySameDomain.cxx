@@ -16,6 +16,7 @@
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 
 #include <BRep_Builder.hxx>
+#include <Standard_NullObject.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
@@ -56,6 +57,7 @@
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Shell.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <Standard_NullValue.hxx>
 #include <Standard_Type.hxx>
 #include <TColGeom2d_Array1OfBSplineCurve.hxx>
 #include <TColGeom2d_HArray1OfBSplineCurve.hxx>
@@ -538,7 +540,7 @@ static void RelocatePCurvesToNewUorigin(
           }
         }
       } // if (EdgesOfFirstFace.Contains(anEdge))
-    } // for (Standard_Integer ii = 1; ii <= edges.Length(); ii++)
+    }   // for (Standard_Integer ii = 1; ii <= edges.Length(); ii++)
 
     if (StartEdge.IsNull()) // all contours are passed
       break;
@@ -618,7 +620,7 @@ static void RelocatePCurvesToNewUorigin(
         break;
       }
     } // for (;;) (collect pcurves of a contour)
-  } // for (;;) (walk by contours)
+  }   // for (;;) (walk by contours)
 }
 
 static void InsertWiresIntoFaces(const TopTools_SequenceOfShape& theWires,
@@ -1297,7 +1299,7 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface, gp_Cylin
 
 static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 {
-  if (aSurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  if (!aSurface.IsNull() && aSurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
     Handle(Geom_RectangularTrimmedSurface) rts =
       Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
@@ -2033,7 +2035,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
         ResFirsts(ii) = aFirst3d;
         ResLasts(ii)  = aLast3d;
       } // if ranges > aMaxTol
-    } // for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
+    }   // for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
   }
 
   if (anIsSeam)
@@ -3000,7 +3002,10 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
 
     // surface and location to construct result
     TopLoc_Location      aBaseLocation;
-    Handle(Geom_Surface) aBaseSurface     = BRep_Tool::Surface(aFace);
+    Handle(Geom_Surface) aBaseSurface = BRep_Tool::Surface(aFace);
+    // Bug 33894: Prevent crash when face has no surface
+    Standard_NullObject_Raise_if(aBaseSurface.IsNull(),
+                                 "ShapeUpgrade_UnifySameDomain: Face has no surface");
     aBaseSurface                          = ClearRts(aBaseSurface);
     TopAbs_Orientation RefFaceOrientation = aFace.Orientation();
 
@@ -3231,7 +3236,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
           }
         }
       } // if (!aKeepEdges.IsEmpty())
-    } // if (faces.Length() > 1)
+    }   // if (faces.Length() > 1)
 
     TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
     for (i = 1; i <= faces.Length(); i++)
@@ -3505,8 +3510,8 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                 }
               }
             } // else (Umax - Umin < Uperiod - 1.e-5, no Useam)
-          } // if (!UseamFound)
-        } // if (Uperiod != 0.)
+          }   // if (!UseamFound)
+        }     // if (Uperiod != 0.)
       UseamFound = anIsSeamFound[0];
       VseamFound = anIsSeamFound[1];
       ////////////////////////////////////
@@ -3935,7 +3940,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
         }
       }
     } // if (faces.Length() > 1)
-  } // end processing each face
+  }   // end processing each face
 }
 
 //=================================================================================================
@@ -4257,7 +4262,7 @@ void SplitWire(const TopoDS_Wire&                theWire,
               break;
             }
         } // else (more than one edge)
-      } // for (;;)
+      }   // for (;;)
       theWireSeq.Append(aNewWire);
     } // while (anItl.More())
   }
