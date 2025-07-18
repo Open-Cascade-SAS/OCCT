@@ -922,13 +922,13 @@ bool Image_AlienPixMap::Load(const Standard_Byte*           theData,
     aWicSrc = aWicConvertedFrame.get();
   }
 
-  IWICBitmapFlipRotator* aRotator;
-  bool                   isTopDown = true;
-  if (aWicImgFactory->CreateBitmapFlipRotator(&aRotator) == S_OK
+  Image_ComPtr<IWICBitmapFlipRotator> aRotator;
+  bool                                isTopDown = true;
+  if (aWicImgFactory->CreateBitmapFlipRotator(&aRotator.ChangePtr()) == S_OK
       && aRotator->Initialize(aWicSrc, WICBitmapTransformFlipVertical) == S_OK)
   {
     isTopDown = false;
-    aWicSrc   = aRotator;
+    aWicSrc   = aRotator.get();
   }
 
   if (aWicSrc->CopyPixels(NULL, (UINT)SizeRowBytes(), (UINT)SizeBytes(), ChangeData()) != S_OK)
