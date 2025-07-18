@@ -114,6 +114,8 @@ TEST_F(ShapeHealing_TessellatedTest, ShapeFixThrowsException)
   aFixer->SetMaxTolerance(1.0);
 
   // This should throw Standard_NullObject exception instead of crashing
-  EXPECT_THROW({ aFixer->Perform(); }, Standard_NullObject)
+  EXPECT_THROW(
+    { aFixer->Perform(); },
+    Standard_NullObject)
     << "ShapeFix_Shape should throw exception for tessellated geometry";
 }
