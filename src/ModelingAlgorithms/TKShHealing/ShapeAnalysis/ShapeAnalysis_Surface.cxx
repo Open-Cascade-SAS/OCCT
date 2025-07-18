@@ -33,6 +33,7 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <ElSLib.hxx>
+#include <Standard_NullObject.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -105,6 +106,8 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S)
       myUCloseVal(-1),
       myVCloseVal(-1)
 {
+  // Bug 33895: Prevent crash when surface is null
+  Standard_NullObject_Raise_if(mySurf.IsNull(), "ShapeAnalysis_Surface: Cannot create with null surface");
   mySurf->Bounds(myUF, myUL, myVF, myVL);
   myAdSur = new GeomAdaptor_Surface(mySurf);
 }
@@ -115,6 +118,8 @@ void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
 {
   if (mySurf == S)
     return;
+  // Bug 33895: Prevent crash when surface is null
+  Standard_NullObject_Raise_if(S.IsNull(), "ShapeAnalysis_Surface::Init: Cannot initialize with null surface");
   myExtOK     = Standard_False; //: 30
   mySurf      = S;
   myNbDeg     = -1;

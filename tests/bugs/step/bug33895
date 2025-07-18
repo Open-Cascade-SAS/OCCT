@@ -1,0 +1,39 @@
+puts "========"
+puts "bug33895"
+puts "========"
+puts ""
+#################################################
+# Bug 33895: fixshape crashes on tessellated geometry without surfaces
+# Test fixshape on tessellated tetrahedron in AP242
+# Expect exception on tessellated geometry without surfaces
+#################################################
+
+pload XDE MODELING
+
+stepread [locate_data_file tessellated_tetrahedron_ap242.step] a *
+
+# Check what kind of shape we get
+checknbshapes a_1 -t
+
+# Validate shape - will show BRepCheck_NoSurface errors
+checkshape a_1
+
+# Test fixshape - expect exception
+set exception_thrown 0
+if {[catch {fixshape result a_1} err]} {
+  puts "EXPECTED: Exception caught during fixshape: $err"
+  if {[string match "*Standard_NullObject*" $err]} {
+    puts "SUCCESS: Correct exception type (Standard_NullObject)"
+    set exception_thrown 1
+  } else {
+    puts "ERROR: Wrong exception type"
+  }
+} else {
+  puts "ERROR: No exception thrown - fixshape should fail on tessellated geometry"
+}
+
+if {$exception_thrown == 0} {
+  puts "TEST FAILED: Expected Standard_NullObject exception"
+} else {
+  puts "TEST PASSED: Exception properly thrown for tessellated geometry"
+}
