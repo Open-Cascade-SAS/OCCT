@@ -433,10 +433,8 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
   myForceApproxC1 = ForceApproxC1;
 }
 
-//=======================================================================
-// function : Add
-// purpose  : Add a Section
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_PipeShell::Add(const TopoDS_Shape&    Profile,
                              const Standard_Boolean WithContact,
                              const Standard_Boolean WithCorrection)
@@ -447,10 +445,8 @@ void BRepFill_PipeShell::Add(const TopoDS_Shape&    Profile,
   ResetLoc();
 }
 
-//=======================================================================
-// function : Add
-// purpose  : Add a Section
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_PipeShell::Add(const TopoDS_Shape&    Profile,
                              const TopoDS_Vertex&   Location,
                              const Standard_Boolean WithContact,
@@ -562,10 +558,8 @@ void BRepFill_PipeShell::SetLaw(const TopoDS_Shape&         Profile,
   ResetLoc();
 }
 
-//=======================================================================
-// function : Delete
-// purpose  : Delete a section
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_PipeShell::DeleteProfile(const TopoDS_Shape& Profile)
 {
   Standard_Boolean Trouve = Standard_False;
@@ -864,10 +858,8 @@ Standard_Boolean BRepFill_PipeShell::MakeSolid()
   return B;
 }
 
-//=======================================================================
-// function : Shape
-// purpose  : Return the result
-//=======================================================================
+//=================================================================================================
+
 const TopoDS_Shape& BRepFill_PipeShell::Shape() const
 {
   return myShape;

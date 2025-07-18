@@ -58,10 +58,8 @@ void StdLDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
                        0);
 }
 
-//=======================================================================
-// function : BindTypes
-// purpose  : Register types
-//=======================================================================
+//=================================================================================================
+
 void StdLDrivers::BindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
   StdLPersistent::BindTypes(theMap);

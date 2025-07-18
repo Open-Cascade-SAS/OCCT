@@ -5866,10 +5866,8 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-//=======================================================================
-// function : VFont
-// purpose  : Font management
-//=======================================================================
+//=================================================================================================
+
 struct FontComparator
 {
   bool operator()(const Handle(Font_SystemFont)& theFontA, const Handle(Font_SystemFont)& theFontB)

@@ -1,0 +1,95 @@
+name: 'ASCII Code Check'
+description: 'Check for non-ASCII characters in changed code files'
+inputs:
+  base-ref:
+    description: 'Base reference to compare changes against'
+    required: true
+    default: 'master'
+  file-pattern:
+    description: 'Pattern to match files for ASCII check'
+    required: false
+    default: '^(src)/.*\.(cpp|hxx|cxx|lxx|h|pxx|hpp)$'
+
+outputs:
+  has-non-ascii:
+    description: 'Whether any files contained non-ASCII characters'
+    value: ${{ steps.ascii-check.outputs.has_non_ascii }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get changed files
+      id: changed-files
+      shell: pwsh
+      run: |
+        $changedFiles = git diff --name-only origin/${{ inputs.base-ref }} HEAD |
+          Where-Object { $_ -match '${{ inputs.file-pattern }}' } |
+          Where-Object { Test-Path $_ }
+        
+        $changedFiles | Set-Content "changed_files.txt"
+        if ($changedFiles.Count -gt 0) {
+          echo "has_files=true" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Check for non-ASCII characters
+      id: ascii-check
+      if: steps.changed-files.outputs.has_files == 'true'
+      shell: pwsh
+      run: |
+        $hasNonAscii = $false
+        $nonAsciiLogs = @()
+        
+        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
+        foreach ($file in $files) {
+          Write-Output "Checking file: $file"
+          $fileContent = Get-Content -Path $file -Raw
+          $lineNumber = 1
+          $nonAsciiInFile = $false
+          
+          foreach ($line in ($fileContent -split "`n")) {
+            # Find non-ASCII characters (char code > 127)
+            $nonAsciiMatches = [regex]::Matches($line, "[^\x00-\x7F]")
+            if ($nonAsciiMatches.Count -gt 0) {
+              $nonAsciiInFile = $true
+              $hasNonAscii = $true
+              
+              foreach ($match in $nonAsciiMatches) {
+                $charCode = [int][char]$match.Value
+                $hexCode = "0x{0:X}" -f $charCode
+                $positionInLine = $match.Index + 1
+                
+                $message = "Non-ASCII character found in '$file' at line $lineNumber, position $($positionInLine): '$($match.Value)' (Unicode: $hexCode)"
+                $nonAsciiLogs += $message
+                Write-Output $message
+              }
+            }
+            $lineNumber++
+          }
+          
+          if ($nonAsciiInFile) {
+            Write-Output "::warning file=$file::File contains non-ASCII characters"
+          }
+        }
+        
+        $nonAsciiLogs | Set-Content "non_ascii_report.txt"
+        if ($hasNonAscii) {
+          echo "has_non_ascii=true" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Upload non-ASCII report
+      if: steps.ascii-check.outputs.has_non_ascii == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: non-ascii-report
+        path: non_ascii_report.txt
+
+    - name: Failing step for non-ASCII issues
+      if: steps.ascii-check.outputs.has_non_ascii == 'true'
+      shell: pwsh
+      run: |
+        Write-Output "::error::Files contain non-ASCII characters. See the non-ascii-report artifact for details."
+        exit 1
+
+branding:
+  icon: 'alert-circle'
+  color: 'red'

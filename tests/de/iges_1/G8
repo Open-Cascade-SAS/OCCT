@@ -24,12 +24,6 @@ LAYERS      : Layers   =   (  )
 set de_use_custom_scripts 1
 
 proc de_before_script {TheFileName} {
-    if { [info exists imagedir] == 0 } {
-       set imagedir ../[file rootname $TheFileName]
-       if {![file exists ${imagedir}]} {
-           file mkdir ${imagedir}
-       }
-    }
     # remember the path to the old resource file
     set old_resource_path $::env(CSF_IGESDefaults)
     # reading old resource file
@@ -37,7 +31,8 @@ proc de_before_script {TheFileName} {
     # activation of ignoring the adding of natural bound
     dict set anOptions "FromIGES.FixShape.FixAddNaturalBoundMode" "0"
     # path to new resource file
-    set new_resource_path ${imagedir}
+    global imagedir new_resource_path
+    set new_resource_path "${imagedir}[file rootname $TheFileName]"
     # creating resource file
     create_resource_file "${new_resource_path}/IGES" $anOptions
     # changing the path to the resource file
@@ -51,4 +46,10 @@ proc de_after_script {old_resource_path} {
    # Restoring the path to the old resource file
    set ::env(CSF_IGESDefaults) ${old_resource_path}
    puts "Restore path to IGES resource file: \"${old_resource_path}\""
+   # Remove the newly created resource directory and its contents
+   global new_resource_path
+   if {[info exists new_resource_path] && [file exists ${new_resource_path}]} {
+       file delete -force ${new_resource_path}
+       puts "Deleted temporary directory: \"${new_resource_path}\""
+   }
 }

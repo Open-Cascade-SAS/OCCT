@@ -321,10 +321,8 @@ Standard_Real EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2)
   return aDist;
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(void)
     : done(Standard_False),
       nbint(0),
@@ -2691,10 +2689,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus&     Tor1,
   }
 }
 
-//=======================================================================
-// function : Point
-// purpose  : Returns a Point
-//=======================================================================
+//=================================================================================================
+
 gp_Pnt IntAna_QuadQuadGeo::Point(const Standard_Integer n) const
 {
   if (!done)
@@ -2726,10 +2722,8 @@ gp_Pnt IntAna_QuadQuadGeo::Point(const Standard_Integer n) const
   return gp_Pnt(0, 0, 0);
 }
 
-//=======================================================================
-// function : Line
-// purpose  : Returns a Line
-//=======================================================================
+//=================================================================================================
+
 gp_Lin IntAna_QuadQuadGeo::Line(const Standard_Integer n) const
 {
   if (!done)
@@ -2750,10 +2744,8 @@ gp_Lin IntAna_QuadQuadGeo::Line(const Standard_Integer n) const
   }
 }
 
-//=======================================================================
-// function : Circle
-// purpose  : Returns a Circle
-//=======================================================================
+//=================================================================================================
+
 gp_Circ IntAna_QuadQuadGeo::Circle(const Standard_Integer n) const
 {
   if (!done)
@@ -2792,10 +2784,8 @@ gp_Circ IntAna_QuadQuadGeo::Circle(const Standard_Integer n) const
   }
 }
 
-//=======================================================================
-// function : Ellipse
-// purpose  : Returns a Elips
-//=======================================================================
+//=================================================================================================
+
 gp_Elips IntAna_QuadQuadGeo::Ellipse(const Standard_Integer n) const
 {
   if (!done)
@@ -2835,10 +2825,8 @@ gp_Elips IntAna_QuadQuadGeo::Ellipse(const Standard_Integer n) const
   }
 }
 
-//=======================================================================
-// function : Parabola
-// purpose  : Returns a Parabola
-//=======================================================================
+//=================================================================================================
+
 gp_Parab IntAna_QuadQuadGeo::Parabola(const Standard_Integer n) const
 {
   if (!done)

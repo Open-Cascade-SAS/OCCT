@@ -136,10 +136,7 @@ const gp_Vec2d& BlendFunc_Corde::Tangent2dOnS() const
   return tg2d;
 }
 
-//=======================================================================
-// function : DerFguide
-// purpose  : dF/dw
-//=======================================================================
+//=================================================================================================
 
 void BlendFunc_Corde::DerFguide(const math_Vector& Sol, gp_Vec2d& DerF)
 {

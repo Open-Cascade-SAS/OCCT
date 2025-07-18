@@ -15,12 +15,9 @@ set conf "
 provider.STEP.OCC.write.schema :	 5
 provider.STEP.OCC.write.tessellated :	 1
 "
-LoadConfiguration ${conf} -recursive on
-param write.step.schema 5
-param write.step.tessellated 1
 
-WriteStep D1 "$imagedir/${casename}.stp"
-ReadStep D2 "$imagedir/${casename}.stp"
+WriteFile D1 "$imagedir/${casename}.stp" -conf ${conf}
+ReadFile D2 "$imagedir/${casename}.stp"
 
 XGetOneShape a1 D1
 XGetOneShape a2 D2
@@ -44,8 +41,4 @@ if {([expr abs($REF_X - [lindex $pos2  9])] > $tol) ||
 Close D1
 Close D2
 file delete "$imagedir/${casename}.stp"
-set conf "
-provider.STEP.OCC.write.schema :	 4
-provider.STEP.OCC.write.tessellated :	 2
-"
-LoadConfiguration ${conf} -recursive on
+

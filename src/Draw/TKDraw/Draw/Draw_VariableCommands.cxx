@@ -1183,10 +1183,8 @@ bool Draw::ParseInteger(const Standard_CString theExpressionString,
   return true;
 }
 
-//=======================================================================
-// function : Set
-// purpose  : set a TCL var
-//=======================================================================
+//=================================================================================================
+
 void Draw::Set(const Standard_CString Name, const Standard_CString val)
 {
   Standard_PCharacter pName, pVal;

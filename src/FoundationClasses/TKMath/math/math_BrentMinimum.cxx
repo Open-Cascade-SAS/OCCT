@@ -18,10 +18,8 @@
 
 static const Standard_Real CGOLD = 0.3819660; // 0.5*(3 - sqrt(5));
 
-//=======================================================================
-// function : SHFT
-// purpose  : Shifts arguments
-//=======================================================================
+//=================================================================================================
+
 inline void SHFT(Standard_Real& theA, Standard_Real& theB, Standard_Real& theC, Standard_Real& theD)
 {
   theA = theB;

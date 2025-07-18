@@ -1,0 +1,71 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepBasic_RWAheadOrBehind_HeaderFile
+#define _RWStepBasic_RWAheadOrBehind_HeaderFile
+
+#include <StepBasic_AheadOrBehind.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepBasic_RWAheadOrBehind
+{
+static constexpr char aobAhead[]  = ".AHEAD.";
+static constexpr char aobExact[]  = ".EXACT.";
+static constexpr char aobBehind[] = ".BEHIND.";
+
+//! Convert StepBasic_AheadOrBehind to string
+//! @param theSourceEnum The StepBasic_AheadOrBehind value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepBasic_aobAhead:
+      return aobAhead;
+    case StepBasic_aobExact:
+      return aobExact;
+    case StepBasic_aobBehind:
+      return aobBehind;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepBasic_AheadOrBehind
+//! @param theAheadOrBehindStr The string to convert
+//! @param theResultEnum The corresponding StepBasic_AheadOrBehind value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString   theAheadOrBehindStr,
+                          StepBasic_AheadOrBehind& theResultEnum)
+{
+  if (IsEqual(theAheadOrBehindStr, aobAhead))
+  {
+    theResultEnum = StepBasic_aobAhead;
+  }
+  else if (IsEqual(theAheadOrBehindStr, aobExact))
+  {
+    theResultEnum = StepBasic_aobExact;
+  }
+  else if (IsEqual(theAheadOrBehindStr, aobBehind))
+  {
+    theResultEnum = StepBasic_aobBehind;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+} // namespace RWStepBasic_RWAheadOrBehind
+
+#endif // _RWStepBasic_RWAheadOrBehind_HeaderFile

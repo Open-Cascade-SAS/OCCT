@@ -112,30 +112,21 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C)
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter());
 }
 
-//=======================================================================
-// function : Length
-// purpose  : 3d with tolerance
-//=======================================================================
+//=================================================================================================
 
 Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const Standard_Real Tol)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
 
-//=======================================================================
-// function : Length
-// purpose  : 2d with tolerance
-//=======================================================================
+//=================================================================================================
 
 Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const Standard_Real Tol)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
 
-//=======================================================================
-// function : Length
-// purpose  : 3d with parameters
-//=======================================================================
+//=================================================================================================
 
 Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
                                           const Standard_Real    U1,
@@ -154,10 +145,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
   return Abs(TheLength.Value());
 }
 
-//=======================================================================
-// function : Length
-// purpose  : 2d with parameters
-//=======================================================================
+//=================================================================================================
 
 Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
                                           const Standard_Real      U1,

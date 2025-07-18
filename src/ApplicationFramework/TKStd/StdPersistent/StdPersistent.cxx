@@ -23,10 +23,8 @@
 #include <StdPersistent_DataXtd_PatternStd.hxx>
 #include <StdPersistent_PPrsStd.hxx>
 
-//=======================================================================
-// function : BindTypes
-// purpose  : Register types
-//=======================================================================
+//=================================================================================================
+
 void StdPersistent::BindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
   // Non-attribute data

@@ -426,10 +426,8 @@ static Handle(Poly_Triangulation) CreatePolyTriangulation(
 }
 } // namespace
 
-// ============================================================================
-// Method  : StepToTopoDS_TranslateFace
-// Purpose : Empty Constructor
-// ============================================================================
+//=================================================================================================
+
 StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace()
     : myError(StepToTopoDS_TranslateFaceOther)
 {

@@ -1,0 +1,69 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepBasic_RWSource_HeaderFile
+#define _RWStepBasic_RWSource_HeaderFile
+
+#include <StepBasic_Source.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepBasic_RWSource
+{
+static constexpr char sBought[]   = ".BOUGHT.";
+static constexpr char sNotKnown[] = ".NOT_KNOWN.";
+static constexpr char sMade[]     = ".MADE.";
+
+//! Convert StepBasic_Source to string
+//! @param theSourceEnum The StepBasic_Source value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepBasic_Source theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepBasic_sBought:
+      return sBought;
+    case StepBasic_sNotKnown:
+      return sNotKnown;
+    case StepBasic_sMade:
+      return sMade;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepBasic_Source
+//! @param theSourceStr The string to convert
+//! @param theResultEnum The corresponding StepBasic_Source value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString theSourceStr, StepBasic_Source& theResultEnum)
+{
+  if (IsEqual(theSourceStr, sBought))
+  {
+    theResultEnum = StepBasic_sBought;
+  }
+  else if (IsEqual(theSourceStr, sNotKnown))
+  {
+    theResultEnum = StepBasic_sNotKnown;
+  }
+  else if (IsEqual(theSourceStr, sMade))
+  {
+    theResultEnum = StepBasic_sMade;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepBasic_RWSource
+
+#endif // _RWStepBasic_RWSource_HeaderFile

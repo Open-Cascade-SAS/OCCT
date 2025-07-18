@@ -28,10 +28,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
 
-//============================================================================
-// Method:  Constructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject(const IVtkOCC_Shape::Handle& theShape)
     : SelectMgr_SelectableObject(PrsMgr_TOP_AllView),
       myShape(theShape)
@@ -42,29 +40,23 @@ IVtkOCC_SelectableObject::IVtkOCC_SelectableObject(const IVtkOCC_Shape::Handle& 
   }
 }
 
-//============================================================================
-// Method:  Constructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject()
     : SelectMgr_SelectableObject(PrsMgr_TOP_AllView)
 {
   //
 }
 
-//============================================================================
-// Method:  Destructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_SelectableObject::~IVtkOCC_SelectableObject()
 {
   //
 }
 
-//============================================================================
-// Method:  SetShape
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_SelectableObject::SetShape(const IVtkOCC_Shape::Handle& theShape)
 {
   myShape = theShape;
@@ -78,10 +70,8 @@ void IVtkOCC_SelectableObject::SetShape(const IVtkOCC_Shape::Handle& theShape)
   myselections.Clear();
 }
 
-//============================================================================
-// Method:  ComputeSelection
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_SelectableObject::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
                                                 const Standard_Integer             theMode)
 {
@@ -126,10 +116,8 @@ void IVtkOCC_SelectableObject::ComputeSelection(const Handle(SelectMgr_Selection
   }
 }
 
-//============================================================================
-// Method:  BoundingBox
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
 {
   if (myShape.IsNull())
@@ -154,10 +142,8 @@ const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
   return myBndBox;
 }
 
-//============================================================================
-// Method:  BoundingBox
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_SelectableObject::BoundingBox(Bnd_Box& theBndBox)
 {
   BoundingBox();

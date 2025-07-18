@@ -25,12 +25,14 @@ set(OCCT_RWStepGeom_FILES
   RWStepGeom_RWBSplineCurve.cxx
   RWStepGeom_RWBSplineCurve.pxx
   RWStepGeom_RWBSplineCurveWithKnots.cxx
+  RWStepGeom_RWBSplineCurveForm.pxx
   RWStepGeom_RWBSplineCurveWithKnots.pxx
   RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.cxx
   RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.pxx
   RWStepGeom_RWBSplineSurface.cxx
   RWStepGeom_RWBSplineSurface.pxx
   RWStepGeom_RWBSplineSurfaceWithKnots.cxx
+  RWStepGeom_RWBSplineSurfaceForm.pxx
   RWStepGeom_RWBSplineSurfaceWithKnots.pxx
   RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface.cxx
   RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface.pxx
@@ -86,6 +88,7 @@ set(OCCT_RWStepGeom_FILES
   RWStepGeom_RWHyperbola.pxx
   RWStepGeom_RWIntersectionCurve.cxx
   RWStepGeom_RWIntersectionCurve.pxx
+  RWStepGeom_RWKnotType.pxx
   RWStepGeom_RWLine.cxx
   RWStepGeom_RWLine.pxx
   RWStepGeom_RWOffsetCurve3d.cxx
@@ -114,6 +117,7 @@ set(OCCT_RWStepGeom_FILES
   RWStepGeom_RWPointReplica.pxx
   RWStepGeom_RWPolyline.cxx
   RWStepGeom_RWPolyline.pxx
+  RWStepGeom_RWPreferredSurfaceCurveRepresentation.pxx
   RWStepGeom_RWQuasiUniformCurve.cxx
   RWStepGeom_RWQuasiUniformCurve.pxx
   RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve.cxx
@@ -156,6 +160,7 @@ set(OCCT_RWStepGeom_FILES
   RWStepGeom_RWSweptSurface.pxx
   RWStepGeom_RWToroidalSurface.cxx
   RWStepGeom_RWToroidalSurface.pxx
+  RWStepGeom_RWTransitionCode.pxx
   RWStepGeom_RWTrimmedCurve.cxx
   RWStepGeom_RWTrimmedCurve.pxx
   RWStepGeom_RWUniformCurve.cxx

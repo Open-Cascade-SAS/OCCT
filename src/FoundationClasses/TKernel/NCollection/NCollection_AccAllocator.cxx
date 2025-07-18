@@ -37,10 +37,8 @@ NCollection_AccAllocator::~NCollection_AccAllocator()
   }
 }
 
-//=======================================================================
-// function : Allocate
-// purpose  : Allocate a memory
-//=======================================================================
+//=================================================================================================
+
 void* NCollection_AccAllocator::Allocate(const size_t theSize)
 {
   const AlignedSize aSize(theSize);

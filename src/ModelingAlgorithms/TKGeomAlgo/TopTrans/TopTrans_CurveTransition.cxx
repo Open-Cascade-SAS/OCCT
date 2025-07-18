@@ -21,10 +21,7 @@
 #define SAME 0
 #define LOWER -1
 
-//=======================================================================
-// function : TopTrans_CurveTransition
-// purpose  : Empty Constructor.
-//=======================================================================
+//=================================================================================================
 
 TopTrans_CurveTransition::TopTrans_CurveTransition()
     : myCurv(0.0),
@@ -32,6 +29,8 @@ TopTrans_CurveTransition::TopTrans_CurveTransition()
       CurvFirst(0.0),
       CurvLast(0.0)
 {
+  TranFirst = TopAbs_FORWARD;
+  TranLast  = TopAbs_FORWARD;
 }
 
 //=======================================================================
@@ -394,10 +393,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
   return OneBefore;
 }
 
-//=======================================================================
-// function : Compare
-// purpose  : Compare two angles
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer TopTrans_CurveTransition::Compare(const Standard_Real Ang1,
                                                    const Standard_Real Ang2,

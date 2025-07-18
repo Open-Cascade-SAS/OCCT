@@ -55,10 +55,8 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
   return Standard_True;
 }
 
-//=============================================================================
-// function : ReadObj
-// purpose  : Reads OBJ file
-//=============================================================================
+//=================================================================================================
+
 static Standard_Integer ReadObj(Draw_Interpretor& theDI,
                                 Standard_Integer  theNbArgs,
                                 const char**      theArgVec)
@@ -232,10 +230,8 @@ static Standard_Integer ReadObj(Draw_Interpretor& theDI,
   return 0;
 }
 
-///=============================================================================
-// function : WriteObj
-// purpose  : Writes OBJ file
-//=============================================================================
+///=================================================================================================
+
 static Standard_Integer WriteObj(Draw_Interpretor& theDI,
                                  Standard_Integer  theNbArgs,
                                  const char**      theArgVec)

@@ -90,10 +90,8 @@ TopoDS_Shape BRepOffsetAPI_MakePipe::LastShape()
   return myPipe.LastShape();
 }
 
-//=======================================================================
-// function : Generated
-// purpose  : standard method
-//=======================================================================
+//=================================================================================================
+
 const TopTools_ListOfShape& BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& S)
 {
   myPipe.Generated(S, myGenerated);

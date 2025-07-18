@@ -17,10 +17,7 @@
 #include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
-//=======================================================================
-// function : BinLDrivers_DocumentSection
-// purpose  : Empty constructor
-//=======================================================================
+//=================================================================================================
 
 BinLDrivers_DocumentSection::BinLDrivers_DocumentSection()
     : myIsPostRead(Standard_False)
@@ -106,7 +103,7 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
     if (aBufSize < aLen)
       aBufSize += sizeof(Standard_Integer);
 
-      // Write the buffer: size + string
+    // Write the buffer: size + string
 #ifdef DO_INVERSE
     aBufSz[0] = InverseInt((Standard_Integer)aBufSize);
 #else

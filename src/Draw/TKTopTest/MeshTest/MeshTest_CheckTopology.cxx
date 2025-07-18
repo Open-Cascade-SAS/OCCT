@@ -46,10 +46,7 @@ static Standard_Real ComputeArea(const gp_XY& theP1, const gp_XY& theP2, const g
   return 0.5 * Abs((theP3 - theP1).Crossed(theP2 - theP1));
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Performs checking
-//=======================================================================
+//=================================================================================================
 
 void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 {

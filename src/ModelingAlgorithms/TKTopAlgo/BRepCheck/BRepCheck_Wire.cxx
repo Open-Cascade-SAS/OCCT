@@ -534,10 +534,8 @@ static Standard_Boolean IsDistanceIn2DTolerance(
   return Standard_False;
 }
 
-//=======================================================================
-// function : Closed2d
-// purpose  : for periodic faces
-//=======================================================================
+//=================================================================================================
+
 BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const Standard_Boolean Update)
 {
   Handle(BRepCheck_HListOfStatus) aHList;

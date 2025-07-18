@@ -50,10 +50,8 @@ void Bisector_FunctionInter::Perform(const Handle(Geom2d_Curve)&   C,
   bisector2 = B2;
 }
 
-//=============================================================================
-// function : Value
-// purpose :
-///=============================================================================
+//=================================================================================================
+
 Standard_Boolean Bisector_FunctionInter::Value(const Standard_Real X, Standard_Real& F)
 {
   gp_Pnt2d PC  = curve->Value(X);

@@ -1126,10 +1126,7 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge&     E1,
   return newPCurve;
 }
 
-//=======================================================================
-// function : Glue
-// purpose  : glue two edges.
-//=======================================================================
+//=================================================================================================
 
 static TopoDS_Edge Glue(const TopoDS_Edge&     E1,
                         const TopoDS_Edge&     E2,

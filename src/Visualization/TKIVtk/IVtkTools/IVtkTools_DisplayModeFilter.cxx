@@ -61,10 +61,8 @@ vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
   myModesDefinition[DM_Shading] = aTypes;
 }
 
-//============================================================================
-// Method: Destructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkTools_DisplayModeFilter::~IVtkTools_DisplayModeFilter() {}
 
 //============================================================================
@@ -81,10 +79,8 @@ int IVtkTools_DisplayModeFilter::RequestData(vtkInformation*        theRequest,
   return Superclass::RequestData(theRequest, theInputVector, theOutputVector);
 }
 
-//============================================================================
-// Method: PrintSelf
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::PrintSelf(std::ostream& theOs, vtkIndent theIndent)
 {
   this->Superclass::PrintSelf(theOs, theIndent);
@@ -99,10 +95,8 @@ void IVtkTools_DisplayModeFilter::PrintSelf(std::ostream& theOs, vtkIndent theIn
   }
 }
 
-//============================================================================
-// Method: SetDisplaySharedVertices
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::SetDisplaySharedVertices(const bool theDoDisplay)
 {
   if (myDoDisplaySharedVertices != theDoDisplay)
@@ -126,10 +120,8 @@ void IVtkTools_DisplayModeFilter::SetDisplaySharedVertices(const bool theDoDispl
   }
 }
 
-//============================================================================
-// Method: SetDisplayMode
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::SetDisplayMode(const IVtk_DisplayMode theMode)
 {
   if (myDisplayMode != theMode)
@@ -139,28 +131,22 @@ void IVtkTools_DisplayModeFilter::SetDisplayMode(const IVtk_DisplayMode theMode)
   }
 }
 
-//============================================================================
-// Method: GetDisplayMode
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtk_DisplayMode IVtkTools_DisplayModeFilter::GetDisplayMode() const
 {
   return myDisplayMode;
 }
 
-//============================================================================
-// Method: meshTypesForMode
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 const IVtk_IdTypeMap& IVtkTools_DisplayModeFilter::MeshTypesForMode(IVtk_DisplayMode theMode) const
 {
   return myModesDefinition[theMode];
 }
 
-//============================================================================
-// Method: setMeshTypesForMode
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(IVtk_DisplayMode      theMode,
                                                       const IVtk_IdTypeMap& theMeshTypes)
 {
@@ -168,10 +154,8 @@ void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(IVtk_DisplayMode      theM
   Modified();
 }
 
-//============================================================================
-// Method: SetFaceBoundaryDraw
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::SetFaceBoundaryDraw(bool theToDraw)
 {
   myDrawFaceBoundaries = theToDraw;
@@ -188,10 +172,8 @@ void IVtkTools_DisplayModeFilter::SetFaceBoundaryDraw(bool theToDraw)
   Modified();
 }
 
-//============================================================================
-// Method: SetSmoothShading
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_DisplayModeFilter::SetSmoothShading(bool theIsSmooth)
 {
   if (myIsSmoothShading != theIsSmooth)

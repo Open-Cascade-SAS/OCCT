@@ -267,6 +267,37 @@ public:
   //! then clears it
   Standard_EXPORT Standard_Boolean Print(Standard_OStream& S);
 
+  //! Static helper function to prepare text for STEP file output while preserving
+  //! existing ISO 10303-21 control directives.
+  //!
+  //! This function processes input text and escapes special characters (quotes, backslashes,
+  //! newlines, tabs) for STEP file format compliance, while carefully preserving any existing
+  //! control directives that may already be present in the input string.
+  //!
+  //! Supported control directive patterns that are preserved:
+  //! - \X{HH}\ : Single byte character encoding (U+0000 to U+00FF)
+  //! - \X2\{HHHH}...\X0\ : UTF-16 character encoding
+  //! - \X4\{HHHHHHHH}...\X0\ : UTF-32 character encoding
+  //! - \S\ : Latin codepoint character with current code page
+  //! - \P{A-I}\ : Code page control directive
+  //! - \N\ : Newline directive (preserved as-is)
+  //! - \T\ : Tab directive (preserved as-is)
+  //!
+  //! Character escaping performed (only on non-directive content):
+  //! - Single quote (') -> double quote ('')
+  //! - Backslash (\) -> double backslash (\\)
+  //! - Newline character -> \N\ directive
+  //! - Tab character -> \T\ directive
+  //!
+  //! Example:
+  //!   Input:  "text with \XA7\ and 'quotes'"
+  //!   Output: "text with \XA7\ and ''quotes''"
+  //!
+  //! @param theText The input text string to be processed
+  //! @return Processed text with preserved control directives and escaped special characters
+  Standard_EXPORT static TCollection_AsciiString CleanTextForSend(
+    const TCollection_AsciiString& theText);
+
 protected:
 private:
   //! adds a string to current line; first flushes it if full

@@ -36,10 +36,8 @@
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 
-//=======================================================================
-// function : writeply
-// purpose  : write PLY file
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer WritePly(Draw_Interpretor& theDI,
                                  Standard_Integer  theNbArgs,
                                  const char**      theArgVec)

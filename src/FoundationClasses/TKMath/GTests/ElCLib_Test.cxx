@@ -62,7 +62,7 @@ void checkDirectorsEqual(const gp_Dir&       theD1,
 
 TEST(ElClibTests, InPeriod)
 {
-  // Test with standard range [0, 2π]
+  // Test with standard range [0, 2pi]
   const Standard_Real PI2 = 2.0 * M_PI;
 
   EXPECT_NEAR(ElCLib::InPeriod(0.5, 0.0, PI2), 0.5, Precision::Confusion());
@@ -82,7 +82,7 @@ TEST(ElClibTests, AdjustPeriodic)
   Standard_Real       U1, U2;
   const Standard_Real PI2 = 2.0 * M_PI;
 
-  // Test with standard range [0, 2π]
+  // Test with standard range [0, 2pi]
   // Case 1: U1 and U2 within range, no adjustment needed
   U1 = 0.5;
   U2 = 0.7;

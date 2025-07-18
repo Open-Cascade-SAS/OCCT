@@ -27,10 +27,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDSToStep_FacetedTool.hxx>
 
-// ============================================================================
-// Method  :
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 TopoDSToStep_FacetedError TopoDSToStep_FacetedTool::CheckTopoDSShape(const TopoDS_Shape& aShape)
 {
   TopExp_Explorer FaceExp, EdgeExp;

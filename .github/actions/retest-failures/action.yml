@@ -84,27 +84,16 @@ runs:
         echo "failed_count={0}" >> $GITHUB_OUTPUT
         ', steps.check_failures_unix.outputs.failed_count) }}
 
-    - name: Download and extract 3rdparty dependencies (Windows)
-      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
-      shell: pwsh
-      run: |
-          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
-          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
-          Remove-Item 3rdparty-vc14-64.zip
-
-    - name: Install dependencies (macOS)
-      if: ${{ inputs.platform == 'macos' && steps.check_failures.outputs.failed_count > 0 }}
-      shell: bash
-      run: |
-        brew update
-        brew install tcl-tk tbb gl2ps xerces-c \
-                     libxmu libxi libxft libxpm \
-                     glew freeimage draco glfw
+    - name: Download vcpkg cache
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
 
     - name: Install dependencies (Linux)
       if: ${{ inputs.platform == 'linux' && steps.check_failures.outputs.failed_count > 0 }}
       shell: bash
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
 
     - name: Setup Xvfb and Mesa (Linux)
       if: ${{ inputs.platform == 'linux' && steps.check_failures.outputs.failed_count > 0 }}
@@ -167,7 +156,7 @@ runs:
       shell: cmd
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        call env.bat vc14 win64 release
         DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }} -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -193,7 +182,7 @@ runs:
       shell: cmd
       run: |
         cd install
-        call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+        call env.bat vc14 win64 release
         # Repeat failed tests for 10 times
         for /l %%i in (1,1,10) do (
           DRAWEXE.exe -v -c testgrid -regress results/${{ inputs.test-directory-name }}-retest -outdir results/${{ inputs.test-directory-name }}-retest -parallel 0 -overwrite
@@ -222,12 +211,21 @@ runs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    - name: Upload regression test results
-      if: steps.check_failures.outputs.failed_count > 0
+    - name: Upload regression test results (Windows)
+      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.results-artifact-name }}-retest
-        path: install/${{ (inputs.platform == 'windows') && '' || 'bin/' }}results/${{ inputs.test-directory-name }}-retest
+        path: install/results/${{ inputs.test-directory-name }}-retest
+        retention-days: 15
+        overwrite: true
+        
+    - name: Upload regression test results (macOS/Linux)
+      if: ${{ inputs.platform != 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.results-artifact-name }}-retest
+        path: install/bin/results/${{ inputs.test-directory-name }}-retest
         retention-days: 15
         overwrite: true
 
@@ -239,7 +237,7 @@ runs:
         if exist "*" (
           xcopy /s /y /i . "..\${{ inputs.test-directory-name }}"
           cd ..\..
-          call env.bat ${{ inputs.compiler == 'clang' && 'clang' || 'vc14' }} win64 release
+          call env.bat vc14 win64 release
           DRAWEXE.exe -v -c "testsummarize results/${{ inputs.test-directory-name }}"
         ) else (
           echo No retest results to copy - directory is empty

@@ -22,6 +22,11 @@ runs:
         name: ${{ inputs.install-artifact-name }}
         path: occt-install
 
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: ${{ inputs.install-artifact-name }}-cache
+
     - name: Install Windows dependencies
       if: inputs.platform == 'windows'
       shell: pwsh
@@ -40,7 +45,7 @@ runs:
       run: |
         git clone https://github.com/Open-Cascade-SAS/Inspector.git inspector
         cd inspector
-        git checkout 6da9ba776ef72a17dca3331974df4200024c7f34
+        git checkout 0757c9bbe4d856a9cd26a62a453fc31879d9d054
 
     - name: Configure TInspector - Windows
       if: inputs.platform == 'windows'
@@ -65,12 +70,17 @@ runs:
         cd inspector
         mkdir build
         cd build
+        export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
         cmake -G "Unix Makefiles" \
               -D CMAKE_BUILD_TYPE=Release \
               -D BUILD_SHARED_LIBS=ON \
               -D OpenCASCADE_DIR=${{ github.workspace }}/occt-install \
               -D INSTALL_DIR=${{ github.workspace }}/inspector/install \
               -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+              -D CMAKE_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
+              -D CMAKE_INCLUDE_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/include" \
+              -D CMAKE_EXE_LINKER_FLAGS="-L${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib -Wl,-rpath,${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
+              -D CMAKE_SHARED_LINKER_FLAGS="-L${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib -Wl,-rpath,${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib" \
               ..
 
     - name: Build TInspector - Windows
@@ -85,6 +95,10 @@ runs:
       shell: bash
       run: |
         cd inspector/build
+        # Set library paths for build and runtime
+        export LD_LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LD_LIBRARY_PATH"
+        export LIBRARY_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib:${{ github.workspace }}/occt-install/lib:$LIBRARY_PATH"
+        export PKG_CONFIG_PATH="${{ github.workspace }}/build/vcpkg_installed/x64-linux-dynamic/lib/pkgconfig:$PKG_CONFIG_PATH"
         make install -j$(nproc)
 
     - name: Upload TInspector installation

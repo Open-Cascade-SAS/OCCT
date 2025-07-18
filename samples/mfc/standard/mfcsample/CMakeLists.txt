@@ -187,3 +187,6 @@ set (mfcsample_USED_LIBS  TKDEVRML
                           ${CSF_OpenGlLibs})
 
 target_link_libraries (mfcsample ${mfcsample_USED_LIBS})
+
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)

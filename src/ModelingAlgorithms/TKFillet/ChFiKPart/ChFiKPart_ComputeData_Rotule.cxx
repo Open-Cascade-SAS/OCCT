@@ -38,10 +38,8 @@
 #include <Precision.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 
-//=======================================================================
-// function : MakeRotule
-// Purpose  : cas plan/plan.
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
                                       const Handle(ChFiDS_SurfData)& Data,
                                       const gp_Pln&                  pl,

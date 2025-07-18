@@ -58,10 +58,8 @@ const Standard_GUID& TFunction_Logbook::ID() const
   return GetID();
 }
 
-//=======================================================================
-// function : TFunction_Logbook
-// purpose  : A Logbook creation
-//=======================================================================
+//=================================================================================================
+
 TFunction_Logbook::TFunction_Logbook()
     : isDone(Standard_False)
 {

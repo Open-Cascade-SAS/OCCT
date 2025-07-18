@@ -2,4 +2,5 @@
 set(OCCT_TKService_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKService_GTests_FILES
+  Image_VideoRecorder_Test.cxx
 )

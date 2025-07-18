@@ -183,10 +183,7 @@ void DDataStd_DrawPresentation::Paste(const Handle(TDF_Attribute)& Into,
   Handle(DDataStd_DrawPresentation)::DownCast(Into)->SetDrawable(myDrawable);
 }
 
-//=======================================================================
-// function : AfterAddition
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
 
 void DDataStd_DrawPresentation::AfterAddition()
 {
@@ -194,10 +191,7 @@ void DDataStd_DrawPresentation::AfterAddition()
   // if (isDisplayed)  DrawDisplay ();
 }
 
-//=======================================================================
-// function : BeforeRemoval
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
 
 void DDataStd_DrawPresentation::BeforeRemoval()
 {
@@ -205,10 +199,7 @@ void DDataStd_DrawPresentation::BeforeRemoval()
   // if (isDisplayed)  DrawErase ();
 }
 
-//=======================================================================
-// function : BeforeForget
-// purpose  : erase if displayed
-//=======================================================================
+//=================================================================================================
 
 void DDataStd_DrawPresentation::BeforeForget()
 {

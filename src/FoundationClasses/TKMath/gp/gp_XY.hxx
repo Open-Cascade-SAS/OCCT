@@ -99,19 +99,18 @@ public:
   Standard_Real Y() const { return y; }
 
   //! Computes Sqrt (X*X + Y*Y) where X and Y are the two coordinates of this number pair.
-  Standard_Real Modulus() const { return sqrt(x * x + y * y); }
+  Standard_Real Modulus() const { return sqrt(SquareModulus()); }
 
   //! Computes X*X + Y*Y where X and Y are the two coordinates of this number pair.
   Standard_Real SquareModulus() const { return x * x + y * y; }
 
   //! Returns true if the coordinates of this number pair are
   //! equal to the respective coordinates of the number pair
-  //! theOther, within the specified tolerance theTolerance. I.e.:
-  //! abs(<me>.X() - theOther.X()) <= theTolerance and
-  //! abs(<me>.Y() - theOther.Y()) <= theTolerance and
-  //! computations
-  Standard_EXPORT Standard_Boolean IsEqual(const gp_XY&        theOther,
-                                           const Standard_Real theTolerance) const;
+  //! theOther, within the specified tolerance theTolerance.
+  Standard_Boolean IsEqual(const gp_XY& theOther, const Standard_Real theTolerance) const
+  {
+    return (Abs(x - theOther.x) < theTolerance) && (Abs(y - theOther.y) < theTolerance);
+  }
 
   //! Computes the sum of this number pair and number pair theOther
   //! @code
@@ -155,15 +154,14 @@ public:
   //! theRight. Returns || <me> ^ theRight ||
   inline Standard_Real CrossMagnitude(const gp_XY& theRight) const
   {
-    Standard_Real aVal = x * theRight.y - y * theRight.x;
-    return aVal < 0 ? -aVal : aVal;
+    return Abs(x * theRight.y - y * theRight.x);
   }
 
   //! computes the square magnitude of the cross product between <me> and
   //! theRight. Returns || <me> ^ theRight ||**2
   inline Standard_Real CrossSquareMagnitude(const gp_XY& theRight) const
   {
-    Standard_Real aZresult = x * theRight.y - y * theRight.x;
+    const Standard_Real aZresult = x * theRight.y - y * theRight.x;
     return aZresult * aZresult;
   }
 
@@ -247,8 +245,8 @@ public:
   //! New = theMatrix * <me>
   Standard_NODISCARD gp_XY Multiplied(const gp_Mat2d& theMatrix) const
   {
-    return gp_XY(theMatrix.Value(1, 1) * x + theMatrix.Value(1, 2) * y,
-                 theMatrix.Value(2, 1) * x + theMatrix.Value(2, 2) * y);
+    return gp_XY(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y,
+                 theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y);
   }
 
   Standard_NODISCARD gp_XY operator*(const gp_Mat2d& theMatrix) const
@@ -385,9 +383,9 @@ private:
 //=======================================================================
 inline void gp_XY::Multiply(const gp_Mat2d& theMatrix)
 {
-  Standard_Real aXresult = theMatrix.Value(1, 1) * x + theMatrix.Value(1, 2) * y;
-  y                      = theMatrix.Value(2, 1) * x + theMatrix.Value(2, 2) * y;
-  x                      = aXresult;
+  const Standard_Real aXresult = theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y;
+  y                            = theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y;
+  x                            = aXresult;
 }
 
 //=======================================================================

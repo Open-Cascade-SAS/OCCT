@@ -33,10 +33,8 @@
 
 // #include <BRepAPI.hxx>
 //  For I-DEAS-like processing (ssv; 15.11.2010)
-//  ============================================================================
-//  Method  : StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex
-//  Purpose : Empty Constructor
-//  ============================================================================
+//=================================================================================================
+
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
     : myError(StepToTopoDS_TranslateVertexOther)
 {

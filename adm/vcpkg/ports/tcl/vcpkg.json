@@ -20,6 +20,9 @@
     },
     "utfmax": {
       "description": "Forces Tcl_UniChar to be a 32-bit quantity in stead of 16-bits"
+    },
+    "tk" : {
+      "description": "Enables optional usage of Tk. Part of the module-foundation-classes."
     }
   }
 }

@@ -4,8 +4,13 @@ description: 'Compare test results between current branch and master'
 runs:
   using: "composite"
   steps:
+    - name: Download vcpkg cache
+      uses: ./.github/actions/download-vcpkg-cache
+      with:
+        artifact-name: install-linux-clang-x64-cache
+
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y cmake clang g++ make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
       shell: bash
 
     - name: Setup Xvfb and Mesa
@@ -20,7 +25,7 @@ runs:
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
-        name: install-linux-gcc-x64
+        name: install-linux-clang-x64
         path: install
 
     - name: Set execute permissions on DRAWEXE
@@ -43,7 +48,7 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
           gh run download ${{ env.latest_run_id }} -n "results-$platform" -D "install/bin/results/master/"
         done
@@ -53,7 +58,7 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
           gh run download -n "results-$platform" -D "install/bin/results/current/"
         done
@@ -64,7 +69,7 @@ runs:
         echo "Comparing test results..."
         cd install/bin
         source env.sh
-        for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+        for platform in windows-x64 macos-x64 linux-clang-x64; do
           ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" &
         done
         wait
@@ -94,3 +99,36 @@ runs:
           install/bin/results/**/summary.html
           install/bin/results/**/tests.log
           install/bin/results/**/*.png
+
+    - name: Post performance summary to PR
+      if: github.repository == 'Open-Cascade-SAS/OCCT' && github.head_ref == 'IR' && github.base_ref == 'master'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        COMMENT_FILE=$(mktemp)
+        
+        # Get commit ID and commit header
+        COMMIT_ID=$(git rev-parse HEAD)
+        COMMIT_HEADER=$(git log -1 --pretty=%s)
+        
+        echo -e "**Performance Test Summary**\n" > "$COMMENT_FILE"
+        echo -e "**Commit**: \`${COMMIT_ID}\`\n" >> "$COMMENT_FILE"
+        echo -e "**Title**: ${COMMIT_HEADER}\n" >> "$COMMENT_FILE"
+        
+        LOG_FILES=$(find install/bin/results/current -name "diff-*.log")
+        if [ -z "$LOG_FILES" ]; then
+          echo "No diff logs found." >> "$COMMENT_FILE"
+        else
+          for log_file in $LOG_FILES; do
+            PLATFORM=$(basename $(dirname "$log_file"))
+            echo "**Platform: ${PLATFORM}**" >> "$COMMENT_FILE"
+            echo '```' >> "$COMMENT_FILE"
+            grep -E "Total (MEMORY|CPU|IMAGE) difference:" "$log_file" >> "$COMMENT_FILE" || echo "No performance summary found." >> "$COMMENT_FILE"
+            echo '```' >> "$COMMENT_FILE"
+            echo "" >> "$COMMENT_FILE"
+          done
+        fi
+        gh pr comment ${PR_NUMBER} --body-file "$COMMENT_FILE"
+        rm "$COMMENT_FILE"
+      shell: bash

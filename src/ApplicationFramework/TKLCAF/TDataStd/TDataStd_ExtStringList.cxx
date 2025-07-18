@@ -50,10 +50,8 @@ static Handle(TDataStd_ExtStringList) SetAttr(const TDF_Label& label, const Stan
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_ExtStringList
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_ExtStringList::TDataStd_ExtStringList()
     : myID(GetID())
 {
@@ -275,10 +273,7 @@ void TDataStd_ExtStringList::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_ExtStringList::SetID()
 {

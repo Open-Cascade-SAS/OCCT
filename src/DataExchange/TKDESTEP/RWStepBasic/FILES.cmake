@@ -14,6 +14,7 @@ set(OCCT_RWStepBasic_FILES
   RWStepBasic_RWActionRequestSolution.pxx
   RWStepBasic_RWAddress.cxx
   RWStepBasic_RWAddress.pxx
+  RWStepBasic_RWAheadOrBehind.pxx
   RWStepBasic_RWApplicationContext.cxx
   RWStepBasic_RWApplicationContext.pxx
   RWStepBasic_RWApplicationContextElement.cxx
@@ -208,6 +209,7 @@ set(OCCT_RWStepBasic_FILES
   RWStepBasic_RWSecurityClassification.pxx
   RWStepBasic_RWSecurityClassificationLevel.cxx
   RWStepBasic_RWSecurityClassificationLevel.pxx
+  RWStepBasic_RWSiPrefix.pxx
   RWStepBasic_RWSiUnit.cxx
   RWStepBasic_RWSiUnit.pxx
   RWStepBasic_RWSiUnitAndAreaUnit.cxx
@@ -228,10 +230,12 @@ set(OCCT_RWStepBasic_FILES
   RWStepBasic_RWSiUnitAndTimeUnit.pxx
   RWStepBasic_RWSiUnitAndVolumeUnit.cxx
   RWStepBasic_RWSiUnitAndVolumeUnit.pxx
+  RWStepBasic_RWSiUnitName.pxx
   RWStepBasic_RWSolidAngleMeasureWithUnit.cxx
   RWStepBasic_RWSolidAngleMeasureWithUnit.pxx
   RWStepBasic_RWSolidAngleUnit.cxx
   RWStepBasic_RWSolidAngleUnit.pxx
+  RWStepBasic_RWSource.pxx
   RWStepBasic_RWThermodynamicTemperatureUnit.cxx
   RWStepBasic_RWThermodynamicTemperatureUnit.pxx
   RWStepBasic_RWUncertaintyMeasureWithUnit.cxx

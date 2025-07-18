@@ -726,11 +726,8 @@ void FSD_File::ReadInfo(Standard_Integer&              nbObj,
   }
 }
 
-//=======================================================================
-// function : ReadCompleteInfo
-// purpose  :
-//
-//=======================================================================
+//=================================================================================================
+
 void FSD_File::ReadCompleteInfo(Standard_IStream& /*theIStream*/, Handle(Storage_Data)& /*theData*/)
 {
 }

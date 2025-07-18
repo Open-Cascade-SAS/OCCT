@@ -41,10 +41,7 @@ const Standard_GUID& TDocStd_XLinkRoot::GetID()
   return myID;
 }
 
-//=======================================================================
-// function : Set
-// purpose  : CLASS method.
-//=======================================================================
+//=================================================================================================
 
 Handle(TDocStd_XLinkRoot) TDocStd_XLinkRoot::Set(const Handle(TDF_Data)& aDF)
 {

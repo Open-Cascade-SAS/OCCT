@@ -6212,10 +6212,7 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(
   return Standard_True;
 }
 
-//=======================================================================
-// function : ReadStep
-// purpose  : Reading of a file
-//=======================================================================
+//=================================================================================================
 
 void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer                 CN,
                                            const Handle(StepData_StepReaderData)& data,
@@ -10838,10 +10835,7 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer               
   return;
 }
 
-//=======================================================================
-// function : WriteStep
-// purpose  : Writing of a file
-//=======================================================================
+//=================================================================================================
 
 void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer            CN,
                                             StepData_StepWriter&              SW,

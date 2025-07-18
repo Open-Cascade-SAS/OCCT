@@ -19,13 +19,7 @@
 #include <StepGeom_QuasiUniformCurveAndRationalBSplineCurve.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
-// --- Enum : BSplineCurveForm ---
-static TCollection_AsciiString bscfEllipticArc(".ELLIPTIC_ARC.");
-static TCollection_AsciiString bscfPolylineForm(".POLYLINE_FORM.");
-static TCollection_AsciiString bscfParabolicArc(".PARABOLIC_ARC.");
-static TCollection_AsciiString bscfCircularArc(".CIRCULAR_ARC.");
-static TCollection_AsciiString bscfUnspecified(".UNSPECIFIED.");
-static TCollection_AsciiString bscfHyperbolicArc(".HYPERBOLIC_ARC.");
+#include "RWStepGeom_RWBSplineCurveForm.pxx"
 
 RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::
   RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve()
@@ -85,20 +79,10 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 3);
-    if (bscfEllipticArc.IsEqual(text))
-      aCurveForm = StepGeom_bscfEllipticArc;
-    else if (bscfPolylineForm.IsEqual(text))
-      aCurveForm = StepGeom_bscfPolylineForm;
-    else if (bscfParabolicArc.IsEqual(text))
-      aCurveForm = StepGeom_bscfParabolicArc;
-    else if (bscfCircularArc.IsEqual(text))
-      aCurveForm = StepGeom_bscfCircularArc;
-    else if (bscfUnspecified.IsEqual(text))
-      aCurveForm = StepGeom_bscfUnspecified;
-    else if (bscfHyperbolicArc.IsEqual(text))
-      aCurveForm = StepGeom_bscfHyperbolicArc;
-    else
+    if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
+    {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #3 (curve_form) is not an enumeration");
@@ -207,27 +191,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
   SW.CloseSub();
   // --- field : curveForm ---
 
-  switch (ent->CurveForm())
-  {
-    case StepGeom_bscfEllipticArc:
-      SW.SendEnum(bscfEllipticArc);
-      break;
-    case StepGeom_bscfPolylineForm:
-      SW.SendEnum(bscfPolylineForm);
-      break;
-    case StepGeom_bscfParabolicArc:
-      SW.SendEnum(bscfParabolicArc);
-      break;
-    case StepGeom_bscfCircularArc:
-      SW.SendEnum(bscfCircularArc);
-      break;
-    case StepGeom_bscfUnspecified:
-      SW.SendEnum(bscfUnspecified);
-      break;
-    case StepGeom_bscfHyperbolicArc:
-      SW.SendEnum(bscfHyperbolicArc);
-      break;
-  }
+  SW.SendEnum(RWStepGeom_RWBSplineCurveForm::ConvertToString(ent->CurveForm()));
   // --- field : closedCurve ---
 
   SW.SendLogical(ent->ClosedCurve());

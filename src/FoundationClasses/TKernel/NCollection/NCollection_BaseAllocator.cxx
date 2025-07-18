@@ -24,10 +24,8 @@ void* NCollection_BaseAllocator::Allocate(const size_t theSize)
   return Standard::Allocate(theSize);
 }
 
-//=======================================================================
-// function : AllocateOptimal
-// purpose  : Optimal allocation
-//=======================================================================
+//=================================================================================================
+
 void* NCollection_BaseAllocator::AllocateOptimal(const size_t theSize)
 {
   return Standard::AllocateOptimal(theSize);
