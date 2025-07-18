@@ -38,11 +38,7 @@ endmacro()
 # vcpkg processing
 if (BUILD_USE_VCPKG)
   find_package (draco CONFIG REQUIRED)
-
-  set (3RDPARTY_DRACO_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
-  SEARCH_DRACO_LIB()
-
-  list (APPEND 3RDPARTY_INCLUDE_DIRS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/draco")
+  set(CSF_Draco draco::draco)
   return()
 endif()
 

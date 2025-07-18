@@ -166,10 +166,8 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Cont
   return aD2.Modulus() / (float)aViewport[2];
 }
 
-// =======================================================================
-// method  : getDistancetoCorner
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_ShortReal OpenGl_GraduatedTrihedron::getDistanceToCorner(
   const OpenGl_Vec3&       theNormal,
   const OpenGl_Vec3&       theCenter,
@@ -181,10 +179,8 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getDistanceToCorner(
          + theNormal.z() * (theZ - theCenter.z());
 }
 
-// =======================================================================
-// method  : getGridAxes
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes(const Standard_ShortReal theCorners[8],
                                                              GridAxes& theGridAxes) const
 {
@@ -701,20 +697,16 @@ void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorksp
   aContext->ApplyWorldViewMatrix();
 }
 
-// =======================================================================
-// method  : SetMinMax
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::SetMinMax(const OpenGl_Vec3& theMin, const OpenGl_Vec3& theMax)
 {
   myMin = theMin;
   myMax = theMax;
 }
 
-// =======================================================================
-// method  : OpenGl_GraduatedTrihedron::Axis constructor
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAspect& theAspect,
                                       const OpenGl_Vec3&                              theDirection)
     : Direction(theDirection),
@@ -770,10 +762,8 @@ OpenGl_GraduatedTrihedron::Axis& OpenGl_GraduatedTrihedron::Axis::operator=(cons
   return *this;
 }
 
-// =======================================================================
-// method  : InitArrow
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_GraduatedTrihedron::Axis::InitArrow(const Handle(OpenGl_Context)& theContext,
                                                 const Standard_ShortReal      theLength,
                                                 const OpenGl_Vec3&            theNormal) const

@@ -1,0 +1,33 @@
+name: 'Upload vcpkg Cache'
+description: 'Upload vcpkg installed packages and cache for reuse'
+
+inputs:
+  artifact-name:
+    description: 'Name of the artifact to store vcpkg cache'
+    required: true
+  build-directory:
+    description: 'Build directory containing vcpkg_installed'
+    required: false
+    default: 'build'
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Create vcpkg tar archive
+      run: |
+        cd ${{ inputs.build-directory }}
+        tar -czf vcpkg-dependencies.tar.gz \
+          --exclude='vcpkg_installed/*/debug' \
+          --exclude='vcpkg_installed/**/*.pdb' \
+          --exclude='vcpkg_installed/**/*.lib' \
+          ./vcpkg_installed/
+      shell: bash
+
+    - name: Upload vcpkg tar archive
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.build-directory }}/vcpkg-dependencies.tar.gz
+        retention-days: 7
+        compression-level: 1

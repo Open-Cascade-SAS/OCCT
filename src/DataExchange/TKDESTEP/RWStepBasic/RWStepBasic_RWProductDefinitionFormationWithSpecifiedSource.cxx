@@ -20,10 +20,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// --- Enum : Source ---
-static TCollection_AsciiString sBought(".BOUGHT.");
-static TCollection_AsciiString sNotKnown(".NOT_KNOWN.");
-static TCollection_AsciiString sMade(".MADE.");
+#include "RWStepBasic_RWSource.pxx"
 
 RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::
   RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource()
@@ -66,14 +63,10 @@ void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::ReadStep(
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
     Standard_CString text = data->ParamCValue(num, 4);
-    if (sBought.IsEqual(text))
-      aMakeOrBuy = StepBasic_sBought;
-    else if (sNotKnown.IsEqual(text))
-      aMakeOrBuy = StepBasic_sNotKnown;
-    else if (sMade.IsEqual(text))
-      aMakeOrBuy = StepBasic_sMade;
-    else
+    if (!RWStepBasic_RWSource::ConvertToEnum(text, aMakeOrBuy))
+    {
       ach->AddFail("Enumeration source has not an allowed value");
+    }
   }
   else
     ach->AddFail("Parameter #4 (make_or_buy) is not an enumeration");
@@ -102,18 +95,7 @@ void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::WriteStep(
 
   // --- own field : makeOrBuy ---
 
-  switch (ent->MakeOrBuy())
-  {
-    case StepBasic_sBought:
-      SW.SendEnum(sBought);
-      break;
-    case StepBasic_sNotKnown:
-      SW.SendEnum(sNotKnown);
-      break;
-    case StepBasic_sMade:
-      SW.SendEnum(sMade);
-      break;
-  }
+  SW.SendEnum(RWStepBasic_RWSource::ConvertToString(ent->MakeOrBuy()));
 }
 
 void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::Share(

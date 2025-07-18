@@ -16,7 +16,6 @@
 
 #include <OSD.hxx>
 #include <OSD_Parallel.hxx>
-#include <Standard_Atomic.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OSD_ThreadPool, Standard_Transient)
@@ -25,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(OSD_ThreadPool, Standard_Transient)
 
 bool OSD_ThreadPool::EnumeratedThread::Lock()
 {
-  return Standard_Atomic_CompareAndSwap(&myUsageCounter, 0, 1);
+  return myUsageCounter.exchange(1) == 0;
 }
 
 //=================================================================================================
 
 void OSD_ThreadPool::EnumeratedThread::Free()
 {
-  Standard_Atomic_CompareAndSwap(&myUsageCounter, 1, 0);
+  myUsageCounter.store(0);
 }
 
 //=================================================================================================

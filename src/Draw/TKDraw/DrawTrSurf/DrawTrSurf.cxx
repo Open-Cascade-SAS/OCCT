@@ -645,10 +645,8 @@ void DrawTrSurf::Set(const Standard_CString theName, const gp_Pnt2d& thePoint)
   Draw::Set(theName, aDrawPoint);
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Geometry from Geom
-//=======================================================================
+//=================================================================================================
+
 void DrawTrSurf::Set(const Standard_CString       theName,
                      const Handle(Geom_Geometry)& theGeometry,
                      const Standard_Boolean       isSenseMarker)
@@ -753,10 +751,8 @@ void DrawTrSurf::Set(const Standard_CString       theName,
   Draw::Set(theName, aDrawable);
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Curve from Geom2d
-//=======================================================================
+//=================================================================================================
+
 void DrawTrSurf::Set(const Standard_CString      theName,
                      const Handle(Geom2d_Curve)& theCurve,
                      const Standard_Boolean      isSenseMarker)

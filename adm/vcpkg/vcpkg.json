@@ -26,7 +26,7 @@
     },
     {
       "name": "angle",
-       "platform": "uwp"
+      "platform": "uwp"
     },
     {
       "name": "opengl",
@@ -35,9 +35,12 @@
   ],
   "features": {
     "angle": {
-      "description": "Enables optional usage of ANGLE. Part of the module-visualization.",
+      "description": "Enables optional usage of OpenGL ES 2.0. Part of the module-visualization.",
       "dependencies": [
-        "angle"
+        {
+          "name": "angle",
+          "platform": "!(linux & !static)"
+        }
       ]
     },
     "opengl": {
@@ -50,6 +53,21 @@
       "description": "Enables optional usage of Tcl. Part of the module-foundation-classes.",
       "dependencies": [
         "tcl"
+      ]
+    },
+    "tcltk": {
+      "description": "Enables optional usage of TclTk. Part of the module-foundation-classes.",
+      "dependencies": [
+        {
+          "name": "tcl",
+          "features": [
+            "tk"
+          ]
+        },
+        {
+          "name": "libx11",
+          "platform": "!windows"
+        }
       ]
     },
     "freeimage": {

@@ -308,10 +308,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
   }
 }
 
-//=======================================================================
-// function : Add
-// purpose  : static function
-//=======================================================================
+//=================================================================================================
 
 static void Add(const Standard_Integer                           ind,
                 TColStd_MapOfInteger&                            mapI,
@@ -351,10 +348,7 @@ static void Add(const Standard_Integer                           ind,
   }
 }
 
-//=======================================================================
-// function : Propagate
-// purpose  : static function
-//=======================================================================
+//=================================================================================================
 
 static void Propagate(const TopoDS_Shape&               F,
                       TopoDS_Shape&                     Sh,
@@ -428,10 +422,7 @@ static void Propagate(const TopoDS_Shape&               F,
   }
 }
 
-//=======================================================================
-// function : IsInside
-// purpose  : static function
-//=======================================================================
+//=================================================================================================
 
 static Standard_Boolean IsInside(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {

@@ -27,14 +27,23 @@ inline math_Matrix operator*(const Standard_Real Left, const math_Matrix& Right)
   return Right.Multiplied(Left);
 }
 
-inline Standard_Real& math_Matrix::Value(const Standard_Integer Row,
-                                         const Standard_Integer Col) const
+inline const Standard_Real& math_Matrix::Value(const Standard_Integer Row,
+                                               const Standard_Integer Col) const
 {
   Standard_RangeError_Raise_if(((Row < LowerRowIndex) || (Row > UpperRowIndex)
                                 || (Col < LowerColIndex) || (Col > UpperColIndex)),
                                " ");
 
-  return Array(Row, Col);
+  return Array.Value(Row, Col);
+}
+
+inline Standard_Real& math_Matrix::Value(const Standard_Integer Row, const Standard_Integer Col)
+{
+  Standard_RangeError_Raise_if(((Row < LowerRowIndex) || (Row > UpperRowIndex)
+                                || (Col < LowerColIndex) || (Col > UpperColIndex)),
+                               " ");
+
+  return Array.Value(Row, Col);
 }
 
 inline Standard_Integer math_Matrix::RowNumber() const

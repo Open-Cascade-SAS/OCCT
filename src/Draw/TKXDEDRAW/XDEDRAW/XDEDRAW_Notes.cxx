@@ -483,10 +483,8 @@ static Standard_Integer noteDelete(Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
-//=======================================================================
-// function : noteDeleteAll
-// purpose  : deletes all notes
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteDeleteAll = {"XNoteDeleteAll", 2, "XNoteDeleteAll Doc"};
 
 static Standard_Integer noteDeleteAll(Draw_Interpretor& di,

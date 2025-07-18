@@ -19,10 +19,8 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-//=======================================================================
-// function : XmlObjMgt_Persistent
-// purpose  : empty constructor
-//=======================================================================
+//=================================================================================================
+
 XmlObjMgt_Persistent::XmlObjMgt_Persistent()
     : myID(0)
 {

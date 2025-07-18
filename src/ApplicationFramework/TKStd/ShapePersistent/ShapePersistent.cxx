@@ -21,10 +21,8 @@
 #include <ShapePersistent_Geom_Surface.hxx>
 #include <ShapePersistent_BRep.hxx>
 
-//=======================================================================
-// function : BindTypes
-// purpose  : Register types
-//=======================================================================
+//=================================================================================================
+
 void ShapePersistent::BindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
   theMap.Bind<StdLPersistent_HArray1::Persistent>("PTopoDS_HArray1OfHShape");

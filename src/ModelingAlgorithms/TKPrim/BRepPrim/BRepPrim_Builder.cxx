@@ -54,20 +54,14 @@ void BRepPrim_Builder::MakeShell(TopoDS_Shell& S) const
   S.Closed(Standard_True);
 }
 
-//=======================================================================
-// function : MakeFace
-// purpose  : Make a Planar Face
-//=======================================================================
+//=================================================================================================
 
 void BRepPrim_Builder::MakeFace(TopoDS_Face& F, const gp_Pln& P) const
 {
   myBuilder.MakeFace(F, new Geom_Plane(P), Precision::Confusion());
 }
 
-//=======================================================================
-// function : MakeWire
-// purpose  : Make an empty Wire
-//=======================================================================
+//=================================================================================================
 
 void BRepPrim_Builder::MakeWire(TopoDS_Wire& W) const
 {
@@ -82,10 +76,7 @@ void BRepPrim_Builder::MakeDegeneratedEdge(TopoDS_Edge& E) const
   myBuilder.Degenerated(E, Standard_True);
 }
 
-//=======================================================================
-// function : MakeEdge
-// purpose  : Make a linear Edge
-//=======================================================================
+//=================================================================================================
 
 void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Lin& L) const
 {
@@ -136,20 +127,14 @@ void BRepPrim_Builder::SetPCurve(TopoDS_Edge& E, const TopoDS_Face& F, const gp_
   myBuilder.UpdateEdge(E, new Geom2d_Circle(C), F, Precision::Confusion());
 }
 
-//=======================================================================
-// function : MakeVertex
-// purpose  : Make a Vertex
-//=======================================================================
+//=================================================================================================
 
 void BRepPrim_Builder::MakeVertex(TopoDS_Vertex& V, const gp_Pnt& P) const
 {
   myBuilder.MakeVertex(V, P, Precision::Confusion());
 }
 
-//=======================================================================
-// function : ReverseFace
-// purpose  : Reverse a Face
-//=======================================================================
+//=================================================================================================
 
 void BRepPrim_Builder::ReverseFace(TopoDS_Face& F) const
 {

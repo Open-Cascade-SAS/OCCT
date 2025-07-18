@@ -26,10 +26,8 @@ NCollection_AlignedAllocator::NCollection_AlignedAllocator(const size_t theAlign
   //
 }
 
-//=======================================================================
-// function : Allocate
-// purpose  : allocate a memory
-//=======================================================================
+//=================================================================================================
+
 void* NCollection_AlignedAllocator::Allocate(const size_t theSize)
 {
   return Standard::AllocateAligned(theSize, myAlignment);

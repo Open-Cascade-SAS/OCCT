@@ -24,6 +24,8 @@
 #include <ShapeFix_Root.hxx>
 #include <TopoDS_Wire.hxx>
 #include <ShapeExtend_Status.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+
 class ShapeFix_Edge;
 class ShapeAnalysis_Wire;
 class TopoDS_Wire;
@@ -123,6 +125,12 @@ public:
 
   //! Set working face for the wire
   void SetFace(const TopoDS_Face& face);
+
+  //! Set working face for the wire and surface analysis object
+  void SetFace(const TopoDS_Face& theFace, const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
+
+  //! Set surface analysis for the wire
+  void SetSurface(const Handle(ShapeAnalysis_Surface)& theSurfaceAnalysis);
 
   //! Set surface for the wire
   void SetSurface(const Handle(Geom_Surface)& surf);

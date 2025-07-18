@@ -339,10 +339,8 @@ void BRepBuilderAPI_FastSewing::UpdateEdgeInfo(const Standard_Integer theIDPrevV
   aFace.SetEdge(theIDCurvOnFace, anEdge.myID);
 }
 
-//=======================================================================
-// function : CreateNewEdge
-// purpose  : Creates FS_Edge
-//=======================================================================
+//=================================================================================================
+
 void BRepBuilderAPI_FastSewing::CreateNewEdge(const Standard_Integer theIDPrevVertex,
                                               const Standard_Integer theIDCurrVertex,
                                               const Standard_Integer theFaceID,

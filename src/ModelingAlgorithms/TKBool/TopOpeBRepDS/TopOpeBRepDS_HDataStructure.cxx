@@ -126,10 +126,8 @@ void TopOpeBRepDS_HDataStructure::AddAncestors(const TopoDS_Shape&    S,
   }
 }
 
-//=======================================================================
-// function : ChkIntg
-// purpose  : Check Integrity
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepDS_HDataStructure::ChkIntg()
 {
   // Check the integrity of the DS

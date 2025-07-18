@@ -180,10 +180,7 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
   BRepPrim_Wedge_Init(ShellBuilt, VerticesBuilt, EdgesBuilt, WiresBuilt, FacesBuilt);
 }
 
-//=======================================================================
-// function : BRepPrim_GWedge
-// purpose  : build a STEP wedge
-//=======================================================================
+//=================================================================================================
 
 BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
                                  const gp_Ax2&           Axes,

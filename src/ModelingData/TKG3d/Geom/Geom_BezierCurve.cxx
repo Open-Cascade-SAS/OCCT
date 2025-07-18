@@ -120,10 +120,7 @@ Geom_BezierCurve::Geom_BezierCurve(const TColgp_Array1OfPnt&   Poles,
   Init(npoles, nweights);
 }
 
-//=======================================================================
-// function : Increase
-// purpose  : increase degree
-//=======================================================================
+//=================================================================================================
 
 void Geom_BezierCurve::Increase(const Standard_Integer Deg)
 {

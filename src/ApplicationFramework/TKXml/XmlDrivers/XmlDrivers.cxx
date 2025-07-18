@@ -31,10 +31,8 @@
 static Standard_GUID XmlStorageDriver("03a56820-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID XmlRetrievalDriver("03a56822-8269-11d5-aab2-0050044b1af1");
 
-//=======================================================================
-// function : Factory
-// purpose  : PLUGIN FACTORY
-//=======================================================================
+//=================================================================================================
+
 const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlStorageDriver)

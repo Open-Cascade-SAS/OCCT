@@ -49,10 +49,8 @@ static Handle(TDataStd_RealList) SetAttr(const TDF_Label& label, const Standard_
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_RealList
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_RealList::TDataStd_RealList()
     : myID(GetID())
 {
@@ -268,10 +266,8 @@ void TDataStd_RealList::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_RealList::SetID()
 {
   Backup();

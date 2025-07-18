@@ -1,0 +1,77 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepVisual_RWTextPath_HeaderFile
+#define _RWStepVisual_RWTextPath_HeaderFile
+
+#include <StepVisual_TextPath.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepVisual_RWTextPath
+{
+
+static constexpr char tpUp[]    = ".UP.";
+static constexpr char tpRight[] = ".RIGHT.";
+static constexpr char tpDown[]  = ".DOWN.";
+static constexpr char tpLeft[]  = ".LEFT.";
+
+//! Convert StepVisual_TextPath to string
+//! @param theSourceEnum The StepVisual_TextPath value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepVisual_TextPath theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepVisual_tpUp:
+      return tpUp;
+    case StepVisual_tpRight:
+      return tpRight;
+    case StepVisual_tpDown:
+      return tpDown;
+    case StepVisual_tpLeft:
+      return tpLeft;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepVisual_TextPath
+//! @param thePathStr The string to convert
+//! @param theResultEnum The corresponding StepVisual_TextPath value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString thePathStr, StepVisual_TextPath& theResultEnum)
+{
+  if (IsEqual(thePathStr, tpUp))
+  {
+    theResultEnum = StepVisual_tpUp;
+  }
+  else if (IsEqual(thePathStr, tpRight))
+  {
+    theResultEnum = StepVisual_tpRight;
+  }
+  else if (IsEqual(thePathStr, tpDown))
+  {
+    theResultEnum = StepVisual_tpDown;
+  }
+  else if (IsEqual(thePathStr, tpLeft))
+  {
+    theResultEnum = StepVisual_tpLeft;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepVisual_RWTextPath
+
+#endif // _RWStepVisual_RWTextPath_HeaderFile

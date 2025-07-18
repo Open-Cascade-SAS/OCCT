@@ -22,13 +22,14 @@
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
-#include <Standard_Atomic.hxx>
+
+#include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderProgram, Standard_Transient)
 
 namespace
 {
-static volatile Standard_Integer THE_PROGRAM_OBJECT_COUNTER = 0;
+static std::atomic<Standard_Integer> THE_PROGRAM_OBJECT_COUNTER(0);
 }
 
 //=================================================================================================
@@ -87,7 +88,7 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
       myIsPBR(false)
 {
   myID = TCollection_AsciiString("Graphic3d_ShaderProgram_")
-         + TCollection_AsciiString(Standard_Atomic_Increment(&THE_PROGRAM_OBJECT_COUNTER));
+         + TCollection_AsciiString(++THE_PROGRAM_OBJECT_COUNTER);
 }
 
 // =======================================================================

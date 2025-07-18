@@ -21,10 +21,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
-//============================================================================
-// Method:  Constructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
     : SelectMgr_ViewerSelector(),
       myPixTol(2),
@@ -32,16 +30,12 @@ IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
 {
 }
 
-//============================================================================
-// Method:  Destructor
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector() {}
 
-//============================================================================
-// Method: ConvertVtkToOccCamera
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 Handle(Graphic3d_Camera) IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
   const IVtk_IView::Handle& theView)
 {
@@ -163,10 +157,8 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,
   TraverseSensitives(-1);
 }
 
-//============================================================================
-// Method:  Pick
-// Purpose:
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
                                   const int                 theNbPoints,
                                   const IVtk_IView::Handle& theView)

@@ -88,12 +88,13 @@ void gp_Mat::SetCross(const gp_XYZ& theRef)
   const Standard_Real Y = theRef.Y();
   const Standard_Real Z = theRef.Z();
   myMat[0][0] = myMat[1][1] = myMat[2][2] = 0.0;
-  myMat[0][1]                             = -Z;
-  myMat[0][2]                             = Y;
-  myMat[1][2]                             = -X;
-  myMat[1][0]                             = Z;
-  myMat[2][0]                             = -Y;
-  myMat[2][1]                             = X;
+
+  myMat[0][1] = -Z;
+  myMat[0][2] = Y;
+  myMat[1][2] = -X;
+  myMat[1][0] = Z;
+  myMat[2][0] = -Y;
+  myMat[2][1] = X;
 }
 
 //=================================================================================================
@@ -103,37 +104,58 @@ void gp_Mat::SetDot(const gp_XYZ& theRef)
   const Standard_Real X = theRef.X();
   const Standard_Real Y = theRef.Y();
   const Standard_Real Z = theRef.Z();
-  myMat[0][0]           = X * X;
-  myMat[1][1]           = Y * Y;
-  myMat[2][2]           = Z * Z;
-  myMat[0][1]           = X * Y;
-  myMat[0][2]           = X * Z;
-  myMat[1][2]           = Y * Z;
-  myMat[1][0]           = myMat[0][1];
-  myMat[2][0]           = myMat[0][2];
-  myMat[2][1]           = myMat[1][2];
+
+  myMat[0][0] = X * X;
+  myMat[1][1] = Y * Y;
+  myMat[2][2] = Z * Z;
+  myMat[0][1] = X * Y;
+  myMat[0][2] = X * Z;
+  myMat[1][2] = Y * Z;
+
+  myMat[1][0] = myMat[0][1];
+  myMat[2][0] = myMat[0][2];
+  myMat[2][1] = myMat[1][2];
 }
 
 //=================================================================================================
 
 void gp_Mat::SetRotation(const gp_XYZ& theAxis, const Standard_Real theAng)
 {
-  //    Rot = I + sin(Ang) * M + (1. - cos(Ang)) * M*M
-  //    avec  M . XYZ = Axis ^ XYZ
+  // Rodrigues' rotation formula: R = I + sin(theta)K + (1-cos(theta))K^2
+  // Where K is the skew-symmetric matrix of the normalized axis
   const gp_XYZ aV = theAxis.Normalized();
-  SetCross(aV);
-  Multiply(sin(theAng));
-  gp_Mat aTemp;
-  aTemp.SetScale(1.0);
-  Add(aTemp);
+
   const Standard_Real A = aV.X();
   const Standard_Real B = aV.Y();
   const Standard_Real C = aV.Z();
-  aTemp.SetRow(1, gp_XYZ(-C * C - B * B, A * B, A * C));
-  aTemp.SetRow(2, gp_XYZ(A * B, -A * A - C * C, B * C));
-  aTemp.SetRow(3, gp_XYZ(A * C, B * C, -A * A - B * B));
-  aTemp.Multiply(1.0 - cos(theAng));
-  Add(aTemp);
+
+  // Precompute trigonometric values
+  const Standard_Real aCos   = cos(theAng);
+  const Standard_Real aSin   = sin(theAng);
+  const Standard_Real aOmCos = 1.0 - aCos; // One minus cosine
+
+  // Precompute terms
+  const Standard_Real A2 = A * A;
+  const Standard_Real B2 = B * B;
+  const Standard_Real C2 = C * C;
+  const Standard_Real AB = A * B;
+  const Standard_Real AC = A * C;
+  const Standard_Real BC = B * C;
+
+  // Direct matrix computation: R = I + sin(theta)K + (1-cos(theta))K^2
+  // K^2 diagonal terms are -(sum of other two squared components)
+  // K^2 off-diagonal terms are products of components
+  myMat[0][0] = 1.0 + aOmCos * (-(B2 + C2));
+  myMat[0][1] = aOmCos * AB - aSin * C;
+  myMat[0][2] = aOmCos * AC + aSin * B;
+
+  myMat[1][0] = aOmCos * AB + aSin * C;
+  myMat[1][1] = 1.0 + aOmCos * (-(A2 + C2));
+  myMat[1][2] = aOmCos * BC - aSin * A;
+
+  myMat[2][0] = aOmCos * AC - aSin * B;
+  myMat[2][1] = aOmCos * BC + aSin * A;
+  myMat[2][2] = 1.0 + aOmCos * (-(A2 + B2));
 }
 
 //=================================================================================================
@@ -211,55 +233,49 @@ gp_XYZ gp_Mat::Row(const Standard_Integer theRow) const
 
 void gp_Mat::Invert()
 {
-  Standard_Real aNewMat[3][3];
-  // calcul de  la transposee de la commatrice
-  aNewMat[0][0] = myMat[1][1] * myMat[2][2] - myMat[1][2] * myMat[2][1];
-  aNewMat[1][0] = -(myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2]);
-  aNewMat[2][0] = myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1];
-  aNewMat[0][1] = -(myMat[0][1] * myMat[2][2] - myMat[2][1] * myMat[0][2]);
-  aNewMat[1][1] = myMat[0][0] * myMat[2][2] - myMat[2][0] * myMat[0][2];
-  aNewMat[2][1] = -(myMat[0][0] * myMat[2][1] - myMat[2][0] * myMat[0][1]);
-  aNewMat[0][2] = myMat[0][1] * myMat[1][2] - myMat[1][1] * myMat[0][2];
-  aNewMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
-  aNewMat[2][2] = myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
-  Standard_Real aDet =
-    myMat[0][0] * aNewMat[0][0] + myMat[0][1] * aNewMat[1][0] + myMat[0][2] * aNewMat[2][0];
+  // Optimized matrix inversion using cached elements
+  const Standard_Real a00 = myMat[0][0], a01 = myMat[0][1], a02 = myMat[0][2];
+  const Standard_Real a10 = myMat[1][0], a11 = myMat[1][1], a12 = myMat[1][2];
+  const Standard_Real a20 = myMat[2][0], a21 = myMat[2][1], a22 = myMat[2][2];
+
+  // Compute adjugate matrix (transpose of cofactor matrix)
+  const Standard_Real adj00 = a11 * a22 - a12 * a21;
+  const Standard_Real adj10 = a12 * a20 - a10 * a22;
+  const Standard_Real adj20 = a10 * a21 - a11 * a20;
+  const Standard_Real adj01 = a02 * a21 - a01 * a22;
+  const Standard_Real adj11 = a00 * a22 - a02 * a20;
+  const Standard_Real adj21 = a01 * a20 - a00 * a21;
+  const Standard_Real adj02 = a01 * a12 - a02 * a11;
+  const Standard_Real adj12 = a02 * a10 - a00 * a12;
+  const Standard_Real adj22 = a00 * a11 - a01 * a10;
+
+  // Compute determinant using first row expansion (reuse computed cofactors)
+  const Standard_Real aDet = a00 * adj00 + a01 * adj10 + a02 * adj20;
+
   Standard_ConstructionError_Raise_if(Abs(aDet) <= gp::Resolution(),
                                       "gp_Mat::Invert() - matrix has zero determinant");
-  aDet        = 1.0e0 / aDet;
-  myMat[0][0] = aNewMat[0][0];
-  myMat[1][0] = aNewMat[1][0];
-  myMat[2][0] = aNewMat[2][0];
-  myMat[0][1] = aNewMat[0][1];
-  myMat[1][1] = aNewMat[1][1];
-  myMat[2][1] = aNewMat[2][1];
-  myMat[0][2] = aNewMat[0][2];
-  myMat[1][2] = aNewMat[1][2];
-  myMat[2][2] = aNewMat[2][2];
-  Multiply(aDet);
+
+  // Compute inverse: inv(A) = adj(A) / det(A)
+  const Standard_Real aInvDet = 1.0 / aDet;
+
+  // Direct assignment with scaling
+  myMat[0][0] = adj00 * aInvDet;
+  myMat[1][0] = adj10 * aInvDet;
+  myMat[2][0] = adj20 * aInvDet;
+  myMat[0][1] = adj01 * aInvDet;
+  myMat[1][1] = adj11 * aInvDet;
+  myMat[2][1] = adj21 * aInvDet;
+  myMat[0][2] = adj02 * aInvDet;
+  myMat[1][2] = adj12 * aInvDet;
+  myMat[2][2] = adj22 * aInvDet;
 }
 
 //=================================================================================================
 
 gp_Mat gp_Mat::Inverted() const
 {
-  gp_Mat aNewMat;
-  // calcul de  la transposee de la commatrice
-  aNewMat.myMat[0][0] = myMat[1][1] * myMat[2][2] - myMat[1][2] * myMat[2][1];
-  aNewMat.myMat[1][0] = -(myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2]);
-  aNewMat.myMat[2][0] = myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1];
-  aNewMat.myMat[0][1] = -(myMat[0][1] * myMat[2][2] - myMat[2][1] * myMat[0][2]);
-  aNewMat.myMat[1][1] = myMat[0][0] * myMat[2][2] - myMat[2][0] * myMat[0][2];
-  aNewMat.myMat[2][1] = -(myMat[0][0] * myMat[2][1] - myMat[2][0] * myMat[0][1]);
-  aNewMat.myMat[0][2] = myMat[0][1] * myMat[1][2] - myMat[1][1] * myMat[0][2];
-  aNewMat.myMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
-  aNewMat.myMat[2][2] = myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
-  Standard_Real aDet  = myMat[0][0] * aNewMat.myMat[0][0] + myMat[0][1] * aNewMat.myMat[1][0]
-                       + myMat[0][2] * aNewMat.myMat[2][0];
-  Standard_ConstructionError_Raise_if(Abs(aDet) <= gp::Resolution(),
-                                      "gp_Mat::Inverted() - matrix has zero determinant");
-  aDet = 1.0e0 / aDet;
-  aNewMat.Multiply(aDet);
+  gp_Mat aNewMat(*this);
+  aNewMat.Invert();
   return aNewMat;
 }
 
@@ -267,37 +283,45 @@ gp_Mat gp_Mat::Inverted() const
 
 void gp_Mat::Power(const Standard_Integer theN)
 {
-  if (theN == 1)
-  {
-  }
-  else if (theN == 0)
+  // Optimized matrix exponentiation using fast binary exponentiation
+  if (theN == 0)
   {
     SetIdentity();
+    return;
   }
-  else if (theN == -1)
+
+  if (theN == 1)
+  {
+    return; // Matrix is already this^1
+  }
+
+  if (theN == -1)
+  {
+    Invert();
+    return;
+  }
+
+  // Handle negative powers: A^(-n) = (A^(-1))^n
+  const Standard_Boolean isNegative = (theN < 0);
+  if (isNegative)
   {
     Invert();
   }
-  else
+
+  // Fast binary exponentiation for |theN| > 1
+  Standard_Integer power = isNegative ? -theN : theN;
+  gp_Mat           aBase = *this; // Base for exponentiation
+  SetIdentity();                  // Result starts as identity
+
+  // Binary exponentiation: repeatedly square base and multiply when bit is set
+  while (power > 0)
   {
-    if (theN < 0)
+    if (power & 1) // If current bit is 1
     {
-      Invert();
+      Multiply(aBase);
     }
-    Standard_Integer Npower = theN;
-    if (Npower < 0)
-      Npower = -Npower;
-    Npower--;
-    gp_Mat aTemp = *this;
-    for (;;)
-    {
-      if (IsOdd(Npower))
-        Multiply(aTemp);
-      if (Npower == 1)
-        break;
-      aTemp.Multiply(aTemp);
-      Npower >>= 1;
-    }
+    aBase.Multiply(aBase); // Square the base
+    power >>= 1;           // Move to next bit
   }
 }
 

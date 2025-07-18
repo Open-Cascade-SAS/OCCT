@@ -202,10 +202,8 @@ static Standard_Boolean ProcessMicroEdge(const TopoDS_Edge&              theEdge
   return bMicro;
 }
 
-//=======================================================================
-// function : UpdateOrigins
-// purpose  : Updating origins
-//=======================================================================
+//=================================================================================================
+
 static void UpdateOrigins(const TopTools_ListOfShape&         theLA,
                           TopTools_DataMapOfShapeListOfShape& theOrigins,
                           BOPAlgo_Builder&                    theGF)

@@ -41,20 +41,15 @@
 #include <Transfer_TransientProcess.hxx>
 
 // #include <BRepAPI.hxx>
-//  ============================================================================
-//  Method  :
-//  Purpose :
-//  ============================================================================
+//=================================================================================================
+
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop()
     : myError(StepToTopoDS_TranslatePolyLoopOther)
 {
   done = Standard_False;
 }
 
-// ============================================================================
-// Method  :
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop(
   const Handle(StepShape_PolyLoop)& PL,
@@ -66,10 +61,7 @@ StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop(
   Init(PL, T, S, F, theLocalFactors);
 }
 
-// ============================================================================
-// Method  :
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
                                           StepToTopoDS_Tool&                aTool,
@@ -199,10 +191,7 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL,
   }
 }
 
-// ============================================================================
-// Method  :
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslatePolyLoop::Value() const
 {
@@ -210,10 +199,7 @@ const TopoDS_Shape& StepToTopoDS_TranslatePolyLoop::Value() const
   return myResult;
 }
 
-// ============================================================================
-// Method  :
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 StepToTopoDS_TranslatePolyLoopError StepToTopoDS_TranslatePolyLoop::Error() const
 {

@@ -39,10 +39,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface, Geom_BoundedSurface)
 
-//=======================================================================
-// function : CheckSurfaceData
-// purpose  : Internal use only.
-//=======================================================================
+//=================================================================================================
+
 static void CheckSurfaceData(const TColgp_Array2OfPnt&      SPoles,
                              const TColStd_Array1OfReal&    SUKnots,
                              const TColStd_Array1OfReal&    SVKnots,
@@ -92,10 +90,7 @@ static void CheckSurfaceData(const TColgp_Array2OfPnt&      SPoles,
     throw Standard_ConstructionError("Geom_BSplineSurface: # V Poles and degree mismatch");
 }
 
-//=======================================================================
-// function : Rational
-// purpose  : Internal use only.
-//=======================================================================
+//=================================================================================================
 
 static void Rational(const TColStd_Array2OfReal& Weights,
                      Standard_Boolean&           Urational,

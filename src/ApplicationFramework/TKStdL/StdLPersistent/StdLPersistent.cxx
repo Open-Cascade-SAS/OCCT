@@ -28,10 +28,8 @@
 #include <StdLPersistent_TreeNode.hxx>
 #include <StdLPersistent_NamedData.hxx>
 
-//=======================================================================
-// function : BindTypes
-// purpose  : Register types
-//=======================================================================
+//=================================================================================================
+
 void StdLPersistent::BindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
   // Non-attribute data

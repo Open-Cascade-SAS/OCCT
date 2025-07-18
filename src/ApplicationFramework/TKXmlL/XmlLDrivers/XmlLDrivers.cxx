@@ -31,10 +31,8 @@
 static Standard_GUID XmlLStorageDriver("13a56820-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID XmlLRetrievalDriver("13a56822-8269-11d5-aab2-0050044b1af1");
 
-//=======================================================================
-// function : Factory
-// purpose  : PLUGIN FACTORY
-//=======================================================================
+//=================================================================================================
+
 const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlLStorageDriver)
@@ -61,10 +59,8 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
 
 #define SLENGTH 80
 
-//=======================================================================
-// function : CreationDate
-// purpose  : mm/dd/yy
-//=======================================================================
+//=================================================================================================
+
 TCollection_AsciiString XmlLDrivers::CreationDate()
 {
   Standard_Character nowstr[SLENGTH];

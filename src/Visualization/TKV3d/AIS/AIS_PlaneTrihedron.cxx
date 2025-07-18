@@ -233,10 +233,8 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color& aCol)
   SynchronizeAspects();
 }
 
-//=======================================================================
-// function : ExtremityPoints
-// purpose  : to avoid warning
-//=======================================================================
+//=================================================================================================
+
 // void  AIS_Trihedron::ExtremityPoints(TColgp_Array1OfPnt& PP) const
 void ExtremityPoints(TColgp_Array1OfPnt&         PP,
                      const Handle(Geom_Plane)&   myPlane,

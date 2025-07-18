@@ -2346,10 +2346,8 @@ void STEPControl_ActorRead::computeIDEASClosings(
   }
 }
 
-//=======================================================================
-// Method  : SetModel
-// Purpose :
-//=======================================================================
+//=================================================================================================
+
 void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& theModel)
 {
   myModel = theModel;

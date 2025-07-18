@@ -1,0 +1,126 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWBSplineSurfaceForm_HeaderFile
+#define _RWStepGeom_RWBSplineSurfaceForm_HeaderFile
+
+#include <StepGeom_BSplineSurfaceForm.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWBSplineSurfaceForm
+{
+static constexpr char bssfSurfOfLinearExtrusion[] = (".SURF_OF_LINEAR_EXTRUSION.");
+static constexpr char bssfPlaneSurf[]             = (".PLANE_SURF.");
+static constexpr char bssfGeneralisedCone[]       = (".GENERALISED_CONE.");
+static constexpr char bssfToroidalSurf[]          = (".TOROIDAL_SURF.");
+static constexpr char bssfConicalSurf[]           = (".CONICAL_SURF.");
+static constexpr char bssfSphericalSurf[]         = (".SPHERICAL_SURF.");
+static constexpr char bssfUnspecified[]           = (".UNSPECIFIED.");
+static constexpr char bssfRuledSurf[]             = (".RULED_SURF.");
+static constexpr char bssfSurfOfRevolution[]      = (".SURF_OF_REVOLUTION.");
+static constexpr char bssfCylindricalSurf[]       = (".CYLINDRICAL_SURF.");
+static constexpr char bssfQuadricSurf[]           = (".QUADRIC_SURF.");
+
+//! Convert StepGeom_BSplineSurfaceForm to string
+//! @param theSourceEnum The StepGeom_BSplineSurfaceForm value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepGeom_BSplineSurfaceForm theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepGeom_bssfSurfOfLinearExtrusion:
+      return bssfSurfOfLinearExtrusion;
+    case StepGeom_bssfPlaneSurf:
+      return bssfPlaneSurf;
+    case StepGeom_bssfGeneralisedCone:
+      return bssfGeneralisedCone;
+    case StepGeom_bssfToroidalSurf:
+      return bssfToroidalSurf;
+    case StepGeom_bssfConicalSurf:
+      return bssfConicalSurf;
+    case StepGeom_bssfSphericalSurf:
+      return bssfSphericalSurf;
+    case StepGeom_bssfUnspecified:
+      return bssfUnspecified;
+    case StepGeom_bssfRuledSurf:
+      return bssfRuledSurf;
+    case StepGeom_bssfSurfOfRevolution:
+      return bssfSurfOfRevolution;
+    case StepGeom_bssfCylindricalSurf:
+      return bssfCylindricalSurf;
+    case StepGeom_bssfQuadricSurf:
+      return bssfQuadricSurf;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_BSplineSurfaceForm
+//! @param theFormString The string to convert
+//! @param theResultEnum The corresponding StepGeom_BSplineSurfaceForm value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString       theFormString,
+                          StepGeom_BSplineSurfaceForm& theResultEnum)
+{
+  if (IsEqual(theFormString, bssfSurfOfLinearExtrusion))
+  {
+    theResultEnum = StepGeom_bssfSurfOfLinearExtrusion;
+  }
+  else if (IsEqual(theFormString, bssfPlaneSurf))
+  {
+    theResultEnum = StepGeom_bssfPlaneSurf;
+  }
+  else if (IsEqual(theFormString, bssfGeneralisedCone))
+  {
+    theResultEnum = StepGeom_bssfGeneralisedCone;
+  }
+  else if (IsEqual(theFormString, bssfToroidalSurf))
+  {
+    theResultEnum = StepGeom_bssfToroidalSurf;
+  }
+  else if (IsEqual(theFormString, bssfConicalSurf))
+  {
+    theResultEnum = StepGeom_bssfConicalSurf;
+  }
+  else if (IsEqual(theFormString, bssfSphericalSurf))
+  {
+    theResultEnum = StepGeom_bssfSphericalSurf;
+  }
+  else if (IsEqual(theFormString, bssfUnspecified))
+  {
+    theResultEnum = StepGeom_bssfUnspecified;
+  }
+  else if (IsEqual(theFormString, bssfRuledSurf))
+  {
+    theResultEnum = StepGeom_bssfRuledSurf;
+  }
+  else if (IsEqual(theFormString, bssfSurfOfRevolution))
+  {
+    theResultEnum = StepGeom_bssfSurfOfRevolution;
+  }
+  else if (IsEqual(theFormString, bssfCylindricalSurf))
+  {
+    theResultEnum = StepGeom_bssfCylindricalSurf;
+  }
+  else if (IsEqual(theFormString, bssfQuadricSurf))
+  {
+    theResultEnum = StepGeom_bssfQuadricSurf;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWBSplineSurfaceForm
+
+#endif // _RWStepGeom_RWBSplineSurfaceForm_HeaderFile

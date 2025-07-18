@@ -235,10 +235,7 @@ Standard_Boolean XSControl_Controller::RecognizeWriteTransient(
   return myAdaptorWrite->Recognize(new Transfer_TransientMapper(obj));
 }
 
-//=======================================================================
-// function : TransferFinder
-// purpose  : internal function
-//=======================================================================
+//=================================================================================================
 
 static IFSelect_ReturnStatus TransferFinder(const Handle(Transfer_ActorOfFinderProcess)& theActor,
                                             const Handle(Transfer_Finder)&               theMapper,

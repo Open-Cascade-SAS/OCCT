@@ -62,10 +62,7 @@ static Handle(TDataStd_RealArray) SetAttr(const TDF_Label&       label,
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_RealArray
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
 
 TDataStd_RealArray::TDataStd_RealArray()
     : myIsDelta(Standard_False),
@@ -218,10 +215,7 @@ void TDataStd_RealArray::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_RealArray::SetID()
 {

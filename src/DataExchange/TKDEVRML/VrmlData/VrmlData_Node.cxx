@@ -34,10 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Node, Standard_Transient)
 
 static VrmlData_Scene MyDefaultScene;
 
-//=======================================================================
-// function : IsEqual
-// purpose  : Global method
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean IsEqual(const Handle(VrmlData_Node)& theOne, const Handle(VrmlData_Node)& theTwo)
 {

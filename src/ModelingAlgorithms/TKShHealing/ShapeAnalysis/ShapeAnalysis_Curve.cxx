@@ -57,44 +57,68 @@
 
 //=================================================================================================
 
-static void ProjectOnSegments(const Adaptor3d_Curve& AC,
-                              const gp_Pnt&          P3D,
-                              const Standard_Integer nbseg,
-                              Standard_Real&         uMin,
-                              Standard_Real&         uMax,
-                              Standard_Real&         distmin,
-                              gp_Pnt&                proj,
-                              Standard_Real&         param)
+// This function projects a point onto a curve by evaluating the curve at several points
+// within the specified parameter range. It finds the closest point on the curve to @p thePoint
+// and updates the projection distance, projection point, and projection parameter accordingly.
+// It also adjusts the start and end parameters.
+// @param theCurve The curve to project on.
+// @param thePoint The point to project.
+// @param theSegmentCount The number of segments to consider for projection.
+// @param aStartParam The start parameter of the curve. It will be updated to the start parameter
+//                    of the segment containing the projection point even if distance less than
+//                    theProjectionDistance was not found.
+// @param anEndParam The end parameter of the curve. It will be updated to the end parameter of the
+//                   segment containing the projection point even if distance less than
+//                   theProjectionDistance was not found.
+// @param aProjDistance The distance between the point and the closest point on the curve.
+//                      If distance less than theProjectionDistance was found, it will be updated
+//                      to the distance to the projection point.
+// @param aProjPoint The closest point on the curve to the given point. It will be updated to the
+//                   projection point if a closer point is found during the iterations.
+// @param aProjParam The parameter of the closest point on the curve to the given point.
+//                   It will be updated to the parameter of the projection point if a closer point
+//                   is found during the iterations.
+static void ProjectOnSegments(const Adaptor3d_Curve& theCurve,
+                              const gp_Pnt&          thePoint,
+                              const Standard_Integer theSegmentCount,
+                              Standard_Real&         aStartParam,
+                              Standard_Real&         anEndParam,
+                              Standard_Real&         aProjDistance,
+                              gp_Pnt&                aProjPoint,
+                              Standard_Real&         aProjParam)
 {
-  //  On considere <nbseg> points sur [uMin,uMax]
-  //  Quel est le plus proche. Et quel est le nouvel intervalle
-  //  (il ne peut pas deborder l ancien)
-  Standard_Real u, dist2,
-    delta = (nbseg == 0) ? 0 : (uMax - uMin) / nbseg; // szv#4:S4163:12Mar99 anti-exception
-  Standard_Real    distmin2    = distmin * distmin;
-  Standard_Boolean aHasChanged = Standard_False;
-  for (Standard_Integer i = 0; i <= nbseg; i++)
+  // We consider <nbseg> points on [uMin,uMax]
+  // Which is the closest? And what is the new interval?
+  // (it cannot overflow the old one)
+
+  if (theSegmentCount <= 0)
   {
-    u         = uMin + (delta * i);
-    gp_Pnt PU = AC.Value(u);
-    dist2     = PU.SquareDistance(P3D);
-    if (dist2 < distmin2)
+    return; // No segments to project on
+  }
+
+  const Standard_Real aParamStep     = (anEndParam - aStartParam) / theSegmentCount;
+  Standard_Real       aMinSqDistance = aProjDistance * aProjDistance;
+  Standard_Boolean    aHasChanged    = Standard_False;
+  for (Standard_Integer i = 0; i <= theSegmentCount; i++)
+  {
+    const Standard_Real aCurrentParam      = aStartParam + (aParamStep * i);
+    const gp_Pnt        aCurrentPoint      = theCurve.Value(aCurrentParam);
+    const Standard_Real aCurrentSqDistance = aCurrentPoint.SquareDistance(thePoint);
+    if (aCurrentSqDistance < aMinSqDistance)
     {
-      distmin2    = dist2;
-      proj        = PU;
-      param       = u;
-      aHasChanged = Standard_True;
+      aMinSqDistance = aCurrentSqDistance;
+      aProjPoint     = aCurrentPoint;
+      aProjParam     = aCurrentParam;
+      aHasChanged    = Standard_True;
     }
   }
   if (aHasChanged)
-    distmin = Sqrt(distmin2);
-#ifdef OCCT_DEBUG
-  std::cout << "ShapeAnalysis_Geom:Project, param=" << param << " -> distmin=" << distmin
-            << std::endl;
-#endif
+  {
+    aProjDistance = Sqrt(aMinSqDistance);
+  }
 
-  uMax = Min(uMax, param + delta);
-  uMin = Max(uMin, param - delta);
+  anEndParam  = Min(anEndParam, aProjParam + aParamStep);
+  aStartParam = Max(aStartParam, aProjParam - aParamStep);
 }
 
 //=================================================================================================
@@ -230,193 +254,238 @@ Standard_Real ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
 
 //=================================================================================================
 
-Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
-                                              const gp_Pnt&          P3D,
-                                              const Standard_Real    preci,
-                                              gp_Pnt&                proj,
-                                              Standard_Real&         param) const
+Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& theCurve,
+                                              const gp_Pnt&          thePoint,
+                                              const Standard_Real    theTolerance,
+                                              gp_Pnt&                theProjPoint,
+                                              Standard_Real&         theProjParam) const
 
 {
   Standard_Boolean OK = Standard_False;
-  param               = 0.;
+  theProjParam        = 0.;
   try
   {
     OCC_CATCH_SIGNALS
-    Extrema_ExtPC    myExtPC(P3D, C3D);
-    Standard_Real    dist2Min = RealLast(), dist2;
-    Standard_Integer index    = 0;
-    if (myExtPC.IsDone() && (myExtPC.NbExt() > 0))
+    Extrema_ExtPC    aCurveExtrema(thePoint, theCurve);
+    Standard_Real    aMinExtremaDistance = RealLast();
+    Standard_Integer aMinExtremaIndex    = 0;
+    if (aCurveExtrema.IsDone() && (aCurveExtrema.NbExt() > 0))
     {
-      for (Standard_Integer i = 1; i <= myExtPC.NbExt(); i++)
+      for (Standard_Integer i = 1; i <= aCurveExtrema.NbExt(); i++)
       {
-        if (!myExtPC.IsMin(i))
-          continue;
-
-        dist2 = myExtPC.SquareDistance(i);
-        if (dist2 < dist2Min)
+        if (!aCurveExtrema.IsMin(i))
         {
-          dist2Min = dist2;
-          index    = i;
+          continue;
+        }
+
+        const Standard_Real aCurrentDistance = aCurveExtrema.SquareDistance(i);
+        if (aCurrentDistance < aMinExtremaDistance)
+        {
+          aMinExtremaDistance = aCurrentDistance;
+          aMinExtremaIndex    = i;
         }
       }
 
-      if (index != 0)
+      if (aMinExtremaIndex != 0)
       {
-        param = (myExtPC.Point(index)).Parameter();
-        proj  = (myExtPC.Point(index)).Value();
-        OK    = Standard_True;
+        theProjParam = (aCurveExtrema.Point(aMinExtremaIndex)).Parameter();
+        theProjPoint = (aCurveExtrema.Point(aMinExtremaIndex)).Value();
+        OK           = Standard_True;
       }
     }
   }
-  catch (Standard_Failure const& anException)
+  catch (const Standard_Failure& anException)
   {
-#ifdef OCCT_DEBUG
-    //: s5
-    std::cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: ";
-    anException.Print(std::cout);
-    std::cout << std::endl;
-#endif
     (void)anException;
     OK = Standard_False;
   }
 
   // szv#4:S4163:12Mar99 moved
-  Standard_Real    uMin = C3D.FirstParameter(), uMax = C3D.LastParameter();
-  Standard_Boolean closed  = Standard_False; // si on franchit les bornes ...
-  Standard_Real    distmin = Precision::Infinite(), valclosed = 0.;
-  Standard_Real    aModParam = param;
-  Standard_Real    aModMin   = distmin;
+  Standard_Real    uMin            = theCurve.FirstParameter();
+  Standard_Real    uMax            = theCurve.LastParameter();
+  Standard_Boolean anIsClosedCurve = Standard_False;
+  Standard_Real    aCurvePeriod    = 0.;
+  // Distance between the point and the projection point.
+  Standard_Real aProjDistance = Precision::Infinite();
+  Standard_Real aModMin       = Precision::Infinite();
+
+  // Remember the computed values.
+  // These values will be used in case the projection is not successful.
+  const Standard_Real aComputedParam = theProjParam;
+  const gp_Pnt        aComputedProj  = theProjPoint;
 
   // PTV 29.05.2002 remember the old solution, cause it could be better
-  Standard_Real    anOldParam   = 0.;
-  Standard_Boolean IsHaveOldSol = Standard_False;
+  Standard_Boolean anIsHaveOldSolution = Standard_False;
+  Standard_Real    anOldParam          = 0.;
   gp_Pnt           anOldProj;
   if (OK)
   {
-    IsHaveOldSol = Standard_True;
-    anOldProj    = proj;
-    anOldParam   = param;
-    distmin      = proj.Distance(P3D);
-    aModMin      = distmin;
-    if (distmin > preci)
-      OK = Standard_False;
-    // Cas TrimmedCurve a cheval. Voir la courbe de base.
-    // Si fermee, passer une periode
-    if (C3D.IsClosed())
+    anIsHaveOldSolution = Standard_True;
+    anOldProj           = theProjPoint;
+    anOldParam          = theProjParam;
+    aProjDistance       = theProjPoint.Distance(thePoint);
+    aModMin             = aProjDistance;
+    if (aProjDistance > theTolerance)
     {
-      closed    = Standard_True;
-      valclosed = uMax - uMin; // szv#4:S4163:12Mar99 optimized
+      OK = Standard_False;
+    }
+    if (theCurve.IsClosed())
+    {
+      anIsClosedCurve = Standard_True;
+      aCurvePeriod    = uMax - uMin; // szv#4:S4163:12Mar99 optimized
     }
   }
 
   if (!OK)
   {
-    // BUG NICOLAS - Si le point est sur la courbe 0 Solutions
-    // Cela fonctionne avec ElCLib
+    // BUG NICOLAS - If the point is on the curve 0 Solutions. This works with ElCLib
 
-    // D une facon generale, on essaie de TOUJOURS retourner un resultat
-    //  MEME PAS BIEN BON. L appelant pourra decider alors quoi faire
-    param = 0.;
+    // Generally speaking, we try to ALWAYS return a result that's NOT EVEN GOOD. The caller can
+    // then decide what to do.
+    theProjParam = 0.;
 
-    switch (C3D.GetType())
+    switch (theCurve.GetType())
     {
       case GeomAbs_Circle: {
-        const gp_Circ& aCirc = C3D.Circle();
-        proj                 = aCirc.Position().Location();
-        if (aCirc.Radius() <= gp::Resolution() || P3D.SquareDistance(proj) <= gp::Resolution())
+        const gp_Circ& aCirc = theCurve.Circle();
+        theProjPoint         = aCirc.Position().Location();
+        if (aCirc.Radius() <= gp::Resolution()
+            || thePoint.SquareDistance(theProjPoint) <= gp::Resolution())
         {
-          param = C3D.FirstParameter();
-          proj  = proj.XYZ() + aCirc.XAxis().Direction().XYZ() * aCirc.Radius();
+          theProjParam = theCurve.FirstParameter();
+          theProjPoint = theProjPoint.XYZ() + aCirc.XAxis().Direction().XYZ() * aCirc.Radius();
         }
         else
         {
-          param = ElCLib::Parameter(aCirc, P3D);
-          proj  = ElCLib::Value(param, aCirc);
+          theProjParam = ElCLib::Parameter(aCirc, thePoint);
+          theProjPoint = ElCLib::Value(theProjParam, aCirc);
         }
-        closed    = Standard_True;
-        valclosed = 2. * M_PI;
+        anIsClosedCurve = Standard_True;
+        aCurvePeriod    = 2. * M_PI;
       }
       break;
+
       case GeomAbs_Hyperbola: {
-        param = ElCLib::Parameter(C3D.Hyperbola(), P3D);
-        proj  = ElCLib::Value(param, C3D.Hyperbola());
+        theProjParam = ElCLib::Parameter(theCurve.Hyperbola(), thePoint);
+        theProjPoint = ElCLib::Value(theProjParam, theCurve.Hyperbola());
       }
       break;
+
       case GeomAbs_Parabola: {
-        param = ElCLib::Parameter(C3D.Parabola(), P3D);
-        proj  = ElCLib::Value(param, C3D.Parabola());
+        theProjParam = ElCLib::Parameter(theCurve.Parabola(), thePoint);
+        theProjPoint = ElCLib::Value(theProjParam, theCurve.Parabola());
       }
       break;
+
       case GeomAbs_Line: {
-        param = ElCLib::Parameter(C3D.Line(), P3D);
-        proj  = ElCLib::Value(param, C3D.Line());
+        theProjParam = ElCLib::Parameter(theCurve.Line(), thePoint);
+        theProjPoint = ElCLib::Value(theProjParam, theCurve.Line());
       }
       break;
+
       case GeomAbs_Ellipse: {
-        param     = ElCLib::Parameter(C3D.Ellipse(), P3D);
-        proj      = ElCLib::Value(param, C3D.Ellipse());
-        closed    = Standard_True;
-        valclosed = 2. * M_PI;
+        theProjParam    = ElCLib::Parameter(theCurve.Ellipse(), thePoint);
+        theProjPoint    = ElCLib::Value(theProjParam, theCurve.Ellipse());
+        anIsClosedCurve = Standard_True;
+        aCurvePeriod    = 2. * M_PI;
       }
       break;
+
       default: {
-        //  on ne va quand meme pas se laisser abattre ... ???
-        //  on tente ceci : 21 points sur la courbe, quel est le plus proche
-        distmin = Precision::Infinite();
-        ProjectOnSegments(C3D, P3D, 25, uMin, uMax, distmin, proj, param);
-        if (distmin <= preci)
-          return distmin;
-        Extrema_LocateExtPC aProjector(P3D, C3D, param /*U0*/, uMin, uMax, preci /*TolU*/);
+        // Bspline or something, no easy solution.
+        // Here this algorithm tries to find the closest point on the curve
+        // by evaluating the distance between the point and the curve
+        // at several points within the parameter range.
+        aProjDistance = Precision::Infinite();
+        ProjectOnSegments(theCurve,
+                          thePoint,
+                          25,
+                          uMin,
+                          uMax,
+                          aProjDistance,
+                          theProjPoint,
+                          theProjParam);
+        if (aProjDistance <= theTolerance)
+        {
+          return aProjDistance;
+        }
+
+        Extrema_LocateExtPC aProjector(thePoint,
+                                       theCurve,
+                                       theProjParam /*U0*/,
+                                       uMin,
+                                       uMax,
+                                       theTolerance /*TolU*/);
         if (aProjector.IsDone())
         {
-          param                     = aProjector.Point().Parameter();
-          proj                      = aProjector.Point().Value();
-          Standard_Real aDistNewton = P3D.Distance(proj);
+          theProjParam                    = aProjector.Point().Parameter();
+          theProjPoint                    = aProjector.Point().Value();
+          const Standard_Real aDistNewton = thePoint.Distance(theProjPoint);
           if (aDistNewton < aModMin)
+          {
             return aDistNewton;
-        }
-        // std::cout <<"newton failed"<<std::endl;
-        ProjectOnSegments(C3D, P3D, 40, uMin, uMax, distmin, proj, param);
-        if (distmin <= preci)
-          return distmin;
-        ProjectOnSegments(C3D, P3D, 20, uMin, uMax, distmin, proj, param);
-        if (distmin <= preci)
-          return distmin;
-        ProjectOnSegments(C3D, P3D, 25, uMin, uMax, distmin, proj, param);
-        if (distmin <= preci)
-          return distmin;
-        ProjectOnSegments(C3D, P3D, 40, uMin, uMax, distmin, proj, param);
-        if (distmin <= preci)
-          return distmin;
-        //  soyons raisonnable ...
-        if (distmin > aModMin)
-        {
-          distmin = aModMin;
-          param   = aModParam;
+          }
         }
 
-        return distmin;
+        // Here we are trying to find the closest point on the curve
+        // by repeatedly evaluating the distance between the point
+        // and the curve at several points within the parameter range.
+        // After each call to ProjectOnSegments, uMin and uMax
+        // are updated to the start and end parameters of the segment
+        // containing the projection point. So, the range of probing
+        // is reduced in each iteration.
+        // The particular number of segments to probe was
+        // chosen to be 40, 20, 25, and 40 again. It is unknown why
+        // these particular values were chosen, probably just because
+        // they were found to be sufficient in practice.
+        for (const Standard_Integer aSegmentCount : {40, 20, 25, 40})
+        {
+          ProjectOnSegments(theCurve,
+                            thePoint,
+                            aSegmentCount,
+                            uMin,
+                            uMax,
+                            aProjDistance,
+                            theProjPoint,
+                            theProjParam);
+          if (aProjDistance <= theTolerance)
+          {
+            return aProjDistance;
+          }
+        }
+
+        // Did not find a point on the curve
+        // that is closer than the tolerance.
+        // So, we return the closest point found so far.
+        if (aProjDistance > aModMin)
+        {
+          aProjDistance = aModMin;
+          theProjParam  = aComputedParam;
+          theProjPoint  = aComputedProj;
+        }
+
+        return aProjDistance;
       }
     }
   }
 
-  //  p = PPOC.LowerDistanceParameter();  cf try
-  if (closed && (param < uMin || param > uMax))
-    param += ShapeAnalysis::AdjustByPeriod(param, 0.5 * (uMin + uMax), valclosed);
+  if (anIsClosedCurve && (theProjParam < uMin || theProjParam > uMax))
+  {
+    theProjParam += ShapeAnalysis::AdjustByPeriod(theProjParam, 0.5 * (uMin + uMax), aCurvePeriod);
+  }
 
-  if (IsHaveOldSol)
+  if (anIsHaveOldSolution)
   {
     // PTV 29.05.2002 Compare old solution and new;
-    Standard_Real adist1, adist2;
-    adist1 = anOldProj.SquareDistance(P3D);
-    adist2 = proj.SquareDistance(P3D);
-    if (adist1 < adist2)
+    const Standard_Real anOldDist = anOldProj.SquareDistance(thePoint);
+    const Standard_Real aNewDist  = theProjPoint.SquareDistance(thePoint);
+    if (anOldDist < aNewDist)
     {
-      proj  = anOldProj;
-      param = anOldParam;
+      theProjPoint = anOldProj;
+      theProjParam = anOldParam;
     }
   }
-  return proj.Distance(P3D);
+  return theProjPoint.Distance(thePoint);
 }
 
 //=======================================================================
@@ -522,30 +591,18 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
   {
     if (First < cf)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Update Edge First Parameter to Curve First Parameter" << std::endl;
-#endif
       First = cf;
     }
     else if (First > cl)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Update Edge First Parameter to Curve Last Parameter" << std::endl;
-#endif
       First = cl;
     }
     if (Last < cf)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Update Edge Last Parameter to Curve First Parameter" << std::endl;
-#endif
       Last = cf;
     }
     else if (Last > cl)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Update Edge Last Parameter to Curve Last Parameter" << std::endl;
-#endif
       Last = cl;
     }
   }
@@ -586,10 +643,6 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
         Last = cl;
       if (First > Last)
       {
-#ifdef OCCT_DEBUG
-        std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
-                  << std::endl;
-#endif
         Standard_Real tmp = First;
         First             = Last;
         Last              = tmp;
@@ -619,10 +672,6 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
       // on inverse quand meme les parametres !!!!!!
       else
       {
-#ifdef OCCT_DEBUG
-        std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
-                  << std::endl;
-#endif
         Standard_Real tmp = First;
         First             = Last;
         Last              = tmp;
@@ -631,9 +680,6 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
     // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     else if (First > Last)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
-#endif
       First = theCurve->ReversedParameter(First);
       Last  = theCurve->ReversedParameter(Last);
       theCurve->Reverse();
@@ -648,18 +694,9 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange(const Handle(Geom_Curve)& th
   }
   else
   {
-#ifdef OCCT_DEBUG
-    std::cout << "UpdateParam3d Failed" << std::endl;
-    std::cout << "  - Curve Type : " << theCurve->DynamicType() << std::endl;
-    std::cout << "  - Param 1    : " << First << std::endl;
-    std::cout << "  - Param 2    : " << Last << std::endl;
-#endif
     // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     if (First > Last)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
-#endif
       First = theCurve->ReversedParameter(First);
       Last  = theCurve->ReversedParameter(Last);
       theCurve->Reverse();

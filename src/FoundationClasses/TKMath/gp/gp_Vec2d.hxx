@@ -382,11 +382,7 @@ inline gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
 inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = Angle(theOther);
-  if (anAng < 0)
-  {
-    anAng = -anAng;
-  }
+  const Standard_Real anAng = Abs(Angle(theOther));
   return M_PI - anAng <= theAngularTolerance;
 }
 
@@ -397,11 +393,7 @@ inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
 inline Standard_Boolean gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = Angle(theOther);
-  if (anAng < 0)
-  {
-    anAng = -anAng;
-  }
+  const Standard_Real anAng = Abs(Angle(theOther));
   return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
 }
 

@@ -323,10 +323,8 @@ Standard_Boolean BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge&     theEdg
   return Standard_True;
 }
 
-//=======================================================================
-// function : initNodes
-// purpose  : Initializes nodes
-//=======================================================================
+//=================================================================================================
+
 void BRepExtrema_TriangleSet::initNodes(const TColgp_Array1OfPnt& theNodes,
                                         const gp_Trsf&            theTrsf,
                                         const Standard_Integer    theIndex)

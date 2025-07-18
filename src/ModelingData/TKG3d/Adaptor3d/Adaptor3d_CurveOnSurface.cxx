@@ -1814,10 +1814,7 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
   }
 }
 
-//=======================================================================
-// function :LocatePart_RevExt
-// purpose  : processes Knots
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                  UV,
                                                              const gp_Vec2d&                  DUV,
@@ -1885,10 +1882,7 @@ Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&    
   return Ok;
 }
 
-//=======================================================================
-// function :LocatePart
-// purpose  : for BSplineSurface
-//=======================================================================
+//=================================================================================================
 
 void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                  UV,
                                           const gp_Vec2d&                  DUV,

@@ -1,0 +1,91 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepGeom_RWBSplineCurveForm_HeaderFile
+#define _RWStepGeom_RWBSplineCurveForm_HeaderFile
+
+#include <StepGeom_BSplineCurveForm.hxx>
+#include <Standard_CString.hxx>
+
+namespace RWStepGeom_RWBSplineCurveForm
+{
+static constexpr char bscfEllipticArc[]   = ".ELLIPTIC_ARC.";
+static constexpr char bscfPolylineForm[]  = ".POLYLINE_FORM.";
+static constexpr char bscfParabolicArc[]  = ".PARABOLIC_ARC.";
+static constexpr char bscfCircularArc[]   = ".CIRCULAR_ARC.";
+static constexpr char bscfUnspecified[]   = ".UNSPECIFIED.";
+static constexpr char bscfHyperbolicArc[] = ".HYPERBOLIC_ARC.";
+
+//! Convert StepGeom_BSplineCurveForm to string
+//! @param theSourceEnum The StepGeom_BSplineCurveForm value to convert
+//! @return The corresponding string representation or nullptr if not found
+inline const char* ConvertToString(const StepGeom_BSplineCurveForm theSourceEnum)
+{
+  switch (theSourceEnum)
+  {
+    case StepGeom_bscfEllipticArc:
+      return bscfEllipticArc;
+    case StepGeom_bscfPolylineForm:
+      return bscfPolylineForm;
+    case StepGeom_bscfParabolicArc:
+      return bscfParabolicArc;
+    case StepGeom_bscfCircularArc:
+      return bscfCircularArc;
+    case StepGeom_bscfUnspecified:
+      return bscfUnspecified;
+    case StepGeom_bscfHyperbolicArc:
+      return bscfHyperbolicArc;
+  }
+  return nullptr;
+}
+
+//! Convert string to StepGeom_BSplineCurveForm
+//! @param theFormString The string to convert
+//! @param theResultEnum The corresponding StepGeom_BSplineCurveForm value
+//! @return Standard_True if the conversion was successful, Standard_False otherwise
+inline bool ConvertToEnum(const Standard_CString     theFormString,
+                          StepGeom_BSplineCurveForm& theResultEnum)
+{
+  if (IsEqual(theFormString, bscfEllipticArc))
+  {
+    theResultEnum = StepGeom_bscfEllipticArc;
+  }
+  else if (IsEqual(theFormString, bscfPolylineForm))
+  {
+    theResultEnum = StepGeom_bscfPolylineForm;
+  }
+  else if (IsEqual(theFormString, bscfParabolicArc))
+  {
+    theResultEnum = StepGeom_bscfParabolicArc;
+  }
+  else if (IsEqual(theFormString, bscfCircularArc))
+  {
+    theResultEnum = StepGeom_bscfCircularArc;
+  }
+  else if (IsEqual(theFormString, bscfUnspecified))
+  {
+    theResultEnum = StepGeom_bscfUnspecified;
+  }
+  else if (IsEqual(theFormString, bscfHyperbolicArc))
+  {
+    theResultEnum = StepGeom_bscfHyperbolicArc;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+} // namespace RWStepGeom_RWBSplineCurveForm
+
+#endif // _RWStepGeom_RWBSplineCurveForm_HeaderFile

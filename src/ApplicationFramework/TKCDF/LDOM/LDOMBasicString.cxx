@@ -84,10 +84,7 @@ LDOMBasicString::LDOMBasicString(const char*                    aValue,
   }
 }
 
-//=======================================================================
-// function : LDOMBasicString
-// purpose  : Copy constructor
-//=======================================================================
+//=================================================================================================
 
 LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
     : myType(anOther.Type())
@@ -110,6 +107,7 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
       break;
     case LDOM_Integer:
       myVal.i = anOther.myVal.i;
+      break;
     default:;
   }
 }
@@ -167,7 +165,9 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
       break;
     case LDOM_Integer:
       myVal.i = anOther.myVal.i;
-    default:;
+      break;
+    default:
+      break;
   }
   return *this;
 }

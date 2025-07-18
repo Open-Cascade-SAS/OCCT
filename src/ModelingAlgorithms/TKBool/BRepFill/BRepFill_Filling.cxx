@@ -757,10 +757,8 @@ Standard_Boolean BRepFill_Filling::IsDone() const
   return myIsDone;
 }
 
-//=======================================================================
-// function : Face
-// purpose  : returns the result
-//======================================================================
+//=================================================================================================
+
 TopoDS_Face BRepFill_Filling::Face() const
 {
   return myFace;

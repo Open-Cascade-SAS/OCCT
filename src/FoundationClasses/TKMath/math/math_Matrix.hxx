@@ -349,13 +349,24 @@ public:
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Subtract(const math_Matrix& Left, const math_Matrix& Right);
 
+  //! Accesses the value of index <Row>
+  //! and <Col> of a matrix.
+  //! An exception is raised if <Row> and <Col> are not
+  //! in the correct range.
+  const Standard_Real& Value(const Standard_Integer Row, const Standard_Integer Col) const;
+
   //! Accesses (in read or write mode) the value of index <Row>
   //! and <Col> of a matrix.
   //! An exception is raised if <Row> and <Col> are not
   //! in the correct range.
-  Standard_Real& Value(const Standard_Integer Row, const Standard_Integer Col) const;
+  Standard_Real& Value(const Standard_Integer Row, const Standard_Integer Col);
 
-  Standard_Real& operator()(const Standard_Integer Row, const Standard_Integer Col) const
+  const Standard_Real& operator()(const Standard_Integer Row, const Standard_Integer Col) const
+  {
+    return Value(Row, Col);
+  }
+
+  Standard_Real& operator()(const Standard_Integer Row, const Standard_Integer Col)
   {
     return Value(Row, Col);
   }

@@ -117,10 +117,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& Poles,
   Init(npoles, nweights);
 }
 
-//=======================================================================
-// function : Increase
-// purpose  : increase degree
-//=======================================================================
+//=================================================================================================
 
 void Geom2d_BezierCurve::Increase(const Standard_Integer Deg)
 {

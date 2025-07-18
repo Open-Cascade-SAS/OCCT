@@ -16,16 +16,7 @@
 
 #include <gtest/gtest.h>
 
-// Test fixture for NCollection_Array1 tests
-class NCollection_Array1Test : public testing::Test
-{
-protected:
-  void SetUp() override {}
-
-  void TearDown() override {}
-};
-
-TEST_F(NCollection_Array1Test, DefaultConstructor)
+TEST(NCollection_Array1Test, DefaultConstructor)
 {
   // Default constructor should not compile as it's explicitly deleted
   // NCollection_Array1<Standard_Integer> anArray;
@@ -37,7 +28,7 @@ TEST_F(NCollection_Array1Test, DefaultConstructor)
   EXPECT_EQ(10, anArray.Upper());
 }
 
-TEST_F(NCollection_Array1Test, ConstructorWithBounds)
+TEST(NCollection_Array1Test, ConstructorWithBounds)
 {
   // Test constructor with explicit bounds
   NCollection_Array1<Standard_Integer> anArray(1, 5);
@@ -46,7 +37,7 @@ TEST_F(NCollection_Array1Test, ConstructorWithBounds)
   EXPECT_EQ(5, anArray.Upper());
 }
 
-TEST_F(NCollection_Array1Test, ConstructorWithNegativeBounds)
+TEST(NCollection_Array1Test, ConstructorWithNegativeBounds)
 {
   // Test constructor with negative bounds
   NCollection_Array1<Standard_Integer> anArray(-3, 2);
@@ -55,7 +46,7 @@ TEST_F(NCollection_Array1Test, ConstructorWithNegativeBounds)
   EXPECT_EQ(2, anArray.Upper());
 }
 
-TEST_F(NCollection_Array1Test, AssignmentValue)
+TEST(NCollection_Array1Test, AssignmentValue)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
 
@@ -78,7 +69,7 @@ TEST_F(NCollection_Array1Test, AssignmentValue)
   }
 }
 
-TEST_F(NCollection_Array1Test, CopyConstructor)
+TEST(NCollection_Array1Test, CopyConstructor)
 {
   NCollection_Array1<Standard_Integer> anArray1(1, 5);
 
@@ -106,7 +97,7 @@ TEST_F(NCollection_Array1Test, CopyConstructor)
   EXPECT_NE(anArray1(3), anArray2(3));
 }
 
-TEST_F(NCollection_Array1Test, ValueAccess)
+TEST(NCollection_Array1Test, ValueAccess)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
 
@@ -124,7 +115,7 @@ TEST_F(NCollection_Array1Test, ValueAccess)
   }
 }
 
-TEST_F(NCollection_Array1Test, ChangeValueAccess)
+TEST(NCollection_Array1Test, ChangeValueAccess)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
 
@@ -153,7 +144,7 @@ TEST_F(NCollection_Array1Test, ChangeValueAccess)
   }
 }
 
-TEST_F(NCollection_Array1Test, AssignmentOperator)
+TEST(NCollection_Array1Test, AssignmentOperator)
 {
   NCollection_Array1<Standard_Integer> anArray1(1, 5);
 
@@ -179,7 +170,7 @@ TEST_F(NCollection_Array1Test, AssignmentOperator)
   }
 }
 
-TEST_F(NCollection_Array1Test, Move)
+TEST(NCollection_Array1Test, Move)
 {
   NCollection_Array1<Standard_Integer> anArray1(1, 5);
 
@@ -199,15 +190,12 @@ TEST_F(NCollection_Array1Test, Move)
   EXPECT_EQ(1, anArray2.Lower());
   EXPECT_EQ(5, anArray2.Upper());
 
-  // Original array is keep referecing the same data
-  EXPECT_EQ(anArray1.Lower(), anArray2.Lower());
-  EXPECT_EQ(anArray1.Upper(), anArray2.Upper());
-  EXPECT_EQ(anArray1(1), anArray2(1));
-  EXPECT_EQ(anArray1(2), anArray2(2));
-  EXPECT_EQ(5, anArray1.Length());
+  // Original array is not keep referecing the same data
+  EXPECT_EQ(anArray1.Length(), 0);
+  EXPECT_EQ(anArray1.Lower(), 1);
 }
 
-TEST_F(NCollection_Array1Test, Init)
+TEST(NCollection_Array1Test, Init)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
 
@@ -221,7 +209,7 @@ TEST_F(NCollection_Array1Test, Init)
   }
 }
 
-TEST_F(NCollection_Array1Test, SetValue)
+TEST(NCollection_Array1Test, SetValue)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
 
@@ -232,7 +220,7 @@ TEST_F(NCollection_Array1Test, SetValue)
   EXPECT_EQ(123, anArray(3));
 }
 
-TEST_F(NCollection_Array1Test, FirstLast)
+TEST(NCollection_Array1Test, FirstLast)
 {
   NCollection_Array1<Standard_Integer> anArray(5, 10);
 
@@ -251,7 +239,7 @@ TEST_F(NCollection_Array1Test, FirstLast)
   EXPECT_EQ(10101, anArray.Last());
 }
 
-TEST_F(NCollection_Array1Test, STLIteration)
+TEST(NCollection_Array1Test, STLIteration)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
   for (Standard_Integer i = anArray.Lower(); i <= anArray.Upper(); i++)
@@ -268,7 +256,7 @@ TEST_F(NCollection_Array1Test, STLIteration)
   }
 }
 
-TEST_F(NCollection_Array1Test, Resize)
+TEST(NCollection_Array1Test, Resize)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
   for (Standard_Integer i = anArray.Lower(); i <= anArray.Upper(); i++)
@@ -311,7 +299,7 @@ TEST_F(NCollection_Array1Test, Resize)
   }
 }
 
-TEST_F(NCollection_Array1Test, ChangeValue)
+TEST(NCollection_Array1Test, ChangeValue)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
   anArray.Init(42);
@@ -329,7 +317,7 @@ TEST_F(NCollection_Array1Test, ChangeValue)
   EXPECT_EQ(42, anArray(5));
 }
 
-TEST_F(NCollection_Array1Test, IteratorAccess)
+TEST(NCollection_Array1Test, IteratorAccess)
 {
   NCollection_Array1<Standard_Integer> anArray(1, 5);
   for (Standard_Integer i = 1; i <= 5; i++)

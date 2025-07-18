@@ -484,10 +484,18 @@ OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
 
 set (OCCT_3RDPARTY_CMAKE_LIST)
 
+# define CSF variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
+
 # Tcl (mandatory for Draw Harness)
 if (USE_TCL)
   message (STATUS "Info: TCL is used by OCCT")
-  OCCT_ADD_VCPKG_FEATURE ("tcl")
+  if (CAN_USE_TK AND USE_TK)
+    OCCT_ADD_VCPKG_FEATURE ("tcltk")
+  else()
+    OCCT_ADD_VCPKG_FEATURE ("tcl")
+    OCCT_UNSET_VCPKG_FEATURE ("tcltk")
+  endif()
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tcl")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
@@ -498,7 +506,6 @@ endif()
 # Tk (optional for Draw Harness)
 if (CAN_USE_TK AND USE_TK)
   message (STATUS "Info: TK is used by OCCT")
-  OCCT_ADD_VCPKG_FEATURE ("tk")
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tk")
 else()
   if (NOT CAN_USE_TK)
@@ -506,7 +513,6 @@ else()
   endif()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
   OCCT_CHECK_AND_UNSET ("INSTALL_TK")
-  OCCT_UNSET_VCPKG_FEATURE ("tk")
 endif()
 
 # Xlib
@@ -772,15 +778,17 @@ if (BUILD_USE_VCPKG)
   project (OCCT)
 endif()
 
+if (APPLE)
+  # set Apple specific variables
+  occt_set_apple_csf_vars()
+endif()
+
 # copying clang-format file to the root of the project
 file(COPY ${CMAKE_SOURCE_DIR}/.clang-format DESTINATION ${CMAKE_SOURCE_DIR})
 
 # Get all used variables: OS_WITH_BIT, COMPILER
 OCCT_MAKE_OS_WITH_BITNESS()
 OCCT_MAKE_COMPILER_SHORT_NAME()
-
-# define CSF variable
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 # do not define INSTALL_DIR_BIN for win.
 # Leave library structure for win: <prefix>/win64/vc10/bin(d)

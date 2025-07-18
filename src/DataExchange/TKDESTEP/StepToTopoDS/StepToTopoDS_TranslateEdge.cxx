@@ -63,10 +63,8 @@
 //: d8
 // Used in I-DEAS-like STP processing (ssv; 15.11.2010)
 // #define DEBUG
-// ============================================================================
-// Method  : DecodeMakeEdgeError
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 static void DecodeMakeEdgeError(const BRepLib_MakeEdge&           ME,
                                 const Handle(Standard_Transient)& orig,
                                 const Handle(Geom_Curve)&         myCurve,
@@ -135,10 +133,7 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&           ME,
 #endif
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge
-// Purpose : Empty Constructor
-// ============================================================================
+//=================================================================================================
 
 static Handle(Geom_Curve) MakeCurve(const Handle(StepGeom_Curve)&            C1,
                                     const Handle(Transfer_TransientProcess)& TP,

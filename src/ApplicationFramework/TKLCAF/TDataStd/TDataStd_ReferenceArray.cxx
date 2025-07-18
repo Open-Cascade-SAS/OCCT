@@ -58,10 +58,8 @@ static Handle(TDataStd_ReferenceArray) SetAttr(const TDF_Label&       label,
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_ReferenceArray
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_ReferenceArray::TDataStd_ReferenceArray()
     : myID(GetID())
 {
@@ -209,10 +207,7 @@ void TDataStd_ReferenceArray::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_ReferenceArray::SetID()
 {

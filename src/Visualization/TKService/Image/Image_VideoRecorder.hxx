@@ -23,6 +23,7 @@
 
 // forward declarations
 struct AVFormatContext;
+struct AVCodecContext;
 struct AVStream;
 struct AVCodec;
 struct AVFrame;
@@ -111,6 +112,9 @@ protected:
   //! Wrapper for av_strerror().
   Standard_EXPORT TCollection_AsciiString formatAvError(const int theError) const;
 
+  //! Get codec context compatible with both old and new FFmpeg API.
+  Standard_EXPORT AVCodecContext* getCodecContext() const;
+
   //! Append video stream.
   //! theParams[in]      video parameters
   //! theDefCodecId[in]  identifier of codec managed by FFmpeg library (AVCodecID enum)
@@ -135,6 +139,7 @@ protected:
   AVFormatContext* myAVContext;   //!< video context
   AVStream*        myVideoStream; //!< video stream
   AVCodec*         myVideoCodec;  //!< video codec
+  AVCodecContext*  myCodecCtx;    //!< codec context (for FFmpeg 5.0+)
   AVFrame*         myFrame;       //!< frame to record
   SwsContext*      myScaleCtx;    //!< scale context for conversion from RGBA to YUV
 

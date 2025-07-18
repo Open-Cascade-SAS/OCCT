@@ -52,20 +52,15 @@
 #include <TopoDSToStep_WireframeBuilder.hxx>
 #include <Transfer_FinderProcess.hxx>
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder::TopoDSToStep_Builder
-// Purpose :
-// ============================================================================
+//=================================================================================================
+
 TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder()
     : myError(TopoDSToStep_BuilderOther)
 {
   done = Standard_False;
 }
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder::TopoDSToStep_Builder
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder(
   const TopoDS_Shape&     aShape,
@@ -86,20 +81,14 @@ void TopoDSToStep_WireframeBuilder::Init(const TopoDS_Shape& aShape,
   myResult = itemList;
 }
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder::Error
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 TopoDSToStep_BuilderError TopoDSToStep_WireframeBuilder::Error() const
 {
   return myError;
 }
 
-// ============================================================================
-// Method  : TopoDSToStep_Builder::Value
-// Purpose :
-// ============================================================================
+//=================================================================================================
 
 const Handle(TColStd_HSequenceOfTransient)& TopoDSToStep_WireframeBuilder::Value() const
 {

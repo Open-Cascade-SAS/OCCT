@@ -23,10 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver, Standard_Transient)
 
 TFunction_Driver::TFunction_Driver() {}
 
-//=======================================================================
-// function : Init
-// purpose  : Initialization
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Driver::Init(const TDF_Label& L)
 {

@@ -1,0 +1,110 @@
+name: 'Setup vcpkg'
+description: 'Setup vcpkg dependencies for OCCT build on a specific platform'
+
+inputs:
+  vcpkg-tag:
+    description: 'vcpkg tag to checkout'
+    required: false
+    default: '2025.06.13'
+  github-token:
+    description: 'GitHub token for NuGet package access'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set environment variables
+      run: |
+        echo "USERNAME=Open-Cascade-SAS" >> $GITHUB_ENV
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
+        echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $GITHUB_ENV
+        echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $GITHUB_ENV
+        echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $GITHUB_ENV
+        echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $GITHUB_ENV
+        echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $GITHUB_ENV
+      shell: bash
+      if: runner.os != 'Windows'
+
+    - name: Set environment variables (Windows)
+      run: |
+        echo "USERNAME=Open-Cascade-SAS" >> $env:GITHUB_ENV
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
+        echo "VCPKG_EXE=${{ github.workspace }}/vcpkg/vcpkg" >> $env:GITHUB_ENV
+        echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $env:GITHUB_ENV
+        echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $env:GITHUB_ENV
+        echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $env:GITHUB_ENV
+        echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $env:GITHUB_ENV
+      shell: pwsh
+      if: runner.os == 'Windows'
+
+    - name: Install required packages (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf mono-complete \
+              libx11-dev \
+              libxi-dev \
+              libxext-dev \
+              mesa-common-dev \
+              libglu1-mesa-dev \
+              libegl1-mesa-dev \
+              libgles2-mesa-dev
+      shell: bash
+
+
+    - name: Install required packages (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew update || true
+        brew install cmake ninja nasm autoconf automake mono openexr || true
+        brew install --cask xquartz || true
+      shell: bash
+
+
+    - name: Set up vcpkg (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        git checkout ${{ inputs.vcpkg-tag }}
+        ./bootstrap-vcpkg.sh
+      shell: bash
+
+    - name: Set up vcpkg (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        git checkout ${{ inputs.vcpkg-tag }}
+        .\bootstrap-vcpkg.bat
+      shell: cmd
+
+    - name: Add NuGet sources
+      if: runner.os == 'Windows'
+      run: |
+        .$(${{ env.VCPKG_EXE }} fetch nuget) `
+          sources add `
+          -Source "${{ env.FEED_URL }}" `
+          -StorePasswordInClearText `
+          -Name GitHubPackages `
+          -UserName "${{ env.USERNAME }}" `
+          -Password "${{ inputs.github-token }}"
+        .$(${{ env.VCPKG_EXE }} fetch nuget) `
+          setapikey "${{ inputs.github-token }}" `
+          -Source "${{ env.FEED_URL }}"
+      shell: pwsh
+
+    - name: Add NuGet sources
+      if: runner.os != 'Windows'
+      run: |
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          sources add \
+          -Source "${{ env.FEED_URL }}" \
+          -StorePasswordInClearText \
+          -Name GitHubPackages \
+          -UserName "${{ env.USERNAME }}" \
+          -Password "${{ inputs.github-token }}"
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          setapikey "${{ inputs.github-token }}" \
+          -Source "${{ env.FEED_URL }}"
+      shell: bash

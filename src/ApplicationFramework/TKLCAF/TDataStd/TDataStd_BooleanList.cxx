@@ -49,10 +49,8 @@ static Handle(TDataStd_BooleanList) SetAttr(const TDF_Label& label, const Standa
   return A;
 }
 
-//=======================================================================
-// function : TDataStd_BooleanList
-// purpose  : Empty Constructor
-//=======================================================================
+//=================================================================================================
+
 TDataStd_BooleanList::TDataStd_BooleanList()
     : myID(GetID())
 {
@@ -219,10 +217,7 @@ void TDataStd_BooleanList::SetID(const Standard_GUID& theGuid)
   myID = theGuid;
 }
 
-//=======================================================================
-// function : SetID
-// purpose  : sets default ID
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_BooleanList::SetID()
 {

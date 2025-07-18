@@ -3329,10 +3329,7 @@ static int VZBuffTrihedron(Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-//==============================================================================
-// function : VRotate
-// purpose  : Camera Rotating
-//==============================================================================
+//=================================================================================================
 
 static int VRotate(Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgVec)
 {

@@ -52,7 +52,6 @@
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlDrivers_DocumentStorageDriver.hxx>
 #include <TDataStd_Real.hxx>
-#include <Standard_Atomic.hxx>
 #include <Draw.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -69,6 +68,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_ENABLE_DEPRECATION_WARNINGS
 #endif
 
+#include <atomic>
 #include <cstdio>
 #include <cmath>
 #include <iostream>
@@ -133,7 +133,7 @@ static Standard_Integer OCC23361(Draw_Interpretor& di,
 class IncrementerDecrementer
 {
 public:
-  IncrementerDecrementer(Standard_Integer* theVal, Standard_Boolean thePositive)
+  IncrementerDecrementer(std::atomic<int>* theVal, Standard_Boolean thePositive)
       : myVal(theVal),
         myPositive(thePositive)
   {
@@ -142,13 +142,13 @@ public:
   void operator()(const size_t) const
   {
     if (myPositive)
-      Standard_Atomic_Increment(myVal);
+      ++(*myVal);
     else
-      Standard_Atomic_Decrement(myVal);
+      --(*myVal);
   }
 
 private:
-  Standard_Integer* myVal;
+  std::atomic<int>* myVal;
   Standard_Boolean  myPositive;
 };
 
@@ -156,13 +156,13 @@ static Standard_Integer OCC22980(Draw_Interpretor& di,
                                  Standard_Integer /*argc*/,
                                  const char** /*argv*/)
 {
-  int aSum = 0;
+  std::atomic<int> aSum(0);
 
   // check returned value
-  QCOMPARE(Standard_Atomic_Decrement(&aSum), -1);
-  QCOMPARE(Standard_Atomic_Increment(&aSum), 0);
-  QCOMPARE(Standard_Atomic_Increment(&aSum), 1);
-  QCOMPARE(Standard_Atomic_Increment(&aSum), 2);
+  QCOMPARE(aSum.fetch_sub(1) - 1, -1);
+  QCOMPARE(aSum.fetch_add(1) + 1, 0);
+  QCOMPARE(aSum.fetch_add(1) + 1, 1);
+  QCOMPARE(aSum.fetch_add(1) + 1, 2);
   //  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 0);
   //  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 1);
 
@@ -3127,13 +3127,13 @@ struct OCC25545_Functor
       gp_Pnt               aP = BRep_Tool::Pnt(aV);
       if (aP.X() != static_cast<double>(i))
       {
-        Standard_Atomic_Increment(&myIsRaceDetected);
+        ++myIsRaceDetected;
       }
     }
   }
 
   const std::vector<TopoDS_Shape>* myShapeVec;
-  mutable volatile int             myIsRaceDetected;
+  mutable std::atomic<int>         myIsRaceDetected;
 };
 
 //=======================================================================
