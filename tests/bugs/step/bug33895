@@ -22,11 +22,11 @@ checkshape a_1
 set exception_thrown 0
 if {[catch {fixshape result a_1} err]} {
   puts "EXPECTED: Exception caught during fixshape: $err"
-  if {[string match "*Standard_NullObject*" $err]} {
+  if {[string first "Standard_NullObject" $err] >= 0} {
     puts "SUCCESS: Correct exception type (Standard_NullObject)"
     set exception_thrown 1
   } else {
-    puts "ERROR: Wrong exception type"
+    puts "ERROR: Unexpected exception type: $err"
   }
 } else {
   puts "ERROR: No exception thrown - fixshape should fail on tessellated geometry"
