@@ -60,7 +60,7 @@ shopt -u nocasematch
 
 # ----- Setup Environment Variables -----
 anArch=`uname -m`
-if [ "$anArch" != "x86_64" ] && [ "$anArch" != "ia64" ]; then
+if [ "$anArch" != "x86_64" ] && [ "$anArch" != "ia64" ] && [ "$anArch" != "aarch64" ] && [ "$anArch" != "arm64" ]; then
   export ARCH="32";
 else
   export ARCH="64";
@@ -68,7 +68,6 @@ fi
 
 if [ "$aSystem" == "Darwin" ]; then
   export WOKSTATION="mac";
-  export ARCH="64";
 else
   export WOKSTATION="lin";
 fi
