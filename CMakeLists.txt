@@ -1227,23 +1227,31 @@ set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCR
 
 # Set custom bin/lib paths variable for template
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
-  # For vcpkg, detect debug vs release at runtime
+  # For vcpkg, set paths based on CMAKE_BUILD_TYPE
   if (WIN32)
-    set (OCCT_CUSTOM_BIN_LIB_PATHS "if exist \"%~dp0debug\\lib\" (
-      set \"CSF_OCCTBinPath=%~dp0debug\\bin\"
-      set \"CSF_OCCTLibPath=%~dp0debug\\lib\"
-    ) else (
-      set \"CSF_OCCTBinPath=%~dp0bin\"
-      set \"CSF_OCCTLibPath=%~dp0lib\"
-    )")
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+      set (OCCT_CUSTOM_BIN_LIB_PATHS "
+        set \"CSF_OCCTBinPath=%~dp0debug\\bin\"
+        set \"CSF_OCCTLibPath=%~dp0debug\\lib\"
+      ")
+    else()
+      set (OCCT_CUSTOM_BIN_LIB_PATHS "
+        set \"CSF_OCCTBinPath=%~dp0bin\"
+        set \"CSF_OCCTLibPath=%~dp0lib\"
+      ")
+    endif()
   else()
-    set (OCCT_CUSTOM_BIN_LIB_PATHS "if [ -d \"\$(dirname \"\$0\")/debug/lib\" ]; then
-      export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/debug/bin\"
-      export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/debug/lib\"
-    else
-      export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/bin\"
-      export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/lib\"
-    fi")
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+      set (OCCT_CUSTOM_BIN_LIB_PATHS "
+        export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/debug/bin\"
+        export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/debug/lib\"
+      ")
+    else()
+      set (OCCT_CUSTOM_BIN_LIB_PATHS "
+        export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/bin\"
+        export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/lib\"
+      ")
+    endif()
   endif()
 else()
   # For other layouts, use CASROOT with full paths
