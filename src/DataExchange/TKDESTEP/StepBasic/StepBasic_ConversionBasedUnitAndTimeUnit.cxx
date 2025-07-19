@@ -25,7 +25,7 @@ StepBasic_ConversionBasedUnitAndTimeUnit::StepBasic_ConversionBasedUnitAndTimeUn
 void StepBasic_ConversionBasedUnitAndTimeUnit::Init(
   const Handle(StepBasic_DimensionalExponents)& aDimensions,
   const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor)
+  const Handle(Standard_Transient)&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);

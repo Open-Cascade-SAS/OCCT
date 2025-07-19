@@ -38,6 +38,7 @@
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=================================================================================================
@@ -284,10 +285,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(
 
   if (aContext.IsNull())
   {
-#ifdef OCCT_DEBUG
-    std::cout << " -- STEPConstruct_UnitContext:ComputeFactor, Context undefined -> default"
-              << std::endl;
-#endif
     return 1;
   }
 
@@ -299,14 +296,11 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(
   {
     Handle(StepBasic_NamedUnit) theNamedUnit = aContext->UnitsValue(i);
     status                                   = ComputeFactors(theNamedUnit, theLocalFactors);
-#ifdef OCCT_DEBUG
-    if (status == -1)
-      std::cout << " -- STEPConstruct_UnitContext:ComputeFactor: Unit item no." << i
-                << " is not recognized" << std::endl;
-#endif
   }
   return status;
 }
+
+//=================================================================================================
 
 Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasic_NamedUnit)& aUnit,
                                                            const StepData_Factors& theLocalFactors)
@@ -326,28 +320,33 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
   {
     Handle(StepBasic_ConversionBasedUnit) theCBU =
       Handle(StepBasic_ConversionBasedUnit)::DownCast(aUnit);
-    //    Handle(StepBasic_DimensionalExponents) theDimExp = theCBU->Dimensions();
-    Handle(StepBasic_MeasureWithUnit) theMWU;
+
+    Handle(StepBasic_MeasureWithUnit) aMWU;
     if (!theCBU.IsNull())
     {
-      theMWU = theCBU->ConversionFactor();
+      Handle(Standard_Transient) aConvFactor = theCBU->ConversionFactor();
+      if (aConvFactor->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
+      {
+        aMWU = Handle(StepBasic_MeasureWithUnit)::DownCast(aConvFactor);
+      }
+      else if (aConvFactor->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
+      {
+        Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
+          Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aConvFactor);
+        aMWU = aReprMeasureItem->GetMeasureWithUnit();
+      }
+
       // sln 8.10.2001: the case of unrecognized entity
-      if (theMWU.IsNull())
+      if (aMWU.IsNull())
+      {
         return -1;
-      // if (!theMWU->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit))) { gka
-      //	return 2;
-      // }
-      Handle(StepBasic_NamedUnit) theTargetUnit = theMWU->UnitComponent().NamedUnit();
-      // StepBasic_Unit theTargetUnit = theMWU->UnitComponent();
-      Standard_Real theSIPFactor = 1.;
+      }
+
+      Handle(StepBasic_NamedUnit) theTargetUnit = aMWU->UnitComponent().NamedUnit();
+      Standard_Real               theSIPFactor  = 1.;
 
       //: f5 abv 24 Apr 98: ProSTEP TR8 tr8_bv1_tc: INCHES
-      // gka   Handle(StepBasic_SiUnitAndLengthUnit) theSUALU =
-      //	Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(theTargetUnit);
-      //       Handle(StepBasic_SiUnit) theSIU;
-      //       if ( ! theSUALU.IsNull() ) theSIU = Handle(StepBasic_SiUnit)::DownCast(theSUALU);
-      Handle(StepBasic_SiUnit) theSIU =                    // f5
-        Handle(StepBasic_SiUnit)::DownCast(theTargetUnit); // f5
+      Handle(StepBasic_SiUnit) theSIU = Handle(StepBasic_SiUnit)::DownCast(theTargetUnit);
 
       if (!theSIU.IsNull())
       {
@@ -360,15 +359,12 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
         // Treat the SiUnitName
         if (!SiUnitNameFactor(theSIU, theSIUNF))
           status = 11; // et continue
-                       // std::cout << "The SiUnitNameFactor is :";
-        // std::cout << theSIUNF << std::endl;
       }
       else
       {
-        //      std::cout << "Recursive algo required - Aborted" << std::endl;
         return 3;
       }
-      Standard_Real theMVAL = theMWU->ValueComponent();
+      Standard_Real theMVAL = aMWU->ValueComponent();
       theFactor             = theSIPFactor * theMVAL; // * theSIUNF * pow(10.,theLExp)
     }
     parameter = theFactor;
@@ -379,9 +375,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else
     {
       status = 14;
-#ifdef OCCT_DEBUG
-      std::cout << "Error in the file : parameter double defined" << std::endl;
-#endif
     }
   }
   else if (aUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnit)))
@@ -409,18 +402,12 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else
     {
       status = 14;
-#ifdef OCCT_DEBUG
-      std::cout << "Error in the file : parameter double defined" << std::endl;
-#endif
     }
   }
 
   // Defining a type of unit
   if (!parameterDone)
   {
-#ifdef OCCT_DEBUG
-    std::cout << "Unit Type not implemented" << std::endl;
-#endif
     return 0;
   }
 
@@ -438,9 +425,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else
     {
       status = 14;
-#ifdef OCCT_DEBUG
-      std::cout << "Error in the file : LengthFactor double defined" << std::endl;
-#endif
     }
   } // end of LengthUnit
   else if (aUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit))
@@ -503,9 +487,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance(
     Handle(StepBasic_UncertaintyMeasureWithUnit) aUMWU = aContext->UncertaintyValue(un);
     if (aUMWU.IsNull())
     {
-#ifdef OCCT_DEBUG
-      std::cout << "BAD Uncertainty Measure with Units, n0." << un << std::endl;
-#endif
       continue;
     }
     // Decode the associated Unit
@@ -540,10 +521,6 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance(
     }
   }
 
-#ifdef OCCT_DEBUG
-  if (hasUncertainty)
-    std::cout << "UNCERTAINTY read as " << theUncertainty << std::endl;
-#endif
   return status;
 }
 

@@ -30,7 +30,7 @@ StepDimTol_GeometricToleranceWithDefinedUnit::StepDimTol_GeometricToleranceWithD
 void StepDimTol_GeometricToleranceWithDefinedUnit::Init(
   const Handle(TCollection_HAsciiString)&        theName,
   const Handle(TCollection_HAsciiString)&        theDescription,
-  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const Handle(Standard_Transient)&              theMagnitude,
   const Handle(StepRepr_ShapeAspect)&            theTolerancedShapeAspect,
   const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize)
 {
@@ -46,7 +46,7 @@ void StepDimTol_GeometricToleranceWithDefinedUnit::Init(
 void StepDimTol_GeometricToleranceWithDefinedUnit::Init(
   const Handle(TCollection_HAsciiString)&        theName,
   const Handle(TCollection_HAsciiString)&        theDescription,
-  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const Handle(Standard_Transient)&              theMagnitude,
   const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
   const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize)
 {

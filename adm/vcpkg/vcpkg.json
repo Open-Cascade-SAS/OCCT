@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "opencascade",
-  "version": "7.8.1",
+  "version": "8.0.0",
   "description": "Open CASCADE Technology (OCCT) is an open-source software development platform for 3D CAD, CAM, CAE.",
   "homepage": "https://github.com/Open-Cascade-SAS/OCCT",
-  "documentation": "https://github.com/Open-Cascade-SAS/OCCT/wiki",
+  "documentation": "https://dev.opencascade.org/doc/overview/html",
   "license": "LGPL-2.1",
   "dependencies": [
     {
@@ -35,7 +35,7 @@
   ],
   "features": {
     "angle": {
-      "description": "Enables optional usage of OpenGL ES 2.0. Part of the module-visualization.",
+      "description": "Enables OpenGL ES 2.0 through ANGLE project. Required for 3D visualization in OCCT on UWP platform where desktop OpenGL is not available.",
       "dependencies": [
         {
           "name": "angle",
@@ -44,19 +44,19 @@
       ]
     },
     "opengl": {
-      "description": "Enables optional usage of OpenGL. Part of the module-visualization.",
+      "description": "Enables OpenGL support for 3D visualization toolkit. Required for OCCT's OpenGL rendering pipeline and graphical display drivers.",
       "dependencies": [
         "opengl"
       ]
     },
     "tcl": {
-      "description": "Enables optional usage of Tcl. Part of the module-foundation-classes.",
+      "description": "Enables Tcl scripting support for OCCT's DRAWEXE test harness and command-line interface. Provides access to OCCT's geometric algorithms through scripting.",
       "dependencies": [
         "tcl"
       ]
     },
     "tcltk": {
-      "description": "Enables optional usage of TclTk. Part of the module-foundation-classes.",
+      "description": "Enables Tcl/Tk GUI support for DRAWEXE test harness. Provides windowed interface for OCCT's geometric modeling and visualization tools.",
       "dependencies": [
         {
           "name": "tcl",
@@ -71,13 +71,13 @@
       ]
     },
     "freeimage": {
-      "description": "Enables optional usage of FreeImage. Part of the module-visualization.",
+      "description": "Enables FreeImage support for advanced image file format handling (TIFF, PNG, JPEG, etc.) in OCCT's imaging and visualization components.",
       "dependencies": [
         "freeimage"
       ]
     },
     "freetype": {
-      "description": "Enables optional usage of FreeType. Part of the module-visualization.",
+      "description": "Enables FreeType font rendering engine for high-quality text display in OCCT's 3D visualization and technical drawing output.",
       "supports": "!uwp",
       "dependencies": [
         "fontconfig",
@@ -88,19 +88,19 @@
       ]
     },
     "rapidjson": {
-      "description": "Enables optional usage of RapidJSON. Part of the module-data-exchange.",
+      "description": "Enables RapidJSON for efficient JSON parsing and serialization in OCCT's glTF 2.0 import/export functionality.",
       "dependencies": [
         "rapidjson"
       ]
     },
     "tbb": {
-      "description": "Enables optional usage of TBB. Part of the module-foundation-classes.",
+      "description": "Enables Intel Threading Building Blocks for optimized parallel computing. Replaces OCCT's default threading with TBB's task-based parallelism for better performance.",
       "dependencies": [
         "tbb"
       ]
     },
     "vtk": {
-      "description": "Enables optional usage of VTK. Part of the module-visualization.",
+      "description": "Enables VTK (Visualization Toolkit) integration for advanced scientific visualization capabilities and mesh processing in OCCT.",
       "dependencies": [
         {
           "name": "vtk",
@@ -112,27 +112,33 @@
       ]
     },
     "draco": {
-      "description": "Enables optional usage of Draco. Part of the module-data-exchange.",
+      "description": "Enables Google Draco geometry compression for efficient mesh storage and transmission in OCCT's glTF 2.0 import/export workflow.",
       "dependencies": [
         "draco"
       ]
     },
     "ffmpeg": {
-      "description": "Enables optional usage of FFmpeg. Part of the module-visualization.",
+      "description": "Enables FFmpeg multimedia framework for video encoding/decoding and animation export capabilities in OCCT's visualization pipeline.",
       "dependencies": [
         "ffmpeg"
       ]
     },
     "openvr": {
-      "description": "Enables optional usage of OpenVR. Part of the module-visualization.",
+      "description": "Enables OpenVR SDK integration for virtual reality support in OCCT's 3D visualization, allowing immersive CAD model exploration.",
       "dependencies": [
         "openvr"
       ]
     },
     "jemalloc": {
-      "description": "Enables optional usage of jemalloc. Part of the module-foundation-classes.",
+      "description": "Enables jemalloc high-performance memory allocator as replacement for system malloc. Improves memory usage patterns for large-scale CAD operations.",
       "dependencies": [
         "jemalloc"
+      ]
+    },
+    "gtest": {
+      "description": "Enables Google Test framework for building OCCT's unit test suite. Required for running automated tests and validation of OCCT functionality.",
+      "dependencies": [
+        "gtest"
       ]
     }
   }

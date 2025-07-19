@@ -42,12 +42,12 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep(
     return;
   Handle(TCollection_HAsciiString) aName;
   data->ReadString(num, 1, "name", ach, aName);
-  Handle(StepBasic_MeasureWithUnit) aConversionFactor;
+  Handle(Standard_Transient) aConversionFactor;
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
                    ach,
-                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   STANDARD_TYPE(Standard_Transient),
                    aConversionFactor);
 
   // NAMED_UNIT

@@ -22,7 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <StepRepr_ProductDefinitionUsage.hxx>
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepBasic_ProductDefinition;
 
 class StepRepr_MakeFromUsageOption;
@@ -48,7 +47,7 @@ public:
                                             aProductDefinitionRelationship_RelatedProductDefinition,
     const Standard_Integer                  aRanking,
     const Handle(TCollection_HAsciiString)& aRankingRationale,
-    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+    const Handle(Standard_Transient)&       aQuantity);
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
@@ -62,7 +61,7 @@ public:
                                             aProductDefinitionRelationship_RelatedProductDefinition,
     const Standard_Integer                  aRanking,
     const Handle(TCollection_HAsciiString)& aRankingRationale,
-    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+    const Handle(Standard_Transient)&       aQuantity);
 
   //! Returns field Ranking
   Standard_EXPORT Standard_Integer Ranking() const;
@@ -78,18 +77,18 @@ public:
     const Handle(TCollection_HAsciiString)& RankingRationale);
 
   //! Returns field Quantity
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Quantity() const;
+  Standard_EXPORT Handle(Standard_Transient) Quantity() const;
 
   //! Set field Quantity
-  Standard_EXPORT void SetQuantity(const Handle(StepBasic_MeasureWithUnit)& Quantity);
+  Standard_EXPORT void SetQuantity(const Handle(Standard_Transient)& Quantity);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_MakeFromUsageOption, StepRepr_ProductDefinitionUsage)
 
 protected:
 private:
-  Standard_Integer                  theRanking;
-  Handle(TCollection_HAsciiString)  theRankingRationale;
-  Handle(StepBasic_MeasureWithUnit) theQuantity;
+  Standard_Integer                 theRanking;
+  Handle(TCollection_HAsciiString) theRankingRationale;
+  Handle(Standard_Transient)       theQuantity;
 };
 
 #endif // _StepRepr_MakeFromUsageOption_HeaderFile

@@ -34,63 +34,18 @@ void RWStepShape_RWToleranceValue::ReadStep(const Handle(StepData_StepReaderData
 
   // --- own field : lower_bound ---
 
-  Handle(Standard_Transient) LB;
-  if (!data->ReadEntity(num, 1, "lower_bound", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), LB))
-  {
-    Handle(StepRepr_MeasureRepresentationItem)  aMSR;
-    Handle(StepRepr_ReprItemAndMeasureWithUnit) aRIMU;
-
-    if (data->ReadEntity(num,
-                         1,
-                         "lower_bound",
-                         ach,
-                         STANDARD_TYPE(StepRepr_MeasureRepresentationItem),
-                         aMSR)
-        || data->ReadEntity(num,
-                            1,
-                            "lower_bound",
-                            ach,
-                            STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit),
-                            aRIMU))
-    {
-      if (!aMSR.IsNull())
-        LB = aMSR;
-      else if (!aRIMU.IsNull())
-        LB = aRIMU;
-    }
-  }
+  Handle(Standard_Transient) aLowerBound;
+  data->ReadEntity(num, 1, "lower_bound", ach, STANDARD_TYPE(Standard_Transient), aLowerBound);
 
   // --- own field : upper_bound ---
 
-  Handle(Standard_Transient) UB;
-  if (!data->ReadEntity(num, 2, "upper_bound", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), UB))
-  {
-    Handle(StepRepr_MeasureRepresentationItem)  aMSR1;
-    Handle(StepRepr_ReprItemAndMeasureWithUnit) aRIMU1;
-    if (data->ReadEntity(num,
-                         2,
-                         "upper_bound",
-                         ach,
-                         STANDARD_TYPE(StepRepr_MeasureRepresentationItem),
-                         aMSR1)
-        || data->ReadEntity(num,
-                            2,
-                            "upper_bound",
-                            ach,
-                            STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit),
-                            aRIMU1))
-    {
-      if (!aMSR1.IsNull())
-        UB = aMSR1;
-      else if (!aRIMU1.IsNull())
-        UB = aRIMU1;
-    }
-  }
+  Handle(Standard_Transient) anUpperBound;
+  data->ReadEntity(num, 2, "upper_bound", ach, STANDARD_TYPE(Standard_Transient), anUpperBound);
 
   //--- Initialisation of the read entity ---
-  if (!LB.IsNull() && !UB.IsNull())
+  if (!aLowerBound.IsNull() && !anUpperBound.IsNull())
     ach->ClearFails();
-  ent->Init(LB, UB);
+  ent->Init(aLowerBound, anUpperBound);
 }
 
 void RWStepShape_RWToleranceValue::WriteStep(StepData_StepWriter&                    SW,

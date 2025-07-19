@@ -23,7 +23,6 @@
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
 
 class StepDimTol_GeometricToleranceWithModifiers;
@@ -41,7 +40,7 @@ public:
   Standard_EXPORT void Init(
     const Handle(TCollection_HAsciiString)&                       theName,
     const Handle(TCollection_HAsciiString)&                       theDescription,
-    const Handle(StepBasic_MeasureWithUnit)&                      theMagnitude,
+    const Handle(Standard_Transient)&                             theMagnitude,
     const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
     const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers);
 

@@ -47,8 +47,8 @@ void RWStepShape_RWMeasureQualification::ReadStep(
 
   // --- own field : qualified_measure ---
 
-  Handle(StepBasic_MeasureWithUnit) aQM;
-  data->ReadEntity(num, 3, "qualified_measure", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aQM);
+  Handle(Standard_Transient) aQM;
+  data->ReadEntity(num, 3, "qualified_measure", ach, STANDARD_TYPE(Standard_Transient), aQM);
 
   // --- own field : qualifiers ---
 

@@ -37,7 +37,7 @@ jobs:
   configure-macos:
     name: Configure OCCT on macOS with Clang
     runs-on: macos-15
-    if: github.ref == 'refs/heads/IR' && github.repository == 'Open-Cascade-SAS/OCCT'
+    if: github.repository == 'Open-Cascade-SAS/OCCT'
 
     steps:
     - name: Checkout repository

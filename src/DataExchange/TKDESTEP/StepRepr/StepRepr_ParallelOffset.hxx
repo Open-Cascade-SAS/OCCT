@@ -21,7 +21,6 @@
 
 #include <StepRepr_DerivedShapeAspect.hxx>
 #include <StepData_Logical.hxx>
-class StepBasic_MeasureWithUnit;
 class TCollection_HAsciiString;
 class StepRepr_ProductDefinitionShape;
 
@@ -40,17 +39,17 @@ public:
                             const Handle(TCollection_HAsciiString)&        theDescription,
                             const Handle(StepRepr_ProductDefinitionShape)& theOfShape,
                             const StepData_Logical                         theProductDefinitional,
-                            const Handle(StepBasic_MeasureWithUnit)&       theOffset);
+                            const Handle(Standard_Transient)&              theOffset);
 
   //! Returns field Offset
-  inline Handle(StepBasic_MeasureWithUnit) Offset() const { return offset; }
+  inline Handle(Standard_Transient) Offset() const { return offset; }
 
   //! Set field Offset
-  inline void SetOffset(const Handle(StepBasic_MeasureWithUnit)& theOffset) { offset = theOffset; }
+  inline void SetOffset(const Handle(Standard_Transient)& theOffset) { offset = theOffset; }
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ParallelOffset, StepRepr_DerivedShapeAspect)
 
 private:
-  Handle(StepBasic_MeasureWithUnit) offset;
+  Handle(Standard_Transient) offset;
 };
 #endif // _StepRepr_ParallelOffset_HeaderFile

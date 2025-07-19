@@ -22,7 +22,6 @@
 #include <StepDimTol_LimitCondition.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
@@ -39,17 +38,17 @@ public:
 
   //! Initialize all fields (own and inherited) AP214
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&  theGeometricTolerance_Name,
-    const Handle(TCollection_HAsciiString)&  theGeometricTolerance_Description,
-    const Handle(StepBasic_MeasureWithUnit)& theGeometricTolerance_Magnitude,
-    const Handle(StepRepr_ShapeAspect)&      theGeometricTolerance_TolerancedShapeAspect,
-    const StepDimTol_LimitCondition          theModifier);
+    const Handle(TCollection_HAsciiString)& theGeometricTolerance_Name,
+    const Handle(TCollection_HAsciiString)& theGeometricTolerance_Description,
+    const Handle(Standard_Transient)&       theGeometricTolerance_Magnitude,
+    const Handle(StepRepr_ShapeAspect)&     theGeometricTolerance_TolerancedShapeAspect,
+    const StepDimTol_LimitCondition         theModifier);
 
   //! Initialize all fields (own and inherited) AP242
   Standard_EXPORT void Init(
     const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
     const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
-    const Handle(StepBasic_MeasureWithUnit)&   theGeometricTolerance_Magnitude,
+    const Handle(Standard_Transient)&          theGeometricTolerance_Magnitude,
     const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
     const StepDimTol_LimitCondition            theModifier);
 

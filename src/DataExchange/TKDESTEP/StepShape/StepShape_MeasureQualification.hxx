@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepShape_ValueQualifier;
 
 class StepShape_MeasureQualification;
@@ -38,7 +37,7 @@ public:
 
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&          name,
                             const Handle(TCollection_HAsciiString)&          description,
-                            const Handle(StepBasic_MeasureWithUnit)&         qualified_measure,
+                            const Handle(Standard_Transient)&                qualified_measure,
                             const Handle(StepShape_HArray1OfValueQualifier)& qualifiers);
 
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
@@ -49,10 +48,9 @@ public:
 
   Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& description);
 
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) QualifiedMeasure() const;
+  Standard_EXPORT Handle(Standard_Transient) QualifiedMeasure() const;
 
-  Standard_EXPORT void SetQualifiedMeasure(
-    const Handle(StepBasic_MeasureWithUnit)& qualified_measure);
+  Standard_EXPORT void SetQualifiedMeasure(const Handle(Standard_Transient)& qualified_measure);
 
   Standard_EXPORT Handle(StepShape_HArray1OfValueQualifier) Qualifiers() const;
 
@@ -71,7 +69,7 @@ protected:
 private:
   Handle(TCollection_HAsciiString)          theName;
   Handle(TCollection_HAsciiString)          theDescription;
-  Handle(StepBasic_MeasureWithUnit)         theQualifiedMeasure;
+  Handle(Standard_Transient)                theQualifiedMeasure;
   Handle(StepShape_HArray1OfValueQualifier) theQualifiers;
 };
 

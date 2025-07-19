@@ -759,6 +759,17 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
 endif()
 
+# GTest
+if (BUILD_GTEST)
+  OCCT_ADD_VCPKG_FEATURE ("gtest")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/gtest")
+else()
+  OCCT_UNSET_VCPKG_FEATURE ("gtest")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GTEST")
+  OCCT_CHECK_AND_UNSET_GROUP ("GTest")
+  OCCT_CHECK_AND_UNSET ("INSTALL_GTEST")
+endif()
+
 # qt for samples
 if (BUILD_SAMPLES_QT)
   # check qt 3rdparty path
@@ -1198,7 +1209,6 @@ endforeach()
 
 # Setup Google Test integration if enabled
 if (BUILD_GTEST)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/gtest")
   enable_testing()
 
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_gtest")
@@ -1212,11 +1222,6 @@ if (BUILD_GTEST)
   
   # Set environment variables for all tests
   OCCT_SET_GTEST_ENVIRONMENT()
-else()
-  # Disable GTest integration if not enabled
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GTEST")
-  OCCT_CHECK_AND_UNSET_GROUP ("GTest")
-  OCCT_CHECK_AND_UNSET ("INSTALL_GTEST")
 endif()
 
 if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)

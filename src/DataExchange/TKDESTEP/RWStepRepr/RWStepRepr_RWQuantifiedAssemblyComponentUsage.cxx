@@ -102,8 +102,8 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
 
   // Own fields of QuantifiedAssemblyComponentUsage
 
-  Handle(StepBasic_MeasureWithUnit) aQuantity;
-  data->ReadEntity(num, 7, "quantity", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aQuantity);
+  Handle(Standard_Transient) aQuantity;
+  data->ReadEntity(num, 7, "quantity", ach, STANDARD_TYPE(Standard_Transient), aQuantity);
 
   // Initialize entity
   ent->Init(aProductDefinitionRelationship_Id,

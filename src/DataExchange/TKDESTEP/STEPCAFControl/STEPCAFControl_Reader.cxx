@@ -247,36 +247,36 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 
-// skl 21.08.2003 for reading G&DT
-// #include <StepRepr_CompoundItemDefinition.hxx>
-// #include <StepRepr_CompoundItemDefinitionMember.hxx>
-// #include <StepBasic_ConversionBasedUnit.hxx>
-// #include <TDataStd_Real.hxx>
-// #include <TDataStd_Constraint.hxx>
-// #include <TDataStd_ConstraintEnum.hxx>
-// #include <TNaming_Tool.hxx>
-// #include <AIS_InteractiveObject.hxx>
-// #include <TPrsStd_ConstraintTools.hxx>
-// #include <AIS_DiameterDimension.hxx>
-// #include <TPrsStd_Position.hxx>
-// #include <TPrsStd_AISPresentation.hxx>
-// #include <TNaming_Builder.hxx>
-#ifdef OCCT_DEBUG
-//! Converts address of the passed shape (TShape) to string.
-//! \param theShape [in] Shape to dump.
-//! \return corresponding string.
-TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
+namespace
 {
-  std::string        anAddrStr;
-  std::ostringstream ost;
-  ost << theShape.TShape().get();
-  anAddrStr = ost.str();
+// Returns a MeasureWithUnit from the given Standard_Transient object.
+// If the object is a StepRepr_ReprItemAndMeasureWithUnit, it retrieves
+// the MeasureWithUnit from it. If it is a StepBasic_MeasureWithUnit,
+// it returns it directly. If the object is neither, it returns a null handle.
+// @param theMeasure The Standard_Transient object to check.
+// @return Handle to StepBasic_MeasureWithUnit if found, otherwise null handle.
+static Handle(StepBasic_MeasureWithUnit) GetMeasureWithUnit(
+  const Handle(Standard_Transient)& theMeasure)
+{
+  if (theMeasure.IsNull())
+  {
+    return nullptr;
+  }
 
-  TCollection_AsciiString aStr = TCollection_AsciiString("[").Cat(anAddrStr.c_str()).Cat("]");
-
-  return aStr;
+  Handle(StepBasic_MeasureWithUnit) aMeasureWithUnit;
+  if (theMeasure->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
+  {
+    aMeasureWithUnit = Handle(StepBasic_MeasureWithUnit)::DownCast(theMeasure);
+  }
+  else if (theMeasure->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
+  {
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
+      Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(theMeasure);
+    aMeasureWithUnit = aReprMeasureItem->GetMeasureWithUnit();
+  }
+  return aMeasureWithUnit;
 }
-#endif
+} // namespace
 
 //=================================================================================================
 
@@ -1991,7 +1991,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(
     {
       if (style != aHSeqOfInvisStyle->Value(si))
         continue;
-        // found that current style is invisible.
+      // found that current style is invisible.
 #ifdef OCCT_DEBUG
       std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name()
                 << ") is invisible" << std::endl;
@@ -2091,7 +2091,7 @@ static Standard_Boolean GetMassConversionFactor(const Handle(StepBasic_NamedUnit
     return Standard_False;
   Handle(StepBasic_ConversionBasedUnitAndMassUnit) CBUMU =
     Handle(StepBasic_ConversionBasedUnitAndMassUnit)::DownCast(NU);
-  Handle(StepBasic_MeasureWithUnit) MWUCBU = CBUMU->ConversionFactor();
+  Handle(StepBasic_MeasureWithUnit) MWUCBU = GetMeasureWithUnit(CBUMU->ConversionFactor());
   afact                                    = MWUCBU->ValueComponent();
   StepBasic_Unit anUnit2                   = MWUCBU->UnitComponent();
   if (anUnit2.CaseNum(anUnit2.Value()) == 1)
@@ -3680,12 +3680,11 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
             Handle(StepDimTol_GeometricTolerance) GT =
               Handle(StepDimTol_GeometricTolerance)::DownCast(theEnt);
             // read common data for tolerance
-            // Standard_Real dim = GT->Magnitude()->ValueComponent();
-            Handle(StepBasic_MeasureWithUnit) dim3 = GT->Magnitude();
+            Handle(StepBasic_MeasureWithUnit) dim3 = GetMeasureWithUnit(GT->Magnitude());
             if (dim3.IsNull())
               continue;
             Standard_Real  dim    = dim3->ValueComponent();
-            StepBasic_Unit anUnit = GT->Magnitude()->UnitComponent();
+            StepBasic_Unit anUnit = dim3->UnitComponent();
             if (anUnit.IsNull())
               continue;
             if (!(anUnit.CaseNum(anUnit.Value()) == 1))
@@ -4136,15 +4135,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)&    theEnt,
         Handle(Standard_Transient) aUpperBound = aTV->UpperBound();
         if (aUpperBound.IsNull())
           continue;
-        Handle(StepBasic_MeasureWithUnit) aMWU;
-        if (aUpperBound->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
-          aMWU = Handle(StepBasic_MeasureWithUnit)::DownCast(aUpperBound);
-        else if (aUpperBound->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
-        {
-          Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
-            Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aUpperBound);
-          aMWU = aReprMeasureItem->GetMeasureWithUnit();
-        }
+        Handle(StepBasic_MeasureWithUnit) aMWU = GetMeasureWithUnit(aUpperBound);
         if (aMWU.IsNull())
           continue;
         Standard_Real  aVal   = aMWU->ValueComponent();
@@ -4173,14 +4164,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)&    theEnt,
         if (aLowerBound.IsNull())
           continue;
 
-        if (aLowerBound->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
-          aMWU = Handle(StepBasic_MeasureWithUnit)::DownCast(aLowerBound);
-        else if (aLowerBound->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
-        {
-          Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
-            Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aLowerBound);
-          aMWU = aReprMeasureItem->GetMeasureWithUnit();
-        }
+        aMWU = GetMeasureWithUnit(aLowerBound);
         if (aMWU.IsNull())
           continue;
 
@@ -4550,17 +4534,20 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)&    theEnt,
   if (!aTolEnt->Magnitude().IsNull())
   {
     // get value
-    Standard_Real  aVal   = aTolEnt->Magnitude()->ValueComponent();
-    StepBasic_Unit anUnit = aTolEnt->Magnitude()->UnitComponent();
-    if (anUnit.IsNull())
-      return;
-    if (!(anUnit.CaseNum(anUnit.Value()) == 1))
-      return;
-    Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-    STEPConstruct_UnitContext   anUnitCtx;
-    anUnitCtx.ComputeFactors(NU, theLocalFactors);
-    aVal = aVal * anUnitCtx.LengthFactor();
-    aTolObj->SetValue(aVal);
+    if (Handle(StepBasic_MeasureWithUnit) aMWU = GetMeasureWithUnit(aTolEnt->Magnitude()))
+    {
+      Standard_Real  aVal   = aMWU->ValueComponent();
+      StepBasic_Unit anUnit = aMWU->UnitComponent();
+      if (anUnit.IsNull())
+        return;
+      if (!(anUnit.CaseNum(anUnit.Value()) == 1))
+        return;
+      Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+      STEPConstruct_UnitContext   anUnitCtx;
+      anUnitCtx.ComputeFactors(NU, theLocalFactors);
+      aVal = aVal * anUnitCtx.LengthFactor();
+      aTolObj->SetValue(aVal);
+    }
   }
   // get modifiers
   XCAFDimTolObjects_GeomToleranceTypeValue aTypeV = XCAFDimTolObjects_GeomToleranceTypeValue_None;

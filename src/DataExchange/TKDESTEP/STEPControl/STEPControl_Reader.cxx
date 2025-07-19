@@ -49,6 +49,7 @@
 #include <StepRepr_RepresentationMap.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
@@ -808,7 +809,18 @@ Standard_Boolean STEPControl_Reader::findUnits(
     Standard_Real           anUnitFact = 0;
     if (!aConvUnit.IsNull())
     {
-      Handle(StepBasic_MeasureWithUnit) aMeasWithUnit = aConvUnit->ConversionFactor();
+      Handle(StepBasic_MeasureWithUnit) aMeasWithUnit;
+      Handle(Standard_Transient)        aConvFactor = aConvUnit->ConversionFactor();
+      if (aConvFactor->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
+      {
+        aMeasWithUnit = Handle(StepBasic_MeasureWithUnit)::DownCast(aConvFactor);
+      }
+      else if (aConvFactor->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
+      {
+        Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
+          Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aConvFactor);
+        aMeasWithUnit = aReprMeasureItem->GetMeasureWithUnit();
+      }
 
       if (aMeasWithUnit.IsNull())
         continue;

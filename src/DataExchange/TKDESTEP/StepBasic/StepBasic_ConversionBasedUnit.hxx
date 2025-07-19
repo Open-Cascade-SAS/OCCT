@@ -37,23 +37,22 @@ public:
 
   Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
                             const Handle(TCollection_HAsciiString)&       aName,
-                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+                            const Handle(Standard_Transient)&             aConversionFactor);
 
   Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
 
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
 
-  Standard_EXPORT void SetConversionFactor(
-    const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
+  Standard_EXPORT void SetConversionFactor(const Handle(Standard_Transient)& aConversionFactor);
 
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) ConversionFactor() const;
+  Standard_EXPORT Handle(Standard_Transient) ConversionFactor() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit, StepBasic_NamedUnit)
 
 protected:
 private:
-  Handle(TCollection_HAsciiString)  name;
-  Handle(StepBasic_MeasureWithUnit) conversionFactor;
+  Handle(TCollection_HAsciiString) name;
+  Handle(Standard_Transient)       conversionFactor;
 };
 
 #endif // _StepBasic_ConversionBasedUnit_HeaderFile

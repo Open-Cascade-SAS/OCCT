@@ -23,7 +23,6 @@
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
@@ -43,7 +42,7 @@ public:
   Standard_EXPORT void Init(
     const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Name,
     const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Description,
-    const Handle(StepBasic_MeasureWithUnit)&          theGeometricTolerance_Magnitude,
+    const Handle(Standard_Transient)&                 theGeometricTolerance_Magnitude,
     const Handle(StepRepr_ShapeAspect)&               theGeometricTolerance_TolerancedShapeAspect,
     const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem);
 
@@ -51,7 +50,7 @@ public:
   Standard_EXPORT void Init(
     const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
     const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
-    const Handle(StepBasic_MeasureWithUnit)&   theGeometricTolerance_Magnitude,
+    const Handle(Standard_Transient)&          theGeometricTolerance_Magnitude,
     const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
     const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem);
 

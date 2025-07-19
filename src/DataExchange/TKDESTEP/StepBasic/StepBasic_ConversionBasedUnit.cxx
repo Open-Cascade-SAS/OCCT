@@ -22,7 +22,7 @@ StepBasic_ConversionBasedUnit::StepBasic_ConversionBasedUnit() {}
 
 void StepBasic_ConversionBasedUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
                                          const Handle(TCollection_HAsciiString)&       aName,
-                                         const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
+                                         const Handle(Standard_Transient)& aConversionFactor)
 {
   // --- classe own fields ---
   name             = aName;
@@ -42,12 +42,12 @@ Handle(TCollection_HAsciiString) StepBasic_ConversionBasedUnit::Name() const
 }
 
 void StepBasic_ConversionBasedUnit::SetConversionFactor(
-  const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
+  const Handle(Standard_Transient)& aConversionFactor)
 {
   conversionFactor = aConversionFactor;
 }
 
-Handle(StepBasic_MeasureWithUnit) StepBasic_ConversionBasedUnit::ConversionFactor() const
+Handle(Standard_Transient) StepBasic_ConversionBasedUnit::ConversionFactor() const
 {
   return conversionFactor;
 }
