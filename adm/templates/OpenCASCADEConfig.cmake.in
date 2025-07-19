@@ -17,17 +17,21 @@ set (OpenCASCADE_MAINTENANCE_VERSION "@OCC_VERSION_MAINTENANCE@")
 set (OpenCASCADE_DEVELOPMENT_VERSION "@OCC_VERSION_DEVELOPMENT@")
 
 # Compute the installation prefix from this OpenCASCADEConfig.cmake file 
-# location, by going up one level + one level if "cmake" + one level if "lib".
+# location, by going up one level + one level if "cmake" + one level if "lib" + one level if "share".
 # This is made to support different locations of CMake files:
-# - in UNIX style: $INSTALL_DIR/lib/cmake/opencascade-<version>
+# - in UNIX style: $INSTALL_DIR/lib/cmake/@OCCT_PROJECT_NAME@-<version>
 # - in Windows style: $INSTALL_DIR/cmake
-# - in Android style: $INSTALL_DIR/libs/$CMAKE_ANDROID_ARCH_ABI/cmake/opencascade-<version>
+# - in vcpkg style: $INSTALL_DIR/share/@OCCT_PROJECT_NAME@
+# - in Android style: $INSTALL_DIR/libs/$CMAKE_ANDROID_ARCH_ABI/cmake/@OCCT_PROJECT_NAME@-<version>
 get_filename_component (OpenCASCADE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
 if (OpenCASCADE_INSTALL_PREFIX MATCHES "/cmake$")
   get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
 endif()
 if (OpenCASCADE_INSTALL_PREFIX MATCHES "/lib(32|64)?$")
+  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+endif()
+if (OpenCASCADE_INSTALL_PREFIX MATCHES "/share$")
   get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
 endif()
 if (OpenCASCADE_INSTALL_PREFIX MATCHES "/libs/${CMAKE_ANDROID_ARCH_ABI}$")

@@ -1,4 +1,8 @@
 echo off
+setlocal enabledelayedexpansion
+rem Delayed expansion is required for handling variable modifications within the following conditional blocks:
+rem - The block starting at line 7, where variables like CSF_FPE and directory paths are set.
+rem - The block starting at line 24, where QTDIR is conditionally set based on @USED_3RDPARTY_QT_DIR@.
 
 rem CASDEB comes as third argument
 
@@ -25,8 +29,7 @@ if /I "%VCVER%" == "@COMPILER@" (
     set "TCL_VERSION_WITH_DOT=@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
     set "TK_VERSION_WITH_DOT=@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 
-    set "CSF_OCCTBinPath=%CASROOT%/@INSTALL_DIR_BIN@%3"
-    set "CSF_OCCTLibPath=%CASROOT%/@INSTALL_DIR_LIB@%3"
+    @OCCT_CUSTOM_BIN_LIB_PATHS@
 
     set "CSF_OCCTIncludePath=%CASROOT%/@INSTALL_DIR_INCLUDE@"
     set "CSF_OCCTResourcePath=%CASROOT%/@INSTALL_DIR_RESOURCE@"
