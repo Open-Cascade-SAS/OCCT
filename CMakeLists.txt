@@ -1220,13 +1220,6 @@ if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
        string (REGEX REPLACE ";" ":" ${USED_3RDPARTY_CACHE_VARIABLE} "${${USED_3RDPARTY_CACHE_VARIABLE}}")
      endif()
   endforeach()
-else()
-  # For non-vcpkg layouts, clear USED_3RDPARTY variables to prevent contamination in templates
-  get_cmake_property(USED_3RDPARTY_CACHE_VARIABLES VARIABLES)
-  string (REGEX MATCHALL "(^|;)USED_3RDPARTY_[^;]+_DIR[^;]*" USED_3RDPARTY_CACHE_VARIABLES "${USED_3RDPARTY_CACHE_VARIABLES}")
-  foreach (USED_3RDPARTY_CACHE_VARIABLE ${USED_3RDPARTY_CACHE_VARIABLES})
-     set (${USED_3RDPARTY_CACHE_VARIABLE} "")
-  endforeach()
 endif()
 
 # write current custom.bat/sh (for install directory)
