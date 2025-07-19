@@ -1,6 +1,8 @@
 echo off
 setlocal enabledelayedexpansion
-rem Delayed expansion is required for handling variable modifications within conditional blocks.
+rem Delayed expansion is required for handling variable modifications within the following conditional blocks:
+rem - The block starting at line 7, where variables like CSF_FPE and directory paths are set.
+rem - The block starting at line 24, where QTDIR is conditionally set based on @USED_3RDPARTY_QT_DIR@.
 
 rem CASDEB comes as third argument
 
