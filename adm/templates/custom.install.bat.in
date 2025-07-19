@@ -1,5 +1,6 @@
 echo off
 setlocal enabledelayedexpansion
+rem Delayed expansion is required for handling variable modifications within conditional blocks.
 
 rem CASDEB comes as third argument
 
