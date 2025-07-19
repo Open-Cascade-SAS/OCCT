@@ -1230,27 +1230,16 @@ if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
   # For vcpkg, set paths based on CMAKE_BUILD_TYPE
   if (WIN32)
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-      set (OCCT_CUSTOM_BIN_LIB_PATHS "
-        set \"CSF_OCCTBinPath=%~dp0debug\\bin\"
-        set \"CSF_OCCTLibPath=%~dp0debug\\lib\"
-      ")
+      file(READ "${CMAKE_SOURCE_DIR}/templates/windows_debug_paths.template" OCCT_CUSTOM_BIN_LIB_PATHS)
     else()
-      set (OCCT_CUSTOM_BIN_LIB_PATHS "
-        set \"CSF_OCCTBinPath=%~dp0bin\"
-        set \"CSF_OCCTLibPath=%~dp0lib\"
-      ")
+      file(READ "${CMAKE_SOURCE_DIR}/templates/windows_release_paths.template" OCCT_CUSTOM_BIN_LIB_PATHS)
     endif()
   else()
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-      set (OCCT_CUSTOM_BIN_LIB_PATHS "
-        export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/debug/bin\"
-        export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/debug/lib\"
-      ")
+      file(READ "${CMAKE_SOURCE_DIR}/templates/unix_debug_paths.template" OCCT_CUSTOM_BIN_LIB_PATHS)
     else()
-      set (OCCT_CUSTOM_BIN_LIB_PATHS "
-        export CSF_OCCTBinPath=\"\$(dirname \"\$0\")/bin\"
-        export CSF_OCCTLibPath=\"\$(dirname \"\$0\")/lib\"
-      ")
+      file(READ "${CMAKE_SOURCE_DIR}/templates/unix_release_paths.template" OCCT_CUSTOM_BIN_LIB_PATHS)
+    endif()
     endif()
   endif()
 else()
