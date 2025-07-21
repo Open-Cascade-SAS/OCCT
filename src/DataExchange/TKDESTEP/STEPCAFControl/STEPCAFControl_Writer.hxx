@@ -323,7 +323,7 @@ protected:
 
   //! Write metadata assigned to specified labels, to STEP model
   Standard_Boolean writeMetadata(const Handle(XSControl_WorkSession)& theWS,
-                                  const TDF_LabelSequence&             theLabels) const;
+                                 const TDF_LabelSequence&             theLabels) const;
 
   //! Write D&GTs assigned to specified labels, to STEP model
   Standard_Boolean writeDGTs(const Handle(XSControl_WorkSession)& theWS,
