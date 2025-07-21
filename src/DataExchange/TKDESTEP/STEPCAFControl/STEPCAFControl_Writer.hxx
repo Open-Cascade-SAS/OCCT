@@ -211,6 +211,11 @@ public:
 
   Standard_Boolean GetPropsMode() const { return myPropsMode; }
 
+  //! Set MetadataMode for indicate write metadata or not.
+  void SetMetadataMode(const Standard_Boolean theMetadataMode) { myMetadataMode = theMetadataMode; }
+
+  Standard_Boolean GetMetadataMode() const { return myMetadataMode; }
+
   //! Set SHUO mode for indicate write SHUO or not.
   void SetSHUOMode(const Standard_Boolean theSHUOMode) { mySHUOMode = theSHUOMode; }
 

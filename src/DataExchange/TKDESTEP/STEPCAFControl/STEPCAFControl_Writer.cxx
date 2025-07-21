@@ -1606,6 +1606,108 @@ Standard_Boolean STEPCAFControl_Writer::writeNames(const Handle(XSControl_WorkSe
 
 //=================================================================================================
 
+Standard_Boolean STEPCAFControl_Writer::writeMetadata(const Handle(XSControl_WorkSession)& theWS,
+                                                       const TDF_LabelSequence& theLabels) const
+{
+  if (theLabels.IsEmpty())
+    return Standard_False;
+
+  // get working data
+  const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
+  const Handle(Transfer_FinderProcess)&   aFP = aTW->FinderProcess();
+  const Handle(StepData_StepModel)& aModel = Handle(StepData_StepModel)::DownCast(theWS->Model());
+
+  // Iterate on requested shapes
+  for (TDF_LabelSequence::Iterator aLabelIter(theLabels); aLabelIter.More(); aLabelIter.Next())
+  {
+    const TDF_Label& aLabel = aLabelIter.Value();
+    
+    // Check if label has metadata (NamedData)
+    Handle(TDataStd_NamedData) aNamedData;
+    if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), aNamedData))
+      continue; // no metadata on this label
+
+    // find target STEP entity for the current shape
+    if (!myLabels.IsBound(aLabel))
+      continue; // not recorded as translated, skip
+
+    const TopoDS_Shape& aShape = myLabels.Find(aLabel);
+    Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+    Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(aFP, aShape);
+    
+    if (!aFP->FindTypedTransient(aMapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), aSDR))
+      continue; // cannot find STEP representation
+
+    // Get the product definition from the shape definition representation
+    Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
+    if (aPropD.IsNull())
+      continue;
+    Handle(StepBasic_ProductDefinition) aPD = aPropD->Definition().ProductDefinition();
+    if (aPD.IsNull())
+      continue;
+
+    // Export string metadata as property_definition entities
+    const TDataStd_DataMapOfStringString& aStringMap = aNamedData->GetStringsContainer();
+    for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringMap); anIter.More(); anIter.Next())
+    {
+      const TCollection_ExtendedString& aKey = anIter.Key();
+      const TCollection_ExtendedString& aValue = anIter.Value();
+      
+      // Create property_definition
+      Handle(StepRepr_PropertyDefinition) aMetaPropDef = new StepRepr_PropertyDefinition();
+      Handle(TCollection_HAsciiString) aPropName = new TCollection_HAsciiString(aKey);
+      Handle(TCollection_HAsciiString) aPropDesc = new TCollection_HAsciiString("Metadata property");
+      aMetaPropDef->SetName(aPropName);
+      aMetaPropDef->SetDescription(aPropDesc);
+      
+      // Set the definition to point to the product definition
+      StepRepr_CharacterizedDefinition aCharDef;
+      aCharDef.SetValue(aPD);
+      aMetaPropDef->SetDefinition(aCharDef);
+      
+      // Create property_definition_representation
+      Handle(StepRepr_PropertyDefinitionRepresentation) aPropDefRepr = new StepRepr_PropertyDefinitionRepresentation();
+      StepRepr_RepresentedDefinition aRepDef;
+      aRepDef.SetValue(aMetaPropDef);
+      aPropDefRepr->SetDefinition(aRepDef);
+      
+      // Create representation with descriptive_representation_item
+      Handle(StepRepr_Representation) aRepr = new StepRepr_Representation();
+      Handle(TCollection_HAsciiString) aReprName = new TCollection_HAsciiString(aKey);
+      aRepr->SetName(aReprName);
+      
+      // Create descriptive representation item for the value
+      Handle(StepRepr_DescriptiveRepresentationItem) aDescrItem = new StepRepr_DescriptiveRepresentationItem();
+      Handle(TCollection_HAsciiString) aItemName = new TCollection_HAsciiString(aKey);
+      Handle(TCollection_HAsciiString) aItemValue = new TCollection_HAsciiString(aValue);
+      aDescrItem->SetName(aItemName);
+      aDescrItem->SetDescription(aItemValue);
+      
+      // Add item to representation
+      Handle(StepRepr_HArray1OfRepresentationItem) aItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
+      aItems->SetValue(1, aDescrItem);
+      aRepr->SetItems(aItems);
+      
+      // Set representation context (reuse from shape representation)
+      Handle(StepRepr_RepresentationContext) aRC = aSDR->UsedRepresentation()->ContextOfItems();
+      aRepr->SetContextOfItems(aRC);
+      
+      aPropDefRepr->SetUsedRepresentation(aRepr);
+      
+      // Add entities to the model
+      aModel->AddWithRefs(aMetaPropDef);
+      aModel->AddWithRefs(aPropDefRepr);
+      aModel->AddWithRefs(aRepr);
+      aModel->AddWithRefs(aDescrItem);
+    }
+  }
+  
+  return Standard_True;
+}
+
+
+//=================================================================================================
+
 static Standard_Boolean WritePropsForLabel(const Handle(XSControl_WorkSession)&      theWS,
                                            const STEPCAFControl_DataMapOfLabelShape& theLabels,
                                            const TDF_Label&                          theLabel,
