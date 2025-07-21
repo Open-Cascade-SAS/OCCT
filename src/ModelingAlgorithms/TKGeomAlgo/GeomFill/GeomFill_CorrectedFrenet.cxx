@@ -506,44 +506,53 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
                                                         TColgp_SequenceOfVec&   SeqTangent,
                                                         TColgp_SequenceOfVec&   SeqNormal) const
 {
-  Bnd_Box                Boite;
   gp_Vec                 Tangent, Normal, BN, cross;
   TColStd_SequenceOfReal parameters;
   TColStd_SequenceOfReal EvolAT;
-  Standard_Real          Param  = First, LengthMin, L, norm;
+  Standard_Real          Param  = First;
   Standard_Boolean       isZero = Standard_True, isConst = Standard_True;
-  Standard_Integer       i;
   gp_Pnt                 PonC;
   gp_Vec                 D1;
 
   frenet->SetInterval(First, Last); // To have right evaluation at bounds
   GeomFill_SnglrFunc CS(myCurve);
-  BndLib_Add3dCurve::Add(CS, First, Last, 1.e-2, Boite);
-  LengthMin = Boite.GetGap() * 1.e-4;
+  Bnd_Box            aCurveBoundBox;
+  BndLib_Add3dCurve::Add(CS, First, Last, 1.e-2, aCurveBoundBox);
+  const Standard_Real LengthMin = aCurveBoundBox.GetGap() * 1.e-4;
 
   aT = gp_Vec(0, 0, 0);
   aN = gp_Vec(0, 0, 0);
 
-  Standard_Real angleAT = 0., currParam, currStep = Step;
+  Standard_Real angleAT  = 0.;
+  Standard_Real currStep = Step;
 
   Handle(Geom_Plane) aPlane;
   Standard_Boolean   isPlanar = Standard_False;
   if (!myForEvaluation)
+  {
     isPlanar = FindPlane(myCurve, aPlane);
+  }
 
-  i                   = 1;
-  currParam           = Param;
-  Standard_Real DLast = Last - Precision::PConfusion();
+  Standard_Integer    i         = 1;
+  Standard_Real       currParam = Param;
+  const Standard_Real DLast     = Last - Precision::PConfusion();
 
   while (Param < Last)
   {
     if (currParam > DLast)
     {
+      if (Abs(DLast - Param) < Precision::SquareConfusion())
+      {
+        Param = currParam;
+      }
+
       currStep  = DLast - Param;
       currParam = Last;
     }
     if (isPlanar)
+    {
       currParam = Last;
+    }
 
     frenet->D0(currParam, Tangent, Normal, BN);
     if (prevTangent.Angle(Tangent) < M_PI / 3 || i == 1)
@@ -577,18 +586,22 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
 
       // Evaluate the Next step
       CS.D1(Param, PonC, D1);
-      L    = Max(PonC.XYZ().Modulus() / 2, LengthMin);
-      norm = D1.Magnitude();
+      Standard_Real L    = Max(PonC.XYZ().Modulus() / 2, LengthMin);
+      Standard_Real norm = D1.Magnitude();
       if (norm < Precision::Confusion())
       {
         norm = Precision::Confusion();
       }
       currStep = L / norm;
       if (currStep > Step)
+      {
         currStep = Step; // default value
+      }
     }
     else
+    {
       currStep /= 2; // Step too long !
+    }
 
     currParam = Param + currStep;
   }
@@ -613,23 +626,11 @@ Standard_Boolean GeomFill_CorrectedFrenet::InitInterval(const Standard_Real     
     Handle(TColStd_HArray1OfReal) pararr     = new TColStd_HArray1OfReal(1, Length);
     Handle(TColStd_HArray1OfReal) angleATarr = new TColStd_HArray1OfReal(1, Length);
 
-    for (i = 1; i <= Length; i++)
+    for (Standard_Integer aParamIndex = 1; aParamIndex <= Length; ++aParamIndex)
     {
-      pararr->ChangeValue(i)     = parameters(i);
-      angleATarr->ChangeValue(i) = EvolAT(i);
+      pararr->ChangeValue(aParamIndex)     = parameters(aParamIndex);
+      angleATarr->ChangeValue(aParamIndex) = EvolAT(aParamIndex);
     }
-
-#ifdef OCCT_DEBUG
-    if (Affich)
-    {
-      std::cout << "NormalEvolution" << std::endl;
-      for (i = 1; i <= Length; i++)
-      {
-        std::cout << "(" << pararr->Value(i) << ", " << angleATarr->Value(i) << ")" << std::endl;
-      }
-      std::cout << std::endl;
-    }
-#endif
 
     Law_Interpolate lawAT(angleATarr, pararr, Standard_False, Precision::PConfusion());
     lawAT.Perform();
