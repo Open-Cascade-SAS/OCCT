@@ -260,7 +260,17 @@ if (NOT INSTALL_DIR_LAYOUT)
   else()
     set (INSTALL_DIR_LAYOUT "Unix" CACHE STRING "${INSTALL_DIR_LAYOUT_DESCR}" FORCE)
   endif()
-  SET_PROPERTY(CACHE INSTALL_DIR_LAYOUT PROPERTY STRINGS Windows Unix)
+  SET_PROPERTY(CACHE INSTALL_DIR_LAYOUT PROPERTY STRINGS Windows Unix vcpkg)
+endif()
+
+# set project name for install directories (only used for vcpkg layout)
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  if (NOT DEFINED OCCT_PROJECT_NAME)
+    set (OCCT_PROJECT_NAME "opencascade" CACHE STRING "${OCCT_PROJECT_NAME_DESCR}")
+  endif()
+else()
+  # unset the variable if it was previously set for vcpkg but layout changed
+  OCCT_CHECK_AND_UNSET (OCCT_PROJECT_NAME)
 endif()
 
 # check INSTALL_DIR_LAYOUT changes and update INSTALL_DIR_* paths if necessary
@@ -270,6 +280,16 @@ elseif (NOT "${INSTALL_DIR_LAYOUT_PREV}" STREQUAL "${INSTALL_DIR_LAYOUT}")
   set (INSTALL_DIR_LAYOUT_PREV "${INSTALL_DIR_LAYOUT}" CACHE INTERNAL "" FORCE)
   # The structure of install folder should be reset due to changed layout
   OCCT_CHECK_AND_UNSET_INSTALL_DIR_SUBDIRS ()
+
+  # Manage OCCT_PROJECT_NAME based on layout
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    if (NOT DEFINED OCCT_PROJECT_NAME)
+      set (OCCT_PROJECT_NAME "opencascade" CACHE STRING "${OCCT_PROJECT_NAME_DESCR}")
+    endif()
+  else()
+    # unset OCCT_PROJECT_NAME if layout changed from vcpkg to something else
+    OCCT_CHECK_AND_UNSET (OCCT_PROJECT_NAME)
+  endif()
 
   # Unset INSTALL_DIR_WITH_VERSION on windows
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Windows")
@@ -321,10 +341,12 @@ endif()
 set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE)
 
 set (BIN_LETTER "")
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-  set (BIN_LETTER "d")
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-  set (BIN_LETTER "i")
+if (NOT "${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set (BIN_LETTER "d")
+  elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+    set (BIN_LETTER "i")
+  endif()
 endif()
 
 # the list of being built toolkits
@@ -463,12 +485,23 @@ else()
   OCCT_CHECK_AND_UNSET (BUILD_YACCLEX)
 endif()
 
-if (NOT DEFINED 3RDPARTY_DIR)
-  set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
-  get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
+# Set 3RDPARTY_DIR based on layout
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  if (NOT DEFINED 3RDPARTY_DIR)
+    set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
+    get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
+  else()
+    file (TO_CMAKE_PATH "${3RDPARTY_DIR}" 3RDPARTY_DIR)
+    set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
+  endif()
 else()
-  file (TO_CMAKE_PATH "${3RDPARTY_DIR}" 3RDPARTY_DIR)
-  set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
+  # For non-vcpkg layouts, 3RDPARTY_DIR should be user-defined or empty
+  if (NOT DEFINED 3RDPARTY_DIR)
+    set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
+  else()
+    file (TO_CMAKE_PATH "${3RDPARTY_DIR}" 3RDPARTY_DIR)
+    set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
+  endif()
 endif()
 
 # search for CSF variable in EXTERNLIB of each being used toolkit
@@ -806,6 +839,8 @@ OCCT_MAKE_COMPILER_SHORT_NAME()
 if (NOT DEFINED INSTALL_DIR_BIN)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_BIN "bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_BIN "bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
   else()
     set (INSTALL_DIR_BIN "${OS_WITH_BIT}/${COMPILER}/bin" CACHE PATH "${INSTALL_DIR_BIN_DESCR}")
   endif()
@@ -815,6 +850,9 @@ endif()
 if (NOT DEFINED INSTALL_DIR_SCRIPT)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    # For vcpkg, scripts are always in bin directory, no generator expressions needed
+    set (INSTALL_DIR_SCRIPT "bin" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   else()
     set (INSTALL_DIR_SCRIPT "." CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   endif()
@@ -823,6 +861,8 @@ endif()
 # place the libraries to <prefix>/lib folder for unix and leave old structure for windows
 if (NOT DEFINED INSTALL_DIR_LIB)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
+    set (INSTALL_DIR_LIB "lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
     set (INSTALL_DIR_LIB "lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
   else()
     set (INSTALL_DIR_LIB "${OS_WITH_BIT}/${COMPILER}/lib" CACHE PATH "${INSTALL_DIR_LIB_DESCR}")
@@ -837,6 +877,8 @@ if (NOT DEFINED INSTALL_DIR_INCLUDE)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_INCLUDE "include/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_DIR_INCLUDE_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_INCLUDE "include" CACHE PATH "${INSTALL_DIR_INCLUDE_DESCR}")
   else()
     set (INSTALL_DIR_INCLUDE "inc" CACHE PATH "${INSTALL_DIR_INCLUDE_DESCR}")
   endif()
@@ -850,6 +892,8 @@ if (NOT DEFINED INSTALL_DIR_RESOURCE)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_RESOURCE "share/opencascade-${OCC_VERSION_STRING_EXT}/resources" CACHE PATH "${INSTALL_DIR_RESOURCE_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_RESOURCE "share/${OCCT_PROJECT_NAME}" CACHE PATH "${INSTALL_DIR_RESOURCE_DESCR}")
   else()
     set (INSTALL_DIR_RESOURCE "src" CACHE PATH "${INSTALL_DIR_RESOURCE_DESCR}")
   endif()
@@ -862,6 +906,8 @@ if (NOT DEFINED INSTALL_DIR_DATA)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_DATA "share/opencascade-${OCC_VERSION_STRING_EXT}/data" CACHE PATH "${INSTALL_DIR_DATA_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_DATA "share/${OCCT_PROJECT_NAME}" CACHE PATH "${INSTALL_DIR_DATA_DESCR}")
   else()
     set (INSTALL_DIR_DATA "data" CACHE PATH "${INSTALL_DIR_DATA_DESCR}")
   endif()
@@ -874,6 +920,8 @@ if (NOT DEFINED INSTALL_DIR_SAMPLES)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_SAMPLES "share/opencascade-${OCC_VERSION_STRING_EXT}/samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_SAMPLES "share/${OCCT_PROJECT_NAME}/samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}")
   else()
     set (INSTALL_DIR_SAMPLES "samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}")
   endif()
@@ -886,6 +934,8 @@ if (NOT DEFINED INSTALL_DIR_TESTS)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_TESTS "share/opencascade-${OCC_VERSION_STRING_EXT}/tests" CACHE PATH "${INSTALL_DIR_TESTS_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_TESTS "share/${OCCT_PROJECT_NAME}/tests" CACHE PATH "${INSTALL_DIR_TESTS_DESCR}")
   else()
     set (INSTALL_DIR_TESTS "tests" CACHE PATH "${INSTALL_DIR_TESTS_DESCR}")
   endif()
@@ -898,6 +948,8 @@ if (NOT DEFINED INSTALL_DIR_DOC)
     if (INSTALL_DIR_WITH_VERSION)
       set (INSTALL_DIR_DOC "share/doc/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_DIR_DOC_DESCR}" FORCE)
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_DOC "share/${OCCT_PROJECT_NAME}/doc" CACHE PATH "${INSTALL_DIR_DOC_DESCR}")
   else()
     set (INSTALL_DIR_DOC "doc" CACHE PATH "${INSTALL_DIR_DOC_DESCR}")
   endif()
@@ -911,6 +963,8 @@ if (NOT DEFINED INSTALL_DIR_CMAKE)
     else()
       set (INSTALL_DIR_CMAKE "lib/cmake/opencascade" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
     endif()
+  elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (INSTALL_DIR_CMAKE "share/${OCCT_PROJECT_NAME}" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
   else()
     set (INSTALL_DIR_CMAKE "cmake" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
   endif()
@@ -921,6 +975,9 @@ OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_resources")
 
 # install LICENSE_LGPL_21.txt and OCCT_LGPL_EXCEPTION.txt files
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
+  OCCT_INSTALL_FILE_OR_DIR ("LICENSE_LGPL_21.txt" "${INSTALL_DIR_DOC}")
+  OCCT_INSTALL_FILE_OR_DIR ("OCCT_LGPL_EXCEPTION.txt" "${INSTALL_DIR_DOC}")
+elseif ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
   OCCT_INSTALL_FILE_OR_DIR ("LICENSE_LGPL_21.txt" "${INSTALL_DIR_DOC}")
   OCCT_INSTALL_FILE_OR_DIR ("OCCT_LGPL_EXCEPTION.txt" "${INSTALL_DIR_DOC}")
 else()
@@ -998,34 +1055,63 @@ endif()
 
 # build directories
 if (SINGLE_GENERATOR)
-  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BIN_LETTER}")
-  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BIN_LETTER}")
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BIN_LETTER}")
-  if (WIN32)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BIN_LETTER}")
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+    if (WIN32)
+      set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+    endif()
+  else()
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BIN_LETTER}")
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BIN_LETTER}")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BIN_LETTER}")
+    if (WIN32)
+      set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BIN_LETTER}")
+    endif()
   endif()
 endif()
 
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/lib")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/lib")
 
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/lib")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/bin")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/lib")
 
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/lib")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/lib")
 
-if (WIN32)
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE        "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+  if (WIN32)
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE        "${CMAKE_BINARY_DIR}/bin")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/bin")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}/bin")
+  endif()
+else()
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+
+  set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+  set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+
+  if (WIN32)
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE        "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+  endif()
 endif()
 
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
+message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE} ...")
 
 # collect all the headers to <binary dir>/inc folder
 COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "src" "${INSTALL_DIR_INCLUDE}")
@@ -1135,7 +1221,59 @@ endforeach()
 
 # write current custom.bat/sh (for install directory)
 set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCRIPT_EXT}")
+
+# Set custom bin/lib paths variable for template
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  # For vcpkg layout, use simple installation paths without build-specific suffixes
+  # vcpkg manages dependencies differently, so avoid traditional %3 (debug suffix) paths
+  if (WIN32)
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%/${INSTALL_DIR_BIN}\"
+    set \"CSF_OCCTLibPath=%CASROOT%/${INSTALL_DIR_LIB}\"")
+  else()
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
+    export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
+  endif()
+else()
+  # For other layouts, use CASROOT with full paths including build-specific suffixes
+  if (WIN32)
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%/${INSTALL_DIR_BIN}%3\"
+    set \"CSF_OCCTLibPath=%CASROOT%/${INSTALL_DIR_LIB}%3\"")
+  else()
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
+    export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
+  endif()
+endif()
+
 OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${SUB_CUSTOM_BUILD_NAME}" "${SUB_CUSTOM_NAME}" "${INSTALL_DIR_SCRIPT}")
+
+# Set build directory paths for custom.build script
+if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  # For vcpkg, use simple bin/lib paths
+  if (WIN32)
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    set \"CSF_OCCTLibPath=@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"
+    if [\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"] == [\"\"] (
+      set \"CSF_OCCTBinPath=@CMAKE_BINARY_DIR@/bin\"
+      set \"CSF_OCCTLibPath=@CMAKE_BINARY_DIR@/lib\"
+    )")
+  else()
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    export CSF_OCCTLibPath=\"@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"")
+  endif()
+else()
+  # For other layouts, use traditional paths with suffixes
+  if (WIN32)
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    set \"CSF_OCCTLibPath=@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"
+    if [\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"] == [\"\"] (
+      set \"CSF_OCCTBinPath=@CMAKE_BINARY_DIR@/win%ARCH%/%VCVER%/bin%3\"
+      set \"CSF_OCCTLibPath=@CMAKE_BINARY_DIR@/win%ARCH%/%VCVER%/lib%3\"
+    )")
+  else()
+    set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
+    export CSF_OCCTLibPath=\"@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"")
+  endif()
+endif()
 
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
@@ -1146,6 +1284,16 @@ if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
 endif()
 
 if (WIN32)
+  # Set custom script path variable for Windows template
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    # For vcpkg, scripts are in same directory - use existing SCRIPTROOT variable
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "%SCRIPTROOT%/")
+  else()
+    # For other layouts, use CASROOT with full path
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "%CASROOT%/")
+  endif()
   # env script for draw in building environment
   OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
   # install env script
@@ -1156,6 +1304,20 @@ if (WIN32)
 else()
   set (SUB_ENV_NAME "env.${SCRIPT_EXT}")
   set (SUB_ENV_BUILD_NAME "env.install.${SCRIPT_EXT}")
+  # Set custom script path variable for template
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+    # For vcpkg, scripts are in same directory - use existing path variables
+    set (OCCT_CUSTOM_SCRIPT_PATH "custom.${SCRIPT_EXT}")
+    if (WIN32)
+      set (OCCT_CUSTOM_SCRIPT_PREFIX "%SCRIPTROOT%/")
+    else()
+      set (OCCT_CUSTOM_SCRIPT_PREFIX "\${aScriptPath}/")
+    endif()
+  else()
+    # For other layouts, use CASROOT with full path
+    set (OCCT_CUSTOM_SCRIPT_PATH "${INSTALL_DIR_SCRIPT}/custom.${SCRIPT_EXT}")
+    set (OCCT_CUSTOM_SCRIPT_PREFIX "\${CASROOT}/")
+  endif()
   # install env script
   OCCT_CONFIGURE_AND_INSTALL ("adm/templates/env.install.${SCRIPT_EXT}.in" "${SUB_ENV_BUILD_NAME}" "${SUB_ENV_NAME}" "${INSTALL_DIR_SCRIPT}")
   # env script for draw in building environment
