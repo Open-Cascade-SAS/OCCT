@@ -696,7 +696,7 @@ macro (OCCT_UPDATE_TARGET_FILE)
 endmacro()
 
 macro (OCCT_INSERT_CODE_FOR_TARGET)
-  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "vcpkg")
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Vcpkg")
     install(CODE "set (OCCT_INSTALL_BIN_LETTER \"\")")
   else()
     install(CODE "if (\"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$\")
