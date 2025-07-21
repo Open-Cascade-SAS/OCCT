@@ -788,6 +788,10 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer&            
   if (GetPropsMode())
     writeValProps(theWriter.WS(), aSubLabels, theIsMulti);
 
+  // write metadata
+  if (GetMetadataMode())
+    writeMetadata(theWriter.WS(), aSubLabels);
+
   // refresh graph
   theWriter.WS()->ComputeGraph(Standard_True);
 
