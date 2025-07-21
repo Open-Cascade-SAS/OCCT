@@ -321,6 +321,10 @@ protected:
   Standard_Boolean writeNames(const Handle(XSControl_WorkSession)& theWS,
                               const TDF_LabelSequence&             theLabels) const;
 
+  //! Write metadata assigned to specified labels, to STEP model
+  Standard_Boolean writeMetadata(const Handle(XSControl_WorkSession)& theWS,
+                                  const TDF_LabelSequence&             theLabels) const;
+
   //! Write D&GTs assigned to specified labels, to STEP model
   Standard_Boolean writeDGTs(const Handle(XSControl_WorkSession)& theWS,
                              const TDF_LabelSequence&             theLabels) const;
@@ -403,6 +407,7 @@ private:
   Standard_Boolean                                                                myNameMode;
   Standard_Boolean                                                                myLayerMode;
   Standard_Boolean                                                                myPropsMode;
+  Standard_Boolean                                                                myMetadataMode;
   Standard_Boolean                                                                mySHUOMode;
   MoniTool_DataMapOfShapeTransient                                                myMapCompMDGPR;
   Standard_Boolean                                                                myGDTMode;
