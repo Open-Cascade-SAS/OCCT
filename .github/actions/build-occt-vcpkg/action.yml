@@ -1,0 +1,88 @@
+name: 'Build OCCT with vcpkg'
+description: 'Build OCCT using vcpkg package manager on a specific platform'
+
+inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  compiler:
+    description: 'Compiler (msvc, clang, gcc)'
+    required: true
+  artifact-name:
+    description: 'Name of the artifact to store build results'
+    required: true
+  use-vtk:
+    description: 'Enable VTK'
+    required: false
+    default: 'true'
+  build-use-pch:
+    description: 'Enable precompiled headers'
+    required: false
+    default: 'true'
+  build-opt-profile:
+    description: 'Build optimization profile'
+    required: false
+    default: 'Production'
+  cmake-build-type:
+    description: 'CMake build type (Release, Debug, etc)'
+    required: false
+    default: 'Release'
+  github-token:
+    description: 'GitHub token for vcpkg NuGet package access'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup vcpkg
+      uses: ./.github/actions/vcpkg-setup
+      with:
+        github-token: ${{ inputs.github-token }}
+
+    - name: Install dependencies (Linux)
+      if: ${{ inputs.platform == 'linux' }}
+      run: sudo apt-get update && sudo apt-get install -y cmake ${{ inputs.compiler == 'clang' && 'clang' || 'gcc g++' }} make libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
+      shell: bash
+
+    - name: Install required packages (macOS)
+      if: ${{ inputs.platform == 'macos' }}
+      run: brew update || true
+      shell: bash
+
+    - name: Build feature list
+      id: features
+      run: |
+        FEATURES="tcl,freetype,opengl"
+        if [ "${{ inputs.use-vtk }}" = "true" ]; then
+          FEATURES="${FEATURES},vtk"
+        fi
+        if [ "${{ inputs.build-use-pch }}" = "true" ]; then
+          FEATURES="${FEATURES},pch"
+        fi
+        if [ "${{ inputs.build-opt-profile }}" = "Production" ]; then
+          FEATURES="${FEATURES},optimized"
+        fi
+        if [ "${{ inputs.platform }}" = "windows" ]; then
+          FEATURES="${FEATURES},d3d"
+        fi
+        echo "features=${FEATURES}" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Install OCCT with vcpkg
+      run: |
+        vcpkg install opencascade[${{ steps.features.outputs.features }}] \
+          --overlay-ports=${{ github.workspace }}/adm/vcpkg/ports \
+          --triplet=${{ inputs.platform == 'windows' && 'x64-windows' || inputs.platform == 'macos' && 'x64-osx' || 'x64-linux' }}
+      shell: bash
+
+    - name: Get vcpkg root
+      id: vcpkg-root
+      run: echo "root=$(vcpkg env --triplet x64-linux | grep VCPKG_ROOT | cut -d= -f2)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Upload vcpkg installed directory
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ steps.vcpkg-root.outputs.root }}/installed
+        retention-days: 7
