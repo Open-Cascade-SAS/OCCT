@@ -3,8 +3,8 @@
 if(OCCT_MACROS_ALREADY_INCLUDED)
   return()
 endif()
-set(OCCT_MACROS_ALREADY_INCLUDED 1)
 
+set(OCCT_MACROS_ALREADY_INCLUDED 1)
 
 macro (OCCT_CHECK_AND_UNSET VARNAME)
   if (DEFINED ${VARNAME})
@@ -696,7 +696,7 @@ macro (OCCT_UPDATE_TARGET_FILE)
 endmacro()
 
 macro (OCCT_INSERT_CODE_FOR_TARGET)
-  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Vcpkg")
+  if (LAYOUT_IS_VCPKG)
     install(CODE "set (OCCT_INSTALL_BIN_LETTER \"\")")
   else()
     install(CODE "if (\"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$\")
