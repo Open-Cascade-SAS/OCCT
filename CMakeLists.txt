@@ -1280,21 +1280,21 @@ else()
   if (WIN32)
     set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%/${INSTALL_DIR_BIN}%3\"
     set \"CSF_OCCTLibPath=%CASROOT%/${INSTALL_DIR_LIB}%3\"")
-    set (OCCT_CUSTOM_ADDITIONAL_PATHS "set \"CSF_OCCTIncludePath=%CASROOT%/@INSTALL_DIR_INCLUDE@\"
-    set \"CSF_OCCTResourcePath=%CASROOT%/@INSTALL_DIR_RESOURCE@\"
-    set \"CSF_OCCTDataPath=%CASROOT%/@INSTALL_DIR_DATA@\"
-    set \"CSF_OCCTSamplesPath=%CASROOT%/@INSTALL_DIR_SAMPLES@\"
-    set \"CSF_OCCTTestsPath=%CASROOT%/@INSTALL_DIR_TESTS@\"
-    set \"CSF_OCCTDocPath=%CASROOT%/@INSTALL_DIR_DOC@\"")
+    set (OCCT_CUSTOM_ADDITIONAL_PATHS "set \"CSF_OCCTIncludePath=%CASROOT%/${INSTALL_DIR_INCLUDE}\"
+    set \"CSF_OCCTResourcePath=%CASROOT%/${INSTALL_DIR_RESOURCE}\"
+    set \"CSF_OCCTDataPath=%CASROOT%/${INSTALL_DIR_DATA}\"
+    set \"CSF_OCCTSamplesPath=%CASROOT%/${INSTALL_DIR_SAMPLES}\"
+    set \"CSF_OCCTTestsPath=%CASROOT%/${INSTALL_DIR_TESTS}\"
+    set \"CSF_OCCTDocPath=%CASROOT%/${INSTALL_DIR_DOC}\"")
   else()
     set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
     export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
-    set (OCCT_CUSTOM_ADDITIONAL_PATHS "export CSF_OCCTIncludePath=\"\${CASROOT}/@INSTALL_DIR_INCLUDE@\"
-    export CSF_OCCTResourcePath=\"\${CASROOT}/@INSTALL_DIR_RESOURCE@\"
-    export CSF_OCCTDataPath=\"\${CASROOT}/@INSTALL_DIR_DATA@\"
-    export CSF_OCCTSamplesPath=\"\${CASROOT}/@INSTALL_DIR_SAMPLES@\"
-    export CSF_OCCTTestsPath=\"\${CASROOT}/@INSTALL_DIR_TESTS@\"
-    export CSF_OCCTDocPath=\"\${CASROOT}/@INSTALL_DIR_DOC@\"")
+    set (OCCT_CUSTOM_ADDITIONAL_PATHS "export CSF_OCCTIncludePath=\"\${CASROOT}/${INSTALL_DIR_INCLUDE}\"
+    export CSF_OCCTResourcePath=\"\${CASROOT}/${INSTALL_DIR_RESOURCE}\"
+    export CSF_OCCTDataPath=\"\${CASROOT}/${INSTALL_DIR_DATA}\"
+    export CSF_OCCTSamplesPath=\"\${CASROOT}/${INSTALL_DIR_SAMPLES}\"
+    export CSF_OCCTTestsPath=\"\${CASROOT}/${INSTALL_DIR_TESTS}\"
+    export CSF_OCCTDocPath=\"\${CASROOT}/${INSTALL_DIR_DOC}\"")
   endif()
 endif()
 
