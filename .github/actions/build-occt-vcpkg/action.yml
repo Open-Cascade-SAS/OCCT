@@ -70,21 +70,17 @@ runs:
 
     - name: Install OCCT with vcpkg
       run: |
+        echo "Using vcpkg: $VCPKG_EXE"
         echo "Using overlay ports: $GITHUB_WORKSPACE/adm/vcpkg/ports"
         ls -la "$GITHUB_WORKSPACE/adm/vcpkg/ports"
-        vcpkg install opencascade[${{ steps.features.outputs.features }}] \
+        $VCPKG_EXE install opencascade[${{ steps.features.outputs.features }}] \
           --overlay-ports="$GITHUB_WORKSPACE/adm/vcpkg/ports" \
           --triplet=${{ inputs.platform == 'windows' && 'x64-windows' || inputs.platform == 'macos' && 'x64-osx' || 'x64-linux' }}
-      shell: bash
-
-    - name: Get vcpkg root
-      id: vcpkg-root
-      run: echo "root=$(vcpkg env --triplet x64-linux | grep VCPKG_ROOT | cut -d= -f2)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Upload vcpkg installed directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ steps.vcpkg-root.outputs.root }}/installed
+        path: ${{ env.VCPKG_ROOT }}/installed
         retention-days: 7
