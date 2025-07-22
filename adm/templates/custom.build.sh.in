@@ -21,8 +21,9 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
     export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 
-    export CSF_OCCTBinPath="@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
-    export CSF_OCCTLibPath="@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"
+    # CSF_OCCTBinPath and CSF_OCCTLibPath are defined differently for 
+    # multiple and single configuration builds
+    @OCCT_CUSTOM_BUILD_BIN_LIB_PATHS@
     export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     export CSF_OCCTResourcePath="@CMAKE_SOURCE_DIR@/resources"
     export CSF_OCCTDataPath="@CMAKE_SOURCE_DIR@/data"
