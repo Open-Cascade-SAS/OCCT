@@ -156,6 +156,12 @@
     "d3d": {
       "description": "Enables Direct3D support for 3D visualization on Windows. Provides alternative graphics backend to OpenGL for Windows-specific applications.",
       "supports": "windows"
+    },
+    "docs": {
+      "description": "Enables documentation generation using Doxygen. Creates HTML reference manual and overview documentation for OCCT API.",
+      "dependencies": [
+        "doxygen"
+      ]
     }
   }
 }
