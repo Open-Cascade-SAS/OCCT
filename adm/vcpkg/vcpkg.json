@@ -140,6 +140,22 @@
       "dependencies": [
         "gtest"
       ]
+    },
+    "pch": {
+      "description": "Enables precompiled headers to improve compilation speed. Creates shared headers that are compiled once and reused across multiple source files."
+    },
+    "cpp20": {
+      "description": "Enables C++20 standard compilation mode for OCCT. Provides access to latest C++20 features including concepts and modules."
+    },
+    "cpp23": {
+      "description": "Enables C++23 standard compilation mode for OCCT. Provides access to the latest C++23 features including improved constexpr and new standard library components."
+    },
+    "optimized": {
+      "description": "Enables production-level optimizations for maximum performance. Applies aggressive compiler optimizations and removes debug symbols."
+    },
+    "d3d": {
+      "description": "Enables Direct3D support for 3D visualization on Windows. Provides alternative graphics backend to OpenGL for Windows-specific applications.",
+      "supports": "windows"
     }
   }
 }
