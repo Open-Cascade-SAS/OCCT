@@ -872,8 +872,8 @@ if (NOT DEFINED INSTALL_DIR_SCRIPT)
   if (LAYOUT_IS_UNIX)
     set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   elseif (LAYOUT_IS_VCPKG)
-    # For vcpkg, scripts are always in bin directory, no generator expressions needed
-    set (INSTALL_DIR_SCRIPT "bin" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
+    # For vcpkg, scripts should follow same debug/release pattern as binaries
+    set (INSTALL_DIR_SCRIPT "$<IF:$<CONFIG:Debug>,debug/bin,bin>" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   else()
     set (INSTALL_DIR_SCRIPT "." CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
   endif()
@@ -1240,23 +1240,61 @@ set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCR
 
 # Set custom bin/lib paths variable for template
 if (LAYOUT_IS_VCPKG)
-  # For vcpkg layout, use simple installation paths without build-specific suffixes
-  # vcpkg manages dependencies differently, so avoid traditional %3 (debug suffix) paths
+  # For vcpkg layout, paths need to handle debug/release structure
+  # Debug builds: scripts in debug/bin, need to go ../../ to reach root
+  # Release builds: scripts in bin, need to go ../ to reach root
   if (WIN32)
-    set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%/${INSTALL_DIR_BIN}\"
-    set \"CSF_OCCTLibPath=%CASROOT%/${INSTALL_DIR_LIB}\"")
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%\\bin\"
+    set \"CSF_OCCTLibPath=%CASROOT%\\lib\"
+    if exist \"%SCRIPTROOT%\\..\\..\\include\" (
+      set \"CASCONTENTROOT=%SCRIPTROOT%\\..\\..\"
+    ) else (
+      set \"CASCONTENTROOT=%SCRIPTROOT%\\..\"
+    )
+    set \"CSF_OCCTIncludePath=%CASCONTENTROOT%\\include\"
+    set \"CSF_OCCTResourcePath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\"
+    set \"CSF_OCCTDataPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\"
+    set \"CSF_OCCTSamplesPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\samples\"
+    set \"CSF_OCCTTestsPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\tests\"
+    set \"CSF_OCCTDocPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\doc\"")
   else()
-    set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
-    export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
+    set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/bin\"
+    export CSF_OCCTLibPath=\"\${CASROOT}/lib\"
+    if [ -d \"\${aScriptPath}/../../include\" ]; then
+      export CASCONTENTROOT=\$(cd \"\${aScriptPath}/../..\" && pwd)
+    else
+      export CASCONTENTROOT=\$(cd \"\${aScriptPath}/..\" && pwd)
+    fi
+    export CSF_OCCTIncludePath=\"\${CASCONTENTROOT}/include\"
+    export CSF_OCCTResourcePath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}\"
+    export CSF_OCCTDataPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}\"
+    export CSF_OCCTSamplesPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/samples\"
+    export CSF_OCCTTestsPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/tests\"
+    export CSF_OCCTDocPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/doc\"")
   endif()
+  
+  # For vcpkg, we handle all paths in the bin/lib paths logic above
+  set (OCCT_CUSTOM_ADDITIONAL_PATHS "")
 else()
   # For other layouts, use CASROOT with full paths including build-specific suffixes
   if (WIN32)
     set (OCCT_CUSTOM_BIN_LIB_PATHS "set \"CSF_OCCTBinPath=%CASROOT%/${INSTALL_DIR_BIN}%3\"
     set \"CSF_OCCTLibPath=%CASROOT%/${INSTALL_DIR_LIB}%3\"")
+    set (OCCT_CUSTOM_ADDITIONAL_PATHS "set \"CSF_OCCTIncludePath=%CASROOT%/@INSTALL_DIR_INCLUDE@\"
+    set \"CSF_OCCTResourcePath=%CASROOT%/@INSTALL_DIR_RESOURCE@\"
+    set \"CSF_OCCTDataPath=%CASROOT%/@INSTALL_DIR_DATA@\"
+    set \"CSF_OCCTSamplesPath=%CASROOT%/@INSTALL_DIR_SAMPLES@\"
+    set \"CSF_OCCTTestsPath=%CASROOT%/@INSTALL_DIR_TESTS@\"
+    set \"CSF_OCCTDocPath=%CASROOT%/@INSTALL_DIR_DOC@\"")
   else()
     set (OCCT_CUSTOM_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"\${CASROOT}/${INSTALL_DIR_BIN}\"
     export CSF_OCCTLibPath=\"\${CASROOT}/${INSTALL_DIR_LIB}\"")
+    set (OCCT_CUSTOM_ADDITIONAL_PATHS "export CSF_OCCTIncludePath=\"\${CASROOT}/@INSTALL_DIR_INCLUDE@\"
+    export CSF_OCCTResourcePath=\"\${CASROOT}/@INSTALL_DIR_RESOURCE@\"
+    export CSF_OCCTDataPath=\"\${CASROOT}/@INSTALL_DIR_DATA@\"
+    export CSF_OCCTSamplesPath=\"\${CASROOT}/@INSTALL_DIR_SAMPLES@\"
+    export CSF_OCCTTestsPath=\"\${CASROOT}/@INSTALL_DIR_TESTS@\"
+    export CSF_OCCTDocPath=\"\${CASROOT}/@INSTALL_DIR_DOC@\"")
   endif()
 endif()
 

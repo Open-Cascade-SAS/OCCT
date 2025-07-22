@@ -23,12 +23,8 @@ if [ "$1" == "@BIN_LETTER@" ]; then
 
     # Set paths based on layout
     @OCCT_CUSTOM_BIN_LIB_PATHS@
-    export CSF_OCCTIncludePath="${CASROOT}/@INSTALL_DIR_INCLUDE@"
-    export CSF_OCCTResourcePath="${CASROOT}/@INSTALL_DIR_RESOURCE@"
-    export CSF_OCCTDataPath="${CASROOT}/@INSTALL_DIR_DATA@"
-    export CSF_OCCTSamplesPath="${CASROOT}/@INSTALL_DIR_SAMPLES@"
-    export CSF_OCCTTestsPath="${CASROOT}/@INSTALL_DIR_TESTS@"
-    export CSF_OCCTDocPath="${CASROOT}/@INSTALL_DIR_DOC@"
+    
+    @OCCT_CUSTOM_ADDITIONAL_PATHS@
   fi
 fi
 
