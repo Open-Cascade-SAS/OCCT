@@ -2,7 +2,11 @@ name: Test vcpkg port
 
 on:
   pull_request:
-    branches: [ vcpkg-port ]
+    branches:
+      - '**'
+  push:
+    branches:
+      - 'master'
 
 jobs:
   test-vcpkg:
