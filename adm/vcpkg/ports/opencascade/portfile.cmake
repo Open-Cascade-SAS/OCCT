@@ -12,9 +12,6 @@ if(NOT GIT_RESULT EQUAL 0)
     set(GIT_COMMIT_HASH "unknown")
 endif()
 
-# Include git hash in package ABI for cache invalidation
-vcpkg_add_to_path_hash("${GIT_COMMIT_HASH}")
-
 set(SOURCE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../..")
 
 if (VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
@@ -75,8 +72,15 @@ vcpkg_cmake_configure(
         -DBUILD_CPP_STANDARD=${BUILD_CPP_STANDARD}
         -DBUILD_OPT_PROFILE=${BUILD_OPT_PROFILE}
         -DBUILD_MODULE_Draw=${BUILD_MODULE_Draw}
+        -DCMAKE_INSTALL_PREFIX=${CURRENT_PACKAGES_DIR}
+    MAYBE_UNUSED_VARIABLES
+        -USE_HASH=${GIT_COMMIT_HASH}
 )
 
 vcpkg_cmake_install()
 
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/opencascade)
+vcpkg_install_copyright(
+    FILE_LIST
+        "${SOURCE_PATH}/LICENSE_LGPL_21.txt"
+        "${SOURCE_PATH}/OCCT_LGPL_EXCEPTION.txt"
+)
