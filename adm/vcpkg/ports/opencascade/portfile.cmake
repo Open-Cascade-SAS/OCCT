@@ -74,7 +74,7 @@ vcpkg_cmake_configure(
         -DBUILD_MODULE_Draw=${BUILD_MODULE_Draw}
         -DCMAKE_INSTALL_PREFIX=${CURRENT_PACKAGES_DIR}
     MAYBE_UNUSED_VARIABLES
-        -USE_HASH=${GIT_COMMIT_HASH}
+        -DUSE_HASH=${GIT_COMMIT_HASH}
 )
 
 vcpkg_cmake_install()
