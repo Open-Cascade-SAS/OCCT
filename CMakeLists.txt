@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.10 FATAL_ERROR)
 
+# Define OCCT root directory as a cache variable - works for both standalone and subproject builds
+set(OCCT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Root directory of OCCT project" FORCE)
+
 if (NOT DEFINED BUILD_USE_VCPKG)
   set (BUILD_USE_VCPKG OFF CACHE BOOL "Use vcpkg for 3rdparty libraries.")
   if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
@@ -849,9 +852,6 @@ if (APPLE)
   # set Apple specific variables
   occt_set_apple_csf_vars()
 endif()
-
-# copying clang-format file to the root of the project
-file(COPY ${OCCT_ROOT_DIR}/.clang-format DESTINATION ${OCCT_ROOT_DIR})
 
 # Get all used variables: OS_WITH_BIT, COMPILER
 OCCT_MAKE_OS_WITH_BITNESS()
