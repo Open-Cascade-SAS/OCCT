@@ -32,7 +32,7 @@ if (BUILD_USE_VCPKG)
   endif()
 
   if  (NOT DEFINED VCPKG_MANIFEST_DIR OR NOT EXISTS "${VCPKG_MANIFEST_DIR}")
-    set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg")
+    set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg/ports/opencascade")
   endif()
 
   # Disable default features for vcpkg manifest
