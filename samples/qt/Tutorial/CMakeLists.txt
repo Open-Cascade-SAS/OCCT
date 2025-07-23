@@ -1,8 +1,8 @@
 project(Tutorial)
 
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
-include_directories("${CMAKE_SOURCE_DIR}/${RELATIVE_DIR}/Interface/src")
-include_directories("${CMAKE_SOURCE_DIR}/${RELATIVE_DIR}/Common/src")
+include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/Interface/src")
+include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/Common/src")
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
 

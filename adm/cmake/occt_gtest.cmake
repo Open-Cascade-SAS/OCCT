@@ -135,29 +135,29 @@ function(OCCT_SET_GTEST_ENVIRONMENT)
     set(TEST_ENVIRONMENT
       "CSF_LANGUAGE=us"
       "MMGT_CLEAR=1"
-      "CSF_SHMessage=${CMAKE_SOURCE_DIR}/resources/SHMessage"
-      "CSF_MDTVTexturesDirectory=${CMAKE_SOURCE_DIR}/resources/Textures"
-      "CSF_ShadersDirectory=${CMAKE_SOURCE_DIR}/resources/Shaders"
-      "CSF_XSMessage=${CMAKE_SOURCE_DIR}/resources/XSMessage"
-      "CSF_TObjMessage=${CMAKE_SOURCE_DIR}/resources/TObj"
-      "CSF_StandardDefaults=${CMAKE_SOURCE_DIR}/resources/StdResource"
-      "CSF_PluginDefaults=${CMAKE_SOURCE_DIR}/resources/StdResource"
-      "CSF_XCAFDefaults=${CMAKE_SOURCE_DIR}/resources/StdResource"
-      "CSF_TObjDefaults=${CMAKE_SOURCE_DIR}/resources/StdResource"
-      "CSF_StandardLiteDefaults=${CMAKE_SOURCE_DIR}/resources/StdResource"
-      "CSF_IGESDefaults=${CMAKE_SOURCE_DIR}/resources/XSTEPResource"
-      "CSF_STEPDefaults=${CMAKE_SOURCE_DIR}/resources/XSTEPResource"
-      "CSF_XmlOcafResource=${CMAKE_SOURCE_DIR}/resources/XmlOcafResource"
-      "CSF_MIGRATION_TYPES=${CMAKE_SOURCE_DIR}/resources/StdResource/MigrationSheet.txt"
-      "CSF_OCCTResourcePath=${CMAKE_SOURCE_DIR}/resources"
-      "CSF_OCCTDataPath=${CMAKE_SOURCE_DIR}/data"
-      "CSF_OCCTDocPath=${CMAKE_SOURCE_DIR}/doc"
-      "CSF_OCCTSamplesPath=${CMAKE_SOURCE_DIR}/samples"
-      "CSF_OCCTTestsPath=${CMAKE_SOURCE_DIR}/tests"
+      "CSF_SHMessage=${OCCT_ROOT_DIR}/resources/SHMessage"
+      "CSF_MDTVTexturesDirectory=${OCCT_ROOT_DIR}/resources/Textures"
+      "CSF_ShadersDirectory=${OCCT_ROOT_DIR}/resources/Shaders"
+      "CSF_XSMessage=${OCCT_ROOT_DIR}/resources/XSMessage"
+      "CSF_TObjMessage=${OCCT_ROOT_DIR}/resources/TObj"
+      "CSF_StandardDefaults=${OCCT_ROOT_DIR}/resources/StdResource"
+      "CSF_PluginDefaults=${OCCT_ROOT_DIR}/resources/StdResource"
+      "CSF_XCAFDefaults=${OCCT_ROOT_DIR}/resources/StdResource"
+      "CSF_TObjDefaults=${OCCT_ROOT_DIR}/resources/StdResource"
+      "CSF_StandardLiteDefaults=${OCCT_ROOT_DIR}/resources/StdResource"
+      "CSF_IGESDefaults=${OCCT_ROOT_DIR}/resources/XSTEPResource"
+      "CSF_STEPDefaults=${OCCT_ROOT_DIR}/resources/XSTEPResource"
+      "CSF_XmlOcafResource=${OCCT_ROOT_DIR}/resources/XmlOcafResource"
+      "CSF_MIGRATION_TYPES=${OCCT_ROOT_DIR}/resources/StdResource/MigrationSheet.txt"
+      "CSF_OCCTResourcePath=${OCCT_ROOT_DIR}/resources"
+      "CSF_OCCTDataPath=${OCCT_ROOT_DIR}/data"
+      "CSF_OCCTDocPath=${OCCT_ROOT_DIR}/doc"
+      "CSF_OCCTSamplesPath=${OCCT_ROOT_DIR}/samples"
+      "CSF_OCCTTestsPath=${OCCT_ROOT_DIR}/tests"
       "CSF_OCCTBinPath=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
       "CSF_OCCTLibPath=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}"
       "CSF_OCCTIncludePath=${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}"
-      "CASROOT=${CMAKE_SOURCE_DIR}"
+      "CASROOT=${OCCT_ROOT_DIR}"
     )
 
     # Build PATH environment variable
@@ -215,12 +215,12 @@ function(OCCT_SET_GTEST_ENVIRONMENT)
     endif()
 
     # Add DrawResources related environment if it exists
-    if(EXISTS "${CMAKE_SOURCE_DIR}/resources/DrawResources")
-      list(APPEND TEST_ENVIRONMENT "DRAWHOME=${CMAKE_SOURCE_DIR}/resources/DrawResources")
-      list(APPEND TEST_ENVIRONMENT "CSF_DrawPluginDefaults=${CMAKE_SOURCE_DIR}/resources/DrawResources")
+    if(EXISTS "${OCCT_ROOT_DIR}/resources/DrawResources")
+      list(APPEND TEST_ENVIRONMENT "DRAWHOME=${OCCT_ROOT_DIR}/resources/DrawResources")
+      list(APPEND TEST_ENVIRONMENT "CSF_DrawPluginDefaults=${OCCT_ROOT_DIR}/resources/DrawResources")
 
-      if(EXISTS "${CMAKE_SOURCE_DIR}/resources/DrawResources/DrawDefault")
-        list(APPEND TEST_ENVIRONMENT "DRAWDEFAULT=${CMAKE_SOURCE_DIR}/resources/DrawResources/DrawDefault")
+      if(EXISTS "${OCCT_ROOT_DIR}/resources/DrawResources/DrawDefault")
+        list(APPEND TEST_ENVIRONMENT "DRAWDEFAULT=${OCCT_ROOT_DIR}/resources/DrawResources/DrawDefault")
       endif()
     endif()
 
