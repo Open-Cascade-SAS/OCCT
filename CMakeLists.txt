@@ -31,9 +31,7 @@ if (BUILD_USE_VCPKG)
     message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
   endif()
 
-  if  (NOT DEFINED VCPKG_MANIFEST_DIR OR NOT EXISTS "${VCPKG_MANIFEST_DIR}")
-    set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg/ports/opencascade")
-  endif()
+  set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg/ports/opencascade")
 
   # Disable default features for vcpkg manifest
   set (VCPKG_MANIFEST_NO_DEFAULT_FEATURES 1)
