@@ -329,7 +329,7 @@ TCollection_AsciiString ApplicationCommonWindow::getSampleSourceDir()
     TCollection_AsciiString aCasRoot = OSD_Environment("CASROOT").Value();
     if (!aCasRoot.IsEmpty())
     {
-      aSampleSourceDir = aCasRoot + "/samples/OCCTOverview/code";
+      aSampleSourceDir = aCasRoot + "/samples/qt/OCCTOverview/code";
     }
   }
   return aSampleSourceDir;

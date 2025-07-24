@@ -1174,7 +1174,6 @@ if (INSTALL_SAMPLES)
   OCCT_INSTALL_FILE_OR_DIR ("samples/java" "${INSTALL_DIR_SAMPLES}")
   OCCT_INSTALL_FILE_OR_DIR ("samples/ocafsamples" "${INSTALL_DIR_SAMPLES}")
   OCCT_INSTALL_FILE_OR_DIR ("samples/qt" "${INSTALL_DIR_SAMPLES}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code" "${INSTALL_DIR_SAMPLES}/OCCTOverview")
 
   install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/FuncDemo" RENAME "env.${SCRIPT_EXT}")
   install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/IESample" RENAME "env.${SCRIPT_EXT}")
@@ -1403,13 +1402,13 @@ if (BUILD_SAMPLES_QT)
   endforeach()
 
   ## Copy sources of OCCTOverview for using in the sample
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/DataExchangeSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/OcafSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/GeometrySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/TopologySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/TriangulationSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/Viewer2dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/OCCTOverview/code/Viewer3dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/DataExchangeSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/OcafSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/GeometrySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/TopologySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/TriangulationSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/Viewer2dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/Viewer3dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
 endif()
 
 
