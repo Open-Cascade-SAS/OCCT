@@ -1,8 +1,17 @@
 project(OCCTOverview)
 
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
-include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/../OCCTOverview/code")
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
+# Sample configuration
+set (EXECUTABLE_PROJECT ON)
+set (USE_QT ON)
+set (RELATIVE_DIR "samples/qt")
+set (TARGET_FOLDER "Samples")
 
-ADD_DEFINITIONS(-DNO_COMMONSAMPLE_EXPORTS -DNO_IESAMPLE_EXPORTS)
+include_directories("${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/${RELATIVE_DIR}")
+include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/../OCCTOverview/code")
+include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/Common/src")
+include_directories("${OCCT_ROOT_DIR}/${RELATIVE_DIR}/Interface/src")
+
+OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
+
+# Target-specific definitions
+target_compile_definitions(OCCTOverview PRIVATE -DNO_COMMONSAMPLE_EXPORTS -DNO_IESAMPLE_EXPORTS)

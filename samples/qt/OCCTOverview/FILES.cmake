@@ -1,0 +1,47 @@
+# Source files for OCCTOverview sample
+set(OCCT_OCCTOverview_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_OCCTOverview_FILES
+  src/ApplicationCommon.cxx
+  src/ApplicationCommon.h
+  src/CommonSample.h
+  src/DocumentCommon.cxx
+  src/DocumentCommon.h
+  src/GeomWidget.cxx
+  src/GeomWidget.h
+  src/Main.cxx
+  src/OcctHighlighter.cxx
+  src/OcctHighlighter.h
+  src/OcctWindow.cxx
+  src/OcctWindow.h
+  src/OCCTOverview.qrc
+  src/TranslateDialog.h
+  src/TranslateDialog.cxx
+  src/Transparency.cxx
+  src/Transparency.h
+  src/View.cxx
+  src/View.h
+  ../Common/src/ApplicationCommon.cxx
+  ../Common/src/ApplicationCommon.h
+  ../Common/src/Common-icon.ts
+  ../Common/src/Common-string.ts
+  ../Common/src/CommonSample.h
+  ../Common/src/DocumentCommon.cxx
+  ../Common/src/DocumentCommon.h
+  ../Common/src/Material.cxx
+  ../Common/src/Material.h
+  ../Common/src/MDIWindow.cxx
+  ../Common/src/MDIWindow.h
+  ../Common/src/OcctWindow.cxx
+  ../Common/src/OcctWindow.h
+  ../Common/src/Transparency.cxx
+  ../Common/src/Transparency.h
+  ../Common/src/View.cxx
+  ../Common/src/View.h
+  ../Interface/src/Application.cxx
+  ../Interface/src/Application.h
+  ../Interface/src/IESample.h
+  ../Interface/src/Interface-string.ts
+  ../Interface/src/Translate.cxx
+  ../Interface/src/Translate.h
+)
