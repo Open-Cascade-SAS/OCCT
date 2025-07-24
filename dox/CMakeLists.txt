@@ -1,7 +1,7 @@
 project (Overview)
 
 # directory that contains all raw OCCT overview articles (markdown format)
-set (OCCT_OVERVIEW_DIR "${CMAKE_SOURCE_DIR}/dox")
+set (OCCT_OVERVIEW_DIR "${OCCT_ROOT_DIR}/dox")
 
 # directory that contains resources for the generation of OCCT documentation
 set (OCCT_OVERVIEW_RESOURCE_DIR "${OCCT_OVERVIEW_DIR}/resources")
@@ -43,7 +43,7 @@ configure_file ("${OCCT_OVERVIEW_RESOURCE_DIR}/occt_ug_html.doxyfile" "${OCCT_CO
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nPROJECT_NUMBER         = ${OCC_VERSION_STRING_EXT}")
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nOUTPUT_DIRECTORY       = ${OCCT_GENERATED_OVERVIEW_DIR}/.")
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nPROJECT_LOGO           = ${OCCT_OVERVIEW_DIR}/resources/occ_logo.png")
-file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nEXAMPLE_PATH           = ${CMAKE_SOURCE_DIR}/src")
+file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nEXAMPLE_PATH           = ${OCCT_ROOT_DIR}/src")
 
 set (OCCT_ARTICLE_PARAM_INPUT     "INPUT                  =")
 set (OCCT_ARTICLE_PARAM_IMAGEPATH "IMAGE_PATH             = ${OCCT_OVERVIEW_DIR}/resources/ ")
