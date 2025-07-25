@@ -1,0 +1,20 @@
+# External dependencies for AndroidQt sample
+set(OCCT_AndroidQt_EXTERNAL_LIBS
+  TKernel
+  TKMath
+  TKG2d
+  TKG3d
+  TKGeomBase
+  TKBRep
+  TKGeomAlgo
+  TKTopAlgo
+  TKShHealing
+  TKService
+  TKMesh
+  TKHLR
+  TKV3d
+  TKOpenGl
+  CSF_FreeImagePlus
+  CSF_FREETYPE
+  CSF_OpenGlLibs
+)
