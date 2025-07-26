@@ -16,7 +16,7 @@
 #ifndef NCollection_String_HeaderFile
 #define NCollection_String_HeaderFile
 
-#include "NCollection_UtfString.hxx"
+#include <NCollection_UtfString.hxx>
 
 typedef NCollection_Utf8String NCollection_String;
 

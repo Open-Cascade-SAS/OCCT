@@ -104,6 +104,10 @@ public:
   Standard_EXPORT Geom_BezierCurve(const TColgp_Array1OfPnt&   CurvePoles,
                                    const TColStd_Array1OfReal& PoleWeights);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the Bezier curve to copy from
+  Standard_EXPORT Geom_BezierCurve(const Geom_BezierCurve& theOther);
+
   //! Increases the degree of a bezier curve. Degree is the new
   //! degree of <me>. Raises ConstructionError
   //! if Degree is greater than MaxDegree or lower than 2

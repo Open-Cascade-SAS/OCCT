@@ -78,7 +78,7 @@ runs:
 
     - name: Upload non-ASCII report
       if: steps.ascii-check.outputs.has_non_ascii == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: non-ascii-report
         path: non_ascii_report.txt

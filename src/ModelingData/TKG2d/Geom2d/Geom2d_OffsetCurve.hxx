@@ -98,6 +98,9 @@ public:
                                      const Standard_Real         Offset,
                                      const Standard_Boolean      isNotCheckC0 = Standard_False);
 
+  //! Copy constructor for optimized copying without validation.
+  Standard_EXPORT Geom2d_OffsetCurve(const Geom2d_OffsetCurve& theOther);
+
   //! Changes the direction of parametrization of <me>.
   //! As a result:
   //! - the basis curve is reversed,

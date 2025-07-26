@@ -33,11 +33,11 @@ if (NOT FLEX_FOUND OR NOT FLEX_INCLUDE_DIR OR NOT EXISTS "${FLEX_INCLUDE_DIR}/Fl
 endif()
 
 # remove old general version of FlexLexer
-if (EXISTS ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
-  message (STATUS "Info: remove old FLEX header file: ${CMAKE_SOURCE_DIR}/src/FlexLexer/FlexLexer.h")
-  file(REMOVE ${CMAKE_SOURCE_DIR}/src/FlexLexer/FlexLexer.h)
+if (EXISTS ${OCCT_ROOT_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
+  message (STATUS "Info: remove old FLEX header file: ${OCCT_ROOT_DIR}/src/FlexLexer/FlexLexer.h")
+  file(REMOVE ${OCCT_ROOT_DIR}/src/FlexLexer/FlexLexer.h)
 endif()
 # install copy of FlexLexer.h locally to allow further building without flex
 if (FLEX_INCLUDE_DIR AND EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
-  configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${CMAKE_SOURCE_DIR}/src/FlexLexer/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
+  configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${OCCT_ROOT_DIR}/src/FlexLexer/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
 endif()

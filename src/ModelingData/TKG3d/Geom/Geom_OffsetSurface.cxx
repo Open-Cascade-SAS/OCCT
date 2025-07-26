@@ -70,14 +70,28 @@ static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 Handle(Geom_Geometry) Geom_OffsetSurface::Copy() const
 {
-  Handle(Geom_OffsetSurface) S(new Geom_OffsetSurface(basisSurf, offsetValue, Standard_True));
-  return S;
+  return new Geom_OffsetSurface(*this);
 }
 
 //=======================================================================
 // function : Geom_OffsetSurface
 // purpose  : Basis surface cannot be an Offset surface or trimmed from
 //            offset surface.
+//=======================================================================
+
+Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
+    : basisSurf(Handle(Geom_Surface)::DownCast(theOther.basisSurf->Copy())),
+      equivSurf(theOther.equivSurf.IsNull()
+                  ? Handle(Geom_Surface)()
+                  : Handle(Geom_Surface)::DownCast(theOther.equivSurf->Copy())),
+      offsetValue(theOther.offsetValue),
+      myOscSurf(theOther.myOscSurf),
+      myBasisSurfContinuity(theOther.myBasisSurfContinuity),
+      myEvaluator(new GeomEvaluator_OffsetSurface(basisSurf, offsetValue, myOscSurf))
+{
+  // Deep copy without validation - source surface is already validated
+}
+
 //=======================================================================
 
 Geom_OffsetSurface::Geom_OffsetSurface(const Handle(Geom_Surface)& theSurf,

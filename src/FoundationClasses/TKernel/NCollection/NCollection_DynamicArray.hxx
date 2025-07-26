@@ -14,8 +14,8 @@
 #ifndef NCollection_DynamicArray_HeaderFile
 #define NCollection_DynamicArray_HeaderFile
 
-#include "NCollection_Allocator.hxx"
-#include "NCollection_BasePointerVector.hxx"
+#include <NCollection_Allocator.hxx>
+#include <NCollection_BasePointerVector.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_NotImplemented.hxx>

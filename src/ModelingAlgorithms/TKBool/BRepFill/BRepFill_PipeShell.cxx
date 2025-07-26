@@ -213,7 +213,8 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
       myIsAutomaticLaw(Standard_False),
       myTrihedron(GeomFill_IsCorrectedFrenet),
       myTransition(BRepFill_Modified),
-      myStatus(GeomFill_PipeOk)
+      myStatus(GeomFill_PipeOk),
+      myIsBuildHistory(Standard_True)
 {
   myLocation.Nullify();
   mySection.Nullify();
@@ -785,7 +786,10 @@ Standard_Boolean BRepFill_PipeShell::Build()
         myShape.Closed(Standard_True);
     }
 
-    BuildHistory(MkSw);
+    if (myIsBuildHistory)
+    {
+      BuildHistory(MkSw);
+    }
   }
   else
   {

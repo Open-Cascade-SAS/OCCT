@@ -128,29 +128,65 @@ static void Rational(const TColStd_Array2OfReal& Weights,
 
 Handle(Geom_Geometry) Geom_BSplineSurface::Copy() const
 {
-  Handle(Geom_BSplineSurface) S;
-  if (urational || vrational)
-    S = new Geom_BSplineSurface(poles->Array2(),
-                                weights->Array2(),
-                                uknots->Array1(),
-                                vknots->Array1(),
-                                umults->Array1(),
-                                vmults->Array1(),
-                                udeg,
-                                vdeg,
-                                uperiodic,
-                                vperiodic);
-  else
-    S = new Geom_BSplineSurface(poles->Array2(),
-                                uknots->Array1(),
-                                vknots->Array1(),
-                                umults->Array1(),
-                                vmults->Array1(),
-                                udeg,
-                                vdeg,
-                                uperiodic,
-                                vperiodic);
-  return S;
+  return new Geom_BSplineSurface(*this);
+}
+
+//=================================================================================================
+
+Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
+    : urational(theOther.urational),
+      vrational(theOther.vrational),
+      uperiodic(theOther.uperiodic),
+      vperiodic(theOther.vperiodic),
+      uknotSet(theOther.uknotSet),
+      vknotSet(theOther.vknotSet),
+      Usmooth(theOther.Usmooth),
+      Vsmooth(theOther.Vsmooth),
+      udeg(theOther.udeg),
+      vdeg(theOther.vdeg),
+      umaxderivinv(theOther.umaxderivinv),
+      vmaxderivinv(theOther.vmaxderivinv),
+      maxderivinvok(Standard_False)
+{
+  // Deep copy all data arrays without validation
+  poles                 = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(),
+                                  theOther.poles->UpperRow(),
+                                  theOther.poles->LowerCol(),
+                                  theOther.poles->UpperCol());
+  poles->ChangeArray2() = theOther.poles->Array2();
+
+  uknots = new TColStd_HArray1OfReal(theOther.uknots->Lower(), theOther.uknots->Upper());
+  uknots->ChangeArray1() = theOther.uknots->Array1();
+
+  vknots = new TColStd_HArray1OfReal(theOther.vknots->Lower(), theOther.vknots->Upper());
+  vknots->ChangeArray1() = theOther.vknots->Array1();
+
+  umults = new TColStd_HArray1OfInteger(theOther.umults->Lower(), theOther.umults->Upper());
+  umults->ChangeArray1() = theOther.umults->Array1();
+
+  vmults = new TColStd_HArray1OfInteger(theOther.vmults->Lower(), theOther.vmults->Upper());
+  vmults->ChangeArray1() = theOther.vmults->Array1();
+
+  if (!theOther.ufknots.IsNull())
+  {
+    ufknots = new TColStd_HArray1OfReal(theOther.ufknots->Lower(), theOther.ufknots->Upper());
+    ufknots->ChangeArray1() = theOther.ufknots->Array1();
+  }
+
+  if (!theOther.vfknots.IsNull())
+  {
+    vfknots = new TColStd_HArray1OfReal(theOther.vfknots->Lower(), theOther.vfknots->Upper());
+    vfknots->ChangeArray1() = theOther.vfknots->Array1();
+  }
+
+  if (!theOther.weights.IsNull())
+  {
+    weights                 = new TColStd_HArray2OfReal(theOther.weights->LowerRow(),
+                                        theOther.weights->UpperRow(),
+                                        theOther.weights->LowerCol(),
+                                        theOther.weights->UpperCol());
+    weights->ChangeArray2() = theOther.weights->Array2();
+  }
 }
 
 //=================================================================================================

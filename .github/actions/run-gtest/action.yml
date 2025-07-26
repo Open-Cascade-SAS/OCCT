@@ -25,7 +25,7 @@ runs:
   using: "composite"
   steps:
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.7
+      uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.install-artifact-name }}
         path: install
@@ -77,7 +77,7 @@ runs:
         cat gtest_output.log
 
     - name: Upload GTest results
-      uses: actions/upload-artifact@v4.4.3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: gtest-results-${{ inputs.platform }}-${{ inputs.compiler }}-${{ inputs.artifact-suffix }}
         path: |

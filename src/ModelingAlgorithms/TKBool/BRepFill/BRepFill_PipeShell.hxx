@@ -122,6 +122,18 @@ public:
   //! spine
   Standard_EXPORT void SetForceApproxC1(const Standard_Boolean ForceApproxC1);
 
+  //! Sets the build history flag.
+  //! If set to True, the pipe shell will store the history of the sections
+  //! and the spine, which can be used for further modifications or analysis.
+  inline void SetIsBuildHistory(const Standard_Boolean theIsBuildHistory)
+  {
+    myIsBuildHistory = theIsBuildHistory;
+  }
+
+  //! Returns the build history flag.
+  //! If True, the pipe shell stores the history of the sections and the spine.
+  inline bool IsBuildHistory() const { return myIsBuildHistory; }
+
   //! Set an section. The correspondence with the spine, will be automatically performed.
   Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
                            const Standard_Boolean WithContact    = Standard_False,
@@ -246,6 +258,7 @@ private:
   BRepFill_TransitionStyle           myTransition;
   GeomFill_PipeError                 myStatus;
   Standard_Real                      myErrorOnSurf;
+  Standard_Boolean                   myIsBuildHistory;
 };
 
 #endif // _BRepFill_PipeShell_HeaderFile

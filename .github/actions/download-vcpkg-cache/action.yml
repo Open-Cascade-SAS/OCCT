@@ -15,7 +15,7 @@ runs:
   steps:
 
     - name: Download vcpkg tar archive
-      uses: actions/download-artifact@v4.1.8
+      uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.artifact-name }}
         path: ${{ inputs.build-directory }}

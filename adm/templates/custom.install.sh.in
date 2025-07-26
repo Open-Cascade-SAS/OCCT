@@ -21,14 +21,10 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
     export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 
-    export CSF_OCCTBinPath="${CASROOT}/@INSTALL_DIR_BIN@"
-    export CSF_OCCTLibPath="${CASROOT}/@INSTALL_DIR_LIB@"
-    export CSF_OCCTIncludePath="${CASROOT}/@INSTALL_DIR_INCLUDE@"
-    export CSF_OCCTResourcePath="${CASROOT}/@INSTALL_DIR_RESOURCE@"
-    export CSF_OCCTDataPath="${CASROOT}/@INSTALL_DIR_DATA@"
-    export CSF_OCCTSamplesPath="${CASROOT}/@INSTALL_DIR_SAMPLES@"
-    export CSF_OCCTTestsPath="${CASROOT}/@INSTALL_DIR_TESTS@"
-    export CSF_OCCTDocPath="${CASROOT}/@INSTALL_DIR_DOC@"
+    # Set paths based on layout
+    @OCCT_CUSTOM_BIN_LIB_PATHS@
+    
+    @OCCT_CUSTOM_ADDITIONAL_PATHS@
   fi
 fi
 

@@ -172,6 +172,10 @@ public:
                                     const Standard_Boolean         Periodic      = Standard_False,
                                     const Standard_Boolean         CheckRational = Standard_True);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the BSpline curve to copy from
+  Standard_EXPORT Geom_BSplineCurve(const Geom_BSplineCurve& theOther);
+
   //! Increases the degree of this BSpline curve to
   //! Degree. As a result, the poles, weights and
   //! multiplicities tables are modified; the knots table is

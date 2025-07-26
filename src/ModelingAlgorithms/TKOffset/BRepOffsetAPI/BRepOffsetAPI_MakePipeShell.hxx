@@ -274,13 +274,24 @@ public:
 
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
+  //! Sets the build history flag.
+  //! If set to True, the pipe shell will store the history of the sections
+  //! and the spine, which can be used for further modifications or analysis.
+  inline void SetIsBuildHistory(const Standard_Boolean theIsBuildHistory)
+  {
+    myPipe->SetIsBuildHistory(theIsBuildHistory);
+  }
+
+  //! Returns the build history flag.
+  //! If True, the pipe shell stores the history of the sections and the spine.
+  inline bool IsBuildHistory() const { return myPipe->IsBuildHistory(); }
+
   //! Returns the list of original profiles
   void Profiles(TopTools_ListOfShape& theProfiles) { myPipe->Profiles(theProfiles); }
 
   //! Returns the spine
   const TopoDS_Wire& Spine() { return myPipe->Spine(); }
 
-protected:
 private:
   Handle(BRepFill_PipeShell) myPipe;
 };

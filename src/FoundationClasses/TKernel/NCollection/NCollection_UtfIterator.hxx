@@ -243,6 +243,6 @@ typedef NCollection_UtfIterator<Standard_Utf32Char> NCollection_Utf32Iter;
 typedef NCollection_UtfIterator<Standard_WideChar>  NCollection_UtfWideIter;
 
 // template implementation
-#include "NCollection_UtfIterator.lxx"
+#include <NCollection_UtfIterator.lxx>
 
 #endif // _NCollection_UtfIterator_H__

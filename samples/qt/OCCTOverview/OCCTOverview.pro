@@ -17,19 +17,19 @@ isEmpty(CSF_OCCTSamplesPath) {
 
 
 HEADERS   = ./src/*.h \
-            $${SAMPLESROOT}/../OCCTOverview/code/*.h
+            ./code/*.h
 
 SOURCES   = ./src/*.cxx \
-            $${SAMPLESROOT}/../OCCTOverview/code/*.cxx
+            ./code/*.cxx
 
-RESOURCES += $${SAMPLESROOT}/../OCCTOverview/code/Samples.qrc
+RESOURCES += ./code/Samples.qrc
 RESOURCES += ./src/OCCTOverview.qrc
 
 RES_DIR   = $$quote($$(RES_DIR))
 
 INCLUDEPATH += $$quote($$(CSF_SampleSources))
 INCLUDEPATH += $$quote($$(CSF_OCCTIncludePath)) \
-               $${SAMPLESROOT}/../OCCTOverview/code
+               $${SAMPLESROOT}/qt/OCCTOverview/code
 
 
 OCCT_DEFINES = $$(CSF_DEFINES)

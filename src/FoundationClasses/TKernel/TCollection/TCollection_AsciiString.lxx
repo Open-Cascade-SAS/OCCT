@@ -15,7 +15,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_HashUtils.hxx>
-#include "TCollection_AsciiString.hxx"
+#include <TCollection_AsciiString.hxx>
 
 // definition global methods for using in NCollection
 
