@@ -119,6 +119,29 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& Poles,
 
 //=================================================================================================
 
+Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
+    : rational(theOther.rational),
+      closed(theOther.closed),
+      maxderivinv(theOther.maxderivinv),
+      maxderivinvok(theOther.maxderivinvok)
+{
+  // Deep copy all data arrays without validation
+  poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());
+  poles->ChangeArray1() = theOther.poles->Array1();
+  
+  if (theOther.weights.IsNull())
+  {
+    weights.Nullify();
+  }
+  else
+  {
+    weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
+    weights->ChangeArray1() = theOther.weights->Array1();
+  }
+}
+
+//=================================================================================================
+
 void Geom2d_BezierCurve::Increase(const Standard_Integer Deg)
 {
   if (Deg == Degree())
@@ -665,13 +688,7 @@ void Geom2d_BezierCurve::Resolution(const Standard_Real ToleranceUV, Standard_Re
 
 Handle(Geom2d_Geometry) Geom2d_BezierCurve::Copy() const
 {
-
-  Handle(Geom2d_BezierCurve) C;
-  if (IsRational())
-    C = new Geom2d_BezierCurve(poles->Array1(), weights->Array1());
-  else
-    C = new Geom2d_BezierCurve(poles->Array1());
-  return C;
+  return new Geom2d_BezierCurve(*this);
 }
 
 //=================================================================================================
