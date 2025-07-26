@@ -69,7 +69,7 @@ Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
       maxderivinv(theOther.maxderivinv)
 {
   // Deep copy all data arrays without validation
-  poles = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
+  poles                 = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
   poles->ChangeArray1() = theOther.poles->Array1();
 
   if (rational && !theOther.weights.IsNull())

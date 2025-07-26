@@ -128,7 +128,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
   // Deep copy all data arrays without validation
   poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());
   poles->ChangeArray1() = theOther.poles->Array1();
-  
+
   if (theOther.weights.IsNull())
   {
     weights.Nullify();

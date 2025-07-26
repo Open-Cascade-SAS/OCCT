@@ -66,7 +66,7 @@ Geom2d_OffsetCurve::Geom2d_OffsetCurve(const Geom2d_OffsetCurve& theOther)
       myBasisCurveContinuity(theOther.myBasisCurveContinuity)
 {
   // Deep copy basis curve and evaluator without validation
-  basisCurve = Handle(Geom2d_Curve)::DownCast(theOther.basisCurve->Copy());
+  basisCurve  = Handle(Geom2d_Curve)::DownCast(theOther.basisCurve->Copy());
   myEvaluator = new Geom2dEvaluator_OffsetCurve(basisCurve, offsetValue);
 }
 

@@ -26,13 +26,13 @@ protected:
   void SetUp() override
   {
     // Create a circle as basis curve
-    gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+    gp_Circ             aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
     Handle(Geom_Circle) aBasisCurve = new Geom_Circle(aCircle);
 
     // Create offset curve
-    gp_Dir anOffsetDir(0, 0, 1);
+    gp_Dir        anOffsetDir(0, 0, 1);
     Standard_Real anOffsetValue = 2.0;
-    
+
     myOriginalCurve = new Geom_OffsetCurve(aBasisCurve, anOffsetValue, anOffsetDir);
   }
 
@@ -57,7 +57,7 @@ TEST_F(Geom_OffsetCurve_Test, CopyConstructorBasisCurve)
 
   // Verify basis curves are equivalent but independent
   Handle(Geom_Curve) anOrigBasis = myOriginalCurve->BasisCurve();
-  Handle(Geom_Curve) aCopyBasis = aCopiedCurve->BasisCurve();
+  Handle(Geom_Curve) aCopyBasis  = aCopiedCurve->BasisCurve();
 
   // They should be different objects
   EXPECT_NE(anOrigBasis.get(), aCopyBasis.get());
@@ -70,23 +70,23 @@ TEST_F(Geom_OffsetCurve_Test, CopyConstructorBasisCurve)
 TEST_F(Geom_OffsetCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry) aCopiedGeom = myOriginalCurve->Copy();
+  Handle(Geom_Geometry)    aCopiedGeom  = myOriginalCurve->Copy();
   Handle(Geom_OffsetCurve) aCopiedCurve = Handle(Geom_OffsetCurve)::DownCast(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
-  
+
   // Verify the copy is functionally identical
   EXPECT_DOUBLE_EQ(myOriginalCurve->Offset(), aCopiedCurve->Offset());
-  
+
   // Test evaluation at several points
   Standard_Real anUFirst = myOriginalCurve->FirstParameter();
-  Standard_Real anULast = myOriginalCurve->LastParameter();
-  Standard_Real aStep = (anULast - anUFirst) / 4.0;
-  
+  Standard_Real anULast  = myOriginalCurve->LastParameter();
+  Standard_Real aStep    = (anULast - anUFirst) / 4.0;
+
   for (Standard_Real u = anUFirst; u <= anULast; u += aStep)
   {
     gp_Pnt anOrigPnt = myOriginalCurve->Value(u);
-    gp_Pnt aCopyPnt = aCopiedCurve->Value(u);
+    gp_Pnt aCopyPnt  = aCopiedCurve->Value(u);
     EXPECT_TRUE(anOrigPnt.IsEqual(aCopyPnt, 1e-10));
   }
 }

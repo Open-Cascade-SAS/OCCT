@@ -56,7 +56,7 @@ TEST_F(Geom2d_BezierCurve_Test, CopyConstructorPoles)
   for (Standard_Integer i = 1; i <= myOriginalCurve->NbPoles(); ++i)
   {
     gp_Pnt2d anOrigPole = myOriginalCurve->Pole(i);
-    gp_Pnt2d aCopyPole = aCopiedCurve->Pole(i);
+    gp_Pnt2d aCopyPole  = aCopiedCurve->Pole(i);
     EXPECT_TRUE(anOrigPole.IsEqual(aCopyPole, 1e-10));
   }
 }
@@ -64,20 +64,20 @@ TEST_F(Geom2d_BezierCurve_Test, CopyConstructorPoles)
 TEST_F(Geom2d_BezierCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom2d_Geometry) aCopiedGeom = myOriginalCurve->Copy();
+  Handle(Geom2d_Geometry)    aCopiedGeom  = myOriginalCurve->Copy();
   Handle(Geom2d_BezierCurve) aCopiedCurve = Handle(Geom2d_BezierCurve)::DownCast(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
-  
+
   // Verify the copy is functionally identical
   EXPECT_EQ(myOriginalCurve->Degree(), aCopiedCurve->Degree());
   EXPECT_EQ(myOriginalCurve->NbPoles(), aCopiedCurve->NbPoles());
-  
+
   // Test evaluation at several points
   for (Standard_Real u = 0.0; u <= 1.0; u += 0.25)
   {
     gp_Pnt2d anOrigPnt = myOriginalCurve->Value(u);
-    gp_Pnt2d aCopyPnt = aCopiedCurve->Value(u);
+    gp_Pnt2d aCopyPnt  = aCopiedCurve->Value(u);
     EXPECT_TRUE(anOrigPnt.IsEqual(aCopyPnt, 1e-10));
   }
 }
@@ -95,11 +95,11 @@ TEST_F(Geom2d_BezierCurve_Test, RationalCurveCopyConstructor)
   aWeights(2) = 2.0;
   aWeights(3) = 1.0;
 
-  Handle(Geom2d_BezierCurve) aRationalCurve = new Geom2d_BezierCurve(aPoles, aWeights);
+  Handle(Geom2d_BezierCurve) aRationalCurve  = new Geom2d_BezierCurve(aPoles, aWeights);
   Handle(Geom2d_BezierCurve) aCopiedRational = new Geom2d_BezierCurve(*aRationalCurve);
 
   EXPECT_TRUE(aCopiedRational->IsRational());
-  
+
   // Verify weights are copied correctly
   for (Standard_Integer i = 1; i <= aRationalCurve->NbPoles(); ++i)
   {

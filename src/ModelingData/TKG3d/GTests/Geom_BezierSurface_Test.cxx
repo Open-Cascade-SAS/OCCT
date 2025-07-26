@@ -63,7 +63,7 @@ TEST_F(Geom_BezierSurface_Test, CopyConstructorPoles)
     for (Standard_Integer j = 1; j <= myOriginalSurface->NbVPoles(); ++j)
     {
       gp_Pnt anOrigPole = myOriginalSurface->Pole(i, j);
-      gp_Pnt aCopyPole = aCopiedSurface->Pole(i, j);
+      gp_Pnt aCopyPole  = aCopiedSurface->Pole(i, j);
       EXPECT_TRUE(anOrigPole.IsEqual(aCopyPole, 1e-10));
     }
   }
@@ -72,22 +72,22 @@ TEST_F(Geom_BezierSurface_Test, CopyConstructorPoles)
 TEST_F(Geom_BezierSurface_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry) aCopiedGeom = myOriginalSurface->Copy();
+  Handle(Geom_Geometry)      aCopiedGeom    = myOriginalSurface->Copy();
   Handle(Geom_BezierSurface) aCopiedSurface = Handle(Geom_BezierSurface)::DownCast(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedSurface.IsNull());
-  
+
   // Verify the copy is functionally identical
   EXPECT_EQ(myOriginalSurface->UDegree(), aCopiedSurface->UDegree());
   EXPECT_EQ(myOriginalSurface->VDegree(), aCopiedSurface->VDegree());
-  
+
   // Test evaluation at several points
   for (Standard_Real u = 0.0; u <= 1.0; u += 0.5)
   {
     for (Standard_Real v = 0.0; v <= 1.0; v += 0.5)
     {
       gp_Pnt anOrigPnt = myOriginalSurface->Value(u, v);
-      gp_Pnt aCopyPnt = aCopiedSurface->Value(u, v);
+      gp_Pnt aCopyPnt  = aCopiedSurface->Value(u, v);
       EXPECT_TRUE(anOrigPnt.IsEqual(aCopyPnt, 1e-10));
     }
   }
@@ -109,10 +109,10 @@ TEST_F(Geom_BezierSurface_Test, RationalSurfaceCopyConstructor)
   aWeights(2, 2) = 1.0;
 
   Handle(Geom_BezierSurface) aRationalSurface = new Geom_BezierSurface(aPoles, aWeights);
-  Handle(Geom_BezierSurface) aCopiedRational = new Geom_BezierSurface(*aRationalSurface);
+  Handle(Geom_BezierSurface) aCopiedRational  = new Geom_BezierSurface(*aRationalSurface);
 
   EXPECT_TRUE(aCopiedRational->IsURational() || aCopiedRational->IsVRational());
-  
+
   // Verify weights are copied correctly
   for (Standard_Integer i = 1; i <= aRationalSurface->NbUPoles(); ++i)
   {

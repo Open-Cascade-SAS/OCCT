@@ -367,14 +367,18 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
       maxderivinvok(theOther.maxderivinvok)
 {
   // Deep copy all data arrays without validation
-  poles = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(), theOther.poles->UpperRow(),
-                                  theOther.poles->LowerCol(), theOther.poles->UpperCol());
+  poles                 = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(),
+                                  theOther.poles->UpperRow(),
+                                  theOther.poles->LowerCol(),
+                                  theOther.poles->UpperCol());
   poles->ChangeArray2() = theOther.poles->Array2();
 
   if ((urational || vrational) && !theOther.weights.IsNull())
   {
-    weights = new TColStd_HArray2OfReal(theOther.weights->LowerRow(), theOther.weights->UpperRow(),
-                                        theOther.weights->LowerCol(), theOther.weights->UpperCol());
+    weights                 = new TColStd_HArray2OfReal(theOther.weights->LowerRow(),
+                                        theOther.weights->UpperRow(),
+                                        theOther.weights->LowerCol(),
+                                        theOther.weights->UpperCol());
     weights->ChangeArray2() = theOther.weights->Array2();
   }
 }

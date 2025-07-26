@@ -81,7 +81,9 @@ Handle(Geom_Geometry) Geom_OffsetSurface::Copy() const
 
 Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
     : basisSurf(Handle(Geom_Surface)::DownCast(theOther.basisSurf->Copy())),
-      equivSurf(theOther.equivSurf.IsNull() ? Handle(Geom_Surface)() : Handle(Geom_Surface)::DownCast(theOther.equivSurf->Copy())),
+      equivSurf(theOther.equivSurf.IsNull()
+                  ? Handle(Geom_Surface)()
+                  : Handle(Geom_Surface)::DownCast(theOther.equivSurf->Copy())),
       offsetValue(theOther.offsetValue),
       myOscSurf(theOther.myOscSurf),
       myBasisSurfContinuity(theOther.myBasisSurfContinuity),

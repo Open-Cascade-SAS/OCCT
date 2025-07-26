@@ -109,7 +109,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther)
   // Deep copy all data arrays without validation
   poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());
   poles->ChangeArray1() = theOther.poles->Array1();
-  
+
   if (theOther.weights.IsNull())
   {
     weights.Nullify();
@@ -119,13 +119,13 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther)
     weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
     weights->ChangeArray1() = theOther.weights->Array1();
   }
-  
+
   knots = new TColStd_HArray1OfReal(theOther.knots->Lower(), theOther.knots->Upper());
   knots->ChangeArray1() = theOther.knots->Array1();
-  
+
   mults = new TColStd_HArray1OfInteger(theOther.mults->Lower(), theOther.mults->Upper());
   mults->ChangeArray1() = theOther.mults->Array1();
-  
+
   if (theOther.flatknots.IsNull())
   {
     flatknots.Nullify();

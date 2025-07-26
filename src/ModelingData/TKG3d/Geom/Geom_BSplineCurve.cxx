@@ -110,7 +110,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
       maxderivinvok(theOther.maxderivinvok)
 {
   // Deep copy all data arrays without validation
-  poles = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
+  poles                 = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
   poles->ChangeArray1() = theOther.poles->Array1();
 
   knots = new TColStd_HArray1OfReal(theOther.knots->Lower(), theOther.knots->Upper());

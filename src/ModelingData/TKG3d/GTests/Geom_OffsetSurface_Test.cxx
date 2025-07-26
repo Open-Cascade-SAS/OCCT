@@ -26,12 +26,12 @@ protected:
   void SetUp() override
   {
     // Create a plane as basis surface
-    gp_Pln aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+    gp_Pln             aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
     Handle(Geom_Plane) aBasisSurface = new Geom_Plane(aPlane);
 
     // Create offset surface
     Standard_Real anOffsetValue = 3.0;
-    
+
     myOriginalSurface = new Geom_OffsetSurface(aBasisSurface, anOffsetValue);
   }
 
@@ -57,7 +57,7 @@ TEST_F(Geom_OffsetSurface_Test, CopyConstructorBasisSurface)
 
   // Verify basis surfaces are equivalent but independent
   Handle(Geom_Surface) anOrigBasis = myOriginalSurface->BasisSurface();
-  Handle(Geom_Surface) aCopyBasis = aCopiedSurface->BasisSurface();
+  Handle(Geom_Surface) aCopyBasis  = aCopiedSurface->BasisSurface();
 
   // They should be different objects
   EXPECT_NE(anOrigBasis.get(), aCopyBasis.get());
@@ -65,10 +65,10 @@ TEST_F(Geom_OffsetSurface_Test, CopyConstructorBasisSurface)
   // But functionally equivalent
   Standard_Real anUFirst, anULast, aVFirst, aVLast;
   anOrigBasis->Bounds(anUFirst, anULast, aVFirst, aVLast);
-  
+
   Standard_Real anUFirstCopy, anULastCopy, aVFirstCopy, aVLastCopy;
   aCopyBasis->Bounds(anUFirstCopy, anULastCopy, aVFirstCopy, aVLastCopy);
-  
+
   EXPECT_DOUBLE_EQ(anUFirst, anUFirstCopy);
   EXPECT_DOUBLE_EQ(anULast, anULastCopy);
   EXPECT_DOUBLE_EQ(aVFirst, aVFirstCopy);
@@ -78,21 +78,21 @@ TEST_F(Geom_OffsetSurface_Test, CopyConstructorBasisSurface)
 TEST_F(Geom_OffsetSurface_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry) aCopiedGeom = myOriginalSurface->Copy();
+  Handle(Geom_Geometry)      aCopiedGeom    = myOriginalSurface->Copy();
   Handle(Geom_OffsetSurface) aCopiedSurface = Handle(Geom_OffsetSurface)::DownCast(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedSurface.IsNull());
-  
+
   // Verify the copy is functionally identical
   EXPECT_DOUBLE_EQ(myOriginalSurface->Offset(), aCopiedSurface->Offset());
-  
+
   // Test evaluation at several points
   for (Standard_Real u = -5.0; u <= 5.0; u += 2.5)
   {
     for (Standard_Real v = -5.0; v <= 5.0; v += 2.5)
     {
       gp_Pnt anOrigPnt = myOriginalSurface->Value(u, v);
-      gp_Pnt aCopyPnt = aCopiedSurface->Value(u, v);
+      gp_Pnt aCopyPnt  = aCopiedSurface->Value(u, v);
       EXPECT_TRUE(anOrigPnt.IsEqual(aCopyPnt, 1e-10));
     }
   }

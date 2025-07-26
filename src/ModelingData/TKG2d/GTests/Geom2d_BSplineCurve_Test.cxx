@@ -66,7 +66,7 @@ TEST_F(Geom2d_BSplineCurve_Test, CopyConstructorPoles)
   for (Standard_Integer i = 1; i <= myOriginalCurve->NbPoles(); ++i)
   {
     gp_Pnt2d anOrigPole = myOriginalCurve->Pole(i);
-    gp_Pnt2d aCopyPole = aCopiedCurve->Pole(i);
+    gp_Pnt2d aCopyPole  = aCopiedCurve->Pole(i);
     EXPECT_TRUE(anOrigPole.IsEqual(aCopyPole, 1e-10));
   }
 }
@@ -86,20 +86,20 @@ TEST_F(Geom2d_BSplineCurve_Test, CopyConstructorKnots)
 TEST_F(Geom2d_BSplineCurve_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom2d_Geometry) aCopiedGeom = myOriginalCurve->Copy();
+  Handle(Geom2d_Geometry)     aCopiedGeom  = myOriginalCurve->Copy();
   Handle(Geom2d_BSplineCurve) aCopiedCurve = Handle(Geom2d_BSplineCurve)::DownCast(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedCurve.IsNull());
-  
+
   // Verify the copy is functionally identical
   EXPECT_EQ(myOriginalCurve->Degree(), aCopiedCurve->Degree());
   EXPECT_EQ(myOriginalCurve->NbPoles(), aCopiedCurve->NbPoles());
-  
+
   // Test evaluation at several points
   for (Standard_Real u = 0.0; u <= 1.0; u += 0.25)
   {
     gp_Pnt2d anOrigPnt = myOriginalCurve->Value(u);
-    gp_Pnt2d aCopyPnt = aCopiedCurve->Value(u);
+    gp_Pnt2d aCopyPnt  = aCopiedCurve->Value(u);
     EXPECT_TRUE(anOrigPnt.IsEqual(aCopyPnt, 1e-10));
   }
 }
@@ -125,11 +125,12 @@ TEST_F(Geom2d_BSplineCurve_Test, RationalCurveCopyConstructor)
   aMults(1) = 3;
   aMults(2) = 3;
 
-  Handle(Geom2d_BSplineCurve) aRationalCurve = new Geom2d_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
+  Handle(Geom2d_BSplineCurve) aRationalCurve =
+    new Geom2d_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
   Handle(Geom2d_BSplineCurve) aCopiedRational = new Geom2d_BSplineCurve(*aRationalCurve);
 
   EXPECT_TRUE(aCopiedRational->IsRational());
-  
+
   // Verify weights are copied correctly
   for (Standard_Integer i = 1; i <= aRationalCurve->NbPoles(); ++i)
   {
