@@ -228,6 +228,10 @@ public:
                                       const Standard_Boolean         UPeriodic = Standard_False,
                                       const Standard_Boolean         VPeriodic = Standard_False);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the BSpline surface to copy from
+  Standard_EXPORT Geom_BSplineSurface(const Geom_BSplineSurface& theOther);
+
   //! Exchanges the u and v parametric directions on
   //! this BSpline surface.
   //! As a consequence:

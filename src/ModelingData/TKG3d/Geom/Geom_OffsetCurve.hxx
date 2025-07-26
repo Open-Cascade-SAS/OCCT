@@ -101,6 +101,10 @@ public:
                                    const gp_Dir&             V,
                                    const Standard_Boolean    isNotCheckC0 = Standard_False);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the offset curve to copy from
+  Standard_EXPORT Geom_OffsetCurve(const Geom_OffsetCurve& theOther);
+
   //! Changes the orientation of this offset curve.
   //! As a result:
   //! - the basis curve is reversed,
