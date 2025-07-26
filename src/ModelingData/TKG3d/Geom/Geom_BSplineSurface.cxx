@@ -146,7 +146,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
       vdeg(theOther.vdeg),
       umaxderivinv(theOther.umaxderivinv),
       vmaxderivinv(theOther.vmaxderivinv),
-      maxderivinvok(theOther.maxderivinvok)
+      maxderivinvok(Standard_False)
 {
   // Deep copy all data arrays without validation
   poles                 = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(),

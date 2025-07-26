@@ -66,7 +66,8 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
 Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
     : rational(theOther.rational),
       closed(theOther.closed),
-      maxderivinv(theOther.maxderivinv)
+      maxderivinv(theOther.maxderivinv),
+      maxderivinvok(Standard_False)
 {
   // Deep copy all data arrays without validation
   poles                 = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());

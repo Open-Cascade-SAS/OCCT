@@ -123,7 +123,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
     : rational(theOther.rational),
       closed(theOther.closed),
       maxderivinv(theOther.maxderivinv),
-      maxderivinvok(theOther.maxderivinvok)
+      maxderivinvok(Standard_False)
 {
   // Deep copy all data arrays without validation
   poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());

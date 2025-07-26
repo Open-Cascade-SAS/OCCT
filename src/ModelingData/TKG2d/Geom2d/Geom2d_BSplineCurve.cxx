@@ -104,7 +104,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther)
       smooth(theOther.smooth),
       deg(theOther.deg),
       maxderivinv(theOther.maxderivinv),
-      maxderivinvok(theOther.maxderivinvok)
+      maxderivinvok(Standard_False)
 {
   // Deep copy all data arrays without validation
   poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());

@@ -364,7 +364,7 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
       vrational(theOther.vrational),
       umaxderivinv(theOther.umaxderivinv),
       vmaxderivinv(theOther.vmaxderivinv),
-      maxderivinvok(theOther.maxderivinvok)
+      maxderivinvok(Standard_False)
 {
   // Deep copy all data arrays without validation
   poles                 = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(),
