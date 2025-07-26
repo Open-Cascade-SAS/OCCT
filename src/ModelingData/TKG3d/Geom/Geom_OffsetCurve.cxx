@@ -44,16 +44,25 @@ static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 Handle(Geom_Geometry) Geom_OffsetCurve::Copy() const
 {
-
-  Handle(Geom_OffsetCurve) C;
-  C = new Geom_OffsetCurve(basisCurve, offsetValue, direction);
-  return C;
+  return new Geom_OffsetCurve(*this);
 }
 
 //=======================================================================
 // function : Geom_OffsetCurve
 // purpose  : Basis curve cannot be an Offset curve or trimmed from
 //            offset curve.
+//=======================================================================
+
+Geom_OffsetCurve::Geom_OffsetCurve(const Geom_OffsetCurve& theOther)
+    : basisCurve(Handle(Geom_Curve)::DownCast(theOther.basisCurve->Copy())),
+      direction(theOther.direction),
+      offsetValue(theOther.offsetValue),
+      myBasisCurveContinuity(theOther.myBasisCurveContinuity),
+      myEvaluator(new GeomEvaluator_OffsetCurve(basisCurve, offsetValue, direction))
+{
+  // Deep copy without validation - source curve is already validated
+}
+
 //=======================================================================
 
 Geom_OffsetCurve::Geom_OffsetCurve(const Handle(Geom_Curve)& theCurve,

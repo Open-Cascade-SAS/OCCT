@@ -63,6 +63,24 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
 
 //=================================================================================================
 
+Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
+    : rational(theOther.rational),
+      closed(theOther.closed),
+      maxderivinv(theOther.maxderivinv)
+{
+  // Deep copy all data arrays without validation
+  poles = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
+  poles->ChangeArray1() = theOther.poles->Array1();
+
+  if (rational && !theOther.weights.IsNull())
+  {
+    weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
+    weights->ChangeArray1() = theOther.weights->Array1();
+  }
+}
+
+//=================================================================================================
+
 Geom_BezierCurve::Geom_BezierCurve(const TColgp_Array1OfPnt& Poles)
 {
   Standard_Integer nbpoles = Poles.Length();
@@ -692,13 +710,7 @@ void Geom_BezierCurve::Resolution(const Standard_Real Tolerance3D, Standard_Real
 
 Handle(Geom_Geometry) Geom_BezierCurve::Copy() const
 {
-
-  Handle(Geom_BezierCurve) C;
-  if (IsRational())
-    C = new Geom_BezierCurve(poles->Array1(), weights->Array1());
-  else
-    C = new Geom_BezierCurve(poles->Array1());
-  return C;
+  return new Geom_BezierCurve(*this);
 }
 
 //=================================================================================================
