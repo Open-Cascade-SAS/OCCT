@@ -179,7 +179,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
     vfknots->ChangeArray1() = theOther.vfknots->Array1();
   }
 
-  if ((urational || vrational) && !theOther.weights.IsNull())
+  if (!theOther.weights.IsNull())
   {
     weights                 = new TColStd_HArray2OfReal(theOther.weights->LowerRow(),
                                         theOther.weights->UpperRow(),

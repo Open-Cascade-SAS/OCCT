@@ -373,7 +373,7 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
                                   theOther.poles->UpperCol());
   poles->ChangeArray2() = theOther.poles->Array2();
 
-  if ((urational || vrational) && !theOther.weights.IsNull())
+  if (!theOther.weights.IsNull())
   {
     weights                 = new TColStd_HArray2OfReal(theOther.weights->LowerRow(),
                                         theOther.weights->UpperRow(),

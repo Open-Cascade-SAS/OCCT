@@ -72,7 +72,7 @@ Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
   poles                 = new TColgp_HArray1OfPnt(theOther.poles->Lower(), theOther.poles->Upper());
   poles->ChangeArray1() = theOther.poles->Array1();
 
-  if (rational && !theOther.weights.IsNull())
+  if (!theOther.weights.IsNull())
   {
     weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
     weights->ChangeArray1() = theOther.weights->Array1();
