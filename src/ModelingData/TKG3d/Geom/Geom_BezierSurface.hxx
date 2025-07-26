@@ -127,6 +127,10 @@ public:
   //! U or V.
   Standard_EXPORT Geom_BezierSurface(const TColgp_Array2OfPnt& SurfacePoles);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the Bezier surface to copy from
+  Standard_EXPORT Geom_BezierSurface(const Geom_BezierSurface& theOther);
+
   //! ---Purpose
   //! Creates a rational Bezier surface with a set of poles and a
   //! set of weights.

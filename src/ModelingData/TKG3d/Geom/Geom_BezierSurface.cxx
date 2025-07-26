@@ -359,6 +359,28 @@ static void DeleteRatPoleRow(const TColgp_Array2OfPnt&   Poles,
 
 //=================================================================================================
 
+Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
+    : urational(theOther.urational),
+      vrational(theOther.vrational),
+      umaxderivinv(theOther.umaxderivinv),
+      vmaxderivinv(theOther.vmaxderivinv),
+      maxderivinvok(theOther.maxderivinvok)
+{
+  // Deep copy all data arrays without validation
+  poles = new TColgp_HArray2OfPnt(theOther.poles->LowerRow(), theOther.poles->UpperRow(),
+                                  theOther.poles->LowerCol(), theOther.poles->UpperCol());
+  poles->ChangeArray2() = theOther.poles->Array2();
+
+  if ((urational || vrational) && !theOther.weights.IsNull())
+  {
+    weights = new TColStd_HArray2OfReal(theOther.weights->LowerRow(), theOther.weights->UpperRow(),
+                                        theOther.weights->LowerCol(), theOther.weights->UpperCol());
+    weights->ChangeArray2() = theOther.weights->Array2();
+  }
+}
+
+//=================================================================================================
+
 Geom_BezierSurface::Geom_BezierSurface(const TColgp_Array2OfPnt& SurfacePoles)
     : maxderivinvok(Standard_False)
 {
@@ -2036,8 +2058,7 @@ void Geom_BezierSurface::Resolution(const Standard_Real Tolerance3D,
 
 Handle(Geom_Geometry) Geom_BezierSurface::Copy() const
 {
-  Handle(Geom_BezierSurface) S = new Geom_BezierSurface(poles, weights, urational, vrational);
-  return S;
+  return new Geom_BezierSurface(*this);
 }
 
 //=================================================================================================
