@@ -167,11 +167,17 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
   vmults = new TColStd_HArray1OfInteger(theOther.vmults->Lower(), theOther.vmults->Upper());
   vmults->ChangeArray1() = theOther.vmults->Array1();
 
-  ufknots = new TColStd_HArray1OfReal(theOther.ufknots->Lower(), theOther.ufknots->Upper());
-  ufknots->ChangeArray1() = theOther.ufknots->Array1();
+  if (!theOther.ufknots.IsNull())
+  {
+    ufknots = new TColStd_HArray1OfReal(theOther.ufknots->Lower(), theOther.ufknots->Upper());
+    ufknots->ChangeArray1() = theOther.ufknots->Array1();
+  }
 
-  vfknots = new TColStd_HArray1OfReal(theOther.vfknots->Lower(), theOther.vfknots->Upper());
-  vfknots->ChangeArray1() = theOther.vfknots->Array1();
+  if (!theOther.vfknots.IsNull())
+  {
+    vfknots = new TColStd_HArray1OfReal(theOther.vfknots->Lower(), theOther.vfknots->Upper());
+    vfknots->ChangeArray1() = theOther.vfknots->Array1();
+  }
 
   if ((urational || vrational) && !theOther.weights.IsNull())
   {

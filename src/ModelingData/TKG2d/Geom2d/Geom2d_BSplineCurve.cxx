@@ -126,11 +126,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther)
   mults = new TColStd_HArray1OfInteger(theOther.mults->Lower(), theOther.mults->Upper());
   mults->ChangeArray1() = theOther.mults->Array1();
 
-  if (theOther.flatknots.IsNull())
-  {
-    flatknots.Nullify();
-  }
-  else
+  if (!theOther.flatknots.IsNull())
   {
     flatknots = new TColStd_HArray1OfReal(theOther.flatknots->Lower(), theOther.flatknots->Upper());
     flatknots->ChangeArray1() = theOther.flatknots->Array1();

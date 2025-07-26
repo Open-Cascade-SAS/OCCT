@@ -119,10 +119,13 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
   mults = new TColStd_HArray1OfInteger(theOther.mults->Lower(), theOther.mults->Upper());
   mults->ChangeArray1() = theOther.mults->Array1();
 
-  flatknots = new TColStd_HArray1OfReal(theOther.flatknots->Lower(), theOther.flatknots->Upper());
-  flatknots->ChangeArray1() = theOther.flatknots->Array1();
+  if (!theOther.flatknots.IsNull())
+  {
+    flatknots = new TColStd_HArray1OfReal(theOther.flatknots->Lower(), theOther.flatknots->Upper());
+    flatknots->ChangeArray1() = theOther.flatknots->Array1();
+  }
 
-  if (rational && !theOther.weights.IsNull())
+  if (!theOther.weights.IsNull())
   {
     weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
     weights->ChangeArray1() = theOther.weights->Array1();
