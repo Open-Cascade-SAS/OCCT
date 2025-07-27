@@ -20,4 +20,5 @@ set(OCCT_TKTopTest_EXTERNAL_LIBS
   TKOffset
   TKFeat
   TKShHealing
+  TKHelix
 )

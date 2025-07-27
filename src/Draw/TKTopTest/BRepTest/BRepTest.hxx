@@ -98,8 +98,7 @@ public:
   //! Defines the History commands for the algorithms.
   Standard_EXPORT static void HistoryCommands(Draw_Interpretor& DI);
 
-protected:
-private:
+  Standard_EXPORT static void HelixCommands(Draw_Interpretor& theCommands);
 };
 
 #endif // _BRepTest_HeaderFile
