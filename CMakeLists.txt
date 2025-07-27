@@ -1203,6 +1203,7 @@ if (${DRAWEXE_INDEX} GREATER -1)
   OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
 endif()
 
+OCCT_MAKE_COMPILER_BITNESS()
 set (SUB_CUSTOM_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
 
 if (WIN32)
@@ -1331,6 +1332,11 @@ else()
     set (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS "export CSF_OCCTBinPath=\"@CMAKE_RUNTIME_OUTPUT_DIRECTORY@\"
     export CSF_OCCTLibPath=\"@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@\"")
   endif()
+endif()
+
+# Expand OCCT_CUSTOM_BUILD_BIN_LIB_PATHS variable to resolve nested @...@ variables
+if (OCCT_CUSTOM_BUILD_BIN_LIB_PATHS)
+  string(CONFIGURE "${OCCT_CUSTOM_BUILD_BIN_LIB_PATHS}" OCCT_CUSTOM_BUILD_BIN_LIB_PATHS @ONLY)
 endif()
 
 # write current custom.bat/sh (for build directory)
