@@ -27,6 +27,7 @@
 #include <OSD_OpenFile.hxx>
 #include <OSD_Parallel.hxx>
 #include <OSD_Path.hxx>
+#include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_ActorWrite.hxx>
@@ -1100,6 +1101,7 @@ void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
   {
     return;
   }
+  STEPCAFControl_Controller::Init();
   aIsActivated = Standard_True;
 
   const char* aGroup = "DE: STEP"; // Step transfer file commands
