@@ -1,0 +1,48 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload XDE
+    pload TOPTEST
+    pload VISUALIZATION
+}
+            
+# to prevent loops limit to 16 minutes
+cpulimit 1000
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image] == 0 } {
+   set test_image photo
+}
+
+proc CheckSweep {} {
+    global s1 s2 result
+    checkshape s1
+    checkshape s2
+    mksweep s1
+    addsweep s2
+    set bad_buildsweep 0
+    if [catch { buildsweep result -S } catch_result] {
+        puts "Faulty OCC1477 : buildsweep is wrong"
+    } else {
+	checkshape result
+    }
+}
+
+proc CheckSpiral {} {
+    global result good_Center_X good_Center_Y good_Center_Z good_Moments_IX set good_Moments_IY good_Moments_IZ
+    set llprops [lprops result]
+    regexp {[ \t]*X =[ \t]*([-0-9.+eE]+)} $llprops full Center_X
+    regexp {[ \t]*Y =[ \t]*([-0-9.+eE]+)} $llprops full Center_Y
+    regexp {[ \t]*Z =[ \t]*([-0-9.+eE]+)} $llprops full Center_Z
+    regexp {[ \t]*IX =[ \t]*([-0-9.+eE]+)} $llprops full Moments_IX
+    regexp {[ \t]*IY =[ \t]*([-0-9.+eE]+)} $llprops full Moments_IY
+    regexp {[ \t]*IZ =[ \t]*([-0-9.+eE]+)} $llprops full Moments_IZ
+    if { $good_Center_X != $Center_X ||
+	 $good_Center_Y != $Center_Y ||
+	 $good_Center_Z != $Center_Z ||
+	 $good_Moments_IX != $Moments_IX ||
+	 $good_Moments_IY != $Moments_IY ||
+	 $good_Moments_IZ != $Moments_IZ } {
+        puts "Error : CheckSpiral"
+    }
+}

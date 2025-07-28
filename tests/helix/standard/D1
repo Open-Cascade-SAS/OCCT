@@ -1,0 +1,73 @@
+puts "============"
+puts "OCCGH648"
+puts "============"
+puts ""
+#######################################################################
+#    spiral helix: comphelix, D1 = 100, D4 = 20, 1 part, pitche = 10; 10; 10, PFi=1
+#######################################################################
+
+set BugNumber OCCGH648
+
+set np 3
+set D1 100
+set D4 20
+
+set H1 20
+set H2 60
+set H3 20
+
+set D2 [expr ($D1 - ($D1-$D4)*($H1)/($H1+$H2+$H3))]
+set D3 [expr ($D1 - ($D1-$D4)*($H1+$H2)/($H1+$H2+$H3))]
+
+set P1 10
+set P2 10
+set P3 10
+
+set PF1 1
+set PF2 1
+set PF3 1
+
+set mistake 0
+set result ""
+if [catch { set info_result [comphelix result ${np} ${D1} ${D2} ${D3} ${D4} ${H1} ${H2} ${H3} ${P1} ${P2} ${P3} ${PF1} ${PF2} ${PF3}]} ] {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : approximation algorithm is broken"
+  set mistake 1
+} elseif { [regexp {ErrorStatus} ${info_result}] } {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : helix is broken"
+  set mistake 1
+}
+
+if { ${mistake} == 0 } {
+  set d 3
+  set x [expr $D1/2]
+  set y 0
+  set z 0
+  set dx 0
+  set dy 1
+  set dz 0
+
+  circle c $x $y $z $dx $dy $dz $d
+  mkedge e c
+  wire s2 e
+
+  renamevar result s1
+
+
+set square 35646.7
+set volume 53369.2
+
+set nb_v_good 11
+set nb_e_good 21
+set nb_w_good 12
+set nb_f_good 12
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 58
+
+CheckSweep
+}
+set 2dviewer 0
