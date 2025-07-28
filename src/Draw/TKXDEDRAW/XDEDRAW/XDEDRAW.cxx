@@ -36,7 +36,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <DESTL_ConfigurationNode.hxx>
-#include <DEGLTF_ConfigurationNode.hxx>
 #include <DEOBJ_ConfigurationNode.hxx>
 #include <DEPLY_ConfigurationNode.hxx>
 #include <STEPCAFControl_Controller.hxx>
