@@ -446,6 +446,50 @@ void XCAFDimTolObjects_DimensionObject::RemoveDescription(const Standard_Integer
 
 //=================================================================================================
 
+Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
+  const XCAFDimTolObjects_DimensionType theType)
+{
+  if (theType == XCAFDimTolObjects_DimensionType_Location_None
+      || theType == XCAFDimTolObjects_DimensionType_Location_CurvedDistance
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToOuter
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToInner
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToCenter
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToOuter
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToInner
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToCenter
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter
+      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner
+      || theType == XCAFDimTolObjects_DimensionType_Location_Oriented)
+    return Standard_True;
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
+  const XCAFDimTolObjects_DimensionType theType)
+{
+  if (theType == XCAFDimTolObjects_DimensionType_Size_CurveLength
+      || theType == XCAFDimTolObjects_DimensionType_Size_Diameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_SphericalDiameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_Radius
+      || theType == XCAFDimTolObjects_DimensionType_Size_SphericalRadius
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorDiameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorDiameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorRadius
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorRadius
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorDiameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorDiameter
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius
+      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius
+      || theType == XCAFDimTolObjects_DimensionType_Size_Thickness)
+    return Standard_True;
+  return Standard_False;
+}
+
+//=================================================================================================
+
 void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream,
                                                  Standard_Integer  theDepth) const
 {

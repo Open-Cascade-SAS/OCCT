@@ -24,22 +24,13 @@
 #include <DDF_Browser.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
-#include <DE_Wrapper.hxx>
-#include <DEBREP_ConfigurationNode.hxx>
-#include <DEXCAF_ConfigurationNode.hxx>
 #include <Draw.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Geom_Axis2Placement.hxx>
-#include <DEIGES_ConfigurationNode.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Quantity_Color.hxx>
-#include <DESTL_ConfigurationNode.hxx>
-#include <DEOBJ_ConfigurationNode.hxx>
-#include <DEPLY_ConfigurationNode.hxx>
-#include <STEPCAFControl_Controller.hxx>
-#include <DESTEP_ConfigurationNode.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -78,7 +69,6 @@
 #include <V3d_Viewer.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
-#include <DEVRML_ConfigurationNode.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_AssemblyIterator.hxx>
 #include <XCAFDoc_AssemblyGraph.hxx>
@@ -1853,9 +1843,6 @@ void XDEDRAW::Init(Draw_Interpretor& di)
     return;
   }
   initactor = Standard_True;
-
-  // Load static variables for STEPCAF (ssv; 16.08.2012)
-  STEPCAFControl_Controller::Init();
 
   // Initialize XCAF formats
   Handle(TDocStd_Application) anApp = DDocStd::GetApplication();

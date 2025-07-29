@@ -4489,7 +4489,7 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
                            aConnectionPnts,
                            theLocalFactors);
     XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
-    if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType))
+    if (XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(aDimType))
     {
       // Dimensional_Location
       Handle(StepShape_DimensionalLocation) aDim = new StepShape_DimensionalLocation();
@@ -4535,7 +4535,7 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
         ->Init(new TCollection_HAsciiString(), Standard_False, NULL, aFirstSA, aSecondSA, aPathSA);
       aDimension.SetValue(aDim);
     }
-    else if (STEPCAFControl_GDTProperty::IsDimensionalSize(aDimType))
+    else if (XCAFDimTolObjects_DimensionObject::IsDimensionalSize(aDimType))
     {
       // Dimensional_Size
       Handle(StepShape_DimensionalSize) aDim = new StepShape_DimensionalSize();

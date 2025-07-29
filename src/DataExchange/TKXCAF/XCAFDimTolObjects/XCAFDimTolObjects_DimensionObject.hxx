@@ -292,6 +292,14 @@ public:
     myDescriptionNames.Append(theName);
   }
 
+  //! Returns true if the dimension type is a location.
+  Standard_EXPORT static Standard_Boolean IsDimensionalLocation(
+    const XCAFDimTolObjects_DimensionType theType);
+
+  //! Returns true if the dimension type is a size.
+  Standard_EXPORT static Standard_Boolean IsDimensionalSize(
+    const XCAFDimTolObjects_DimensionType theType);
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 

@@ -94,12 +94,6 @@ public:
   Standard_EXPORT static Handle(TCollection_HAsciiString) GetDatumTargetName(
     const XCAFDimTolObjects_DatumTargetType theDatumType);
 
-  Standard_EXPORT static Standard_Boolean IsDimensionalLocation(
-    const XCAFDimTolObjects_DimensionType theType);
-
-  Standard_EXPORT static Standard_Boolean IsDimensionalSize(
-    const XCAFDimTolObjects_DimensionType theType);
-
   Standard_EXPORT static StepDimTol_GeometricToleranceType GetGeomToleranceType(
     const XCAFDimTolObjects_GeomToleranceType theType);
 
