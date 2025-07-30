@@ -1,0 +1,58 @@
+name: 'Upload Platform Artifacts'
+description: 'Upload artifacts with proper file permissions and symlinks (cross-platform)'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Path to archive'
+    required: true
+  retention-days:
+    description: 'Number of days to retain artifact'
+    required: false
+    default: '30'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create archive (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $BASE_PATH = "${{ inputs.path }}"
+        $ARCHIVE_NAME = "${{ inputs.name }}.zip"
+        
+        if (Test-Path $BASE_PATH -PathType Container) {
+          Compress-Archive -Path $BASE_PATH -DestinationPath $ARCHIVE_NAME
+          Write-Output "Created archive: $ARCHIVE_NAME"
+          Get-ChildItem $ARCHIVE_NAME
+        } else {
+          Write-Error "Error: Path $BASE_PATH does not exist"
+          exit 1
+        }
+    
+    - name: Create archive (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        BASE_PATH="${{ inputs.path }}"
+        ARCHIVE_NAME="${{ inputs.name }}.tar.gz"
+        
+        if [ -d "$BASE_PATH" ]; then
+          tar -czf "$ARCHIVE_NAME" -C "$(dirname "$BASE_PATH")" "$(basename "$BASE_PATH")"
+        elif [ -f "$BASE_PATH" ]; then
+          tar -czf "$ARCHIVE_NAME" -C "$(dirname "$BASE_PATH")" "$(basename "$BASE_PATH")"
+        else
+          echo "Error: Path $BASE_PATH does not exist"
+          exit 1
+        fi
+        
+        echo "Created archive: $ARCHIVE_NAME"
+        ls -la "$ARCHIVE_NAME"
+    
+    - name: Upload archive
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.name }}.*
+        retention-days: ${{ inputs.retention-days }}

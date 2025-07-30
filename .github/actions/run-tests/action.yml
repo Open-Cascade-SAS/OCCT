@@ -53,7 +53,7 @@ runs:
       shell: bash
 
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.3.0
+      uses: ./.github/actions/download-artifacts
       with:
         name: ${{ inputs.install-artifact-name }}
         path: install
@@ -145,7 +145,7 @@ runs:
 
     - name: Upload test results (Windows)
       if: ${{ inputs.platform == 'windows' }}
-      uses: actions/upload-artifact@v4.6.2
+      uses: ./.github/actions/upload-artifacts
       with:
         name: results-${{ inputs.test-directory-name }}
         path: |
@@ -156,7 +156,7 @@ runs:
 
     - name: Upload test results (macOS/Linux)
       if: ${{ inputs.platform == 'macos' || inputs.platform == 'linux' }}
-      uses: actions/upload-artifact@v4.6.2
+      uses: ./.github/actions/upload-artifacts
       with:
         name: results-${{ inputs.test-directory-name }}
         path: |

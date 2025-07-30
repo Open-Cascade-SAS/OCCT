@@ -1,0 +1,82 @@
+name: 'Download Platform Artifacts'
+description: 'Download and extract artifacts with proper file permissions and symlinks (cross-platform)'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Path to extract to (optional)'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download archive
+      uses: actions/download-artifact@v4.3.0
+      with:
+        name: ${{ inputs.name }}
+        path: ./download-temp
+    
+    - name: Extract archive (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $EXTRACT_PATH = "${{ inputs.path }}"
+        $ARCHIVE_FILE = "./download-temp/${{ inputs.name }}.zip"
+        
+        if (-not (Test-Path $ARCHIVE_FILE)) {
+          Write-Error "Archive file $ARCHIVE_FILE not found"
+          Get-ChildItem ./download-temp/
+          exit 1
+        }
+        
+        Write-Output "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
+        
+        # Extract to parent directory so that archived directory structure is recreated
+        if ($EXTRACT_PATH -ne ".") {
+          $ParentPath = Split-Path $EXTRACT_PATH -Parent
+          if ($ParentPath) {
+            New-Item -ItemType Directory -Path $ParentPath -Force | Out-Null
+            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath $ParentPath -Force
+          } else {
+            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath "." -Force
+          }
+        } else {
+          Expand-Archive -Path $ARCHIVE_FILE -DestinationPath $EXTRACT_PATH -Force
+        }
+        
+        Write-Output "Extraction complete"
+        Get-ChildItem $EXTRACT_PATH -ErrorAction SilentlyContinue
+        
+        # Clean up temporary download directory
+        Remove-Item -Recurse -Force ./download-temp
+    
+    - name: Extract archive (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        EXTRACT_PATH="${{ inputs.path }}"
+        ARCHIVE_FILE="./download-temp/${{ inputs.name }}.tar.gz"
+        
+        if [ ! -f "$ARCHIVE_FILE" ]; then
+          echo "Error: Archive file $ARCHIVE_FILE not found"
+          ls -la ./download-temp/
+          exit 1
+        fi
+        
+        echo "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
+        
+        # Extract to parent directory so that archived directory structure is recreated
+        if [ "$EXTRACT_PATH" != "." ]; then
+          mkdir -p "$(dirname "$EXTRACT_PATH")"
+          tar -xzf "$ARCHIVE_FILE" -C "$(dirname "$EXTRACT_PATH")"
+        else
+          tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_PATH"
+        fi
+        
+        echo "Extraction complete"
+        ls -la "$EXTRACT_PATH"
+        
+        # Clean up temporary download directory
+        rm -rf ./download-temp
