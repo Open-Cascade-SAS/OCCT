@@ -175,22 +175,22 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
 {
   Cocoa_LocalPool aLocalPool;
 
-  // Suppress Metal initialization errors on macOS by pre-warming graphics context
-  static bool isMetalInitialized = false;
-  if (!isMetalInitialized)
+  // pre-warm graphics context to avoid Metal initialization issues
+  static bool isGraphicsInitialized = false;
+  if (!isGraphicsInitialized)
   {
     @try
     {
-      NSImage* aTempImage = [[NSImage alloc] initWithSize: NSMakeSize (1, 1)];
-      [aTempImage lockFocus];
-      [aTempImage unlockFocus];
-      [aTempImage release];
+      NSImage* anInitImage = [[NSImage alloc] initWithSize: NSMakeSize (1, 1)];
+      [anInitImage lockFocus];
+      [anInitImage unlockFocus];
+      [anInitImage release];
     }
     @catch (NSException*)
     {
-      // ignore Metal initialization exceptions
+      // ignore initialization exceptions
     }
-    isMetalInitialized = true;
+    isGraphicsInitialized = true;
   }
 
   // converting left-bottom coordinate to left-top coordinate
@@ -563,6 +563,10 @@ bool Draw_Window::Save (Standard_CString theFileName) const
     }
 
     NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
+    
+    // Ensure image buffer is properly locked before accessing
+    [myImageBuffer lockFocus];
+    [myImageBuffer unlockFocus];
     
     NSData* aTiffData = [myImageBuffer TIFFRepresentation];
     if (aTiffData == NULL)
