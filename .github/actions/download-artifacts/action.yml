@@ -12,57 +12,21 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Download archive
+    # For Windows, use standard GitHub action - no symlink issues
+    - name: Download artifacts (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/download-artifact@v4.3.0
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+    
+    # For Linux/Unix, use custom workaround to handle symlinks properly
+    - name: Download archive (Unix)
+      if: runner.os != 'Windows'
       uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.name }}
         path: ./download-temp
-    
-    - name: Extract archive (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        $EXTRACT_PATH = "${{ inputs.path }}"
-        $ARCHIVE_FILE = "./download-temp/${{ inputs.name }}.zip"
-        
-        if (-not (Test-Path $ARCHIVE_FILE)) {
-          Write-Error "Archive file $ARCHIVE_FILE not found"
-          Get-ChildItem ./download-temp/
-          exit 1
-        }
-        
-        Write-Output "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
-        
-        # Extract and handle directory structure properly
-        if ($EXTRACT_PATH -ne ".") {
-          # Extract to temp location first
-          New-Item -ItemType Directory -Path "temp-extract" -Force | Out-Null
-          Expand-Archive -Path $ARCHIVE_FILE -DestinationPath "temp-extract" -Force
-          
-          # Move the extracted content to the desired path
-          if (Test-Path "temp-extract/install") {
-            # Remove target directory if it exists to avoid nesting
-            if (Test-Path $EXTRACT_PATH) {
-              Remove-Item -Recurse -Force $EXTRACT_PATH
-            }
-            Move-Item "temp-extract/install" $EXTRACT_PATH -Force
-          } else {
-            # If archive doesn't contain install/, move everything
-            New-Item -ItemType Directory -Path $EXTRACT_PATH -Force | Out-Null
-            Get-ChildItem "temp-extract" | Move-Item -Destination $EXTRACT_PATH -Force
-          }
-          
-          # Clean up temp directory
-          Remove-Item -Recurse -Force "temp-extract"
-        } else {
-          Expand-Archive -Path $ARCHIVE_FILE -DestinationPath $EXTRACT_PATH -Force
-        }
-        
-        Write-Output "Extraction complete"
-        Get-ChildItem $EXTRACT_PATH -ErrorAction SilentlyContinue
-        
-        # Clean up temporary download directory
-        Remove-Item -Recurse -Force ./download-temp
     
     - name: Extract archive (Unix)
       if: runner.os != 'Windows'

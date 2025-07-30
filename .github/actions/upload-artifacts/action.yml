@@ -15,22 +15,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Create archive (Windows)
+    # For Windows, use standard GitHub action - no symlink issues
+    - name: Upload artifacts (Windows)
       if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        $BASE_PATH = "${{ inputs.path }}"
-        $ARCHIVE_NAME = "${{ inputs.name }}.zip"
-        
-        if (Test-Path $BASE_PATH -PathType Container) {
-          Compress-Archive -Path $BASE_PATH -DestinationPath $ARCHIVE_NAME
-          Write-Output "Created archive: $ARCHIVE_NAME"
-          Get-ChildItem $ARCHIVE_NAME
-        } else {
-          Write-Error "Error: Path $BASE_PATH does not exist"
-          exit 1
-        }
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        retention-days: ${{ inputs.retention-days }}
     
+    # For Linux/Unix, use custom workaround to handle symlinks properly
     - name: Create archive (Unix)
       if: runner.os != 'Windows'
       shell: bash
@@ -50,9 +44,10 @@ runs:
         echo "Created archive: $ARCHIVE_NAME"
         ls -la "$ARCHIVE_NAME"
     
-    - name: Upload archive
+    - name: Upload archive (Unix)
+      if: runner.os != 'Windows'
       uses: actions/upload-artifact@v4.6.2
       with:
         name: ${{ inputs.name }}
-        path: ${{ inputs.name }}.*
+        path: ${{ inputs.name }}.tar.gz
         retention-days: ${{ inputs.retention-days }}
