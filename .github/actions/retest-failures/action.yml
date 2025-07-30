@@ -23,14 +23,14 @@ runs:
   steps:
     - name: Download previous test results (Windows)
       if: ${{ inputs.platform == 'windows' }}
-      uses: ./.github/actions/download-artifacts
+      uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.results-artifact-name }}
         path: install/results
       
     - name: Download previous test results (macOS/Linux)
       if: ${{ inputs.platform != 'windows' }}
-      uses: ./.github/actions/download-artifacts
+      uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.results-artifact-name }}
         path: install/bin/results

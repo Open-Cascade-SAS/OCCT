@@ -33,15 +33,23 @@ runs:
         
         Write-Output "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
         
-        # Extract to parent directory so that archived directory structure is recreated
+        # Extract and handle directory structure properly
         if ($EXTRACT_PATH -ne ".") {
-          $ParentPath = Split-Path $EXTRACT_PATH -Parent
-          if ($ParentPath) {
-            New-Item -ItemType Directory -Path $ParentPath -Force | Out-Null
-            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath $ParentPath -Force
+          # Extract to temp location first
+          New-Item -ItemType Directory -Path "temp-extract" -Force | Out-Null
+          Expand-Archive -Path $ARCHIVE_FILE -DestinationPath "temp-extract" -Force
+          
+          # Move the extracted content to the desired path
+          if (Test-Path "temp-extract/install") {
+            Move-Item "temp-extract/install" $EXTRACT_PATH -Force
           } else {
-            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath "." -Force
+            # If archive doesn't contain install/, move everything
+            New-Item -ItemType Directory -Path $EXTRACT_PATH -Force | Out-Null
+            Get-ChildItem "temp-extract" | Move-Item -Destination $EXTRACT_PATH -Force
           }
+          
+          # Clean up temp directory
+          Remove-Item -Recurse -Force "temp-extract"
         } else {
           Expand-Archive -Path $ARCHIVE_FILE -DestinationPath $EXTRACT_PATH -Force
         }
@@ -67,10 +75,23 @@ runs:
         
         echo "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
         
-        # Extract to parent directory so that archived directory structure is recreated
+        # Extract and handle directory structure properly
         if [ "$EXTRACT_PATH" != "." ]; then
-          mkdir -p "$(dirname "$EXTRACT_PATH")"
-          tar -xzf "$ARCHIVE_FILE" -C "$(dirname "$EXTRACT_PATH")"
+          # Extract to temp location first
+          mkdir -p temp-extract
+          tar -xzf "$ARCHIVE_FILE" -C temp-extract
+          
+          # Move the extracted content to the desired path
+          if [ -d "temp-extract/install" ]; then
+            mv "temp-extract/install" "$EXTRACT_PATH"
+          else
+            # If archive doesn't contain install/, move everything
+            mkdir -p "$EXTRACT_PATH"
+            mv temp-extract/* "$EXTRACT_PATH/"
+          fi
+          
+          # Clean up temp directory
+          rm -rf temp-extract
         else
           tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_PATH"
         fi
