@@ -23,7 +23,7 @@ runs:
       shell: bash
 
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.3.0
+      uses: ./.github/actions/download-artifacts
       with:
         name: install-linux-clang-x64
         path: install
@@ -54,18 +54,6 @@ runs:
         done
       shell: bash
 
-    - name: Extract master branch test results
-      run: |
-        cd install/bin/results/master/
-        for archive in *.tar.gz; do
-          if [ -f "$archive" ]; then
-            echo "Extracting $archive"
-            tar -xzf "$archive"
-            rm "$archive"
-          fi
-        done
-      shell: bash
-
     - name: Download current branch test results
       env:
         GH_TOKEN: ${{ github.token }}
@@ -73,18 +61,6 @@ runs:
         for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
           gh run download -n "results-$platform" -D "install/bin/results/current/"
-        done
-      shell: bash
-
-    - name: Extract current branch test results
-      run: |
-        cd install/bin/results/current/
-        for archive in *.tar.gz; do
-          if [ -f "$archive" ]; then
-            echo "Extracting $archive"
-            tar -xzf "$archive"
-            rm "$archive"
-          fi
         done
       shell: bash
 
