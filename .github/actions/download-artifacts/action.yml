@@ -41,6 +41,10 @@ runs:
           
           # Move the extracted content to the desired path
           if (Test-Path "temp-extract/install") {
+            # Remove target directory if it exists to avoid nesting
+            if (Test-Path $EXTRACT_PATH) {
+              Remove-Item -Recurse -Force $EXTRACT_PATH
+            }
             Move-Item "temp-extract/install" $EXTRACT_PATH -Force
           } else {
             # If archive doesn't contain install/, move everything
@@ -83,6 +87,8 @@ runs:
           
           # Move the extracted content to the desired path
           if [ -d "temp-extract/install" ]; then
+            # Remove target directory if it exists to avoid nesting
+            rm -rf "$EXTRACT_PATH"
             mv "temp-extract/install" "$EXTRACT_PATH"
           else
             # If archive doesn't contain install/, move everything
