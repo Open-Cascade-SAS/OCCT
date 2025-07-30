@@ -175,6 +175,22 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
 {
   Cocoa_LocalPool aLocalPool;
 
+  // Suppress Metal initialization errors on macOS by pre-warming graphics context
+  static bool isMetalInitialized = false;
+  if (!isMetalInitialized) {
+    @try {
+      // Create a minimal NSImage to trigger Metal initialization early
+      NSImage* aTempImage = [[NSImage alloc] initWithSize:NSMakeSize(1, 1)];
+      [aTempImage lockFocus];
+      [aTempImage unlockFocus];
+      [aTempImage release];
+    }
+    @catch (NSException*) {
+      // Ignore any Metal initialization exceptions
+    }
+    isMetalInitialized = true;
+  }
+
   // converting left-bottom coordinate to left-top coordinate
   Standard_Integer anYTop = getScreenBottom() - theXY.y() - theSize.y();
 
