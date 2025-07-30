@@ -1,0 +1,73 @@
+name: 'Download Platform Artifacts'
+description: 'Download and extract artifacts with proper file permissions and symlinks (cross-platform)'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Path to extract to (optional)'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    # For Windows, use standard GitHub action - no symlink issues
+    - name: Download artifacts (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/download-artifact@v4.3.0
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+    
+    # For Linux/Unix, use custom workaround to handle symlinks properly
+    - name: Download archive (Unix)
+      if: runner.os != 'Windows'
+      uses: actions/download-artifact@v4.3.0
+      with:
+        name: ${{ inputs.name }}
+        path: ./download-temp
+    
+    - name: Extract archive (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        EXTRACT_PATH="${{ inputs.path }}"
+        ARCHIVE_FILE="./download-temp/${{ inputs.name }}.tar.gz"
+        
+        if [ ! -f "$ARCHIVE_FILE" ]; then
+          echo "Error: Archive file $ARCHIVE_FILE not found"
+          ls -la ./download-temp/
+          exit 1
+        fi
+        
+        echo "Extracting $ARCHIVE_FILE to $EXTRACT_PATH"
+        
+        # Extract and handle directory structure properly
+        if [ "$EXTRACT_PATH" != "." ]; then
+          # Extract to temp location first
+          mkdir -p temp-extract
+          tar -xzf "$ARCHIVE_FILE" -C temp-extract
+          
+          # Move the extracted content to the desired path
+          if [ -d "temp-extract/install" ]; then
+            # Remove target directory if it exists to avoid nesting
+            rm -rf "$EXTRACT_PATH"
+            mv "temp-extract/install" "$EXTRACT_PATH"
+          else
+            # If archive doesn't contain install/, move everything
+            mkdir -p "$EXTRACT_PATH"
+            mv temp-extract/* "$EXTRACT_PATH/"
+          fi
+          
+          # Clean up temp directory
+          rm -rf temp-extract
+        else
+          tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_PATH"
+        fi
+        
+        echo "Extraction complete"
+        ls -la "$EXTRACT_PATH"
+        
+        # Clean up temporary download directory
+        rm -rf ./download-temp

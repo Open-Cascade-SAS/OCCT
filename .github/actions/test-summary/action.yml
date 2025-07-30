@@ -23,7 +23,7 @@ runs:
       shell: bash
 
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.3.0
+      uses: ./.github/actions/download-artifacts
       with:
         name: install-linux-clang-x64
         path: install
