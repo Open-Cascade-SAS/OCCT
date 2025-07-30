@@ -1,1 +1,1 @@
-testgrid -outdir results/macos-x64 caf basic
+testgrid -outdir results/macos-x64 "caf,helix" "basic,standard"

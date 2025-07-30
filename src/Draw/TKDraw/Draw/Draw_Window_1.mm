@@ -175,6 +175,24 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
 {
   Cocoa_LocalPool aLocalPool;
 
+  // pre-warm graphics context to avoid Metal initialization issues
+  static bool isGraphicsInitialized = false;
+  if (!isGraphicsInitialized)
+  {
+    @try
+    {
+      NSImage* anInitImage = [[NSImage alloc] initWithSize: NSMakeSize (1, 1)];
+      [anInitImage lockFocus];
+      [anInitImage unlockFocus];
+      [anInitImage release];
+    }
+    @catch (NSException*)
+    {
+      // ignore initialization exceptions
+    }
+    isGraphicsInitialized = true;
+  }
+
   // converting left-bottom coordinate to left-top coordinate
   Standard_Integer anYTop = getScreenBottom() - theXY.y() - theSize.y();
 
@@ -519,37 +537,68 @@ void Draw_Window::SetMode (Standard_Integer theMode)
 //function : Save
 //purpose  :
 //=======================================================================
-Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
+bool Draw_Window::Save (Standard_CString theFileName) const
 {
-  Cocoa_LocalPool aLocalPool;
-
-  NSString* aFileName = [[[NSString alloc] initWithUTF8String: theFileName] autorelease];
-  NSString* aFileExtension = [[aFileName pathExtension] lowercaseString];
-
-  NSDictionary* aFileTypeDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSNumber numberWithInt: NSBitmapImageFileTypePNG],  @"png",
-                                  [NSNumber numberWithInt: NSBitmapImageFileTypeBMP],  @"bmp",
-                                  [NSNumber numberWithInt: NSBitmapImageFileTypeJPEG], @"jpg",
-                                  [NSNumber numberWithInt: NSBitmapImageFileTypeGIF],  @"gif",
-                                  nil];
-  if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
+  if (myImageBuffer == NULL || theFileName == NULL)
   {
-    return Standard_False; // unsupported image extension
+    return false;
   }
 
-  NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
-  NSBitmapImageRep* anImageRep = [NSBitmapImageRep imageRepWithData: [myImageBuffer TIFFRepresentation]];
+  Cocoa_LocalPool aLocalPool;
 
-  NSDictionary* anImgProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8]
-                                                         forKey: NSImageCompressionFactor];
+  @try
+  {
+    NSString* aFileName = [[[NSString alloc] initWithUTF8String: theFileName] autorelease];
+    NSString* aFileExtension = [[aFileName pathExtension] lowercaseString];
 
-  NSData* aData = [anImageRep representationUsingType: aFileType 
-                                           properties: anImgProps];
+    NSDictionary* aFileTypeDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithInt: NSBitmapImageFileTypePNG],  @"png",
+                                    [NSNumber numberWithInt: NSBitmapImageFileTypeBMP],  @"bmp",
+                                    [NSNumber numberWithInt: NSBitmapImageFileTypeJPEG], @"jpg",
+                                    [NSNumber numberWithInt: NSBitmapImageFileTypeGIF],  @"gif",
+                                    nil];
+    if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
+    {
+      return false;
+    }
 
-  Standard_Boolean isSuccess = [aData writeToFile: aFileName
-                                       atomically: NO];
+    NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
+    
+    // Ensure image buffer is properly locked before accessing
+    [myImageBuffer lockFocus];
+    [myImageBuffer unlockFocus];
+    
+    NSData* aTiffData = [myImageBuffer TIFFRepresentation];
+    if (aTiffData == NULL)
+    {
+      return false;
+    }
+    
+    NSBitmapImageRep* anImageRep = [NSBitmapImageRep imageRepWithData: aTiffData];
+    if (anImageRep == NULL)
+    {
+      return false;
+    }
 
-  return isSuccess;
+    NSDictionary* anImgProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8]
+                                                           forKey: NSImageCompressionFactor];
+
+    NSData* aData = [anImageRep representationUsingType: aFileType 
+                                             properties: anImgProps];
+    if (aData == NULL)
+    {
+      return false;
+    }
+
+    bool isSuccess = [aData writeToFile: aFileName
+                                         atomically: NO];
+
+    return isSuccess;
+  }
+  @catch (NSException*)
+  {
+    return false;
+  }
 }
 
 Standard_Boolean Draw_Window::IsEqualWindows (const long theWindowNumber)
