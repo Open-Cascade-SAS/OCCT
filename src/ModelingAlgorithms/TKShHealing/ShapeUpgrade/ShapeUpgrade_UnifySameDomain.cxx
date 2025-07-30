@@ -16,7 +16,6 @@
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 
 #include <BRep_Builder.hxx>
-#include <Standard_NullObject.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
@@ -648,7 +647,7 @@ static void RelocatePCurvesToNewUorigin(
         break;
       }
     } // for (;;) (collect pcurves of a contour)
-  }   // for (;;) (walk by contours)
+  } // for (;;) (walk by contours)
 }
 
 static void InsertWiresIntoFaces(const TopTools_SequenceOfShape& theWires,
@@ -1327,13 +1326,9 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface, gp_Cylin
 
 static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 {
-  if (!aSurface.IsNull() && aSurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-  {
-    Handle(Geom_RectangularTrimmedSurface) rts =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
-    return rts->BasisSurface();
-  }
-  return aSurface;
+  const Handle(Geom_RectangularTrimmedSurface) aRTS =
+    Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
+  return aRTS.IsNull() ? aSurface : aRTS->BasisSurface();
 }
 
 //=======================================================================
@@ -2063,7 +2058,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
         ResFirsts(ii) = aFirst3d;
         ResLasts(ii)  = aLast3d;
       } // if ranges > aMaxTol
-    }   // for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
+    } // for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
   }
 
   if (anIsSeam)
@@ -3009,11 +3004,18 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
   TopExp_Explorer exp;
   for (exp.Init(theInpShape, TopAbs_FACE); exp.More(); exp.Next())
   {
-
-    TopoDS_Face aFace = TopoDS::Face(exp.Current());
-
+    const TopoDS_Face aFace = TopoDS::Face(exp.Current());
     if (aProcessed.Contains(aFace))
+    {
       continue;
+    }
+
+    const Handle(Geom_Surface) aBaseSurface = ClearRts(BRep_Tool::Surface(aFace));
+    // Bug 33894: Prevent crash when face has no surface
+    if (aBaseSurface.IsNull())
+    {
+      continue;
+    }
 
     // Boundary edges for the new face
     TopTools_SequenceOfShape edges;
@@ -3029,12 +3031,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
     faces.Append(aFace);
 
     // surface and location to construct result
-    TopLoc_Location      aBaseLocation;
-    Handle(Geom_Surface) aBaseSurface = BRep_Tool::Surface(aFace);
-    // Bug 33894: Prevent crash when face has no surface
-    Standard_NullObject_Raise_if(aBaseSurface.IsNull(),
-                                 "ShapeUpgrade_UnifySameDomain: Face has no surface");
-    aBaseSurface                          = ClearRts(aBaseSurface);
+    TopLoc_Location    aBaseLocation;
     TopAbs_Orientation RefFaceOrientation = aFace.Orientation();
 
     // Take original surface
@@ -3264,7 +3261,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
           }
         }
       } // if (!aKeepEdges.IsEmpty())
-    }   // if (faces.Length() > 1)
+    } // if (faces.Length() > 1)
 
     TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
     for (i = 1; i <= faces.Length(); i++)
@@ -3538,8 +3535,8 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                 }
               }
             } // else (Umax - Umin < Uperiod - 1.e-5, no Useam)
-          }   // if (!UseamFound)
-        }     // if (Uperiod != 0.)
+          } // if (!UseamFound)
+        } // if (Uperiod != 0.)
       UseamFound = anIsSeamFound[0];
       VseamFound = anIsSeamFound[1];
       ////////////////////////////////////
@@ -3968,7 +3965,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
         }
       }
     } // if (faces.Length() > 1)
-  }   // end processing each face
+  } // end processing each face
 }
 
 //=================================================================================================
@@ -4290,7 +4287,7 @@ void SplitWire(const TopoDS_Wire&                theWire,
               break;
             }
         } // else (more than one edge)
-      }   // for (;;)
+      } // for (;;)
       theWireSeq.Append(aNewWire);
     } // while (anItl.More())
   }
