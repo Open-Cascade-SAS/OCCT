@@ -48,6 +48,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Message.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>

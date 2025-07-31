@@ -149,7 +149,12 @@ void ShapeAnalysis_Wire::Load(const Handle(ShapeExtend_WireData)& sbwd)
 
 void ShapeAnalysis_Wire::SetFace(const TopoDS_Face& face)
 {
-  myFace                              = face;
+  myFace = face;
+  if (myFace.IsNull())
+  {
+    return;
+  }
+
   const Handle(Geom_Surface) aSurface = BRep_Tool::Surface(myFace);
   if (!face.IsNull() && !aSurface.IsNull())
   {
