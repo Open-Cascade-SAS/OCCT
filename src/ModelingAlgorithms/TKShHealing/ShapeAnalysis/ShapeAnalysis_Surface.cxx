@@ -33,7 +33,6 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <ElSLib.hxx>
-#include <Standard_NullObject.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -56,6 +55,8 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
+
+#include <cassert>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_Surface, Standard_Transient)
 
@@ -107,8 +108,12 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S)
       myVCloseVal(-1)
 {
   // Bug 33895: Prevent crash when surface is null
-  Standard_NullObject_Raise_if(mySurf.IsNull(),
-                               "ShapeAnalysis_Surface: Cannot create with null surface");
+  if (mySurf.IsNull())
+  {
+    Message::SendWarning("ShapeAnalysis_Surface: Cannot create with null surface");
+    assert(!mySurf.IsNull());
+    return;
+  }
   mySurf->Bounds(myUF, myUL, myVF, myVL);
   myAdSur = new GeomAdaptor_Surface(mySurf);
 }
@@ -119,9 +124,13 @@ void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
 {
   if (mySurf == S)
     return;
-  // Bug 33895: Prevent crash when surface is null
-  Standard_NullObject_Raise_if(S.IsNull(),
-                               "ShapeAnalysis_Surface::Init: Cannot initialize with null surface");
+  // Bug 33895: Prevent crash when surface is null  if (S.IsNull())
+  if (S.IsNull())
+  {
+    Message::SendWarning("ShapeAnalysis_Surface: Cannot initialize with null surface");
+    assert(!mySurf.IsNull());
+    return;
+  }
   myExtOK     = Standard_False; //: 30
   mySurf      = S;
   myNbDeg     = -1;

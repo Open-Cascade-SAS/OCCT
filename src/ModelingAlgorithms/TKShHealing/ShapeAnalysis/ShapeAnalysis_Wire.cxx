@@ -149,9 +149,12 @@ void ShapeAnalysis_Wire::Load(const Handle(ShapeExtend_WireData)& sbwd)
 
 void ShapeAnalysis_Wire::SetFace(const TopoDS_Face& face)
 {
-  myFace = face;
-  if (!face.IsNull())
-    mySurf = new ShapeAnalysis_Surface(BRep_Tool::Surface(myFace));
+  myFace                              = face;
+  const Handle(Geom_Surface) aSurface = BRep_Tool::Surface(myFace);
+  if (!face.IsNull() && !aSurface.IsNull())
+  {
+    mySurf = new ShapeAnalysis_Surface(aSurface);
+  }
 }
 
 //=================================================================================================
@@ -661,7 +664,6 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSmall(const Standard_Integer num,
   if (!IsLoaded() || NbEdges() <= 1)
     return Standard_False;
 
-  // Standard_Integer n = ( num ? num : NbEdges() ); //szv#4:S4163:12Mar99 not needed
   TopoDS_Edge        E = myWire->Edge(num ? num : NbEdges());
   ShapeAnalysis_Edge sae;
 
@@ -685,35 +687,35 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSmall(const Standard_Integer num,
   gp_Pnt        p2   = BRep_Tool::Pnt(V2);
   Standard_Real dist = p1.Distance(p2);
   Standard_Real prec = precsmall; // Min ( myPrecision, precsmall );
-  // Standard_Real prec = Min(BRep_Tool::Tolerance(V1),BRep_Tool::Tolerance(V2)); //skl
   if (dist > prec)
-    return Standard_False; // pas nulle
+    return Standard_False; // not small enough
 
-  // La courbe 3D a present : est-elle FERMEE ou DE LONGUEUR NULLE ... ???
-  // Pour cela on prend le point milieu (y a-t-il mieux)
-  // Si pas de C3D, on essaie la C2D ...
+  // The 3D curve now: is it CLOSED or ZERO LENGTH...???
+  // To do this, we take the midpoint (is there anything better?)
+  // If there's no 3D curve, we try 2D...
 
-  gp_Pnt             Pm;
+  gp_Pnt             aMidpoint;
   Standard_Real      cf, cl;
   Handle(Geom_Curve) c3d;
   if (sae.Curve3d(E, c3d, cf, cl, Standard_False))
-    Pm = c3d->Value((cf + cl) / 2.);
+  {
+    aMidpoint = c3d->Value((cf + cl) / 2.);
+  }
   else
   {
     Handle(Geom2d_Curve) c2d;
-    if (!myFace.IsNull() && sae.PCurve(E, myFace, c2d, cf, cl, Standard_False))
+    if (!myFace.IsNull() && !mySurf.IsNull() && sae.PCurve(E, myFace, c2d, cf, cl, Standard_False))
     {
       gp_Pnt2d p2m = c2d->Value((cf + cl) / 2.);
-      Pm           = mySurf->Value(p2m);
+      aMidpoint    = mySurf->Value(p2m);
     }
     else
     {
-      myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-      Pm       = p1;
-      //: n2      return Standard_False;
+      myStatus  = ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      aMidpoint = p1;
     }
   }
-  if (Pm.Distance(p1) > prec || Pm.Distance(p2) > prec)
+  if (aMidpoint.Distance(p1) > prec || aMidpoint.Distance(p2) > prec)
     return Standard_False;
 
   myStatus |= ShapeExtend::EncodeStatus(V1.IsSame(V2) ? ShapeExtend_DONE1 : ShapeExtend_DONE2);
@@ -820,8 +822,6 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
     return Standard_False;
   }
-  //: i8  if ( BRep_Tool::Degenerated ( E1 ) ||
-  //: i8       BRep_Tool::Degenerated ( E2 ) ) return Standard_False;  // deja OK
 
   TopoDS_Vertex Vp = sae.FirstVertex(E1); //: i9
   TopoDS_Vertex V0 = sae.LastVertex(E1);
@@ -906,7 +906,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
     // rln S4135 if ( prec > myPrecision ) mySurf->ComputeSingularities ( myPrecision ); //:51
   }
 
-  //  voila, on a soit dgnr soit lack
+  // there you go, we either have degenerate or lack
   if (!lack && !dgnr)
   {
     //: abv 29.08.01: if singularity not detected but edge is marked
@@ -932,8 +932,6 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
     if (sae.PCurve(E1, myFace, c2d, a, b, Standard_True))
     {
       p2d1 = c2d->Value(b);
-      // #84 rln gp_Pnt2d p2d = c2d->Value ( b );
-      // #84 rln par1 = ( p2d.XY() - aP2d.XY() ) * theDir2d.XY();
     }
     else
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
@@ -941,19 +939,10 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
     if (sae.PCurve((dgnr ? E3 : E2), myFace, c2d, a, b, Standard_True))
     {
       p2d2 = c2d->Value(a);
-      // #84 rln gp_Pnt2d p2d = c2d->Value ( a );
-      // #84 rln par2 = ( p2d.XY() - aP2d.XY() ) * theDir2d.XY();
     }
     else
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
   }
-  /*
-    if ( par2 < par1 ) {
-      par1 = -par1;
-      par2 = -par2;
-      theDir2d.Reverse();
-    }
-  */
 
   // #84 rln 18.03.99 if pcurve is not degenerate anymore, the fix is postponned
   // to ShapeFix_Wire::FixLacking
@@ -974,8 +963,6 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated(const Standard_Integer num
   if (p2d1.Distance(p2d2) /*Abs (par1 - par2)*/ <= max + gp::Resolution())
     return Standard_False;
 
-  // #84 rln p2d1 = aP2d.XY() + par1 * theDir2d.XY();
-  // #84 rln p2d2 = aP2d.XY() + par2 * theDir2d.XY();
   myStatus = ShapeExtend::EncodeStatus(dgnr ? ShapeExtend_DONE2 : ShapeExtend_DONE1);
   return Standard_True;
 }
@@ -1020,6 +1007,12 @@ Standard_Boolean ShapeAnalysis_Wire::CheckGap3d(const Standard_Integer num)
 
 Standard_Boolean ShapeAnalysis_Wire::CheckGap2d(const Standard_Integer num)
 {
+  if (myFace.IsNull() || mySurf.IsNull())
+  {
+    myStatus = ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+    return Standard_False;
+  }
+
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   // szv#4:S4163:12Mar99 optimized
   if (!IsReady() || NbEdges() < 1)
