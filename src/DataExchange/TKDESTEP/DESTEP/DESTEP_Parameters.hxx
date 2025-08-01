@@ -199,7 +199,7 @@ public:
   bool WriteName = true; //<! NameMode is used to indicate write Name or not
   bool WriteLayer = true; //<! LayerMode is used to indicate write Layers or not
   bool WriteProps = true; //<! PropsMode is used to indicate write Validation properties or not
-  bool WriteMetadata = true; //<! MetadataMode is used to indicate write validation properties.
+  bool WriteMetadata = true; //<! MetadataMode is used to indicate write metadata properties or not.
   bool WriteMaterial = true;  //<! MaterialMode is used to indicate write Material or not
   bool WriteVisMaterial = false;  //<! VisMaterialMode is used to indicate write Visual Material or not
   STEPControl_StepModelType WriteModelType = STEPControl_AsIs; //<! Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP

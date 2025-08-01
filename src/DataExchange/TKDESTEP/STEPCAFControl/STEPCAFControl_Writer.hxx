@@ -40,6 +40,7 @@ class XSControl_WorkSession;
 class TDocStd_Document;
 class STEPCAFControl_ExternFile;
 class TopoDS_Shape;
+class StepShape_ShapeDefinitionRepresentation;
 
 //! Provides a tool to write DECAF document to the
 //! STEP file. Besides transfer of shapes (including
@@ -324,6 +325,24 @@ protected:
   //! Write metadata assigned to specified labels, to STEP model
   Standard_Boolean writeMetadata(const Handle(XSControl_WorkSession)& theWS,
                                  const TDF_LabelSequence&             theLabels) const;
+
+  //! Write metadata assigned to specified label, to STEP model.
+  // Also recursively writes metadata for children labels.
+  Standard_Boolean writeMetadataForLabel(const Handle(XSControl_WorkSession)& theWS,
+                                         const TDF_Label&                     theLabel) const;
+  
+  //! Write metadata representation item to STEP model.
+  //! @param theKey The key for metadata item.
+  //! @param theModel The STEP model to write to.
+  //! @param theShapeDefRep The shape definition representation.
+  //! @param theProdDef The product definition.
+  //! @param theItem The representation item to write.
+  void writeMetadataRepresentationItem(
+    const TCollection_AsciiString&                        theKey,
+    const Handle(StepData_StepModel)&                     theModel,
+    const Handle(StepShape_ShapeDefinitionRepresentation) theShapeDefRep,
+    const Handle(StepBasic_ProductDefinition)&            theProdDef,
+    const Handle(StepRepr_RepresentationItem)&            theItem) const;
 
   //! Write D&GTs assigned to specified labels, to STEP model
   Standard_Boolean writeDGTs(const Handle(XSControl_WorkSession)& theWS,

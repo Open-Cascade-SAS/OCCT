@@ -119,6 +119,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetMaterialMode(aNode->InternalParameters.WriteMaterial);
   aWriter.SetVisualMaterialMode(aNode->InternalParameters.WriteVisMaterial);
   aWriter.SetCleanDuplicates(aNode->InternalParameters.CleanDuplicates);
+  aWriter.SetMetadataMode(aNode->InternalParameters.WriteMetadata);
   DESTEP_Parameters aParams        = aNode->InternalParameters;
   Standard_Real     aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,

@@ -190,6 +190,8 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("write.layer", InternalParameters.WriteLayer, aScope);
   InternalParameters.WriteProps =
     theResource->BooleanVal("write.props", InternalParameters.WriteProps, aScope);
+  InternalParameters.WriteMetadata =
+    theResource->BooleanVal("write.metadata", InternalParameters.WriteMetadata, aScope);
   InternalParameters.WriteMaterial =
     theResource->BooleanVal("write.material", InternalParameters.WriteMaterial, aScope);
   InternalParameters.WriteVisMaterial =
@@ -560,6 +562,13 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
              "properties or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.props :\t " + InternalParameters.WriteProps + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up the write.metadata parameter which is used to indicate "
+             "write Metadata or not\n";
+  aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
+  aResult += aScope + "write.props :\t " + InternalParameters.WriteMetadata + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
