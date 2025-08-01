@@ -121,19 +121,19 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S)
 
 //=================================================================================================
 
-void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
+void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& theSurface)
 {
-  if (mySurf == S)
+  if (mySurf == theSurface)
     return;
-  // Bug 33895: Prevent crash when surface is null  if (S.IsNull())
-  if (S.IsNull())
+  // Bug 33895: Prevent crash when surface is null
+  if (theSurface.IsNull())
   {
     Message::SendWarning("ShapeAnalysis_Surface: Cannot initialize with null surface");
-    assert(!mySurf.IsNull());
+    assert(!theSurface.IsNull());
     return;
   }
   myExtOK     = Standard_False; //: 30
-  mySurf      = S;
+  mySurf      = theSurface;
   myNbDeg     = -1;
   myUCloseVal = myVCloseVal = -1;
   myGap                     = 0.;
