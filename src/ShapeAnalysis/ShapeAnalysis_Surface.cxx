@@ -48,6 +48,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Message.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
@@ -55,6 +56,8 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
+
+#include <cassert>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_Surface, Standard_Transient)
 
@@ -105,18 +108,32 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S)
       myUCloseVal(-1),
       myVCloseVal(-1)
 {
+  // Bug 33895: Prevent crash when surface is null
+  if (mySurf.IsNull())
+  {
+    Message::SendWarning("ShapeAnalysis_Surface: Cannot create with null surface");
+    assert(!mySurf.IsNull());
+    return;
+  }
   mySurf->Bounds(myUF, myUL, myVF, myVL);
   myAdSur = new GeomAdaptor_Surface(mySurf);
 }
 
 //=================================================================================================
 
-void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
+void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& theSurface)
 {
-  if (mySurf == S)
+  if (mySurf == theSurface)
     return;
+  // Bug 33895: Prevent crash when surface is null
+  if (theSurface.IsNull())
+  {
+    Message::SendWarning("ShapeAnalysis_Surface: Cannot initialize with null surface");
+    assert(!theSurface.IsNull());
+    return;
+  }
   myExtOK     = Standard_False; //: 30
-  mySurf      = S;
+  mySurf      = theSurface;
   myNbDeg     = -1;
   myUCloseVal = myVCloseVal = -1;
   myGap                     = 0.;
