@@ -56,6 +56,7 @@
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Shell.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <Standard_NullValue.hxx>
 #include <Standard_Type.hxx>
 #include <TColGeom2d_Array1OfBSplineCurve.hxx>
 #include <TColGeom2d_HArray1OfBSplineCurve.hxx>
@@ -1325,13 +1326,9 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface, gp_Cylin
 
 static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 {
-  if (aSurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-  {
-    Handle(Geom_RectangularTrimmedSurface) rts =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
-    return rts->BasisSurface();
-  }
-  return aSurface;
+  const Handle(Geom_RectangularTrimmedSurface) aRTS =
+    Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
+  return aRTS.IsNull() ? aSurface : aRTS->BasisSurface();
 }
 
 //=======================================================================
@@ -3007,11 +3004,18 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
   TopExp_Explorer exp;
   for (exp.Init(theInpShape, TopAbs_FACE); exp.More(); exp.Next())
   {
-
-    TopoDS_Face aFace = TopoDS::Face(exp.Current());
-
+    const TopoDS_Face aFace = TopoDS::Face(exp.Current());
     if (aProcessed.Contains(aFace))
+    {
       continue;
+    }
+
+    const Handle(Geom_Surface) aBaseSurface = ClearRts(BRep_Tool::Surface(aFace));
+    // Bug 33894: Prevent crash when face has no surface
+    if (aBaseSurface.IsNull())
+    {
+      continue;
+    }
 
     // Boundary edges for the new face
     TopTools_SequenceOfShape edges;
@@ -3027,9 +3031,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
     faces.Append(aFace);
 
     // surface and location to construct result
-    TopLoc_Location      aBaseLocation;
-    Handle(Geom_Surface) aBaseSurface     = BRep_Tool::Surface(aFace);
-    aBaseSurface                          = ClearRts(aBaseSurface);
+    TopLoc_Location    aBaseLocation;
     TopAbs_Orientation RefFaceOrientation = aFace.Orientation();
 
     // Take original surface
