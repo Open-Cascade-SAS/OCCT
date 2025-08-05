@@ -310,12 +310,54 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
+  return Read(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                 theStreams,
+                                         const Handle(TDocStd_Document)& theDocument,
+                                         Handle(XSControl_WorkSession)&  theWS,
+                                         const Message_ProgressRange&    theProgress)
+{
+  (void)theWS;
+  return Write(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&           theStreams,
+                                        TopoDS_Shape&                  theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theShape, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                theStreams,
+                                         const TopoDS_Shape&            theShape,
+                                         Handle(XSControl_WorkSession)& theWS,
+                                         const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  return Write(theStreams, theShape, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&            theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
+{
   if (theStreams.IsEmpty())
   {
     Message::SendFail() << "Error: DEVRML_Provider stream map is empty";
@@ -336,7 +378,7 @@ Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&            theStream
   }
   
   TopoDS_Shape aShape;
-  if (!Read(theStreams, aShape, theWS, theProgress))
+  if (!Read(theStreams, aShape, theProgress))
   {
     return Standard_False;
   }
@@ -350,25 +392,67 @@ Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&            theStream
 
 Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                 theStreams,
                                          const Handle(TDocStd_Document)& theDocument,
-                                         Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  (void)theWS;
-  (void)theStreams;
-  (void)theDocument;
   (void)theProgress;
-  Message::SendFail() << "Error: DEVRML_Provider doesn't support document write operations with streams";
-  return Standard_False;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEVRML_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEVRML_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEVRML_ConfigurationNode)))
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEVRML_Provider during writing stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DEVRML_ConfigurationNode) aNode = Handle(DEVRML_ConfigurationNode)::DownCast(GetNode());
+  
+  Standard_Real aScaling = 1.;
+  Standard_Real aScaleFactorMM = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    aScaling = aScaleFactorMM / aNode->GlobalParameters.LengthUnit;
+  }
+  else
+  {
+    aScaling = aNode->GlobalParameters.SystemUnit / aNode->GlobalParameters.LengthUnit;
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendWarning() << "Warning in the DEVRML_Provider during writing stream " << aFirstKey
+                           << ": The document has no information on Units. Using global parameter as initial Unit.";
+  }
+  
+  // Use VrmlAPI_Writer with stream support
+  VrmlAPI_Writer aWriter;
+  aWriter.SetRepresentation(static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  
+  if (!aWriter.WriteDoc(theDocument, aStream, aScaling))
+  {
+    Message::SendFail() << "Error in the DEVRML_Provider during writing stream " << aFirstKey
+                        << ": WriteDoc operation failed";
+    return Standard_False;
+  }
+  
+  return Standard_True;
 }
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
-                                        Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
 {
-  (void)theWS;
   (void)theProgress;
   if (theStreams.IsEmpty())
   {
@@ -382,7 +466,7 @@ Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&           theStreams
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   
   if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEVRML_ConfigurationNode)))
   {
@@ -481,55 +565,45 @@ Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&           theStreams
 
 Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                theStreams,
                                          const TopoDS_Shape&            theShape,
-                                         Handle(XSControl_WorkSession)& theWS,
                                          const Message_ProgressRange&   theProgress)
 {
-  (void)theWS;
-  (void)theStreams;
-  (void)theShape;
   (void)theProgress;
-  Message::SendFail() << "Error: DEVRML_Provider doesn't support shape write operations with streams";
-  return Standard_False;
-}
-
-//=================================================================================================
-
-Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&            theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        const Message_ProgressRange&    theProgress)
-{
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                 theStreams,
-                                         const Handle(TDocStd_Document)& theDocument,
-                                         const Message_ProgressRange&    theProgress)
-{
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-Standard_Boolean DEVRML_Provider::Read(const ReadStreamMap&           theStreams,
-                                        TopoDS_Shape&                  theShape,
-                                        const Message_ProgressRange&   theProgress)
-{
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theShape, aWS, theProgress);
-}
-
-//=================================================================================================
-
-Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                theStreams,
-                                         const TopoDS_Shape&            theShape,
-                                         const Message_ProgressRange&   theProgress)
-{
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theShape, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEVRML_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEVRML_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEVRML_ConfigurationNode)))
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEVRML_Provider during writing stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DEVRML_ConfigurationNode) aNode = Handle(DEVRML_ConfigurationNode)::DownCast(GetNode());
+  
+  // Use VrmlAPI_Writer with stream support
+  VrmlAPI_Writer aWriter;
+  aWriter.SetRepresentation(static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  
+  if (!aWriter.Write(theShape, aStream, 2)) // Use version 2 by default
+  {
+    Message::SendFail() << "Error in the DEVRML_Provider during writing stream " << aFirstKey
+                        << ": Write operation failed";
+    return Standard_False;
+  }
+  
+  return Standard_True;
 }
 
 //=================================================================================================

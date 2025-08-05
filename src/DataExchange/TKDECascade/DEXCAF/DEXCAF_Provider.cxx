@@ -291,14 +291,13 @@ TCollection_AsciiString DEXCAF_Provider::GetFormat() const
 
 //=================================================================================================
 
-Standard_Boolean DEXCAF_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
-  (void)theWS; (void)theStreams; (void)theDocument; (void)theProgress;
-  Message::SendFail() << "Error: DEXCAF_Provider doesn't support stream operations";
-  return Standard_False;
+  (void)theWS;
+  return Read(theStreams, theDocument, theProgress);
 }
 
 Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStreams,
@@ -306,19 +305,17 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStrea
                                          Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  (void)theWS; (void)theStreams; (void)theDocument; (void)theProgress;
-  Message::SendFail() << "Error: DEXCAF_Provider doesn't support stream operations";
-  return Standard_False;
+  (void)theWS;
+  return Write(theStreams, theDocument, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
 {
-  (void)theWS; (void)theStreams; (void)theShape; (void)theProgress;
-  Message::SendFail() << "Error: DEXCAF_Provider doesn't support stream operations";
-  return Standard_False;
+  (void)theWS;
+  return Read(theStreams, theShape, theProgress);
 }
 
 Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStreams,
@@ -326,41 +323,229 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStream
                                          Handle(XSControl_WorkSession)& theWS,
                                          const Message_ProgressRange&   theProgress)
 {
-  (void)theWS; (void)theStreams; (void)theShape; (void)theProgress;
-  Message::SendFail() << "Error: DEXCAF_Provider doesn't support stream operations";
-  return Standard_False;
+  (void)theWS;
+  return Write(theStreams, theShape, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theDocument, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  if (theDocument.IsNull())
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEXCAF_Provider during reading stream " << aFirstKey
+                        << ": theDocument shouldn't be null";
+    return Standard_False;
+  }
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEXCAF_ConfigurationNode)))
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEXCAF_Provider during reading stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DEXCAF_ConfigurationNode) aNode = Handle(DEXCAF_ConfigurationNode)::DownCast(GetNode());
+  Handle(TDocStd_Document) aDocument;
+  Handle(TDocStd_Application) anApp = new TDocStd_Application();
+  BinDrivers::DefineFormat(anApp);
+  BinLDrivers::DefineFormat(anApp);
+  BinTObjDrivers::DefineFormat(anApp);
+  BinXCAFDrivers::DefineFormat(anApp);
+  StdDrivers::DefineFormat(anApp);
+  StdLDrivers::DefineFormat(anApp);
+  XmlDrivers::DefineFormat(anApp);
+  XmlLDrivers::DefineFormat(anApp);
+  XmlTObjDrivers::DefineFormat(anApp);
+  XmlXCAFDrivers::DefineFormat(anApp);
+  
+  Handle(PCDM_ReaderFilter) aFilter = new PCDM_ReaderFilter(aNode->InternalParameters.ReadAppendMode);
+  for (TColStd_ListOfAsciiString::Iterator anIt(aNode->InternalParameters.ReadSkipValues); anIt.More(); anIt.Next())
+  {
+    aFilter->AddSkipped(anIt.Value());
+  }
+  for (TColStd_ListOfAsciiString::Iterator anIt(aNode->InternalParameters.ReadValues); anIt.More(); anIt.Next())
+  {
+    if (anIt.Value().StartsWith("0"))
+    {
+      aFilter->AddPath(anIt.Value());
+    }
+    else
+    {
+      aFilter->AddRead(anIt.Value());
+    }
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  
+  if (anApp->Open(aStream, aDocument, aFilter, theProgress) != PCDM_RS_OK)
+  {
+    Message::SendFail() << "Error in the DEXCAF_Provider during reading stream " << aFirstKey
+                        << ": Cannot open XDE document";
+    return Standard_False;
+  }
+  
+  theDocument->SetData(aDocument->GetData());
+  return Standard_True;
 }
 
 Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStreams,
                                          const Handle(TDocStd_Document)& theDocument,
                                          const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theDocument, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  Handle(TDocStd_Application) anApp = new TDocStd_Application();
+  BinXCAFDrivers::DefineFormat(anApp);
+  
+  Handle(DEXCAF_ConfigurationNode) aNode = Handle(DEXCAF_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendWarning() << "Warning in the DEXCAF_Provider during writing stream " << aFirstKey
+                           << ": Target Units for writing were changed, but current format doesn't support scaling";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  
+  PCDM_StoreStatus aStatus = anApp->SaveAs(theDocument, aStream, theProgress);
+  
+  switch (aStatus)
+  {
+    case PCDM_SS_OK:
+      return Standard_True;
+    case PCDM_SS_DriverFailure:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : driver failure";
+      break;
+    case PCDM_SS_WriteFailure:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : write failure";
+      break;
+    case PCDM_SS_Failure:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : general failure";
+      break;
+    case PCDM_SS_Doc_IsNull:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error :: document is NULL";
+      break;
+    case PCDM_SS_No_Obj:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : no object";
+      break;
+    case PCDM_SS_Info_Section_Error:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : section error";
+      break;
+    case PCDM_SS_UserBreak:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : user break";
+      break;
+    case PCDM_SS_UnrecognizedFormat:
+      Message::SendFail() << "Error in the DEXCAF_Provider during writing stream " << aFirstKey
+                          << ": Storage error : unrecognized document storage format : "
+                          << theDocument->StorageFormat();
+      break;
+  }
+  return Standard_False;
 }
 
-Standard_Boolean DEXCAF_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theShape, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinXCAF");
+  if (!Read(theStreams, aDoc, theProgress))
+  {
+    return Standard_False;
+  }
+  
+  TDF_LabelSequence aLabels;
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  aSTool->GetFreeShapes(aLabels);
+  
+  if (aLabels.Length() <= 0)
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEXCAF_Provider during reading stream " << aFirstKey
+                        << ": Document contain no shapes";
+    return Standard_False;
+  }
+  
+  if (aLabels.Length() == 1)
+  {
+    theShape = aSTool->GetShape(aLabels.Value(1));
+  }
+  else
+  {
+    TopoDS_Compound aComp;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound(aComp);
+    for (Standard_Integer anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
+    {
+      TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
+      aBuilder.Add(aComp, aS);
+    }
+    theShape = aComp;
+  }
+  return Standard_True;
 }
 
 Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStreams,
                                          const TopoDS_Shape&            theShape,
                                          const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theShape, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinXCAF");
+  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  aShTool->AddShape(theShape);
+  return Write(theStreams, aDoc, theProgress);
 }
 
 //=================================================================================================

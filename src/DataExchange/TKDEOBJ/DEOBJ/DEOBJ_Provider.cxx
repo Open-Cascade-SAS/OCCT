@@ -233,17 +233,13 @@ TCollection_AsciiString DEOBJ_Provider::GetFormat() const
 
 //=================================================================================================
 
-Standard_Boolean DEOBJ_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEOBJ_Provider::Read(ReadStreamMap&            theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
-  (void)theStreams;
-  (void)theDocument;
-  (void)theProgress;
-  Message::SendFail() << "Error: DEOBJ_Provider doesn't support document read operations with streams";
-  return Standard_False;
+  return Read(theStreams, theDocument, theProgress);
 }
 
 //=================================================================================================
@@ -254,26 +250,18 @@ Standard_Boolean DEOBJ_Provider::Write(WriteStreamMap&                 theStream
                                         const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
-  (void)theStreams;
-  (void)theDocument;
-  (void)theProgress;
-  Message::SendFail() << "Error: DEOBJ_Provider doesn't support document write operations with streams";
-  return Standard_False;
+  return Write(theStreams, theDocument, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DEOBJ_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEOBJ_Provider::Read(ReadStreamMap&           theStreams,
                                        TopoDS_Shape&                  theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
-  (void)theStreams;
-  (void)theShape;
-  (void)theProgress;
-  Message::SendFail() << "Error: DEOBJ_Provider doesn't support shape read operations with streams";
-  return Standard_False;
+  return Read(theStreams, theShape, theProgress);
 }
 
 //=================================================================================================
@@ -284,21 +272,66 @@ Standard_Boolean DEOBJ_Provider::Write(WriteStreamMap&                theStreams
                                         const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
-  (void)theStreams;
-  (void)theShape;
-  (void)theProgress;
-  Message::SendFail() << "Error: DEOBJ_Provider doesn't support shape write operations with streams";
-  return Standard_False;
+  return Write(theStreams, theShape, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DEOBJ_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEOBJ_Provider::Read(ReadStreamMap&            theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theDocument, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEOBJ_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEOBJ_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  if (theDocument.IsNull())
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEOBJ_Provider during reading stream " << aFirstKey
+                        << ": theDocument shouldn't be null";
+    return Standard_False;
+  }
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEOBJ_ConfigurationNode)))
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during reading stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DEOBJ_ConfigurationNode) aNode = Handle(DEOBJ_ConfigurationNode)::DownCast(GetNode());
+  RWObj_CafReader aReader;
+  aReader.SetSinglePrecision(aNode->InternalParameters.ReadSinglePrecision);
+  aReader.SetSystemLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
+  aReader.SetSystemCoordinateSystem(aNode->InternalParameters.SystemCS);
+  aReader.SetFileLengthUnit(aNode->InternalParameters.FileLengthUnit);
+  aReader.SetFileCoordinateSystem(aNode->InternalParameters.FileCS);
+  aReader.SetDocument(theDocument);
+  aReader.SetRootPrefix(aNode->InternalParameters.ReadRootPrefix);
+  aReader.SetMemoryLimitMiB(aNode->InternalParameters.ReadMemoryLimitMiB);
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  
+  if (!aReader.Perform(aStream, theProgress, aFirstKey))
+  {
+    Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during reading stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      aNode->GlobalParameters.LengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -307,18 +340,66 @@ Standard_Boolean DEOBJ_Provider::Write(WriteStreamMap&                 theStream
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theDocument, aWS, theProgress);
+  (void)theStreams;
+  (void)theDocument;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEOBJ_Provider doesn't support document write operations with streams";
+  return Standard_False;
 }
 
 //=================================================================================================
 
-Standard_Boolean DEOBJ_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEOBJ_Provider::Read(ReadStreamMap&           theStreams,
                                        TopoDS_Shape&                  theShape,
                                        const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Read(theStreams, theShape, aWS, theProgress);
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEOBJ_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEOBJ_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinXCAF");
+  if (!Read(theStreams, aDoc, theProgress))
+  {
+    return Standard_False;
+  }
+  
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  TDF_LabelSequence aLabels;
+  aSTool->GetFreeShapes(aLabels);
+  
+  if (aLabels.Length() <= 0)
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DEOBJ_Provider during reading stream " << aFirstKey
+                        << ": Document contain no shapes";
+    return Standard_False;
+  }
+  
+  if (aLabels.Length() == 1)
+  {
+    theShape = aSTool->GetShape(aLabels.Value(1));
+  }
+  else
+  {
+    TopoDS_Compound aComp;
+    BRep_Builder    aBuilder;
+    aBuilder.MakeCompound(aComp);
+    for (Standard_Integer anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
+    {
+      TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
+      aBuilder.Add(aComp, aS);
+    }
+    theShape = aComp;
+  }
+  
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -327,8 +408,11 @@ Standard_Boolean DEOBJ_Provider::Write(WriteStreamMap&                theStreams
                                         const TopoDS_Shape&            theShape,
                                         const Message_ProgressRange&   theProgress)
 {
-  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
-  return Write(theStreams, theShape, aWS, theProgress);
+  (void)theStreams;
+  (void)theShape;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEOBJ_Provider doesn't support shape write operations with streams";
+  return Standard_False;
 }
 
 //=================================================================================================

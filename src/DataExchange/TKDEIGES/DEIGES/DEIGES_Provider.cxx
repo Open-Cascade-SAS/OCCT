@@ -416,7 +416,7 @@ TCollection_AsciiString DEIGES_Provider::GetVendor() const
 
 //=================================================================================================
 
-Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
@@ -433,7 +433,7 @@ Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&            theStream
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   
   if (theDocument.IsNull())
   {
@@ -479,7 +479,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   
   if (theDocument.IsNull())
   {
@@ -508,7 +508,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
@@ -525,7 +525,7 @@ Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&           theStreams
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   
   personizeWS(theWS);
   
@@ -565,7 +565,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStream
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   
   personizeWS(theWS);
   
@@ -598,7 +598,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStream
 
 //=================================================================================================
 
-Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&            theStreams,
+Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
@@ -618,7 +618,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&           theStreams,
+Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         const Message_ProgressRange&   theProgress)
 {
