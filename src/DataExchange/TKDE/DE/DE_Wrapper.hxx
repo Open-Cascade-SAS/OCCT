@@ -163,6 +163,94 @@ public:
           const TopoDS_Shape&            theShape,
           const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(const DE_Provider::ReadStreamMap& theStreams,
+         const Handle(TDocStd_Document)&   theDocument,
+         Handle(XSControl_WorkSession)&    theWS,
+         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamMap&     theStreams,
+          const Handle(TDocStd_Document)& theDocument,
+          Handle(XSControl_WorkSession)&  theWS,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(const DE_Provider::ReadStreamMap& theStreams,
+         const Handle(TDocStd_Document)&   theDocument,
+         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamMap&     theStreams,
+          const Handle(TDocStd_Document)& theDocument,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(const DE_Provider::ReadStreamMap& theStreams,
+         TopoDS_Shape&                     theShape,
+         Handle(XSControl_WorkSession)&    theWS,
+         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamMap&    theStreams,
+          const TopoDS_Shape&             theShape,
+          Handle(XSControl_WorkSession)&  theWS,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(const DE_Provider::ReadStreamMap& theStreams,
+         TopoDS_Shape&                     theShape,
+         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamMap&    theStreams,
+          const TopoDS_Shape&             theShape,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
 public:
   //! Updates values according the resource file
   //! @param[in] theResource file path to resource or resource value

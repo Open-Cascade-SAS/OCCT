@@ -572,3 +572,295 @@ void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
     ChangePriority(aFormatIter.Key(), aVendorPriority, Standard_True);
   }
 }
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+                                   const Handle(TDocStd_Document)&   theDocument,
+                                   Handle(XSControl_WorkSession)&    theWS,
+                                   const Message_ProgressRange&      theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Read(theStreams, theDocument, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
+                                    const Handle(TDocStd_Document)& theDocument,
+                                    Handle(XSControl_WorkSession)&  theWS,
+                                    const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Write(theStreams, theDocument, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+                                   const Handle(TDocStd_Document)&   theDocument,
+                                   const Message_ProgressRange&      theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Read(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
+                                    const Handle(TDocStd_Document)& theDocument,
+                                    const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Write(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+                                   TopoDS_Shape&                     theShape,
+                                   Handle(XSControl_WorkSession)&    theWS,
+                                   const Message_ProgressRange&      theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Read(theStreams, theShape, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
+                                    const TopoDS_Shape&             theShape,
+                                    Handle(XSControl_WorkSession)&  theWS,
+                                    const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Write(theStreams, theShape, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+                                   TopoDS_Shape&                     theShape,
+                                   const Message_ProgressRange&      theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Read(theStreams, theShape, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
+                                    const TopoDS_Shape&             theShape,
+                                    const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
+                           << " streams, using only the first one for format detection";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  
+  Handle(DE_Provider) aProvider;
+  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " " 
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+  
+  return aProvider->Write(theStreams, theShape, theProgress);
+}

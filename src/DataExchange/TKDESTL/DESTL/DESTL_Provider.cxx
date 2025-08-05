@@ -229,6 +229,258 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
+Standard_Boolean DESTL_Provider::Read(const ReadStreamMap&            theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       Handle(XSControl_WorkSession)&  theWS,
+                                       const Message_ProgressRange&    theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  if (theDocument.IsNull())
+  {
+    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+    Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
+                        << ": theDocument shouldn't be null";
+    return Standard_False;
+  }
+  
+  TopoDS_Shape aShape;
+  if (!Read(theStreams, aShape, theWS, theProgress))
+  {
+    return Standard_False;
+  }
+  
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  aShapeTool->AddShape(aShape);
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        Handle(XSControl_WorkSession)&  theWS,
+                                        const Message_ProgressRange&    theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  TopoDS_Shape              aShape;
+  TDF_LabelSequence         aLabels;
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  aSTool->GetFreeShapes(aLabels);
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  if (aLabels.Length() <= 0)
+  {
+    Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
+                        << ": Document contain no shapes";
+    return Standard_False;
+  }
+
+  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning()
+      << "Warning in the DESTL_Provider during writing stream " << aFirstKey
+      << ": Target Units for writing were changed, but current format doesn't support scaling";
+  }
+
+  if (aLabels.Length() == 1)
+  {
+    aShape = aSTool->GetShape(aLabels.Value(1));
+  }
+  else
+  {
+    TopoDS_Compound aComp;
+    BRep_Builder    aBuilder;
+    aBuilder.MakeCompound(aComp);
+    for (Standard_Integer anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
+    {
+      TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
+      aBuilder.Add(aComp, aS);
+    }
+    aShape = aComp;
+  }
+  return Write(theStreams, aShape, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Read(const ReadStreamMap&           theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       Handle(XSControl_WorkSession)& theWS,
+                                       const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  
+  Message::SendWarning()
+    << "OCCT Stl reader does not support model scaling according to custom length unit";
+  if (!GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  {
+    Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+  double aMergeAngle = aNode->InternalParameters.ReadMergeAngle * M_PI / 180.0;
+  if (aMergeAngle != M_PI_2)
+  {
+    if (aMergeAngle < 0.0 || aMergeAngle > M_PI_2)
+    {
+      Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
+                          << ": The merge angle is out of the valid range";
+      return Standard_False;
+    }
+  }
+  
+  if (!aNode->InternalParameters.ReadBRep)
+  {
+    Handle(Poly_Triangulation) aTriangulation =
+      RWStl::ReadFile(aStream, aMergeAngle, theProgress);
+
+    TopoDS_Face  aFace;
+    BRep_Builder aB;
+    aB.MakeFace(aFace);
+    aB.UpdateFace(aFace, aTriangulation);
+    theShape = aFace;
+  }
+  else
+  {
+    Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
+                        << ": STL BRep mode does not support stream reading";
+    return Standard_False;
+  }
+  
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  
+  Message::SendWarning()
+    << "OCCT Stl writer does not support model scaling according to custom length unit";
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  {
+    Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
+                        << ": Incorrect or empty Configuration Node";
+    return Standard_False;
+  }
+  
+  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning()
+      << "Warning in the DESTL_Provider during writing stream " << aFirstKey
+      << ": Target Units for writing were changed, but current format doesn't support scaling";
+  }
+
+  StlAPI_Writer aWriter;
+  aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;
+  if (!aWriter.Write(theShape, aStream, theProgress))
+  {
+    Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
+                        << ": Mesh writing has been failed";
+    return Standard_False;
+  }
+  
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Read(const ReadStreamMap&            theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Read(const ReadStreamMap&           theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DESTL_Provider::GetFormat() const
 {
   return TCollection_AsciiString("STL");

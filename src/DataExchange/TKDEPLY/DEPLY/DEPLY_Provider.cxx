@@ -145,6 +145,106 @@ TCollection_AsciiString DEPLY_Provider::GetFormat() const
 
 //=================================================================================================
 
+Standard_Boolean DEPLY_Provider::Read(const ReadStreamMap&            theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       Handle(XSControl_WorkSession)&  theWS,
+                                       const Message_ProgressRange&    theProgress)
+{
+  (void)theWS;
+  (void)theStreams;
+  (void)theDocument;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEPLY_Provider doesn't support document read operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        Handle(XSControl_WorkSession)&  theWS,
+                                        const Message_ProgressRange&    theProgress)
+{
+  (void)theWS;
+  (void)theStreams;
+  (void)theDocument;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEPLY_Provider doesn't support document write operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Read(const ReadStreamMap&           theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       Handle(XSControl_WorkSession)& theWS,
+                                       const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  (void)theStreams;
+  (void)theShape;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEPLY_Provider doesn't support shape read operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Write(WriteStreamMap&                theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  (void)theStreams;
+  (void)theShape;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEPLY_Provider doesn't support shape write operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Read(const ReadStreamMap&            theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Read(const ReadStreamMap&           theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEPLY_Provider::Write(WriteStreamMap&                theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DEPLY_Provider::GetVendor() const
 {
   return TCollection_AsciiString("OCC");

@@ -100,6 +100,10 @@ public:
   //! @return Standard_True if export is support
   Standard_EXPORT virtual bool IsExportSupported() const;
 
+  //! Checks the stream supporting
+  //! @return Standard_True if stream is support
+  Standard_EXPORT virtual bool IsStreamSupported() const;
+
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
   Standard_EXPORT virtual TCollection_AsciiString GetFormat() const = 0;

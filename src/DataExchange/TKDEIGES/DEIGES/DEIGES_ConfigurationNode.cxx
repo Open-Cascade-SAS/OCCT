@@ -437,3 +437,10 @@ bool DEIGES_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& th
   }
   return false;
 }
+
+//=================================================================================================
+
+bool DEIGES_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}

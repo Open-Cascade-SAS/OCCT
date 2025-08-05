@@ -15,6 +15,8 @@
 #define _DE_Provider_HeaderFile
 
 #include <Message_ProgressRange.hxx>
+#include <Standard_IStream.hxx>
+#include <Standard_OStream.hxx>
 
 class DE_ConfigurationNode;
 class TopoDS_Shape;
@@ -42,6 +44,16 @@ class DE_Provider : public Standard_Transient
 {
 public:
   DEFINE_STANDARD_RTTIEXT(DE_Provider, Standard_Transient)
+public:
+  //! Map to store write stream information
+  //! Key: Relative path to the output file
+  //! Value: Output stream to write data
+  using WriteStreamMap = NCollection_IndexedDataMap<TCollection_AsciiString, Standard_OStream>;
+
+  //! Map to store read stream information
+  //! Key: Relative path to the input file
+  //! Value: Input stream to read data
+  using ReadStreamMap = NCollection_IndexedDataMap<TCollection_AsciiString, Standard_IStream>;
 
 public:
   //! Default constructor
@@ -77,6 +89,30 @@ public:
     Handle(XSControl_WorkSession)&  theWS,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    const ReadStreamMap&            theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    Handle(XSControl_WorkSession)&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamMap&                 theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    Handle(XSControl_WorkSession)&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
@@ -97,6 +133,26 @@ public:
     const Handle(TDocStd_Document)& theDocument,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    const ReadStreamMap&            theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamMap&                 theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
@@ -121,6 +177,30 @@ public:
     Handle(XSControl_WorkSession)& theWS,
     const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    const ReadStreamMap&           theStreams,
+    TopoDS_Shape&                  theShape,
+    Handle(XSControl_WorkSession)& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamMap&                theStreams,
+    const TopoDS_Shape&            theShape,
+    Handle(XSControl_WorkSession)& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
@@ -140,6 +220,26 @@ public:
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    const ReadStreamMap&         theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamMap&              theStreams,
+    const TopoDS_Shape&          theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 public:
   //! Gets CAD format name of associated provider

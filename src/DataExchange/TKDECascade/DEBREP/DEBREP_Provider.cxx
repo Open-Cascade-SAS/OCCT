@@ -295,3 +295,193 @@ TCollection_AsciiString DEBREP_Provider::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Read(const ReadStreamMap&            theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        Handle(XSControl_WorkSession)&  theWS,
+                                        const Message_ProgressRange&    theProgress)
+{
+  (void)theDocument;
+  (void)theWS;
+  Message::SendFail() << "Error: DEBREP_Provider doesn't support document read operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStreams,
+                                         const Handle(TDocStd_Document)& theDocument,
+                                         Handle(XSControl_WorkSession)&  theWS,
+                                         const Message_ProgressRange&    theProgress)
+{
+  (void)theStreams;
+  (void)theDocument;
+  (void)theWS;
+  (void)theProgress;
+  Message::SendFail() << "Error: DEBREP_Provider doesn't support document write operations with streams";
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Read(const ReadStreamMap&           theStreams,
+                                        TopoDS_Shape&                  theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEBREP_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEBREP_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEBREP_ConfigurationNode)))
+  {
+    Message::SendFail() << "Error: DEBREP_Provider configuring failed in reading stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  Handle(DEBREP_ConfigurationNode) aNode = Handle(DEBREP_ConfigurationNode)::DownCast(GetNode());
+  
+  if (aNode->InternalParameters.ReadBinary)
+  {
+    if (!BinTools::Read(theShape, aStream, theProgress))
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during reading stream " << aFirstKey
+                          << ": Cannot read from the stream";
+      return Standard_False;
+    }
+  }
+  else
+  {
+    if (!BRepTools::Read(theShape, aStream, BRep_Builder(), theProgress))
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during reading stream " << aFirstKey
+                          << ": Cannot read from the stream";
+      return Standard_False;
+    }
+  }
+  
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                theStreams,
+                                         const TopoDS_Shape&            theShape,
+                                         Handle(XSControl_WorkSession)& theWS,
+                                         const Message_ProgressRange&   theProgress)
+{
+  (void)theWS;
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEBREP_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEBREP_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  
+  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEBREP_ConfigurationNode)))
+  {
+    Message::SendFail() << "Error: DEBREP_Provider configuring failed in writing stream " << aFirstKey;
+    return Standard_False;
+  }
+  
+  Handle(DEBREP_ConfigurationNode) aNode = Handle(DEBREP_ConfigurationNode)::DownCast(GetNode());
+  
+  if (aNode->InternalParameters.WriteBinary)
+  {
+    if (aNode->InternalParameters.WriteNormals
+        && aNode->InternalParameters.WriteVersionBin < BinTools_FormatVersion_VERSION_4)
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during writing stream " << aFirstKey
+                          << ": Vertex normals require binary format version 4 or later";
+      return Standard_False;
+    }
+
+    if (!BinTools::Write(theShape,
+                         aStream,
+                         aNode->InternalParameters.WriteTriangles,
+                         aNode->InternalParameters.WriteNormals,
+                         aNode->InternalParameters.WriteVersionBin,
+                         theProgress))
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during writing stream " << aFirstKey
+                          << ": Cannot write to the stream";
+      return Standard_False;
+    }
+  }
+  else
+  {
+    if (!BRepTools::Write(theShape,
+                          aStream,
+                          aNode->InternalParameters.WriteTriangles,
+                          aNode->InternalParameters.WriteNormals,
+                          aNode->InternalParameters.WriteVersionAscii,
+                          theProgress))
+    {
+      Message::SendFail() << "Error in the DEBREP_Provider during writing stream " << aFirstKey
+                          << ": Cannot write to the stream";
+      return Standard_False;
+    }
+  }
+  
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Read(const ReadStreamMap&            theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStreams,
+                                         const Handle(TDocStd_Document)& theDocument,
+                                         const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Read(const ReadStreamMap&           theStreams,
+                                        TopoDS_Shape&                  theShape,
+                                        const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                theStreams,
+                                         const TopoDS_Shape&            theShape,
+                                         const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theShape, aWS, theProgress);
+}

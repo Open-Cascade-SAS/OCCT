@@ -116,16 +116,28 @@ public:
                                             const Standard_CString          theFile,
                                             const Standard_Real             theScale) const;
 
+  //! Converts the shape aShape to
+  //! VRML format of the passed version and writes it to the given stream.
+  Standard_EXPORT Standard_Boolean Write(const TopoDS_Shape&       aShape,
+                                         Standard_OStream&         theOStream, 
+                                         const Standard_Integer    aVersion = 2) const;
+
+  //! Converts the document to VRML format of the passed version
+  //! and writes it to the given stream.
+  Standard_EXPORT Standard_Boolean WriteDoc(const Handle(TDocStd_Document)& theDoc,
+                                            Standard_OStream&               theOStream,
+                                            const Standard_Real             theScale) const;
+
 protected:
   //! Converts the shape aShape to VRML format of version 1.0 and writes it
-  //! to the file identified by aFileName using default parameters.
-  Standard_EXPORT Standard_Boolean write_v1(const TopoDS_Shape&    aShape,
-                                            const Standard_CString aFileName) const;
+  //! to the given stream using default parameters.
+  Standard_EXPORT Standard_Boolean write_v1(const TopoDS_Shape& aShape,
+                                            Standard_OStream&   theOStream) const;
 
   //! Converts the shape aShape to VRML format of version 2.0 and writes it
-  //! to the file identified by aFileName using default parameters.
-  Standard_EXPORT Standard_Boolean write_v2(const TopoDS_Shape&    aShape,
-                                            const Standard_CString aFileName) const;
+  //! to the given stream using default parameters.
+  Standard_EXPORT Standard_Boolean write_v2(const TopoDS_Shape& aShape,
+                                            Standard_OStream&   theOStream) const;
 
 private:
   VrmlAPI_RepresentationOfShape   myRepresentation;

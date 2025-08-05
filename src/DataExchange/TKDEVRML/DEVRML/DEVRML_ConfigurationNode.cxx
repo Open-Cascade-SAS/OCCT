@@ -172,6 +172,13 @@ bool DEVRML_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
+bool DEVRML_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DEVRML_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("VRML");

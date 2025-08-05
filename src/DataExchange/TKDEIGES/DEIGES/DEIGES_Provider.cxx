@@ -413,3 +413,225 @@ TCollection_AsciiString DEIGES_Provider::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&            theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        Handle(XSControl_WorkSession)&  theWS,
+                                        const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  
+  if (theDocument.IsNull())
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << ". Document is null";
+    return Standard_False;
+  }
+  personizeWS(theWS);
+  
+  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  if (aNode.IsNull())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider configuring failed in reading stream " << aFirstKey;
+    return Standard_False;
+  }
+  IGESCAFControl_Reader aReader(theWS, Standard_False);
+  configureIGESParameters(aReader, aNode->InternalParameters);
+  Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  if (!isOk)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to read stream " << aFirstKey;
+    return Standard_False;
+  }
+  return aReader.Transfer(theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStreams,
+                                         const Handle(TDocStd_Document)& theDocument,
+                                         Handle(XSControl_WorkSession)&  theWS,
+                                         const Message_ProgressRange&    theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  
+  if (theDocument.IsNull())
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
+                        << ". Document is null";
+    return Standard_False;
+  }
+  personizeWS(theWS);
+  
+  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  if (aNode.IsNull())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider configuring failed in writing stream " << aFirstKey;
+    return Standard_False;
+  }
+  IGESCAFControl_Writer aWriter(theWS, Standard_False);
+  configureIGESParameters(aWriter, aNode->InternalParameters);
+  Standard_Boolean isOk = aWriter.Transfer(theDocument, theProgress);
+  if (!isOk)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to transfer document for stream " << aFirstKey;
+    return Standard_False;
+  }
+  return aWriter.WriteStream(aStream);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&           theStreams,
+                                        TopoDS_Shape&                  theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_IStream& aStream = theStreams.FindFromIndex(1);
+  
+  personizeWS(theWS);
+  
+  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  if (aNode.IsNull())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider configuring failed in reading stream " << aFirstKey;
+    return Standard_False;
+  }
+  IGESControl_Reader aReader(theWS, Standard_False);
+  configureIGESParameters(aReader, aNode->InternalParameters);
+  Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  if (!isOk)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to read stream " << aFirstKey;
+    return Standard_False;
+  }
+  return aReader.TransferOneRoot(1, theShape, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStreams,
+                                         const TopoDS_Shape&            theShape,
+                                         Handle(XSControl_WorkSession)& theWS,
+                                         const Message_ProgressRange&   theProgress)
+{
+  if (theStreams.IsEmpty())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
+    return Standard_False;
+  }
+  if (theStreams.Size() > 1)
+  {
+    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
+                           << " streams, using only the first one";
+  }
+  
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  Standard_OStream& aStream = theStreams.FindFromIndex(1);
+  
+  personizeWS(theWS);
+  
+  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  if (aNode.IsNull())
+  {
+    Message::SendFail() << "Error: DEIGES_Provider configuring failed in writing stream " << aFirstKey;
+    return Standard_False;
+  }
+  initStatic(aNode);
+  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
+  IGESControl_Writer aWriter((aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM",
+                             aNode->InternalParameters.WriteBRepMode);
+  IGESData_GlobalSection aGS = aWriter.Model()->GlobalSection();
+  aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
+  if (!aFlag)
+  {
+    aGS.SetCascadeUnit(aNode->GlobalParameters.LengthUnit);
+  }
+  aWriter.Model()->SetGlobalSection(aGS);
+  Standard_Boolean isOk = aWriter.AddShape(theShape);
+  if (!isOk)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to transfer shape for stream " << aFirstKey;
+    return Standard_False;  
+  }
+  aWriter.ComputeModel();
+  return aWriter.WriteStream(aStream);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&            theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStreams,
+                                         const Handle(TDocStd_Document)& theDocument,
+                                         const Message_ProgressRange&    theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Read(const ReadStreamMap&           theStreams,
+                                        TopoDS_Shape&                  theShape,
+                                        const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Read(theStreams, theShape, aWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStreams,
+                                         const TopoDS_Shape&            theShape,
+                                         const Message_ProgressRange&   theProgress)
+{
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
+  return Write(theStreams, theShape, aWS, theProgress);
+}
