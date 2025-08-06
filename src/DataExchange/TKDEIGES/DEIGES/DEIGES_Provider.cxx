@@ -617,11 +617,10 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamList&                 theStream
   {
     return Standard_False;
   }
-  personizeWS(theWS);
 
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
-
   initStatic(aNode);
+  personizeWS(theWS);
 
   IGESControl_Reader aReader;
   aReader.SetWS(theWS);
@@ -669,11 +668,11 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&                theStrea
   {
     return Standard_False;
   }
-  personizeWS(theWS);
 
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
-
   initStatic(aNode);
+  personizeWS(theWS);
+
   IGESControl_Writer aWriter(getIGESUnitString(aNode).ToCString(),
                              aNode->InternalParameters.WriteBRepMode);
   configureIGESControlWriter(aWriter, aNode);
