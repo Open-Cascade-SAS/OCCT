@@ -150,13 +150,6 @@ bool DEBREP_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
-bool DEBREP_ConfigurationNode::IsStreamSupported() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 TCollection_AsciiString DEBREP_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("BREP");

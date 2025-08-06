@@ -108,54 +108,6 @@ public:
     Handle(XSControl_WorkSession)& theWS,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
-  //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theDocument document to save result
-  //! @param[in] theWS current work session
-  //! @param[in] theProgress progress indicator
-  //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamList&                  theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theDocument document to export
-  //! @param[in] theWS current work session
-  //! @param[in] theProgress progress indicator
-  //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
-    WriteStreamList&                 theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theShape shape to save result
-  //! @param[in] theWS current work session
-  //! @param[in] theProgress progress indicator
-  //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamList&                 theStreams,
-    TopoDS_Shape&                  theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theShape shape to export
-  //! @param[in] theWS current work session
-  //! @param[in] theProgress progress indicator
-  //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
-    WriteStreamList&                theStreams,
-    const TopoDS_Shape&            theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
@@ -175,46 +127,6 @@ public:
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theDocument document to save result
-  //! @param[in] theProgress progress indicator
-  //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamList&                  theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theDocument document to export
-  //! @param[in] theProgress progress indicator
-  //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
-    WriteStreamList&                 theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Reads streams according to internal configuration
-  //! @param[in] theStreams streams to read from
-  //! @param[out] theShape shape to save result
-  //! @param[in] theProgress progress indicator
-  //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamList&               theStreams,
-    TopoDS_Shape&                theShape,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-
-  //! Writes streams according to internal configuration
-  //! @param[in] theStreams streams to write to
-  //! @param[out] theShape shape to export
-  //! @param[in] theProgress progress indicator
-  //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
-    WriteStreamList&              theStreams,
-    const TopoDS_Shape&          theShape,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
 public:
   //! Gets CAD format name of associated provider

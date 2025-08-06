@@ -145,13 +145,6 @@ bool DEXCAF_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
-bool DEXCAF_ConfigurationNode::IsStreamSupported() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 TCollection_AsciiString DEXCAF_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("XCAF");
