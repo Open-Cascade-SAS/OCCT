@@ -464,7 +464,7 @@ TCollection_AsciiString DEBREP_Provider::GetVendor() const
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DEBREP_Provider::Read(ReadStreamList&                  theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -475,7 +475,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                  theStream
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DEBREP_Provider::Write(WriteStreamList&                 theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
@@ -486,20 +486,20 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                 theStreams,
+Standard_Boolean DEBREP_Provider::Read(ReadStreamList&                 theStreams,
                                        TopoDS_Shape&                  theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
   Handle(DEBREP_ConfigurationNode) aNode;
-  TCollection_AsciiString          aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString          aFirstKey = theStreams.First().Path;
   if (!ValidateConfigurationNode(GetNode(),
                                  TCollection_AsciiString(aContext) + " " + aFirstKey,
                                  aNode))
@@ -507,7 +507,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                 theStreams
     return Standard_False;
   }
 
-  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream& aStream = *theStreams.First().Stream;
   return ReadShapeFromStream(aStream,
                              TCollection_AsciiString(aContext) + " " + aFirstKey,
                              theShape,
@@ -516,20 +516,20 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                 theStreams
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                theStreams,
+Standard_Boolean DEBREP_Provider::Write(WriteStreamList&                theStreams,
                                         const TopoDS_Shape&            theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
   Handle(DEBREP_ConfigurationNode) aNode;
-  TCollection_AsciiString          aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString          aFirstKey = theStreams.First().Path;
   if (!ValidateConfigurationNode(GetNode(),
                                  TCollection_AsciiString(aContext) + " " + aFirstKey,
                                  aNode))
@@ -537,7 +537,7 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                theStream
     return Standard_False;
   }
 
-  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_OStream& aStream = *theStreams.First().Stream;
   return WriteShapeToStream(aNode,
                             theShape,
                             aStream,
@@ -547,17 +547,17 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                theStream
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DEBREP_Provider::Read(ReadStreamList&                  theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
@@ -565,7 +565,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                  theStream
   }
 
   TopoDS_Shape      aShape;
-  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream& aStream = *theStreams.First().Stream;
   if (!ReadShapeFromStream(aStream, aFullContext, aShape, theProgress))
   {
     return Standard_False;
@@ -578,17 +578,17 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&                  theStream
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DEBREP_Provider::Write(WriteStreamList&                 theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
 
   Handle(DEBREP_ConfigurationNode) aNode;
@@ -603,23 +603,23 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStrea
     return Standard_False;
   }
 
-  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_OStream& aStream = *theStreams.First().Stream;
   return WriteShapeToStream(aNode, aShape, aStream, aFullContext, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&               theStreams,
+Standard_Boolean DEBREP_Provider::Read(ReadStreamList&               theStreams,
                                        TopoDS_Shape&                theShape,
                                        const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
 
   Handle(DEBREP_ConfigurationNode) aNode;
@@ -628,23 +628,23 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&               theStreams,
     return Standard_False;
   }
 
-  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream& aStream = *theStreams.First().Stream;
   return ReadShapeFromStream(aStream, aFullContext, theShape, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&              theStreams,
+Standard_Boolean DEBREP_Provider::Write(WriteStreamList&              theStreams,
                                         const TopoDS_Shape&          theShape,
                                         const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
 
   Handle(DEBREP_ConfigurationNode) aNode;
@@ -653,6 +653,6 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&              theStreams,
     return Standard_False;
   }
 
-  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_OStream& aStream = *theStreams.First().Stream;
   return WriteShapeToStream(aNode, theShape, aStream, aFullContext, theProgress);
 }

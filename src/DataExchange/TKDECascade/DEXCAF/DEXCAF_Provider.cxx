@@ -359,7 +359,7 @@ TCollection_AsciiString DEXCAF_Provider::GetFormat() const
 
 //=================================================================================================
 
-Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamList&                  theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -368,7 +368,7 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                  theStream
   return Read(theStreams, theDocument, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DEXCAF_Provider::Write(WriteStreamList&                 theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
@@ -377,7 +377,7 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStrea
   return Write(theStreams, theDocument, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                 theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamList&                 theStreams,
                                        TopoDS_Shape&                  theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
@@ -386,7 +386,7 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                 theStreams
   return Read(theStreams, theShape, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStreams,
+Standard_Boolean DEXCAF_Provider::Write(WriteStreamList&                theStreams,
                                         const TopoDS_Shape&            theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
@@ -395,17 +395,17 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStream
   return Write(theStreams, theShape, theProgress);
 }
 
-Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamList&                  theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
@@ -425,7 +425,7 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                  theStream
   Handle(PCDM_ReaderFilter) aFilter;
   ConfigureReaderFilter(aFilter, aNode);
 
-  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream& aStream = *theStreams.First().Stream;
 
   if (anApp->Open(aStream, aDocument, aFilter, theProgress) != PCDM_RS_OK)
   {
@@ -438,17 +438,17 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&                  theStream
   return Standard_True;
 }
 
-Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DEXCAF_Provider::Write(WriteStreamList&                 theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey = theStreams.First().Path;
 
   Handle(TDocStd_Application) anApp;
   SetupApplication(anApp, Standard_False);
@@ -457,23 +457,23 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStrea
   TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
   CheckLengthUnitWarning(aNode, aFullContext);
 
-  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
+  Standard_OStream& aStream = *theStreams.First().Stream;
   PCDM_StoreStatus  aStatus = anApp->SaveAs(theDocument, aStream, theProgress);
 
   return HandlePCDMStatus(aStatus, theDocument, aFullContext);
 }
 
-Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&               theStreams,
+Standard_Boolean DEXCAF_Provider::Read(ReadStreamList&               theStreams,
                                        TopoDS_Shape&                theShape,
                                        const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFirstKey = theStreams.First().Path;
 
   Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinXCAF");
   if (!Read(theStreams, aDoc, theProgress))
@@ -484,12 +484,12 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&               theStreams,
   return ExtractShapeFromDocument(aDoc, aContext + " " + aFirstKey, theShape);
 }
 
-Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&              theStreams,
+Standard_Boolean DEXCAF_Provider::Write(WriteStreamList&              theStreams,
                                         const TopoDS_Shape&          theShape,
                                         const Message_ProgressRange& theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }

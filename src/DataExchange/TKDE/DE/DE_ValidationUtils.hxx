@@ -58,25 +58,26 @@ public:
     const TCollection_AsciiString& theContext,
     const Standard_Boolean         theIsVerbose = Standard_True);
 
-  //! Validates read stream map, warns if multiple streams
-  //! @param[in] theStreams read stream map to validate
+  //! Validates read stream list, warns if multiple streams
+  //! @param[in] theStreams read stream list to validate
   //! @param[in] theContext context string for error messages
   //! @param[in] theIsVerbose if true, sends detailed error/warning messages
-  //! @return Standard_True if stream map is valid, Standard_False otherwise
-  Standard_EXPORT static Standard_Boolean ValidateReadStreamMap(
-    const DE_Provider::ReadStreamMap& theStreams,
-    const TCollection_AsciiString&    theContext,
-    const Standard_Boolean            theIsVerbose = Standard_True);
+  //! @return Standard_True if stream list is valid, Standard_False otherwise
+  Standard_EXPORT static Standard_Boolean ValidateReadStreamList(
+    const DE_Provider::ReadStreamList& theStreams,
+    const TCollection_AsciiString&     theContext,
+    const Standard_Boolean             theIsVerbose = Standard_True);
 
-  //! Validates write stream map, warns if multiple streams
-  //! @param[in] theStreams write stream map to validate
+  //! Validates write stream list, warns if multiple streams
+  //! @param[in] theStreams write stream list to validate
   //! @param[in] theContext context string for error messages
   //! @param[in] theIsVerbose if true, sends detailed error/warning messages
-  //! @return Standard_True if stream map is valid, Standard_False otherwise
-  Standard_EXPORT static Standard_Boolean ValidateWriteStreamMap(
-    DE_Provider::WriteStreamMap&   theStreams,
-    const TCollection_AsciiString& theContext,
-    const Standard_Boolean         theIsVerbose = Standard_True);
+  //! @return Standard_True if stream list is valid, Standard_False otherwise
+  Standard_EXPORT static Standard_Boolean ValidateWriteStreamList(
+    DE_Provider::WriteStreamList&      theStreams,
+    const TCollection_AsciiString&     theContext,
+    const Standard_Boolean             theIsVerbose = Standard_True);
+
 
   //! Validates that TDocStd_Document handle is not null
   //! @param[in] theDocument document to validate

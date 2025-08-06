@@ -238,7 +238,7 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStreams,
                                       const Handle(TDocStd_Document)& theDocument,
                                       Handle(XSControl_WorkSession)&  theWS,
                                       const Message_ProgressRange&    theProgress)
@@ -249,7 +249,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -260,7 +260,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                 theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                 theStreams,
                                       TopoDS_Shape&                  theShape,
                                       Handle(XSControl_WorkSession)& theWS,
                                       const Message_ProgressRange&   theProgress)
@@ -271,7 +271,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                 theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&                theStreams,
                                        const TopoDS_Shape&            theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
@@ -282,17 +282,17 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                theStreams
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStreams,
                                       const Handle(TDocStd_Document)& theDocument,
                                       const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey    = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
@@ -312,17 +312,17 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   // Extract shape from document
   TDF_LabelSequence         aLabels;
@@ -364,7 +364,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&               theStreams,
                                       TopoDS_Shape&                theShape,
                                       const Message_ProgressRange& theProgress)
 {
@@ -380,8 +380,8 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
                            << " streams for reading, using only the first one";
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_IStream&              aStream   = theStreams.ChangeFromIndex(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+  Standard_IStream&              aStream   = *theStreams.First().Stream;
 
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
@@ -441,7 +441,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&              theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&              theStreams,
                                        const TopoDS_Shape&          theShape,
                                        const Message_ProgressRange& theProgress)
 {
@@ -457,8 +457,8 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&              theStreams,
                            << " streams for writing, using only the first one";
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_OStream&              aStream   = theStreams.ChangeFromIndex(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+  Standard_OStream&              aStream   = *theStreams.First().Stream;
 
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";

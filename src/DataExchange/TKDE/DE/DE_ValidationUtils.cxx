@@ -159,16 +159,16 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
-  const DE_Provider::ReadStreamMap& theStreams,
-  const TCollection_AsciiString&    theContext,
-  const Standard_Boolean            theIsVerbose)
+Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
+  const DE_Provider::ReadStreamList& theStreams,
+  const TCollection_AsciiString&     theContext,
+  const Standard_Boolean             theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext << ": Stream map is empty";
+      Message::SendFail() << "Error during " << theContext << ": Stream list is empty";
     }
     return Standard_False;
   }
@@ -185,13 +185,21 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
   // Additional validation for input streams
   try
   {
-    const Standard_IStream& aStream = theStreams(1);
-    if (aStream.fail() || aStream.bad())
+    const DE_Provider::ReadStreamNode& aNode = theStreams.First();
+    if (!aNode.Stream)
     {
       if (theIsVerbose)
       {
-        TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-        TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+        Message::SendFail() << "Error during " << theContext << ": Stream pointer is null";
+      }
+      return Standard_False;
+    }
+    
+    if (aNode.Stream->fail() || aNode.Stream->bad())
+    {
+      if (theIsVerbose)
+      {
+        TCollection_AsciiString aKeyInfo = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
         Message::SendFail() << "Error during " << theContext << ": Input stream '" << aKeyInfo
                             << "' is in invalid state";
       }
@@ -202,8 +210,8 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
   {
     if (theIsVerbose)
     {
-      TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-      TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+      const DE_Provider::ReadStreamNode& aNode = theStreams.First();
+      TCollection_AsciiString aKeyInfo = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
       Message::SendFail() << "Error during " << theContext << ": Cannot access input stream '"
                           << aKeyInfo << "'";
     }
@@ -215,8 +223,8 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
-  DE_Provider::WriteStreamMap&   theStreams,
+Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
+  DE_Provider::WriteStreamList&  theStreams,
   const TCollection_AsciiString& theContext,
   const Standard_Boolean         theIsVerbose)
 {
@@ -224,7 +232,7 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext << ": Stream map is empty";
+      Message::SendFail() << "Error during " << theContext << ": Stream list is empty";
     }
     return Standard_False;
   }
@@ -241,13 +249,21 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
   // Additional validation for output streams
   try
   {
-    Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
-    if (aStream.fail() || aStream.bad())
+    const DE_Provider::WriteStreamNode& aNode = theStreams.First();
+    if (!aNode.Stream)
     {
       if (theIsVerbose)
       {
-        TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-        TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+        Message::SendFail() << "Error during " << theContext << ": Stream pointer is null";
+      }
+      return Standard_False;
+    }
+    
+    if (aNode.Stream->fail() || aNode.Stream->bad())
+    {
+      if (theIsVerbose)
+      {
+        TCollection_AsciiString aKeyInfo = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
         Message::SendFail() << "Error during " << theContext << ": Output stream '" << aKeyInfo
                             << "' is in invalid state";
       }
@@ -258,8 +274,8 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
   {
     if (theIsVerbose)
     {
-      TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-      TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+      const DE_Provider::WriteStreamNode& aNode = theStreams.First();
+      TCollection_AsciiString aKeyInfo = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
       Message::SendFail() << "Error during " << theContext << ": Cannot access output stream '"
                           << aKeyInfo << "'";
     }

@@ -642,20 +642,20 @@ void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&     theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
                                   const Handle(TDocStd_Document)& theDocument,
                                   Handle(XSControl_WorkSession)&  theWS,
                                   const Message_ProgressRange&    theProgress)
 {
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -674,17 +674,17 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    Handle(XSControl_WorkSession)&  theWS,
                                    const Message_ProgressRange&    theProgress)
 {
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
@@ -705,19 +705,19 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&     theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
                                   const Handle(TDocStd_Document)& theDocument,
                                   const Message_ProgressRange&    theProgress)
 {
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -736,16 +736,16 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    const Message_ProgressRange&    theProgress)
 {
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
@@ -766,20 +766,20 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&    theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
                                   TopoDS_Shape&                  theShape,
                                   Handle(XSControl_WorkSession)& theWS,
                                   const Message_ProgressRange&   theProgress)
 {
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -798,17 +798,17 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&   theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
                                    const TopoDS_Shape&            theShape,
                                    Handle(XSControl_WorkSession)& theWS,
                                    const Message_ProgressRange&   theProgress)
 {
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
@@ -829,19 +829,19 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&   theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&  theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&  theStreams,
                                   TopoDS_Shape&                theShape,
                                   const Message_ProgressRange& theProgress)
 {
-  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = theStreams.ChangeFromIndex(1);
+  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -860,16 +860,16 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap&  theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap& theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList& theStreams,
                                    const TopoDS_Shape&          theShape,
                                    const Message_ProgressRange& theProgress)
 {
-  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
   if (!FindWriteProvider(aFirstKey, aProvider))
