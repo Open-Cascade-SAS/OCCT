@@ -464,10 +464,8 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamMap&            theStreams,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
-  (void)theDocument;
   (void)theWS;
-  Message::SendFail() << "Error: DEBREP_Provider doesn't support document read operations with streams";
-  return Standard_False;
+  return Read(theStreams, theDocument, theProgress);
 }
 
 //=================================================================================================
@@ -477,12 +475,8 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamMap&                 theStrea
                                          Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  (void)theStreams;
-  (void)theDocument;
   (void)theWS;
-  (void)theProgress;
-  Message::SendFail() << "Error: DEBREP_Provider doesn't support document write operations with streams";
-  return Standard_False;
+  return Write(theStreams, theDocument, theProgress);
 }
 
 //=================================================================================================
