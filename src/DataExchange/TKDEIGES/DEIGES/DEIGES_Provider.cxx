@@ -27,6 +27,139 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DEIGES_Provider, DE_Provider)
 
+namespace
+{
+  //! Helper function to validate configuration node
+  Standard_Boolean validateConfigurationNode(const Handle(DE_ConfigurationNode)& theNode,
+                                              const TCollection_AsciiString& thePath,
+                                              const TCollection_AsciiString& theOperation)
+  {
+    if (!theNode->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
+    {
+      Message::SendFail() << "Error in the DEIGES_Provider during " << theOperation 
+                          << " the file " << thePath
+                          << "\t: Incorrect or empty Configuration Node";
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
+  //! Helper function to validate stream maps and warn about multiple streams
+  template<typename StreamMapType>
+  Standard_Boolean validateStreamMap(const StreamMapType& theStreams)
+  {
+    if (theStreams.IsEmpty())
+    {
+      Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
+      return Standard_False;
+    }
+    if (theStreams.Size() > 1)
+    {
+      const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+      Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
+                             << " streams for " << aFirstKey << ", using only the first one";
+    }
+    return Standard_True;
+  }
+
+  //! Helper function to configure IGES reader parameters
+  void configureIGESReader(IGESCAFControl_Reader& theReader,
+                           const Handle(DEIGES_ConfigurationNode)& theNode)
+  {
+    theReader.SetReadVisible(theNode->InternalParameters.ReadOnlyVisible);
+    theReader.SetColorMode(theNode->InternalParameters.ReadColor);
+    theReader.SetNameMode(theNode->InternalParameters.ReadName);
+    theReader.SetLayerMode(theNode->InternalParameters.ReadLayer);
+    theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
+  }
+
+  //! Helper function to configure IGES control reader parameters
+  void configureIGESControlReader(IGESControl_Reader& theReader,
+                                  const Handle(DEIGES_ConfigurationNode)& theNode)
+  {
+    theReader.SetReadVisible(theNode->InternalParameters.ReadOnlyVisible);
+    theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
+  }
+
+  //! Helper function to configure IGES CAF writer parameters  
+  void configureIGESCAFWriter(IGESCAFControl_Writer& theWriter,
+                               const Handle(DEIGES_ConfigurationNode)& theNode,
+                               const Handle(TDocStd_Document)& theDocument,
+                               const TCollection_AsciiString& thePath)
+  {
+    Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+    IGESData_GlobalSection aGS = theWriter.Model()->GlobalSection();
+    
+    Standard_Real aScaleFactorMM = 1.;
+    Standard_Boolean aHasUnits =
+      XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
+                                          aScaleFactorMM,
+                                          UnitsMethods_LengthUnit_Millimeter);
+    if (aHasUnits)
+    {
+      aGS.SetCascadeUnit(aScaleFactorMM);
+    }
+    else
+    {
+      aGS.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
+      Message::SendWarning()
+        << "Warning in the DEIGES_Provider during writing the file " << thePath
+        << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+    }
+    
+    if (aFlag == 0)
+    {
+      aGS.SetScale(theNode->GlobalParameters.LengthUnit);
+    }
+    
+    theWriter.Model()->SetGlobalSection(aGS);
+    theWriter.SetColorMode(theNode->InternalParameters.WriteColor);
+    theWriter.SetNameMode(theNode->InternalParameters.WriteName);
+    theWriter.SetLayerMode(theNode->InternalParameters.WriteLayer);
+    theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
+  }
+
+  //! Helper function to configure IGES control writer for shapes
+  void configureIGESControlWriter(IGESControl_Writer& theWriter,
+                                  const Handle(DEIGES_ConfigurationNode)& theNode)
+  {
+    Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+    IGESData_GlobalSection aGS = theWriter.Model()->GlobalSection();
+    aGS.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
+    
+    if (aFlag == 0)
+    {
+      aGS.SetScale(theNode->GlobalParameters.LengthUnit);
+    }
+    
+    theWriter.Model()->SetGlobalSection(aGS);
+    theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
+  }
+
+  //! Helper function to setup IGES writer unit flags
+  TCollection_AsciiString getIGESUnitString(const Handle(DEIGES_ConfigurationNode)& theNode)
+  {
+    Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+    return (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM";
+  }
+
+  //! Helper function to process read file operation
+  Standard_Boolean processReadFile(IGESControl_Reader& theReader,
+                                   const TCollection_AsciiString& thePath)
+  {
+    IFSelect_ReturnStatus aReadStat = theReader.ReadFile(thePath.ToCString());
+    if (aReadStat != IFSelect_RetDone)
+    {
+      Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
+                          << "\t: abandon, no model loaded";
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
+
+}
+
 //=================================================================================================
 
 DEIGES_Provider::DEIGES_Provider() {}
@@ -166,29 +299,25 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&  thePath,
                         << "\t: theDocument shouldn't be null";
     return false;
   }
-  if (!GetNode()->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
+  
+  if (!validateConfigurationNode(GetNode(), thePath, "reading"))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
+  
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
   initStatic(aNode);
+  
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
                                       UnitsMethods_LengthUnit_Millimeter);
+  
   IGESCAFControl_Reader aReader;
   aReader.SetWS(theWS);
+  configureIGESReader(aReader, aNode);
 
-  aReader.SetReadVisible(aNode->InternalParameters.ReadOnlyVisible);
-
-  aReader.SetColorMode(aNode->InternalParameters.ReadColor);
-  aReader.SetNameMode(aNode->InternalParameters.ReadName);
-  aReader.SetLayerMode(aNode->InternalParameters.ReadLayer);
-  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
-  IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
-  aReadStat                       = aReader.ReadFile(thePath.ToCString());
+  IFSelect_ReturnStatus aReadStat = aReader.ReadFile(thePath.ToCString());
   if (aReadStat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
@@ -215,54 +344,28 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&  thePath,
                             Handle(XSControl_WorkSession)&  theWS,
                             const Message_ProgressRange&    theProgress)
 {
-  if (!GetNode()->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
+  if (!validateConfigurationNode(GetNode(), thePath, "writing"))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
+  
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
   initStatic(aNode);
-  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
-  IGESCAFControl_Writer  aWriter(theWS,
-                                (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM");
-  IGESData_GlobalSection aGS            = aWriter.Model()->GlobalSection();
-  Standard_Real          aScaleFactorMM = 1.;
-  Standard_Boolean       aHasUnits =
-    XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                        aScaleFactorMM,
-                                        UnitsMethods_LengthUnit_Millimeter);
-  if (aHasUnits)
-  {
-    aGS.SetCascadeUnit(aScaleFactorMM);
-  }
-  else
-  {
-    aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
-    Message::SendWarning()
-      << "Warning in the DEIGES_Provider during writing the file " << thePath
-      << "\t: The document has no information on Units. Using global parameter as initial Unit.";
-  }
-  if (aFlag == 0)
-  {
-    aGS.SetScale(aNode->GlobalParameters.LengthUnit);
-  }
-  aWriter.Model()->SetGlobalSection(aGS);
-  aWriter.SetColorMode(aNode->InternalParameters.WriteColor);
-  aWriter.SetNameMode(aNode->InternalParameters.WriteName);
-  aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
-  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
+  
+  IGESCAFControl_Writer aWriter(theWS, Standard_False);
+  configureIGESCAFWriter(aWriter, aNode, theDocument, thePath);
+  
   if (!aWriter.Transfer(theDocument, theProgress))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
+    Message::SendFail() << "Error in the DEIGES_Provider during writing the file " << thePath
                         << "\t: The document cannot be translated or gives no result";
     resetStatic();
     return false;
   }
   if (!aWriter.Write(thePath.ToCString()))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
+    Message::SendFail() << "Error in the DEIGES_Provider during writing the file " << thePath
                         << "\t: Write failed";
     resetStatic();
     return false;
@@ -299,29 +402,25 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
                            const Message_ProgressRange&   theProgress)
 {
   (void)theProgress;
-  if (!GetNode()->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
+  if (!validateConfigurationNode(GetNode(), thePath, "reading"))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
+  
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   initStatic(aNode);
   personizeWS(theWS);
+  
   IGESControl_Reader aReader;
   aReader.SetWS(theWS);
-  aReader.SetReadVisible(aNode->InternalParameters.ReadOnlyVisible);
-  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
+  configureIGESControlReader(aReader, aNode);
 
-  IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
-  aReadStat                       = aReader.ReadFile(thePath.ToCString());
-  if (aReadStat != IFSelect_RetDone)
+  if (!processReadFile(aReader, thePath))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
-                        << "\t: Could not read file, no model loaded";
     resetStatic();
     return false;
   }
+  
   if (aReader.TransferRoots() <= 0)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
@@ -343,25 +442,17 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
 {
   (void)theWS;
   (void)theProgress;
-  if (!GetNode()->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
+  if (!validateConfigurationNode(GetNode(), thePath, "writing"))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
+  
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   initStatic(aNode);
-  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
-  IGESControl_Writer aWriter((aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM",
-                             aNode->InternalParameters.WriteBRepMode);
-  IGESData_GlobalSection aGS = aWriter.Model()->GlobalSection();
-  aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
-  if (!aFlag)
-  {
-    aGS.SetScale(aNode->GlobalParameters.LengthUnit);
-  }
-  aWriter.Model()->SetGlobalSection(aGS);
-  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
+  
+  IGESControl_Writer aWriter(getIGESUnitString(aNode).ToCString(), aNode->InternalParameters.WriteBRepMode);
+  configureIGESControlWriter(aWriter, aNode);
+  
   Standard_Boolean aIsOk = aWriter.AddShape(theShape);
   if (!aIsOk)
   {
@@ -370,7 +461,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
 
-  if (!(aWriter.Write(thePath.ToCString())))
+  if (!aWriter.Write(thePath.ToCString()))
   {
     Message::SendFail() << "DEIGES_Provider: Error on writing file " << thePath;
     resetStatic();
@@ -421,15 +512,9 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&            theStreams,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!validateStreamMap(theStreams))
   {
-    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
-                           << " streams, using only the first one";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -443,21 +528,40 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&            theStreams,
   }
   personizeWS(theWS);
   
-  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   if (aNode.IsNull())
   {
     Message::SendFail() << "Error: DEIGES_Provider configuring failed in reading stream " << aFirstKey;
     return Standard_False;
   }
-  IGESCAFControl_Reader aReader(theWS, Standard_False);
-  configureIGESParameters(aReader, aNode->InternalParameters);
-  Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
-  if (!isOk)
+  
+  initStatic(aNode);
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      aNode->GlobalParameters.LengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
+  
+  IGESCAFControl_Reader aReader;
+  aReader.SetWS(theWS);
+  configureIGESReader(aReader, aNode);
+
+  IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  if (aReadStat != IFSelect_RetDone)
   {
-    Message::SendFail() << "Error: DEIGES_Provider failed to read stream " << aFirstKey;
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: abandon, no model loaded";
+    resetStatic();
     return Standard_False;
   }
-  return aReader.Transfer(theDocument, theProgress);
+
+  if (!aReader.Transfer(theDocument, theProgress))
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: Cannot read any relevant data from the IGES stream";
+    resetStatic();
+    return Standard_False;
+  }
+  resetStatic();
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -467,15 +571,9 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
                                          Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!validateStreamMap(theStreams))
   {
-    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
-                           << " streams, using only the first one";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -489,21 +587,34 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
   }
   personizeWS(theWS);
   
-  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   if (aNode.IsNull())
   {
     Message::SendFail() << "Error: DEIGES_Provider configuring failed in writing stream " << aFirstKey;
     return Standard_False;
   }
+  
+  initStatic(aNode);
   IGESCAFControl_Writer aWriter(theWS, Standard_False);
-  configureIGESParameters(aWriter, aNode->InternalParameters);
-  Standard_Boolean isOk = aWriter.Transfer(theDocument, theProgress);
-  if (!isOk)
+  configureIGESCAFWriter(aWriter, aNode, theDocument, aFirstKey);
+  
+  if (!aWriter.Transfer(theDocument, theProgress))
   {
-    Message::SendFail() << "Error: DEIGES_Provider failed to transfer document for stream " << aFirstKey;
+    Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
+                        << "\t: The document cannot be translated or gives no result";
+    resetStatic();
     return Standard_False;
   }
-  return aWriter.WriteStream(aStream);
+  
+  if (!aWriter.Write(aStream))
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
+                        << "\t: Write failed";
+    resetStatic();
+    return Standard_False;
+  }
+  resetStatic();
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -511,17 +622,11 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
 Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         Handle(XSControl_WorkSession)& theWS,
-                                        const Message_ProgressRange&   theProgress)
+                                        const Message_ProgressRange&   /*theProgress*/)
 {
-  if (theStreams.IsEmpty())
+  if (!validateStreamMap(theStreams))
   {
-    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
-                           << " streams, using only the first one";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -529,21 +634,38 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
   
   personizeWS(theWS);
   
-  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   if (aNode.IsNull())
   {
     Message::SendFail() << "Error: DEIGES_Provider configuring failed in reading stream " << aFirstKey;
     return Standard_False;
   }
-  IGESControl_Reader aReader(theWS, Standard_False);
-  configureIGESParameters(aReader, aNode->InternalParameters);
-  Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
-  if (!isOk)
+  
+  initStatic(aNode);
+  
+  IGESControl_Reader aReader;
+  aReader.SetWS(theWS);
+  configureIGESControlReader(aReader, aNode);
+
+  IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  if (aReadStat != IFSelect_RetDone)
   {
-    Message::SendFail() << "Error: DEIGES_Provider failed to read stream " << aFirstKey;
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: Could not read stream, no model loaded";
+    resetStatic();
     return Standard_False;
   }
-  return aReader.TransferOneRoot(1, theShape, theProgress);
+  
+  if (aReader.TransferRoots() <= 0)
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: Cannot read any relevant data from the IGES stream";
+    resetStatic();
+    return Standard_False;
+  }
+  theShape = aReader.OneShape();
+  resetStatic();
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -551,17 +673,11 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
 Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStreams,
                                          const TopoDS_Shape&            theShape,
                                          Handle(XSControl_WorkSession)& theWS,
-                                         const Message_ProgressRange&   theProgress)
+                                         const Message_ProgressRange&   /*theProgress*/)
 {
-  if (theStreams.IsEmpty())
+  if (!validateStreamMap(theStreams))
   {
-    Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
-                           << " streams, using only the first one";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -569,31 +685,33 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStream
   
   personizeWS(theWS);
   
-  const Handle(DEIGES_ConfigurationNode)& aNode = GetNode();
+  Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
   if (aNode.IsNull())
   {
     Message::SendFail() << "Error: DEIGES_Provider configuring failed in writing stream " << aFirstKey;
     return Standard_False;
   }
+  
   initStatic(aNode);
-  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
-  IGESControl_Writer aWriter((aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM",
-                             aNode->InternalParameters.WriteBRepMode);
-  IGESData_GlobalSection aGS = aWriter.Model()->GlobalSection();
-  aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
-  if (!aFlag)
-  {
-    aGS.SetCascadeUnit(aNode->GlobalParameters.LengthUnit);
-  }
-  aWriter.Model()->SetGlobalSection(aGS);
+  IGESControl_Writer aWriter(getIGESUnitString(aNode).ToCString(), aNode->InternalParameters.WriteBRepMode);
+  configureIGESControlWriter(aWriter, aNode);
+  
   Standard_Boolean isOk = aWriter.AddShape(theShape);
   if (!isOk)
   {
     Message::SendFail() << "Error: DEIGES_Provider failed to transfer shape for stream " << aFirstKey;
+    resetStatic();
     return Standard_False;  
   }
-  aWriter.ComputeModel();
-  return aWriter.WriteStream(aStream);
+
+  if (!aWriter.Write(aStream))
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to write shape to stream " << aFirstKey;
+    resetStatic();
+    return Standard_False;
+  }
+  resetStatic();
+  return Standard_True;
 }
 
 //=================================================================================================
