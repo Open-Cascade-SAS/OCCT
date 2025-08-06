@@ -92,16 +92,16 @@ public:
                                           const Standard_Boolean theToKeep);
 
 public:
-  //! Checks the import supporting
-  //! @return Standard_True if import is support
+  //! Checks for import support.
+  //! @return Standard_True if import is supported
   Standard_EXPORT virtual bool IsImportSupported() const;
 
-  //! Checks the export supporting
-  //! @return Standard_True if export is support
+  //! Checks for export support.
+  //! @return Standard_True if export is supported
   Standard_EXPORT virtual bool IsExportSupported() const;
 
-  //! Checks the stream supporting
-  //! @return Standard_True if stream is support
+  //! Checks for stream support.
+  //! @return Standard_True if streams are supported
   Standard_EXPORT virtual bool IsStreamSupported() const;
 
   //! Gets CAD format name of associated provider

@@ -64,8 +64,8 @@ public:
   //! @return true if export is supported
   Standard_EXPORT virtual bool IsExportSupported() const Standard_OVERRIDE;
 
-  //! Checks the stream supporting
-  //! @return true if stream is supported
+  //! Checks for stream support.
+  //! @return Standard_True if streams are supported
   Standard_EXPORT virtual bool IsStreamSupported() const Standard_OVERRIDE;
 
   //! Gets CAD format name of associated provider
