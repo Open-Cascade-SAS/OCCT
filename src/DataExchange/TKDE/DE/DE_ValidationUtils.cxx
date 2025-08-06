@@ -334,6 +334,10 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&          
   const std::streamsize aBytesRead                               = theStream.gcount();
   theBuffer->ChangeData()[aBytesRead < 2048 ? aBytesRead : 2047] = '\0';
 
+  // Clear any error flags (including EOF) BEFORE attempting to reset position
+  // This is essential because seekg() fails when EOF flag is set
+  theStream.clear();
+  
   // Reset stream to original position for subsequent reads
   theStream.seekg(aOriginalPos);
 

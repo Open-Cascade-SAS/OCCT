@@ -24,6 +24,8 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
+#include <stdexcept>
+
 IMPLEMENT_STANDARD_RTTIEXT(DEVRML_Provider, DE_Provider)
 
 namespace
@@ -171,18 +173,34 @@ static Standard_Boolean ProcessVrmlScene(Standard_IStream&                      
   VrmlData_Scene aScene;
   aScene.SetLinearScale(theNode->GlobalParameters.LengthUnit);
   aScene.SetVrmlDir(theVrmlDir);
+  
   aScene << theStream;
 
   if (!HandleVrmlSceneStatus(aScene, theContext))
   {
     return Standard_False;
   }
-
+  
   if (aScene.Status() == VrmlData_StatusOK)
   {
     VrmlData_DataMapOfShapeAppearance aShapeAppMap;
     TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
     theShape                                 = aShape;
+    
+    // Verify that a valid shape was extracted
+    if (theShape.IsNull())
+    {
+      Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
+                          << ": VRML scene processed successfully but no geometry was extracted";
+      return Standard_False;
+    }
+  }
+  else
+  {
+    // Scene status was not OK but HandleVrmlSceneStatus didn't catch it
+    Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
+                        << ": VRML scene status is not OK but no specific error was reported";
+    return Standard_False;
   }
 
   return Standard_True;
@@ -273,6 +291,11 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
   (void)theProgress;
   TCollection_AsciiString aContext = "writing the file ";
   aContext += thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
+  {
+    return false;
+  }
+  
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
@@ -446,6 +469,11 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStre
 
   const TCollection_AsciiString&   aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
+  {
+    return Standard_False;
+  }
+  
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
