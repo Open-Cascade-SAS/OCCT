@@ -221,7 +221,6 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
   }
   
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   StlAPI_Writer aWriter;
@@ -336,8 +335,8 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
   }
 
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing stream ") + aFirstKey;
-  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
+  TCollection_AsciiString aLengthContext = TCollection_AsciiString("writing stream ") + aFirstKey;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aLengthContext);
 
   TopoDS_Shape aShape;
   if (aLabels.Length() == 1)
@@ -468,8 +467,8 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&               theStreams,
   }
   
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing stream ") + aFirstKey;
-  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
+  TCollection_AsciiString aLengthContext = TCollection_AsciiString("writing stream ") + aFirstKey;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aLengthContext);
 
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;

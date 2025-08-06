@@ -15,6 +15,7 @@
 #define _DE_Wrapper_HeaderFile
 
 #include <DE_ConfigurationNode.hxx>
+#include <DE_Provider.hxx>
 #include <Message_ProgressRange.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -170,7 +171,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(const DE_Provider::ReadStreamMap& theStreams,
+    Read(DE_Provider::ReadStreamMap& theStreams,
          const Handle(TDocStd_Document)&   theDocument,
          Handle(XSControl_WorkSession)&    theWS,
          const Message_ProgressRange&      theProgress = Message_ProgressRange());
@@ -193,7 +194,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(const DE_Provider::ReadStreamMap& theStreams,
+    Read(DE_Provider::ReadStreamMap& theStreams,
          const Handle(TDocStd_Document)&   theDocument,
          const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
@@ -214,7 +215,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(const DE_Provider::ReadStreamMap& theStreams,
+    Read(DE_Provider::ReadStreamMap& theStreams,
          TopoDS_Shape&                     theShape,
          Handle(XSControl_WorkSession)&    theWS,
          const Message_ProgressRange&      theProgress = Message_ProgressRange());
@@ -237,7 +238,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(const DE_Provider::ReadStreamMap& theStreams,
+    Read(DE_Provider::ReadStreamMap& theStreams,
          TopoDS_Shape&                     theShape,
          const Message_ProgressRange&      theProgress = Message_ProgressRange());
 

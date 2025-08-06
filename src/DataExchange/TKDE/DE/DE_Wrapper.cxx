@@ -575,7 +575,7 @@ void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    const Handle(TDocStd_Document)&   theDocument,
                                    Handle(XSControl_WorkSession)&    theWS,
                                    const Message_ProgressRange&      theProgress)
@@ -649,7 +649,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    const Handle(TDocStd_Document)&   theDocument,
                                    const Message_ProgressRange&      theProgress)
 {
@@ -721,7 +721,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    TopoDS_Shape&                     theShape,
                                    Handle(XSControl_WorkSession)&    theWS,
                                    const Message_ProgressRange&      theProgress)
@@ -795,7 +795,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(const DE_Provider::ReadStreamMap& theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    TopoDS_Shape&                     theShape,
                                    const Message_ProgressRange&      theProgress)
 {
