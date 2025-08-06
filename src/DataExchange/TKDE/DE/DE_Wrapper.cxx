@@ -642,7 +642,7 @@ void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
                                   const Handle(TDocStd_Document)& theDocument,
                                   Handle(XSControl_WorkSession)&  theWS,
                                   const Message_ProgressRange&    theProgress)
@@ -674,7 +674,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    Handle(XSControl_WorkSession)&  theWS,
                                    const Message_ProgressRange&    theProgress)
@@ -705,7 +705,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
                                   const Handle(TDocStd_Document)& theDocument,
                                   const Message_ProgressRange&    theProgress)
 {
@@ -736,7 +736,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    const Message_ProgressRange&    theProgress)
 {
@@ -766,7 +766,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&   theStreams,
                                   TopoDS_Shape&                  theShape,
                                   Handle(XSControl_WorkSession)& theWS,
                                   const Message_ProgressRange&   theProgress)
@@ -798,7 +798,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&  theStreams,
                                    const TopoDS_Shape&            theShape,
                                    Handle(XSControl_WorkSession)& theWS,
                                    const Message_ProgressRange&   theProgress)
@@ -829,7 +829,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&  theStreams,
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList& theStreams,
                                   TopoDS_Shape&                theShape,
                                   const Message_ProgressRange& theProgress)
 {
@@ -861,8 +861,8 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&  theStreams,
 //=================================================================================================
 
 Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList& theStreams,
-                                   const TopoDS_Shape&          theShape,
-                                   const Message_ProgressRange& theProgress)
+                                   const TopoDS_Shape&           theShape,
+                                   const Message_ProgressRange&  theProgress)
 {
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
   {

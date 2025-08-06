@@ -251,7 +251,7 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                 theStreams,
                                       const Handle(TDocStd_Document)& theDocument,
                                       Handle(XSControl_WorkSession)&  theWS,
                                       const Message_ProgressRange&    theProgress)
@@ -262,7 +262,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&                theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -273,7 +273,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStrea
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamList&                 theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                theStreams,
                                       TopoDS_Shape&                  theShape,
                                       Handle(XSControl_WorkSession)& theWS,
                                       const Message_ProgressRange&   theProgress)
@@ -284,7 +284,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&                 theStreams
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamList&                theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&               theStreams,
                                        const TopoDS_Shape&            theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
@@ -295,7 +295,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&                theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&                 theStreams,
                                       const Handle(TDocStd_Document)& theDocument,
                                       const Message_ProgressRange&    theProgress)
 {
@@ -325,7 +325,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&                  theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&                theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
@@ -389,7 +389,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStrea
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamList&               theStreams,
+Standard_Boolean DESTL_Provider::Read(ReadStreamList&              theStreams,
                                       TopoDS_Shape&                theShape,
                                       const Message_ProgressRange& theProgress)
 {
@@ -467,7 +467,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&               theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamList&              theStreams,
+Standard_Boolean DESTL_Provider::Write(WriteStreamList&             theStreams,
                                        const TopoDS_Shape&          theShape,
                                        const Message_ProgressRange& theProgress)
 {

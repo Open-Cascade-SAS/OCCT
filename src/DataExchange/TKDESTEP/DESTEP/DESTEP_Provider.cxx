@@ -52,12 +52,12 @@ Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode,
 //! @param[in] theLengthUnit Length unit for document setup (used only if theDocument is provided)
 //! @param[in] theShapeFixParams Shape fix parameters (optional, uses default if not provided)
 //! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
-void configureSTEPCAFReader(STEPCAFControl_Reader&                     theReader,
-                            const DESTEP_Parameters&                   theParams,
-                            Handle(XSControl_WorkSession)&             theWS,
-                            const Handle(TDocStd_Document)&            theDocument,
-                            Standard_Real                              theLengthUnit,
-                            const DE_ShapeFixParameters& theShapeFixParams)
+void configureSTEPCAFReader(STEPCAFControl_Reader&          theReader,
+                            const DESTEP_Parameters&        theParams,
+                            Handle(XSControl_WorkSession)&  theWS,
+                            const Handle(TDocStd_Document)& theDocument,
+                            Standard_Real                   theLengthUnit,
+                            const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theReader.Init(theWS);
 
@@ -83,15 +83,15 @@ void configureSTEPCAFReader(STEPCAFControl_Reader&                     theReader
 //! @param[in] theLengthUnit Length unit for document setup
 //! @param[in] theShapeFixParams Shape fix parameters
 //! @note Sets up all write parameters including colors, names, layers, props, materials
-void configureSTEPCAFWriter(STEPCAFControl_Writer&                      theWriter,
-                            const DESTEP_Parameters&                    theParams,
-                            Handle(XSControl_WorkSession)&              theWS,
-                            const Handle(TDocStd_Document)&             theDocument,
-                            Standard_Real                               theLengthUnit,
-                            const DE_ShapeFixParameters&  theShapeFixParams)
+void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
+                            const DESTEP_Parameters&        theParams,
+                            Handle(XSControl_WorkSession)&  theWS,
+                            const Handle(TDocStd_Document)& theDocument,
+                            Standard_Real                   theLengthUnit,
+                            const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theWriter.Init(theWS);
-  
+
   theWriter.SetColorMode(theParams.WriteColor);
   theWriter.SetNameMode(theParams.WriteName);
   theWriter.SetLayerMode(theParams.WriteLayer);
@@ -99,12 +99,12 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer&                      theWrite
   theWriter.SetMaterialMode(theParams.WriteMaterial);
   theWriter.SetVisualMaterialMode(theParams.WriteVisMaterial);
   theWriter.SetCleanDuplicates(theParams.CleanDuplicates);
-  
+
   theWriter.SetShapeFixParameters(theShapeFixParams);
 
   Handle(StepData_StepModel) aModel =
     Handle(StepData_StepModel)::DownCast(theWriter.Writer().WS()->Model());
-  
+
   Standard_Real aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
@@ -119,7 +119,7 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer&                      theWrite
       << "Warning in the DESTEP_Provider during writing"
       << "\t: The document has no information on Units. Using global parameter as initial Unit.";
   }
-  
+
   aModel->SetWriteLengthUnit(theLengthUnit);
 }
 
@@ -213,7 +213,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   }
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
-  
+
   STEPCAFControl_Writer aWriter;
   configureSTEPCAFWriter(aWriter,
                          aNode->InternalParameters,
@@ -221,12 +221,12 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
                          theDocument,
                          aNode->GlobalParameters.SystemUnit,
                          aNode->ShapeFixParameters);
-  
+
   Handle(StepData_StepModel) aModel =
     Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
-  DESTEP_Parameters aParams = aNode->InternalParameters;
+  DESTEP_Parameters       aParams = aNode->InternalParameters;
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
@@ -474,7 +474,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
   personizeWS(theWS);
 
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  
+
   STEPCAFControl_Writer aWriter(theWS, Standard_False);
   configureSTEPCAFWriter(aWriter,
                          aNode->InternalParameters,
@@ -485,7 +485,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
 
   Handle(StepData_StepModel) aModel =
     Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
-  DESTEP_Parameters aParams = aNode->InternalParameters;
+  DESTEP_Parameters       aParams = aNode->InternalParameters;
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);

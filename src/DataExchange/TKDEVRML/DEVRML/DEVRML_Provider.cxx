@@ -173,20 +173,20 @@ static Standard_Boolean ProcessVrmlScene(Standard_IStream&                      
   VrmlData_Scene aScene;
   aScene.SetLinearScale(theNode->GlobalParameters.LengthUnit);
   aScene.SetVrmlDir(theVrmlDir);
-  
+
   aScene << theStream;
 
   if (!HandleVrmlSceneStatus(aScene, theContext))
   {
     return Standard_False;
   }
-  
+
   if (aScene.Status() == VrmlData_StatusOK)
   {
     VrmlData_DataMapOfShapeAppearance aShapeAppMap;
     TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
     theShape                                 = aShape;
-    
+
     // Verify that a valid shape was extracted
     if (theShape.IsNull())
     {
@@ -295,7 +295,7 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
   {
     return false;
   }
-  
+
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
@@ -382,7 +382,7 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -393,7 +393,7 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                  theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
@@ -404,7 +404,7 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStre
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                theStreams,
                                        TopoDS_Shape&                  theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
@@ -415,7 +415,7 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStreams,
+Standard_Boolean DEVRML_Provider::Write(WriteStreamList&               theStreams,
                                         const TopoDS_Shape&            theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
@@ -426,7 +426,7 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
@@ -456,7 +456,7 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&                  theStrea
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
@@ -467,13 +467,13 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStre
     return Standard_False;
   }
 
-  const TCollection_AsciiString&   aFirstKey    = theStreams.First().Path;
-  TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
+  TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
     return Standard_False;
   }
-  
+
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
@@ -501,7 +501,7 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStre
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Read(ReadStreamList&               theStreams,
+Standard_Boolean DEVRML_Provider::Read(ReadStreamList&              theStreams,
                                        TopoDS_Shape&                theShape,
                                        const Message_ProgressRange& theProgress)
 {
@@ -527,7 +527,7 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&               theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DEVRML_Provider::Write(WriteStreamList&              theStreams,
+Standard_Boolean DEVRML_Provider::Write(WriteStreamList&             theStreams,
                                         const TopoDS_Shape&          theShape,
                                         const Message_ProgressRange& theProgress)
 {

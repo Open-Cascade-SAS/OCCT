@@ -152,7 +152,7 @@ Standard_Boolean DE_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DE_Provider::Read(ReadStreamList&                 theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    Handle(XSControl_WorkSession)&  theWS,
                                    const Message_ProgressRange&    theProgress)
@@ -168,7 +168,7 @@ Standard_Boolean DE_Provider::Read(ReadStreamList&                  theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DE_Provider::Write(WriteStreamList&                theStreams,
                                     const Handle(TDocStd_Document)& theDocument,
                                     Handle(XSControl_WorkSession)&  theWS,
                                     const Message_ProgressRange&    theProgress)
@@ -184,7 +184,7 @@ Standard_Boolean DE_Provider::Write(WriteStreamList&                 theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Read(ReadStreamList&                 theStreams,
+Standard_Boolean DE_Provider::Read(ReadStreamList&                theStreams,
                                    TopoDS_Shape&                  theShape,
                                    Handle(XSControl_WorkSession)& theWS,
                                    const Message_ProgressRange&   theProgress)
@@ -200,7 +200,7 @@ Standard_Boolean DE_Provider::Read(ReadStreamList&                 theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Write(WriteStreamList&                theStreams,
+Standard_Boolean DE_Provider::Write(WriteStreamList&               theStreams,
                                     const TopoDS_Shape&            theShape,
                                     Handle(XSControl_WorkSession)& theWS,
                                     const Message_ProgressRange&   theProgress)
@@ -216,7 +216,7 @@ Standard_Boolean DE_Provider::Write(WriteStreamList&                theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DE_Provider::Read(ReadStreamList&                 theStreams,
                                    const Handle(TDocStd_Document)& theDocument,
                                    const Message_ProgressRange&    theProgress)
 {
@@ -230,7 +230,7 @@ Standard_Boolean DE_Provider::Read(ReadStreamList&                  theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DE_Provider::Write(WriteStreamList&                theStreams,
                                     const Handle(TDocStd_Document)& theDocument,
                                     const Message_ProgressRange&    theProgress)
 {
@@ -244,7 +244,7 @@ Standard_Boolean DE_Provider::Write(WriteStreamList&                 theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Read(ReadStreamList&               theStreams,
+Standard_Boolean DE_Provider::Read(ReadStreamList&              theStreams,
                                    TopoDS_Shape&                theShape,
                                    const Message_ProgressRange& theProgress)
 {
@@ -258,7 +258,7 @@ Standard_Boolean DE_Provider::Read(ReadStreamList&               theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DE_Provider::Write(WriteStreamList&              theStreams,
+Standard_Boolean DE_Provider::Write(WriteStreamList&             theStreams,
                                     const TopoDS_Shape&          theShape,
                                     const Message_ProgressRange& theProgress)
 {

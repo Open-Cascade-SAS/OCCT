@@ -171,7 +171,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamList&     theStreams,
+    Read(DE_Provider::ReadStreamList&    theStreams,
          const Handle(TDocStd_Document)& theDocument,
          Handle(XSControl_WorkSession)&  theWS,
          const Message_ProgressRange&    theProgress = Message_ProgressRange());
@@ -183,7 +183,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamList&    theStreams,
+    Write(DE_Provider::WriteStreamList&   theStreams,
           const Handle(TDocStd_Document)& theDocument,
           Handle(XSControl_WorkSession)&  theWS,
           const Message_ProgressRange&    theProgress = Message_ProgressRange());
@@ -194,7 +194,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamList&     theStreams,
+    Read(DE_Provider::ReadStreamList&    theStreams,
          const Handle(TDocStd_Document)& theDocument,
          const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
@@ -204,7 +204,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamList&    theStreams,
+    Write(DE_Provider::WriteStreamList&   theStreams,
           const Handle(TDocStd_Document)& theDocument,
           const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
@@ -215,7 +215,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamList&    theStreams,
+    Read(DE_Provider::ReadStreamList&   theStreams,
          TopoDS_Shape&                  theShape,
          Handle(XSControl_WorkSession)& theWS,
          const Message_ProgressRange&   theProgress = Message_ProgressRange());
@@ -227,7 +227,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamList&   theStreams,
+    Write(DE_Provider::WriteStreamList&  theStreams,
           const TopoDS_Shape&            theShape,
           Handle(XSControl_WorkSession)& theWS,
           const Message_ProgressRange&   theProgress = Message_ProgressRange());
@@ -238,7 +238,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamList&  theStreams,
+    Read(DE_Provider::ReadStreamList& theStreams,
          TopoDS_Shape&                theShape,
          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -249,8 +249,8 @@ public:
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
     Write(DE_Provider::WriteStreamList& theStreams,
-          const TopoDS_Shape&          theShape,
-          const Message_ProgressRange& theProgress = Message_ProgressRange());
+          const TopoDS_Shape&           theShape,
+          const Message_ProgressRange&  theProgress = Message_ProgressRange());
 
 public:
   //! Updates values according the resource file

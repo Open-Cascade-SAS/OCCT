@@ -74,10 +74,9 @@ public:
   //! @param[in] theIsVerbose if true, sends detailed error/warning messages
   //! @return Standard_True if stream list is valid, Standard_False otherwise
   Standard_EXPORT static Standard_Boolean ValidateWriteStreamList(
-    DE_Provider::WriteStreamList&      theStreams,
-    const TCollection_AsciiString&     theContext,
-    const Standard_Boolean             theIsVerbose = Standard_True);
-
+    DE_Provider::WriteStreamList&  theStreams,
+    const TCollection_AsciiString& theContext,
+    const Standard_Boolean         theIsVerbose = Standard_True);
 
   //! Validates that TDocStd_Document handle is not null
   //! @param[in] theDocument document to validate

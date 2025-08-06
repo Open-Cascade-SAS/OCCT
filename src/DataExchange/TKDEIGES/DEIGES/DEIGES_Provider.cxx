@@ -41,7 +41,7 @@ Standard_Boolean validateConfigurationNode(const Handle(DE_ConfigurationNode)& t
 
 //! Helper function to configure IGES CAF reader parameters
 void configureIGESCAFReader(IGESCAFControl_Reader&                  theReader,
-                             const Handle(DEIGES_ConfigurationNode)& theNode)
+                            const Handle(DEIGES_ConfigurationNode)& theNode)
 {
   theReader.SetReadVisible(theNode->InternalParameters.ReadOnlyVisible);
   theReader.SetColorMode(theNode->InternalParameters.ReadColor);
@@ -63,7 +63,7 @@ void setupIGESUnits(IGESData_GlobalSection&                 theGS,
                     const Handle(DEIGES_ConfigurationNode)& theNode,
                     const Handle(TDocStd_Document)&         theDocument,
                     const TCollection_AsciiString&          thePath,
-                    Standard_Boolean                         theUseDocumentUnits)
+                    Standard_Boolean                        theUseDocumentUnits)
 {
   Standard_Integer aFlag =
     IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
@@ -118,7 +118,7 @@ void configureIGESCAFWriter(IGESCAFControl_Writer&                  theWriter,
 void configureIGESControlWriter(IGESControl_Writer&                     theWriter,
                                 const Handle(DEIGES_ConfigurationNode)& theNode)
 {
-  IGESData_GlobalSection aGS = theWriter.Model()->GlobalSection();
+  IGESData_GlobalSection   aGS = theWriter.Model()->GlobalSection();
   Handle(TDocStd_Document) aNullDoc;
   setupIGESUnits(aGS, theNode, aNullDoc, "", Standard_False);
 

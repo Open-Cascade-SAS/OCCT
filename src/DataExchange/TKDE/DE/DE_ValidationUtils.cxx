@@ -202,7 +202,7 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
     if (theIsVerbose)
     {
       const DE_Provider::ReadStreamNode& aNode = theStreams.First();
-      TCollection_AsciiString aKeyInfo = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
+      TCollection_AsciiString aKeyInfo         = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
       Message::SendFail() << "Error during " << theContext << ": Cannot access input stream '"
                           << aKeyInfo << "'";
     }
@@ -337,7 +337,7 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&          
   // Clear any error flags (including EOF) BEFORE attempting to reset position
   // This is essential because seekg() fails when EOF flag is set
   theStream.clear();
-  
+
   // Reset stream to original position for subsequent reads
   theStream.seekg(aOriginalPos);
 
