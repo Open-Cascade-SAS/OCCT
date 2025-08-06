@@ -514,11 +514,11 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamList&                  theStrea
   {
     return Standard_False;
   }
-  personizeWS(theWS);
 
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
-
   initStatic(aNode);
+  personizeWS(theWS);
+
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
                                       UnitsMethods_LengthUnit_Millimeter);
@@ -569,11 +569,11 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&                 theStre
   {
     return Standard_False;
   }
-  personizeWS(theWS);
 
   Handle(DEIGES_ConfigurationNode) aNode = Handle(DEIGES_ConfigurationNode)::DownCast(GetNode());
-
   initStatic(aNode);
+  personizeWS(theWS);
+
   IGESCAFControl_Writer aWriter(theWS, Standard_False);
   configureIGESCAFWriter(aWriter, aNode, theDocument, aFirstKey);
 
