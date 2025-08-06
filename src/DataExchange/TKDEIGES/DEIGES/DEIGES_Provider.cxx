@@ -740,4 +740,4 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&              theStreams
   return Write(theStreams, theShape, aWS, theProgress);
 }
 
-*\
+*/
