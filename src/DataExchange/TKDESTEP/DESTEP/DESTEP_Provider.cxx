@@ -65,93 +65,6 @@ namespace
                                         UnitsMethods_LengthUnit_Millimeter);
   }
 
-  //! Configures STEPCAFControl_Writer for document operations.
-  //! @param theWriter [in,out] STEP CAF writer to configure
-  //! @param theNode [in] Configuration node containing write parameters
-  //! @param theDocument [in] Source document for length unit extraction
-  //! @param theWS [in,out] Work session to initialize writer with
-  //! @note Sets up all write parameters including colors, names, layers, materials, units
-  void setupDocumentWriter(STEPCAFControl_Writer& theWriter,
-                          const Handle(DESTEP_ConfigurationNode)& theNode,
-                          const Handle(TDocStd_Document)& theDocument,
-                          Handle(XSControl_WorkSession)& theWS)
-  {
-    theWriter.Init(theWS);
-    Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(theWriter.Writer().WS()->Model());
-    
-    theWriter.SetColorMode(theNode->InternalParameters.WriteColor);
-    theWriter.SetNameMode(theNode->InternalParameters.WriteName);
-    theWriter.SetLayerMode(theNode->InternalParameters.WriteLayer);
-    theWriter.SetPropsMode(theNode->InternalParameters.WriteProps);
-    theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
-    theWriter.SetMaterialMode(theNode->InternalParameters.WriteMaterial);
-    theWriter.SetVisualMaterialMode(theNode->InternalParameters.WriteVisMaterial);
-    theWriter.SetCleanDuplicates(theNode->InternalParameters.CleanDuplicates);
-    
-    Standard_Real aScaleFactorMM = 1.;
-    if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                            aScaleFactorMM,
-                                            UnitsMethods_LengthUnit_Millimeter))
-    {
-      aModel->SetLocalLengthUnit(aScaleFactorMM);
-    }
-    else
-    {
-      aModel->SetLocalLengthUnit(theNode->GlobalParameters.SystemUnit);
-      Message::SendWarning()
-        << "Warning in the DESTEP_Provider during writing"
-        << "\t: The document has no information on Units. Using global parameter as initial Unit.";
-    }
-    
-    UnitsMethods_LengthUnit aTargetUnit =
-      UnitsMethods::GetLengthUnitByFactorValue(theNode->GlobalParameters.LengthUnit,
-                                               UnitsMethods_LengthUnit_Millimeter);
-    aModel->SetWriteLengthUnit(theNode->GlobalParameters.LengthUnit);
-  }
-
-  //! Configures STEPControl_Reader for shape operations.
-  //! @param theReader [in,out] STEP reader to configure
-  //! @param theNode [in] Configuration node containing parameters
-  //! @param theWS [in,out] Work session to set on reader
-  //! @note Minimal setup for shape-only reading operations
-  void setupShapeReader(STEPControl_Reader& theReader,
-                       const Handle(DESTEP_ConfigurationNode)& theNode,
-                       Handle(XSControl_WorkSession)& theWS)
-  {
-    theReader.SetWS(theWS);
-    theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
-  }
-
-  //! Configures STEPControl_Writer for shape operations.
-  //! @param theWriter [in,out] STEP writer to configure
-  //! @param theNode [in] Configuration node containing write parameters
-  //! @param theWS [in,out] Work session to set on writer
-  //! @note Sets up units and shape fix parameters for shape-only writing
-  void setupShapeWriter(STEPControl_Writer& theWriter,
-                       const Handle(DESTEP_ConfigurationNode)& theNode,
-                       Handle(XSControl_WorkSession)& theWS)
-  {
-    theWriter.SetWS(theWS);
-    Handle(StepData_StepModel) aModel = theWriter.Model();
-    aModel->SetLocalLengthUnit(theNode->GlobalParameters.SystemUnit);
-    
-    UnitsMethods_LengthUnit aTargetUnit =
-      UnitsMethods::GetLengthUnitByFactorValue(theNode->GlobalParameters.LengthUnit,
-                                               UnitsMethods_LengthUnit_Millimeter);
-    if (aTargetUnit == UnitsMethods_LengthUnit_Undefined)
-    {
-      aModel->SetWriteLengthUnit(1.0);
-      Message::SendWarning()
-        << "Custom units are not supported by STEP format, but LengthUnit global parameter doesn't "
-           "fit any predefined unit. Units will be scaled to Millimeters";
-    }
-    else
-    {
-      aModel->SetWriteLengthUnit(theNode->GlobalParameters.LengthUnit);
-    }
-    theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
-  }
-
   //! Configures STEPCAFControl_Reader with specified parameters.
   //! @param theReader [in,out] STEP CAF reader to configure
   //! @param theParams [in] Parameters containing read settings
@@ -183,35 +96,6 @@ namespace
     theWriter.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }
 
-  //! Checks if input stream is readable and has content.
-  //! @param theStream [in,out] Input stream to check
-  //! @param theKey [in] Stream identifier for error reporting
-  //! @return Standard_True if stream is readable and has content, Standard_False otherwise
-  //! @note Restores original stream position after checking
-  bool checkStreamReadability(Standard_IStream& theStream, const TCollection_AsciiString& theKey)
-  {
-    if (!theStream.good())
-    {
-      TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
-      Message::SendFail() << "Error: Input stream '" << aKeyInfo << "' is not in good state before reading";
-      return false;
-    }
-    
-    // Check if stream has content
-    std::streampos aCurrentPos = theStream.tellg();
-    theStream.seekg(0, std::ios::end);
-    std::streampos aEndPos = theStream.tellg();
-    theStream.seekg(aCurrentPos);
-    
-    if (aEndPos <= aCurrentPos)
-    {
-      TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
-      Message::SendFail() << "Error: Input stream '" << aKeyInfo << "' appears to be empty or at end";
-      return false;
-    }
-    
-    return true;
-  }
 
   //! Checks if output stream is in writable state.
   //! @param theStream [in] Output stream to check
@@ -516,16 +400,13 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
   
   TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
-  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext))
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext) ||
+      !DE_ValidationUtils::ValidateReadStreamMap(theStreams, aFullContext))
   {
     return Standard_False;
   }
   
   Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
-  if (!checkStreamReadability(aStream, aFirstKey))
-  {
-    return Standard_False;
-  }
   
   personizeWS(theWS);
   
@@ -659,17 +540,15 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
   aReader.SetWS(theWS);
   aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
   
-  // Create a STEP model from the stream
-  Handle(StepData_StepModel) aModel = new StepData_StepModel();
-  aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
-  
-  // Read from stream using the model
+  // Read from stream using the reader's internal model
   IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
   if (aReadStat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to read from stream " << aFirstKey;
     return Standard_False;
   }
+  Handle(StepData_StepModel) aModel = aReader.StepModel();
+  aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
   
   // Transfer the first root to get the shape
   if (aReader.TransferRoots() <= 0)
