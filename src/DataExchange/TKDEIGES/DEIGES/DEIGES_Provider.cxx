@@ -492,6 +492,10 @@ TCollection_AsciiString DEIGES_Provider::GetVendor() const
   return TCollection_AsciiString("OCC");
 }
 
+/*
+
+// TODO: Implement IGES stream support
+
 //=================================================================================================
 
 Standard_Boolean DEIGES_Provider::Read(ReadStreamList&                  theStreams,
@@ -735,3 +739,5 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&              theStreams
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);
 }
+
+*\
