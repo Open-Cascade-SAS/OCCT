@@ -119,8 +119,6 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
       << "Warning in the DESTEP_Provider during writing"
       << "\t: The document has no information on Units. Using global parameter as initial Unit.";
   }
-
-  aModel->SetWriteLengthUnit(theLengthUnit);
 }
 
 //! Checks if output stream is in writable state.
@@ -231,6 +229,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
   aParams.WriteUnit = aTargetUnit;
+  aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   TDF_Label aLabel;
   if (!aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress))
   {
@@ -490,7 +489,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
   aParams.WriteUnit = aTargetUnit;
-
+  aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
   Standard_Boolean isOk = aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress);
