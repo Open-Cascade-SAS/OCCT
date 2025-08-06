@@ -34,12 +34,24 @@ public:
     const OSD_Path&                   thePath,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
+  //! Write triangulation to binary STL stream.
+  Standard_EXPORT static Standard_Boolean WriteBinary(
+    const Handle(Poly_Triangulation)& theMesh,
+    Standard_OStream&                 theStream,
+    const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
   //! write the meshing in a file following the
   //! Ascii  format of an STL file.
   //! Returns false if the cannot be opened;
   Standard_EXPORT static Standard_Boolean WriteAscii(
     const Handle(Poly_Triangulation)& theMesh,
     const OSD_Path&                   thePath,
+    const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
+  //! Write triangulation to ASCII STL stream.
+  Standard_EXPORT static Standard_Boolean WriteAscii(
+    const Handle(Poly_Triangulation)& theMesh,
+    Standard_OStream&                 theStream,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Read specified STL file and returns its content as triangulation.
@@ -91,17 +103,6 @@ public:
   Standard_EXPORT static Handle(Poly_Triangulation) ReadAscii(
     const OSD_Path&              thePath,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
-
-private:
-  //! Write ASCII version.
-  static Standard_Boolean writeASCII(const Handle(Poly_Triangulation)& theMesh,
-                                     FILE*                             theFile,
-                                     const Message_ProgressRange&      theProgress);
-
-  //! Write binary version.
-  static Standard_Boolean writeBinary(const Handle(Poly_Triangulation)& theMesh,
-                                      FILE*                             theFile,
-                                      const Message_ProgressRange&      theProgress);
 };
 
 #endif

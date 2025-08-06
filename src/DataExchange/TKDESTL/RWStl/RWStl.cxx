@@ -21,6 +21,8 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWStl_Reader.hxx>
+#include <iomanip>
+#include <iostream>
 
 namespace
 {
@@ -253,17 +255,14 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
 
   TCollection_AsciiString aPath;
   thePath.SystemName(aPath);
-
-  FILE* aFile = OSD_OpenFile(aPath, "wb");
-  if (aFile == NULL)
+  
+  std::ofstream aStream(aPath.ToCString(), std::ios::binary);
+  if (!aStream.is_open())
   {
     return Standard_False;
   }
-
-  Standard_Boolean isOK = writeBinary(theMesh, aFile, theProgress);
-
-  fclose(aFile);
-  return isOK;
+  
+  return WriteBinary(theMesh, aStream, theProgress);
 }
 
 //=================================================================================================
@@ -279,46 +278,45 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
 
   TCollection_AsciiString aPath;
   thePath.SystemName(aPath);
-
-  FILE* aFile = OSD_OpenFile(aPath, "w");
-  if (aFile == NULL)
+  
+  std::ofstream aStream(aPath.ToCString());
+  if (!aStream.is_open())
   {
     return Standard_False;
   }
-
-  Standard_Boolean isOK = writeASCII(theMesh, aFile, theProgress);
-  fclose(aFile);
-  return isOK;
+  
+  return WriteAscii(theMesh, aStream, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean RWStl::writeASCII(const Handle(Poly_Triangulation)& theMesh,
-                                   FILE*                             theFile,
+Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
+                                   Standard_OStream&                 theStream,
                                    const Message_ProgressRange&      theProgress)
 {
-  // note that space after 'solid' is necessary for many systems
-  if (fwrite("solid \n", 1, 7, theFile) != 7)
+  if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
     return Standard_False;
   }
 
-  char aBuffer[512];
-  memset(aBuffer, 0, sizeof(aBuffer));
+  // note that space after 'solid' is necessary for many systems
+  theStream << "solid \n";
+  if (theStream.fail())
+  {
+    return Standard_False;
+  }
 
   const Standard_Integer NBTriangles = theMesh->NbTriangles();
   Message_ProgressScope  aPS(theProgress, "Triangles", NBTriangles);
-
   Standard_Integer anElem[3] = {0, 0, 0};
+  
   for (Standard_Integer aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
   {
     const Poly_Triangle aTriangle = theMesh->Triangle(aTriIter);
     aTriangle.Get(anElem[0], anElem[1], anElem[2]);
-
     const gp_Pnt aP1 = theMesh->Node(anElem[0]);
     const gp_Pnt aP2 = theMesh->Node(anElem[1]);
     const gp_Pnt aP3 = theMesh->Node(anElem[2]);
-
     const gp_Vec aVec1(aP1, aP2);
     const gp_Vec aVec2(aP1, aP3);
     gp_Vec       aVNorm = aVec1.Crossed(aVec2);
@@ -330,33 +328,21 @@ Standard_Boolean RWStl::writeASCII(const Handle(Poly_Triangulation)& theMesh,
     {
       aVNorm.SetCoord(0.0, 0.0, 0.0);
     }
-
-    Sprintf(aBuffer,
-            " facet normal % 12e % 12e % 12e\n"
-            "   outer loop\n"
-            "     vertex % 12e % 12e % 12e\n"
-            "     vertex % 12e % 12e % 12e\n"
-            "     vertex % 12e % 12e % 12e\n"
-            "   endloop\n"
-            " endfacet\n",
-            aVNorm.X(),
-            aVNorm.Y(),
-            aVNorm.Z(),
-            aP1.X(),
-            aP1.Y(),
-            aP1.Z(),
-            aP2.X(),
-            aP2.Y(),
-            aP2.Z(),
-            aP3.X(),
-            aP3.Y(),
-            aP3.Z());
-
-    if (fprintf(theFile, "%s", aBuffer) < 0)
+    
+    theStream << " facet normal " << std::scientific << std::setprecision(5)
+              << aVNorm.X() << " " << aVNorm.Y() << " " << aVNorm.Z() << "\n"
+              << "   outer loop\n"
+              << "     vertex " << aP1.X() << " " << aP1.Y() << " " << aP1.Z() << "\n"
+              << "     vertex " << aP2.X() << " " << aP2.Y() << " " << aP2.Z() << "\n"
+              << "     vertex " << aP3.X() << " " << aP3.Y() << " " << aP3.Z() << "\n"
+              << "   endloop\n"
+              << " endfacet\n";
+              
+    if (theStream.fail())
     {
       return Standard_False;
     }
-
+    
     // update progress only per 1k triangles
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
@@ -365,53 +351,52 @@ Standard_Boolean RWStl::writeASCII(const Handle(Poly_Triangulation)& theMesh,
       aPS.Next(IND_THRESHOLD);
     }
   }
-
-  if (fwrite("endsolid\n", 1, 9, theFile) != 9)
-  {
-    return Standard_False;
-  }
-
-  return Standard_True;
+  
+  theStream << "endsolid\n";
+  return !theStream.fail();
 }
 
 //=================================================================================================
 
-Standard_Boolean RWStl::writeBinary(const Handle(Poly_Triangulation)& theMesh,
-                                    FILE*                             theFile,
+Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
+                                    Standard_OStream&                 theStream,
                                     const Message_ProgressRange&      theProgress)
 {
-  char aHeader[80] = "STL Exported by Open CASCADE Technology [dev.opencascade.org]";
-  if (fwrite(aHeader, 1, 80, theFile) != 80)
+  if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
   {
     return Standard_False;
   }
-
+  
+  char aHeader[80] = "STL Exported by Open CASCADE Technology [dev.opencascade.org]";
+  theStream.write(aHeader, 80);
+  if (theStream.fail())
+  {
+    return Standard_False;
+  }
+  
   const Standard_Integer aNBTriangles = theMesh->NbTriangles();
   Message_ProgressScope  aPS(theProgress, "Triangles", aNBTriangles);
-
   const Standard_Size                    aNbChunkTriangles = 4096;
   const Standard_Size                    aChunkSize = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
   NCollection_Array1<Standard_Character> aData(1, aChunkSize);
   Standard_Character*                    aDataChunk = &aData.ChangeFirst();
-
   Standard_Character aConv[4];
   convertInteger(aNBTriangles, aConv);
-  if (fwrite(aConv, 1, 4, theFile) != 4)
+  theStream.write(aConv, 4);
+  if (theStream.fail())
   {
     return Standard_False;
   }
-
+  
   Standard_Size aByteCount = 0;
   for (Standard_Integer aTriIter = 1; aTriIter <= aNBTriangles; ++aTriIter)
   {
     Standard_Integer    id[3];
     const Poly_Triangle aTriangle = theMesh->Triangle(aTriIter);
     aTriangle.Get(id[0], id[1], id[2]);
-
     const gp_Pnt aP1 = theMesh->Node(id[0]);
     const gp_Pnt aP2 = theMesh->Node(id[1]);
     const gp_Pnt aP3 = theMesh->Node(id[2]);
-
     gp_Vec aVec1(aP1, aP2);
     gp_Vec aVec2(aP1, aP3);
     gp_Vec aVNorm = aVec1.Crossed(aVec2);
@@ -423,48 +408,42 @@ Standard_Boolean RWStl::writeBinary(const Handle(Poly_Triangulation)& theMesh,
     {
       aVNorm.SetCoord(0.0, 0.0, 0.0);
     }
-
     convertDouble(aVNorm.X(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aVNorm.Y(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aVNorm.Z(), &aDataChunk[aByteCount]);
     aByteCount += 4;
-
     convertDouble(aP1.X(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP1.Y(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP1.Z(), &aDataChunk[aByteCount]);
     aByteCount += 4;
-
     convertDouble(aP2.X(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP2.Y(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP2.Z(), &aDataChunk[aByteCount]);
     aByteCount += 4;
-
     convertDouble(aP3.X(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP3.Y(), &aDataChunk[aByteCount]);
     aByteCount += 4;
     convertDouble(aP3.Z(), &aDataChunk[aByteCount]);
     aByteCount += 4;
-
     aDataChunk[aByteCount] = 0;
-    aByteCount += 1;
-    aDataChunk[aByteCount] = 0;
-    aByteCount += 1;
+    aDataChunk[aByteCount + 1] = 0;
+    aByteCount += 2;
 
-    // Chunk is filled. Dump it to the file.
+    // Chunk is full, write it out.
     if (aByteCount == aChunkSize)
     {
-      if (fwrite(aDataChunk, 1, aChunkSize, theFile) != aChunkSize)
+      theStream.write(aDataChunk, aChunkSize);
+      if (theStream.fail())
       {
         return Standard_False;
       }
-
       aByteCount = 0;
     }
 
@@ -480,7 +459,8 @@ Standard_Boolean RWStl::writeBinary(const Handle(Poly_Triangulation)& theMesh,
   // Write last part if necessary.
   if (aByteCount != aChunkSize)
   {
-    if (fwrite(aDataChunk, 1, aByteCount, theFile) != aByteCount)
+    theStream.write(aDataChunk, aByteCount);
+    if (theStream.fail())
     {
       return Standard_False;
     }
