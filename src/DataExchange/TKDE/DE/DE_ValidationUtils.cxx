@@ -344,8 +344,9 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(
   // Save current stream position
   std::streampos aOriginalPos = theStream.tellg();
   
-  theStream.read((char*)theBuffer->ChangeData(), 2048);
-  theBuffer->ChangeData()[2047] = '\0';
+  theStream.read(reinterpret_cast<char*>(theBuffer->ChangeData()), 2048);
+  const std::streamsize aBytesRead = theStream.gcount();
+  theBuffer->ChangeData()[aBytesRead < 2048 ? aBytesRead : 2047] = '\0';
   
   // Reset stream to original position for subsequent reads
   theStream.seekg(aOriginalPos);
