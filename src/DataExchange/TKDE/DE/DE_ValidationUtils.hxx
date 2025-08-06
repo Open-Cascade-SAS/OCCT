@@ -89,6 +89,16 @@ public:
     const TCollection_AsciiString& theContext,
     const Standard_Boolean theIsVerbose = Standard_True);
 
+  //! Sends warning when format doesn't support length unit scaling
+  //! @param[in] theLengthUnit length unit value to check
+  //! @param[in] theContext context string for warning messages
+  //! @param[in] theIsVerbose if true, sends warning messages via Message::SendWarning
+  //! @return Standard_True always (this is just a warning)
+  Standard_EXPORT static Standard_Boolean WarnLengthUnitNotSupported(
+    const Standard_Real theLengthUnit,
+    const TCollection_AsciiString& theContext,
+    const Standard_Boolean theIsVerbose = Standard_True);
+
 };
 
 #endif // _DE_ValidationUtils_HeaderFile

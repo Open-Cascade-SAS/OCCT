@@ -14,6 +14,7 @@
 #include <DEPLY_Provider.hxx>
 
 #include <BRep_Builder.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <DEPLY_ConfigurationNode.hxx>
 #include <DE_Wrapper.hxx>
 #include <Message.hxx>
@@ -55,10 +56,9 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
                            const Handle(TDocStd_Document)& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEPLY_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DEPLY_ConfigurationNode), aContext))
   {
-    Message::SendFail() << "Error in the DEPLY_Provider during writing the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   Handle(DEPLY_ConfigurationNode) aNode = Handle(DEPLY_ConfigurationNode)::DownCast(GetNode());

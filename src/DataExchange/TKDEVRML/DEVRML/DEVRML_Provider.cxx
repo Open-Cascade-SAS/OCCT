@@ -13,6 +13,7 @@
 
 #include <DEVRML_Provider.hxx>
 
+#include <DE_ValidationUtils.hxx>
 #include <DEVRML_ConfigurationNode.hxx>
 #include <Message.hxx>
 #include <OSD_Path.hxx>
@@ -27,51 +28,15 @@ IMPLEMENT_STANDARD_RTTIEXT(DEVRML_Provider, DE_Provider)
 
 namespace
 {
-  // Static function to validate configuration node
+  // Helper function to validate configuration node and downcast
   static Handle(DEVRML_ConfigurationNode) ValidateConfigurationNode(const Handle(DE_ConfigurationNode)& theNode,
                                                                      const TCollection_AsciiString& theContext)
   {
-    if (theNode.IsNull() || !theNode->IsKind(STANDARD_TYPE(DEVRML_ConfigurationNode)))
+    if (!DE_ValidationUtils::ValidateConfigurationNode(theNode, STANDARD_TYPE(DEVRML_ConfigurationNode), theContext))
     {
-      Message::SendFail() << "Error in the DEVRML_Provider during " << theContext
-                          << ": Incorrect or empty Configuration Node";
       return Handle(DEVRML_ConfigurationNode)();
     }
     return Handle(DEVRML_ConfigurationNode)::DownCast(theNode);
-  }
-
-  // Static function to validate stream map
-  static Standard_Boolean ValidateReadStreamMap(const DE_Provider::ReadStreamMap& theStreams,
-                                                 const TCollection_AsciiString& theContext)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DEVRML_Provider stream map is empty";
-      return Standard_False;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DEVRML_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    return Standard_True;
-  }
-
-  // Static function to validate stream map for write operations
-  static Standard_Boolean ValidateWriteStreamMap(const DE_Provider::WriteStreamMap& theStreams,
-                                                  const TCollection_AsciiString& theContext)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DEVRML_Provider stream map is empty";
-      return Standard_False;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DEVRML_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    return Standard_True;
   }
 
   // Static function to handle VrmlData_Scene status errors
@@ -257,15 +222,11 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
                            const Handle(TDocStd_Document)& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
-  if (theDocument.IsNull())
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
   {
-    Message::SendFail() << "Error in the DEVRML_Provider during reading the file " << thePath
-                        << "\t: theDocument shouldn't be null";
     return false;
   }
-  
-  TCollection_AsciiString aContext = "reading the file ";
-  aContext += thePath;
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
   if (aNode.IsNull())
   {
@@ -440,16 +401,16 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  if (!ValidateReadStreamMap(theStreams, "reading stream"))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
   
-  if (theDocument.IsNull())
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-    Message::SendFail() << "Error in the DEVRML_Provider during reading stream " << aFirstKey
-                        << ": theDocument shouldn't be null";
     return Standard_False;
   }
   
@@ -471,15 +432,15 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                 theStrea
                                          const Message_ProgressRange&    theProgress)
 {
   (void)theProgress;
-  if (!ValidateWriteStreamMap(theStreams, "writing stream"))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  TCollection_AsciiString aContext = "writing stream ";
-  aContext += aFirstKey;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
     return Standard_False;
@@ -510,7 +471,8 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&           theStreams,
                                         const Message_ProgressRange&   theProgress)
 {
   (void)theProgress;
-  if (!ValidateReadStreamMap(theStreams, "reading stream"))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
@@ -518,9 +480,8 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamMap&           theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   
-  TCollection_AsciiString aContext = "reading stream ";
-  aContext += aFirstKey;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
     return Standard_False;
@@ -536,15 +497,15 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamMap&                theStream
                                          const Message_ProgressRange&   theProgress)
 {
   (void)theProgress;
-  if (!ValidateWriteStreamMap(theStreams, "writing stream"))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  TCollection_AsciiString aContext = "writing stream ";
-  aContext += aFirstKey;
-  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aContext);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
     return Standard_False;

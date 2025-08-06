@@ -13,6 +13,7 @@
 
 #include <DESTEP_Provider.hxx>
 
+#include <DE_ValidationUtils.hxx>
 #include <DESTEP_ConfigurationNode.hxx>
 #include <DESTEP_Parameters.hxx>
 #include <Interface_Static.hxx>
@@ -33,106 +34,10 @@ IMPLEMENT_STANDARD_RTTIEXT(DESTEP_Provider, DE_Provider)
 
 namespace
 {
-  //! Validates that configuration node is not null and is of correct type.
-  //! @param theNode [in] Configuration node to validate
-  //! @param thePath [in] Path/identifier for error reporting context
-  //! @return Standard_True if node is valid DESTEP_ConfigurationNode, Standard_False otherwise
-  //! @note Provides detailed error messages including actual node type for debugging
-  bool validateNode(const Handle(DE_ConfigurationNode)& theNode, const TCollection_AsciiString& thePath)
+  //! Helper function to validate configuration node
+  Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode, const TCollection_AsciiString& theContext)
   {
-    if (theNode.IsNull())
-    {
-      Message::SendFail() << "Error in the DESTEP_Provider during processing the file " << thePath
-                          << "\t: Configuration Node is null";
-      return false;
-    }
-    if (!theNode->IsKind(STANDARD_TYPE(DESTEP_ConfigurationNode)))
-    {
-      Message::SendFail() << "Error in the DESTEP_Provider during processing the file " << thePath
-                          << "\t: Configuration Node is not of type DESTEP_ConfigurationNode, got: "
-                          << theNode->DynamicType()->Name();
-      return false;
-    }
-    return true;
-  }
-
-  //! Validates that document handle is not null.
-  //! @param theDocument [in] Document handle to validate
-  //! @param thePath [in] Path/identifier for error reporting context
-  //! @return Standard_True if document is not null, Standard_False otherwise
-  bool validateDocument(const Handle(TDocStd_Document)& theDocument, const TCollection_AsciiString& thePath)
-  {
-    if (theDocument.IsNull())
-    {
-      Message::SendFail() << "Error in the DESTEP_Provider during processing the file " << thePath
-                          << "\t: theDocument shouldn't be null";
-      return false;
-    }
-    return true;
-  }
-
-  //! Validates read stream map and extracts the first stream key.
-  //! @param theStreams [in] Map of input streams to validate
-  //! @param theFirstKey [out] Key of the first stream (can be empty - this is valid)
-  //! @return Standard_True if validation successful, Standard_False otherwise
-  //! @note If multiple streams provided, only the first one is used (with warning)
-  bool validateStreams(const DE_Provider::ReadStreamMap& theStreams, TCollection_AsciiString& theFirstKey)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DESTEP_Provider stream map is empty";
-      return false;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DESTEP_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    theFirstKey = theStreams.FindKey(1);
-    
-    // Stream key can be empty - this is valid
-    // Validate stream state
-    const Standard_IStream& aStream = theStreams(1);
-    if (aStream.fail() || aStream.bad())
-    {
-      TCollection_AsciiString aKeyInfo = theFirstKey.IsEmpty() ? "<empty key>" : theFirstKey;
-      Message::SendFail() << "Error: DESTEP_Provider input stream '" << aKeyInfo << "' is in invalid state";
-      return false;
-    }
-    
-    return true;
-  }
-
-  //! Validates write stream map and extracts the first stream key.
-  //! @param theStreams [in] Map of output streams to validate
-  //! @param theFirstKey [out] Key of the first stream (can be empty - this is valid)
-  //! @return Standard_True if validation successful, Standard_False otherwise
-  //! @note If multiple streams provided, only the first one is used (with warning)
-  bool validateStreams(const DE_Provider::WriteStreamMap& theStreams, TCollection_AsciiString& theFirstKey)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DESTEP_Provider stream map is empty";
-      return false;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DESTEP_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    theFirstKey = theStreams.FindKey(1);
-    
-    // Stream key can be empty - this is valid
-    // Validate stream state
-    const Standard_OStream& aStream = theStreams(1);
-    if (aStream.fail() || aStream.bad())
-    {
-      TCollection_AsciiString aKeyInfo = theFirstKey.IsEmpty() ? "<empty key>" : theFirstKey;
-      Message::SendFail() << "Error: DESTEP_Provider output stream '" << aKeyInfo << "' is in invalid state";
-      return false;
-    }
-    
-    return true;
+    return DE_ValidationUtils::ValidateConfigurationNode(theNode, STANDARD_TYPE(DESTEP_ConfigurationNode), theContext);
   }
 
   //! Configures STEPCAFControl_Reader for document operations.
@@ -344,7 +249,8 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
                            Handle(XSControl_WorkSession)&  theWS,
                            const Message_ProgressRange&    theProgress)
 {
-  if (!validateDocument(theDocument, thePath) || !validateNode(GetNode(), thePath))
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext) || !validateNode(GetNode(), aContext))
   {
     return false;
   }
@@ -602,8 +508,15 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!validateStreams(theStreams, aFirstKey) || !validateDocument(theDocument, aFirstKey) || !validateNode(GetNode(), aFirstKey))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  {
+    return Standard_False;
+  }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
@@ -641,8 +554,15 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
                                          Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!validateStreams(theStreams, aFirstKey) || !validateDocument(theDocument, aFirstKey) || !validateNode(GetNode(), aFirstKey))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  {
+    return Standard_False;
+  }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
@@ -716,8 +636,15 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!validateStreams(theStreams, aFirstKey) || !validateNode(GetNode(), aFirstKey))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
+  {
+    return Standard_False;
+  }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
@@ -762,8 +689,15 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
                                          Handle(XSControl_WorkSession)& theWS,
                                          const Message_ProgressRange&   theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!validateStreams(theStreams, aFirstKey) || !validateNode(GetNode(), aFirstKey))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
+  {
+    return Standard_False;
+  }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }

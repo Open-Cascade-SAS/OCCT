@@ -14,6 +14,7 @@
 #include <DESTL_Provider.hxx>
 
 #include <BRep_Builder.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <DESTL_ConfigurationNode.hxx>
 #include <Message.hxx>
 #include <NCollection_Vector.hxx>
@@ -70,10 +71,9 @@ bool DESTL_Provider::Read(const TCollection_AsciiString&  thePath,
                           const Handle(TDocStd_Document)& theDocument,
                           const Message_ProgressRange&    theProgress)
 {
-  if (theDocument.IsNull())
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
   {
-    Message::SendFail() << "Error in the DESTL_Provider during reading the file " << thePath
-                        << "\t: theDocument shouldn't be null";
     return false;
   }
   TopoDS_Shape aShape;
@@ -105,12 +105,8 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
   }
 
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  if (aNode->GlobalParameters.LengthUnit != 1.0)
-  {
-    Message::SendWarning()
-      << "Warning in the DESTL_Provider during writing the file " << thePath
-      << ": Target Units were changed, but current format doesn't support scaling";
-  }
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   TopoDS_Shape aShape;
   if (aLabels.Length() == 1)
@@ -218,20 +214,15 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";
     
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DESTL_ConfigurationNode), aContext))
   {
-    Message::SendFail() << "Error in the DESTL_Provider during writing the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  if (aNode->GlobalParameters.LengthUnit != 1.0)
-  {
-    Message::SendWarning()
-      << "Warning in the DESTL_Provider during writing the file " << thePath
-      << "\t: Target Units for writing were changed, but current format doesn't support scaling";
-  }
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;
@@ -294,23 +285,16 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStream
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
-  // Validate stream map
-  if (theStreams.IsEmpty())
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
-    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
     return Standard_False;
   }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
-                           << " streams for reading, using only the first one";
-  }
   
-  if (theDocument.IsNull())
+  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-    Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
-                        << ": theDocument shouldn't be null";
     return Standard_False;
   }
   
@@ -331,16 +315,10 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  // Validate stream map
-  if (theStreams.IsEmpty())
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
-    Message::SendFail() << "Error: DESTL_Provider stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
-                           << " streams for writing, using only the first one";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -358,12 +336,8 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
   }
 
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  if (aNode->GlobalParameters.LengthUnit != 1.0)
-  {
-    Message::SendWarning()
-      << "Warning in the DESTL_Provider during writing stream " << aFirstKey
-      << ": Target Units were changed, but current format doesn't support scaling";
-  }
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing stream ") + aFirstKey;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   TopoDS_Shape aShape;
   if (aLabels.Length() == 1)
@@ -494,12 +468,8 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&               theStreams,
   }
   
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  if (aNode->GlobalParameters.LengthUnit != 1.0)
-  {
-    Message::SendWarning()
-      << "Warning in the DESTL_Provider during writing stream " << aFirstKey
-      << ": Target Units for writing were changed, but current format doesn't support scaling";
-  }
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing stream ") + aFirstKey;
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;

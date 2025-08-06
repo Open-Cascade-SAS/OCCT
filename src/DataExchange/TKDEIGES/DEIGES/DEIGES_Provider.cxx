@@ -13,6 +13,7 @@
 
 #include <DEIGES_Provider.hxx>
 
+#include <DE_ValidationUtils.hxx>
 #include <DEIGES_ConfigurationNode.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IGESCAFControl_Writer.hxx>
@@ -31,35 +32,9 @@ namespace
 {
   //! Helper function to validate configuration node
   Standard_Boolean validateConfigurationNode(const Handle(DE_ConfigurationNode)& theNode,
-                                              const TCollection_AsciiString& thePath,
-                                              const TCollection_AsciiString& theOperation)
+                                              const TCollection_AsciiString& theContext)
   {
-    if (!theNode->IsKind(STANDARD_TYPE(DEIGES_ConfigurationNode)))
-    {
-      Message::SendFail() << "Error in the DEIGES_Provider during " << theOperation 
-                          << " the file " << thePath
-                          << "\t: Incorrect or empty Configuration Node";
-      return Standard_False;
-    }
-    return Standard_True;
-  }
-
-  //! Helper function to validate stream maps and warn about multiple streams
-  template<typename StreamMapType>
-  Standard_Boolean validateStreamMap(const StreamMapType& theStreams)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DEIGES_Provider stream map is empty";
-      return Standard_False;
-    }
-    if (theStreams.Size() > 1)
-    {
-      const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-      Message::SendWarning() << "Warning: DEIGES_Provider received " << theStreams.Size()
-                             << " streams for " << aFirstKey << ", using only the first one";
-    }
-    return Standard_True;
+    return DE_ValidationUtils::ValidateConfigurationNode(theNode, STANDARD_TYPE(DEIGES_ConfigurationNode), theContext);
   }
 
   //! Helper function to configure IGES reader parameters
@@ -300,7 +275,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&  thePath,
     return false;
   }
   
-  if (!validateConfigurationNode(GetNode(), thePath, "reading"))
+  if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("reading the file ") + thePath))
   {
     return false;
   }
@@ -344,7 +319,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&  thePath,
                             Handle(XSControl_WorkSession)&  theWS,
                             const Message_ProgressRange&    theProgress)
 {
-  if (!validateConfigurationNode(GetNode(), thePath, "writing"))
+  if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("writing the file ") + thePath))
   {
     return false;
   }
@@ -402,7 +377,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
                            const Message_ProgressRange&   theProgress)
 {
   (void)theProgress;
-  if (!validateConfigurationNode(GetNode(), thePath, "reading"))
+  if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("reading the file ") + thePath))
   {
     return false;
   }
@@ -442,7 +417,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
 {
   (void)theWS;
   (void)theProgress;
-  if (!validateConfigurationNode(GetNode(), thePath, "writing"))
+  if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("writing the file ") + thePath))
   {
     return false;
   }
@@ -512,18 +487,18 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&            theStreams,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
 {
-  if (!validateStreamMap(theStreams))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   
-  if (theDocument.IsNull())
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
-                        << ". Document is null";
     return Standard_False;
   }
   personizeWS(theWS);
@@ -571,7 +546,8 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
                                          Handle(XSControl_WorkSession)&  theWS,
                                          const Message_ProgressRange&    theProgress)
 {
-  if (!validateStreamMap(theStreams))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
@@ -579,10 +555,9 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                 theStrea
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   
-  if (theDocument.IsNull())
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
-    Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
-                        << ". Document is null";
     return Standard_False;
   }
   personizeWS(theWS);
@@ -624,7 +599,8 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamMap&           theStreams,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   /*theProgress*/)
 {
-  if (!validateStreamMap(theStreams))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
@@ -675,7 +651,8 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamMap&                theStream
                                          Handle(XSControl_WorkSession)& theWS,
                                          const Message_ProgressRange&   /*theProgress*/)
 {
-  if (!validateStreamMap(theStreams))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }

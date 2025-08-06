@@ -14,7 +14,10 @@
 #include <DE_ValidationUtils.hxx>
 
 #include <Message.hxx>
-#include <filesystem>
+#include <OSD_FileSystem.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Protection.hxx>
 #include <fstream>
 
 //=================================================================================================
@@ -69,10 +72,11 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
 
   try
   {
-    std::filesystem::path aFilePath(thePath.ToCString());
+    OSD_Path aOSDPath(thePath);
+    OSD_File aFile(aOSDPath);
     
     // Check if file exists
-    if (!std::filesystem::exists(aFilePath))
+    if (!aFile.Exists())
     {
       if (theIsVerbose)
       {
@@ -82,19 +86,8 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
       return Standard_False;
     }
 
-    // Check if it's a regular file
-    if (!std::filesystem::is_regular_file(aFilePath))
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext 
-                            << ": Path '" << thePath << "' is not a regular file";
-      }
-      return Standard_False;
-    }
-
     // Try to open for reading to verify permissions
-    std::ifstream aTestFile(aFilePath);
+    std::ifstream aTestFile(thePath.ToCString());
     if (!aTestFile.is_open() || !aTestFile.good())
     {
       if (theIsVerbose)
@@ -137,39 +130,11 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
 
   try
   {
-    std::filesystem::path aFilePath(thePath.ToCString());
+    OSD_Path aOSDPath(thePath);
+    OSD_File aFile(aOSDPath);
     
-    // If file exists, check if it's writable
-    if (std::filesystem::exists(aFilePath))
-    {
-      // Check if it's a regular file
-      if (!std::filesystem::is_regular_file(aFilePath))
-      {
-        if (theIsVerbose)
-        {
-          Message::SendFail() << "Error during " << theContext 
-                              << ": Path '" << thePath << "' exists but is not a regular file";
-        }
-        return Standard_False;
-      }
-    }
-    else
-    {
-      // File doesn't exist, check if parent directory exists and is writable
-      std::filesystem::path aParentPath = aFilePath.parent_path();
-      if (!aParentPath.empty() && !std::filesystem::exists(aParentPath))
-      {
-        if (theIsVerbose)
-        {
-          Message::SendFail() << "Error during " << theContext 
-                              << ": Parent directory '" << aParentPath.string().c_str() << "' does not exist";
-        }
-        return Standard_False;
-      }
-    }
-
     // Try to open for writing to verify permissions
-    std::ofstream aTestFile(aFilePath, std::ios::out | std::ios::app);
+    std::ofstream aTestFile(thePath.ToCString(), std::ios::out | std::ios::app);
     if (!aTestFile.is_open() || !aTestFile.good())
     {
       if (theIsVerbose)
@@ -327,5 +292,22 @@ Standard_Boolean DE_ValidationUtils::ValidateDocument(
     return Standard_False;
   }
 
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_ValidationUtils::WarnLengthUnitNotSupported(
+  const Standard_Real theLengthUnit,
+  const TCollection_AsciiString& theContext,
+  const Standard_Boolean theIsVerbose)
+{
+  if (theIsVerbose && theLengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning during " << theContext 
+                           << ": Format doesn't support custom length unit scaling (unit: " 
+                           << theLengthUnit << ")";
+  }
+  
   return Standard_True;
 }

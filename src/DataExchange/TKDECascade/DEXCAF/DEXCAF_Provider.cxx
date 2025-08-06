@@ -17,6 +17,7 @@
 #include <BinLDrivers.hxx>
 #include <BinTObjDrivers.hxx>
 #include <BinXCAFDrivers.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <StdDrivers.hxx>
 #include <StdLDrivers.hxx>
 #include <XmlDrivers.hxx>
@@ -35,63 +36,15 @@ IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_Provider, DE_Provider)
 
 namespace
 {
-  Standard_Boolean ValidateStreamMap(const DEXCAF_Provider::ReadStreamMap& theStreams,
-                                      TCollection_AsciiString& theFirstKey)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
-      return Standard_False;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    theFirstKey = theStreams.FindKey(1);
-    return Standard_True;
-  }
-
-  Standard_Boolean ValidateStreamMap(const DEXCAF_Provider::WriteStreamMap& theStreams,
-                                      TCollection_AsciiString& theFirstKey)
-  {
-    if (theStreams.IsEmpty())
-    {
-      Message::SendFail() << "Error: DEXCAF_Provider stream map is empty";
-      return Standard_False;
-    }
-    if (theStreams.Size() > 1)
-    {
-      Message::SendWarning() << "Warning: DEXCAF_Provider received " << theStreams.Size()
-                             << " streams, using only the first one";
-    }
-    theFirstKey = theStreams.FindKey(1);
-    return Standard_True;
-  }
-
   Standard_Boolean ValidateConfigurationNode(const Handle(DE_ConfigurationNode)& theNode,
                                               const TCollection_AsciiString& theContext,
                                               Handle(DEXCAF_ConfigurationNode)& theDowncastNode)
   {
-    if (theNode.IsNull() || !theNode->IsKind(STANDARD_TYPE(DEXCAF_ConfigurationNode)))
+    if (!DE_ValidationUtils::ValidateConfigurationNode(theNode, STANDARD_TYPE(DEXCAF_ConfigurationNode), theContext))
     {
-      Message::SendFail() << "Error in the DEXCAF_Provider during " << theContext
-                          << ": Incorrect or empty Configuration Node";
       return Standard_False;
     }
     theDowncastNode = Handle(DEXCAF_ConfigurationNode)::DownCast(theNode);
-    return Standard_True;
-  }
-
-  Standard_Boolean ValidateDocument(const Handle(TDocStd_Document)& theDocument,
-                                     const TCollection_AsciiString& theContext)
-  {
-    if (theDocument.IsNull())
-    {
-      Message::SendFail() << "Error in the DEXCAF_Provider during " << theContext
-                          << ": theDocument shouldn't be null";
-      return Standard_False;
-    }
     return Standard_True;
   }
 
@@ -224,12 +177,7 @@ namespace
   void CheckLengthUnitWarning(const Handle(DEXCAF_ConfigurationNode)& theNode,
                               const TCollection_AsciiString& theContext)
   {
-    if (theNode->GlobalParameters.LengthUnit != 1.0)
-    {
-      Message::SendWarning()
-        << "Warning in the DEXCAF_Provider during " << theContext
-        << ": Target Units for writing were changed, but current format doesn't support scaling";
-    }
+    DE_ValidationUtils::WarnLengthUnitNotSupported(theNode->GlobalParameters.LengthUnit, theContext);
   }
 }
 
@@ -272,7 +220,7 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
                            const Handle(TDocStd_Document)& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
-  if (!ValidateDocument(theDocument, TCollection_AsciiString("reading the file ") + thePath))
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, TCollection_AsciiString("reading the file ") + thePath))
   {
     return false;
   }
@@ -439,19 +387,21 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&            theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!ValidateStreamMap(theStreams, aFirstKey))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
   
-  if (!ValidateDocument(theDocument, TCollection_AsciiString("reading stream ") + aFirstKey))
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
     return Standard_False;
   }
   
   Handle(DEXCAF_ConfigurationNode) aNode;
-  if (!ValidateConfigurationNode(GetNode(), TCollection_AsciiString("reading stream ") + aFirstKey, aNode))
+  if (!ValidateConfigurationNode(GetNode(), aFullContext, aNode))
   {
     return Standard_False;
   }
@@ -480,33 +430,38 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                 theStrea
                                          const Handle(TDocStd_Document)& theDocument,
                                          const Message_ProgressRange&    theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!ValidateStreamMap(theStreams, aFirstKey))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
   
   Handle(TDocStd_Application) anApp;
   SetupApplication(anApp, Standard_False);
   
   Handle(DEXCAF_ConfigurationNode) aNode = Handle(DEXCAF_ConfigurationNode)::DownCast(GetNode());
-  CheckLengthUnitWarning(aNode, TCollection_AsciiString("writing stream ") + aFirstKey);
+  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  CheckLengthUnitWarning(aNode, aFullContext);
   
   Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   PCDM_StoreStatus aStatus = anApp->SaveAs(theDocument, aStream, theProgress);
   
-  return HandlePCDMStatus(aStatus, theDocument, TCollection_AsciiString("writing stream ") + aFirstKey);
+  return HandlePCDMStatus(aStatus, theDocument, aFullContext);
 }
 
 Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&           theStreams,
                                         TopoDS_Shape&                  theShape,
                                         const Message_ProgressRange&   theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!ValidateStreamMap(theStreams, aFirstKey))
+  TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
+  
+  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
   
   Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinXCAF");
   if (!Read(theStreams, aDoc, theProgress))
@@ -514,15 +469,15 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamMap&           theStreams,
     return Standard_False;
   }
   
-  return ExtractShapeFromDocument(aDoc, TCollection_AsciiString("reading stream ") + aFirstKey, theShape);
+  return ExtractShapeFromDocument(aDoc, aContext + " " + aFirstKey, theShape);
 }
 
 Standard_Boolean DEXCAF_Provider::Write(WriteStreamMap&                theStreams,
                                          const TopoDS_Shape&            theShape,
                                          const Message_ProgressRange&   theProgress)
 {
-  TCollection_AsciiString aFirstKey;
-  if (!ValidateStreamMap(theStreams, aFirstKey))
+  TCollection_AsciiString aContext = "writing stream";
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
