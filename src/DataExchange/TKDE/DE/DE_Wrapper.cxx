@@ -499,8 +499,24 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
                                           const Standard_Boolean         theToImport,
                                           Handle(DE_Provider)&           theProvider) const
 {
-  Handle(NCollection_Buffer) aBuffer;
   if (theToImport)
+  {
+    return FindReadProvider(thePath, Standard_True, theProvider);
+  }
+  else
+  {
+    return FindWriteProvider(thePath, theProvider);
+  }
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                              const Standard_Boolean         theCheckContent,
+                                              Handle(DE_Provider)&           theProvider) const
+{
+  Handle(NCollection_Buffer) aBuffer;
+  if (theCheckContent)
   {
     const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream> aStream =
@@ -522,10 +538,78 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
     {
       const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
       if (aNode->IsEnabled()
-          && ((theToImport && aNode->IsImportSupported())
-              || (!theToImport && aNode->IsExportSupported()))
-          && (aNode->CheckExtension(anExtr) || (theToImport && aNode->CheckContent(aBuffer)))
-          && aNode->UpdateLoad(theToImport, myKeepUpdates))
+          && aNode->IsImportSupported()
+          && (aNode->CheckExtension(anExtr) || (theCheckContent && aNode->CheckContent(aBuffer)))
+          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+      {
+        theProvider             = aNode->BuildProvider();
+        aNode->GlobalParameters = GlobalParameters;
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                              std::istream&                  theStream,
+                                              Handle(DE_Provider)&           theProvider) const
+{
+  Handle(NCollection_Buffer) aBuffer;
+  aBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
+  
+  // Save current stream position
+  std::streampos aOriginalPos = theStream.tellg();
+  
+  theStream.read((char*)aBuffer->ChangeData(), 2048);
+  aBuffer->ChangeData()[2047] = '\0';
+  
+  // Reset stream to original position for subsequent reads
+  theStream.seekg(aOriginalPos);
+  
+  OSD_Path                      aPath(thePath);
+  const TCollection_AsciiString anExtr = aPath.Extension();
+  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+       aFormatIter.Next())
+  {
+    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+         aVendorIter.Next())
+    {
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      if (aNode->IsEnabled()
+          && aNode->IsImportSupported()
+          && (aNode->CheckExtension(anExtr) || aNode->CheckContent(aBuffer))
+          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+      {
+        theProvider             = aNode->BuildProvider();
+        aNode->GlobalParameters = GlobalParameters;
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindWriteProvider(const TCollection_AsciiString& thePath,
+                                               Handle(DE_Provider)&           theProvider) const
+{
+  OSD_Path                      aPath(thePath);
+  const TCollection_AsciiString anExtr = aPath.Extension();
+  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+       aFormatIter.Next())
+  {
+    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+         aVendorIter.Next())
+    {
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      if (aNode->IsEnabled()
+          && aNode->IsExportSupported()
+          && aNode->CheckExtension(anExtr)
+          && aNode->UpdateLoad(Standard_False, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
@@ -594,7 +678,8 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  Standard_IStream& aFirstStream = theStreams.ChangeFromIndex(1);
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -631,7 +716,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -667,7 +752,8 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  Standard_IStream& aFirstStream = theStreams.ChangeFromIndex(1);
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -703,7 +789,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -740,7 +826,8 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  Standard_IStream& aFirstStream = theStreams.ChangeFromIndex(1);
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -777,7 +864,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -813,7 +900,8 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_True, aProvider))
+  Standard_IStream& aFirstStream = theStreams.ChangeFromIndex(1);
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
@@ -849,7 +937,7 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
   
   Handle(DE_Provider) aProvider;
-  if (!FindProvider(aFirstKey, Standard_False, aProvider))
+  if (!FindWriteProvider(aFirstKey, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
     return Standard_False;
