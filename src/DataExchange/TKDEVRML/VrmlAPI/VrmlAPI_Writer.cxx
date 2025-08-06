@@ -371,7 +371,7 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,
   VrmlConverter_TypeOfCamera      Camera = VrmlConverter_PerspectiveCamera;
   Handle(VrmlConverter_Projector) projector =
     new VrmlConverter_Projector(Shapes, Focus, DX, DY, DZ, XUp, YUp, ZUp, Camera, Light);
-  
+
   Vrml::VrmlHeaderWriter(theOStream);
   if (myRepresentation == VrmlAPI_BothRepresentation)
     Vrml::CommentWriter(
@@ -383,17 +383,17 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,
   if (myRepresentation == VrmlAPI_WireFrameRepresentation)
     Vrml::CommentWriter(" This file contents only Wire Frame representation of selected Shape ",
                         theOStream);
-  
+
   Vrml_Separator S1;
   S1.Print(theOStream);
   projector->Add(theOStream);
-  
+
   Light  = VrmlConverter_DirectionLight;
   Camera = VrmlConverter_OrthographicCamera;
   Handle(VrmlConverter_Projector) projector1 =
     new VrmlConverter_Projector(Shapes, Focus, DX, DY, DZ, XUp, YUp, ZUp, Camera, Light);
   projector1->Add(theOStream);
-  
+
   Vrml_Separator S2;
   S2.Print(theOStream);
   if ((myRepresentation == VrmlAPI_ShadedRepresentation

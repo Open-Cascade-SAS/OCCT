@@ -257,13 +257,13 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
 
   TCollection_AsciiString aPath;
   thePath.SystemName(aPath);
-  
+
   std::ofstream aStream(aPath.ToCString(), std::ios::binary);
   if (!aStream.is_open())
   {
     return Standard_False;
   }
-  
+
   return WriteBinary(theMesh, aStream, theProgress);
 }
 
@@ -280,13 +280,13 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
 
   TCollection_AsciiString aPath;
   thePath.SystemName(aPath);
-  
+
   std::ofstream aStream(aPath.ToCString());
   if (!aStream.is_open())
   {
     return Standard_False;
   }
-  
+
   return WriteAscii(theMesh, aStream, theProgress);
 }
 
@@ -310,8 +310,8 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
 
   const Standard_Integer NBTriangles = theMesh->NbTriangles();
   Message_ProgressScope  aPS(theProgress, "Triangles", NBTriangles);
-  Standard_Integer anElem[3] = {0, 0, 0};
-  
+  Standard_Integer       anElem[3] = {0, 0, 0};
+
   for (Standard_Integer aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
   {
     const Poly_Triangle aTriangle = theMesh->Triangle(aTriIter);
@@ -330,21 +330,21 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
     {
       aVNorm.SetCoord(0.0, 0.0, 0.0);
     }
-    
-    theStream << " facet normal " << std::scientific << std::setprecision(5)
-              << aVNorm.X() << " " << aVNorm.Y() << " " << aVNorm.Z() << "\n"
+
+    theStream << " facet normal " << std::scientific << std::setprecision(5) << aVNorm.X() << " "
+              << aVNorm.Y() << " " << aVNorm.Z() << "\n"
               << "   outer loop\n"
               << "     vertex " << aP1.X() << " " << aP1.Y() << " " << aP1.Z() << "\n"
               << "     vertex " << aP2.X() << " " << aP2.Y() << " " << aP2.Z() << "\n"
               << "     vertex " << aP3.X() << " " << aP3.Y() << " " << aP3.Z() << "\n"
               << "   endloop\n"
               << " endfacet\n";
-              
+
     if (theStream.fail())
     {
       return Standard_False;
     }
-    
+
     // update progress only per 1k triangles
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
@@ -353,7 +353,7 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
       aPS.Next(IND_THRESHOLD);
     }
   }
-  
+
   theStream << "endsolid\n";
   return !theStream.fail();
 }
@@ -368,28 +368,28 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
   {
     return Standard_False;
   }
-  
+
   char aHeader[80] = "STL Exported by Open CASCADE Technology [dev.opencascade.org]";
   theStream.write(aHeader, 80);
   if (theStream.fail())
   {
     return Standard_False;
   }
-  
-  const Standard_Integer aNBTriangles = theMesh->NbTriangles();
-  Message_ProgressScope  aPS(theProgress, "Triangles", aNBTriangles);
+
+  const Standard_Integer                 aNBTriangles = theMesh->NbTriangles();
+  Message_ProgressScope                  aPS(theProgress, "Triangles", aNBTriangles);
   const Standard_Size                    aNbChunkTriangles = 4096;
   const Standard_Size                    aChunkSize = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
   NCollection_Array1<Standard_Character> aData(1, aChunkSize);
   Standard_Character*                    aDataChunk = &aData.ChangeFirst();
-  Standard_Character aConv[4];
+  Standard_Character                     aConv[4];
   convertInteger(aNBTriangles, aConv);
   theStream.write(aConv, 4);
   if (theStream.fail())
   {
     return Standard_False;
   }
-  
+
   Standard_Size aByteCount = 0;
   for (Standard_Integer aTriIter = 1; aTriIter <= aNBTriangles; ++aTriIter)
   {
@@ -399,9 +399,9 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
     const gp_Pnt aP1 = theMesh->Node(id[0]);
     const gp_Pnt aP2 = theMesh->Node(id[1]);
     const gp_Pnt aP3 = theMesh->Node(id[2]);
-    gp_Vec aVec1(aP1, aP2);
-    gp_Vec aVec2(aP1, aP3);
-    gp_Vec aVNorm = aVec1.Crossed(aVec2);
+    gp_Vec       aVec1(aP1, aP2);
+    gp_Vec       aVec2(aP1, aP3);
+    gp_Vec       aVNorm = aVec1.Crossed(aVec2);
     if (aVNorm.SquareMagnitude() > gp::Resolution())
     {
       aVNorm.Normalize();
@@ -434,7 +434,7 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
     aByteCount += 4;
     convertDouble(aP3.Z(), &aDataChunk[aByteCount]);
     aByteCount += 4;
-    aDataChunk[aByteCount] = 0;
+    aDataChunk[aByteCount]     = 0;
     aDataChunk[aByteCount + 1] = 0;
     aByteCount += 2;
 
@@ -494,7 +494,7 @@ Handle(Poly_Triangulation) RWStl::ReadAsciiStream(Standard_IStream&            t
 {
   Reader aReader;
   aReader.SetMergeAngle(theMergeAngle);
-  
+
   // get length of stream to feed progress indicator
   theStream.seekg(0, theStream.end);
   std::streampos theEnd = theStream.tellg();
@@ -516,13 +516,13 @@ Handle(Poly_Triangulation) RWStl::ReadStream(Standard_IStream&            theStr
 {
   // Try to detect ASCII vs Binary format by peeking at the first few bytes
   std::streampos originalPos = theStream.tellg();
-  char header[6];
+  char           header[6];
   theStream.read(header, 5);
   header[5] = '\0';
   theStream.seekg(originalPos);
-  
+
   bool isAscii = (strncmp(header, "solid", 5) == 0);
-  
+
   if (isAscii)
   {
     return RWStl::ReadAsciiStream(theStream, theMergeAngle, theProgress);

@@ -34,86 +34,89 @@ IMPLEMENT_STANDARD_RTTIEXT(DESTEP_Provider, DE_Provider)
 
 namespace
 {
-  //! Helper function to validate configuration node
-  Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode, const TCollection_AsciiString& theContext)
-  {
-    return DE_ValidationUtils::ValidateConfigurationNode(theNode, STANDARD_TYPE(DESTEP_ConfigurationNode), theContext);
-  }
-
-  //! Configures STEPCAFControl_Reader for document operations.
-  //! @param theReader [in,out] STEP CAF reader to configure
-  //! @param theNode [in] Configuration node containing read parameters
-  //! @param theDocument [in] Target document for length unit setup
-  //! @param theWS [in,out] Work session to initialize reader with
-  //! @note Sets up all read parameters including colors, names, layers, props, metadata
-  void setupDocumentReader(STEPCAFControl_Reader& theReader, 
-                          const Handle(DESTEP_ConfigurationNode)& theNode,
-                          const Handle(TDocStd_Document)& theDocument,
-                          Handle(XSControl_WorkSession)& theWS)
-  {
-    theReader.Init(theWS);
-    theReader.SetColorMode(theNode->InternalParameters.ReadColor);
-    theReader.SetNameMode(theNode->InternalParameters.ReadName);
-    theReader.SetLayerMode(theNode->InternalParameters.ReadLayer);
-    theReader.SetPropsMode(theNode->InternalParameters.ReadProps);
-    theReader.SetMetaMode(theNode->InternalParameters.ReadMetadata);
-    theReader.SetProductMetaMode(theNode->InternalParameters.ReadProductMetadata);
-    theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
-    
-    XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
-                                        theNode->GlobalParameters.LengthUnit,
-                                        UnitsMethods_LengthUnit_Millimeter);
-  }
-
-  //! Configures STEPCAFControl_Reader with specified parameters.
-  //! @param theReader [in,out] STEP CAF reader to configure
-  //! @param theParams [in] Parameters containing read settings
-  //! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
-  void configureSTEPCAFReader(STEPCAFControl_Reader& theReader, const DESTEP_Parameters& theParams)
-  {
-    theReader.SetColorMode(theParams.ReadColor);
-    theReader.SetNameMode(theParams.ReadName);
-    theReader.SetLayerMode(theParams.ReadLayer);
-    theReader.SetPropsMode(theParams.ReadProps);
-    theReader.SetMetaMode(theParams.ReadMetadata);
-    theReader.SetProductMetaMode(theParams.ReadProductMetadata);
-    theReader.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
-  }
-
-  //! Configures STEPCAFControl_Writer with specified parameters.
-  //! @param theWriter [in,out] STEP CAF writer to configure
-  //! @param theParams [in] Parameters containing write settings
-  //! @note Sets up colors, names, layers, properties, materials, and shape fix parameters
-  void configureSTEPCAFWriter(STEPCAFControl_Writer& theWriter, const DESTEP_Parameters& theParams)
-  {
-    theWriter.SetColorMode(theParams.WriteColor);
-    theWriter.SetNameMode(theParams.WriteName);
-    theWriter.SetLayerMode(theParams.WriteLayer);
-    theWriter.SetPropsMode(theParams.WriteProps);
-    theWriter.SetMaterialMode(theParams.WriteMaterial);
-    theWriter.SetVisualMaterialMode(theParams.WriteVisMaterial);
-    theWriter.SetCleanDuplicates(theParams.CleanDuplicates);
-    theWriter.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
-  }
-
-
-  //! Checks if output stream is in writable state.
-  //! @param theStream [in] Output stream to check
-  //! @param theKey [in] Stream identifier for error reporting
-  //! @return Standard_True if stream is writable, Standard_False otherwise
-  bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
-  {
-    if (!theStream.good())
-    {
-      TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
-      Message::SendFail() << "Error: Output stream '" << aKeyInfo << "' is not in good state for writing";
-      return false;
-    }
-    
-    return true;
-  }
-
+//! Helper function to validate configuration node
+Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode,
+                              const TCollection_AsciiString&      theContext)
+{
+  return DE_ValidationUtils::ValidateConfigurationNode(theNode,
+                                                       STANDARD_TYPE(DESTEP_ConfigurationNode),
+                                                       theContext);
 }
+
+//! Configures STEPCAFControl_Reader for document operations.
+//! @param theReader [in,out] STEP CAF reader to configure
+//! @param theNode [in] Configuration node containing read parameters
+//! @param theDocument [in] Target document for length unit setup
+//! @param theWS [in,out] Work session to initialize reader with
+//! @note Sets up all read parameters including colors, names, layers, props, metadata
+void setupDocumentReader(STEPCAFControl_Reader&                  theReader,
+                         const Handle(DESTEP_ConfigurationNode)& theNode,
+                         const Handle(TDocStd_Document)&         theDocument,
+                         Handle(XSControl_WorkSession)&          theWS)
+{
+  theReader.Init(theWS);
+  theReader.SetColorMode(theNode->InternalParameters.ReadColor);
+  theReader.SetNameMode(theNode->InternalParameters.ReadName);
+  theReader.SetLayerMode(theNode->InternalParameters.ReadLayer);
+  theReader.SetPropsMode(theNode->InternalParameters.ReadProps);
+  theReader.SetMetaMode(theNode->InternalParameters.ReadMetadata);
+  theReader.SetProductMetaMode(theNode->InternalParameters.ReadProductMetadata);
+  theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
+
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      theNode->GlobalParameters.LengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
+}
+
+//! Configures STEPCAFControl_Reader with specified parameters.
+//! @param theReader [in,out] STEP CAF reader to configure
+//! @param theParams [in] Parameters containing read settings
+//! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
+void configureSTEPCAFReader(STEPCAFControl_Reader& theReader, const DESTEP_Parameters& theParams)
+{
+  theReader.SetColorMode(theParams.ReadColor);
+  theReader.SetNameMode(theParams.ReadName);
+  theReader.SetLayerMode(theParams.ReadLayer);
+  theReader.SetPropsMode(theParams.ReadProps);
+  theReader.SetMetaMode(theParams.ReadMetadata);
+  theReader.SetProductMetaMode(theParams.ReadProductMetadata);
+  theReader.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
+}
+
+//! Configures STEPCAFControl_Writer with specified parameters.
+//! @param theWriter [in,out] STEP CAF writer to configure
+//! @param theParams [in] Parameters containing write settings
+//! @note Sets up colors, names, layers, properties, materials, and shape fix parameters
+void configureSTEPCAFWriter(STEPCAFControl_Writer& theWriter, const DESTEP_Parameters& theParams)
+{
+  theWriter.SetColorMode(theParams.WriteColor);
+  theWriter.SetNameMode(theParams.WriteName);
+  theWriter.SetLayerMode(theParams.WriteLayer);
+  theWriter.SetPropsMode(theParams.WriteProps);
+  theWriter.SetMaterialMode(theParams.WriteMaterial);
+  theWriter.SetVisualMaterialMode(theParams.WriteVisMaterial);
+  theWriter.SetCleanDuplicates(theParams.CleanDuplicates);
+  theWriter.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
+}
+
+//! Checks if output stream is in writable state.
+//! @param theStream [in] Output stream to check
+//! @param theKey [in] Stream identifier for error reporting
+//! @return Standard_True if stream is writable, Standard_False otherwise
+bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
+{
+  if (!theStream.good())
+  {
+    TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
+    Message::SendFail() << "Error: Output stream '" << aKeyInfo
+                        << "' is not in good state for writing";
+    return false;
+  }
+
+  return true;
+}
+
+} // namespace
 
 //=================================================================================================
 
@@ -134,21 +137,22 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
-  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext) || !validateNode(GetNode(), aContext))
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
+      || !validateNode(GetNode(), aContext))
   {
     return false;
   }
-  
+
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
-  
+
   STEPCAFControl_Reader aReader;
   setupDocumentReader(aReader, aNode, theDocument, theWS);
-  
+
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
   DESTEP_Parameters     aParams   = aNode->InternalParameters;
-  aReadStat = aReader.ReadFile(thePath.ToCString(), aParams);
-  
+  aReadStat                       = aReader.ReadFile(thePath.ToCString(), aParams);
+
   if (aReadStat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
@@ -387,80 +391,83 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        Handle(XSControl_WorkSession)&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTEP_Provider::Read(ReadStreamMap&                  theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       Handle(XSControl_WorkSession)&  theWS,
+                                       const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+
+  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
-  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext) ||
-      !DE_ValidationUtils::ValidateReadStreamMap(theStreams, aFullContext))
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
+      || !validateNode(GetNode(), aFullContext)
+      || !DE_ValidationUtils::ValidateReadStreamMap(theStreams, aFullContext))
   {
     return Standard_False;
   }
-  
+
   Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
-  
+
   personizeWS(theWS);
-  
+
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  STEPCAFControl_Reader aReader(theWS, Standard_False);
+  STEPCAFControl_Reader            aReader(theWS, Standard_False);
   configureSTEPCAFReader(aReader, aNode->InternalParameters);
-  
+
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
                                       UnitsMethods_LengthUnit_Millimeter);
-  
+
   Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
   if (!isOk)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to read stream " << aFirstKey;
     return Standard_False;
   }
-  
+
   return aReader.Transfer(theDocument, theProgress);
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
-                                         const Handle(TDocStd_Document)& theDocument,
-                                         Handle(XSControl_WorkSession)&  theWS,
-                                         const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTEP_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        Handle(XSControl_WorkSession)&  theWS,
+                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+
+  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
-  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext) || !validateNode(GetNode(), aFullContext))
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
+      || !validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
-  
+
   Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   if (!checkStreamWritability(aStream, aFirstKey))
   {
     return Standard_False;
   }
-  
+
   personizeWS(theWS);
-  
+
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  STEPCAFControl_Writer aWriter(theWS, Standard_False);
+  STEPCAFControl_Writer            aWriter(theWS, Standard_False);
   configureSTEPCAFWriter(aWriter, aNode->InternalParameters);
-  
-  Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
+
+  Handle(StepData_StepModel) aModel =
+    Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
   Standard_Real aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
@@ -472,19 +479,21 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
   {
     aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
   }
-  
+
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
   DESTEP_Parameters aParams = aNode->InternalParameters;
-  aParams.WriteUnit = aTargetUnit;
+  aParams.WriteUnit         = aTargetUnit;
   aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
-  
-  STEPControl_StepModelType aMode = static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
+
+  STEPControl_StepModelType aMode =
+    static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
   Standard_Boolean isOk = aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress);
   if (!isOk)
   {
-    Message::SendFail() << "Error: DESTEP_Provider failed to transfer document for stream " << aFirstKey;
+    Message::SendFail() << "Error: DESTEP_Provider failed to transfer document for stream "
+                        << aFirstKey;
     return Standard_False;
   }
   return aWriter.WriteStream(aStream);
@@ -492,9 +501,9 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTEP_Provider::Read(ReadStreamMap&                  theStreams,
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       const Message_ProgressRange&    theProgress)
 {
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Read(theStreams, theDocument, aWS, theProgress);
@@ -502,9 +511,9 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
-                                         const Handle(TDocStd_Document)& theDocument,
-                                         const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTEP_Provider::Write(WriteStreamMap&                 theStreams,
+                                        const Handle(TDocStd_Document)& theDocument,
+                                        const Message_ProgressRange&    theProgress)
 {
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Write(theStreams, theDocument, aWS, theProgress);
@@ -512,34 +521,34 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
-                                        TopoDS_Shape&                  theShape,
-                                        Handle(XSControl_WorkSession)& theWS,
-                                        const Message_ProgressRange&   theProgress)
+Standard_Boolean DESTEP_Provider::Read(ReadStreamMap&                 theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       Handle(XSControl_WorkSession)& theWS,
+                                       const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+
+  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
-  
+
   Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
   personizeWS(theWS);
-  
+
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  
+
   // Use STEPControl_Reader for shape operations from streams
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
   aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
-  
+
   // Read from stream using the reader's internal model
   IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
   if (aReadStat != IFSelect_RetDone)
@@ -549,56 +558,57 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
   }
   Handle(StepData_StepModel) aModel = aReader.StepModel();
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
-  
+
   // Transfer the first root to get the shape
   if (aReader.TransferRoots() <= 0)
   {
-    Message::SendFail() << "Error: DESTEP_Provider found no transferable roots in stream " << aFirstKey;
+    Message::SendFail() << "Error: DESTEP_Provider found no transferable roots in stream "
+                        << aFirstKey;
     return Standard_False;
   }
-  
+
   theShape = aReader.OneShape();
   return Standard_True;
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
-                                         const TopoDS_Shape&            theShape,
-                                         Handle(XSControl_WorkSession)& theWS,
-                                         const Message_ProgressRange&   theProgress)
+Standard_Boolean DESTEP_Provider::Write(WriteStreamMap&                theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        Handle(XSControl_WorkSession)& theWS,
+                                        const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
-  TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
+
+  TCollection_AsciiString aFirstKey    = theStreams.FindKey(1);
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateNode(GetNode(), aFullContext))
   {
     return Standard_False;
   }
-  
+
   Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
   personizeWS(theWS);
-  
+
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  
+
   // Use STEPControl_Writer for shape operations to streams
   STEPControl_Writer aWriter;
   aWriter.SetWS(theWS);
-  
+
   Handle(StepData_StepModel) aModel = aWriter.Model();
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
-  
+
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
   DESTEP_Parameters aParams = aNode->InternalParameters;
-  aParams.WriteUnit = aTargetUnit;
-  
+  aParams.WriteUnit         = aTargetUnit;
+
   if (aTargetUnit == UnitsMethods_LengthUnit_Undefined)
   {
     aModel->SetWriteLengthUnit(1.0);
@@ -610,9 +620,9 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
   {
     aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   }
-  
+
   aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
-  
+
   IFSelect_ReturnStatus aWriteStat = aWriter.Transfer(theShape,
                                                       aNode->InternalParameters.WriteModelType,
                                                       aParams,
@@ -620,30 +630,31 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
                                                       theProgress);
   if (aWriteStat != IFSelect_RetDone)
   {
-    Message::SendFail() << "Error: DESTEP_Provider failed to transfer shape for stream " << aFirstKey;
+    Message::SendFail() << "Error: DESTEP_Provider failed to transfer shape for stream "
+                        << aFirstKey;
     return Standard_False;
   }
-  
+
   if (aNode->InternalParameters.CleanDuplicates)
   {
     aWriter.CleanDuplicateEntities();
   }
-  
+
   // Write to stream
   if (!aWriter.WriteStream(aStream))
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to write to stream " << aFirstKey;
     return Standard_False;
   }
-  
+
   return Standard_True;
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
-                                        TopoDS_Shape&                  theShape,
-                                        const Message_ProgressRange&   theProgress)
+Standard_Boolean DESTEP_Provider::Read(ReadStreamMap&               theStreams,
+                                       TopoDS_Shape&                theShape,
+                                       const Message_ProgressRange& theProgress)
 {
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Read(theStreams, theShape, aWS, theProgress);
@@ -651,9 +662,9 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamMap& theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamMap& theStreams,
-                                         const TopoDS_Shape&            theShape,
-                                         const Message_ProgressRange&   theProgress)
+Standard_Boolean DESTEP_Provider::Write(WriteStreamMap&              theStreams,
+                                        const TopoDS_Shape&          theShape,
+                                        const Message_ProgressRange& theProgress)
 {
   Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);

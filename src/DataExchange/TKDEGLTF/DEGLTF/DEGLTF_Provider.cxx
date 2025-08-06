@@ -92,7 +92,9 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString&  thePath,
   {
     return false;
   }
-  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DEGLTF_ConfigurationNode), aContext))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEGLTF_ConfigurationNode),
+                                                     aContext))
   {
     return false;
   }
@@ -119,7 +121,9 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&  thePath,
                             const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
-  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DEGLTF_ConfigurationNode), aContext))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEGLTF_ConfigurationNode),
+                                                     aContext))
   {
     return false;
   }
@@ -138,9 +142,10 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&  thePath,
   if (aNode->GlobalParameters.LengthUnit != 1000.)
   {
     TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
-    Message::SendWarning() << "Warning during " << aContext
-                           << ": Target format doesn't support custom units. Model will be scaled to Meters (unit: "
-                           << aNode->GlobalParameters.LengthUnit << ")";
+    Message::SendWarning()
+      << "Warning during " << aContext
+      << ": Target format doesn't support custom units. Model will be scaled to Meters (unit: "
+      << aNode->GlobalParameters.LengthUnit << ")";
   }
   aConverter.SetOutputLengthUnit(1.); // gltf units always Meters
   aConverter.SetOutputCoordinateSystem(aNode->InternalParameters.FileCS);

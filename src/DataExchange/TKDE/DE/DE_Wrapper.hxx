@@ -171,10 +171,10 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamMap& theStreams,
-         const Handle(TDocStd_Document)&   theDocument,
-         Handle(XSControl_WorkSession)&    theWS,
-         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+    Read(DE_Provider::ReadStreamMap&     theStreams,
+         const Handle(TDocStd_Document)& theDocument,
+         Handle(XSControl_WorkSession)&  theWS,
+         const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -183,7 +183,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamMap&     theStreams,
+    Write(DE_Provider::WriteStreamMap&    theStreams,
           const Handle(TDocStd_Document)& theDocument,
           Handle(XSControl_WorkSession)&  theWS,
           const Message_ProgressRange&    theProgress = Message_ProgressRange());
@@ -194,9 +194,9 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamMap& theStreams,
-         const Handle(TDocStd_Document)&   theDocument,
-         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+    Read(DE_Provider::ReadStreamMap&     theStreams,
+         const Handle(TDocStd_Document)& theDocument,
+         const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -204,7 +204,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamMap&     theStreams,
+    Write(DE_Provider::WriteStreamMap&    theStreams,
           const Handle(TDocStd_Document)& theDocument,
           const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
@@ -215,10 +215,10 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamMap& theStreams,
-         TopoDS_Shape&                     theShape,
-         Handle(XSControl_WorkSession)&    theWS,
-         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+    Read(DE_Provider::ReadStreamMap&    theStreams,
+         TopoDS_Shape&                  theShape,
+         Handle(XSControl_WorkSession)& theWS,
+         const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -227,10 +227,10 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamMap&    theStreams,
-          const TopoDS_Shape&             theShape,
-          Handle(XSControl_WorkSession)&  theWS,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+    Write(DE_Provider::WriteStreamMap&   theStreams,
+          const TopoDS_Shape&            theShape,
+          Handle(XSControl_WorkSession)& theWS,
+          const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
@@ -238,9 +238,9 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Read(DE_Provider::ReadStreamMap& theStreams,
-         TopoDS_Shape&                     theShape,
-         const Message_ProgressRange&      theProgress = Message_ProgressRange());
+    Read(DE_Provider::ReadStreamMap&  theStreams,
+         TopoDS_Shape&                theShape,
+         const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -248,9 +248,9 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT Standard_Boolean
-    Write(DE_Provider::WriteStreamMap&    theStreams,
-          const TopoDS_Shape&             theShape,
-          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+    Write(DE_Provider::WriteStreamMap& theStreams,
+          const TopoDS_Shape&          theShape,
+          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 public:
   //! Updates values according the resource file
@@ -349,7 +349,7 @@ public:
   //! @param[out] theProvider created new provider
   //! @return Standard_True if provider found and created
   Standard_EXPORT virtual Standard_Boolean FindReadProvider(const TCollection_AsciiString& thePath,
-                                                            std::istream& theStream,
+                                                            std::istream&        theStream,
                                                             Handle(DE_Provider)& theProvider) const;
 
   //! Find available write provider from the configuration.
@@ -357,8 +357,9 @@ public:
   //! @param[in] thePath path to the CAD file (for extension checking only)
   //! @param[out] theProvider created new provider
   //! @return Standard_True if provider found and created
-  Standard_EXPORT virtual Standard_Boolean FindWriteProvider(const TCollection_AsciiString& thePath,
-                                                             Handle(DE_Provider)& theProvider) const;
+  Standard_EXPORT virtual Standard_Boolean FindWriteProvider(
+    const TCollection_AsciiString& thePath,
+    Handle(DE_Provider)&           theProvider) const;
 
   //! Updates all registered nodes, all changes will be saved in nodes
   //! @param[in] theToForceUpdate flag that turns on/of nodes, according to updated ability to

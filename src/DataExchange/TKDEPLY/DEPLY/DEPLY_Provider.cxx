@@ -57,7 +57,9 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
-  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DEPLY_ConfigurationNode), aContext))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEPLY_ConfigurationNode),
+                                                     aContext))
   {
     return false;
   }

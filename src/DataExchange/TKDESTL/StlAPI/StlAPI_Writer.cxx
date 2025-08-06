@@ -43,7 +43,7 @@ Standard_Boolean StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
   {
     return Standard_False;
   }
-  
+
   return Write(theShape, aStream, theProgress);
 }
 

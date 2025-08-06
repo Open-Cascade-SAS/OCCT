@@ -26,16 +26,15 @@
 
 Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
   const Handle(DE_ConfigurationNode)& theNode,
-  const Handle(Standard_Type)& theExpectedType,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const Handle(Standard_Type)&        theExpectedType,
+  const TCollection_AsciiString&      theContext,
+  const Standard_Boolean              theIsVerbose)
 {
   if (theNode.IsNull())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Configuration Node is null";
+      Message::SendFail() << "Error during " << theContext << ": Configuration Node is null";
     }
     return Standard_False;
   }
@@ -44,10 +43,9 @@ Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
+      Message::SendFail() << "Error during " << theContext
                           << ": Configuration Node is not of expected type. Expected: "
-                          << theExpectedType->Name() 
-                          << ", got: " << theNode->DynamicType()->Name();
+                          << theExpectedType->Name() << ", got: " << theNode->DynamicType()->Name();
     }
     return Standard_False;
   }
@@ -60,14 +58,13 @@ Standard_Boolean DE_ValidationUtils::ValidateConfigurationNode(
 Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
   const TCollection_AsciiString& thePath,
   const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const Standard_Boolean         theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": File path is empty";
+      Message::SendFail() << "Error during " << theContext << ": File path is empty";
     }
     return Standard_False;
   }
@@ -76,14 +73,14 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
   {
     OSD_Path aOSDPath(thePath);
     OSD_File aFile(aOSDPath);
-    
+
     // Check if file exists
     if (!aFile.Exists())
     {
       if (theIsVerbose)
       {
-        Message::SendFail() << "Error during " << theContext 
-                            << ": File '" << thePath << "' does not exist";
+        Message::SendFail() << "Error during " << theContext << ": File '" << thePath
+                            << "' does not exist";
       }
       return Standard_False;
     }
@@ -94,8 +91,8 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
     {
       if (theIsVerbose)
       {
-        Message::SendFail() << "Error during " << theContext 
-                            << ": Cannot open file '" << thePath << "' for reading";
+        Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
+                            << "' for reading";
       }
       return Standard_False;
     }
@@ -104,8 +101,8 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Cannot access file '" << thePath << "': " << anException.what();
+      Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
+                          << "': " << anException.what();
     }
     return Standard_False;
   }
@@ -118,14 +115,13 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForReading(
 Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
   const TCollection_AsciiString& thePath,
   const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const Standard_Boolean         theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": File path is empty";
+      Message::SendFail() << "Error during " << theContext << ": File path is empty";
     }
     return Standard_False;
   }
@@ -134,15 +130,15 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
   {
     OSD_Path aOSDPath(thePath);
     OSD_File aFile(aOSDPath);
-    
+
     // Try to open for writing to verify permissions
     std::ofstream aTestFile(thePath.ToCString(), std::ios::out | std::ios::app);
     if (!aTestFile.is_open() || !aTestFile.good())
     {
       if (theIsVerbose)
       {
-        Message::SendFail() << "Error during " << theContext 
-                            << ": Cannot open file '" << thePath << "' for writing";
+        Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
+                            << "' for writing";
       }
       return Standard_False;
     }
@@ -152,8 +148,8 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Cannot access file '" << thePath << "': " << anException.what();
+      Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
+                          << "': " << anException.what();
     }
     return Standard_False;
   }
@@ -165,15 +161,14 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
 
 Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
   const DE_Provider::ReadStreamMap& theStreams,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const TCollection_AsciiString&    theContext,
+  const Standard_Boolean            theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Stream map is empty";
+      Message::SendFail() << "Error during " << theContext << ": Stream map is empty";
     }
     return Standard_False;
   }
@@ -182,9 +177,8 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
   {
     if (theIsVerbose)
     {
-      Message::SendWarning() << "Warning during " << theContext 
-                             << ": Received " << theStreams.Size()
-                             << " streams, using only the first one";
+      Message::SendWarning() << "Warning during " << theContext << ": Received "
+                             << theStreams.Size() << " streams, using only the first one";
     }
   }
 
@@ -197,9 +191,9 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
       if (theIsVerbose)
       {
         TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-        TCollection_AsciiString aKeyInfo = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
-        Message::SendFail() << "Error during " << theContext 
-                            << ": Input stream '" << aKeyInfo << "' is in invalid state";
+        TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+        Message::SendFail() << "Error during " << theContext << ": Input stream '" << aKeyInfo
+                            << "' is in invalid state";
       }
       return Standard_False;
     }
@@ -209,9 +203,9 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
     if (theIsVerbose)
     {
       TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-      TCollection_AsciiString aKeyInfo = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Cannot access input stream '" << aKeyInfo << "'";
+      TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+      Message::SendFail() << "Error during " << theContext << ": Cannot access input stream '"
+                          << aKeyInfo << "'";
     }
     return Standard_False;
   }
@@ -222,16 +216,15 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamMap(
 //=================================================================================================
 
 Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
-  DE_Provider::WriteStreamMap& theStreams,
+  DE_Provider::WriteStreamMap&   theStreams,
   const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const Standard_Boolean         theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Stream map is empty";
+      Message::SendFail() << "Error during " << theContext << ": Stream map is empty";
     }
     return Standard_False;
   }
@@ -240,9 +233,8 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
   {
     if (theIsVerbose)
     {
-      Message::SendWarning() << "Warning during " << theContext 
-                             << ": Received " << theStreams.Size()
-                             << " streams, using only the first one";
+      Message::SendWarning() << "Warning during " << theContext << ": Received "
+                             << theStreams.Size() << " streams, using only the first one";
     }
   }
 
@@ -255,9 +247,9 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
       if (theIsVerbose)
       {
         TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-        TCollection_AsciiString aKeyInfo = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
-        Message::SendFail() << "Error during " << theContext 
-                            << ": Output stream '" << aKeyInfo << "' is in invalid state";
+        TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+        Message::SendFail() << "Error during " << theContext << ": Output stream '" << aKeyInfo
+                            << "' is in invalid state";
       }
       return Standard_False;
     }
@@ -267,9 +259,9 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
     if (theIsVerbose)
     {
       TCollection_AsciiString aFirstKey = theStreams.FindKey(1);
-      TCollection_AsciiString aKeyInfo = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Cannot access output stream '" << aKeyInfo << "'";
+      TCollection_AsciiString aKeyInfo  = aFirstKey.IsEmpty() ? "<empty key>" : aFirstKey;
+      Message::SendFail() << "Error during " << theContext << ": Cannot access output stream '"
+                          << aKeyInfo << "'";
     }
     return Standard_False;
   }
@@ -279,17 +271,15 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamMap(
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::ValidateDocument(
-  const Handle(TDocStd_Document)& theDocument,
-  const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+Standard_Boolean DE_ValidationUtils::ValidateDocument(const Handle(TDocStd_Document)& theDocument,
+                                                      const TCollection_AsciiString&  theContext,
+                                                      const Standard_Boolean          theIsVerbose)
 {
   if (theDocument.IsNull())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext 
-                          << ": Document handle is null";
+      Message::SendFail() << "Error during " << theContext << ": Document handle is null";
     }
     return Standard_False;
   }
@@ -300,56 +290,54 @@ Standard_Boolean DE_ValidationUtils::ValidateDocument(
 //=================================================================================================
 
 Standard_Boolean DE_ValidationUtils::WarnLengthUnitNotSupported(
-  const Standard_Real theLengthUnit,
+  const Standard_Real            theLengthUnit,
   const TCollection_AsciiString& theContext,
-  const Standard_Boolean theIsVerbose)
+  const Standard_Boolean         theIsVerbose)
 {
   if (theIsVerbose && theLengthUnit != 1.0)
   {
-    Message::SendWarning() << "Warning during " << theContext 
-                           << ": Format doesn't support custom length unit scaling (unit: " 
+    Message::SendWarning() << "Warning during " << theContext
+                           << ": Format doesn't support custom length unit scaling (unit: "
                            << theLengthUnit << ")";
   }
-  
+
   return Standard_True;
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::CreateContentBuffer(
-  const TCollection_AsciiString& thePath,
-  Handle(NCollection_Buffer)& theBuffer)
+Standard_Boolean DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString& thePath,
+                                                         Handle(NCollection_Buffer)&    theBuffer)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aStream =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
-  
+
   if (aStream.get() == nullptr)
   {
     theBuffer.Nullify();
     return Standard_False;
   }
-  
+
   return CreateContentBuffer(*aStream, theBuffer);
 }
 
 //=================================================================================================
 
-Standard_Boolean DE_ValidationUtils::CreateContentBuffer(
-  std::istream& theStream,
-  Handle(NCollection_Buffer)& theBuffer)
+Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&               theStream,
+                                                         Handle(NCollection_Buffer)& theBuffer)
 {
   theBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
-  
+
   // Save current stream position
   std::streampos aOriginalPos = theStream.tellg();
-  
+
   theStream.read(reinterpret_cast<char*>(theBuffer->ChangeData()), 2048);
-  const std::streamsize aBytesRead = theStream.gcount();
+  const std::streamsize aBytesRead                               = theStream.gcount();
   theBuffer->ChangeData()[aBytesRead < 2048 ? aBytesRead : 2047] = '\0';
-  
+
   // Reset stream to original position for subsequent reads
   theStream.seekg(aOriginalPos);
-  
+
   return Standard_True;
 }

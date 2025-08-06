@@ -118,9 +118,9 @@ public:
 
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the given stream.
-  Standard_EXPORT Standard_Boolean Write(const TopoDS_Shape&       aShape,
-                                         Standard_OStream&         theOStream, 
-                                         const Standard_Integer    aVersion = 2) const;
+  Standard_EXPORT Standard_Boolean Write(const TopoDS_Shape&    aShape,
+                                         Standard_OStream&      theOStream,
+                                         const Standard_Integer aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the given stream.

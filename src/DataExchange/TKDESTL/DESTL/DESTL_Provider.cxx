@@ -96,7 +96,7 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
   TDF_LabelSequence         aLabels;
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aSTool->GetFreeShapes(aLabels);
-  
+
   if (aLabels.Length() <= 0)
   {
     Message::SendFail() << "Error in the DESTL_Provider during writing the file " << thePath
@@ -104,8 +104,8 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
     return false;
   }
 
-  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  Handle(DESTL_ConfigurationNode) aNode    = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+  TCollection_AsciiString         aContext = TCollection_AsciiString("writing the file ") + thePath;
   DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   TopoDS_Shape aShape;
@@ -125,7 +125,7 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
     }
     aShape = aComp;
   }
-  
+
   return Write(thePath, aShape, theProgress);
 }
 
@@ -159,17 +159,17 @@ bool DESTL_Provider::Read(const TCollection_AsciiString& thePath,
 {
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
-    
+
   if (!GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
   {
     Message::SendFail() << "Error in the DESTL_Provider during reading the file " << thePath
                         << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  
+
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  double aMergeAngle = aNode->InternalParameters.ReadMergeAngle * M_PI / 180.0;
-  
+  double aMergeAngle                    = aNode->InternalParameters.ReadMergeAngle * M_PI / 180.0;
+
   if (aMergeAngle != M_PI_2)
   {
     if (aMergeAngle < 0.0 || aMergeAngle > M_PI_2)
@@ -179,7 +179,7 @@ bool DESTL_Provider::Read(const TCollection_AsciiString& thePath,
       return false;
     }
   }
-  
+
   if (!aNode->InternalParameters.ReadBRep)
   {
     Handle(Poly_Triangulation) aTriangulation =
@@ -195,7 +195,7 @@ bool DESTL_Provider::Read(const TCollection_AsciiString& thePath,
   {
     Standard_DISABLE_DEPRECATION_WARNINGS
 
-    if (!StlAPI::Read(theShape, thePath.ToCString()))
+      if (!StlAPI::Read(theShape, thePath.ToCString()))
     {
       Message::SendFail() << "Error in the DESTL_Provider during reading the file " << thePath;
       return false;
@@ -213,13 +213,15 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
 {
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";
-    
+
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
-  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DESTL_ConfigurationNode), aContext))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aContext))
   {
     return false;
   }
-  
+
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
   DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
@@ -236,10 +238,10 @@ bool DESTL_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
-                                       Handle(XSControl_WorkSession)&  theWS,
-                                       const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams,
+                                      const Handle(TDocStd_Document)& theDocument,
+                                      Handle(XSControl_WorkSession)&  theWS,
+                                      const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Read(theStreams, theDocument, theProgress);
@@ -248,9 +250,9 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStream
 //=================================================================================================
 
 Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        Handle(XSControl_WorkSession)&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       Handle(XSControl_WorkSession)&  theWS,
+                                       const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Write(theStreams, theDocument, theProgress);
@@ -258,10 +260,10 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStreams,
-                                       TopoDS_Shape&                    theShape,
-                                       Handle(XSControl_WorkSession)&   theWS,
-                                       const Message_ProgressRange&     theProgress)
+Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                 theStreams,
+                                      TopoDS_Shape&                  theShape,
+                                      Handle(XSControl_WorkSession)& theWS,
+                                      const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Read(theStreams, theShape, theProgress);
@@ -269,10 +271,10 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
-                                        const TopoDS_Shape&             theShape,
-                                        Handle(XSControl_WorkSession)&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                theStreams,
+                                       const TopoDS_Shape&            theShape,
+                                       Handle(XSControl_WorkSession)& theWS,
+                                       const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Write(theStreams, theShape, theProgress);
@@ -280,29 +282,29 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStreams,
-                                       const Handle(TDocStd_Document)& theDocument,
-                                       const Message_ProgressRange&    theProgress)
+Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                  theStreams,
+                                      const Handle(TDocStd_Document)& theDocument,
+                                      const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
-  const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+
+  const TCollection_AsciiString& aFirstKey    = theStreams.FindKey(1);
+  TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
     return Standard_False;
   }
-  
+
   TopoDS_Shape aShape;
   if (!Read(theStreams, aShape, theProgress))
   {
     return Standard_False;
   }
-  
+
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->AddShape(aShape);
   return Standard_True;
@@ -311,22 +313,22 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&                   theStream
 //=================================================================================================
 
 Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStreams,
-                                        const Handle(TDocStd_Document)& theDocument,
-                                        const Message_ProgressRange&    theProgress)
+                                       const Handle(TDocStd_Document)& theDocument,
+                                       const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, aContext))
   {
     return Standard_False;
   }
-  
+
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  
+
   // Extract shape from document
   TDF_LabelSequence         aLabels;
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aSTool->GetFreeShapes(aLabels);
-  
+
   if (aLabels.Length() <= 0)
   {
     Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
@@ -334,9 +336,10 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
     return Standard_False;
   }
 
-  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+  Handle(DESTL_ConfigurationNode) aNode  = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
   TCollection_AsciiString aLengthContext = TCollection_AsciiString("writing stream ") + aFirstKey;
-  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aLengthContext);
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit,
+                                                 aLengthContext);
 
   TopoDS_Shape aShape;
   if (aLabels.Length() == 1)
@@ -355,15 +358,15 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&                 theStream
     }
     aShape = aComp;
   }
-  
+
   return Write(theStreams, aShape, theProgress);
 }
 
 //=================================================================================================
 
 Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
-                                       TopoDS_Shape&                theShape,
-                                       const Message_ProgressRange& theProgress)
+                                      TopoDS_Shape&                theShape,
+                                      const Message_ProgressRange& theProgress)
 {
   // Validate stream map
   if (theStreams.IsEmpty())
@@ -376,23 +379,23 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
     Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
                            << " streams for reading, using only the first one";
   }
-  
+
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_IStream& aStream = theStreams.ChangeFromIndex(1);
-  
+  Standard_IStream&              aStream   = theStreams.ChangeFromIndex(1);
+
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
-    
+
   if (!GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
   {
     Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
                         << ": Incorrect or empty Configuration Node";
     return Standard_False;
   }
-  
+
   Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  double aMergeAngle = aNode->InternalParameters.ReadMergeAngle * M_PI / 180.0;
-  
+  double aMergeAngle                    = aNode->InternalParameters.ReadMergeAngle * M_PI / 180.0;
+
   if (aMergeAngle != M_PI_2)
   {
     if (aMergeAngle < 0.0 || aMergeAngle > M_PI_2)
@@ -402,10 +405,11 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
       return Standard_False;
     }
   }
-  
+
   if (!aNode->InternalParameters.ReadBRep)
   {
-    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadStream(aStream, aMergeAngle, theProgress);
+    Handle(Poly_Triangulation) aTriangulation =
+      RWStl::ReadStream(aStream, aMergeAngle, theProgress);
     if (aTriangulation.IsNull())
     {
       Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
@@ -422,8 +426,8 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
   else
   {
     Standard_DISABLE_DEPRECATION_WARNINGS
-    
-    StlAPI_Reader aReader;
+
+      StlAPI_Reader aReader;
     if (!aReader.Read(theShape, aStream))
     {
       Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey;
@@ -431,15 +435,15 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamMap&               theStreams,
     }
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
-  
+
   return Standard_True;
 }
 
 //=================================================================================================
 
-Standard_Boolean DESTL_Provider::Write(WriteStreamMap&               theStreams,
-                                        const TopoDS_Shape&           theShape,
-                                        const Message_ProgressRange&  theProgress)
+Standard_Boolean DESTL_Provider::Write(WriteStreamMap&              theStreams,
+                                       const TopoDS_Shape&          theShape,
+                                       const Message_ProgressRange& theProgress)
 {
   // Validate stream map
   if (theStreams.IsEmpty())
@@ -452,23 +456,24 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&               theStreams,
     Message::SendWarning() << "Warning: DESTL_Provider received " << theStreams.Size()
                            << " streams for writing, using only the first one";
   }
-  
+
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
-  Standard_OStream& aStream = theStreams.ChangeFromIndex(1);
-  
+  Standard_OStream&              aStream   = theStreams.ChangeFromIndex(1);
+
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";
-    
+
   if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
   {
     Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
                         << ": Incorrect or empty Configuration Node";
     return Standard_False;
   }
-  
-  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
+
+  Handle(DESTL_ConfigurationNode) aNode  = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
   TCollection_AsciiString aLengthContext = TCollection_AsciiString("writing stream ") + aFirstKey;
-  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aLengthContext);
+  DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit,
+                                                 aLengthContext);
 
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;
@@ -478,7 +483,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamMap&               theStreams,
                         << ": Mesh writing has been failed";
     return Standard_False;
   }
-  
+
   return Standard_True;
 }
 

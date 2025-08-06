@@ -109,21 +109,21 @@ public:
   Standard_EXPORT static Handle(Poly_Triangulation) ReadBinaryStream(
     Standard_IStream&            theStream,
     const Standard_Real          theMergeAngle = M_PI / 2.0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+    const Message_ProgressRange& theProgress   = Message_ProgressRange());
 
   //! Read triangulation from ASCII STL stream
   //! In case of error, returns Null handle.
   Standard_EXPORT static Handle(Poly_Triangulation) ReadAsciiStream(
     Standard_IStream&            theStream,
     const Standard_Real          theMergeAngle = M_PI / 2.0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+    const Message_ProgressRange& theProgress   = Message_ProgressRange());
 
   //! Read STL data from stream (auto-detects ASCII vs Binary)
   //! In case of error, returns Null handle.
   Standard_EXPORT static Handle(Poly_Triangulation) ReadStream(
     Standard_IStream&            theStream,
     const Standard_Real          theMergeAngle = M_PI / 2.0,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+    const Message_ProgressRange& theProgress   = Message_ProgressRange());
 };
 
 #endif

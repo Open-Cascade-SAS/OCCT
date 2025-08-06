@@ -68,7 +68,9 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
   {
     return false;
   }
-  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(), STANDARD_TYPE(DEOBJ_ConfigurationNode), aContext))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEOBJ_ConfigurationNode),
+                                                     aContext))
   {
     return false;
   }

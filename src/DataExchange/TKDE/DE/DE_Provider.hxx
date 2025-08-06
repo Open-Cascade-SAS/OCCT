@@ -96,7 +96,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return True if Read was successful
   Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamMap&            theStreams,
+    ReadStreamMap&                  theStreams,
     const Handle(TDocStd_Document)& theDocument,
     Handle(XSControl_WorkSession)&  theWS,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
@@ -139,7 +139,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return True if Read was successful
   Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamMap&            theStreams,
+    ReadStreamMap&                  theStreams,
     const Handle(TDocStd_Document)& theDocument,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
@@ -184,7 +184,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return True if Read was successful
   Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamMap&           theStreams,
+    ReadStreamMap&                 theStreams,
     TopoDS_Shape&                  theShape,
     Handle(XSControl_WorkSession)& theWS,
     const Message_ProgressRange&   theProgress = Message_ProgressRange());
@@ -227,7 +227,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return True if Read was successful
   Standard_EXPORT virtual Standard_Boolean Read(
-    ReadStreamMap&         theStreams,
+    ReadStreamMap&               theStreams,
     TopoDS_Shape&                theShape,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
