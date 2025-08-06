@@ -15,6 +15,7 @@
 #define _DE_Provider_HeaderFile
 
 #include <Message_ProgressRange.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
 
