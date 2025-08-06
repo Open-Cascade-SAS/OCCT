@@ -199,13 +199,6 @@ bool DEPLY_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
-bool DEPLY_ConfigurationNode::IsStreamSupported() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 TCollection_AsciiString DEPLY_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("PLY");

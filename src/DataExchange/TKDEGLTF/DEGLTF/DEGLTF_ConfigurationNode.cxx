@@ -368,13 +368,6 @@ bool DEGLTF_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
-bool DEGLTF_ConfigurationNode::IsStreamSupported() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 TCollection_AsciiString DEGLTF_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("GLTF");
