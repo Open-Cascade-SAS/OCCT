@@ -21,8 +21,10 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWStl_Reader.hxx>
+#include <Standard_ReadLineBuffer.hxx>
 #include <iomanip>
 #include <iostream>
+#include <cstring>
 
 namespace
 {
@@ -467,4 +469,66 @@ Standard_Boolean RWStl::WriteBinary(const Handle(Poly_Triangulation)& theMesh,
   }
 
   return Standard_True;
+}
+
+//=================================================================================================
+
+Handle(Poly_Triangulation) RWStl::ReadBinaryStream(Standard_IStream&            theStream,
+                                                   const Standard_Real          theMergeAngle,
+                                                   const Message_ProgressRange& theProgress)
+{
+  Reader aReader;
+  aReader.SetMergeAngle(theMergeAngle);
+  if (!aReader.ReadBinary(theStream, theProgress))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  return aReader.GetTriangulation();
+}
+
+//=================================================================================================
+
+Handle(Poly_Triangulation) RWStl::ReadAsciiStream(Standard_IStream&            theStream,
+                                                  const Standard_Real          theMergeAngle,
+                                                  const Message_ProgressRange& theProgress)
+{
+  Reader aReader;
+  aReader.SetMergeAngle(theMergeAngle);
+  
+  // get length of stream to feed progress indicator
+  theStream.seekg(0, theStream.end);
+  std::streampos theEnd = theStream.tellg();
+  theStream.seekg(0, theStream.beg);
+
+  Standard_ReadLineBuffer aBuffer(THE_BUFFER_SIZE);
+  if (!aReader.ReadAscii(theStream, aBuffer, theEnd, theProgress))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  return aReader.GetTriangulation();
+}
+
+//=================================================================================================
+
+Handle(Poly_Triangulation) RWStl::ReadStream(Standard_IStream&            theStream,
+                                             const Standard_Real          theMergeAngle,
+                                             const Message_ProgressRange& theProgress)
+{
+  // Try to detect ASCII vs Binary format by peeking at the first few bytes
+  std::streampos originalPos = theStream.tellg();
+  char header[6];
+  theStream.read(header, 5);
+  header[5] = '\0';
+  theStream.seekg(originalPos);
+  
+  bool isAscii = (strncmp(header, "solid", 5) == 0);
+  
+  if (isAscii)
+  {
+    return RWStl::ReadAsciiStream(theStream, theMergeAngle, theProgress);
+  }
+  else
+  {
+    return RWStl::ReadBinaryStream(theStream, theMergeAngle, theProgress);
+  }
 }
