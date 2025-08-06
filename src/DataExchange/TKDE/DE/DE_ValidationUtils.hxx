@@ -99,6 +99,22 @@ public:
     const TCollection_AsciiString& theContext,
     const Standard_Boolean theIsVerbose = Standard_True);
 
+  //! Creates buffer by reading from file stream for content checking
+  //! @param[in] thePath file path for reading
+  //! @param[out] theBuffer output buffer with file content
+  //! @return Standard_True if successful, Standard_False otherwise
+  Standard_EXPORT static Standard_Boolean CreateContentBuffer(
+    const TCollection_AsciiString& thePath,
+    Handle(NCollection_Buffer)& theBuffer);
+
+  //! Creates buffer by reading from input stream for content checking
+  //! @param[in,out] theStream input stream to read from (position will be restored)
+  //! @param[out] theBuffer output buffer with stream content
+  //! @return Standard_True if successful, Standard_False otherwise
+  Standard_EXPORT static Standard_Boolean CreateContentBuffer(
+    std::istream& theStream,
+    Handle(NCollection_Buffer)& theBuffer);
+
 };
 
 #endif // _DE_ValidationUtils_HeaderFile

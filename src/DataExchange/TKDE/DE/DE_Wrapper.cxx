@@ -16,6 +16,7 @@
 #include <DE_ConfigurationContext.hxx>
 #include <DE_ConfigurationNode.hxx>
 #include <DE_Provider.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <Message_ProgressRange.hxx>
 #include <NCollection_Buffer.hxx>
 #include <OSD_File.hxx>
@@ -516,17 +517,9 @@ Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& the
                                               Handle(DE_Provider)&           theProvider) const
 {
   Handle(NCollection_Buffer) aBuffer;
-  if (theCheckContent)
+  if (theCheckContent && !DE_ValidationUtils::CreateContentBuffer(thePath, aBuffer))
   {
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aStream =
-      aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
-    if (aStream.get() != nullptr)
-    {
-      aBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
-      aStream->read((char*)aBuffer->ChangeData(), 2048);
-      aBuffer->ChangeData()[2047] = '\0';
-    }
+    return Standard_False;
   }
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
@@ -558,16 +551,10 @@ Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& the
                                               Handle(DE_Provider)&           theProvider) const
 {
   Handle(NCollection_Buffer) aBuffer;
-  aBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
-  
-  // Save current stream position
-  std::streampos aOriginalPos = theStream.tellg();
-  
-  theStream.read((char*)aBuffer->ChangeData(), 2048);
-  aBuffer->ChangeData()[2047] = '\0';
-  
-  // Reset stream to original position for subsequent reads
-  theStream.seekg(aOriginalPos);
+  if (!DE_ValidationUtils::CreateContentBuffer(theStream, aBuffer))
+  {
+    return Standard_False;
+  }
   
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
@@ -664,15 +651,9 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    Handle(XSControl_WorkSession)&    theWS,
                                    const Message_ProgressRange&      theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -702,15 +683,9 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
                                     Handle(XSControl_WorkSession)&  theWS,
                                     const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -738,15 +713,9 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    const Handle(TDocStd_Document)&   theDocument,
                                    const Message_ProgressRange&      theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -775,15 +744,9 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&     theStreams,
                                     const Handle(TDocStd_Document)& theDocument,
                                     const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -812,15 +775,9 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    Handle(XSControl_WorkSession)&    theWS,
                                    const Message_ProgressRange&      theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -850,15 +807,9 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
                                     Handle(XSControl_WorkSession)&  theWS,
                                     const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -886,15 +837,9 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamMap& theStreams,
                                    TopoDS_Shape&                     theShape,
                                    const Message_ProgressRange&      theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateReadStreamMap(theStreams, "DE_Wrapper Read"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);
@@ -923,15 +868,9 @@ Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamMap&    theStreams,
                                     const TopoDS_Shape&             theShape,
                                     const Message_ProgressRange&    theProgress)
 {
-  if (theStreams.IsEmpty())
+  if (!DE_ValidationUtils::ValidateWriteStreamMap(theStreams, "DE_Wrapper Write"))
   {
-    Message::SendFail() << "Error: DE_Wrapper stream map is empty";
     return Standard_False;
-  }
-  if (theStreams.Size() > 1)
-  {
-    Message::SendWarning() << "Warning: DE_Wrapper received " << theStreams.Size()
-                           << " streams, using only the first one for format detection";
   }
   
   const TCollection_AsciiString& aFirstKey = theStreams.FindKey(1);

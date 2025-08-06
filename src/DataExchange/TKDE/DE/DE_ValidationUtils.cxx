@@ -14,6 +14,8 @@
 #include <DE_ValidationUtils.hxx>
 
 #include <Message.hxx>
+#include <NCollection_Buffer.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_File.hxx>
@@ -308,6 +310,45 @@ Standard_Boolean DE_ValidationUtils::WarnLengthUnitNotSupported(
                            << ": Format doesn't support custom length unit scaling (unit: " 
                            << theLengthUnit << ")";
   }
+  
+  return Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_ValidationUtils::CreateContentBuffer(
+  const TCollection_AsciiString& thePath,
+  Handle(NCollection_Buffer)& theBuffer)
+{
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream> aStream =
+    aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
+  
+  if (aStream.get() == nullptr)
+  {
+    theBuffer.Nullify();
+    return Standard_False;
+  }
+  
+  return CreateContentBuffer(*aStream, theBuffer);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_ValidationUtils::CreateContentBuffer(
+  std::istream& theStream,
+  Handle(NCollection_Buffer)& theBuffer)
+{
+  theBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
+  
+  // Save current stream position
+  std::streampos aOriginalPos = theStream.tellg();
+  
+  theStream.read((char*)theBuffer->ChangeData(), 2048);
+  theBuffer->ChangeData()[2047] = '\0';
+  
+  // Reset stream to original position for subsequent reads
+  theStream.seekg(aOriginalPos);
   
   return Standard_True;
 }
