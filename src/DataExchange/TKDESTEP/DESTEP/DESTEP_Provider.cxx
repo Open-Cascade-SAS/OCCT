@@ -43,52 +43,55 @@ Standard_Boolean validateNode(const Handle(DE_ConfigurationNode)& theNode,
                                                        theContext);
 }
 
-//! Configures STEPCAFControl_Reader for document operations.
-//! @param theReader [in,out] STEP CAF reader to configure
-//! @param theNode [in] Configuration node containing read parameters
-//! @param theDocument [in] Target document for length unit setup
-//! @param theWS [in,out] Work session to initialize reader with
-//! @note Sets up all read parameters including colors, names, layers, props, metadata
-void setupDocumentReader(STEPCAFControl_Reader&                  theReader,
-                         const Handle(DESTEP_ConfigurationNode)& theNode,
-                         const Handle(TDocStd_Document)&         theDocument,
-                         Handle(XSControl_WorkSession)&          theWS)
+//! Configures STEPCAFControl_Reader with specified parameters and optional document setup.
+//! @param[in,out] theReader STEP CAF reader to configure
+//! @param[in] theParams Parameters containing read settings
+//! @param[in] theWS Work session to initialize reader with (optional, if provided reader will
+//! be initialized)
+//! @param[in] theDocument Target document for length unit setup (optional)
+//! @param[in] theLengthUnit Length unit for document setup (used only if theDocument is provided)
+//! @param[in] theShapeFixParams Shape fix parameters (optional, uses default if not provided)
+//! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
+void configureSTEPCAFReader(STEPCAFControl_Reader&                     theReader,
+                            const DESTEP_Parameters&                   theParams,
+                            Handle(XSControl_WorkSession)&             theWS,
+                            const Handle(TDocStd_Document)&            theDocument,
+                            Standard_Real                              theLengthUnit,
+                            const DE_ShapeFixParameters& theShapeFixParams)
 {
   theReader.Init(theWS);
-  theReader.SetColorMode(theNode->InternalParameters.ReadColor);
-  theReader.SetNameMode(theNode->InternalParameters.ReadName);
-  theReader.SetLayerMode(theNode->InternalParameters.ReadLayer);
-  theReader.SetPropsMode(theNode->InternalParameters.ReadProps);
-  theReader.SetMetaMode(theNode->InternalParameters.ReadMetadata);
-  theReader.SetProductMetaMode(theNode->InternalParameters.ReadProductMetadata);
-  theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
 
-  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
-                                      theNode->GlobalParameters.LengthUnit,
-                                      UnitsMethods_LengthUnit_Millimeter);
-}
-
-//! Configures STEPCAFControl_Reader with specified parameters.
-//! @param theReader [in,out] STEP CAF reader to configure
-//! @param theParams [in] Parameters containing read settings
-//! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
-void configureSTEPCAFReader(STEPCAFControl_Reader& theReader, const DESTEP_Parameters& theParams)
-{
   theReader.SetColorMode(theParams.ReadColor);
   theReader.SetNameMode(theParams.ReadName);
   theReader.SetLayerMode(theParams.ReadLayer);
   theReader.SetPropsMode(theParams.ReadProps);
   theReader.SetMetaMode(theParams.ReadMetadata);
   theReader.SetProductMetaMode(theParams.ReadProductMetadata);
-  theReader.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
+
+  theReader.SetShapeFixParameters(theShapeFixParams);
+
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      theLengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
 }
 
-//! Configures STEPCAFControl_Writer with specified parameters.
-//! @param theWriter [in,out] STEP CAF writer to configure
-//! @param theParams [in] Parameters containing write settings
-//! @note Sets up colors, names, layers, properties, materials, and shape fix parameters
-void configureSTEPCAFWriter(STEPCAFControl_Writer& theWriter, const DESTEP_Parameters& theParams)
+//! Configures STEPCAFControl_Writer with full setup.
+//! @param[in,out] theWriter STEP CAF writer to configure
+//! @param[in] theParams Parameters containing write settings
+//! @param[in,out] theWS Work session to initialize writer with
+//! @param[in] theDocument Source document for length unit extraction
+//! @param[in] theLengthUnit Length unit for document setup
+//! @param[in] theShapeFixParams Shape fix parameters
+//! @note Sets up all write parameters including colors, names, layers, props, materials
+void configureSTEPCAFWriter(STEPCAFControl_Writer&                      theWriter,
+                            const DESTEP_Parameters&                    theParams,
+                            Handle(XSControl_WorkSession)&              theWS,
+                            const Handle(TDocStd_Document)&             theDocument,
+                            Standard_Real                               theLengthUnit,
+                            const DE_ShapeFixParameters&  theShapeFixParams)
 {
+  theWriter.Init(theWS);
+  
   theWriter.SetColorMode(theParams.WriteColor);
   theWriter.SetNameMode(theParams.WriteName);
   theWriter.SetLayerMode(theParams.WriteLayer);
@@ -96,12 +99,33 @@ void configureSTEPCAFWriter(STEPCAFControl_Writer& theWriter, const DESTEP_Param
   theWriter.SetMaterialMode(theParams.WriteMaterial);
   theWriter.SetVisualMaterialMode(theParams.WriteVisMaterial);
   theWriter.SetCleanDuplicates(theParams.CleanDuplicates);
-  theWriter.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
+  
+  theWriter.SetShapeFixParameters(theShapeFixParams);
+
+  Handle(StepData_StepModel) aModel =
+    Handle(StepData_StepModel)::DownCast(theWriter.Writer().WS()->Model());
+  
+  Standard_Real aScaleFactorMM = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
+                                          aScaleFactorMM,
+                                          UnitsMethods_LengthUnit_Millimeter))
+  {
+    aModel->SetLocalLengthUnit(aScaleFactorMM);
+  }
+  else
+  {
+    aModel->SetLocalLengthUnit(theLengthUnit);
+    Message::SendWarning()
+      << "Warning in the DESTEP_Provider during writing"
+      << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
+  
+  aModel->SetWriteLengthUnit(theLengthUnit);
 }
 
 //! Checks if output stream is in writable state.
-//! @param theStream [in] Output stream to check
-//! @param theKey [in] Stream identifier for error reporting
+//! @param[in] theStream Output stream to check
+//! @param[in] theKey Stream identifier for error reporting
 //! @return Standard_True if stream is writable, Standard_False otherwise
 bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
 {
@@ -147,7 +171,12 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
   personizeWS(theWS);
 
   STEPCAFControl_Reader aReader;
-  setupDocumentReader(aReader, aNode, theDocument, theWS);
+  configureSTEPCAFReader(aReader,
+                         aNode->InternalParameters,
+                         theWS,
+                         theDocument,
+                         aNode->GlobalParameters.LengthUnit,
+                         aNode->ShapeFixParameters);
 
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
   DESTEP_Parameters     aParams   = aNode->InternalParameters;
@@ -176,48 +205,32 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
                             Handle(XSControl_WorkSession)&  theWS,
                             const Message_ProgressRange&    theProgress)
 {
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTEP_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
+      || !validateNode(GetNode(), aContext))
   {
-    Message::SendFail() << "Error in the DESTEP_Provider during writing the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
+  
   STEPCAFControl_Writer aWriter;
-  aWriter.Init(theWS);
+  configureSTEPCAFWriter(aWriter,
+                         aNode->InternalParameters,
+                         theWS,
+                         theDocument,
+                         aNode->GlobalParameters.SystemUnit,
+                         aNode->ShapeFixParameters);
+  
   Handle(StepData_StepModel) aModel =
     Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
-  aWriter.SetColorMode(aNode->InternalParameters.WriteColor);
-  aWriter.SetNameMode(aNode->InternalParameters.WriteName);
-  aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
-  aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
-  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
-  aWriter.SetMaterialMode(aNode->InternalParameters.WriteMaterial);
-  aWriter.SetVisualMaterialMode(aNode->InternalParameters.WriteVisMaterial);
-  aWriter.SetCleanDuplicates(aNode->InternalParameters.CleanDuplicates);
-  DESTEP_Parameters aParams        = aNode->InternalParameters;
-  Standard_Real     aScaleFactorMM = 1.;
-  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                          aScaleFactorMM,
-                                          UnitsMethods_LengthUnit_Millimeter))
-  {
-    aModel->SetLocalLengthUnit(aScaleFactorMM);
-  }
-  else
-  {
-    aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
-    Message::SendWarning()
-      << "Warning in the DESTEP_Provider during writing the file " << thePath
-      << "\t: The document has no information on Units. Using global parameter as initial Unit.";
-  }
+  DESTEP_Parameters aParams = aNode->InternalParameters;
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
   aParams.WriteUnit = aTargetUnit;
-  aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   TDF_Label aLabel;
   if (!aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress))
   {
@@ -273,11 +286,9 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
                            Handle(XSControl_WorkSession)& theWS,
                            const Message_ProgressRange&   theProgress)
 {
-  (void)theProgress;
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTEP_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!validateNode(GetNode(), aContext))
   {
-    Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
@@ -296,7 +307,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
-  if (aReader.TransferRoots() <= 0)
+  if (aReader.TransferRoots(theProgress) <= 0)
   {
     Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
                         << "\t:Cannot read any relevant data from the STEP file";
@@ -313,10 +324,9 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
                             Handle(XSControl_WorkSession)& theWS,
                             const Message_ProgressRange&   theProgress)
 {
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTEP_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!validateNode(GetNode(), aContext))
   {
-    Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
@@ -391,7 +401,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        Handle(XSControl_WorkSession)&  theWS,
                                        const Message_ProgressRange&    theProgress)
@@ -417,11 +427,12 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStrea
 
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
   STEPCAFControl_Reader            aReader(theWS, Standard_False);
-  configureSTEPCAFReader(aReader, aNode->InternalParameters);
-
-  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
-                                      aNode->GlobalParameters.LengthUnit,
-                                      UnitsMethods_LengthUnit_Millimeter);
+  configureSTEPCAFReader(aReader,
+                         aNode->InternalParameters,
+                         theWS,
+                         theDocument,
+                         aNode->GlobalParameters.LengthUnit,
+                         aNode->ShapeFixParameters);
 
   Standard_Boolean isOk = aReader.ReadStream(aFirstKey.ToCString(), aStream);
   if (!isOk)
@@ -435,7 +446,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStrea
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)&  theWS,
                                         const Message_ProgressRange&    theProgress)
@@ -463,29 +474,22 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStre
   personizeWS(theWS);
 
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
-  STEPCAFControl_Writer            aWriter(theWS, Standard_False);
-  configureSTEPCAFWriter(aWriter, aNode->InternalParameters);
+  
+  STEPCAFControl_Writer aWriter(theWS, Standard_False);
+  configureSTEPCAFWriter(aWriter,
+                         aNode->InternalParameters,
+                         theWS,
+                         theDocument,
+                         aNode->GlobalParameters.LengthUnit,
+                         aNode->ShapeFixParameters);
 
   Handle(StepData_StepModel) aModel =
     Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
-  Standard_Real aScaleFactorMM = 1.;
-  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                          aScaleFactorMM,
-                                          UnitsMethods_LengthUnit_Millimeter))
-  {
-    aModel->SetLocalLengthUnit(aScaleFactorMM);
-  }
-  else
-  {
-    aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
-  }
-
+  DESTEP_Parameters aParams = aNode->InternalParameters;
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,
                                              UnitsMethods_LengthUnit_Millimeter);
-  DESTEP_Parameters aParams = aNode->InternalParameters;
-  aParams.WriteUnit         = aTargetUnit;
-  aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
+  aParams.WriteUnit = aTargetUnit;
 
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
@@ -501,7 +505,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStre
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStreams,
+Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStreams,
                                        const Handle(TDocStd_Document)& theDocument,
                                        const Message_ProgressRange&    theProgress)
 {
@@ -511,7 +515,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStrea
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStreams,
+Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStreams,
                                         const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange&    theProgress)
 {
@@ -521,7 +525,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStre
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStreams,
+Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                theStreams,
                                        TopoDS_Shape&                  theShape,
                                        Handle(XSControl_WorkSession)& theWS,
                                        const Message_ProgressRange&   theProgress)
@@ -560,7 +564,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.LengthUnit);
 
   // Transfer the first root to get the shape
-  if (aReader.TransferRoots() <= 0)
+  if (aReader.TransferRoots(theProgress) <= 0)
   {
     Message::SendFail() << "Error: DESTEP_Provider found no transferable roots in stream "
                         << aFirstKey;
@@ -573,7 +577,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStreams,
+Standard_Boolean DESTEP_Provider::Write(WriteStreamList&               theStreams,
                                         const TopoDS_Shape&            theShape,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange&   theProgress)
@@ -652,7 +656,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Read(ReadStreamList&               theStreams,
+Standard_Boolean DESTEP_Provider::Read(ReadStreamList&              theStreams,
                                        TopoDS_Shape&                theShape,
                                        const Message_ProgressRange& theProgress)
 {
@@ -662,7 +666,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&               theStreams,
 
 //=================================================================================================
 
-Standard_Boolean DESTEP_Provider::Write(WriteStreamList&              theStreams,
+Standard_Boolean DESTEP_Provider::Write(WriteStreamList&             theStreams,
                                         const TopoDS_Shape&          theShape,
                                         const Message_ProgressRange& theProgress)
 {
