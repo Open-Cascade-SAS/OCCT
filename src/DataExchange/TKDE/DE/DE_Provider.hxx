@@ -46,33 +46,27 @@ public:
   DEFINE_STANDARD_RTTIEXT(DE_Provider, Standard_Transient)
 
   //! Node to store write stream information
-  //! Contains relative path and pointer to output stream
+  //! Contains relative path and reference to output stream
   struct WriteStreamNode
   {
     TCollection_AsciiString Path;      //!< Relative path to the output file
-    Standard_OStream*       Stream;    //!< Pointer to output stream
+    Standard_OStream&       Stream;    //!< Reference to output stream
     
     //! Constructor
-    WriteStreamNode(const TCollection_AsciiString& thePath, Standard_OStream* theStream)
+    WriteStreamNode(const TCollection_AsciiString& thePath, Standard_OStream& theStream)
       : Path(thePath), Stream(theStream) {}
-    
-    //! Default constructor
-    WriteStreamNode() : Stream(nullptr) {}
   };
 
   //! Node to store read stream information  
-  //! Contains relative path and pointer to input stream
+  //! Contains relative path and reference to input stream
   struct ReadStreamNode
   {
     TCollection_AsciiString Path;      //!< Relative path to the input file
-    Standard_IStream*       Stream;    //!< Pointer to input stream
+    Standard_IStream&       Stream;    //!< Reference to input stream
     
     //! Constructor
-    ReadStreamNode(const TCollection_AsciiString& thePath, Standard_IStream* theStream)
+    ReadStreamNode(const TCollection_AsciiString& thePath, Standard_IStream& theStream)
       : Path(thePath), Stream(theStream) {}
-    
-    //! Default constructor
-    ReadStreamNode() : Stream(nullptr) {}
   };
 
 public:

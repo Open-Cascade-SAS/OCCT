@@ -655,7 +655,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -717,7 +717,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&     theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -779,7 +779,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
@@ -841,7 +841,7 @@ Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&  theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
 
   Handle(DE_Provider) aProvider;
-  Standard_IStream&   aFirstStream = *theStreams.First().Stream;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
   if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
   {
     Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;

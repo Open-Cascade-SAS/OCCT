@@ -381,7 +381,7 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&               theStreams,
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_IStream&              aStream   = *theStreams.First().Stream;
+  Standard_IStream&              aStream   = theStreams.First().Stream;
 
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
@@ -458,7 +458,7 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&              theStreams,
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = *theStreams.First().Stream;
+  Standard_OStream&              aStream   = theStreams.First().Stream;
 
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";

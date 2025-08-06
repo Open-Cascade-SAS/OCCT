@@ -500,7 +500,7 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamList&                  theStrea
 
   const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
-  Standard_IStream&              aStream      = *theStreams.First().Stream;
+  Standard_IStream&              aStream      = theStreams.First().Stream;
 
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
@@ -559,7 +559,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&                 theStre
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = *theStreams.First().Stream;
+  Standard_OStream&              aStream   = theStreams.First().Stream;
 
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
@@ -613,7 +613,7 @@ Standard_Boolean DEIGES_Provider::Read(ReadStreamList&                 theStream
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_IStream&              aStream   = *theStreams.First().Stream;
+  Standard_IStream&              aStream   = theStreams.First().Stream;
 
   personizeWS(theWS);
 
@@ -666,7 +666,7 @@ Standard_Boolean DEIGES_Provider::Write(WriteStreamList&                theStrea
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = *theStreams.First().Stream;
+  Standard_OStream&              aStream   = theStreams.First().Stream;
 
   personizeWS(theWS);
 

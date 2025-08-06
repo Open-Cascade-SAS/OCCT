@@ -425,7 +425,7 @@ Standard_Boolean DEXCAF_Provider::Read(ReadStreamList&                  theStrea
   Handle(PCDM_ReaderFilter) aFilter;
   ConfigureReaderFilter(aFilter, aNode);
 
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
 
   if (anApp->Open(aStream, aDocument, aFilter, theProgress) != PCDM_RS_OK)
   {
@@ -457,7 +457,7 @@ Standard_Boolean DEXCAF_Provider::Write(WriteStreamList&                 theStre
   TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
   CheckLengthUnitWarning(aNode, aFullContext);
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   PCDM_StoreStatus  aStatus = anApp->SaveAs(theDocument, aStream, theProgress);
 
   return HandlePCDMStatus(aStatus, theDocument, aFullContext);

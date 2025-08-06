@@ -411,7 +411,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                  theStrea
     return Standard_False;
   }
 
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
 
   personizeWS(theWS);
 
@@ -454,7 +454,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                 theStre
     return Standard_False;
   }
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   if (!checkStreamWritability(aStream, aFirstKey))
   {
     return Standard_False;
@@ -539,7 +539,7 @@ Standard_Boolean DESTEP_Provider::Read(ReadStreamList&                 theStream
     return Standard_False;
   }
 
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
   personizeWS(theWS);
 
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());
@@ -591,7 +591,7 @@ Standard_Boolean DESTEP_Provider::Write(WriteStreamList&                theStrea
     return Standard_False;
   }
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   personizeWS(theWS);
 
   Handle(DESTEP_ConfigurationNode) aNode = Handle(DESTEP_ConfigurationNode)::DownCast(GetNode());

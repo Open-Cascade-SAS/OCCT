@@ -459,7 +459,7 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&                 theStre
   aWriter.SetRepresentation(
     static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
 
   if (!aWriter.WriteDoc(theDocument, aStream, aScaling))
   {
@@ -485,7 +485,7 @@ Standard_Boolean DEVRML_Provider::Read(ReadStreamList&               theStreams,
   }
 
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_IStream&              aStream   = *theStreams.First().Stream;
+  Standard_IStream&              aStream   = theStreams.First().Stream;
 
   TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
   Handle(DEVRML_ConfigurationNode) aNode = ValidateConfigurationNode(GetNode(), aFullContext);
@@ -523,7 +523,7 @@ Standard_Boolean DEVRML_Provider::Write(WriteStreamList&              theStreams
   aWriter.SetRepresentation(
     static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
 
   if (!aWriter.Write(theShape, aStream, 2)) // Use version 2 by default
   {

@@ -186,16 +186,7 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
   try
   {
     const DE_Provider::ReadStreamNode& aNode = theStreams.First();
-    if (!aNode.Stream)
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext << ": Stream pointer is null";
-      }
-      return Standard_False;
-    }
-    
-    if (aNode.Stream->fail() || aNode.Stream->bad())
+    if (aNode.Stream.fail() || aNode.Stream.bad())
     {
       if (theIsVerbose)
       {
@@ -250,16 +241,7 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
   try
   {
     const DE_Provider::WriteStreamNode& aNode = theStreams.First();
-    if (!aNode.Stream)
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext << ": Stream pointer is null";
-      }
-      return Standard_False;
-    }
-    
-    if (aNode.Stream->fail() || aNode.Stream->bad())
+    if (aNode.Stream.fail() || aNode.Stream.bad())
     {
       if (theIsVerbose)
       {

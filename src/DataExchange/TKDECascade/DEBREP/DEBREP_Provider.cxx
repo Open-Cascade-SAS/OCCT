@@ -507,7 +507,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamList&                 theStream
     return Standard_False;
   }
 
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
   return ReadShapeFromStream(aStream,
                              TCollection_AsciiString(aContext) + " " + aFirstKey,
                              theShape,
@@ -537,7 +537,7 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamList&                theStrea
     return Standard_False;
   }
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   return WriteShapeToStream(aNode,
                             theShape,
                             aStream,
@@ -565,7 +565,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamList&                  theStrea
   }
 
   TopoDS_Shape      aShape;
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
   if (!ReadShapeFromStream(aStream, aFullContext, aShape, theProgress))
   {
     return Standard_False;
@@ -603,7 +603,7 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamList&                 theStre
     return Standard_False;
   }
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   return WriteShapeToStream(aNode, aShape, aStream, aFullContext, theProgress);
 }
 
@@ -628,7 +628,7 @@ Standard_Boolean DEBREP_Provider::Read(ReadStreamList&               theStreams,
     return Standard_False;
   }
 
-  Standard_IStream& aStream = *theStreams.First().Stream;
+  Standard_IStream& aStream = theStreams.First().Stream;
   return ReadShapeFromStream(aStream, aFullContext, theShape, theProgress);
 }
 
@@ -653,6 +653,6 @@ Standard_Boolean DEBREP_Provider::Write(WriteStreamList&              theStreams
     return Standard_False;
   }
 
-  Standard_OStream& aStream = *theStreams.First().Stream;
+  Standard_OStream& aStream = theStreams.First().Stream;
   return WriteShapeToStream(aNode, theShape, aStream, aFullContext, theProgress);
 }

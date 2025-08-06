@@ -33,8 +33,9 @@ class DEVRML_ProviderTest : public ::testing::Test
 protected:
   void SetUp() override
   {
-    // Initialize provider with default configuration
-    myProvider = new DEVRML_Provider();
+    // Initialize provider with proper configuration node
+    Handle(DEVRML_ConfigurationNode) aNode = new DEVRML_ConfigurationNode();
+    myProvider = new DEVRML_Provider(aNode);
     
     // Create simple test shapes
     myBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
@@ -83,7 +84,7 @@ TEST_F(DEVRML_ProviderTest, StreamShapeWriteRead)
   // Test with box shape
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("test.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("test.vrml", anOStream));
 
   // Write box to stream
   EXPECT_TRUE(myProvider->Write(aWriteStreams, myBox));
@@ -95,7 +96,7 @@ TEST_F(DEVRML_ProviderTest, StreamShapeWriteRead)
   // Read back from stream
   std::istringstream anIStream(aVrmlContent);
   DE_Provider::ReadStreamList aReadStreams;
-  aReadStreams.Append(DE_Provider::ReadStreamNode("test.vrml", &anIStream));
+  aReadStreams.Append(DE_Provider::ReadStreamNode("test.vrml", anIStream));
   
   TopoDS_Shape aReadShape;
   EXPECT_TRUE(myProvider->Read(aReadStreams, aReadShape));
@@ -116,7 +117,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentWriteRead)
 
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("document.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("document.vrml", anOStream));
 
   // Write document to stream
   EXPECT_TRUE(myProvider->Write(aWriteStreams, myDocument));
@@ -132,7 +133,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentWriteRead)
   // Read back from stream
   std::istringstream anIStream(aVrmlContent);
   DE_Provider::ReadStreamList aReadStreams;
-  aReadStreams.Append(DE_Provider::ReadStreamNode("document.vrml", &anIStream));
+  aReadStreams.Append(DE_Provider::ReadStreamNode("document.vrml", anIStream));
   
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
   
@@ -153,7 +154,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentMultipleShapes)
 
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("multi_shapes.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("multi_shapes.vrml", anOStream));
 
   // Write document to stream
   EXPECT_TRUE(myProvider->Write(aWriteStreams, myDocument));
@@ -169,7 +170,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentMultipleShapes)
   // Read back from stream
   std::istringstream anIStream(aVrmlContent);
   DE_Provider::ReadStreamList aReadStreams;
-  aReadStreams.Append(DE_Provider::ReadStreamNode("multi_shapes.vrml", &anIStream));
+  aReadStreams.Append(DE_Provider::ReadStreamNode("multi_shapes.vrml", anIStream));
   
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
   
@@ -191,7 +192,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperIntegration)
   // Test write with DE_Wrapper
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("wrapper_test.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("wrapper_test.vrml", anOStream));
 
   EXPECT_TRUE(aWrapper.Write(aWriteStreams, myBox));
   
@@ -202,7 +203,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperIntegration)
   // Test read with DE_Wrapper
   std::istringstream anIStream(aVrmlContent);
   DE_Provider::ReadStreamList aReadStreams;
-  aReadStreams.Append(DE_Provider::ReadStreamNode("wrapper_test.vrml", &anIStream));
+  aReadStreams.Append(DE_Provider::ReadStreamNode("wrapper_test.vrml", anIStream));
   
   TopoDS_Shape aReadShape;
   EXPECT_TRUE(aWrapper.Read(aReadStreams, aReadShape));
@@ -228,7 +229,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperDocumentOperations)
   // Test document write with DE_Wrapper
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("wrapper_doc.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("wrapper_doc.vrml", anOStream));
 
   EXPECT_TRUE(aWrapper.Write(aWriteStreams, myDocument));
   
@@ -242,7 +243,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperDocumentOperations)
 
   std::istringstream anIStream(aVrmlContent);
   DE_Provider::ReadStreamList aReadStreams;
-  aReadStreams.Append(DE_Provider::ReadStreamNode("wrapper_doc.vrml", &anIStream));
+  aReadStreams.Append(DE_Provider::ReadStreamNode("wrapper_doc.vrml", anIStream));
   
   EXPECT_TRUE(aWrapper.Read(aReadStreams, aNewDocument));
   
@@ -267,7 +268,7 @@ TEST_F(DEVRML_ProviderTest, ErrorHandling)
   // Test with null shape
   std::ostringstream anOStream;
   DE_Provider::WriteStreamList aWriteStreams;
-  aWriteStreams.Append(DE_Provider::WriteStreamNode("null_test.vrml", &anOStream));
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("null_test.vrml", anOStream));
   TopoDS_Shape aNullShape;
   
   // Writing null shape might succeed but produce empty or minimal content
