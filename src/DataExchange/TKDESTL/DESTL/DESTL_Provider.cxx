@@ -92,6 +92,12 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
                            const Handle(TDocStd_Document)& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
+  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
+  {
+    return false;
+  }
+
   // Extract shape from document
   TDF_LabelSequence         aLabels;
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
@@ -104,8 +110,14 @@ bool DESTL_Provider::Write(const TCollection_AsciiString&  thePath,
     return false;
   }
 
-  Handle(DESTL_ConfigurationNode) aNode    = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
-  TCollection_AsciiString         aContext = TCollection_AsciiString("writing the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aContext))
+  {
+    return false;
+  }
+
+  Handle(DESTL_ConfigurationNode) aNode = Handle(DESTL_ConfigurationNode)::DownCast(GetNode());
   DE_ValidationUtils::WarnLengthUnitNotSupported(aNode->GlobalParameters.LengthUnit, aContext);
 
   TopoDS_Shape aShape;
@@ -160,10 +172,11 @@ bool DESTL_Provider::Read(const TCollection_AsciiString& thePath,
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
 
-  if (!GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aContext))
   {
-    Message::SendFail() << "Error in the DESTL_Provider during reading the file " << thePath
-                        << "\t: Incorrect or empty Configuration Node";
     return false;
   }
 
@@ -322,7 +335,12 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStrea
     return Standard_False;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
+  TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
+  {
+    return Standard_False;
+  }
 
   // Extract shape from document
   TDF_LabelSequence         aLabels;
@@ -333,6 +351,13 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&                 theStrea
   {
     Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
                         << ": Document contain no shapes";
+    return Standard_False;
+  }
+
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aFullContext))
+  {
     return Standard_False;
   }
 
@@ -386,10 +411,11 @@ Standard_Boolean DESTL_Provider::Read(ReadStreamList&               theStreams,
   Message::SendWarning()
     << "OCCT Stl reader does not support model scaling according to custom length unit";
 
-  if (!GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  TCollection_AsciiString aNodeContext = TCollection_AsciiString("reading stream ") + aFirstKey;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aNodeContext))
   {
-    Message::SendFail() << "Error in the DESTL_Provider during reading stream " << aFirstKey
-                        << ": Incorrect or empty Configuration Node";
     return Standard_False;
   }
 
@@ -463,10 +489,11 @@ Standard_Boolean DESTL_Provider::Write(WriteStreamList&              theStreams,
   Message::SendWarning()
     << "OCCT Stl writer does not support model scaling according to custom length unit";
 
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DESTL_ConfigurationNode)))
+  TCollection_AsciiString aNodeContext = TCollection_AsciiString("writing stream ") + aFirstKey;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DESTL_ConfigurationNode),
+                                                     aNodeContext))
   {
-    Message::SendFail() << "Error in the DESTL_Provider during writing stream " << aFirstKey
-                        << ": Incorrect or empty Configuration Node";
     return Standard_False;
   }
 
