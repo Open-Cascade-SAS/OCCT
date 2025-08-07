@@ -11,23 +11,11 @@
 #include <cmath>
 #include <limits>
 
-// Test fixture for Bnd_Box tests
-class Bnd_BoxTest : public ::testing::Test
-{
-protected:
-  void SetUp() override
-  {
-    myTolerance = 1e-10;
-  }
-
-  Standard_Real myTolerance;
-};
-
 //==================================================================================================
 // Constructor Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, DefaultConstructor)
+TEST(Bnd_BoxTest, DefaultConstructor)
 {
   Bnd_Box aBox;
   
@@ -36,7 +24,7 @@ TEST_F(Bnd_BoxTest, DefaultConstructor)
   EXPECT_DOUBLE_EQ(0.0, aBox.GetGap()) << "Default gap should be 0.0";
 }
 
-TEST_F(Bnd_BoxTest, PointConstructor)
+TEST(Bnd_BoxTest, PointConstructor)
 {
   gp_Pnt aMinPnt(1.0, 2.0, 3.0);
   gp_Pnt aMaxPnt(4.0, 5.0, 6.0);
@@ -61,7 +49,7 @@ TEST_F(Bnd_BoxTest, PointConstructor)
 // Set and Update Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, SetWithPoint)
+TEST(Bnd_BoxTest, SetWithPoint)
 {
   Bnd_Box aBox;
   gp_Pnt aPnt(1.5, 2.5, 3.5);
@@ -81,7 +69,7 @@ TEST_F(Bnd_BoxTest, SetWithPoint)
   EXPECT_DOUBLE_EQ(3.5, aZmax) << "Point coordinates should set both min and max";
 }
 
-TEST_F(Bnd_BoxTest, SetWithPointAndDirection)
+TEST(Bnd_BoxTest, SetWithPointAndDirection)
 {
   Bnd_Box aBox;
   gp_Pnt aPnt(1.0, 2.0, 3.0);
@@ -94,7 +82,7 @@ TEST_F(Bnd_BoxTest, SetWithPointAndDirection)
   EXPECT_FALSE(aBox.IsOpenXmin()) << "Box should not be open in negative X direction";
 }
 
-TEST_F(Bnd_BoxTest, UpdateWithBounds)
+TEST(Bnd_BoxTest, UpdateWithBounds)
 {
   Bnd_Box aBox;
   
@@ -113,7 +101,7 @@ TEST_F(Bnd_BoxTest, UpdateWithBounds)
   EXPECT_DOUBLE_EQ(6.0, aZmax) << "Update should set correct bounds";
 }
 
-TEST_F(Bnd_BoxTest, UpdateWithPoint)
+TEST(Bnd_BoxTest, UpdateWithPoint)
 {
   Bnd_Box aBox;
   
@@ -136,7 +124,7 @@ TEST_F(Bnd_BoxTest, UpdateWithPoint)
   EXPECT_DOUBLE_EQ(2.5, aYmax) << "Box should expand to include new point";
 }
 
-TEST_F(Bnd_BoxTest, UpdateExpansion)
+TEST(Bnd_BoxTest, UpdateExpansion)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -159,7 +147,7 @@ TEST_F(Bnd_BoxTest, UpdateExpansion)
 // Gap and Tolerance Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, GapOperations)
+TEST(Bnd_BoxTest, GapOperations)
 {
   Bnd_Box aBox;
   
@@ -182,7 +170,7 @@ TEST_F(Bnd_BoxTest, GapOperations)
 // Corner Methods Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, CornerMethods)
+TEST(Bnd_BoxTest, CornerMethods)
 {
   Bnd_Box aBox;
   aBox.Update(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
@@ -200,7 +188,7 @@ TEST_F(Bnd_BoxTest, CornerMethods)
   EXPECT_DOUBLE_EQ(6.1, aCornerMax.Z()) << "CornerMax should account for gap";
 }
 
-TEST_F(Bnd_BoxTest, CornerMethodsVoidBox)
+TEST(Bnd_BoxTest, CornerMethodsVoidBox)
 {
   Bnd_Box aBox; // void box
   
@@ -208,7 +196,7 @@ TEST_F(Bnd_BoxTest, CornerMethodsVoidBox)
   EXPECT_THROW(aBox.CornerMax(), Standard_ConstructionError) << "CornerMax should throw for void box";
 }
 
-TEST_F(Bnd_BoxTest, CornerMethodsOpenBox)
+TEST(Bnd_BoxTest, CornerMethodsOpenBox)
 {
   Bnd_Box aBox;
   aBox.Update(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
@@ -226,7 +214,7 @@ TEST_F(Bnd_BoxTest, CornerMethodsOpenBox)
 // Thin Methods Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, ThinnessMethods)
+TEST(Bnd_BoxTest, ThinnessMethods)
 {
   Bnd_Box aBox;
   
@@ -253,7 +241,7 @@ TEST_F(Bnd_BoxTest, ThinnessMethods)
   EXPECT_TRUE(aThinBox.IsThin(0.1)) << "Box thin in all dimensions should be overall thin";
 }
 
-TEST_F(Bnd_BoxTest, ThinnessWithOpenBox)
+TEST(Bnd_BoxTest, ThinnessWithOpenBox)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -270,7 +258,7 @@ TEST_F(Bnd_BoxTest, ThinnessWithOpenBox)
 // Transformation Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, TransformationIdentity)
+TEST(Bnd_BoxTest, TransformationIdentity)
 {
   Bnd_Box aBox;
   aBox.Update(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
@@ -294,7 +282,7 @@ TEST_F(Bnd_BoxTest, TransformationIdentity)
   EXPECT_DOUBLE_EQ(aBox.GetGap(), aTransformed.GetGap()) << "Gap should be preserved";
 }
 
-TEST_F(Bnd_BoxTest, TransformationTranslation)
+TEST(Bnd_BoxTest, TransformationTranslation)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -315,7 +303,7 @@ TEST_F(Bnd_BoxTest, TransformationTranslation)
   EXPECT_DOUBLE_EQ(5.0, aZmax) << "Translation should shift coordinates";
 }
 
-TEST_F(Bnd_BoxTest, TransformationVoidBox)
+TEST(Bnd_BoxTest, TransformationVoidBox)
 {
   Bnd_Box aVoidBox;
   gp_Trsf aRotation;
@@ -330,7 +318,7 @@ TEST_F(Bnd_BoxTest, TransformationVoidBox)
 // Add Methods Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, AddBox)
+TEST(Bnd_BoxTest, AddBox)
 {
   Bnd_Box aBox1;
   aBox1.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -355,7 +343,7 @@ TEST_F(Bnd_BoxTest, AddBox)
   EXPECT_DOUBLE_EQ(0.2, aBox1.GetGap()) << "Gap should be maximum of both boxes";
 }
 
-TEST_F(Bnd_BoxTest, AddVoidBox)
+TEST(Bnd_BoxTest, AddVoidBox)
 {
   Bnd_Box aBox;
   aBox.Update(1.0, 1.0, 1.0, 2.0, 2.0, 2.0);
@@ -370,7 +358,7 @@ TEST_F(Bnd_BoxTest, AddVoidBox)
   EXPECT_DOUBLE_EQ(2.0, aXmax) << "Adding void box should not change original";
 }
 
-TEST_F(Bnd_BoxTest, AddToVoidBox)
+TEST(Bnd_BoxTest, AddToVoidBox)
 {
   Bnd_Box aVoidBox;
   Bnd_Box aBox;
@@ -387,7 +375,7 @@ TEST_F(Bnd_BoxTest, AddToVoidBox)
   EXPECT_DOUBLE_EQ(2.0, aXmax) << "Should adopt added box's bounds";
 }
 
-TEST_F(Bnd_BoxTest, AddPoint)
+TEST(Bnd_BoxTest, AddPoint)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -406,7 +394,7 @@ TEST_F(Bnd_BoxTest, AddPoint)
   EXPECT_DOUBLE_EQ(1.0, aZmax) << "Box should maintain existing bounds";
 }
 
-TEST_F(Bnd_BoxTest, AddDirection)
+TEST(Bnd_BoxTest, AddDirection)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -420,7 +408,7 @@ TEST_F(Bnd_BoxTest, AddDirection)
   EXPECT_FALSE(aBox.IsOpenYmin()) << "X direction should not affect Y";
 }
 
-TEST_F(Bnd_BoxTest, AddPointWithDirection)
+TEST(Bnd_BoxTest, AddPointWithDirection)
 {
   Bnd_Box aBox;
   gp_Pnt aPnt(1.0, 2.0, 3.0);
@@ -437,7 +425,7 @@ TEST_F(Bnd_BoxTest, AddPointWithDirection)
 // IsOut Methods Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, IsOutPoint)
+TEST(Bnd_BoxTest, IsOutPoint)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
@@ -451,7 +439,7 @@ TEST_F(Bnd_BoxTest, IsOutPoint)
   EXPECT_FALSE(aBox.IsOut(aBoundaryPnt)) << "Point on boundary should not be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutPointWithGap)
+TEST(Bnd_BoxTest, IsOutPointWithGap)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
@@ -464,7 +452,7 @@ TEST_F(Bnd_BoxTest, IsOutPointWithGap)
   EXPECT_TRUE(aBox.IsOut(aFarBoundaryPnt)) << "Point beyond gap should be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutVoidBox)
+TEST(Bnd_BoxTest, IsOutVoidBox)
 {
   Bnd_Box aVoidBox;
   gp_Pnt anAnyPnt(1.0, 2.0, 3.0);
@@ -472,7 +460,7 @@ TEST_F(Bnd_BoxTest, IsOutVoidBox)
   EXPECT_TRUE(aVoidBox.IsOut(anAnyPnt)) << "Void box should exclude all points";
 }
 
-TEST_F(Bnd_BoxTest, IsOutWholeBox)
+TEST(Bnd_BoxTest, IsOutWholeBox)
 {
   Bnd_Box aWholeBox;
   aWholeBox.SetWhole();
@@ -482,7 +470,7 @@ TEST_F(Bnd_BoxTest, IsOutWholeBox)
   EXPECT_FALSE(aWholeBox.IsOut(anAnyPnt)) << "Whole box should include all points";
 }
 
-TEST_F(Bnd_BoxTest, IsOutBox)
+TEST(Bnd_BoxTest, IsOutBox)
 {
   Bnd_Box aBox1;
   aBox1.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
@@ -501,7 +489,7 @@ TEST_F(Bnd_BoxTest, IsOutBox)
   EXPECT_FALSE(aBox1.IsOut(aTouchingBox)) << "Touching boxes should not be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutPlane)
+TEST(Bnd_BoxTest, IsOutPlane)
 {
   Bnd_Box aBox;
   aBox.Update(-1.0, -1.0, -1.0, 1.0, 1.0, 1.0);
@@ -516,7 +504,7 @@ TEST_F(Bnd_BoxTest, IsOutPlane)
   EXPECT_TRUE(aBox.IsOut(aSeparatePln)) << "Separate plane should be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutLine)
+TEST(Bnd_BoxTest, IsOutLine)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
@@ -535,7 +523,7 @@ TEST_F(Bnd_BoxTest, IsOutLine)
 // Distance Method Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, Distance)
+TEST(Bnd_BoxTest, Distance)
 {
   Bnd_Box aBox1;
   aBox1.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -558,7 +546,7 @@ TEST_F(Bnd_BoxTest, Distance)
 // Open/Close Methods Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, OpenCloseMethods)
+TEST(Bnd_BoxTest, OpenCloseMethods)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -587,7 +575,7 @@ TEST_F(Bnd_BoxTest, OpenCloseMethods)
 // Void/Whole State Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, VoidWholeStates)
+TEST(Bnd_BoxTest, VoidWholeStates)
 {
   Bnd_Box aBox;
   
@@ -614,7 +602,7 @@ TEST_F(Bnd_BoxTest, VoidWholeStates)
 // Edge Cases and Error Conditions
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, EdgeCases)
+TEST(Bnd_BoxTest, EdgeCases)
 {
   Bnd_Box aBox;
   
@@ -632,7 +620,7 @@ TEST_F(Bnd_BoxTest, EdgeCases)
   EXPECT_TRUE(aSmallBox.IsXThin(1e-9)) << "Very small box should be considered thin";
 }
 
-TEST_F(Bnd_BoxTest, TransformationWithOpenBox)
+TEST(Bnd_BoxTest, TransformationWithOpenBox)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -651,7 +639,7 @@ TEST_F(Bnd_BoxTest, TransformationWithOpenBox)
 // Additional Coverage Tests
 //==================================================================================================
 
-TEST_F(Bnd_BoxTest, SquareExtent)
+TEST(Bnd_BoxTest, SquareExtent)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 2.0, 3.0, 4.0);
@@ -662,7 +650,7 @@ TEST_F(Bnd_BoxTest, SquareExtent)
   EXPECT_DOUBLE_EQ(29.0, aBox.SquareExtent()) << "Square extent should be square of diagonal length";
 }
 
-TEST_F(Bnd_BoxTest, SetVoidAndWholeTransitions)
+TEST(Bnd_BoxTest, SetVoidAndWholeTransitions)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -677,7 +665,7 @@ TEST_F(Bnd_BoxTest, SetVoidAndWholeTransitions)
   EXPECT_FALSE(aBox.IsVoid()) << "Whole box should not be void";
 }
 
-TEST_F(Bnd_BoxTest, DirectOpenOperations)
+TEST(Bnd_BoxTest, DirectOpenOperations)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -702,7 +690,7 @@ TEST_F(Bnd_BoxTest, DirectOpenOperations)
   EXPECT_TRUE(aBox.IsOpenZmax()) << "OpenZmax should work";
 }
 
-TEST_F(Bnd_BoxTest, IsOutWithTransformation)
+TEST(Bnd_BoxTest, IsOutWithTransformation)
 {
   Bnd_Box aBox1;
   aBox1.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -718,7 +706,7 @@ TEST_F(Bnd_BoxTest, IsOutWithTransformation)
   EXPECT_FALSE(aBox1.IsOut(aBox2, aTransf)) << "Overlapping transformed boxes should not be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutWithTwoTransformations)
+TEST(Bnd_BoxTest, IsOutWithTwoTransformations)
 {
   Bnd_Box aBox1;
   aBox1.Update(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
@@ -733,7 +721,7 @@ TEST_F(Bnd_BoxTest, IsOutWithTwoTransformations)
   EXPECT_TRUE(aBox1.IsOut(aT1, aBox2, aT2)) << "Separated transformed boxes should be out";
 }
 
-TEST_F(Bnd_BoxTest, IsOutLineSegment)
+TEST(Bnd_BoxTest, IsOutLineSegment)
 {
   Bnd_Box aBox;
   aBox.Update(0.0, 0.0, 0.0, 2.0, 2.0, 2.0);
@@ -752,7 +740,7 @@ TEST_F(Bnd_BoxTest, IsOutLineSegment)
   EXPECT_TRUE(aBox.IsOut(aP3, aP4, aDir)) << "Line segment missing box should be out";
 }
 
-TEST_F(Bnd_BoxTest, UpdateExpandsCorrectly)
+TEST(Bnd_BoxTest, UpdateExpandsCorrectly)
 {
   Bnd_Box aBox;
   
