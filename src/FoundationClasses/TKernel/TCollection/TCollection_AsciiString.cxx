@@ -30,7 +30,14 @@
 namespace
 {
 static char THE_DEFAULT_CHAR_STRING[1] = {'\0'};
+
+//! Calculate padded allocation size: minimum +1 byte guaranteed, up to +4 bytes
+//! This provides automatic space for null terminator and some extra buffer, aligned to 4-byte boundary
+inline Standard_Size calculatePaddedSize(const int theLength)
+{
+  return (theLength + 4) & ~0x3; // Always guarantees at least +1 byte, up to +4 bytes
 }
+} // namespace
 
 // ----------------------------------------------------------------------------
 // Create an empty AsciiString
@@ -214,6 +221,7 @@ TCollection_AsciiString::TCollection_AsciiString(const TCollection_ExtendedStrin
   else
   {
     // create UTF-8 string
+    // Note: allocate() adds padding (theLength + 4) & ~0x3, so no need for +1 for null terminator
     allocate(astring.LengthOfCString());
     astring.ToUTF8CString(mystring);
   }
@@ -1340,7 +1348,7 @@ void TCollection_AsciiString::allocate(const int theLength)
   }
   else
   {
-    const Standard_Size aRoundSize = (theLength + 4) & ~0x3;
+    const Standard_Size aRoundSize = calculatePaddedSize(theLength);
     mystring           = static_cast<Standard_PCharacter>(Standard::AllocateOptimal(aRoundSize));
     mystring[mylength] = '\0';
   }
@@ -1354,12 +1362,15 @@ void TCollection_AsciiString::reallocate(const int theLength)
   {
     if (mystring == THE_DEFAULT_CHAR_STRING)
     {
-      const Standard_Size aRoundSize = (theLength + 4) & ~0x3;
+      // Use same padding strategy as allocate() for consistency
+      const Standard_Size aRoundSize = calculatePaddedSize(theLength);
       mystring = static_cast<Standard_PCharacter>(Standard::AllocateOptimal(aRoundSize));
     }
     else
     {
-      mystring = static_cast<Standard_PCharacter>(Standard::Reallocate(mystring, theLength + 1));
+      // For existing allocations, use padding size with Standard::Reallocate
+      const Standard_Size aRoundSize = calculatePaddedSize(theLength);
+      mystring = static_cast<Standard_PCharacter>(Standard::Reallocate(mystring, aRoundSize));
     }
     mystring[theLength] = '\0';
   }
