@@ -331,7 +331,7 @@ Standard_Boolean RWStl::WriteAscii(const Handle(Poly_Triangulation)& theMesh,
       aVNorm.SetCoord(0.0, 0.0, 0.0);
     }
 
-    theStream << " facet normal " << std::scientific << std::setprecision(5) << aVNorm.X() << " "
+    theStream << " facet normal " << std::scientific << std::setprecision(12) << aVNorm.X() << " "
               << aVNorm.Y() << " " << aVNorm.Z() << "\n"
               << "   outer loop\n"
               << "     vertex " << aP1.X() << " " << aP1.Y() << " " << aP1.Z() << "\n"

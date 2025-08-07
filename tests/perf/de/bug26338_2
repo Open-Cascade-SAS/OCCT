@@ -13,7 +13,7 @@ dchrono s restart
 writestl result $imagedir/${casename}-ascii.stl 0
 dchrono s stop counter writestl
 set aFileSize [file size $imagedir/${casename}-ascii.stl]
-if {$aFileSize < 480000000} {
+if {$aFileSize < 490000000} {
   puts "Error: unexpected file size"
 } else {
   file delete -force $imagedir/${casename}-ascii.stl
