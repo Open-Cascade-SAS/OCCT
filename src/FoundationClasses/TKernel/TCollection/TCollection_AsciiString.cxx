@@ -32,7 +32,8 @@ namespace
 static char THE_DEFAULT_CHAR_STRING[1] = {'\0'};
 
 //! Calculate padded allocation size: minimum +1 byte guaranteed, up to +4 bytes
-//! This provides automatic space for null terminator and some extra buffer, aligned to 4-byte boundary
+//! This provides automatic space for null terminator and some extra buffer, aligned to 4-byte
+//! boundary
 inline Standard_Size calculatePaddedSize(const int theLength)
 {
   return (theLength + 4) & ~0x3; // Always guarantees at least +1 byte, up to +4 bytes

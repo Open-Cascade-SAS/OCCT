@@ -237,7 +237,7 @@ TEST(TCollection_AsciiStringTest, MemoryAllocation)
   // Test memory allocation with various string lengths
   TCollection_AsciiString aString1("test");
   EXPECT_EQ(4, aString1.Length());
-  
+
   // Test allocation with different lengths
   for (Standard_Integer anIdx = 0; anIdx <= 20; ++anIdx)
   {
@@ -246,19 +246,19 @@ TEST(TCollection_AsciiStringTest, MemoryAllocation)
   }
 }
 
-TEST(TCollection_AsciiStringTest, LengthConstructor) 
+TEST(TCollection_AsciiStringTest, LengthConstructor)
 {
   // Test constructor with string and maximum length
   const Standard_CString aSourceString = "This is a very long string";
-  
+
   TCollection_AsciiString aString1(aSourceString, 4);
   EXPECT_EQ(4, aString1.Length());
   EXPECT_STREQ("This", aString1.ToCString());
-  
+
   TCollection_AsciiString aString2(aSourceString, 7);
   EXPECT_EQ(7, aString2.Length());
   EXPECT_STREQ("This is", aString2.ToCString());
-  
+
   // Test with length exceeding source string
   TCollection_AsciiString aString3(aSourceString, 100);
   EXPECT_EQ(26, aString3.Length());
@@ -269,8 +269,8 @@ TEST(TCollection_AsciiStringTest, ExtendedStringConversion)
 {
   // Test conversion from ExtendedString
   TCollection_ExtendedString anExtString("Hello World");
-  TCollection_AsciiString anAsciiString(anExtString);
-  
+  TCollection_AsciiString    anAsciiString(anExtString);
+
   EXPECT_EQ(anExtString.Length(), anAsciiString.Length());
   EXPECT_STREQ("Hello World", anAsciiString.ToCString());
 }
@@ -280,10 +280,10 @@ TEST(TCollection_AsciiStringTest, NumericalConstructors)
   // Test integer constructor
   TCollection_AsciiString anIntString(42);
   EXPECT_STREQ("42", anIntString.ToCString());
-  
-  // Test real constructor  
+
+  // Test real constructor
   TCollection_AsciiString aRealString(3.14);
-  const Standard_CString aRealCStr = aRealString.ToCString();
+  const Standard_CString  aRealCStr = aRealString.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
 }
 
@@ -301,11 +301,11 @@ TEST(TCollection_AsciiStringTest, ConcatenationConstructors)
   TCollection_AsciiString aBaseString("Hello");
   TCollection_AsciiString aStringWithChar(aBaseString, '!');
   EXPECT_STREQ("Hello!", aStringWithChar.ToCString());
-  
+
   // Test string + C string constructor
   TCollection_AsciiString aStringWithCStr(aBaseString, " World");
   EXPECT_STREQ("Hello World", aStringWithCStr.ToCString());
-  
+
   // Test string + string constructor
   TCollection_AsciiString aSecondString(" Universe");
   TCollection_AsciiString aCombinedString(aBaseString, aSecondString);
@@ -317,11 +317,11 @@ TEST(TCollection_AsciiStringTest, EdgeCases)
   // Test empty string operations
   TCollection_AsciiString anEmptyString1;
   TCollection_AsciiString anEmptyString2("");
-  
+
   EXPECT_TRUE(anEmptyString1.IsEqual(anEmptyString2));
   EXPECT_EQ(0, anEmptyString1.Length());
   EXPECT_TRUE(anEmptyString1.IsEmpty());
-  
+
   // Test null character handling
   TCollection_AsciiString aNullCharString('\0');
   EXPECT_EQ(0, aNullCharString.Length());
@@ -331,9 +331,9 @@ TEST(TCollection_AsciiStringTest, EdgeCases)
 TEST(TCollection_AsciiStringTest, LargeStrings)
 {
   // Test with large strings to verify memory allocation
-  const Standard_Integer aLargeSize = 1000;
+  const Standard_Integer  aLargeSize = 1000;
   TCollection_AsciiString aLargeString(aLargeSize, 'X');
-  
+
   EXPECT_EQ(aLargeSize, aLargeString.Length());
   EXPECT_EQ('X', aLargeString.Value(1));
   EXPECT_EQ('X', aLargeString.Value(aLargeSize));
@@ -346,11 +346,11 @@ TEST(TCollection_AsciiStringTest, PaddingSafety)
   {
     TCollection_AsciiString aTestString(anIdx, 'A');
     EXPECT_EQ(anIdx, aTestString.Length());
-    
+
     // Verify null termination
     const Standard_CString aCString = aTestString.ToCString();
     EXPECT_EQ('\0', aCString[anIdx]);
-    
+
     // Verify content
     for (Standard_Integer aCharIdx = 0; aCharIdx < anIdx; ++aCharIdx)
     {

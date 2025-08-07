@@ -55,7 +55,7 @@ inline Standard_ExtCharacter* Standard_UNUSED fromWideString(const Standard_Wide
   {
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
-  const Standard_Size aRoundSize = calculatePaddedSize(theLength);
+  const Standard_Size    aRoundSize = calculatePaddedSize(theLength);
   Standard_ExtCharacter* aString =
     static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
   NCollection_UtfWideIter anIterRead(theUtfString);
@@ -80,7 +80,7 @@ inline Standard_ExtCharacter* Standard_UNUSED
   {
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
-  const Standard_Size aRoundSize = calculatePaddedSize(theLength);
+  const Standard_Size    aRoundSize = calculatePaddedSize(theLength);
   Standard_ExtCharacter* aString =
     static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
   const Standard_Integer aSize = theLength * sizeof(Standard_ExtCharacter);
