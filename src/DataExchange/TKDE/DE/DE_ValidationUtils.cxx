@@ -324,13 +324,14 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&          
 {
   constexpr std::streamsize aBufferLength = 2048;
 
-  theBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aBufferLength);
+  theBuffer =
+    new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aBufferLength);
 
   // Save current stream position
   std::streampos aOriginalPos = theStream.tellg();
 
   theStream.read(reinterpret_cast<char*>(theBuffer->ChangeData()), aBufferLength);
-  const std::streamsize aBytesRead                               = theStream.gcount();
+  const std::streamsize aBytesRead = theStream.gcount();
   theBuffer->ChangeData()[aBytesRead < aBufferLength ? aBytesRead : aBufferLength - 1] = '\0';
 
   // Clear any error flags (including EOF) BEFORE attempting to reset position
