@@ -15,6 +15,7 @@
 #define _DE_Wrapper_HeaderFile
 
 #include <DE_ConfigurationNode.hxx>
+#include <DE_Provider.hxx>
 #include <Message_ProgressRange.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -163,6 +164,94 @@ public:
           const TopoDS_Shape&            theShape,
           const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(DE_Provider::ReadStreamList&    theStreams,
+         const Handle(TDocStd_Document)& theDocument,
+         Handle(XSControl_WorkSession)&  theWS,
+         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamList&   theStreams,
+          const Handle(TDocStd_Document)& theDocument,
+          Handle(XSControl_WorkSession)&  theWS,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(DE_Provider::ReadStreamList&    theStreams,
+         const Handle(TDocStd_Document)& theDocument,
+         const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamList&   theStreams,
+          const Handle(TDocStd_Document)& theDocument,
+          const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(DE_Provider::ReadStreamList&   theStreams,
+         TopoDS_Shape&                  theShape,
+         Handle(XSControl_WorkSession)& theWS,
+         const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamList&  theStreams,
+          const TopoDS_Shape&            theShape,
+          Handle(XSControl_WorkSession)& theWS,
+          const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return true if Read operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Read(DE_Provider::ReadStreamList& theStreams,
+         TopoDS_Shape&                theShape,
+         const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return true if Write operation has ended correctly
+  Standard_EXPORT Standard_Boolean
+    Write(DE_Provider::WriteStreamList& theStreams,
+          const TopoDS_Shape&           theShape,
+          const Message_ProgressRange&  theProgress = Message_ProgressRange());
+
 public:
   //! Updates values according the resource file
   //! @param[in] theResource file path to resource or resource value
@@ -242,6 +331,35 @@ public:
   Standard_EXPORT virtual Standard_Boolean FindProvider(const TCollection_AsciiString& thePath,
                                                         const Standard_Boolean         theToImport,
                                                         Handle(DE_Provider)& theProvider) const;
+
+  //! Find available read provider from the configuration for file-based operations.
+  //! If there are several providers, choose the one with the highest priority.
+  //! @param[in] thePath path to the CAD file (for extension and content checking)
+  //! @param[in] theCheckContent flag to enable content checking via file reading
+  //! @param[out] theProvider created new provider
+  //! @return Standard_True if provider found and created
+  Standard_EXPORT virtual Standard_Boolean FindReadProvider(const TCollection_AsciiString& thePath,
+                                                            const Standard_Boolean theCheckContent,
+                                                            Handle(DE_Provider)& theProvider) const;
+
+  //! Find available read provider from the configuration for stream-based operations.
+  //! If there are several providers, choose the one with the highest priority.
+  //! @param[in] thePath path to the CAD file (for extension extraction)
+  //! @param[in] theStream input stream for content checking
+  //! @param[out] theProvider created new provider
+  //! @return Standard_True if provider found and created
+  Standard_EXPORT virtual Standard_Boolean FindReadProvider(const TCollection_AsciiString& thePath,
+                                                            std::istream&        theStream,
+                                                            Handle(DE_Provider)& theProvider) const;
+
+  //! Find available write provider from the configuration.
+  //! If there are several providers, choose the one with the highest priority.
+  //! @param[in] thePath path to the CAD file (for extension checking only)
+  //! @param[out] theProvider created new provider
+  //! @return Standard_True if provider found and created
+  Standard_EXPORT virtual Standard_Boolean FindWriteProvider(
+    const TCollection_AsciiString& thePath,
+    Handle(DE_Provider)&           theProvider) const;
 
   //! Updates all registered nodes, all changes will be saved in nodes
   //! @param[in] theToForceUpdate flag that turns on/of nodes, according to updated ability to

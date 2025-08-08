@@ -15,6 +15,9 @@
 #define _DE_Provider_HeaderFile
 
 #include <Message_ProgressRange.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_IStream.hxx>
+#include <Standard_OStream.hxx>
 
 class DE_ConfigurationNode;
 class TopoDS_Shape;
@@ -42,6 +45,45 @@ class DE_Provider : public Standard_Transient
 {
 public:
   DEFINE_STANDARD_RTTIEXT(DE_Provider, Standard_Transient)
+
+  //! Node to store write stream information
+  //! Contains relative path and reference to output stream
+  struct WriteStreamNode
+  {
+    TCollection_AsciiString Path;   //!< Relative path to the output file
+    Standard_OStream&       Stream; //!< Reference to output stream
+
+    //! Constructor
+    WriteStreamNode(const TCollection_AsciiString& thePath, Standard_OStream& theStream)
+        : Path(thePath),
+          Stream(theStream)
+    {
+    }
+  };
+
+  //! Node to store read stream information
+  //! Contains relative path and reference to input stream
+  struct ReadStreamNode
+  {
+    TCollection_AsciiString Path;   //!< Relative path to the input file
+    Standard_IStream&       Stream; //!< Reference to input stream
+
+    //! Constructor
+    ReadStreamNode(const TCollection_AsciiString& thePath, Standard_IStream& theStream)
+        : Path(thePath),
+          Stream(theStream)
+    {
+    }
+  };
+
+public:
+  //! List to store write stream nodes
+  //! First element is the main stream, others are for internal referencing
+  using WriteStreamList = NCollection_List<WriteStreamNode>;
+
+  //! List to store read stream nodes
+  //! First element is the main stream, others are for internal referencing
+  using ReadStreamList = NCollection_List<ReadStreamNode>;
 
 public:
   //! Default constructor
@@ -77,6 +119,30 @@ public:
     Handle(XSControl_WorkSession)&  theWS,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    ReadStreamList&                 theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    Handle(XSControl_WorkSession)&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamList&                theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    Handle(XSControl_WorkSession)&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
@@ -97,6 +163,26 @@ public:
     const Handle(TDocStd_Document)& theDocument,
     const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theDocument document to save result
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    ReadStreamList&                 theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theDocument document to export
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamList&                theStreams,
+    const Handle(TDocStd_Document)& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
@@ -121,6 +207,30 @@ public:
     Handle(XSControl_WorkSession)& theWS,
     const Message_ProgressRange&   theProgress = Message_ProgressRange());
 
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    ReadStreamList&                theStreams,
+    TopoDS_Shape&                  theShape,
+    Handle(XSControl_WorkSession)& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theWS current work session
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamList&               theStreams,
+    const TopoDS_Shape&            theShape,
+    Handle(XSControl_WorkSession)& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
@@ -140,6 +250,26 @@ public:
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange());
+
+  //! Reads streams according to internal configuration
+  //! @param[in] theStreams streams to read from
+  //! @param[out] theShape shape to save result
+  //! @param[in] theProgress progress indicator
+  //! @return True if Read was successful
+  Standard_EXPORT virtual Standard_Boolean Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  //! Writes streams according to internal configuration
+  //! @param[in] theStreams streams to write to
+  //! @param[out] theShape shape to export
+  //! @param[in] theProgress progress indicator
+  //! @return True if Write was successful
+  Standard_EXPORT virtual Standard_Boolean Write(
+    WriteStreamList&             theStreams,
+    const TopoDS_Shape&          theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 public:
   //! Gets CAD format name of associated provider
