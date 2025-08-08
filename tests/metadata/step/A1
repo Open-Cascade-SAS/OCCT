@@ -1,8 +1,8 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug28345_30338.stp
-
-set ref_data {
-Property for [0:1:1:1]:
+set ref_size 41611
+set check_metadata 1
+set ref_metadata {Property for [0:1:1:1]:
 H_CIP : 55.545955351400004
 ProductID : MVE0300X02S030_ASM
 ProductName : MVE0300X02S030_ASM
@@ -35,5 +35,4 @@ MODELED_BY :
 ProductID : NOCUT_MVE0300X02S030
 ProductName : NOCUT_MVE0300X02S030
 Description : NOT SPECIFIED
-
 }

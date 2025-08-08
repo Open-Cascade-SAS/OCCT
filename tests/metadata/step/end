@@ -1,100 +1,72 @@
 # Set flag dump_file to 1 in order to regenerate script files with actual data
 # used as reference. In this mode all tests intentionally report failure.
 set dump_file 0
-########################################################################
-set mist 0;
-set todo_msg ""
-set todo_mask "puts \"TODO CR00000 ALL: "
-set end_line "\" \n"
-##################################################################
 
-set conf "provider.STEP.OCC.read.productmetadata : 1"
+set aReadMetadataConfig "provider.STEP.OCC.read.productmetadata : 1"
+set aWriteMetadataConfig "provider.STEP.OCC.write.metadata : 1"
 
 # Read original file
-if { [string length $filename] > 1} {
-  set path_file [locate_data_file $filename]
-  if { [catch { ReadFile D $path_file -conf $conf } catch_result] } {
-    set err_msg "Error: file was not read - exception "
-    puts $err_msg
-    append todo_msg $todo_mask $err_msg $end_line
-    set mist 1
-  }
-} else {
-  set mist 1
-}
+set path_file [locate_data_file $filename]
+ReadFile anDocInput_1 $path_file -conf $aReadMetadataConfig
 
-# Get information about translation
-if { $mist < 1} {
-  puts ""
-  set prop [ XGetProperties D ] 
+#Name for a file to write
+set aWrittenFileName $imagedir/${casename}_written.step
 
-  if { [llength $prop] < 0 } {
-      puts " Metadata was NOT provided"
+# Write file
+WriteFile anDocInput_1 $aWrittenFileName -conf $aWriteMetadataConfig
+set aSize [file size $aWrittenFileName]
+
+# Read just written and get its metadata.
+ReadFile anDocInput_2 $aWrittenFileName -conf $aReadMetadataConfig
+set aMetaDataBase [ XGetProperties anDocInput_2 ]
+set aMetaData [format $aMetaDataBase]
+
+if { $dump_file == 1 } { 
+    set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
+    puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
+    puts $fd_stream "set filename $filename"
+    puts $fd_stream "set ref_size $aSize"
+    puts $fd_stream "set check_metadata $check_metadata"
+    if {$check_metadata == 1} {
+      puts $fd_stream "set ref_metadata \{$aMetaData\}"
     }
-}
-if { $mist < 1} {
-  # Close the document
-  if { [catch { Close D } catch_result] } {
-    set err_msg "Error : cannot close a document D - exception"
-    puts $err_msg
-    append todo_msg $todo_mask $err_msg $end_line
-  }
-}
-
-if { $mist != 1 } {
-  puts "" 
-  set result ""
-  append result [format $prop]
-}
-
-set ref_Compare 0
-# Put reference data to the test script file if option "dump" is set
-if { $dump_file == 1 } {
-  set fd_stream  [open $dirname/$groupname/$gridname/$casename w]
-  fconfigure $fd_stream -encoding utf-8
-  puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
-  puts $fd_stream "set filename $filename"
-  if { $mist != 1 } {
-    puts $fd_stream "" 
-    puts $fd_stream "set ref_data \{"
-    puts $fd_stream $result
-    puts $fd_stream "\}"
-  }
-  close $fd_stream 
-} elseif { $mist != 1 } {
-  puts "========================== Comparison with reference data ========"
-  
-  # Comparison of reference data with obtained result
-  set ref_list [split $ref_data \n]
-  set cur_list [split $result \n]
-  set nb_ref [llength $ref_list]
-  for { set i 0 } { $i < $nb_ref } { incr i } {
-    set j [expr $i + 1]
-    set refstr [lindex $ref_list $j]
-    set curstr [lindex $cur_list $i]
-    set isOK 1;
-
-    if {[string equal $refstr $curstr] == 0} {
-      incr ref_Compare
-      puts "Reference data - $refstr\n"
-      puts "Current data - $curstr\n"
-      puts "----------------------------------------------\n"
-    }
-  }
-}
-
-if { $dump_file != 0 } {
+    close $fd_stream
     puts "Error : Running in regeneration mode, comparison was not performed!"
-    if { $mist != 1 } {
-      puts "Generation of test file $groupname/$gridname/$casename successful"
-    } else {
-      puts "Generation of reference data failed"
-    }
 } else {
-    if { $ref_Compare >= 1} {
-      puts "Error : differences with reference data found : $ref_Compare"
-    } else {
-      puts "Comparison of current result with reference data - OK\n"
+    set tolerance [expr {min(max(0.001 * $ref_size, 1), 100)}]
+    if {abs($aSize - $ref_size) > $tolerance} {
+        puts "Error: Wrong file size $aSize instead of $ref_size"
+    }
+    
+    if {$check_metadata == 1} {
+      # Compare metadata in files.
+      set aMetaDataLines [split ${aMetaData} "\n"]
+      set aRefMetaDataLines [split ${ref_metadata} "\n"]
+      set aMetaDataLinesCount [llength $aMetaDataLines]
+      set aRefMetaDataLinesCount [llength $aRefMetaDataLines]
+      set aMinLineCount [expr min($aMetaDataLinesCount, $aRefMetaDataLinesCount)]
+      for {set aLineIndex 0} {$aLineIndex < $aMinLineCount} {incr aLineIndex} {
+        set aCurrentMetaDataLine [lindex $aMetaDataLines $aLineIndex]
+        set aCurrentRefMetaDataLine [lindex $aRefMetaDataLines $aLineIndex]
+        if {$aCurrentMetaDataLine != $aCurrentRefMetaDataLine} {
+          puts "Error: Incorrect metadata at line $aLineIndex"
+          puts "Expected: \"$aCurrentRefMetaDataLine\""
+          puts "Actual:   \"$aCurrentMetaDataLine\""
+          break
+        }
+      }
+      # It is faster to check this condition first, before string-by-string comparison,
+      # however string-by-string comparison would be more informative in case of error.
+      if {$aMetaDataLinesCount != $aRefMetaDataLinesCount} {
+           puts "Error: Line count is metadata doesn't match the expected value."
+          puts "Expected: $aRefMetaDataLinesCount"
+          puts "Actual:   $aMetaDataLinesCount"
+      }
     }
 }
+
+# finalize scenario
+Close anDocInput_1
+Close anDocInput_2
+file delete $aWrittenFileName
 puts "TEST COMPLETED"
