@@ -48,7 +48,7 @@ static Handle(DEVRML_ConfigurationNode) ValidateConfigurationNode(
 static Standard_Boolean HandleVrmlSceneStatus(const VrmlData_Scene&          theScene,
                                               const TCollection_AsciiString& theContext)
 {
-  const char* aStr = 0L;
+  const char* aStr = nullptr;
   switch (theScene.Status())
   {
     case VrmlData_StatusOK:

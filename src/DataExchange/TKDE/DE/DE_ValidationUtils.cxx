@@ -128,9 +128,6 @@ Standard_Boolean DE_ValidationUtils::ValidateFileForWriting(
 
   try
   {
-    OSD_Path aOSDPath(thePath);
-    OSD_File aFile(aOSDPath);
-
     // Try to open for writing to verify permissions
     std::ofstream aTestFile(thePath.ToCString(), std::ios::out | std::ios::app);
     if (!aTestFile.is_open() || !aTestFile.good())
@@ -241,7 +238,7 @@ Standard_Boolean DE_ValidationUtils::ValidateWriteStreamList(
   try
   {
     const DE_Provider::WriteStreamNode& aNode = theStreams.First();
-    if (aNode.Stream.fail() || aNode.Stream.bad())
+    if (aNode.Stream.fail())
     {
       if (theIsVerbose)
       {
@@ -325,14 +322,16 @@ Standard_Boolean DE_ValidationUtils::CreateContentBuffer(const TCollection_Ascii
 Standard_Boolean DE_ValidationUtils::CreateContentBuffer(std::istream&               theStream,
                                                          Handle(NCollection_Buffer)& theBuffer)
 {
-  theBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
+  constexpr std::streamsize aBufferLength = 2048;
+
+  theBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aBufferLength);
 
   // Save current stream position
   std::streampos aOriginalPos = theStream.tellg();
 
-  theStream.read(reinterpret_cast<char*>(theBuffer->ChangeData()), 2048);
+  theStream.read(reinterpret_cast<char*>(theBuffer->ChangeData()), aBufferLength);
   const std::streamsize aBytesRead                               = theStream.gcount();
-  theBuffer->ChangeData()[aBytesRead < 2048 ? aBytesRead : 2047] = '\0';
+  theBuffer->ChangeData()[aBytesRead < aBufferLength ? aBytesRead : aBufferLength - 1] = '\0';
 
   // Clear any error flags (including EOF) BEFORE attempting to reset position
   // This is essential because seekg() fails when EOF flag is set

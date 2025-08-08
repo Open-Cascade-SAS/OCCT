@@ -515,13 +515,14 @@ Handle(Poly_Triangulation) RWStl::ReadStream(Standard_IStream&            theStr
                                              const Message_ProgressRange& theProgress)
 {
   // Try to detect ASCII vs Binary format by peeking at the first few bytes
-  std::streampos originalPos = theStream.tellg();
-  char           header[6];
-  theStream.read(header, 5);
-  header[5] = '\0';
-  theStream.seekg(originalPos);
+  std::streampos anOriginalPos = theStream.tellg();
+  constexpr std::streamsize aHeaderSize = 6;
+  char           aHeader[aHeaderSize];
+  theStream.read(aHeader, aHeaderSize - 1);
+  aHeader[aHeaderSize - 1] = '\0';
+  theStream.seekg(anOriginalPos);
 
-  bool isAscii = (strncmp(header, "solid", 5) == 0);
+  bool isAscii = (strncmp(aHeader, "solid", 5) == 0);
 
   if (isAscii)
   {

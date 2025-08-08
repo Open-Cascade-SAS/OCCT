@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEIGES_Provider, DE_Provider)
 
 namespace
 {
-//! Helper function to validate configuration node
+// Helper function to validate configuration node
 Standard_Boolean validateConfigurationNode(const Handle(DE_ConfigurationNode)& theNode,
                                            const TCollection_AsciiString&      theContext)
 {
@@ -39,7 +39,7 @@ Standard_Boolean validateConfigurationNode(const Handle(DE_ConfigurationNode)& t
                                                        theContext);
 }
 
-//! Helper function to configure IGES CAF reader parameters
+// Helper function to configure IGES CAF reader parameters
 void configureIGESCAFReader(IGESCAFControl_Reader&                  theReader,
                             const Handle(DEIGES_ConfigurationNode)& theNode)
 {
@@ -50,7 +50,7 @@ void configureIGESCAFReader(IGESCAFControl_Reader&                  theReader,
   theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-//! Helper function to configure IGES control reader parameters
+// Helper function to configure IGES control reader parameters
 void configureIGESControlReader(IGESControl_Reader&                     theReader,
                                 const Handle(DEIGES_ConfigurationNode)& theNode)
 {
@@ -58,7 +58,7 @@ void configureIGESControlReader(IGESControl_Reader&                     theReade
   theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-//! Helper function to setup IGES unit configuration
+// Helper function to setup IGES unit configuration
 void setupIGESUnits(IGESData_GlobalSection&                 theGS,
                     const Handle(DEIGES_ConfigurationNode)& theNode,
                     const Handle(TDocStd_Document)&         theDocument,
@@ -98,7 +98,7 @@ void setupIGESUnits(IGESData_GlobalSection&                 theGS,
   }
 }
 
-//! Helper function to configure IGES CAF writer parameters
+// Helper function to configure IGES CAF writer parameters
 void configureIGESCAFWriter(IGESCAFControl_Writer&                  theWriter,
                             const Handle(DEIGES_ConfigurationNode)& theNode,
                             const Handle(TDocStd_Document)&         theDocument,
@@ -114,7 +114,7 @@ void configureIGESCAFWriter(IGESCAFControl_Writer&                  theWriter,
   theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-//! Helper function to configure IGES control writer for shapes
+// Helper function to configure IGES control writer for shapes
 void configureIGESControlWriter(IGESControl_Writer&                     theWriter,
                                 const Handle(DEIGES_ConfigurationNode)& theNode)
 {
@@ -126,7 +126,7 @@ void configureIGESControlWriter(IGESControl_Writer&                     theWrite
   theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-//! Helper function to setup IGES writer unit flags
+// Helper function to setup IGES writer unit flags
 TCollection_AsciiString getIGESUnitString(const Handle(DEIGES_ConfigurationNode)& theNode)
 {
   Standard_Integer aFlag =
@@ -134,7 +134,7 @@ TCollection_AsciiString getIGESUnitString(const Handle(DEIGES_ConfigurationNode)
   return (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM";
 }
 
-//! Helper function to process read file operation
+// Helper function to process read file operation
 Standard_Boolean processReadFile(IGESControl_Reader&            theReader,
                                  const TCollection_AsciiString& thePath)
 {
