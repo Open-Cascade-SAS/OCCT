@@ -330,7 +330,7 @@ protected:
   // Also recursively writes metadata for children labels.
   Standard_Boolean writeMetadataForLabel(const Handle(XSControl_WorkSession)& theWS,
                                          const TDF_Label&                     theLabel) const;
-  
+
   //! Write metadata representation item to STEP model.
   //! @param theKey The key for metadata item.
   //! @param theModel The STEP model to write to.
