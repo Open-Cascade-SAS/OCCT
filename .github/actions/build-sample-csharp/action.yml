@@ -13,7 +13,7 @@ runs:
   using: "composite"
   steps:
     - name: Download OCCT installation
-      uses: actions/download-artifact@v4.1.7
+      uses: ./.github/actions/download-artifacts
       with:
         name: ${{ inputs.install-artifact-name }}
         path: occt-install
@@ -50,7 +50,7 @@ runs:
         msbuild.exe CSharp_D3D.sln /p:Configuration=Release /p:Platform=x64 /consoleloggerparameters:Verbosity=normal;Summary /flp:LogFile=build_d3d.log;Verbosity=detailed /m
 
     - name: Upload CSharp Sample
-      uses: actions/upload-artifact@v4.4.3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: csharp-sample-${{ inputs.platform }}-x64
         path: samples/CSharp

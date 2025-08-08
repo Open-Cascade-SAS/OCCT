@@ -92,17 +92,41 @@ static Standard_Boolean Rational(const TColStd_Array1OfReal& theWeights)
 
 Handle(Geom2d_Geometry) Geom2d_BSplineCurve::Copy() const
 {
-  Handle(Geom2d_BSplineCurve) C;
-  if (IsRational())
-    C = new Geom2d_BSplineCurve(poles->Array1(),
-                                weights->Array1(),
-                                knots->Array1(),
-                                mults->Array1(),
-                                deg,
-                                periodic);
-  else
-    C = new Geom2d_BSplineCurve(poles->Array1(), knots->Array1(), mults->Array1(), deg, periodic);
-  return C;
+  return new Geom2d_BSplineCurve(*this);
+}
+
+//=================================================================================================
+
+Geom2d_BSplineCurve::Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther)
+    : rational(theOther.rational),
+      periodic(theOther.periodic),
+      knotSet(theOther.knotSet),
+      smooth(theOther.smooth),
+      deg(theOther.deg),
+      maxderivinv(theOther.maxderivinv),
+      maxderivinvok(Standard_False)
+{
+  // Deep copy all data arrays without validation
+  poles = new TColgp_HArray1OfPnt2d(theOther.poles->Lower(), theOther.poles->Upper());
+  poles->ChangeArray1() = theOther.poles->Array1();
+
+  if (!theOther.weights.IsNull())
+  {
+    weights = new TColStd_HArray1OfReal(theOther.weights->Lower(), theOther.weights->Upper());
+    weights->ChangeArray1() = theOther.weights->Array1();
+  }
+
+  knots = new TColStd_HArray1OfReal(theOther.knots->Lower(), theOther.knots->Upper());
+  knots->ChangeArray1() = theOther.knots->Array1();
+
+  mults = new TColStd_HArray1OfInteger(theOther.mults->Lower(), theOther.mults->Upper());
+  mults->ChangeArray1() = theOther.mults->Array1();
+
+  if (!theOther.flatknots.IsNull())
+  {
+    flatknots = new TColStd_HArray1OfReal(theOther.flatknots->Lower(), theOther.flatknots->Upper());
+    flatknots->ChangeArray1() = theOther.flatknots->Array1();
+  }
 }
 
 //=================================================================================================

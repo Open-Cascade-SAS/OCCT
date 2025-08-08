@@ -22,6 +22,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Poly_Triangulation.hxx>
+#include <fstream>
 
 //=================================================================================================
 
@@ -35,6 +36,21 @@ StlAPI_Writer::StlAPI_Writer()
 
 Standard_Boolean StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
                                       const Standard_CString       theFileName,
+                                      const Message_ProgressRange& theProgress)
+{
+  std::ofstream aStream(theFileName, myASCIIMode ? std::ios::out : std::ios::binary);
+  if (!aStream.is_open())
+  {
+    return Standard_False;
+  }
+
+  return Write(theShape, aStream, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
+                                      Standard_OStream&            theStream,
                                       const Message_ProgressRange& theProgress)
 {
   Standard_Integer aNbNodes     = 0;
@@ -115,9 +131,8 @@ Standard_Boolean StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
     aTriangleOffet += aTriangulation->NbTriangles();
   }
 
-  OSD_Path         aPath(theFileName);
-  Standard_Boolean isDone = (myASCIIMode ? RWStl::WriteAscii(aMesh, aPath, theProgress)
-                                         : RWStl::WriteBinary(aMesh, aPath, theProgress));
+  Standard_Boolean isDone = (myASCIIMode ? RWStl::WriteAscii(aMesh, theStream, theProgress)
+                                         : RWStl::WriteBinary(aMesh, theStream, theProgress));
 
   if (isDone && (aNbFacesNoTri > 0))
   {

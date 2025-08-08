@@ -25,6 +25,13 @@ namespace
 {
 static Standard_ExtCharacter THE_DEFAULT_EXT_CHAR_STRING[1] = {0};
 
+//! Calculate padded allocation size for ExtendedString (2-byte characters)
+//! Guarantees at least +1 character space for null terminator, aligned to 4-byte boundary
+inline Standard_Size calculatePaddedSize(const int theLength)
+{
+  return (((theLength + 1) * sizeof(Standard_ExtCharacter)) + 3) & ~0x3;
+}
+
 //! Returns the number of 16-bit code units in Unicode string
 template <typename T>
 static Standard_Integer nbSymbols(const T* theUtfString)
@@ -48,7 +55,7 @@ inline Standard_ExtCharacter* Standard_UNUSED fromWideString(const Standard_Wide
   {
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
-  const Standard_Size aRoundSize = (((theLength + 1) * sizeof(Standard_ExtCharacter)) + 3) & ~0x3;
+  const Standard_Size    aRoundSize = calculatePaddedSize(theLength);
   Standard_ExtCharacter* aString =
     static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
   NCollection_UtfWideIter anIterRead(theUtfString);
@@ -73,7 +80,7 @@ inline Standard_ExtCharacter* Standard_UNUSED
   {
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
-  const Standard_Size aRoundSize = (((theLength + 1) * sizeof(Standard_ExtCharacter)) + 3) & ~0x3;
+  const Standard_Size    aRoundSize = calculatePaddedSize(theLength);
   Standard_ExtCharacter* aString =
     static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
   const Standard_Integer aSize = theLength * sizeof(Standard_ExtCharacter);
@@ -901,9 +908,8 @@ Standard_Boolean TCollection_ExtendedString::ConvertToUnicode(const Standard_CSt
   return Standard_True;
 }
 
-//----------------------------------------------------------------------------
-// Returns expected CString length in UTF8 coding.
-//----------------------------------------------------------------------------
+//=================================================================================================
+
 Standard_Integer TCollection_ExtendedString::LengthOfCString() const
 {
   Standard_Integer aSizeBytes = 0;
@@ -947,7 +953,7 @@ void TCollection_ExtendedString::allocate(const int theLength)
   }
   else
   {
-    const Standard_Size aRoundSize = (((theLength + 1) * sizeof(Standard_ExtCharacter)) + 3) & ~0x3;
+    const Standard_Size aRoundSize = calculatePaddedSize(theLength);
     mystring           = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
     mystring[mylength] = '\0';
   }
@@ -961,14 +967,14 @@ void TCollection_ExtendedString::reallocate(const int theLength)
   {
     if (mystring == THE_DEFAULT_EXT_CHAR_STRING)
     {
-      const Standard_Size aRoundSize =
-        (((theLength + 1) * sizeof(Standard_ExtCharacter)) + 3) & ~0x3;
+      const Standard_Size aRoundSize = calculatePaddedSize(theLength);
       mystring = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
     }
     else
     {
-      mystring = static_cast<Standard_PExtCharacter>(
-        Standard::Reallocate(mystring, (theLength + 1) * sizeof(Standard_ExtCharacter)));
+      // For reallocate, use padded size for consistency
+      const Standard_Size aRoundSize = calculatePaddedSize(theLength);
+      mystring = static_cast<Standard_PExtCharacter>(Standard::Reallocate(mystring, aRoundSize));
     }
     mystring[theLength] = 0;
   }

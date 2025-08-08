@@ -17,7 +17,7 @@ runs:
   using: "composite"
   steps:
     - name: Download OCCT installation
-      uses: actions/download-artifact@v4.1.7
+      uses: ./.github/actions/download-artifacts
       with:
         name: ${{ inputs.install-artifact-name }}
         path: occt-install
@@ -116,7 +116,7 @@ runs:
         done
 
     - name: Upload Qt Samples
-      uses: actions/upload-artifact@v4.4.3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: qt-samples-${{ inputs.platform }}-x64
         path: |

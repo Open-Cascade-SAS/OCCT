@@ -1,9 +1,16 @@
 project(AndroidQt)
 
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
-OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit_prepare_sample)
+# Sample configuration
+set (EXECUTABLE_PROJECT ON)
+set (USE_QT ON)
+set (RELATIVE_DIR "samples/qt")
+set (TARGET_FOLDER "Samples")
 
-ADD_DEFINITIONS(-DNO_Common_EXPORTS)
+include_directories("${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/${RELATIVE_DIR}")
+
+OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
+
+# Target-specific definitions
+target_compile_definitions(AndroidQt PRIVATE -DNO_Common_EXPORTS)
 
 

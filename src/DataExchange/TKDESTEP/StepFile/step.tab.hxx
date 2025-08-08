@@ -789,7 +789,7 @@ private:
 // but only if this has not been done yet, to avoid redefinition
 #if !defined(yyFlexLexer) && !defined(FlexLexerOnce)
   #define yyFlexLexer stepFlexLexer
-  #include "FlexLexer.h"
+  #include <FlexLexer.h>
 #endif
 
 namespace step

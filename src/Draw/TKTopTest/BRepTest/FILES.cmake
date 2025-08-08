@@ -17,6 +17,7 @@ set(OCCT_BRepTest_FILES
   BRepTest_FilletCommands.cxx
   BRepTest_FillingCommands.cxx
   BRepTest_GPropCommands.cxx
+  BRepTest_HelixCommands.cxx
   BRepTest_HistoryCommands.cxx
   BRepTest_MatCommands.cxx
   BRepTest_Objects.cxx

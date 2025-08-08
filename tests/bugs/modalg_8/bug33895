@@ -1,0 +1,21 @@
+puts "========================================================================"
+puts "Bug 33895: fixshape crashes on tessellated geometry without surfaces"
+puts "No crash expected"
+puts "========================================================================"
+
+pload XDE MODELING
+
+stepread [locate_data_file gh623_tessellated_tetrahedron_ap242.step] anInputShape *
+
+# Check what kind of shape we get
+checknbshapes anInputShape_1 -t
+
+# Validate shape - will show BRepCheck_NoSurface errors
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_6"
+checkshape anInputShape_1
+
+# Fix shapes. No crash expected.
+fixshape aFixed anInputShape_1
+
+# Check result. 
+checknbshapes aFixed -face 4 -shell 4 -compound 1 -shape 9 -t

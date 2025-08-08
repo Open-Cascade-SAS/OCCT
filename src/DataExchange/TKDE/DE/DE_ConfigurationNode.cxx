@@ -103,6 +103,13 @@ bool DE_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
+bool DE_ConfigurationNode::IsStreamSupported() const
+{
+  return false;
+}
+
+//=================================================================================================
+
 bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExtension) const
 {
   TCollection_AsciiString anExtension(theExtension);

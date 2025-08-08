@@ -196,6 +196,9 @@ public:
                                       const Standard_Integer         Degree,
                                       const Standard_Boolean         Periodic = Standard_False);
 
+  //! Copy constructor for optimized copying without validation.
+  Standard_EXPORT Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther);
+
   //! Increases the degree of this BSpline curve to
   //! Degree. As a result, the poles, weights and
   //! multiplicities tables are modified; the knots table is

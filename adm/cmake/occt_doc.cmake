@@ -258,7 +258,7 @@ endfunction()
 # Function to load file lists for documentation
 function(OCCT_DOC_LOAD_FILE_LISTS)
   # Load list of HTML documentation files
-  set(FILES_HTML_PATH "${CMAKE_SOURCE_DIR}/dox/FILES_HTML.txt")
+  set(FILES_HTML_PATH "${OCCT_ROOT_DIR}/dox/FILES_HTML.txt")
   if(EXISTS ${FILES_HTML_PATH})
     file(STRINGS ${FILES_HTML_PATH} HTML_FILES REGEX "^[^#]+")
     set(OCCT_DOC_HTML_FILES ${HTML_FILES} PARENT_SCOPE)
@@ -267,7 +267,7 @@ function(OCCT_DOC_LOAD_FILE_LISTS)
   endif()
 
   # Load list of PDF documentation files
-  set(FILES_PDF_PATH "${CMAKE_SOURCE_DIR}/dox/FILES_PDF.txt")
+  set(FILES_PDF_PATH "${OCCT_ROOT_DIR}/dox/FILES_PDF.txt")
   if(EXISTS ${FILES_PDF_PATH})
     file(STRINGS ${FILES_PDF_PATH} PDF_FILES REGEX "^[^#]+")
     set(OCCT_DOC_PDF_FILES ${PDF_FILES} PARENT_SCOPE)
@@ -317,9 +317,9 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
 
   # Use existing Doxygen template file as base
   if(DOC_TYPE STREQUAL "OVERVIEW")
-    set(TEMPLATE_DOXYFILE "${CMAKE_SOURCE_DIR}/dox/resources/occt_ug_html.doxyfile")
+    set(TEMPLATE_DOXYFILE "${OCCT_ROOT_DIR}/dox/resources/occt_ug_html.doxyfile")
   else()
-    set(TEMPLATE_DOXYFILE "${CMAKE_SOURCE_DIR}/dox/resources/occt_rm.doxyfile")
+    set(TEMPLATE_DOXYFILE "${OCCT_ROOT_DIR}/dox/resources/occt_rm.doxyfile")
   endif()
 
   # Define Doxygen parameters that need to be overridden from the template
@@ -355,7 +355,7 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
   # Additional parameters based on the document type
   if(DOC_TYPE STREQUAL "OVERVIEW")
     # Settings for Overview documentation
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_LOGO = ${CMAKE_SOURCE_DIR}/dox/resources/occ_logo.png\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_LOGO = ${OCCT_ROOT_DIR}/dox/resources/occ_logo.png\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTRACT_ALL = NO\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTRACT_PRIVATE = NO\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTRACT_STATIC = NO\n")
@@ -374,27 +374,27 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     if(DEFINED OCCT_OVERVIEW_FILES)
       file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${OCCT_OVERVIEW_FILES}\n")
     else()
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${CMAKE_SOURCE_DIR}/dox\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${OCCT_ROOT_DIR}/dox\n")
     endif()
 
     # Collect image directories for overview
-    set(OVERVIEW_INPUT_DIRS ${CMAKE_SOURCE_DIR}/dox)
+    set(OVERVIEW_INPUT_DIRS ${OCCT_ROOT_DIR}/dox)
     OCCT_DOC_COLLECT_IMAGE_DIRS("${OVERVIEW_INPUT_DIRS}" OVERVIEW_IMAGE_DIRS)
 
     # Image path for overview
     if(OVERVIEW_IMAGE_DIRS)
       string(REPLACE ";" " " OVERVIEW_IMAGE_DIRS_STR "${OVERVIEW_IMAGE_DIRS}")
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${OVERVIEW_IMAGE_DIRS_STR} ${CMAKE_SOURCE_DIR}/dox/resources\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${OVERVIEW_IMAGE_DIRS_STR} ${OCCT_ROOT_DIR}/dox/resources\n")
     else()
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${CMAKE_SOURCE_DIR}/dox/resources\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${OCCT_ROOT_DIR}/dox/resources\n")
     endif()
 
     # Example paths
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATH = ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/samples\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATH = ${OCCT_ROOT_DIR}/src ${OCCT_ROOT_DIR}/samples\n")
   else()
     # Settings for Reference Manual
     file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_NAME = \"Open CASCADE Technology Reference Manual\"\n")
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_LOGO = ${CMAKE_SOURCE_DIR}/dox/resources/occ_logo.png\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_LOGO = ${OCCT_ROOT_DIR}/dox/resources/occ_logo.png\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "BUILTIN_STL_SUPPORT = YES\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTRACT_PRIVATE = NO\n")
     file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTRACT_PACKAGE = YES\n")
@@ -407,14 +407,14 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
 
     # Input files for reference manual - CRITICAL FOR PROPER GENERATION
     file(APPEND ${DOXYGEN_CONFIG_FILE} "\n# Input files for reference manual\n")
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${CMAKE_SOURCE_DIR}/src\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "INPUT = ${OCCT_ROOT_DIR}/src\n")
 
     # If generating documentation for specific modules
     if(DEFINED OCCT_DOC_MODULES)
       set(MODULE_PATHS "")
       foreach(MODULE ${OCCT_DOC_MODULES})
         foreach(TOOLKIT ${${MODULE}_TOOLKITS})
-          list(APPEND MODULE_PATHS "${CMAKE_SOURCE_DIR}/src/${TOOLKIT}")
+          list(APPEND MODULE_PATHS "${OCCT_ROOT_DIR}/src/${TOOLKIT}")
         endforeach()
       endforeach()
       string(REPLACE ";" " " MODULE_PATHS_STR "${MODULE_PATHS}")
@@ -422,14 +422,14 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     endif()
 
     # Configure image path for reference manual
-    set(REFMAN_INPUT_DIRS ${CMAKE_SOURCE_DIR}/src)
+    set(REFMAN_INPUT_DIRS ${OCCT_ROOT_DIR}/src)
     OCCT_DOC_COLLECT_IMAGE_DIRS("${REFMAN_INPUT_DIRS}" REFMAN_IMAGE_DIRS)
 
     if(REFMAN_IMAGE_DIRS)
       string(REPLACE ";" " " REFMAN_IMAGE_DIRS_STR "${REFMAN_IMAGE_DIRS}")
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${REFMAN_IMAGE_DIRS_STR} ${CMAKE_SOURCE_DIR}/dox/resources\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${REFMAN_IMAGE_DIRS_STR} ${OCCT_ROOT_DIR}/dox/resources\n")
     else()
-      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${CMAKE_SOURCE_DIR}/dox/resources\n")
+      file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${OCCT_ROOT_DIR}/dox/resources\n")
     endif()
 
     # Add main page file if generated
@@ -444,8 +444,8 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
   endif()
 
   # Custom CSS
-  if(EXISTS "${CMAKE_SOURCE_DIR}/dox/resources/custom.css")
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "HTML_EXTRA_STYLESHEET = ${CMAKE_SOURCE_DIR}/dox/resources/custom.css\n")
+  if(EXISTS "${OCCT_ROOT_DIR}/dox/resources/custom.css")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "HTML_EXTRA_STYLESHEET = ${OCCT_ROOT_DIR}/dox/resources/custom.css\n")
   endif()
 
   # Set paths for dot tool
@@ -600,7 +600,7 @@ function(OCCT_SETUP_DOC_TARGETS)
     file(MAKE_DIRECTORY "${REFMAN_OUTPUT_DIR}/html")
 
     # Copy index file to provide fast access to HTML documentation
-    file(COPY "${CMAKE_SOURCE_DIR}/dox/resources/index.html" DESTINATION "${REFMAN_OUTPUT_DIR}")
+    file(COPY "${OCCT_ROOT_DIR}/dox/resources/index.html" DESTINATION "${REFMAN_OUTPUT_DIR}")
 
     # Generate main page for reference manual
     OCCT_DOC_GENERATE_MAIN_PAGE(${REFMAN_OUTPUT_DIR} "main_page.dox")
@@ -613,7 +613,7 @@ function(OCCT_SETUP_DOC_TARGETS)
     add_custom_target(RefMan
       COMMAND ${DOXYGEN_EXECUTABLE} ${REFMAN_OUTPUT_DIR}/Doxyfile
       COMMENT "Generating Reference Manual with Doxygen"
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      WORKING_DIRECTORY ${OCCT_ROOT_DIR}
       VERBATIM
     )
 
@@ -640,12 +640,12 @@ function(OCCT_SETUP_DOC_TARGETS)
     add_custom_target(Overview
       COMMAND ${DOXYGEN_EXECUTABLE} ${OVERVIEW_OUTPUT_DIR}/Doxyfile
       COMMENT "Generating Overview documentation with Doxygen"
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      WORKING_DIRECTORY ${OCCT_ROOT_DIR}
       VERBATIM
     )
 
     # Copy index file to provide fast access to HTML documentation
-    file(COPY "${CMAKE_SOURCE_DIR}/dox/resources/index.html" DESTINATION "${OVERVIEW_OUTPUT_DIR}")
+    file(COPY "${OCCT_ROOT_DIR}/dox/resources/index.html" DESTINATION "${OVERVIEW_OUTPUT_DIR}")
 
     # Add custom command to copy generated documentation to install location if required
     if(INSTALL_DOC_Overview)
@@ -655,7 +655,7 @@ function(OCCT_SETUP_DOC_TARGETS)
 
       # Create overview.html only for windows
       if(WIN32)
-        install(FILES "${CMAKE_SOURCE_DIR}/dox/resources/overview.html"
+        install(FILES "${OCCT_ROOT_DIR}/dox/resources/overview.html"
                 DESTINATION "${INSTALL_DIR_DOC}")
       endif()
     endif()

@@ -6,6 +6,7 @@ set(OCCT_ModelingAlgorithms_LIST_OF_TOOLKITS
   TKBO
   TKBool
   TKHLR
+  TKHelix
   TKFillet
   TKOffset
   TKFeat

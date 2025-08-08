@@ -101,6 +101,10 @@ public:
   Standard_EXPORT void SetBasisSurface(const Handle(Geom_Surface)& S,
                                        const Standard_Boolean      isNotCheckC0 = Standard_False);
 
+  //! Copy constructor for optimized copying without validation.
+  //! @param[in] theOther the offset surface to copy from
+  Standard_EXPORT Geom_OffsetSurface(const Geom_OffsetSurface& theOther);
+
   //! Changes this offset surface by assigning D as the offset value.
   Standard_EXPORT void SetOffsetValue(const Standard_Real D);
 

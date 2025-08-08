@@ -1,0 +1,89 @@
+puts "============"
+puts "OCCGH648"
+puts "============"
+puts ""
+
+set BugNumber OCCGH648
+
+set np 5
+set D1 150
+set D2 150
+set D3 150
+set D4 123
+set D5 123
+set D6 123
+
+set N1 .75
+set N2 2.1
+set N3 2.25
+set N4 2.5
+set N5 .75
+
+set P1 13
+set P2 64
+set P3 50
+set P4 45
+set P5 13
+
+set H1 [expr $N1 * $P1]
+set H2 [expr $N2 * $P2]
+set H3 [expr $N3 * $P3]
+set H4 [expr $N4 * $P4]
+set H5 [expr $N5 * $P5]
+
+set PF1 0
+set PF2 0
+set PF3 0
+set PF4 0
+set PF5 0
+
+set P1 $N1
+set P2 $N2
+set P3 $N3
+set P4 $N4
+set P5 $N5
+
+set mistake 0
+set result ""
+if [catch { set info_result [comphelix result ${np} ${D1} ${D2} ${D3} ${D4} ${D5} ${D6} ${H1} ${H2} ${H3} ${H4} ${H5} ${P1} ${P2} ${P3} ${P4} ${P5} ${PF1} ${PF2} ${PF3} ${PF4} ${PF5}]} ] {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : approximation algorithm is broken"
+  set mistake 1
+} elseif { [regexp {ErrorStatus} ${info_result}] } {
+  puts "${info_result}"
+  puts "Faulty ${BugNumber} : helix is broken"
+  set mistake 1
+}
+
+if { ${mistake} == 0 } {
+  set d 5
+  set x [expr $D1/2]
+  set y 0
+  set z 0
+  set dx 0
+  set dy 1
+  set dz 0
+
+  circle c $x $y $z $dx $dy $dz $d
+  mkedge e c
+  wire s2 e
+
+  renamevar result s1
+
+
+set square 112804
+set volume 281562
+
+set nb_v_good 12
+set nb_e_good 23
+set nb_w_good 13
+set nb_f_good 13
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 63
+
+CheckSweep
+}
+set 2dviewer 0

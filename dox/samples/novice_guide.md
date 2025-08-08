@@ -95,7 +95,7 @@ In addition to these two samples, there are much more that might be of use to a 
 Check Readme files in the sample directories to learn more about samples compilation.
 
 **Note:** source code for OCCTOverview is stored at 'samples/qt/OCCTOverview/src' folder in your OCCT root,
-and the source code files for examples presented in subsections are stored at 'samples/OCCTOverview/code folder'.
+and the source code files for examples presented in subsections are stored at 'samples/qt/OCCTOverview/code folder'.
 Several utility classes that are not presented in the example window may be found in example source code files.
 
 The overall classes introduction may be found in the @ref occt_user_guides__foundation_classes "Foundation Classes" section of the documentation.

@@ -330,6 +330,6 @@ typedef NCollection_UtfString<Standard_Utf32Char> NCollection_Utf32String;
 typedef NCollection_UtfString<Standard_WideChar>  NCollection_UtfWideString;
 
 // template implementation (inline methods)
-#include "NCollection_UtfString.lxx"
+#include <NCollection_UtfString.lxx>
 
 #endif // _NCollection_UtfString_H__

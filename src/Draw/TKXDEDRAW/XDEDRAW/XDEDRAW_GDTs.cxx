@@ -21,8 +21,6 @@
 #include <DrawTrSurf.hxx>
 #include <Geom_Plane.hxx>
 
-#include <STEPCAFControl_GDTProperty.hxx>
-
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
 #include <XCAFDoc_GraphNode.hxx>
@@ -402,7 +400,7 @@ static Standard_Integer DumpNbDGTs(Draw_Interpretor& di, Standard_Integer argc, 
       {
         nbCommon++;
       }
-      else if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType))
+      else if (XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(aDimType))
       {
         nbLocation++;
       }
@@ -416,7 +414,7 @@ static Standard_Integer DumpNbDGTs(Draw_Interpretor& di, Standard_Integer argc, 
         nbLocation++;
         nbWithPath++;
       }
-      else if (STEPCAFControl_GDTProperty::IsDimensionalSize(aDimType))
+      else if (XCAFDimTolObjects_DimensionObject::IsDimensionalSize(aDimType))
       {
         nbSize++;
       }

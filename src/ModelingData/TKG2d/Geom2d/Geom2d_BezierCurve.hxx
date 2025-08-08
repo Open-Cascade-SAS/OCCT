@@ -108,6 +108,9 @@ public:
   Standard_EXPORT Geom2d_BezierCurve(const TColgp_Array1OfPnt2d& CurvePoles,
                                      const TColStd_Array1OfReal& PoleWeights);
 
+  //! Copy constructor for optimized copying without validation.
+  Standard_EXPORT Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther);
+
   //! Increases the degree of a bezier curve. Degree is the new
   //! degree of <me>.
   //! raises ConstructionError if Degree is greater than MaxDegree or lower than 2

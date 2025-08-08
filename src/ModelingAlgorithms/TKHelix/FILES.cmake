@@ -1,0 +1,7 @@
+# Source files for TKHelix
+set(OCCT_TKHelix_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_TKHelix_FILES
+  EXTERNLIB
+  PACKAGES
+)

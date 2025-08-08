@@ -1,0 +1,167 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "opencascade",
+  "version": "8.0.0",
+  "description": "Open CASCADE Technology (OCCT) is an open-source software development platform for 3D CAD, CAM, CAE.",
+  "homepage": "https://github.com/Open-Cascade-SAS/OCCT",
+  "documentation": "https://dev.opencascade.org/doc/overview/html",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ],
+  "default-features": [
+    {
+      "name": "tcl"
+    },
+    {
+      "name": "freetype",
+      "platform": "!uwp"
+    },
+    {
+      "name": "angle",
+      "platform": "uwp"
+    },
+    {
+      "name": "opengl",
+      "platform": "!(android | ios | uwp | wasm32)"
+    }
+  ],
+  "features": {
+    "angle": {
+      "description": "Enables OpenGL ES 2.0 through ANGLE project. Required for 3D visualization in OCCT on UWP platform where desktop OpenGL is not available.",
+      "dependencies": [
+        {
+          "name": "angle",
+          "platform": "!(linux & !static)"
+        }
+      ]
+    },
+    "opengl": {
+      "description": "Enables OpenGL support for 3D visualization toolkit. Required for OCCT's OpenGL rendering pipeline and graphical display drivers.",
+      "dependencies": [
+        "opengl"
+      ]
+    },
+    "tcl": {
+      "description": "Enables Tcl scripting support for OCCT's DRAWEXE test harness and command-line interface. Provides access to OCCT's geometric algorithms through scripting.",
+      "dependencies": [
+        "tcl"
+      ]
+    },
+    "tcltk": {
+      "description": "Enables Tcl/Tk GUI support for DRAWEXE test harness. Provides windowed interface for OCCT's geometric modeling and visualization tools.",
+      "dependencies": [
+        {
+          "name": "tcl",
+          "features": [
+            "tk"
+          ]
+        },
+        {
+          "name": "libx11",
+          "platform": "!windows"
+        }
+      ]
+    },
+    "freeimage": {
+      "description": "Enables FreeImage support for advanced image file format handling (TIFF, PNG, JPEG, etc.) in OCCT's imaging and visualization components.",
+      "dependencies": [
+        "freeimage"
+      ]
+    },
+    "freetype": {
+      "description": "Enables FreeType font rendering engine for high-quality text display in OCCT's 3D visualization and technical drawing output.",
+      "supports": "!uwp",
+      "dependencies": [
+        "fontconfig",
+        {
+          "name": "freetype",
+          "default-features": false
+        }
+      ]
+    },
+    "rapidjson": {
+      "description": "Enables RapidJSON for efficient JSON parsing and serialization in OCCT's glTF 2.0 import/export functionality.",
+      "dependencies": [
+        "rapidjson"
+      ]
+    },
+    "tbb": {
+      "description": "Enables Intel Threading Building Blocks for optimized parallel computing. Replaces OCCT's default threading with TBB's task-based parallelism for better performance.",
+      "dependencies": [
+        "tbb"
+      ]
+    },
+    "vtk": {
+      "description": "Enables VTK (Visualization Toolkit) integration for advanced scientific visualization capabilities and mesh processing in OCCT.",
+      "dependencies": [
+        {
+          "name": "vtk",
+          "default-features": false,
+          "features": [
+            "opengl"
+          ]
+        }
+      ]
+    },
+    "draco": {
+      "description": "Enables Google Draco geometry compression for efficient mesh storage and transmission in OCCT's glTF 2.0 import/export workflow.",
+      "dependencies": [
+        "draco"
+      ]
+    },
+    "ffmpeg": {
+      "description": "Enables FFmpeg multimedia framework for video encoding/decoding and animation export capabilities in OCCT's visualization pipeline.",
+      "dependencies": [
+        "ffmpeg"
+      ]
+    },
+    "openvr": {
+      "description": "Enables OpenVR SDK integration for virtual reality support in OCCT's 3D visualization, allowing immersive CAD model exploration.",
+      "dependencies": [
+        "openvr"
+      ]
+    },
+    "jemalloc": {
+      "description": "Enables jemalloc high-performance memory allocator as replacement for system malloc. Improves memory usage patterns for large-scale CAD operations.",
+      "dependencies": [
+        "jemalloc"
+      ]
+    },
+    "gtest": {
+      "description": "Enables Google Test framework for building OCCT's unit test suite. Required for running automated tests and validation of OCCT functionality.",
+      "dependencies": [
+        "gtest"
+      ]
+    },
+    "pch": {
+      "description": "Enables precompiled headers to improve compilation speed. Creates shared headers that are compiled once and reused across multiple source files."
+    },
+    "cpp20": {
+      "description": "Enables C++20 standard compilation mode for OCCT. Provides access to latest C++20 features including concepts and modules."
+    },
+    "cpp23": {
+      "description": "Enables C++23 standard compilation mode for OCCT. Provides access to the latest C++23 features including improved constexpr and new standard library components."
+    },
+    "optimized": {
+      "description": "Enables production-level optimizations for maximum performance. Applies aggressive compiler optimizations and removes debug symbols."
+    },
+    "d3d": {
+      "description": "Enables Direct3D support for 3D visualization on Windows. Provides alternative graphics backend to OpenGL for Windows-specific applications.",
+      "supports": "windows"
+    },
+    "docs": {
+      "description": "Enables documentation generation using Doxygen. Creates HTML reference manual and overview documentation for OCCT API.",
+      "dependencies": [
+        "doxygen"
+      ]
+    }
+  }
+}

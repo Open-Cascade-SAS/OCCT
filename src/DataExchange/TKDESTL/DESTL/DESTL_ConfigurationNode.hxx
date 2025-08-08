@@ -64,6 +64,10 @@ public:
   //! @return true if export is supported
   Standard_EXPORT virtual bool IsExportSupported() const Standard_OVERRIDE;
 
+  //! Checks for stream support.
+  //! @return Standard_True if streams are supported
+  Standard_EXPORT virtual bool IsStreamSupported() const Standard_OVERRIDE;
+
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
   Standard_EXPORT virtual TCollection_AsciiString GetFormat() const Standard_OVERRIDE;

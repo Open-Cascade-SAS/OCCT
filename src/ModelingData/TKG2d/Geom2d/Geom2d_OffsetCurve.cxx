@@ -42,9 +42,7 @@ static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 Handle(Geom2d_Geometry) Geom2d_OffsetCurve::Copy() const
 {
-  Handle(Geom2d_OffsetCurve) C;
-  C = new Geom2d_OffsetCurve(basisCurve, offsetValue);
-  return C;
+  return new Geom2d_OffsetCurve(*this);
 }
 
 //=======================================================================
@@ -59,6 +57,17 @@ Geom2d_OffsetCurve::Geom2d_OffsetCurve(const Handle(Geom2d_Curve)& theCurve,
     : offsetValue(theOffset)
 {
   SetBasisCurve(theCurve, isTheNotCheckC0);
+}
+
+//=================================================================================================
+
+Geom2d_OffsetCurve::Geom2d_OffsetCurve(const Geom2d_OffsetCurve& theOther)
+    : offsetValue(theOther.offsetValue),
+      myBasisCurveContinuity(theOther.myBasisCurveContinuity)
+{
+  // Deep copy basis curve and evaluator without validation
+  basisCurve  = Handle(Geom2d_Curve)::DownCast(theOther.basisCurve->Copy());
+  myEvaluator = new Geom2dEvaluator_OffsetCurve(basisCurve, offsetValue);
 }
 
 //=================================================================================================

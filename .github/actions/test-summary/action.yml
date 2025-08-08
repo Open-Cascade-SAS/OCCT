@@ -23,7 +23,7 @@ runs:
       shell: bash
 
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.7
+      uses: ./.github/actions/download-artifacts
       with:
         name: install-linux-clang-x64
         path: install
@@ -88,7 +88,7 @@ runs:
       shell: bash
 
     - name: Upload comparison results
-      uses: actions/upload-artifact@v4.4.3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: test-compare-results
         retention-days: 15

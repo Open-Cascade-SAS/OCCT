@@ -14,24 +14,25 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export FFMPEG_DIR="@3RDPARTY_FFMPEG_LIBRARY_DIR@"
     export JEMALLOC_DIR="@3RDPARTY_JEMALLOC_LIBRARY_DIR@"
 
-    if [ "x@3RDPARTY_QT_DIR" != "x" ]; then
+    if [ "x@3RDPARTY_QT_DIR@" != "x" ]; then
       export QTDIR="@3RDPARTY_QT_DIR@"
     fi
 
     export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
     export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 
-    export CSF_OCCTBinPath="@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
-    export CSF_OCCTLibPath="@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"
+    # CSF_OCCTBinPath and CSF_OCCTLibPath are defined differently for 
+    # multiple and single configuration builds
+    @OCCT_CUSTOM_BUILD_BIN_LIB_PATHS@
     export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
-    export CSF_OCCTResourcePath="@CMAKE_SOURCE_DIR@/resources"
-    export CSF_OCCTDataPath="@CMAKE_SOURCE_DIR@/data"
-    export CSF_OCCTSamplesPath="@CMAKE_SOURCE_DIR@/samples"
-    export CSF_OCCTTestsPath="@CMAKE_SOURCE_DIR@/tests"
-    export CSF_OCCTDocPath="@CMAKE_SOURCE_DIR@/doc"
+    export CSF_OCCTResourcePath="@OCCT_ROOT_DIR@/resources"
+    export CSF_OCCTDataPath="@OCCT_ROOT_DIR@/data"
+    export CSF_OCCTSamplesPath="@OCCT_ROOT_DIR@/samples"
+    export CSF_OCCTTestsPath="@OCCT_ROOT_DIR@/tests"
+    export CSF_OCCTDocPath="@OCCT_ROOT_DIR@/doc"
 
     # for compatibility with external application using CASROOT
-    export CASROOT="@CMAKE_SOURCE_DIR@"
+    export CASROOT="@OCCT_ROOT_DIR@"
   fi
 fi
 

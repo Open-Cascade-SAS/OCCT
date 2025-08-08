@@ -644,6 +644,13 @@ bool DESTEP_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
+bool DESTEP_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DESTEP_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("STEP");
