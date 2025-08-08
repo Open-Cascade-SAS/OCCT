@@ -240,11 +240,11 @@ gp_Pnt Bnd_Box::CornerMax() const
     aCornerMax.SetX(Bnd_Precision_Infinite);
   else
     aCornerMax.SetX(Xmax + Gap);
-  if (IsOpenYmin())
+  if (IsOpenYmax())
     aCornerMax.SetY(Bnd_Precision_Infinite);
   else
     aCornerMax.SetY(Ymax + Gap);
-  if (IsOpenZmin())
+  if (IsOpenZmax())
     aCornerMax.SetZ(Bnd_Precision_Infinite);
   else
     aCornerMax.SetZ(Zmax + Gap);
@@ -1106,12 +1106,13 @@ void Bnd_Box::Dump() const
 
 //=================================================================================================
 
-void Bnd_Box::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
-  OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "CornerMin", 3, Xmin, Ymin, Zmin)
-    OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "CornerMax", 3, Xmax, Ymax, Zmax)
-
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Gap)
-        OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Flags)}
+void Bnd_Box::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "CornerMin", 3, Xmin, Ymin, Zmin);
+  OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "CornerMax", 3, Xmax, Ymax, Zmax);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Gap);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Flags)
+}
 
 //=================================================================================================
 

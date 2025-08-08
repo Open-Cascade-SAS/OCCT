@@ -45,6 +45,13 @@ public:
           const Standard_CString       theFileName,
           const Message_ProgressRange& theProgress = Message_ProgressRange());
 
+  //! Converts a given shape to STL format and writes it to the specified stream.
+  //! \return the error state.
+  Standard_EXPORT Standard_Boolean
+    Write(const TopoDS_Shape&          theShape,
+          Standard_OStream&            theStream,
+          const Message_ProgressRange& theProgress = Message_ProgressRange());
+
 private:
   Standard_Boolean myASCIIMode;
 };

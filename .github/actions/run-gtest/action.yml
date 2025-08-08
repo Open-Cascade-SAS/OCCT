@@ -25,7 +25,7 @@ runs:
   using: "composite"
   steps:
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.3.0
+      uses: ./.github/actions/download-artifacts
       with:
         name: ${{ inputs.install-artifact-name }}
         path: install

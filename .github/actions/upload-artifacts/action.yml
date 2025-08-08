@@ -1,0 +1,53 @@
+name: 'Upload Platform Artifacts'
+description: 'Upload artifacts with proper file permissions and symlinks (cross-platform)'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Path to archive'
+    required: true
+  retention-days:
+    description: 'Number of days to retain artifact'
+    required: false
+    default: '30'
+
+runs:
+  using: 'composite'
+  steps:
+    # For Windows, use standard GitHub action - no symlink issues
+    - name: Upload artifacts (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        retention-days: ${{ inputs.retention-days }}
+    
+    # For Linux/Unix, use custom workaround to handle symlinks properly
+    - name: Create archive (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        BASE_PATH="${{ inputs.path }}"
+        ARCHIVE_NAME="${{ inputs.name }}.tar.gz"
+        
+        if [ -d "$BASE_PATH" ]; then
+          tar -czf "$ARCHIVE_NAME" -C "$(dirname "$BASE_PATH")" "$(basename "$BASE_PATH")"
+        elif [ -f "$BASE_PATH" ]; then
+          tar -czf "$ARCHIVE_NAME" -C "$(dirname "$BASE_PATH")" "$(basename "$BASE_PATH")"
+        else
+          echo "Error: Path $BASE_PATH does not exist"
+          exit 1
+        fi
+        
+        echo "Created archive: $ARCHIVE_NAME"
+        ls -la "$ARCHIVE_NAME"
+    
+    - name: Upload archive (Unix)
+      if: runner.os != 'Windows'
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.name }}.tar.gz
+        retention-days: ${{ inputs.retention-days }}

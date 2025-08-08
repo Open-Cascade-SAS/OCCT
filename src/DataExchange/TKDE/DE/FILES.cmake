@@ -12,6 +12,8 @@ set(OCCT_DE_FILES
   DE_ShapeFixConfigurationNode.cxx
   DE_ShapeFixConfigurationNode.hxx
   DE_ShapeFixParameters.hxx
+  DE_ValidationUtils.cxx
+  DE_ValidationUtils.hxx
   DE_Wrapper.cxx
   DE_Wrapper.hxx
 )

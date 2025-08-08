@@ -242,29 +242,66 @@ Standard_Boolean VrmlAPI_Writer::Write(const TopoDS_Shape&    aShape,
                                        const Standard_CString aFile,
                                        const Standard_Integer aVersion) const
 {
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::ostream> anOutStream =
+    aFileSystem->OpenOStream(aFile, std::ios::out | std::ios::binary);
+  if (anOutStream.get() == NULL)
+  {
+    return Standard_False;
+  }
+
+  return Write(aShape, *anOutStream, aVersion);
+}
+
+Standard_Boolean VrmlAPI_Writer::WriteDoc(const Handle(TDocStd_Document)& theDoc,
+                                          const Standard_CString          theFile,
+                                          const Standard_Real             theScale) const
+{
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::ostream> anOutStream =
+    aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
+  if (anOutStream.get() == NULL)
+  {
+    return Standard_False;
+  }
+
+  return WriteDoc(theDoc, *anOutStream, theScale);
+}
+
+//=================================================================================================
+
+Standard_Boolean VrmlAPI_Writer::Write(const TopoDS_Shape&    aShape,
+                                       Standard_OStream&      theOStream,
+                                       const Standard_Integer aVersion) const
+{
   if (aVersion == 1)
-    return write_v1(aShape, aFile);
+    return write_v1(aShape, theOStream);
   else if (aVersion == 2)
-    return write_v2(aShape, aFile);
+    return write_v2(aShape, theOStream);
 
   return Standard_False;
 }
 
-Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape&    aShape,
-                                          const Standard_CString aFile) const
+//=================================================================================================
+
+Standard_Boolean VrmlAPI_Writer::WriteDoc(const Handle(TDocStd_Document)& theDoc,
+                                          Standard_OStream&               theOStream,
+                                          const Standard_Real             theScale) const
 {
-  OSD_Path                thePath(aFile);
-  TCollection_AsciiString theFile;
-  thePath.SystemName(theFile);
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutFile =
-    aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
-  if (anOutFile.get() == NULL)
-  {
-    return Standard_False;
-  }
-  Handle(VrmlConverter_IsoAspect) ia  = new VrmlConverter_IsoAspect; // UIso
-  Handle(VrmlConverter_IsoAspect) ia1 = new VrmlConverter_IsoAspect; // VIso
+  VrmlData_Scene        aScene;
+  VrmlData_ShapeConvert aConv(aScene, theScale);
+  aConv.ConvertDocument(theDoc);
+
+  theOStream << aScene;
+  theOStream.flush();
+  return theOStream.good();
+}
+
+Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,
+                                          Standard_OStream&   theOStream) const
+{
+  Handle(VrmlConverter_IsoAspect) ia  = new VrmlConverter_IsoAspect;
+  Handle(VrmlConverter_IsoAspect) ia1 = new VrmlConverter_IsoAspect;
   ia->SetMaterial(myUisoMaterial);
   ia->SetHasMaterial(Standard_True);
   myDrawer->SetUIsoAspect(ia);
@@ -318,7 +355,6 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape&    aShape,
     if (!aFace.IsNull())
     {
       Handle(Poly_Triangulation) aTri = BRep_Tool::Triangulation(aFace, aLoc);
-
       if (!aTri.IsNull())
       {
         hasTriangles = Standard_True;
@@ -335,57 +371,61 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape&    aShape,
   VrmlConverter_TypeOfCamera      Camera = VrmlConverter_PerspectiveCamera;
   Handle(VrmlConverter_Projector) projector =
     new VrmlConverter_Projector(Shapes, Focus, DX, DY, DZ, XUp, YUp, ZUp, Camera, Light);
-  Vrml::VrmlHeaderWriter(*anOutFile);
+
+  Vrml::VrmlHeaderWriter(theOStream);
   if (myRepresentation == VrmlAPI_BothRepresentation)
     Vrml::CommentWriter(
       " This file contents both Shaded and Wire Frame representation of selected Shape ",
-      *anOutFile);
+      theOStream);
   if (myRepresentation == VrmlAPI_ShadedRepresentation)
     Vrml::CommentWriter(" This file contents only Shaded representation of selected Shape ",
-                        *anOutFile);
+                        theOStream);
   if (myRepresentation == VrmlAPI_WireFrameRepresentation)
     Vrml::CommentWriter(" This file contents only Wire Frame representation of selected Shape ",
-                        *anOutFile);
+                        theOStream);
+
   Vrml_Separator S1;
-  S1.Print(*anOutFile);
-  projector->Add(*anOutFile);
+  S1.Print(theOStream);
+  projector->Add(theOStream);
+
   Light  = VrmlConverter_DirectionLight;
   Camera = VrmlConverter_OrthographicCamera;
   Handle(VrmlConverter_Projector) projector1 =
     new VrmlConverter_Projector(Shapes, Focus, DX, DY, DZ, XUp, YUp, ZUp, Camera, Light);
-  projector1->Add(*anOutFile);
+  projector1->Add(theOStream);
+
   Vrml_Separator S2;
-  S2.Print(*anOutFile);
+  S2.Print(theOStream);
   if ((myRepresentation == VrmlAPI_ShadedRepresentation
        || myRepresentation == VrmlAPI_BothRepresentation)
       && hasTriangles)
   {
     Vrml_Group Group1;
-    Group1.Print(*anOutFile);
+    Group1.Print(theOStream);
     Vrml_Instancing I2("Shaded representation of shape");
-    I2.DEF(*anOutFile);
-    VrmlConverter_ShadedShape::Add(*anOutFile, aShape, myDrawer);
-    Group1.Print(*anOutFile);
+    I2.DEF(theOStream);
+    VrmlConverter_ShadedShape::Add(theOStream, aShape, myDrawer);
+    Group1.Print(theOStream);
   }
   if (myRepresentation == VrmlAPI_WireFrameRepresentation
       || myRepresentation == VrmlAPI_BothRepresentation)
   {
     Vrml_Group Group2;
-    Group2.Print(*anOutFile);
+    Group2.Print(theOStream);
     Vrml_Instancing I3("Wire Frame representation of shape");
-    I3.DEF(*anOutFile);
-    VrmlConverter_WFDeflectionShape::Add(*anOutFile, aShape, myDrawer);
-    Group2.Print(*anOutFile);
+    I3.DEF(theOStream);
+    VrmlConverter_WFDeflectionShape::Add(theOStream, aShape, myDrawer);
+    Group2.Print(theOStream);
   }
-  S2.Print(*anOutFile);
-  S1.Print(*anOutFile);
+  S2.Print(theOStream);
+  S1.Print(theOStream);
 
-  anOutFile->flush();
-  return anOutFile->good();
+  theOStream.flush();
+  return theOStream.good();
 }
 
-Standard_Boolean VrmlAPI_Writer::write_v2(const TopoDS_Shape&    aShape,
-                                          const Standard_CString aFile) const
+Standard_Boolean VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,
+                                          Standard_OStream&   theOStream) const
 {
   Standard_Boolean anExtFace = Standard_False;
   if (myRepresentation == VrmlAPI_ShadedRepresentation
@@ -402,38 +442,7 @@ Standard_Boolean VrmlAPI_Writer::write_v2(const TopoDS_Shape&    aShape,
   aConv.AddShape(aShape);
   aConv.Convert(anExtFace, anExtEdge);
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutStream =
-    aFileSystem->OpenOStream(aFile, std::ios::out | std::ios::binary);
-  if (anOutStream.get() != NULL)
-  {
-    *anOutStream << aScene;
-    anOutStream->flush();
-    return anOutStream->good();
-  }
-  anOutStream.reset();
-  return Standard_False;
-}
-
-//=================================================================================================
-
-Standard_Boolean VrmlAPI_Writer::WriteDoc(const Handle(TDocStd_Document)& theDoc,
-                                          const Standard_CString          theFile,
-                                          const Standard_Real             theScale) const
-{
-  VrmlData_Scene        aScene;
-  VrmlData_ShapeConvert aConv(aScene, theScale);
-  aConv.ConvertDocument(theDoc);
-
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutStream =
-    aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
-  if (anOutStream.get() != NULL)
-  {
-    *anOutStream << aScene;
-    anOutStream->flush();
-    return anOutStream->good();
-  }
-  anOutStream.reset();
-  return Standard_False;
+  theOStream << aScene;
+  theOStream.flush();
+  return theOStream.good();
 }

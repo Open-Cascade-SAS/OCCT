@@ -364,9 +364,9 @@ public:
   //! <theCString> should be allocated before call!
   Standard_EXPORT Standard_Integer ToUTF8CString(Standard_PCharacter& theCString) const;
 
-  //! Returns expected CString length in UTF8 coding.
-  //! It can be used for  memory  calculation  before converting
-  //! to CString containing symbols in UTF8 coding.
+  //! Returns expected CString length in UTF8 coding (like strlen, without null terminator).
+  //! It can be used for memory calculation before converting to CString containing symbols in UTF8
+  //! coding. For external allocation, use: char* buf = new char[str.LengthOfCString() + 1];
   Standard_EXPORT Standard_Integer LengthOfCString() const;
 
 private:

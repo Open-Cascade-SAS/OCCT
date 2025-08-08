@@ -16,6 +16,7 @@
 #include <DE_ConfigurationContext.hxx>
 #include <DE_ConfigurationNode.hxx>
 #include <DE_Provider.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <Message_ProgressRange.hxx>
 #include <NCollection_Buffer.hxx>
 #include <OSD_File.hxx>
@@ -499,18 +500,26 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
                                           const Standard_Boolean         theToImport,
                                           Handle(DE_Provider)&           theProvider) const
 {
-  Handle(NCollection_Buffer) aBuffer;
   if (theToImport)
   {
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aStream =
-      aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
-    if (aStream.get() != nullptr)
-    {
-      aBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), 2048);
-      aStream->read((char*)aBuffer->ChangeData(), 2048);
-      aBuffer->ChangeData()[2047] = '\0';
-    }
+    return FindReadProvider(thePath, Standard_True, theProvider);
+  }
+  else
+  {
+    return FindWriteProvider(thePath, theProvider);
+  }
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                              const Standard_Boolean         theCheckContent,
+                                              Handle(DE_Provider)&           theProvider) const
+{
+  Handle(NCollection_Buffer) aBuffer;
+  if (theCheckContent && !DE_ValidationUtils::CreateContentBuffer(thePath, aBuffer))
+  {
+    return Standard_False;
   }
   OSD_Path                      aPath(thePath);
   const TCollection_AsciiString anExtr = aPath.Extension();
@@ -521,11 +530,69 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
          aVendorIter.Next())
     {
       const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
-      if (aNode->IsEnabled()
-          && ((theToImport && aNode->IsImportSupported())
-              || (!theToImport && aNode->IsExportSupported()))
-          && (aNode->CheckExtension(anExtr) || (theToImport && aNode->CheckContent(aBuffer)))
-          && aNode->UpdateLoad(theToImport, myKeepUpdates))
+      if (aNode->IsEnabled() && aNode->IsImportSupported()
+          && (aNode->CheckExtension(anExtr) || (theCheckContent && aNode->CheckContent(aBuffer)))
+          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+      {
+        theProvider             = aNode->BuildProvider();
+        aNode->GlobalParameters = GlobalParameters;
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindReadProvider(const TCollection_AsciiString& thePath,
+                                              std::istream&                  theStream,
+                                              Handle(DE_Provider)&           theProvider) const
+{
+  Handle(NCollection_Buffer) aBuffer;
+  if (!DE_ValidationUtils::CreateContentBuffer(theStream, aBuffer))
+  {
+    return Standard_False;
+  }
+
+  OSD_Path                      aPath(thePath);
+  const TCollection_AsciiString anExtr = aPath.Extension();
+  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+       aFormatIter.Next())
+  {
+    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+         aVendorIter.Next())
+    {
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      if (aNode->IsEnabled() && aNode->IsImportSupported()
+          && (aNode->CheckExtension(anExtr) || aNode->CheckContent(aBuffer))
+          && aNode->UpdateLoad(Standard_True, myKeepUpdates))
+      {
+        theProvider             = aNode->BuildProvider();
+        aNode->GlobalParameters = GlobalParameters;
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::FindWriteProvider(const TCollection_AsciiString& thePath,
+                                               Handle(DE_Provider)&           theProvider) const
+{
+  OSD_Path                      aPath(thePath);
+  const TCollection_AsciiString anExtr = aPath.Extension();
+  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration); aFormatIter.More();
+       aFormatIter.Next())
+  {
+    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value()); aVendorIter.More();
+         aVendorIter.Next())
+    {
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      if (aNode->IsEnabled() && aNode->IsExportSupported() && aNode->CheckExtension(anExtr)
+          && aNode->UpdateLoad(Standard_False, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
@@ -571,4 +638,252 @@ void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
     }
     ChangePriority(aFormatIter.Key(), aVendorPriority, Standard_True);
   }
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
+                                  const Handle(TDocStd_Document)& theDocument,
+                                  Handle(XSControl_WorkSession)&  theWS,
+                                  const Message_ProgressRange&    theProgress)
+{
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Read(theStreams, theDocument, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
+                                   const Handle(TDocStd_Document)& theDocument,
+                                   Handle(XSControl_WorkSession)&  theWS,
+                                   const Message_ProgressRange&    theProgress)
+{
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  if (!FindWriteProvider(aFirstKey, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Write(theStreams, theDocument, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&    theStreams,
+                                  const Handle(TDocStd_Document)& theDocument,
+                                  const Message_ProgressRange&    theProgress)
+{
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Read(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&   theStreams,
+                                   const Handle(TDocStd_Document)& theDocument,
+                                   const Message_ProgressRange&    theProgress)
+{
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  if (!FindWriteProvider(aFirstKey, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Write(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList&   theStreams,
+                                  TopoDS_Shape&                  theShape,
+                                  Handle(XSControl_WorkSession)& theWS,
+                                  const Message_ProgressRange&   theProgress)
+{
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Read(theStreams, theShape, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList&  theStreams,
+                                   const TopoDS_Shape&            theShape,
+                                   Handle(XSControl_WorkSession)& theWS,
+                                   const Message_ProgressRange&   theProgress)
+{
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  if (!FindWriteProvider(aFirstKey, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Write(theStreams, theShape, theWS, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Read(DE_Provider::ReadStreamList& theStreams,
+                                  TopoDS_Shape&                theShape,
+                                  const Message_ProgressRange& theProgress)
+{
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, "DE_Wrapper Read"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  Standard_IStream&   aFirstStream = theStreams.First().Stream;
+  if (!FindReadProvider(aFirstKey, aFirstStream, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Read(theStreams, theShape, theProgress);
+}
+
+//=================================================================================================
+
+Standard_Boolean DE_Wrapper::Write(DE_Provider::WriteStreamList& theStreams,
+                                   const TopoDS_Shape&           theShape,
+                                   const Message_ProgressRange&  theProgress)
+{
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, "DE_Wrapper Write"))
+  {
+    return Standard_False;
+  }
+
+  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
+
+  Handle(DE_Provider) aProvider;
+  if (!FindWriteProvider(aFirstKey, aProvider))
+  {
+    Message::SendFail() << "Error: DE_Wrapper cannot find provider for stream " << aFirstKey;
+    return Standard_False;
+  }
+
+  if (!aProvider->GetNode()->IsStreamSupported())
+  {
+    Message::SendFail() << "Error: Provider " << aProvider->GetFormat() << " "
+                        << aProvider->GetVendor() << " doesn't support stream operations";
+    return Standard_False;
+  }
+
+  return aProvider->Write(theStreams, theShape, theProgress);
 }

@@ -14,6 +14,7 @@
 #include <DEOBJ_Provider.hxx>
 
 #include <BRep_Builder.hxx>
+#include <DE_ValidationUtils.hxx>
 #include <DEOBJ_ConfigurationNode.hxx>
 #include <RWObj_CafReader.hxx>
 #include <RWObj_CafWriter.hxx>
@@ -62,16 +63,15 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
                           const Handle(TDocStd_Document)& theDocument,
                           const Message_ProgressRange&    theProgress)
 {
-  if (theDocument.IsNull())
+  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
   {
-    Message::SendFail() << "Error in the DEOBJ_Provider during reading the file " << thePath
-                        << "\t: theDocument shouldn't be null";
     return false;
   }
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEOBJ_ConfigurationNode)))
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEOBJ_ConfigurationNode),
+                                                     aContext))
   {
-    Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during reading the file "
-                        << thePath << "\t: Incorrect or empty Configuration Node";
     return false;
   }
   Handle(DEOBJ_ConfigurationNode) aNode = Handle(DEOBJ_ConfigurationNode)::DownCast(GetNode());

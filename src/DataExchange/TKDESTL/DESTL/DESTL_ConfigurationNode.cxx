@@ -134,6 +134,13 @@ bool DESTL_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
+bool DESTL_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DESTL_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("STL");
