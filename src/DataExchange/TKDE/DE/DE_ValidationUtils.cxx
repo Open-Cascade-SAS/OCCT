@@ -183,7 +183,7 @@ Standard_Boolean DE_ValidationUtils::ValidateReadStreamList(
   try
   {
     const DE_Provider::ReadStreamNode& aNode = theStreams.First();
-    if (aNode.Stream.fail() || aNode.Stream.bad())
+    if (aNode.Stream.fail())
     {
       if (theIsVerbose)
       {
