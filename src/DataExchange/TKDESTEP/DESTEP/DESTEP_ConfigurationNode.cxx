@@ -568,7 +568,7 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!Setting up the write.metadata parameter which is used to indicate "
              "write Metadata or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
-  aResult += aScope + "write.props :\t " + InternalParameters.WriteMetadata + "\n";
+  aResult += aScope + "write.metadata :\t " + InternalParameters.WriteMetadata + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
