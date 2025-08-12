@@ -131,7 +131,7 @@ void RWStepVisual_RWTessellatedShell::Share(const Handle(StepVisual_TessellatedS
 
   // Own fields of TessellatedShell
 
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (Standard_Integer i1 = 1; theEnt->NbItems() > 0 && i1 <= theEnt->Items()->Length(); i1++)
   {
     Handle(StepVisual_TessellatedStructuredItem) Var0 = theEnt->Items()->Value(i1);
     theIter.AddItem(Var0);
