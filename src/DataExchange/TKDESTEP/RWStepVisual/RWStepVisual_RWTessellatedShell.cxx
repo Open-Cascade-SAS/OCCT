@@ -49,8 +49,9 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
 
   // Own fields of TessellatedShell
 
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems = new StepVisual_HArray1OfTessellatedStructuredItem();
-  Standard_Integer                                      sub2 = 0;
+  Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems =
+    new StepVisual_HArray1OfTessellatedStructuredItem();
+  Standard_Integer sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
     Standard_Integer nb0  = theData->NbParams(sub2);
