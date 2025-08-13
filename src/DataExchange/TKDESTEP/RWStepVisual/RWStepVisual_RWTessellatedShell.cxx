@@ -49,13 +49,13 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
 
   // Own fields of TessellatedShell
 
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems;
+  Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems = new StepVisual_HArray1OfTessellatedStructuredItem();
   Standard_Integer                                      sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
     Standard_Integer nb0  = theData->NbParams(sub2);
-    aItems                = new StepVisual_HArray1OfTessellatedStructuredItem(1, nb0);
     Standard_Integer num2 = sub2;
+    aItems.Resize(1, nb0, false);
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
       Handle(StepVisual_TessellatedStructuredItem) anIt0;
@@ -131,7 +131,7 @@ void RWStepVisual_RWTessellatedShell::Share(const Handle(StepVisual_TessellatedS
 
   // Own fields of TessellatedShell
 
-  for (Standard_Integer i1 = 1; theEnt->NbItems() > 0 && i1 <= theEnt->Items()->Length(); i1++)
+  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
     Handle(StepVisual_TessellatedStructuredItem) Var0 = theEnt->Items()->Value(i1);
     theIter.AddItem(Var0);
