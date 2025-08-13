@@ -56,7 +56,7 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
   {
     Standard_Integer nb0  = theData->NbParams(sub2);
     Standard_Integer num2 = sub2;
-    aItems.Resize(1, nb0, false);
+    aItems->Resize(1, nb0, false);
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
       Handle(StepVisual_TessellatedStructuredItem) anIt0;
