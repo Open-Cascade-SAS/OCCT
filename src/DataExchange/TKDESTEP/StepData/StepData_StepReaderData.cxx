@@ -688,7 +688,7 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
   numsub = SubListNumber(num, nump, Standard_False);
   if (numsub > 0)
   {
-    return (NbParams(numsub) > 0);
+    return Standard_True;
   }
   //  Si optionel indefini, on passe l eponge
   numsub                  = 0;
