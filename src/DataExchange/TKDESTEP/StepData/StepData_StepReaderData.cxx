@@ -1954,7 +1954,7 @@ Standard_Integer StepData_StepReaderData::FindEntityNumber(const Standard_Intege
 //  the Entities properly said in the list read by BoundEntity
 //  Interest: also addresses sub-lists (Num->record number in the Directory)
 //  result exploited by ParamEntity and ParamNumber
-//  
+//
 //  This is a critical optimization that resolves entity references during loading
 //  rather than during each access, significantly improving performance for large files
 

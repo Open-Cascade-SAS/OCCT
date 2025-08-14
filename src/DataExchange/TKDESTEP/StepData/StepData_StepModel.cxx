@@ -154,7 +154,7 @@ void StepData_StepModel::SetIdentLabel(const Handle(Standard_Transient)& ent,
   if (!num)
     return; // Entity not found in model
   Standard_Integer nbEnt = NbEntities();
-  
+
   // Initialize identifier array if not yet created
   if (theidnums.IsNull())
   {

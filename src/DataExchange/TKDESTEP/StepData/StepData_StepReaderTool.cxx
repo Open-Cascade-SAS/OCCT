@@ -32,8 +32,8 @@
 // Constructor: Initialize the STEP reader tool with reader data and protocol
 StepData_StepReaderTool::StepData_StepReaderTool(const Handle(StepData_StepReaderData)& reader,
                                                  const Handle(StepData_Protocol)&       protocol)
-    : theglib(protocol),  // General library from protocol
-      therlib(protocol)   // Reader library from protocol
+    : theglib(protocol), // General library from protocol
+      therlib(protocol)  // Reader library from protocol
 {
   SetData(reader, protocol);
 }
@@ -70,8 +70,8 @@ Standard_Boolean StepData_StepReaderTool::Recognize(const Standard_Integer      
 void StepData_StepReaderTool::Prepare(const Handle(StepData_FileRecognizer)& reco,
                                       const Standard_Boolean                 optim)
 {
-  thereco = reco;  // Store the recognizer for later use
-  Prepare(optim);  // Continue with standard preparation
+  thereco = reco; // Store the recognizer for later use
+  Prepare(optim); // Continue with standard preparation
 }
 
 //=================================================================================================
@@ -112,7 +112,7 @@ void StepData_StepReaderTool::Prepare(const Standard_Boolean optim)
 // Prepare header entities by recognizing their types and binding them
 void StepData_StepReaderTool::PrepareHeader(const Handle(StepData_FileRecognizer)& reco)
 {
-  Standard_Integer i = 0;  // Index for iterating through header records
+  Standard_Integer i = 0; // Index for iterating through header records
 
   // Type recognition
   DeclareAndCast(StepData_StepReaderData, stepdat, Data());

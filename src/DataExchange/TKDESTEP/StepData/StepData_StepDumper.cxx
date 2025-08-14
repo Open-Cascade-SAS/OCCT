@@ -46,17 +46,17 @@ StepData_StepWriter& StepData_StepDumper::StepWriter()
 
 // Main dump method: outputs entity information to stream with different levels of detail
 // level <= 0: basic entity type and identifier information only
-// level == 1: entity identifiers and basic structure 
+// level == 1: entity identifiers and basic structure
 // level > 1:  complete entity data with all referenced entities
 Standard_Boolean StepData_StepDumper::Dump(Standard_OStream&                 S,
                                            const Handle(Standard_Transient)& ent,
                                            const Standard_Integer            level)
 {
   Standard_Integer        i, nb = themodel->NbEntities();
-  TColStd_Array1OfInteger ids(0, nb);  // Array to store entity identifiers
+  TColStd_Array1OfInteger ids(0, nb); // Array to store entity identifiers
   ids.Init(0);
-  Standard_Integer num  = themodel->Number(ent);      // Entity number in model
-  Standard_Integer nlab = themodel->IdentLabel(ent);  // Entity identifier label
+  Standard_Integer num  = themodel->Number(ent);     // Entity number in model
+  Standard_Integer nlab = themodel->IdentLabel(ent); // Entity identifier label
   ids.SetValue(num, (nlab > 0 ? nlab : -1));
 
   if (level <= 0)
@@ -67,7 +67,7 @@ Standard_Boolean StepData_StepDumper::Dump(Standard_OStream&                 S,
     if (num > 0)
       S << "#" << num << " = ";
     else
-      S << "#??? = ";  // Unknown entity number
+      S << "#??? = "; // Unknown entity number
     if (thewlib.Select(ent, module, CN))
     {
       if (module->IsComplex(CN))
@@ -160,21 +160,21 @@ Standard_Boolean StepData_StepDumper::Dump(Standard_OStream&                 S,
   }
 
   // Display entity identifiers if present
-  // Count different types of identifiers: distinct (nbi), matching entity number (nbq), 
+  // Count different types of identifiers: distinct (nbi), matching entity number (nbq),
   // without identifier (nbu), total entities with identifiers (nbe)
   Standard_Integer nbi = 0, nbe = 0, nbq = 0, nbu = 0;
   for (i = 1; i <= nb; i++)
   {
     nlab = ids.Value(i);
     if (nlab == 0)
-      continue;  // Skip entities without identifiers
-    nbe++;       // Count entities with identifiers
+      continue; // Skip entities without identifiers
+    nbe++;      // Count entities with identifiers
     if (nlab < 0)
-      nbu = 0;   // Entities without proper identifier
+      nbu = 0; // Entities without proper identifier
     else if (nlab == i)
-      nbq = 0;   // Entities where identifier matches entity number
+      nbq = 0; // Entities where identifier matches entity number
     else if (nlab > 0)
-      nbi++;     // Entities with distinct proper identifiers
+      nbi++; // Entities with distinct proper identifiers
   }
   if (nbe > 0)
   {
@@ -229,7 +229,7 @@ Standard_Boolean StepData_StepDumper::Dump(Standard_OStream&                 S,
         nbr0 = nbr;
 
         // Alternative formatting approaches for entity identifiers:
-        // - Line wrapping at 79 characters  
+        // - Line wrapping at 79 characters
         // - Grouped output with spacing
         // - Tabular format with entity ranks and STEP identifiers
       }

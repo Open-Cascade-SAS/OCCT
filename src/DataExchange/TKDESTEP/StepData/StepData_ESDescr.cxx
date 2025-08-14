@@ -120,7 +120,7 @@ Standard_Boolean StepData_ESDescr::IsSub(const Handle(StepData_ESDescr)& other) 
   if (oth == thesuper)
     return Standard_True; // Direct superclass
   else if (thesuper.IsNull())
-    return Standard_False; // No superclass
+    return Standard_False;     // No superclass
   return thesuper->IsSub(oth); // Check recursively up the hierarchy
 }
 
@@ -167,7 +167,7 @@ Standard_Boolean StepData_ESDescr::Matches(const Standard_CString name) const
   if (thenom.IsEqual(name))
     return Standard_True; // Direct match
   if (thesuper.IsNull())
-    return Standard_False; // No superclass to check
+    return Standard_False;        // No superclass to check
   return thesuper->Matches(name); // Check superclass hierarchy
 }
 
