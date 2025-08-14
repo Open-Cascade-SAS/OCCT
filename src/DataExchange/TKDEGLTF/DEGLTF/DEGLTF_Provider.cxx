@@ -141,7 +141,6 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&  thePath,
   aConverter.SetInputCoordinateSystem(aNode->InternalParameters.SystemCS);
   if (aNode->GlobalParameters.LengthUnit != 1000.)
   {
-    TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
     Message::SendWarning()
       << "Warning during " << aContext
       << ": Target format doesn't support custom units. Model will be scaled to Meters (unit: "
