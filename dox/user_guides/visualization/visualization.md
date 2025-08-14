@@ -1542,7 +1542,7 @@ This sample TEST program for the *V3d* Package uses primary packages *Xw* and *G
 
 ~~~~{.cpp}
 // create a default display connection
-Handle(Aspect_DisplayConnection) aDispConnection = new Aspect_DisplayConnection();
+Handle(Xw_DisplayConnection) aDispConnection = new Xw_DisplayConnection();
 // create a Graphic Driver
 Handle(OpenGl_GraphicDriver) aGraphicDriver = new OpenGl_GraphicDriver (aDispConnection);
 // create a Viewer to this Driver
