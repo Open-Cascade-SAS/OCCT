@@ -29,14 +29,17 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 
-// Entete de fichier : liste d entites
+// File header: list of entities
+// Default constructor for STEP data model
 StepData_StepModel::StepData_StepModel() {}
 
 Handle(Standard_Transient) StepData_StepModel::Entity(const Standard_Integer num) const
 {
   return Value(num);
-} // nom plus joli
+} // More user-friendly name for accessing entities
 
+// Copy header entities from another STEP model
+// This method transfers only the header section, not the data entities
 void StepData_StepModel::GetFromAnother(const Handle(Interface_InterfaceModel)& other)
 {
   theheader.Clear();
@@ -44,7 +47,7 @@ void StepData_StepModel::GetFromAnother(const Handle(Interface_InterfaceModel)& 
   if (another.IsNull())
     return;
   Interface_EntityIterator iter = another->Header();
-  //  recopier le header. Attention, header distinct du contenu ...
+  // Copy the header. Important: header is distinct from content...
   Interface_CopyTool TC(this, StepData::HeaderProtocol());
   for (; iter.More(); iter.Next())
   {
@@ -68,6 +71,8 @@ Interface_EntityIterator StepData_StepModel::Header() const
   return iter;
 }
 
+// Check if exactly one header entity of specified type exists
+// Returns true only if there is exactly one entity of the given type
 Standard_Boolean StepData_StepModel::HasHeaderEntity(const Handle(Standard_Type)& atype) const
 {
   return (theheader.NbTypedEntities(atype) == 1);
@@ -79,7 +84,7 @@ Handle(Standard_Transient) StepData_StepModel::HeaderEntity(
   return theheader.TypedEntity(atype);
 }
 
-//   Remplissage du Header
+// Header population methods
 
 void StepData_StepModel::ClearHeader()
 {
@@ -110,7 +115,7 @@ void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
 
 void StepData_StepModel::DumpHeader(Standard_OStream& S, const Standard_Integer /*level*/) const
 {
-  //  NB : level n est pas utilise
+  // Note: level parameter is not used in this implementation
 
   Handle(StepData_Protocol) stepro = StepData::HeaderProtocol();
   Standard_Boolean          iapro  = !stepro.IsNull();
@@ -131,7 +136,7 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const Standard_Integer 
 
   Handle(StepData_StepModel) me(this);
   StepData_StepWriter        SW(me);
-  SW.SendModel(stepro, Standard_True); // envoi HEADER seul
+  SW.SendModel(stepro, Standard_True); // Send HEADER only
   SW.Print(S);
 }
 
@@ -140,23 +145,29 @@ void StepData_StepModel::ClearLabels()
   theidnums.Nullify();
 }
 
+// Set identifier label for an entity (used in STEP file format)
+// The identifier is typically a number like #123 that appears in STEP files
 void StepData_StepModel::SetIdentLabel(const Handle(Standard_Transient)& ent,
                                        const Standard_Integer            ident)
 {
   Standard_Integer num = Number(ent);
   if (!num)
-    return;
+    return; // Entity not found in model
   Standard_Integer nbEnt = NbEntities();
+  
+  // Initialize identifier array if not yet created
   if (theidnums.IsNull())
   {
     theidnums = new TColStd_HArray1OfInteger(1, nbEnt);
-    theidnums->Init(0);
+    theidnums->Init(0); // Initialize all values to 0
   }
+  // Resize array if model has grown since last allocation
   else if (nbEnt > theidnums->Length())
   {
     Standard_Integer                 prevLength = theidnums->Length();
     Handle(TColStd_HArray1OfInteger) idnums1    = new TColStd_HArray1OfInteger(1, nbEnt);
     idnums1->Init(0);
+    // Copy existing identifier mappings
     Standard_Integer k = 1;
     for (; k <= prevLength; k++)
       idnums1->SetValue(k, theidnums->Value(k));
@@ -230,8 +241,11 @@ void StepData_StepModel::SetWriteLengthUnit(const Standard_Real theUnit)
 
 //=================================================================================================
 
+// Get the length unit for writing STEP files
+// Returns the conversion factor from millimeters to the target unit
 Standard_Real StepData_StepModel::WriteLengthUnit() const
 {
+  // Lazy initialization of write unit from global parameters
   if (!myWriteUnitIsInitialized)
   {
     myWriteUnitIsInitialized = Standard_True;

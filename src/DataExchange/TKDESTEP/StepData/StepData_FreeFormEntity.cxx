@@ -21,6 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_FreeFormEntity, Standard_Transient)
 
 void StepData_FreeFormEntity::SetStepType(const Standard_CString typenam)
 {
+  // Set the STEP entity type name for this free-form entity
   thetype.Clear();
   thetype.AssignCat(typenam);
 }
@@ -53,6 +54,7 @@ Handle(StepData_FreeFormEntity) StepData_FreeFormEntity::Next() const
 
 Standard_Boolean StepData_FreeFormEntity::IsComplex() const
 {
+  // A complex entity is one that has additional entity parts linked via 'next'
   return (!thenext.IsNull());
 }
 
@@ -81,18 +83,20 @@ Handle(TColStd_HSequenceOfAsciiString) StepData_FreeFormEntity::TypeList() const
 
 Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity)& ent)
 {
+  // Reorder complex entities to ensure alphabetical sorting of entity types
   if (ent.IsNull())
     return Standard_False;
   if (!ent->IsComplex())
     return Standard_False;
-  Standard_Boolean                afr = Standard_False;
+  Standard_Boolean                afr = Standard_False; // flag: any reordering needed
   Handle(StepData_FreeFormEntity) e1  = ent;
   Handle(StepData_FreeFormEntity) e2  = ent->Next();
+  // Check if entities are already in alphabetical order
   while (!e2.IsNull())
   {
     if (strcmp(e1->StepType(), e2->StepType()) > 0)
     {
-      afr = Standard_True;
+      afr = Standard_True; // Found out-of-order pair
       break;
     }
     e1 = e2;
@@ -100,7 +104,7 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
   }
   if (!afr)
     return afr;
-  //  remise en ordre avec un dictionnaire
+  //  Reordering using a dictionary (map) to sort entity types alphabetically
   e1 = ent;
   e2.Nullify();
   NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> dic;
@@ -109,7 +113,7 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
     dic.Bind(e1->StepType(), e1);
     e1 = e1->Next();
   }
-  //  d abord effacer les next en cours ...
+  //  First clear the current 'next' links to break the chain...
   for (NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(dic);
        iter.More();
        iter.Next())
@@ -118,7 +122,7 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
     if (!e1.IsNull())
       e1->SetNext(e2);
   }
-  //  ... puis les remettre dans l ordre
+  //  ... then rebuild the chain in alphabetical order
   e1.Nullify();
   for (NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(dic);
        iter.More();
@@ -136,6 +140,7 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
 
 void StepData_FreeFormEntity::SetNbFields(const Standard_Integer nb)
 {
+  // Initialize the array of fields for this entity
   if (nb <= 0)
     thefields.Nullify();
   else
