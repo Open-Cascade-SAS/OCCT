@@ -688,6 +688,13 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
   numsub = SubListNumber(num, nump, Standard_False);
   if (numsub > 0)
   {
+    const Standard_Integer aNbParams = NbParams(numsub);
+    if (aNbParams == 0)
+    {
+      Handle(String) anErrMess = new String("Parameter n0.%d (%s) is an empty LIST");
+      sprintf(txtmes, anErrMess->ToCString(), nump, mess);
+      ach->AddWarning(txtmes, anErrMess->ToCString());
+    }
     return Standard_True;
   }
   //  Si optionel indefini, on passe l eponge
