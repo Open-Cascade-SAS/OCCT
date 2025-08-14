@@ -49,15 +49,14 @@ runs:
           mkdir -p temp-extract
           tar -xzf "$ARCHIVE_FILE" -C temp-extract
           
-          # Move the extracted content to the desired path
+          # Create target directory and copy content (preserving existing files)
+          mkdir -p "$EXTRACT_PATH"
+          
+          # Copy from install/ subdirectory if it exists, otherwise copy everything
           if [ -d "temp-extract/install" ]; then
-            # Remove target directory if it exists to avoid nesting
-            rm -rf "$EXTRACT_PATH"
-            mv "temp-extract/install" "$EXTRACT_PATH"
+            cp -r temp-extract/install/* "$EXTRACT_PATH/"
           else
-            # If archive doesn't contain install/, move everything
-            mkdir -p "$EXTRACT_PATH"
-            mv temp-extract/* "$EXTRACT_PATH/"
+            cp -r temp-extract/* "$EXTRACT_PATH/"
           fi
           
           # Clean up temp directory
