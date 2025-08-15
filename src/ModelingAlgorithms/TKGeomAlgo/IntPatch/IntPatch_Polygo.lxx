@@ -13,40 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : Error
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real IntPatch_Polygo::Error() const
 {
   return myError;
 }
 
-//=======================================================================
-// function : DeflectionOverEstimation
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation() const
 {
   return myError;
 }
 
-//=======================================================================
-// function : NbSegments
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Integer IntPatch_Polygo::NbSegments() const
 {
   return NbPoints() - 1;
 }
 
-//=======================================================================
-// function : BeginOfSeg
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void IntPatch_Polygo::Segment(const Standard_Integer theIndex,
                                      gp_Pnt2d&              theBegin,

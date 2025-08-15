@@ -13,20 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : SetNbKronrodPoints
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BRepGProp_TFunction::SetNbKronrodPoints(const Standard_Integer theNbPoints)
 {
   myNbPntOuter = (theNbPoints % 2 == 0) ? theNbPoints + 1 : theNbPoints;
 }
 
-//=======================================================================
-// function : SetValueType
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
 {
@@ -34,30 +30,24 @@ inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
   myUFunction.SetValueType(myValueType);
 }
 
-//=======================================================================
-// function : SetTolerance
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BRepGProp_TFunction::SetTolerance(const Standard_Real theTolerance)
 {
   myTolerance = theTolerance;
 }
 
-//=======================================================================
-// function : TolReached
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real BRepGProp_TFunction::ErrorReached() const
 {
   return myErrReached;
 }
 
-//=======================================================================
-// function : ErrorReached
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real BRepGProp_TFunction::AbsolutError() const
 {

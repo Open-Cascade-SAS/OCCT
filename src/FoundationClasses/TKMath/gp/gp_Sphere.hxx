@@ -199,10 +199,8 @@ private:
   Standard_Real radius;
 };
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Sphere::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   pos.Scale(theP, theS);
@@ -213,10 +211,8 @@ inline void gp_Sphere::Scale(const gp_Pnt& theP, const Standard_Real theS)
   }
 }
 
-//=======================================================================
-// function : Scaled
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Sphere gp_Sphere::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Sphere aC = *this;
@@ -229,10 +225,8 @@ inline gp_Sphere gp_Sphere::Scaled(const gp_Pnt& theP, const Standard_Real theS)
   return aC;
 }
 
-//=======================================================================
-// function : Transform
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Sphere::Transform(const gp_Trsf& theT)
 {
   pos.Transform(theT);
@@ -243,10 +237,8 @@ inline void gp_Sphere::Transform(const gp_Trsf& theT)
   }
 }
 
-//=======================================================================
-// function : Transformed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Sphere gp_Sphere::Transformed(const gp_Trsf& theT) const
 {
   gp_Sphere aC = *this;

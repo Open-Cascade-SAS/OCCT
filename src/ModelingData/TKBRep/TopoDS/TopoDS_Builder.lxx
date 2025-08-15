@@ -25,10 +25,8 @@
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
 
-//=======================================================================
-// function : MakeWire
-// purpose  : Make an empty wire
-//=======================================================================
+//=================================================================================================
+
 
 inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
 {
@@ -36,10 +34,9 @@ inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
   MakeShape(W, TW);
 }
 
-//=======================================================================
-// function : MakeShell
-// purpose  : Make an empty Shell
-//=======================================================================
+
+//=================================================================================================
+
 
 inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
 {
@@ -47,10 +44,9 @@ inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
   MakeShape(S, TS);
 }
 
-//=======================================================================
-// function : MakeSolid
-// purpose  : Make an empty Solid
-//=======================================================================
+
+//=================================================================================================
+
 
 inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
 {

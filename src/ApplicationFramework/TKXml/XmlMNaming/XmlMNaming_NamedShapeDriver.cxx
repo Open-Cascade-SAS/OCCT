@@ -276,10 +276,9 @@ static TNaming_Evolution EvolutionEnum(const XmlObjMgt_DOMString& theString)
   return aResult;
 }
 
-//=======================================================================
-// function : doTranslate
-// purpose  : shape storage to XML
-//=======================================================================
+
+//=================================================================================================
+
 
 static void doTranslate(const TopoDS_Shape& theShape,
                         XmlMNaming_Shape1&  theResult,

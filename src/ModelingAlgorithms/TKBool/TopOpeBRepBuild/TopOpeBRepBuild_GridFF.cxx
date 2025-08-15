@@ -314,10 +314,9 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
   return Standard_True;
 }
 
-//=======================================================================
-// variable : Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = NULL;
 
 //=================================================================================================

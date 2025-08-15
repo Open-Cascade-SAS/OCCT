@@ -51,10 +51,9 @@ void TDF_IDFilter::Keep(const Standard_GUID& anID)
     myIDMap.Remove(anID);
 }
 
-//=======================================================================
-// function : Keep
-// purpose  : Keeps a list of ID.
-//=======================================================================
+
+//=================================================================================================
+
 
 void TDF_IDFilter::Keep(const TDF_IDList& anIDList)
 {

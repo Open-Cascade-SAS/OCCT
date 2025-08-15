@@ -18,10 +18,9 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 
-// ============================================================================
-// Method  : StepToTopoDS_NMTool
-// Purpose : Default constructor
-// ============================================================================
+
+//=================================================================================================
+
 
 StepToTopoDS_NMTool::StepToTopoDS_NMTool()
 {

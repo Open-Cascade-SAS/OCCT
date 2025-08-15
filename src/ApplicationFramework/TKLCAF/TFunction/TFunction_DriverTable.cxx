@@ -152,10 +152,9 @@ Standard_Boolean TFunction_DriverTable::RemoveDriver(const Standard_GUID&   guid
   return Standard_False;
 }
 
-//=======================================================================
-// function : Clear
-// purpose  : Removes all drivers
-//=======================================================================
+
+//=================================================================================================
+
 
 void TFunction_DriverTable::Clear()
 {

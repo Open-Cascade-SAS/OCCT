@@ -32,10 +32,8 @@ struct BVH_NodeInStack
 };
 } // namespace
 
-// =======================================================================
-// function : BVH_Traverse::Select
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class NumType, int Dimension, class BVHSetType, class MetricType>
 Standard_Integer BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH)
@@ -167,10 +165,8 @@ struct BVH_PairNodesInStack
 };
 } // namespace
 
-// =======================================================================
-// function : BVH_PairTraverse::Select
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class NumType, int Dimension, class BVHSetType, class MetricType>
 Standard_Integer BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
   const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,

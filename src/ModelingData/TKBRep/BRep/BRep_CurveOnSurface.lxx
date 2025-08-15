@@ -14,10 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : SetUVPoints
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BRep_CurveOnSurface::SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
@@ -25,10 +23,8 @@ inline void BRep_CurveOnSurface::SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d&
   myUV2 = P2;
 }
 
-//=======================================================================
-// function : UVPoints
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BRep_CurveOnSurface::UVPoints(gp_Pnt2d& P1, gp_Pnt2d& P2) const
 {

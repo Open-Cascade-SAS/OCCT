@@ -111,10 +111,9 @@ void Geom2dHatch_Hatcher::Confusion3d(const Standard_Real Confusion)
   }
 }
 
-//=======================================================================
-// Function : KeepPoints
-// Purpose  : Sets the above flag.
-//=======================================================================
+
+//=================================================================================================
+
 
 void Geom2dHatch_Hatcher::KeepPoints(const Standard_Boolean Keep)
 {
@@ -129,10 +128,9 @@ void Geom2dHatch_Hatcher::KeepPoints(const Standard_Boolean Keep)
   }
 }
 
-//=======================================================================
-// Function : KeepSegments
-// Purpose  : Sets the above flag.
-//=======================================================================
+
+//=================================================================================================
+
 
 void Geom2dHatch_Hatcher::KeepSegments(const Standard_Boolean Keep)
 {

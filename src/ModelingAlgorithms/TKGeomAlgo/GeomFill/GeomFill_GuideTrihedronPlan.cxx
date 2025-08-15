@@ -54,10 +54,9 @@ static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 }
 #endif
 
-//==================================================================
-// Function: InGoodPeriod
-// Purpose : Recadre un paramtere
-//==================================================================
+
+//=================================================================================================
+
 static void InGoodPeriod(const Standard_Real Prec,
                          const Standard_Real Period,
                          Standard_Real&      Current)

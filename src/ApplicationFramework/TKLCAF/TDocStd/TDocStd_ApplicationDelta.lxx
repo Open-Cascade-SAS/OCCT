@@ -13,30 +13,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : GetDocuments
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
 {
   return myDocuments;
 }
 
-//=======================================================================
-// function : GetName
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline const TCollection_ExtendedString& TDocStd_ApplicationDelta::GetName() const
 {
   return myName;
 }
 
-//=======================================================================
-// function : SetName
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void TDocStd_ApplicationDelta::SetName(const TCollection_ExtendedString& theName)
 {

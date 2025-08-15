@@ -18,10 +18,8 @@
 #include <Standard_DomainError.hxx>
 #include <math_FunctionRoot.hxx>
 
-//=======================================================================
-//function : Extrema_GenLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
 : myDone(Standard_False),
@@ -32,10 +30,8 @@ Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
 }
 
 
-//=======================================================================
-//function : Extrema_GenLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GenLocateExtPC::Extrema_GenLocateExtPC (const Pnt&          P,
 						const Curve&        C,
@@ -47,10 +43,8 @@ Extrema_GenLocateExtPC::Extrema_GenLocateExtPC (const Pnt&          P,
 }
 
 
-//=======================================================================
-//function : Extrema_GenLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GenLocateExtPC::Extrema_GenLocateExtPC (const Pnt&          P,
 						const Curve&        C,
@@ -64,10 +58,8 @@ Extrema_GenLocateExtPC::Extrema_GenLocateExtPC (const Pnt&          P,
 }
 
 
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GenLocateExtPC::Initialize(const Curve&        C,
 					const Standard_Real Umin,
@@ -82,10 +74,8 @@ void Extrema_GenLocateExtPC::Initialize(const Curve&        C,
 }
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GenLocateExtPC::Perform(const Pnt&          P,
 				     const Standard_Real U0)
@@ -124,10 +114,8 @@ Methode:
   }
 }
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GenLocateExtPC::IsDone () const 
 {
@@ -135,10 +123,8 @@ Standard_Boolean Extrema_GenLocateExtPC::IsDone () const
 }
 
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Real Extrema_GenLocateExtPC::SquareDistance() const 
 {
@@ -150,10 +136,8 @@ Standard_Real Extrema_GenLocateExtPC::SquareDistance() const
 }
 
 
-//=======================================================================
-//function : IsMin
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GenLocateExtPC::IsMin () const 
 {
@@ -165,10 +149,8 @@ Standard_Boolean Extrema_GenLocateExtPC::IsMin () const
 }
 
 
-//=======================================================================
-//function : Point
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 const POnC & Extrema_GenLocateExtPC::Point () const 
 {

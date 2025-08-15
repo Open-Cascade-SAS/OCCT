@@ -26,10 +26,8 @@ inline Standard_Integer Intf_TangentZone::NumberOfPoints() const
   return Result.Length();
 }
 
-//=======================================================================
-// function : ParamOnFirst
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real& paraMax) const
 {
@@ -37,10 +35,8 @@ inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real
   paraMax = ParamOnFirstMax;
 }
 
-//=======================================================================
-// function : ParamOnSecond
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Intf_TangentZone::ParamOnSecond(Standard_Real& paraMin, Standard_Real& paraMax) const
 {

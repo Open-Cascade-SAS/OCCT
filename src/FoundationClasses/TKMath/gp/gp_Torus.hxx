@@ -249,10 +249,8 @@ private:
   Standard_Real minorRadius;
 };
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Torus::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   pos.Scale(theP, theS);
@@ -265,10 +263,8 @@ inline void gp_Torus::Scale(const gp_Pnt& theP, const Standard_Real theS)
   minorRadius *= s;
 }
 
-//=======================================================================
-// function : Scaled
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Torus gp_Torus::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Torus aC = *this;
@@ -286,10 +282,8 @@ inline gp_Torus gp_Torus::Scaled(const gp_Pnt& theP, const Standard_Real theS) c
   return aC;
 }
 
-//=======================================================================
-// function : Transform
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Torus::Transform(const gp_Trsf& theT)
 {
   pos.Transform(theT);
@@ -302,10 +296,8 @@ inline void gp_Torus::Transform(const gp_Trsf& theT)
   majorRadius *= aT;
 }
 
-//=======================================================================
-// function : Transformed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Torus gp_Torus::Transformed(const gp_Trsf& theT) const
 {
   gp_Torus aC = *this;

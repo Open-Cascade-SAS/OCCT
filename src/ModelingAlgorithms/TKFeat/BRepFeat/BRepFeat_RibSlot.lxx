@@ -14,10 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : BRepFeatForm
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline BRepFeat_RibSlot::BRepFeat_RibSlot()
     : myFuse(Standard_False),

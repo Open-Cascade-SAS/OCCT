@@ -488,10 +488,9 @@ Standard_Boolean TObj_Object::Detach(const TObj_DeletingMode theMode)
   return Standard_True;
 }
 
-//=======================================================================
-// function : Detach
-// purpose  : public static method
-//=======================================================================
+
+//=================================================================================================
+
 
 Standard_Boolean TObj_Object::Detach(const TDF_Label& theLabel, const TObj_DeletingMode theMode)
 {
@@ -573,10 +572,9 @@ void TObj_Object::AfterRetrieval()
     aModel->RegisterName(GetName(), GetLabel(), GetDictionary());
 }
 
-//=======================================================================
-// function : BeforeStoring
-// purpose  : base implementation
-//=======================================================================
+
+//=================================================================================================
+
 
 void TObj_Object::BeforeStoring() {}
 

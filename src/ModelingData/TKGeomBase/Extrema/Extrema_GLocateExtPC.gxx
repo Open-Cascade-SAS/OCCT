@@ -31,10 +31,8 @@
 #include <TColStd_Array1OfReal.hxx>
 
 
-//=======================================================================
-//function : Extrema_GLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GLocateExtPC::Extrema_GLocateExtPC()
 : myC(NULL),
@@ -50,10 +48,8 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC()
 }
 
 
-//=======================================================================
-//function : Extrema_GLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
   const TheCurve&     C,
@@ -64,10 +60,8 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
   Perform(P, U0);
 }
 
-//=======================================================================
-//function : Extrema_GLocateExtPC
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
   const TheCurve&     C,
@@ -82,10 +76,8 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
 
 
 
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GLocateExtPC::Initialize(const TheCurve&     C, 
   const Standard_Real Umin,
@@ -113,10 +105,8 @@ void Extrema_GLocateExtPC::Initialize(const TheCurve&     C,
 
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
   const Standard_Real U0)
@@ -310,10 +300,8 @@ void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
 
 
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GLocateExtPC::IsDone () const 
 {
@@ -321,10 +309,8 @@ Standard_Boolean Extrema_GLocateExtPC::IsDone () const
 }
 
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Real Extrema_GLocateExtPC::SquareDistance () const 
 {
@@ -350,10 +336,8 @@ Standard_Real Extrema_GLocateExtPC::SquareDistance () const
 }
 
 
-//=======================================================================
-//function : IsMin
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Extrema_GLocateExtPC::IsMin () const 
 {
@@ -379,10 +363,8 @@ Standard_Boolean Extrema_GLocateExtPC::IsMin () const
 }
 
 
-//=======================================================================
-//function : Point
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 const ThePOnC & Extrema_GLocateExtPC::Point () const 
 {

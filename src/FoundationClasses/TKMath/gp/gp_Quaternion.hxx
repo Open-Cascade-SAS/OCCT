@@ -301,10 +301,8 @@ private:
   Standard_Real w;
 };
 
-//=======================================================================
-// function : Set
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Quaternion::Set(Standard_Real theX,
                                Standard_Real theY,
                                Standard_Real theZ,
@@ -316,10 +314,8 @@ inline void gp_Quaternion::Set(Standard_Real theX,
   this->w = theW;
 }
 
-//=======================================================================
-// function : Set
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Quaternion::Set(const gp_Quaternion& theQuaternion)
 {
   x = theQuaternion.x;
@@ -328,10 +324,8 @@ inline void gp_Quaternion::Set(const gp_Quaternion& theQuaternion)
   w = theQuaternion.w;
 }
 
-//=======================================================================
-// function : Scale
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Quaternion::Scale(const Standard_Real theScale)
 {
   x *= theScale;
@@ -340,10 +334,8 @@ inline void gp_Quaternion::Scale(const Standard_Real theScale)
   w *= theScale;
 }
 
-//=======================================================================
-// function : Multiplied
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Quaternion gp_Quaternion::Multiplied(const gp_Quaternion& theQ) const
 {
   return gp_Quaternion(w * theQ.x + x * theQ.w + y * theQ.z - z * theQ.y,
@@ -353,10 +345,8 @@ inline gp_Quaternion gp_Quaternion::Multiplied(const gp_Quaternion& theQ) const
   // 16 multiplications    12 addidtions    0 variables
 }
 
-//=======================================================================
-// function : Add
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Quaternion::Add(const gp_Quaternion& theQ)
 {
   x += theQ.x;
@@ -365,10 +355,8 @@ inline void gp_Quaternion::Add(const gp_Quaternion& theQ)
   w += theQ.w;
 }
 
-//=======================================================================
-// function : Subtract
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Quaternion::Subtract(const gp_Quaternion& theQ)
 {
   x -= theQ.x;

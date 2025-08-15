@@ -414,19 +414,17 @@ Standard_Real MeshVS_VectorPrsBuilder::calculateArrow(TColgp_Array1OfPnt& Points
   return h;
 }
 
-//=======================================================================
-// name    : SetSimplePrsMode
-// Purpose :
-//=======================================================================
+
+//=================================================================================================
+
 void MeshVS_VectorPrsBuilder::SetSimplePrsMode(const Standard_Boolean IsSimpleArrow)
 {
   myIsSimplePrs = IsSimpleArrow;
 }
 
-//=======================================================================
-// name    : SetSimplePrsParams
-// Purpose :
-//=======================================================================
+
+//=================================================================================================
+
 void MeshVS_VectorPrsBuilder::SetSimplePrsParams(const Standard_Real theLineWidthParam,
                                                  const Standard_Real theStartParam,
                                                  const Standard_Real theEndParam)

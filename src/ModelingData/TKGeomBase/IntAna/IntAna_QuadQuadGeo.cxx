@@ -2844,10 +2844,9 @@ gp_Parab IntAna_QuadQuadGeo::Parabola(const Standard_Integer n) const
   return (gp_Parab(gp_Ax2(pt1, dir1, dir2), param1));
 }
 
-//=======================================================================
-// function : Hyperbola
-// purpose  : Returns a Hyperbola
-//=======================================================================
+
+//=================================================================================================
+
 gp_Hypr IntAna_QuadQuadGeo::Hyperbola(const Standard_Integer n) const
 {
   if (!done)

@@ -113,10 +113,9 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
 #endif
 }
 
-//=======================================================================
-// function : Add
-// purpose  : add faces of gluing
-//=======================================================================
+
+//=================================================================================================
+
 
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {

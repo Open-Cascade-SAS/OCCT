@@ -18,10 +18,8 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-//=======================================================================
-// function : CoefsD0
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BSplSLib::CoefsD0(const Standard_Real         U,
                               const Standard_Real         V,
@@ -42,10 +40,8 @@ inline void BSplSLib::CoefsD0(const Standard_Real         U,
                     Point);
 }
 
-//=======================================================================
-// function : CoefsD1
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BSplSLib::CoefsD1(const Standard_Real         U,
                               const Standard_Real         V,
@@ -70,10 +66,8 @@ inline void BSplSLib::CoefsD1(const Standard_Real         U,
                     VecV);
 }
 
-//=======================================================================
-// function : CoefsD2
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BSplSLib::CoefsD2(const Standard_Real         U,
                               const Standard_Real         V,
@@ -104,10 +98,8 @@ inline void BSplSLib::CoefsD2(const Standard_Real         U,
                     VecVV);
 }
 
-//=======================================================================
-// function : PolesCoefficients
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt& Poles,
                                         TColgp_Array2OfPnt&       CachePoles)
@@ -115,10 +107,8 @@ inline void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt& Poles,
   BSplSLib::PolesCoefficients(Poles, BSplSLib::NoWeights(), CachePoles, BSplSLib::NoWeights());
 }
 
-//=======================================================================
-// function : NoWeights
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline TColStd_Array2OfReal* BSplSLib::NoWeights()
 {

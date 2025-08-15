@@ -145,30 +145,27 @@ Standard_Boolean TFunction_Scope::HasFunction(const TDF_Label& L) const
   return myFunctions.IsBound2(L);
 }
 
-//=======================================================================
-// function : GetFunction
-// purpose  : Returns a function.
-//=======================================================================
+
+//=================================================================================================
+
 
 Standard_Integer TFunction_Scope::GetFunction(const TDF_Label& L) const
 {
   return myFunctions.Find2(L);
 }
 
-//=======================================================================
-// function : GetFunction
-// purpose  : Returns a function.
-//=======================================================================
+
+//=================================================================================================
+
 
 const TDF_Label& TFunction_Scope::GetFunction(const Standard_Integer ID) const
 {
   return myFunctions.Find1(ID);
 }
 
-//=======================================================================
-// function : GetLogbook
-// purpose  : Returns the Logbook.
-//=======================================================================
+
+//=================================================================================================
+
 
 Handle(TFunction_Logbook) TFunction_Scope::GetLogbook() const
 {

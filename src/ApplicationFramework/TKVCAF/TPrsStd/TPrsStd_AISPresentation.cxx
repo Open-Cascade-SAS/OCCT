@@ -631,10 +631,9 @@ void TPrsStd_AISPresentation::BeforeForget()
   }
 }
 
-//=======================================================================
-// function : AfterResume
-// purpose  : display if displayed
-//=======================================================================
+
+//=================================================================================================
+
 void TPrsStd_AISPresentation::AfterResume()
 {
   if (IsDisplayed())

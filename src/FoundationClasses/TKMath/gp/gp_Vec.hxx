@@ -449,28 +449,22 @@ private:
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 
-//=======================================================================
-// function :  gp_Vec
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec::gp_Vec(const gp_Dir& theV)
 {
   coord = theV.XYZ();
 }
 
-//=======================================================================
-// function :  gp_Vec
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
 {
   coord = theP2.XYZ().Subtracted(theP1.XYZ());
 }
 
-//=======================================================================
-// function :  IsNormal
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Vec::IsNormal(const gp_Vec&       theOther,
                                          const Standard_Real theAngularTolerance) const
 {
@@ -478,10 +472,8 @@ inline Standard_Boolean gp_Vec::IsNormal(const gp_Vec&       theOther,
   return anAng <= theAngularTolerance;
 }
 
-//=======================================================================
-// function :  Angle
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Vec::Angle(const gp_Vec& theOther) const
 {
   gp_VectorWithNullMagnitude_Raise_if(coord.Modulus() <= gp::Resolution()
@@ -490,10 +482,8 @@ inline Standard_Real gp_Vec::Angle(const gp_Vec& theOther) const
   return (gp_Dir(coord)).Angle(theOther);
 }
 
-//=======================================================================
-// function :  AngleWithRef
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Vec::AngleWithRef(const gp_Vec& theOther, const gp_Vec& theVRef) const
 {
   gp_VectorWithNullMagnitude_Raise_if(coord.Modulus() <= gp::Resolution()
@@ -503,10 +493,8 @@ inline Standard_Real gp_Vec::AngleWithRef(const gp_Vec& theOther, const gp_Vec& 
   return (gp_Dir(coord)).AngleWithRef(theOther, theVRef);
 }
 
-//=======================================================================
-// function :  Normalized
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec gp_Vec::Normalized() const
 {
   const Standard_Real aD = coord.Modulus();
@@ -517,10 +505,8 @@ inline gp_Vec gp_Vec::Normalized() const
   return aV;
 }
 
-//=======================================================================
-// function :  Rotate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Vec::Rotate(const gp_Ax1& theA1, const Standard_Real theAng)
 {
   gp_Trsf aT;

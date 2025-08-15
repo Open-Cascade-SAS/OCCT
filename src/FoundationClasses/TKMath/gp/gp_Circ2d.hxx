@@ -245,10 +245,8 @@ private:
   Standard_Real radius;
 };
 
-// =======================================================================
-// function : Coefficients
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Circ2d::Coefficients(Standard_Real& theA,
                                     Standard_Real& theB,
                                     Standard_Real& theC,
@@ -266,10 +264,8 @@ inline void gp_Circ2d::Coefficients(Standard_Real& theA,
   theF               = aXc * aXc + anYc * anYc - radius * radius;
 }
 
-// =======================================================================
-// function : Distance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Circ2d::Distance(const gp_Pnt2d& theP) const
 {
   gp_XY aCoord = theP.XY();
@@ -282,10 +278,8 @@ inline Standard_Real gp_Circ2d::Distance(const gp_Pnt2d& theP) const
   return aD;
 }
 
-// =======================================================================
-// function : Reversed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Circ2d gp_Circ2d::Reversed() const
 {
   gp_Circ2d aCirc = *this;
@@ -295,10 +289,8 @@ inline gp_Circ2d gp_Circ2d::Reversed() const
   return aCirc;
 }
 
-// =======================================================================
-// function : SquareDistance
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Circ2d::SquareDistance(const gp_Pnt2d& theP) const
 {
   gp_XY aCoord = theP.XY();
@@ -307,10 +299,8 @@ inline Standard_Real gp_Circ2d::SquareDistance(const gp_Pnt2d& theP) const
   return aD * aD;
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Circ2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   radius *= theS;
@@ -321,10 +311,8 @@ inline void gp_Circ2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Circ2d gp_Circ2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Circ2d aCirc = *this;
@@ -337,10 +325,8 @@ inline gp_Circ2d gp_Circ2d::Scaled(const gp_Pnt2d& theP, const Standard_Real the
   return aCirc;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Circ2d::Transform(const gp_Trsf2d& theT)
 {
   radius *= theT.ScaleFactor();
@@ -351,10 +337,8 @@ inline void gp_Circ2d::Transform(const gp_Trsf2d& theT)
   pos.Transform(theT);
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Circ2d gp_Circ2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Circ2d aCirc = *this;

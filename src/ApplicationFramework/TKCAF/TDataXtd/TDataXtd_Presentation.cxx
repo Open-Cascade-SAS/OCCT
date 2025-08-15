@@ -261,10 +261,9 @@ Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum(Quantity_Name
   return anOld;
 }
 
-//=======================================================================
-// function : TDataXtd_Presentation
-// purpose  : Default constructor.
-//=======================================================================
+
+//=================================================================================================
+
 TDataXtd_Presentation::TDataXtd_Presentation()
     : myDriverGUID("00000000-0000-0000-0000-000000000000"),
       myColor(Quantity_NOC_WHITE),

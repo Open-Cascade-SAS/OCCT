@@ -1271,10 +1271,9 @@ static Standard_Integer VtkSelect(Draw_Interpretor&,
   return 0;
 }
 
-//===================================================================
-// Fubction  : VtkViewProj
-// Purpose   :
-//===================================================================
+
+//=================================================================================================
+
 static Standard_Integer VtkViewProj(Draw_Interpretor&,
                                     Standard_Integer theNbArgs,
                                     const char**     theArgVec)
@@ -1507,10 +1506,9 @@ static int VtkCamera(Draw_Interpretor& theDI, Standard_Integer theArgsNb, const 
   return 0;
 }
 
-//===================================================================
-// Fubction  : VtkDump
-// Purpose   :
-//===================================================================
+
+//=================================================================================================
+
 static Standard_Integer VtkDump(Draw_Interpretor&, Standard_Integer theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
@@ -1654,10 +1652,9 @@ static Standard_Integer VtkDump(Draw_Interpretor&, Standard_Integer theArgNum, c
   return 0;
 }
 
-//===================================================================
-// Fubction  : VtkBackgroundColor
-// Purpose   :
-//===================================================================
+
+//=================================================================================================
+
 static Standard_Integer VtkBackgroundColor(Draw_Interpretor&,
                                            Standard_Integer theArgNum,
                                            const char**     theArgs)

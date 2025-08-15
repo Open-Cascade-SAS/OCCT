@@ -212,10 +212,8 @@ private:
   gp_Ax2d pos;
 };
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const
 {
   gp_XY aCoord = theP.XY();
@@ -228,10 +226,8 @@ inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const
   return aVal;
 }
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin2d::Distance(const gp_Lin2d& theOther) const
 {
   Standard_Real aD = 0.0;
@@ -242,10 +238,8 @@ inline Standard_Real gp_Lin2d::Distance(const gp_Lin2d& theOther) const
   return aD;
 }
 
-//=======================================================================
-// function : SquareDistance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin2d::SquareDistance(const gp_Pnt2d& theP) const
 {
   gp_XY aCoord = theP.XY();
@@ -254,10 +248,8 @@ inline Standard_Real gp_Lin2d::SquareDistance(const gp_Pnt2d& theP) const
   return aD * aD;
 }
 
-//=======================================================================
-// function : SquareDistance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin2d::SquareDistance(const gp_Lin2d& theOther) const
 {
   Standard_Real aD = 0.0;

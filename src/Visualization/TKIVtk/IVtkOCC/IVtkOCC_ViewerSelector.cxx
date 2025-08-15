@@ -114,10 +114,9 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXPix,
   TraverseSensitives(-1);
 }
 
-//============================================================================
-// Method:  Pick
-// Purpose: Picking by rectangle
-//============================================================================
+
+//=================================================================================================
+
 void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,
                                   const Standard_Integer    theYMin,
                                   const Standard_Integer    theXMax,

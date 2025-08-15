@@ -34,10 +34,9 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Dump.hxx>
 
-//=======================================================================
-// function : gp_Trsf
-// purpose  : Constructor from 2d
-//=======================================================================
+
+//=================================================================================================
+
 gp_Trsf::gp_Trsf(const gp_Trsf2d& T)
     : scale(T.ScaleFactor()),
       shape(T.Form()),

@@ -135,10 +135,9 @@ static void TraceRevol(const Standard_Real                        t,
 }
 #endif
 
-//==================================================================
-// Function: InGoodPeriod
-// Purpose : Recadre un paramtere
-//==================================================================
+
+//=================================================================================================
+
 static void InGoodPeriod(const Standard_Real Prec,
                          const Standard_Real Period,
                          Standard_Real&      Current)
@@ -509,10 +508,9 @@ void GeomFill_LocationGuide::Set(const Handle(GeomFill_SectionLaw)& Section,
     rotation = Standard_False;
 }
 
-//==================================================================
-// Function: EraseRotation
-// Purpose : Supprime la Rotation
-//==================================================================
+
+//=================================================================================================
+
 void GeomFill_LocationGuide::EraseRotation()
 {
   rotation = Standard_False;

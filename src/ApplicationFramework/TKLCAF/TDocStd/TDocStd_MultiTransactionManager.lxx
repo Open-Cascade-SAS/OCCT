@@ -13,20 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : GetUndoLimit
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Integer TDocStd_MultiTransactionManager::GetUndoLimit() const
 {
   return myUndoLimit;
 }
 
-//=======================================================================
-// function : GetAvailableUndos
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
   GetAvailableUndos() const
@@ -34,10 +30,8 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
   return myUndos;
 }
 
-//=======================================================================
-// function : GetAvailableRedos
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
   GetAvailableRedos() const
@@ -45,30 +39,24 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
   return myRedos;
 }
 
-//=======================================================================
-// function : Documents
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline const TDocStd_SequenceOfDocument& TDocStd_MultiTransactionManager::Documents() const
 {
   return myDocuments;
 }
 
-//=======================================================================
-// function : IsNestedTransactionMode
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean TDocStd_MultiTransactionManager::IsNestedTransactionMode() const
 {
   return myIsNestedTransactionMode;
 }
 
-//=======================================================================
-// function : HasOpenCommand
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean TDocStd_MultiTransactionManager::HasOpenCommand() const
 {

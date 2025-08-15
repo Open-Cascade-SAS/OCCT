@@ -281,10 +281,8 @@ private:
 
 #include <gp_Lin.hxx>
 
-//=======================================================================
-// function : Coefficients
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pln::Coefficients(Standard_Real& theA,
                                  Standard_Real& theB,
                                  Standard_Real& theC,
@@ -307,10 +305,8 @@ inline void gp_Pln::Coefficients(Standard_Real& theA,
   theD             = -(theA * aP.X() + theB * aP.Y() + theC * aP.Z());
 }
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pln::Distance(const gp_Pnt& theP) const
 {
   const gp_Pnt& aLoc = pos.Location();
@@ -324,10 +320,8 @@ inline Standard_Real gp_Pln::Distance(const gp_Pnt& theP) const
   return aD;
 }
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pln::Distance(const gp_Lin& theL) const
 {
   Standard_Real aD = 0.0;
@@ -346,10 +340,8 @@ inline Standard_Real gp_Pln::Distance(const gp_Lin& theL) const
   return aD;
 }
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pln::Distance(const gp_Pln& theOther) const
 {
   Standard_Real aD = 0.0;

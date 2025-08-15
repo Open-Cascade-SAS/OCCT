@@ -91,10 +91,9 @@ const Standard_GUID& TDataStd_TreeNode::ID() const
   return myTreeID;
 }
 
-//=======================================================================
-// TreeNode : TDataStd_TreeNode
-// purpose  : Constructor
-//=======================================================================
+
+//=================================================================================================
+
 
 TDataStd_TreeNode::TDataStd_TreeNode()
     : myFather(NULL),
@@ -408,10 +407,9 @@ Handle(TDataStd_TreeNode) TDataStd_TreeNode::Previous() const
   return O;
 }
 
-//=======================================================================
-// TreeNode : First
-// purpose  : Returns first child
-//=======================================================================
+
+//=================================================================================================
+
 
 Handle(TDataStd_TreeNode) TDataStd_TreeNode::First() const
 {
@@ -598,10 +596,9 @@ Standard_Boolean TDataStd_TreeNode::AfterUndo(const Handle(TDF_AttributeDelta)& 
   return Standard_True;
 }
 
-//=======================================================================
-// TreeNode : Restore
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 
 void TDataStd_TreeNode::Restore(const Handle(TDF_Attribute)& other)
 {
@@ -675,10 +672,9 @@ void TDataStd_TreeNode::References(const Handle(TDF_DataSet)& aDataSet) const
   }
 }
 
-//=======================================================================
-// TreeNode : Dump
-// purpose  : Dump of the TreeNode
-//=======================================================================
+
+//=================================================================================================
+
 
 Standard_OStream& TDataStd_TreeNode::Dump(Standard_OStream& anOS) const
 {

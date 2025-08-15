@@ -15,10 +15,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator, Standard_Transient)
 
-//=======================================================================
-// function : Allocate
-// purpose  : Standard allocation
-//=======================================================================
+
+//=================================================================================================
+
 void* NCollection_BaseAllocator::Allocate(const size_t theSize)
 {
   return Standard::Allocate(theSize);

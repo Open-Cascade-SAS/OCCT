@@ -165,10 +165,9 @@ Handle(TDF_Attribute) TFunction_Function::NewEmpty() const
 
 void TFunction_Function::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
 
-//=======================================================================
-// function : Dump
-// purpose  : Dump of the function
-//=======================================================================
+
+//=================================================================================================
+
 
 Standard_OStream& TFunction_Function::Dump(Standard_OStream& anOS) const
 {

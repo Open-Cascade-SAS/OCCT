@@ -273,10 +273,9 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   }
 }
 
-//=======================================================================
-// function :Locate1Coord
-// purpose  : along BSpline curve
-//=======================================================================
+
+//=================================================================================================
+
 
 static void Locate1Coord(const Standard_Integer           Index,
                          const gp_Pnt2d&                  UV,

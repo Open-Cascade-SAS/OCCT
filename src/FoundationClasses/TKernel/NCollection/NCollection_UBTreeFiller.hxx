@@ -144,10 +144,8 @@ private:
   Standard_Boolean           myIsFullRandom;
 };
 
-//=======================================================================
-// function : Fill
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 template <class TheObjType, class TheBndType>
 Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
@@ -180,10 +178,8 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
   return nbAdd;
 }
 
-//=======================================================================
-// function : CheckTree
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 template <class TheObjType, class TheBndType>
 Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
@@ -200,10 +196,8 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
   return aNumber;
 }
 
-//=======================================================================
-// function : checkNode
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 template <class TheObjType, class TheBndType>
 Standard_Real NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(

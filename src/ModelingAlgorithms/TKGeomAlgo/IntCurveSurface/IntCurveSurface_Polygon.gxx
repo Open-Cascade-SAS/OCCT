@@ -56,10 +56,8 @@ IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&        C,
   Init(C);
 }
 
-//=======================================================================
-//function : IntCurveSurface_Polygon
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 IntCurveSurface_Polygon::IntCurveSurface_Polygon(const TheCurve&        C,
 						 const TColStd_Array1OfReal& Upars):
@@ -125,10 +123,8 @@ void IntCurveSurface_Polygon::Init(const TheCurve&        C) {
   ClosedPolygon = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void IntCurveSurface_Polygon::Init(const TheCurve&        C,
 				   const TColStd_Array1OfReal& Upars) { 

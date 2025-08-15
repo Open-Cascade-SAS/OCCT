@@ -520,10 +520,9 @@ Standard_Boolean ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d&     p2d1,
   return du * du + dv * dv > max3d * max3d;
 }
 
-//=======================================================================
-// static : ComputeIso
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 
 static Handle(Geom_Curve) ComputeIso(const Handle(Geom_Surface)& surf,
                                      const Standard_Boolean      utype,

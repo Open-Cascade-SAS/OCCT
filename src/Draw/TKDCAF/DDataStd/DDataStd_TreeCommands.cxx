@@ -502,10 +502,9 @@ static Standard_Integer DDataStd_InitChildNodeIterator(Draw_Interpretor& di,
   return 1;
 }
 
-//=======================================================================
-// TreeNode : ChildNodeMore
-// purpose  : ChildNodeMore
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Integer DDataStd_ChildNodeMore(Draw_Interpretor& di,
                                                Standard_Integer /*n*/,
@@ -522,10 +521,9 @@ static Standard_Integer DDataStd_ChildNodeMore(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-// TreeNode : ChildNodeNext
-// purpose  : ChildNodeNext
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Integer DDataStd_ChildNodeNext(Draw_Interpretor& /*di*/,
                                                Standard_Integer /*n*/,
@@ -548,10 +546,9 @@ static Standard_Integer DDataStd_ChildNodeNextBrother(Draw_Interpretor& /*di*/,
   return 0;
 }
 
-//=======================================================================
-// TreeNode : ChildNodeValue
-// purpose  : ChildNodeValue
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Integer DDataStd_ChildNodeValue(Draw_Interpretor& di,
                                                 Standard_Integer /*n*/,
@@ -563,10 +560,9 @@ static Standard_Integer DDataStd_ChildNodeValue(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-// TreeNode : TreeCommands
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 
 void DDataStd::TreeCommands(Draw_Interpretor& theCommands)
 {

@@ -16,20 +16,16 @@
 
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
-// function : IsDone
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
 {
   return done;
 }
 
-//=======================================================================
-// function : Line
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 {
@@ -40,10 +36,8 @@ inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
   return line;
 }
 
-//=======================================================================
-// function : Decroch1Start
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
 {
@@ -53,10 +47,8 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
   return Standard_False;
 }
 
-//=======================================================================
-// function : Decroch1End
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
 {
@@ -66,10 +58,8 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
   return Standard_False;
 }
 
-//=======================================================================
-// function : Decroch2Start
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
 {
@@ -79,10 +69,8 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
   return Standard_False;
 }
 
-//=======================================================================
-// function : Decroch2End
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2End() const
 {

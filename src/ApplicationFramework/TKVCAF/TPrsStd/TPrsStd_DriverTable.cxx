@@ -120,10 +120,9 @@ Standard_Boolean TPrsStd_DriverTable::RemoveDriver(const Standard_GUID& guid)
   return myDrivers.UnBind(guid);
 }
 
-//=======================================================================
-// function : Clear
-// purpose  : Removes all drivers
-//=======================================================================
+
+//=================================================================================================
+
 
 void TPrsStd_DriverTable::Clear()
 {

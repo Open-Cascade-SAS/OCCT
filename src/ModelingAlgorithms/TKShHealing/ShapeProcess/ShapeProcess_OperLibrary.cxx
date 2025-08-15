@@ -438,10 +438,9 @@ static Standard_Boolean converttobspline(const Handle(ShapeProcess_Context)& con
   return Standard_True;
 }
 
-//=======================================================================
-// function : splitcontinuity
-// purpose  : Split by Continuity
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Boolean splitcontinuity(const Handle(ShapeProcess_Context)& context,
                                         const Message_ProgressRange&)

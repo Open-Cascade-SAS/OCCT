@@ -131,10 +131,8 @@ static Standard_Real ScaleFactor(const NCollection_Mat4<T>& theMatrix)
 }
 } // namespace Graphic3d_TransformUtils
 
-// =======================================================================
-// function : Convert
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T>
 void Graphic3d_TransformUtils::Convert(const gp_Trsf&                theTransformation,
                                        typename MatrixType<T>::Mat4& theOut)

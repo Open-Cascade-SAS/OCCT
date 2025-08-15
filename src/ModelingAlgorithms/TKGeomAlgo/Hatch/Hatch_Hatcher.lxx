@@ -14,20 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : Tolerance
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Hatch_Hatcher::Tolerance(const Standard_Real Tol)
 {
   myToler = Tol;
 }
 
-//=======================================================================
-// function : Tolerance
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real Hatch_Hatcher::Tolerance() const
 {

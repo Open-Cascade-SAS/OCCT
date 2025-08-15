@@ -14,10 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// Function : Geom2dHatch_Intersector
-// Purpose  : Constructor.
-//=======================================================================
+//=================================================================================================
+
 
 inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const Standard_Real Confusion,
                                                         const Standard_Real Tangency)

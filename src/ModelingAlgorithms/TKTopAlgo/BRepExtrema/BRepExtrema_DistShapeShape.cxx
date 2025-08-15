@@ -104,10 +104,9 @@ static Standard_Boolean BRepExtrema_CheckPair_Comparator(const BRepExtrema_Check
 }
 } // namespace
 
-//=======================================================================
-// struct   : IndexBand
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct IndexBand
 {
   IndexBand()
@@ -126,10 +125,9 @@ struct IndexBand
   Standard_Integer Last;
 };
 
-//=======================================================================
-// struct   : ThreadSolution
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct ThreadSolution
 {
   ThreadSolution(Standard_Integer theTaskNum)
@@ -145,10 +143,9 @@ struct ThreadSolution
   NCollection_Array1<Standard_Real>             Dist;
 };
 
-//=======================================================================
-// struct   : VertexFunctor
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct VertexFunctor
 {
   VertexFunctor(NCollection_Array1<IndexBand>* theBandArray, const Message_ProgressRange& theRange)
@@ -296,10 +293,9 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
   return Standard_True;
 }
 
-//=======================================================================
-// struct   : DistanceFunctor
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct DistanceFunctor
 {
   DistanceFunctor(NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>>* theArrayOfArrays,
@@ -391,10 +387,9 @@ struct DistanceFunctor
   Standard_Real                                                  StartDist;
 };
 
-//=======================================================================
-// struct   : DistancePairFunctor
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct DistancePairFunctor
 {
   DistancePairFunctor(NCollection_Array1<IndexBand>* theBandArray,
@@ -692,10 +687,9 @@ void BRepExtrema_DistShapeShape::LoadS2(const TopoDS_Shape& Shape2)
   Decomposition(Shape2, myMapV2, myMapE2, myMapF2);
 }
 
-//=======================================================================
-// struct   : TreatmentFunctor
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 struct TreatmentFunctor
 {
   TreatmentFunctor(NCollection_Array1<NCollection_Array1<TopoDS_Shape>>* theArrayOfArrays,

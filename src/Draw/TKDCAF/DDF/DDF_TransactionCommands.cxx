@@ -35,10 +35,9 @@ static Handle(TDF_Delta)    DDF_LastDelta;
 // Transaction commands
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//=======================================================================
-// function : OpenTran
-// purpose  : Opens a transaction
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Integer OpenTran(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -55,10 +54,9 @@ static Standard_Integer OpenTran(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
-//=======================================================================
-// function : AbortTran
-// purpose  : Aborts a transaction
-//=======================================================================
+
+//=================================================================================================
+
 
 static Standard_Integer AbortTran(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {

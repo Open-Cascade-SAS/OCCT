@@ -263,10 +263,8 @@ private:
   Standard_Real minorRadius;
 };
 
-// =======================================================================
-// function : Directrix1
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Elips::Directrix1() const
 {
   Standard_Real anE = Eccentricity();
@@ -278,10 +276,8 @@ inline gp_Ax1 gp_Elips::Directrix1() const
   return gp_Ax1(gp_Pnt(anOrig), pos.YDirection());
 }
 
-// =======================================================================
-// function : Directrix2
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax1 gp_Elips::Directrix2() const
 {
   Standard_Real anE = Eccentricity();
@@ -293,10 +289,8 @@ inline gp_Ax1 gp_Elips::Directrix2() const
   return gp_Ax1(gp_Pnt(anOrig), pos.YDirection());
 }
 
-// =======================================================================
-// function : Eccentricity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Elips::Eccentricity() const
 {
   if (majorRadius == 0.0)
@@ -309,10 +303,8 @@ inline Standard_Real gp_Elips::Eccentricity() const
   }
 }
 
-// =======================================================================
-// function : Focus1
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Elips::Focus1() const
 {
   Standard_Real aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
@@ -321,10 +313,8 @@ inline gp_Pnt gp_Elips::Focus1() const
   return gp_Pnt(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y(), aPP.Z() + aC * aDD.Z());
 }
 
-// =======================================================================
-// function : Focus2
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Pnt gp_Elips::Focus2() const
 {
   Standard_Real aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
@@ -333,10 +323,8 @@ inline gp_Pnt gp_Elips::Focus2() const
   return gp_Pnt(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y(), aPP.Z() - aC * aDD.Z());
 }
 
-// =======================================================================
-// function : Parameter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Elips::Parameter() const
 {
   if (majorRadius == 0.0)
@@ -349,10 +337,8 @@ inline Standard_Real gp_Elips::Parameter() const
   }
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Elips::Scale(const gp_Pnt& theP, const Standard_Real theS)
 //  Modified by skv - Fri Apr  8 10:28:10 2005 OCC8559 Begin
 // { pos.Scale(P, S); }
@@ -372,10 +358,8 @@ inline void gp_Elips::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //  Modified by skv - Fri Apr  8 10:28:10 2005 OCC8559 End
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Elips gp_Elips::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Elips anE = *this;
@@ -393,10 +377,8 @@ inline gp_Elips gp_Elips::Scaled(const gp_Pnt& theP, const Standard_Real theS) c
   return anE;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Elips::Transform(const gp_Trsf& theT)
 {
   majorRadius *= theT.ScaleFactor();
@@ -412,10 +394,8 @@ inline void gp_Elips::Transform(const gp_Trsf& theT)
   pos.Transform(theT);
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Elips gp_Elips::Transformed(const gp_Trsf& theT) const
 {
   gp_Elips anE = *this;

@@ -66,10 +66,9 @@ static Standard_Boolean InDomain(const Standard_Real fpar,
   return Standard_False;
 }
 
-//=======================================================================
-// function : Constructor
-// purpose  : vertex Fix Relation
-//=======================================================================
+
+//=================================================================================================
+
 
 PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                        const Handle(Geom_Plane)& aPlane,
@@ -83,10 +82,9 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
   myArrowSize         = 5.;
 }
 
-//=======================================================================
-// function : Constructor
-// purpose  : vertex Fix Relation
-//=======================================================================
+
+//=================================================================================================
+
 
 PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                        const Handle(Geom_Plane)& aPlane,

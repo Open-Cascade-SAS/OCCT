@@ -16,10 +16,8 @@
 
 #include <ShapeAnalysis_HSequenceOfFreeBounds.hxx>
 
-//=======================================================================
-// function : Shape
-// purpose  : Returns shape
-//=======================================================================
+//=================================================================================================
+
 
 inline TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
 {
@@ -36,10 +34,8 @@ inline Standard_Boolean ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
   return !(myShape.IsNull());
 }
 
-//=======================================================================
-// function : Tolerance
-// purpose  : Returns tolerance
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
 {

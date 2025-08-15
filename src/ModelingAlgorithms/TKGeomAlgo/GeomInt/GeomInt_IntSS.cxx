@@ -20,10 +20,9 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Extrema_ExtPS.hxx>
 
-//=======================================================================
-// function : Perform
-// purpose  : General intersection
-//=======================================================================
+
+//=================================================================================================
+
 void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
                             const Handle(Geom_Surface)& S2,
                             const Standard_Real         Tol,

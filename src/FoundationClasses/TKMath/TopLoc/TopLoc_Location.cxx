@@ -22,10 +22,9 @@
 #include <TopLoc_Location.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
-//=======================================================================
-// function : TopLoc_Location
-// purpose  : constructor Identity
-//=======================================================================
+
+//=================================================================================================
+
 
 TopLoc_Location::TopLoc_Location() {}
 

@@ -1578,11 +1578,9 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
   }
 }
 
-//=======================================================================
-// class    : Disk
-// function : Init
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 void AIS_Manipulator::Disk::Init(const Standard_ShortReal theInnerRadius,
                                  const Standard_ShortReal theOuterRadius,
                                  const gp_Ax1&            thePosition,
@@ -1603,11 +1601,9 @@ void AIS_Manipulator::Disk::Init(const Standard_ShortReal theInnerRadius,
   myTriangulation = aTool.CreatePolyTriangulation(aTrsf);
 }
 
-//=======================================================================
-// class    : Sphere
-// function : Init
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 void AIS_Manipulator::Sphere::Init(const Standard_ShortReal theRadius,
                                    const gp_Pnt&            thePosition,
                                    const ManipulatorSkin    theSkinMode,
@@ -1626,11 +1622,9 @@ void AIS_Manipulator::Sphere::Init(const Standard_ShortReal theRadius,
   myTriangulation = aTool.CreatePolyTriangulation(aTrsf);
 }
 
-//=======================================================================
-// class    : Cube
-// function : Init
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 void AIS_Manipulator::Cube::Init(const gp_Ax1&            thePosition,
                                  const Standard_ShortReal theSize,
                                  const ManipulatorSkin    theSkinMode)
@@ -1729,11 +1723,9 @@ void AIS_Manipulator::Cube::addTriangle(const Standard_Integer theIndex,
   myArray->AddVertex(theP3, theNormal);
 }
 
-//=======================================================================
-// class    : Sector
-// function : Init
-// purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 void AIS_Manipulator::Sector::Init(const Standard_ShortReal theRadius,
                                    const gp_Ax1&            thePosition,
                                    const gp_Dir&            theXDirection,

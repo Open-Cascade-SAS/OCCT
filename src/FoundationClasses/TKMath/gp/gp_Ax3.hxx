@@ -327,10 +327,8 @@ private:
   gp_Dir vxdir;
 };
 
-// =======================================================================
-// function : gp_Ax3
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax3::gp_Ax3(const gp_Ax2& theA)
     : axis(theA.Axis()),
       vydir(theA.YDirection()),
@@ -338,10 +336,8 @@ inline gp_Ax3::gp_Ax3(const gp_Ax2& theA)
 {
 }
 
-// =======================================================================
-// function : Ax2
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax2 gp_Ax3::Ax2() const
 {
   gp_Dir aZz = axis.Direction();
@@ -352,20 +348,16 @@ inline gp_Ax2 gp_Ax3::Ax2() const
   return gp_Ax2(axis.Location(), aZz, vxdir);
 }
 
-// =======================================================================
-// function : SetAxis
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax3::SetAxis(const gp_Ax1& theA1)
 {
   axis.SetLocation(theA1.Location());
   SetDirection(theA1.Direction());
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax3::SetDirection(const gp_Dir& theV)
 {
   Standard_Real aDot = theV.Dot(vxdir);
@@ -398,10 +390,8 @@ inline void gp_Ax3::SetDirection(const gp_Dir& theV)
   }
 }
 
-// =======================================================================
-// function : SetXDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax3::SetXDirection(const gp_Dir& theVx)
 {
   Standard_Real aDot = theVx.Dot(axis.Direction());
@@ -433,10 +423,8 @@ inline void gp_Ax3::SetXDirection(const gp_Dir& theVx)
   }
 }
 
-// =======================================================================
-// function : SetYDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax3::SetYDirection(const gp_Dir& theVy)
 {
   Standard_Real aDot = theVy.Dot(axis.Direction());
@@ -465,10 +453,8 @@ inline void gp_Ax3::SetYDirection(const gp_Dir& theVy)
   }
 }
 
-// =======================================================================
-// function : IsCoplanar
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Ax3::IsCoplanar(const gp_Ax3&       theOther,
                                            const Standard_Real theLinearTolerance,
                                            const Standard_Real theAngularTolerance) const
@@ -488,10 +474,8 @@ inline Standard_Boolean gp_Ax3::IsCoplanar(const gp_Ax3&       theOther,
           && axis.IsParallel(theOther.axis, theAngularTolerance));
 }
 
-// =======================================================================
-// function : IsCoplanar
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Ax3::IsCoplanar(const gp_Ax1&       theA1,
                                            const Standard_Real theLinearTolerance,
                                            const Standard_Real theAngularTolerance) const

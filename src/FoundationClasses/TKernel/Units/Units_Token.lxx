@@ -20,80 +20,64 @@
 #include <TCollection_AsciiString.hxx>
 #include <Units_Dimensions.hxx>
 
-//=======================================================================
-// function : Word
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline TCollection_AsciiString Units_Token::Word() const
 {
   return theword;
 }
 
-//=======================================================================
-// function : Mean
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline TCollection_AsciiString Units_Token::Mean() const
 {
   return themean;
 }
 
-//=======================================================================
-// function : Value
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Real Units_Token::Value() const
 {
   return thevalue;
 }
 
-//=======================================================================
-// function : Dimensions
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Handle(Units_Dimensions) Units_Token::Dimensions() const
 {
   return thedimensions;
 }
 
-//=======================================================================
-// function : Word
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Units_Token::Word(const Standard_CString aword)
 {
   theword = aword;
 }
 
-//=======================================================================
-// function : Mean
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Units_Token::Mean(const Standard_CString amean)
 {
   themean = amean;
 }
 
-//=======================================================================
-// function : Value
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline void Units_Token::Value(const Standard_Real avalue)
 {
   thevalue = avalue;
 }
 
-//=======================================================================
-// function : IsNotEqual
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsNotEqual(const Standard_CString astring) const
 {
@@ -106,10 +90,8 @@ inline Standard_Boolean Units_Token::IsNotEqual(const Standard_CString astring) 
     return Standard_True;
 }
 
-//=======================================================================
-// function : IsNotEqual
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsNotEqual(const Handle(Units_Token)& atoken) const
 {
@@ -122,10 +104,8 @@ inline Standard_Boolean Units_Token::IsNotEqual(const Handle(Units_Token)& atoke
     return Standard_True;
 }
 
-//=======================================================================
-// function : IsLessOrEqual
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsLessOrEqual(const Standard_CString astring) const
 {
@@ -138,10 +118,8 @@ inline Standard_Boolean Units_Token::IsLessOrEqual(const Standard_CString astrin
     return Standard_False;
 }
 
-//=======================================================================
-// function : IsGreater
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsGreater(const Standard_CString astring) const
 {
@@ -151,10 +129,8 @@ inline Standard_Boolean Units_Token::IsGreater(const Standard_CString astring) c
                                                                       : Standard_False;
 }
 
-//=======================================================================
-// function : IsGreater
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsGreater(const Handle(Units_Token)& atoken) const
 {
@@ -165,10 +141,8 @@ inline Standard_Boolean Units_Token::IsGreater(const Handle(Units_Token)& atoken
                                                                                    : Standard_False;
 }
 
-//=======================================================================
-// function : IsGreaterOrEqual
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Standard_Boolean Units_Token::IsGreaterOrEqual(const Handle(Units_Token)& atoken) const
 {

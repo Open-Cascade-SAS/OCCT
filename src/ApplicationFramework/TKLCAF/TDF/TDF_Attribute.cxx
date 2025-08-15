@@ -44,10 +44,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute, Standard_Transient)
 
 #define TDF_DATA_COMMIT_OPTIMIZED
 
-//=======================================================================
-// function : TDF_Attribute
-// purpose  : Initializes fields.
-//=======================================================================
+
+//=================================================================================================
+
 
 TDF_Attribute::TDF_Attribute()
     : myLabelNode(NULL),

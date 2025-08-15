@@ -11,10 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : Context
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 
 inline Handle(ShapeBuild_ReShape) ShapeFix_IntersectionTool::Context() const
 {

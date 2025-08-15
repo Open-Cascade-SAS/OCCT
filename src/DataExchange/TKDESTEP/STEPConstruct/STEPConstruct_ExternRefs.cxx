@@ -840,10 +840,9 @@ Standard_Integer STEPConstruct_ExternRefs::WriteExternRefs(const Standard_Intege
   return myAEIAs.Length();
 }
 
-//=======================================================================
-// function : addAP214ExterRef
-// purpose  : PTV 30.01.2003 TRJ11
-//=======================================================================
+
+//=================================================================================================
+
 
 Standard_Boolean STEPConstruct_ExternRefs::addAP214ExterRef(
   const Handle(StepAP214_AppliedDocumentReference)& ADR,

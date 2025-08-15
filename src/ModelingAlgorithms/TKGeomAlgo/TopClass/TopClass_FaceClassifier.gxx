@@ -20,10 +20,8 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 
-//=======================================================================
-//function : TopClass_FaceClassifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 TopClass_FaceClassifier::TopClass_FaceClassifier() :
 myEdgeParameter(0.0),
@@ -32,10 +30,8 @@ nowires(Standard_True)
 {
 }
 
-//=======================================================================
-//function : TopClass_FaceClassifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer& FExp,
 						 const gp_Pnt2d& P,
@@ -47,10 +43,8 @@ nowires(Standard_True)
   Perform(FExp,P,Tol);
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
 				      const gp_Pnt2d& P,
@@ -152,10 +146,8 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
   }
 }
 
-//=======================================================================
-//function : State
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 TopAbs_State TopClass_FaceClassifier::State() const
 {
@@ -164,10 +156,8 @@ TopAbs_State TopClass_FaceClassifier::State() const
   else              return  myClassifier.State();
 }
 
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 const TheEdge& TopClass_FaceClassifier::Edge() const
 {
@@ -177,10 +167,8 @@ const TheEdge& TopClass_FaceClassifier::Edge() const
 }
 
 
-//=======================================================================
-//function : EdgeParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Real TopClass_FaceClassifier::EdgeParameter() const
 {

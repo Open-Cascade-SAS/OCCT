@@ -191,10 +191,8 @@ private:
   Standard_Real radius;
 };
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Cylinder::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   pos.Scale(theP, theS);
@@ -205,10 +203,8 @@ inline void gp_Cylinder::Scale(const gp_Pnt& theP, const Standard_Real theS)
   }
 }
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Cylinder gp_Cylinder::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Cylinder aCyl = *this;
@@ -221,10 +217,8 @@ inline gp_Cylinder gp_Cylinder::Scaled(const gp_Pnt& theP, const Standard_Real t
   return aCyl;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Cylinder::Transform(const gp_Trsf& theT)
 {
   pos.Transform(theT);
@@ -235,10 +229,8 @@ inline void gp_Cylinder::Transform(const gp_Trsf& theT)
   }
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Cylinder gp_Cylinder::Transformed(const gp_Trsf& theT) const
 {
   gp_Cylinder aCyl = *this;

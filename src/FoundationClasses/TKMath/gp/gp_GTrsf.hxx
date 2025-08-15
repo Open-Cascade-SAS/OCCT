@@ -316,10 +316,8 @@ private:
   Standard_Real scale;
 };
 
-//=======================================================================
-// function : SetAffinity
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf::SetAffinity(const gp_Ax1& theA1, const Standard_Real theRatio)
 {
   shape = gp_Other;
@@ -335,10 +333,8 @@ inline void gp_GTrsf::SetAffinity(const gp_Ax1& theA1, const Standard_Real theRa
   loc.Add(theA1.Location().XYZ());
 }
 
-//=======================================================================
-// function : SetAffinity
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const Standard_Real theRatio)
 {
   shape = gp_Other;
@@ -351,10 +347,8 @@ inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const Standard_Real theRa
   matrix.SetDiagonal(matrix.Value(1, 1) + 1., matrix.Value(2, 2) + 1., matrix.Value(3, 3) + 1.);
 }
 
-//=======================================================================
-// function : SetValue
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf::SetValue(const Standard_Integer theRow,
                                const Standard_Integer theCol,
                                const Standard_Real    theValue)
@@ -382,10 +376,8 @@ inline void gp_GTrsf::SetValue(const Standard_Integer theRow,
   }
 }
 
-//=======================================================================
-// function : Value
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
                                      const Standard_Integer theCol) const
 {
@@ -401,10 +393,8 @@ inline Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
   return scale * matrix.Value(theRow, theCol);
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf::Transforms(gp_XYZ& theCoord) const
 {
   theCoord.Multiply(matrix);
@@ -415,10 +405,8 @@ inline void gp_GTrsf::Transforms(gp_XYZ& theCoord) const
   theCoord.Add(loc);
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_GTrsf::Transforms(Standard_Real& theX,
                                  Standard_Real& theY,
                                  Standard_Real& theZ) const
@@ -433,10 +421,8 @@ inline void gp_GTrsf::Transforms(Standard_Real& theX,
   aTriplet.Coord(theX, theY, theZ);
 }
 
-//=======================================================================
-// function : Trsf
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Trsf gp_GTrsf::Trsf() const
 {
   if (Form() == gp_Other)
