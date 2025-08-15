@@ -110,28 +110,22 @@ private:
 
 #include <Message_ProgressIndicator.hxx>
 
-//=======================================================================
-// function : IsActive
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean Message_ProgressRange::IsActive() const
 {
   return !myWasUsed && myParentScope && myParentScope->myProgress;
 }
 
-//=======================================================================
-// function : UserBreak
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean Message_ProgressRange::UserBreak() const
 {
   return myParentScope && myParentScope->myProgress && myParentScope->myProgress->UserBreak();
 }
 
-//=======================================================================
-// function : Close
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void Message_ProgressRange::Close()
 {
   if (!IsActive())

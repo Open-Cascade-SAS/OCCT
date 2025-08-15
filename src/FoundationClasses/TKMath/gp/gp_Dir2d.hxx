@@ -257,10 +257,8 @@ private:
 #include <gp_Ax2d.hxx>
 #include <gp_Trsf2d.hxx>
 
-// =======================================================================
-// function : gp_Dir2d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir2d::gp_Dir2d(const gp_Vec2d& theV)
 {
   const gp_XY&  aXY = theV.XY();
@@ -273,10 +271,8 @@ inline gp_Dir2d::gp_Dir2d(const gp_Vec2d& theV)
   coord.SetY(anY / aD);
 }
 
-// =======================================================================
-// function : gp_Dir2d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir2d::gp_Dir2d(const gp_XY& theXY)
 {
   Standard_Real aX  = theXY.X();
@@ -288,10 +284,8 @@ inline gp_Dir2d::gp_Dir2d(const gp_XY& theXY)
   coord.SetY(anY / aD);
 }
 
-// =======================================================================
-// function : gp_Dir2d
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Dir2d::gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv)
 {
   Standard_Real aD = sqrt(theXv * theXv + theYv * theYv);
@@ -301,10 +295,8 @@ inline gp_Dir2d::gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv)
   coord.SetY(theYv / aD);
 }
 
-// =======================================================================
-// function : SetCoord
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
 {
   Standard_Real aX  = coord.X();
@@ -326,10 +318,8 @@ inline void gp_Dir2d::SetCoord(const Standard_Integer theIndex, const Standard_R
   coord.SetY(anY / aD);
 }
 
-// =======================================================================
-// function : SetCoord
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::SetCoord(const Standard_Real theXv, const Standard_Real theYv)
 {
   Standard_Real aD = sqrt(theXv * theXv + theYv * theYv);
@@ -339,10 +329,8 @@ inline void gp_Dir2d::SetCoord(const Standard_Real theXv, const Standard_Real th
   coord.SetY(theYv / aD);
 }
 
-// =======================================================================
-// function : SetX
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::SetX(const Standard_Real theX)
 {
   Standard_Real anY = coord.Y();
@@ -353,10 +341,8 @@ inline void gp_Dir2d::SetX(const Standard_Real theX)
   coord.SetY(anY / aD);
 }
 
-// =======================================================================
-// function : SetY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::SetY(const Standard_Real theY)
 {
   Standard_Real aX = coord.X();
@@ -367,10 +353,8 @@ inline void gp_Dir2d::SetY(const Standard_Real theY)
   coord.SetY(theY / aD);
 }
 
-// =======================================================================
-// function : SetXY
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::SetXY(const gp_XY& theXY)
 {
   Standard_Real aX  = theXY.X();
@@ -382,10 +366,8 @@ inline void gp_Dir2d::SetXY(const gp_XY& theXY)
   coord.SetY(anY / aD);
 }
 
-// =======================================================================
-// function : IsEqual
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Dir2d::IsEqual(const gp_Dir2d&     theOther,
                                           const Standard_Real theAngularTolerance) const
 {
@@ -397,10 +379,8 @@ inline Standard_Boolean gp_Dir2d::IsEqual(const gp_Dir2d&     theOther,
   return anAng <= theAngularTolerance;
 }
 
-// =======================================================================
-// function : IsNormal
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Dir2d::IsNormal(const gp_Dir2d&     theOther,
                                            const Standard_Real theAngularTolerance) const
 {
@@ -417,10 +397,8 @@ inline Standard_Boolean gp_Dir2d::IsNormal(const gp_Dir2d&     theOther,
   return anAng <= theAngularTolerance;
 }
 
-// =======================================================================
-// function : IsOpposite
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Dir2d::IsOpposite(const gp_Dir2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
@@ -432,10 +410,8 @@ inline Standard_Boolean gp_Dir2d::IsOpposite(const gp_Dir2d&     theOther,
   return M_PI - anAng <= theAngularTolerance;
 }
 
-// =======================================================================
-// function : IsParallel
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Dir2d::IsParallel(const gp_Dir2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
@@ -447,10 +423,8 @@ inline Standard_Boolean gp_Dir2d::IsParallel(const gp_Dir2d&     theOther,
   return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
 }
 
-// =======================================================================
-// function : Rotate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Dir2d::Rotate(const Standard_Real theAng)
 {
   gp_Trsf2d aT;

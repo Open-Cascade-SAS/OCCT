@@ -203,20 +203,14 @@ inline Standard_Boolean BinObjMgt_Persistent::noMoreData(const Standard_Integer 
   return myIsError;
 }
 
-//=======================================================================
-// function : PutBoolean
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline BinObjMgt_Persistent& BinObjMgt_Persistent::PutBoolean(const Standard_Boolean theValue)
 {
   return PutInteger((Standard_Integer)theValue);
 }
 
-//=======================================================================
-// function : GetBoolean
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean(
   Standard_Boolean& theValue) const

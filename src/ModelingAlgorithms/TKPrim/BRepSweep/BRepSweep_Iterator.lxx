@@ -14,30 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : More
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Boolean BRepSweep_Iterator::More() const
 {
   return myIterator.More();
 }
 
-//=======================================================================
-// function : Value
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const TopoDS_Shape& BRepSweep_Iterator::Value() const
 {
   return myIterator.Value();
 }
 
-//=======================================================================
-// function : Orientation
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TopAbs_Orientation BRepSweep_Iterator::Orientation() const
 {

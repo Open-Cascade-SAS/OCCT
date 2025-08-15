@@ -16,10 +16,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
-// function : LocOpe_CSIntersector
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline LocOpe_CSIntersector::LocOpe_CSIntersector()
     : myDone(Standard_False),
@@ -28,10 +25,7 @@ inline LocOpe_CSIntersector::LocOpe_CSIntersector()
 {
 }
 
-//=======================================================================
-// function : LocOpe_CSIntersector
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
     : myDone(Standard_False),
@@ -41,10 +35,7 @@ inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
 {
 }
 
-//=======================================================================
-// function : IsDone
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Boolean LocOpe_CSIntersector::IsDone() const
 {

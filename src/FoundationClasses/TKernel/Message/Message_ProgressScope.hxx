@@ -404,10 +404,8 @@ private:
 
 #include <Message_ProgressRange.hxx>
 
-//=======================================================================
-// function : Message_ProgressScope
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Message_ProgressScope::Message_ProgressScope(Message_ProgressIndicator* theProgress)
     : myProgress(theProgress),
       myParent(0),
@@ -422,10 +420,8 @@ inline Message_ProgressScope::Message_ProgressScope(Message_ProgressIndicator* t
 {
 }
 
-//=======================================================================
-// function : Message_ProgressScope
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&   theRange,
                                                     const TCollection_AsciiString& theName,
                                                     Standard_Real                  theMax,
@@ -447,10 +443,8 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
   theRange.myWasUsed = true; // Disarm the range
 }
 
-//=======================================================================
-// function : Message_ProgressScope
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 template <size_t N>
 Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRange,
                                              const char (&theName)[N],
@@ -472,10 +466,8 @@ Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRan
   theRange.myWasUsed = true; // Disarm the range
 }
 
-//=======================================================================
-// function : Message_ProgressScope
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRange,
                                                     const NullString*,
                                                     Standard_Real    theMax,
@@ -496,10 +488,8 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
   theRange.myWasUsed = true; // Disarm the range
 }
 
-//=======================================================================
-// function : Close
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void Message_ProgressScope::Close()
 {
   if (!myIsActive)
@@ -521,19 +511,15 @@ inline void Message_ProgressScope::Close()
   myIsActive = false;
 }
 
-//=======================================================================
-// function : UserBreak
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean Message_ProgressScope::UserBreak() const
 {
   return myProgress && myProgress->UserBreak();
 }
 
-//=======================================================================
-// function : Next
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Message_ProgressRange Message_ProgressScope::Next(Standard_Real theStep)
 {
   if (myIsActive && theStep > 0.)
@@ -549,10 +535,7 @@ inline Message_ProgressRange Message_ProgressScope::Next(Standard_Real theStep)
   return Message_ProgressRange();
 }
 
-//=======================================================================
-// function : Show
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void Message_ProgressScope::Show()
 {
@@ -562,10 +545,8 @@ inline void Message_ProgressScope::Show()
   }
 }
 
-//=======================================================================
-// function : localToGlobal
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real Message_ProgressScope::localToGlobal(const Standard_Real theVal) const
 {
   if (theVal <= 0.)
@@ -583,10 +564,7 @@ inline Standard_Real Message_ProgressScope::localToGlobal(const Standard_Real th
   return myPortion * x / (1. + x); // hyperbola
 }
 
-//=======================================================================
-// function : Value
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Real Message_ProgressScope::Value() const
 {

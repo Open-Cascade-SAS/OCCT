@@ -160,10 +160,8 @@ protected:
   Standard_Integer myNumOfThreads; //!< Number of threads used to build BVH
 };
 
-// =======================================================================
-// function : addChildren
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 void BVH_QueueBuilder<T, N>::addChildren(
   BVH_Tree<T, N>*                                        theBVH,

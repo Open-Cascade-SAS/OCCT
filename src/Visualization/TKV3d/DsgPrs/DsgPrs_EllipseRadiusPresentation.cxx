@@ -118,10 +118,7 @@ void DsgPrs_EllipseRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPr
                                         ArrowPrs);
 }
 
-//=======================================================================
-// function : Add
-// purpose  : // for offset curve
-//=======================================================================
+//=================================================================================================
 
 void DsgPrs_EllipseRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
                                            const Handle(Prs3d_Drawer)&       aDrawer,

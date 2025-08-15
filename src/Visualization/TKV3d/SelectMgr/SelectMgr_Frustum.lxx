@@ -460,10 +460,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
   return Standard_True;
 }
 
-// =======================================================================
-// function : hasSphereOverlap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt&       thePnt,
                                                         const Standard_Real theRadius,
@@ -512,10 +510,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap(const gp_Pnt&       theP
   return IsBoundaryIntersectSphere(aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
 }
 
-// =======================================================================
-// function : IsDotInside
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&             thePnt,
                                                    const TColgp_Array1OfPnt& theVertices) const
@@ -537,10 +533,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&             the
   return false;
 }
 
-// =======================================================================
-// function : isSegmentsIntersect
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
                                                            const gp_Pnt& thePnt2Seg1,
@@ -599,10 +593,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1
   return false;
 }
 
-// =======================================================================
-// function : isIntersectCircle
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isIntersectCircle(
   const Standard_Real       theRadius,
@@ -652,10 +644,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isIntersectCircle(
   return false;
 }
 
-// =======================================================================
-// function : isInsideCylinderEndFace
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isInsideCylinderEndFace(
   const Standard_Real       theBottomRad,
@@ -694,10 +684,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isInsideCylinderEndFace(
   return true;
 }
 
-// =======================================================================
-// function : hasCylinderOverlap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap(const Standard_Real    theBottomRad,
                                                           const Standard_Real    theTopRad,
@@ -828,10 +816,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap(const Standard_Real   
   return isCylInsideRec;
 }
 
-// =======================================================================
-// function : hasCircleOverlap
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasCircleOverlap(const Standard_Real    theRadius,
                                                         const gp_Trsf&         theTrsf,
@@ -895,10 +881,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCircleOverlap(const Standard_Real    t
   return theIsFilled ? !isInside || (isCenterInside && isInside) : isInside && isCenterInside;
 }
 
-//=======================================================================
-// function : DumpJson
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 template <int N>
 void SelectMgr_Frustum<N>::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {

@@ -262,10 +262,8 @@ private:
   gp_Dir2d vxdir;
 };
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::SetXAxis(const gp_Ax2d& theA1)
 {
   Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
@@ -281,10 +279,8 @@ inline void gp_Ax22d::SetXAxis(const gp_Ax2d& theA1)
   }
 }
 
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::SetYAxis(const gp_Ax2d& theA1)
 {
   Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
@@ -300,10 +296,8 @@ inline void gp_Ax22d::SetYAxis(const gp_Ax2d& theA1)
   }
 }
 
-// =======================================================================
-// function : SetXDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::SetXDirection(const gp_Dir2d& theVx)
 {
   Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
@@ -318,10 +312,8 @@ inline void gp_Ax22d::SetXDirection(const gp_Dir2d& theVx)
   }
 }
 
-// =======================================================================
-// function : SetYDirection
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::SetYDirection(const gp_Dir2d& theVy)
 {
   Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
@@ -336,10 +328,8 @@ inline void gp_Ax22d::SetYDirection(const gp_Dir2d& theVy)
   }
 }
 
-// =======================================================================
-// function : Rotate
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
 {
   gp_Pnt2d aTemp = point;
@@ -349,10 +339,8 @@ inline void gp_Ax22d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   vydir.Rotate(theAng);
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   gp_Pnt2d aTemp = point;
@@ -365,10 +353,8 @@ inline void gp_Ax22d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
   }
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Ax22d::Transform(const gp_Trsf2d& theT)
 {
   gp_Pnt2d aTemp = point;

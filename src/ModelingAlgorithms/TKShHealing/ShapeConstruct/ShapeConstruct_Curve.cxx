@@ -347,10 +347,8 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(
   return bspl;
 }
 
-//=======================================================================
-// function : FixKnots
-// purpose  : Fix coincided knots
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& knots)
 {
   Standard_Boolean Fixed   = Standard_False;
@@ -370,10 +368,8 @@ Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& k
   return Fixed;
 }
 
-//=======================================================================
-// function : FixKnots
-// purpose  : Fix coincided knots
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ShapeConstruct_Curve::FixKnots(TColStd_Array1OfReal& knots)
 {
   Standard_Boolean Fixed   = Standard_False;

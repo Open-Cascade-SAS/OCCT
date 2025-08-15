@@ -117,10 +117,8 @@ Standard_Real Draw_RGBColorsArray[MAXCOLOR][3] = {{1.0,  1.0,  1.0},
                                                   {0.94, 0.9,  0.55},
                                                   {1.0,  0.5,  0.31}};
 
-//=======================================================================
-//function : Draw_Window
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Draw_Window::Draw_Window (const char* theTitle,
                           const NCollection_Vec2<int>& theXY,
                           const NCollection_Vec2<int>& theSize,
@@ -166,10 +164,8 @@ Draw_Window::~Draw_Window()
   }
 }
 
-//=======================================================================
-//function : init
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::init (const NCollection_Vec2<int>& theXY,
                         const NCollection_Vec2<int>& theSize)
 {
@@ -213,19 +209,15 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
   [myWindow setReleasedWhenClosed: NO];
 }
 
-//=======================================================================
-//function : InitBuffer
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::InitBuffer()
 {
   //
 }
 
-//=======================================================================
-//function : SetPosition
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::SetPosition (Standard_Integer theNewXpos,
                                Standard_Integer theNewYpos)
 {
@@ -233,10 +225,8 @@ void Draw_Window::SetPosition (Standard_Integer theNewXpos,
   [myWindow setFrameTopLeftPoint: aNewPosition];
 }
 
-//=======================================================================
-//function : SetDimension
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::SetDimension (Standard_Integer theNewWidth,
                                 Standard_Integer theNewHeight)
 {
@@ -247,10 +237,8 @@ void Draw_Window::SetDimension (Standard_Integer theNewWidth,
   [myWindow setFrame: aNewContentRect display: YES];
 }
 
-//=======================================================================
-//function : GetPosition
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::GetPosition (Standard_Integer &thePosX,
                                Standard_Integer &thePosY)
 {
@@ -259,30 +247,24 @@ void Draw_Window::GetPosition (Standard_Integer &thePosX,
   thePosY = getScreenBottom() - aWindowRect.origin.y - aWindowRect.size.height;
 }
 
-//=======================================================================
-//function : HeightWin
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer Draw_Window::HeightWin() const
 {
   NSRect aViewBounds = [myView bounds];
   return aViewBounds.size.height;
 }
 
-//=======================================================================
-//function : WidthWin
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer Draw_Window::WidthWin() const
 {
   NSRect aViewBounds = [myView bounds];
   return aViewBounds.size.width;
 }
 
-//=======================================================================
-//function : SetTitle
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::SetTitle (const TCollection_AsciiString& theTitle)
 {
   NSString* aTitleNs = [[NSString alloc] initWithUTF8String: theTitle.ToCString()];
@@ -290,29 +272,23 @@ void Draw_Window::SetTitle (const TCollection_AsciiString& theTitle)
   [aTitleNs release];
 }
 
-//=======================================================================
-//function : GetTitle
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 TCollection_AsciiString Draw_Window::GetTitle() const
 {
   Standard_CString aTitle = [[myWindow title] UTF8String];
   return TCollection_AsciiString (aTitle);
 }
 
-//=======================================================================
-//function :DefineColor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Draw_Window::DefineColor (const Standard_Integer , Standard_CString )
 {
   return Standard_True; // unused
 }
 
-//=======================================================================
-//function : IsMapped
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool Draw_Window::IsMapped() const
 {
   if (Draw_VirtualWindows
@@ -324,10 +300,8 @@ bool Draw_Window::IsMapped() const
   return [myWindow isVisible];
 }
 
-//=======================================================================
-//function : DisplayWindow
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::DisplayWindow()
 {
   if (Draw_VirtualWindows)
@@ -341,10 +315,8 @@ void Draw_Window::DisplayWindow()
   }
 }
 
-//=======================================================================
-//function : Hide
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::Hide()
 {
   if (myWindow != NULL)
@@ -353,10 +325,8 @@ void Draw_Window::Hide()
   }
 }
 
-//=======================================================================
-//function : Destroy
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::Destroy()
 {  
   if (myWindow != NULL)
@@ -378,10 +348,8 @@ void Draw_Window::Destroy()
   }
 }
 
-//=======================================================================
-//function : Clear
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::Clear()
 {
   [myImageBuffer lockFocus];
@@ -396,19 +364,15 @@ void Draw_Window::Clear()
   }
 }
 
-//=======================================================================
-//function : Flush
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::Flush()
 {
   //
 }
 
-//=======================================================================
-//function : DrawString
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::DrawString (Standard_Integer theXLeft, Standard_Integer theYTop,
                               const char* theText)
 {
@@ -431,10 +395,8 @@ void Draw_Window::DrawString (Standard_Integer theXLeft, Standard_Integer theYTo
   }
 }
 
-//=======================================================================
-//function : DrawSegments
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::DrawSegments (const Draw_XSegment* theSegments,
                                 Standard_Integer theNumberOfElements)
 {
@@ -484,10 +446,8 @@ void Draw_Window::DrawSegments (const Draw_XSegment* theSegments,
   Draw_IsInZoomingMode = Standard_False;
 }
 
-//=======================================================================
-//function : Redraw
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::Redraw()
 {
   if (myUseBuffer)
@@ -496,29 +456,23 @@ void Draw_Window::Redraw()
   }
 }
 
-//=======================================================================
-//function : SetColor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::SetColor (Standard_Integer theColor)
 {
   myCurrentColor = theColor;
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Draw_Window::SetMode (Standard_Integer theMode)
 {
   // unsupported
   (void )theMode;
 }
 
-//=======================================================================
-//function : Save
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
 {
   Cocoa_LocalPool aLocalPool;

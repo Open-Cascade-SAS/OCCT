@@ -620,10 +620,8 @@ void BRepFill_PipeShell::SetTransition(const BRepFill_TransitionStyle Mode,
   angmax       = Angmax;
 }
 
-//=======================================================================
-// function : Simulate
-// purpose  : Calculate N Sections
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_PipeShell::Simulate(const Standard_Integer N, TopTools_ListOfShape& List)
 {
   // Preparation

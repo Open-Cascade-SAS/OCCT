@@ -145,10 +145,8 @@ private:
 
 #include <Message_ProgressScope.hxx>
 
-//=======================================================================
-// function : Increment
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 inline void Message_ProgressIndicator::Increment(const Standard_Real          theStep,
                                                  const Message_ProgressScope& theScope)
 {

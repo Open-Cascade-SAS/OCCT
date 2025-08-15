@@ -125,10 +125,8 @@ const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_BMP = 0x0000FF
 template <typename Type>
 const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_LEGAL = 0x0010FFFFUL;
 
-// =======================================================================
-// function : readUTF16
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline void NCollection_UtfIterator<Type>::readUTF16()
 {
@@ -148,10 +146,8 @@ inline void NCollection_UtfIterator<Type>::readUTF16()
   myCharUtf32 = aChar;
 }
 
-// =======================================================================
-// function : AdvanceBytesUtf8
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
 {
@@ -183,10 +179,8 @@ inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
   }
 }
 
-// =======================================================================
-// function : GetUtf8
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Utf8Char* NCollection_UtfIterator<Type>::GetUtf8(Standard_Utf8Char* theBuffer) const
 {
@@ -194,10 +188,8 @@ inline Standard_Utf8Char* NCollection_UtfIterator<Type>::GetUtf8(Standard_Utf8Ch
   return (Standard_Utf8Char*)GetUtf8((Standard_Utf8UChar*)theBuffer);
 }
 
-// =======================================================================
-// function : GetUtf8
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8(
   Standard_Utf8UChar* theBuffer) const
@@ -249,20 +241,16 @@ inline Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8(
   }
 }
 
-// =======================================================================
-// function : AdvanceBytesUtf16
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
 {
   return AdvanceCodeUnitsUtf16() * sizeof(Standard_Utf16Char);
 }
 
-// =======================================================================
-// function : AdvanceCodeUnitsUtf16
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
 {
@@ -291,10 +279,8 @@ inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() c
   }
 }
 
-// =======================================================================
-// function : GetUtf16
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
   Standard_Utf16Char* theBuffer) const
@@ -329,10 +315,8 @@ inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
   }
 }
 
-// =======================================================================
-// function : GetUtf32
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32(
   Standard_Utf32Char* theBuffer) const

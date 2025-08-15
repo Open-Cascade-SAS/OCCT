@@ -210,10 +210,8 @@ private:
   gp_Ax1 pos;
 };
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin::Distance(const gp_Pnt& theP) const
 {
   gp_XYZ aCoord = theP.XYZ();
@@ -222,10 +220,8 @@ inline Standard_Real gp_Lin::Distance(const gp_Pnt& theP) const
   return aCoord.Modulus();
 }
 
-//=======================================================================
-// function : SquareDistance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Lin::SquareDistance(const gp_Pnt& theP) const
 {
   const gp_Pnt& aLoc = pos.Location();
@@ -234,10 +230,8 @@ inline Standard_Real gp_Lin::SquareDistance(const gp_Pnt& theP) const
   return aV.SquareMagnitude();
 }
 
-//=======================================================================
-// function : Normal
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Lin gp_Lin::Normal(const gp_Pnt& theP) const
 {
   const gp_Pnt& aLoc = pos.Location();

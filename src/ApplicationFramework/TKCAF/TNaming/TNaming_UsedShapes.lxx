@@ -14,20 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : Map
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TNaming_DataMapOfShapePtrRefShape& TNaming_UsedShapes::Map()
 {
   return myMap;
 }
 
-//=======================================================================
-// function : ID
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const Standard_GUID& TNaming_UsedShapes::ID() const
 {

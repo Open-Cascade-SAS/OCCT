@@ -15,10 +15,7 @@
 
 #include <ShapeExtend_MsgRegistrator.hxx>
 
-//=======================================================================
-// function : MapTransient
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator::MapTransient()
   const
@@ -26,10 +23,7 @@ inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator
   return myMapTransient;
 }
 
-//=======================================================================
-// function : MapShape
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const ShapeExtend_DataMapOfShapeListOfMsg& ShapeExtend_MsgRegistrator::MapShape() const
 {

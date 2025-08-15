@@ -357,28 +357,22 @@ private:
 #include <gp_Trsf2d.hxx>
 #include <gp_Pnt2d.hxx>
 
-//=======================================================================
-// function :  gp_Vec2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec2d::gp_Vec2d(const gp_Dir2d& theV)
 {
   coord = theV.XY();
 }
 
-//=======================================================================
-// function :  gp_Vec2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
 {
   coord = theP2.XY().Subtracted(theP1.XY());
 }
 
-//=======================================================================
-// function :  IsOpposite
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
@@ -386,10 +380,8 @@ inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
   return M_PI - anAng <= theAngularTolerance;
 }
 
-//=======================================================================
-// function :  IsParallel
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Boolean gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
                                              const Standard_Real theAngularTolerance) const
 {
@@ -397,10 +389,8 @@ inline Standard_Boolean gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
   return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;
 }
 
-//=======================================================================
-// function :  Normalized
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Vec2d gp_Vec2d::Normalized() const
 {
   Standard_Real aD = coord.Modulus();
@@ -411,10 +401,8 @@ inline gp_Vec2d gp_Vec2d::Normalized() const
   return aV;
 }
 
-//=======================================================================
-// function :  Rotate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Vec2d::Rotate(const Standard_Real theAng)
 {
   gp_Trsf2d aT;

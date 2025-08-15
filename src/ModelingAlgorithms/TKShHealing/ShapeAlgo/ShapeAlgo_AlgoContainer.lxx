@@ -15,20 +15,14 @@
 
 #include <ShapeAlgo_AlgoContainer.hxx>
 
-//=======================================================================
-// function : SetToolContainer
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void ShapeAlgo_AlgoContainer::SetToolContainer(const Handle(ShapeAlgo_ToolContainer)& TC)
 {
   myTC = TC;
 }
 
-//=======================================================================
-// function : ToolContainer
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(ShapeAlgo_ToolContainer) ShapeAlgo_AlgoContainer::ToolContainer() const
 {

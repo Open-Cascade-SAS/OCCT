@@ -17,10 +17,8 @@
 #include <OSD_Parallel.hxx>
 #include <BVH_Distance.hxx>
 
-// =======================================================================
-// function : BVH_DistanceField
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 BVH_DistanceField<T, N>::BVH_DistanceField(const Standard_Integer theMaximumSize,
                                            const Standard_Boolean theComputeSign)

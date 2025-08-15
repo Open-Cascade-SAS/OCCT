@@ -14,10 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : BRepFeat_MakeLinearForm
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm()
     : myBnd(0.0),
@@ -25,10 +22,7 @@ inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm()
 {
 }
 
-//=======================================================================
-// function : BRepFeat_MakePrism
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
                                                         const TopoDS_Wire&        W,

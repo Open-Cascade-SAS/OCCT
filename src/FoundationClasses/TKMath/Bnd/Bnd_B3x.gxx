@@ -134,10 +134,8 @@ Standard_Boolean Bnd_B3x::Limit (const Bnd_B3x& theBox)
   return aResult;
 }
 
-//=======================================================================
-//function : Transformed
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Bnd_B3x Bnd_B3x::Transformed (const gp_Trsf& theTrsf) const
 {
@@ -319,10 +317,8 @@ Standard_Boolean Bnd_B3x::IsOut (const Bnd_B3x& theBox,
   return aResult;
 }
 
-//=======================================================================
-//function : IsOut
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Bnd_B3x::IsOut (const gp_Ax3& thePlane) const
 {
@@ -343,10 +339,8 @@ Standard_Boolean Bnd_B3x::IsOut (const gp_Ax3& thePlane) const
   return ((aDist0 + aDist1) * (aDist0 - aDist1) > 0.);
 }
 
-//=======================================================================
-//function : IsOut
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Boolean Bnd_B3x::IsOut (const gp_Ax1&          theLine,
                                  const Standard_Boolean isRay,

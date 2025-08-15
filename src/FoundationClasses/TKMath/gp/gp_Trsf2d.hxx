@@ -216,10 +216,8 @@ private:
 #include <gp_Trsf.hxx>
 #include <gp_Pnt2d.hxx>
 
-//=======================================================================
-// function : gp_Trsf2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Trsf2d::gp_Trsf2d()
 {
   shape = gp_Identity;
@@ -228,10 +226,8 @@ inline gp_Trsf2d::gp_Trsf2d()
   loc.SetCoord(0.0, 0.0);
 }
 
-//=======================================================================
-// function : gp_Trsf2d
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Trsf2d::gp_Trsf2d(const gp_Trsf& theT)
     : scale(theT.ScaleFactor()),
       shape(theT.Form()),
@@ -244,10 +240,8 @@ inline gp_Trsf2d::gp_Trsf2d(const gp_Trsf& theT)
   matrix(2, 2)    = M(2, 2);
 }
 
-//=======================================================================
-// function : SetRotation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::SetRotation(const gp_Pnt2d& theP, const Standard_Real theAng)
 {
   shape = gp_Rotation;
@@ -259,10 +253,8 @@ inline void gp_Trsf2d::SetRotation(const gp_Pnt2d& theP, const Standard_Real the
   loc.Add(theP.XY());
 }
 
-//=======================================================================
-// function : SetMirror
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::SetMirror(const gp_Pnt2d& theP)
 {
   shape = gp_PntMirror;
@@ -272,10 +264,8 @@ inline void gp_Trsf2d::SetMirror(const gp_Pnt2d& theP)
   loc.Multiply(2.0);
 }
 
-//=======================================================================
-// function : SetScale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::SetScale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   shape = gp_Scale;
@@ -285,10 +275,8 @@ inline void gp_Trsf2d::SetScale(const gp_Pnt2d& theP, const Standard_Real theS)
   loc.Multiply(1.0 - theS);
 }
 
-//=======================================================================
-// function : SetTranslation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::SetTranslation(const gp_Vec2d& theV)
 {
   shape = gp_Translation;
@@ -297,10 +285,8 @@ inline void gp_Trsf2d::SetTranslation(const gp_Vec2d& theV)
   loc = theV.XY();
 }
 
-//=======================================================================
-// function : SetTranslation
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::SetTranslation(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
 {
   shape = gp_Translation;
@@ -309,10 +295,8 @@ inline void gp_Trsf2d::SetTranslation(const gp_Pnt2d& theP1, const gp_Pnt2d& the
   loc = (theP2.XY()).Subtracted(theP1.XY());
 }
 
-//=======================================================================
-// function : Value
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
                                       const Standard_Integer theCol) const
 {
@@ -327,10 +311,8 @@ inline Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
   }
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const
 {
   gp_XY aDoublet(theX, theY);
@@ -343,10 +325,8 @@ inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) cons
   aDoublet.Coord(theX, theY);
 }
 
-//=======================================================================
-// function : Transforms
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Trsf2d::Transforms(gp_XY& theCoord) const
 {
   theCoord.Multiply(matrix);

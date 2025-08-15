@@ -391,10 +391,8 @@ private:
   Standard_Real minorRadius;
 };
 
-//=======================================================================
-// function : Asymptote1
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Hypr2d::Asymptote1() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
@@ -407,10 +405,8 @@ inline gp_Ax2d gp_Hypr2d::Asymptote1() const
   return gp_Ax2d(pos.Location(), aVdir);
 }
 
-//=======================================================================
-// function : Asymptote2
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Hypr2d::Asymptote2() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
@@ -423,10 +419,8 @@ inline gp_Ax2d gp_Hypr2d::Asymptote2() const
   return gp_Ax2d(pos.Location(), aVdir);
 }
 
-//=======================================================================
-// function : Directrix1
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Hypr2d::Directrix1() const
 {
   Standard_Real anE    = Eccentricity();
@@ -436,10 +430,8 @@ inline gp_Ax2d gp_Hypr2d::Directrix1() const
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
 }
 
-//=======================================================================
-// function : Directrix2
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Hypr2d::Directrix2() const
 {
   Standard_Real anE    = Eccentricity();
@@ -449,10 +441,8 @@ inline gp_Ax2d gp_Hypr2d::Directrix2() const
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
 }
 
-//=======================================================================
-// function : Reversed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Hypr2d gp_Hypr2d::Reversed() const
 {
   gp_Hypr2d aH    = *this;
@@ -462,10 +452,8 @@ inline gp_Hypr2d gp_Hypr2d::Reversed() const
   return aH;
 }
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   majorRadius *= theS;
@@ -481,10 +469,8 @@ inline void gp_Hypr2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-//=======================================================================
-// function : Scaled
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Hypr2d aH = *this;
@@ -502,10 +488,8 @@ inline gp_Hypr2d gp_Hypr2d::Scaled(const gp_Pnt2d& theP, const Standard_Real the
   return aH;
 }
 
-//=======================================================================
-// function : Transform
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Hypr2d::Transform(const gp_Trsf2d& theT)
 {
   majorRadius *= theT.ScaleFactor();
@@ -521,10 +505,8 @@ inline void gp_Hypr2d::Transform(const gp_Trsf2d& theT)
   pos.Transform(theT);
 }
 
-//=======================================================================
-// function : Transformed
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Hypr2d gp_Hypr2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Hypr2d aH = *this;

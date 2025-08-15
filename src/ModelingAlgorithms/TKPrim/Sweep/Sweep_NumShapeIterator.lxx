@@ -14,30 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : More
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_Boolean Sweep_NumShapeIterator::More() const
 {
   return myMore;
 }
 
-//=======================================================================
-// function : Value
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline const Sweep_NumShape& Sweep_NumShapeIterator::Value() const
 {
   return myCurrentNumShape;
 }
 
-//=======================================================================
-// function : Orientation
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TopAbs_Orientation Sweep_NumShapeIterator::Orientation() const
 {

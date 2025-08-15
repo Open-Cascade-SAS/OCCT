@@ -18,10 +18,7 @@
 #include <Units_Dimensions.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-//=======================================================================
-// function : Units_Quantity
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Units_Quantity::Units_Quantity(const Standard_CString             aname,
                                       const Handle(Units_Dimensions)&    adimensions,
@@ -32,30 +29,21 @@ inline Units_Quantity::Units_Quantity(const Standard_CString             aname,
   theunitssequence = aunitssequence;
 }
 
-//=======================================================================
-// function : Name
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline TCollection_AsciiString Units_Quantity::Name() const
 {
   return thename->String();
 }
 
-//=======================================================================
-// function : Dimensions
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(Units_Dimensions) Units_Quantity::Dimensions() const
 {
   return thedimensions;
 }
 
-//=======================================================================
-// function : Sequence
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(Units_UnitsSequence) Units_Quantity::Sequence() const
 {

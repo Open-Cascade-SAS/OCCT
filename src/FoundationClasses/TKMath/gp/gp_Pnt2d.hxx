@@ -185,10 +185,8 @@ private:
 #include <gp_Vec2d.hxx>
 #include <gp_Trsf2d.hxx>
 
-//=======================================================================
-// function : Distance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
 {
   const gp_XY&  aXY = theOther.coord;
@@ -197,10 +195,8 @@ inline Standard_Real gp_Pnt2d::Distance(const gp_Pnt2d& theOther) const
   return sqrt(aX * aX + aY * aY);
 }
 
-//=======================================================================
-// function : SquareDistance
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const
 {
   const gp_XY&  aXY = theOther.coord;
@@ -209,10 +205,8 @@ inline Standard_Real gp_Pnt2d::SquareDistance(const gp_Pnt2d& theOther) const
   return (aX * aX + aY * aY);
 }
 
-//=======================================================================
-// function : Rotate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
 {
   gp_Trsf2d aT;
@@ -220,10 +214,8 @@ inline void gp_Pnt2d::Rotate(const gp_Pnt2d& theP, const Standard_Real theAng)
   aT.Transforms(coord);
 }
 
-//=======================================================================
-// function : Scale
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   gp_XY aXY = theP.coord;
@@ -232,19 +224,15 @@ inline void gp_Pnt2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
   coord.Add(aXY);
 }
 
-//=======================================================================
-// function : Translate
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Pnt2d::Translate(const gp_Vec2d& theV)
 {
   coord.Add(theV.XY());
 }
 
-//=======================================================================
-// function : Translated
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Pnt2d gp_Pnt2d::Translated(const gp_Vec2d& theV) const
 {
   gp_Pnt2d aP = *this;

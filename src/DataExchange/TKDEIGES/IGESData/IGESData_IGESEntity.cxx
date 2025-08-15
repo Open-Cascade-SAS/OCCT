@@ -48,10 +48,8 @@ static const Standard_Integer IGESShiftUse    = 8;
 static const Standard_Integer IGESShiftHier   = 12;
 } // namespace
 
-//=======================================================================
-// function : IGESData_IGESEntity
-// purpose  : Default constructor.
-//=======================================================================
+//=================================================================================================
+
 IGESData_IGESEntity::IGESData_IGESEntity()
     : theType(0),
       theForm(0),

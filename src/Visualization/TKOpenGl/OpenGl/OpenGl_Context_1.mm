@@ -36,10 +36,8 @@
 
 #include <Standard_ProgramError.hxx>
 
-// =======================================================================
-// function : IsCurrent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::IsCurrent() const
 {
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
@@ -51,10 +49,8 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
 #endif
 }
 
-// =======================================================================
-// function : MakeCurrent
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::MakeCurrent()
 {
   if (myGContext == NULL)
@@ -71,10 +67,8 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
 #endif
 }
 
-// =======================================================================
-// function : SwapBuffers
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_Context::SwapBuffers()
 {
   if (myGContext == NULL)
@@ -99,10 +93,8 @@ void OpenGl_Context::SwapBuffers()
 #endif
 }
 
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Standard_Boolean OpenGl_Context::Init (const Standard_Boolean theIsCoreProfile)
 {
   if (myIsInitialized)

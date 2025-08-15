@@ -67,10 +67,8 @@ protected:
                               Standard_Integer                           theDigit) const;
 };
 
-// =======================================================================
-// function : BVH_LinearBuilder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const Standard_Integer theLeafNodeSize,
                                            const Standard_Integer theMaxTreeDepth)
@@ -306,10 +304,8 @@ private:
 };
 } // namespace BVH
 
-// =======================================================================
-// function : Build
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 void BVH_LinearBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
                                     BVH_Tree<T, N>*      theBVH,

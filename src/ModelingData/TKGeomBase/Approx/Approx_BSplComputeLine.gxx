@@ -184,10 +184,8 @@ static void DUMP(const AppParCurves_MultiBSpCurve& C)
 
 
 
-//=======================================================================
-//function : FirstTangencyVector
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine&  Line,
   const Standard_Integer index,
   math_Vector&           V)
@@ -265,10 +263,8 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine&  Line,
 }
 
 
-//=======================================================================
-//function : LastTangencyVector
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::LastTangencyVector(const MultiLine&       Line,
   const Standard_Integer index,
   math_Vector&           V)
@@ -347,10 +343,8 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine&       Line,
 
 
 
-//=======================================================================
-//function : SearchFirstLambda
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Real Approx_BSplComputeLine::
 SearchFirstLambda(const MultiLine&            Line,
   const math_Vector&          aPar,
@@ -407,10 +401,8 @@ SearchFirstLambda(const MultiLine&            Line,
 }
 
 
-//=======================================================================
-//function : SearchLastLambda
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Real Approx_BSplComputeLine::
 SearchLastLambda(const MultiLine&            Line,
   const math_Vector&          aPar,
@@ -468,10 +460,8 @@ SearchLastLambda(const MultiLine&            Line,
 
 
 
-//=======================================================================
-//function : Approx_BSplComputeLine
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Approx_BSplComputeLine::Approx_BSplComputeLine
 (const MultiLine& Line,
   const math_Vector& Parameters,
@@ -510,10 +500,8 @@ Approx_BSplComputeLine::Approx_BSplComputeLine
 }
 
 
-//=======================================================================
-//function : Approx_BSplComputeLine
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Approx_BSplComputeLine::Approx_BSplComputeLine
 (const math_Vector& Parameters,
   const Standard_Integer degreemin,
@@ -549,10 +537,8 @@ Approx_BSplComputeLine::Approx_BSplComputeLine
   tolreached = Standard_False;
 }
 
-//=======================================================================
-//function : Approx_BSplComputeLine
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Approx_BSplComputeLine::Approx_BSplComputeLine
 (const Standard_Integer degreemin,
   const Standard_Integer degreemax,
@@ -584,10 +570,8 @@ Approx_BSplComputeLine::Approx_BSplComputeLine
 }
 
 
-//=======================================================================
-//function : Approx_BSplComputeLine
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Approx_BSplComputeLine::Approx_BSplComputeLine
 (const MultiLine& Line,
   const Standard_Integer degreemin,
@@ -622,10 +606,8 @@ Approx_BSplComputeLine::Approx_BSplComputeLine
 
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 {
 
@@ -764,10 +746,8 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 
 
 
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const TColStd_Array1OfReal& Approx_BSplComputeLine::Parameters() const
 {
   return myParameters->Array1();
@@ -775,28 +755,22 @@ const TColStd_Array1OfReal& Approx_BSplComputeLine::Parameters() const
 
 
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const AppParCurves_MultiBSpCurve& Approx_BSplComputeLine::Value() const
 {
   return TheMultiBSpCurve;
 }
 
-//=======================================================================
-//function : ChangeValue
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 AppParCurves_MultiBSpCurve& Approx_BSplComputeLine::ChangeValue()
 {
   return TheMultiBSpCurve;
 }
 
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
   const Standard_Integer firstP,
@@ -874,10 +848,8 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
 }
 
 
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine& Line,
   const Standard_Integer fpt,
   const Standard_Integer lpt,
@@ -1023,10 +995,8 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine& Line,
 
 
 
-//=======================================================================
-//function : SetParameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetParameters(const math_Vector& ThePar)
 {
   myfirstParam = new TColStd_HArray1OfReal(ThePar.Lower(),
@@ -1037,10 +1007,8 @@ void Approx_BSplComputeLine::SetParameters(const math_Vector& ThePar)
 }
 
 
-//=======================================================================
-//function : SetKnots
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetKnots(const TColStd_Array1OfReal& Knots)
 {
   myhasknots = Standard_True;
@@ -1051,10 +1019,8 @@ void Approx_BSplComputeLine::SetKnots(const TColStd_Array1OfReal& Knots)
 }
 
 
-//=======================================================================
-//function : SetKnotsAndMultiplicities
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetKnotsAndMultiplicities
 (const TColStd_Array1OfReal&    Knots,
   const TColStd_Array1OfInteger& Mults)
@@ -1072,10 +1038,8 @@ void Approx_BSplComputeLine::SetKnotsAndMultiplicities
   }
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::Init(const Standard_Integer degreemin,
   const Standard_Integer degreemax,
   const Standard_Real Tolerance3d,
@@ -1097,10 +1061,8 @@ void Approx_BSplComputeLine::Init(const Standard_Integer degreemin,
 
 
 
-//=======================================================================
-//function : SetDegrees
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetDegrees(const Standard_Integer degreemin,
   const Standard_Integer degreemax)
 {
@@ -1109,10 +1071,8 @@ void Approx_BSplComputeLine::SetDegrees(const Standard_Integer degreemin,
 }
 
 
-//=======================================================================
-//function : SetTolerances
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetTolerances(const Standard_Real Tolerance3d,
   const Standard_Real Tolerance2d)
 {
@@ -1121,10 +1081,8 @@ void Approx_BSplComputeLine::SetTolerances(const Standard_Real Tolerance3d,
 }
 
 
-//=======================================================================
-//function : SetConstraints
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetConstraints(const AppParCurves_Constraint FirstC,
   const AppParCurves_Constraint LastC)
 {
@@ -1132,38 +1090,30 @@ void Approx_BSplComputeLine::SetConstraints(const AppParCurves_Constraint FirstC
   mylastC = LastC;
 }
 
-//=======================================================================
-//function : SetPeriodic
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetPeriodic(const Standard_Boolean thePeriodic)
 {
   myPeriodic = thePeriodic;
 }
 
 
-//=======================================================================
-//function : IsAllApproximated
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Approx_BSplComputeLine::IsAllApproximated() const
 {
   return alldone;
 }
 
-//=======================================================================
-//function : IsToleranceReached
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Approx_BSplComputeLine::IsToleranceReached() const
 {
   return tolreached;
 }
 
-//=======================================================================
-//function : Error
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::Error(Standard_Real& tol3d,
   Standard_Real& tol2d) const
 {
@@ -1173,10 +1123,8 @@ void Approx_BSplComputeLine::Error(Standard_Real& tol3d,
 
 
 
-//=======================================================================
-//function : SetContinuity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::SetContinuity(const Standard_Integer C)
 {
   mycont = C;
@@ -1184,10 +1132,8 @@ void Approx_BSplComputeLine::SetContinuity(const Standard_Integer C)
 
 
 
-//=======================================================================
-//function : FindRealConstraints
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
 {
   realfirstC = myfirstC;
@@ -1259,10 +1205,8 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
 
 
 
-//=======================================================================
-//function : Interpol
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 {
   Standard_Integer i, Thefirstpt, Thelastpt, deg = 3;
@@ -1400,10 +1344,8 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 }
 
 
-//=======================================================================
-//function : TangencyVector
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_BSplComputeLine::TangencyVector(
   const MultiLine&               Line,
   const AppParCurves_MultiCurve& C,

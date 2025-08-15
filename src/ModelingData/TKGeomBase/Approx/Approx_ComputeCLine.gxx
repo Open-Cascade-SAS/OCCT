@@ -441,19 +441,15 @@ void Approx_ComputeCLine::SetMaxSegments(const Standard_Integer theMaxSegments)
   myMaxSegments = theMaxSegments;
 }
 
-//=======================================================================
-//function : SetInvOrder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_ComputeCLine::SetInvOrder(const Standard_Boolean theInvOrder)
 {
   myInvOrder = theInvOrder;
 }
 
-//=======================================================================
-//function : SetHangChecking
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void Approx_ComputeCLine::SetHangChecking(const Standard_Boolean theHangChecking)
 {
   myHangChecking = theHangChecking;

@@ -143,10 +143,8 @@ static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
   return;
 }
 
-//=======================================================================
-// function : Transfer
-// purpose  : basic working method
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)& doc,
                                                  const Message_ProgressRange&    theProgress)
 {

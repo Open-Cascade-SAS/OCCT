@@ -44,10 +44,8 @@ Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt();
 //  --- keep pipe parametrized like path
 
 
-//=======================================================================
-//function : AppBlend_AppSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 AppBlend_AppSurf::AppBlend_AppSurf ()
 : done(Standard_False),
@@ -70,10 +68,8 @@ AppBlend_AppSurf::AppBlend_AppSurf ()
 }
 
 
-//=======================================================================
-//function : AppBlend_AppSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 AppBlend_AppSurf::AppBlend_AppSurf (const Standard_Integer Degmin,
 				    const Standard_Integer Degmax,
@@ -100,10 +96,8 @@ AppBlend_AppSurf::AppBlend_AppSurf (const Standard_Integer Degmin,
   critweights[2]=0.4;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::Init (const Standard_Integer Degmin,
 			     const Standard_Integer Degmax,
@@ -138,10 +132,8 @@ void AppBlend_AppSurf::CriteriumWeight(Standard_Real& W1, Standard_Real& W2, Sta
   W2 = critweights[1];
   W3 = critweights[2] ;
 }
-//=======================================================================
-//function : SetCriteriumWeight
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::SetCriteriumWeight(const Standard_Real W1, const Standard_Real W2, const Standard_Real W3)
 {
@@ -150,40 +142,32 @@ void AppBlend_AppSurf::SetCriteriumWeight(const Standard_Real W1, const Standard
   critweights[1] = W2;
   critweights[2] = W3;
 }
-//=======================================================================
-//function : SetContinuity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::SetContinuity (const GeomAbs_Shape TheCont)
 {
   continuity = TheCont;
 }
 
-//=======================================================================
-//function : Continuity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 GeomAbs_Shape AppBlend_AppSurf::Continuity () const
 {
   return continuity;
 }
 
-//=======================================================================
-//function : SetParType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::SetParType (const Approx_ParametrizationType ParType)
 {
   paramtype = ParType;
 }
 
-//=======================================================================
-//function : ParType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Approx_ParametrizationType AppBlend_AppSurf::ParType () const
 {
@@ -191,10 +175,8 @@ Approx_ParametrizationType AppBlend_AppSurf::ParType () const
 }
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 			       TheSectionGenerator& F,
@@ -204,10 +186,8 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
   InternalPerform(Lin, F, SpApprox, Standard_False);
 }
 
-//=======================================================================
-//function : PerformSmoothing
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::PerformSmoothing(const Handle(TheLine)& Lin,
 					  TheSectionGenerator& F)
@@ -216,10 +196,8 @@ void AppBlend_AppSurf::PerformSmoothing(const Handle(TheLine)& Lin,
   InternalPerform(Lin, F, Standard_True, Standard_True);
 }
 
-//=======================================================================
-//function : InternalPerform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
 				       TheSectionGenerator& F,
@@ -583,10 +561,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
 }
 
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 			       TheSectionGenerator& F,
@@ -929,10 +905,8 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 }
 
 
-//=======================================================================
-//function : SurfShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::SurfShape (Standard_Integer& UDegree,
 				  Standard_Integer& VDegree,
@@ -968,10 +942,8 @@ void AppBlend_AppSurf::Surface(TColgp_Array2OfPnt& TPoles,
   TVMults  = tabVMults->Array1();
 }
 
-//=======================================================================
-//function : Curves2dShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::Curves2dShape(Standard_Integer& Degree,
 				     Standard_Integer& NbPoles,
@@ -984,10 +956,8 @@ void AppBlend_AppSurf::Curves2dShape(Standard_Integer& Degree,
   NbKnots = tabVKnots->Length();
 }
 
-//=======================================================================
-//function : Curve2d
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 void AppBlend_AppSurf::Curve2d(const Standard_Integer Index,
 			       TColgp_Array1OfPnt2d& TPoles,
@@ -1001,10 +971,8 @@ void AppBlend_AppSurf::Curve2d(const Standard_Integer Index,
   TMults  = tabVMults->Array1();
 }
 
-//=======================================================================
-//function : TolCurveOnSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 
 Standard_Real AppBlend_AppSurf::TolCurveOnSurf(const Standard_Integer) const
 {

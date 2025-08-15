@@ -288,10 +288,8 @@ private:
   Standard_Real minorRadius;
 };
 
-// =======================================================================
-// function : Directrix1
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Elips2d::Directrix1() const
 {
   Standard_Real anE = Eccentricity();
@@ -303,10 +301,8 @@ inline gp_Ax2d gp_Elips2d::Directrix1() const
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
 }
 
-// =======================================================================
-// function : Directrix2
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Ax2d gp_Elips2d::Directrix2() const
 {
   Standard_Real anE = Eccentricity();
@@ -318,10 +314,8 @@ inline gp_Ax2d gp_Elips2d::Directrix2() const
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
 }
 
-// =======================================================================
-// function : Eccentricity
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Elips2d::Eccentricity() const
 {
   if (majorRadius == 0.0)
@@ -334,10 +328,8 @@ inline Standard_Real gp_Elips2d::Eccentricity() const
   }
 }
 
-// =======================================================================
-// function : Focus1
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Pnt2d gp_Elips2d::Focus1() const
 {
   Standard_Real   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
@@ -346,10 +338,8 @@ inline gp_Pnt2d gp_Elips2d::Focus1() const
   return gp_Pnt2d(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y());
 }
 
-// =======================================================================
-// function : Focus2
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Pnt2d gp_Elips2d::Focus2() const
 {
   Standard_Real   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
@@ -358,10 +348,8 @@ inline gp_Pnt2d gp_Elips2d::Focus2() const
   return gp_Pnt2d(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y());
 }
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 {
   majorRadius *= theS;
@@ -377,10 +365,8 @@ inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
 {
   gp_Elips2d anE = *this;
@@ -398,10 +384,8 @@ inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real t
   return anE;
 }
 
-// =======================================================================
-// function : Parameter
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline Standard_Real gp_Elips2d::Parameter() const
 {
   if (majorRadius == 0.0)
@@ -414,10 +398,8 @@ inline Standard_Real gp_Elips2d::Parameter() const
   }
 }
 
-// =======================================================================
-// function : Reversed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Elips2d gp_Elips2d::Reversed() const
 {
   gp_Elips2d anE   = *this;
@@ -427,10 +409,8 @@ inline gp_Elips2d gp_Elips2d::Reversed() const
   return anE;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Elips2d::Transform(const gp_Trsf2d& theT)
 {
   Standard_Real aTSca = theT.ScaleFactor();
@@ -443,10 +423,8 @@ inline void gp_Elips2d::Transform(const gp_Trsf2d& theT)
   pos.Transform(theT);
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Elips2d gp_Elips2d::Transformed(const gp_Trsf2d& theT) const
 {
   gp_Elips2d anE = *this;

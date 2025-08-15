@@ -14,10 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : GetSDR
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyComponent::GetSDR()
   const
@@ -25,10 +22,7 @@ inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyCo
   return mySDR;
 }
 
-//=======================================================================
-// function : GetList
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyComponent::GetList()
   const
@@ -36,10 +30,7 @@ inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyCom
   return myList;
 }
 
-//=======================================================================
-// function : SetSDR
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline void STEPSelections_AssemblyComponent::SetSDR(
   const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)

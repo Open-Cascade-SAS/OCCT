@@ -222,10 +222,8 @@ private:
   Standard_Real radius;
 };
 
-// =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Circ::Scale(const gp_Pnt& theP, const Standard_Real theS)
 {
   radius *= theS;
@@ -236,10 +234,8 @@ inline void gp_Circ::Scale(const gp_Pnt& theP, const Standard_Real theS)
   pos.Scale(theP, theS);
 }
 
-// =======================================================================
-// function : Scaled
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Circ gp_Circ::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
 {
   gp_Circ aC = *this;
@@ -252,10 +248,8 @@ inline gp_Circ gp_Circ::Scaled(const gp_Pnt& theP, const Standard_Real theS) con
   return aC;
 }
 
-// =======================================================================
-// function : Transform
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline void gp_Circ::Transform(const gp_Trsf& theT)
 {
   radius *= theT.ScaleFactor();
@@ -266,10 +260,8 @@ inline void gp_Circ::Transform(const gp_Trsf& theT)
   pos.Transform(theT);
 }
 
-// =======================================================================
-// function : Transformed
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 inline gp_Circ gp_Circ::Transformed(const gp_Trsf& theT) const
 {
   gp_Circ aC = *this;

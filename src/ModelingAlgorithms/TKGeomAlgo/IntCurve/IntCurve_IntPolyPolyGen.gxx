@@ -1338,19 +1338,15 @@ void GetIntersection(const TheCurve& theC1, const Standard_Real theT1f, const St
 
 }
 
-//=======================================================================
-//function : GetMinNbPoints
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer IntCurve_IntPolyPolyGen::GetMinNbSamples() const
 {
   return myMinPntNb;
 }
 
-//=======================================================================
-//function : SetMinNbPoints
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntPolyPolyGen::SetMinNbSamples(const Standard_Integer theMinNbSamples)
 {
   myMinPntNb = theMinNbSamples;

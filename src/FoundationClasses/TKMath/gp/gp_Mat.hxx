@@ -310,10 +310,8 @@ private:
   Standard_Real myMat[3][3];
 };
 
-//=======================================================================
-// function : gp_Mat
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat::gp_Mat(const Standard_Real theA11,
                       const Standard_Real theA12,
                       const Standard_Real theA13,
@@ -335,10 +333,8 @@ inline gp_Mat::gp_Mat(const Standard_Real theA11,
   myMat[2][2] = theA33;
 }
 
-//=======================================================================
-// function : Add
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::Add(const gp_Mat& theOther)
 {
   myMat[0][0] += theOther.myMat[0][0];
@@ -352,10 +348,8 @@ inline void gp_Mat::Add(const gp_Mat& theOther)
   myMat[2][2] += theOther.myMat[2][2];
 }
 
-//=======================================================================
-// function : Added
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat gp_Mat::Added(const gp_Mat& theOther) const
 {
   gp_Mat aNewMat(*this);
@@ -363,10 +357,8 @@ inline gp_Mat gp_Mat::Added(const gp_Mat& theOther) const
   return aNewMat;
 }
 
-//=======================================================================
-// function : Divide
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::Divide(const Standard_Real theScalar)
 {
   Standard_Real aVal = theScalar;
@@ -387,10 +379,8 @@ inline void gp_Mat::Divide(const Standard_Real theScalar)
   myMat[2][2] *= anUnSurScalar;
 }
 
-//=======================================================================
-// function : Divided
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat gp_Mat::Divided(const Standard_Real theScalar) const
 {
   gp_Mat aNewMat(*this);
@@ -398,10 +388,8 @@ inline gp_Mat gp_Mat::Divided(const Standard_Real theScalar) const
   return aNewMat;
 }
 
-//=======================================================================
-// function : Multiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::Multiply(const gp_Mat& theOther)
 {
   const Standard_Real aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0]
@@ -433,10 +421,8 @@ inline void gp_Mat::Multiply(const gp_Mat& theOther)
   myMat[2][2] = aT22;
 }
 
-//=======================================================================
-// function : PreMultiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::PreMultiply(const gp_Mat& theOther)
 {
   const Standard_Real aT00 = theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0]
@@ -468,10 +454,8 @@ inline void gp_Mat::PreMultiply(const gp_Mat& theOther)
   myMat[2][2] = aT22;
 }
 
-//=======================================================================
-// function : Multiplied
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat gp_Mat::Multiplied(const Standard_Real theScalar) const
 {
   gp_Mat aNewMat(*this);
@@ -479,10 +463,8 @@ inline gp_Mat gp_Mat::Multiplied(const Standard_Real theScalar) const
   return aNewMat;
 }
 
-//=======================================================================
-// function : Multiply
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::Multiply(const Standard_Real theScalar)
 {
   myMat[0][0] *= theScalar;
@@ -496,10 +478,8 @@ inline void gp_Mat::Multiply(const Standard_Real theScalar)
   myMat[2][2] *= theScalar;
 }
 
-//=======================================================================
-// function : Subtract
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline void gp_Mat::Subtract(const gp_Mat& theOther)
 {
   myMat[0][0] -= theOther.myMat[0][0];
@@ -513,10 +493,8 @@ inline void gp_Mat::Subtract(const gp_Mat& theOther)
   myMat[2][2] -= theOther.myMat[2][2];
 }
 
-//=======================================================================
-// function : Subtracted
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline gp_Mat gp_Mat::Subtracted(const gp_Mat& theOther) const
 {
   gp_Mat aNewMat(*this);
@@ -524,10 +502,8 @@ inline gp_Mat gp_Mat::Subtracted(const gp_Mat& theOther) const
   return aNewMat;
 }
 
-//=======================================================================
-// function : Transpose
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 // On macOS 10.13.6 with XCode 9.4.1 the compiler has a bug leading to
 // generation of invalid code when method gp_Mat::Transpose() is called
 // for a matrix which is when applied to vector; it looks like vector
