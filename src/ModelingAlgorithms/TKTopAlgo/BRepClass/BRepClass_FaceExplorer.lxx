@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepClass_FaceExplorer::MoreWires() const
 {
   return myWExplorer.More();
 }
 
 //=================================================================================================
-
 
 inline void BRepClass_FaceExplorer::NextWire()
 {
@@ -32,14 +30,12 @@ inline void BRepClass_FaceExplorer::NextWire()
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepClass_FaceExplorer::MoreEdges() const
 {
   return myEExplorer.More();
 }
 
 //=================================================================================================
-
 
 inline void BRepClass_FaceExplorer::NextEdge()
 {

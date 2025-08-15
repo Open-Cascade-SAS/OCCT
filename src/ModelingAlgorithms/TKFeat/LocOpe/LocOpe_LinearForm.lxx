@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline LocOpe_LinearForm::LocOpe_LinearForm()
     : myDone(Standard_False),
       myIsTrans(Standard_False)
@@ -24,7 +23,6 @@ inline LocOpe_LinearForm::LocOpe_LinearForm()
 }
 
 //=================================================================================================
-
 
 inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
                                             const gp_Vec&       V,
@@ -36,7 +34,6 @@ inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
 }
 
 //=================================================================================================
-
 
 inline LocOpe_LinearForm::LocOpe_LinearForm(const TopoDS_Shape& Base,
                                             const gp_Vec&       V,

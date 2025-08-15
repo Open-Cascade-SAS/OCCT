@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Handle(StepRepr_NextAssemblyUsageOccurrence) STEPSelections_AssemblyLink::GetNAUO() const
 {
   return myNAUO;
 }
 
 //=================================================================================================
-
 
 inline Handle(Standard_Transient) STEPSelections_AssemblyLink::GetItem() const
 {
@@ -32,14 +30,12 @@ inline Handle(Standard_Transient) STEPSelections_AssemblyLink::GetItem() const
 
 //=================================================================================================
 
-
 inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyLink::GetComponent() const
 {
   return myComponent;
 }
 
 //=================================================================================================
-
 
 inline void STEPSelections_AssemblyLink::SetNAUO(
   const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo)
@@ -49,14 +45,12 @@ inline void STEPSelections_AssemblyLink::SetNAUO(
 
 //=================================================================================================
 
-
 inline void STEPSelections_AssemblyLink::SetItem(const Handle(Standard_Transient)& item)
 {
   myItem = item;
 }
 
 //=================================================================================================
-
 
 inline void STEPSelections_AssemblyLink::SetComponent(
   const Handle(STEPSelections_AssemblyComponent)& part)

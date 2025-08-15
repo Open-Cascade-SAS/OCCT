@@ -600,9 +600,7 @@ void BRep_Builder::NaturalRestriction(const TopoDS_Face& F, const Standard_Boole
   F.TShape()->Modified(Standard_True);
 }
 
-
 //=================================================================================================
-
 
 void BRep_Builder::MakeEdge(TopoDS_Edge& E) const
 {

@@ -523,9 +523,7 @@ void STEPCAFControl_Reader::prepareUnits(const Handle(StepData_StepModel)& theMo
   theModel->SetLocalLengthUnit(aScaleFactorMM);
 }
 
-
 //=================================================================================================
-
 
 Standard_Boolean STEPCAFControl_Reader::Transfer(STEPControl_Reader&             reader,
                                                  const Standard_Integer          nroot,

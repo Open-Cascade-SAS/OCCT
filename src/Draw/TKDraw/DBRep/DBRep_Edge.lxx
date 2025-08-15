@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Edge& DBRep_Edge::Edge() const
 {
   return myEdge;
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Edge::Edge(const TopoDS_Edge& E)
 {
@@ -32,14 +30,12 @@ inline void DBRep_Edge::Edge(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-
 inline const Draw_Color& DBRep_Edge::Color() const
 {
   return myColor;
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Edge::Color(const Draw_Color& C)
 {

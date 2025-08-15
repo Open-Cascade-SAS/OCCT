@@ -631,7 +631,6 @@ void TPrsStd_AISPresentation::BeforeForget()
   }
 }
 
-
 //=================================================================================================
 
 void TPrsStd_AISPresentation::AfterResume()

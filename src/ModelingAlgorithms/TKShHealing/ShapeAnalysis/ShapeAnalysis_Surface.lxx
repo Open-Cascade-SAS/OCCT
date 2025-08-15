@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const Handle(Geom_Surface)& ShapeAnalysis_Surface::Surface() const
 {
   return mySurf;
 }
 
 //=================================================================================================
-
 
 inline const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::TrueAdaptor3d() const
 {
@@ -32,14 +30,12 @@ inline const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::TrueAdaptor3d()
 
 //=================================================================================================
 
-
 inline Standard_Real ShapeAnalysis_Surface::Gap() const
 {
   return myGap;
 }
 
 //=================================================================================================
-
 
 inline gp_Pnt ShapeAnalysis_Surface::Value(const Standard_Real u, const Standard_Real v)
 {
@@ -48,14 +44,12 @@ inline gp_Pnt ShapeAnalysis_Surface::Value(const Standard_Real u, const Standard
 
 //=================================================================================================
 
-
 inline gp_Pnt ShapeAnalysis_Surface::Value(const gp_Pnt2d& p2d)
 {
   return myAdSur->Value(p2d.X(), p2d.Y());
 }
 
 //=================================================================================================
-
 
 inline void ShapeAnalysis_Surface::Bounds(Standard_Real& ufirst,
                                           Standard_Real& ulast,
@@ -70,14 +64,12 @@ inline void ShapeAnalysis_Surface::Bounds(Standard_Real& ufirst,
 
 //=================================================================================================
 
-
 inline Standard_Real ShapeAnalysis_Surface::UCloseVal() const
 {
   return myUCloseVal;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real ShapeAnalysis_Surface::VCloseVal() const
 {

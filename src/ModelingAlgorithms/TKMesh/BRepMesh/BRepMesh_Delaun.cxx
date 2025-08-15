@@ -274,7 +274,6 @@ void BRepMesh_Delaun::perform(IMeshData::VectorOfInteger& theVertexIndices,
   compute(theVertexIndices);
 }
 
-
 //=================================================================================================
 
 void BRepMesh_Delaun::superMesh(const Bnd_Box2d& theBox)

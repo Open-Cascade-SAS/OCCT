@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline TopoDS_Edge& BRepClass_Edge::Edge()
 {
   return myEdge;
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Edge& BRepClass_Edge::Edge() const
 {
@@ -32,14 +30,12 @@ inline const TopoDS_Edge& BRepClass_Edge::Edge() const
 
 //=================================================================================================
 
-
 inline TopoDS_Face& BRepClass_Edge::Face()
 {
   return myFace;
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Face& BRepClass_Edge::Face() const
 {

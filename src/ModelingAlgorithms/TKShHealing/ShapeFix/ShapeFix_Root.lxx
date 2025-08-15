@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline Handle(ShapeBuild_ReShape) ShapeFix_Root::Context() const
 {
   return myContext;
 }
 
 //=================================================================================================
-
 
 inline Handle(ShapeExtend_BasicMsgRegistrator) ShapeFix_Root::MsgRegistrator() const
 {
@@ -31,14 +29,12 @@ inline Handle(ShapeExtend_BasicMsgRegistrator) ShapeFix_Root::MsgRegistrator() c
 
 //=================================================================================================
 
-
 inline Standard_Real ShapeFix_Root::Precision() const
 {
   return myPrecision;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real ShapeFix_Root::MinTolerance() const
 {
@@ -47,14 +43,12 @@ inline Standard_Real ShapeFix_Root::MinTolerance() const
 
 //=================================================================================================
 
-
 inline Standard_Real ShapeFix_Root::MaxTolerance() const
 {
   return myMaxTol;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real ShapeFix_Root::LimitTolerance(const Standard_Real toler) const
 {
@@ -64,14 +58,12 @@ inline Standard_Real ShapeFix_Root::LimitTolerance(const Standard_Real toler) co
 
 //=================================================================================================
 
-
 inline void ShapeFix_Root::SendMsg(const Message_Msg& message, const Message_Gravity gravity) const
 {
   SendMsg(myShape, message, gravity);
 }
 
 //=================================================================================================
-
 
 inline void ShapeFix_Root::SendWarning(const TopoDS_Shape& shape, const Message_Msg& message) const
 {
@@ -80,7 +72,6 @@ inline void ShapeFix_Root::SendWarning(const TopoDS_Shape& shape, const Message_
 
 //=================================================================================================
 
-
 inline void ShapeFix_Root::SendWarning(const Message_Msg& message) const
 {
   SendWarning(myShape, message);
@@ -88,14 +79,12 @@ inline void ShapeFix_Root::SendWarning(const Message_Msg& message) const
 
 //=================================================================================================
 
-
 inline void ShapeFix_Root::SendFail(const TopoDS_Shape& shape, const Message_Msg& message) const
 {
   SendMsg(shape, message, Message_Fail);
 }
 
 //=================================================================================================
-
 
 inline void ShapeFix_Root::SendFail(const Message_Msg& message) const
 {

@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Handle(HLRTopoBRep_OutLiner) HLRTest_OutLiner::OutLiner() const
 {
   return myOutLiner;

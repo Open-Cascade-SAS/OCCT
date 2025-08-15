@@ -120,9 +120,7 @@ Standard_Boolean TPrsStd_DriverTable::RemoveDriver(const Standard_GUID& guid)
   return myDrivers.UnBind(guid);
 }
 
-
 //=================================================================================================
-
 
 void TPrsStd_DriverTable::Clear()
 {

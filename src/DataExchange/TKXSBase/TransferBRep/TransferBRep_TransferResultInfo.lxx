@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer& TransferBRep_TransferResultInfo::Result()
 {
   return myR;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
 {
@@ -32,14 +30,12 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
 
 //=================================================================================================
 
-
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultFail()
 {
   return myRF;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
 {
@@ -48,14 +44,12 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
 
 //=================================================================================================
 
-
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResult()
 {
   return myNR;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
 {
@@ -64,14 +58,12 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
 
 //=================================================================================================
 
-
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultFail()
 {
   return myNRF;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarningFail()
 {

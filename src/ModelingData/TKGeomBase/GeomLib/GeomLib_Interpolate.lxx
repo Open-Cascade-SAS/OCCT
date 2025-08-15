@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean GeomLib_Interpolate::IsDone() const
 {
   return myIsDone;
 }
 
 //=================================================================================================
-
 
 inline GeomLib_InterpolationErrors GeomLib_Interpolate::Error() const
 {

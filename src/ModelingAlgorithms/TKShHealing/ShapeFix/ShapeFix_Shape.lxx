@@ -21,14 +21,12 @@
 
 //=================================================================================================
 
-
 inline Handle(ShapeFix_Solid) ShapeFix_Shape::FixSolidTool() const
 {
   return myFixSolid;
 }
 
 //=================================================================================================
-
 
 inline Handle(ShapeFix_Shell) ShapeFix_Shape::FixShellTool() const
 {
@@ -37,14 +35,12 @@ inline Handle(ShapeFix_Shell) ShapeFix_Shape::FixShellTool() const
 
 //=================================================================================================
 
-
 inline Handle(ShapeFix_Face) ShapeFix_Shape::FixFaceTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool();
 }
 
 //=================================================================================================
-
 
 inline Handle(ShapeFix_Wire) ShapeFix_Shape::FixWireTool() const
 {
@@ -53,14 +49,12 @@ inline Handle(ShapeFix_Wire) ShapeFix_Shape::FixWireTool() const
 
 //=================================================================================================
 
-
 inline Handle(ShapeFix_Edge) ShapeFix_Shape::FixEdgeTool() const
 {
   return myFixSolid->FixShellTool()->FixFaceTool()->FixWireTool()->FixEdgeTool();
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeFix_Shape::FixSolidMode()
 {
@@ -69,14 +63,12 @@ inline Standard_Integer& ShapeFix_Shape::FixSolidMode()
 
 //=================================================================================================
 
-
 inline Standard_Integer& ShapeFix_Shape::FixFreeShellMode()
 {
   return myFixShellMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeFix_Shape::FixFreeFaceMode()
 {
@@ -85,14 +77,12 @@ inline Standard_Integer& ShapeFix_Shape::FixFreeFaceMode()
 
 //=================================================================================================
 
-
 inline Standard_Integer& ShapeFix_Shape::FixFreeWireMode()
 {
   return myFixWireMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeFix_Shape::FixSameParameterMode()
 {
@@ -101,14 +91,12 @@ inline Standard_Integer& ShapeFix_Shape::FixSameParameterMode()
 
 //=================================================================================================
 
-
 inline Standard_Integer& ShapeFix_Shape::FixVertexPositionMode()
 {
   return myFixVertexPositionMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeFix_Shape::FixVertexTolMode()
 {

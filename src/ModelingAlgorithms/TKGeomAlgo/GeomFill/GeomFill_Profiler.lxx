@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean GeomFill_Profiler::IsPeriodic() const
 {
   return myIsPeriodic;
 }
 
 //=================================================================================================
-
 
 inline const Handle(Geom_Curve)& GeomFill_Profiler::Curve(const Standard_Integer Index) const
 {

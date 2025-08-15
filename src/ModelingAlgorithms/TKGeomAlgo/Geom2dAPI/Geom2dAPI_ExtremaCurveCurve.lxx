@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Extrema_ExtCC2d& Geom2dAPI_ExtremaCurveCurve::Extrema() const
 {
   return myExtCC;

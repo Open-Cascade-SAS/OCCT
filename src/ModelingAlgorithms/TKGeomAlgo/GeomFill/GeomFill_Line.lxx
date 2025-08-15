@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer GeomFill_Line::NbPoints() const
 {
   return myNbPoints;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer GeomFill_Line::Point(const Standard_Integer Index) const
 {

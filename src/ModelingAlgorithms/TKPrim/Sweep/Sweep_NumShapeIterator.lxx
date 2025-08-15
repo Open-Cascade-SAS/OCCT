@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean Sweep_NumShapeIterator::More() const
 {
   return myMore;
@@ -24,14 +23,12 @@ inline Standard_Boolean Sweep_NumShapeIterator::More() const
 
 //=================================================================================================
 
-
 inline const Sweep_NumShape& Sweep_NumShapeIterator::Value() const
 {
   return myCurrentNumShape;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation Sweep_NumShapeIterator::Orientation() const
 {

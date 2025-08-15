@@ -261,7 +261,6 @@ Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum(Quantity_Name
   return anOld;
 }
 
-
 //=================================================================================================
 
 TDataXtd_Presentation::TDataXtd_Presentation()

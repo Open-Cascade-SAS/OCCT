@@ -20,7 +20,6 @@
 
 //=================================================================================================
 
-
 inline void BSplSLib::CoefsD0(const Standard_Real         U,
                               const Standard_Real         V,
                               const TColgp_Array2OfPnt&   Poles,
@@ -41,7 +40,6 @@ inline void BSplSLib::CoefsD0(const Standard_Real         U,
 }
 
 //=================================================================================================
-
 
 inline void BSplSLib::CoefsD1(const Standard_Real         U,
                               const Standard_Real         V,
@@ -67,7 +65,6 @@ inline void BSplSLib::CoefsD1(const Standard_Real         U,
 }
 
 //=================================================================================================
-
 
 inline void BSplSLib::CoefsD2(const Standard_Real         U,
                               const Standard_Real         V,
@@ -100,7 +97,6 @@ inline void BSplSLib::CoefsD2(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt& Poles,
                                         TColgp_Array2OfPnt&       CachePoles)
 {
@@ -108,7 +104,6 @@ inline void BSplSLib::PolesCoefficients(const TColgp_Array2OfPnt& Poles,
 }
 
 //=================================================================================================
-
 
 inline TColStd_Array2OfReal* BSplSLib::NoWeights()
 {

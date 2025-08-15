@@ -17,14 +17,12 @@
 
 //=================================================================================================
 
-
 inline void IGESToBRep_AlgoContainer::SetToolContainer(const Handle(IGESToBRep_ToolContainer)& TC)
 {
   myTC = TC;
 }
 
 //=================================================================================================
-
 
 inline Handle(IGESToBRep_ToolContainer) IGESToBRep_AlgoContainer::ToolContainer() const
 {

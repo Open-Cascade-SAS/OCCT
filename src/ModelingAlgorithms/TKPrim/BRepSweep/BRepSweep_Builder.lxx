@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const BRep_Builder& BRepSweep_Builder::Builder() const
 {
   return myBuilder;

@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer Intf_SectionLine::NumberOfPoints() const
 {
   return myPoints.Length();

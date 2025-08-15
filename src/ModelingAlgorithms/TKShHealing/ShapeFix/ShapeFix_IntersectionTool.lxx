@@ -13,7 +13,6 @@
 
 //=================================================================================================
 
-
 inline Handle(ShapeBuild_ReShape) ShapeFix_IntersectionTool::Context() const
 {
   return myContext;

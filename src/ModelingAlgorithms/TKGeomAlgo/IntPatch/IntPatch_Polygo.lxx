@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Real IntPatch_Polygo::Error() const
 {
   return myError;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation() const
 {
@@ -31,14 +29,12 @@ inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation() const
 
 //=================================================================================================
 
-
 inline Standard_Integer IntPatch_Polygo::NbSegments() const
 {
   return NbPoints() - 1;
 }
 
 //=================================================================================================
-
 
 inline void IntPatch_Polygo::Segment(const Standard_Integer theIndex,
                                      gp_Pnt2d&              theBegin,

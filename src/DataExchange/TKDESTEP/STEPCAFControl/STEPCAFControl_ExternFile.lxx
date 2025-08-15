@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetWS(const Handle(XSControl_WorkSession)& WS)
 {
   myWS = WS;
 }
 
 //=================================================================================================
-
 
 inline Handle(XSControl_WorkSession) STEPCAFControl_ExternFile::GetWS() const
 {
@@ -31,14 +29,12 @@ inline Handle(XSControl_WorkSession) STEPCAFControl_ExternFile::GetWS() const
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetLoadStatus(const IFSelect_ReturnStatus stat)
 {
   myLoadStatus = stat;
 }
 
 //=================================================================================================
-
 
 inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetLoadStatus() const
 {
@@ -47,14 +43,12 @@ inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetLoadStatus() const
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetTransferStatus(const Standard_Boolean isok)
 {
   myTransferStatus = isok;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean STEPCAFControl_ExternFile::GetTransferStatus() const
 {
@@ -63,14 +57,12 @@ inline Standard_Boolean STEPCAFControl_ExternFile::GetTransferStatus() const
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetWriteStatus(const IFSelect_ReturnStatus stat)
 {
   myWriteStatus = stat;
 }
 
 //=================================================================================================
-
 
 inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetWriteStatus() const
 {
@@ -79,14 +71,12 @@ inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetWriteStatus() const
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetName(const Handle(TCollection_HAsciiString)& name)
 {
   myName = name;
 }
 
 //=================================================================================================
-
 
 inline Handle(TCollection_HAsciiString) STEPCAFControl_ExternFile::GetName() const
 {
@@ -113,14 +103,12 @@ inline TopoDS_Shape STEPCAFControl_ExternFile::GetShape () const
 
 //=================================================================================================
 
-
 inline void STEPCAFControl_ExternFile::SetLabel(const TDF_Label& Label)
 {
   myLabel = Label;
 }
 
 //=================================================================================================
-
 
 inline TDF_Label STEPCAFControl_ExternFile::GetLabel() const
 {

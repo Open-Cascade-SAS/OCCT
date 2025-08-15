@@ -502,9 +502,7 @@ static Standard_Integer DDataStd_InitChildNodeIterator(Draw_Interpretor& di,
   return 1;
 }
 
-
 //=================================================================================================
-
 
 static Standard_Integer DDataStd_ChildNodeMore(Draw_Interpretor& di,
                                                Standard_Integer /*n*/,
@@ -521,9 +519,7 @@ static Standard_Integer DDataStd_ChildNodeMore(Draw_Interpretor& di,
   return 0;
 }
 
-
 //=================================================================================================
-
 
 static Standard_Integer DDataStd_ChildNodeNext(Draw_Interpretor& /*di*/,
                                                Standard_Integer /*n*/,
@@ -546,9 +542,7 @@ static Standard_Integer DDataStd_ChildNodeNextBrother(Draw_Interpretor& /*di*/,
   return 0;
 }
 
-
 //=================================================================================================
-
 
 static Standard_Integer DDataStd_ChildNodeValue(Draw_Interpretor& di,
                                                 Standard_Integer /*n*/,
@@ -560,9 +554,7 @@ static Standard_Integer DDataStd_ChildNodeValue(Draw_Interpretor& di,
   return 0;
 }
 
-
 //=================================================================================================
-
 
 void DDataStd::TreeCommands(Draw_Interpretor& theCommands)
 {

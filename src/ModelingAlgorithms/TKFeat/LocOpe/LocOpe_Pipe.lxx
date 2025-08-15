@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& LocOpe_Pipe::Spine() const
 {
   return myPipe.Spine();
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& LocOpe_Pipe::Profile() const
 {
@@ -32,14 +30,12 @@ inline const TopoDS_Shape& LocOpe_Pipe::Profile() const
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& LocOpe_Pipe::FirstShape() const
 {
   return myPipe.FirstShape();
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& LocOpe_Pipe::LastShape() const
 {

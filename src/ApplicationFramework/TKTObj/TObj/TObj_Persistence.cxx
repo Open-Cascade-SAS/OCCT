@@ -40,9 +40,7 @@ TObj_Persistence::TObj_Persistence(const Standard_CString theType)
   getMapOfTypes().Bind(theType, this);
 }
 
-
 //=================================================================================================
-
 
 TObj_Persistence::~TObj_Persistence()
 {

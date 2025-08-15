@@ -14,14 +14,12 @@
 
 //=================================================================================================
 
-
 inline void TopBas_Interference::Intersection(const TheSubShape& I)
 {
   myIntersection = I;
 }
 
 //=================================================================================================
-
 
 inline void TopBas_Interference::Boundary(const TheShape& B)
 {
@@ -30,14 +28,12 @@ inline void TopBas_Interference::Boundary(const TheShape& B)
 
 //=================================================================================================
 
-
 inline void TopBas_Interference::Orientation(const TopAbs_Orientation Or)
 {
   myOrientation = Or;
 }
 
 //=================================================================================================
-
 
 inline void TopBas_Interference::Transition(const TopAbs_Orientation Or)
 {
@@ -46,14 +42,12 @@ inline void TopBas_Interference::Transition(const TopAbs_Orientation Or)
 
 //=================================================================================================
 
-
 inline void TopBas_Interference::BoundaryTransition(const TopAbs_Orientation Or)
 {
   myBTransition = Or;
 }
 
 //=================================================================================================
-
 
 inline const TheSubShape& TopBas_Interference::Intersection() const
 {
@@ -62,14 +56,12 @@ inline const TheSubShape& TopBas_Interference::Intersection() const
 
 //=================================================================================================
 
-
 inline TheSubShape& TopBas_Interference::ChangeIntersection()
 {
   return myIntersection;
 }
 
 //=================================================================================================
-
 
 inline const TheShape& TopBas_Interference::Boundary() const
 {
@@ -78,14 +70,12 @@ inline const TheShape& TopBas_Interference::Boundary() const
 
 //=================================================================================================
 
-
 inline TheShape& TopBas_Interference::ChangeBoundary()
 {
   return myBoundary;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation TopBas_Interference::Orientation() const
 {
@@ -94,14 +84,12 @@ inline TopAbs_Orientation TopBas_Interference::Orientation() const
 
 //=================================================================================================
 
-
 inline TopAbs_Orientation TopBas_Interference::Transition() const
 {
   return myTransition;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation TopBas_Interference::BoundaryTransition() const
 {

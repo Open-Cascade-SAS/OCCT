@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline void Message_Algorithm::SetStatus(const Message_Status&  theStat,
                                          const Standard_CString theStr,
                                          const Standard_Boolean noRepetitions)
@@ -27,7 +26,6 @@ inline void Message_Algorithm::SetStatus(const Message_Status&  theStat,
 }
 
 //=================================================================================================
-
 
 inline void Message_Algorithm::SetStatus(const Message_Status&          theStat,
                                          const TCollection_AsciiString& theStr,
@@ -38,7 +36,6 @@ inline void Message_Algorithm::SetStatus(const Message_Status&          theStat,
 
 //=================================================================================================
 
-
 inline void Message_Algorithm::SetStatus(const Message_Status&                   theStat,
                                          const Handle(TCollection_HAsciiString)& theStr,
                                          const Standard_Boolean                  noRepetitions)
@@ -47,7 +44,6 @@ inline void Message_Algorithm::SetStatus(const Message_Status&                  
 }
 
 //=================================================================================================
-
 
 inline void Message_Algorithm::SetStatus(const Message_Status&             theStat,
                                          const TCollection_ExtendedString& theStr,
@@ -58,7 +54,6 @@ inline void Message_Algorithm::SetStatus(const Message_Status&             theSt
 
 //=================================================================================================
 
-
 inline const Message_ExecStatus& Message_Algorithm::GetStatus() const
 {
   return myStatus;
@@ -66,14 +61,12 @@ inline const Message_ExecStatus& Message_Algorithm::GetStatus() const
 
 //=================================================================================================
 
-
 inline Message_ExecStatus& Message_Algorithm::ChangeStatus()
 {
   return myStatus;
 }
 
 //=================================================================================================
-
 
 inline Handle(Message_Messenger) Message_Algorithm::GetMessenger() const
 {

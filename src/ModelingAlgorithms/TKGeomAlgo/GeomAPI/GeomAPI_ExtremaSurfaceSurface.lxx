@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Extrema_ExtSS& GeomAPI_ExtremaSurfaceSurface::Extrema() const
 {
   return myExtSS;

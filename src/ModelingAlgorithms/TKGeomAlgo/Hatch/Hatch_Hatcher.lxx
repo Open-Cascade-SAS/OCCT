@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void Hatch_Hatcher::Tolerance(const Standard_Real Tol)
 {
   myToler = Tol;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Hatch_Hatcher::Tolerance() const
 {

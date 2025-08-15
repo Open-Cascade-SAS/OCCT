@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline BRepFeat_RibSlot::BRepFeat_RibSlot()
     : myFuse(Standard_False),
       mySliding(Standard_False),

@@ -29,14 +29,12 @@ inline XmlObjMgt_Element& XmlObjMgt_Persistent::Element()
 
 //=================================================================================================
 
-
 inline XmlObjMgt_Persistent::operator const XmlObjMgt_Element&() const
 {
   return myElement;
 }
 
 //=================================================================================================
-
 
 inline XmlObjMgt_Persistent::operator XmlObjMgt_Element&()
 {

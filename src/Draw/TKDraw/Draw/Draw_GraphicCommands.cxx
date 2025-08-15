@@ -873,9 +873,7 @@ static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const c
   return 0;
 }
 
-
 //=================================================================================================
-
 
 extern void Draw_RepaintNowIfNecessary();
 

@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Compound& ShapeFix_FreeBounds::GetClosedWires() const
 {
   return myWires;
@@ -24,14 +23,12 @@ inline const TopoDS_Compound& ShapeFix_FreeBounds::GetClosedWires() const
 
 //=================================================================================================
 
-
 inline const TopoDS_Compound& ShapeFix_FreeBounds::GetOpenWires() const
 {
   return myEdges;
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& ShapeFix_FreeBounds::GetShape() const
 {

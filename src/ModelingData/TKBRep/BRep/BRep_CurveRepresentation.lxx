@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const TopLoc_Location& BRep_CurveRepresentation::Location() const
 {
   return myLocation;
 }
 
 //=================================================================================================
-
 
 inline void BRep_CurveRepresentation::Location(const TopLoc_Location& L)
 {

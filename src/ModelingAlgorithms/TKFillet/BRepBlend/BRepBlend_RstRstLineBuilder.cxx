@@ -1229,9 +1229,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
   return Standard_False;
 }
 
-
 //=================================================================================================
-
 
 Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&      Func,
                                                        Blend_SurfCurvFuncInv&     Finv,

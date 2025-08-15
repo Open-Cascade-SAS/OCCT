@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Real BRep_TEdge::Tolerance() const
 {
   return myTolerance;
@@ -24,14 +23,12 @@ inline Standard_Real BRep_TEdge::Tolerance() const
 
 //=================================================================================================
 
-
 inline void BRep_TEdge::Tolerance(const Standard_Real T)
 {
   myTolerance = T;
 }
 
 //=================================================================================================
-
 
 inline void BRep_TEdge::UpdateTolerance(const Standard_Real T)
 {
@@ -41,14 +38,12 @@ inline void BRep_TEdge::UpdateTolerance(const Standard_Real T)
 
 //=================================================================================================
 
-
 inline const BRep_ListOfCurveRepresentation& BRep_TEdge::Curves() const
 {
   return myCurves;
 }
 
 //=================================================================================================
-
 
 inline BRep_ListOfCurveRepresentation& BRep_TEdge::ChangeCurves()
 {

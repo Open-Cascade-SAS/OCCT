@@ -26,14 +26,12 @@
 
 //=================================================================================================
 
-
 inline void HLRAlgo_PolyInternalData::DecTData()
 {
   myNbTData--;
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_PolyInternalData::DecPISeg()
 {
@@ -42,14 +40,12 @@ inline void HLRAlgo_PolyInternalData::DecPISeg()
 
 //=================================================================================================
 
-
 inline void HLRAlgo_PolyInternalData::DecPINod()
 {
   myNbPINod--;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_PolyInternalData::NbTData() const
 {
@@ -58,14 +54,12 @@ inline Standard_Integer HLRAlgo_PolyInternalData::NbTData() const
 
 //=================================================================================================
 
-
 inline Standard_Integer HLRAlgo_PolyInternalData::NbPISeg() const
 {
   return myNbPISeg;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_PolyInternalData::NbPINod() const
 {
@@ -74,14 +68,12 @@ inline Standard_Integer HLRAlgo_PolyInternalData::NbPINod() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRAlgo_PolyInternalData::Planar() const
 {
   return myPlanar;
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_PolyInternalData::Planar(const Standard_Boolean B)
 {
@@ -90,14 +82,12 @@ inline void HLRAlgo_PolyInternalData::Planar(const Standard_Boolean B)
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRAlgo_PolyInternalData::IntOutL() const
 {
   return myIntOutL;
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_PolyInternalData::IntOutL(const Standard_Boolean B)
 {
@@ -106,7 +96,6 @@ inline void HLRAlgo_PolyInternalData::IntOutL(const Standard_Boolean B)
 
 //=================================================================================================
 
-
 inline HLRAlgo_Array1OfTData& HLRAlgo_PolyInternalData::TData() const
 {
   return myTData->ChangeArray1();
@@ -114,14 +103,12 @@ inline HLRAlgo_Array1OfTData& HLRAlgo_PolyInternalData::TData() const
 
 //=================================================================================================
 
-
 inline HLRAlgo_Array1OfPINod& HLRAlgo_PolyInternalData::PINod() const
 {
   return myPINod->ChangeArray1();
 }
 
 //=================================================================================================
-
 
 inline HLRAlgo_Array1OfPISeg& HLRAlgo_PolyInternalData::PISeg() const
 {

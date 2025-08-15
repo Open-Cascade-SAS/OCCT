@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Extrema_ExtPC& GeomAPI_ProjectPointOnCurve::Extrema() const
 {
   return myExtPC;

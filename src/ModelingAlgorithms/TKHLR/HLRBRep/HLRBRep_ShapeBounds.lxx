@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline HLRBRep_ShapeBounds::HLRBRep_ShapeBounds()
     : myNbIso(0),
       myVertStart(0),
@@ -30,14 +29,12 @@ inline HLRBRep_ShapeBounds::HLRBRep_ShapeBounds()
 
 //=================================================================================================
 
-
 inline void HLRBRep_ShapeBounds::Shape(const Handle(HLRTopoBRep_OutLiner)& S)
 {
   myShape = S;
 }
 
 //=================================================================================================
-
 
 inline const Handle(HLRTopoBRep_OutLiner)& HLRBRep_ShapeBounds::Shape() const
 {
@@ -46,14 +43,12 @@ inline const Handle(HLRTopoBRep_OutLiner)& HLRBRep_ShapeBounds::Shape() const
 
 //=================================================================================================
 
-
 inline void HLRBRep_ShapeBounds::ShapeData(const Handle(Standard_Transient)& SD)
 {
   myShapeData = SD;
 }
 
 //=================================================================================================
-
 
 inline const Handle(Standard_Transient)& HLRBRep_ShapeBounds::ShapeData() const
 {
@@ -62,14 +57,12 @@ inline const Handle(Standard_Transient)& HLRBRep_ShapeBounds::ShapeData() const
 
 //=================================================================================================
 
-
 inline void HLRBRep_ShapeBounds::NbOfIso(const Standard_Integer nbIso)
 {
   myNbIso = nbIso;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRBRep_ShapeBounds::NbOfIso() const
 {

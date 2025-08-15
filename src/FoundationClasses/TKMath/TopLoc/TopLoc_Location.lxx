@@ -21,14 +21,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean TopLoc_Location::IsIdentity() const
 {
   return myItems.IsEmpty();
 }
 
 //=================================================================================================
-
 
 inline void TopLoc_Location::Identity()
 {
@@ -37,7 +35,6 @@ inline void TopLoc_Location::Identity()
 
 //=================================================================================================
 
-
 inline const Handle(TopLoc_Datum3D)& TopLoc_Location::FirstDatum() const
 {
   return myItems.Value().myDatum;
@@ -45,14 +42,12 @@ inline const Handle(TopLoc_Datum3D)& TopLoc_Location::FirstDatum() const
 
 //=================================================================================================
 
-
 inline Standard_Integer TopLoc_Location::FirstPower() const
 {
   return myItems.Value().myPower;
 }
 
 //=================================================================================================
-
 
 inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 {

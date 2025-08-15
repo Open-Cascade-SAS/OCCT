@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Extrema_ExtPS& GeomAPI_ProjectPointOnSurf::Extrema() const
 {
   return myExtPS;

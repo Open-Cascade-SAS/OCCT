@@ -25,14 +25,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Real Extrema_Curve2dTool::FirstParameter(const Adaptor2d_Curve2d& C)
 {
   return C.FirstParameter();
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Extrema_Curve2dTool::LastParameter(const Adaptor2d_Curve2d& C)
 {
@@ -41,14 +39,12 @@ inline Standard_Real Extrema_Curve2dTool::LastParameter(const Adaptor2d_Curve2d&
 
 //=================================================================================================
 
-
 inline GeomAbs_Shape Extrema_Curve2dTool::Continuity(const Adaptor2d_Curve2d& C)
 {
   return C.Continuity();
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer Extrema_Curve2dTool::NbIntervals(const Adaptor2d_Curve2d& C,
                                                          const GeomAbs_Shape      S)
@@ -57,7 +53,6 @@ inline Standard_Integer Extrema_Curve2dTool::NbIntervals(const Adaptor2d_Curve2d
 }
 
 //=================================================================================================
-
 
 inline void Extrema_Curve2dTool::Intervals(const Adaptor2d_Curve2d& C,
                                            TColStd_Array1OfReal&    T,
@@ -68,14 +63,12 @@ inline void Extrema_Curve2dTool::Intervals(const Adaptor2d_Curve2d& C,
 
 //=================================================================================================
 
-
 inline Standard_Boolean Extrema_Curve2dTool::IsClosed(const Adaptor2d_Curve2d& C)
 {
   return C.IsClosed();
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Extrema_Curve2dTool::IsPeriodic(const Adaptor2d_Curve2d& C)
 {
@@ -84,14 +77,12 @@ inline Standard_Boolean Extrema_Curve2dTool::IsPeriodic(const Adaptor2d_Curve2d&
 
 //=================================================================================================
 
-
 inline Standard_Real Extrema_Curve2dTool::Period(const Adaptor2d_Curve2d& C)
 {
   return C.Period();
 }
 
 //=================================================================================================
-
 
 inline gp_Pnt2d Extrema_Curve2dTool::Value(const Adaptor2d_Curve2d& C, const Standard_Real U)
 {
@@ -100,14 +91,12 @@ inline gp_Pnt2d Extrema_Curve2dTool::Value(const Adaptor2d_Curve2d& C, const Sta
 
 //=================================================================================================
 
-
 inline void Extrema_Curve2dTool::D0(const Adaptor2d_Curve2d& C, const Standard_Real U, gp_Pnt2d& P)
 {
   C.D0(U, P);
 }
 
 //=================================================================================================
-
 
 inline void Extrema_Curve2dTool::D1(const Adaptor2d_Curve2d& C,
                                     const Standard_Real      U,
@@ -119,7 +108,6 @@ inline void Extrema_Curve2dTool::D1(const Adaptor2d_Curve2d& C,
 
 //=================================================================================================
 
-
 inline void Extrema_Curve2dTool::D2(const Adaptor2d_Curve2d& C,
                                     const Standard_Real      U,
                                     gp_Pnt2d&                P,
@@ -130,7 +118,6 @@ inline void Extrema_Curve2dTool::D2(const Adaptor2d_Curve2d& C,
 }
 
 //=================================================================================================
-
 
 inline void Extrema_Curve2dTool::D3(const Adaptor2d_Curve2d& C,
                                     const Standard_Real      U,
@@ -144,7 +131,6 @@ inline void Extrema_Curve2dTool::D3(const Adaptor2d_Curve2d& C,
 
 //=================================================================================================
 
-
 inline gp_Vec2d Extrema_Curve2dTool::DN(const Adaptor2d_Curve2d& C,
                                         const Standard_Real      U,
                                         const Standard_Integer   N)
@@ -154,7 +140,6 @@ inline gp_Vec2d Extrema_Curve2dTool::DN(const Adaptor2d_Curve2d& C,
 
 //=================================================================================================
 
-
 inline Standard_Real Extrema_Curve2dTool::Resolution(const Adaptor2d_Curve2d& C,
                                                      const Standard_Real      R3d)
 {
@@ -163,14 +148,12 @@ inline Standard_Real Extrema_Curve2dTool::Resolution(const Adaptor2d_Curve2d& C,
 
 //=================================================================================================
 
-
 inline GeomAbs_CurveType Extrema_Curve2dTool::GetType(const Adaptor2d_Curve2d& C)
 {
   return C.GetType();
 }
 
 //=================================================================================================
-
 
 inline gp_Lin2d Extrema_Curve2dTool::Line(const Adaptor2d_Curve2d& C)
 {
@@ -179,14 +162,12 @@ inline gp_Lin2d Extrema_Curve2dTool::Line(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-
 inline gp_Circ2d Extrema_Curve2dTool::Circle(const Adaptor2d_Curve2d& C)
 {
   return C.Circle();
 }
 
 //=================================================================================================
-
 
 inline gp_Elips2d Extrema_Curve2dTool::Ellipse(const Adaptor2d_Curve2d& C)
 {
@@ -195,14 +176,12 @@ inline gp_Elips2d Extrema_Curve2dTool::Ellipse(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-
 inline gp_Hypr2d Extrema_Curve2dTool::Hyperbola(const Adaptor2d_Curve2d& C)
 {
   return C.Hyperbola();
 }
 
 //=================================================================================================
-
 
 inline gp_Parab2d Extrema_Curve2dTool::Parabola(const Adaptor2d_Curve2d& C)
 {
@@ -211,14 +190,12 @@ inline gp_Parab2d Extrema_Curve2dTool::Parabola(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-
 inline Standard_Integer Extrema_Curve2dTool::NbPoles(const Adaptor2d_Curve2d& C)
 {
   return C.NbPoles();
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer Extrema_Curve2dTool::Degree(const Adaptor2d_Curve2d& C)
 {
@@ -227,14 +204,12 @@ inline Standard_Integer Extrema_Curve2dTool::Degree(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-
 inline Standard_Boolean Extrema_Curve2dTool::IsRational(const Adaptor2d_Curve2d& C)
 {
   return C.Degree() != 0;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer Extrema_Curve2dTool::NbKnots(const Adaptor2d_Curve2d& C)
 {
@@ -243,14 +218,12 @@ inline Standard_Integer Extrema_Curve2dTool::NbKnots(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-
 inline Handle(Geom2d_BezierCurve) Extrema_Curve2dTool::Bezier(const Adaptor2d_Curve2d& C)
 {
   return C.Bezier();
 }
 
 //=================================================================================================
-
 
 inline Handle(Geom2d_BSplineCurve) Extrema_Curve2dTool::BSpline(const Adaptor2d_Curve2d& C)
 {

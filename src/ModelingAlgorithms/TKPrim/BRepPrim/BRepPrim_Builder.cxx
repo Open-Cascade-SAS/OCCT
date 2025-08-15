@@ -83,9 +83,7 @@ void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Lin& L) const
   myBuilder.MakeEdge(E, new Geom_Line(L), Precision::Confusion());
 }
 
-
 //=================================================================================================
-
 
 void BRepPrim_Builder::MakeEdge(TopoDS_Edge& E, const gp_Circ& C) const
 {
@@ -200,9 +198,7 @@ void BRepPrim_Builder::AddWireEdge(TopoDS_Wire&           W,
   myBuilder.Add(W, EE);
 }
 
-
 //=================================================================================================
-
 
 void BRepPrim_Builder::AddFaceWire(TopoDS_Face& F, const TopoDS_Wire& W) const
 {

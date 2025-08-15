@@ -13,14 +13,12 @@
 
 //=================================================================================================
 
-
 inline TopoDS_Shape ShapeUpgrade_RemoveLocations::GetResult() const
 {
   return myShape;
 }
 
 //=================================================================================================
-
 
 inline void ShapeUpgrade_RemoveLocations::SetRemoveLevel(const TopAbs_ShapeEnum theLevel)
 {
@@ -33,14 +31,12 @@ inline void ShapeUpgrade_RemoveLocations::SetRemoveLevel(const TopAbs_ShapeEnum 
 
 //=================================================================================================
 
-
 inline TopAbs_ShapeEnum ShapeUpgrade_RemoveLocations::RemoveLevel() const
 {
   return myLevelRemoving;
 }
 
 //=================================================================================================
-
 
 inline TopoDS_Shape ShapeUpgrade_RemoveLocations::ModifiedShape(
   const TopoDS_Shape& theInitShape) const

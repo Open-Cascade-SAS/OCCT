@@ -13,7 +13,6 @@
 
 //=================================================================================================
 
-
 inline MoniTool_Timer::MoniTool_Timer()
     : myCount(0),
       myNesting(0),
@@ -23,7 +22,6 @@ inline MoniTool_Timer::MoniTool_Timer()
 
 //=================================================================================================
 
-
 inline OSD_Timer& MoniTool_Timer::Timer()
 {
   return myTimer;
@@ -31,14 +29,12 @@ inline OSD_Timer& MoniTool_Timer::Timer()
 
 //=================================================================================================
 
-
 inline const OSD_Timer& MoniTool_Timer::Timer() const
 {
   return myTimer;
 }
 
 //=================================================================================================
-
 
 inline void MoniTool_Timer::Start()
 {
@@ -51,7 +47,6 @@ inline void MoniTool_Timer::Start()
 
 //=================================================================================================
 
-
 inline void MoniTool_Timer::Stop()
 {
   myNesting--;
@@ -62,7 +57,6 @@ inline void MoniTool_Timer::Stop()
 
 //=================================================================================================
 
-
 inline void MoniTool_Timer::Reset()
 {
   myTimer.Reset();
@@ -72,14 +66,12 @@ inline void MoniTool_Timer::Reset()
 
 //=================================================================================================
 
-
 inline Standard_Integer MoniTool_Timer::Count() const
 {
   return myCount;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer MoniTool_Timer::IsRunning() const
 {
@@ -88,14 +80,12 @@ inline Standard_Integer MoniTool_Timer::IsRunning() const
 
 //=================================================================================================
 
-
 inline Standard_Real MoniTool_Timer::Amend() const
 {
   return myAmend;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real MoniTool_Timer::CPU()
 {
@@ -107,14 +97,12 @@ inline Standard_Real MoniTool_Timer::CPU()
 
 //=================================================================================================
 
-
 inline void MoniTool_Timer::Start(const Standard_CString name)
 {
   Timer(name)->Start();
 }
 
 //=================================================================================================
-
 
 inline void MoniTool_Timer::Stop(const Standard_CString name)
 {

@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const Handle(Geom_Surface)& GeomFill_Pipe::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const
 {
@@ -32,14 +30,12 @@ inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const
 
 //=================================================================================================
 
-
 inline void GeomFill_Pipe::GenerateParticularCase(const Standard_Boolean B)
 {
   myKPart = B;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean GeomFill_Pipe::GenerateParticularCase() const
 {

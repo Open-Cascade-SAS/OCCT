@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean GeomLib_MakeCurvefromApprox::IsDone() const
 {
   return myApprox.IsDone();

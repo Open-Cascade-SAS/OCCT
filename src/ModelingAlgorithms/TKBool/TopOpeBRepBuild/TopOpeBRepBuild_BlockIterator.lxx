@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void TopOpeBRepBuild_BlockIterator::Initialize()
 {
   myValue = myLower;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean TopOpeBRepBuild_BlockIterator::More() const
 {
@@ -33,7 +31,6 @@ inline Standard_Boolean TopOpeBRepBuild_BlockIterator::More() const
 
 //=================================================================================================
 
-
 inline void TopOpeBRepBuild_BlockIterator::Next()
 {
   myValue++;
@@ -41,14 +38,12 @@ inline void TopOpeBRepBuild_BlockIterator::Next()
 
 //=================================================================================================
 
-
 inline Standard_Integer TopOpeBRepBuild_BlockIterator::Value() const
 {
   return myValue;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer TopOpeBRepBuild_BlockIterator::Extent() const
 {

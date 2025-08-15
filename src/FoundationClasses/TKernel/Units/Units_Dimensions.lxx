@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Dimensions::Mass() const
 {
   return themass;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Units_Dimensions::Length() const
 {
@@ -32,14 +30,12 @@ inline Standard_Real Units_Dimensions::Length() const
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Dimensions::Time() const
 {
   return thetime;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Units_Dimensions::ElectricCurrent() const
 {
@@ -48,14 +44,12 @@ inline Standard_Real Units_Dimensions::ElectricCurrent() const
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Dimensions::ThermodynamicTemperature() const
 {
   return thethermodynamictemperature;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Units_Dimensions::AmountOfSubstance() const
 {
@@ -64,7 +58,6 @@ inline Standard_Real Units_Dimensions::AmountOfSubstance() const
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Dimensions::LuminousIntensity() const
 {
   return theluminousintensity;
@@ -72,14 +65,12 @@ inline Standard_Real Units_Dimensions::LuminousIntensity() const
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Dimensions::PlaneAngle() const
 {
   return theplaneangle;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Units_Dimensions::SolidAngle() const
 {

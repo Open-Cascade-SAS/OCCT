@@ -19,7 +19,6 @@
 
 //=================================================================================================
 
-
 inline void ShapeAnalysis_FreeBoundData::SetFreeBound(const TopoDS_Wire& freebound)
 {
   myBound = freebound;
@@ -71,7 +70,6 @@ inline void ShapeAnalysis_FreeBoundData::SetWidth(const Standard_Real width)
 //=======================================================================
 
 //=================================================================================================
-
 
 inline TopoDS_Wire ShapeAnalysis_FreeBoundData::FreeBound() const
 {

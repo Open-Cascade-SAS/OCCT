@@ -19,14 +19,12 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetClosedWires() const
 {
   return myWires;
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetOpenWires() const
 {

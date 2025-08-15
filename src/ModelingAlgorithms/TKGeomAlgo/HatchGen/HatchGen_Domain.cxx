@@ -55,9 +55,7 @@ HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P, const Standa
   }
 }
 
-
 //=================================================================================================
-
 
 void HatchGen_Domain::Dump(const Standard_Integer Index) const
 {

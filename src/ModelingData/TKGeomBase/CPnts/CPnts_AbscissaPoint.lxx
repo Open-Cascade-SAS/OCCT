@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean CPnts_AbscissaPoint::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real CPnts_AbscissaPoint::Parameter() const
 {
@@ -32,7 +30,6 @@ inline Standard_Real CPnts_AbscissaPoint::Parameter() const
 }
 
 //=================================================================================================
-
 
 inline void CPnts_AbscissaPoint::SetParameter(const Standard_Real P)
 {

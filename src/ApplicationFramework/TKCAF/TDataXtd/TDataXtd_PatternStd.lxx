@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer TDataXtd_PatternStd::Signature() const
 {
   return mySignature;
 }
 
 //=================================================================================================
-
 
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis1() const
 {
@@ -31,14 +29,12 @@ inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis1() const
 
 //=================================================================================================
 
-
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis2() const
 {
   return myAxis2;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean TDataXtd_PatternStd::Axis1Reversed() const
 {
@@ -47,14 +43,12 @@ inline Standard_Boolean TDataXtd_PatternStd::Axis1Reversed() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean TDataXtd_PatternStd::Axis2Reversed() const
 {
   return myAxis2Reversed;
 }
 
 //=================================================================================================
-
 
 inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value1() const
 {
@@ -63,14 +57,12 @@ inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value1() const
 
 //=================================================================================================
 
-
 inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value2() const
 {
   return myValue2;
 }
 
 //=================================================================================================
-
 
 inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances1() const
 {
@@ -79,14 +71,12 @@ inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances1() const
 
 //=================================================================================================
 
-
 inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances2() const
 {
   return myNb2;
 }
 
 //=================================================================================================
-
 
 inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Mirror() const
 {

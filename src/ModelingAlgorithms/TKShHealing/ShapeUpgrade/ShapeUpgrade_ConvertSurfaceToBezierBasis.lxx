@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const Standard_Boolean mode)
 {
   myPlaneMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode() const
 {
@@ -32,14 +30,12 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode()
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const Standard_Boolean mode)
 {
   myRevolutionMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionMode() const
 {
@@ -48,14 +44,12 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionM
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const Standard_Boolean mode)
 {
   myExtrusionMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMode() const
 {
@@ -64,14 +58,12 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMo
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const Standard_Boolean mode)
 {
   myBSplineMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetBSplineMode() const
 {

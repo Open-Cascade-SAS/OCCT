@@ -152,9 +152,7 @@ Standard_Boolean TFunction_DriverTable::RemoveDriver(const Standard_GUID&   guid
   return Standard_False;
 }
 
-
 //=================================================================================================
-
 
 void TFunction_DriverTable::Clear()
 {

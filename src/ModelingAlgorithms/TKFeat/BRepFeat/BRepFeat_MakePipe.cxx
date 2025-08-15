@@ -113,9 +113,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
 #endif
 }
 
-
 //=================================================================================================
-
 
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {

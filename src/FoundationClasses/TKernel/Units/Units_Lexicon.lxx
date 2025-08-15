@@ -19,14 +19,12 @@
 
 //=================================================================================================
 
-
 inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
 {
   return thesequenceoftokens;
 }
 
 //=================================================================================================
-
 
 inline void Units_Lexicon::Dump() const
 {

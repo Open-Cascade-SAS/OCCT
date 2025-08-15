@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetMaxTolerance(const Standard_Real theMaxToler)
 {
   myMaxTolerance = theMaxToler;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real BRepBuilderAPI_Sewing::MaxTolerance() const
 {
@@ -31,14 +29,12 @@ inline Standard_Real BRepBuilderAPI_Sewing::MaxTolerance() const
 
 //=================================================================================================
 
-
 inline Standard_Real BRepBuilderAPI_Sewing::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
-
 
 inline void BRepBuilderAPI_Sewing::SetTolerance(const Standard_Real theToler)
 {
@@ -47,14 +43,12 @@ inline void BRepBuilderAPI_Sewing::SetTolerance(const Standard_Real theToler)
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetMinTolerance(const Standard_Real theMinToler)
 {
   myMinTolerance = theMinToler;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real BRepBuilderAPI_Sewing::MinTolerance() const
 {
@@ -63,14 +57,12 @@ inline Standard_Real BRepBuilderAPI_Sewing::MinTolerance() const
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetFaceMode(const Standard_Boolean theFaceMode)
 {
   myFaceMode = theFaceMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBuilderAPI_Sewing::FaceMode() const
 {
@@ -79,14 +71,12 @@ inline Standard_Boolean BRepBuilderAPI_Sewing::FaceMode() const
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetFloatingEdgesMode(const Standard_Boolean theFloatingEdgesMode)
 {
   myFloatingEdgesMode = theFloatingEdgesMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBuilderAPI_Sewing::FloatingEdgesMode() const
 {
@@ -114,7 +104,6 @@ inline  Standard_Boolean BRepBuilderAPI_Sewing::CuttingFloatingEdgesMode() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBuilderAPI_Sewing::SameParameterMode() const
 {
   return mySameParameterMode;
@@ -122,14 +111,12 @@ inline Standard_Boolean BRepBuilderAPI_Sewing::SameParameterMode() const
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetSameParameterMode(const Standard_Boolean SameParameterMode)
 {
   mySameParameterMode = SameParameterMode;
 }
 
 //=================================================================================================
-
 
 inline void BRepBuilderAPI_Sewing::SetLocalTolerancesMode(
   const Standard_Boolean theLocalTolerancesMode)
@@ -139,7 +126,6 @@ inline void BRepBuilderAPI_Sewing::SetLocalTolerancesMode(
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBuilderAPI_Sewing::LocalTolerancesMode() const
 {
   return myLocalToleranceMode;
@@ -147,14 +133,12 @@ inline Standard_Boolean BRepBuilderAPI_Sewing::LocalTolerancesMode() const
 
 //=================================================================================================
 
-
 inline void BRepBuilderAPI_Sewing::SetNonManifoldMode(const Standard_Boolean theNonManifoldMode)
 {
   myNonmanifold = theNonManifoldMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBuilderAPI_Sewing::NonManifoldMode() const
 {

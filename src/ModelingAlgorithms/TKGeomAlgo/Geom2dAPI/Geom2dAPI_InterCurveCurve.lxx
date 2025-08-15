@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Geom2dInt_GInter& Geom2dAPI_InterCurveCurve::Intersector() const
 {
   return myIntersector;

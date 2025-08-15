@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer& ShapeCustom_RestrictionParameters::GMaxDegree()
 {
   return myGMaxDegree;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeCustom_RestrictionParameters::GMaxSeg()
 {
@@ -31,14 +29,12 @@ inline Standard_Integer& ShapeCustom_RestrictionParameters::GMaxSeg()
 
 //=================================================================================================
 
-
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertPlane()
 {
   return myConvPlane;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertBezierSurf()
 {
@@ -47,14 +43,12 @@ inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertBezierSurf()
 
 //=================================================================================================
 
-
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertRevolutionSurf()
 {
   return myConvRevolSurf;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertExtrusionSurf()
 {
@@ -63,14 +57,12 @@ inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertExtrusionSurf
 
 //=================================================================================================
 
-
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetSurf()
 {
   return myConvOffsetSurf;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::SegmentSurfaceMode()
 {
@@ -79,14 +71,12 @@ inline Standard_Boolean& ShapeCustom_RestrictionParameters::SegmentSurfaceMode()
 
 //=================================================================================================
 
-
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertCurve3d()
 {
   return myConvCurve3d;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetCurv3d()
 {
@@ -95,14 +85,12 @@ inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetCurv3d(
 
 //=================================================================================================
 
-
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertCurve2d()
 {
   return myConvCurve2d;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetCurv2d()
 {

@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector()
     : myDone(Standard_False)
 {
 }
 
 //=================================================================================================
-
 
 inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Ax1&       Axis,
                                                                   const TopoDS_Shape& S)
@@ -35,7 +33,6 @@ inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Ax1& 
 
 //=================================================================================================
 
-
 inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Circ&      C,
                                                                   const TopoDS_Shape& S)
 {
@@ -44,14 +41,12 @@ inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector(const gp_Circ&
 
 //=================================================================================================
 
-
 inline Standard_Boolean LocOpe_CurveShapeIntersector::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer LocOpe_CurveShapeIntersector::NbPoints() const
 {
@@ -63,7 +58,6 @@ inline Standard_Integer LocOpe_CurveShapeIntersector::NbPoints() const
 }
 
 //=================================================================================================
-
 
 inline const LocOpe_PntFace& LocOpe_CurveShapeIntersector::Point(const Standard_Integer I) const
 {

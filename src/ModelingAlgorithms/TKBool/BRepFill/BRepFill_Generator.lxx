@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Shell& BRepFill_Generator::Shell() const
 {
   return myShell;

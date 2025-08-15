@@ -15,7 +15,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator, Standard_Transient)
 
-
 //=================================================================================================
 
 void* NCollection_BaseAllocator::Allocate(const size_t theSize)

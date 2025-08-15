@@ -18,9 +18,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 
-
 //=================================================================================================
-
 
 StepToTopoDS_NMTool::StepToTopoDS_NMTool()
 {

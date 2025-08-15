@@ -48,7 +48,6 @@ static const Standard_Integer IGESShiftUse    = 8;
 static const Standard_Integer IGESShiftHier   = 12;
 } // namespace
 
-
 //=================================================================================================
 
 IGESData_IGESEntity::IGESData_IGESEntity()

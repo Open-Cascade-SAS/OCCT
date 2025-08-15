@@ -20,14 +20,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean AdvApprox_ApproxAFunction::HasResult() const
 {
   return myHasResult;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean AdvApprox_ApproxAFunction::IsDone() const
 {
@@ -57,7 +55,6 @@ inline Handle(TColgp_HArray2OfPnt) AdvApprox_ApproxAFunction::Poles() const
 
 //=================================================================================================
 
-
 inline Standard_Integer AdvApprox_ApproxAFunction::Degree() const
 {
   return myDegree;
@@ -65,14 +62,12 @@ inline Standard_Integer AdvApprox_ApproxAFunction::Degree() const
 
 //=================================================================================================
 
-
 inline Standard_Integer AdvApprox_ApproxAFunction::NbKnots() const
 {
   return myKnots->Length();
 }
 
 //=================================================================================================
-
 
 inline Handle(TColStd_HArray1OfReal) AdvApprox_ApproxAFunction::Knots() const
 
@@ -82,7 +77,6 @@ inline Handle(TColStd_HArray1OfReal) AdvApprox_ApproxAFunction::Knots() const
 
 //=================================================================================================
 
-
 inline Handle(TColStd_HArray1OfInteger) AdvApprox_ApproxAFunction::Multiplicities() const
 
 {
@@ -90,7 +84,6 @@ inline Handle(TColStd_HArray1OfInteger) AdvApprox_ApproxAFunction::Multiplicitie
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer AdvApprox_ApproxAFunction::NumSubSpaces(
   const Standard_Integer Dimension) const

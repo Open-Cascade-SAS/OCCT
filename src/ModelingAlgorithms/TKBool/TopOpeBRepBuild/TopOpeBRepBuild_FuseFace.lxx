@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace()
     : myInternal(Standard_False),
       myModified(Standard_False),
@@ -27,7 +26,6 @@ inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace()
 }
 
 //=================================================================================================
-
 
 inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace(const TopTools_ListOfShape& LIF,
                                                           const TopTools_ListOfShape& LRF,
@@ -38,14 +36,12 @@ inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace(const TopTools_ListOfS
 
 //=================================================================================================
 
-
 inline Standard_Boolean TopOpeBRepBuild_FuseFace::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean TopOpeBRepBuild_FuseFace::IsModified() const
 {
@@ -54,14 +50,12 @@ inline Standard_Boolean TopOpeBRepBuild_FuseFace::IsModified() const
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LFuseFace() const
 {
   return myLFF;
 }
 
 //=================================================================================================
-
 
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternEdge() const
 {
@@ -70,14 +64,12 @@ inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternEdge() const
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LExternEdge() const
 {
   return myLEE;
 }
 
 //=================================================================================================
-
 
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LModifEdge() const
 {
@@ -86,7 +78,6 @@ inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LModifEdge() const
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternVertex() const
 {
   return myLIV;
@@ -94,14 +85,12 @@ inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternVertex() con
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LExternVertex() const
 {
   return myLEV;
 }
 
 //=================================================================================================
-
 
 inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LModifVertex() const
 {

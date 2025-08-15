@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Extrema_ExtCS& GeomAPI_ExtremaCurveSurface::Extrema() const
 {
   return myExtCS;

@@ -340,7 +340,6 @@ Standard_Boolean BRepTools_History::prepareModified(const TopoDS_Shape& theIniti
   return Standard_True;
 }
 
-
 //=================================================================================================
 
 const TopTools_ListOfShape BRepTools_History::myEmptyList;
@@ -352,23 +351,19 @@ const TopTools_ListOfShape& BRepTools_History::emptyList()
   return myEmptyList;
 }
 
-
 //=================================================================================================
 
 const char* BRepTools_History::myMsgUnsupportedType = "Error: unsupported shape type.";
-
 
 //=================================================================================================
 
 const char* BRepTools_History::myMsgGeneratedAndRemoved =
   "Error: a shape is generated and removed simultaneously.";
 
-
 //=================================================================================================
 
 const char* BRepTools_History::myMsgModifiedAndRemoved =
   "Error: a shape is modified and removed simultaneously.";
-
 
 //=================================================================================================
 

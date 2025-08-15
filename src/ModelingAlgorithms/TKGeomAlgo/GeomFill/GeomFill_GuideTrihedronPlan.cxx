@@ -54,7 +54,6 @@ static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 }
 #endif
 
-
 //=================================================================================================
 
 static void InGoodPeriod(const Standard_Real Prec,

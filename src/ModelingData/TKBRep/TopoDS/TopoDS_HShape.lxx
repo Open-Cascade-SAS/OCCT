@@ -16,11 +16,9 @@
 
 //=================================================================================================
 
-
 inline TopoDS_HShape::TopoDS_HShape() {}
 
 //=================================================================================================
-
 
 inline TopoDS_HShape::TopoDS_HShape(const TopoDS_Shape& aShape)
     : myShape(aShape)
@@ -29,7 +27,6 @@ inline TopoDS_HShape::TopoDS_HShape(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-
 inline void TopoDS_HShape::Shape(const TopoDS_Shape& aShape)
 {
   myShape = aShape;
@@ -37,14 +34,12 @@ inline void TopoDS_HShape::Shape(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& TopoDS_HShape::Shape() const
 {
   return myShape;
 }
 
 //=================================================================================================
-
 
 inline TopoDS_Shape& TopoDS_HShape::ChangeShape()
 {

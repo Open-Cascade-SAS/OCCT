@@ -19,14 +19,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_FaceIterator::MoreEdge() const
 {
   return iWire <= nbWires;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRBRep_FaceIterator::BeginningOfWire() const
 {
@@ -35,14 +33,12 @@ inline Standard_Boolean HLRBRep_FaceIterator::BeginningOfWire() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_FaceIterator::EndOfWire() const
 {
   return iEdge == nbEdges;
 }
 
 //=================================================================================================
-
 
 inline void HLRBRep_FaceIterator::SkipWire()
 {
@@ -52,14 +48,12 @@ inline void HLRBRep_FaceIterator::SkipWire()
 
 //=================================================================================================
 
-
 inline Handle(HLRAlgo_EdgesBlock) HLRBRep_FaceIterator::Wire() const
 {
   return myWires->Wire(iWire);
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRBRep_FaceIterator::Edge() const
 {
@@ -68,14 +62,12 @@ inline Standard_Integer HLRBRep_FaceIterator::Edge() const
 
 //=================================================================================================
 
-
 inline TopAbs_Orientation HLRBRep_FaceIterator::Orientation() const
 {
   return myEdges->Orientation(iEdge);
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRBRep_FaceIterator::OutLine() const
 {
@@ -84,7 +76,6 @@ inline Standard_Boolean HLRBRep_FaceIterator::OutLine() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_FaceIterator::Internal() const
 {
   return myEdges->Internal(iEdge);
@@ -92,14 +83,12 @@ inline Standard_Boolean HLRBRep_FaceIterator::Internal() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_FaceIterator::Double() const
 {
   return myEdges->Double(iEdge);
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRBRep_FaceIterator::IsoLine() const
 {

@@ -20,14 +20,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer BSplCLib::MaxDegree()
 {
   return 25;
 }
 
 //=================================================================================================
-
 
 inline TColStd_Array1OfReal* BSplCLib::NoWeights()
 {
@@ -36,14 +34,12 @@ inline TColStd_Array1OfReal* BSplCLib::NoWeights()
 
 //=================================================================================================
 
-
 inline TColStd_Array1OfInteger* BSplCLib::NoMults()
 {
   return NULL;
 }
 
 //=================================================================================================
-
 
 inline void BSplCLib::CoefsD0(const Standard_Real         U,
                               const TColgp_Array1OfPnt&   Poles,
@@ -55,7 +51,6 @@ inline void BSplCLib::CoefsD0(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplCLib::CoefsD0(const Standard_Real         U,
                               const TColgp_Array1OfPnt2d& Poles,
                               const TColStd_Array1OfReal* Weights,
@@ -65,7 +60,6 @@ inline void BSplCLib::CoefsD0(const Standard_Real         U,
 }
 
 //=================================================================================================
-
 
 inline void BSplCLib::CoefsD1(const Standard_Real         U,
                               const TColgp_Array1OfPnt&   Poles,
@@ -78,7 +72,6 @@ inline void BSplCLib::CoefsD1(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplCLib::CoefsD1(const Standard_Real         U,
                               const TColgp_Array1OfPnt2d& Poles,
                               const TColStd_Array1OfReal* Weights,
@@ -89,7 +82,6 @@ inline void BSplCLib::CoefsD1(const Standard_Real         U,
 }
 
 //=================================================================================================
-
 
 inline void BSplCLib::CoefsD2(const Standard_Real         U,
                               const TColgp_Array1OfPnt&   Poles,
@@ -103,7 +95,6 @@ inline void BSplCLib::CoefsD2(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplCLib::CoefsD2(const Standard_Real         U,
                               const TColgp_Array1OfPnt2d& Poles,
                               const TColStd_Array1OfReal* Weights,
@@ -115,7 +106,6 @@ inline void BSplCLib::CoefsD2(const Standard_Real         U,
 }
 
 //=================================================================================================
-
 
 inline void BSplCLib::CoefsD3(const Standard_Real         U,
                               const TColgp_Array1OfPnt&   Poles,
@@ -130,7 +120,6 @@ inline void BSplCLib::CoefsD3(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplCLib::CoefsD3(const Standard_Real         U,
                               const TColgp_Array1OfPnt2d& Poles,
                               const TColStd_Array1OfReal* Weights,
@@ -144,7 +133,6 @@ inline void BSplCLib::CoefsD3(const Standard_Real         U,
 
 //=================================================================================================
 
-
 inline void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt& Poles,
                                         TColgp_Array1OfPnt&       CachePoles)
 {
@@ -152,7 +140,6 @@ inline void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt& Poles,
 }
 
 //=================================================================================================
-
 
 inline void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles,
                                         TColgp_Array1OfPnt2d&       CachePoles)

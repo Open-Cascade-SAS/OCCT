@@ -28,7 +28,6 @@ inline Standard_Integer Intf_TangentZone::NumberOfPoints() const
 
 //=================================================================================================
 
-
 inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real& paraMax) const
 {
   paraMin = ParamOnFirstMin;
@@ -36,7 +35,6 @@ inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real
 }
 
 //=================================================================================================
-
 
 inline void Intf_TangentZone::ParamOnSecond(Standard_Real& paraMin, Standard_Real& paraMax) const
 {

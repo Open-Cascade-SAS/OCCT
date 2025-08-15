@@ -1578,7 +1578,6 @@ void AIS_Manipulator::ComputeSelection(const Handle(SelectMgr_Selection)& theSel
   }
 }
 
-
 //=================================================================================================
 
 void AIS_Manipulator::Disk::Init(const Standard_ShortReal theInnerRadius,
@@ -1601,7 +1600,6 @@ void AIS_Manipulator::Disk::Init(const Standard_ShortReal theInnerRadius,
   myTriangulation = aTool.CreatePolyTriangulation(aTrsf);
 }
 
-
 //=================================================================================================
 
 void AIS_Manipulator::Sphere::Init(const Standard_ShortReal theRadius,
@@ -1621,7 +1619,6 @@ void AIS_Manipulator::Sphere::Init(const Standard_ShortReal theRadius,
   myArray         = aTool.CreateTriangulation(aTrsf);
   myTriangulation = aTool.CreatePolyTriangulation(aTrsf);
 }
-
 
 //=================================================================================================
 
@@ -1722,7 +1719,6 @@ void AIS_Manipulator::Cube::addTriangle(const Standard_Integer theIndex,
   myArray->AddVertex(theP2, theNormal);
   myArray->AddVertex(theP3, theNormal);
 }
-
 
 //=================================================================================================
 

@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Handle(ShapeFix_Face) ShapeFix_Shell::FixFaceTool()
 {
   return myFixFace;
@@ -24,14 +23,12 @@ inline Handle(ShapeFix_Face) ShapeFix_Shell::FixFaceTool()
 
 //=================================================================================================
 
-
 inline Standard_Integer& ShapeFix_Shell::FixFaceMode()
 {
   return myFixFaceMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer& ShapeFix_Shell::FixOrientationMode()
 {

@@ -18,7 +18,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-
 //=================================================================================================
 
 class BOPTools_ConnexityBlock

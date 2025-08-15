@@ -17,7 +17,6 @@
 
 //=================================================================================================
 
-
 inline const TCollection_AsciiString& BinMDF_ADriver::TypeName() const
 {
   if (myTypeName.Length() == 0)

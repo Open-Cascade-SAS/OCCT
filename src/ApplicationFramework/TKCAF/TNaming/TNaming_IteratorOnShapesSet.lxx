@@ -18,11 +18,9 @@
 
 //=================================================================================================
 
-
 inline TNaming_IteratorOnShapesSet::TNaming_IteratorOnShapesSet() {}
 
 //=================================================================================================
-
 
 inline TNaming_IteratorOnShapesSet::TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S)
 {
@@ -31,14 +29,12 @@ inline TNaming_IteratorOnShapesSet::TNaming_IteratorOnShapesSet(const TNaming_Sh
 
 //=================================================================================================
 
-
 inline void TNaming_IteratorOnShapesSet::Init(const TNaming_ShapesSet& S)
 {
   myIt.Initialize(S.Map());
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const
 {
@@ -47,14 +43,12 @@ inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const
 
 //=================================================================================================
 
-
 inline void TNaming_IteratorOnShapesSet::Next()
 {
   myIt.Next();
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& TNaming_IteratorOnShapesSet::Value() const
 {

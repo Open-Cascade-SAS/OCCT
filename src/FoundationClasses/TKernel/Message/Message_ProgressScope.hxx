@@ -537,7 +537,6 @@ inline Message_ProgressRange Message_ProgressScope::Next(Standard_Real theStep)
 
 //=================================================================================================
 
-
 inline void Message_ProgressScope::Show()
 {
   if (myIsActive)
@@ -566,7 +565,6 @@ inline Standard_Real Message_ProgressScope::localToGlobal(const Standard_Real th
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Message_ProgressScope::Value() const
 {

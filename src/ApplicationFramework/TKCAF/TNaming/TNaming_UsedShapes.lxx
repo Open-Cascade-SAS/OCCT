@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline TNaming_DataMapOfShapePtrRefShape& TNaming_UsedShapes::Map()
 {
   return myMap;
 }
 
 //=================================================================================================
-
 
 inline const Standard_GUID& TNaming_UsedShapes::ID() const
 {

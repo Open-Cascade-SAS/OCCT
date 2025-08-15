@@ -18,7 +18,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveFace, Select3D_SensitiveFace)
 
-
 //=================================================================================================
 
 MeshVS_SensitiveFace::MeshVS_SensitiveFace(const Handle(SelectMgr_EntityOwner)& theOwnerId,

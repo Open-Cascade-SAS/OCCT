@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline GeomInt_LineConstructor::GeomInt_LineConstructor()
     : done(Standard_False)
 {
 }
 
 //=================================================================================================
-
 
 inline void GeomInt_LineConstructor::Load(const Handle(Adaptor3d_TopolTool)& D1,
                                           const Handle(Adaptor3d_TopolTool)& D2,
@@ -40,14 +38,12 @@ inline void GeomInt_LineConstructor::Load(const Handle(Adaptor3d_TopolTool)& D1,
 
 //=================================================================================================
 
-
 inline Standard_Boolean GeomInt_LineConstructor::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer GeomInt_LineConstructor::NbParts() const
 {

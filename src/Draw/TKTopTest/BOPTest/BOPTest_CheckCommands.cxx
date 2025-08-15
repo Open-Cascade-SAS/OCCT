@@ -93,7 +93,6 @@ void BOPTest::CheckCommands(Draw_Interpretor& theCommands)
                   g);
 }
 
-
 //=================================================================================================
 
 class BOPTest_Interf

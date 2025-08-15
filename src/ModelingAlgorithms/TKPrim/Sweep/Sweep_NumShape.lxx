@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer Sweep_NumShape::Index() const
 {
   return myIndex;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_ShapeEnum Sweep_NumShape::Type() const
 {
@@ -32,7 +30,6 @@ inline TopAbs_ShapeEnum Sweep_NumShape::Type() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean Sweep_NumShape::Closed() const
 {
   return myClosed;
@@ -40,14 +37,12 @@ inline Standard_Boolean Sweep_NumShape::Closed() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean Sweep_NumShape::BegInfinite() const
 {
   return myBegInf;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Sweep_NumShape::EndInfinite() const
 {

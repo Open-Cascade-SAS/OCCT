@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
-
 
 inline const Handle(BRepBlend_Line)& BRepBlend_SurfRstLineBuilder::Line() const
 {
@@ -38,14 +36,12 @@ inline const Handle(BRepBlend_Line)& BRepBlend_SurfRstLineBuilder::Line() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochStart() const
 {
   return decrochdeb;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochEnd() const
 {

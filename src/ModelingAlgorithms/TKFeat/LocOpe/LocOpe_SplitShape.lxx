@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline LocOpe_SplitShape::LocOpe_SplitShape()
     : myDone(Standard_False)
 {
@@ -26,14 +25,12 @@ inline LocOpe_SplitShape::LocOpe_SplitShape()
 
 //=================================================================================================
 
-
 inline LocOpe_SplitShape::LocOpe_SplitShape(const TopoDS_Shape& S)
 {
   Init(S);
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& LocOpe_SplitShape::Shape() const
 {

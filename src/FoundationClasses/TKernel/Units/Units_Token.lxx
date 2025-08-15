@@ -22,14 +22,12 @@
 
 //=================================================================================================
 
-
 inline TCollection_AsciiString Units_Token::Word() const
 {
   return theword;
 }
 
 //=================================================================================================
-
 
 inline TCollection_AsciiString Units_Token::Mean() const
 {
@@ -38,14 +36,12 @@ inline TCollection_AsciiString Units_Token::Mean() const
 
 //=================================================================================================
 
-
 inline Standard_Real Units_Token::Value() const
 {
   return thevalue;
 }
 
 //=================================================================================================
-
 
 inline Handle(Units_Dimensions) Units_Token::Dimensions() const
 {
@@ -54,14 +50,12 @@ inline Handle(Units_Dimensions) Units_Token::Dimensions() const
 
 //=================================================================================================
 
-
 inline void Units_Token::Word(const Standard_CString aword)
 {
   theword = aword;
 }
 
 //=================================================================================================
-
 
 inline void Units_Token::Mean(const Standard_CString amean)
 {
@@ -70,14 +64,12 @@ inline void Units_Token::Mean(const Standard_CString amean)
 
 //=================================================================================================
 
-
 inline void Units_Token::Value(const Standard_Real avalue)
 {
   thevalue = avalue;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Units_Token::IsNotEqual(const Standard_CString astring) const
 {
@@ -92,7 +84,6 @@ inline Standard_Boolean Units_Token::IsNotEqual(const Standard_CString astring) 
 
 //=================================================================================================
 
-
 inline Standard_Boolean Units_Token::IsNotEqual(const Handle(Units_Token)& atoken) const
 {
   TCollection_AsciiString string1 = Word();
@@ -105,7 +96,6 @@ inline Standard_Boolean Units_Token::IsNotEqual(const Handle(Units_Token)& atoke
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Units_Token::IsLessOrEqual(const Standard_CString astring) const
 {
@@ -120,7 +110,6 @@ inline Standard_Boolean Units_Token::IsLessOrEqual(const Standard_CString astrin
 
 //=================================================================================================
 
-
 inline Standard_Boolean Units_Token::IsGreater(const Standard_CString astring) const
 {
   TCollection_AsciiString string = Word();
@@ -130,7 +119,6 @@ inline Standard_Boolean Units_Token::IsGreater(const Standard_CString astring) c
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Units_Token::IsGreater(const Handle(Units_Token)& atoken) const
 {
@@ -142,7 +130,6 @@ inline Standard_Boolean Units_Token::IsGreater(const Handle(Units_Token)& atoken
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Units_Token::IsGreaterOrEqual(const Handle(Units_Token)& atoken) const
 {

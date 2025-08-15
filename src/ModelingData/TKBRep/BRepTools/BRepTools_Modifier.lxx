@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape(const TopoDS_Shape& S) const
 {
   if (!myMap.IsBound(S))

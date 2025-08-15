@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole()
     : myAxDef(Standard_False),
       myStatus(BRepFeat_NoError),
@@ -29,7 +28,6 @@ inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole()
 
 //=================================================================================================
 
-
 inline void BRepFeat_MakeCylindricalHole::Init(const gp_Ax1& Axis)
 {
   myAxis  = Axis;
@@ -37,7 +35,6 @@ inline void BRepFeat_MakeCylindricalHole::Init(const gp_Ax1& Axis)
 }
 
 //=================================================================================================
-
 
 inline void BRepFeat_MakeCylindricalHole::Init(const TopoDS_Shape& S, const gp_Ax1& Axis)
 {
@@ -47,7 +44,6 @@ inline void BRepFeat_MakeCylindricalHole::Init(const TopoDS_Shape& S, const gp_A
 }
 
 //=================================================================================================
-
 
 inline BRepFeat_Status BRepFeat_MakeCylindricalHole::Status() const
 {

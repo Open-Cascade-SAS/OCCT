@@ -104,7 +104,6 @@ static Standard_Boolean BRepExtrema_CheckPair_Comparator(const BRepExtrema_Check
 }
 } // namespace
 
-
 //=================================================================================================
 
 struct IndexBand
@@ -125,7 +124,6 @@ struct IndexBand
   Standard_Integer Last;
 };
 
-
 //=================================================================================================
 
 struct ThreadSolution
@@ -142,7 +140,6 @@ struct ThreadSolution
   NCollection_Array1<BRepExtrema_SeqOfSolution> Shape2;
   NCollection_Array1<Standard_Real>             Dist;
 };
-
 
 //=================================================================================================
 
@@ -293,7 +290,6 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(
   return Standard_True;
 }
 
-
 //=================================================================================================
 
 struct DistanceFunctor
@@ -386,7 +382,6 @@ struct DistanceFunctor
   Standard_Real                                                  Eps;
   Standard_Real                                                  StartDist;
 };
-
 
 //=================================================================================================
 
@@ -686,7 +681,6 @@ void BRepExtrema_DistShapeShape::LoadS2(const TopoDS_Shape& Shape2)
   myIsInitS2 = Standard_False;
   Decomposition(Shape2, myMapV2, myMapE2, myMapF2);
 }
-
 
 //=================================================================================================
 

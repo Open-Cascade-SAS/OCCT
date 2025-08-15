@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void HLRTest_DrawablePolyEdgeTool::Show()
 {
   myHideMode = Standard_False;
 }
 
 //=================================================================================================
-
 
 inline void HLRTest_DrawablePolyEdgeTool::Hide()
 {
@@ -32,14 +30,12 @@ inline void HLRTest_DrawablePolyEdgeTool::Hide()
 
 //=================================================================================================
 
-
 inline void HLRTest_DrawablePolyEdgeTool::DisplayRg1Line(const Standard_Boolean B)
 {
   myDispRg1 = B;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayRg1Line() const
 {
@@ -48,14 +44,12 @@ inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayRg1Line() const
 
 //=================================================================================================
 
-
 inline void HLRTest_DrawablePolyEdgeTool::DisplayRgNLine(const Standard_Boolean B)
 {
   myDispRgN = B;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayRgNLine() const
 {
@@ -64,14 +58,12 @@ inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayRgNLine() const
 
 //=================================================================================================
 
-
 inline void HLRTest_DrawablePolyEdgeTool::DisplayHidden(const Standard_Boolean B)
 {
   myDispHid = B;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayHidden() const
 {
@@ -80,14 +72,12 @@ inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::DisplayHidden() const
 
 //=================================================================================================
 
-
 inline void HLRTest_DrawablePolyEdgeTool::Debug(const Standard_Boolean B)
 {
   myDebug = B;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRTest_DrawablePolyEdgeTool::Debug() const
 {

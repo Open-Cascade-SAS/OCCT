@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::Orientation(const TopAbs_Orientation Ori)
 {
   myOrien = Ori;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation HLRAlgo_Intersection::Orientation() const
 {
@@ -32,14 +30,12 @@ inline TopAbs_Orientation HLRAlgo_Intersection::Orientation() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::Level(const Standard_Integer Lev)
 {
   myLevel = Lev;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_Intersection::Level() const
 {
@@ -48,14 +44,12 @@ inline Standard_Integer HLRAlgo_Intersection::Level() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::SegIndex(const Standard_Integer SegInd)
 {
   mySegIndex = SegInd;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_Intersection::SegIndex() const
 {
@@ -64,14 +58,12 @@ inline Standard_Integer HLRAlgo_Intersection::SegIndex() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::Index(const Standard_Integer Ind)
 {
   myIndex = Ind;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_Intersection::Index() const
 {
@@ -80,14 +72,12 @@ inline Standard_Integer HLRAlgo_Intersection::Index() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::Parameter(const Standard_Real P)
 {
   myParam = P;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real HLRAlgo_Intersection::Parameter() const
 {
@@ -96,14 +86,12 @@ inline Standard_Real HLRAlgo_Intersection::Parameter() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::Tolerance(const Standard_ShortReal T)
 {
   myToler = T;
 }
 
 //=================================================================================================
-
 
 inline Standard_ShortReal HLRAlgo_Intersection::Tolerance() const
 {
@@ -112,14 +100,12 @@ inline Standard_ShortReal HLRAlgo_Intersection::Tolerance() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Intersection::State(const TopAbs_State St)
 {
   myState = St;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_State HLRAlgo_Intersection::State() const
 {

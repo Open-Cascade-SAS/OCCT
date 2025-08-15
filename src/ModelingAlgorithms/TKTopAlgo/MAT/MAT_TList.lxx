@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer MAT_TList::Number() const
 {
   return thenumberofitems;
@@ -24,14 +23,12 @@ inline Standard_Integer MAT_TList::Number() const
 
 //=================================================================================================
 
-
 inline Standard_Integer MAT_TList::Index() const
 {
   return thecurrentindex;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean MAT_TList::IsEmpty() const
 {

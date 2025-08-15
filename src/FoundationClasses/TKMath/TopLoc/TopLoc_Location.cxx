@@ -22,9 +22,7 @@
 #include <TopLoc_Location.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
-
 //=================================================================================================
-
 
 TopLoc_Location::TopLoc_Location() {}
 

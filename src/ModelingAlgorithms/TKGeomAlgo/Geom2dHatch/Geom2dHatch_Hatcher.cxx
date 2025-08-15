@@ -111,9 +111,7 @@ void Geom2dHatch_Hatcher::Confusion3d(const Standard_Real Confusion)
   }
 }
 
-
 //=================================================================================================
-
 
 void Geom2dHatch_Hatcher::KeepPoints(const Standard_Boolean Keep)
 {
@@ -128,9 +126,7 @@ void Geom2dHatch_Hatcher::KeepPoints(const Standard_Boolean Keep)
   }
 }
 
-
 //=================================================================================================
-
 
 void Geom2dHatch_Hatcher::KeepSegments(const Standard_Boolean Keep)
 {

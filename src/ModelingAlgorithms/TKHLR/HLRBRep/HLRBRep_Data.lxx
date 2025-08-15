@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline HLRBRep_Array1OfEData& HLRBRep_Data::EDataArray()
 {
   return myEData;
 }
 
 //=================================================================================================
-
 
 inline HLRBRep_Array1OfFData& HLRBRep_Data::FDataArray()
 {
@@ -32,14 +30,12 @@ inline HLRBRep_Array1OfFData& HLRBRep_Data::FDataArray()
 
 //=================================================================================================
 
-
 inline void HLRBRep_Data::Tolerance(const Standard_ShortReal tol)
 {
   myToler = tol;
 }
 
 //=================================================================================================
-
 
 inline Standard_ShortReal HLRBRep_Data::Tolerance() const
 {
@@ -48,14 +44,12 @@ inline Standard_ShortReal HLRBRep_Data::Tolerance() const
 
 //=================================================================================================
 
-
 inline HLRAlgo_Projector& HLRBRep_Data::Projector()
 {
   return myProj;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRBRep_Data::NbVertices() const
 {
@@ -64,14 +58,12 @@ inline Standard_Integer HLRBRep_Data::NbVertices() const
 
 //=================================================================================================
 
-
 inline Standard_Integer HLRBRep_Data::NbEdges() const
 {
   return myNbEdges;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRBRep_Data::NbFaces() const
 {
@@ -80,14 +72,12 @@ inline Standard_Integer HLRBRep_Data::NbFaces() const
 
 //=================================================================================================
 
-
 inline TopTools_IndexedMapOfShape& HLRBRep_Data::EdgeMap()
 {
   return myEMap;
 }
 
 //=================================================================================================
-
 
 inline TopTools_IndexedMapOfShape& HLRBRep_Data::FaceMap()
 {
@@ -96,14 +86,12 @@ inline TopTools_IndexedMapOfShape& HLRBRep_Data::FaceMap()
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_Data::SimpleHidingFace() const
 {
   return iFaceSimp;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRBRep_Data::HidingTheFace() const
 {
@@ -112,7 +100,6 @@ inline Standard_Boolean HLRBRep_Data::HidingTheFace() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRBRep_Data::MoreInterference() const
 {
   return (iInterf <= myNbPoints + 2 * myNbSegments);
@@ -120,14 +107,12 @@ inline Standard_Boolean HLRBRep_Data::MoreInterference() const
 
 //=================================================================================================
 
-
 inline HLRAlgo_Interference& HLRBRep_Data::Interference()
 {
   return myIntf;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRBRep_Data::EdgeOfTheHidingFace(const Standard_Integer,
                                                           const HLRBRep_EdgeData& ED) const

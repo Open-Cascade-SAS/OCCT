@@ -34,7 +34,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Dump.hxx>
 
-
 //=================================================================================================
 
 gp_Trsf::gp_Trsf(const gp_Trsf2d& T)

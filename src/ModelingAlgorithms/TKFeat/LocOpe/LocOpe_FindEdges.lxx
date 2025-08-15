@@ -18,11 +18,9 @@
 
 //=================================================================================================
 
-
 inline LocOpe_FindEdges::LocOpe_FindEdges() {}
 
 //=================================================================================================
-
 
 inline LocOpe_FindEdges::LocOpe_FindEdges(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 {
@@ -30,7 +28,6 @@ inline LocOpe_FindEdges::LocOpe_FindEdges(const TopoDS_Shape& FFrom, const TopoD
 }
 
 //=================================================================================================
-
 
 inline void LocOpe_FindEdges::InitIterator()
 {
@@ -40,14 +37,12 @@ inline void LocOpe_FindEdges::InitIterator()
 
 //=================================================================================================
 
-
 inline Standard_Boolean LocOpe_FindEdges::More() const
 {
   return myItFrom.More();
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Edge& LocOpe_FindEdges::EdgeFrom() const
 {
@@ -56,14 +51,12 @@ inline const TopoDS_Edge& LocOpe_FindEdges::EdgeFrom() const
 
 //=================================================================================================
 
-
 inline const TopoDS_Edge& LocOpe_FindEdges::EdgeTo() const
 {
   return TopoDS::Edge(myItTo.Value());
 }
 
 //=================================================================================================
-
 
 inline void LocOpe_FindEdges::Next()
 {

@@ -146,7 +146,6 @@ private:
 
 //=================================================================================================
 
-
 template <class TheObjType, class TheBndType>
 Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
 {
@@ -180,7 +179,6 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
 
 //=================================================================================================
 
-
 template <class TheObjType, class TheBndType>
 Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
   Standard_OStream& theStream)
@@ -197,7 +195,6 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(
 }
 
 //=================================================================================================
-
 
 template <class TheObjType, class TheBndType>
 Standard_Real NCollection_UBTreeFiller<TheObjType, TheBndType>::checkNode(

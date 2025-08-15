@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const Standard_Real Confusion,
                                                         const Standard_Real Tangency)
     : Geom2dInt_GInter(),

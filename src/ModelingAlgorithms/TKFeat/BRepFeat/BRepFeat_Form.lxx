@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline BRepFeat_Form::BRepFeat_Form()
     : myFuse(Standard_False),
       myModify(Standard_False),
@@ -37,14 +36,12 @@ inline BRepFeat_Form::BRepFeat_Form()
 
 //=================================================================================================
 
-
 inline void BRepFeat_Form::BasisShapeValid()
 {
   mySbOK = Standard_True;
 }
 
 //=================================================================================================
-
 
 inline void BRepFeat_Form::PerfSelectionValid()
 {
@@ -53,14 +50,12 @@ inline void BRepFeat_Form::PerfSelectionValid()
 
 //=================================================================================================
 
-
 inline void BRepFeat_Form::GeneratedShapeValid()
 {
   myGSOK = Standard_True;
 }
 
 //=================================================================================================
-
 
 inline void BRepFeat_Form::ShapeFromValid()
 {
@@ -69,7 +64,6 @@ inline void BRepFeat_Form::ShapeFromValid()
 
 //=================================================================================================
 
-
 inline void BRepFeat_Form::ShapeUntilValid()
 {
   mySUOK = Standard_True;
@@ -77,14 +71,12 @@ inline void BRepFeat_Form::ShapeUntilValid()
 
 //=================================================================================================
 
-
 inline void BRepFeat_Form::GluedFacesValid()
 {
   myGFOK = Standard_True;
 }
 
 //=================================================================================================
-
 
 inline void BRepFeat_Form::SketchFaceValid()
 {

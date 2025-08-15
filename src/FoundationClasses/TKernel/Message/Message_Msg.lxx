@@ -54,7 +54,6 @@ inline Message_Msg& Message_Msg::Arg(const Handle(TCollection_HExtendedString)& 
 
 //=================================================================================================
 
-
 inline const TCollection_ExtendedString& Message_Msg::Original() const
 {
   return myOriginal;
@@ -62,14 +61,12 @@ inline const TCollection_ExtendedString& Message_Msg::Original() const
 
 //=================================================================================================
 
-
 inline const TCollection_ExtendedString& Message_Msg::Value() const
 {
   return myMessageBody;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Message_Msg::IsEdited() const
 {

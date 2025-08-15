@@ -17,14 +17,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean CPnts_UniformDeflection::IsAllDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
-
 
 inline void CPnts_UniformDeflection::Next()
 {
@@ -35,7 +33,6 @@ inline void CPnts_UniformDeflection::Next()
 
 //=================================================================================================
 
-
 inline Standard_Real CPnts_UniformDeflection::Value() const
 {
   StdFail_NotDone_Raise_if(!myDone, "CPnts_UniformDeflection::Value() - no result");
@@ -43,7 +40,6 @@ inline Standard_Real CPnts_UniformDeflection::Value() const
 }
 
 //=================================================================================================
-
 
 inline gp_Pnt CPnts_UniformDeflection::Point() const
 {

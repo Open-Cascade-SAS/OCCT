@@ -414,14 +414,12 @@ Standard_Real MeshVS_VectorPrsBuilder::calculateArrow(TColgp_Array1OfPnt& Points
   return h;
 }
 
-
 //=================================================================================================
 
 void MeshVS_VectorPrsBuilder::SetSimplePrsMode(const Standard_Boolean IsSimpleArrow)
 {
   myIsSimplePrs = IsSimpleArrow;
 }
-
 
 //=================================================================================================
 

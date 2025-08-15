@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean StepToTopoDS_Root::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real StepToTopoDS_Root::Precision() const
 {
@@ -34,7 +32,6 @@ inline Standard_Real StepToTopoDS_Root::Precision() const
 
 //=================================================================================================
 
-
 inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci)
 {
   myPrecision = preci;
@@ -42,14 +39,12 @@ inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci)
 
 //=================================================================================================
 
-
 inline Standard_Real StepToTopoDS_Root::MaxTol() const
 {
   return myMaxTol;
 }
 
 //=================================================================================================
-
 
 inline void StepToTopoDS_Root::SetMaxTol(const Standard_Real maxpreci)
 {

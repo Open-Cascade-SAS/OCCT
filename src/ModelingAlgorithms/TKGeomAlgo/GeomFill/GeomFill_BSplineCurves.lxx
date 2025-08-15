@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline const Handle(Geom_BSplineSurface)& GeomFill_BSplineCurves::Surface() const
 {
   return mySurface;

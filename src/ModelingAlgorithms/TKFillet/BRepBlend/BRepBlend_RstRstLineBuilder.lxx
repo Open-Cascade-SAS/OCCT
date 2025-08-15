@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
-
 
 inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 {
@@ -38,7 +36,6 @@ inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
 {
   if (decrochdeb == Blend_DecrochRst1 || decrochdeb == Blend_DecrochBoth)
@@ -48,7 +45,6 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
 {
@@ -60,7 +56,6 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
 {
   if (decrochdeb == Blend_DecrochRst2 || decrochdeb == Blend_DecrochBoth)
@@ -70,7 +65,6 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2End() const
 {

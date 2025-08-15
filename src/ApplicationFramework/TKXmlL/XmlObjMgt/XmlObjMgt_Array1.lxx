@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline const XmlObjMgt_Element& XmlObjMgt_Array1::Element() const
 {
   return myElement;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer XmlObjMgt_Array1::Length() const
 {
@@ -31,14 +29,12 @@ inline Standard_Integer XmlObjMgt_Array1::Length() const
 
 //=================================================================================================
 
-
 inline Standard_Integer XmlObjMgt_Array1::Lower() const
 {
   return myFirst;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer XmlObjMgt_Array1::Upper() const
 {

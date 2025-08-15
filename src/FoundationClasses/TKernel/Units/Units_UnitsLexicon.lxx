@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline void Units_UnitsLexicon::Dump() const
 {
   std::cout << " UNITSLEXICON : " << std::endl;

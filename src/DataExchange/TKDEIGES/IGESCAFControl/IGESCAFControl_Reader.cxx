@@ -143,7 +143,6 @@ static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
   return;
 }
 
-
 //=================================================================================================
 
 Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)& doc,

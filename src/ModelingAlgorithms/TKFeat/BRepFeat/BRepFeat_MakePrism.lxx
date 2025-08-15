@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline BRepFeat_MakePrism::BRepFeat_MakePrism()
     : myStatusError(BRepFeat_OK)
 {
 }
 
 //=================================================================================================
-
 
 inline BRepFeat_MakePrism::BRepFeat_MakePrism(const TopoDS_Shape&    Sbase,
                                               const TopoDS_Shape&    Pbase,

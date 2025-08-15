@@ -18,14 +18,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRAlgo_EdgeIterator::MoreHidden() const
 {
   return iHid <= myNbHid + 1;
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_EdgeIterator::Hidden(Standard_Real&      Start,
                                          Standard_ShortReal& TolStart,
@@ -40,7 +38,6 @@ inline void HLRAlgo_EdgeIterator::Hidden(Standard_Real&      Start,
 
 //=================================================================================================
 
-
 inline void HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 {
   EVis    = &status;
@@ -50,7 +47,6 @@ inline void HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 
 //=================================================================================================
 
-
 inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible() const
 {
   return iVis <= myNbVis;
@@ -58,14 +54,12 @@ inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_EdgeIterator::NextVisible()
 {
   iVis++;
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_EdgeIterator::Visible(Standard_Real&      Start,
                                           Standard_ShortReal& TolStart,

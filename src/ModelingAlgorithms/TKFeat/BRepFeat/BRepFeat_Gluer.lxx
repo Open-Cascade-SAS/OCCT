@@ -16,11 +16,9 @@
 
 //=================================================================================================
 
-
 inline BRepFeat_Gluer::BRepFeat_Gluer() {}
 
 //=================================================================================================
-
 
 inline BRepFeat_Gluer::BRepFeat_Gluer(const TopoDS_Shape& Snew, const TopoDS_Shape& Sbase)
     : myGluer(Sbase, Snew) // Attention a l`inversion
@@ -29,14 +27,12 @@ inline BRepFeat_Gluer::BRepFeat_Gluer(const TopoDS_Shape& Snew, const TopoDS_Sha
 
 //=================================================================================================
 
-
 inline void BRepFeat_Gluer::Init(const TopoDS_Shape& Snew, const TopoDS_Shape& Sbase)
 {
   myGluer.Init(Sbase, Snew);
 }
 
 //=================================================================================================
-
 
 inline void BRepFeat_Gluer::Bind(const TopoDS_Face& Fnew, const TopoDS_Face& Fbase)
 {
@@ -45,14 +41,12 @@ inline void BRepFeat_Gluer::Bind(const TopoDS_Face& Fnew, const TopoDS_Face& Fba
 
 //=================================================================================================
 
-
 inline void BRepFeat_Gluer::Bind(const TopoDS_Edge& Enew, const TopoDS_Edge& Ebase)
 {
   myGluer.Bind(Enew, Ebase);
 }
 
 //=================================================================================================
-
 
 inline LocOpe_Operation BRepFeat_Gluer::OpeType() const
 {
@@ -61,14 +55,12 @@ inline LocOpe_Operation BRepFeat_Gluer::OpeType() const
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& BRepFeat_Gluer::BasisShape() const
 {
   return myGluer.BasisShape();
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& BRepFeat_Gluer::GluedShape() const
 {

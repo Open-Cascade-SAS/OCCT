@@ -1093,7 +1093,6 @@ static Standard_Integer noteGetNotes(Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
-
 //=================================================================================================
 
 static const cmd XNoteUsername = {"XNoteUsername", 3, "XNoteUsername Doc note"};
@@ -1187,7 +1186,6 @@ static Standard_Integer noteTimestamp(Draw_Interpretor& di,
 
   return 0;
 }
-
 
 //=================================================================================================
 

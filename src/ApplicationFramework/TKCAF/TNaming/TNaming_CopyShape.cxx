@@ -157,9 +157,7 @@ static Handle(TopLoc_Datum3D) TranslateDatum3D(const Handle(TopLoc_Datum3D)&    
   return TD;
 }
 
-
 //=================================================================================================
-
 
 TopLoc_Location TNaming_CopyShape::Translate(const TopLoc_Location&                      L,
                                              TColStd_IndexedDataMapOfTransientTransient& aMap)

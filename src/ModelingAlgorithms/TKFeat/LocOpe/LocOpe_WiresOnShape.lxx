@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
 {
   myCheckInterior = ToCheckInterior;
@@ -24,14 +23,12 @@ inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheck
 
 //=================================================================================================
 
-
 inline Standard_Boolean LocOpe_WiresOnShape::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean LocOpe_WiresOnShape::IsFaceWithSection(const TopoDS_Shape& aFace) const
 {

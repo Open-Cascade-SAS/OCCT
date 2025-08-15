@@ -44,9 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute, Standard_Transient)
 
 #define TDF_DATA_COMMIT_OPTIMIZED
 
-
 //=================================================================================================
-
 
 TDF_Attribute::TDF_Attribute()
     : myLabelNode(NULL),

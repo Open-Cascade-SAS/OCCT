@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void HLRTopoBRep_OutLiner::OriginalShape(const TopoDS_Shape& OriS)
 {
   myOriginalShape = OriS;
 }
 
 //=================================================================================================
-
 
 inline TopoDS_Shape& HLRTopoBRep_OutLiner::OriginalShape()
 {
@@ -32,7 +30,6 @@ inline TopoDS_Shape& HLRTopoBRep_OutLiner::OriginalShape()
 
 //=================================================================================================
 
-
 inline void HLRTopoBRep_OutLiner::OutLinedShape(const TopoDS_Shape& OutS)
 {
   myOutLinedShape = OutS;
@@ -40,14 +37,12 @@ inline void HLRTopoBRep_OutLiner::OutLinedShape(const TopoDS_Shape& OutS)
 
 //=================================================================================================
 
-
 inline TopoDS_Shape& HLRTopoBRep_OutLiner::OutLinedShape()
 {
   return myOutLinedShape;
 }
 
 //=================================================================================================
-
 
 inline HLRTopoBRep_Data& HLRTopoBRep_OutLiner::DataStructure()
 {

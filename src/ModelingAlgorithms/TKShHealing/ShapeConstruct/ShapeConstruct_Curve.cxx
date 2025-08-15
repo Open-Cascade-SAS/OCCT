@@ -347,7 +347,6 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(
   return bspl;
 }
 
-
 //=================================================================================================
 
 Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& knots)
@@ -368,7 +367,6 @@ Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& k
   }
   return Fixed;
 }
-
 
 //=================================================================================================
 

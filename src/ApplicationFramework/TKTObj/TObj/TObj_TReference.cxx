@@ -82,9 +82,7 @@ void TObj_TReference::Set(const Handle(TObj_Object)& theElem, const TDF_Label& t
   myMasterLabel = theMasterLabel;
 }
 
-
 //=================================================================================================
-
 
 void TObj_TReference::Set(const TDF_Label& theLabel, const TDF_Label& theMasterLabel)
 {

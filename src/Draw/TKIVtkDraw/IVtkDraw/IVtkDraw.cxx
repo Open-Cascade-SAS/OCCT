@@ -1271,7 +1271,6 @@ static Standard_Integer VtkSelect(Draw_Interpretor&,
   return 0;
 }
 
-
 //=================================================================================================
 
 static Standard_Integer VtkViewProj(Draw_Interpretor&,
@@ -1506,7 +1505,6 @@ static int VtkCamera(Draw_Interpretor& theDI, Standard_Integer theArgsNb, const 
   return 0;
 }
 
-
 //=================================================================================================
 
 static Standard_Integer VtkDump(Draw_Interpretor&, Standard_Integer theArgNum, const char** theArgs)
@@ -1651,7 +1649,6 @@ static Standard_Integer VtkDump(Draw_Interpretor&, Standard_Integer theArgNum, c
   anImageWriter->Write();
   return 0;
 }
-
 
 //=================================================================================================
 

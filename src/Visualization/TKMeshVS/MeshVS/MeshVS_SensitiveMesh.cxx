@@ -22,7 +22,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
-
 //=================================================================================================
 
 MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const Handle(SelectMgr_EntityOwner)& theOwnerId,
@@ -53,7 +52,6 @@ Standard_Integer MeshVS_SensitiveMesh::GetMode() const
 {
   return myMode;
 }
-
 
 //=================================================================================================
 

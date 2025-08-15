@@ -314,7 +314,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
   return Standard_True;
 }
 
-
 //=================================================================================================
 
 Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = NULL;
@@ -837,10 +836,10 @@ void TopOpeBRepBuild_Builder::GSplitEdgeWES(const TopoDS_Shape&          EOR,
   if (isfafa)
     newO = Standard_False; // xpu110598
 
-    // if (fus) : faces are SDSO : we keep original edge's orientation
-    // if (com) : faces are SDSO : we keep original edge's orientation
-    // if (cut && TBToFill==OUT)  : myFaceToFill is the reference face,
-    //                              we keep original edge's orientation
+  // if (fus) : faces are SDSO : we keep original edge's orientation
+  // if (com) : faces are SDSO : we keep original edge's orientation
+  // if (cut && TBToFill==OUT)  : myFaceToFill is the reference face,
+  //                              we keep original edge's orientation
 
 #ifdef OCCT_DEBUG
   Standard_Integer iEOR;

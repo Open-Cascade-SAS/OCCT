@@ -20,14 +20,12 @@
 
 //=================================================================================================
 
-
 inline void HLRAlgo_PolyData::FaceIndex(const Standard_Integer I)
 {
   myFaceIndices.Index = I;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer HLRAlgo_PolyData::FaceIndex() const
 {
@@ -36,14 +34,12 @@ inline Standard_Integer HLRAlgo_PolyData::FaceIndex() const
 
 //=================================================================================================
 
-
 inline TColgp_Array1OfXYZ& HLRAlgo_PolyData::Nodes() const
 {
   return myHNodes->ChangeArray1();
 }
 
 //=================================================================================================
-
 
 inline HLRAlgo_Array1OfTData& HLRAlgo_PolyData::TData() const
 {
@@ -52,14 +48,12 @@ inline HLRAlgo_Array1OfTData& HLRAlgo_PolyData::TData() const
 
 //=================================================================================================
 
-
 inline HLRAlgo_Array1OfPHDat& HLRAlgo_PolyData::PHDat() const
 {
   return myHPHDat->ChangeArray1();
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRAlgo_PolyData::Hiding() const
 {

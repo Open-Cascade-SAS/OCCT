@@ -15,7 +15,6 @@
 
 //=================================================================================================
 
-
 inline PCDM_ReaderStatus PCDM_Reader::GetStatus() const
 {
   return myReaderStatus;

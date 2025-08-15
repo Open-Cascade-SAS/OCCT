@@ -51,9 +51,7 @@ void TDF_IDFilter::Keep(const Standard_GUID& anID)
     myIDMap.Remove(anID);
 }
 
-
 //=================================================================================================
-
 
 void TDF_IDFilter::Keep(const TDF_IDList& anIDList)
 {

@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer ChFiDS_SurfData::IndexOfS1() const
 {
   return indexOfS1;
@@ -24,14 +23,12 @@ inline Standard_Integer ChFiDS_SurfData::IndexOfS1() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean ChFiDS_SurfData::IsOnCurve1() const
 {
   return isoncurv1;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer ChFiDS_SurfData::IndexOfC1() const
 {
@@ -42,7 +39,6 @@ inline Standard_Integer ChFiDS_SurfData::IndexOfC1() const
 
 //=================================================================================================
 
-
 inline void ChFiDS_SurfData::SetIndexOfC1(const Standard_Integer theIndex)
 {
   indexOfC1 = theIndex;
@@ -51,7 +47,6 @@ inline void ChFiDS_SurfData::SetIndexOfC1(const Standard_Integer theIndex)
 
 //=================================================================================================
 
-
 inline Standard_Integer ChFiDS_SurfData::IndexOfS2() const
 {
   return indexOfS2;
@@ -59,14 +54,12 @@ inline Standard_Integer ChFiDS_SurfData::IndexOfS2() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean ChFiDS_SurfData::IsOnCurve2() const
 {
   return isoncurv2;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer ChFiDS_SurfData::IndexOfC2() const
 {
@@ -77,7 +70,6 @@ inline Standard_Integer ChFiDS_SurfData::IndexOfC2() const
 
 //=================================================================================================
 
-
 inline void ChFiDS_SurfData::SetIndexOfC2(const Standard_Integer theIndex)
 {
   indexOfC2 = theIndex;
@@ -86,14 +78,12 @@ inline void ChFiDS_SurfData::SetIndexOfC2(const Standard_Integer theIndex)
 
 //=================================================================================================
 
-
 inline Standard_Integer ChFiDS_SurfData::Surf() const
 {
   return indexOfConge;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation ChFiDS_SurfData::Orientation() const
 {
@@ -102,14 +92,12 @@ inline TopAbs_Orientation ChFiDS_SurfData::Orientation() const
 
 //=================================================================================================
 
-
 inline const ChFiDS_FaceInterference& ChFiDS_SurfData::InterferenceOnS1() const
 {
   return intf1;
 }
 
 //=================================================================================================
-
 
 inline const ChFiDS_FaceInterference& ChFiDS_SurfData::InterferenceOnS2() const
 {
@@ -118,14 +106,12 @@ inline const ChFiDS_FaceInterference& ChFiDS_SurfData::InterferenceOnS2() const
 
 //=================================================================================================
 
-
 inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexFirstOnS1() const
 {
   return pfirstOnS1;
 }
 
 //=================================================================================================
-
 
 inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS1() const
 {
@@ -134,14 +120,12 @@ inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS1() const
 
 //=================================================================================================
 
-
 inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexFirstOnS2() const
 {
   return pfirstOnS2;
 }
 
 //=================================================================================================
-
 
 inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS2() const
 {
@@ -150,14 +134,12 @@ inline const ChFiDS_CommonPoint& ChFiDS_SurfData::VertexLastOnS2() const
 
 //=================================================================================================
 
-
 inline void ChFiDS_SurfData::ChangeIndexOfS1(const Standard_Integer Index)
 {
   indexOfS1 = Index;
 }
 
 //=================================================================================================
-
 
 inline void ChFiDS_SurfData::ChangeIndexOfS2(const Standard_Integer Index)
 {
@@ -166,14 +148,12 @@ inline void ChFiDS_SurfData::ChangeIndexOfS2(const Standard_Integer Index)
 
 //=================================================================================================
 
-
 inline void ChFiDS_SurfData::ChangeSurf(const Standard_Integer Index)
 {
   indexOfConge = Index;
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation& ChFiDS_SurfData::ChangeOrientation()
 {
@@ -182,14 +162,12 @@ inline TopAbs_Orientation& ChFiDS_SurfData::ChangeOrientation()
 
 //=================================================================================================
 
-
 inline ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterferenceOnS1()
 {
   return intf1;
 }
 
 //=================================================================================================
-
 
 inline ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterferenceOnS2()
 {
@@ -198,14 +176,12 @@ inline ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterferenceOnS2()
 
 //=================================================================================================
 
-
 inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexFirstOnS1()
 {
   return pfirstOnS1;
 }
 
 //=================================================================================================
-
 
 inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS1()
 {
@@ -214,7 +190,6 @@ inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS1()
 
 //=================================================================================================
 
-
 inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexFirstOnS2()
 {
   return pfirstOnS2;
@@ -222,14 +197,12 @@ inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexFirstOnS2()
 
 //=================================================================================================
 
-
 inline ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertexLastOnS2()
 {
   return plastOnS2;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ChFiDS_SurfData::IsOnCurve(const Standard_Integer OnS) const
 {
@@ -239,7 +212,6 @@ inline Standard_Boolean ChFiDS_SurfData::IsOnCurve(const Standard_Integer OnS) c
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer ChFiDS_SurfData::IndexOfC(const Standard_Integer OnS) const
 {
@@ -255,7 +227,6 @@ inline Standard_Integer ChFiDS_SurfData::IndexOfC(const Standard_Integer OnS) co
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ChFiDS_SurfData::TwistOnS1() const
 {

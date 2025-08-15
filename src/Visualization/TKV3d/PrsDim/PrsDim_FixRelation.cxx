@@ -66,9 +66,7 @@ static Standard_Boolean InDomain(const Standard_Real fpar,
   return Standard_False;
 }
 
-
 //=================================================================================================
-
 
 PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                        const Handle(Geom_Plane)& aPlane,
@@ -82,9 +80,7 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
   myArrowSize         = 5.;
 }
 
-
 //=================================================================================================
-
 
 PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                        const Handle(Geom_Plane)& aPlane,

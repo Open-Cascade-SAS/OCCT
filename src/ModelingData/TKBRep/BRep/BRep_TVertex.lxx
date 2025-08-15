@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Real BRep_TVertex::Tolerance() const
 {
   return myTolerance;
@@ -24,14 +23,12 @@ inline Standard_Real BRep_TVertex::Tolerance() const
 
 //=================================================================================================
 
-
 inline void BRep_TVertex::Tolerance(const Standard_Real T)
 {
   myTolerance = T;
 }
 
 //=================================================================================================
-
 
 inline void BRep_TVertex::UpdateTolerance(const Standard_Real T)
 {
@@ -41,14 +38,12 @@ inline void BRep_TVertex::UpdateTolerance(const Standard_Real T)
 
 //=================================================================================================
 
-
 inline const gp_Pnt& BRep_TVertex::Pnt() const
 {
   return myPnt;
 }
 
 //=================================================================================================
-
 
 inline void BRep_TVertex::Pnt(const gp_Pnt& P)
 {
@@ -57,14 +52,12 @@ inline void BRep_TVertex::Pnt(const gp_Pnt& P)
 
 //=================================================================================================
 
-
 inline const BRep_ListOfPointRepresentation& BRep_TVertex::Points() const
 {
   return myPoints;
 }
 
 //=================================================================================================
-
 
 inline BRep_ListOfPointRepresentation& BRep_TVertex::ChangePoints()
 {

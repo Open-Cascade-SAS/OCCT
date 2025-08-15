@@ -17,7 +17,6 @@
 
 //=================================================================================================
 
-
 inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator::MapTransient()
   const
 {
@@ -25,7 +24,6 @@ inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator
 }
 
 //=================================================================================================
-
 
 inline const ShapeExtend_DataMapOfShapeListOfMsg& ShapeExtend_MsgRegistrator::MapShape() const
 {

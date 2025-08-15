@@ -27,16 +27,13 @@
 
 //=================================================================================================
 
-
 inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
 {
   Handle(TopoDS_TWire) TW = new TopoDS_TWire();
   MakeShape(W, TW);
 }
 
-
 //=================================================================================================
-
 
 inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
 {
@@ -44,9 +41,7 @@ inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
   MakeShape(S, TS);
 }
 
-
 //=================================================================================================
-
 
 inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
 {

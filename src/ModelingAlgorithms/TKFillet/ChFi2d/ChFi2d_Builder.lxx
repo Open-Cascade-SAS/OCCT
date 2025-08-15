@@ -23,7 +23,6 @@
 
 //=================================================================================================
 
-
 inline TopoDS_Face ChFi2d_Builder::Result() const
 {
   TopoDS_Face aFace = newFace;
@@ -33,14 +32,12 @@ inline TopoDS_Face ChFi2d_Builder::Result() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean ChFi2d_Builder::IsModified(const TopoDS_Edge& E) const
 {
   return history.IsBound(E);
 }
 
 //=================================================================================================
-
 
 inline const TopTools_SequenceOfShape& ChFi2d_Builder::FilletEdges() const
 {
@@ -49,14 +46,12 @@ inline const TopTools_SequenceOfShape& ChFi2d_Builder::FilletEdges() const
 
 //=================================================================================================
 
-
 inline const TopTools_SequenceOfShape& ChFi2d_Builder::ChamferEdges() const
 {
   return chamfers;
 }
 
 //=================================================================================================
-
 
 inline Standard_Integer ChFi2d_Builder::NbFillet() const
 {
@@ -65,14 +60,12 @@ inline Standard_Integer ChFi2d_Builder::NbFillet() const
 
 //=================================================================================================
 
-
 inline Standard_Integer ChFi2d_Builder::NbChamfer() const
 {
   return chamfers.Length();
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ChFi2d_Builder::HasDescendant(const TopoDS_Edge& E) const
 {
@@ -81,14 +74,12 @@ inline Standard_Boolean ChFi2d_Builder::HasDescendant(const TopoDS_Edge& E) cons
 
 //=================================================================================================
 
-
 inline const TopoDS_Edge& ChFi2d_Builder::DescendantEdge(const TopoDS_Edge& E) const
 {
   return TopoDS::Edge(history.Find(E));
 } // DescendantEdge
 
 //=================================================================================================
-
 
 inline ChFi2d_ConstructionError ChFi2d_Builder::Status() const
 {

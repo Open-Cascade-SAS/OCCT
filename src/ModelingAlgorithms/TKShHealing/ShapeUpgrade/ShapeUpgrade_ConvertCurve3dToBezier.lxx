@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetLineMode(const Standard_Boolean mode)
 {
   myLineMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetLineMode() const
 {
@@ -32,14 +30,12 @@ inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetLineMode() const
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetCircleMode(const Standard_Boolean mode)
 {
   myCircleMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetCircleMode() const
 {
@@ -48,14 +44,12 @@ inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetCircleMode() con
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ConvertCurve3dToBezier::SetConicMode(const Standard_Boolean mode)
 {
   myConicMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetConicMode() const
 {

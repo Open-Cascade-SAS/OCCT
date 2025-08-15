@@ -31,14 +31,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Real Intrv_Interval::Start() const
 {
   return myStart;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Intrv_Interval::End() const
 {
@@ -47,7 +45,6 @@ inline Standard_Real Intrv_Interval::End() const
 
 //=================================================================================================
 
-
 inline Standard_ShortReal Intrv_Interval::TolStart() const
 {
   return myTolStart;
@@ -55,14 +52,12 @@ inline Standard_ShortReal Intrv_Interval::TolStart() const
 
 //=================================================================================================
 
-
 inline Standard_ShortReal Intrv_Interval::TolEnd() const
 {
   return myTolEnd;
 }
 
 //=================================================================================================
-
 
 inline void Intrv_Interval::Bounds(Standard_Real&      Start,
                                    Standard_ShortReal& TolStart,
@@ -76,7 +71,6 @@ inline void Intrv_Interval::Bounds(Standard_Real&      Start,
 }
 
 //=================================================================================================
-
 
 inline void Intrv_Interval::SetStart(const Standard_Real Start, const Standard_ShortReal TolStart)
 {
@@ -129,7 +123,6 @@ inline void Intrv_Interval::CutAtStart(const Standard_Real Start, const Standard
 
 //=================================================================================================
 
-
 inline void Intrv_Interval::SetEnd(const Standard_Real End, const Standard_ShortReal TolEnd)
 {
   myEnd    = End;
@@ -180,7 +173,6 @@ inline void Intrv_Interval::CutAtEnd(const Standard_Real End, const Standard_Sho
 
 //=================================================================================================
 
-
 inline Standard_Boolean AreFused(const Standard_Real      c1,
                                  const Standard_ShortReal t1,
                                  const Standard_Real      c2,
@@ -190,7 +182,6 @@ inline Standard_Boolean AreFused(const Standard_Real      c1,
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean Intrv_Interval::IsProbablyEmpty() const
 {

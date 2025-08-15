@@ -208,9 +208,7 @@ void DDataStd_DrawPresentation::BeforeForget()
     DrawErase(Label(), this);
 }
 
-
 //=================================================================================================
-
 
 void DDataStd_DrawPresentation::AfterResume()
 {

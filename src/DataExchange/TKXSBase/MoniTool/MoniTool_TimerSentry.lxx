@@ -15,7 +15,6 @@
 
 //=================================================================================================
 
-
 inline MoniTool_TimerSentry::MoniTool_TimerSentry(const Standard_CString cname)
     : myTimer(MoniTool_Timer::Timer(cname))
 {
@@ -23,7 +22,6 @@ inline MoniTool_TimerSentry::MoniTool_TimerSentry(const Standard_CString cname)
 }
 
 //=================================================================================================
-
 
 inline MoniTool_TimerSentry::MoniTool_TimerSentry(const Handle(MoniTool_Timer)& timer)
 {
@@ -44,14 +42,12 @@ inline MoniTool_TimerSentry::~MoniTool_TimerSentry()
 
 //=================================================================================================
 
-
 inline Handle(MoniTool_Timer) MoniTool_TimerSentry::Timer() const
 {
   return myTimer;
 }
 
 //=================================================================================================
-
 
 inline void MoniTool_TimerSentry::Stop()
 {

@@ -16,11 +16,9 @@
 
 //=================================================================================================
 
-
 inline MAT_TListNode::MAT_TListNode() {}
 
 //=================================================================================================
-
 
 inline MAT_TListNode::MAT_TListNode(const Item& anitem)
 {
@@ -29,14 +27,12 @@ inline MAT_TListNode::MAT_TListNode(const Item& anitem)
 
 //=================================================================================================
 
-
 inline Item MAT_TListNode::GetItem() const
 {
   return theitem;
 }
 
 //=================================================================================================
-
 
 inline Handle(MAT_TListNode) MAT_TListNode::Next() const
 {
@@ -45,14 +41,12 @@ inline Handle(MAT_TListNode) MAT_TListNode::Next() const
 
 //=================================================================================================
 
-
 inline Handle(MAT_TListNode) MAT_TListNode::Previous() const
 {
   return theprevious;
 }
 
 //=================================================================================================
-
 
 inline void MAT_TListNode::SetItem(const Item& anitem)
 {
@@ -61,14 +55,12 @@ inline void MAT_TListNode::SetItem(const Item& anitem)
 
 //=================================================================================================
 
-
 inline void MAT_TListNode::Next(const Handle(MAT_TListNode)& atlistnode)
 {
   thenext = atlistnode;
 }
 
 //=================================================================================================
-
 
 inline void MAT_TListNode::Previous(const Handle(MAT_TListNode)& atlistnode)
 {

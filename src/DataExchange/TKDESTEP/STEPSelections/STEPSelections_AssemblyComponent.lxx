@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyComponent::GetSDR()
   const
 {
@@ -25,7 +24,6 @@ inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyCo
 
 //=================================================================================================
 
-
 inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyComponent::GetList()
   const
 {
@@ -33,7 +31,6 @@ inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyCom
 }
 
 //=================================================================================================
-
 
 inline void STEPSelections_AssemblyComponent::SetSDR(
   const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)

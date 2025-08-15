@@ -19,14 +19,12 @@
 
 //=================================================================================================
 
-
 inline Handle(Units_TokensSequence) Units_Sentence::Sequence() const
 {
   return thesequenceoftokens;
 }
 
 //=================================================================================================
-
 
 inline void Units_Sentence::Sequence(const Handle(Units_TokensSequence)& asequenceoftokens)
 {
@@ -35,14 +33,12 @@ inline void Units_Sentence::Sequence(const Handle(Units_TokensSequence)& asequen
 
 //=================================================================================================
 
-
 inline Standard_Boolean Units_Sentence::IsDone() const
 {
   return thesequenceoftokens->Length() > 0;
 }
 
 //=================================================================================================
-
 
 inline void Units_Sentence::Dump() const
 {

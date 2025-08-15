@@ -15,7 +15,6 @@
 
 //=================================================================================================
 
-
 inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
 {
   return myDocuments;
@@ -23,14 +22,12 @@ inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
 
 //=================================================================================================
 
-
 inline const TCollection_ExtendedString& TDocStd_ApplicationDelta::GetName() const
 {
   return myName;
 }
 
 //=================================================================================================
-
 
 inline void TDocStd_ApplicationDelta::SetName(const TCollection_ExtendedString& theName)
 {

@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline Standard_Boolean BRepSweep_Iterator::More() const
 {
   return myIterator.More();
@@ -24,14 +23,12 @@ inline Standard_Boolean BRepSweep_Iterator::More() const
 
 //=================================================================================================
 
-
 inline const TopoDS_Shape& BRepSweep_Iterator::Value() const
 {
   return myIterator.Value();
 }
 
 //=================================================================================================
-
 
 inline TopAbs_Orientation BRepSweep_Iterator::Orientation() const
 {

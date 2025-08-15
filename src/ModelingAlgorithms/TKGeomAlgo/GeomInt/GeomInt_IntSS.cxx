@@ -20,7 +20,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Extrema_ExtPS.hxx>
 
-
 //=================================================================================================
 
 void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,

@@ -16,11 +16,9 @@
 
 //=================================================================================================
 
-
 inline LocOpe_BuildShape::LocOpe_BuildShape() {}
 
 //=================================================================================================
-
 
 inline LocOpe_BuildShape::LocOpe_BuildShape(const TopTools_ListOfShape& L)
 {
@@ -28,7 +26,6 @@ inline LocOpe_BuildShape::LocOpe_BuildShape(const TopTools_ListOfShape& L)
 }
 
 //=================================================================================================
-
 
 inline const TopoDS_Shape& LocOpe_BuildShape::Shape() const
 {

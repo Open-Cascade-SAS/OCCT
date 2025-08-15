@@ -62,7 +62,6 @@ Standard_Boolean DNaming_Line3DDriver::MustExecute(const Handle(TFunction_Logboo
   return Standard_True;
 }
 
-
 //=================================================================================================
 
 Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog) const

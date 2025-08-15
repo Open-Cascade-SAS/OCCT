@@ -16,7 +16,6 @@
 
 //=================================================================================================
 
-
 inline void BRep_CurveOnSurface::SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
   myUV1 = P1;
@@ -24,7 +23,6 @@ inline void BRep_CurveOnSurface::SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d&
 }
 
 //=================================================================================================
-
 
 inline void BRep_CurveOnSurface::UVPoints(gp_Pnt2d& P1, gp_Pnt2d& P2) const
 {

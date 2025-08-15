@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const TopoDS_Face& DBRep_Face::Face() const
 {
   return myFace;
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Face::Face(const TopoDS_Face& F)
 {
@@ -32,14 +30,12 @@ inline void DBRep_Face::Face(const TopoDS_Face& F)
 
 //=================================================================================================
 
-
 inline Standard_Integer DBRep_Face::NbIsos() const
 {
   return myTypes.Upper();
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Face::Iso(const Standard_Integer I,
                             const GeomAbs_IsoType  T,
@@ -54,7 +50,6 @@ inline void DBRep_Face::Iso(const Standard_Integer I,
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Face::GetIso(const Standard_Integer I,
                                GeomAbs_IsoType&       T,
@@ -73,14 +68,12 @@ inline void DBRep_Face::GetIso(const Standard_Integer I,
 
 //=================================================================================================
 
-
 inline const Draw_Color& DBRep_Face::Color() const
 {
   return myColor;
 }
 
 //=================================================================================================
-
 
 inline void DBRep_Face::Color(const Draw_Color& C)
 {

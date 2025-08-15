@@ -135,7 +135,6 @@ static void TraceRevol(const Standard_Real                        t,
 }
 #endif
 
-
 //=================================================================================================
 
 static void InGoodPeriod(const Standard_Real Prec,
@@ -507,7 +506,6 @@ void GeomFill_LocationGuide::Set(const Handle(GeomFill_SectionLaw)& Section,
   else
     rotation = Standard_False;
 }
-
 
 //=================================================================================================
 

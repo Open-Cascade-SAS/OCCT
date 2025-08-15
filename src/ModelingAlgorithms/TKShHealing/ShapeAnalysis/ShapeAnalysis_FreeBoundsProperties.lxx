@@ -18,7 +18,6 @@
 
 //=================================================================================================
 
-
 inline TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
 {
   return myShape;
@@ -35,7 +34,6 @@ inline Standard_Boolean ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
 }
 
 //=================================================================================================
-
 
 inline Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
 {

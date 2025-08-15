@@ -20,7 +20,6 @@
 
 //=================================================================================================
 
-
 inline void HLRBRep_SLPropsATool::Value(const Standard_Address A,
                                         const Standard_Real    U,
                                         const Standard_Real    V,
@@ -30,7 +29,6 @@ inline void HLRBRep_SLPropsATool::Value(const Standard_Address A,
 }
 
 //=================================================================================================
-
 
 inline void HLRBRep_SLPropsATool::D1(const Standard_Address A,
                                      const Standard_Real    U,
@@ -43,7 +41,6 @@ inline void HLRBRep_SLPropsATool::D1(const Standard_Address A,
 }
 
 //=================================================================================================
-
 
 inline void HLRBRep_SLPropsATool::D2(const Standard_Address A,
                                      const Standard_Real    U,
@@ -60,7 +57,6 @@ inline void HLRBRep_SLPropsATool::D2(const Standard_Address A,
 
 //=================================================================================================
 
-
 inline gp_Vec HLRBRep_SLPropsATool::DN(const Standard_Address A,
                                        const Standard_Real    U,
                                        const Standard_Real    V,
@@ -72,14 +68,12 @@ inline gp_Vec HLRBRep_SLPropsATool::DN(const Standard_Address A,
 
 //=================================================================================================
 
-
 inline Standard_Integer HLRBRep_SLPropsATool::Continuity(const Standard_Address)
 {
   return 2;
 } // et boum ! cky le 27 - 04 - 1993
 
 //=================================================================================================
-
 
 inline void HLRBRep_SLPropsATool::Bounds(const Standard_Address,
                                          Standard_Real& U1,

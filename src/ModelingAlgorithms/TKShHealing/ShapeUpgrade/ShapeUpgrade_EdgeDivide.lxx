@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_EdgeDivide::SetFace(const TopoDS_Face& F)
 {
   myFace = F;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve2d() const
 {
@@ -31,7 +29,6 @@ inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve2d() const
 
 //=================================================================================================
 
-
 inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve3d() const
 {
   return myHasCurve3d;
@@ -39,14 +36,12 @@ inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve3d() const
 
 //=================================================================================================
 
-
 inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots2d() const
 {
   return myKnots2d;
 }
 
 //=================================================================================================
-
 
 inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots3d() const
 {

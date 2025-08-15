@@ -49,7 +49,6 @@ inline Standard_Real math_KronrodSingleIntegration::ErrorReached() const
 
 //=================================================================================================
 
-
 inline Standard_Real math_KronrodSingleIntegration::AbsolutError() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "math_KronrodSingleIntegration");

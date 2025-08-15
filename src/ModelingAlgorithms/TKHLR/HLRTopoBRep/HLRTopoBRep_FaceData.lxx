@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIntL() const
 {
   return myIntL;
 }
 
 //=================================================================================================
-
 
 inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceOutL() const
 {
@@ -32,14 +30,12 @@ inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceOutL() const
 
 //=================================================================================================
 
-
 inline const TopTools_ListOfShape& HLRTopoBRep_FaceData::FaceIsoL() const
 {
   return myIsoL;
 }
 
 //=================================================================================================
-
 
 inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIntL()
 {
@@ -48,14 +44,12 @@ inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIntL()
 
 //=================================================================================================
 
-
 inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddOutL()
 {
   return myOutL;
 }
 
 //=================================================================================================
-
 
 inline TopTools_ListOfShape& HLRTopoBRep_FaceData::AddIsoL()
 {

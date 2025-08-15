@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline const Standard_GUID& TNaming_NamedShape::ID() const
 {
   return GetID();
 }
 
 //=================================================================================================
-
 
 inline TNaming_Evolution TNaming_NamedShape::Evolution() const
 {
@@ -32,14 +30,12 @@ inline TNaming_Evolution TNaming_NamedShape::Evolution() const
 
 //=================================================================================================
 
-
 inline Standard_Integer TNaming_NamedShape::Version() const
 {
   return myVersion;
 }
 
 //=================================================================================================
-
 
 inline void TNaming_NamedShape::SetVersion(const Standard_Integer v)
 {

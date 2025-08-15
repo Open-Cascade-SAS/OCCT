@@ -114,7 +114,6 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXPix,
   TraverseSensitives(-1);
 }
 
-
 //=================================================================================================
 
 void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,

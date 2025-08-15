@@ -16,14 +16,12 @@
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::Set2dConversion(const Standard_Boolean mode)
 {
   my2dMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get2dConversion() const
 {
@@ -32,14 +30,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get2dConversion() con
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConversion(const Standard_Boolean mode)
 {
   my3dMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConversion() const
 {
@@ -48,14 +44,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConversion() con
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::SetSurfaceConversion(const Standard_Boolean mode)
 {
   mySurfaceMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetSurfaceConversion() const
 {
@@ -64,14 +58,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetSurfaceConversion(
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::Set3dLineConversion(const Standard_Boolean mode)
 {
   my3dLineMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dLineConversion() const
 {
@@ -80,14 +72,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dLineConversion()
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::Set3dCircleConversion(const Standard_Boolean mode)
 {
   my3dCircleMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dCircleConversion() const
 {
@@ -96,14 +86,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dCircleConversion
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConicConversion(const Standard_Boolean mode)
 {
   my3dConicMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConicConversion() const
 {
@@ -112,14 +100,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConicConversion(
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::SetPlaneMode(const Standard_Boolean mode)
 {
   myPlaneMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetPlaneMode() const
 {
@@ -128,14 +114,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetPlaneMode() const
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::SetRevolutionMode(const Standard_Boolean mode)
 {
   myRevolutionMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetRevolutionMode() const
 {
@@ -144,14 +128,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetRevolutionMode() c
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::SetExtrusionMode(const Standard_Boolean mode)
 {
   myExtrusionMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetExtrusionMode() const
 {
@@ -160,14 +142,12 @@ inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetExtrusionMode() co
 
 //=================================================================================================
 
-
 inline void ShapeUpgrade_ShapeConvertToBezier::SetBSplineMode(const Standard_Boolean mode)
 {
   myBSplineMode = mode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetBSplineMode() const
 {

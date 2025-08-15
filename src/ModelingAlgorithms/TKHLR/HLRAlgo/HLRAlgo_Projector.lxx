@@ -20,7 +20,6 @@
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Projector::Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const
 {
   D1 = myD1;
@@ -29,7 +28,6 @@ inline void HLRAlgo_Projector::Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& 
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean HLRAlgo_Projector::Perspective() const
 {
@@ -45,7 +43,6 @@ inline const gp_Trsf & HLRAlgo_Projector::Transformation() const
 */
 //=================================================================================================
 
-
 inline const gp_Trsf& HLRAlgo_Projector::InvertedTransformation() const
 {
   return myInvTrsf;
@@ -53,14 +50,12 @@ inline const gp_Trsf& HLRAlgo_Projector::InvertedTransformation() const
 
 //=================================================================================================
 
-
 inline const gp_Trsf& HLRAlgo_Projector::FullTransformation() const
 {
   return myScaledTrsf;
 }
 
 //=================================================================================================
-
 
 inline Standard_Real HLRAlgo_Projector::Focus() const
 {
@@ -70,14 +65,12 @@ inline Standard_Real HLRAlgo_Projector::Focus() const
 
 //=================================================================================================
 
-
 inline void HLRAlgo_Projector::Transform(gp_Vec& D) const
 {
   D.Transform(myTrsf);
 }
 
 //=================================================================================================
-
 
 inline void HLRAlgo_Projector::Transform(gp_Pnt& Pnt) const
 {

@@ -16,11 +16,9 @@
 
 //=================================================================================================
 
-
 inline GeomAPI_IntSS::GeomAPI_IntSS() {}
 
 //=================================================================================================
-
 
 inline GeomAPI_IntSS::GeomAPI_IntSS(const Handle(Geom_Surface)& S1,
                                     const Handle(Geom_Surface)& S2,
@@ -31,7 +29,6 @@ inline GeomAPI_IntSS::GeomAPI_IntSS(const Handle(Geom_Surface)& S1,
 
 //=================================================================================================
 
-
 inline void GeomAPI_IntSS::Perform(const Handle(Geom_Surface)& S1,
                                    const Handle(Geom_Surface)& S2,
                                    const Standard_Real         Tol)
@@ -41,7 +38,6 @@ inline void GeomAPI_IntSS::Perform(const Handle(Geom_Surface)& S1,
 
 //=================================================================================================
 
-
 inline Standard_Boolean GeomAPI_IntSS::IsDone() const
 {
   return myIntersec.IsDone();
@@ -49,14 +45,12 @@ inline Standard_Boolean GeomAPI_IntSS::IsDone() const
 
 //=================================================================================================
 
-
 inline Standard_Integer GeomAPI_IntSS::NbLines() const
 {
   return myIntersec.NbLines();
 }
 
 //=================================================================================================
-
 
 inline const Handle(Geom_Curve)& GeomAPI_IntSS::Line(const Standard_Integer I) const
 {

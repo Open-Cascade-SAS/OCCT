@@ -15,14 +15,12 @@
 
 //=================================================================================================
 
-
 inline Standard_Integer TDocStd_MultiTransactionManager::GetUndoLimit() const
 {
   return myUndoLimit;
 }
 
 //=================================================================================================
-
 
 inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
   GetAvailableUndos() const
@@ -32,7 +30,6 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
 
 //=================================================================================================
 
-
 inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
   GetAvailableRedos() const
 {
@@ -41,7 +38,6 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
 
 //=================================================================================================
 
-
 inline const TDocStd_SequenceOfDocument& TDocStd_MultiTransactionManager::Documents() const
 {
   return myDocuments;
@@ -49,14 +45,12 @@ inline const TDocStd_SequenceOfDocument& TDocStd_MultiTransactionManager::Docume
 
 //=================================================================================================
 
-
 inline Standard_Boolean TDocStd_MultiTransactionManager::IsNestedTransactionMode() const
 {
   return myIsNestedTransactionMode;
 }
 
 //=================================================================================================
-
 
 inline Standard_Boolean TDocStd_MultiTransactionManager::HasOpenCommand() const
 {

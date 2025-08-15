@@ -22,14 +22,12 @@
 
 //=================================================================================================
 
-
 inline TCollection_AsciiString Units_Unit::Name() const
 {
   return thename->String();
 }
 
 //=================================================================================================
-
 
 inline Standard_Real Units_Unit::Value() const
 {
@@ -38,14 +36,12 @@ inline Standard_Real Units_Unit::Value() const
 
 //=================================================================================================
 
-
 inline Handle(Units_Quantity) Units_Unit::Quantity() const
 {
   return thequantity;
 }
 
 //=================================================================================================
-
 
 inline Handle(TColStd_HSequenceOfHAsciiString) Units_Unit::SymbolsSequence() const
 {
@@ -54,14 +50,12 @@ inline Handle(TColStd_HSequenceOfHAsciiString) Units_Unit::SymbolsSequence() con
 
 //=================================================================================================
 
-
 inline void Units_Unit::Value(const Standard_Real avalue)
 {
   thevalue = avalue;
 }
 
 //=================================================================================================
-
 
 inline void Units_Unit::Quantity(const Handle(Units_Quantity)& aquantity)
 {
