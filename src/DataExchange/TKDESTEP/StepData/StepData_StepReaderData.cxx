@@ -51,14 +51,16 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
-// Le Header est constitue d entites analogues dans leur principe a celles
-// du Data, a ceci pres qu elles sont sans identifieur, et ne peuvent ni
-// referencer, ni etre referencees (que ce soit avec Header ou avec Data)
-// Ainsi, dans StepReaderData, le Header est constitue des "thenbhead" 1res Entites
+// The Header consists of entities analogous in principle to those
+// of the Data, except that they are without identifier, and can neither
+// reference, nor be referenced (whether with Header or with Data)
+// Thus, in StepReaderData, the Header consists of the first "thenbhead" Entities
+// This separation allows STEP files to have metadata and structural information
+// separate from the main geometric and semantic data
 //  #########################################################################
-//  ....   Creation et Acces de base aux donnees atomiques du fichier    ....
+//  ....   Creation and basic access to atomic file data    ....
 typedef TCollection_HAsciiString String;
-static char                      txtmes[200]; // plus commode que redeclarer partout
+static char                      txtmes[200]; // more convenient than redeclaring everywhere
 
 static Standard_Boolean initstr = Standard_False;
 #define Maxlst 64
@@ -390,7 +392,7 @@ void StepData_StepReaderData::SetRecord(const Standard_Integer num,
   Standard_Integer numlst;
 
   if (type[0] != '(')
-    thenbents++; // total de termes propres du fichier
+    thenbents++; // total number of proper file terms
 
   thetypes.ChangeValue(num) = thenametypes.Add(TCollection_AsciiString(type));
 
@@ -401,7 +403,7 @@ void StepData_StepReaderData::SetRecord(const Standard_Integer num,
     else
       numlst = ident[1] - 48;
     if (thelastn < numlst)
-      thelastn = numlst; // plus fort n0 de sous-liste
+      thelastn = numlst; // highest sub-list number
     theidents.SetValue(num, -2 - numlst);
   }
   else if (ident[0] == '#')
@@ -410,10 +412,10 @@ void StepData_StepReaderData::SetRecord(const Standard_Integer num,
     theidents.SetValue(num, numlst);
     if (numlst == 0 && num > thenbhead)
     {
-      //    Header, ou bien Type Complexe ...
-      //    Si Type Complexe, retrouver Type Precedent (on considere que c est rare)
-      //    On chaine le type precedent sur le suivant
-      //    VERIFICATION que les types sont en ordre alphabetique
+      //    Header, or Complex Type ...
+      //    If Complex Type, find Previous Type (we consider this is rare)
+      //    Chain the previous type to the next one
+      //    VERIFICATION that types are in alphabetical order
       for (Standard_Integer prev = num - 1; prev > thenbhead; prev--)
       {
         if (theidents(prev) >= 0)
@@ -522,7 +524,7 @@ Standard_Integer StepData_StepReaderData::RecordIdent(const Standard_Integer num
 }
 
 //  ########################################################################
-//  ....       Aides a la lecture des parametres, adaptees a STEP       ....
+//  ....       Parameter reading aids, adapted for STEP       ....
 
 //=================================================================================================
 
@@ -592,7 +594,7 @@ Standard_Boolean StepData_StepReaderData::NamedForComplex(const Standard_CString
 
   if (n == 0)                            /*stat =*/
     NamedForComplex(name, num0, n, ach); // on a rembobine
-                                         //  Pas dans l ordre alphabetique : boucler
+                                         //  Not in alphabetical order: loop
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
   sprintf(txtmes, errmess->ToCString(), num0, name);
   for (n = num0; n > 0; n = NextForComplex(n))
@@ -715,7 +717,7 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer   n
   return Standard_True;
 }
 
-//  ...   Facilites pour LateBinding
+//  ...   Utilities for LateBinding
 
 //=================================================================================================
 
@@ -727,12 +729,12 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
 {
   Standard_Integer nbp = NbParams(numsub);
   if (nbp == 0)
-    return 0; // liste vide = Handle Null
+    return 0; // empty list = Handle Null
   const TCollection_AsciiString& rectyp = RecordType(numsub);
   if (nbp == 1 && rectyp.ToCString()[0] != '(')
   {
-    //  c est un type avec un parametre -> SelectNamed
-    //  cf ReadSelect mais ici, on est deja sur le contenu du parametre
+    //  it's a type with one parameter -> SelectNamed
+    //  cf ReadSelect but here, we are already on the parameter content
     Handle(StepData_SelectNamed) sn = new StepData_SelectNamed;
     val                             = sn;
     sn->SetName(rectyp.ToCString());
@@ -743,7 +745,7 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
       return 0;
   }
 
-  //  cas courant : faire un HArray1 de ... de ... de quoi au fait
+  //  common case: make an HArray1 of ... of ... of what exactly
   const Interface_FileParameter&          FP0 = Param(numsub, 1);
   Interface_ParamType                     FT, FT0 = FP0.ParamType();
   Standard_CString                        str = FP0.CValue();
@@ -810,7 +812,7 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
     htr = new TColStd_HArray1OfTransient(1, nbp);
     val = htr;
   }
-  //  Attention : si type variable, faudra changer son fusil d epaule -> htr
+  //  Attention: if variable type, will need to change approach -> htr
 
   for (Standard_Integer ip = 1; ip <= nbp; ip++)
   {
@@ -884,10 +886,10 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
       default:
         break;
     }
-    //    Restent les autres cas ... tout est possible. cf le type du Param
+    //    Remaining other cases ... everything is possible. cf the Param type
     if (kod > 0)
       continue;
-    //    Il faut passer au transient ...
+    //    Need to pass to transient ...
     if (htr.IsNull())
     {
       htr = new TColStd_HArray1OfTransient(1, nbp);
@@ -919,8 +921,8 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
         }
       }
     }
-    //    A present, faut y aller : lire le champ et le mettre en place
-    //    Ce qui suit ressemble fortement a ReadAny ...
+    //    Now, let's go: read the field and put it in place
+    //    What follows strongly resembles ReadAny ...
 
     switch (FT)
     {
@@ -1008,7 +1010,7 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer        
     }
     return -1;
   }
-  return 8; // pour Any
+  return 8; // for Any
 }
 
 //=================================================================================================
@@ -1148,7 +1150,7 @@ Standard_Boolean StepData_StepReaderData::ReadAny(const Standard_Integer        
   Standard_CString               str = FP.CValue();
   Interface_ParamType            FT  = FP.ParamType();
 
-  //    A present, faut y aller : lire le champ et le mettre en place
+  //    Now, let's go: read the field and put it in place
   switch (FT)
   {
     case Interface_ParamMisc:
@@ -1259,7 +1261,7 @@ Standard_Boolean StepData_StepReaderData::ReadAny(const Standard_Integer        
       Standard_Integer numsub = SubListNumber(num, nump, Standard_False);
       Standard_Integer nbp    = NbParams(numsub);
       if (nbp == 0)
-        return Standard_False; // liste vide = Handle Null
+        return Standard_False; // empty list = Handle Null
       const TCollection_AsciiString& rectyp = RecordType(numsub);
       if (nbp == 1 && rectyp.ToCString()[0] != '(')
       {
@@ -1326,7 +1328,7 @@ Standard_Boolean StepData_StepReaderData::ReadXY(const Standard_Integer   num,
                                                  Standard_Real&           X,
                                                  Standard_Real&           Y) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Integer numsub = SubListNumber(num, nump, Standard_False);
   if (numsub != 0)
   {
@@ -1367,7 +1369,7 @@ Standard_Boolean StepData_StepReaderData::ReadXYZ(const Standard_Integer   num,
                                                   Standard_Real&           Y,
                                                   Standard_Real&           Z) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Integer numsub = SubListNumber(num, nump, Standard_False);
   if (numsub != 0)
   {
@@ -1442,7 +1444,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer     
                                                      const Handle(Standard_Type)& atype,
                                                      Handle(Standard_Transient)&  ent) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1497,7 +1499,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
                                                      Handle(Interface_Check)& ach,
                                                      StepData_SelectType&     sel) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1530,9 +1532,9 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer   nu
     }
     else
     {
-      // Cas restant : on s interesse en fait au SelectMember ...
+      // Remaining case: we are actually interested in the SelectMember ...
       Handle(Standard_Transient) sm = sel.NewMember();
-      // SelectMember qui assure ce role. Peut etre specialise
+      // SelectMember which performs this role. Can be specialized
       if (!ReadAny(num, nump, mess, ach, sel.Description(), sm))
         errmess = new String("Parameter n0.%d (%s) : could not be read");
       if (!sel.Matches(sm))
@@ -1567,7 +1569,7 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer   n
                                                       Handle(Interface_Check)& ach,
                                                       Standard_Integer&        val) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1679,7 +1681,7 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer     
                                                      Handle(Interface_Check)&          ach,
                                                      Handle(TCollection_HAsciiString)& val) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1724,7 +1726,7 @@ Standard_Boolean StepData_StepReaderData::ReadEnumParam(const Standard_Integer  
                                                         Handle(Interface_Check)& ach,
                                                         Standard_CString&        text) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1776,8 +1778,8 @@ Standard_Boolean StepData_StepReaderData::ReadEnum(const Standard_Integer   num,
                                                    const StepData_EnumTool& enumtool,
                                                    Standard_Integer&        val) const
 {
-  //  reprendre avec ReadEnumParam ?
-  Handle(String)   errmess; // Null si pas d erreur
+  //  resume with ReadEnumParam?
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1831,7 +1833,7 @@ Standard_Boolean StepData_StepReaderData::ReadTypedParam(const Standard_Integer 
     const Interface_FileParameter& FP = Param(num, nump);
     if (FP.ParamType() != Interface_ParamSub)
     {
-      //    Pas une sous-liste : OK si admis
+      //    Not a sub-list: OK if allowed
       numr  = num;
       numrp = nump;
       typ.Clear();
@@ -1868,7 +1870,7 @@ Standard_Boolean StepData_StepReaderData::CheckDerived(const Standard_Integer   
                                                        Handle(Interface_Check)& ach,
                                                        const Standard_Boolean   errstat) const
 {
-  Handle(String)   errmess; // Null si pas d erreur
+  Handle(String)   errmess; // Null if no error
   Standard_Boolean warn = !errstat;
   if (nump > 0 && nump <= NbParams(num))
   {
@@ -1893,7 +1895,7 @@ Standard_Boolean StepData_StepReaderData::CheckDerived(const Standard_Integer   
 }
 
 //  #########################################################################
-// ....     Methodes specifiques (demandees par FileReaderData)     .... //
+// ....     Specific methods (requested by FileReaderData)     .... //
 
 //=================================================================================================
 
@@ -1906,10 +1908,10 @@ Standard_Integer StepData_StepReaderData::NbEntities() const // redefined
 
 Standard_Integer StepData_StepReaderData::FindNextRecord(const Standard_Integer num) const
 {
-  // retourne, sur un numero d enregistrement donne (par num), le suivant qui
-  // definit une entite, ou 0 si c est fini :
-  // passe le Header (nbhend premiers records) et
-  // saute les enregistrements SCOPE et ENDSCOPE et les SOUS-LISTES
+  // returns, for a given record number (by num), the next one which
+  // defines an entity, or 0 if finished:
+  // passes the Header (first nbhend records) and
+  // skips SCOPE and ENDSCOPE records and SUB-LISTS
 
   if (num < 0)
     return 0;
@@ -1923,8 +1925,8 @@ Standard_Integer StepData_StepReaderData::FindNextRecord(const Standard_Integer 
     if (theidents(num1) > 0)
       return num1;
 
-    // SCOPE,ENDSCOPE et Sous-Liste ont un identifieur fictif: -1,-2 respectivement
-    // et SUBLIST ont un negatif. Seule une vraie entite a un Ident positif
+    // SCOPE,ENDSCOPE and Sub-List have a fictitious identifier: -1,-2 respectively
+    // and SUBLIST have a negative one. Only a real entity has a positive Ident
     num1++;
   }
   return 0;
@@ -1935,8 +1937,8 @@ Standard_Integer StepData_StepReaderData::FindNextRecord(const Standard_Integer 
 Standard_Integer StepData_StepReaderData::FindEntityNumber(const Standard_Integer num,
                                                            const Standard_Integer id) const
 {
-  //  Soit un "Id" : recherche dans les Parametres de type Ident de <num>,
-  //  si un d eux designe #Id justement. Si oui, retourne son EntityNumber
+  //  Given an "Id": search in the Ident type Parameters of <num>,
+  //  if one of them designates #Id precisely. If yes, return its EntityNumber
   if (num == 0)
     return 0;
   Standard_Integer nb = NbParams(num);
@@ -1953,51 +1955,56 @@ Standard_Integer StepData_StepReaderData::FindEntityNumber(const Standard_Intege
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
-// ....         La fonction qui suit merite une attention speciale        ....
+// ....         The following function deserves special attention        ....
 
-//  Cette methode precharge les EntityNumbers dans les Params : ils designent
-//  les Entites proprement dites dans la liste lue par BoundEntity
-//  Interet : adresse de meme les sous-listes (Num->no record dans le Direc)
-//  resultat exploite par ParamEntity et ParamNumber
-
-//  En l absence de SCOPE, ou si les "ident" sont strictement ordonnes, a coup
-//  sur ils ne sont pas dupliques, on peut utiliser une IndexedMap en toute
-//  confiance. Sinon, il faut balayer dans le fichier, mais avec les SCOPES
-//  cela va beaucoup plus vite (s ils sont assez gros) : on s y retrouve.
-
-// Pour la recherche par balayage, On opere en plusieurs etapes
-// Avant toute chose, le chargement a deja fait une preparation : les idents
-// (Entity, SubList) sont deja en entiers (rapidite de lecture), en particulier
-// dans les EntityNumber : ainsi, on lit cet ident, on le traite, et on remet
-// a la place un vrai numero de Record
+//  This method preloads the EntityNumbers in the Params: they designate
+//  the Entities properly said in the list read by BoundEntity
+//  Interest: also addresses sub-lists (Num->record number in the Directory)
+//  result exploited by ParamEntity and ParamNumber
 //
-// D abord, on passe le directory en table d entiers,  sous-listes expurgees
-// en // , table inverse vers cette table, car les sous-listes peuvent par
-// contre designer des objets ...
+//  This is a critical optimization that resolves entity references during loading
+//  rather than during each access, significantly improving performance for large files
 
-// Pour les sous-listes, on exploite leur mode de construction : elles sont
-// enregistrees AVANT d etre referencees. Un tableau "subn" note donc pour
-// chaque numero de sous-liste (relatif a une entite qui suit, et reference
-// par elle ou une autre sous-liste qui suit egalement), son n0 de record
-// REMARQUE : ceci marche aussi pour le Header, traite par l occasion
+//  In the absence of SCOPE, or if the "ident" are strictly ordered, for sure
+//  they are not duplicated, we can use an IndexedMap with full
+//  confidence. Otherwise, we must scan the file, but with SCOPES
+//  this goes much faster (if they are big enough): we find our way around.
+
+// For the search by scanning, We operate in several steps
+// Before anything, the loading has already done preparation: the idents
+// (Entity, SubList) are already in integers (reading speed), in particular
+// in the EntityNumber: thus, we read this ident, we process it, and we put back
+// in its place a real Record number
+//
+// First, we pass the directory to integer table, sub-lists purged
+// in parallel, inverse table towards this table, because sub-lists can on the
+// contrary designate objects ...
+
+// For sub-lists, we exploit their construction mode: they are
+// recorded BEFORE being referenced. A "subn" array thus notes for
+// each sub-list number (relative to an entity that follows, and referenced
+// by it or another sub-list that also follows), its record number
+// NOTE: this also works for the Header, processed on the occasion
 
 //=================================================================================================
 
 void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 {
   Message_Messenger::StreamBuffer sout = Message::SendTrace();
-  //   Passe initiale : Resolution directe par Map
-  //   si tout passe (pas de collision), OK. Sinon, autres passes a prevoir
-  //   On resoud du meme coup les sous-listes
+  //   Initial pass: Direct resolution by Map
+  //   if everything passes (no collision), OK. Otherwise, other passes to plan
+  //   We resolve sub-lists at the same time
+  //   The Map approach is O(1) lookup but requires unique identifiers
+  //   If identifiers collide (due to SCOPE sections), we fall back to linear search
   Standard_Integer                 nbdirec = NbRecords();
   Handle(NCollection_IncAllocator) anAlloc =
     new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
   TColStd_Array1OfInteger subn(0, thelastn);
 
-  Standard_Boolean            pbmap = Standard_False; // au moins un conflit
+  Standard_Boolean            pbmap = Standard_False; // at least one conflict
   Standard_Integer            nbmap = 0;
   TColStd_IndexedMapOfInteger imap(thenbents, anAlloc);
-  TColStd_Array1OfInteger     indm(0, nbdirec); // Index Map -> Record Number (seulement si map)
+  TColStd_Array1OfInteger     indm(0, nbdirec); // Index Map -> Record Number (only if map)
 
   Standard_Integer num; // svv Jan11 2000 : porting on DEC
   for (num = 1; num <= nbdirec; num++)
@@ -2005,14 +2012,14 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
     Standard_Integer ident = theidents(num);
     if (ident > 0)
     { // Ident normal -> Map ?
-      //  Map : si Recouvrement, l inhiber. Sinon, noter index
+      //  Map: if Overlap, inhibit it. Otherwise, note index
       Standard_Integer indmap = imap.Add(ident);
       if (indmap <= nbmap)
       {
-        indmap       = imap.FindIndex(ident); // plus sur
+        indmap       = imap.FindIndex(ident); // safer
         indm(indmap) = -1;                    // Map -> pb
         pbmap        = Standard_True;
-        //  pbmap signifie qu une autre passe sera necessaire ...
+        //  pbmap means another pass will be necessary ...
       }
       else
       {
@@ -2033,7 +2040,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 
     for (Standard_Integer na = nba; na > 0; na--)
     {
-      //    On traite : les sous-listes (sf subn), les idents (si Map dit OK ...)
+      //    We process: sub-lists (except subn), idents (if Map says OK ...)
       Interface_FileParameter& FP = ChangeParameter(nda + na);
       //      Interface_FileParameter& FP = ChangeParam (num,na);
       Interface_ParamType letype = FP.ParamType();
@@ -2053,31 +2060,31 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
         Standard_Integer id     = FP.EntityNumber();
         Standard_Integer indmap = imap.FindIndex(id);
         if (indmap > 0)
-        { // la map a trouve
+        { // the map found it
           Standard_Integer num0 = indm(indmap);
           if (num0 > 0)
-            FP.SetEntityNumber(num0); // ET VOILA, on a resolu
+            FP.SetEntityNumber(num0); // AND THERE, we have resolved
           else
-            FP.SetEntityNumber(-id); // CONFLIT -> faudra resoudre ...
+            FP.SetEntityNumber(-id); // CONFLICT -> will need to resolve ...
         }
         else
-        { // NON RESOLU, si pas pbmap, le dire
+        { // NOT RESOLVED, if no pbmap, say it
           if (pbmap)
           {
             FP.SetEntityNumber(-id);
-            continue; // pbmap : on se retrouvera
+            continue; // pbmap: we will find ourselves again
           }
           char failmess[100];
-          //  ...  Construire le Check  ...
+          //  ...  Build the Check  ...
           sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);
           thecheck->AddFail(failmess, "Unresolved Reference");
-          //  ...  Et sortir message un peu plus complet
+          //  ...  And output a more complete message
           sout << "*** ERR StepReaderData *** Entite #" << ident << "\n    Type:" << RecordType(num)
                << "  Param.n0 " << na << ": #" << id << " Not found" << std::endl;
-        } // FIN  Mapping
-      } // FIN  Traitement Reference
-    } // FIN  Boucle Parametres
-  } // FIN  Boucle Repertoires
+        } // END  Mapping
+      } // END  Reference Processing
+    } // END  Parameters Loop
+  } // END  Directory Loop
 
   if (!pbmap)
   {
@@ -2088,22 +2095,22 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
   Standard_Integer                 nbseq = thenbents + 2 * thenbscop;
   TColStd_Array1OfInteger          inds(0, nbseq);   // n0 Record/Entite
   TColStd_Array1OfInteger          indi(0, nbseq);   // Idents/scopes
-  TColStd_Array1OfInteger          indr(0, nbdirec); // inverse de nds
-  Handle(TColStd_HArray1OfInteger) indx;             // pour EXPORT (silya)
+  TColStd_Array1OfInteger          indr(0, nbdirec); // inverse of nds
+  Handle(TColStd_HArray1OfInteger) indx;             // for EXPORT (if any)
 
   imap.Clear();
   anAlloc->Reset();
-  Standard_Boolean iamap = withmap; // (par defaut True)
+  Standard_Boolean iamap = withmap; // (default True)
   nbmap                  = 0;
 
-  TColStd_SequenceOfInteger scopile(anAlloc); // chainage des scopes note par pile
+  TColStd_SequenceOfInteger scopile(anAlloc); // scope chaining noted by stack
   Standard_Integer          nr = 0;
   for (num = 1; num <= nbdirec; num++)
   {
     Standard_Integer ident = theidents(num);
     if (ident < -2)
-    {                     // SOUS-LISTE (cas le plus courant)
-      indr(num) = nr + 1; // recherche basee sur nr (objet qui suit)
+    {                     // SUB-LIST (most common case)
+      indr(num) = nr + 1; // search based on nr (following object)
     }
     else if (ident >= 0)
     { // Ident normal
@@ -2112,8 +2119,8 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
       indi(nr)  = ident;
       indr(num) = nr;
       if (ident > 0)
-      { // et non (iamap && ident > 0)
-        //  Map : si Recouvrement, l inhiber. Sinon, noter index
+      { // and not (iamap && ident > 0)
+        //  Map: if Overlap, inhibit it. Otherwise, note index
         Standard_Integer indmap = imap.Add(ident);
         if (indmap <= nbmap)
         {
@@ -2122,50 +2129,50 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           pbmap                       = Standard_True;
           if (thenbscop == 0)
             errorscope = Standard_True;
-          //  Numeros identiques alors quilnya pas de SCOPE ? ERREUR !
-          //  (Bien sur, silya des SCOPES, on passe au travers, mais bon...)
+          //  Identical numbers when there is no SCOPE? ERROR!
+          //  (Of course, if there are SCOPES, we pass through, but still...)
           else
           {
-            //  Silya des SCOPES, tachons d y voir de plus pres pour signaler un probleme
-            //  Erreur si MEME groupe SCOPE
-            //  ATTENTION, on recherche, non dans tous les records, mais dans les records
-            //    CHAINES, cf nr et non num (pas de sous-liste, chainage scope-endscope)
+            //  If there are SCOPES, let's look more closely to report a problem
+            //  Error if SAME SCOPE group
+            //  ATTENTION, we search, not in all records, but in the records
+            //    CHAINED, cf nr and not num (no sub-list, scope-endscope chaining)
             Standard_Integer fromscope = nr;
             Standard_Integer toscope   = indm(indmap);
             if (toscope < 0)
               toscope = -toscope;
             for (;;)
             {
-              fromscope--; // iteration de base
+              fromscope--; // basic iteration
               if (fromscope <= toscope)
               {
-                errorscope = Standard_True; // BANG, on est dessus
+                errorscope = Standard_True; // BANG, we are on it
                 break;
               }
               Standard_Integer idtest = indi(fromscope);
               if (idtest >= 0)
-                continue; // le suivant (enfin, le precedent)
+                continue; // the next one (well, the previous one)
               if (idtest == -1)
-                break; // pas meme niveau, donc c est OK
+                break; // not same level, so it's OK
               if (idtest == -3)
               {
                 fromscope = inds(fromscope);
                 if (fromscope < toscope)
-                  break; // on sort, pas en meme niveau
+                  break; // we exit, not on same level
               }
             }
           }
           if (errorscope)
           {
-            //  On est dedans : le signaler
+            //  We are inside: report it
             char ligne[80];
             sprintf(ligne, "Ident defined SEVERAL TIMES : #%d", ident);
             thecheck->AddFail(ligne, "Ident defined SEVERAL TIMES : #%d");
             sout << "StepReaderData : SetEntityNumbers, " << ligne << std::endl;
           }
           if (indm(indmap) > 0)
-            indm(indmap) = -indm(indmap); // Pas pour Map
-                                          //  Cas Normal pour la Map
+            indm(indmap) = -indm(indmap); // Not for Map
+                                          //  Normal case for the Map
         }
         else
         {
@@ -2210,9 +2217,9 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
     }
   }
 
-  //  ..    Resolution des EXPORT, silyena et silya besoin    ..
-  //  Pour chaque valeur de EXPORT qui n a pas ete resolue par la MAP,
-  //  determiner sa position locale par recherche en arriere depuis ENDSCOPE
+  //  ..    EXPORT resolution, if any and if needed    ..
+  //  For each EXPORT value that has not been resolved by the MAP,
+  //  determine its local position by backward search from ENDSCOPE
   if ((!iamap || pbmap) && !indx.IsNull())
   {
     for (nr = 0; nr <= nbseq; nr++)
@@ -2228,114 +2235,118 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           continue;
         Standard_Integer id = -FP.EntityNumber();
         if (id < 0)
-          continue; // deja resolu en tete
+          continue; // already resolved at head
                     /*	if (imap.Contains(id)) {            et voila
                         FP.SetEntityNumber(indm(imap.FindIndex(id)));
                         continue;
                       }    */
 
-        //  Recherche du Id demande : si EXPORT imbrique, deja resolu mais il faut
-        //  regarder ! (inutile par contre d aller y voir : c est deja fait, car
-        //  un EXPORT imbrique a ete traite AVANT celui qui imbrique)
+        //  Search for the requested Id: if nested EXPORT, already resolved but we must
+        //  look! (useless however to go see: it's already done, because
+        //  a nested EXPORT has been processed BEFORE the one that nests)
         Standard_Integer n0 = nr - 1;
         if (indi(n0) == -3)
-          n0--; // si on suit juste un ENDSCOPE
+          n0--; // if we just follow an ENDSCOPE
         while (n0 > 0)
         {
           Standard_Integer irec = indi(n0);
           if (irec == id)
-          { // trouve
+          { // found
             FP.SetEntityNumber(inds(n0));
             break;
           }
           if (irec == -1)
-            break; // SCOPE : fin de ce SCOPE/ENDSCOPE
+            break; // SCOPE: end of this SCOPE/ENDSCOPE
           if (irec == -3)
           {
-            //  gare a EXPORT : si un EXPORT detient Id, noter son Numero deja calcule
-            //  Attention : Id a lire depuis CValue  car EntityNumber deja resolu
+            //  beware of EXPORT: if an EXPORT holds Id, note its already calculated Number
+            //  Attention: Id to be read from CValue because EntityNumber already resolved
             Standard_Integer nok = FindEntityNumber(indx->Value(n0), id);
             if (nok > 0)
             {
               FP.SetEntityNumber(nok);
               break;
             }
-            n0 = inds(n0); // ENDSCOPE ou EXPORT infructueux : le sauter
-          } // fin traitement sur un ENDSCOPE ou EXPORT
+            n0 = inds(n0); // ENDSCOPE or unsuccessful EXPORT: skip it
+          } // end processing on an ENDSCOPE or EXPORT
           n0--;
-        } // fin resolution d un Parametre EXPORT
-      } // fin resolution de la liste d un EXPORT
-    } // fin bouclage sur les EXPORT
+        } // end resolution of an EXPORT Parameter
+      } // end resolution of an EXPORT list
+    } // end looping on EXPORTs
   }
 
-  //  Exploitation de la table : bouclage porte sur la table
+  //  Table exploitation: looping operates on the table
 
-  //  Traitement des sous-listes : se fait dans la foulee, par gestion d une pile
-  //  basee sur la constitution des sous-listes
-  Standard_Integer                 maxsubpil = 30; // pile simulee avec un Array : tres fort
-  Handle(TColStd_HArray1OfInteger) subpile   =     // ... gagne de la memoire ...
+  //  Sub-lists processing: done on the fly, by managing a stack
+  //  based on the constitution of sub-lists
+  Standard_Integer                 maxsubpil = 30; // simulated stack with an Array: very strong
+  Handle(TColStd_HArray1OfInteger) subpile   =     // ... saves memory ...
     new TColStd_HArray1OfInteger(1, maxsubpil);
-  Standard_Integer nbsubpil = 0; // ... et tellement plus rapide !
+  Standard_Integer nbsubpil = 0; // ... and so much faster!
 
   for (num = 1; num <= nbdirec; num++)
   {
     nr = indr(num);
     if (nr == 0)
-      continue; //    pas un objet ou une sous-liste
+      continue; //    not an object or a sub-list
     Standard_Integer nba = NbParams(num);
     for (Standard_Integer na = nba; na > 0; na--)
     {
-      //  On lit depuis la fin : cela permet de traiter les sous-listes dans la foulee
-      //  Sinon, on devrait noter qu il y a eu des sous-listes et reprendre ensuite
+      //  We read from the end: this allows processing sub-lists on the fly
+      //  Otherwise, we should note that there were sub-lists and resume afterwards
+      //  Reverse processing ensures that nested sub-lists are resolved before their containers
+      //  This is critical for maintaining referential integrity in complex STEP structures
 
       Interface_FileParameter& FP     = ChangeParam(num, na);
       Interface_ParamType      letype = FP.ParamType();
       if (letype == Interface_ParamSub)
       {
-        //  parametre type sous-liste : numero de la sous-liste lu par depilement
+        //  sub-list type parameter: sub-list number read by unstacking
         FP.SetEntityNumber(subpile->Value(nbsubpil));
         nbsubpil--; //	subpile->Remove(nbsubpil);
       }
       else if (letype == Interface_ParamIdent)
       {
-        //  parametre type ident (reference une entite) : chercher ident demande
+        //  ident type parameter (references an entity): search for requested ident
         Standard_Integer id = -FP.EntityNumber();
         if (id < 0)
-          continue; // deja resolu en tete
+          continue; // already resolved at head
 
-        // Voila : on va chercher id dans ndi; algorithme de balayage
+        // Here we go: we will search for id in ndi; scanning algorithm
+        // This implements a bidirectional search strategy: first backward from current position
+        // to file beginning, then forward to file end. This optimizes for locality of references.
         Standard_Integer pass, sens, nok, n0, irec;
         pass = sens = nok = 0;
         if (!iamap)
-          pass = 1; // si map non disponible
+          pass = 1; // if map not available
         while (pass < 3)
         {
           pass++;
-          //    MAP disponible
+          //    MAP available
           if (pass == 1)
-          { // MAP DISPONIBLE
+          { // MAP AVAILABLE
             Standard_Integer indmap = imap.FindIndex(id);
             if (indmap > 0)
-            { // la map a trouve
+            { // the map found it
               nok = indm(indmap);
               if (nok < 0)
-                continue; // CONFLIT -> faut resoudre ...
+                continue; // CONFLICT -> need to resolve ...
               break;
             }
             else
               continue;
           }
-          //    1re Passe : REMONTEE -> Debut fichier
+          //    1st Pass: BACKWARD -> File beginning
           if (sens == 0 && nr > 1)
           {
             n0 = nr - 1;
             if (indi(n0) == -3)
-              n0--; // si on suit juste un ENDSCOPE
+              n0--; // if we just follow an ENDSCOPE
             while (n0 > 0)
             {
               irec = indi(n0);
               if (irec == id)
-              { // trouve
+              { // found
                 nok = n0;
                 break;
               }
@@ -2346,40 +2357,40 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
                   n0 = inds(n0);
                 else
                 {
-                  //    EXPORT, il faut regarder
+                  //    EXPORT, we must look
                   nok = FindEntityNumber(indx->Value(n0), id);
                   if (nok > 0)
                     break;
-                  n0 = inds(n0); // ENDSCOPE : le sauter
+                  n0 = inds(n0); // ENDSCOPE: skip it
                 }
               }
               n0--;
             }
-            //    2me Passe : DESCENTE -> Fin fichier
+            //    2nd Pass: DESCENT -> End of file
           }
           else if (nr < nbseq)
-          { // descente -> fin fichier
+          { // descent -> end of file
             n0 = nr + 1;
             while (n0 <= nbseq)
             {
               irec = indi(n0);
               if (irec == id)
-              { // trouve
+              { // found
                 nok = n0;
                 break;
               }
-              //    SCOPE : Attention a EXPORT sinon sauter
+              //    SCOPE: Attention to EXPORT otherwise skip
               if (irec == -1)
               {
                 if (indx.IsNull())
                   n0 = inds(n0);
                 else
                 {
-                  //    EXPORT, il faut regarder
+                  //    EXPORT, we must look
                   nok = FindEntityNumber(indx->Value(n0), id);
                   if (nok > 0)
                     break;
-                  n0 = inds(n0); // SCOPE : le sauter
+                  n0 = inds(n0); // SCOPE: skip it
                 }
               }
               n0++;
@@ -2387,19 +2398,19 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           }
           if (nok > 0)
             break;
-          sens = 1 - sens; // passe suivante
+          sens = 1 - sens; // next pass
         }
-        // ici on a nok, numero trouve
+        // here we have nok, number found
         if (nok > 0)
         {
           Standard_Integer num0 = inds(nok);
-          FP.SetEntityNumber(num0); // ET VOILA, on a resolu
+          FP.SetEntityNumber(num0); // AND THERE, we have resolved
 
-          // pas trouve : le signaler
+          // not found: report it
         }
         else
         {
-          //  Alimenter le Check ...  Pour cela, determiner n0 Entite et Ident
+          //  Feed the Check ... For this, determine Entity n0 and Ident
           char             failmess[100];
           Standard_Integer nument = 0;
           Standard_Integer n0ent; // svv Jan11 2000 : porting on DEC
@@ -2418,7 +2429,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
                 break;
             }
           }
-          //  ...  Construire le Check  ...
+          //  ...  Build the Check  ...
           sprintf(failmess,
                   "Unresolved Reference, Ent.n0 %d (Id.#%d) Param.n0 %d (Id.#%d)",
                   nument,
@@ -2427,16 +2438,16 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
                   id);
           thecheck->AddFail(failmess, "Unresolved Reference");
 
-          //  ...  Et sortir message un peu plus complet
+          //  ...  And output a more complete message
           sout << "*** ERR StepReaderData *** Entite " << nument << ", a " << (nr * 100) / nbseq
                << "% de DATA : #" << ident << "\n    Type:" << RecordType(num) << "  Param.n0 "
                << na << ": #" << id << " Not found" << std::endl;
 
-          FP.SetEntityNumber(0); // -> Reference non resolue
+          FP.SetEntityNumber(0); // -> Unresolved reference
         }
       }
     }
-    //  Si ce record est lui-meme une sous-liste, empiler !
+    //  If this record is itself a sub-list, stack it!
     if (inds(nr) != num)
     {
       if (nbsubpil >= maxsubpil)
@@ -2454,15 +2465,15 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
-//  ....             Gestion du Header : Preparation, lecture             ....
+//  ....             Header Management: Preparation, reading             ....
 
 //=================================================================================================
 
 Standard_Integer StepData_StepReaderData::FindNextHeaderRecord(const Standard_Integer num) const
 {
-  // retourne, sur un numero d enregistrement donne (par num), le suivant qui
-  // definit une entite, ou 0 si c est fini :
-  // Opere comme FindNextRecord mais ne balaie que le Header
+  // returns, for a given record number (by num), the next one which
+  // defines an entity, or 0 if finished:
+  // Operates like FindNextRecord but only scans the Header
 
   if (num < 0)
     return 0;
@@ -2471,8 +2482,8 @@ Standard_Integer StepData_StepReaderData::FindNextHeaderRecord(const Standard_In
 
   while (num1 <= max)
   {
-    // SCOPE,ENDSCOPE et Sous-Liste ont un identifieur negatif
-    // Ne retenir que les Idents positifs ou nuls (nul : pas d Ident dans Header)
+    // SCOPE,ENDSCOPE and Sub-List have a negative identifier
+    // Only retain positive or null Idents (null: no Ident in Header)
     if (RecordIdent(num1) >= 0)
       return num1;
     num1++;
@@ -2484,33 +2495,33 @@ Standard_Integer StepData_StepReaderData::FindNextHeaderRecord(const Standard_In
 
 void StepData_StepReaderData::PrepareHeader()
 {
-  // Resolution des references : ne concerne que les sous-listes
-  //  deja faite par SetEntityNumbers donc pas de souci a se faire
+  // Reference resolution: only concerns sub-lists
+  //  already done by SetEntityNumbers so no need to worry
 
   /*
-  // Algorithme repris et adapte de SetEntityNumbers
+  // Algorithm taken and adapted from SetEntityNumbers
   //  Traitement des sous-listes : se fait dans la foulee, par gestion d une pile
   //  basee sur la constitution des sous-listes
     TColStd_SequenceOfInteger subpile;
-    Standard_Integer nbsubpil = 0;     // profondeur de pile mais plus rapide ...
+    Standard_Integer nbsubpil = 0;     // stack depth but faster ...
 
     for (Standard_Integer num = 1 ; num <= thenbhead ; num ++) {
       Standard_Integer nba = NbParams(num) ;
       for (Standard_Integer na = nba ; na > 0 ; na --) {
-  ..  On lit depuis la fin : cela permet de traiter les sous-listes dans la foulee
-  ..  Sinon, on devrait noter qu il y a eu des sous-listes et reprendre ensuite
+  ..  We read from the end: this allows processing sub-lists on the fly
+  ..  Otherwise, we should note that there were sub-lists and resume afterwards
 
         Interface_FileParameter& FP = ChangeParam(num,na);
         Interface_ParamType letype = FP.ParamType();
         if (letype == Interface_ParamSub) {
-  ..  parametre type sous-liste : numero de la sous-liste lu par depilement
+  ..  sub-list type parameter: sub-list number read by unstacking
           FP.SetEntityNumber(subpile.Last());
   .. ..        SetParam(num,na,FP);
     subpile.Remove(nbsubpil);
           nbsubpil --;
         }
       }
-  .. Si c est une sous-liste, empiler
+  .. If it's a sub-list, stack
       if (RecordIdent(num) < -2) {
         subpile.Append(num);
         nbsubpil ++;

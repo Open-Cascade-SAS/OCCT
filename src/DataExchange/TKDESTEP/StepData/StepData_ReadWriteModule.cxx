@@ -43,17 +43,17 @@ Standard_Integer StepData_ReadWriteModule::CaseNum(const Handle(Interface_FileRe
 Standard_Integer StepData_ReadWriteModule::CaseStep(const TColStd_SequenceOfAsciiString&) const
 {
   return 0;
-} // par defaut
+} // default
 
 Standard_Boolean StepData_ReadWriteModule::IsComplex(const Standard_Integer) const
 {
   return Standard_False;
-} // par defaut
+} // default
 
 TCollection_AsciiString StepData_ReadWriteModule::ShortType(const Standard_Integer) const
 {
   return TCollection_AsciiString("");
-} // par defaut vide
+} // default empty
 
 Standard_Boolean StepData_ReadWriteModule::ComplexType(const Standard_Integer,
                                                        TColStd_SequenceOfAsciiString&) const
